@@ -1,0 +1,1883 @@
+{
+  "status": "PASS",
+  "modes": [
+    "Off",
+    "On"
+  ],
+  "images": [
+    {
+      "path": "FinalPlots_Off_Baseline/Circle_Stress.png",
+      "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/Circle_Stress.png",
+      "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/Rectangle_Stress.png",
+      "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/Rectangle_Stress.png",
+      "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/LSection_Stress.png",
+      "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/LSection_Stress.png",
+      "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/TwoRectangles_Stress.png",
+      "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/TwoRectangles_Stress.png",
+      "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/RoundedSimple_Stress.png",
+      "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/RoundedSimple_Stress.png",
+      "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/RoundedTapered_Stress.png",
+      "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/RoundedTapered_Stress.png",
+      "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/RoundedMixed_Stress.png",
+      "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/RoundedMixed_Stress.png",
+      "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/HollowCentered_Stress.png",
+      "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/HollowCentered_Stress.png",
+      "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/HollowOffset_Stress.png",
+      "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/HollowOffset_Stress.png",
+      "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/Circle_Strain.png",
+      "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/Circle_Strain.png",
+      "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/Rectangle_Strain.png",
+      "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/Rectangle_Strain.png",
+      "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/LSection_Strain.png",
+      "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/LSection_Strain.png",
+      "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/TwoRectangles_Strain.png",
+      "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/TwoRectangles_Strain.png",
+      "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/RoundedSimple_Strain.png",
+      "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/RoundedSimple_Strain.png",
+      "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/RoundedTapered_Strain.png",
+      "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/RoundedTapered_Strain.png",
+      "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/RoundedMixed_Strain.png",
+      "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/RoundedMixed_Strain.png",
+      "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/HollowCentered_Strain.png",
+      "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/HollowCentered_Strain.png",
+      "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Baseline/HollowOffset_Strain.png",
+      "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_Off_Current/HollowOffset_Strain.png",
+      "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/PERF_01_Stress.png",
+      "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/PERF_01_Strain.png",
+      "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/PERF_02_Stress.png",
+      "sha256": "f922165348e29dc5bae7a7bbf55f4fbfec3f3dfceb538869f57428f746d72ec4",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/PERF_02_Strain.png",
+      "sha256": "692db5c4588438789d80a829d3a21d809230c50a2356cb388b29a5cdd7bb14b3",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/Worst_Stress.png",
+      "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/Worst_Strain.png",
+      "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/Resize_NoLabels.png",
+      "sha256": "4ebbdbbfa2842caeb51f7c2bf9e6fa45c6bcc95711a05ba6459e3d2ff5b7cad7",
+      "size": [
+        867,
+        667
+      ]
+    },
+    {
+      "path": "FinalPlotModes_Off/MissingState.png",
+      "sha256": "eb0bc4fe6e12bdf810fb8eb274feece990764628632179e0c8d3383a4a1fbd90",
+      "size": [
+        867,
+        667
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/Circle_Stress.png",
+      "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/Circle_Stress.png",
+      "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/Rectangle_Stress.png",
+      "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/Rectangle_Stress.png",
+      "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/LSection_Stress.png",
+      "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/LSection_Stress.png",
+      "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/TwoRectangles_Stress.png",
+      "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/TwoRectangles_Stress.png",
+      "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/RoundedSimple_Stress.png",
+      "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/RoundedSimple_Stress.png",
+      "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/RoundedTapered_Stress.png",
+      "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/RoundedTapered_Stress.png",
+      "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/RoundedMixed_Stress.png",
+      "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/RoundedMixed_Stress.png",
+      "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/HollowCentered_Stress.png",
+      "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/HollowCentered_Stress.png",
+      "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/HollowOffset_Stress.png",
+      "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/HollowOffset_Stress.png",
+      "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/Circle_Strain.png",
+      "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/Circle_Strain.png",
+      "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/Rectangle_Strain.png",
+      "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/Rectangle_Strain.png",
+      "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/LSection_Strain.png",
+      "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/LSection_Strain.png",
+      "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/TwoRectangles_Strain.png",
+      "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/TwoRectangles_Strain.png",
+      "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/RoundedSimple_Strain.png",
+      "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/RoundedSimple_Strain.png",
+      "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/RoundedTapered_Strain.png",
+      "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/RoundedTapered_Strain.png",
+      "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/RoundedMixed_Strain.png",
+      "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/RoundedMixed_Strain.png",
+      "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/HollowCentered_Strain.png",
+      "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/HollowCentered_Strain.png",
+      "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Baseline/HollowOffset_Strain.png",
+      "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlots_On_Current/HollowOffset_Strain.png",
+      "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/PERF_01_Stress.png",
+      "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/PERF_01_Strain.png",
+      "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/PERF_02_Stress.png",
+      "sha256": "f922165348e29dc5bae7a7bbf55f4fbfec3f3dfceb538869f57428f746d72ec4",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/PERF_02_Strain.png",
+      "sha256": "692db5c4588438789d80a829d3a21d809230c50a2356cb388b29a5cdd7bb14b3",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/Worst_Stress.png",
+      "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/Worst_Strain.png",
+      "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+      "size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/Resize_NoLabels.png",
+      "sha256": "4ebbdbbfa2842caeb51f7c2bf9e6fa45c6bcc95711a05ba6459e3d2ff5b7cad7",
+      "size": [
+        867,
+        667
+      ]
+    },
+    {
+      "path": "FinalPlotModes_On/MissingState.png",
+      "sha256": "eb0bc4fe6e12bdf810fb8eb274feece990764628632179e0c8d3383a4a1fbd90",
+      "size": [
+        867,
+        667
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "mode": "Off",
+      "family": "Circle",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "Rectangle",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "LSection",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "TwoRectangles",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedSimple",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedTapered",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedMixed",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "HollowCentered",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "HollowOffset",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "Circle",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "Rectangle",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "LSection",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "TwoRectangles",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedSimple",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedTapered",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedMixed",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "HollowCentered",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "Off",
+      "family": "HollowOffset",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "Circle",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "Rectangle",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "LSection",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "TwoRectangles",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "RoundedSimple",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "RoundedTapered",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "RoundedMixed",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "HollowCentered",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "HollowOffset",
+      "quantity": "Stress",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "Circle",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "Rectangle",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "LSection",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "TwoRectangles",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "RoundedSimple",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "RoundedTapered",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "RoundedMixed",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "HollowCentered",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    },
+    {
+      "mode": "On",
+      "family": "HollowOffset",
+      "quantity": "Strain",
+      "sameSize": true,
+      "pixelsEqual": true,
+      "differenceBounds": null
+    }
+  ],
+  "contactSheets": [
+    {
+      "path": "VisualQA/Off_Stress_1.png",
+      "sha256": "5eaac5799bfa5668e5bd34ceedcb234e8c92272577d70de981e9ca64f75b659c"
+    },
+    {
+      "path": "VisualQA/Off_Stress_2.png",
+      "sha256": "7eafa5c0d342e08b75b7680d6b2112261d6999b53ef673073f19a13a94b5b18c"
+    },
+    {
+      "path": "VisualQA/Off_Stress_3.png",
+      "sha256": "dfc722ccd2280cb4b70eb5bb683da9d087187f60b342c298625c888f34218184"
+    },
+    {
+      "path": "VisualQA/Off_Strain_1.png",
+      "sha256": "5bac8642cded43fadfce8c0e8f81763b77a1199c6f18525965ae361888a5fc0c"
+    },
+    {
+      "path": "VisualQA/Off_Strain_2.png",
+      "sha256": "e8de07706638978d0d583f61b244549808451a50d4e38e152b577663782b39cc"
+    },
+    {
+      "path": "VisualQA/Off_Strain_3.png",
+      "sha256": "b53e5f032a570f6ded01a6c9dab33eee944c859ff2276dcdb001dc63df35fd72"
+    },
+    {
+      "path": "VisualQA/Off_special.png",
+      "sha256": "7a5f0a821e729eb8d954e094458d0ba6ac47526350a4bab13eb256d63f0e4361"
+    },
+    {
+      "path": "VisualQA/On_Stress_1.png",
+      "sha256": "5eaac5799bfa5668e5bd34ceedcb234e8c92272577d70de981e9ca64f75b659c"
+    },
+    {
+      "path": "VisualQA/On_Stress_2.png",
+      "sha256": "7eafa5c0d342e08b75b7680d6b2112261d6999b53ef673073f19a13a94b5b18c"
+    },
+    {
+      "path": "VisualQA/On_Stress_3.png",
+      "sha256": "dfc722ccd2280cb4b70eb5bb683da9d087187f60b342c298625c888f34218184"
+    },
+    {
+      "path": "VisualQA/On_Strain_1.png",
+      "sha256": "5bac8642cded43fadfce8c0e8f81763b77a1199c6f18525965ae361888a5fc0c"
+    },
+    {
+      "path": "VisualQA/On_Strain_2.png",
+      "sha256": "e8de07706638978d0d583f61b244549808451a50d4e38e152b577663782b39cc"
+    },
+    {
+      "path": "VisualQA/On_Strain_3.png",
+      "sha256": "b53e5f032a570f6ded01a6c9dab33eee944c859ff2276dcdb001dc63df35fd72"
+    },
+    {
+      "path": "VisualQA/On_special.png",
+      "sha256": "7a5f0a821e729eb8d954e094458d0ba6ac47526350a4bab13eb256d63f0e4361"
+    }
+  ],
+  "reports": [
+    {
+      "name": "FinalPlotModes_Off.txt",
+      "status": "PASS",
+      "sourceSHA256": "42fae67d1fb383c704b3d640523bb406ee3501dd019007fdff40b50d9019f09f",
+      "reportSHA256": "ea5d5e2df8b47157ec359d4c4fa7d47584cfa24ec1c67c7a7798d0eaeb208556",
+      "suites": [
+        {
+          "name": "modFinalGeometryChecks.RunDirectedPlotModes",
+          "status": "PASS",
+          "started": "2026-10-13T08:45:02",
+          "finished": "2026-10-13T08:45:20",
+          "passed": 29,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [],
+      "passed": 29
+    },
+    {
+      "name": "FinalPlotModes_On.txt",
+      "status": "PASS",
+      "sourceSHA256": "42fae67d1fb383c704b3d640523bb406ee3501dd019007fdff40b50d9019f09f",
+      "reportSHA256": "e316a90cc7f8e4a0ef074cd8c705f418534b6dcdfd95eabb9434324bc258c5b9",
+      "suites": [
+        {
+          "name": "modFinalGeometryChecks.RunDirectedPlotModes",
+          "status": "PASS",
+          "started": "2026-10-13T08:47:17",
+          "finished": "2026-10-13T08:47:36",
+          "passed": 29,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [],
+      "passed": 29
+    }
+  ],
+  "visualReview": {
+    "status": "REVIEWED",
+    "images": [
+      {
+        "path": "FinalPlots_Off_Baseline/Circle_Stress.png",
+        "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/Circle_Stress.png",
+        "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/Rectangle_Stress.png",
+        "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/Rectangle_Stress.png",
+        "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/LSection_Stress.png",
+        "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/LSection_Stress.png",
+        "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/TwoRectangles_Stress.png",
+        "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/TwoRectangles_Stress.png",
+        "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/RoundedSimple_Stress.png",
+        "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/RoundedSimple_Stress.png",
+        "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/RoundedTapered_Stress.png",
+        "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/RoundedTapered_Stress.png",
+        "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/RoundedMixed_Stress.png",
+        "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/RoundedMixed_Stress.png",
+        "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/HollowCentered_Stress.png",
+        "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/HollowCentered_Stress.png",
+        "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/HollowOffset_Stress.png",
+        "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/HollowOffset_Stress.png",
+        "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/Circle_Strain.png",
+        "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/Circle_Strain.png",
+        "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/Rectangle_Strain.png",
+        "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/Rectangle_Strain.png",
+        "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/LSection_Strain.png",
+        "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/LSection_Strain.png",
+        "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/TwoRectangles_Strain.png",
+        "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/TwoRectangles_Strain.png",
+        "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/RoundedSimple_Strain.png",
+        "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/RoundedSimple_Strain.png",
+        "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/RoundedTapered_Strain.png",
+        "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/RoundedTapered_Strain.png",
+        "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/RoundedMixed_Strain.png",
+        "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/RoundedMixed_Strain.png",
+        "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/HollowCentered_Strain.png",
+        "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/HollowCentered_Strain.png",
+        "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Baseline/HollowOffset_Strain.png",
+        "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_Off_Current/HollowOffset_Strain.png",
+        "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/PERF_01_Stress.png",
+        "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/PERF_01_Strain.png",
+        "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/PERF_02_Stress.png",
+        "sha256": "f922165348e29dc5bae7a7bbf55f4fbfec3f3dfceb538869f57428f746d72ec4",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/PERF_02_Strain.png",
+        "sha256": "692db5c4588438789d80a829d3a21d809230c50a2356cb388b29a5cdd7bb14b3",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/Worst_Stress.png",
+        "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/Worst_Strain.png",
+        "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/Resize_NoLabels.png",
+        "sha256": "4ebbdbbfa2842caeb51f7c2bf9e6fa45c6bcc95711a05ba6459e3d2ff5b7cad7",
+        "size": [
+          867,
+          667
+        ]
+      },
+      {
+        "path": "FinalPlotModes_Off/MissingState.png",
+        "sha256": "eb0bc4fe6e12bdf810fb8eb274feece990764628632179e0c8d3383a4a1fbd90",
+        "size": [
+          867,
+          667
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/Circle_Stress.png",
+        "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/Circle_Stress.png",
+        "sha256": "ffd257183b1e87b90365b6eea23e5831c3a974cf0fea19f3c10785f5f6492676",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/Rectangle_Stress.png",
+        "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/Rectangle_Stress.png",
+        "sha256": "59c00390903bd638771f6c9c1dec5029499d75dbca562f845c2490aa34bdbafc",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/LSection_Stress.png",
+        "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/LSection_Stress.png",
+        "sha256": "f97ed46db081c105d7409b87514e21fae2eba212108a4778719533fe162dc7a2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/TwoRectangles_Stress.png",
+        "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/TwoRectangles_Stress.png",
+        "sha256": "fb5acaa0270304430facec1d2409237a22fd7974263963e624e717015aa87588",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/RoundedSimple_Stress.png",
+        "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/RoundedSimple_Stress.png",
+        "sha256": "da339e00c860dcd615677d9ac61d173a9b1ff95d897507cf1535aa44d0c2210c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/RoundedTapered_Stress.png",
+        "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/RoundedTapered_Stress.png",
+        "sha256": "dfc9bd7e70b12641c49a27b3a715ee664c2bc97e99d9e19c0632eb9798ec5c26",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/RoundedMixed_Stress.png",
+        "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/RoundedMixed_Stress.png",
+        "sha256": "a9281c2802be9a2ab7e97d1401827628164e7a65af81f9f8651fc1ac250909cf",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/HollowCentered_Stress.png",
+        "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/HollowCentered_Stress.png",
+        "sha256": "d9002f6e02e46aa15cc1aa369b41a142470c1b90911ed97245be0ad21492eb1c",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/HollowOffset_Stress.png",
+        "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/HollowOffset_Stress.png",
+        "sha256": "7f8f461867015a080d4647c2d0d131c5124be368b9225bb860b0008115bb49d2",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/Circle_Strain.png",
+        "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/Circle_Strain.png",
+        "sha256": "5bc9668be60971d8ba6aa8b8234bb332ee8cd0b0517b350a7ef0cbb57ca75276",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/Rectangle_Strain.png",
+        "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/Rectangle_Strain.png",
+        "sha256": "b43d0bd14ef29e9f0b26d8fa45dfc01b8436ebd4f6987cb1b6c7d3ceed7f9e76",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/LSection_Strain.png",
+        "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/LSection_Strain.png",
+        "sha256": "8b0a92017e070cc27c6c2eb286e1434d7412a54d23dbcec999919ae7eaf4ee84",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/TwoRectangles_Strain.png",
+        "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/TwoRectangles_Strain.png",
+        "sha256": "8bd222ad561984ac92de69f0b20c9b10d46be866fa2e6a6fffb3455f75a750ed",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/RoundedSimple_Strain.png",
+        "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/RoundedSimple_Strain.png",
+        "sha256": "7f5cf16b4296a60bc2425b9a77627ad30020dcf5788c5c2cf2f2912330c40923",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/RoundedTapered_Strain.png",
+        "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/RoundedTapered_Strain.png",
+        "sha256": "da7eb4560682b365a9fdf4fac7e4652ff89148f87e62bdcdcec4b44c8216ba75",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/RoundedMixed_Strain.png",
+        "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/RoundedMixed_Strain.png",
+        "sha256": "ad8c7837fd72e2d93983ccd704805463f903f3d60fc253bf638e851dd3c9ef0f",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/HollowCentered_Strain.png",
+        "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/HollowCentered_Strain.png",
+        "sha256": "13009c1f1f1db6026b3d34e4e8f119ff22ae4a28e80a7a881471ec32528a53df",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Baseline/HollowOffset_Strain.png",
+        "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlots_On_Current/HollowOffset_Strain.png",
+        "sha256": "2d6982143c23c5046d4554a386614e086b8a7c57ef3d9b1d727a5abbcad12028",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/PERF_01_Stress.png",
+        "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/PERF_01_Strain.png",
+        "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/PERF_02_Stress.png",
+        "sha256": "f922165348e29dc5bae7a7bbf55f4fbfec3f3dfceb538869f57428f746d72ec4",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/PERF_02_Strain.png",
+        "sha256": "692db5c4588438789d80a829d3a21d809230c50a2356cb388b29a5cdd7bb14b3",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/Worst_Stress.png",
+        "sha256": "517687d99b0c01c1eb8f0121b8b7be15928d82f77457af81852f666141019ee7",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/Worst_Strain.png",
+        "sha256": "28bb8f2d3b527ef7de36d052d376f3da0bf4b6aeb875b0bd0d3f5dc364996e67",
+        "size": [
+          1094,
+          720
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/Resize_NoLabels.png",
+        "sha256": "4ebbdbbfa2842caeb51f7c2bf9e6fa45c6bcc95711a05ba6459e3d2ff5b7cad7",
+        "size": [
+          867,
+          667
+        ]
+      },
+      {
+        "path": "FinalPlotModes_On/MissingState.png",
+        "sha256": "eb0bc4fe6e12bdf810fb8eb274feece990764628632179e0c8d3383a4a1fbd90",
+        "size": [
+          867,
+          667
+        ]
+      }
+    ],
+    "contactSheets": [
+      {
+        "path": "VisualQA/Off_Stress_1.png",
+        "sha256": "5eaac5799bfa5668e5bd34ceedcb234e8c92272577d70de981e9ca64f75b659c"
+      },
+      {
+        "path": "VisualQA/Off_Stress_2.png",
+        "sha256": "7eafa5c0d342e08b75b7680d6b2112261d6999b53ef673073f19a13a94b5b18c"
+      },
+      {
+        "path": "VisualQA/Off_Stress_3.png",
+        "sha256": "dfc722ccd2280cb4b70eb5bb683da9d087187f60b342c298625c888f34218184"
+      },
+      {
+        "path": "VisualQA/Off_Strain_1.png",
+        "sha256": "5bac8642cded43fadfce8c0e8f81763b77a1199c6f18525965ae361888a5fc0c"
+      },
+      {
+        "path": "VisualQA/Off_Strain_2.png",
+        "sha256": "e8de07706638978d0d583f61b244549808451a50d4e38e152b577663782b39cc"
+      },
+      {
+        "path": "VisualQA/Off_Strain_3.png",
+        "sha256": "b53e5f032a570f6ded01a6c9dab33eee944c859ff2276dcdb001dc63df35fd72"
+      },
+      {
+        "path": "VisualQA/Off_special.png",
+        "sha256": "7a5f0a821e729eb8d954e094458d0ba6ac47526350a4bab13eb256d63f0e4361"
+      },
+      {
+        "path": "VisualQA/On_Stress_1.png",
+        "sha256": "5eaac5799bfa5668e5bd34ceedcb234e8c92272577d70de981e9ca64f75b659c"
+      },
+      {
+        "path": "VisualQA/On_Stress_2.png",
+        "sha256": "7eafa5c0d342e08b75b7680d6b2112261d6999b53ef673073f19a13a94b5b18c"
+      },
+      {
+        "path": "VisualQA/On_Stress_3.png",
+        "sha256": "dfc722ccd2280cb4b70eb5bb683da9d087187f60b342c298625c888f34218184"
+      },
+      {
+        "path": "VisualQA/On_Strain_1.png",
+        "sha256": "5bac8642cded43fadfce8c0e8f81763b77a1199c6f18525965ae361888a5fc0c"
+      },
+      {
+        "path": "VisualQA/On_Strain_2.png",
+        "sha256": "e8de07706638978d0d583f61b244549808451a50d4e38e152b577663782b39cc"
+      },
+      {
+        "path": "VisualQA/On_Strain_3.png",
+        "sha256": "b53e5f032a570f6ded01a6c9dab33eee944c859ff2276dcdb001dc63df35fd72"
+      },
+      {
+        "path": "VisualQA/On_special.png",
+        "sha256": "7a5f0a821e729eb8d954e094458d0ba6ac47526350a4bab13eb256d63f0e4361"
+      }
+    ],
+    "reviewedUTC": "2026-10-13T05:49:28.778773+00:00",
+    "method": "All14 contact sheets inspected at original resolution, covering all88 native Excel exports. All36 baseline/current pairs pixel-identical.",
+    "observations": [
+      "Оба режима: все девять форм, наружные границы, отверстия, стержни, габариты и подписи сохранены. Новых визуальных расхождений с baseline нет.",
+      "Легенды Stress/Strain и единицы видны; окраска и размеры согласованы между парными изображениями.",
+      "В специальных режимах видны разные области сжатия и растяжения для двух сочетаний; Worst выбирает PERF_01.",
+      "После resize подписи отключены, геометрия, оси и легенды сохраняются. При отсутствии НДС отображается геометрия и сообщение об отсутствии выбранного состояния, без ложной окраски напряжений.",
+      "Тестовый чужой синий Shape сохранён. Компактное расположение подписей у внутренних углов LSection/TwoRectangles совпадает с baseline."
+    ]
+  },
+  "errors": [],
+  "scope": "Native Stress/Strain images of nine families and eight saved-state/resize/missing-state modes per ON/OFF"
+}

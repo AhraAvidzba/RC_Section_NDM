@@ -1,0 +1,329 @@
+{
+  "status": "PASS",
+  "validationPlanSHA256": "69ffcca49d6e0f49585c163779980c53b25ad4154960335bf1a3ee857391beb8",
+  "scenarios": [
+    {
+      "entrypoint": "RunPlateauSlopeTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestMaterialDiagrams.bas",
+      "sourceSHA256": "1c54db4b11bfc47e32012d1e4eabeb6888d8ea72755d0b2ac4ff80cd77b14896"
+    },
+    {
+      "entrypoint": "RunAudit03MaterialControlUnitsTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestMaterialDiagrams.bas",
+      "sourceSHA256": "1c54db4b11bfc47e32012d1e4eabeb6888d8ea72755d0b2ac4ff80cd77b14896"
+    },
+    {
+      "entrypoint": "RunPlateauResultsDiagramTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestBatchCalculation.bas",
+      "sourceSHA256": "7f1c57960b87ee7be2137034435c5d7e4844f92c2a72d4b8a65a60f6be649756"
+    },
+    {
+      "entrypoint": "RunContourMeshTests",
+      "evidence": [
+        "FinalDomain_Off.txt",
+        "FinalDomain_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestContourMesh.bas",
+      "sourceSHA256": "577d45ae8d09ff23d56d8a5c704a26c8a500083450f05ffe2e582ba410140aee"
+    },
+    {
+      "entrypoint": "RunRealAutoCADContourMeshTests",
+      "evidence": [
+        "NativeReleaseMesh_Off/NativeCAD.txt",
+        "NativeReleaseMesh_On/NativeCAD.txt"
+      ],
+      "status": "PASS"
+    },
+    {
+      "entrypoint": "RunConcreteMeshCenterTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestGeometry.bas",
+      "sourceSHA256": "47f1546f8fca93dac715056751187f02c08be10c4ffc02d12ba6d6ffb5f491a9"
+    },
+    {
+      "entrypoint": "RunCommonStrainLimitTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunAsymmetricSteelStrengthTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestMaterialDiagrams.bas",
+      "sourceSHA256": "1c54db4b11bfc47e32012d1e4eabeb6888d8ea72755d0b2ac4ff80cd77b14896"
+    },
+    {
+      "entrypoint": "RunTangentClipRegressionTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestGeometryQuery.bas",
+      "sourceSHA256": "98df7fd22a84276405a3af0f7c8239f174f99bf5a186cd27d183f69be178de4f"
+    },
+    {
+      "entrypoint": "RunGeometryQueryTests",
+      "evidence": [
+        "FinalSupplement_Off.txt",
+        "FinalSupplement_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestGeometryQuery.bas",
+      "sourceSHA256": "98df7fd22a84276405a3af0f7c8239f174f99bf5a186cd27d183f69be178de4f"
+    },
+    {
+      "entrypoint": "RunSolverWorkStatsTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunBatchWorkStatsTests",
+      "evidence": [
+        "FinalExtras_Off.txt",
+        "FinalExtras_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestBatchCalculation.bas",
+      "sourceSHA256": "7f1c57960b87ee7be2137034435c5d7e4844f92c2a72d4b8a65a60f6be649756"
+    },
+    {
+      "entrypoint": "RunLimitGuessScalingTests",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunContinuationStateTests",
+      "coveredBy": "RunSectionSolverTests",
+      "privateCases": [
+        "TestContinuationStates"
+      ],
+      "privateCasesReachable": true,
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestSectionSolver.bas",
+      "sourceSHA256": "76dba87d0fc4c1ceeefbc84d364dd9d6bc9a81965f553481524b653d4b1577d3"
+    },
+    {
+      "entrypoint": "RunSectionSolverTests",
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestSectionSolver.bas",
+      "sourceSHA256": "76dba87d0fc4c1ceeefbc84d364dd9d6bc9a81965f553481524b653d4b1577d3"
+    },
+    {
+      "entrypoint": "RunAudit03UltimateContracts",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunAudit03UltimateStagnation",
+      "coveredBy": "RunAudit03UltimateContracts",
+      "privateCases": [
+        "TestAudit03UltimateGuardCase",
+        "TestRejectedUltimateFinalPoint",
+        "TestScaledUltimateStepAcceptance"
+      ],
+      "privateCasesReachable": true,
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunUltimateFrameRegressionTests",
+      "coveredBy": "RunCapacitySolverTests",
+      "privateCases": [
+        "TestAudit02AsymmetricSteelLimits",
+        "TestProjectedLimitRecovery",
+        "TestUltimateMomentTranslationInvariant",
+        "TestUltimateNumericalContextCache",
+        "TestUltimateStrainToleranceNoHiddenFloor"
+      ],
+      "privateCasesReachable": true,
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunNumericalPathPreparationTests",
+      "coveredBy": "RunCapacitySolverTests",
+      "privateCases": [
+        "TestNumericalPathPreparation"
+      ],
+      "privateCasesReachable": true,
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunCapacitySolverTests",
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunProjectedLimitRecoveryTests",
+      "coveredBy": "RunCapacitySolverTests",
+      "privateCases": [
+        "TestProjectedLimitRecovery",
+        "TestWarmStartRestartContract"
+      ],
+      "privateCasesReachable": true,
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunUltimateStepScaleRegressionTests",
+      "coveredBy": "RunCapacitySolverTests",
+      "privateCases": [
+        "TestUltimateStepScale"
+      ],
+      "privateCasesReachable": true,
+      "evidence": [
+        "FinalFull_Off.txt",
+        "FinalFull_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunCapacityMomentMeritTests",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunBracketFinalizationRecoveryTests",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestCapacitySolver.bas",
+      "sourceSHA256": "6c17d33a2253ecee23a5592673898fdfdd226441c8a9fed4bfcccbf6e841e786"
+    },
+    {
+      "entrypoint": "RunSavedCrackLambdaToleranceTests",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestBatchCalculation.bas",
+      "sourceSHA256": "7f1c57960b87ee7be2137034435c5d7e4844f92c2a72d4b8a65a60f6be649756"
+    },
+    {
+      "entrypoint": "RunAudit03LambdaSettingsTests",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestConfiguration.bas",
+      "sourceSHA256": "2a3afe6b38bc94d50675a2ccb000cf7971e1768c7c248f2b8abaa5767c9c88ae"
+    },
+    {
+      "entrypoint": "RunExecutionReportFormattingTests",
+      "evidence": [
+        "FinalValidationPlan_Off.txt",
+        "FinalValidationPlan_On.txt"
+      ],
+      "status": "PASS",
+      "source": "tests/modTestWorkbookInterface.bas",
+      "sourceSHA256": "01c2506b4a1f661d8af216c8efeac19f8513d1177f60647bb7a6c31f5988c097"
+    },
+    {
+      "entrypoint": "RunRealAutoCADFarOriginTests",
+      "evidence": [
+        "NativeRelease_RunRealAutoCADFarOriginTests_Off/NativeCAD.txt",
+        "NativeRelease_RunRealAutoCADFarOriginTests_On/NativeCAD.txt"
+      ],
+      "status": "PASS"
+    },
+    {
+      "entrypoint": "RunRealAutoCADFarCapacityTests",
+      "evidence": [
+        "NativeRelease_RunRealAutoCADFarCapacityTests_Off/NativeCAD.txt",
+        "NativeRelease_RunRealAutoCADFarCapacityTests_On/NativeCAD.txt"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "aliasPolicy": "Same private test bodies reached from a completed current aggregator; no substitution with similar tests"
+}

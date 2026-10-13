@@ -1,0 +1,1667 @@
+﻿{
+    "Published":  true,
+    "DateUTC":  "2026-10-13T05:52:54.3536959Z",
+    "WorkbookSHA256":  "871b42914fcb2fcf0168f43896d66ba603b6b170f6e6a9f9db9206cdc3ca9fec",
+    "ExportSHA256":  "92c7b69f499564fd354721146e9e14b7e943488d190386355a42c9b4016b06b4",
+    "OriginalWorkbookSHA256":  "4dc6034434a2391ccba8a8fea9775dd09b26c2e2be62eabaae6160905ec01026",
+    "OriginalDumpSHA256":  "ac21f983d3bf083ef8166efcd982bfc5e64b86ba844bde4f2468dc614a3aee35",
+    "UserDataPreserved":  true,
+    "ForeignOutputsPreserved":  true,
+    "ForeignOutputFiles":  [
+                               {
+                                   "Path":  "workbook\\output\\RC_NDM_ui_test_progress.txt",
+                                   "SHA256":  "8063e18a8054f34637082903407e57efd533284b9dc41d44333b46561a1ccf0f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\RC_Section_NDM_execution_report.txt",
+                                   "SHA256":  "7a3c3481f87124f2a8f6cbed21320f248c6fc50e88e38f1134f89cf923c9bb71"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_001_composite.png",
+                                   "SHA256":  "5afd3d44ac4b36fc9836c06ef7cfff93179407b20255a69610a29f78e1af7e71"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_001_text.png",
+                                   "SHA256":  "6d18b51397153702f1496379121d363a58a42a270309a430245462a46986b2eb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_002_text.png",
+                                   "SHA256":  "416c17b7be3e9d961e272f2e8431c6b1eac4326a245a4fba9cdc37175091c1aa"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_003_fraction.png",
+                                   "SHA256":  "261b03557207c47fdfee06be5d9508f6a6a9253e366822532ba7ad98e2bbddbc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_003_text.png",
+                                   "SHA256":  "75fd80522f5907ffde4b56ac58cdd74b8529e94b7676a8f3e52444ba2d4e2351"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_004_text.png",
+                                   "SHA256":  "b2d2b03f1aa7b8734ec507166be795c572f1ec36d43ff3d6ed7b2abf73e8b2e8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_005_text.png",
+                                   "SHA256":  "76fa6ef592bd7ff857de540e9dc6298e8b5a2b823afd28edabbbf7743de9a8e1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_006_text.png",
+                                   "SHA256":  "80c8d4865d98519fd0936a8d0d8197a1126ccf99dc43e9ff16582618d276599e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_007_composite.png",
+                                   "SHA256":  "ec38cf69dd89af9af6344efa3f626326e33e5831bfe3efe8c7d0700e044f1a99"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_007_fraction.png",
+                                   "SHA256":  "aaadaea1ee2f07d196598235456ef293d11d83c6c9eb4eccff20a3ed570ebf27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_007_text.png",
+                                   "SHA256":  "23e78d097156b1c01dc45e9edfb0fc244f142639e0596e072ac277705f1f5eaf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_008_composite.png",
+                                   "SHA256":  "dfa33d5ad7c4c2cbc3cb20a37a9daa7c9ab7791ac1219196448092cbdc17c199"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_008_fraction.png",
+                                   "SHA256":  "aaadaea1ee2f07d196598235456ef293d11d83c6c9eb4eccff20a3ed570ebf27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_008_matrix.png",
+                                   "SHA256":  "711733eaf4a77a871133f3e50641a16c9564847f62e66172c34c706af9cddc24"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_008_text.png",
+                                   "SHA256":  "bac44bb18e27ef75b37c8e56072b0137d4097987da0159959bf7c65ceb4d87d7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_009_composite.png",
+                                   "SHA256":  "dfa33d5ad7c4c2cbc3cb20a37a9daa7c9ab7791ac1219196448092cbdc17c199"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_009_fraction.png",
+                                   "SHA256":  "aaadaea1ee2f07d196598235456ef293d11d83c6c9eb4eccff20a3ed570ebf27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_009_text.png",
+                                   "SHA256":  "3c98db84933564962622af69560f5b24f968a4b424a85a09df4264ab33c2c451"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_010_fraction.png",
+                                   "SHA256":  "9f305bc4d7d0306b1eaf4c2bc609f00859e2990cc468d960ecad1ae8b8f4bda7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_010_text.png",
+                                   "SHA256":  "d8b1539db89815fb474f9c37a1c8878164122e5135dd4b727392fb293f5bf6b0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_011_composite.png",
+                                   "SHA256":  "769bd55c1d7d4e045b837ab13070c7e342d8af68e6c9b2c3b89fac8861ae85aa"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_011_fraction.png",
+                                   "SHA256":  "491750b091fb378fbe41b688b3886377c72f5b498ba096e271e7f097fcfec9e1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_011_matrix.png",
+                                   "SHA256":  "3309ec70f64c5e0f61e3e26e0635044a20596d21a8aa26dbb6da2a92824bc4b0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_011_text.png",
+                                   "SHA256":  "1249b7591c982dee9fed21e807c5f98f0f2c676c6c1db754ea472e6c350a4abc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_012_composite.png",
+                                   "SHA256":  "3d21ffeb3decfcdd9cd08a5ab9e163c9e98add3505fe5eb8fb80779856ddce65"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_012_fraction.png",
+                                   "SHA256":  "1c1d418ae478f5ac0dafc5dea764b121e0c7e37c37d6b6ad869398f33c77a2ac"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_012_matrix.png",
+                                   "SHA256":  "b90ccab94abbdbe362a46bbf2a9aa45ff1ce9cc7995e768f2d23a5bde69eae48"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_012_text.png",
+                                   "SHA256":  "0353667d301579ac3fc603365d29a5f9265e4bfb416c3555a80db87e65ecab46"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_013_fraction.png",
+                                   "SHA256":  "491750b091fb378fbe41b688b3886377c72f5b498ba096e271e7f097fcfec9e1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_013_matrix.png",
+                                   "SHA256":  "bc2b5d92c14a146a8bac94750a7de4b1be45582f9ba7d9b280dd1f5db1bf07a3"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_013_text.png",
+                                   "SHA256":  "fc8d7788101731a1aa7a82babe0c92bdebd82e55f8c42366b7915d4c8bb23335"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_014_composite.png",
+                                   "SHA256":  "b66810e7e54269d16caefa3f0e485c3df106cf2dc14e715fa1eaae9d8f9f87e9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_014_fraction.png",
+                                   "SHA256":  "722de65d3ccd276354181b616b50384e6168075ebc9e10083175a2093dc2cae4"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_014_text.png",
+                                   "SHA256":  "f0a814eaa5c30e9a586d7396ee0274d62ef8247e31ef22f19a1343d7984ffbed"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_015_composite.png",
+                                   "SHA256":  "3d21ffeb3decfcdd9cd08a5ab9e163c9e98add3505fe5eb8fb80779856ddce65"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_015_fraction.png",
+                                   "SHA256":  "9a821783dad6d39a445391d8a55ed9fd62f96996ae28fb87f5db5e08f87fe69f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_015_text.png",
+                                   "SHA256":  "758cb80a0a278cb2a5c77c773fb45791b5a229a484babbf5e5c8c93b418f49c6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_016_fraction.png",
+                                   "SHA256":  "722de65d3ccd276354181b616b50384e6168075ebc9e10083175a2093dc2cae4"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_016_matrix.png",
+                                   "SHA256":  "a892c970dfb4f4ff2bdc037f99e8e9274e0abc1de425ae3ef8bb99a3ad16708d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_016_text.png",
+                                   "SHA256":  "6beb3dcbf4a93cc2fcd7006a78a0e50000bfa00e2c0f203983e2361ffb95c084"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_017_composite.png",
+                                   "SHA256":  "c1ac415569fa7db8070c4fe147c3be8aaec1c5f2a193a1fcbba9a52c9497e366"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_017_fraction.png",
+                                   "SHA256":  "34dff5734877f2e5b4439b533782ce63f698143869b1410f26649eb1f02d0b22"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_017_text.png",
+                                   "SHA256":  "3a0079caf937037f9938067f2d835a4205157faf6194f9bded45cb97f385d09b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_018_fraction.png",
+                                   "SHA256":  "1c1d418ae478f5ac0dafc5dea764b121e0c7e37c37d6b6ad869398f33c77a2ac"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_018_text.png",
+                                   "SHA256":  "6c7d40b2d3cc3c3cc978986ece915c8646d7464a7f2def96c7ac26a643a6571d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_019_composite.png",
+                                   "SHA256":  "51ccde712062fa4ec7b2978f5d2968ea2108a8eff8b5c674a3492d22845fdb2d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_019_fraction.png",
+                                   "SHA256":  "8a48a4568fe1d8dca4d1fed2dccea221557b9527f01e7da64ec5070fd10ff393"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_019_text.png",
+                                   "SHA256":  "6f8d5f26633cdb861ff59a1d11ec632fac89d90cb34d2dc24d141bceac8c21e4"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_020_fraction.png",
+                                   "SHA256":  "442a01690b7f7175c1821b9e17f59e21d89fb0692fb7b43f6f6195b5326873be"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_020_text.png",
+                                   "SHA256":  "e831c61cd008f4a9f54d6fa58cb2218e539c7f6fc6226325b9da14a3bd485c4d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_021_fraction.png",
+                                   "SHA256":  "aed1c82ac75713b3e893f1eeb7630857a0ef8c8f9ba9b17922092a4de37a8b66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_021_text.png",
+                                   "SHA256":  "cc536ffe34dd585fbc0c9366c8fa6fee8bb6b68a10e1438820897c2de71c0d04"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_022_fraction.png",
+                                   "SHA256":  "bb16327fdf9f80d0cbb0b3570620d37455a55dc4a1eb70c926ea863023a86a3b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_022_text.png",
+                                   "SHA256":  "ef47f0e03661ecd5270ea5529dbd1d449f743e3c604963f168531c9543e3c713"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_023_fraction.png",
+                                   "SHA256":  "accb8c9e781a0eb336e48261b5046e6b45b027665697d5357c45f9d89a25e521"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_023_text.png",
+                                   "SHA256":  "0802f382140fafced1d7beb7d8acce37eb54d171479f0748a65d5b29f62a00d5"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_024_fraction.png",
+                                   "SHA256":  "8fdc45199e536ceb0d6064087d986e98af53ad0112939608a3ecde3a117fbb60"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_024_matrix.png",
+                                   "SHA256":  "9fc2bfd6ee3dc9602f9430b0ecbf83b1006cdacea70e05fc1e823488cb2e1ddf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_024_text.png",
+                                   "SHA256":  "3c4ec2ff8853695ff1843a5582bd6e284cfe5ceaeb633ddea95cbf7c3fc18459"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_025_fraction.png",
+                                   "SHA256":  "f5e2bed70168ce46bb7c0f7dec96062fc2628837026429276f66cb5858a2be3a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_025_text.png",
+                                   "SHA256":  "8f2cf3c90362b8a1f5d40f2ee0b3fcda3bb97e424cd727623d2a16caa7a29901"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_026_composite.png",
+                                   "SHA256":  "ec38cf69dd89af9af6344efa3f626326e33e5831bfe3efe8c7d0700e044f1a99"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_026_fraction.png",
+                                   "SHA256":  "accb8c9e781a0eb336e48261b5046e6b45b027665697d5357c45f9d89a25e521"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_026_matrix.png",
+                                   "SHA256":  "b63ea4701a7db787a1dc2e31dfdfab36ec7ea3325049334a7c68241229645514"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_026_text.png",
+                                   "SHA256":  "4f338e3d1ed901778af7cb45b1d2dc14de2547d35da9bc7d1460fe69d147ed24"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_027_fraction.png",
+                                   "SHA256":  "59f19785cc2b2d244cae8806aaecf96f1732b304b2a51b123d62c3d3ad33f79d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_027_matrix.png",
+                                   "SHA256":  "bc658a21ed96d4cdff690c36c71de273921fc8437c7fbd385ad9a9c0ca116f9d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_027_text.png",
+                                   "SHA256":  "4373b1c1271fadcdcddd7e7659d5136ce9857f968f572f067e57928e9f2ed461"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_028_fraction.png",
+                                   "SHA256":  "0c127b9c8bf6f9a88ecf3e5151ed3322a192df551e0773314baf01dcebfe99ea"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_028_matrix.png",
+                                   "SHA256":  "199db4eb60b6573cffeda525acfd08ec478f68aa2de2ea45cf91ef5e33880c70"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_028_text.png",
+                                   "SHA256":  "bc5e395681ad232e849bc4ab8d000801903ee04a96124f285977b7353254a9ba"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_029_composite.png",
+                                   "SHA256":  "72e7396cb0869ecefe29591575a1c3d68cc40b4530ca9892117c32113a935b1b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_029_fraction.png",
+                                   "SHA256":  "2c498d32050f105e3747211c6db160ac2a2a7129996902eb547fcc7cff8620f0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_029_matrix.png",
+                                   "SHA256":  "40b5dcfbfd895cd4ad5b9d0ab650e5a6467c6db0e0edc6b1dffb94a7a767fe35"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_029_text.png",
+                                   "SHA256":  "40079e3e710fcc4e7f4d072449282088cc49148c9b168334e30115151258515e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_030_fraction.png",
+                                   "SHA256":  "61d9139039437b774a8b5debee8f5ab3ab62cff8e6e501f49b71964a02552cb6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_030_matrix.png",
+                                   "SHA256":  "9fc2bfd6ee3dc9602f9430b0ecbf83b1006cdacea70e05fc1e823488cb2e1ddf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_030_text.png",
+                                   "SHA256":  "4690d5ee34b8ad1ff909c8b0490ac69b8ef08cffdd57cf59061373176ee5cc05"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_031_fraction.png",
+                                   "SHA256":  "8292b85899280fd2513efc343b870bceab03901e3be0c49616eac32972b0a03b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_031_sp35_Groups.png",
+                                   "SHA256":  "675c941239967ecb23f62bb818102831f995484609fc1744e5b098cf8e1dc916"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_031_text.png",
+                                   "SHA256":  "4bdbb47e15ddc2839b938c028427d5487d50c8773c7db48926ac21e70aa7ecea"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_032_composite.png",
+                                   "SHA256":  "ec38cf69dd89af9af6344efa3f626326e33e5831bfe3efe8c7d0700e044f1a99"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_032_fraction.png",
+                                   "SHA256":  "a1ca2991a18cada7d3504a9972c0b924ed4ffc2759d871ae3b137147b6a56d27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_032_text.png",
+                                   "SHA256":  "9ac1e7a862c652e5ebd77a7d4ca5e39f4bbb622426bc317f736331d70e53ae13"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_033_composite.png",
+                                   "SHA256":  "af356892c35bda20bdc53753cfd54b5def38e8da4c4bd754b54624feedc961dd"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_033_fraction.png",
+                                   "SHA256":  "a1ca2991a18cada7d3504a9972c0b924ed4ffc2759d871ae3b137147b6a56d27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_033_text.png",
+                                   "SHA256":  "056071f0ca10bcd9df4bfac66f763a958e53ff7fead7404723a7ee1cf0d6df14"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_034_composite.png",
+                                   "SHA256":  "d988c2d8a3c729c97660adfb190f0244930069ad6d0f7afc2c394b473b8bb5e0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_034_fraction.png",
+                                   "SHA256":  "aaadaea1ee2f07d196598235456ef293d11d83c6c9eb4eccff20a3ed570ebf27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_034_text.png",
+                                   "SHA256":  "ec96eefa26561b1d43a35988079c742701d66c74e20440aa88754bb8588f9b4e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_035_composite.png",
+                                   "SHA256":  "dfa33d5ad7c4c2cbc3cb20a37a9daa7c9ab7791ac1219196448092cbdc17c199"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_035_fraction.png",
+                                   "SHA256":  "2c498d32050f105e3747211c6db160ac2a2a7129996902eb547fcc7cff8620f0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_035_matrix.png",
+                                   "SHA256":  "9fc2bfd6ee3dc9602f9430b0ecbf83b1006cdacea70e05fc1e823488cb2e1ddf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_035_text.png",
+                                   "SHA256":  "fdac419b22dec3fe911375e0823ef8c1809c60b3f270fcdca343a0d809726bb9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_036_composite.png",
+                                   "SHA256":  "2944d24f35a2ee3e681bcee23d8a21524cbcb3b82c5fc87828ea93b90f63e608"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_036_fraction.png",
+                                   "SHA256":  "261b03557207c47fdfee06be5d9508f6a6a9253e366822532ba7ad98e2bbddbc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_036_sp35_Rows.png",
+                                   "SHA256":  "4eb28e887380111f37ff9c58bdae020a334fbb429969b5d9c85babe5989f9dd8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_036_text.png",
+                                   "SHA256":  "d5c1e12ee7aa1c91033cafaeb63b89dff76ce817ef15d1ea51b8d1a494155c36"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_037_composite.png",
+                                   "SHA256":  "ec38cf69dd89af9af6344efa3f626326e33e5831bfe3efe8c7d0700e044f1a99"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_037_fraction.png",
+                                   "SHA256":  "a1ca2991a18cada7d3504a9972c0b924ed4ffc2759d871ae3b137147b6a56d27"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_037_text.png",
+                                   "SHA256":  "1c68cd06f7b03159bcd7758bf2805bb19b1281f9a9ea3d800fd1e774ea382227"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_038_composite.png",
+                                   "SHA256":  "909d776914184143fba8022eb535e13fabb9d8f9905cd80713d9f6cc260fa004"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_038_fraction.png",
+                                   "SHA256":  "31bc47b72f19c7d018585b8f4859208f68105c404bfa1a2a16e6b72e0e193dd0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_038_sp35_Contours.png",
+                                   "SHA256":  "3ab24104fefedc03fc174f78d9d7b4140cc274639956435d096939706ab9ec30"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_038_text.png",
+                                   "SHA256":  "f7ea28e220114d5cd6fcfb8ab326739ef4f46ae55343d5175477f275fa7f220f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_039_composite.png",
+                                   "SHA256":  "9b93f003556db5de5f520c6cc013221efbb4d998f640ccc573e0ef8435328eec"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_039_fraction.png",
+                                   "SHA256":  "5b74500911b86c66bcdfdc65168dba5e18569e88c33c9426f71758266f93ab1a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_039_text.png",
+                                   "SHA256":  "33bf3a8c5e0024c7881341a235da7089759cb2a3926e61f273986768b8737b15"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_040_composite.png",
+                                   "SHA256":  "909d776914184143fba8022eb535e13fabb9d8f9905cd80713d9f6cc260fa004"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_040_fraction.png",
+                                   "SHA256":  "2c498d32050f105e3747211c6db160ac2a2a7129996902eb547fcc7cff8620f0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_040_text.png",
+                                   "SHA256":  "ca98c6704c7cc3473d44e60e2545832ac5791a5b7e920067f8556fa224eb3350"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_041_composite.png",
+                                   "SHA256":  "b66810e7e54269d16caefa3f0e485c3df106cf2dc14e715fa1eaae9d8f9f87e9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_041_fraction.png",
+                                   "SHA256":  "9f305bc4d7d0306b1eaf4c2bc609f00859e2990cc468d960ecad1ae8b8f4bda7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_041_text.png",
+                                   "SHA256":  "8b50dcc4e89dbfb2637be77dbf2c1be111f12ed638b67a459b77d065f239a58a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_042_composite.png",
+                                   "SHA256":  "708e91a400a7d36dc02c93665e80a5c13c9bfbae56a3ab221a30a860d9c9490f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_042_fraction.png",
+                                   "SHA256":  "5eb9620a0acca20b9eb86d0ac7c929a711d44a303e499471840df83d0466a740"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_042_text.png",
+                                   "SHA256":  "876d67da31d871e66416236bf76d948891ef6fdb2857941e804a3c5d3787e29b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_043_composite.png",
+                                   "SHA256":  "c1ac415569fa7db8070c4fe147c3be8aaec1c5f2a193a1fcbba9a52c9497e366"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_043_fraction.png",
+                                   "SHA256":  "db20b08034eb25662d22747500f998eb240cc5f1652752472f85b3cd36e1de43"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_043_text.png",
+                                   "SHA256":  "fef413928da06e50f08ff67ab24e42fd6e63b7fb2b39d43c8e6923219e10b661"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_044_fraction.png",
+                                   "SHA256":  "5b3dacca7cbadf14bcec033c5a929e9c91e0ddfdcdde219721e480c005c74dc9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_044_text.png",
+                                   "SHA256":  "3c98db84933564962622af69560f5b24f968a4b424a85a09df4264ab33c2c451"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_045_composite.png",
+                                   "SHA256":  "51ccde712062fa4ec7b2978f5d2968ea2108a8eff8b5c674a3492d22845fdb2d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_045_fraction.png",
+                                   "SHA256":  "8d089cf8ac39d3bdebbffb1287a60fa88e1af188206c4365bf96126e2d31218c"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_045_text.png",
+                                   "SHA256":  "6b25fd100ea4d3caedc350acdb126086cce2f9cbf6c29f5304336257b6db5624"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_046_fraction.png",
+                                   "SHA256":  "9f305bc4d7d0306b1eaf4c2bc609f00859e2990cc468d960ecad1ae8b8f4bda7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_046_sp35_MeshCentral.png",
+                                   "SHA256":  "edba4626c53fa96a286bb3ae878548a642e0ec0b8df19081584445ee1afa15c7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_046_text.png",
+                                   "SHA256":  "4bdbb47e15ddc2839b938c028427d5487d50c8773c7db48926ac21e70aa7ecea"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_047_composite.png",
+                                   "SHA256":  "b66810e7e54269d16caefa3f0e485c3df106cf2dc14e715fa1eaae9d8f9f87e9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_047_fraction.png",
+                                   "SHA256":  "aed1c82ac75713b3e893f1eeb7630857a0ef8c8f9ba9b17922092a4de37a8b66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_047_text.png",
+                                   "SHA256":  "3eebb17dae25dd80ed8c638e903933a28285a36dfc2066e9d7e802e22772a6ea"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_048_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_048_text.png",
+                                   "SHA256":  "c7bbe7dd6a4bbed246cb22dddba93cd797bbc86ef11bb7579427d79633b7951d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_049_composite.png",
+                                   "SHA256":  "c1ac415569fa7db8070c4fe147c3be8aaec1c5f2a193a1fcbba9a52c9497e366"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_049_fraction.png",
+                                   "SHA256":  "13b23565592e0a6e976b16d253420718ff3d5981c8d2875f0de5021f3d5b1f8c"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_049_text.png",
+                                   "SHA256":  "ba36c64a46e6034f64685db1012b8cc32d97c59b514bcf2f6f0a1ec115da6534"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_050_composite.png",
+                                   "SHA256":  "fcc86904981f4631a208d51de5b5e49d4da2c873cfdc957873c564683bb4bc3c"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_050_fraction.png",
+                                   "SHA256":  "722de65d3ccd276354181b616b50384e6168075ebc9e10083175a2093dc2cae4"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_050_matrix.png",
+                                   "SHA256":  "9fc2bfd6ee3dc9602f9430b0ecbf83b1006cdacea70e05fc1e823488cb2e1ddf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_050_text.png",
+                                   "SHA256":  "fc8d7788101731a1aa7a82babe0c92bdebd82e55f8c42366b7915d4c8bb23335"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_051_composite.png",
+                                   "SHA256":  "6058fead17a5d0e7f3fc1c38cbcb2ead5ec8abbeaffa728e733e2cdc0c2a818a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_051_fraction.png",
+                                   "SHA256":  "564b136460f2126aa7befa8ce5bde3fd5371b4bd5d54f6b8de12de39ab210f92"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_051_text.png",
+                                   "SHA256":  "d5c1e12ee7aa1c91033cafaeb63b89dff76ce817ef15d1ea51b8d1a494155c36"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_052_composite.png",
+                                   "SHA256":  "b66810e7e54269d16caefa3f0e485c3df106cf2dc14e715fa1eaae9d8f9f87e9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_052_fraction.png",
+                                   "SHA256":  "accb8c9e781a0eb336e48261b5046e6b45b027665697d5357c45f9d89a25e521"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_052_text.png",
+                                   "SHA256":  "4f47516358ee411fe271dc9172570547acf0d249d712ed4fe87257e5806693a6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_053_composite.png",
+                                   "SHA256":  "1a2c1b0166e7b0e10f843b62d867c94cb86024e9553d42148215b9b498eea917"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_053_fraction.png",
+                                   "SHA256":  "aed1c82ac75713b3e893f1eeb7630857a0ef8c8f9ba9b17922092a4de37a8b66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_053_text.png",
+                                   "SHA256":  "6beb3dcbf4a93cc2fcd7006a78a0e50000bfa00e2c0f203983e2361ffb95c084"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_054_composite.png",
+                                   "SHA256":  "c1ac415569fa7db8070c4fe147c3be8aaec1c5f2a193a1fcbba9a52c9497e366"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_054_fraction.png",
+                                   "SHA256":  "44ceb7f39e70aa512d2c86fb913b1c22ef281f4b48d175fe757bfbe5093c86c8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_054_text.png",
+                                   "SHA256":  "5387cc83efc134dd21f315df8503f8e8740d8e55b221e1898ec884e85a0e7c55"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_055_composite.png",
+                                   "SHA256":  "f165be7aa16fc1a322605c38aa5eeceaf05e3ef3f1f43831097a5a497ebb850f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_055_fraction.png",
+                                   "SHA256":  "b4c7118f6e6283526c9c2f2f3aaa81b7797da3713c9960c6c0c638dd35354786"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_055_text.png",
+                                   "SHA256":  "534ac0297dbc659a3ba1819d9b4fcd7b21b20f5efc4b7abcdc63ccc3cee566b9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_056_composite.png",
+                                   "SHA256":  "f165be7aa16fc1a322605c38aa5eeceaf05e3ef3f1f43831097a5a497ebb850f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_056_fraction.png",
+                                   "SHA256":  "8d089cf8ac39d3bdebbffb1287a60fa88e1af188206c4365bf96126e2d31218c"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_056_text.png",
+                                   "SHA256":  "d8e43b773480bec619aad1bb91287d6b18f89b3fefbf354599aa1a254e96a47c"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_057_composite.png",
+                                   "SHA256":  "6058fead17a5d0e7f3fc1c38cbcb2ead5ec8abbeaffa728e733e2cdc0c2a818a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_057_fraction.png",
+                                   "SHA256":  "b8c83046b22870b9d6b09f23d83fed6fd1f8a91c17fa515a348a204c3ab13e6b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_057_text.png",
+                                   "SHA256":  "8d35ee1bb8bdb51e4c406878d24b38ec8e82c3b7985e1bc0c09ac20e0ecd964a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_058_composite.png",
+                                   "SHA256":  "de48818049e723307ac3f96d11bf56414218f5651917deeb297daddc5fc5293e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_058_fraction.png",
+                                   "SHA256":  "00295dbda0a2ee732449635b3fd618040c361eb53a9ad4c5f2e67097ee80fec0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_058_text.png",
+                                   "SHA256":  "0b73060dc363f7277b870fe1a73344da70780a29ec090984dc5bb8646a784f91"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_059_composite.png",
+                                   "SHA256":  "f165be7aa16fc1a322605c38aa5eeceaf05e3ef3f1f43831097a5a497ebb850f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_059_fraction.png",
+                                   "SHA256":  "76ff7574822ea165f91d555adadb5a47f283902fd82c8aa70c0fb16aa6de0fcc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_059_text.png",
+                                   "SHA256":  "5387cc83efc134dd21f315df8503f8e8740d8e55b221e1898ec884e85a0e7c55"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_060_composite.png",
+                                   "SHA256":  "de48818049e723307ac3f96d11bf56414218f5651917deeb297daddc5fc5293e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_060_fraction.png",
+                                   "SHA256":  "e69f6c2349c1bb9f8fe6a2e16850682e9fcf129983ae5e97262a6d85933a1dba"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_060_text.png",
+                                   "SHA256":  "d0b42a5df1ef2888de65b0fd9a55890b8dfb18febe0f2dff1f2a57f77a53c1c6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_061_fraction.png",
+                                   "SHA256":  "9551c1a7e4a84774f0607a7454ab9cf0589ea304f91c52899c9b0a1299a053cc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_061_text.png",
+                                   "SHA256":  "9fb018bf01eb82e787fe10306787abbc2d928f37c8fbc0e332048e070f6049e2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_062_composite.png",
+                                   "SHA256":  "6058fead17a5d0e7f3fc1c38cbcb2ead5ec8abbeaffa728e733e2cdc0c2a818a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_062_fraction.png",
+                                   "SHA256":  "372ba8f536fc39ee9ea7067d9727f465f1ee8f1199b4c0cd0feb79690f889c41"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_062_text.png",
+                                   "SHA256":  "87622ebde4d7dd6998d590afa167f571e0326ed600d40161f9ab887ff781a2f6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_063_fraction.png",
+                                   "SHA256":  "442a01690b7f7175c1821b9e17f59e21d89fb0692fb7b43f6f6195b5326873be"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_063_text.png",
+                                   "SHA256":  "6157fe8976a3dd77ca27aac45e4775e2705ce595c2fe7ca2b91df9ef64503e20"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_064_fraction.png",
+                                   "SHA256":  "3ab15d0a12485ba80260156a733b3ff6b6c48408ce99728364f4aee41e78762e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_064_text.png",
+                                   "SHA256":  "71c9602d909b305f6a06b3f6e34319fb7c8f20c20d501331938cda68c76ac712"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_065_composite.png",
+                                   "SHA256":  "58859fdb4ceea054e5db69431f321e0d6295fb3370dfe03dabb45219351dedd7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_065_fraction.png",
+                                   "SHA256":  "8fdc45199e536ceb0d6064087d986e98af53ad0112939608a3ecde3a117fbb60"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_065_text.png",
+                                   "SHA256":  "6e0e9d23c32aaa2d4183c9ab82bc61529a1b891c4a562163d911055b4f895fcb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_066_fraction.png",
+                                   "SHA256":  "b1005e195641ce4fb53aeae620b02e9161d5de09803d0db3c4484f1134a39cc1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_066_text.png",
+                                   "SHA256":  "6c7d40b2d3cc3c3cc978986ece915c8646d7464a7f2def96c7ac26a643a6571d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_067_composite.png",
+                                   "SHA256":  "b66810e7e54269d16caefa3f0e485c3df106cf2dc14e715fa1eaae9d8f9f87e9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_067_fraction.png",
+                                   "SHA256":  "dc7f30f55137fe955870c12ff1fd6d790bd2f80e3199a893754065a7c99e701e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_067_text.png",
+                                   "SHA256":  "e87f9fa4bbbe0ac127d579887a7d7ba6fc86d3f530634784f0c7c54e17b7626a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_068_composite.png",
+                                   "SHA256":  "c6eaed6bb6dd299efaf77e1a624e70083e5a6a20e480d74975357cbd1a9045a2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_068_fraction.png",
+                                   "SHA256":  "442a01690b7f7175c1821b9e17f59e21d89fb0692fb7b43f6f6195b5326873be"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_068_text.png",
+                                   "SHA256":  "4f338e3d1ed901778af7cb45b1d2dc14de2547d35da9bc7d1460fe69d147ed24"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_069_composite.png",
+                                   "SHA256":  "c1ac415569fa7db8070c4fe147c3be8aaec1c5f2a193a1fcbba9a52c9497e366"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_069_fraction.png",
+                                   "SHA256":  "204df2a8ca8b77d82692960479a98aa62389526ecf0ac85d22aeb604ddfd6d8b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_069_text.png",
+                                   "SHA256":  "a0661e842ebe3d18a30add2a43b202760becdc0b78c70740f3fde9c6a7095fb8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_070_fraction.png",
+                                   "SHA256":  "06cea3d9a47ac41c99fe797d4e144e2d9abeadaaab9cef5e17f08ce431a593bc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_070_text.png",
+                                   "SHA256":  "9c3527270b5429ebf7575423e5f825debdac0c89028a62c16b8ce6ec417ece9e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_071_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_071_fraction.png",
+                                   "SHA256":  "b100ffa94d26c6ac95fc9d18584e182e23de9f5bcaf96977080f7dd73d0cfc66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_071_text.png",
+                                   "SHA256":  "3c98db84933564962622af69560f5b24f968a4b424a85a09df4264ab33c2c451"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_072_composite.png",
+                                   "SHA256":  "9b93f003556db5de5f520c6cc013221efbb4d998f640ccc573e0ef8435328eec"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_072_fraction.png",
+                                   "SHA256":  "66680dc866ed2033bba3cac8672c2dc16bf5a4be83ce7b59c55e5cc84b159563"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_072_text.png",
+                                   "SHA256":  "fde1e5c42d3a092fcf11a9b51a66a66dbb8ff6eef49d1880c850f178ebe15c86"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_073_fraction.png",
+                                   "SHA256":  "aed1c82ac75713b3e893f1eeb7630857a0ef8c8f9ba9b17922092a4de37a8b66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_073_text.png",
+                                   "SHA256":  "0da7263fbc57ba356d1db16910870b7a79df347bfbf7a6ae1121aeab042e43fb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_074_fraction.png",
+                                   "SHA256":  "fe0c85c0c7bfd37b025395d32ef87471062ec729a2a114e75d46d68cb31bc8bc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_074_text.png",
+                                   "SHA256":  "baf93f4d0ae292126a9148b0c87cad2e22a8d919ca82e54d9677fa2ed71aa056"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_075_composite.png",
+                                   "SHA256":  "1a2c1b0166e7b0e10f843b62d867c94cb86024e9553d42148215b9b498eea917"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_075_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_075_text.png",
+                                   "SHA256":  "9c3527270b5429ebf7575423e5f825debdac0c89028a62c16b8ce6ec417ece9e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_076_composite.png",
+                                   "SHA256":  "909d776914184143fba8022eb535e13fabb9d8f9905cd80713d9f6cc260fa004"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_076_fraction.png",
+                                   "SHA256":  "a3d68ff95c9ef8a80d78530f178426ecb3540753d849cf02a9e06bab4a1b516a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_076_text.png",
+                                   "SHA256":  "06b253b7bb79b8381c48bffd2ae6914bb1564a9d9baa213f59a765cfae363c55"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_077_composite.png",
+                                   "SHA256":  "708e91a400a7d36dc02c93665e80a5c13c9bfbae56a3ab221a30a860d9c9490f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_077_fraction.png",
+                                   "SHA256":  "b4c7118f6e6283526c9c2f2f3aaa81b7797da3713c9960c6c0c638dd35354786"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_077_text.png",
+                                   "SHA256":  "efc61f7804d66b42c01b94e474731c2a3d8a5e7feeb862d1ba00dcbdd98f2de9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_078_fraction.png",
+                                   "SHA256":  "5b74500911b86c66bcdfdc65168dba5e18569e88c33c9426f71758266f93ab1a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_078_text.png",
+                                   "SHA256":  "e87f9fa4bbbe0ac127d579887a7d7ba6fc86d3f530634784f0c7c54e17b7626a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_079_fraction.png",
+                                   "SHA256":  "941fe943c07e9e4452b8e8aa88a1a3c12f0a4360764f1f1891a905ebb805f435"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_079_text.png",
+                                   "SHA256":  "ca98c6704c7cc3473d44e60e2545832ac5791a5b7e920067f8556fa224eb3350"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_080_fraction.png",
+                                   "SHA256":  "d46b93ae1bb2fa52e747826279f5ec28e01b1874c7e6a9784255fd315e55655f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_080_text.png",
+                                   "SHA256":  "d617811eb2d28f88eb4d4a5d5df612b38a03a77f4b877115ff1072eb8c9ec908"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_081_composite.png",
+                                   "SHA256":  "cc34e1532a4ce5a311b75c597a9291d22ecfe08b3c2fca6f62042795273b52ca"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_081_fraction.png",
+                                   "SHA256":  "a6c5c21209c6fe9775b16f65c47f602b206a0d0172f21a0bb1d755bb9ca4cb3a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_081_text.png",
+                                   "SHA256":  "73c96e5d1c9b9b8a3ce03909e813ad5d8ae401a40a07e4815f26eec1891288e9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_082_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_082_fraction.png",
+                                   "SHA256":  "0c127b9c8bf6f9a88ecf3e5151ed3322a192df551e0773314baf01dcebfe99ea"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_082_sp35_Groups.png",
+                                   "SHA256":  "2fa32539c37d47d13fec83aaa8d3ea1311a7b38518c92afe43303f4ae10515db"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_082_text.png",
+                                   "SHA256":  "130c637779f3779389c8e864cb5a818566e5ca10aebf89e5fc34707c2a7d6b6f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_083_composite.png",
+                                   "SHA256":  "d777727d9d2f3b5d9c09293b8fc9f443c252b1364fd07b5dac1f7517ed0d01bd"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_083_fraction.png",
+                                   "SHA256":  "198155c81dbe8ffd7d6e72080ea7f4f9699a9d4a8ea33e9fdbf00588fd6e0d54"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_083_sp35_Groups.png",
+                                   "SHA256":  "e4c4db29c0e477badcd47f2ddc2e9dfd588f729586018226823b3abdcd35caf9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_083_text.png",
+                                   "SHA256":  "048f73179a67de765b722c75b8b600500a3dccb72f5499ce3708b556c11e2997"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_084_composite.png",
+                                   "SHA256":  "499117d675f52c5f31bc955ea2ea3798879bd59e4d3f86d090fa0c46ad51d193"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_084_fraction.png",
+                                   "SHA256":  "61d9139039437b774a8b5debee8f5ab3ab62cff8e6e501f49b71964a02552cb6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_084_text.png",
+                                   "SHA256":  "3c1bf66afa4efd7ee33ddff8a64d1b5225910ab37b03a7bd175012b68f8146ed"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_085_composite.png",
+                                   "SHA256":  "f165be7aa16fc1a322605c38aa5eeceaf05e3ef3f1f43831097a5a497ebb850f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_085_fraction.png",
+                                   "SHA256":  "8fdc45199e536ceb0d6064087d986e98af53ad0112939608a3ecde3a117fbb60"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_085_sp35_Groups.png",
+                                   "SHA256":  "e4c4db29c0e477badcd47f2ddc2e9dfd588f729586018226823b3abdcd35caf9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_085_text.png",
+                                   "SHA256":  "3c1bf66afa4efd7ee33ddff8a64d1b5225910ab37b03a7bd175012b68f8146ed"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_086_composite.png",
+                                   "SHA256":  "737379bd125b5ea6ac41c4f1c291cc234ad6da754abe8ba2ad3492113b48aa9e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_086_fraction.png",
+                                   "SHA256":  "22b83cb6af8a6defaa2a02747f27ef45fd647d5e0f82ea1badaabd8d61e55308"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_086_text.png",
+                                   "SHA256":  "9c1b7d567fb1d14f26378825f6675bfd2f216c2a40abf9875d570676502ce310"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_087_composite.png",
+                                   "SHA256":  "7a705da2bff755104825ab4bf2ca11e39991c1de2a4ae15423c3904d82cfe3cb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_087_fraction.png",
+                                   "SHA256":  "44ceb7f39e70aa512d2c86fb913b1c22ef281f4b48d175fe757bfbe5093c86c8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_087_text.png",
+                                   "SHA256":  "f1694b0520e3d7b958d9a3fabc4fb0a78881d650c3d2c5b1450da729750675cf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_088_composite.png",
+                                   "SHA256":  "de48818049e723307ac3f96d11bf56414218f5651917deeb297daddc5fc5293e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_088_fraction.png",
+                                   "SHA256":  "b4c7118f6e6283526c9c2f2f3aaa81b7797da3713c9960c6c0c638dd35354786"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_088_text.png",
+                                   "SHA256":  "40b7332eee1a18e72b608842ac1141060638588d77f5db8651071f5a951520cf"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_089_composite.png",
+                                   "SHA256":  "e2b44f71e4ae1f230cbe3b2e0d8ba64925c019d342b24089b9c2dfbc741f1bcd"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_089_fraction.png",
+                                   "SHA256":  "59f19785cc2b2d244cae8806aaecf96f1732b304b2a51b123d62c3d3ad33f79d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_089_sp35_Rows.png",
+                                   "SHA256":  "3e94cff9609c0ac96ec4948ba07a67e7ff15faf021db0043e35dda768f5980c2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_089_text.png",
+                                   "SHA256":  "9ac1e7a862c652e5ebd77a7d4ca5e39f4bbb622426bc317f736331d70e53ae13"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_090_composite.png",
+                                   "SHA256":  "af356892c35bda20bdc53753cfd54b5def38e8da4c4bd754b54624feedc961dd"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_090_fraction.png",
+                                   "SHA256":  "01aea9920f57d0842be64c0326eb8e35f6bd8f844d564646616dbf52c0be9a5f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_090_text.png",
+                                   "SHA256":  "85f400682a2b394a96a66ff37cd6886f5ddf788ffa9d07df5f7a0dcec18951b1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_091_composite.png",
+                                   "SHA256":  "1142bb1b8f173e96669c7acb6c018f8ec11ca00f8baabe2c85c0e426422ddef8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_091_fraction.png",
+                                   "SHA256":  "22b83cb6af8a6defaa2a02747f27ef45fd647d5e0f82ea1badaabd8d61e55308"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_091_sp35_Contours.png",
+                                   "SHA256":  "2ff6df9b82dede06e1b4b99c93ef220edf75d890abb4e37fca99b98056a75a3b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_091_sp35_Rows.png",
+                                   "SHA256":  "3e94cff9609c0ac96ec4948ba07a67e7ff15faf021db0043e35dda768f5980c2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_091_text.png",
+                                   "SHA256":  "601ba95bdc5347211bf5f327a3e4afecc7c132a9754ae1a91224ffd85ae3fd89"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_092_composite.png",
+                                   "SHA256":  "d988c2d8a3c729c97660adfb190f0244930069ad6d0f7afc2c394b473b8bb5e0"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_092_fraction.png",
+                                   "SHA256":  "8314aa8537721d3ac9f010201e2571f76965774143bebd2e8db0b417a30ab007"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_092_sp35_MeshCentral.png",
+                                   "SHA256":  "a0599b5cb77a8d9e519baea668935c04506b3c6f829029a613e653a953527d63"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_092_sp35_Rows.png",
+                                   "SHA256":  "3e94cff9609c0ac96ec4948ba07a67e7ff15faf021db0043e35dda768f5980c2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_092_text.png",
+                                   "SHA256":  "78b7a7e389547816656709da2fcc0d552697c3b2ac590d525b2114368386e67d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_093_fraction.png",
+                                   "SHA256":  "b70710e50ab419d18a8581e8ef65e91e2afd80f04bbc734743a3e41be965bce1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_093_sp35_Contours.png",
+                                   "SHA256":  "5cd8d64a765052357a1b878f3a2755d59c796380f0c3208334b9ebc946364117"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_093_sp35_Rows.png",
+                                   "SHA256":  "6e5fb29f945cdc315d455c761d531eb81045c3a287a0d5ab615cae1bbab92499"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_093_text.png",
+                                   "SHA256":  "ebb4075329a33d4b1c540c10018d4ea58357e7732d904b14fcebb73b57c08b4f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_094_composite.png",
+                                   "SHA256":  "6342b722a99f55aae128ba02da84e2ea6ecc32229e038494248257169d125110"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_094_fraction.png",
+                                   "SHA256":  "c7ca31168f234901316a9020c7f9385bab0d0d4514d3d208753819e7e7af1d1f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_094_sp35_Contours.png",
+                                   "SHA256":  "5cd8d64a765052357a1b878f3a2755d59c796380f0c3208334b9ebc946364117"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_094_sp35_MeshCentral.png",
+                                   "SHA256":  "839129870ba161aeb36b46404193de94571a17df06300fc9fd632b7e1d74bf7e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_094_text.png",
+                                   "SHA256":  "0a7f2c24b1b30b1f1d0450a51da578bef2601ec7e61d91146c1d9c575bc255d6"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_095_composite.png",
+                                   "SHA256":  "de48818049e723307ac3f96d11bf56414218f5651917deeb297daddc5fc5293e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_095_fraction.png",
+                                   "SHA256":  "e2f0c26f1df4a2f0da7dd16a57fad0ad43d3eaed881f5b97e41ffcc25ae06f73"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_095_sp35_Contours.png",
+                                   "SHA256":  "3ab24104fefedc03fc174f78d9d7b4140cc274639956435d096939706ab9ec30"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_095_sp35_MeshCentral.png",
+                                   "SHA256":  "839129870ba161aeb36b46404193de94571a17df06300fc9fd632b7e1d74bf7e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_095_text.png",
+                                   "SHA256":  "3e0a7eecf0ef6ce1c0480b82f91675fabe15d784368e330b36addd279a0ccd26"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_096_fraction.png",
+                                   "SHA256":  "8bce32fd1ac951986eb07ad2720ece2e6d5ccf3f17af0027e576b84db83acad9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_096_sp35_MeshCentral.png",
+                                   "SHA256":  "839129870ba161aeb36b46404193de94571a17df06300fc9fd632b7e1d74bf7e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_096_text.png",
+                                   "SHA256":  "a9e81d41e25a35bb8e25cc99c0426270ab1639dea199f096a85293e68359502e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_097_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_097_fraction.png",
+                                   "SHA256":  "4b775788575614a642208b421ca2613a7c115efce0f886d334e5082a1ddf8196"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_097_sp35_Rows.png",
+                                   "SHA256":  "1424119395233ecf80aa9c20d94bfb195dabb4143e05717be3f919ad1c310a2e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_097_text.png",
+                                   "SHA256":  "3e0a7eecf0ef6ce1c0480b82f91675fabe15d784368e330b36addd279a0ccd26"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_098_fraction.png",
+                                   "SHA256":  "b1005e195641ce4fb53aeae620b02e9161d5de09803d0db3c4484f1134a39cc1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_098_text.png",
+                                   "SHA256":  "1c68cd06f7b03159bcd7758bf2805bb19b1281f9a9ea3d800fd1e774ea382227"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_099_composite.png",
+                                   "SHA256":  "da35f85e073dc28bba222b43b98af11216bc4db7808fba59394305eacde5a8d5"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_099_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_099_sp35_Contours.png",
+                                   "SHA256":  "3ab24104fefedc03fc174f78d9d7b4140cc274639956435d096939706ab9ec30"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_099_text.png",
+                                   "SHA256":  "94c472ea112c821adf76b9b86e91831f83e6cb6211e407d28a74eec26c7bdd3d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_100_composite.png",
+                                   "SHA256":  "6342b722a99f55aae128ba02da84e2ea6ecc32229e038494248257169d125110"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_100_sp35_MeshCentral.png",
+                                   "SHA256":  "839129870ba161aeb36b46404193de94571a17df06300fc9fd632b7e1d74bf7e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_100_text.png",
+                                   "SHA256":  "fde1e5c42d3a092fcf11a9b51a66a66dbb8ff6eef49d1880c850f178ebe15c86"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_101_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_101_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_101_text.png",
+                                   "SHA256":  "6b25fd100ea4d3caedc350acdb126086cce2f9cbf6c29f5304336257b6db5624"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_102_composite.png",
+                                   "SHA256":  "5d3aa20d6281c60bbfbd0741e07a4f9a11e4a00454f9e444159f8619a0fd5fd9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_102_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_102_text.png",
+                                   "SHA256":  "9c3527270b5429ebf7575423e5f825debdac0c89028a62c16b8ce6ec417ece9e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_103_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_103_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_103_text.png",
+                                   "SHA256":  "94c472ea112c821adf76b9b86e91831f83e6cb6211e407d28a74eec26c7bdd3d"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_104_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_104_fraction.png",
+                                   "SHA256":  "8a8b0a8eb47028c44db60dfe95658c2d9773d4751809d0a5ed7f24a8ac19deef"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_104_text.png",
+                                   "SHA256":  "fde1e5c42d3a092fcf11a9b51a66a66dbb8ff6eef49d1880c850f178ebe15c86"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_105_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_105_fraction.png",
+                                   "SHA256":  "8a8b0a8eb47028c44db60dfe95658c2d9773d4751809d0a5ed7f24a8ac19deef"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_105_text.png",
+                                   "SHA256":  "e87f9fa4bbbe0ac127d579887a7d7ba6fc86d3f530634784f0c7c54e17b7626a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_106_composite.png",
+                                   "SHA256":  "2872d4855d2a559277a963d4ef7082421650ac256317726c212ad30851837469"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_106_fraction.png",
+                                   "SHA256":  "8a8b0a8eb47028c44db60dfe95658c2d9773d4751809d0a5ed7f24a8ac19deef"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_106_text.png",
+                                   "SHA256":  "baf93f4d0ae292126a9148b0c87cad2e22a8d919ca82e54d9677fa2ed71aa056"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_107_composite.png",
+                                   "SHA256":  "1a2c1b0166e7b0e10f843b62d867c94cb86024e9553d42148215b9b498eea917"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_107_fraction.png",
+                                   "SHA256":  "52a192355ceeaf25ae7a4f88597fb3030fcabd9713dc1d26c74c307774e05dbb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_107_text.png",
+                                   "SHA256":  "9fb018bf01eb82e787fe10306787abbc2d928f37c8fbc0e332048e070f6049e2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_108_composite.png",
+                                   "SHA256":  "1a2c1b0166e7b0e10f843b62d867c94cb86024e9553d42148215b9b498eea917"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_108_fraction.png",
+                                   "SHA256":  "44ceb7f39e70aa512d2c86fb913b1c22ef281f4b48d175fe757bfbe5093c86c8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_108_text.png",
+                                   "SHA256":  "6fb6de0a3409490a5f9b45221f1c5845f781139490f9410c4812e37a848ffdf2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_109_composite.png",
+                                   "SHA256":  "ac6e5b46e93102110b3da23fcfe8b0a637373184f814a0a57bbd61109d3dbe5e"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_109_fraction.png",
+                                   "SHA256":  "44ceb7f39e70aa512d2c86fb913b1c22ef281f4b48d175fe757bfbe5093c86c8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_109_text.png",
+                                   "SHA256":  "28ca791e653b6f5d250b933f451f0f925736f81af0a6dd07474917c524abdec9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_110_composite.png",
+                                   "SHA256":  "da35f85e073dc28bba222b43b98af11216bc4db7808fba59394305eacde5a8d5"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_110_fraction.png",
+                                   "SHA256":  "8a8b0a8eb47028c44db60dfe95658c2d9773d4751809d0a5ed7f24a8ac19deef"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_110_text.png",
+                                   "SHA256":  "0d9dfeb1abb53b4943b6bee441f4d5d760e3131d01dc601adafbeae06a61faac"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_111_composite.png",
+                                   "SHA256":  "2872d4855d2a559277a963d4ef7082421650ac256317726c212ad30851837469"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_111_fraction.png",
+                                   "SHA256":  "b4c7118f6e6283526c9c2f2f3aaa81b7797da3713c9960c6c0c638dd35354786"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_111_text.png",
+                                   "SHA256":  "9fb018bf01eb82e787fe10306787abbc2d928f37c8fbc0e332048e070f6049e2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_112_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_112_fraction.png",
+                                   "SHA256":  "22b83cb6af8a6defaa2a02747f27ef45fd647d5e0f82ea1badaabd8d61e55308"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_112_text.png",
+                                   "SHA256":  "e7fd9374ba516184af926e0e054e49ebd3d1d7ed6e9264eb18034eeef0896fe3"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_113_composite.png",
+                                   "SHA256":  "1a2c1b0166e7b0e10f843b62d867c94cb86024e9553d42148215b9b498eea917"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_113_fraction.png",
+                                   "SHA256":  "22b83cb6af8a6defaa2a02747f27ef45fd647d5e0f82ea1badaabd8d61e55308"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_113_text.png",
+                                   "SHA256":  "28ca791e653b6f5d250b933f451f0f925736f81af0a6dd07474917c524abdec9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_114_fraction.png",
+                                   "SHA256":  "44ceb7f39e70aa512d2c86fb913b1c22ef281f4b48d175fe757bfbe5093c86c8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_114_text.png",
+                                   "SHA256":  "cf66c16210810fe0bce583d3960782ba58ea1bfe1420b84ea2d35ca1b2b7a2d2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_115_fraction.png",
+                                   "SHA256":  "b4c7118f6e6283526c9c2f2f3aaa81b7797da3713c9960c6c0c638dd35354786"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_115_text.png",
+                                   "SHA256":  "048f73179a67de765b722c75b8b600500a3dccb72f5499ce3708b556c11e2997"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_116_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_116_fraction.png",
+                                   "SHA256":  "b70710e50ab419d18a8581e8ef65e91e2afd80f04bbc734743a3e41be965bce1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_116_text.png",
+                                   "SHA256":  "0d9dfeb1abb53b4943b6bee441f4d5d760e3131d01dc601adafbeae06a61faac"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_117_composite.png",
+                                   "SHA256":  "5d3aa20d6281c60bbfbd0741e07a4f9a11e4a00454f9e444159f8619a0fd5fd9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_117_fraction.png",
+                                   "SHA256":  "01aea9920f57d0842be64c0326eb8e35f6bd8f844d564646616dbf52c0be9a5f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_117_text.png",
+                                   "SHA256":  "28ca791e653b6f5d250b933f451f0f925736f81af0a6dd07474917c524abdec9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_118_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_118_fraction.png",
+                                   "SHA256":  "22b83cb6af8a6defaa2a02747f27ef45fd647d5e0f82ea1badaabd8d61e55308"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_118_text.png",
+                                   "SHA256":  "cf66c16210810fe0bce583d3960782ba58ea1bfe1420b84ea2d35ca1b2b7a2d2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_119_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_119_fraction.png",
+                                   "SHA256":  "8314aa8537721d3ac9f010201e2571f76965774143bebd2e8db0b417a30ab007"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_119_text.png",
+                                   "SHA256":  "cd92caa15ad12069c3e0b129cae4fbed12d22216cfbe9f9dadd4a5451202c13a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_120_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_120_fraction.png",
+                                   "SHA256":  "b70710e50ab419d18a8581e8ef65e91e2afd80f04bbc734743a3e41be965bce1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_120_text.png",
+                                   "SHA256":  "cd92caa15ad12069c3e0b129cae4fbed12d22216cfbe9f9dadd4a5451202c13a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_121_composite.png",
+                                   "SHA256":  "5d3aa20d6281c60bbfbd0741e07a4f9a11e4a00454f9e444159f8619a0fd5fd9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_121_fraction.png",
+                                   "SHA256":  "204df2a8ca8b77d82692960479a98aa62389526ecf0ac85d22aeb604ddfd6d8b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_121_text.png",
+                                   "SHA256":  "048f73179a67de765b722c75b8b600500a3dccb72f5499ce3708b556c11e2997"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_122_fraction.png",
+                                   "SHA256":  "01aea9920f57d0842be64c0326eb8e35f6bd8f844d564646616dbf52c0be9a5f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_122_text.png",
+                                   "SHA256":  "cf66c16210810fe0bce583d3960782ba58ea1bfe1420b84ea2d35ca1b2b7a2d2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_123_composite.png",
+                                   "SHA256":  "5d3aa20d6281c60bbfbd0741e07a4f9a11e4a00454f9e444159f8619a0fd5fd9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_123_fraction.png",
+                                   "SHA256":  "8bce32fd1ac951986eb07ad2720ece2e6d5ccf3f17af0027e576b84db83acad9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_123_text.png",
+                                   "SHA256":  "d9b4aa87ba9f92cb0d1acd5f166783422c1bce5b7e83ceb5c0fe05cf355a0425"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_124_composite.png",
+                                   "SHA256":  "f9f7b3c333812ada72629bfc9ece019cff11510fb86798fdcaa859c0b39e79ce"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_124_fraction.png",
+                                   "SHA256":  "7b92102933154421c0364d474ba53558dd92b92d214382d1ef327cbad7e9362b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_124_text.png",
+                                   "SHA256":  "30151404cd617ce8ceb3732392b0b873aac75dfb42706ec5d8598041f97f5ba8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_125_composite.png",
+                                   "SHA256":  "5d3aa20d6281c60bbfbd0741e07a4f9a11e4a00454f9e444159f8619a0fd5fd9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_125_fraction.png",
+                                   "SHA256":  "b1005e195641ce4fb53aeae620b02e9161d5de09803d0db3c4484f1134a39cc1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_125_text.png",
+                                   "SHA256":  "cd92caa15ad12069c3e0b129cae4fbed12d22216cfbe9f9dadd4a5451202c13a"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_126_composite.png",
+                                   "SHA256":  "6342b722a99f55aae128ba02da84e2ea6ecc32229e038494248257169d125110"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_126_fraction.png",
+                                   "SHA256":  "b1005e195641ce4fb53aeae620b02e9161d5de09803d0db3c4484f1134a39cc1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_126_text.png",
+                                   "SHA256":  "cf66c16210810fe0bce583d3960782ba58ea1bfe1420b84ea2d35ca1b2b7a2d2"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_127_composite.png",
+                                   "SHA256":  "6342b722a99f55aae128ba02da84e2ea6ecc32229e038494248257169d125110"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_127_fraction.png",
+                                   "SHA256":  "a172d6239c8d88b5743b97db44bbc5b44042f79ea75fae729164203570bc25cb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_127_text.png",
+                                   "SHA256":  "d9b4aa87ba9f92cb0d1acd5f166783422c1bce5b7e83ceb5c0fe05cf355a0425"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_128_composite.png",
+                                   "SHA256":  "6342b722a99f55aae128ba02da84e2ea6ecc32229e038494248257169d125110"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_128_fraction.png",
+                                   "SHA256":  "7b92102933154421c0364d474ba53558dd92b92d214382d1ef327cbad7e9362b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_128_text.png",
+                                   "SHA256":  "30151404cd617ce8ceb3732392b0b873aac75dfb42706ec5d8598041f97f5ba8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_129_composite.png",
+                                   "SHA256":  "5d3aa20d6281c60bbfbd0741e07a4f9a11e4a00454f9e444159f8619a0fd5fd9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_129_fraction.png",
+                                   "SHA256":  "204df2a8ca8b77d82692960479a98aa62389526ecf0ac85d22aeb604ddfd6d8b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_130_composite.png",
+                                   "SHA256":  "e74675a1f7473fad8e7233ebe8cfa729c59676e36f30268e0cf6b51ca4ce1842"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_130_fraction.png",
+                                   "SHA256":  "b1005e195641ce4fb53aeae620b02e9161d5de09803d0db3c4484f1134a39cc1"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_130_text.png",
+                                   "SHA256":  "30151404cd617ce8ceb3732392b0b873aac75dfb42706ec5d8598041f97f5ba8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_131_composite.png",
+                                   "SHA256":  "e74675a1f7473fad8e7233ebe8cfa729c59676e36f30268e0cf6b51ca4ce1842"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_131_fraction.png",
+                                   "SHA256":  "a172d6239c8d88b5743b97db44bbc5b44042f79ea75fae729164203570bc25cb"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_131_text.png",
+                                   "SHA256":  "30151404cd617ce8ceb3732392b0b873aac75dfb42706ec5d8598041f97f5ba8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_132_composite.png",
+                                   "SHA256":  "6342b722a99f55aae128ba02da84e2ea6ecc32229e038494248257169d125110"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_132_fraction.png",
+                                   "SHA256":  "b100ffa94d26c6ac95fc9d18584e182e23de9f5bcaf96977080f7dd73d0cfc66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_132_text.png",
+                                   "SHA256":  "30151404cd617ce8ceb3732392b0b873aac75dfb42706ec5d8598041f97f5ba8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_133_composite.png",
+                                   "SHA256":  "da35f85e073dc28bba222b43b98af11216bc4db7808fba59394305eacde5a8d5"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_133_fraction.png",
+                                   "SHA256":  "204df2a8ca8b77d82692960479a98aa62389526ecf0ac85d22aeb604ddfd6d8b"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_134_composite.png",
+                                   "SHA256":  "2872d4855d2a559277a963d4ef7082421650ac256317726c212ad30851837469"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_134_fraction.png",
+                                   "SHA256":  "3254dd7416ebf72170f8b05b691ed50295abd47bb2724bcd813d348cc03eed41"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_134_text.png",
+                                   "SHA256":  "039e92abd0997bf6b40a85c075b8d9196df40ceed09ecd1993acc7ca652b24c9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_135_composite.png",
+                                   "SHA256":  "e74675a1f7473fad8e7233ebe8cfa729c59676e36f30268e0cf6b51ca4ce1842"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_135_fraction.png",
+                                   "SHA256":  "b1fc2a3e4e6adaa4236f7be5eddfd90cb4147a7a56ade42f2092e124d26ac33f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_136_fraction.png",
+                                   "SHA256":  "b100ffa94d26c6ac95fc9d18584e182e23de9f5bcaf96977080f7dd73d0cfc66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_136_text.png",
+                                   "SHA256":  "30151404cd617ce8ceb3732392b0b873aac75dfb42706ec5d8598041f97f5ba8"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_137_composite.png",
+                                   "SHA256":  "da35f85e073dc28bba222b43b98af11216bc4db7808fba59394305eacde5a8d5"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_137_fraction.png",
+                                   "SHA256":  "80dbf4b157a00e49c97316aad8cb7f9796a3b0a90ae6a7612388c9ee17af3915"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_137_text.png",
+                                   "SHA256":  "039e92abd0997bf6b40a85c075b8d9196df40ceed09ecd1993acc7ca652b24c9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_138_composite.png",
+                                   "SHA256":  "2872d4855d2a559277a963d4ef7082421650ac256317726c212ad30851837469"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_138_fraction.png",
+                                   "SHA256":  "fe0c85c0c7bfd37b025395d32ef87471062ec729a2a114e75d46d68cb31bc8bc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_138_text.png",
+                                   "SHA256":  "039e92abd0997bf6b40a85c075b8d9196df40ceed09ecd1993acc7ca652b24c9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_139_fraction.png",
+                                   "SHA256":  "b1fc2a3e4e6adaa4236f7be5eddfd90cb4147a7a56ade42f2092e124d26ac33f"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_139_text.png",
+                                   "SHA256":  "61c8e41bda836aa967950803f3af41c95153a83466020c7b6592a2f3037f99e7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_140_fraction.png",
+                                   "SHA256":  "b100ffa94d26c6ac95fc9d18584e182e23de9f5bcaf96977080f7dd73d0cfc66"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_140_text.png",
+                                   "SHA256":  "61c8e41bda836aa967950803f3af41c95153a83466020c7b6592a2f3037f99e7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_141_fraction.png",
+                                   "SHA256":  "80dbf4b157a00e49c97316aad8cb7f9796a3b0a90ae6a7612388c9ee17af3915"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_142_text.png",
+                                   "SHA256":  "039e92abd0997bf6b40a85c075b8d9196df40ceed09ecd1993acc7ca652b24c9"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_143_fraction.png",
+                                   "SHA256":  "fe0c85c0c7bfd37b025395d32ef87471062ec729a2a114e75d46d68cb31bc8bc"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_144_text.png",
+                                   "SHA256":  "61c8e41bda836aa967950803f3af41c95153a83466020c7b6592a2f3037f99e7"
+                               },
+                               {
+                                   "Path":  "workbook\\output\\formula_images\\formula_145_fraction.png",
+                                   "SHA256":  "6f64459b60e2479a6c38795561d063ac2ac03b387a998bfe1546596ab3298875"
+                               }
+                           ],
+    "Backup":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\GeometryFull_2026-10-13\\OriginalOutputBackup",
+    "SourceCodeCommit":  "037abc7c80269b49774b32337d5b40edc54d730a",
+    "ActualVBAComponents":  149,
+    "FullOnOff":  "PASS",
+    "PushPerformed":  false,
+    "CandidateExportSHA256":  "70e84b3d256b9543e175e16b68491c1813e7547a254891d67c42ed4632cb913a",
+    "NativeOutputExport":  "VBA_ActualPublished.txt"
+}

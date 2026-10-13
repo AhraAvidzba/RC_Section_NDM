@@ -1,0 +1,996 @@
+{
+  "status": "PASS",
+  "modes": [
+    "Off",
+    "On"
+  ],
+  "records": {
+    "Off/Baseline": {
+      "families": {
+        "Circle": {
+          "diagramExtension": "No",
+          "seconds": 4.11438749998342,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "ecd7121befe525ad5020a1c09b7c7578c9d66e3d2cee62fe214e4d0dffa52e36",
+          "fingerprintLines": 1096
+        },
+        "Rectangle": {
+          "diagramExtension": "No",
+          "seconds": 1.18196220003301,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "6954e870b9318b411c283fabd3a051d9840ed0867081c228040f7761452b0355",
+          "fingerprintLines": 587
+        },
+        "LSection": {
+          "diagramExtension": "No",
+          "seconds": 1.29111460002605,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "1bfbfad4c5995ca9b897ddfca8891bbc5c720c8ec781de10fde8b21048c6f458",
+          "fingerprintLines": 839
+        },
+        "TwoRectangles": {
+          "diagramExtension": "No",
+          "seconds": 1.43016039999202,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "cb72627dbe2b09a75eb100ac7c22719d86306ac4ea026e6a7cf46ebf62146b51",
+          "fingerprintLines": 915
+        },
+        "RoundedSimple": {
+          "diagramExtension": "No",
+          "seconds": 1.31928400002653,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "51b23533d00e4ed04265c5af4c23b9fcd51075c5ae86be36ef36369be197a29f",
+          "fingerprintLines": 834
+        },
+        "RoundedTapered": {
+          "diagramExtension": "No",
+          "seconds": 1.37277190003078,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "061330931dc132ec5fbfcd70c634aad9018fe1277bf631a524e89c0b5c807d66",
+          "fingerprintLines": 1008
+        },
+        "RoundedMixed": {
+          "diagramExtension": "No",
+          "seconds": 1.34751890000189,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "b85a0215609cdaddcb50575d77dc73a3973218a4e4da7c75ed3ee371164e6692",
+          "fingerprintLines": 931
+        },
+        "HollowCentered": {
+          "diagramExtension": "No",
+          "seconds": 2.06587479996961,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "964183dc8b636c02228d5af69ca0717630a28475c217a7223c510b39d396ff43",
+          "fingerprintLines": 2306
+        },
+        "HollowOffset": {
+          "diagramExtension": "No",
+          "seconds": 2.31902590004029,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "b49e09b26c3992aa95ec1a2ede5248380759c5f4ddb721b514003a8ff35b5afb",
+          "fingerprintLines": 2336
+        }
+      },
+      "stages": [
+        {
+          "diagramExtension": "No",
+          "seconds": 4.56946099997731,
+          "preparation": 2.61053419997916,
+          "core": 0.017337500001304,
+          "clear": 0.160034100001212,
+          "packing": 0.00658340001246,
+          "summary": 0.585692599997856,
+          "snapshot": 0.473933300003409,
+          "plot": 0.715334300009999,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "cd51dd415d816249ec9d4a64d1d68b590e546502095b8215c7bb0c557a62bafc",
+          "fingerprintLines": 2337
+        },
+        {
+          "diagramExtension": "No",
+          "seconds": 2.15179890004219,
+          "preparation": 0.244772500009276,
+          "core": 0.013326600019354,
+          "clear": 0.056465100031346,
+          "packing": 0.00685980002163,
+          "summary": 0.570726700010709,
+          "snapshot": 0.544679899991024,
+          "plot": 0.714959200005978,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "cd51dd415d816249ec9d4a64d1d68b590e546502095b8215c7bb0c557a62bafc",
+          "fingerprintLines": 2337
+        },
+        {
+          "diagramExtension": "No",
+          "seconds": 2.15378210000927,
+          "preparation": 0.263825900037773,
+          "core": 0.013501699955668,
+          "clear": 0.059601699991617,
+          "packing": 0.006944399967324,
+          "summary": 0.577815500029828,
+          "snapshot": 0.532057400036138,
+          "plot": 0.700025699974503,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "cd51dd415d816249ec9d4a64d1d68b590e546502095b8215c7bb0c557a62bafc",
+          "fingerprintLines": 2337
+        }
+      ],
+      "mixed": [
+        {
+          "diagramExtension": "No",
+          "seconds": 2.28616040002089,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "42b6fa95309f1b6ba644237d8f243bc0a9a917829e53d8db653bc8c7c43d14c0",
+          "fingerprintLines": 5392
+        }
+      ],
+      "warmMedianSeconds": 2.1527905000257297
+    },
+    "Off/Current": {
+      "families": {
+        "Circle": {
+          "diagramExtension": "No",
+          "seconds": 4.06172120000701,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "ecd7121befe525ad5020a1c09b7c7578c9d66e3d2cee62fe214e4d0dffa52e36",
+          "fingerprintLines": 1096
+        },
+        "Rectangle": {
+          "diagramExtension": "No",
+          "seconds": 1.16946770000504,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "6954e870b9318b411c283fabd3a051d9840ed0867081c228040f7761452b0355",
+          "fingerprintLines": 587
+        },
+        "LSection": {
+          "diagramExtension": "No",
+          "seconds": 1.26768540003104,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "1bfbfad4c5995ca9b897ddfca8891bbc5c720c8ec781de10fde8b21048c6f458",
+          "fingerprintLines": 839
+        },
+        "TwoRectangles": {
+          "diagramExtension": "No",
+          "seconds": 1.32057369995164,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "cb72627dbe2b09a75eb100ac7c22719d86306ac4ea026e6a7cf46ebf62146b51",
+          "fingerprintLines": 915
+        },
+        "RoundedSimple": {
+          "diagramExtension": "No",
+          "seconds": 1.31851189996814,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "51b23533d00e4ed04265c5af4c23b9fcd51075c5ae86be36ef36369be197a29f",
+          "fingerprintLines": 834
+        },
+        "RoundedTapered": {
+          "diagramExtension": "No",
+          "seconds": 1.37277409998933,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "061330931dc132ec5fbfcd70c634aad9018fe1277bf631a524e89c0b5c807d66",
+          "fingerprintLines": 1008
+        },
+        "RoundedMixed": {
+          "diagramExtension": "No",
+          "seconds": 1.50482229999034,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "b85a0215609cdaddcb50575d77dc73a3973218a4e4da7c75ed3ee371164e6692",
+          "fingerprintLines": 931
+        },
+        "HollowCentered": {
+          "diagramExtension": "No",
+          "seconds": 2.21094740001718,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "964183dc8b636c02228d5af69ca0717630a28475c217a7223c510b39d396ff43",
+          "fingerprintLines": 2306
+        },
+        "HollowOffset": {
+          "diagramExtension": "No",
+          "seconds": 2.22459460003302,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "b49e09b26c3992aa95ec1a2ede5248380759c5f4ddb721b514003a8ff35b5afb",
+          "fingerprintLines": 2336
+        }
+      },
+      "stages": [
+        {
+          "diagramExtension": "No",
+          "seconds": 4.62342909997096,
+          "preparation": 2.6261331999558,
+          "core": 0.017526599986013,
+          "clear": 0.157966000027955,
+          "packing": 0.006886699993629,
+          "summary": 0.593646000023,
+          "snapshot": 0.490211500029545,
+          "plot": 0.731048099987675,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "cd51dd415d816249ec9d4a64d1d68b590e546502095b8215c7bb0c557a62bafc",
+          "fingerprintLines": 2337
+        },
+        {
+          "diagramExtension": "No",
+          "seconds": 2.10208829998737,
+          "preparation": 0.246730299957562,
+          "core": 0.012515200010967,
+          "clear": 0.056615800014697,
+          "packing": 0.006942000007257,
+          "summary": 0.578566099982709,
+          "snapshot": 0.496052000031341,
+          "plot": 0.704657400026917,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "cd51dd415d816249ec9d4a64d1d68b590e546502095b8215c7bb0c557a62bafc",
+          "fingerprintLines": 2337
+        },
+        {
+          "diagramExtension": "No",
+          "seconds": 2.14468159998069,
+          "preparation": 0.25415829999838,
+          "core": 0.01820960000623,
+          "clear": 0.057522199989762,
+          "packing": 0.010741200007033,
+          "summary": 0.606797199987341,
+          "snapshot": 0.500072499969974,
+          "plot": 0.697171100007836,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "cd51dd415d816249ec9d4a64d1d68b590e546502095b8215c7bb0c557a62bafc",
+          "fingerprintLines": 2337
+        }
+      ],
+      "mixed": [
+        {
+          "diagramExtension": "No",
+          "seconds": 2.32606950000627,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "42b6fa95309f1b6ba644237d8f243bc0a9a917829e53d8db653bc8c7c43d14c0",
+          "fingerprintLines": 5392
+        }
+      ],
+      "warmMedianSeconds": 2.12338494998403
+    },
+    "On/Baseline": {
+      "families": {
+        "Circle": {
+          "diagramExtension": "Yes",
+          "seconds": 4.07885729998816,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "fb852f3c87057ea6ee136ffb1ed687b4fa04503fe87c5d63aa00c6ab85988f2e",
+          "fingerprintLines": 1099
+        },
+        "Rectangle": {
+          "diagramExtension": "Yes",
+          "seconds": 1.15424449997954,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "f97dfd96065081f3c54e11dd487e75a79d9c25ec3c20e68944cef70e5e016273",
+          "fingerprintLines": 590
+        },
+        "LSection": {
+          "diagramExtension": "Yes",
+          "seconds": 1.28681550000329,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "072de5eba446a0dabe1b34ed4ea3adc809b86c03c59db2b307e8ce3621fe1831",
+          "fingerprintLines": 842
+        },
+        "TwoRectangles": {
+          "diagramExtension": "Yes",
+          "seconds": 1.33051100000739,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "54b6a217aa1642554387551ceb86d18ae3a77cdf66b41501204f18f82dedc8a6",
+          "fingerprintLines": 918
+        },
+        "RoundedSimple": {
+          "diagramExtension": "Yes",
+          "seconds": 1.26394700002857,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "644bd3516893e2d371051760a7ba22ebe240c0364782ec9c0df950913c47a1d5",
+          "fingerprintLines": 837
+        },
+        "RoundedTapered": {
+          "diagramExtension": "Yes",
+          "seconds": 1.35415949998423,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "25c48d56d223e5cf27ba1bbb7c9cc064994331f70dbe8443eafa7d1555047892",
+          "fingerprintLines": 1011
+        },
+        "RoundedMixed": {
+          "diagramExtension": "Yes",
+          "seconds": 1.33122719998937,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "d750b9c4f43a9b123b35932c123b965766f457ec647e9bf165cb83007bd652d4",
+          "fingerprintLines": 934
+        },
+        "HollowCentered": {
+          "diagramExtension": "Yes",
+          "seconds": 1.94654810003703,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "90f9905113b9f3da826cc65fd710d3a96dcbec5d3f96b1e84e080182741bd6cc",
+          "fingerprintLines": 2309
+        },
+        "HollowOffset": {
+          "diagramExtension": "Yes",
+          "seconds": 2.0954713000101,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "d0b0207fb2993d6f1a6b1be61b0c520e969764f6ac218202fc4687d4fb15a922",
+          "fingerprintLines": 2339
+        }
+      },
+      "stages": [
+        {
+          "diagramExtension": "Yes",
+          "seconds": 4.69956189999357,
+          "preparation": 2.62550419999752,
+          "core": 0.017195699969307,
+          "clear": 0.163221599999815,
+          "packing": 0.006771699991077,
+          "summary": 0.599721300008241,
+          "snapshot": 0.572489900048822,
+          "plot": 0.714646100008395,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "eb2464d0263c8761a88d05fd91c0e9c8a52891682370a56675b6a1c20f682cd7",
+          "fingerprintLines": 2340
+        },
+        {
+          "diagramExtension": "Yes",
+          "seconds": 2.11971519998042,
+          "preparation": 0.257759600004647,
+          "core": 0.017052799987141,
+          "clear": 0.057282800029498,
+          "packing": 0.009461800043937,
+          "summary": 0.573842499987222,
+          "snapshot": 0.503599699994083,
+          "plot": 0.700706499977969,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "eb2464d0263c8761a88d05fd91c0e9c8a52891682370a56675b6a1c20f682cd7",
+          "fingerprintLines": 2340
+        },
+        {
+          "diagramExtension": "Yes",
+          "seconds": 2.18214709998574,
+          "preparation": 0.330890199984424,
+          "core": 0.017350999987684,
+          "clear": 0.058975299994927,
+          "packing": 0.008324200054631,
+          "summary": 0.568422600044869,
+          "snapshot": 0.493046599964146,
+          "plot": 0.705127900000662,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "eb2464d0263c8761a88d05fd91c0e9c8a52891682370a56675b6a1c20f682cd7",
+          "fingerprintLines": 2340
+        }
+      ],
+      "mixed": [
+        {
+          "diagramExtension": "Yes",
+          "seconds": 2.18758000002708,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "ae491ac2cd432fdc54ad80e1cad8e57942071d5f230165a12cf8879c99a630b9",
+          "fingerprintLines": 5405
+        }
+      ],
+      "warmMedianSeconds": 2.15093114998308
+    },
+    "On/Current": {
+      "families": {
+        "Circle": {
+          "diagramExtension": "Yes",
+          "seconds": 4.12534450000385,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "fb852f3c87057ea6ee136ffb1ed687b4fa04503fe87c5d63aa00c6ab85988f2e",
+          "fingerprintLines": 1099
+        },
+        "Rectangle": {
+          "diagramExtension": "Yes",
+          "seconds": 1.18519360001665,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "f97dfd96065081f3c54e11dd487e75a79d9c25ec3c20e68944cef70e5e016273",
+          "fingerprintLines": 590
+        },
+        "LSection": {
+          "diagramExtension": "Yes",
+          "seconds": 1.29191670002183,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "072de5eba446a0dabe1b34ed4ea3adc809b86c03c59db2b307e8ce3621fe1831",
+          "fingerprintLines": 842
+        },
+        "TwoRectangles": {
+          "diagramExtension": "Yes",
+          "seconds": 1.41435690002982,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "54b6a217aa1642554387551ceb86d18ae3a77cdf66b41501204f18f82dedc8a6",
+          "fingerprintLines": 918
+        },
+        "RoundedSimple": {
+          "diagramExtension": "Yes",
+          "seconds": 1.34337879996747,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "644bd3516893e2d371051760a7ba22ebe240c0364782ec9c0df950913c47a1d5",
+          "fingerprintLines": 837
+        },
+        "RoundedTapered": {
+          "diagramExtension": "Yes",
+          "seconds": 1.37429720000364,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "25c48d56d223e5cf27ba1bbb7c9cc064994331f70dbe8443eafa7d1555047892",
+          "fingerprintLines": 1011
+        },
+        "RoundedMixed": {
+          "diagramExtension": "Yes",
+          "seconds": 1.40842899994459,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "d750b9c4f43a9b123b35932c123b965766f457ec647e9bf165cb83007bd652d4",
+          "fingerprintLines": 934
+        },
+        "HollowCentered": {
+          "diagramExtension": "Yes",
+          "seconds": 2.08409189997474,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "90f9905113b9f3da826cc65fd710d3a96dcbec5d3f96b1e84e080182741bd6cc",
+          "fingerprintLines": 2309
+        },
+        "HollowOffset": {
+          "diagramExtension": "Yes",
+          "seconds": 2.30384149996098,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "d0b0207fb2993d6f1a6b1be61b0c520e969764f6ac218202fc4687d4fb15a922",
+          "fingerprintLines": 2339
+        }
+      },
+      "stages": [
+        {
+          "diagramExtension": "Yes",
+          "seconds": 4.58116980001796,
+          "preparation": 2.62724090000847,
+          "core": 0.020178899983876,
+          "clear": 0.159978199983016,
+          "packing": 0.007832299976144,
+          "summary": 0.584666699985974,
+          "snapshot": 0.458084499987308,
+          "plot": 0.723177300009411,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "eb2464d0263c8761a88d05fd91c0e9c8a52891682370a56675b6a1c20f682cd7",
+          "fingerprintLines": 2340
+        },
+        {
+          "diagramExtension": "Yes",
+          "seconds": 2.17566369997803,
+          "preparation": 0.267819200002123,
+          "core": 0.021379499987233,
+          "clear": 0.05528879998019,
+          "packing": 0.013708200014662,
+          "summary": 0.578021600027569,
+          "snapshot": 0.522798499965575,
+          "plot": 0.716637899982743,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "eb2464d0263c8761a88d05fd91c0e9c8a52891682370a56675b6a1c20f682cd7",
+          "fingerprintLines": 2340
+        },
+        {
+          "diagramExtension": "Yes",
+          "seconds": 2.11082300002454,
+          "preparation": 0.254607600043528,
+          "core": 0.018494799965993,
+          "clear": 0.058903600031044,
+          "packing": 0.007202599954326,
+          "summary": 0.576327300048433,
+          "snapshot": 0.496477400010917,
+          "plot": 0.698800200014375,
+          "elements": 954.0,
+          "bars": 42.0,
+          "solves": 1.0,
+          "domainBuilds": 0.0,
+          "mechanicalBuilds": 0.0,
+          "released": "True",
+          "fingerprint": "eb2464d0263c8761a88d05fd91c0e9c8a52891682370a56675b6a1c20f682cd7",
+          "fingerprintLines": 2340
+        }
+      ],
+      "mixed": [
+        {
+          "diagramExtension": "Yes",
+          "seconds": 2.2727361000143,
+          "preparation": 0.0,
+          "core": 0.0,
+          "clear": 0.0,
+          "packing": 0.0,
+          "summary": 0.0,
+          "snapshot": 0.0,
+          "plot": 0.0,
+          "fingerprint": "ae491ac2cd432fdc54ad80e1cad8e57942071d5f230165a12cf8879c99a630b9",
+          "fingerprintLines": 5405
+        }
+      ],
+      "warmMedianSeconds": 2.143243350001285
+    }
+  },
+  "comparisons": [
+    {
+      "mode": "Off",
+      "family": "Circle",
+      "baselineSeconds": 4.11438749998342,
+      "currentSeconds": 4.06172120000701,
+      "deltaSeconds": -0.05266629997640937,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "HollowCentered",
+      "baselineSeconds": 2.06587479996961,
+      "currentSeconds": 2.21094740001718,
+      "deltaSeconds": 0.14507260004756972,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "HollowOffset",
+      "baselineSeconds": 2.31902590004029,
+      "currentSeconds": 2.22459460003302,
+      "deltaSeconds": -0.09443130000727029,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "LSection",
+      "baselineSeconds": 1.29111460002605,
+      "currentSeconds": 1.26768540003104,
+      "deltaSeconds": -0.02342919999501003,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "Rectangle",
+      "baselineSeconds": 1.18196220003301,
+      "currentSeconds": 1.16946770000504,
+      "deltaSeconds": -0.012494500027969924,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedMixed",
+      "baselineSeconds": 1.34751890000189,
+      "currentSeconds": 1.50482229999034,
+      "deltaSeconds": 0.1573033999884501,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedSimple",
+      "baselineSeconds": 1.31928400002653,
+      "currentSeconds": 1.31851189996814,
+      "deltaSeconds": -0.0007721000583900128,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "RoundedTapered",
+      "baselineSeconds": 1.37277190003078,
+      "currentSeconds": 1.37277409998933,
+      "deltaSeconds": 2.1999585499976604e-06,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "Off",
+      "family": "TwoRectangles",
+      "baselineSeconds": 1.43016039999202,
+      "currentSeconds": 1.32057369995164,
+      "deltaSeconds": -0.10958670004038007,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "Circle",
+      "baselineSeconds": 4.07885729998816,
+      "currentSeconds": 4.12534450000385,
+      "deltaSeconds": 0.04648720001569018,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "HollowCentered",
+      "baselineSeconds": 1.94654810003703,
+      "currentSeconds": 2.08409189997474,
+      "deltaSeconds": 0.13754379993771004,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "HollowOffset",
+      "baselineSeconds": 2.0954713000101,
+      "currentSeconds": 2.30384149996098,
+      "deltaSeconds": 0.2083701999508798,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "LSection",
+      "baselineSeconds": 1.28681550000329,
+      "currentSeconds": 1.29191670002183,
+      "deltaSeconds": 0.005101200018539975,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "Rectangle",
+      "baselineSeconds": 1.15424449997954,
+      "currentSeconds": 1.18519360001665,
+      "deltaSeconds": 0.030949100037110044,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "RoundedMixed",
+      "baselineSeconds": 1.33122719998937,
+      "currentSeconds": 1.40842899994459,
+      "deltaSeconds": 0.07720179995522014,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "RoundedSimple",
+      "baselineSeconds": 1.26394700002857,
+      "currentSeconds": 1.34337879996747,
+      "deltaSeconds": 0.07943179993890004,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "RoundedTapered",
+      "baselineSeconds": 1.35415949998423,
+      "currentSeconds": 1.37429720000364,
+      "deltaSeconds": 0.020137700019410065,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    },
+    {
+      "mode": "On",
+      "family": "TwoRectangles",
+      "baselineSeconds": 1.33051100000739,
+      "currentSeconds": 1.41435690002982,
+      "deltaSeconds": 0.08384590002242986,
+      "fingerprintSame": true,
+      "under10Seconds": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "FinalWorkflow_Off_Baseline.txt",
+      "sha256": "cb74a1d0d0afd7e50191db3aed68a9bca976ee66c4dcf6ebb43acb8a816b996e"
+    },
+    {
+      "path": "FinalStagesMixed_Off_Baseline.txt",
+      "sha256": "9d4287145a0682879d882dc9090d3d99d57636a3ada29507de2f47de3caba6ea"
+    },
+    {
+      "path": "FinalWorkflow_Off_Current.txt",
+      "sha256": "a5cee7cad2eab7c85fea0c785d6fef9fa7d650319fd58a5bc20227a41a2ead46"
+    },
+    {
+      "path": "FinalStagesMixed_Off_Current.txt",
+      "sha256": "eb2d2d24641b25c9ed0c42e7e565626aa4c0c624a1773277cd5f04a441455c7c"
+    },
+    {
+      "path": "FinalWorkflow_On_Baseline.txt",
+      "sha256": "df6bf743f65d238c2e84c89f9dd4488b36bbf026071e3f40551aeb2ccaa246d6"
+    },
+    {
+      "path": "FinalStagesMixed_On_Baseline.txt",
+      "sha256": "6f8aaf981dce72431d400b875f3f7cd4a07f633477e576bff0cbed266dd33992"
+    },
+    {
+      "path": "FinalWorkflow_On_Current.txt",
+      "sha256": "caf2154db09d315230e0b44448f0911675a016aadb19809c194c84c162e8d257"
+    },
+    {
+      "path": "FinalStagesMixed_On_Current.txt",
+      "sha256": "0870154b87ba3b7f2e18aafb5b23768e5072326a29541fbd3f8d37be7f059c64"
+    }
+  ],
+  "errors": [],
+  "under10Seconds": true,
+  "scope": "Nine full single-LC workflows per mode with preparation/report/Results/plot; paired staged and mixed HollowOffset",
+  "measurementCondition": "Run only after main/native jobs; no concurrent heavy regression",
+  "notUsedAsBenchmark": "Aggregate suite wall times and COM/dialog retry waits"
+}

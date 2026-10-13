@@ -1,0 +1,13 @@
+﻿{
+    "Status":  "PASS",
+    "WorkbookSHA256":  "871b42914fcb2fcf0168f43896d66ba603b6b170f6e6a9f9db9206cdc3ca9fec",
+    "AllCodeSHA256":  "92c7b69f499564fd354721146e9e14b7e943488d190386355a42c9b4016b06b4",
+    "NativeComponents":  149,
+    "SourceMatch":  true,
+    "UserCellsPreserved":  52003,
+    "StructureChecks":  27,
+    "APIMembers":  275,
+    "ForeignOutputsPreserved":  true,
+    "ReadOnlyVerification":  true,
+    "CompletedUTC":  "2026-10-13T05:58:16.4032172Z"
+}
