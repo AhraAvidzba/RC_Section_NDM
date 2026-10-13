@@ -26,6 +26,10 @@ ALL CODE: `8aa82603d9d0a498c4acf6fb9dd10a4544028be1ea4486c65b659b61c4359db1`.
 книги; отличается только дата экспорта. Дополнение сохранено в отдельном
 `PlateauFactorEvidence_2026-10-13.zip`: 63 артефакта, CRC/SHA256 PASS.
 
+Коммит дополнения `ac8dd060544d3b6aabaf28f0e2b77daabd1f494a` отправлен
+обычным push в `codex/material-diagram-architecture`; удалённый SHA подтверждён.
+Факт отправки записан в `PlateauFactorV2/Push.json` после публикации файлов.
+
 ## Предыдущая полная приёмка геометрии
 
 **VERIFIED_PUBLISHED.** Все 72 требования сохраняют PASS; полная приёмка
