@@ -30,8 +30,8 @@
 В примерах уже создан объект facade типа CSectionDefinitionBuilder; path имеет тип CGeometryPath, options — CRebarRuleOptions. Все размеры здесь в мм. Следующие две строки задают наружную границу прямоугольника 600 × 1000 мм:
 
 ```vb
-Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
-facade.Outer "OUTER", path.ID
+Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#) ' Контур 600 x 1000 мм.
+facade.Outer "OUTER", path.ID ' Наружная граница бетона.
 ```
 
 Для отверстия создайте другую замкнутую линию и передайте в Opening её имя и имя наружной границы, внутри которой находится отверстие.
@@ -41,9 +41,9 @@ facade.Outer "OUTER", path.ID
 На горизонтальном отрезке от (50; 950) до (550; 950) размещаются пять стержней диаметром 20 мм. В этом примере линия задана координатами; для её получения из наружного контура есть методы Offset и OffsetRoundedPolygon. Имя Top объединяет стержни для общей подписи:
 
 ```vb
-Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)
-Set options = New CRebarRuleOptions: options.AnnotationGroup = "Top"
-facade.RebarByCount "Top.Main", path.ID, 5, 20#, options
+Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#) ' Линия верхнего ряда.
+Set options = New CRebarRuleOptions: options.AnnotationGroup = "Top" ' Группа верхних рядов.
+facade.RebarByCount "Top.Main", path.ID, 5, 20#, options ' Пять стержней диаметром 20 мм.
 ```
 
 Нулевое число стержней или нулевой диаметр отключают ряд. Условие EverySecond создаёт дополнительный ряд только у первого, третьего и следующих нечётных стержней исходного ряда; на каждой независимой линии отсчёт начинается заново.
@@ -53,8 +53,8 @@ facade.RebarByCount "Top.Main", path.ID, 5, 20#, options
 Первая строка добавляет подпись числа и диаметра стержней верхнего ряда. Вторая — горизонтальный размер B между x = 0 и x = 600 на уровне y = 1000:
 
 ```vb
-facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#
-facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#
+facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50# ' Подпись верхней арматуры.
+facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000# ' Размер ширины B.
 ```
 
 Подпись арматуры учитывает фактически созданные стержни и исчезает, если их нет. Размеры сечения сохраняются и на сторонах без арматуры.

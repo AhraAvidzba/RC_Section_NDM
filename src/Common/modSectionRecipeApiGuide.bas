@@ -48,52 +48,19 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     Тело ISectionRecipe_CreateDefinition в классе с Implements ISectionRecipe. Пример задаёт
 '     прямоугольник и пять верхних стержней диаметром 20 мм:
 '
-'       Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
-'       ' Объявляем переменные для сборщика описания сечения и геометрической линии. Объекты пока не
-'       ' создаются.
-'
-'       Dim options As CRebarRuleOptions
-'       ' Объявляем переменную для условий размещения арматуры. Объект пока не создаётся.
-'
-'       Set facade = New CSectionDefinitionBuilder
-'       ' Создаём сборщик, в котором будем описывать границы бетона, размещение арматуры и аннотации.
-'
-'       facade.Initialize "MySection"
-'       ' Начинаем новое описание сечения с именем MySection.
-'
-'       Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
-'       ' Создаём замкнутый контур Boundary: прямоугольник шириной 600 мм и высотой 1000 мм с левым
-'       ' нижним углом (0; 0).
-'
-'       facade.Outer "OUTER", path.ID
-'       ' Назначаем контур Boundary наружной границей бетона с именем OUTER.
-'
-'       Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)
-'       ' Создаём линию центров верхних стержней от (50; 950) до (550; 950) мм: отступ от верхней и
-'       ' боковых граней равен 50 мм.
-'
-'       Set options = New CRebarRuleOptions
-'       ' Создаём условия размещения арматуры со значениями по умолчанию.
-'
-'       options.AnnotationGroup = "Top"
-'       ' Назначаем арматуре имя группы Top, для которой программа сформирует общую подпись.
-'
-'       facade.RebarByCount "Top.Main", path.ID, 5, 20#, options
-'       ' Задаём ряд Top.Main: пять стержней диаметром 20 мм, равномерно размещённых на линии TopAxis с
-'       ' заданными условиями.
-'
-'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#
-'       ' Объявляем подпись группы Top по концам верхнего ряда с направлением вверх. Количество и
-'       ' диаметр программа получит по фактически созданным стержням.
-'
-'       facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#
-'       ' Объявляем горизонтальный размер B = 600 мм между X = 0 и X = 600 на уровне Y = 1000; отступ
-'       ' размерной линии задают настройки плоттера.
-'
-'       Set ISectionRecipe_CreateDefinition = facade.Finish
-'       ' Проверяем и завершаем описание сечения, затем возвращаем его общему сборщику. Сетку, стержни и
-'       ' схему программа построит автоматически.
-'
+'       Dim facade As CSectionDefinitionBuilder, path As CGeometryPath  ' Сборщик описания и геометрическая линия.
+'       Dim options As CRebarRuleOptions  ' Переменная условий размещения арматуры.
+'       Set facade = New CSectionDefinitionBuilder  ' Создаём сборщик описания сечения.
+'       facade.Initialize "MySection"  ' Начинаем описание сечения MySection.
+'       Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)  ' Контур прямоугольника 600 x 1000 мм.
+'       facade.Outer "OUTER", path.ID  ' Назначаем наружную границу бетона.
+'       Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)  ' Линия верхнего ряда с отступом as = 50 мм.
+'       Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
+'       options.AnnotationGroup = "Top"  ' Общая группа подписи верхних рядов.
+'       facade.RebarByCount "Top.Main", path.ID, 5, 20#, options  ' Пять стержней диаметром 20 мм.
+'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#  ' Подпись арматуры верхней стороны.
+'       facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#  ' Размер ширины B = 600 мм.
+'       Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем описание сечения.
 '
 '     В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New
 '     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array()

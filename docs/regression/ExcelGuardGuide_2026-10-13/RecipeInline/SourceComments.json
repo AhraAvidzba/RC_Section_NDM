@@ -1,0 +1,1429 @@
+{
+  "recipes": [
+    {
+      "source": "docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls",
+      "linesBefore": 120,
+      "linesAfter": 119,
+      "commentedLines": 35,
+      "entries": [
+        {
+          "line": 54,
+          "originalLine": 54,
+          "code": "Set ISectionRecipe_CreateDefinition = Describe(parameters, table)",
+          "comment": "Возвращаем описание геометрии, арматуры и размеров."
+        },
+        {
+          "line": 67,
+          "originalLine": 67,
+          "code": "Set ProgramDefinition = Describe(parameters, Nothing)",
+          "comment": "Возвращаем описание геометрии, арматуры и размеров."
+        },
+        {
+          "line": 82,
+          "originalLine": 82,
+          "code": "Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, openingPath As CGeometryPath, axis As CGeometryPath",
+          "comment": "Объявляем сборщик описания сечения."
+        },
+        {
+          "line": 83,
+          "originalLine": 83,
+          "code": "Dim vertices As Variant, radii As Variant, corners As Variant, options As CRebarRuleOptions",
+          "comment": "Объявляем условия размещения арматуры."
+        },
+        {
+          "line": 84,
+          "originalLine": 84,
+          "code": "Set facade = New CSectionDefinitionBuilder: facade.Initialize \"RoundedTrapezoid\"",
+          "comment": "Создаём описание трапециевидного сечения."
+        },
+        {
+          "line": 85,
+          "originalLine": 85,
+          "code": "vertices = Array(Array(-parameters.BottomWidth / 2#, -parameters.Height / 2#), Array(parameters.BottomWidth / 2#, -parameters.Height / 2#), Array(parameters.TopWidth / 2#, parameters.Height / 2#), Array(-parameters.TopWidth / 2#, parameters.Height / 2#))",
+          "comment": "Задаём координаты четырёх вершин трапеции."
+        },
+        {
+          "line": 86,
+          "originalLine": 87,
+          "code": "radii = Array(parameters.CornerRadius, parameters.CornerRadius, parameters.CornerRadius, parameters.CornerRadius)",
+          "comment": "Назначаем радиусы скругления вершин."
+        },
+        {
+          "line": 87,
+          "originalLine": 88,
+          "code": "corners = Array(\"BottomLeft\", \"BottomRight\", \"TopRight\", \"TopLeft\")",
+          "comment": "Назначаем имена четырём вершинам трапеции."
+        },
+        {
+          "line": 88,
+          "originalLine": 89,
+          "code": "facade.Source \"Boundary\", parameters.Source",
+          "comment": "Привязываем геометрию к ячейкам исходных данных."
+        },
+        {
+          "line": 89,
+          "originalLine": 90,
+          "code": "Set boundary = facade.RoundedPolygon(\"Boundary\", vertices, radii, corners)",
+          "comment": "Создаём замкнутый контур с заданными скруглениями."
+        },
+        {
+          "line": 90,
+          "originalLine": 91,
+          "code": "facade.Outer \"Concrete\", boundary.ID, \"Наружная граница скругленной трапеции.\"",
+          "comment": "Назначаем наружную границу бетона."
+        },
+        {
+          "line": 91,
+          "originalLine": 92,
+          "code": "Set openingPath = facade.CirclePath(\"Opening.Circle\", 0#, 0#, parameters.OpeningRadius)",
+          "comment": "Создаём окружность отверстия."
+        },
+        {
+          "line": 92,
+          "originalLine": 93,
+          "code": "facade.Opening \"Opening\", openingPath.ID, \"Concrete\", \"Круглое отверстие.\"",
+          "comment": "Объявляем отверстие внутри наружной границы."
+        },
+        {
+          "line": 93,
+          "originalLine": 94,
+          "code": "Set axis = facade.OffsetRoundedPolygon(\"Outer.Axis\", vertices, radii, corners, parameters.OuterAxisDistance)",
+          "comment": "Смещаем контур к линии центров стержней."
+        },
+        {
+          "line": 94,
+          "originalLine": 95,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 95,
+          "originalLine": 96,
+          "code": "options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap",
+          "comment": "Замкнутый ряд; стержни целиком в бетоне, без пересечений."
+        },
+        {
+          "line": 96,
+          "originalLine": 97,
+          "code": "options.AnnotationGroup = \"OuterBars\": options.SourcePrefix = \"Outer.\"",
+          "comment": "Задаём имена стержней и общую группу подписи."
+        },
+        {
+          "line": 97,
+          "originalLine": 98,
+          "code": "options.SourceReference = parameters.Source",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 98,
+          "originalLine": 99,
+          "code": "If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey(\"OuterAxisDistance\"), 2) & \"; \" & table.SourceReference(table.RowByKey(\"OuterCount\"), 2)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 99,
+          "originalLine": 100,
+          "code": "facade.RebarByCount \"OuterBars\", axis.ID, parameters.OuterCount, parameters.OuterDiameter, options",
+          "comment": "Задаём основной ряд по числу и диаметру стержней."
+        },
+        {
+          "line": 101,
+          "originalLine": 102,
+          "code": "Set axis = facade.Offset(\"Inner.Axis\", openingPath.ID, -parameters.InnerAxisDistance)",
+          "comment": "Смещаем окружность из отверстия в бетон для арматуры."
+        },
+        {
+          "line": 102,
+          "originalLine": 103,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 103,
+          "originalLine": 104,
+          "code": "options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap",
+          "comment": "Замкнутый ряд; стержни целиком в бетоне, без пересечений."
+        },
+        {
+          "line": 104,
+          "originalLine": 105,
+          "code": "options.AnnotationGroup = \"InnerBars\": options.SourcePrefix = \"Inner.\"",
+          "comment": "Задаём имена стержней и общую группу подписи."
+        },
+        {
+          "line": 105,
+          "originalLine": 106,
+          "code": "options.SourceReference = parameters.Source",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 106,
+          "originalLine": 107,
+          "code": "If Not table Is Nothing Then options.SourceReference = table.SourceReference(table.RowByKey(\"InnerAxisDistance\"), 2) & \"; \" & table.SourceReference(table.RowByKey(\"InnerCount\"), 2)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 107,
+          "originalLine": 108,
+          "code": "facade.RebarByCount \"InnerBars\", axis.ID, parameters.InnerCount, parameters.InnerDiameter, options",
+          "comment": "Задаём основной ряд по числу и диаметру стержней."
+        },
+        {
+          "line": 108,
+          "originalLine": 109,
+          "code": "facade.VerticalExtent \"Height\", boundary.ID, \"H\", -parameters.BottomWidth / 2#, -1#",
+          "comment": "Добавляем размер полной высоты сечения."
+        },
+        {
+          "line": 109,
+          "originalLine": 110,
+          "code": "facade.HorizontalExtent \"Width\", boundary.ID, \"B\", -parameters.Height / 2#, -1#",
+          "comment": "Добавляем размер полной ширины сечения."
+        },
+        {
+          "line": 110,
+          "originalLine": 111,
+          "code": "facade.Radius \"OpeningRadius\", openingPath.ID, openingPath.ID, 0.25, \"Ro\"",
+          "comment": "Добавляем размер радиуса круглого отверстия."
+        },
+        {
+          "line": 111,
+          "originalLine": 112,
+          "code": "facade.Anchor \"Caption\", -parameters.TopWidth / 4#, parameters.Height / 5#",
+          "comment": "Создаём точку привязки названия сечения."
+        },
+        {
+          "line": 112,
+          "originalLine": 113,
+          "code": "facade.Text \"FormName\", \"Caption\", \"Скругленная трапеция\"",
+          "comment": "Добавляем название сечения на схему."
+        },
+        {
+          "line": 113,
+          "originalLine": 114,
+          "code": "facade.RebarLabel \"OuterBars\", \"Outer.Axis\", 0#, 1#, parameters.OuterAxisDistance",
+          "comment": "Объявляем общую подпись количества и диаметров группы."
+        },
+        {
+          "line": 114,
+          "originalLine": 115,
+          "code": "facade.RebarLabel \"InnerBars\", \"Inner.Axis\", 0#, -1#, parameters.InnerAxisDistance",
+          "comment": "Объявляем общую подпись количества и диаметров группы."
+        },
+        {
+          "line": 115,
+          "originalLine": 116,
+          "code": "Set Describe = facade.Finish",
+          "comment": "Проверяем и возвращаем готовое описание сечения."
+        }
+      ],
+      "executableCommandsUnchanged": true,
+      "sourceSHA256": "40a23c3b81f338a7e292e48f6ca7b481a09358dc8f4cdc8a32e7a1b43d1990de"
+    },
+    {
+      "source": "src/Geometry/CSectionRecipeCircle.cls",
+      "linesBefore": 87,
+      "linesAfter": 86,
+      "commentedLines": 26,
+      "entries": [
+        {
+          "line": 20,
+          "originalLine": 20,
+          "code": "Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder",
+          "comment": "Объявляем сборщик описания сечения."
+        },
+        {
+          "line": 22,
+          "originalLine": 22,
+          "code": "Dim loc2 As String, loc3 As String, options As CRebarRuleOptions, path As CGeometryPath, skipped As Double",
+          "comment": "Объявляем линии геометрии и условия армирования."
+        },
+        {
+          "line": 32,
+          "originalLine": 32,
+          "code": "Set facade = New CSectionDefinitionBuilder: facade.Initialize \"Circle\"",
+          "comment": "Создаём описание круглого сечения."
+        },
+        {
+          "line": 33,
+          "originalLine": 33,
+          "code": "Set path = facade.CirclePath(\"CONTOUR_CIRCLE\", 0#, 0#, diameter / 2#)",
+          "comment": "Создаём наружную окружность бетона."
+        },
+        {
+          "line": 34,
+          "originalLine": 34,
+          "code": "facade.Outer \"OUTER\", path.ID, \"Круговой контур сечения.\"",
+          "comment": "Назначаем наружную границу бетона."
+        },
+        {
+          "line": 44,
+          "originalLine": 44,
+          "code": "Set path = facade.CirclePath(\"Circle.Axis\", 0#, 0#, diameter / 2# - axisDistance)",
+          "comment": "Создаём окружность центров стержней с отступом as."
+        },
+        {
+          "line": 47,
+          "originalLine": 47,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 48,
+          "originalLine": 48,
+          "code": "options.EndMode = ClosedUniform: options.SourcePrefix = \"B\": options.AnnotationGroup = \"Circle\"",
+          "comment": "Замкнутый ряд; имена и общая группа подписи."
+        },
+        {
+          "line": 49,
+          "originalLine": 49,
+          "code": "options.Publication = PublishPerSourcePosition: options.Comment = \"Круг: основной ряд арматуры\"",
+          "comment": "Задаём имена стержней и пояснение первого ряда."
+        },
+        {
+          "line": 50,
+          "originalLine": 50,
+          "code": "options.SourceReference = table.SourceReference(table.RowByKey(\"Rebar.Count\"), 2) & \"; \" & table.SourceReference(table.RowByKey(\"Rebar.AxisDistance\"), 2)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 51,
+          "originalLine": 52,
+          "code": "facade.RebarByCount \"Circle.Main\", path.ID, count, d, options",
+          "comment": "Задаём основной ряд по числу и диаметру стержней."
+        },
+        {
+          "line": 53,
+          "originalLine": 54,
+          "code": "Set options = AdditionalOptions(table, \"Rebar.Diameter2\", \"_R2\", loc2, d / 2# + d2 / 2#)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 54,
+          "originalLine": 55,
+          "code": "facade.RebarDependent \"Circle.Row2\", \"Circle.Main\", d2, options",
+          "comment": "Задаём второй ряд относительно основного."
+        },
+        {
+          "line": 58,
+          "originalLine": 59,
+          "code": "Set options = AdditionalOptions(table, \"Rebar.Diameter3\", \"_R3\", loc3, d / 2# + skipped + d3 / 2#)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 59,
+          "originalLine": 60,
+          "code": "facade.RebarDependent \"Circle.Row3\", \"Circle.Main\", d3, options",
+          "comment": "Задаём третий ряд относительно основного."
+        },
+        {
+          "line": 61,
+          "originalLine": 62,
+          "code": "facade.RebarLabel \"Circle\", path.ID, 0#, 1#, axisDistance",
+          "comment": "Объявляем общую подпись количества и диаметров группы."
+        },
+        {
+          "line": 65,
+          "originalLine": 66,
+          "code": "facade.VerticalExtent \"DIM_CIRCLE_D\", \"CONTOUR_CIRCLE\", \"D\", -diameter / 2#, -1#, \"Диаметр параметрического круглого сечения.\"",
+          "comment": "Добавляем размер диаметра бетонного круга."
+        },
+        {
+          "line": 66,
+          "originalLine": 67,
+          "code": "Set ISectionRecipe_CreateDefinition = facade.Finish",
+          "comment": "Проверяем и возвращаем готовое описание сечения."
+        },
+        {
+          "line": 73,
+          "originalLine": 74,
+          "code": "Dim options As CRebarRuleOptions",
+          "comment": "Объявляем условия размещения арматуры."
+        },
+        {
+          "line": 74,
+          "originalLine": 75,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 75,
+          "originalLine": 76,
+          "code": "If location = \"Stacked\" Then options.NormalOffset = distance Else options.TangentOffset = -distance",
+          "comment": "Выбираем смещение поперёк ряда или вдоль него."
+        },
+        {
+          "line": 76,
+          "originalLine": 77,
+          "code": "options.SourceSuffix = suffix: options.AnnotationGroup = \"Circle\"",
+          "comment": "Задаём суффикс ряда и общую группу подписи."
+        },
+        {
+          "line": 77,
+          "originalLine": 78,
+          "code": "options.Publication = PublishPerSourcePosition: options.PlacementCheck = CheckFullDisk",
+          "comment": "Сохраняем исходные имена; проверяем весь стержень."
+        },
+        {
+          "line": 78,
+          "originalLine": 79,
+          "code": "options.Comment = \"Круг: дополнительный ряд арматуры\"",
+          "comment": "Задаём пояснение к стержням этого ряда."
+        },
+        {
+          "line": 79,
+          "originalLine": 80,
+          "code": "options.SourceReference = table.SourceReference(table.RowByKey(key), 2)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 80,
+          "originalLine": 81,
+          "code": "Set AdditionalOptions = options",
+          "comment": "Возвращаем условия размещения дополнительного ряда."
+        }
+      ],
+      "executableCommandsUnchanged": true,
+      "sourceSHA256": "26df4b391cc7a5efabef06f23998d6f62f8b6e238e399ba8810b037c65c0c1ff"
+    },
+    {
+      "source": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "linesBefore": 285,
+      "linesAfter": 282,
+      "commentedLines": 57,
+      "entries": [
+        {
+          "line": 54,
+          "originalLine": 54,
+          "code": "Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder",
+          "comment": "Объявляем сборщик описания сечения."
+        },
+        {
+          "line": 59,
+          "originalLine": 59,
+          "code": "Set facade = New CSectionDefinitionBuilder: facade.Initialize \"HollowRectangle\"",
+          "comment": "Создаём описание полого сечения."
+        },
+        {
+          "line": 60,
+          "originalLine": 60,
+          "code": "AddGeometry facade, sizes",
+          "comment": "Описываем наружную границу и геометрию сечения."
+        },
+        {
+          "line": 61,
+          "originalLine": 61,
+          "code": "AddReinforcement facade, sizes, faces",
+          "comment": "Описываем армирование всех активных сторон."
+        },
+        {
+          "line": 62,
+          "originalLine": 62,
+          "code": "AddDimensions facade, sizes",
+          "comment": "Описываем размеры сечения."
+        },
+        {
+          "line": 63,
+          "originalLine": 63,
+          "code": "Set ISectionRecipe_CreateDefinition = facade.Finish",
+          "comment": "Проверяем и возвращаем готовое описание сечения."
+        },
+        {
+          "line": 137,
+          "originalLine": 137,
+          "code": "AddBoundary facade, \"OUTER\", \"Outer.Shape\", sizes.B, sizes.H, sizes.R, 0#, 0#, False",
+          "comment": "Добавляем наружную границу бетона."
+        },
+        {
+          "line": 138,
+          "originalLine": 138,
+          "code": "AddBoundary facade, \"OPENING\", \"Opening.Shape\", sizes.Bo, sizes.Ho, sizes.Ro, sizes.Xo, sizes.Yo, True",
+          "comment": "Добавляем границу отверстия."
+        },
+        {
+          "line": 144,
+          "originalLine": 144,
+          "code": "Dim shape As CGeometryPath, boundary As CGeometryPath, edge As TRegionEdge, ids() As String, i As Long, part As String, first As String",
+          "comment": "Объявляем линии и параметры геометрии."
+        },
+        {
+          "line": 145,
+          "originalLine": 145,
+          "code": "Set shape = facade.RoundedPolygon(shapeID, Corners(B, H, x, y), Array(radius, radius, radius, radius), Array(\"TL\", \"TR\", \"BR\", \"BL\"))",
+          "comment": "Создаём замкнутый контур с заданными скруглениями."
+        },
+        {
+          "line": 147,
+          "originalLine": 147,
+          "code": "Set boundary = facade.Chain(loopID & \".Boundary\", shape.ID, first, 0#, first, 0#, True, True)",
+          "comment": "Замыкаем контур с началом на выбранном участке."
+        },
+        {
+          "line": 148,
+          "originalLine": 148,
+          "code": "ReDim ids(0 To boundary.SegmentCount - 1)",
+          "comment": "Готовим имена участков контура."
+        },
+        {
+          "line": 150,
+          "originalLine": 150,
+          "code": "boundary.CopySegment i, edge",
+          "comment": "Получаем участок контура для назначения имени."
+        },
+        {
+          "line": 151,
+          "originalLine": 151,
+          "code": "If edge.Sweep = 0# Then ids(i - 1) = \"CONTOUR_\" & loopID & \"_LINE_\" & CStr(i) Else ids(i - 1) = \"CONTOUR_\" & loopID & \"_ARC_\" & CStr(i)",
+          "comment": "Назначаем имена прямым и дуговым участкам контура."
+        },
+        {
+          "line": 155,
+          "originalLine": 155,
+          "code": "facade.Opening loopID, boundary.ID, \"OUTER\", \"Прямой участок \" & part & \" HollowRectangle.\", ids, \"Дуга \" & part & \" HollowRectangle.\"",
+          "comment": "Объявляем отверстие внутри наружной границы."
+        },
+        {
+          "line": 157,
+          "originalLine": 157,
+          "code": "facade.Outer loopID, boundary.ID, \"Прямой участок \" & part & \" HollowRectangle.\", ids, \"Дуга \" & part & \" HollowRectangle.\"",
+          "comment": "Назначаем наружную границу бетона."
+        },
+        {
+          "line": 163,
+          "originalLine": 163,
+          "code": "Corners = Array(Array(x - B / 2#, y + H / 2#), Array(x + B / 2#, y + H / 2#), Array(x + B / 2#, y - H / 2#), Array(x - B / 2#, y - H / 2#))",
+          "comment": "Задаём четыре вершины прямоугольной границы."
+        },
+        {
+          "line": 168,
+          "originalLine": 169,
+          "code": "Dim i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions",
+          "comment": "Объявляем линии геометрии и условия армирования."
+        },
+        {
+          "line": 173,
+          "originalLine": 174,
+          "code": "Set path = AxisPath(facade, sizes, faces, i)",
+          "comment": "Получаем линию центров стержней выбранной стороны."
+        },
+        {
+          "line": 174,
+          "originalLine": 175,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 175,
+          "originalLine": 176,
+          "code": "options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback",
+          "comment": "Задаём отступы ряда от обоих концов грани."
+        },
+        {
+          "line": 176,
+          "originalLine": 177,
+          "code": "options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner",
+          "comment": "Сохраняем имена и владельца совпавшего стержня."
+        },
+        {
+          "line": 177,
+          "originalLine": 178,
+          "code": "options.IncomingTangentAtJoint = True: options.AnnotationGroup = faces(i).ID",
+          "comment": "На стыках берём входящую касательную; задаём подпись."
+        },
+        {
+          "line": 178,
+          "originalLine": 179,
+          "code": "options.SourceReference = faces(i).Source",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 179,
+          "originalLine": 180,
+          "code": "options.Comment = \"HollowRectangle: \" & faces(i).Caption & IIf(i > 4, \" грань Opening\", \" наружная грань\") & \", ряд 1\"",
+          "comment": "Задаём пояснение к стержням этого ряда."
+        },
+        {
+          "line": 182,
+          "originalLine": 183,
+          "code": "If base <= 2 Then options.EndMode = ExcludeBoth",
+          "comment": "Исключаем стержни на обоих концах линии."
+        },
+        {
+          "line": 183,
+          "originalLine": 184,
+          "code": "facade.RebarByCount faces(i).ID & \".Main\", path.ID, faces(i).Count, faces(i).Diameter, options",
+          "comment": "Задаём основной ряд по числу и диаметру стержней."
+        },
+        {
+          "line": 185,
+          "originalLine": 186,
+          "code": "options.SourceNormalSign = normalSign: options.SkipMissingProjection = True",
+          "comment": "Задаём сторону проекции; пропуски допускаем."
+        },
+        {
+          "line": 186,
+          "originalLine": 187,
+          "code": "options.SuccessfulProjectionOrdinal = True: options.NewPublicationRoot = True",
+          "comment": "Нумеруем успешные проекции как новый внутренний ряд."
+        },
+        {
+          "line": 187,
+          "originalLine": 188,
+          "code": "facade.RebarProjected faces(i).ID & \".Main\", path.ID, faces(base).ID & \".Main\", faces(i).Diameter, options",
+          "comment": "Проецируем наружный ряд на линию у отверстия."
+        },
+        {
+          "line": 191,
+          "originalLine": 192,
+          "code": "Set options = ExtraOptions(faces(i), 2, faces(i).Location2, faces(i).Binding2, faces(i).Diameter / 2# + faces(i).D2 / 2#, normalSign)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 192,
+          "originalLine": 193,
+          "code": "facade.RebarDependent faces(i).ID & \".Row2\", faces(i).ID & \".Main\", faces(i).D2, options",
+          "comment": "Задаём второй ряд относительно основного."
+        },
+        {
+          "line": 197,
+          "originalLine": 198,
+          "code": "Set options = ExtraOptions(faces(i), 3, faces(i).Location3, faces(i).Binding3, distance, normalSign)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 198,
+          "originalLine": 199,
+          "code": "facade.RebarDependent faces(i).ID & \".Row3\", faces(i).ID & \".Main\", faces(i).D3, options",
+          "comment": "Задаём третий ряд относительно основного."
+        },
+        {
+          "line": 208,
+          "originalLine": 209,
+          "code": "facade.RebarRowExtremeLabel faces(i).ID, faces(i).ID & \".Main\", 0#, IIf(base = 1, 1#, -1#), nx, ny, faces(i).AxisDistance",
+          "comment": "Привязываем подпись к крайнему ряду выбранной стороны."
+        },
+        {
+          "line": 210,
+          "originalLine": 211,
+          "code": "facade.RebarLabel faces(i).ID, path.ID, nx, ny, faces(i).AxisDistance",
+          "comment": "Объявляем общую подпись количества и диаметров группы."
+        },
+        {
+          "line": 220,
+          "originalLine": 221,
+          "code": "Dim B As Double, H As Double, radius As Double, x As Double, y As Double, offset As Double, base As Long, shape As CGeometryPath",
+          "comment": "Объявляем линии и параметры геометрии."
+        },
+        {
+          "line": 227,
+          "originalLine": 228,
+          "code": "facade.Source faces(index).ID, faces(index).Source",
+          "comment": "Привязываем геометрию к ячейкам исходных данных."
+        },
+        {
+          "line": 230,
+          "originalLine": 231,
+          "code": "Set shape = facade.LinePath(\"Unlimited.\" & faces(index).ID, x - B / 2#, y, x + B / 2#, y)",
+          "comment": "Создаём исходную прямую ряда у отверстия."
+        },
+        {
+          "line": 231,
+          "originalLine": 232,
+          "code": "Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - B / 2# - faces(7).AxisDistance, 1#, 0#, x + B / 2# + faces(8).AxisDistance)",
+          "comment": "Ограничиваем концы ряда отступами соседних граней."
+        },
+        {
+          "line": 234,
+          "originalLine": 236,
+          "code": "Set shape = facade.LinePath(\"Unlimited.\" & faces(index).ID, x, y - H / 2#, x, y + H / 2#)",
+          "comment": "Создаём исходную прямую ряда у отверстия."
+        },
+        {
+          "line": 235,
+          "originalLine": 237,
+          "code": "Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - H / 2# - faces(6).AxisDistance, 0#, 1#, y + H / 2# + faces(5).AxisDistance)",
+          "comment": "Ограничиваем концы ряда отступами соседних граней."
+        },
+        {
+          "line": 240,
+          "originalLine": 243,
+          "code": "Set shape = facade.OffsetRoundedPolygon(\"Offset.\" & faces(index).ID, Corners(B, H, x, y), Array(radius, radius, radius, radius), Array(\"TL\", \"TR\", \"BR\", \"BL\"), offset)",
+          "comment": "Смещаем контур к линии центров стержней."
+        },
+        {
+          "line": 251,
+          "originalLine": 254,
+          "code": "Set AxisPath = facade.Chain(faces(index).ID, shape.ID, first, firstParameter, last, lastParameter, base = 1)",
+          "comment": "Выделяем верхнюю или нижнюю линию ряда с дугами."
+        },
+        {
+          "line": 252,
+          "originalLine": 255,
+          "code": "Case 3: Set AxisPath = facade.Chain(faces(index).ID, shape.ID, \"Edge.BL\", 0#, \"Edge.BL\", 1#)",
+          "comment": "Выделяем прямую линию левого ряда."
+        },
+        {
+          "line": 253,
+          "originalLine": 256,
+          "code": "Case 4: Set AxisPath = facade.Chain(faces(index).ID, shape.ID, \"Edge.TR\", 1#, \"Edge.TR\", 0#, False)",
+          "comment": "Выделяем прямую линию правого ряда."
+        },
+        {
+          "line": 262,
+          "originalLine": 265,
+          "code": "Dim options As CRebarRuleOptions",
+          "comment": "Объявляем условия размещения арматуры."
+        },
+        {
+          "line": 263,
+          "originalLine": 266,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 264,
+          "originalLine": 267,
+          "code": "If location = \"Stacked\" Then options.NormalOffset = normalSign * distance Else options.TangentOffset = distance",
+          "comment": "Выбираем смещение поперёк ряда или вдоль него."
+        },
+        {
+          "line": 265,
+          "originalLine": 268,
+          "code": "options.EverySecond = (binding = \"EverySecondBar\"): options.Publication = PublishPerSourcePosition",
+          "comment": "Все позиции или через одну; сохраняем их имена."
+        },
+        {
+          "line": 266,
+          "originalLine": 269,
+          "code": "options.Coincidence = KeepPublishedOwner: options.AnnotationGroup = face.ID: options.SourceReference = face.Source",
+          "comment": "Сохраняем владельца, группу подписи и адрес ввода."
+        },
+        {
+          "line": 267,
+          "originalLine": 270,
+          "code": "options.Comment = \"HollowRectangle: \" & face.Caption & IIf(Left$(face.ID, 8) = \"Opening.\", \" грань Opening\", \" наружная грань\") & \", ряд \" & CStr(rowNumber)",
+          "comment": "Задаём пояснение к стержням этого ряда."
+        },
+        {
+          "line": 268,
+          "originalLine": 271,
+          "code": "Set ExtraOptions = options",
+          "comment": "Возвращаем условия размещения дополнительного ряда."
+        },
+        {
+          "line": 273,
+          "originalLine": 276,
+          "code": "facade.HorizontalDistance \"DIM_B\", \"B\", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, \"Наружная ширина HollowRectangle.\"",
+          "comment": "Добавляем горизонтальный размер ширины B."
+        },
+        {
+          "line": 274,
+          "originalLine": 277,
+          "code": "facade.VerticalExtent \"DIM_H\", \"OUTER.Boundary\", \"H\", -sizes.B / 2#, -1#, \"Наружная высота HollowRectangle.\"",
+          "comment": "Добавляем размер полной высоты сечения."
+        },
+        {
+          "line": 275,
+          "originalLine": 278,
+          "code": "facade.HorizontalDistance \"DIM_B_OPENING\", \"B_o\", sizes.Xo - sizes.Bo / 2#, sizes.Xo + sizes.Bo / 2#, -sizes.H / 2#, -1#, \"Ширина внутреннего отверстия Opening.\"",
+          "comment": "Добавляем размер ширины отверстия."
+        },
+        {
+          "line": 276,
+          "originalLine": 279,
+          "code": "facade.VerticalExtent \"DIM_H_OPENING\", \"OPENING.Boundary\", \"H_o\", sizes.B / 2#, 1#, \"Высота внутреннего отверстия Opening.\"",
+          "comment": "Добавляем размер высоты отверстия."
+        }
+      ],
+      "executableCommandsUnchanged": true,
+      "sourceSHA256": "7e28b2015a3bf07127acf72400555d4bc1d5234782e78a1366f8b03403e51ac6"
+    },
+    {
+      "source": "src/Geometry/CSectionRecipeRectSet.cls",
+      "linesBefore": 191,
+      "linesAfter": 189,
+      "commentedLines": 51,
+      "entries": [
+        {
+          "line": 32,
+          "originalLine": 32,
+          "code": "Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder",
+          "comment": "Объявляем сборщик описания сечения."
+        },
+        {
+          "line": 33,
+          "originalLine": 33,
+          "code": "Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath",
+          "comment": "Объявляем линии и параметры геометрии."
+        },
+        {
+          "line": 37,
+          "originalLine": 37,
+          "code": "Set facade = New CSectionDefinitionBuilder",
+          "comment": "Создаём описание составного сечения."
+        },
+        {
+          "line": 38,
+          "originalLine": 38,
+          "code": "facade.Initialize \"RectSet\"",
+          "comment": "Начинаем описание составного сечения."
+        },
+        {
+          "line": 39,
+          "originalLine": 39,
+          "code": "AddGeometry facade, sizes, upper, lower, outer",
+          "comment": "Описываем наружную границу и геометрию сечения."
+        },
+        {
+          "line": 40,
+          "originalLine": 40,
+          "code": "AddRectangleRows facade, table, units, sizes.Header, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1",
+          "comment": "Описываем армирование верхнего прямоугольника."
+        },
+        {
+          "line": 41,
+          "originalLine": 41,
+          "code": "If sizes.Shape <> \"Rectangle\" Then AddRectangleRows facade, table, units, sizes.Header, 4, 0#, 0#, sizes.B2, sizes.H2",
+          "comment": "Описываем армирование нижнего прямоугольника."
+        },
+        {
+          "line": 42,
+          "originalLine": 42,
+          "code": "AddDimensions facade, sizes, upper, lower, outer",
+          "comment": "Описываем размеры сечения."
+        },
+        {
+          "line": 43,
+          "originalLine": 43,
+          "code": "Set ISectionRecipe_CreateDefinition = facade.Finish",
+          "comment": "Проверяем и возвращаем готовое описание сечения."
+        },
+        {
+          "line": 79,
+          "originalLine": 79,
+          "code": "Set upper = facade.RectanglePath(\"Upper\", sizes.Offset, sizes.H2, sizes.B1, sizes.H1)",
+          "comment": "Создаём верхний прямоугольник."
+        },
+        {
+          "line": 81,
+          "originalLine": 81,
+          "code": "Set outer = upper",
+          "comment": "Принимаем один прямоугольник за наружный контур."
+        },
+        {
+          "line": 83,
+          "originalLine": 83,
+          "code": "Set lower = facade.RectanglePath(\"Lower\", 0#, 0#, sizes.B2, sizes.H2)",
+          "comment": "Создаём нижний прямоугольник."
+        },
+        {
+          "line": 84,
+          "originalLine": 84,
+          "code": "Set outer = facade.AdjacentRectangles(\"Boundary\", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.Offset, sizes.H2, sizes.B1, sizes.H1)))",
+          "comment": "Получаем общий наружный контур двух прямоугольников."
+        },
+        {
+          "line": 87,
+          "originalLine": 88,
+          "code": "ReDim contourIDs(0 To outer.SegmentCount - 1)",
+          "comment": "Готовим имена участков контура."
+        },
+        {
+          "line": 89,
+          "originalLine": 90,
+          "code": "contourIDs(i - 1) = \"CONTOUR_LINE_\" & CStr(i)",
+          "comment": "Назначаем имена прямым и дуговым участкам контура."
+        },
+        {
+          "line": 91,
+          "originalLine": 92,
+          "code": "facade.Outer \"OUTER\", outer.ID, \"Сегмент контура сечения.\", contourIDs",
+          "comment": "Назначаем наружную границу бетона."
+        },
+        {
+          "line": 97,
+          "originalLine": 98,
+          "code": "facade.HorizontalExtent \"DIM_B\", outer.ID, \"B\", 0#, -1#, \"Общая ширина RectSet-сечения.\"",
+          "comment": "Добавляем размер полной ширины сечения."
+        },
+        {
+          "line": 98,
+          "originalLine": 99,
+          "code": "facade.VerticalExtent \"DIM_H\", outer.ID, \"H\", GeomMin(0#, sizes.Offset), -1#, \"Общая высота RectSet-сечения.\"",
+          "comment": "Добавляем размер полной высоты сечения."
+        },
+        {
+          "line": 99,
+          "originalLine": 100,
+          "code": "facade.HorizontalExtent \"DIM_TOP_WIDTH\", upper.ID, \"B1\", sizes.H1 + sizes.H2, 1#, \"Ширина верхнего прямоугольника RectSet-сечения.\"",
+          "comment": "Добавляем размер ширины верхнего прямоугольника."
+        },
+        {
+          "line": 101,
+          "originalLine": 102,
+          "code": "facade.VerticalExtent \"DIM_RIGHT_HEIGHT\", lower.ID, \"H2\", sizes.B2, 1#, \"Высота нижнего прямоугольника RectSet-сечения.\"",
+          "comment": "Добавляем размер высоты нижнего прямоугольника."
+        },
+        {
+          "line": 102,
+          "originalLine": 103,
+          "code": "If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance \"DIM_UPPER_OFFSET_X\", ChrW$(&H394), 0#, sizes.Offset, sizes.H2, 1#, \"Горизонтальное смещение верхнего прямоугольника относительно базового положения.\"",
+          "comment": "Добавляем размер смещения верхнего прямоугольника."
+        },
+        {
+          "line": 112,
+          "originalLine": 114,
+          "code": "Dim path As CGeometryPath, groupID As String, label As String, options As CRebarRuleOptions",
+          "comment": "Объявляем линии геометрии и условия армирования."
+        },
+        {
+          "line": 124,
+          "originalLine": 126,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 125,
+          "originalLine": 127,
+          "code": "options.StartSetback = table.Length(row, 5, units)",
+          "comment": "Задаём отступ начала ряда от начала грани."
+        },
+        {
+          "line": 126,
+          "originalLine": 128,
+          "code": "options.EndSetback = table.Length(row, 6, units)",
+          "comment": "Задаём отступ конца ряда от конца грани."
+        },
+        {
+          "line": 127,
+          "originalLine": 129,
+          "code": "options.PositionOrder = FromPathMiddle",
+          "comment": "Нумеруем позиции от середины линии."
+        },
+        {
+          "line": 128,
+          "originalLine": 130,
+          "code": "options.Publication = PublishPerSourcePosition",
+          "comment": "Сохраняем имена стержней по исходным позициям."
+        },
+        {
+          "line": 129,
+          "originalLine": 131,
+          "code": "options.Coincidence = KeepPublishedOwner",
+          "comment": "Совпавший стержень сохраняет первого владельца."
+        },
+        {
+          "line": 130,
+          "originalLine": 132,
+          "code": "options.SourceReference = table.SourceReference(row, 2) & \"; \" & table.SourceReference(row, 5) & \"; \" & table.SourceReference(row, 6)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 135,
+          "originalLine": 137,
+          "code": "Set path = facade.LinePath(groupID, x + axisDistance, y, x + axisDistance, y + height)",
+          "comment": "Левый ряд снизу вверх, с отступом as."
+        },
+        {
+          "line": 138,
+          "originalLine": 140,
+          "code": "Set path = facade.LinePath(groupID, x + width - axisDistance, y + height, x + width - axisDistance, y)",
+          "comment": "Правый ряд сверху вниз, с отступом as."
+        },
+        {
+          "line": 141,
+          "originalLine": 143,
+          "code": "Set path = facade.LinePath(groupID, x, y + height - axisDistance, x + width, y + height - axisDistance)",
+          "comment": "Верхний ряд слева направо, с отступом as."
+        },
+        {
+          "line": 144,
+          "originalLine": 146,
+          "code": "Set path = facade.LinePath(groupID, x + width, y + axisDistance, x, y + axisDistance)",
+          "comment": "Нижний ряд справа налево, с отступом as."
+        },
+        {
+          "line": 146,
+          "originalLine": 148,
+          "code": "options.AnnotationGroup = groupID",
+          "comment": "Задаём общую группу подписи стержней."
+        },
+        {
+          "line": 147,
+          "originalLine": 149,
+          "code": "options.Comment = \"RectSet: \" & label & \", ряд 1\"",
+          "comment": "Задаём пояснение к стержням этого ряда."
+        },
+        {
+          "line": 148,
+          "originalLine": 150,
+          "code": "facade.RebarByCount groupID & \".Main\", path.ID, count, diameter, options",
+          "comment": "Задаём основной ряд по числу и диаметру стержней."
+        },
+        {
+          "line": 153,
+          "originalLine": 155,
+          "code": "Set options = AdditionalOptions(table, extra, 2, groupID, label, 2, loc2, diameter / 2# + d2 / 2#, sideSign)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 154,
+          "originalLine": 156,
+          "code": "facade.RebarDependent groupID & \".Row2\", groupID & \".Main\", d2, options",
+          "comment": "Задаём второй ряд относительно основного."
+        },
+        {
+          "line": 161,
+          "originalLine": 163,
+          "code": "Set options = AdditionalOptions(table, extra, 5, groupID, label, 3, loc3, distance, sideSign)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 162,
+          "originalLine": 164,
+          "code": "facade.RebarDependent groupID & \".Row3\", groupID & \".Main\", d3, options",
+          "comment": "Задаём третий ряд относительно основного."
+        },
+        {
+          "line": 164,
+          "originalLine": 166,
+          "code": "facade.RebarRowLabel groupID, groupID & \".Main\", nx, ny, axisDistance",
+          "comment": "Привязываем общую подпись стороны к основному ряду."
+        },
+        {
+          "line": 174,
+          "originalLine": 176,
+          "code": "Dim options As CRebarRuleOptions",
+          "comment": "Объявляем условия размещения арматуры."
+        },
+        {
+          "line": 175,
+          "originalLine": 177,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 176,
+          "originalLine": 178,
+          "code": "If location = \"Stacked\" Then options.NormalOffset = -distance Else options.TangentOffset = sideSign * distance",
+          "comment": "Выбираем смещение поперёк ряда или вдоль него."
+        },
+        {
+          "line": 177,
+          "originalLine": 179,
+          "code": "options.EverySecond = (table.Choice(row, column + 2, Array(\"EachBar\", \"EverySecondBar\")) = \"EverySecondBar\")",
+          "comment": "Выбираем все исходные позиции или через одну."
+        },
+        {
+          "line": 178,
+          "originalLine": 180,
+          "code": "options.Publication = PublishPerSourcePosition",
+          "comment": "Сохраняем имена стержней по исходным позициям."
+        },
+        {
+          "line": 179,
+          "originalLine": 181,
+          "code": "options.Coincidence = KeepPublishedOwner",
+          "comment": "Совпавший стержень сохраняет первого владельца."
+        },
+        {
+          "line": 180,
+          "originalLine": 182,
+          "code": "options.AnnotationGroup = groupID",
+          "comment": "Задаём общую группу подписи стержней."
+        },
+        {
+          "line": 181,
+          "originalLine": 183,
+          "code": "options.Comment = \"RectSet: \" & label & \", ряд \" & CStr(rowNumber)",
+          "comment": "Задаём пояснение к стержням этого ряда."
+        },
+        {
+          "line": 182,
+          "originalLine": 184,
+          "code": "options.SourceReference = table.SourceReference(row, column)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 183,
+          "originalLine": 185,
+          "code": "Set AdditionalOptions = options",
+          "comment": "Возвращаем условия размещения дополнительного ряда."
+        }
+      ],
+      "executableCommandsUnchanged": true,
+      "sourceSHA256": "422ec7b6ea3122cf397733df96177530a7dabf5e98d79a1e741a658c316afcfd"
+    },
+    {
+      "source": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "linesBefore": 227,
+      "linesAfter": 221,
+      "commentedLines": 60,
+      "entries": [
+        {
+          "line": 37,
+          "originalLine": 37,
+          "code": "Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder",
+          "comment": "Объявляем сборщик описания сечения."
+        },
+        {
+          "line": 38,
+          "originalLine": 38,
+          "code": "Dim sizes As TRoundedInput, outer As CGeometryPath",
+          "comment": "Объявляем линии и параметры геометрии."
+        },
+        {
+          "line": 41,
+          "originalLine": 41,
+          "code": "Set facade = New CSectionDefinitionBuilder: facade.Initialize \"RoundedRectangle\"",
+          "comment": "Создаём описание скруглённого сечения."
+        },
+        {
+          "line": 42,
+          "originalLine": 42,
+          "code": "Set outer = AddGeometry(facade, sizes)",
+          "comment": "Описываем наружную границу и геометрию сечения."
+        },
+        {
+          "line": 43,
+          "originalLine": 43,
+          "code": "AddReinforcement facade, table, units, sizes",
+          "comment": "Описываем армирование всех активных сторон."
+        },
+        {
+          "line": 44,
+          "originalLine": 44,
+          "code": "AddDimensions facade, sizes, outer",
+          "comment": "Описываем размеры сечения."
+        },
+        {
+          "line": 45,
+          "originalLine": 45,
+          "code": "Set ISectionRecipe_CreateDefinition = facade.Finish",
+          "comment": "Проверяем и возвращаем готовое описание сечения."
+        },
+        {
+          "line": 80,
+          "originalLine": 80,
+          "code": "AddCorner points, radii, names, count, \"TL\", -sizes.B / 2#, sizes.H / 2#, sizes.R1(1)",
+          "comment": "Добавляем левую верхнюю вершину и её радиус."
+        },
+        {
+          "line": 81,
+          "originalLine": 81,
+          "code": "AddCorner points, radii, names, count, \"TR\", sizes.B / 2#, sizes.H / 2#, sizes.R1(2)",
+          "comment": "Добавляем правую верхнюю вершину и её радиус."
+        },
+        {
+          "line": 82,
+          "originalLine": 82,
+          "code": "If sizes.SideTypes(2) = \"Tapered\" Then AddCorner points, radii, names, count, \"RightNose\", sizes.B / 2# + sizes.Widths(2), 0#, sizes.R2(2)",
+          "comment": "Добавляем вершину правого выступа и её радиус."
+        },
+        {
+          "line": 83,
+          "originalLine": 83,
+          "code": "AddCorner points, radii, names, count, \"BR\", sizes.B / 2#, -sizes.H / 2#, sizes.R1(2)",
+          "comment": "Добавляем правую нижнюю вершину и её радиус."
+        },
+        {
+          "line": 84,
+          "originalLine": 84,
+          "code": "AddCorner points, radii, names, count, \"BL\", -sizes.B / 2#, -sizes.H / 2#, sizes.R1(1)",
+          "comment": "Добавляем левую нижнюю вершину и её радиус."
+        },
+        {
+          "line": 85,
+          "originalLine": 85,
+          "code": "If sizes.SideTypes(1) = \"Tapered\" Then AddCorner points, radii, names, count, \"LeftNose\", -sizes.B / 2# - sizes.Widths(1), 0#, sizes.R2(1)",
+          "comment": "Добавляем вершину левого выступа и её радиус."
+        },
+        {
+          "line": 87,
+          "originalLine": 87,
+          "code": "ReDim vertices(0 To count - 1): ReDim assignedRadii(0 To count - 1): ReDim vertexIDs(0 To count - 1)",
+          "comment": "Готовим массивы вершин, радиусов и имён."
+        },
+        {
+          "line": 88,
+          "originalLine": 88,
+          "code": "For i = 0 To count - 1: vertices(i) = points(i): assignedRadii(i) = radii(i): vertexIDs(i) = names(i): Next i",
+          "comment": "Копируем подготовленные вершины, радиусы и имена."
+        },
+        {
+          "line": 89,
+          "originalLine": 89,
+          "code": "sizes.Vertices = vertices: sizes.Radii = assignedRadii: sizes.VertexIDs = vertexIDs",
+          "comment": "Сохраняем вершины, радиусы и имена контура."
+        },
+        {
+          "line": 90,
+          "originalLine": 90,
+          "code": "Dim original As CGeometryPath, outer As CGeometryPath, first As String, edge As TRegionEdge, contourIDs() As String",
+          "comment": "Объявляем линии и параметры геометрии."
+        },
+        {
+          "line": 91,
+          "originalLine": 91,
+          "code": "Set original = facade.RoundedPolygon(\"Shape\", sizes.Vertices, sizes.Radii, sizes.VertexIDs)",
+          "comment": "Создаём замкнутый контур с заданными скруглениями."
+        },
+        {
+          "line": 93,
+          "originalLine": 93,
+          "code": "Set outer = facade.Chain(\"Boundary\", original.ID, first, 0#, first, 0#, True, True)",
+          "comment": "Замыкаем контур с началом на выбранном участке."
+        },
+        {
+          "line": 94,
+          "originalLine": 94,
+          "code": "ReDim contourIDs(0 To outer.SegmentCount - 1)",
+          "comment": "Готовим имена участков контура."
+        },
+        {
+          "line": 96,
+          "originalLine": 96,
+          "code": "outer.CopySegment i, edge",
+          "comment": "Получаем участок контура для назначения имени."
+        },
+        {
+          "line": 97,
+          "originalLine": 97,
+          "code": "If edge.Sweep = 0# Then contourIDs(i - 1) = \"CONTOUR_LINE_\" & CStr(i) Else contourIDs(i - 1) = \"CONTOUR_ARC_\" & CStr(i)",
+          "comment": "Назначаем имена прямым и дуговым участкам контура."
+        },
+        {
+          "line": 99,
+          "originalLine": 99,
+          "code": "facade.Outer \"OUTER\", outer.ID, \"Прямой участок контура скругленного прямоугольника.\", contourIDs, \"Дуга контура скругленного прямоугольника.\"",
+          "comment": "Назначаем наружную границу бетона."
+        },
+        {
+          "line": 100,
+          "originalLine": 101,
+          "code": "Set AddGeometry = outer",
+          "comment": "Возвращаем готовую наружную границу."
+        },
+        {
+          "line": 109,
+          "originalLine": 110,
+          "code": "points(count) = Array(x, y): radii(count) = radius: names(count) = name: count = count + 1",
+          "comment": "Записываем координаты, радиус и имя новой вершины."
+        },
+        {
+          "line": 117,
+          "originalLine": 118,
+          "code": "Dim groupID As String, diameter As Double, axisDistance As Double, options As CRebarRuleOptions, path As CGeometryPath",
+          "comment": "Объявляем линии геометрии и условия армирования."
+        },
+        {
+          "line": 129,
+          "originalLine": 130,
+          "code": "Set path = AxisPath(facade, sizes, groupID, axisDistance, table.SourceReference(row, 2))",
+          "comment": "Получаем линию центров стержней выбранной стороны."
+        },
+        {
+          "line": 137,
+          "originalLine": 138,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 138,
+          "originalLine": 139,
+          "code": "If index >= 2 Then options.EndMode = ExcludeBoth",
+          "comment": "Исключаем стержни на обоих концах линии."
+        },
+        {
+          "line": 141,
+          "originalLine": 142,
+          "code": "options.StartSetback = table.Length(row, startColumn, units)",
+          "comment": "Задаём отступ начала ряда от начала грани."
+        },
+        {
+          "line": 142,
+          "originalLine": 143,
+          "code": "options.EndSetback = table.Length(row, endColumn, units)",
+          "comment": "Задаём отступ конца ряда от конца грани."
+        },
+        {
+          "line": 145,
+          "originalLine": 146,
+          "code": "options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner",
+          "comment": "Сохраняем имена и владельца совпавшего стержня."
+        },
+        {
+          "line": 146,
+          "originalLine": 147,
+          "code": "options.IncomingTangentAtJoint = True",
+          "comment": "На стыках берём входящую касательную; задаём подпись."
+        },
+        {
+          "line": 147,
+          "originalLine": 148,
+          "code": "options.AnnotationGroup = groupID: options.Comment = \"RoundedRectangle: \" & CStr(captions(index)) & \" грань, ряд 1\"",
+          "comment": "Задаём общую группу подписи стержней."
+        },
+        {
+          "line": 148,
+          "originalLine": 149,
+          "code": "options.SourceReference = table.SourceReference(row, 2) & \"; \" & table.SourceReference(row, startColumn) & \"; \" & table.SourceReference(row, endColumn)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 149,
+          "originalLine": 150,
+          "code": "facade.RebarByCount groupID & \".Main\", path.ID, count, diameter, options",
+          "comment": "Задаём основной ряд по числу и диаметру стержней."
+        },
+        {
+          "line": 154,
+          "originalLine": 155,
+          "code": "Set options = AdditionalOptions(table, extra, 2, groupID, CStr(captions(index)), 2, loc2, diameter / 2# + d2 / 2#, normalSign)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 155,
+          "originalLine": 156,
+          "code": "facade.RebarDependent groupID & \".Row2\", groupID & \".Main\", d2, options",
+          "comment": "Задаём второй ряд относительно основного."
+        },
+        {
+          "line": 161,
+          "originalLine": 162,
+          "code": "Set options = AdditionalOptions(table, extra, 5, groupID, CStr(captions(index)), 3, loc3, distance, normalSign)",
+          "comment": "Получаем смещение и привязку дополнительного ряда."
+        },
+        {
+          "line": 162,
+          "originalLine": 163,
+          "code": "facade.RebarDependent groupID & \".Row3\", groupID & \".Main\", d3, options",
+          "comment": "Задаём третий ряд относительно основного."
+        },
+        {
+          "line": 165,
+          "originalLine": 166,
+          "code": "facade.RebarRowExtentLabel groupID, groupID & \".Main\", nx, ny, axisDistance, True",
+          "comment": "Привязываем подпись к крайним стержням основного ряда."
+        },
+        {
+          "line": 167,
+          "originalLine": 168,
+          "code": "facade.RebarLabel groupID, path.ID, nx, ny, axisDistance",
+          "comment": "Объявляем общую подпись количества и диаметров группы."
+        },
+        {
+          "line": 178,
+          "originalLine": 179,
+          "code": "Dim offset As CGeometryPath",
+          "comment": "Объявляем линии и параметры геометрии."
+        },
+        {
+          "line": 179,
+          "originalLine": 180,
+          "code": "Set offset = facade.OffsetRoundedPolygon(\"Offset.\" & groupID, sizes.Vertices, sizes.Radii, sizes.VertexIDs, axisDistance)",
+          "comment": "Смещаем контур к линии центров стержней."
+        },
+        {
+          "line": 181,
+          "originalLine": 182,
+          "code": "Case \"B.Top\": Set AxisPath = facade.Chain(groupID, offset.ID, \"Edge.TL\", 0#, \"Edge.TL\", 1#)",
+          "comment": "Выделяем прямую линию верхнего ряда."
+        },
+        {
+          "line": 182,
+          "originalLine": 183,
+          "code": "Case \"B.Bottom\": Set AxisPath = facade.Chain(groupID, offset.ID, \"Edge.BR\", 1#, \"Edge.BR\", 0#, False)",
+          "comment": "Выделяем прямую линию нижнего ряда."
+        },
+        {
+          "line": 184,
+          "originalLine": 185,
+          "code": "Set AxisPath = facade.Chain(groupID, offset.ID, \"Edge.TL\", 0#, \"Edge.BR\", 1#, False)",
+          "comment": "Выделяем левую линию ряда со скруглениями."
+        },
+        {
+          "line": 186,
+          "originalLine": 187,
+          "code": "Set AxisPath = facade.Chain(groupID, offset.ID, \"Edge.TL\", 1#, \"Edge.BR\", 0#)",
+          "comment": "Выделяем правую линию ряда со скруглениями."
+        },
+        {
+          "line": 198,
+          "originalLine": 199,
+          "code": "Dim options As CRebarRuleOptions",
+          "comment": "Объявляем условия размещения арматуры."
+        },
+        {
+          "line": 199,
+          "originalLine": 200,
+          "code": "Set options = New CRebarRuleOptions",
+          "comment": "Создаём условия размещения арматуры."
+        },
+        {
+          "line": 200,
+          "originalLine": 201,
+          "code": "If location = \"Stacked\" Then options.NormalOffset = normalSign * distance Else options.TangentOffset = distance",
+          "comment": "Выбираем смещение поперёк ряда или вдоль него."
+        },
+        {
+          "line": 201,
+          "originalLine": 202,
+          "code": "options.EverySecond = (table.Choice(row, column + 2, Array(\"EachBar\", \"EverySecondBar\")) = \"EverySecondBar\")",
+          "comment": "Выбираем все исходные позиции или через одну."
+        },
+        {
+          "line": 202,
+          "originalLine": 203,
+          "code": "options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner: options.AnnotationGroup = groupID",
+          "comment": "Задаём имена стержней, владельца и общую подпись."
+        },
+        {
+          "line": 203,
+          "originalLine": 204,
+          "code": "options.Comment = \"RoundedRectangle: \" & caption & \" грань, ряд \" & CStr(rowNumber)",
+          "comment": "Задаём пояснение к стержням этого ряда."
+        },
+        {
+          "line": 204,
+          "originalLine": 205,
+          "code": "options.SourceReference = table.SourceReference(row, column)",
+          "comment": "Привязываем ошибки размещения к ячейкам ввода."
+        },
+        {
+          "line": 205,
+          "originalLine": 206,
+          "code": "Set AdditionalOptions = options",
+          "comment": "Возвращаем условия размещения дополнительного ряда."
+        },
+        {
+          "line": 212,
+          "originalLine": 213,
+          "code": "facade.HorizontalDistance \"DIM_B\", \"B\", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, \"Размер горизонтальной базы RoundedRectangle между левым и правым торцом.\"",
+          "comment": "Добавляем горизонтальный размер ширины B."
+        },
+        {
+          "line": 213,
+          "originalLine": 215,
+          "code": "facade.VerticalExtent \"DIM_H\", outer.ID, \"H\", minX, -1#, \"Полная высота RoundedRectangle.\"",
+          "comment": "Добавляем размер полной высоты сечения."
+        },
+        {
+          "line": 214,
+          "originalLine": 216,
+          "code": "If sizes.SideTypes(1) = \"Tapered\" And -sizes.B / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance \"DIM_W_LEFT\", \"W'\", minX, -sizes.B / 2#, sizes.H / 2#, 1#, \"Фактический вынос левого края бетона относительно левого торца базы B.\", 1#",
+          "comment": "Добавляем размер левого выступа."
+        },
+        {
+          "line": 215,
+          "originalLine": 219,
+          "code": "If sizes.SideTypes(2) = \"Tapered\" And maxX - sizes.B / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance \"DIM_W_RIGHT\", \"W'\", sizes.B / 2#, maxX, sizes.H / 2#, 1#, \"Фактический вынос правого края бетона относительно правого торца базы B.\", 1#",
+          "comment": "Добавляем размер правого выступа."
+        }
+      ],
+      "executableCommandsUnchanged": true,
+      "sourceSHA256": "6c5aef8fe72ebe742bfe2f805b556e9d0fb2f4706eb51a3ba81b0d806b4aac58"
+    }
+  ],
+  "totalCommentedLines": 229
+}

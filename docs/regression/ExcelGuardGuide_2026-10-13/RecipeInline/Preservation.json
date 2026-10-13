@@ -1,0 +1,27 @@
+{
+  "Passed": true,
+  "RecipeClasses": 5,
+  "RecipeInlineComments": 229,
+  "MaximumCommentCharacters": 57,
+  "GuideExampleInlineComments": 13,
+  "PhysicalRecipeLinesAdded": false,
+  "ExecutableCodeUnchanged": true,
+  "ProductionCompiled": true,
+  "ExampleCompiled": true,
+  "NativeComponents": 150,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "ChangedHelpCells": [
+    "A583",
+    "A584",
+    "A592",
+    "A593",
+    "A594",
+    "A602",
+    "A603",
+    "A612"
+  ],
+  "CandidateSHA256": "de6c1ed1f9e5caac3eb8c3498938207f46fd6be7b5a7e858862cdc0dabf9b4bd",
+  "NativeSHA256": "0da9b79df306adde7c594a2be0bc021e9123d6143306d08bbf51117b5b29b676",
+  "Errors": []
+}

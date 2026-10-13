@@ -1,0 +1,14 @@
+{
+  "PublishedAt": "2026-10-13T21:52:20.9890163+03:00",
+  "WorkbookSHA256": "DE6C1ED1F9E5CAAC3EB8C3498938207F46FD6BE7B5A7E858862CDC0DABF9B4BD",
+  "AllCodeSHA256": "56A7367232EA8A16A68CFC5B3B82B62C5ED543A7257F3DA98C72FDE507E951A1",
+  "UserExecutionReportUnchanged": true,
+  "ExecutableCodeUnchanged": true,
+  "GuideExampleInlineComments": 13,
+  "RecipeClasses": 5,
+  "RecipeInlineComments": 229,
+  "ReadbackPending": false,
+  "AllCodeMatchesActualWorkbookExport": true,
+  "PublishedCodeMatchesCandidate": true,
+  "NativeComponents": 150
+}

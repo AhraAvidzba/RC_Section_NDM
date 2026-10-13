@@ -1,0 +1,116 @@
+{
+  "Archive": "EvidenceCodeSnapshots.zip",
+  "SHA256": "a23a9d007f83213e79e912efe15d457393a48a072d64c5f174958a91c258b391",
+  "Bytes": 5250619,
+  "Files": 21,
+  "CRCAndSHA256Verified": true,
+  "BeforeWorkbookGitCommit": "290d12a8e1ef7ef4564d45dc19e46eeade8089ee",
+  "BeforeWorkbookSHA256": "61C1B41CCFC7C4ADA385721B4B53AF1E205C7009E8FA7A1BE97FFDFEAD09A20F",
+  "Entries": [
+    {
+      "path": "Before.json",
+      "SHA256": "34ba3cb68d35af50d3bfb5ddc01d8e534bea39803e2ef4668477491b133690f8",
+      "bytes": 345
+    },
+    {
+      "path": "CodeUpdate.json",
+      "SHA256": "c78af2a93588463f462cbcc7145e77f0b5e7e0a927446c5fc11b865b8c687eef",
+      "bytes": 860
+    },
+    {
+      "path": "ExampleFixture/CodeUpdate.json",
+      "SHA256": "814324dd599cab72e7c02d3d2da0c616f3197a96ec224fbc4bba8e31e4bd1610",
+      "bytes": 687
+    },
+    {
+      "path": "ExampleFixture/NativeVBA.txt",
+      "SHA256": "703826dc2269ec9a9764259fd7c1d15665d5dffec8dd62a80441626cf92c0075",
+      "bytes": 6863336
+    },
+    {
+      "path": "GuideUpdate.json",
+      "SHA256": "a2cbf86eede176b6928b22d54300ad02ebbfc7ed88bd915f4e25dfab87349690",
+      "bytes": 420
+    },
+    {
+      "path": "LiveNative.txt",
+      "SHA256": "1051eabd9463107a6b551f3d57b8ce9f4f6bcb7248981ba64ce3628692ee0f9a",
+      "bytes": 6833752
+    },
+    {
+      "path": "NativeVBA.txt",
+      "SHA256": "0da9b79df306adde7c594a2be0bc021e9123d6143306d08bbf51117b5b29b676",
+      "bytes": 6850836
+    },
+    {
+      "path": "Preservation.json",
+      "SHA256": "13bbf38304a1af34d8d01c6345473ab45555f02b71fd36065df3f38dc4fac516",
+      "bytes": 689
+    },
+    {
+      "path": "Publication.json",
+      "SHA256": "a528e5ba74d417102942acd8ef30720333b2cbb1a85b2503e7161370f3f78dc1",
+      "bytes": 552
+    },
+    {
+      "path": "PublishedNativeVBA.txt",
+      "SHA256": "56a7367232ea8a16a68cfc5b3b82b62c5ed543a7257f3da98c72fde507e951a1",
+      "bytes": 6850841
+    },
+    {
+      "path": "PublishedSourceEquality.json",
+      "SHA256": "47dc7f55ab4164d018fd72aa308e7a96a573f0ea633f07fe1e89b8e2262584ad",
+      "bytes": 70049
+    },
+    {
+      "path": "PublishedStandaloneHelp.json",
+      "SHA256": "62035d80f7d61e6159aa74536d8a09acb5cb9f6804798e542b113074f992e661",
+      "bytes": 342
+    },
+    {
+      "path": "SourceBefore/docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls",
+      "SHA256": "6bfa51f734762c164781b1824e6658ba6a3f81b5eb509d03fa17982f66f6548c",
+      "bytes": 9032
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "7a9a2c34661060198f21447e7725d992748789db95994363bbdacb44f5ec3e19",
+      "bytes": 6368
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "SHA256": "df02496b02178d0d234e8a568c233f449bd5b1c27bc1cd9bb9e36f6b05fc68a3",
+      "bytes": 18973
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeRectSet.cls",
+      "SHA256": "114459c46b9f90aa883694bd0a38b11a4e2014a886dfc809b0de8c78fc323c43",
+      "bytes": 12662
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "SHA256": "29c4912fb5a2d3235c4057fe64c7af83b31db333802cd7afa23bb1b61a03688a",
+      "bytes": 16088
+    },
+    {
+      "path": "SourceComments.json",
+      "SHA256": "21dd225eaa299ac758726c85d2ee3eb7485d47f123ca7a311398df33eb73f367",
+      "bytes": 69352
+    },
+    {
+      "path": "SourceEquality.json",
+      "SHA256": "d05b71ee72a0a560ebfc89306ffed6682c70e5f3797fa1262cf719c71c3bd049",
+      "bytes": 70049
+    },
+    {
+      "path": "StandaloneHelp.json",
+      "SHA256": "fa5b9eb803014683e2ad89128eafed87e0acff6f6883f60e0e6745a81cd3b15e",
+      "bytes": 342
+    },
+    {
+      "path": "VerifyPreservation.py",
+      "SHA256": "5e0d6dd3a0cb3300354d89ce522eac72e9a694302f74ad319037592840ec2c90",
+      "bytes": 8216
+    }
+  ]
+}
