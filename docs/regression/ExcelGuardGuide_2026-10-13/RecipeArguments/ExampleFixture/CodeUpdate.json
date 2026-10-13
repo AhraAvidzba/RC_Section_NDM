@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\RecipeArguments\\ExampleFixture\\ExampleCompile.xlsm",
+    "WorkbookSHA256":  "21EA560D8B6D8C6C68E162E774146D1687319F970A088CA4F07ECD8AFFF7DB07",
+    "ProductionSHA256":  "DE6C1ED1F9E5CAAC3EB8C3498938207F46FD6BE7B5A7E858862CDC0DABF9B4BD",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionRecipeRoundedTrapezoid"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

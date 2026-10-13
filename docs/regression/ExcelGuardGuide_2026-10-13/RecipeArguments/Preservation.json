@@ -1,0 +1,29 @@
+{
+  "Passed": true,
+  "RecipeClasses": 5,
+  "CommentedCommands": 229,
+  "ArgumentsExplained": 687,
+  "Inline": 126,
+  "Above": 103,
+  "GuideExampleInlineComments": 13,
+  "AboveLineExceptionsAllowedByUser": true,
+  "ExecutableCodeUnchanged": true,
+  "ProductionCompiled": true,
+  "ExampleCompiled": true,
+  "NativeComponents": 150,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "ChangedHelpCells": [
+    "A583",
+    "A584",
+    "A592",
+    "A593",
+    "A594",
+    "A602",
+    "A603",
+    "A612"
+  ],
+  "CandidateSHA256": "80dbf11972c4990c75e8bd416ba56ab55333ad19a57fc5d845d4b819fdaa8c04",
+  "NativeSHA256": "5fdd742d76debf9fbd0d091429fe30a0a84e9dce7ebdbe8944dc54129fd6f6bc",
+  "Errors": []
+}

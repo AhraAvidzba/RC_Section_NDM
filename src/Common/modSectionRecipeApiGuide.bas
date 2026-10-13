@@ -51,15 +51,18 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Dim facade As CSectionDefinitionBuilder, path As CGeometryPath  ' Сборщик описания и геометрическая линия.
 '       Dim options As CRebarRuleOptions  ' Переменная условий размещения арматуры.
 '       Set facade = New CSectionDefinitionBuilder  ' Создаём сборщик описания сечения.
-'       facade.Initialize "MySection"  ' Начинаем описание сечения MySection.
-'       Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)  ' Контур прямоугольника 600 x 1000 мм.
-'       facade.Outer "OUTER", path.ID  ' Назначаем наружную границу бетона.
-'       Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)  ' Линия верхнего ряда с отступом as = 50 мм.
+'       facade.Initialize "MySection"  ' "MySection" — имя типа сечения.
+'       Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)  ' "Boundary" — имя прямоугольника; 0 — X левого нижнего угла, мм; 0 — Y левого нижнего угла, мм; 600 — ширина, мм; 1000 — высота, мм.
+'       facade.Outer "OUTER", path.ID  ' "OUTER" — имя наружной границы бетона; path.ID — замкнутый контур.
+'       Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)  ' "TopAxis" — имя линии; 50 — X начала, мм; 950 — Y начала, мм; 550 — X конца, мм; 950 — Y конца, мм.
 '       Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
-'       options.AnnotationGroup = "Top"  ' Общая группа подписи верхних рядов.
-'       facade.RebarByCount "Top.Main", path.ID, 5, 20#, options  ' Пять стержней диаметром 20 мм.
-'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#  ' Подпись арматуры верхней стороны.
-'       facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#  ' Размер ширины B = 600 мм.
+'       options.AnnotationGroup = "Top"  ' AnnotationGroup — имя общей подписи для всех рядов этой группы.
+'       facade.RebarByCount "Top.Main", path.ID, 5, 20#, options  ' "Top.Main" — имя нового ряда; path.ID — линия центров стержней; 5 — заданное число стержней; 20 — диаметр стержня, мм; options — отступы, нумерация и условия размещения.
+'       ' "Top" — группа общей подписи всех её рядов; "Top.Main" — ряд, к концам которого привязана
+'       ' подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления подписи; 50 —
+'       ' as до осей стержней, мм; отступ подписи задаёт плоттер.
+'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#
+'       facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#  ' "DIM_B" — имя размера; "B" — обозначение на схеме; 0 — X первой точки, мм; 600 — X второй точки, мм; 1000 — уровень исходной размерной линии Y, мм.
 '       Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем описание сечения.
 '
 '     В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New

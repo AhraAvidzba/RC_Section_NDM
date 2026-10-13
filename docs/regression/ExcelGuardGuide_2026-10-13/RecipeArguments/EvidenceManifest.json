@@ -1,0 +1,156 @@
+{
+  "baselineCommit": "461c76bb4bcd5b318cdd176971046361d3889fe4",
+  "workbookSHA256": "80DBF11972C4990C75E8BD416BA56AB55333AD19A57FC5D845D4B819FDAA8C04",
+  "allCodeSHA256": "3ED7F1834B6589C609FA78C0BEDDEC046D3BDE5C6CBE384EA5FDCD28B79B25AC",
+  "calculationTestsRepeated": false,
+  "previewIsScreenshot": false,
+  "files": [
+    {
+      "path": "Before.json",
+      "bytes": 345,
+      "sha256": "d6b6ea8b7f4affa3ae5eda0fe5ac1c198c3cf3fe379789c6fb2d2c96a8cf480d"
+    },
+    {
+      "path": "SourceComments.json",
+      "bytes": 251850,
+      "sha256": "b7e4f02b2f1b1c3fc0942f20d89ef616b074708b78c77ef011f213b7613edd91"
+    },
+    {
+      "path": "CodeUpdate.json",
+      "bytes": 863,
+      "sha256": "faf652016b68de40863b4a413940488059dec053bdec7b591da19d197572e749"
+    },
+    {
+      "path": "GuideUpdate.json",
+      "bytes": 420,
+      "sha256": "49b3023a3e9c5e303740df6c2ee0adec44ffbd674036469d7361a6fa43682855"
+    },
+    {
+      "path": "Preservation.json",
+      "bytes": 723,
+      "sha256": "5d13b347aa1304f7ad0eccfd1f1db3b0656c6f29705f1186a0ca2042110916c1"
+    },
+    {
+      "path": "SourceEquality.json",
+      "bytes": 70049,
+      "sha256": "69e5219fb7b9364c878be0aeb4f7c4b189cdee0a620fc07beea0c8cf65f46bb1"
+    },
+    {
+      "path": "StandaloneHelp.json",
+      "bytes": 342,
+      "sha256": "c171d0da021618eba641cd333fe365376730f38df63bcad59a0d03f65bf73637"
+    },
+    {
+      "path": "Publication.json",
+      "bytes": 688,
+      "sha256": "d8c795ca969daf1e78b7c7d7d57f75210716656db3f37c3494ab10c4e5d5ad0b"
+    },
+    {
+      "path": "PublishedSourceEquality.json",
+      "bytes": 70049,
+      "sha256": "e4af4a392669912ff5a3879d6cc2a4e8fdb78179713aea2d8f6b7470f51e7a3a"
+    },
+    {
+      "path": "PublishedStandaloneHelp.json",
+      "bytes": 342,
+      "sha256": "aa374b1c99cd8950b051affcd8284504c8f23c57b732d273c15876b63cb129e3"
+    },
+    {
+      "path": "ExampleFixture/CodeUpdate.json",
+      "bytes": 690,
+      "sha256": "565deff97eb45f4515f6a00a550c2f4c4f4fbd57561665d658d4f3d7cce7cf28"
+    },
+    {
+      "path": "VerifyPreservation.py",
+      "bytes": 9030,
+      "sha256": "e250529429b24b9cac8dcbb25e7c996cdf43d7bbda07b09c2f4305895e73b250"
+    },
+    {
+      "path": "AnnotateRecipes.py",
+      "bytes": 20462,
+      "sha256": "75063d0ad965e08acea0c167db0e6b4328860f17bcc3b75838b6e79b80d66a5d"
+    },
+    {
+      "path": "RecipeArgumentText.py",
+      "bytes": 20269,
+      "sha256": "577361d159b413a7c5ca70f9e7437c389340bd7fc510c3dbae42a42d349fd26e"
+    },
+    {
+      "path": "PrepareCandidate.ps1",
+      "bytes": 4111,
+      "sha256": "ee2e0ea5adb34a73f869805774df296a8e98c9d0e641858f1614669a38f74f17"
+    },
+    {
+      "path": "PublishCandidate.ps1",
+      "bytes": 4351,
+      "sha256": "92b314f9552262bc210bb0c4b02e91de83d01c37b367d4f2603c9a66c23dc046"
+    },
+    {
+      "path": "FinalizeReadback.ps1",
+      "bytes": 2166,
+      "sha256": "ad1244e81cbb34d618fdc609e1020ab18eb0b7efff8ab4a3a1ea10b84f6eea38"
+    },
+    {
+      "path": "PreviewSource.json",
+      "bytes": 434,
+      "sha256": "1412574568461e30ad902327b31c7463f67e1b4d9baf38a2256eff44e2dfa53d"
+    },
+    {
+      "path": "RecipeArgumentsPreview.png",
+      "bytes": 80997,
+      "sha256": "faa78bb6caf27caafad4e5ab4fe345b356a84d5772e8a7182dd6b55d5345440d"
+    },
+    {
+      "path": "EvidenceCodeSnapshots.zip",
+      "bytes": 5191941,
+      "sha256": "8643e4e780d4253f89081b3b1d9307bf8daee873e2fcfe0a4ce6498d5a441133"
+    }
+  ],
+  "archiveEntries": [
+    {
+      "path": "LiveNative.txt",
+      "bytes": 6850837,
+      "sha256": "98bac82f19e7d5ec341fb913c5fa25d570670270a093a04066648250582dbff6"
+    },
+    {
+      "path": "NativeVBA.txt",
+      "bytes": 6880625,
+      "sha256": "5fdd742d76debf9fbd0d091429fe30a0a84e9dce7ebdbe8944dc54129fd6f6bc"
+    },
+    {
+      "path": "PublishedNativeVBA.txt",
+      "bytes": 6880630,
+      "sha256": "3ed7f1834b6589c609fa78c0beddec046d3bde5c6cbe384ea5fdcd28b79b25ac"
+    },
+    {
+      "path": "ExampleFixture/NativeVBA.txt",
+      "bytes": 6897074,
+      "sha256": "337cbcdc8579e4def205ea7899d57c4b928708807adefa5abf529e3b20fab177"
+    },
+    {
+      "path": "SourceBefore/docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls",
+      "bytes": 12466,
+      "sha256": "40a23c3b81f338a7e292e48f6ca7b481a09358dc8f4cdc8a32e7a1b43d1990de"
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeCircle.cls",
+      "bytes": 8962,
+      "sha256": "26df4b391cc7a5efabef06f23998d6f62f8b6e238e399ba8810b037c65c0c1ff"
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "bytes": 24305,
+      "sha256": "7e28b2015a3bf07127acf72400555d4bc1d5234782e78a1366f8b03403e51ac6"
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeRectSet.cls",
+      "bytes": 17797,
+      "sha256": "422ec7b6ea3122cf397733df96177530a7dabf5e98d79a1e741a658c316afcfd"
+    },
+    {
+      "path": "SourceBefore/src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "bytes": 21787,
+      "sha256": "6c5aef8fe72ebe742bfe2f805b556e9d0fb2f4706eb51a3ba81b0d806b4aac58"
+    }
+  ]
+}

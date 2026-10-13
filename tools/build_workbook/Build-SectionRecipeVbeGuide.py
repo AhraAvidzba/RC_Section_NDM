@@ -7,6 +7,7 @@ from pathlib import Path
 from SectionRecipeApiText import purpose, parameter_meaning
 from SectionRecipeAuthorScope import selected_members
 from VbeCommentText import readable
+from RecipeArgumentText import argument_comment, signatures
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('api', Path(__file__).with_name('Build-SectionRecipeApi.py'))
@@ -45,6 +46,7 @@ def build():
     inventory = api.inventory()
     sections = selected_members(inventory)
     lines = ['Attribute VB_Name = "modSectionRecipeApiGuide"']
+    builder_signatures = signatures((ROOT/'src/Section/CSectionDefinitionBuilder.cls').read_text(encoding='utf-8-sig'))
 
     def comment(text='', indent=0):
         prefix = "' " + ' ' * indent
@@ -106,7 +108,13 @@ def build():
         ('Set ISectionRecipe_CreateDefinition = facade.Finish',
          'Проверяем и возвращаем описание сечения.'),
     ]:
-        lines.append("'       " + line + "  ' " + readable(explanation))
+        explanation, arguments = argument_comment(line, 'MySection', builder_signatures, {}, explanation)
+        if len(line) + len(explanation) + 4 <= 240 and len(explanation) <= 170:
+            lines.append("'       " + line + "  ' " + readable(explanation))
+        else:
+            for note in textwrap.wrap(readable(explanation), 90, break_long_words=False, break_on_hyphens=False):
+                lines.append("'       ' " + note)
+            lines.append("'       " + line)
     comment()
     comment('В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array() подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных таблиц.', 4)
 
