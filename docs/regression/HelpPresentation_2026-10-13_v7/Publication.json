@@ -1,0 +1,10 @@
+{
+  "Published": true,
+  "WorkbookSHA256": "0874A425882D77D22641BC44792D4F20D085D01D09DE6FE3BCB81E247DB30008",
+  "AllCodeSHA256": "8AA82603D9D0A498C4ACF6FB9DD10A4544028BE1EA4486C65B659B61C4359DB1",
+  "VbaComponentsUnchanged": 149,
+  "VbaBinaryUnchanged": true,
+  "VisualReview": "PASS",
+  "Preservation": "PASS",
+  "Backup": "Before.xlsm"
+}

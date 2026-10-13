@@ -1,0 +1,38 @@
+{
+  "AllPassed": true,
+  "SourceSHA256": "A299BDBAE5DC45E69A52DF030316B7A482B905690878380B283A581E7FF4BEED",
+  "CandidateSHA256": "0874A425882D77D22641BC44792D4F20D085D01D09DE6FE3BCB81E247DB30008",
+  "Blocks": [
+    {
+      "Key": "SLS.Crack.ToleranceLambda",
+      "First": 1749,
+      "Last": 1754,
+      "Paragraphs": 4,
+      "RowHeights": [
+        25.5,
+        25.5,
+        38.25,
+        25.5
+      ],
+      "Pass": true
+    },
+    {
+      "Key": "General.PlateauSlopeFactor",
+      "First": 1755,
+      "Last": 1765,
+      "Paragraphs": 6,
+      "RowHeights": [
+        38.25,
+        25.5,
+        38.25,
+        38.25,
+        25.5,
+        38.25
+      ],
+      "Pass": true
+    }
+  ],
+  "HeaderRow": 552,
+  "HeaderFill": 15921906,
+  "VisualReview": "PASS: native Excel images inspected; identical to reviewed v6 images by SHA256."
+}

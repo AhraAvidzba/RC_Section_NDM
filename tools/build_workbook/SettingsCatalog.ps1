@@ -5304,6 +5304,44 @@ function Add-MaterialDiagramTable {
     Set-WorkbookNameByBounds $Workbook $RangeName $Sheet ($HeaderRow + 1) $StartColumn ($HeaderRow + 10) ($StartColumn + 2)
 }
 
+# Обычный блок справки Config: заголовок и нумерованные пояснения в A/B.
+# Обновление использует прежние строки, чтобы не сдвигать ссылки и группировку.
+function Set-SettingInstructionBlock {
+    param([object]$Sheet, [int]$Row, [string]$Title, [string[]]$Lines, [int]$LastRow = 0)
+    if ($LastRow -eq 0) { $LastRow = $Row + $Lines.Count }
+    if ($LastRow -lt $Row + $Lines.Count) { throw "Недостаточно строк справки для $Title." }
+    $block = $Sheet.Range($Sheet.Cells.Item($Row, 1), $Sheet.Cells.Item($LastRow, 6))
+    $block.UnMerge() | Out-Null
+    $block.ClearContents() | Out-Null
+    $block.Font.Name = 'Arial'; $block.Font.Size = 10
+    $block.Font.Bold = $false; $block.Font.Italic = $false
+    $block.Font.Color = 0; $block.Font.Underline = -4142
+    $block.Interior.Pattern = -4142
+    $block.NumberFormat = $Sheet.Cells.Item(1, 1).NumberFormat
+    $block.IndentLevel = 0
+    $block.HorizontalAlignment = 1; $block.VerticalAlignment = -4160
+    $block.WrapText = $true
+    $block.Borders.LineStyle = 1; $block.Borders.Weight = 2
+    $block.Borders.Color = 14277081
+    $block.Borders.Item(10).Color = 0
+    $heading = $Sheet.Range($Sheet.Cells.Item($Row, 1), $Sheet.Cells.Item($Row, 6))
+    $heading.Merge() | Out-Null
+    $heading.Value2 = $Title; $heading.Font.Bold = $true
+    $heading.Interior.Color = 15921906; $heading.WrapText = $false
+    # Merge может вернуть цвет общей границы от прежней соседней строки.
+    $heading.Borders.Item(8).Color = 14277081
+    $heading.Borders.Item(9).Color = 14277081
+    for ($index = 0; $index -lt $Lines.Count; $index++) {
+        $Sheet.Cells.Item(($Row + $index + 1), 1).Value2 = [double]($index + 1)
+        $text = $Sheet.Cells.Item(($Row + $index + 1), 2)
+        $text.Value2 = [string]$Lines[$index]; $text.HorizontalAlignment = -4131
+    }
+    # AutoFit работает для обычных ячеек; объединённый заголовок однострочный.
+    $block.EntireRow.AutoFit() | Out-Null
+    $heading.EntireRow.RowHeight = [double]$Sheet.StandardHeight
+    return $LastRow + 1
+}
+
 # Добавляет независимый допуск трещинообразования в существующую книгу.
 # Сдвигается только A:E реестра; пользовательские значения и соседние таблицы
 # не пересобираются. Повторный вызов сохраняет уже введенный допуск.
@@ -5368,14 +5406,12 @@ function Update-CrackLambdaSetting {
     }
     if (-not $anchor) {
         $anchor = $last + 2
-        $next = Add-GuideTitle $guide $anchor $key 13
-        foreach ($line in (Get-SettingInstructionLines $key ([string]$setting[0][3]))) {
-            $next = Add-GuideParagraph $guide $next $line
-        }
-        $helpRange = $guide.Range($guide.Cells.Item($anchor, 1), $guide.Cells.Item($next - 1, 6))
-        $helpRange.RowHeight = 30
-        $helpRange.Borders.LineStyle = 1
+        $helpEnd = 0
+    } else {
+        $helpEnd = $anchor
+        while ([string]$guide.Cells.Item($helpEnd + 1, 1).Value2 -ne '' -and -not $guide.Cells.Item($helpEnd + 1, 1).Font.Bold) { $helpEnd++ }
     }
+    Set-SettingInstructionBlock $guide $anchor $key (Get-SettingInstructionLines $key ([string]$setting[0][3])) $helpEnd | Out-Null
     Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
     $newRow = $range.Rows.Item([int]$found)
     $newRow.Borders.LineStyle = -4115
@@ -5494,33 +5530,12 @@ function Update-PlateauSlopeFactorSetting {
     }
     if (-not $anchor) {
         $anchor = $last + 2
-        $next = Add-GuideTitle $guide $anchor $key 13
-        foreach ($line in (Get-SettingInstructionLines $key ([string]$definition[0][3]))) { $next = Add-GuideParagraph $guide $next $line }
-        $help = $guide.Range($guide.Cells.Item($anchor, 1), $guide.Cells.Item($next - 1, 6))
-        $help.RowHeight = 30; $help.Borders.LineStyle = 1
+        $helpEnd = 0
     } else {
-        # Меняем лишь свой блок: соседние разделы, их ссылки и группировка
-        # остаются на прежних строках. Высота учитывает перенос текста.
-        $end = $anchor
-        while ([string]$guide.Cells.Item($end+1, 1).Value2 -ne '') {$end++}
-        $available = $end - $anchor
-        $maxLength = 200
-        do {
-            $parts = @()
-            foreach ($line in (Get-SettingInstructionLines $key ([string]$definition[0][3]))) {
-                $parts += @(Split-GuideParagraphText $line $maxLength)
-            }
-            $maxLength += 20
-        } while ($parts.Count -gt $available)
-        $guide.Cells.Item($anchor, 1).Value2 = $key
-        for ($index = 0; $index -lt $available; $index++) {
-            $row = $anchor + 1 + $index
-            $text = if ($index -lt $parts.Count) {[string]$parts[$index]} else {''}
-            $guide.Cells.Item($row, 1).Value2 = $text
-            $guide.Rows.Item($row).RowHeight = if ($text) {[Math]::Max(30, 30 * [Math]::Ceiling($text.Length / 180.0))} else {6}
-            $guide.Cells.Item($row, 1).WrapText = $true
-        }
+        $helpEnd = $anchor
+        while ([string]$guide.Cells.Item($helpEnd + 1, 1).Value2 -ne '' -and -not $guide.Cells.Item($helpEnd + 1, 1).Font.Bold) { $helpEnd++ }
     }
+    Set-SettingInstructionBlock $guide $anchor $key (Get-SettingInstructionLines $key ([string]$definition[0][3])) $helpEnd | Out-Null
     Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
     $range.Rows.Item([int]$found).Borders.LineStyle = -4115
     $range.Rows.Item([int]$found).Borders.Weight = 2

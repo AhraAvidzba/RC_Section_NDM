@@ -155,6 +155,8 @@ function Update-SectionRecipeGuide {
             foreach ($run in (Get-RecipeGuideRowRuns $addresses)) {
                 $styled=$sheet.Range($sheet.Cells.Item($run.First,1),$sheet.Cells.Item($run.Last,6))
                 if ($style -in 'title','h1','h2','h3') {$styled.Font.Bold=$true;$styled.Interior.Color=14277081}
+                # Главный раздел имеет ту же светлую заливку, что остальные разделы Справки.
+                if ($style -eq 'title') {$styled.Interior.Color=15921906}
                 if ($style -in 'title','h1') {$styled.Font.Size=16}
                 elseif ($style -in 'h2','h3') {$styled.Font.Size=13}
                 elseif ($style -eq 'code') {$styled.Font.Name='Consolas';$styled.Interior.Color=15921906}
