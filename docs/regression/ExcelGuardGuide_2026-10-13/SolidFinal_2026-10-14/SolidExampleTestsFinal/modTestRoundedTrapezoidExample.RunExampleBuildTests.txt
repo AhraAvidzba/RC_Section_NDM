@@ -1,0 +1,1 @@
+﻿TOTAL ONE CLASS BUILD: passed=94; failed=0

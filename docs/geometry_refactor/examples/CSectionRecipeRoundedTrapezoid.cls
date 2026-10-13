@@ -142,12 +142,12 @@ Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionIn
     facade.Text "FormName", "Caption", "Скругленная трапеция"  ' "FormName" — имя аннотации; "Caption" — точка размещения текста; "Скругленная трапеция" — текст на схеме.
     ' "OuterBars" — группа общей подписи всех её рядов; "Outer.Axis" — линия, по габаритам которой
     ' привязывается подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления
-    ' подписи; parameters.OuterAxisDistance — as до осей стержней, мм; отступ подписи задаёт плоттер.
-    facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1#, parameters.OuterAxisDistance
+    ' подписи.
+    facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1#
     ' "InnerBars" — группа общей подписи всех её рядов; "Inner.Axis" — линия, по габаритам которой
     ' привязывается подпись; 0 — X-компонента направления подписи; -1 — Y-компонента направления
-    ' подписи; parameters.InnerAxisDistance — as до осей стержней, мм; отступ подписи задаёт плоттер.
-    facade.RebarLabel "InnerBars", "Inner.Axis", 0#, -1#, parameters.InnerAxisDistance
+    ' подписи.
+    facade.RebarLabel "InnerBars", "Inner.Axis", 0#, -1#
     Set Describe = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
     Exit Function
 InvalidGeometry:

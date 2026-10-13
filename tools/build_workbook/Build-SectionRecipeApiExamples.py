@@ -43,6 +43,19 @@ def evidence():
                 body = text[match.end():matches[index+1].start() if index+1 < len(matches) else len(text)]
                 if re.search(r"failed=0\b", body, re.I) and not re.search(r"failed=[1-9]|SUITE_ERROR|WATCHDOG_TIMEOUT", body, re.I):
                     result[match[1]].append(path.relative_to(ROOT).as_posix())
+    # Новые адресные прогоны: отдельный текст каждого entrypoint и завершённый Run.json.
+    solid = ROOT / "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14"
+    for receipt in solid.glob("*/Run.json"):
+        run = json.loads(receipt.read_text(encoding="utf-8-sig"))
+        if not run.get("Passed") or not run.get("ProductionUnchanged"):
+            continue
+        for item in run.get("Runs", []):
+            if not item.get("Passed") or item.get("Snapshot"):
+                continue
+            path = receipt.parent / (item["Macro"] + ".txt")
+            body = path.read_text(encoding="utf-8-sig")
+            if re.search(r"(?m)^TOTAL[^\r\n]*failed=0\b", body) and not re.search(r"(?m)^FAIL|failed=[1-9]|RUNTIME ERROR", body):
+                result[item["Macro"]].insert(0, path.relative_to(ROOT).as_posix())
     return result
 
 

@@ -22,11 +22,11 @@ Option Explicit
 
 Private Const QUERY_TOLERANCE As Double = GEOM_BOUNDARY_TOLERANCE ' Прежний допуск склейки бетонных интервалов, мм.
 Private Const PARAM_TOLERANCE As Double = GEOM_PARAMETER_TOLERANCE ' Только безразмерный параметр аналитического сегмента.
-Private mSection As CSectionModel
-Private mRevision As Long
+Private mSection As CSectionModel ' Модель текущего запроса; операции над переданными областями не требуют модели.
+Private mRevision As Long ' Ревизия геометрии, для которой подготовлен кэш области.
 Private mDomain As CConcreteRegion ' Неизменная область одной модели/query-session; потребитель получает clone.
 Private mDomainBuildCount As Long ' Число успешных подготовок за жизнь query, включая смену контекста.
-Private mDiagnostic As CGeometryDiagnostic
+Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка общей геометрической операции с её исходной привязкой.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
@@ -430,12 +430,32 @@ End Function
 ' от обычного clipping явно заданное отверстие за пределами материала или
 ' поверх другой пустоты не обрезается молча и не скрывается fallback-ом.
 Public Function SubtractContainedRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion) As CConcreteRegion
+    ValidateContainedRegion outer, opening
+    Set SubtractContainedRegion = SubtractRegion(outer, opening)
+End Function
+
+' Проверяет принадлежность отверстия, не создавая ненужную вычтенную копию родительской области.
+' Те же проверки использует SubtractContainedRegion; отдельной геометрической трактовки нет.
+Friend Sub ValidateContainedRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion)
     RequireRegion outer: RequireRegion opening
     If BoundariesMeet(outer, opening) Then GeometryError "Контур отверстия пересекает или касается границы материала либо другой пустоты."
     If Not AllMaterialSamplesInside(opening, outer) Then GeometryError "Заданное отверстие находится вне бетонной области."
     If AnyBoundarySampleInside(outer, opening) Then GeometryError "Заданное отверстие накрывает уже существующую пустоту или отдельную компоненту бетона."
-    Set SubtractContainedRegion = SubtractRegion(outer, opening)
-End Function
+End Sub
+
+' Область уже содержит упорядоченные замкнутые петли; проверка не повторяет StitchLoops и MakeRegion.
+' Проверяются длины, согласованность дуг и пересечения, как при прежней BoundaryRegion.
+Friend Sub ValidatePreparedBoundary(ByVal region As CConcreteRegion)
+    RequireRegion region
+    Dim edges() As TRegionEdge, count As Long, i As Long
+    region.CopyEdges edges, count
+    If count <= 0 Then GeometryError "Заданный контур не содержит граничных сегментов."
+    For i = 1 To count
+        If modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then GeometryError "Заданный контур содержит ребро нулевой длины."
+        If Abs(edges(i).Sweep) > PARAM_TOLERANCE Then ValidateArc edges(i)
+    Next i
+    ValidateSimpleBoundary edges, count
+End Sub
 
 ' Проверяет аналитические пересечения двух готовых границ, включая концы
 ' и совпадающие сегменты. Единый владелец операции - geometry-query.

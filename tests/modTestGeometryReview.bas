@@ -132,9 +132,11 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
         expected = CStr(count) & ChrW$(216) & "20"
     End If
     Check prefix & ".allDiameters", model.Annotations.Text(1) = expected
-    builder.Rebars.AddAnnotationAnchor "Top", -200#, 500#, 200#, 500#, 0#, 1#
+    Dim anchors(1 To 2) As TSectionAnnotation
+    anchors(1).Name = "Top": anchors(1).StartX = -200#: anchors(1).EndX = 200#: anchors(1).StartY = 550#: anchors(1).EndY = 550#: anchors(1).NormalY = 1#
+    anchors(2) = anchors(1): anchors(2).StartY = 500#: anchors(2).EndY = 500#
     Set annotations = New CSectionAnnotations: Set labels = New CRebarGroupAnnotationBuilder
-    labels.AddRebarLabels annotations, builder.Rebars
+    labels.AddRebarLabels annotations, builder.Rebars, anchors, 2
     Check prefix & ".duplicateAnchor", annotations.Count = 1 And annotations.Text(1) = expected
     Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
     Set table = ThisWorkbook.Names("rngUnitSettings").RefersToRange

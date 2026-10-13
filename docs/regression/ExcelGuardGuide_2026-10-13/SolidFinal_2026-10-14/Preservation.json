@@ -1,0 +1,21 @@
+{
+  "Passed": true,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "HelpCellsChanged": [
+    "A572",
+    "A573",
+    "A575",
+    "A602",
+    "A612"
+  ],
+  "HelpRowsExpanded": [
+    575
+  ],
+  "FormulaCachedValuesChanged": 0,
+  "NativeComponents": 153,
+  "ExecutableCodeMatchesTestedVersion": true,
+  "CandidateSHA256": "268d5fd5728289b216f8f5d082c859368cf38c490f169f004939e4ba4b781249",
+  "NativeSHA256": "542ca9cfaa6d1794501b25659ba6c0e0f3c7723f591f42d671c3a7801586a9c2",
+  "Errors": []
+}

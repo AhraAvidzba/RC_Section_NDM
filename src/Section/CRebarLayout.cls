@@ -16,34 +16,26 @@ Option Explicit
 ' сформированных раскладчиком. Затем CSectionModelBuilder переносит эти данные
 ' в единую расчетную модель и присваивает расчетные имена R1/R2/....
 
-Private mBarID() As String
-Private mX() As Double
-Private mY() As Double
-Private mDiameter() As Double
-Private mArea() As Double
-Private mSteelClass() As String
-Private mComment() As String
-Private mBarAnnotationGroupName() As String
-Private mCount As Long
-Private mCapacity As Long
-Private mIDs As Object
-Private mPositionBuckets As Object
-Private mMemberships As Object
+Private mBarID() As String ' Имена источника физических стержней; расчётные R1/R2 назначает CSectionModel.
+Private mX() As Double ' Координаты центров стержней X, мм.
+Private mY() As Double ' Координаты центров стержней Y, мм.
+Private mDiameter() As Double ' Фактические диаметры стержней, мм.
+Private mArea() As Double ' Фактические площади стержней, мм2.
+Private mSteelClass() As String ' Принадлежность материала, используемая также при совпадении позиций.
+Private mComment() As String ' Пояснение происхождения физического стержня.
+Private mBarAnnotationGroupName() As String ' Единственная группа владельца для количественной подписи.
+Private mReadOnly As Boolean ' Опубликованные стержни и группы доступны только для чтения.
+Private mCount As Long ' Количество физических стержней после обработки совпадений.
+Private mCapacity As Long ' Зарезервированный размер массивов; растёт геометрически до публикации.
+Private mIDs As Object ' Индекс уникальных имён физических стержней.
+Private mPositionBuckets As Object ' Поиск близких координат; конечное совпадение проверяется по исходным числам.
+Private mMemberships As Object ' Дополнительные группы происхождения; не дублируют физический стержень или подпись.
 
-Private mAnnotationGroupName() As String
-Private mAnnotationStartX() As Double
-Private mAnnotationStartY() As Double
-Private mAnnotationEndX() As Double
-Private mAnnotationEndY() As Double
-Private mAnnotationNormalX() As Double
-Private mAnnotationNormalY() As Double
-Private mAnnotationAxisDistance() As Double
-Private mAnnotationCount As Long
 
-' Удаляет промежуточные стержни и аннотации линий раскладки целиком.
-' Оба счетчика сбрасываются вместе с массивами, чтобы следующая генерация
-' не смешивала координаты или подписи с предыдущей геометрией.
+' Удаляет физические стержни, группы и индексы ещё не опубликованной раскладки.
+' Аннотации хранятся отдельно; их построение не меняет этот объект.
 Public Sub Clear()
+    RequireMutable
     Erase mBarID
     Erase mX
     Erase mY
@@ -58,15 +50,6 @@ Public Sub Clear()
     Set mPositionBuckets = Nothing
     Set mMemberships = Nothing
 
-    Erase mAnnotationGroupName
-    Erase mAnnotationStartX
-    Erase mAnnotationStartY
-    Erase mAnnotationEndX
-    Erase mAnnotationEndY
-    Erase mAnnotationNormalX
-    Erase mAnnotationNormalY
-    Erase mAnnotationAxisDistance
-    mAnnotationCount = 0
 End Sub
 
 ' Добавляет стержень в промежуточную раскладку с проверкой ID, площади, диаметра и положения в бетоне.
@@ -74,6 +57,7 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
         Optional ByVal comment As String = vbNullString, Optional ByVal geometry As CGeometryRegion = Nothing, _
         Optional ByVal annotationGroupName As String = vbNullString)
+    RequireMutable
 
     If Len(Trim$(barName)) = 0 Then Err.Raise vbObjectError + 3100, "CRebarLayout", "ID стержня не заполнен."
     If diameter <= 0# Then Err.Raise vbObjectError + 3101, "CRebarLayout", "Диаметр арматуры должен быть положительным."
@@ -190,6 +174,7 @@ End Function
 
 ' Membership не создает второй физический стержень и не меняет его площадь.
 Public Sub AddMembership(ByVal index As Long, ByVal groupName As String)
+    RequireMutable
     CheckIndex index
     groupName = Trim$(groupName)
     If Len(groupName) = 0 Then Exit Sub
@@ -280,98 +265,22 @@ Public Property Get BarAnnotationGroupName(ByVal index As Long) As String
     BarAnnotationGroupName = mBarAnnotationGroupName(index)
 End Property
 
-' Добавляет опорную линию группы арматуры, по которой потом строится групповая подпись на схеме.
-Public Sub AddAnnotationAnchor(ByVal groupName As String, ByVal startX As Double, ByVal startY As Double, _
-        ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        Optional ByVal axisDistance As Double = 0#)
-    If Len(Trim$(groupName)) = 0 Then Exit Sub
-
-    mAnnotationCount = mAnnotationCount + 1
-    ReDim Preserve mAnnotationGroupName(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationStartX(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationStartY(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationEndX(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationEndY(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
-    ReDim Preserve mAnnotationAxisDistance(1 To mAnnotationCount)
-
-    mAnnotationGroupName(mAnnotationCount) = Trim$(groupName)
-    mAnnotationStartX(mAnnotationCount) = startX
-    mAnnotationStartY(mAnnotationCount) = startY
-    mAnnotationEndX(mAnnotationCount) = endX
-    mAnnotationEndY(mAnnotationCount) = endY
-    mAnnotationNormalX(mAnnotationCount) = normalX
-    mAnnotationNormalY(mAnnotationCount) = normalY
-    mAnnotationAxisDistance(mAnnotationCount) = axisDistance
-End Sub
-
-' Количество привязок арматурных подписей в раскладке.
-Public Property Get AnnotationCount() As Long
-    AnnotationCount = mAnnotationCount
-End Property
-
-' Смысловая группа выбранной привязки арматурной подписи.
-Public Property Get AnnotationGroupName(ByVal index As Long) As String
-    CheckAnnotationIndex index
-    AnnotationGroupName = mAnnotationGroupName(index)
-End Property
-
-' Координата X начала выбранной привязки арматурной подписи, мм.
-Public Property Get AnnotationStartX(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationStartX = mAnnotationStartX(index)
-End Property
-
-' Координата Y начала выбранной привязки арматурной подписи, мм.
-Public Property Get AnnotationStartY(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationStartY = mAnnotationStartY(index)
-End Property
-
-' Координата X конца выбранной привязки арматурной подписи, мм.
-Public Property Get AnnotationEndX(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationEndX = mAnnotationEndX(index)
-End Property
-
-' Координата Y конца выбранной привязки арматурной подписи, мм.
-Public Property Get AnnotationEndY(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationEndY = mAnnotationEndY(index)
-End Property
-
-' Компонента X направления вынесения выбранной арматурной подписи.
-Public Property Get AnnotationNormalX(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationNormalX = mAnnotationNormalX(index)
-End Property
-
-' Компонента Y направления вынесения выбранной арматурной подписи.
-Public Property Get AnnotationNormalY(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationNormalY = mAnnotationNormalY(index)
-End Property
-
-' Расстояние от исходной границы до оси ряда выбранной привязки, мм.
-Public Property Get AnnotationAxisDistance(ByVal index As Long) As Double
-    CheckAnnotationIndex index
-    AnnotationAxisDistance = mAnnotationAxisDistance(index)
-End Property
-
 ' Проверяет индекс стержня перед доступом к массивам раскладки.
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, "CRebarLayout", "Индекс стержня вне допустимого диапазона."
 End Sub
 
-' Проверяет индекс аннотационной линии перед доступом к массивам раскладки.
-Private Sub CheckAnnotationIndex(ByVal index As Long)
-    If index < 1 Or index > mAnnotationCount Then Err.Raise vbObjectError + 3107, "CRebarLayout", "Индекс аннотации арматуры вне допустимого диапазона."
+' Закрывает физическую раскладку успешно собранной модели, сохраняя те же массивы и индексы.
+Friend Sub Freeze()
+    mReadOnly = True
 End Sub
 
+' Проверяемый режим раскладки; координаты и принадлежность после публикации не меняются.
+Public Property Get IsReadOnly() As Boolean
+    IsReadOnly = mReadOnly
+End Property
 
-
-
-
-
-
+' Новая сборка получает новый layout; опубликованный нельзя очищать или дополнять.
+Private Sub RequireMutable()
+    If mReadOnly Then Err.Raise vbObjectError + 3110, "CRebarLayout", "Опубликованную арматурную раскладку нельзя изменять. Создайте новую раскладку."
+End Sub

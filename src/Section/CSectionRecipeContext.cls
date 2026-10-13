@@ -12,14 +12,15 @@ Option Explicit
 ' Ввод рецепта: неизменяемые таблицы и единицы. Готовое definition не хранит
 ' context, reader или таблицы; к расчетному ядру передаются только числа.
 Private mTables As Object
-Private mUnits As CUnitSystem
+Private mUnits As CUnitSystem ' Независимая закрытая конфигурация; внешний units не влияет на снимок.
 Private mSealed As Boolean
 
 ' Открывает контекст с подготовленной системой единиц один раз.
 Public Sub Initialize(ByVal units As CUnitSystem)
     If Not mTables Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Контекст уже создан."
     If units Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Система единиц не передана."
-    Set mUnits = units
+    Set mUnits = units.Clone
+    mUnits.Freeze
     Set mTables = CreateObject("Scripting.Dictionary")
     mTables.CompareMode = vbTextCompare
 End Sub
@@ -46,7 +47,7 @@ Public Function Table(ByVal tableName As String) As CSectionInputTable
     Set Table = mTables(tableName)
 End Function
 
-' Система единиц внешнего workflow; не перезагружайте её из Excel в рецепте.
+' Закрытая копия единиц ввода; рецепт только переводит числа, не перенастраивая объект.
 Public Property Get Units() As CUnitSystem
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     Set Units = mUnits

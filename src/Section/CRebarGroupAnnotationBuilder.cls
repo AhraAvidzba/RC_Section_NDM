@@ -17,11 +17,12 @@ Option Explicit
 ' Дополнительные смысловые связи совпавшей позиции не увеличивают подписи.
 
 ' Дополняет существующие аннотации подписями по готовым смысловым группам
-' и диаметрам. Контуры не очищает, принадлежность стержней к граням не меняет.
-Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars As CRebarLayout)
+' и диаметрам. Привязки переданы отдельно; раскладка и принадлежность стержней только читаются.
+Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars As CRebarLayout, _
+        ByRef anchors() As TSectionAnnotation, ByVal anchorCount As Long)
     If annotations Is Nothing Then Err.Raise vbObjectError + 5290, "CRebarGroupAnnotationBuilder", "Коллекция аннотаций не передана."
     If rebars Is Nothing Then Exit Sub
-    If rebars.Count <= 0 Or rebars.AnnotationCount <= 0 Then Exit Sub
+    If rebars.Count <= 0 Or anchorCount <= 0 Then Exit Sub
 
     Dim groupedDiameters As Object
     Set groupedDiameters = CreateObject("Scripting.Dictionary")
@@ -63,13 +64,13 @@ Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars
         End If
     Next keyVariant
 
-    For i = 1 To rebars.AnnotationCount
-        groupName = rebars.AnnotationGroupName(i)
+    For i = 1 To anchorCount
+        groupName = Trim$(anchors(i).Name)
         If labels.Exists(groupName) Then
             annotations.AddRebarLabel "REBAR_" & groupName, _
-                rebars.AnnotationStartX(i), rebars.AnnotationStartY(i), _
-                rebars.AnnotationEndX(i), rebars.AnnotationEndY(i), _
-                rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), CStr(labels(groupName))
+                anchors(i).StartX, anchors(i).StartY, _
+                anchors(i).EndX, anchors(i).EndY, _
+                anchors(i).NormalX, anchors(i).NormalY, CStr(labels(groupName))
             ' Несколько привязок одной группы не создают повторную подпись.
             labels.Remove groupName
         End If

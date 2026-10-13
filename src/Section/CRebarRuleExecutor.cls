@@ -17,18 +17,20 @@ Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Счетчики полн�
 
 ' Универсальное исполнение правил: аналитические станции, зависимости,
 ' конечные проекции и отдельный порядок публикации физических стержней.
-Private mDefinition As CSectionDefinition
-Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long
-Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long
-Private mSkippedProjections As Long
-Private mMergedPositions As Long, mConflicts As Long
-Private mCreatedPhysical As Long
-Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long
-Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection
-Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long
-Private mPhysicalRule() As Long, mPhysicalCapacity As Long
-Private mPhysicalOwner() As Long
-Private mDiagnosticRecordsOmitted As Long
+Private mReadOnly As Boolean ' После успешной общей сборки позиции и диагностика закрыты для нового Build.
+Private mBuilt As Boolean ' Freeze разрешён только после полного успешного выполнения правил.
+Private mDefinition As CSectionDefinition ' Закрытое определение, к которому относятся позиции и диагностика.
+Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long ' Правила, состояние зависимостей и диапазоны позиций.
+Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Заявленные позиции до разрешения совпадений.
+Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
+Private mMergedPositions As Long, mConflicts As Long ' Объединённые позиции и отклонённые конфликты.
+Private mCreatedPhysical As Long ' Число опубликованных физических стержней, каждый учитывается один раз.
+Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Те же счётчики отдельно для каждого правила.
+Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection ' Последнее событие и ограниченный набор подробных записей.
+Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Пространственный индекс и счётчик пересечений дисков.
+Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило-владелец каждого физического стержня и ёмкость массива.
+Private mPhysicalOwner() As Long ' Связь заявленной позиции с физическим стержнем после объединений.
+Private mDiagnosticRecordsOmitted As Long ' Число событий сверх лимита подробных записей; счётчики остаются полными.
 
 ' Все запрошенные позиции, включая пропущенные проекции; это не число физических стержней.
 Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections: End Property
@@ -142,6 +144,8 @@ End Function
 ' Исполняет опубликованные правила в готовой бетонной области и возвращает физическую раскладку;
 ' mesh не строит.
 Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout
+    If mReadOnly Then SectionRecipeError "CRebarRuleExecutor", "Опубликованные правила нельзя выполнять заново в том же объекте. Создайте новый исполнитель."
+    mBuilt = False
     ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID
     ' предыдущего успешного запуска того же исполнителя.
     Set mDefinition = Nothing
@@ -158,7 +162,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     Dim ruleCount As Long, i As Long, result As CRebarLayout
     ruleCount = definition.RuleCount
     Set result = New CRebarLayout
-    If ruleCount = 0 Then Set Build = result: Exit Function
+    If ruleCount = 0 Then mBuilt = True: Set Build = result: Exit Function
     ReDim mRules(1 To ruleCount): ReDim mState(1 To ruleCount)
     ReDim mStart(1 To ruleCount): ReDim mCount(1 To ruleCount)
     ReDim mSkippedByRule(1 To ruleCount): ReDim mMergedByRule(1 To ruleCount): ReDim mCreatedByRule(1 To ruleCount)
@@ -209,6 +213,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
 NextPosition:
         Next i
     End If
+    mBuilt = True
     Set Build = result
 End Function
 
@@ -354,7 +359,7 @@ Private Sub PrepareRule(ByVal index As Long)
     If mState(index) = 1 Then RuleError index, "Циклическая зависимость рядов."
     mState(index) = 1
     If Not mRules(index).Enabled Then mState(index) = 2: Exit Sub
-    ValidateOptions index
+    ' Preflight уже проверил все неизменяемые snapshots правил до подготовки позиций.
     Dim source As Long
     If mRules(index).Mode = DependentOffset Or mRules(index).Mode = ProjectFrom Then
         source = mDefinition.RuleIndex(mRules(index).SourceRuleID)
@@ -758,3 +763,14 @@ Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVa
     If index > 0 Then reference = mDiagnostic.SourceReference: reason = "Ряд '" & mRules(index).RuleID & "': " & reason
     SectionRecipeError "CRebarRuleExecutor", reason, reference
 End Sub
+
+' Закрывает исполненные позиции и диагностику общей сборки без копирования массивов.
+Friend Sub Freeze()
+    If Not mBuilt Then RuleError 0, "Нет успешно исполненных правил для публикации."
+    mReadOnly = True
+End Sub
+
+' Статус исполнителя последней успешно собранной модели.
+Public Property Get IsReadOnly() As Boolean
+    IsReadOnly = mReadOnly
+End Property

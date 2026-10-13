@@ -76,8 +76,8 @@ Public Function RoundedFrameDefinition() As CSectionDefinition
     facade.HorizontalExtent "Width", "Outer", "B", -400#, -1#
     facade.VerticalExtent "OpeningHeight", "Opening", "Ho", 350#, 1#
     facade.HorizontalExtent "OpeningWidth", "Opening", "Bo", 130#, 1#
-    facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1#, 60#
-    facade.RebarLabel "InnerBars", "Inner.Axis", 0#, -1#, 45#
+    facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1#
+    facade.RebarLabel "InnerBars", "Inner.Axis", 0#, -1#
     Set RoundedFrameDefinition = facade.Finish
 End Function
 

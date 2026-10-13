@@ -213,15 +213,13 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         If index >= 2 Then
             ' groupID — группа общей подписи; groupID & ".Main" — ряд для определения крайних
             ' стержней; nx — X-компонента направления подписи; ny — Y-компонента направления подписи;
-            ' axisDistance — as до осей стержней, мм; отступ подписи задаёт плоттер; True — меняем
-            ' местами концы опорной линии подписи.
-            facade.RebarRowExtentLabel groupID, groupID & ".Main", nx, ny, axisDistance, True
+            ' True — меняем местами концы опорной линии подписи.
+            facade.RebarRowExtentLabel groupID, groupID & ".Main", nx, ny, True
         Else
             ' groupID — группа общей подписи всех её рядов; path.ID — линия, по габаритам которой
             ' привязывается подпись; nx — X-компонента направления подписи; ny — Y-компонента
-            ' направления подписи; axisDistance — as до осей стержней, мм; отступ подписи задаёт
-            ' плоттер.
-            facade.RebarLabel groupID, path.ID, nx, ny, axisDistance
+            ' направления подписи.
+            facade.RebarLabel groupID, path.ID, nx, ny
         End If
 NextFace:
     Next index

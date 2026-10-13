@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\SolidFinal_2026-10-14\\SolidCandidate.xlsm",
+    "WorkbookSHA256":  "A7ECFC49A5AB73DB31CA673CFDFCEB9D06F9B03B841A30DDBAC596C15235AA41",
+    "ProductionSHA256":  "80DBF11972C4990C75E8BD416BA56AB55333AD19A57FC5D845D4B819FDAA8C04",
+    "Compiled":  true,
+    "Modules":  [
+                    "modSectionRecipeApiGuide"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

@@ -1,0 +1,13 @@
+﻿PASS: labels.first.normal
+PASS: labels.repeat.1
+PASS: bars.repeat.1
+PASS: labels.repeat.2
+PASS: bars.repeat.2
+PASS: labels.repeat.3
+PASS: bars.repeat.3
+PASS: labels.changed.normal
+PASS: labels.changed.count
+PASS: bars.changed.annotation
+PASS: labels.restored
+PASS: bars.restored
+TOTAL ANNOTATION ISOLATION: passed=12; failed=0

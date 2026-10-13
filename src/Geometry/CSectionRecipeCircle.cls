@@ -78,8 +78,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         End If
         ' "Circle" — группа общей подписи всех её рядов; path.ID — линия, по габаритам которой
         ' привязывается подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления
-        ' подписи; axisDistance — as до осей стержней, мм; отступ подписи задаёт плоттер.
-        facade.RebarLabel "Circle", path.ID, 0#, 1#, axisDistance
+        ' подписи.
+        facade.RebarLabel "Circle", path.ID, 0#, 1#
     End If
 
     ' Аннотации: размер и подпись фактической арматуры.

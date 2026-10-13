@@ -10,10 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' Декларативный фасад рецепта. Общая математика выполняется query/path;
-' обычный ряд задается коротким вызовом, сложный - типизированными options.
-Private mDefinition As CSectionDefinition
-Private mQuery As CSectionGeometryQuery
-Private mFinished As Boolean
+' обычный ряд задаётся коротким вызовом, сложный — типизированными options.
+' Initialize открывает одну сборку; Finish закрывает её. Каждая создающая команда сама регистрирует линию.
+' Возвращённый path — ссылка на уже сохранённую линию; Outer/Opening/правило используют её ID.
+Private mDefinition As CSectionDefinition ' Единственное заполняемое определение; после Finish только читается.
+Private mQuery As CSectionGeometryQuery ' Общие операции над линиями и областями, без собственной математики фасада.
+Private mFinished As Boolean ' Повторный Finish и новые команды для опубликованного определения запрещены.
 
 ' Открывает один новый фасад с TypeID и версией схемы. Повторная инициализация запрещена.
 Public Sub Initialize(ByVal typeID As String, Optional ByVal schemaVersion As Long = 1)
@@ -72,7 +74,8 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As V
 End Function
 
 ' Добавляет уже опубликованный непрерывный CGeometryPath в определение; не включает его
-' автоматически в бетон.
+' автоматически в бетон. Используется только для линий, созданных вручную или отдельным общим инструментом.
+' Результат CirclePath/LinePath/ArcPath/RectanglePath и других создающих команд повторно добавлять нельзя.
 Public Sub AddPath(ByVal path As CGeometryPath)
     RequireOpen
     mDefinition.AddPath path
@@ -390,37 +393,35 @@ Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal te
 End Sub
 
 ' Привязывает фактическую подпись группы к габариту target-пути, со стороны normalX/Y.
-Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double, _
-        Optional ByVal axisDistance As Double = 0#)
+Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen
     Dim value As TSectionAnnotation
     value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarLabel": value.Target = target: value.Name = groupID
-    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
+    value.NormalX = normalX: value.NormalY = normalY
     mDefinition.AddAnnotation value
 End Sub
 
 ' Привязывает фактическую подпись группы к концам исполненного ruleID.
-Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _
-        Optional ByVal axisDistance As Double = 0#)
+Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen
     Dim value As TSectionAnnotation
     value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowLabel": value.Target = ruleID: value.Name = groupID
-    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
+    value.NormalX = normalX: value.NormalY = normalY
     mDefinition.AddAnnotation value
 End Sub
 
 ' Подпись по фактическим экстремумам основного ряда, а не по всей траектории.
 Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _
-        Optional ByVal axisDistance As Double = 0#, Optional ByVal reverseDirection As Boolean = False)
+        Optional ByVal reverseDirection As Boolean = False)
     RequireOpen
     Dim value As TSectionAnnotation
     value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowExtentLabel": value.Target = ruleID: value.Name = groupID
-    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance: value.ReverseDirection = reverseDirection
+    value.NormalX = normalX: value.NormalY = normalY: value.ReverseDirection = reverseDirection
     mDefinition.AddAnnotation value
 End Sub
 
-' Проверяет контуры, ссылки, зависимости и аннотации; публикует неизменяемое CSectionDefinition.
-' Фасад после этого закрыт.
+' Проверяет контуры, ссылки, зависимости и виды аннотаций; публикует неизменяемое описание.
+' Фасад после этого закрыт. Параметры и фактическое размещение стержней проверяет Build до создания сетки.
 Public Function Finish() As CSectionDefinition
     RequireOpen
     mDefinition.Seal
@@ -431,14 +432,14 @@ End Function
 ' Геометрическая сторона крайнего ряда и направление подписи независимы:
 ' у отверстия подпись обращена в пустоту, а ряд выбирается со стороны бетона.
 Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal directionX As Double, ByVal directionY As Double, _
-        ByVal normalX As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)
+        ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen
     If Abs(directionX * directionX + directionY * directionY - 1#) > GEOM_TOLERANCE Then _
         SectionRecipeError "CSectionDefinitionBuilder", "Направление крайнего ряда должно быть единичным."
     Dim value As TSectionAnnotation
     value.AnnotationID = "REBAR_" & groupID: value.Kind = "RebarRowExtremeLabel": value.Target = ruleID: value.Name = groupID
     value.DirectionX = directionX: value.DirectionY = directionY
-    value.NormalX = normalX: value.NormalY = normalY: value.Value = axisDistance
+    value.NormalX = normalX: value.NormalY = normalY
     mDefinition.AddAnnotation value
 End Sub
 

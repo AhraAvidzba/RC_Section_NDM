@@ -1,10 +1,10 @@
 {
   "schema": 2,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "709bc278ee90af32e705fbe411c9659fa19e5776c695d8a0721f5ec74fb48bbb",
+  "bodySHA256": "ae560679a1de8ed83cd09565b7e42c71a558bc8d0fabcef826f62964d2e3c4e2",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "ffe2e60073a2114e997e591bfe593b5a94e7f36cb897e5e58420ce495e309168",
-    "src/Common/modSectionRecipeApiGuide.bas": "99eef33159fc9d3bc9fcddf7c1cc2651cd95a2c38870d175f57230aab20edae7"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "4cd0beac9df8dff578c1a48d14aba78bf9c938ef7bdd9d679e5fed26b35a3874",
+    "src/Common/modSectionRecipeApiGuide.bas": "8d90fe5aebf36ec4040e85095c04005d787c8586da935b786da8c8c96ffa91ce"
   },
   "rows": [
     {
@@ -128,13 +128,13 @@
       "line": 20
     },
     {
-      "text": "2. В CreateDefinition получите копии входных таблиц через context.Table и систему единиц через context.Units. Переведите введённые размеры в мм методами CUnitSystem. Сам класс описания сечения не должен читать ячейки Excel.",
+      "text": "2. В CreateDefinition получите копии входных таблиц через context.Table и закрытую копию единиц через context.Units. Переведите введённые размеры в мм методами CUnitSystem; перенастраивать этот объект нельзя. Сам класс описания сечения не должен читать ячейки Excel.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 21
     },
     {
-      "text": "3. Создайте CSectionDefinitionBuilder. Задайте геометрические линии с уникальными именами (ID). Замкнутую наружную границу назначьте методом Outer, а границу отверстия — Opening с указанием имени соответствующей наружной границы.",
+      "text": "3. Создайте CSectionDefinitionBuilder и один раз вызовите Initialize. Задайте геометрические линии с уникальными именами (ID). Создающие команды сразу регистрируют линии; их результат повторно передавать в AddPath не нужно. Замкнутую наружную границу назначьте методом Outer, а отверстие — Opening с именем соответствующей наружной границы.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 22
@@ -146,7 +146,7 @@
       "line": 23
     },
     {
-      "text": "5. При необходимости добавьте размеры и подписи. Вызовите Finish, чтобы проверить и завершить описание сечения.",
+      "text": "5. При необходимости добавьте размеры и подписи. Вызовите Finish, чтобы проверить контуры и ссылки и завершить описание. После него новые команды и повторный Finish запрещены. Арматурные условия и фактическое размещение проверяются общим Build до создания сетки.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 24
@@ -308,7 +308,7 @@
       "line": 54
     },
     {
-      "text": "facade.RebarRowLabel \"Top\", \"Top.Main\", 0#, 1#, 50# ' Top: группа; Top.Main: ряд; (0,1): вверх; 50: as, мм.",
+      "text": "facade.RebarRowLabel \"Top\", \"Top.Main\", 0#, 1# ' Top: группа; Top.Main: ряд; (0,1): направление подписи вверх.",
       "style": "code",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 56
@@ -368,7 +368,7 @@
       "line": 66
     },
     {
-      "text": "NDM.RECIPE.GUIDE/2|709bc278ee90af32e705fbe411c9659fa19e5776c695d8a0721f5ec74fb48bbb|99eef33159fc9d3bc9fcddf7c1cc2651cd95a2c38870d175f57230aab20edae7",
+      "text": "NDM.RECIPE.GUIDE/2|ae560679a1de8ed83cd09565b7e42c71a558bc8d0fabcef826f62964d2e3c4e2|8d90fe5aebf36ec4040e85095c04005d787c8586da935b786da8c8c96ffa91ce",
       "style": "footer"
     }
   ],

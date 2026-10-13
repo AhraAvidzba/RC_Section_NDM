@@ -31,12 +31,16 @@ End Sub
 ' ДЛЯ ТЕСТОВ: тот же исполнитель и annotation builder, что в общей сборке,
 ' без сетки; используется для проверки физических рядов и их привязок.
 Public Function FixtureAnnotatedLayout(ByVal definition As CSectionDefinition, _
-        Optional ByVal executor As CRebarRuleExecutor = Nothing) As CRebarLayout
+        Optional ByVal executor As CRebarRuleExecutor = Nothing, Optional ByRef annotations As CSectionAnnotations = Nothing) As CRebarLayout
     If executor Is Nothing Then Set executor = New CRebarRuleExecutor
-    Dim labels As CSectionAnnotationBuilder, annotations As CSectionAnnotations, layout As CRebarLayout
+    Dim builder As CSectionAnnotationBuilder, all As CSectionAnnotations, layout As CRebarLayout, i As Long
     Set layout = executor.Build(definition, FixtureGeometry(definition.ConcreteDomain))
-    Set labels = New CSectionAnnotationBuilder: Set annotations = New CSectionAnnotations
-    labels.Build definition, layout, annotations, executor
+    Set builder = New CSectionAnnotationBuilder: Set all = New CSectionAnnotations
+    builder.Build definition, layout, all, executor
+    Set annotations = New CSectionAnnotations
+    For i = 1 To all.Count
+        If all.AnnotationType(i) = "REBAR_ANNOTATION" Then FixtureCopyAnnotation all, i, annotations, 0#, 0#
+    Next i
     Set FixtureAnnotatedLayout = layout
 End Function
 
@@ -48,13 +52,25 @@ Public Function FixtureMoveLayout(ByVal layout As CRebarLayout, ByVal x As Doubl
         result.AddBar layout.BarID(i), layout.X(i) + x, layout.Y(i) + y, layout.Diameter(i), layout.Area(i), _
             layout.SteelClass(i), layout.Comment(i), annotationGroupName:=layout.BarAnnotationGroupName(i)
     Next i
-    For i = 1 To layout.AnnotationCount
-        result.AddAnnotationAnchor layout.AnnotationGroupName(i), layout.AnnotationStartX(i) + x, layout.AnnotationStartY(i) + y, _
-            layout.AnnotationEndX(i) + x, layout.AnnotationEndY(i) + y, layout.AnnotationNormalX(i), layout.AnnotationNormalY(i), _
-            layout.AnnotationAxisDistance(i)
-    Next i
+
     Set FixtureMoveLayout = result
 End Function
+
+' ДЛЯ ТЕСТОВ: перенос уже вычисленных аннотаций, без изменения стержней и вычисления привязок.
+Public Sub FixtureMoveAnnotations(ByRef annotations As CSectionAnnotations, ByVal x As Double, ByVal y As Double)
+    Dim result As CSectionAnnotations, i As Long
+    Set result = New CSectionAnnotations
+    For i = 1 To annotations.Count: FixtureCopyAnnotation annotations, i, result, x, y: Next i
+    Set annotations = result
+End Sub
+
+' Копирует полную запись аннотации и переносит только её геометрические точки.
+Private Sub FixtureCopyAnnotation(ByVal source As CSectionAnnotations, ByVal i As Long, _
+        ByVal result As CSectionAnnotations, ByVal x As Double, ByVal y As Double)
+    result.AddAnnotation source.AnnotationType(i), source.AnnotationID(i), source.StartX(i) + x, source.StartY(i) + y, _
+        source.EndX(i) + x, source.EndY(i) + y, source.NormalX(i), source.NormalY(i), source.Text(i), _
+        source.Value(i), source.Unit(i), source.Comment(i)
+End Sub
 
 ' ДЛЯ ТЕСТОВ: форматирование численных исходных данных рецептов. Здесь нет
 ' вычисления позиций, пересечений или формы; всю математику выполняет рецепт.

@@ -19,9 +19,10 @@ Option Explicit
 ' Класс не знает о нагрузках, материалах и solver-ах: он отвечает только за
 ' геометрическую дискретизацию бетонной области.
 
-Private mFibers() As TFiber
-Private mFiberCount As Long
-Private mBuildSeconds As Double
+Private mFibers() As TFiber ' Единственный массив готовых бетонных элементов: координаты, размеры, площади и материал.
+Private mReadOnly As Boolean ' Готовая сетка общей сборки только читается, без копирования массива.
+Private mFiberCount As Long ' Число заполненных элементов; не размер зарезервированного массива.
+Private mBuildSeconds As Double ' Время создания только сетки; не полное время расчёта сочетания.
 
 ' Дискретизирует бетонную область регулярной сеткой. Ячейки полностью внутри
 ' формы добавляются целиком; пограничные ячейки при необходимости дробятся на
@@ -29,6 +30,7 @@ Private mBuildSeconds As Double
 Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
 
+    If mReadOnly Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Опубликованную сетку нельзя перестроить. Создайте новый построитель."
     Dim message As String
     If geometry Is Nothing Then Err.Raise vbObjectError + 2107, "CFiberMeshBuilder", "Геометрия бетонного сечения не передана."
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
@@ -298,3 +300,14 @@ End Property
 
 
 
+
+' Закрывает готовую сетку перед выдачей из CSectionBuilder; массив не копируется.
+Friend Sub Freeze()
+    If mFiberCount <= 0 Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Нет готовой сетки для публикации."
+    mReadOnly = True
+End Sub
+
+' Режим сетки последней успешной сборки.
+Public Property Get IsReadOnly() As Boolean
+    IsReadOnly = mReadOnly
+End Property

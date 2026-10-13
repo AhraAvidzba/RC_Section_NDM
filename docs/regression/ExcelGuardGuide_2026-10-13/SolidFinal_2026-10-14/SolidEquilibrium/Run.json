@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "SolidEquilibrium",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRoundedRecipeEquilibriumTests",
+                     "Seconds":  0.98435699999999993,
+                     "Characters":  24561,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunHollowRecipeEquilibriumTests",
+                     "Seconds":  4.7718918,
+                     "Characters":  52434,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunHollowRecipeEdgeEquilibriumTests",
+                     "Seconds":  3.3346218999999997,
+                     "Characters":  39430,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "A8BA95D80BCEBBD87A1A34CDE40F30C20C5360B0B2C77356E989688EE3C73DE2",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T01:16:04.3857992+03:00"
+}

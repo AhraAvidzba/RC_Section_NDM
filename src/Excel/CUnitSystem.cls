@@ -24,24 +24,26 @@ Private Const TF_IN_N As Double = 9806.65
 Private Const KGF_CM2_IN_MPA As Double = 0.0980665
 Private Const TF_M2_IN_MPA As Double = 0.00980665
 
-Private mInputLength As String
-Private mOutputLength As String
-Private mInputArea As String
-Private mOutputArea As String
-Private mInputForce As String
-Private mOutputForce As String
-Private mInputMoment As String
-Private mOutputMoment As String
-Private mInputStress As String
-Private mOutputStress As String
-Private mInputCurvature As String
-Private mOutputCurvature As String
-Private mSignN As String
-Private mSignMx As String
-Private mSignMy As String
+Private mReadOnly As Boolean ' Защита настроек единиц в опубликованном снимке ввода.
+Private mInputLength As String ' Единица длин ввода; преобразование выполняется один раз при чтении размеров.
+Private mOutputLength As String ' Единица отображения длин; сохранённый Results может задавать собственную.
+Private mInputArea As String ' Единица площадей ввода.
+Private mOutputArea As String ' Единица отображения площадей.
+Private mInputForce As String ' Единица вводимых сил.
+Private mOutputForce As String ' Единица выводимых сил.
+Private mInputMoment As String ' Единица вводимых моментов.
+Private mOutputMoment As String ' Единица выводимых моментов.
+Private mInputStress As String ' Единица вводимых напряжений.
+Private mOutputStress As String ' Единица выводимых напряжений.
+Private mInputCurvature As String ' Единица вводимых кривизн.
+Private mOutputCurvature As String ' Единица выводимых кривизн.
+Private mSignN As String ' Пользовательский знак продольной силы; внутри растяжение положительно.
+Private mSignMx As String ' Пользовательский знак Mx; внутри задаёт растяжение по +Y.
+Private mSignMy As String ' Пользовательский знак My; внутри задаёт растяжение по +X.
 
 ' Устанавливает внутренние defaults, используемые до чтения Config или в автономных тестах.
 Public Sub InitializeDefaults()
+    RequireMutable
     mInputLength = "mm": mOutputLength = "m"
     mInputArea = "mm2": mOutputArea = "m2"
     mInputForce = "N": mOutputForce = "N"
@@ -57,6 +59,7 @@ End Sub
 ' является ошибкой ввода, а не запросом default. Автономный неполный reader
 ' может не содержать ключа: только для отсутствующего ключа остается default.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
+    RequireMutable
     InitializeDefaults
     If settings Is Nothing Then Exit Sub
 
@@ -76,6 +79,64 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
     mSignN = ValidNSign(settings.GetRawString("Sign.N.User", mSignN), "Sign.N.User", settings)
     mSignMx = ValidMxSign(settings.GetRawString("Sign.Mx.User", mSignMx), "Sign.Mx.User", settings)
     mSignMy = ValidMySign(settings.GetRawString("Sign.My.User", mSignMy), "Sign.My.User", settings)
+End Sub
+
+' Возвращает независимую изменяемую копию всех единиц и соглашений о знаках.
+' Копируются только скалярные настройки; ссылка на reader или книгу не хранится.
+Public Function Clone() As CUnitSystem
+    Dim result As CUnitSystem
+    Set result = New CUnitSystem
+    result.CopyState mInputLength, mOutputLength, mInputArea, mOutputArea, mInputForce, mOutputForce, mInputMoment, mOutputMoment, mInputStress, mOutputStress, mInputCurvature, mOutputCurvature, mSignN, mSignMx, mSignMy
+    Set Clone = result
+End Function
+
+' Закрывает настройки, принадлежащие снимку ввода; преобразования чисел остаются доступны.
+Friend Sub Freeze()
+    mReadOnly = True
+End Sub
+
+' Позволяет проверить режим объекта без выдачи изменяемых настроек.
+Public Property Get IsReadOnly() As Boolean
+    IsReadOnly = mReadOnly
+End Property
+
+' Внутреннее заполнение независимой копии; повторная запись в закрытый объект запрещена.
+Friend Sub CopyState(ByVal InputLength As String, _
+        ByVal OutputLength As String, _
+        ByVal InputArea As String, _
+        ByVal OutputArea As String, _
+        ByVal InputForce As String, _
+        ByVal OutputForce As String, _
+        ByVal InputMoment As String, _
+        ByVal OutputMoment As String, _
+        ByVal InputStress As String, _
+        ByVal OutputStress As String, _
+        ByVal InputCurvature As String, _
+        ByVal OutputCurvature As String, _
+        ByVal SignN As String, _
+        ByVal SignMx As String, _
+        ByVal SignMy As String)
+    RequireMutable
+    mInputLength = InputLength
+    mOutputLength = OutputLength
+    mInputArea = InputArea
+    mOutputArea = OutputArea
+    mInputForce = InputForce
+    mOutputForce = OutputForce
+    mInputMoment = InputMoment
+    mOutputMoment = OutputMoment
+    mInputStress = InputStress
+    mOutputStress = OutputStress
+    mInputCurvature = InputCurvature
+    mOutputCurvature = OutputCurvature
+    mSignN = SignN
+    mSignMx = SignMx
+    mSignMy = SignMy
+End Sub
+
+' Контексту нужна стабильная конфигурация единиц на весь срок обработки его таблиц.
+Private Sub RequireMutable()
+    If mReadOnly Then Err.Raise vbObjectError + 4510, "CUnitSystem", "Система единиц принадлежит опубликованному снимку ввода и не может быть перенастроена."
 End Sub
 
 ' Переводит длину из пользовательских INPUT-единиц во внутренние мм.

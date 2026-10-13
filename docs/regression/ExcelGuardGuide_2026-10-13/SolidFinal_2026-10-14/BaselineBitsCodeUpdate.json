@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\SolidFinal_2026-10-14\\BaselineBits.xlsm",
+    "WorkbookSHA256":  "A7F17A0A38BB1EAF52EF3F4642D89270D635E4E4E10987EB4F58562BFB66F3A0",
+    "ProductionSHA256":  "80DBF11972C4990C75E8BD416BA56AB55333AD19A57FC5D845D4B819FDAA8C04",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestGeometrySolidSnapshots"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

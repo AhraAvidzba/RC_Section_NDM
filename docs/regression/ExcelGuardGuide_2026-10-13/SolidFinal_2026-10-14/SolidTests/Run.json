@@ -1,0 +1,149 @@
+﻿{
+    "Stage":  "SolidTests",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestGeometryPublication.RunAnnotationIsolationTests",
+                     "Seconds":  0.12124389999999999,
+                     "Characters":  340,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunRecipeContextFreezeTests",
+                     "Seconds":  0.016057,
+                     "Characters":  368,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunPublishedBuildTests",
+                     "Seconds":  0.10088409999999999,
+                     "Characters":  695,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunDefinitionLifecycleTests",
+                     "Seconds":  0.0300197,
+                     "Characters":  402,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometry.RunGeometryTests",
+                     "Seconds":  3.6134979,
+                     "Characters":  57403,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryQuery.RunGeometryQueryTests",
+                     "Seconds":  0.2905737,
+                     "Characters":  77324,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryQuery.RunGeneratedContourOwnershipTests",
+                     "Seconds":  0.5037172,
+                     "Characters":  27200,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeDefinitionTests",
+                     "Seconds":  0.037207199999999996,
+                     "Characters":  443,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.33399229999999996,
+                     "Characters":  7474,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+                     "Seconds":  0.030015,
+                     "Characters":  7751,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                     "Seconds":  22.7890375,
+                     "Characters":  4055,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryReview.RunGeometryReviewTests",
+                     "Seconds":  8.3849751,
+                     "Characters":  45000,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeAnnotations.RunRecipeAnnotationTests",
+                     "Seconds":  0.0687449,
+                     "Characters":  47,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+                     "Seconds":  0.40985509999999997,
+                     "Characters":  55,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeOperations.RunRecipeOperationTests",
+                     "Seconds":  0.0748837,
+                     "Characters":  46,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeOperations.RunRecipeDiagnosticTests",
+                     "Seconds":  0.24919029999999998,
+                     "Characters":  47,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+                     "Seconds":  0.1001991,
+                     "Characters":  626,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunApiGeometryReadExamples",
+                     "Seconds":  0.0215534,
+                     "Characters":  882,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunApiUnitExamples",
+                     "Seconds":  0.0022783,
+                     "Characters":  986,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunApiInputAndDataExamples",
+                     "Seconds":  0.0072552999999999992,
+                     "Characters":  404,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "A14793AAFD51F7EA00207E7CD634A541E7AC8A3C30A4128D1D8A9AB90E9881CC",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T01:13:17.2268819+03:00"
+}

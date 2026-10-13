@@ -44,6 +44,18 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '   передаёт значение, ByRef позволяет методу вернуть результат через параметр. Nothing вместо options
 '   создаёт обычные условия размещения.
 '
+'   Initialize открывает одно описание, Finish завершает его. CirclePath, LinePath, RectanglePath и
+'   другие создающие команды сами сохраняют линию. Возвращённый path уже зарегистрирован; Outer, Opening
+'   и армирование получают его ID. AddPath нужен только для отдельно созданной линии.
+'
+'   Таблицы и единицы context — независимый снимок ввода. context.Units используется для преобразования
+'   чисел; перенастраивать его нельзя. Проверка и размещение стержней выполняются общим Build до
+'   создания сетки.
+'
+'   Команды подписей задают группу, геометрическую привязку и направление. Расстояние от линии арматуры
+'   до края бетона программа определяет по фактическому контуру; дополнительный отступ задаётся в
+'   настройках плоттера.
+'
 '   МИНИМАЛЬНЫЙ ПРИМЕР
 '     Тело ISectionRecipe_CreateDefinition в классе с Implements ISectionRecipe. Пример задаёт
 '     прямоугольник и пять верхних стержней диаметром 20 мм:
@@ -59,9 +71,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       options.AnnotationGroup = "Top"  ' AnnotationGroup — имя общей подписи для всех рядов этой группы.
 '       facade.RebarByCount "Top.Main", path.ID, 5, 20#, options  ' "Top.Main" — имя нового ряда; path.ID — линия центров стержней; 5 — заданное число стержней; 20 — диаметр стержня, мм; options — отступы, нумерация и условия размещения.
 '       ' "Top" — группа общей подписи всех её рядов; "Top.Main" — ряд, к концам которого привязана
-'       ' подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления подписи; 50 —
-'       ' as до осей стержней, мм; отступ подписи задаёт плоттер.
-'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#
+'       ' подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления подписи.
+'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#
 '       facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#  ' "DIM_B" — имя размера; "B" — обозначение на схеме; 0 — X первой точки, мм; 600 — X второй точки, мм; 1000 — уровень исходной размерной линии Y, мм.
 '       Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем описание сечения.
 '
@@ -114,8 +125,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.Finish
 '
-'       Проверяет контуры, ссылки, зависимости и аннотации; публикует неизменяемое CSectionDefinition.
-'       Фасад после этого закрыт.
+'       Проверяет контуры, ссылки, зависимости и декларации аннотаций; публикует неизменяемое
+'       CSectionDefinition и закрывает фасад. Допустимость параметров и фактическое размещение арматуры
+'       проверяет CSectionBuilder до построения сетки.
 '
 '       Объявление:
 '         Public Function Finish() As CSectionDefinition
@@ -168,7 +180,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionRecipeContext.Units
 '
-'       Система единиц внешнего workflow; не перезагружайте её из Excel в рецепте.
+'       Закрытая копия системы единиц этого снимка ввода. Внешняя перенастройка units не меняет
+'       контекст; методы преобразования доступны, InitializeDefaults/LoadFromSettings запрещены.
 '
 '       Объявление:
 '         Public Property Get Units() As CUnitSystem
@@ -635,8 +648,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.AddPath
 '
-'       Добавляет уже опубликованный непрерывный CGeometryPath в определение; не включает его
-'       автоматически в бетон.
+'       Регистрирует непрерывную линию, созданную вручную или отдельным общим инструментом. Создающие
+'       команды фасада уже регистрируют свой результат; повторный AddPath для него является ошибкой.
+'       Назначение Outer/Opening выполняется отдельно.
 '
 '       Объявление:
 '         Public Sub AddPath(ByVal path As CGeometryPath)
@@ -1830,7 +1844,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As
-'         Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)
+'         Double, ByVal normalY As Double)
 '
 '       Параметры:
 '         ByVal groupID As String
@@ -1845,10 +1859,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         ByVal normalY As Double
 '           Y-компонента стороны размерной/подписной линии.
 '
-'         Optional ByVal axisDistance As Double = 0#
-'           Положительное расстояние до оси, мм; не защитный слой до поверхности и не продольный
-'           setback.
-'
 '
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.RebarRowLabel
@@ -1857,7 +1867,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As
-'         Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)
+'         Double, ByVal normalY As Double)
 '
 '       Параметры:
 '         ByVal groupID As String
@@ -1871,10 +1881,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '         ByVal normalY As Double
 '           Y-компонента стороны размерной/подписной линии.
-'
-'         Optional ByVal axisDistance As Double = 0#
-'           Положительное расстояние до оси, мм; не защитный слой до поверхности и не продольный
-'           setback.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -1885,8 +1891,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX
-'         As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#, Optional ByVal
-'         reverseDirection As Boolean = False)
+'         As Double, ByVal normalY As Double, Optional ByVal reverseDirection As Boolean = False)
 '
 '       Параметры:
 '         ByVal groupID As String
@@ -1900,10 +1905,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '         ByVal normalY As Double
 '           Y-компонента стороны размерной/подписной линии.
-'
-'         Optional ByVal axisDistance As Double = 0#
-'           Положительное расстояние до оси, мм; не защитный слой до поверхности и не продольный
-'           setback.
 '
 '         Optional ByVal reverseDirection As Boolean = False
 '           Обращает направление линии привязки подписи; физический ряд не меняется.
@@ -1918,7 +1919,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Объявление:
 '         Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal
 '         directionX As Double, ByVal directionY As Double, ByVal normalX As Double, ByVal normalY As
-'         Double, Optional ByVal axisDistance As Double = 0#)
+'         Double)
 '
 '       Параметры:
 '         ByVal groupID As String
@@ -1939,10 +1940,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '         ByVal normalY As Double
 '           Y-компонента стороны размерной/подписной линии.
-'
-'         Optional ByVal axisDistance As Double = 0#
-'           Положительное расстояние до оси, мм; не защитный слой до поверхности и не продольный
-'           setback.
 '
 '
 '

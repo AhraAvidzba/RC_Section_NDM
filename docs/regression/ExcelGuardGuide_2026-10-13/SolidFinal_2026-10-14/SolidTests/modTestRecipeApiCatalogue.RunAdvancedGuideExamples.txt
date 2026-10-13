@@ -1,0 +1,17 @@
+﻿PASS: advanced.chain.segments.False
+PASS: advanced.chain.namedNose.False
+PASS: advanced.physical.count.False
+PASS: advanced.projection.skips.False
+PASS: advanced.noOverlap.False
+PASS: advanced.verticalExtent.False
+PASS: advanced.actualLabel.False
+PASS: advanced.dependentTrace.False
+PASS: advanced.chain.segments.True
+PASS: advanced.chain.namedNose.True
+PASS: advanced.physical.count.True
+PASS: advanced.projection.skips.True
+PASS: advanced.noOverlap.True
+PASS: advanced.verticalExtent.True
+PASS: advanced.actualLabel.True
+PASS: advanced.dependentTrace.True
+TOTAL ADVANCED GUIDE EXAMPLES: passed=16; failed=0

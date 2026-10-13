@@ -1,0 +1,164 @@
+{
+  "Passed": true,
+  "Geometry": [
+    {
+      "File": "modTestShapeArchitecture.DumpCircleGeometryMatrix.txt",
+      "Passed": true,
+      "RemovedScratchAnchors": 28,
+      "ComparedBytes": 10082949,
+      "BeforeSHA256": "9068199e7e44912bd77b3487044a845c7eb153b0d64c2ffe33c580ec39b23cb2",
+      "AfterSHA256": "9068199e7e44912bd77b3487044a845c7eb153b0d64c2ffe33c580ec39b23cb2"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt",
+      "Passed": true,
+      "RemovedScratchAnchors": 32,
+      "ComparedBytes": 3861992,
+      "BeforeSHA256": "6ac13329e297f12f5c7590820544c6940e4bb97ccdf12036050c5b33cbe9525a",
+      "AfterSHA256": "6ac13329e297f12f5c7590820544c6940e4bb97ccdf12036050c5b33cbe9525a"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpHollowGeometryMatrix.txt",
+      "Passed": true,
+      "RemovedScratchAnchors": 122,
+      "ComparedBytes": 11827380,
+      "BeforeSHA256": "5db1c9bd2caf36000f3c251bbf2024949ec0651ffa1cb5568ab811dc7babb6a0",
+      "AfterSHA256": "5db1c9bd2caf36000f3c251bbf2024949ec0651ffa1cb5568ab811dc7babb6a0"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "Passed": true,
+      "RemovedScratchAnchors": 117,
+      "ComparedBytes": 5780817,
+      "BeforeSHA256": "9042b2e51c06767c0140f4731b55b59e9873a2821e27a807fcddc1af604cb410",
+      "AfterSHA256": "9042b2e51c06767c0140f4731b55b59e9873a2821e27a807fcddc1af604cb410"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt",
+      "Passed": true,
+      "RemovedScratchAnchors": 92,
+      "ComparedBytes": 8772043,
+      "BeforeSHA256": "91d73cedd3f9628efd29e36ce34e6df31d2e4d31f5591a4d72c39c9743e94f16",
+      "AfterSHA256": "91d73cedd3f9628efd29e36ce34e6df31d2e4d31f5591a4d72c39c9743e94f16"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt",
+      "Passed": true,
+      "RemovedScratchAnchors": 49,
+      "ComparedBytes": 3356425,
+      "BeforeSHA256": "c907b1f0be17b5dffbf92d8d6eb2da0852652e825be0d1024f89f11ffe2b27fc",
+      "AfterSHA256": "c907b1f0be17b5dffbf92d8d6eb2da0852652e825be0d1024f89f11ffe2b27fc"
+    }
+  ],
+  "BitwiseModelsAndNds": [
+    {
+      "File": "modTestGeometrySolidSnapshots.DumpSolidPhysicalBits.txt",
+      "Passed": true,
+      "Bytes": 751906,
+      "BeforeSHA256": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15",
+      "AfterSHA256": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15"
+    },
+    {
+      "File": "modTestGeometrySolidSnapshots.DumpSolidDirectNdsBits.txt",
+      "Passed": true,
+      "Bytes": 21087,
+      "BeforeSHA256": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0",
+      "AfterSHA256": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0"
+    }
+  ],
+  "NdsConverged": 120,
+  "ChartStructureEqual": true,
+  "ExcelPng": [
+    {
+      "File": "Circle.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "9375edeee71b8a3a9776a8b64d2ef6cab5caa48f93ba1981c7780084926d7a2c",
+      "AfterPixelsSHA256": "9375edeee71b8a3a9776a8b64d2ef6cab5caa48f93ba1981c7780084926d7a2c"
+    },
+    {
+      "File": "HollowCentered.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "70b2e1e272289f92faa85323c28ae0caed3a7818f6727ece4b111bd08f96589c",
+      "AfterPixelsSHA256": "70b2e1e272289f92faa85323c28ae0caed3a7818f6727ece4b111bd08f96589c"
+    },
+    {
+      "File": "HollowOffset.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "48cae0872c5ffe95ed04d971e57f530d0c5e6252f9350174a6183b8d6d5ea971",
+      "AfterPixelsSHA256": "48cae0872c5ffe95ed04d971e57f530d0c5e6252f9350174a6183b8d6d5ea971"
+    },
+    {
+      "File": "LSection.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "d469758e0fd60ddf7bbdb995336cf1e812cbafa9fc6ea682ddb1cb615f3e7065",
+      "AfterPixelsSHA256": "d469758e0fd60ddf7bbdb995336cf1e812cbafa9fc6ea682ddb1cb615f3e7065"
+    },
+    {
+      "File": "Rectangle.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "1b202371cc8b367b39e1ecfa96b686c94cecb049b717ae1cc8d017df3458cfc3",
+      "AfterPixelsSHA256": "1b202371cc8b367b39e1ecfa96b686c94cecb049b717ae1cc8d017df3458cfc3"
+    },
+    {
+      "File": "RoundedMixed.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "d2c4724664319911f16bee57c22674b3f79c64a0b310cae1200a687baf8f30c0",
+      "AfterPixelsSHA256": "d2c4724664319911f16bee57c22674b3f79c64a0b310cae1200a687baf8f30c0"
+    },
+    {
+      "File": "RoundedSimple.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "482a0e17d2fe74b3cc0a1c896fe03f13062caf13f25bf5069a0639bc403799e9",
+      "AfterPixelsSHA256": "482a0e17d2fe74b3cc0a1c896fe03f13062caf13f25bf5069a0639bc403799e9"
+    },
+    {
+      "File": "RoundedTapered.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "4c523fbf08b82abb7d3a0247612045359154af137adfedbb2da75bc59ecc4257",
+      "AfterPixelsSHA256": "4c523fbf08b82abb7d3a0247612045359154af137adfedbb2da75bc59ecc4257"
+    },
+    {
+      "File": "TwoRectangles.png",
+      "Passed": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforePixelsSHA256": "310f5fb1fbc53dbd3fcbb615973638ac14d7b7e67563122fd95af2106f1051e9",
+      "AfterPixelsSHA256": "310f5fb1fbc53dbd3fcbb615973638ac14d7b7e67563122fd95af2106f1051e9"
+    }
+  ],
+  "Errors": []
+}

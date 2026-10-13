@@ -237,46 +237,53 @@ Private Sub TestRebarAnnotationAnchors(ByRef stats As TTestStats)
     Dim circleBuilder As CRebarRuleExecutor
     Set circleBuilder = New CRebarRuleExecutor
 
+    Dim circleLabels As CSectionAnnotations, rectsetLabels As CSectionAnnotations
+    Dim zeroFaceLabels As CSectionAnnotations, zeroCircleLabels As CSectionAnnotations
     Dim circleBars As CRebarLayout
-    Set circleBars = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 8, 20#)), circleBuilder), 10#, -20#)
-    AssertTrue stats, "annotation.circle.count", circleBars.AnnotationCount = 1
-    AssertTrue stats, "annotation.circle.group", circleBars.AnnotationGroupName(1) = "Circle"
-    AssertClose stats, "annotation.circle.startX", circleBars.AnnotationStartX(1), -100#, 0.000001
-    AssertClose stats, "annotation.circle.endX", circleBars.AnnotationEndX(1), 120#, 0.000001
-    AssertClose stats, "annotation.circle.normalY", circleBars.AnnotationNormalY(1), 1#, 0.000001
-    AssertClose stats, "annotation.circle.axisDistance", circleBars.AnnotationAxisDistance(1), 40#, 0.000001
+    Set circleBars = FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 8, 20#)), circleBuilder, circleLabels)
+    Set circleBars = FixtureMoveLayout(circleBars, 10#, -20#)
+    FixtureMoveAnnotations circleLabels, 10#, -20#
+    AssertTrue stats, "annotation.circle.count", circleLabels.Count = 1
+    AssertTrue stats, "annotation.circle.group", circleLabels.AnnotationID(1) = "REBAR_Circle"
+    AssertClose stats, "annotation.circle.startX", circleLabels.StartX(1), -100#, 0.000001
+    AssertClose stats, "annotation.circle.endX", circleLabels.EndX(1), 120#, 0.000001
+    AssertClose stats, "annotation.circle.normalY", circleLabels.NormalY(1), 1#, 0.000001
+    AssertClose stats, "annotation.circle.axisDistance", 150# - Sqr((circleBars.X(1) - 10#) ^ 2 + (circleBars.Y(1) + 20#) ^ 2), 40#, 0.000001
 
     Dim rectsetBuilder As CRebarRuleExecutor
     Set rectsetBuilder = New CRebarRuleExecutor
     Dim rectsetBars As CRebarLayout
     Set rectsetBars = FixtureAnnotatedLayout(FixtureRectSetDefinition(Array(250#, 550#, 600#, 250#, 0#, "LSection"), _
-        Array(Array(40#, 40#, 20#, 20#, 3, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings())), rectsetBuilder)
+        Array(Array(40#, 40#, 20#, 20#, 3, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings())), rectsetBuilder, rectsetLabels)
 
-    AssertTrue stats, "annotation.rectset.count", rectsetBars.AnnotationCount = 1
-    AssertTrue stats, "annotation.rectset.group", rectsetBars.AnnotationGroupName(1) = "H1.as_1"
-    AssertClose stats, "annotation.rectset.startY", rectsetBars.AnnotationStartY(1), 300#, 0.000001
-    AssertClose stats, "annotation.rectset.endY", rectsetBars.AnnotationEndY(1), 730#, 0.000001
-    AssertClose stats, "annotation.rectset.normalX", rectsetBars.AnnotationNormalX(1), -1#, 0.000001
-    AssertClose stats, "annotation.rectset.axisDistance", rectsetBars.AnnotationAxisDistance(1), 40#, 0.000001
+    AssertTrue stats, "annotation.rectset.count", rectsetLabels.Count = 1
+    AssertTrue stats, "annotation.rectset.group", rectsetLabels.AnnotationID(1) = "REBAR_H1.as_1"
+    AssertClose stats, "annotation.rectset.startY", rectsetLabels.StartY(1), 300#, 0.000001
+    AssertClose stats, "annotation.rectset.endY", rectsetLabels.EndY(1), 730#, 0.000001
+    AssertClose stats, "annotation.rectset.normalX", rectsetLabels.NormalX(1), -1#, 0.000001
+    AssertClose stats, "annotation.rectset.axisDistance", rectsetBars.X(1), 40#, 0.000001
 
     Dim noBars As CRebarLayout
     Set noBars = New CRebarLayout
-    noBars.AddAnnotationAnchor "SyntheticOnly", 0#, 0#, 1#, 0#, 0#, 1#
-    AssertTrue stats, "annotation.manual.anchor.allowed", noBars.AnnotationCount = 1
+    Dim synthetic(1 To 1) As TSectionAnnotation, noBarLabels As CSectionAnnotations, formatter As CRebarGroupAnnotationBuilder
+    synthetic(1).Name = "SyntheticOnly": synthetic(1).EndX = 1#: synthetic(1).NormalY = 1#
+    Set noBarLabels = New CSectionAnnotations: Set formatter = New CRebarGroupAnnotationBuilder
+    formatter.AddRebarLabels noBarLabels, noBars, synthetic, 1
+    AssertTrue stats, "annotation.manual.noPhysicalLabel", noBarLabels.Count = 0
 
     Dim zeroFaceBuilder As CRebarRuleExecutor
     Set zeroFaceBuilder = New CRebarRuleExecutor
     Dim zeroFaceBars As CRebarLayout
     Set zeroFaceBars = FixtureAnnotatedLayout(FixtureRectSetDefinition(Array(250#, 550#, 600#, 250#, 0#, "LSection"), _
-        Array(EmptyFaceSettings(), EmptyFaceSettings(), Array(40#, 40#, 20#, 20#, 0, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), Array(40#, 40#, 20#, 20#, 2, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"))), zeroFaceBuilder)
+        Array(EmptyFaceSettings(), EmptyFaceSettings(), Array(40#, 40#, 20#, 20#, 0, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"), Array(40#, 40#, 20#, 20#, 2, 0, 50#, 70#, 0#, 0#, 0#, 0#, 0#, 0#, "Stacked", "Stacked"))), zeroFaceBuilder, zeroFaceLabels)
     AssertTrue stats, "annotation.zeroFace.hasOtherBars", zeroFaceBars.Count = 2
-    AssertTrue stats, "annotation.zeroFace.noAnchor", Not HasAnnotationGroup(zeroFaceBars, "B1.as_1")
-    AssertTrue stats, "annotation.zeroFace.otherAnchor", HasAnnotationGroup(zeroFaceBars, "B2.as_1")
+    AssertTrue stats, "annotation.zeroFace.noAnchor", Not HasAnnotationGroup(zeroFaceLabels, "B1.as_1")
+    AssertTrue stats, "annotation.zeroFace.otherAnchor", HasAnnotationGroup(zeroFaceLabels, "B2.as_1")
 
     Dim zeroCircleBars As CRebarLayout
-    Set zeroCircleBars = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 0, 20#, 20#, 30#, "Stacked", "Stacked")), circleBuilder), 10#, -20#)
+    Set zeroCircleBars = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 0, 20#, 20#, 30#, "Stacked", "Stacked")), circleBuilder, zeroCircleLabels), 10#, -20#)
     AssertTrue stats, "annotation.circle.zeroCount.noBars", zeroCircleBars.Count = 0
-    AssertTrue stats, "annotation.circle.zeroCount.noAnchor", zeroCircleBars.AnnotationCount = 0
+    AssertTrue stats, "annotation.circle.zeroCount.noAnchor", zeroCircleLabels.Count = 0
 
     Dim geom As CGeometryRegion
     Set geom = FixtureDisk(300#, 10#, -20#)
@@ -1962,10 +1969,10 @@ Private Sub TestHollowRectangleRebarLayout(ByRef stats As TTestStats)
     Dim builder As CRebarRuleExecutor
     Set builder = New CRebarRuleExecutor
 
-    Dim layout As CRebarLayout
+    Dim layout As CRebarLayout, annotations As CSectionAnnotations
     Set geom = FixtureHollowDefinition(geomParameters, _
         Array(Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), Array(40#, 20#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")))
-    Set layout = FixtureAnnotatedLayout(geom, builder)
+    Set layout = FixtureAnnotatedLayout(geom, builder, annotations)
 
     AssertTrue stats, "hollow.rebar.external.top", CountBarsInAnnotationGroup(layout, "B.Top") = 8
     AssertTrue stats, "hollow.rebar.external.bottom", CountBarsInAnnotationGroup(layout, "B.Bottom") = 8
@@ -1983,32 +1990,32 @@ Private Sub TestHollowRectangleRebarLayout(ByRef stats As TTestStats)
     AssertClose stats, "hollow.rebar.hLeft.lastY", layout.Y(lastHLeft), hLeftY2, 0.000001
 
     Dim annotationBTop As Long
-    annotationBTop = FindRebarAnnotationAnchor(layout, "B.Top")
+    annotationBTop = FindRebarAnnotationAnchor(annotations, "B.Top")
     Dim bTopMaxY As Double
     bTopMaxY = ExtremeYInAnnotationGroup(layout, "B.Top", True)
-    AssertClose stats, "hollow.rebar.bTop.anchorStartY", layout.AnnotationStartY(annotationBTop), bTopMaxY, 0.000001
-    AssertClose stats, "hollow.rebar.bTop.anchorEndY", layout.AnnotationEndY(annotationBTop), bTopMaxY, 0.000001
+    AssertClose stats, "hollow.rebar.bTop.anchorStartY", annotations.StartY(annotationBTop), bTopMaxY, 0.000001
+    AssertClose stats, "hollow.rebar.bTop.anchorEndY", annotations.EndY(annotationBTop), bTopMaxY, 0.000001
 
     Dim annotationBBottom As Long
-    annotationBBottom = FindRebarAnnotationAnchor(layout, "B.Bottom")
+    annotationBBottom = FindRebarAnnotationAnchor(annotations, "B.Bottom")
     Dim bBottomMinY As Double
     bBottomMinY = ExtremeYInAnnotationGroup(layout, "B.Bottom", False)
-    AssertClose stats, "hollow.rebar.bBottom.anchorStartY", layout.AnnotationStartY(annotationBBottom), bBottomMinY, 0.000001
-    AssertClose stats, "hollow.rebar.bBottom.anchorEndY", layout.AnnotationEndY(annotationBBottom), bBottomMinY, 0.000001
+    AssertClose stats, "hollow.rebar.bBottom.anchorStartY", annotations.StartY(annotationBBottom), bBottomMinY, 0.000001
+    AssertClose stats, "hollow.rebar.bBottom.anchorEndY", annotations.EndY(annotationBBottom), bBottomMinY, 0.000001
 
     Dim annotationOpeningBTop As Long
-    annotationOpeningBTop = FindRebarAnnotationAnchor(layout, "Opening.B.Top")
+    annotationOpeningBTop = FindRebarAnnotationAnchor(annotations, "Opening.B.Top")
     Dim openingBTopMaxY As Double
     openingBTopMaxY = ExtremeYInAnnotationGroup(layout, "Opening.B.Top", True)
-    AssertClose stats, "hollow.rebar.openingBTop.anchorStartY", layout.AnnotationStartY(annotationOpeningBTop), openingBTopMaxY, 0.000001
-    AssertClose stats, "hollow.rebar.openingBTop.anchorEndY", layout.AnnotationEndY(annotationOpeningBTop), openingBTopMaxY, 0.000001
+    AssertClose stats, "hollow.rebar.openingBTop.anchorStartY", annotations.StartY(annotationOpeningBTop), openingBTopMaxY, 0.000001
+    AssertClose stats, "hollow.rebar.openingBTop.anchorEndY", annotations.EndY(annotationOpeningBTop), openingBTopMaxY, 0.000001
 
     Dim annotationOpeningBBottom As Long
-    annotationOpeningBBottom = FindRebarAnnotationAnchor(layout, "Opening.B.Bottom")
+    annotationOpeningBBottom = FindRebarAnnotationAnchor(annotations, "Opening.B.Bottom")
     Dim openingBBottomMinY As Double
     openingBBottomMinY = ExtremeYInAnnotationGroup(layout, "Opening.B.Bottom", False)
-    AssertClose stats, "hollow.rebar.openingBBottom.anchorStartY", layout.AnnotationStartY(annotationOpeningBBottom), openingBBottomMinY, 0.000001
-    AssertClose stats, "hollow.rebar.openingBBottom.anchorEndY", layout.AnnotationEndY(annotationOpeningBBottom), openingBBottomMinY, 0.000001
+    AssertClose stats, "hollow.rebar.openingBBottom.anchorStartY", annotations.StartY(annotationOpeningBBottom), openingBBottomMinY, 0.000001
+    AssertClose stats, "hollow.rebar.openingBBottom.anchorEndY", annotations.EndY(annotationOpeningBBottom), openingBBottomMinY, 0.000001
 
     AssertTrue stats, "hollow.rebar.opening.topProjected", CountBarsInAnnotationGroup(layout, "Opening.B.Top") > 0
     AssertTrue stats, "hollow.rebar.opening.bottomProjected", CountBarsInAnnotationGroup(layout, "Opening.B.Bottom") > 0
@@ -2293,14 +2300,8 @@ Private Function EmptyFaceSettings() As Variant
 End Function
 
 ' Проверяет наличие semantic-группы раскладки независимо от графического вывода.
-Private Function HasAnnotationGroup(ByVal layout As CRebarLayout, ByVal groupName As String) As Boolean
-    Dim i As Long
-    For i = 1 To layout.AnnotationCount
-        If StrComp(layout.AnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
-            HasAnnotationGroup = True
-            Exit Function
-        End If
-    Next i
+Private Function HasAnnotationGroup(ByVal annotations As CSectionAnnotations, ByVal groupName As String) As Boolean
+    HasAnnotationGroup = (FindRebarAnnotationAnchor(annotations, groupName) > 0)
 End Function
 
 ' Поиск аннотации требует совпадения типа и ID, а не только похожей подписи.
@@ -2462,12 +2463,11 @@ Private Sub FindFirstLastBarInAnnotationGroup(ByVal layout As CRebarLayout, ByVa
 End Sub
 
 ' Находит semantic-якорь подписи группы, не подменяя его координатами крайнего стержня.
-Private Function FindRebarAnnotationAnchor(ByVal layout As CRebarLayout, ByVal groupName As String) As Long
+Private Function FindRebarAnnotationAnchor(ByVal annotations As CSectionAnnotations, ByVal groupName As String) As Long
     Dim i As Long
-    For i = 1 To layout.AnnotationCount
-        If StrComp(layout.AnnotationGroupName(i), groupName, vbTextCompare) = 0 Then
-            FindRebarAnnotationAnchor = i
-            Exit Function
+    For i = 1 To annotations.Count
+        If StrComp(annotations.AnnotationID(i), "REBAR_" & groupName, vbTextCompare) = 0 Then
+            FindRebarAnnotationAnchor = i: Exit Function
         End If
     Next i
 End Function

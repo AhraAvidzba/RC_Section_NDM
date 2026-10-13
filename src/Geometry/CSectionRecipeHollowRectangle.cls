@@ -254,15 +254,13 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
             ' faces(i).ID — группа общей подписи; faces(i).ID & ".Main" — исходный ряд для выбора
             ' крайней линии; 0 — X-компонента направления выбора крайнего ряда; IIf(base = 1, 1, -1) —
             ' Y-компонента направления выбора крайнего ряда; nx — X-компонента направления подписи; ny
-            ' — Y-компонента направления подписи; faces(i).AxisDistance — as до осей стержней, мм;
-            ' отступ подписи задаёт плоттер.
-            facade.RebarRowExtremeLabel faces(i).ID, faces(i).ID & ".Main", 0#, IIf(base = 1, 1#, -1#), nx, ny, faces(i).AxisDistance
+            ' — Y-компонента направления подписи.
+            facade.RebarRowExtremeLabel faces(i).ID, faces(i).ID & ".Main", 0#, IIf(base = 1, 1#, -1#), nx, ny
         Else
             ' faces(i).ID — группа общей подписи всех её рядов; path.ID — линия, по габаритам которой
             ' привязывается подпись; nx — X-компонента направления подписи; ny — Y-компонента
-            ' направления подписи; faces(i).AxisDistance — as до осей стержней, мм; отступ подписи
-            ' задаёт плоттер.
-            facade.RebarLabel faces(i).ID, path.ID, nx, ny, faces(i).AxisDistance
+            ' направления подписи.
+            facade.RebarLabel faces(i).ID, path.ID, nx, ny
         End If
 NextFace:
     Next i

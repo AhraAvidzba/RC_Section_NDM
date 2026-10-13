@@ -102,7 +102,7 @@ End Function
 
 Private Function SourceValuesSnapshot(ByVal fixture As String, ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout) As String
     Dim lines() As String, count As Long, i As Long
-    ReDim lines(1 To mesh.FiberCount + rebars.Count + rebars.AnnotationCount + 1)
+    ReDim lines(1 To mesh.FiberCount + rebars.Count + 1)
     For i = 1 To mesh.FiberCount
         count = count + 1
         lines(count) = Row(fixture, "FIBER", CStr(i), Array(mesh.FiberX(i), mesh.FiberY(i), mesh.FiberArea(i), _
@@ -113,12 +113,7 @@ Private Function SourceValuesSnapshot(ByVal fixture As String, ByVal mesh As CFi
         lines(count) = Row(fixture, "LAYOUT", rebars.BarID(i), Array(rebars.X(i), rebars.Y(i), rebars.Diameter(i), _
             rebars.Area(i), rebars.SteelClass(i), rebars.BarAnnotationGroupName(i), rebars.Comment(i)))
     Next i
-    For i = 1 To rebars.AnnotationCount
-        count = count + 1
-        lines(count) = Row(fixture, "ANCHOR", rebars.AnnotationGroupName(i), Array(rebars.AnnotationStartX(i), _
-            rebars.AnnotationStartY(i), rebars.AnnotationEndX(i), rebars.AnnotationEndY(i), _
-            rebars.AnnotationNormalX(i), rebars.AnnotationNormalY(i), rebars.AnnotationAxisDistance(i)))
-    Next i
+
     count = count + 1: lines(count) = InputSnapshot(fixture)
     SourceValuesSnapshot = Join(lines, vbNullString)
 End Function

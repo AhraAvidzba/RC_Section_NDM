@@ -215,8 +215,8 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         End If
         ' groupID — группа общей подписи всех её рядов; groupID & ".Main" — ряд, к концам которого
         ' привязана подпись; nx — X-компонента направления подписи; ny — Y-компонента направления
-        ' подписи; axisDistance — as до осей стержней, мм; отступ подписи задаёт плоттер.
-        facade.RebarRowLabel groupID, groupID & ".Main", nx, ny, axisDistance
+        ' подписи.
+        facade.RebarRowLabel groupID, groupID & ".Main", nx, ny
 NextSide:
     Next side
 End Sub

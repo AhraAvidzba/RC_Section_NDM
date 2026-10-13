@@ -82,7 +82,7 @@ Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSection
     Set options = New CRebarRuleOptions: options.NormalOffset = 10#: options.EverySecond = True
     options.SourceSuffix = "_Extra": facade.RebarDependent "Extra", "Base", 10#, options
     facade.VerticalExtent "Height", "Concrete", "H", 740#
-    facade.RebarRowLabel "RowsLabel", "Rows", 0#, 1#, 50#
+    facade.RebarRowLabel "RowsLabel", "Rows", 0#, 1#
     Set AdvancedGuideDefinition = facade.Finish
 End Function
 

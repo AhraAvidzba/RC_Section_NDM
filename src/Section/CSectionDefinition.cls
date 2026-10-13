@@ -11,14 +11,15 @@ Option Explicit
 
 ' Неизменяемое описание формы, путей, армирования и аннотаций.
 ' После публикации содержит только подготовленную геометрию и данные;
-' заполнение доступно лишь общему фасаду, Excel/context не сохраняются.
-Private mTypeID As String, mVersion As Long, mSealed As Boolean
-Private mPaths As Object, mGroups As Object, mAnchors As Object, mSources As Object
-Private mLoops() As TSectionLoop, mLoopCount As Long
-Private mRules() As TRebarRule, mRuleCount As Long
-Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long
-Private mRegion As CConcreteRegion
-Private mDiagnostic As CGeometryDiagnostic
+' заполнение доступно общему фасаду; Excel/context не сохраняются.
+' Определение хранит роли и ссылки. Query проверяет геометрию; executor проверяет размещение при Build.
+Private mTypeID As String, mVersion As Long, mSealed As Boolean ' Тип, версия схемы и завершение деклараций.
+Private mPaths As Object, mGroups As Object, mAnchors As Object, mSources As Object ' Именованные линии, группы, точки и адреса ввода.
+Private mLoops() As TSectionLoop, mLoopCount As Long ' Роли Outer/Opening и явные связи отверстий с наружными границами.
+Private mRules() As TRebarRule, mRuleCount As Long ' Копии правил армирования; координаты стержней определяет executor.
+Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long ' Декларации размеров и подписей, отдельно от физической арматуры.
+Private mRegion As CConcreteRegion ' Каноническая бетонная область успешного Seal; потребители получают clone.
+Private mDiagnostic As CGeometryDiagnostic ' Последняя адресная ошибка проверки определения.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
@@ -218,7 +219,7 @@ Friend Sub Seal()
     RequireMutable
     If mLoopCount = 0 Then DefinitionError "Не задан наружный контур бетона."
     Dim query As CSectionGeometryQuery, outers As Collection, parent As CConcreteRegion
-    Dim outerByID As Object, region As CConcreteRegion, one As CConcreteRegion, i As Long, unused As CConcreteRegion
+    Dim outerByID As Object, region As CConcreteRegion, one As CConcreteRegion, i As Long
     Set query = New CSectionGeometryQuery: Set outers = New Collection
     Set outerByID = CreateObject("Scripting.Dictionary"): outerByID.CompareMode = vbBinaryCompare
     For i = 1 To mLoopCount
@@ -235,7 +236,7 @@ Friend Sub Seal()
             Set one = query.RegionFromContours(LoopContours(i, True))
             ValidateOneLoop query, one
             Set parent = outerByID(mLoops(i).ParentID)
-            Set unused = query.SubtractContainedRegion(parent, one)
+            query.ValidateContainedRegion parent, one
             Set region = query.SubtractContainedRegion(region, one)
         End If
     Next i
@@ -247,6 +248,7 @@ Friend Sub Seal()
     For i = 1 To mAnnotationCount: ValidateAnnotation mAnnotations(i): Next i
     ' Тот же формат и тот же query, что у прежней сборки: механическая сетка
     ' не заменяется аналитическими свойствами и не получает другой источник.
+' Итоговая канонизация необходима для прежних порядка границ и свойств; она не повторяется при Build.
     Set mRegion = query.RegionFromContours(MaterialContours())
     mSealed = True
 End Sub
@@ -282,10 +284,8 @@ End Sub
 
 ' Проверяет замкнутость и геометрическую пригодность одной бетонной границы.
 Private Sub ValidateOneLoop(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion)
-    Dim edges() As TRegionEdge, count As Long, checked As CConcreteRegion
-    region.CopyEdges edges, count
-    Set checked = query.BoundaryRegion(edges, count)
-    If checked.LoopCount <> 1 Then DefinitionError "Один Loop должен содержать одну замкнутую границу."
+    query.ValidatePreparedBoundary region
+    If region.LoopCount <> 1 Then DefinitionError "Один Loop должен содержать одну замкнутую границу."
 End Sub
 
 ' Проверяет зависимости арматурных правил и отклоняет циклы до исполнения.

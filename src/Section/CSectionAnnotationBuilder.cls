@@ -16,10 +16,15 @@ Option Explicit
 Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Прежний зазор сводной подписи над бетонным габаритом.
 
 ' Общая интерпретация модельных измерений и привязок. Оформление и положение
-' в пикселях остаются в существующих layout/plotter; контуры не меняются.
+' в пикселях остаются в layout/plotter. Каждый вызов заново готовит привязки; rebars только читается.
 Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarLayout, ByVal annotations As CSectionAnnotations, _
         Optional ByVal rules As CRebarRuleExecutor = Nothing)
+    If definition Is Nothing Or rebars Is Nothing Or annotations Is Nothing Then _
+        SectionRecipeError "CSectionAnnotationBuilder", "Определение, арматура и контейнер аннотаций обязательны."
+    If Not definition.IsSealed Then SectionRecipeError "CSectionAnnotationBuilder", "Для аннотаций нужно опубликованное определение."
     Dim value As TSectionAnnotation, i As Long, minX As Double, maxX As Double, minY As Double, maxY As Double
+    Dim anchors() As TSectionAnnotation, anchorCount As Long
+    If definition.AnnotationCount > 0 Then ReDim anchors(1 To definition.AnnotationCount)
     annotations.Clear
     For i = 1 To definition.AnnotationCount
         definition.CopyAnnotation i, value
@@ -53,13 +58,11 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                     If value.NormalX >= 0# Then value.StartX = maxX Else value.StartX = minX
                     value.EndX = value.StartX
                 End If
-                rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
-                    value.NormalX, value.NormalY, value.Value
+                AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
                 If rules.RuleEnds(value.Target, value.StartX, value.StartY, value.EndX, value.EndY) Then _
-                    rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
-                        value.NormalX, value.NormalY, value.Value
+                    AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowExtentLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
                 If rules.RuleBounds(value.Target, minX, maxX, minY, maxY) Then
@@ -77,8 +80,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                         swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
                         swap = value.StartY: value.StartY = value.EndY: value.EndY = swap
                     End If
-                    rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
-                        value.NormalX, value.NormalY, value.Value
+                    AppendLabelAnchor anchors, anchorCount, value
                 End If
             Case "RebarRowExtremeLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
@@ -87,8 +89,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                         swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
                         swap = value.StartY: value.StartY = value.EndY: value.EndY = swap
                     End If
-                    rebars.AddAnnotationAnchor value.Name, value.StartX, value.StartY, value.EndX, value.EndY, _
-                        value.NormalX, value.NormalY, value.Value
+                    AppendLabelAnchor anchors, anchorCount, value
                 End If
             Case Else
                 SectionRecipeError "CSectionAnnotationBuilder", "Неизвестное измерение '" & value.Kind & "'."
@@ -96,7 +97,16 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     Next i
     Dim labels As CRebarGroupAnnotationBuilder
     Set labels = New CRebarGroupAnnotationBuilder
-    labels.AddRebarLabels annotations, rebars
+    labels.AddRebarLabels annotations, rebars, anchors, anchorCount
+End Sub
+
+' Привязки принадлежат только этому проходу построения аннотаций.
+' Координаты и направления копируются; физическая раскладка не изменяется.
+Private Sub AppendLabelAnchor(ByRef anchors() As TSectionAnnotation, ByRef count As Long, ByRef value As TSectionAnnotation)
+    If Len(Trim$(value.Name)) = 0 Then Exit Sub
+    count = count + 1
+    anchors(count) = value
+    anchors(count).Name = Trim$(value.Name)
 End Sub
 
 ' Горизонтальная/вертикальная проекция и расстояние по соединяющей линии

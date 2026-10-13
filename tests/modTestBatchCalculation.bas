@@ -4930,7 +4930,6 @@ Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double,
     options.AnnotationGroup = "Circle": options.Comment = "Круг: основной ряд арматуры"
     facade.RebarByCount "CircleRow", path.ID, barCount, barDiameter, options, "A400"
     Set layout = FixtureLayout(facade.Finish)
-    layout.AddAnnotationAnchor "Circle", centerX - radius, centerY + radius, centerX + radius, centerY + radius, 0#, 1#, axisDistance
     Set CircleRebars = layout
 End Function
 

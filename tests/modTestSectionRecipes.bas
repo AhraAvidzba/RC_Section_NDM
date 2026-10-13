@@ -290,9 +290,9 @@ Private Sub TestProjectionNormalsAndOrdinals()
         Near "projection.normal.x." & CStr(i), model.RebarX(i + 3), 2# * model.RebarX(i)
         Near "projection.normal.y." & CStr(i), model.RebarY(i + 3), 2# * model.RebarY(i)
     Next i
-    Near "extreme.anchor.start", builder.Rebars.AnnotationStartX(1), 0#
-    Near "extreme.anchor.end", builder.Rebars.AnnotationEndX(1), 0#
-    Near "extreme.anchor.y", builder.Rebars.AnnotationStartY(1), 100#
+    Near "extreme.anchor.start", model.Annotations.StartX(1), 0#
+    Near "extreme.anchor.end", model.Annotations.EndX(1), 0#
+    Near "extreme.anchor.y", model.Annotations.StartY(1), 100#
     For mode = 0 To 1
         Set facade = RuleFacade
         facade.RebarByCount "Base", "Row", 4, 10#
@@ -349,7 +349,7 @@ Private Sub TestAnnotationMeasurements()
     Set path = facade.ArcPath("Curve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars": options.EndMode = ExcludeBoth
     facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
-    facade.RebarRowExtentLabel "CurveBars", "CurveMain", -1#, 0#, 20#, True
+    facade.RebarRowExtentLabel "CurveBars", "CurveMain", -1#, 0#, True
     facade.HorizontalDistance "REF", "Reference", 0#, 123.6, 200#, 1#, "", 1#
     facade.HorizontalDistance "NEG", "Negative", 0#, -123.6, 200#, 1#, "", 1#
     facade.HorizontalDistance "EXACT", "Exact", 0#, 123.6, 200#
@@ -359,9 +359,9 @@ Private Sub TestAnnotationMeasurements()
     Near "measurements.max.x", maxX, 100# * Cos(GEOM_PI / 8#)
     Near "measurements.min.y", minY, 100# * Sin(GEOM_PI / 8#)
     Near "measurements.max.y", maxY, 100# * Sin(3# * GEOM_PI / 8#)
-    Near "measurements.anchor.x", builder.Rebars.AnnotationStartX(1), minX
-    Near "measurements.anchor.start", builder.Rebars.AnnotationStartY(1), maxY
-    Near "measurements.anchor.end", builder.Rebars.AnnotationEndY(1), minY
+    Near "measurements.anchor.x", model.Annotations.StartX(4), minX
+    Near "measurements.anchor.start", model.Annotations.StartY(4), maxY
+    Near "measurements.anchor.end", model.Annotations.EndY(4), minY
     Set annotations = model.Annotations
     Near "measurements.round.positive", annotations.Value(1), 124#
     Near "measurements.round.negative", annotations.Value(2), -124#
@@ -386,8 +386,8 @@ Private Sub TestPublicationAndCoincidence()
     Check "middle.count", model.RebarCount = 8
     For i = 1 To 8: Near "middle.order." & CStr(i), model.RebarX(i), CDbl(expected(i - 1)): Next i
     Near "middle.first.extra", model.RebarY(2), 10#
-    Near "middle.anchor.first", builder.Rebars.AnnotationStartX(1), 10#
-    Near "middle.anchor.last", builder.Rebars.AnnotationEndX(1), 80#
+    Near "middle.anchor.first", model.Annotations.StartX(1), 10#
+    Near "middle.anchor.last", model.Annotations.EndX(1), 80#
     Set facade = RuleFacade: Set options = New CRebarRuleOptions
     options.AnnotationGroup = "First": facade.RebarByCount "First", "Row", 2, 10#, options
     Set options = New CRebarRuleOptions
@@ -438,9 +438,13 @@ Private Sub TestAnnotationOwnership()
     Check "annotations.partial.first", model.Annotations.Text(1) = "2" & ChrW$(216) & "10 + 1" & ChrW$(216) & "12"
     Check "annotations.partial.second", model.Annotations.Text(2) = "2" & ChrW$(216) & "20"
     Check "annotations.partial.total", AnnotatedBarCount(model.Annotations) = model.RebarCount
-    builder.Rebars.AddAnnotationAnchor "first", 300#, 0#, 400#, 0#, 0#, -1#
+    Dim anchors(1 To 4) As TSectionAnnotation
+    anchors(1).Name = "First": anchors(1).EndX = 100#: anchors(1).NormalY = -1#
+    anchors(2).Name = "Second": anchors(2).StartX = 100#: anchors(2).EndX = 200#: anchors(2).NormalY = 1#
+    anchors(3).Name = "Third": anchors(3).StartX = 100#: anchors(3).EndX = 150#: anchors(3).NormalY = 1#
+    anchors(4).Name = "first": anchors(4).StartX = 300#: anchors(4).EndX = 400#: anchors(4).NormalY = -1#
     Set annotations = New CSectionAnnotations: Set labels = New CRebarGroupAnnotationBuilder
-    labels.AddRebarLabels annotations, builder.Rebars
+    labels.AddRebarLabels annotations, builder.Rebars, anchors, 4
     Check "annotations.repeated.anchor", annotations.Count = 2
     Check "annotations.repeated.total", AnnotatedBarCount(annotations) = model.RebarCount
 End Sub

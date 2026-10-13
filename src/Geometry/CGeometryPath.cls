@@ -12,16 +12,16 @@ Option Explicit
 ' Непрерывный аналитический путь из линий и дуг. После Seal он неизменяем.
 ' Длины и параметры готовятся один раз; формулы сегментов находятся в независимом modGeometryPrimitives.
 Private Const PATH_TOLERANCE As Double = 0.000001 ' Допуск стыков, мм.
-Private mID As String
-Private mEdges() As TRegionEdge
-Private mSegmentIDs() As String
+Private mID As String ' Устойчивое имя линии в определении сечения.
+Private mEdges() As TRegionEdge ' Упорядоченные аналитические отрезки и дуги; фиктивные соединения запрещены.
+Private mSegmentIDs() As String ' Устойчивые имена сегментов текущей линии.
 Private mSourcePathIDs() As String, mSourceSegmentIDs() As String
 Private mSourceStart() As Double, mSourceEnd() As Double
-Private mStations() As Double
-Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long
-Private mCount As Long, mCapacity As Long
-Private mSealed As Boolean, mClosed As Boolean
-Private mDiagnostic As CGeometryDiagnostic
+Private mStations() As Double ' Накопленные длины сегментов; позволяют искать точку без повторного суммирования.
+Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long ' Имена исчезнувших участков и их положение; фиктивные рёбра не создаются.
+Private mCount As Long, mCapacity As Long ' Число аналитических сегментов и ёмкость рабочего массива.
+Private mSealed As Boolean, mClosed As Boolean ' Завершение построения и фактическая замкнутость линии.
+Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка построения или обращения к линии.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic

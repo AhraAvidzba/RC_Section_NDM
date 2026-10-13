@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "SolidExampleTestsFinal",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRoundedTrapezoidExample.RunExampleBuildTests",
+                     "Seconds":  0.5702349,
+                     "Characters":  44,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRoundedTrapezoidExample.RunExampleInputTests",
+                     "Seconds":  0.344794,
+                     "Characters":  45,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestDeclarativeExamples.RunRoundedFrameExampleTests",
+                     "Seconds":  0.149233,
+                     "Characters":  50,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "B2BBC71CE1BB05D00D871BB185F008A5BCEF51C77B3661A4E49B122CDEA9C6AA",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T01:19:29.4876287+03:00"
+}

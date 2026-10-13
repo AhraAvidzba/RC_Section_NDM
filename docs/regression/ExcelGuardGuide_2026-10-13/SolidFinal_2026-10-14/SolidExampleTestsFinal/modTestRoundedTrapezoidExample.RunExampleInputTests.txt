@@ -1,0 +1,1 @@
+﻿TOTAL ONE CLASS INPUT: passed=250; failed=0
