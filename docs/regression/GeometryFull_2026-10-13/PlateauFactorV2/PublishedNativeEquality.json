@@ -1,0 +1,1622 @@
+﻿{
+    "ActualComponents":  149,
+    "RepositoryComponents":  144,
+    "ProductionClasses":  94,
+    "AllPassed":  true,
+    "Checks":  [
+                   {
+                       "Component":  "CBatchSectionCalculator",
+                       "Type":  2,
+                       "SourceLines":  2223,
+                       "SourceSHA256":  "C12F06C5E0A96511CE014D30EACAD0CCA62D53BA94B3A073589ADC82ACDF2AFF",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCalculationProfile",
+                       "Type":  2,
+                       "SourceLines":  299,
+                       "SourceSHA256":  "1C637AEB8D297790AF5A14202BE87C8D349242FFB2523A6DD2712AD7685668CA",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCalculationProfileCatalog",
+                       "Type":  2,
+                       "SourceLines":  319,
+                       "SourceSHA256":  "1F123FFA55878A06922655F52ECD1613DD5185AF691C1C664304C9E76380E566",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCombinationResult",
+                       "Type":  2,
+                       "SourceLines":  358,
+                       "SourceSHA256":  "4729FE37D47734A211B223168611339FAC9B37CB57346D30EEA16D45ED98F16A",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CDirectStateResult",
+                       "Type":  2,
+                       "SourceLines":  160,
+                       "SourceSHA256":  "1996CC98D5343D35727D01F418605DAA5951E2F3170A07AF39FD6F8F92829C80",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionStateResult",
+                       "Type":  2,
+                       "SourceLines":  554,
+                       "SourceSHA256":  "36FAA4D060D1F79E2F20DB145736C56A3E3BA4CBC09A1006735E183894E4A06D",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateProvider",
+                       "Type":  2,
+                       "SourceLines":  244,
+                       "SourceSHA256":  "1D7687DECADC5705014BE35A97481437557819659EB410F3793C3EB459C61662",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateRepository",
+                       "Type":  2,
+                       "SourceLines":  190,
+                       "SourceSHA256":  "CA726FEA1E0985AF68821A3BEDD66F2A5946E4538FFB93CCCAA30BDA2B75BED2",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateRequest",
+                       "Type":  2,
+                       "SourceLines":  103,
+                       "SourceSHA256":  "12A6226F32AB5EE2FC770B72EBAF9F265EF003AFF09FE2966949F39509213827",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStrengthResult",
+                       "Type":  2,
+                       "SourceLines":  132,
+                       "SourceSHA256":  "DC4787EE8F50CF4F63EF80E11BCCE206F1DF4CEC63697B5FD2B7FEAE49FD59E1",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadPathDescriptor",
+                       "Type":  2,
+                       "SourceLines":  299,
+                       "SourceSHA256":  "399D71E2F0E3AAC98B2B19EA0F305E36C6BB0FA637EE79436650A1ACDCD30505",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadPathMath",
+                       "Type":  2,
+                       "SourceLines":  314,
+                       "SourceSHA256":  "2562122BE0DA1073EC56CD5C4B2D2C21F2E34BD4AA6695A974614E06EE20198C",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadPathVector",
+                       "Type":  2,
+                       "SourceLines":  96,
+                       "SourceSHA256":  "6505C60BE86D30A5936571946A037C34C0D8DAFB3041B98F32F37F7C35191665",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMomentZeroFilter",
+                       "Type":  2,
+                       "SourceLines":  59,
+                       "SourceSHA256":  "CF8A304702C6E500B7C62C1D48175EE490FAA9E72E3B399B3811A7D91BF583B3",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CResultMeta",
+                       "Type":  2,
+                       "SourceLines":  202,
+                       "SourceSHA256":  "31EFECFF612D848CF095B1D0E6433F9A72E56D228EBA82496931571B24F76DB9",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CResultStatusPolicy",
+                       "Type":  2,
+                       "SourceLines":  191,
+                       "SourceSHA256":  "06537B18A5E51CA8AF40982C3207AF2766F261CC19BA1FCFE8F4A7F05AF211B8",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionLoadState",
+                       "Type":  2,
+                       "SourceLines":  166,
+                       "SourceSHA256":  "E8F2F2A038207BFE4E7B17A8A992DAE0354E67C63BEE955AF253B4789003392E",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modCalculationPurpose",
+                       "Type":  1,
+                       "SourceLines":  305,
+                       "SourceSHA256":  "927584FDA512C7CAB12B2DF739E216FC7D99839A26135776BF3B939EE1834834",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modGeometryTypes",
+                       "Type":  1,
+                       "SourceLines":  122,
+                       "SourceSHA256":  "9287E987CB0E4638FF5E946107110B6E256A31227EB178E767E4920D1190EE01",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modResultStatus",
+                       "Type":  1,
+                       "SourceLines":  133,
+                       "SourceSHA256":  "3A77173CBC7B1284BDCA9AA7C40774B9679800374CD6A7B070D907CF32DD8D60",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modSectionRecipeApiGuide",
+                       "Type":  1,
+                       "SourceLines":  2582,
+                       "SourceSHA256":  "EE496651B0623841DD5E531306F5999962B668AEDAED5CFDEE62DEBA15052713",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modSectionRecipeTypes",
+                       "Type":  1,
+                       "SourceLines":  177,
+                       "SourceSHA256":  "67A97B73FD42F32BEB77C7C08DA992C3A063DA37C98B722A32813AA07B2B662F",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modSolverWorkStats",
+                       "Type":  1,
+                       "SourceLines":  56,
+                       "SourceSHA256":  "BCA5413E2D1BD630173881E804026CCA8EAB0508C267B4946C7C33FC1F9D15F0",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackFormationCalculator",
+                       "Type":  2,
+                       "SourceLines":  2180,
+                       "SourceSHA256":  "BAA4BBA5F69B71529D0806FEE1449A44ACC73AC33731DD9A6AB2897FA2689C43",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackFormationResult",
+                       "Type":  2,
+                       "SourceLines":  248,
+                       "SourceSHA256":  "EEB6DE098110A1920443A2C301F8F51134F579479D7CEC76570C4CBB61065DB2",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackResult",
+                       "Type":  2,
+                       "SourceLines":  188,
+                       "SourceSHA256":  "84210EB73C3AD490C4BF0E34E9CED50CC7A215B86E7F0376069BDD7646F81D1A",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackWidthCalculator",
+                       "Type":  2,
+                       "SourceLines":  1677,
+                       "SourceSHA256":  "2287B609274E3BC1DD5610ABF0CC9F8940613F9BEAB83DCECE9B881C4DCDEE26",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackWidthResult",
+                       "Type":  2,
+                       "SourceLines":  314,
+                       "SourceSHA256":  "D9442894077DB12D16FE138B497A7B33C53D8D4F9A52270A4C97EB9CD3CCD951",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLongitudinalCrackCalculator",
+                       "Type":  2,
+                       "SourceLines":  85,
+                       "SourceSHA256":  "75A202330B24DA98C9B17B76CA5BC4C5F9792D7B931BF75A19E56388AC876353",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLongitudinalCrackResult",
+                       "Type":  2,
+                       "SourceLines":  91,
+                       "SourceSHA256":  "7BAD085C04BE11447B688D27D343C0C0E45E998C8CF93ED860B745B177595F1F",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSP35CrackData",
+                       "Type":  2,
+                       "SourceLines":  672,
+                       "SourceSHA256":  "6A79684517C56052C370C44A5863CAF86DDFDE30819EA08B1C9B7DCA82991744",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CAutoCADContourReader",
+                       "Type":  2,
+                       "SourceLines":  182,
+                       "SourceSHA256":  "BA135CF67D5474D959AB5A725397DA444A1E6FCC89E815BCF05A8964E857C0D8",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CAutoCADSectionModelImporter",
+                       "Type":  2,
+                       "SourceLines":  906,
+                       "SourceSHA256":  "E8BFDE0E4184DDEA3CCEA5F7BFC9441261CB32EAF5F1B03745644BBC7D69DDEF",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CBatchResultWriter",
+                       "Type":  2,
+                       "SourceLines":  853,
+                       "SourceSHA256":  "C844B6EB42DC696ACD55149D7A546EEBFC6CFB11F86985F2D072865A5426064B",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackSummaryWriter",
+                       "Type":  2,
+                       "SourceLines":  1064,
+                       "SourceSHA256":  "EBB820962697DFAA6426EFBFF01003481FC6996C5F7498B347D714DEF2F4CEBA",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CExcelAppStateGuard",
+                       "Type":  2,
+                       "SourceLines":  86,
+                       "SourceSHA256":  "A1382846C5FF9CA3C2C88FA9F1B09A191A079F7CAA4AD1557F18BBF3FAEB0B6B",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CExecutionReport",
+                       "Type":  2,
+                       "SourceLines":  672,
+                       "SourceSHA256":  "64800A31D3E10199D80852E59E38B47C14300EBE3D46486AD52E5F2824B0C16B",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadCombinationReader",
+                       "Type":  2,
+                       "SourceLines":  182,
+                       "SourceSHA256":  "B3B16B2806E761EA70C65DD7EBEA0F26E2F2257A0AA4DE43CC0717D19623D2A4",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CNDMResultsWriter",
+                       "Type":  2,
+                       "SourceLines":  1544,
+                       "SourceSHA256":  "9E251234AB4A1ED38FD00397194DB6806F325728A3A0D9B4C7B14150DFD3F0B3",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CPlotAnnotationLayout",
+                       "Type":  2,
+                       "SourceLines":  522,
+                       "SourceSHA256":  "BC3A7213036B5770A5DBAA50E0B3F459EF2B33E16B50FBB388F5CDF54094DE83",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionInputSnapshotReader",
+                       "Type":  2,
+                       "SourceLines":  44,
+                       "SourceSHA256":  "D461A67460A37B8A2441A55FF86DF706778609BA03347BB7F4467FDE549F5751",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionPlotDataReader",
+                       "Type":  2,
+                       "SourceLines":  1281,
+                       "SourceSHA256":  "76001F183BB037DD27898E024676F14ACD630DDDF3B8E2EFED5884E6269908C7",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionPlotter",
+                       "Type":  2,
+                       "SourceLines":  2104,
+                       "SourceSHA256":  "98384E49573E4B6B5E7A6E15B010D20098644D310A2818DFFEA47C97ABBE1490",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionTypeRegistry",
+                       "Type":  2,
+                       "SourceLines":  64,
+                       "SourceSHA256":  "1824C4C0EB832AFCCB04329EB4C2244A5475DEF6E4571645433F91FD7023F7AB",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStabilitySummaryWriter",
+                       "Type":  2,
+                       "SourceLines":  883,
+                       "SourceSHA256":  "828F3485595B10F272C83F2FE1FDC79C4C28876E467AEB36962E8EE06B48F60B",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStrengthSummaryWriter",
+                       "Type":  2,
+                       "SourceLines":  812,
+                       "SourceSHA256":  "9CEE1C3A0062F8ED0A402CB975DA18097BFA7F6FA4DF1B70E49FEBD66287BEC3",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSystemSettingsReader",
+                       "Type":  2,
+                       "SourceLines":  907,
+                       "SourceSHA256":  "9D61311DB983892AB1BB7CEF9ACE36B1AB999E8F194FE1A62851D64718F64666",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CUnitSystem",
+                       "Type":  2,
+                       "SourceLines":  409,
+                       "SourceSHA256":  "84871A8CF17ACAD16B1301C8ACAA240CC563837CA4C13150366BD4A5F77EF2B6",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modAutoCADStressExport",
+                       "Type":  1,
+                       "SourceLines":  2512,
+                       "SourceSHA256":  "7412D2EB91C96996FE5B9EF87438013312F76F57130F00B451E238DFA3B05506",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modMeshConfiguration",
+                       "Type":  1,
+                       "SourceLines":  57,
+                       "SourceSHA256":  "0779EFF400C9F5F752154A53425673FC83C76982973239DA8A82701743C0CEA2",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modSectionRecipeSetup",
+                       "Type":  1,
+                       "SourceLines":  149,
+                       "SourceSHA256":  "BD3B1B76596664682C340DA30A396400CC3213B8F0830B3D7D1CA101C087505F",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modStatusFormatting",
+                       "Type":  1,
+                       "SourceLines":  49,
+                       "SourceSHA256":  "BD4F75CBDFC5C644973B28A7AD9D1FC000A9E7AC27E3F0BE304B6C457ED855A8",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modWorkbookCalculation",
+                       "Type":  1,
+                       "SourceLines":  1283,
+                       "SourceSHA256":  "F7ABAB944526233BE2A2FDEA7E2D121CEB0328DE9D41091B7B8F644C48C9B51F",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modWorkbookMessages",
+                       "Type":  1,
+                       "SourceLines":  48,
+                       "SourceSHA256":  "D67370809B7B6573F82F61B54D2E96FB68D036C65A30DDC8F32AB45EDD113D36",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFiberMeshBuilder",
+                       "Type":  2,
+                       "SourceLines":  284,
+                       "SourceSHA256":  "8BAAA7AA2092635642757CF471E200A9F0E120F05F11672DB476C87D7B6DE474",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryDiagnostic",
+                       "Type":  2,
+                       "SourceLines":  29,
+                       "SourceSHA256":  "5A8B139775A98457B368B8636DFA09B4FE2954C75C457E471549D320EAF2D78A",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryPath",
+                       "Type":  2,
+                       "SourceLines":  447,
+                       "SourceSHA256":  "2553DD48564FD578C63FDB05149F74C0279E6FD628B556312F207947585134D0",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CGeometryRegion",
+                       "Type":  2,
+                       "SourceLines":  102,
+                       "SourceSHA256":  "240543A5A32D115C6A2A4E10AC9D3B4E0B1EE8CE679BED37DF6736A0E6A6C119",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionRecipeCircle",
+                       "Type":  2,
+                       "SourceLines":  78,
+                       "SourceSHA256":  "7A9A2C34661060198F21447E7725D992748789DB95994363BBDACB44F5EC3E19",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionRecipeHollowRectangle",
+                       "Type":  2,
+                       "SourceLines":  276,
+                       "SourceSHA256":  "DF02496B02178D0D234E8A568C233F449BD5B1C27BC1CD9BB9E36F6B05FC68A3",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionRecipeRectSet",
+                       "Type":  2,
+                       "SourceLines":  182,
+                       "SourceSHA256":  "114459C46B9F90AA883694BD0A38B11A4E2014A886DFC809B0DE8C78FC323C43",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionRecipeRoundedRectangle",
+                       "Type":  2,
+                       "SourceLines":  218,
+                       "SourceSHA256":  "29C4912FB5A2D3235C4057FE64C7AF83B31DB333802CD7AFA23BB1B61A03688A",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "ILimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  268,
+                       "SourceSHA256":  "81C95C90255F7978BC3618E0D06B352D23724A68D53D644C4D0E8A1CDB664982",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CConcreteMaterialParameters",
+                       "Type":  2,
+                       "SourceLines":  190,
+                       "SourceSHA256":  "B8498DA1C2693FCC2F9FEE66225FD6BD41101F375579728183EBFD6821C8B971",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLinearConcreteMaterial",
+                       "Type":  2,
+                       "SourceLines":  43,
+                       "SourceSHA256":  "9F44E37B19456EBCA4A3C8EE1BDE820384F599A239BEE3C4CA2EE273372BC6AB",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLinearSteelMaterial",
+                       "Type":  2,
+                       "SourceLines":  43,
+                       "SourceSHA256":  "750D982E118E19AC1B62F2D933F99C53EC96C1E1EF61B0A5FE224297B53F9988",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMaterialDiagram",
+                       "Type":  2,
+                       "SourceLines":  504,
+                       "SourceSHA256":  "BF0C7CEEAFA7BEE37481C7A407553C04C3F389BDA789BF41232068C3E7AC2F77",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMaterialModelProvider",
+                       "Type":  2,
+                       "SourceLines":  907,
+                       "SourceSHA256":  "F52CF389196D1AC271F30A09F2C36B28CA08A092B2F3A92C90D79F0788EC14B8",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CMaterialModelSpec",
+                       "Type":  2,
+                       "SourceLines":  101,
+                       "SourceSHA256":  "B477313F4B753A8389E92DE9B00F97EA4DA96E668F3DD1E142DF279AC7A16B32",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSteelMaterialParameters",
+                       "Type":  2,
+                       "SourceLines":  165,
+                       "SourceSHA256":  "DF037C9BAAB831F17A08445057146BC8EB6DFF641367D58163BB249594100211",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CConcreteRegion",
+                       "Type":  2,
+                       "SourceLines":  143,
+                       "SourceSHA256":  "BFA2F4EA356316D036A072C814F11AF33B436C2105FF0B610202369F13E8F778",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRebarGroupAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  80,
+                       "SourceSHA256":  "604B2488C70C1C45C3624A3801BAFC6B4BE113B7B6B98E497161A76FE35D1D82",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRebarLayout",
+                       "Type":  2,
+                       "SourceLines":  361,
+                       "SourceSHA256":  "D062A15692D5E33D6FBE26BD6315701D1BE4B452D7089A52D1E33A4E3B220D59",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRebarRuleExecutor",
+                       "Type":  2,
+                       "SourceLines":  751,
+                       "SourceSHA256":  "1CB5776184D382AAD71ACAF72591E1BB18E2E92A781B32F5BEBC25180AAD2E47",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CRebarRuleOptions",
+                       "Type":  2,
+                       "SourceLines":  63,
+                       "SourceSHA256":  "8BA5ADDEA68694477BD10FC0DFE8C19551338159D7CC4D88BAFDEFD8E60E6996",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionAnnotationBuilder",
+                       "Type":  2,
+                       "SourceLines":  359,
+                       "SourceSHA256":  "777F080E46970AB09F793D9F10977086AD521904E0FBC8E31E3DBF5EBA52CF81",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionAnnotations",
+                       "Type":  2,
+                       "SourceLines":  183,
+                       "SourceSHA256":  "96299C57EA0CF4E2E4A0148B768A5CEBE602446DC1C14BB410DD0F23A11C95F6",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionBuilder",
+                       "Type":  2,
+                       "SourceLines":  54,
+                       "SourceSHA256":  "DF807E01FEA0193BC1A1BADA39670396C9384A52D7D0C28D4440B78D0405B948",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionContours",
+                       "Type":  2,
+                       "SourceLines":  172,
+                       "SourceSHA256":  "A882187FC1638ED67AA7580CA7838691C57D1F7C4D4CC2A680C2975917432DB1",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionDefinition",
+                       "Type":  2,
+                       "SourceLines":  371,
+                       "SourceSHA256":  "180F9F9D0068237A9F951AE2571CFAB05A470EBE052F06984B1B915FD3265607",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionDefinitionBuilder",
+                       "Type":  2,
+                       "SourceLines":  439,
+                       "SourceSHA256":  "63E16A19E29D0FDDC1C6C0200E08E0117C3A7547AF3C7CAE4BC7AD930BCBA1C1",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionGeometryQuery",
+                       "Type":  2,
+                       "SourceLines":  2015,
+                       "SourceSHA256":  "8933D9F602067442CC10559C6E2FCFD78BC7D5C396F503ED76C13ABAEA9E28F2",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionInputTable",
+                       "Type":  2,
+                       "SourceLines":  222,
+                       "SourceSHA256":  "B3AC8124C50E6594493720BC2D1B1621A3D18EF30C42432C9309439777EB4C97",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionModel",
+                       "Type":  2,
+                       "SourceLines":  1030,
+                       "SourceSHA256":  "7220F202B730DDC5BE4BAAD42358048DDAF8DDF3BBCBFBCCBCC71FC37AE24FE2",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionModelBuilder",
+                       "Type":  2,
+                       "SourceLines":  57,
+                       "SourceSHA256":  "EF6FE7F552AFA236B7AF6B294C07E8343E8B14C3B8EC1229C9F359408D06369A",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionPropertiesCalculator",
+                       "Type":  2,
+                       "SourceLines":  799,
+                       "SourceSHA256":  "7DF1885DAB942BE6E7B457973D23C0CBAB02A7801554F47541ACB6888CFB884D",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionRecipeContext",
+                       "Type":  2,
+                       "SourceLines":  44,
+                       "SourceSHA256":  "7EE2CEF284AB2FEF14CCD3CE5692D98749856018312CBF7BDFC465290EF11170",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "ISectionRecipe",
+                       "Type":  2,
+                       "SourceLines":  6,
+                       "SourceSHA256":  "29C1D70147A864331358441C6CC517D0270F0E3D45AA21A3D434A02A1E1EFE51",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacityCalculator",
+                       "Type":  2,
+                       "SourceLines":  330,
+                       "SourceSHA256":  "D1CECBE07238D0CBD9997A3862C6DBDD5AACD65B77B4D7D6BA88C8863903DD15",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacityLimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  505,
+                       "SourceSHA256":  "7C729B3C19DC8C531AC9B9C1F262F9DEACE9BB1A79748C7BC67DAB919B706F2E",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacityResult",
+                       "Type":  2,
+                       "SourceLines":  425,
+                       "SourceSHA256":  "786750600F4A6874F9CC3F7D9A5DDA73C1A6D05E7FB2B819DDC7DCAC51C905DA",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCapacitySolver",
+                       "Type":  2,
+                       "SourceLines":  2162,
+                       "SourceSHA256":  "C3776CFBC3B1DDB24955182A7A2400D839D0B73A3C4028DC6A3535798599F3A5",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CCrackLimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  409,
+                       "SourceSHA256":  "E659E8C37352D38E7F106D218FBC40716DED6CAE8DC273B15C2282929963DFC2",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLimitSearchCoordinator",
+                       "Type":  2,
+                       "SourceLines":  289,
+                       "SourceSHA256":  "9E5F7CC605D004C20168F08C897ECEBE8F20BE5284572E8247D41BADB9A1FC02",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLimitSearchRequest",
+                       "Type":  2,
+                       "SourceLines":  325,
+                       "SourceSHA256":  "E7D1412F78530378E6E170D099B7B4DDB8515E0A3368A692BA3164AE76E5BEA8",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLimitSearchResult",
+                       "Type":  2,
+                       "SourceLines":  225,
+                       "SourceSHA256":  "178488484F155E5B47F3EE84D53019868B76D8623DB2281FF5340981E1D878D4",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLinearSystem3x3",
+                       "Type":  2,
+                       "SourceLines":  202,
+                       "SourceSHA256":  "E43E7A790B49AE91245A6B38628B89B8D6B7874F1163DDF3BAE211372487748A",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CLoadMultiplierSearch",
+                       "Type":  2,
+                       "SourceLines":  821,
+                       "SourceSHA256":  "64D3BA6744BFA01C5ECBA4E2B701FABEF6AA5A2D3A4394A682BE0F5B90B30E1F",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionNumericalFrame",
+                       "Type":  2,
+                       "SourceLines":  101,
+                       "SourceSHA256":  "94500684BC8B4C3072C5136392C053C5CEBF6CA0CF4EB75C9AADFFB2C911F8A1",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionSolver",
+                       "Type":  2,
+                       "SourceLines":  1671,
+                       "SourceSHA256":  "866944A0514A08419DC422095358009228E07D76BBEBA8C90FFB7B8D7944E3C4",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CSectionStrainLimits",
+                       "Type":  2,
+                       "SourceLines":  131,
+                       "SourceSHA256":  "895BCB22910FE3FC91192822ED5460A0497142F35CCED9D88A7FEB652C27C277",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateGuessBuilder",
+                       "Type":  2,
+                       "SourceLines":  674,
+                       "SourceSHA256":  "8DA1C41C109EE5E320F96CCDEA20FF2C4604DACEB9B20F8F74D57323F8EE4E7B",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStateSolutionRunner",
+                       "Type":  2,
+                       "SourceLines":  812,
+                       "SourceSHA256":  "8F759E8300A7F9ECF3797A12693BC3B6D08A5DB7C794D5DCB0AADDDEF244469F",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CUltimateStrainSearch",
+                       "Type":  2,
+                       "SourceLines":  1026,
+                       "SourceSHA256":  "1210444843D20631E086CB75586737474FD811F17CC3516B6CD662A5490B1E98",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modLimitSearchRequestFactory",
+                       "Type":  1,
+                       "SourceLines":  41,
+                       "SourceSHA256":  "357B1846A1A4502C4830D4C718037DEAEBBF29B9E4AF165777D5E9F25747EE3E",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modNonlinearStepControl",
+                       "Type":  1,
+                       "SourceLines":  45,
+                       "SourceSHA256":  "C3320AE5B95F59012478362EF1F360FC59D0E7EE5D1C84C6D68CFB97D920156E",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStabilityCalculator",
+                       "Type":  2,
+                       "SourceLines":  1714,
+                       "SourceSHA256":  "E77F0EE5D1EF2628AA2D72EA793B3988B8C91194C3A29706695752FAAD930FFE",
+                       "RawTextSame":  false,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CStabilityResult",
+                       "Type":  2,
+                       "SourceLines":  695,
+                       "SourceSHA256":  "700B3827324A50B6B4B35F62D21889E8583704E771A87AAA93F1E1D34B18EAAE",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadContour",
+                       "Type":  2,
+                       "SourceLines":  185,
+                       "SourceSHA256":  "BDCC02932EBFA7B0CC8D1D87570019A321BB73445ACCB3782875B4830A1BBC50",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadContourExport",
+                       "Type":  2,
+                       "SourceLines":  175,
+                       "SourceSHA256":  "837AAE94FD6AD55B4CE81215D0C3EB29CEBB9FF8A1FF8304E58152912833FADC",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadDocument",
+                       "Type":  2,
+                       "SourceLines":  48,
+                       "SourceSHA256":  "90034CA8B87332C60F8B728BD1D44B6986F817595B088D2AC4A3D610F0BEB0E6",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadLine",
+                       "Type":  2,
+                       "SourceLines":  57,
+                       "SourceSHA256":  "FD960A1FAE79DD1D68664823B2F4BAADF87B24C0ACF6472A4BA07D93E42F3EC6",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CFakeAcadRegion",
+                       "Type":  2,
+                       "SourceLines":  124,
+                       "SourceSHA256":  "1C9D859FC56FBBD2FA24EBBCAC70CC41AA74B82C58878E2812E08AB4B68DC035",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "CTestLimitSearchProblem",
+                       "Type":  2,
+                       "SourceLines":  790,
+                       "SourceSHA256":  "7D24439BFAD72EDA0A565E470A2FF9BB9FBE06734A8641333F4D24DA77F652F4",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestAutoCADConfig",
+                       "Type":  1,
+                       "SourceLines":  1282,
+                       "SourceSHA256":  "AB7F2A1BA2C4F62055CDFBA6935E9610C6DDDA6A8A61F23CD4EA13925631BA37",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestAutoCADContours",
+                       "Type":  1,
+                       "SourceLines":  2146,
+                       "SourceSHA256":  "430ED8E1569E2012430D8B82D73CD25FCC28A4E2D618279C7F0F5BD14088676B",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestBatchCalculation",
+                       "Type":  1,
+                       "SourceLines":  10477,
+                       "SourceSHA256":  "4F312890F519D08BE5412515993A07FBD158452A3F7471C9F711B708C58BD280",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestCapacitySolver",
+                       "Type":  1,
+                       "SourceLines":  4096,
+                       "SourceSHA256":  "6C17D33A2253ECEE23A5592673898FDFDD226441C8A9FED4BFCCCBF6E841E786",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestConfiguration",
+                       "Type":  1,
+                       "SourceLines":  2348,
+                       "SourceSHA256":  "2A3AFE6B38BC94D50675A2CCB000CF7971E1768C7C248F2B8ABAA5767C9C88AE",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestContourMesh",
+                       "Type":  1,
+                       "SourceLines":  638,
+                       "SourceSHA256":  "577D45AE8D09FF23D56D8A5C704A26C8A500083450F05FFE2E582BA410140AEE",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestCrackWidth",
+                       "Type":  1,
+                       "SourceLines":  1935,
+                       "SourceSHA256":  "272FA3A97ACF6438B0988388BB45916207BD746A72C900D9BC9DDA0326C3EC6A",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestDeclarativeExamples",
+                       "Type":  1,
+                       "SourceLines":  89,
+                       "SourceSHA256":  "8F0C58EEBDAFE605B0244F11C6F680414F3DEF1360A7BCE481783B70C4170B30",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestDeclarativeGeometry",
+                       "Type":  1,
+                       "SourceLines":  636,
+                       "SourceSHA256":  "22422D9830E64CF0629F3FB0FB127FA37001CBFB5368EF8A60C43B4659E69604",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeneralGeometryConfig",
+                       "Type":  1,
+                       "SourceLines":  573,
+                       "SourceSHA256":  "AD30EC93E0D68DFACBC7D1D99F4D8069BAC708D8A5D702EEFCBD583AA35F8A82",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometry",
+                       "Type":  1,
+                       "SourceLines":  2902,
+                       "SourceSHA256":  "47F1546F8FCA93DAC715056751187F02C08BE10C4FFC02D12BA6D6FFB5F491A9",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometryConfig",
+                       "Type":  1,
+                       "SourceLines":  1588,
+                       "SourceSHA256":  "F0C3DC52A5DF6E4905B77B5B0EC35F31E6B75686C2B9499011332B99CE7DEC69",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometryFixtures",
+                       "Type":  1,
+                       "SourceLines":  257,
+                       "SourceSHA256":  "38994B01B4FFA8F47BC5179E761C7B6736D16DBA4CFE60704E26F0447E2826C1",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometryQuery",
+                       "Type":  1,
+                       "SourceLines":  897,
+                       "SourceSHA256":  "98DF7FD22A84276405A3AF0F7C8239F174F99BF5A186CD27D183F69BE178DE4F",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestGeometryReview",
+                       "Type":  1,
+                       "SourceLines":  537,
+                       "SourceSHA256":  "8F5310E1CE1C43ACE97DF873F8AB4AABBC229BA81625A7E6A30A21626D5B2EAE",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestLoadTableConfig",
+                       "Type":  1,
+                       "SourceLines":  854,
+                       "SourceSHA256":  "453307C09866F196DAF7F97CC7EB0202DD0E88160C19CECB1032F03FCD0D439D",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestMaterialDiagrams",
+                       "Type":  1,
+                       "SourceLines":  1414,
+                       "SourceSHA256":  "D8F7E1B0D853D77D184D4C7A1B3AAC53515BDA9C00DDFF44EFA12583FBF64AC8",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestPerformance",
+                       "Type":  1,
+                       "SourceLines":  1114,
+                       "SourceSHA256":  "C921D5692650CC1070A9DD5258C7003C22E0AD941C29DD62100623E2691D4807",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestPlotConfig",
+                       "Type":  1,
+                       "SourceLines":  1608,
+                       "SourceSHA256":  "23635A52C8DE706E2F4FDDEED0CAD04B9B149ABD4C24230ACB30FA0634CD3965",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestProfileConfig",
+                       "Type":  1,
+                       "SourceLines":  1695,
+                       "SourceSHA256":  "F9AEECB0DF09721E3AB8E14AE9C30A7ADC231184F715539F4FAA34B9A5548416",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestRecipeAnnotations",
+                       "Type":  1,
+                       "SourceLines":  205,
+                       "SourceSHA256":  "63EAFEAA8BD03F91D1F2994276C24A5E23AE4F7F71B1DE6B0C4694410B46968C",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestRecipeApiCatalogue",
+                       "Type":  1,
+                       "SourceLines":  270,
+                       "SourceSHA256":  "2970507FC2593687F69111427EFF7CE0C59DEA3CDF74326C4B890F5AA6B50DAD",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestRecipeOperations",
+                       "Type":  1,
+                       "SourceLines":  201,
+                       "SourceSHA256":  "90E4C5609337C447932AC93DE74B110255AF716E30BE866351C65365D5E07891",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestRecipeSetbacks",
+                       "Type":  1,
+                       "SourceLines":  265,
+                       "SourceSHA256":  "8FFB354CEBA0CB426CC515D8BB2E7A8E8F5FC17C035132D6D8D91792B75136CB",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestRegressionBaseline",
+                       "Type":  1,
+                       "SourceLines":  376,
+                       "SourceSHA256":  "4746F5D372721D618C373191CB722536B0D127CE692C54DD6DB59BC36D673607",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestSectionRecipes",
+                       "Type":  1,
+                       "SourceLines":  1350,
+                       "SourceSHA256":  "E4414E7B295CFAACAB04BE3C917CAC77AEA2D86B2C35EA370C2E135F6D217515",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestSectionSolver",
+                       "Type":  1,
+                       "SourceLines":  2095,
+                       "SourceSHA256":  "76DBA87D0FC4C1CEEEFBC84D364DD9D6BC9A81965F553481524B653D4B1577D3",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestShapeArchitecture",
+                       "Type":  1,
+                       "SourceLines":  790,
+                       "SourceSHA256":  "73FC86D75BF98BA77815651F529B481BC66578F12EE897CEFDCBBA982C3A77F5",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestSP35CrackWidth",
+                       "Type":  1,
+                       "SourceLines":  1391,
+                       "SourceSHA256":  "432C1DCBECD0F3FA929C8C49EEF8AE4DF40F933A8252F40132881160DE032E2D",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   },
+                   {
+                       "Component":  "modTestWorkbookInterface",
+                       "Type":  1,
+                       "SourceLines":  7966,
+                       "SourceSHA256":  "20CB5717A9573B51923A793700C32873BF317BE7A11872F433079B161099B2A4",
+                       "RawTextSame":  true,
+                       "Passed":  true,
+                       "Differences":  [
+
+                                       ]
+                   }
+               ],
+    "GeneratedDocumentChecks":  [
+                                    {
+                                        "Component":  "Лист3",
+                                        "Type":  100,
+                                        "Passed":  true
+                                    },
+                                    {
+                                        "Component":  "Лист4",
+                                        "Type":  100,
+                                        "Passed":  true
+                                    },
+                                    {
+                                        "Component":  "Лист1",
+                                        "Type":  100,
+                                        "Passed":  true
+                                    },
+                                    {
+                                        "Component":  "Лист2",
+                                        "Type":  100,
+                                        "Passed":  true
+                                    },
+                                    {
+                                        "Component":  "ЭтаКнига",
+                                        "Type":  100,
+                                        "Passed":  true
+                                    }
+                                ],
+    "BuildScriptSHA256":  "49C0945E008C35000547661E6730A0914F7EDDDEBAC80C82EB57FA828DE3B90B",
+    "ReferenceExport":  "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/VBA_All_Code.txt",
+    "Normalization":  "CRLF/LF, trailing blank lines, VBE identifier case; string literals and comments unchanged. Optional native reference is an independently compiled fresh build from the listed source hashes, not ad-hoc numeric/comment rounding."
+}

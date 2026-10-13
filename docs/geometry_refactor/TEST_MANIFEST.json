@@ -12503,5 +12503,25 @@
       "status": "PASS"
     }
   ],
-  "PushEvidence": "docs/geometry_refactor/GEOMETRY_FULL_PUSH.json"
+  "PushEvidence": "docs/geometry_refactor/GEOMETRY_FULL_PUSH.json",
+  "PlateauFactorAddendum": {
+    "Date": "2026-10-13",
+    "Status": "DIRECTED_PASS_PUBLISHED",
+    "Setting": "General.PlateauSlopeFactor",
+    "Default": 0.001,
+    "Slope": "0.001*E",
+    "MaterialPassed": 25867,
+    "ResultsPassed": 186,
+    "ConfigPassed": 1589,
+    "StructurePassed": 27,
+    "NativeCalculations": 48,
+    "ComparedPairs": 24,
+    "NewNumFail": 0,
+    "OldOverloadNumFailPreserved": true,
+    "OpenNormativeQuestions": "Closed at user request; independent verification deferred to user",
+    "WorkbookSHA256": "a299bdbae5dc45e69a52df030316b7a482b905690878380b283a581e7ff4beed",
+    "DumpSHA256": "8aa82603d9d0a498c4acf6fb9dd10a4544028be1ea4486c65b659b61c4359db1",
+    "Report": "docs/reports/PlateauFactor_2026-10-13.md",
+    "Evidence": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2"
+  }
 }

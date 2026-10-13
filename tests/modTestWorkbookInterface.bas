@@ -7853,7 +7853,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "AutoCAD.Export.ContourFormat": ExpectedConfigDropdownOptions = "Region|Polyline"
         Case "AutoCAD.Export.PrincipalAxesMode", "Plot.PrincipalAxesMode": ExpectedConfigDropdownOptions = "Transformed|Concrete|None"
         Case "Plot.LegendMode": ExpectedConfigDropdownOptions = "Separate|Common"
-        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", "Solver.PlateauSlope.Enabled", _
+        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", _
                 "AutoCAD.Export.NeutralLineEnabled", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
                 "AutoCAD.Export.ExportCrackInteractionContour", "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", _
                 "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", _

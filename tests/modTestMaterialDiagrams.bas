@@ -69,19 +69,19 @@ End Function
 Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
     Dim concrete As New CConcreteMaterialParameters, steel As New CSteelMaterialParameters
     Dim reference As CMaterialModelProvider, provider As CMaterialModelProvider, spec As CMaterialModelSpec
-    Dim extension As Variant, enabled As Variant, kind As Variant, valueSet As Variant, tension As Variant
+    Dim extension As Variant, factor As Variant, kind As Variant, valueSet As Variant, tension As Variant
     Dim baseline As CMaterialDiagram, diagram As CMaterialDiagram, equilibrium As CMaterialDiagram
     Dim clone As CMaterialDiagram, i As Long, material As Long, compressionE As Double, tensionE As Double
     Dim alpha As Double, strain As Double, expected As Double, h As Double, prefix As String, revision As Long
     concrete.Initialize 14.5, 1.05, 18.5, 1.6, 30000#, 27000#, rbMc2:=22#
     steel.Initialize 310#, 350#, 360#, 400#, 205000#, 200000#, 0.018, 0.025, 0.014, 0.015
     For Each extension In Array(False, True)
-        For Each enabled In Array(False, True)
+        For Each factor In Array(0#, 0.00001, 0.0001, 0.001)
             Set reference = New CMaterialModelProvider
             reference.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension)
             Set provider = New CMaterialModelProvider
-            provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension), plateauSlopeEnabled:=CBool(enabled)
-            alpha = 0#: If CBool(enabled) Then alpha = 0.0001
+            alpha = CDbl(factor)
+            provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=CBool(extension), plateauSlopeFactor:=alpha
             For Each kind In Array("TwoLine", "ThreeLine")
                 For Each valueSet In Array("ULS(I)", "SLS(II)")
                     For Each tension In Array("Ignore", "UseDiagram")
@@ -98,7 +98,7 @@ Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
                                 Set equilibrium = provider.SteelMaterialForEquilibriumFromSpec(spec)
                                 compressionE = steel.Esc: tensionE = steel.Es
                             End If
-                            prefix = "plateau." & CStr(extension) & "." & CStr(enabled) & "." & spec.SpecKey & "." & CStr(material)
+                            prefix = "plateau." & CStr(extension) & "." & CStr(factor) & "." & spec.SpecKey & "." & CStr(material)
                             Set clone = equilibrium.Clone(True)
                             AssertClose stats, prefix & ".compressionLimit", equilibrium.PhysicalCompressionStrain, baseline.PhysicalCompressionStrain, 0#
                             AssertClose stats, prefix & ".tensionLimit", equilibrium.PhysicalTensionStrain, baseline.PhysicalTensionStrain, 0#
@@ -135,11 +135,13 @@ Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
             Next kind
             revision = provider.Revision
             expected = diagram.PointStress(1)
-            provider.InitializeFromParameters concrete, steel, plateauSlopeEnabled:=Not CBool(enabled)
+            provider.InitializeFromParameters concrete, steel, plateauSlopeFactor:=alpha + 0.002
             AssertTrue stats, "plateau.cache.newRevision", provider.Revision > revision
             AssertClose stats, "plateau.cache.oldSnapshot", diagram.PointStress(1), expected, 0#
-            AssertTrue stats, "plateau.cache.newMode", provider.PlateauSlopeEnabled = Not CBool(enabled)
-        Next enabled
+            AssertClose stats, "plateau.cache.newFactor", provider.PlateauSlopeFactor, alpha + 0.002, 0#
+            Set clone = provider.SteelMaterialFromSpec(spec)
+            AssertTrue stats, "plateau.cache.newDiagram", clone.PointStress(1) <> expected
+        Next factor
     Next extension
     TestPlateauSlopeSetting stats
 End Sub
@@ -164,24 +166,43 @@ Private Sub TestPlateauSlopeSetting(ByRef stats As TMaterialTestStats)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, errorNumber As Long, description As String
     On Error GoTo Failed
     Set cell = PlateauSettingCell()
-    If cell Is Nothing Then Err.Raise 5, , "В Config отсутствует Solver.PlateauSlope.Enabled."
+    If cell Is Nothing Then Err.Raise 5, , "В Config отсутствует General.PlateauSlopeFactor."
     original = cell.Formula
-    For Each choice In Array("No", "Yes")
-        cell.Value2 = CStr(choice)
+    For Each choice In Array(0#, 0.00001, 0.0001, 0.001, 0.002)
+        cell.Value2 = CDbl(choice)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set provider = New CMaterialModelProvider: provider.Initialize settings, units
-        AssertTrue stats, "plateau.setting." & CStr(choice), provider.PlateauSlopeEnabled = (CStr(choice) = "Yes")
+        AssertClose stats, "plateau.setting." & CStr(choice), provider.PlateauSlopeFactor, CDbl(choice), 0#
     Next choice
-    cell.Value2 = "invalid"
-    settings.LoadFromWorkbook ThisWorkbook
+    cell.Formula = "=1/1000"
+    settings.LoadFromWorkbook ThisWorkbook: provider.Initialize settings, units
+    AssertClose stats, "plateau.setting.formula", provider.PlateauSlopeFactor, 0.001, 0#
+    For Each choice In Array(-0.001, "", "invalid", "1e999", CVErr(2015))
+        cell.Value2 = choice
+        On Error Resume Next
+        settings.LoadFromWorkbook ThisWorkbook
+        If Err.Number = 0 Then provider.Initialize settings, units
+        errorNumber = Err.Number: description = Err.Description: Err.Clear
+        On Error GoTo Failed
+        AssertTrue stats, "plateau.setting.invalidRejected", errorNumber <> 0 And _
+            InStr(1, description, "General.PlateauSlopeFactor", vbBinaryCompare) > 0 And _
+            InStr(1, description, cell.Address(False, False), vbBinaryCompare) > 0
+        AppendLine stats, "PLATEAU_INPUT_DIAG: " & description
+    Next choice
+    cell.Offset(0, -1).Value2 = "TestMissingPlateauFactor"
+    cell.Value2 = 0.001
     On Error Resume Next
-    provider.Initialize settings, units
+    settings.LoadFromWorkbook ThisWorkbook
+    If Err.Number = 0 Then provider.Initialize settings, units
     errorNumber = Err.Number: description = Err.Description: Err.Clear
     On Error GoTo Failed
-    AssertTrue stats, "plateau.setting.invalidRejected", errorNumber <> 0 And InStr(1, description, "Solver.PlateauSlope.Enabled", vbBinaryCompare) > 0
+    AssertTrue stats, "plateau.setting.missingRejected", errorNumber <> 0 And InStr(1, description, "General.PlateauSlopeFactor", vbBinaryCompare) > 0
 Restore:
-    If Not cell Is Nothing Then cell.Formula = original
+    If Not cell Is Nothing Then
+        cell.Offset(0, -1).Value2 = "General.PlateauSlopeFactor"
+        cell.Formula = original
+    End If
     Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
@@ -194,7 +215,7 @@ Private Function PlateauSettingCell() As Object
     Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
     values = table.Value2
     For row = 2 To table.Rows.Count
-        If CStr(values(row, 1)) = "Solver.PlateauSlope.Enabled" Then Set PlateauSettingCell = table.Cells(row, 2): Exit Function
+        If CStr(values(row, 1)) = "General.PlateauSlopeFactor" Then Set PlateauSettingCell = table.Cells(row, 2): Exit Function
     Next row
 End Function
 
@@ -1025,7 +1046,7 @@ Private Function Audit03MaterialConfigProvider(Optional ByVal useCurrentPlateau 
     On Error GoTo Failed
     ' Эти oracle-тесты сверяют исходные нормативные точки. Наклон проверяется отдельно.
     If Not useCurrentPlateau Then Set cell = PlateauSettingCell()
-    If Not cell Is Nothing Then original = cell.Formula: cell.Value2 = "No"
+    If Not cell Is Nothing Then original = cell.Formula: cell.Value2 = 0#
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem
@@ -1180,8 +1201,8 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
     baselineFactor = units.InputStressToInternal(1#)
     Set pattern = CreateObject("VBScript.RegExp")
     pattern.Pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|IF|""Yes""|[,+\-*/()=]|\s)+$"
-    For Each slopeMode In Array("No", "Yes")
-    slopeCell.Value2 = CStr(slopeMode)
+    For Each slopeMode In Array(0#, 0.0001, 0.001)
+    slopeCell.Value2 = CDbl(slopeMode)
     For Each unitName In Array("MPa", "kPa", "Pa", "kgf/cm2", "tf/m2")
         concreteRange.Formula = savedConcrete: steelRange.Formula = savedSteel
         stressCell.Value2 = CStr(unitName)

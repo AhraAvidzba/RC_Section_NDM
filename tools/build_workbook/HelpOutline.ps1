@@ -151,7 +151,7 @@ function Set-HelpSectionOrderAndOutline($Workbook) {
 # Переносим весь абзац внутрь Config, сохраняя реальные адреса Подробнее.
 function Repair-HelpConfigEntries($Workbook) {
     $sheet=$Workbook.Worksheets.Item('Справка')
-    foreach ($key in @('SLS.Crack.ToleranceLambda','Solver.PlateauSlope.Enabled')) {
+    foreach ($key in @('SLS.Crack.ToleranceLambda','General.PlateauSlopeFactor')) {
         $rows=Get-HelpMainRows $sheet
         $config=[int]$rows['Справка по настройкам листа Config']
         if ($config -eq 0) {throw 'Config Help section is missing.'}

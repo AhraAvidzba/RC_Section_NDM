@@ -1,0 +1,16 @@
+﻿{
+    "SourceSHA256":  "871B42914FCB2FCF0168F43896D66BA603B6B170F6E6A9F9DB9206CDC3CA9FEC",
+    "WorkbookSHA256":  "BCAB5CB33CA6D79F953B66DB99DB6725F102EDF1F5B7DA33BBB98DD0528FEE74",
+    "Setting":  {
+                    "Factor":  0.001,
+                    "HelpRow":  1755,
+                    "Added":  false,
+                    "Address":  "B8"
+                },
+    "MigrationChecks":  [
+                            "No -\u003e 0",
+                            "Numeric formula preserved",
+                            "Yes -\u003e 0.001"
+                        ],
+    "ProductionChanged":  false
+}

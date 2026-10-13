@@ -1,0 +1,20 @@
+﻿{
+    "AllPassed":  true,
+    "Published":  true,
+    "BeforeWorkbookSHA256":  "871b42914fcb2fcf0168f43896d66ba603b6b170f6e6a9f9db9206cdc3ca9fec",
+    "WorkbookSHA256":  "a299bdbae5dc45e69a52df030316b7a482b905690878380b283a581e7ff4beed",
+    "DumpSHA256":  "8aa82603d9d0a498c4acf6fb9dd10a4544028be1ea4486c65b659b61c4359db1",
+    "DefaultFactor":  0.001,
+    "Slope":  "0.001*E",
+    "ComparedPairs":  24,
+    "NewNumericalFailures":  0,
+    "OtherOutputFilesPreserved":  412,
+    "Compiled":  true,
+    "PushPerformed":  false,
+    "Backup":  "PublishedBefore.xlsm + PublishedBeforeVBA.txt",
+    "VerificationSHA256":  {
+                               "UserData":  "8e38bcb01e40eb89a298402f8747707f2f244f5a58f51c70f518f6e3d99438d4",
+                               "Code":  "6d98bc525ca75ab7fbe030c064438201a72db0ee036858beb108e7e9ce9d46ac",
+                               "Statuses":  "842d7d0975af1fedc60f23b4df00aafb163bbb991e276464f78f87b57e708f74"
+                           }
+}

@@ -15,6 +15,7 @@ function Get-SystemSettingsCatalog {
             @("General.ExecutionReportEnabled", "Yes", "-", "Включить подробную диагностику выполнения расчета. Диагностика обновляется при каждом новом запуске."),
             @("General.NonCriticalMessagesEnabled", "Yes", "-", "Показывать информационные окна об успешном расчете, обновлении схемы, импорте и экспорте. Ошибки и предупреждения выводятся всегда."),
             @("General.WorstCombinationCriterion", "StrengthCapacity", "-", "Критерий выбора сочетания Worst в верхней сводке Results: прочность по деформациям, прочность по несущей, трещины или устойчивость."),
+            @("General.PlateauSlopeFactor", "0.001", "-", "Коэффициент α определяет наклон ненулевых плато бетона и арматуры: Et = α·E. По умолчанию α = 0,001, наклон плато — 0,001·E (0,1% от E своей ветви). 0 — горизонтальное плато. Наклон помогает сходимости и меняет напряжения; предельные деформации сохраняются."),
             @("General.DiagramExtension", "Yes", "-", "Численное продолжение диаграмм: продолжает активные ветви за физическими пределами. Рекомендуется для сходимости и диагностики. Не увеличивает физические пределы и не делает состояние в продолжении допустимым. При No работают обычные диаграммы."),
             @("Calculation.ZeroMomentPerDepth", "0.0005", "Н*мм/мм", "Порог обнуления малых моментов: M_tol = значение·h. Убирает численный остаток после переносов и поворотов; слишком большое значение может обнулить значимый малый момент.")
         )},
@@ -30,7 +31,6 @@ function Get-SystemSettingsCatalog {
         @{ Name = "SolverSettings"; Title = "[Настройки решателя НДС]"; Rows = @(
             @("[Общие настройки]", "", "-", ""),
             @("Solver.Method", "Newton", "-", "Метод поиска равновесия НДС. Допустимо только Newton или Secant; пустое или неизвестное значение считается ошибкой исходных данных."),
-            @("Solver.PlateauSlope.Enabled", "Yes", "-", "Yes - небольшой согласованный наклон ненулевых плато бетона и арматуры: Et = 0.0001·E соответствующей ветви. Помогает сходимости, немного меняет напряжения. No - исходные горизонтальные плато. Предельные деформации не меняются."),
             @("Solver.MaxIterations", "80", "шт", "Применяется к Newton и Secant. Максимальное число итераций на ступень нагрузки; увеличение повышает шанс сходимости, но увеличивает время."),
             @("Solver.LoadSteps", "1", "шт", "Применяется к Newton и Secant. Число ступеней приложения нагрузки в прямом НДМ; больше ступеней обычно устойчивее, но медленнее."),
             @("Solver.ToleranceN", "0.0001", "Н", "Применяется к Newton и Secant. Абсолютный допуск равновесия по продольной силе в выбранной INPUT-единице силы; значение переводится во внутренние Н."),
@@ -824,12 +824,12 @@ function Get-SettingInstructionLines {
             "Искомые параметры плоскости деформаций: ε_0, κ_x и κ_y.",
             "Выбор влияет на прямое НДС и пробные состояния поиска LoadMultiplier. UltimateStrain решает отдельную предельную задачу. Пустой или неизвестный метод дает InputErr, а не скрытое переключение."
         ) }
-        "Solver.PlateauSlope.Enabled" { return @($lead) + @(
-            "На Config в общих настройках решателя выберите Yes для стабилизации поиска на горизонтальных плато. No возвращает исходную строго горизонтальную диаграмму и прежние алгоритмы решения.",
-            "При Yes ненулевые плато получают наклон Et = α·E, где α = 0.0001 (0.01%), E - модуль соответствующей ветви: Eb/Ebt для бетона, Esc/Es для арматуры. Это численная настройка программы, не нормативный коэффициент.",
-            "Напряжение в начале плато сохраняется; далее оно немного изменяется вместе с деформацией. Напряжения и касательная жесткость определяются по одной диаграмме. Поэтому несущая способность, образование и раскрытие трещин могут немного измениться; полного совпадения Yes/No не требуется.",
+        "General.PlateauSlopeFactor" { return @($lead) + @(
+            "В разделе [Общие] на Config задайте неотрицательный числовой коэффициент α. Наклон ненулевых плато физических диаграмм бетона и арматуры равен Et = α·E. При α = 0 плато горизонтальное; при α > 0 напряжение на плато изменяется с деформацией.",
+            "По умолчанию α = 0,001: наклон плато равен 0,001·E, то есть 0,1% от модуля соответствующей ветви. E — Eb/Ebt для сжатого/растянутого бетона и Esc/Es для сжатой/растянутой арматуры. Например, при E = 200000 МПа наклон равен 200 МПа. Это численная настройка программы для улучшения сходимости, а не нормативный коэффициент.",
+            "Напряжение в начале плато сохраняется; далее его изменение равно α·E·Δε, где Δε — приращение деформации от начала плато. Напряжения и касательная жесткость определяются по одной диаграмме. Увеличение коэффициента сильнее меняет напряжения, несущую способность, образование и раскрытие трещин; улучшение сходимости не гарантируется для любого сочетания.",
             "Предельные деформации не изменяются. Выключенный растянутый бетон остается выключенным. Настройка независима от General.DiagramExtension, которое продолжает диаграммы за физическими пределами.",
-            "Контрольные точки и графики материалов на Config учитывают текущее положение переключателя. Results сохраняет фактически использованные диаграммы последнего расчета, включая наклон и разрешенное продолжение. После изменения переключателя выполните расчет заново."
+            "Контрольные точки и графики материалов на Config учитывают текущее значение коэффициента. Results сохраняет фактически использованные диаграммы последнего расчета, включая наклон и разрешенное продолжение. После изменения коэффициента выполните расчет заново. Пустая ячейка, отрицательное значение и текст вместо числа недопустимы."
         ) }
         "Solver.MaxIterations" { return @($lead) + @(
             "Максимальное число итераций на ступени нагрузки.",
@@ -2524,7 +2524,7 @@ function Add-DirectStateMethodologyGuide {
     $row = Add-GuideTitle $Sheet $row "4. Численный метод и параметры итераций" 13
     $row = Add-GuideParagraph $Sheet $row "Solver.Method выбирает самостоятельные схемы Newton или Secant. Newton использует касательную жесткость сечения; Secant уточняет приближенную матрицу чувствительности по предыдущим состояниям."
     $row = Add-GuideParagraph $Sheet $row "Solver.MaxIterations ограничивает число итераций на ступени нагрузки. Solver.LoadSteps задает число ступеней; их увеличение может повысить устойчивость сходимости ценой дополнительного времени."
-    $row = Add-GuideParagraph $Sheet $row "Solver.PlateauSlope.Enabled = Yes добавляет ненулевым плато бетона и арматуры малый согласованный наклон 0.0001·E своей ветви для улучшения сходимости. Это немного меняет напряжения, но не предельные деформации. No возвращает исходные горизонтальные плато; выключенный растянутый бетон не включается."
+    $row = Add-GuideParagraph $Sheet $row "General.PlateauSlopeFactor задаёт коэффициент α для наклона ненулевых плато бетона и арматуры: Et = α·E своей ветви. По умолчанию α = 0,001, наклон плато — 0,001·E (0,1% от E). 0 сохраняет горизонтальное плато. Наклон помогает сходимости и меняет напряжения, но не предельные деформации; выключенный растянутый бетон не включается. После изменения коэффициента выполните расчёт заново."
     $row = Add-GuideParagraph $Sheet $row "Решатель автоматически пробует полный шаг и уменьшает его, если равновесие ухудшается. Расчет ведется относительно центра бетонной сетки; исходные координаты геометрии и точка, к которой относится ε_0 в Results, не меняются."
     $row = Add-GuideParagraph $Sheet $row "На Config задаются метод, допуски равновесия, число ступеней нагрузки и бюджет итераций. Для Secant настройка Solver.SecantMaxRestarts ограничивает число перестроений приближенной матрицы. Малый шаг сам по себе не означает найденное равновесие."
     $row = Add-GuideTitle $Sheet $row "5. Продолжение диаграмм и статус" 13
@@ -4019,8 +4019,7 @@ function Add-MaterialDiagramControlTables {
         $stressUnitRef = New-MaterialParameterRef "rngUnitSettings" "Stress" 2
         $Sheet.Cells.Item($HeaderRow, $StartColumn + 5).Formula = '="σ, "&' + $stressUnitRef
     }
-    $slopeRef = New-MaterialParameterRef "rngSystemSettings" "Solver.PlateauSlope.Enabled" 2
-    $slopeFactor = 'IF({0}="Yes",0.0001,0)' -f $slopeRef
+    $slopeFactor = New-MaterialParameterRef "rngSystemSettings" "General.PlateauSlopeFactor" 2
 
     $concreteGroups = @(
         @{ Group = "I"; Rb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS(I)" 2); Rbt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.R.ULS(I)" 3); Eb = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 2); Ebt = (New-MaterialParameterRef "rngConcreteMaterialParameters" "Concrete.E" 3) },
@@ -4537,7 +4536,6 @@ function Apply-SystemSettingsLayout {
         "Stability.AccidentalEccentricityPlanes" = @("OnlyMomentPlane", "BothPlanes")
         "Stability.PhiLMode" = @("Auto", "PhiL2")
         "Solver.Method" = @("Newton", "Secant")
-        "Solver.PlateauSlope.Enabled" = @("Yes", "No")
         "General.DiagramExtension" = @("Yes", "No")
         "Capacity.SolutionStrategy" = @("Auto", "UltimateStrain", "LoadMultiplier")
         "Capacity.SearchMethod" = @("Bisection", "Brent", "Secant")
@@ -4580,6 +4578,15 @@ function Apply-SystemSettingsLayout {
                 $cell.Validation.Delete()
                 $cell.Validation.Add(3, 1, 1, $listAddress)
             }
+        }
+    }
+    for ($r = 2; $r -le $settingsRange.Rows.Count; $r++) {
+        if ([string]$settingsRange.Cells.Item($r, 1).Value2 -ceq 'General.PlateauSlopeFactor') {
+            $cell = $settingsRange.Cells.Item($r, 2)
+            $cell.Value2 = [double]::Parse(([string]$cell.Value2), [Globalization.CultureInfo]::InvariantCulture)
+            $cell.NumberFormat = '0.########'
+            $cell.Validation.Delete(); $cell.Validation.Add(2, 1, 7, '0')
+            $cell.Validation.IgnoreBlank = $false; $cell.Validation.ShowError = $true
         }
     }
 
@@ -5384,14 +5391,15 @@ function Update-CrackLambdaSetting {
 
 # Дополняет существующий реестр без пересборки соседних таблиц и их списков.
 # Копирование снизу вверх сохраняет формулы ROW(A...) скрытых источников.
-function Update-SolverPlateauSlopeSetting {
+function Update-PlateauSlopeFactorSetting {
     param([object]$Workbook)
-    $key = "Solver.PlateauSlope.Enabled"
+    $key = "General.PlateauSlopeFactor"
+    $oldKey = "Solver.PlateauSlope.Enabled"
     $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
     $data = $range.Value2
     $found = 0; $method = 0; $extension = 0
     for ($row = 2; $row -le $range.Rows.Count; $row++) {
-        if ([string]$data[$row, 1] -ceq $key) {
+        if ([string]$data[$row, 1] -in @($key, $oldKey)) {
             if ($found) { throw "В Config несколько строк $key." }
             $found = $row
         }
@@ -5399,14 +5407,26 @@ function Update-SolverPlateauSlopeSetting {
         if ([string]$data[$row, 1] -ceq "General.DiagramExtension") { $extension = $row }
     }
     if (-not $method -or -not $extension) { throw "В Config нет обязательных настроек решателя." }
-    $definition = @((Get-SystemSettingsCatalog | Where-Object Name -eq "SolverSettings").Rows | Where-Object { $_[0] -ceq $key })
+    $definition = @((Get-SystemSettingsCatalog | Where-Object Name -eq "GeneralSettings").Rows | Where-Object { $_[0] -ceq $key })
     if ($definition.Count -ne 1) { throw "Неоднозначное определение $key в каталоге." }
-    $list = [string]$range.Cells.Item($extension, 2).Validation.Formula1
-    $options = @($range.Worksheet.Range($list.Substring(1)).Value2 | ForEach-Object { [string]$_ })
-    if (($options -join '|') -cne 'Yes|No') { throw "Источник списка Yes/No поврежден." }
+    $factor = 0.001
+    $settingFormula = $null
+    if ($found) {
+        if ([string]$data[$found, 1] -ceq $oldKey) {
+            switch -CaseSensitive ([string]$data[$found, 2]) {
+                'Yes' {$factor = 0.001}
+                'No' {$factor = 0.0}
+                default {throw "Прежнее значение $oldKey не равно Yes или No."}
+            }
+        } else {
+            $factor = [double]::Parse(([string]$data[$found, 2]), [Globalization.CultureInfo]::InvariantCulture)
+            if ($factor -lt 0 -or [double]::IsInfinity($factor) -or [double]::IsNaN($factor)) {throw 'Недопустимый коэффициент наклона плато.'}
+            $settingFormula = $range.Cells.Item($found, 2).Formula
+        }
+    }
     $added = -not [bool]$found
     if ($added) {
-        $found = $method + 1
+        $found = $extension
         $rowCount = $range.Rows.Count
         $formulas = $range.Formula
         $expanded = $range.Resize($rowCount + 1, $range.Columns.Count)
@@ -5425,22 +5445,52 @@ function Update-SolverPlateauSlopeSetting {
         $Workbook.Names.Item("rngSystemSettings").RefersTo = "='Config'!" + $expanded.Address()
         $range = $expanded
         $range.Rows.Item($found).UnMerge() | Out-Null
-        $range.Rows.Item($method).Copy($range.Rows.Item($found)) | Out-Null
+        $range.Rows.Item($found + 1).Copy($range.Rows.Item($found)) | Out-Null
         $range.Rows.Item($found).Validation.Delete()
         $range.Rows.Item($found).Hyperlinks.Delete()
-        $range.Cells.Item($found, 2).Value2 = "Yes"
+    }
+    elseif ($found -ne $extension - 1) {
+        # Копируем только A:E. Вставка ячеек могла бы изменить ROW(A...) в
+        # независимых источниках списков справа и их смысл после переноса.
+        $order = New-Object 'System.Collections.Generic.List[int]'
+        for ($row = 1; $row -le $range.Rows.Count; $row++) {
+            if ($row -eq $extension) {$order.Add($found)}
+            if ($row -ne $found) {$order.Add($row)}
+        }
+        $temporary = $Workbook.Worksheets.Add()
+        try {
+            $range.Copy($temporary.Range('A1')) | Out-Null
+            $formulas = $range.Formula
+            for ($row = 1; $row -le $range.Rows.Count; $row++) {
+                $sourceRow = $order[$row-1]
+                if ($sourceRow -eq $row) {continue}
+                $target = $range.Rows.Item($row)
+                $target.UnMerge() | Out-Null
+                $temporary.Range('A1').Resize($range.Rows.Count, 5).Rows.Item($sourceRow).Copy($target) | Out-Null
+                $values = New-Object 'object[,]' 1,5
+                for ($column = 1; $column -le 5; $column++) {$values[0,($column-1)] = $formulas[$sourceRow,$column]}
+                $target.Formula = $values
+            }
+            $found = $order.IndexOf($found) + 1
+        } finally {$temporary.Delete()}
     }
     $range.Cells.Item([int]$found, 1).Value2 = $key
     $range.Cells.Item([int]$found, 3).Value2 = "-"
     $range.Cells.Item([int]$found, 4).Value2 = [string]$definition[0][3]
     $cell = $range.Cells.Item([int]$found, 2)
+    if ($null -ne $settingFormula) {$cell.Formula = $settingFormula} else {$cell.Value2 = [double]$factor}
+    $cell.NumberFormat = '0.########'
     $cell.HorizontalAlignment = -4108; $cell.VerticalAlignment = -4108
-    $cell.Validation.Delete(); $cell.Validation.Add(3, 1, 1, $list)
+    $cell.Validation.Delete(); $cell.Validation.Add(2, 1, 7, '0')
+    $cell.Validation.IgnoreBlank = $false
+    $cell.Validation.ShowError = $true
+    $cell.Validation.ErrorTitle = 'Коэффициент наклона плато'
+    $cell.Validation.ErrorMessage = 'Введите число не меньше нуля. 0 — горизонтальное плато; по умолчанию 0,001, наклон плато 0,001·E.'
     $guide = $Workbook.Worksheets.Item("Справка")
     $last = $guide.UsedRange.Row + $guide.UsedRange.Rows.Count - 1
     $anchor = 0
     for ($row = 1; $row -le $last; $row++) {
-        if ([string]$guide.Cells.Item($row, 1).Value2 -ceq $key) { $anchor = $row; break }
+        if ([string]$guide.Cells.Item($row, 1).Value2 -in @($key, $oldKey)) { $anchor = $row; break }
     }
     if (-not $anchor) {
         $anchor = $last + 2
@@ -5448,6 +5498,28 @@ function Update-SolverPlateauSlopeSetting {
         foreach ($line in (Get-SettingInstructionLines $key ([string]$definition[0][3]))) { $next = Add-GuideParagraph $guide $next $line }
         $help = $guide.Range($guide.Cells.Item($anchor, 1), $guide.Cells.Item($next - 1, 6))
         $help.RowHeight = 30; $help.Borders.LineStyle = 1
+    } else {
+        # Меняем лишь свой блок: соседние разделы, их ссылки и группировка
+        # остаются на прежних строках. Высота учитывает перенос текста.
+        $end = $anchor
+        while ([string]$guide.Cells.Item($end+1, 1).Value2 -ne '') {$end++}
+        $available = $end - $anchor
+        $maxLength = 200
+        do {
+            $parts = @()
+            foreach ($line in (Get-SettingInstructionLines $key ([string]$definition[0][3]))) {
+                $parts += @(Split-GuideParagraphText $line $maxLength)
+            }
+            $maxLength += 20
+        } while ($parts.Count -gt $available)
+        $guide.Cells.Item($anchor, 1).Value2 = $key
+        for ($index = 0; $index -lt $available; $index++) {
+            $row = $anchor + 1 + $index
+            $text = if ($index -lt $parts.Count) {[string]$parts[$index]} else {''}
+            $guide.Cells.Item($row, 1).Value2 = $text
+            $guide.Rows.Item($row).RowHeight = if ($text) {[Math]::Max(30, 30 * [Math]::Ceiling($text.Length / 180.0))} else {6}
+            $guide.Cells.Item($row, 1).WrapText = $true
+        }
     }
     Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
     $range.Rows.Item([int]$found).Borders.LineStyle = -4115
@@ -5456,7 +5528,7 @@ function Update-SolverPlateauSlopeSetting {
     $right = $range.Cells.Item([int]$found, 5).Borders.Item(10)
     $right.Weight = 2; $right.Color = 0; $right.LineStyle = -4115
     $Workbook.Application.CutCopyMode = $false
-    return @{ Added = $added; Address = $cell.Address($false, $false); HelpRow = $anchor; Options = $options }
+    return @{ Added = $added; Address = $cell.Address($false, $false); HelpRow = $anchor; Factor = $factor }
 }
 
 function Add-SystemSettings {

@@ -1,0 +1,424 @@
+{
+  "AllPassed": true,
+  "ComparedPairs": 24,
+  "NativeCalculations": 48,
+  "PreviouslyOKPairs": 22,
+  "NewNumericalFailures": 0,
+  "ReportSHA256": {
+    "Baseline_No.txt": "63112a564567424d04f602009f7a824007e1a03882ea217bbea64f8de53c609b",
+    "Release_No.txt": "1dee45e8b32fc00954c45a840ea643efc870bf41c391b4cfae1ad32ba094a4f6",
+    "Baseline_Yes.txt": "810eb7405190c7d352c9fb2e6c3451816e6f7648e7c0b6fdd76f933a7a9465a3",
+    "Release_Yes.txt": "1ccbd0967958c2499497b3a7c1a407ff70210893d7d0b0d4781e72b12c0aee88"
+  },
+  "Records": [
+    {
+      "mode": "No",
+      "id": "axialSmall-1",
+      "before": {
+        "id": "axialSmall-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "axialSmall-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "axialSmall1",
+      "before": {
+        "id": "axialSmall1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "axialSmall1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "Mx-1",
+      "before": {
+        "id": "Mx-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "Mx-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "Mx1",
+      "before": {
+        "id": "Mx1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "Mx1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "My-1",
+      "before": {
+        "id": "My-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "My-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "My1",
+      "before": {
+        "id": "My1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "My1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "mixedC1_-1",
+      "before": {
+        "id": "mixedC1_-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "mixedC1_-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "mixedT-1_1",
+      "before": {
+        "id": "mixedT-1_1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "mixedT-1_1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "N500",
+      "before": {
+        "id": "N500",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "N500",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "N1000",
+      "before": {
+        "id": "N1000",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "N1000",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "N2098Plateau",
+      "before": {
+        "id": "N2098Plateau",
+        "overall": "NumFail",
+        "capacity": "FAIL",
+        "cracks": "FAIL"
+      },
+      "after": {
+        "id": "N2098Plateau",
+        "overall": "NumFail",
+        "capacity": "FAIL",
+        "cracks": "FAIL"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "No",
+      "id": "N500TinyMoment",
+      "before": {
+        "id": "N500TinyMoment",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "N500TinyMoment",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "axialSmall-1",
+      "before": {
+        "id": "axialSmall-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "axialSmall-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "axialSmall1",
+      "before": {
+        "id": "axialSmall1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "axialSmall1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "Mx-1",
+      "before": {
+        "id": "Mx-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "Mx-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "Mx1",
+      "before": {
+        "id": "Mx1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "Mx1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "My-1",
+      "before": {
+        "id": "My-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "My-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "My1",
+      "before": {
+        "id": "My1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "My1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "mixedC1_-1",
+      "before": {
+        "id": "mixedC1_-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "mixedC1_-1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "mixedT-1_1",
+      "before": {
+        "id": "mixedT-1_1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "mixedT-1_1",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "N500",
+      "before": {
+        "id": "N500",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "N500",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "N1000",
+      "before": {
+        "id": "N1000",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "N1000",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "N2098Plateau",
+      "before": {
+        "id": "N2098Plateau",
+        "overall": "FAIL",
+        "capacity": "FAIL",
+        "cracks": "FAIL"
+      },
+      "after": {
+        "id": "N2098Plateau",
+        "overall": "FAIL",
+        "capacity": "FAIL",
+        "cracks": "FAIL"
+      },
+      "statusesEqual": true
+    },
+    {
+      "mode": "Yes",
+      "id": "N500TinyMoment",
+      "before": {
+        "id": "N500TinyMoment",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "after": {
+        "id": "N500TinyMoment",
+        "overall": "OK",
+        "capacity": "OK",
+        "cracks": "OK"
+      },
+      "statusesEqual": true
+    }
+  ],
+  "Errors": []
+}

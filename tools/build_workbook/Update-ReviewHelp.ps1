@@ -105,14 +105,14 @@ try {
     if ((Get-RecipeGuideTextHash $lines) -cne $first.BodySHA256) {throw 'Reopen guide text differs.'}
     $config=[int]$rows[$script:HelpMainTitles[-1]]
     $settings=@()
-    foreach ($key in @('SLS.Crack.ToleranceLambda','Solver.PlateauSlope.Enabled')) {
+    foreach ($key in @('SLS.Crack.ToleranceLambda','General.PlateauSlopeFactor')) {
         $anchor=$sheet.Cells.Find($key,$sheet.Cells.Item(1,1),-4163,1)
         if ($null -eq $anchor -or $anchor.Row -le $config -or [int]$anchor.EntireRow.OutlineLevel -ne 2) {throw ('Setting Help is outside Config: '+$key)}
         $settings+=,[ordered]@{Key=$key;HelpRow=$anchor.Row;InsideConfig=$true}
     }
     $navigation=@()
     $system=$book.Names.Item('rngSystemSettings').RefersToRange
-    foreach ($key in @('Solver.PlateauSlope.Enabled','SLS.Crack.ToleranceLambda','Geometry.Type')) {
+    foreach ($key in @('General.PlateauSlopeFactor','SLS.Crack.ToleranceLambda','Geometry.Type')) {
         $cell=$null
         for ($row=2;$row -le $system.Rows.Count;$row++) {
             if ([string]$system.Cells.Item($row,1).Value2 -ceq $key) {$cell=$system.Cells.Item($row,5);break}

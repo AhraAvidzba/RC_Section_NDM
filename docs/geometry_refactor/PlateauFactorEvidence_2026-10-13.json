@@ -1,0 +1,328 @@
+{
+  "AllPassed": true,
+  "Archive": "docs/geometry_refactor/PlateauFactorEvidence_2026-10-13.zip",
+  "ArchiveSHA256": "c2a8e6abc929a004c50b93e28c1a79f8bf82a1a4da929437c0d41116c18278fe",
+  "ArchiveBytes": 21986010,
+  "Artifacts": [
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Addendum.json",
+      "bytes": 776,
+      "sha256": "9576076954e3a7cb92b5ebc73629816d2a04ce036644d756e51ca15e7320c283"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_No.txt",
+      "bytes": 122743,
+      "sha256": "63112a564567424d04f602009f7a824007e1a03882ea217bbea64f8de53c609b"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_No.txt.progress.txt",
+      "bytes": 19368,
+      "sha256": "d0798da494a52dff96627d0398a2fdc96c71683da36d176286cc40330d096acc"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_No.txt.stdout.log",
+      "bytes": 1878,
+      "sha256": "8783974ca6412f1284d8c0882f45ddb17b701c09aff2ec8cd8f8dbf2a09733c0"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_Yes.txt",
+      "bytes": 119937,
+      "sha256": "810eb7405190c7d352c9fb2e6c3451816e6f7648e7c0b6fdd76f933a7a9465a3"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_Yes.txt.progress.txt",
+      "bytes": 18866,
+      "sha256": "480af2732f0707b8a4d08c6ba998446827e1032cb768a9d6c8b5c191e1d80487"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Baseline_Yes.txt.stdout.log",
+      "bytes": 1875,
+      "sha256": "0ff72fa4e548663e928f12c3c9b943009eede2345e068a73c4955a3b7975d689"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/BaselineProbe/Preparation.json",
+      "bytes": 887,
+      "sha256": "1de32e9e9013120cca765991c76f2ffe4b4ee3a00eb60d477643b6581891e4ae"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/BaselineProbe/RC_Section_NDM.xlsm",
+      "bytes": 8174111,
+      "sha256": "3fb58e747e503b1636516312c9e6a3e20b22d22b8a9c7276373d1e412867c75b"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/BeforeVBA.txt",
+      "bytes": 6942917,
+      "sha256": "92c7b69f499564fd354721146e9e14b7e943488d190386355a42c9b4016b06b4"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/ChangesFromPrevious.json",
+      "bytes": 91288,
+      "sha256": "ef6c4db93c98ae78bb98c71922e83f80987df19e6847fa4f75eda989979a2c1a"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/CodeUpdate.json",
+      "bytes": 664,
+      "sha256": "0cf859cb6f5faa38f154cb0410cbddc07a94a86653f7e802c1570d48ca156f41"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/ManifestBefore.json",
+      "bytes": 584354,
+      "sha256": "066999475f96aadc80ec49e80dbf5bbd782b50aa9f9e75babd3993ede1a020f8"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/MaterialFactor.txt",
+      "bytes": 2769746,
+      "sha256": "32fb3320962dc65baf50b5d71798c5ce330e89e69e40472e568611741b0c5a67"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/MaterialFactor.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/MaterialFactor.txt.stdout.log",
+      "bytes": 764,
+      "sha256": "43e1695f4bc73e76fe6a700f9d834d1101342c4a568858670f6730d922339332"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/MaterialFactorV2.txt",
+      "bytes": 3028089,
+      "sha256": "e79f179d8ca4338d73c9748e806ba813f21addf937215d596956693de4d25045"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/MaterialFactorV2.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/MaterialFactorV2.txt.stdout.log",
+      "bytes": 530,
+      "sha256": "7a1cbb9df246ee20bb8875a349c7823bf782a269c076fa15e6a815cd7daab753"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/NativeSourceEquality.json",
+      "bytes": 54813,
+      "sha256": "6d98bc525ca75ab7fbe030c064438201a72db0ee036858beb108e7e9ce9d46ac"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Preparation.json",
+      "bytes": 624,
+      "sha256": "26ab723887c72d415c06335576679ee8dfb2574c8d0b7e5e8fdea31d20c414b1"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Publication.json",
+      "bytes": 1006,
+      "sha256": "aa79eb640e66393989e7ccf7fe2a69794492831bccb9073e34aaf4a70f802f22"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/PublishedBeforeVBA.txt",
+      "bytes": 6942917,
+      "sha256": "92c7b69f499564fd354721146e9e14b7e943488d190386355a42c9b4016b06b4"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/PublishedNativeEquality.json",
+      "bytes": 69665,
+      "sha256": "479cd17ff66b350f4c4e6a9be261ad78dfe95dae77e132c7d4f27a09d5fb18a6"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/PublishedReadback.json",
+      "bytes": 330,
+      "sha256": "219e7ae31470d6aea1d8e00756edc9cd4014ded5e9c015217f1055702add1a8a"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/PublishedVBA.txt",
+      "bytes": 6944466,
+      "sha256": "be504e2d51d670cce9b3295312d6775f6f7b622c634c1b8b389e3bd8ce443950"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_No.txt",
+      "bytes": 122826,
+      "sha256": "1dee45e8b32fc00954c45a840ea643efc870bf41c391b4cfae1ad32ba094a4f6"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_No.txt.progress.txt",
+      "bytes": 19360,
+      "sha256": "715c50e1f76bd63fb384a3c49cfac312bc6b0ced5f248b1ca994061a56512085"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_No.txt.stdout.log",
+      "bytes": 1871,
+      "sha256": "86e953b7de5b7a261a913109eeb5b9cd9f01b749862d40affb78f128a3cb7727"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_Yes.txt",
+      "bytes": 120033,
+      "sha256": "1ccbd0967958c2499497b3a7c1a407ff70210893d7d0b0d4781e72b12c0aee88"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_Yes.txt.progress.txt",
+      "bytes": 18862,
+      "sha256": "3923052b386d1a7d75bbdc8bcf52c4421080e99e224dec42b03efc0a5dcdb8d3"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Release_Yes.txt.stdout.log",
+      "bytes": 1881,
+      "sha256": "138cef710544dff0441a1a0cb1dff841cff4c4368418397cf83ec67ade136fe1"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/ReleaseProbe/Preparation.json",
+      "bytes": 895,
+      "sha256": "aabb163808399c2d19212df3378e3b5fd913e314a7cd154640102195fae080e5"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/ReleaseProbe/RC_Section_NDM.xlsm",
+      "bytes": 8175323,
+      "sha256": "7f3a445653a40981f3506aba0cec6fb456646649b99c59e92abf79c6c4255fbc"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Results_Config.txt",
+      "bytes": 90079,
+      "sha256": "824c1317b4d72fa7ba50475e024ced37439e150ce441b97fb84a9dc6bfceff1d"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Results_Config.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Results_Config.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "c324030e22cb44ed7cc19e0484db1c20dd0e15c8e8558ac51c2d430f5a7c3cb2"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/SourceEquality.json",
+      "bytes": 72086,
+      "sha256": "2db451a7dff87dc5724727e6a80fa52d8210e83320fcaef9b06027c486606961"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/StandaloneHelp.json",
+      "bytes": 342,
+      "sha256": "902bde71cb6d874ff1973518bb8ce15f68d9a9dd588e16952f4cfe5334a0dfac"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/StatusComparison.json",
+      "bytes": 9106,
+      "sha256": "842d7d0975af1fedc60f23b4df00aafb163bbb991e276464f78f87b57e708f74"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/Structure.json",
+      "bytes": 4533,
+      "sha256": "c2526fa6a512898be4cf7f552267ddf39e9ae64b020b12f3892c9e9e769247a2"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/UserData.json",
+      "bytes": 10159,
+      "sha256": "c39ca79573bc2e2e78de551995cd79bafda9600e562969fc30b2bf581ef1ea0a"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/UserDataV2.json",
+      "bytes": 2474,
+      "sha256": "8e38bcb01e40eb89a298402f8747707f2f244f5a58f51c70f518f6e3d99438d4"
+    },
+    {
+      "path": "docs/regression/GeometryFull_2026-10-13/PlateauFactorV2/VBA_All_Code.txt",
+      "bytes": 6944466,
+      "sha256": "8aa82603d9d0a498c4acf6fb9dd10a4544028be1ea4486c65b659b61c4359db1"
+    },
+    {
+      "path": "docs/reports/PlateauFactor_2026-10-13.md",
+      "bytes": 11205,
+      "sha256": "d9dff872a1b3dd5d3ed4e672717b4f01f3161184b04eeca12cf39cc6f4bda0f2"
+    },
+    {
+      "path": "src/Materials/CMaterialModelProvider.cls",
+      "bytes": 50614,
+      "sha256": "f52cf389196d1ac271f30a09f2c36b28ca08a092b2f3a92c90d79f0788ec14b8"
+    },
+    {
+      "path": "tests/modTestBatchCalculation.bas",
+      "bytes": 651045,
+      "sha256": "4f312890f519d08be5412515993a07fbd158452a3f7471c9f711b708c58bd280"
+    },
+    {
+      "path": "tests/modTestMaterialDiagrams.bas",
+      "bytes": 90928,
+      "sha256": "d8f7e1b0d853d77d184d4c7a1b3aac53515bda9c00ddff44efa12583fbf64ac8"
+    },
+    {
+      "path": "tests/modTestWorkbookInterface.bas",
+      "bytes": 481720,
+      "sha256": "20cb5717a9573b51923a793700c32873bf317be7a11872f433079b161099b2a4"
+    },
+    {
+      "path": "tools/build_workbook/Archive-PlateauFactorEvidence.py",
+      "bytes": 3416,
+      "sha256": "44d654a405ae15ce85d34dbef53550a221f941da5ac079b53e785f5ea288169e"
+    },
+    {
+      "path": "tools/build_workbook/Compare-PlateauFactorControls.py",
+      "bytes": 3038,
+      "sha256": "feffc1a31b438980e6c30b0222db63b814735407fec357caaaaa76155f239f68"
+    },
+    {
+      "path": "tools/build_workbook/FocusedAcceptanceProbe.bas",
+      "bytes": 18627,
+      "sha256": "ebb9399968c5428f3d1f88a2d4600552f91a66e70c776b48ba6ef2807c91c145"
+    },
+    {
+      "path": "tools/build_workbook/PlateauFactorControlProbe.bas",
+      "bytes": 2039,
+      "sha256": "efa0d8f3edd484d272c82183750585d0124905e464b14022ddecae2a058e7066"
+    },
+    {
+      "path": "tools/build_workbook/Prepare-FocusedAcceptance.ps1",
+      "bytes": 6157,
+      "sha256": "ced9a33bede7d6f3e635f545fa5c16a4000f3eb088493a4a2a807462c48bd304"
+    },
+    {
+      "path": "tools/build_workbook/Prepare-PlateauFactorRelease.ps1",
+      "bytes": 6601,
+      "sha256": "1f9f65633d7b24348fd1cbe425750213a43bf1ebed8b95dc7927b87b1e83b2c2"
+    },
+    {
+      "path": "tools/build_workbook/Publish-PlateauFactorRelease.ps1",
+      "bytes": 8394,
+      "sha256": "056f974a34b79694c5ba8dfd2862c14128b638b2ed87e415f87a71eb6750755d"
+    },
+    {
+      "path": "tools/build_workbook/SettingsCatalog.ps1",
+      "bytes": 574150,
+      "sha256": "243a8c5eeeb0a0210c658affcfe2d93626510de8320f0594351d8b2414d5deec"
+    },
+    {
+      "path": "tools/build_workbook/Verify-PlateauFactorCode.ps1",
+      "bytes": 3411,
+      "sha256": "93fcfffd2558459f8d82f23c7eaa8b0dad40894fefbfc9c7352a302fc5bf5ea8"
+    },
+    {
+      "path": "tools/build_workbook/Verify-PlateauFactorWorkbook.py",
+      "bytes": 12259,
+      "sha256": "98ea6d9d4929552d593e817b285e891f47fb36a93bedffa9efabcf2fd4e4c7c6"
+    }
+  ],
+  "CandidateWorkbook": "workbook/output/RC_Section_NDM.xlsm",
+  "CandidateSHA256": "a299bdbae5dc45e69a52df030316b7a482b905690878380b283a581e7ff4beed",
+  "PreviousWorkbookSHA256": "871b42914fcb2fcf0168f43896d66ba603b6b170f6e6a9f9db9206cdc3ca9fec",
+  "PreviousWorkbookRecovery": "Git 821ba077:workbook/output/RC_Section_NDM.xlsm",
+  "Note": "Includes negative development logs; acceptance is given by NativeSourceEquality, UserDataV2, StatusComparison and Publication."
+}

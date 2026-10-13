@@ -29,7 +29,6 @@ Private Const SLOT_CRACKED_NDS As Long = 3 ' Массивный слот физ�
 Private Const STATE_EXTENSION_E_FACTOR As Double = 0.01 ' Жесткость extension: 1% от начального модуля E.
 Private Const STATE_EXTENSION_STRAIN_LIMIT As Double = 10# ' Техническая дальняя точка extension; не является eps_ult.
 Private Const EXTENSION_TOLERANCE As Double = 0.000000000001 ' Допуск, чтобы не добавлять почти совпадающую extension-точку.
-Private Const PLATEAU_SLOPE_E_FACTOR As Double = 0.0001 ' Согласованный наклон ненулевого физического плато: 0.01% от E своей ветви.
 
 Private mConcreteParameters As CConcreteMaterialParameters ' Исходные параметры бетона из Config.
 Private mSteelParameters As CSteelMaterialParameters ' Исходные параметры арматуры из Config.
@@ -52,7 +51,7 @@ Private mSteelTensionResistance(1 To 3) As Double ' Rs/Rs,ser выбранной
 Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бетонной модели, МПа.
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
 Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
-Private mPlateauSlopeEnabled As Boolean ' Меняет точки физической диаграммы до ее публикации, а не только касательную solver-а.
+Private mPlateauSlopeFactor As Double ' Et = alpha * E; default Config 0.001 дает наклон плато 0.001 * E (0.1% E); ноль — горизонтальное плато.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
 Private mRevision As Long ' Версия набора материалов и effective Extension после переинициализации.
@@ -71,7 +70,10 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
     mSteelParameters.LoadFromSettings settings, units
 
     mDiagramExtensionEnabled = ReadDiagramExtensionSetting(settings)
-    mPlateauSlopeEnabled = settings.GetBoolean("Solver.PlateauSlope.Enabled", False)
+    mPlateauSlopeFactor = settings.GetRequiredDouble("General.PlateauSlopeFactor")
+    If mPlateauSlopeFactor < 0# Then Err.Raise vbObjectError + 3247, "CMaterialModelProvider", _
+        settings.InputErrorMessage("General.PlateauSlopeFactor", "Коэффициент наклона плато отрицателен.", _
+            "Введите число не меньше нуля: 0 — горизонтальное плато; положительное число — коэффициент к E.")
 
     BuildPurpose cpStrength, "I", _
         settings.GetString("Diagram.Strength.Concrete", "TwoLine"), _
@@ -266,7 +268,7 @@ Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() A
         ByVal compressionE As Double, ByVal tensionE As Double) As CMaterialDiagram
     Dim diagram As CMaterialDiagram
     Set diagram = New CMaterialDiagram
-    If mPlateauSlopeEnabled Then ApplyPlateauSlope strains, stresses, pointCount, compressionE, tensionE
+    ApplyPlateauSlope strains, stresses, pointCount, compressionE, tensionE
     diagram.InitializeFromArrays strains, stresses, pointCount
     diagram.Freeze
     Set DiagramFromArrays = diagram
@@ -285,7 +287,7 @@ Private Sub ApplyPlateauSlope(ByRef strains() As Double, ByRef stresses() As Dou
     For i = zero - 1 To 1 Step -1
         original = stresses(i)
         If original <> 0# And original = previous Then _
-            offset = offset + PLATEAU_SLOPE_E_FACTOR * compressionE * (strains(i) - strains(i + 1))
+            offset = offset + mPlateauSlopeFactor * compressionE * (strains(i) - strains(i + 1))
         stresses(i) = original + offset
         previous = original
     Next i
@@ -293,7 +295,7 @@ Private Sub ApplyPlateauSlope(ByRef strains() As Double, ByRef stresses() As Dou
     For i = zero + 1 To count
         original = stresses(i)
         If original <> 0# And original = previous Then _
-            offset = offset + PLATEAU_SLOPE_E_FACTOR * tensionE * (strains(i) - strains(i - 1))
+            offset = offset + mPlateauSlopeFactor * tensionE * (strains(i) - strains(i - 1))
         stresses(i) = original + offset
         previous = original
     Next i
@@ -847,10 +849,10 @@ Public Property Get DiagramExtensionEnabled() As Boolean
     DiagramExtensionEnabled = mDiagramExtensionEnabled
 End Property
 
-' Меняет точки физической диаграммы до ее публикации, а не только касательную solver-а.
-Public Property Get PlateauSlopeEnabled() As Boolean
+' Коэффициент к модулю соответствующей ветви для ненулевых физических плато.
+Public Property Get PlateauSlopeFactor() As Double
     EnsureInitialized
-    PlateauSlopeEnabled = mPlateauSlopeEnabled
+    PlateauSlopeFactor = mPlateauSlopeFactor
 End Property
 
 ' Возвращает версию неизменяемого набора материалов текущего запуска.
@@ -895,9 +897,10 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
         Optional ByVal crackedConcreteDiagram As String = "TwoLine", _
         Optional ByVal crackedSteelDiagram As String = "TwoLine", _
         Optional ByVal diagramExtensionEnabled As Boolean = True, _
-        Optional ByVal plateauSlopeEnabled As Boolean = False)
+        Optional ByVal plateauSlopeFactor As Double = 0#)
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
+    If plateauSlopeFactor < 0# Then Err.Raise vbObjectError + 3247, "CMaterialModelProvider", "Коэффициент наклона плато должен быть не меньше нуля."
 
     mInitialized = False
     mRevision = mRevision + 1
@@ -905,7 +908,7 @@ Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMateria
     Set mSteelParameters = steelParameters.Clone
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
     mDiagramExtensionEnabled = diagramExtensionEnabled
-    mPlateauSlopeEnabled = plateauSlopeEnabled
+    mPlateauSlopeFactor = plateauSlopeFactor
     BuildPurpose cpStrength, "I", strengthConcreteDiagram, strengthConcreteTension, strengthSteelDiagram
     BuildPurpose cpMcrc, "II", mcrcConcreteDiagram, "UseDiagram", mcrcSteelDiagram
     BuildPurpose cpCrackedNDS, "II", crackedConcreteDiagram, "Ignore", crackedSteelDiagram

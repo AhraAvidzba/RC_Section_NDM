@@ -445,9 +445,9 @@ Public Function RunPlateauResultsDiagramTests() As String
         fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i
     Set writer = New CNDMResultsWriter
-    For Each slopeMode In Array("No", "Yes")
+    For Each slopeMode In Array("0", "0.0001", "0.001")
         For Each extensionMode In Array("No", "Yes")
-            SetSystemSetting "Solver.PlateauSlope.Enabled", CStr(slopeMode)
+            SetSystemSetting "General.PlateauSlopeFactor", CStr(slopeMode)
             SetSystemSetting "General.DiagramExtension", CStr(extensionMode)
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -463,10 +463,10 @@ Public Function RunPlateauResultsDiagramTests() As String
             AssertTrue stats, prefix & ".materialsSaved", state.HasMaterialSnapshot
             Set props = PrepareSectionSnapshot(section, provider)
             solves = SectionEquilibriumSolveCount()
-            If CStr(slopeMode) = "Yes" Then
-                SetSystemSetting "Solver.PlateauSlope.Enabled", "No"
+            If CStr(slopeMode) = "0.001" Then
+                SetSystemSetting "General.PlateauSlopeFactor", "0"
             Else
-                SetSystemSetting "Solver.PlateauSlope.Enabled", "Yes"
+                SetSystemSetting "General.PlateauSlopeFactor", "0.001"
             End If
             writer.WriteResults fixture, section, props, batch, units
             data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
