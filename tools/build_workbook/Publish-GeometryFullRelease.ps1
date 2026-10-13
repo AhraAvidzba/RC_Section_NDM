@@ -28,7 +28,12 @@ $bridge=Json $candidate.nativeBridge
 $lambdaBridge=Json $candidate.lambdaBridge
 $profileBridge=Json $candidate.profileBridge
 $help=Json 'FinalHelp/HelpEvidence.json'
-$structure=@(Json $candidate.structure)
+# Windows PowerShell 5 возвращает JSON-массив одним объектом в pipeline.
+# Прямое присваивание сохраняет его 27 записей без дополнительной оболочки.
+$structure=Json $candidate.structure
+foreach ($check in $structure) {
+ if ($check.Passed -isnot [bool]) {throw 'Structure proof must contain explicit Boolean results.'}
+}
 if ($candidate.book -ne 'ReleaseSnapshotFixed.xlsm' -or $candidate.dump -ne 'VBA_SnapshotFixed.txt') {throw 'Unexpected release candidate.'}
 $book=Join-Path $release $candidate.book;$dump=Join-Path $release $candidate.dump
 $bookHash=Hash $book;$dumpHash=Hash $dump
