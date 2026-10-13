@@ -1,0 +1,3952 @@
+{
+  "scope": "Методы автора геометрии, арматуры и аннотаций",
+  "sections": [
+    {
+      "number": "01",
+      "title": "Начало и завершение описания",
+      "members": [
+        "ISectionRecipe.CreateDefinition",
+        "CSectionDefinitionBuilder.Initialize",
+        "CSectionDefinitionBuilder.Finish",
+        "CSectionTypeRegistry.RegisterRecipe"
+      ]
+    },
+    {
+      "number": "02",
+      "title": "Входные размеры и единицы",
+      "members": [
+        "CSectionRecipeContext.Table",
+        "CSectionRecipeContext.Units",
+        "CSectionInputTable.Name",
+        "CSectionInputTable.RowCount",
+        "CSectionInputTable.ColumnCount",
+        "CSectionInputTable.SourceReference",
+        "CSectionInputTable.CellValue",
+        "CSectionInputTable.IsBlank",
+        "CSectionInputTable.Text",
+        "CSectionInputTable.Number",
+        "CSectionInputTable.Count",
+        "CSectionInputTable.Choice",
+        "CSectionInputTable.Length",
+        "CSectionInputTable.OptionalDiameter",
+        "CSectionInputTable.ColumnByCaption",
+        "CSectionInputTable.RowByKey",
+        "CSectionInputTable.RowByAnyKey",
+        "CUnitSystem.InputLengthToInternal",
+        "CUnitSystem.InputAreaToInternal"
+      ]
+    },
+    {
+      "number": "03",
+      "title": "Границы бетона и отверстий",
+      "members": [
+        "CSectionDefinitionBuilder.CirclePath",
+        "CSectionDefinitionBuilder.LinePath",
+        "CSectionDefinitionBuilder.ArcPath",
+        "CSectionDefinitionBuilder.RectanglePath",
+        "CSectionDefinitionBuilder.RoundedPolygon",
+        "CSectionDefinitionBuilder.AdjacentRectangles",
+        "CSectionDefinitionBuilder.AddPath",
+        "CSectionDefinitionBuilder.Outer",
+        "CSectionDefinitionBuilder.Opening"
+      ]
+    },
+    {
+      "number": "04",
+      "title": "Линии центров стержней и преобразования",
+      "members": [
+        "CSectionDefinitionBuilder.Offset",
+        "CSectionDefinitionBuilder.OffsetRoundedPolygon",
+        "CSectionDefinitionBuilder.ConstrainLine",
+        "CSectionDefinitionBuilder.Chain",
+        "CSectionDefinitionBuilder.Transform",
+        "CSectionDefinitionBuilder.PathGroup"
+      ]
+    },
+    {
+      "number": "05",
+      "title": "Размещение арматуры",
+      "members": [
+        "CSectionDefinitionBuilder.RebarByCount",
+        "CSectionDefinitionBuilder.RebarByMaxStep",
+        "CSectionDefinitionBuilder.RebarByFixedStep",
+        "CSectionDefinitionBuilder.RebarAtStations",
+        "CSectionDefinitionBuilder.RebarDependent",
+        "CSectionDefinitionBuilder.RebarProjected"
+      ]
+    },
+    {
+      "number": "06",
+      "title": "Условия размещения стержней",
+      "members": [
+        "CRebarRuleOptions.StartSetback",
+        "CRebarRuleOptions.EndSetback",
+        "CRebarRuleOptions.EndMode",
+        "CRebarRuleOptions.DistributionScope",
+        "CRebarRuleOptions.RemainderPlacement",
+        "CRebarRuleOptions.TangentOffset",
+        "CRebarRuleOptions.NormalOffset",
+        "CRebarRuleOptions.EverySecond",
+        "CRebarRuleOptions.IncomingTangentAtJoint",
+        "CRebarRuleOptions.DirectionX",
+        "CRebarRuleOptions.DirectionY",
+        "CRebarRuleOptions.SourceNormalSign",
+        "CRebarRuleOptions.SuccessfulProjectionOrdinal",
+        "CRebarRuleOptions.NewPublicationRoot",
+        "CRebarRuleOptions.SkipMissingProjection",
+        "CRebarRuleOptions.Publication",
+        "CRebarRuleOptions.PositionOrder",
+        "CRebarRuleOptions.Coincidence",
+        "CRebarRuleOptions.PlacementCheck",
+        "CRebarRuleOptions.OverlapPolicy",
+        "CRebarRuleOptions.SourcePrefix",
+        "CRebarRuleOptions.SourceSuffix",
+        "CRebarRuleOptions.AnnotationGroup",
+        "CRebarRuleOptions.Comment",
+        "CRebarRuleOptions.SourceReference",
+        "modSectionRecipeTypes.ERebarEndMode",
+        "modSectionRecipeTypes.ERebarDistributionScope",
+        "modSectionRecipeTypes.ERemainderPlacement",
+        "modSectionRecipeTypes.ERebarPublication",
+        "modSectionRecipeTypes.ERebarPositionOrder",
+        "modSectionRecipeTypes.ERebarCoincidence",
+        "modSectionRecipeTypes.ERebarPlacementCheck",
+        "modSectionRecipeTypes.ERebarOverlapPolicy"
+      ]
+    },
+    {
+      "number": "07",
+      "title": "Размеры, пояснения и подписи арматуры",
+      "members": [
+        "CSectionDefinitionBuilder.Anchor",
+        "CSectionDefinitionBuilder.PathAnchor",
+        "CSectionDefinitionBuilder.TransformAnchor",
+        "CSectionDefinitionBuilder.VerticalExtent",
+        "CSectionDefinitionBuilder.HorizontalExtent",
+        "CSectionDefinitionBuilder.HorizontalDistance",
+        "CSectionDefinitionBuilder.VerticalDistance",
+        "CSectionDefinitionBuilder.Dimension",
+        "CSectionDefinitionBuilder.PathLength",
+        "CSectionDefinitionBuilder.Radius",
+        "CSectionDefinitionBuilder.Diameter",
+        "CSectionDefinitionBuilder.Text",
+        "CSectionDefinitionBuilder.RebarLabel",
+        "CSectionDefinitionBuilder.RebarRowLabel",
+        "CSectionDefinitionBuilder.RebarRowExtentLabel",
+        "CSectionDefinitionBuilder.RebarRowExtremeLabel"
+      ]
+    },
+    {
+      "number": "08",
+      "title": "Составные линии и отдельные участки",
+      "members": [
+        "CGeometryPath.Initialize",
+        "CGeometryPath.AddLine",
+        "CGeometryPath.AddArc",
+        "CGeometryPath.Seal",
+        "CGeometryPath.ID",
+        "CGeometryPath.SegmentCount",
+        "CGeometryPath.IsClosed",
+        "CGeometryPath.Length",
+        "CGeometryPath.SegmentID",
+        "CGeometryPath.SegmentIndex",
+        "CGeometryPath.AnchorStation",
+        "CGeometryPath.BetweenAnchors",
+        "CGeometryPath.AtDistance",
+        "CGeometryPath.Slice",
+        "CGeometryPath.Reversed",
+        "CGeometryPath.Transformed",
+        "CGeometryPath.WithID",
+        "modGeometryTypes.GEOM_PI",
+        "modGeometryTypes.TPoint2D"
+      ]
+    },
+    {
+      "number": "09",
+      "title": "Адреса ввода и сообщения об ошибках",
+      "members": [
+        "CSectionDefinitionBuilder.Source",
+        "CSectionDefinitionBuilder.LastGeometryDiagnostic",
+        "CGeometryPath.LastDiagnostic",
+        "CGeometryDiagnostic.Code",
+        "CGeometryDiagnostic.EntityID",
+        "CGeometryDiagnostic.RelatedEntityID",
+        "CGeometryDiagnostic.Reason",
+        "CGeometryDiagnostic.Detail1",
+        "CGeometryDiagnostic.Detail2",
+        "CGeometryDiagnostic.SourceReference"
+      ]
+    }
+  ],
+  "members": [
+    {
+      "owner": "ISectionRecipe",
+      "name": "CreateDefinition",
+      "kind": "Function",
+      "signature": "Public Function CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition",
+      "parameters": [
+        {
+          "name": "context",
+          "type": "CSectionRecipeContext",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal context As CSectionRecipeContext"
+        }
+      ],
+      "resultType": "CSectionDefinition",
+      "line": 14,
+      "source": "src/Section/ISectionRecipe.cls",
+      "id": "ISectionRecipe.CreateDefinition",
+      "anchor": "api-isectionrecipe-createdefinition"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Initialize",
+      "kind": "Sub",
+      "signature": "Public Sub Initialize(ByVal typeID As String, Optional ByVal schemaVersion As Long = 1)",
+      "parameters": [
+        {
+          "name": "typeID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal typeID As String"
+        },
+        {
+          "name": "schemaVersion",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1",
+          "signature": "Optional ByVal schemaVersion As Long = 1"
+        }
+      ],
+      "resultType": null,
+      "line": 19,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Initialize",
+      "anchor": "api-csectiondefinitionbuilder-initialize"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Finish",
+      "kind": "Function",
+      "signature": "Public Function Finish() As CSectionDefinition",
+      "parameters": [],
+      "resultType": "CSectionDefinition",
+      "line": 424,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Finish",
+      "anchor": "api-csectiondefinitionbuilder-finish"
+    },
+    {
+      "owner": "CSectionTypeRegistry",
+      "name": "RegisterRecipe",
+      "kind": "Sub",
+      "signature": "Public Sub RegisterRecipe(ByVal typeID As String, ByVal recipe As ISectionRecipe, ByVal tableNames As Variant)",
+      "parameters": [
+        {
+          "name": "typeID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal typeID As String"
+        },
+        {
+          "name": "recipe",
+          "type": "ISectionRecipe",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal recipe As ISectionRecipe"
+        },
+        {
+          "name": "tableNames",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal tableNames As Variant"
+        }
+      ],
+      "resultType": null,
+      "line": 28,
+      "source": "src/Excel/CSectionTypeRegistry.cls",
+      "id": "CSectionTypeRegistry.RegisterRecipe",
+      "anchor": "api-csectiontyperegistry-registerrecipe"
+    },
+    {
+      "owner": "CSectionRecipeContext",
+      "name": "Table",
+      "kind": "Function",
+      "signature": "Public Function Table(ByVal tableName As String) As CSectionInputTable",
+      "parameters": [
+        {
+          "name": "tableName",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal tableName As String"
+        }
+      ],
+      "resultType": "CSectionInputTable",
+      "line": 43,
+      "source": "src/Section/CSectionRecipeContext.cls",
+      "id": "CSectionRecipeContext.Table",
+      "anchor": "api-csectionrecipecontext-table"
+    },
+    {
+      "owner": "CSectionRecipeContext",
+      "name": "Units",
+      "kind": "Property Get",
+      "signature": "Public Property Get Units() As CUnitSystem",
+      "parameters": [],
+      "resultType": "CUnitSystem",
+      "line": 50,
+      "source": "src/Section/CSectionRecipeContext.cls",
+      "id": "CSectionRecipeContext.Units",
+      "anchor": "api-csectionrecipecontext-units"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "Name",
+      "kind": "Property Get",
+      "signature": "Public Property Get Name() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 57,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.Name",
+      "anchor": "api-csectioninputtable-name"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "RowCount",
+      "kind": "Property Get",
+      "signature": "Public Property Get RowCount() As Long",
+      "parameters": [],
+      "resultType": "Long",
+      "line": 59,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.RowCount",
+      "anchor": "api-csectioninputtable-rowcount"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "ColumnCount",
+      "kind": "Property Get",
+      "signature": "Public Property Get ColumnCount() As Long",
+      "parameters": [],
+      "resultType": "Long",
+      "line": 61,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.ColumnCount",
+      "anchor": "api-csectioninputtable-columncount"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "SourceReference",
+      "kind": "Function",
+      "signature": "Public Function SourceReference(ByVal row As Long, ByVal column As Long) As String",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        }
+      ],
+      "resultType": "String",
+      "line": 64,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.SourceReference",
+      "anchor": "api-csectioninputtable-sourcereference"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "CellValue",
+      "kind": "Function",
+      "signature": "Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        }
+      ],
+      "resultType": "Variant",
+      "line": 69,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.CellValue",
+      "anchor": "api-csectioninputtable-cellvalue"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "IsBlank",
+      "kind": "Function",
+      "signature": "Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        }
+      ],
+      "resultType": "Boolean",
+      "line": 76,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.IsBlank",
+      "anchor": "api-csectioninputtable-isblank"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "Text",
+      "kind": "Function",
+      "signature": "Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As String",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "defaultValue",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal defaultValue As Variant"
+        }
+      ],
+      "resultType": "String",
+      "line": 81,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.Text",
+      "anchor": "api-csectioninputtable-text"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "Number",
+      "kind": "Function",
+      "signature": "Public Function Number(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As Double",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "defaultValue",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal defaultValue As Variant"
+        }
+      ],
+      "resultType": "Double",
+      "line": 93,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.Number",
+      "anchor": "api-csectioninputtable-number"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "Count",
+      "kind": "Function",
+      "signature": "Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Long = 0) As Long",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "defaultValue",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0",
+          "signature": "Optional ByVal defaultValue As Long = 0"
+        }
+      ],
+      "resultType": "Long",
+      "line": 111,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.Count",
+      "anchor": "api-csectioninputtable-count"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "Choice",
+      "kind": "Function",
+      "signature": "Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As Variant, Optional ByVal defaultValue As String = vbNullString) As String",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "allowed",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal allowed As Variant"
+        },
+        {
+          "name": "defaultValue",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "vbNullString",
+          "signature": "Optional ByVal defaultValue As String = vbNullString"
+        }
+      ],
+      "resultType": "String",
+      "line": 120,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.Choice",
+      "anchor": "api-csectioninputtable-choice"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "Length",
+      "kind": "Function",
+      "signature": "Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "units",
+          "type": "CUnitSystem",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal units As CUnitSystem"
+        }
+      ],
+      "resultType": "Double",
+      "line": 131,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.Length",
+      "anchor": "api-csectioninputtable-length"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "OptionalDiameter",
+      "kind": "Function",
+      "signature": "Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "units",
+          "type": "CUnitSystem",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal units As CUnitSystem"
+        }
+      ],
+      "resultType": "Double",
+      "line": 138,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.OptionalDiameter",
+      "anchor": "api-csectioninputtable-optionaldiameter"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "ColumnByCaption",
+      "kind": "Function",
+      "signature": "Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String) As Long",
+      "parameters": [
+        {
+          "name": "headerRow",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal headerRow As Long"
+        },
+        {
+          "name": "caption",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal caption As String"
+        }
+      ],
+      "resultType": "Long",
+      "line": 149,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.ColumnByCaption",
+      "anchor": "api-csectioninputtable-columnbycaption"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "RowByKey",
+      "kind": "Function",
+      "signature": "Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long",
+      "parameters": [
+        {
+          "name": "key",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal key As String"
+        },
+        {
+          "name": "keyColumn",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1",
+          "signature": "Optional ByVal keyColumn As Long = 1"
+        },
+        {
+          "name": "firstRow",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1",
+          "signature": "Optional ByVal firstRow As Long = 1"
+        },
+        {
+          "name": "lastRow",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0",
+          "signature": "Optional ByVal lastRow As Long = 0"
+        }
+      ],
+      "resultType": "Long",
+      "line": 165,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.RowByKey",
+      "anchor": "api-csectioninputtable-rowbykey"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "RowByAnyKey",
+      "kind": "Function",
+      "signature": "Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As Long = 1, Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long",
+      "parameters": [
+        {
+          "name": "keys",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal keys As Variant"
+        },
+        {
+          "name": "keyColumn",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1",
+          "signature": "Optional ByVal keyColumn As Long = 1"
+        },
+        {
+          "name": "firstRow",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1",
+          "signature": "Optional ByVal firstRow As Long = 1"
+        },
+        {
+          "name": "lastRow",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0",
+          "signature": "Optional ByVal lastRow As Long = 0"
+        }
+      ],
+      "resultType": "Long",
+      "line": 172,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.RowByAnyKey",
+      "anchor": "api-csectioninputtable-rowbyanykey"
+    },
+    {
+      "owner": "CUnitSystem",
+      "name": "InputLengthToInternal",
+      "kind": "Function",
+      "signature": "Public Function InputLengthToInternal(ByVal value As Double) As Double",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal value As Double"
+        }
+      ],
+      "resultType": "Double",
+      "line": 82,
+      "source": "src/Excel/CUnitSystem.cls",
+      "id": "CUnitSystem.InputLengthToInternal",
+      "anchor": "api-cunitsystem-inputlengthtointernal"
+    },
+    {
+      "owner": "CUnitSystem",
+      "name": "InputAreaToInternal",
+      "kind": "Function",
+      "signature": "Public Function InputAreaToInternal(ByVal value As Double) As Double",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal value As Double"
+        }
+      ],
+      "resultType": "Double",
+      "line": 101,
+      "source": "src/Excel/CUnitSystem.cls",
+      "id": "CUnitSystem.InputAreaToInternal",
+      "anchor": "api-cunitsystem-inputareatointernal"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "CirclePath",
+      "kind": "Function",
+      "signature": "Public Function CirclePath(ByVal pathID As String, ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "centerX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerX As Double"
+        },
+        {
+          "name": "centerY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerY As Double"
+        },
+        {
+          "name": "radius",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal radius As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 26,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.CirclePath",
+      "anchor": "api-csectiondefinitionbuilder-circlepath"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "LinePath",
+      "kind": "Function",
+      "signature": "Public Function LinePath(ByVal pathID As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "x1",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x1 As Double"
+        },
+        {
+          "name": "y1",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y1 As Double"
+        },
+        {
+          "name": "x2",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x2 As Double"
+        },
+        {
+          "name": "y2",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y2 As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 36,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.LinePath",
+      "anchor": "api-csectiondefinitionbuilder-linepath"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "ArcPath",
+      "kind": "Function",
+      "signature": "Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double, ByVal startAngle As Double, ByVal sweep As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "centerX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerX As Double"
+        },
+        {
+          "name": "centerY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerY As Double"
+        },
+        {
+          "name": "radius",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal radius As Double"
+        },
+        {
+          "name": "startAngle",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startAngle As Double"
+        },
+        {
+          "name": "sweep",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sweep As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 46,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.ArcPath",
+      "anchor": "api-csectiondefinitionbuilder-arcpath"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RectanglePath",
+      "kind": "Function",
+      "signature": "Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "x",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x As Double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y As Double"
+        },
+        {
+          "name": "width",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal width As Double"
+        },
+        {
+          "name": "height",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal height As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 175,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RectanglePath",
+      "anchor": "api-csectiondefinitionbuilder-rectanglepath"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RoundedPolygon",
+      "kind": "Function",
+      "signature": "Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "vertices",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal vertices As Variant"
+        },
+        {
+          "name": "radii",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal radii As Variant"
+        },
+        {
+          "name": "vertexIDs",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal vertexIDs As Variant"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 58,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RoundedPolygon",
+      "anchor": "api-csectiondefinitionbuilder-roundedpolygon"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "AdjacentRectangles",
+      "kind": "Function",
+      "signature": "Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "rectangles",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rectangles As Variant"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 183,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.AdjacentRectangles",
+      "anchor": "api-csectiondefinitionbuilder-adjacentrectangles"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "AddPath",
+      "kind": "Sub",
+      "signature": "Public Sub AddPath(ByVal path As CGeometryPath)",
+      "parameters": [
+        {
+          "name": "path",
+          "type": "CGeometryPath",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal path As CGeometryPath"
+        }
+      ],
+      "resultType": null,
+      "line": 76,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.AddPath",
+      "anchor": "api-csectiondefinitionbuilder-addpath"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Outer",
+      "kind": "Sub",
+      "signature": "Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = \"\", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = \"\")",
+      "parameters": [
+        {
+          "name": "loopID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal loopID As String"
+        },
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        },
+        {
+          "name": "contourIDs",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal contourIDs As Variant"
+        },
+        {
+          "name": "arcComment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal arcComment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 196,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Outer",
+      "anchor": "api-csectiondefinitionbuilder-outer"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Opening",
+      "kind": "Sub",
+      "signature": "Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, Optional ByVal comment As String = \"\", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = \"\")",
+      "parameters": [
+        {
+          "name": "loopID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal loopID As String"
+        },
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "parentOuterID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal parentOuterID As String"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        },
+        {
+          "name": "contourIDs",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal contourIDs As Variant"
+        },
+        {
+          "name": "arcComment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal arcComment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 207,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Opening",
+      "anchor": "api-csectiondefinitionbuilder-opening"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Offset",
+      "kind": "Function",
+      "signature": "Public Function Offset(ByVal pathID As String, ByVal sourcePathID As String, ByVal signedLeftDistance As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "signedLeftDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal signedLeftDistance As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 115,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Offset",
+      "anchor": "api-csectiondefinitionbuilder-offset"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "OffsetRoundedPolygon",
+      "kind": "Function",
+      "signature": "Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "vertices",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal vertices As Variant"
+        },
+        {
+          "name": "radii",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal radii As Variant"
+        },
+        {
+          "name": "vertexIDs",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal vertexIDs As Variant"
+        },
+        {
+          "name": "distance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal distance As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 67,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.OffsetRoundedPolygon",
+      "anchor": "api-csectiondefinitionbuilder-offsetroundedpolygon"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "ConstrainLine",
+      "kind": "Function",
+      "signature": "Public Function ConstrainLine(ByVal pathID As String, ByVal sourcePathID As String, ByVal startNX As Double, ByVal startNY As Double, ByVal startBound As Double, ByVal endNX As Double, ByVal endNY As Double, ByVal endBound As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "startNX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startNX As Double"
+        },
+        {
+          "name": "startNY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startNY As Double"
+        },
+        {
+          "name": "startBound",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startBound As Double"
+        },
+        {
+          "name": "endNX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endNX As Double"
+        },
+        {
+          "name": "endNY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endNY As Double"
+        },
+        {
+          "name": "endBound",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endBound As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 127,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.ConstrainLine",
+      "anchor": "api-csectiondefinitionbuilder-constrainline"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Chain",
+      "kind": "Function",
+      "signature": "Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, ByVal startSegmentID As String, ByVal startParameter As Double, ByVal endSegmentID As String, ByVal endParameter As Double, Optional ByVal forward As Boolean = True, Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "startSegmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startSegmentID As String"
+        },
+        {
+          "name": "startParameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startParameter As Double"
+        },
+        {
+          "name": "endSegmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endSegmentID As String"
+        },
+        {
+          "name": "endParameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endParameter As Double"
+        },
+        {
+          "name": "forward",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "True",
+          "signature": "Optional ByVal forward As Boolean = True"
+        },
+        {
+          "name": "fullLoopIfSame",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal fullLoopIfSame As Boolean = False"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 153,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Chain",
+      "anchor": "api-csectiondefinitionbuilder-chain"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Transform",
+      "kind": "Function",
+      "signature": "Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, ByVal shiftX As Double, ByVal shiftY As Double, Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "shiftX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal shiftX As Double"
+        },
+        {
+          "name": "shiftY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal shiftY As Double"
+        },
+        {
+          "name": "rotation",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal rotation As Double = 0#"
+        },
+        {
+          "name": "reflectX",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal reflectX As Boolean = False"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 165,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Transform",
+      "anchor": "api-csectiondefinitionbuilder-transform"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "PathGroup",
+      "kind": "Sub",
+      "signature": "Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)",
+      "parameters": [
+        {
+          "name": "groupID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal groupID As String"
+        },
+        {
+          "name": "pathIDs",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathIDs As Variant"
+        }
+      ],
+      "resultType": null,
+      "line": 190,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.PathGroup",
+      "anchor": "api-csectiondefinitionbuilder-pathgroup"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarByCount",
+      "kind": "Sub",
+      "signature": "Public Sub RebarByCount(ByVal ruleID As String, ByVal target As String, ByVal count As Long, ByVal diameter As Double, Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = \"Rebar\")",
+      "parameters": [
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "count",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal count As Long"
+        },
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
+        },
+        {
+          "name": "options",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "Nothing",
+          "signature": "Optional ByVal options As CRebarRuleOptions = Nothing"
+        },
+        {
+          "name": "steelClass",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Rebar\"",
+          "signature": "Optional ByVal steelClass As String = \"Rebar\""
+        }
+      ],
+      "resultType": null,
+      "line": 219,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarByCount",
+      "anchor": "api-csectiondefinitionbuilder-rebarbycount"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarByMaxStep",
+      "kind": "Sub",
+      "signature": "Public Sub RebarByMaxStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = \"Rebar\")",
+      "parameters": [
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "step",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal step As Double"
+        },
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
+        },
+        {
+          "name": "options",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "Nothing",
+          "signature": "Optional ByVal options As CRebarRuleOptions = Nothing"
+        },
+        {
+          "name": "steelClass",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Rebar\"",
+          "signature": "Optional ByVal steelClass As String = \"Rebar\""
+        }
+      ],
+      "resultType": null,
+      "line": 230,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarByMaxStep",
+      "anchor": "api-csectiondefinitionbuilder-rebarbymaxstep"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarByFixedStep",
+      "kind": "Sub",
+      "signature": "Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = \"Rebar\")",
+      "parameters": [
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "step",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal step As Double"
+        },
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
+        },
+        {
+          "name": "options",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "Nothing",
+          "signature": "Optional ByVal options As CRebarRuleOptions = Nothing"
+        },
+        {
+          "name": "steelClass",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Rebar\"",
+          "signature": "Optional ByVal steelClass As String = \"Rebar\""
+        }
+      ],
+      "resultType": null,
+      "line": 239,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarByFixedStep",
+      "anchor": "api-csectiondefinitionbuilder-rebarbyfixedstep"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarAtStations",
+      "kind": "Sub",
+      "signature": "Public Sub RebarAtStations(ByVal ruleID As String, ByVal target As String, ByVal stations As Variant, ByVal diameter As Double, Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = \"Rebar\")",
+      "parameters": [
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "stations",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal stations As Variant"
+        },
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
+        },
+        {
+          "name": "options",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "Nothing",
+          "signature": "Optional ByVal options As CRebarRuleOptions = Nothing"
+        },
+        {
+          "name": "steelClass",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Rebar\"",
+          "signature": "Optional ByVal steelClass As String = \"Rebar\""
+        }
+      ],
+      "resultType": null,
+      "line": 247,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarAtStations",
+      "anchor": "api-csectiondefinitionbuilder-rebaratstations"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarDependent",
+      "kind": "Sub",
+      "signature": "Public Sub RebarDependent(ByVal ruleID As String, ByVal sourceRuleID As String, ByVal diameter As Double, ByVal options As CRebarRuleOptions, Optional ByVal steelClass As String = \"Rebar\")",
+      "parameters": [
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "sourceRuleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourceRuleID As String"
+        },
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
+        },
+        {
+          "name": "options",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal options As CRebarRuleOptions"
+        },
+        {
+          "name": "steelClass",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Rebar\"",
+          "signature": "Optional ByVal steelClass As String = \"Rebar\""
+        }
+      ],
+      "resultType": null,
+      "line": 256,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarDependent",
+      "anchor": "api-csectiondefinitionbuilder-rebardependent"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarProjected",
+      "kind": "Sub",
+      "signature": "Public Sub RebarProjected(ByVal ruleID As String, ByVal target As String, ByVal sourceRuleID As String, ByVal diameter As Double, ByVal options As CRebarRuleOptions, Optional ByVal steelClass As String = \"Rebar\")",
+      "parameters": [
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "sourceRuleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourceRuleID As String"
+        },
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
+        },
+        {
+          "name": "options",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal options As CRebarRuleOptions"
+        },
+        {
+          "name": "steelClass",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Rebar\"",
+          "signature": "Optional ByVal steelClass As String = \"Rebar\""
+        }
+      ],
+      "resultType": null,
+      "line": 265,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarProjected",
+      "anchor": "api-csectiondefinitionbuilder-rebarprojected"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "StartSetback",
+      "kind": "Field",
+      "signature": "Public StartSetback As Double",
+      "resultType": "Double",
+      "line": 14,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.StartSetback",
+      "anchor": "api-crebarruleoptions-startsetback"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "EndSetback",
+      "kind": "Field",
+      "signature": "Public EndSetback As Double",
+      "resultType": "Double",
+      "line": 15,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.EndSetback",
+      "anchor": "api-crebarruleoptions-endsetback"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "EndMode",
+      "kind": "Field",
+      "signature": "Public EndMode As ERebarEndMode",
+      "resultType": "ERebarEndMode",
+      "line": 16,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.EndMode",
+      "anchor": "api-crebarruleoptions-endmode"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "DistributionScope",
+      "kind": "Field",
+      "signature": "Public DistributionScope As ERebarDistributionScope",
+      "resultType": "ERebarDistributionScope",
+      "line": 17,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.DistributionScope",
+      "anchor": "api-crebarruleoptions-distributionscope"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "RemainderPlacement",
+      "kind": "Field",
+      "signature": "Public RemainderPlacement As ERemainderPlacement",
+      "resultType": "ERemainderPlacement",
+      "line": 18,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.RemainderPlacement",
+      "anchor": "api-crebarruleoptions-remainderplacement"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "TangentOffset",
+      "kind": "Field",
+      "signature": "Public TangentOffset As Double",
+      "resultType": "Double",
+      "line": 19,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.TangentOffset",
+      "anchor": "api-crebarruleoptions-tangentoffset"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "NormalOffset",
+      "kind": "Field",
+      "signature": "Public NormalOffset As Double",
+      "resultType": "Double",
+      "line": 20,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.NormalOffset",
+      "anchor": "api-crebarruleoptions-normaloffset"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "EverySecond",
+      "kind": "Field",
+      "signature": "Public EverySecond As Boolean",
+      "resultType": "Boolean",
+      "line": 21,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.EverySecond",
+      "anchor": "api-crebarruleoptions-everysecond"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "IncomingTangentAtJoint",
+      "kind": "Field",
+      "signature": "Public IncomingTangentAtJoint As Boolean",
+      "resultType": "Boolean",
+      "line": 22,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.IncomingTangentAtJoint",
+      "anchor": "api-crebarruleoptions-incomingtangentatjoint"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "DirectionX",
+      "kind": "Field",
+      "signature": "Public DirectionX As Double",
+      "resultType": "Double",
+      "line": 23,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.DirectionX",
+      "anchor": "api-crebarruleoptions-directionx"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "DirectionY",
+      "kind": "Field",
+      "signature": "Public DirectionY As Double",
+      "resultType": "Double",
+      "line": 24,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.DirectionY",
+      "anchor": "api-crebarruleoptions-directiony"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "SourceNormalSign",
+      "kind": "Field",
+      "signature": "Public SourceNormalSign As Double",
+      "resultType": "Double",
+      "line": 25,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.SourceNormalSign",
+      "anchor": "api-crebarruleoptions-sourcenormalsign"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "SuccessfulProjectionOrdinal",
+      "kind": "Field",
+      "signature": "Public SuccessfulProjectionOrdinal As Boolean",
+      "resultType": "Boolean",
+      "line": 26,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.SuccessfulProjectionOrdinal",
+      "anchor": "api-crebarruleoptions-successfulprojectionordinal"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "NewPublicationRoot",
+      "kind": "Field",
+      "signature": "Public NewPublicationRoot As Boolean",
+      "resultType": "Boolean",
+      "line": 27,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.NewPublicationRoot",
+      "anchor": "api-crebarruleoptions-newpublicationroot"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "SkipMissingProjection",
+      "kind": "Field",
+      "signature": "Public SkipMissingProjection As Boolean",
+      "resultType": "Boolean",
+      "line": 28,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.SkipMissingProjection",
+      "anchor": "api-crebarruleoptions-skipmissingprojection"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "Publication",
+      "kind": "Field",
+      "signature": "Public Publication As ERebarPublication",
+      "resultType": "ERebarPublication",
+      "line": 29,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.Publication",
+      "anchor": "api-crebarruleoptions-publication"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "PositionOrder",
+      "kind": "Field",
+      "signature": "Public PositionOrder As ERebarPositionOrder",
+      "resultType": "ERebarPositionOrder",
+      "line": 30,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.PositionOrder",
+      "anchor": "api-crebarruleoptions-positionorder"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "Coincidence",
+      "kind": "Field",
+      "signature": "Public Coincidence As ERebarCoincidence",
+      "resultType": "ERebarCoincidence",
+      "line": 31,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.Coincidence",
+      "anchor": "api-crebarruleoptions-coincidence"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "PlacementCheck",
+      "kind": "Field",
+      "signature": "Public PlacementCheck As ERebarPlacementCheck",
+      "resultType": "ERebarPlacementCheck",
+      "line": 32,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.PlacementCheck",
+      "anchor": "api-crebarruleoptions-placementcheck"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "OverlapPolicy",
+      "kind": "Field",
+      "signature": "Public OverlapPolicy As ERebarOverlapPolicy",
+      "resultType": "ERebarOverlapPolicy",
+      "line": 33,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.OverlapPolicy",
+      "anchor": "api-crebarruleoptions-overlappolicy"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "SourcePrefix",
+      "kind": "Field",
+      "signature": "Public SourcePrefix As String",
+      "resultType": "String",
+      "line": 34,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.SourcePrefix",
+      "anchor": "api-crebarruleoptions-sourceprefix"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "SourceSuffix",
+      "kind": "Field",
+      "signature": "Public SourceSuffix As String",
+      "resultType": "String",
+      "line": 35,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.SourceSuffix",
+      "anchor": "api-crebarruleoptions-sourcesuffix"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "AnnotationGroup",
+      "kind": "Field",
+      "signature": "Public AnnotationGroup As String",
+      "resultType": "String",
+      "line": 36,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.AnnotationGroup",
+      "anchor": "api-crebarruleoptions-annotationgroup"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "Comment",
+      "kind": "Field",
+      "signature": "Public Comment As String",
+      "resultType": "String",
+      "line": 37,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.Comment",
+      "anchor": "api-crebarruleoptions-comment"
+    },
+    {
+      "owner": "CRebarRuleOptions",
+      "name": "SourceReference",
+      "kind": "Field",
+      "signature": "Public SourceReference As String",
+      "resultType": "String",
+      "line": 38,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.SourceReference",
+      "anchor": "api-crebarruleoptions-sourcereference"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarEndMode",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarEndMode",
+      "fields": [
+        "IncludeBoth = 1",
+        "ExcludeBoth = 2",
+        "IncludeStart = 3",
+        "IncludeEnd = 4",
+        "ClosedUniform = 5"
+      ],
+      "line": 11,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarEndMode",
+      "anchor": "api-modsectionrecipetypes-erebarendmode"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarDistributionScope",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarDistributionScope",
+      "fields": [
+        "PerPath = 1"
+      ],
+      "line": 29,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarDistributionScope",
+      "anchor": "api-modsectionrecipetypes-erebardistributionscope"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERemainderPlacement",
+      "kind": "Enum",
+      "signature": "Public Enum ERemainderPlacement",
+      "fields": [
+        "RemainderStart = 1",
+        "RemainderEnd = 2",
+        "RemainderCenter = 3"
+      ],
+      "line": 33,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERemainderPlacement",
+      "anchor": "api-modsectionrecipetypes-eremainderplacement"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarPublication",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarPublication",
+      "fields": [
+        "PublishByRule = 1",
+        "PublishPerSourcePosition = 2"
+      ],
+      "line": 39,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarPublication",
+      "anchor": "api-modsectionrecipetypes-erebarpublication"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarPositionOrder",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarPositionOrder",
+      "fields": [
+        "AlongPath = 1",
+        "FromPathMiddle = 2"
+      ],
+      "line": 44,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarPositionOrder",
+      "anchor": "api-modsectionrecipetypes-erebarpositionorder"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarCoincidence",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarCoincidence",
+      "fields": [
+        "RejectCoincidence = 1",
+        "MergeIdentical = 2",
+        "KeepPublishedOwner = 3"
+      ],
+      "line": 49,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarCoincidence",
+      "anchor": "api-modsectionrecipetypes-erebarcoincidence"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarPlacementCheck",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarPlacementCheck",
+      "fields": [
+        "CheckCenter = 1",
+        "CheckFullDisk = 2"
+      ],
+      "line": 55,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarPlacementCheck",
+      "anchor": "api-modsectionrecipetypes-erebarplacementcheck"
+    },
+    {
+      "owner": "modSectionRecipeTypes",
+      "name": "ERebarOverlapPolicy",
+      "kind": "Enum",
+      "signature": "Public Enum ERebarOverlapPolicy",
+      "fields": [
+        "ReportOverlap = 1",
+        "RejectOverlap = 2"
+      ],
+      "line": 62,
+      "source": "src/Common/modSectionRecipeTypes.bas",
+      "id": "modSectionRecipeTypes.ERebarOverlapPolicy",
+      "anchor": "api-modsectionrecipetypes-erebaroverlappolicy"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Anchor",
+      "kind": "Sub",
+      "signature": "Public Sub Anchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)",
+      "parameters": [
+        {
+          "name": "anchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal anchorID As String"
+        },
+        {
+          "name": "x",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x As Double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y As Double"
+        }
+      ],
+      "resultType": null,
+      "line": 82,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Anchor",
+      "anchor": "api-csectiondefinitionbuilder-anchor"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "PathAnchor",
+      "kind": "Sub",
+      "signature": "Public Sub PathAnchor(ByVal anchorID As String, ByVal pathID As String, ByVal segmentID As String, Optional ByVal parameter As Double = 0#)",
+      "parameters": [
+        {
+          "name": "anchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal anchorID As String"
+        },
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        },
+        {
+          "name": "parameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal parameter As Double = 0#"
+        }
+      ],
+      "resultType": null,
+      "line": 88,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.PathAnchor",
+      "anchor": "api-csectiondefinitionbuilder-pathanchor"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "TransformAnchor",
+      "kind": "Sub",
+      "signature": "Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As String, ByVal shiftX As Double, ByVal shiftY As Double, Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False)",
+      "parameters": [
+        {
+          "name": "anchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal anchorID As String"
+        },
+        {
+          "name": "sourceAnchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourceAnchorID As String"
+        },
+        {
+          "name": "shiftX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal shiftX As Double"
+        },
+        {
+          "name": "shiftY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal shiftY As Double"
+        },
+        {
+          "name": "rotation",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal rotation As Double = 0#"
+        },
+        {
+          "name": "reflectX",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal reflectX As Boolean = False"
+        }
+      ],
+      "resultType": null,
+      "line": 104,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.TransformAnchor",
+      "anchor": "api-csectiondefinitionbuilder-transformanchor"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "VerticalExtent",
+      "kind": "Sub",
+      "signature": "Public Sub VerticalExtent(ByVal annotationID As String, ByVal target As String, ByVal name As String, ByVal placementX As Double, Optional ByVal normalX As Double = -1#, Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal name As String"
+        },
+        {
+          "name": "placementX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal placementX As Double"
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "-1#",
+          "signature": "Optional ByVal normalX As Double = -1#"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 285,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.VerticalExtent",
+      "anchor": "api-csectiondefinitionbuilder-verticalextent"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "HorizontalExtent",
+      "kind": "Sub",
+      "signature": "Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String, ByVal name As String, ByVal placementY As Double, Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal name As String"
+        },
+        {
+          "name": "placementY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal placementY As Double"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1#",
+          "signature": "Optional ByVal normalY As Double = 1#"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 296,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.HorizontalExtent",
+      "anchor": "api-csectiondefinitionbuilder-horizontalextent"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "HorizontalDistance",
+      "kind": "Sub",
+      "signature": "Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String, ByVal startX As Double, ByVal endX As Double, ByVal placementY As Double, Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = \"\", Optional ByVal displayIncrement As Double = 0#)",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal name As String"
+        },
+        {
+          "name": "startX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startX As Double"
+        },
+        {
+          "name": "endX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endX As Double"
+        },
+        {
+          "name": "placementY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal placementY As Double"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "1#",
+          "signature": "Optional ByVal normalY As Double = 1#"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        },
+        {
+          "name": "displayIncrement",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal displayIncrement As Double = 0#"
+        }
+      ],
+      "resultType": null,
+      "line": 307,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.HorizontalDistance",
+      "anchor": "api-csectiondefinitionbuilder-horizontaldistance"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "VerticalDistance",
+      "kind": "Sub",
+      "signature": "Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, ByVal startY As Double, ByVal endY As Double, ByVal placementX As Double, Optional ByVal normalX As Double = -1#, Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal name As String"
+        },
+        {
+          "name": "startY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startY As Double"
+        },
+        {
+          "name": "endY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endY As Double"
+        },
+        {
+          "name": "placementX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal placementX As Double"
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "-1#",
+          "signature": "Optional ByVal normalX As Double = -1#"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 320,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.VerticalDistance",
+      "anchor": "api-csectiondefinitionbuilder-verticaldistance"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Dimension",
+      "kind": "Sub",
+      "signature": "Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String, ByVal endAnchorID As String, ByVal name As String, Optional ByVal measurement As String = \"Aligned\", Optional ByVal normalX As Double = 0#, Optional ByVal normalY As Double = 0#, Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "startAnchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startAnchorID As String"
+        },
+        {
+          "name": "endAnchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endAnchorID As String"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal name As String"
+        },
+        {
+          "name": "measurement",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"Aligned\"",
+          "signature": "Optional ByVal measurement As String = \"Aligned\""
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal normalX As Double = 0#"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal normalY As Double = 0#"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 332,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Dimension",
+      "anchor": "api-csectiondefinitionbuilder-dimension"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "PathLength",
+      "kind": "Sub",
+      "signature": "Public Sub PathLength(ByVal annotationID As String, ByVal target As String, ByVal placementAnchorID As String, Optional ByVal name As String = \"L\", Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "placementAnchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal placementAnchorID As String"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"L\"",
+          "signature": "Optional ByVal name As String = \"L\""
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 347,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.PathLength",
+      "anchor": "api-csectiondefinitionbuilder-pathlength"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Radius",
+      "kind": "Sub",
+      "signature": "Public Sub Radius(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, Optional ByVal parameter As Double = 0.5, Optional ByVal name As String = \"R\", Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        },
+        {
+          "name": "parameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0.5",
+          "signature": "Optional ByVal parameter As Double = 0.5"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"R\"",
+          "signature": "Optional ByVal name As String = \"R\""
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 358,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Radius",
+      "anchor": "api-csectiondefinitionbuilder-radius"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Diameter",
+      "kind": "Sub",
+      "signature": "Public Sub Diameter(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, Optional ByVal parameter As Double = 0.5, Optional ByVal name As String = \"D\", Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        },
+        {
+          "name": "parameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0.5",
+          "signature": "Optional ByVal parameter As Double = 0.5"
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"D\"",
+          "signature": "Optional ByVal name As String = \"D\""
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 365,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Diameter",
+      "anchor": "api-csectiondefinitionbuilder-diameter"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Text",
+      "kind": "Sub",
+      "signature": "Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal textValue As String, Optional ByVal comment As String = \"\")",
+      "parameters": [
+        {
+          "name": "annotationID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal annotationID As String"
+        },
+        {
+          "name": "anchorID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal anchorID As String"
+        },
+        {
+          "name": "textValue",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal textValue As String"
+        },
+        {
+          "name": "comment",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"\"",
+          "signature": "Optional ByVal comment As String = \"\""
+        }
+      ],
+      "resultType": null,
+      "line": 383,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Text",
+      "anchor": "api-csectiondefinitionbuilder-text"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarLabel",
+      "kind": "Sub",
+      "signature": "Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)",
+      "parameters": [
+        {
+          "name": "groupID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal groupID As String"
+        },
+        {
+          "name": "target",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal target As String"
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalX As Double"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalY As Double"
+        },
+        {
+          "name": "axisDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal axisDistance As Double = 0#"
+        }
+      ],
+      "resultType": null,
+      "line": 393,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarLabel",
+      "anchor": "api-csectiondefinitionbuilder-rebarlabel"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarRowLabel",
+      "kind": "Sub",
+      "signature": "Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)",
+      "parameters": [
+        {
+          "name": "groupID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal groupID As String"
+        },
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalX As Double"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalY As Double"
+        },
+        {
+          "name": "axisDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal axisDistance As Double = 0#"
+        }
+      ],
+      "resultType": null,
+      "line": 403,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarRowLabel",
+      "anchor": "api-csectiondefinitionbuilder-rebarrowlabel"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarRowExtentLabel",
+      "kind": "Sub",
+      "signature": "Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#, Optional ByVal reverseDirection As Boolean = False)",
+      "parameters": [
+        {
+          "name": "groupID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal groupID As String"
+        },
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalX As Double"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalY As Double"
+        },
+        {
+          "name": "axisDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal axisDistance As Double = 0#"
+        },
+        {
+          "name": "reverseDirection",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal reverseDirection As Boolean = False"
+        }
+      ],
+      "resultType": null,
+      "line": 413,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarRowExtentLabel",
+      "anchor": "api-csectiondefinitionbuilder-rebarrowextentlabel"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarRowExtremeLabel",
+      "kind": "Sub",
+      "signature": "Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal directionX As Double, ByVal directionY As Double, ByVal normalX As Double, ByVal normalY As Double, Optional ByVal axisDistance As Double = 0#)",
+      "parameters": [
+        {
+          "name": "groupID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal groupID As String"
+        },
+        {
+          "name": "ruleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal ruleID As String"
+        },
+        {
+          "name": "directionX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal directionX As Double"
+        },
+        {
+          "name": "directionY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal directionY As Double"
+        },
+        {
+          "name": "normalX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalX As Double"
+        },
+        {
+          "name": "normalY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalY As Double"
+        },
+        {
+          "name": "axisDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal axisDistance As Double = 0#"
+        }
+      ],
+      "resultType": null,
+      "line": 433,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarRowExtremeLabel",
+      "anchor": "api-csectiondefinitionbuilder-rebarrowextremelabel"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "Initialize",
+      "kind": "Sub",
+      "signature": "Public Sub Initialize(ByVal pathID As String)",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        }
+      ],
+      "resultType": null,
+      "line": 33,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.Initialize",
+      "anchor": "api-cgeometrypath-initialize"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "AddLine",
+      "kind": "Sub",
+      "signature": "Public Sub AddLine(ByVal segmentID As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double)",
+      "parameters": [
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        },
+        {
+          "name": "x1",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x1 As Double"
+        },
+        {
+          "name": "y1",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y1 As Double"
+        },
+        {
+          "name": "x2",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x2 As Double"
+        },
+        {
+          "name": "y2",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y2 As Double"
+        }
+      ],
+      "resultType": null,
+      "line": 41,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.AddLine",
+      "anchor": "api-cgeometrypath-addline"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "AddArc",
+      "kind": "Sub",
+      "signature": "Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double, ByVal startAngle As Double, ByVal sweep As Double)",
+      "parameters": [
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        },
+        {
+          "name": "centerX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerX As Double"
+        },
+        {
+          "name": "centerY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal centerY As Double"
+        },
+        {
+          "name": "radius",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal radius As Double"
+        },
+        {
+          "name": "startAngle",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startAngle As Double"
+        },
+        {
+          "name": "sweep",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sweep As Double"
+        }
+      ],
+      "resultType": null,
+      "line": 50,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.AddArc",
+      "anchor": "api-cgeometrypath-addarc"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "Seal",
+      "kind": "Sub",
+      "signature": "Public Sub Seal(Optional ByVal closed As Boolean = False)",
+      "parameters": [
+        {
+          "name": "closed",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal closed As Boolean = False"
+        }
+      ],
+      "resultType": null,
+      "line": 65,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.Seal",
+      "anchor": "api-cgeometrypath-seal"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "ID",
+      "kind": "Property Get",
+      "signature": "Public Property Get ID() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 81,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.ID",
+      "anchor": "api-cgeometrypath-id"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "SegmentCount",
+      "kind": "Property Get",
+      "signature": "Public Property Get SegmentCount() As Long",
+      "parameters": [],
+      "resultType": "Long",
+      "line": 83,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.SegmentCount",
+      "anchor": "api-cgeometrypath-segmentcount"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "IsClosed",
+      "kind": "Property Get",
+      "signature": "Public Property Get IsClosed() As Boolean",
+      "parameters": [],
+      "resultType": "Boolean",
+      "line": 87,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.IsClosed",
+      "anchor": "api-cgeometrypath-isclosed"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "Length",
+      "kind": "Property Get",
+      "signature": "Public Property Get Length() As Double",
+      "parameters": [],
+      "resultType": "Double",
+      "line": 89,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.Length",
+      "anchor": "api-cgeometrypath-length"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "SegmentID",
+      "kind": "Property Get",
+      "signature": "Public Property Get SegmentID(ByVal index As Long) As String",
+      "parameters": [
+        {
+          "name": "index",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal index As Long"
+        }
+      ],
+      "resultType": "String",
+      "line": 91,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.SegmentID",
+      "anchor": "api-cgeometrypath-segmentid"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "SegmentIndex",
+      "kind": "Function",
+      "signature": "Public Function SegmentIndex(ByVal segmentID As String) As Long",
+      "parameters": [
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        }
+      ],
+      "resultType": "Long",
+      "line": 116,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.SegmentIndex",
+      "anchor": "api-cgeometrypath-segmentindex"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "AnchorStation",
+      "kind": "Function",
+      "signature": "Public Function AnchorStation(ByVal segmentID As String, Optional ByVal parameter As Double = 0#) As Double",
+      "parameters": [
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal segmentID As String"
+        },
+        {
+          "name": "parameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal parameter As Double = 0#"
+        }
+      ],
+      "resultType": "Double",
+      "line": 126,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.AnchorStation",
+      "anchor": "api-cgeometrypath-anchorstation"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "BetweenAnchors",
+      "kind": "Function",
+      "signature": "Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As String, ByVal startParameter As Double, ByVal endSegmentID As String, ByVal endParameter As Double, Optional ByVal forward As Boolean = True, Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "startSegmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startSegmentID As String"
+        },
+        {
+          "name": "startParameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startParameter As Double"
+        },
+        {
+          "name": "endSegmentID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endSegmentID As String"
+        },
+        {
+          "name": "endParameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endParameter As Double"
+        },
+        {
+          "name": "forward",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "True",
+          "signature": "Optional ByVal forward As Boolean = True"
+        },
+        {
+          "name": "fullLoopIfSame",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal fullLoopIfSame As Boolean = False"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 151,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.BetweenAnchors",
+      "anchor": "api-cgeometrypath-betweenanchors"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "AtDistance",
+      "kind": "Sub",
+      "signature": "Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Double, ByRef tangentX As Double, ByRef tangentY As Double, Optional ByVal incomingTangentAtJoint As Boolean = False)",
+      "parameters": [
+        {
+          "name": "distance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal distance As Double"
+        },
+        {
+          "name": "x",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef x As Double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef y As Double"
+        },
+        {
+          "name": "tangentX",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef tangentX As Double"
+        },
+        {
+          "name": "tangentY",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef tangentY As Double"
+        },
+        {
+          "name": "incomingTangentAtJoint",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal incomingTangentAtJoint As Boolean = False"
+        }
+      ],
+      "resultType": null,
+      "line": 179,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.AtDistance",
+      "anchor": "api-cgeometrypath-atdistance"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "Slice",
+      "kind": "Function",
+      "signature": "Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "startDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startDistance As Double"
+        },
+        {
+          "name": "endDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endDistance As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 217,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.Slice",
+      "anchor": "api-cgeometrypath-slice"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "Reversed",
+      "kind": "Function",
+      "signature": "Public Function Reversed() As CGeometryPath",
+      "parameters": [],
+      "resultType": "CGeometryPath",
+      "line": 317,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.Reversed",
+      "anchor": "api-cgeometrypath-reversed"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "Transformed",
+      "kind": "Function",
+      "signature": "Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "shiftX",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal shiftX As Double"
+        },
+        {
+          "name": "shiftY",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal shiftY As Double"
+        },
+        {
+          "name": "rotation",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal rotation As Double = 0#"
+        },
+        {
+          "name": "reflectX",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "False",
+          "signature": "Optional ByVal reflectX As Boolean = False"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 332,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.Transformed",
+      "anchor": "api-cgeometrypath-transformed"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "WithID",
+      "kind": "Function",
+      "signature": "Public Function WithID(ByVal pathID As String) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 138,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.WithID",
+      "anchor": "api-cgeometrypath-withid"
+    },
+    {
+      "owner": "modGeometryTypes",
+      "name": "GEOM_PI",
+      "kind": "Const",
+      "signature": "Public Const GEOM_PI As Double = 3.14159265358979 + 3.10862446895044E-15",
+      "resultType": "Double",
+      "value": "3.14159265358979 + 3.10862446895044E-15",
+      "line": 14,
+      "source": "src/Common/modGeometryTypes.bas",
+      "id": "modGeometryTypes.GEOM_PI",
+      "anchor": "api-modgeometrytypes-geom_pi"
+    },
+    {
+      "owner": "modGeometryTypes",
+      "name": "TPoint2D",
+      "kind": "Type",
+      "signature": "Public Type TPoint2D",
+      "fields": [
+        "X As Double",
+        "Y As Double"
+      ],
+      "line": 18,
+      "source": "src/Common/modGeometryTypes.bas",
+      "id": "modGeometryTypes.TPoint2D",
+      "anchor": "api-modgeometrytypes-tpoint2d"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "Source",
+      "kind": "Sub",
+      "signature": "Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)",
+      "parameters": [
+        {
+          "name": "entityID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal entityID As String"
+        },
+        {
+          "name": "sourceReference",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourceReference As String"
+        }
+      ],
+      "resultType": null,
+      "line": 97,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Source",
+      "anchor": "api-csectiondefinitionbuilder-source"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "LastGeometryDiagnostic",
+      "kind": "Property Get",
+      "signature": "Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic",
+      "parameters": [],
+      "resultType": "CGeometryDiagnostic",
+      "line": 141,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.LastGeometryDiagnostic",
+      "anchor": "api-csectiondefinitionbuilder-lastgeometrydiagnostic"
+    },
+    {
+      "owner": "CGeometryPath",
+      "name": "LastDiagnostic",
+      "kind": "Property Get",
+      "signature": "Public Property Get LastDiagnostic() As CGeometryDiagnostic",
+      "parameters": [],
+      "resultType": "CGeometryDiagnostic",
+      "line": 28,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.LastDiagnostic",
+      "anchor": "api-cgeometrypath-lastdiagnostic"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "Code",
+      "kind": "Property Get",
+      "signature": "Public Property Get Code() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 26,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.Code",
+      "anchor": "api-cgeometrydiagnostic-code"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "EntityID",
+      "kind": "Property Get",
+      "signature": "Public Property Get EntityID() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 28,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.EntityID",
+      "anchor": "api-cgeometrydiagnostic-entityid"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "RelatedEntityID",
+      "kind": "Property Get",
+      "signature": "Public Property Get RelatedEntityID() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 30,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.RelatedEntityID",
+      "anchor": "api-cgeometrydiagnostic-relatedentityid"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "Reason",
+      "kind": "Property Get",
+      "signature": "Public Property Get Reason() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 32,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.Reason",
+      "anchor": "api-cgeometrydiagnostic-reason"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "Detail1",
+      "kind": "Property Get",
+      "signature": "Public Property Get Detail1() As Double",
+      "parameters": [],
+      "resultType": "Double",
+      "line": 34,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.Detail1",
+      "anchor": "api-cgeometrydiagnostic-detail1"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "Detail2",
+      "kind": "Property Get",
+      "signature": "Public Property Get Detail2() As Double",
+      "parameters": [],
+      "resultType": "Double",
+      "line": 36,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.Detail2",
+      "anchor": "api-cgeometrydiagnostic-detail2"
+    },
+    {
+      "owner": "CGeometryDiagnostic",
+      "name": "SourceReference",
+      "kind": "Property Get",
+      "signature": "Public Property Get SourceReference() As String",
+      "parameters": [],
+      "resultType": "String",
+      "line": 38,
+      "source": "src/Geometry/CGeometryDiagnostic.cls",
+      "id": "CGeometryDiagnostic.SourceReference",
+      "anchor": "api-cgeometrydiagnostic-sourcereference"
+    }
+  ]
+}

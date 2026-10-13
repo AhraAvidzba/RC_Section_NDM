@@ -8,9 +8,11 @@ $export=(Resolve-Path -LiteralPath (Join-Path $root $ExportPath)).Path
 $report=[IO.Path]::GetFullPath((Join-Path $root $ReportPath))
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03'))+[IO.Path]::DirectorySeparatorChar
 $openIssuesAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/OpenIssues_2026-10-11'))+[IO.Path]::DirectorySeparatorChar
+$guardGuideAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/ExcelGuardGuide_2026-10-13'))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($export,$report)) {
     if (-not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
-        -not $path.StartsWith($openIssuesAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside its regression directory.'}
+        -not $path.StartsWith($openIssuesAllowed,[StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($guardGuideAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside its regression directory.'}
 }
 $lines=[IO.File]::ReadAllLines($export,[Text.Encoding]::UTF8)
 $components=@{}; $types=@{}
@@ -98,6 +100,11 @@ foreach($file in Get-ChildItem -LiteralPath (Join-Path $root 'src'),(Join-Path $
     if(-not $components.ContainsKey($name)) {$missing+=$name; continue}
     $source=[regex]::Match([IO.File]::ReadAllText($file.FullName,[Text.Encoding]::UTF8),'(?ms)^Option Explicit.*').Value
     $actual=[regex]::Match($components[$name],'(?ms)^Option Explicit.*').Value
+    if($name -eq 'modSectionRecipeApiGuide') {
+        $source=([IO.File]::ReadAllLines($file.FullName,[Text.Encoding]::UTF8) | Where-Object {$_ -notmatch '^Attribute VB_Name = '}) -join "`n"
+        $actual=$components[$name]
+        if(@($source -split "`n" | Where-Object {$_.Trim() -and $_ -notmatch "^\s*'"}).Count){throw 'API guide must contain comments only.'}
+    }
     if(-not $source) {throw "Source has no Option Explicit: $name"}
     $source=[regex]::Replace($source,'\r?\n',"`n").TrimEnd()
     $actual=[regex]::Replace($actual,'\r?\n',"`n").TrimEnd()

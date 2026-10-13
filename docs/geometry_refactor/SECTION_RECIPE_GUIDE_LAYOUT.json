@@ -1,10 +1,10 @@
 {
   "schema": 2,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "23f69cd6d78a112342167e3d932bbfb7bcdea091c49206e20211aa84288b42ff",
+  "bodySHA256": "5117305ed5cf8b3948c97153c7fcb942b01382ddff060b043ad504f6e44b0c2c",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "ff3892d7b5f60f23255c09c20478a3a9e68f7e628ed94ef6696b44c49ebdaa0f",
-    "src/Common/modSectionRecipeApiGuide.bas": "ee496651b0623841dd5e531306f5999962b668aedaed5cfdee62deba15052713"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "70802ae1d2705c93421cf88801291a23216d46d40dae0e16f1fc850fb3ee1e2b",
+    "src/Common/modSectionRecipeApiGuide.bas": "4a0f8b2f178bcbbf9fde265b7f01d938bf54c1b2c61d091c65fa4112e124a00a"
   },
   "rows": [
     {
@@ -338,7 +338,7 @@
       "line": 61
     },
     {
-      "text": "Полный справочник API",
+      "text": "Справочник методов создания сечения",
       "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 62
@@ -350,7 +350,7 @@
       "line": 63
     },
     {
-      "text": "Откройте редактор VBA (Alt+F11), окно проекта (Ctrl+R), затем Modules → modSectionRecipeApiGuide. В этом модуле только пояснения: назначение методов, точная запись их вызова, смысл параметров, единицы, значения по умолчанию, допустимые режимы и ограничения. Найти метод можно через Ctrl+F по имени.",
+      "text": "Откройте редактор VBA (Alt+F11), окно проекта (Ctrl+R), затем Modules → modSectionRecipeApiGuide. Здесь описаны методы создания геометрии, арматуры и аннотаций, чтение размеров и подключение нового типа. Справочник разбит на девять разделов; для каждого метода указаны назначение, точная запись вызова, параметры, единицы и значения по умолчанию. Найти метод можно через Ctrl+F по имени.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 64
@@ -368,12 +368,12 @@
       "line": 66
     },
     {
-      "text": "NDM.RECIPE.GUIDE/2|23f69cd6d78a112342167e3d932bbfb7bcdea091c49206e20211aa84288b42ff|ee496651b0623841dd5e531306f5999962b668aedaed5cfdee62deba15052713",
+      "text": "NDM.RECIPE.GUIDE/2|5117305ed5cf8b3948c97153c7fcb942b01382ddff060b043ad504f6e44b0c2c|4a0f8b2f178bcbbf9fde265b7f01d938bf54c1b2c61d091c65fa4112e124a00a",
       "style": "footer"
     }
   ],
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 275
+  "members": 122
 }

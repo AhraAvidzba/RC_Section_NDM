@@ -16,6 +16,7 @@ $geometryAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Geom
 $reviewAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryReview_2026-10-12')) + [IO.Path]::DirectorySeparatorChar
 $endpointAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/RoundedEndpoint_2026-10-12')) + [IO.Path]::DirectorySeparatorChar
 $fullAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryFull_2026-10-13')) + [IO.Path]::DirectorySeparatorChar
+$guardGuideAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/ExcelGuardGuide_2026-10-13')) + [IO.Path]::DirectorySeparatorChar
 $source = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
 $publishedWorkbook = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
@@ -31,7 +32,8 @@ foreach ($path in @($source, $output)) {
         -not $path.StartsWith($geometryAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($reviewAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($endpointAllowed, [StringComparison]::OrdinalIgnoreCase) -and
-        -not $path.StartsWith($fullAllowed, [StringComparison]::OrdinalIgnoreCase)) {
+        -not $path.StartsWith($fullAllowed, [StringComparison]::OrdinalIgnoreCase) -and
+        -not $path.StartsWith($guardGuideAllowed, [StringComparison]::OrdinalIgnoreCase)) {
         throw 'Read-only export paths must stay in their regression evidence directory.'
     }
 }

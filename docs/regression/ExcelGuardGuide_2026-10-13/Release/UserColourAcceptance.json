@@ -1,0 +1,11 @@
+{
+  "EvidenceKind": "Direct user confirmation in this chat",
+  "PreparationStage": "Colours disappeared at stage 2 in NDM_PlotStages.xlsm.",
+  "ExactOperation": "User confirmed colours disappeared at stage 0 after only ChartType assignment in NDM_PrepareOperations.xlsm.",
+  "FixedWorkbook": "NDM_NoChartTypeReset.xlsm",
+  "FixedWorkbookCode": "Current CSectionPlotter with XY family preservation, compiled into private candidate.",
+  "RequestedScenario": "Three refreshes and one calculation, check formula after each, do not select chart.",
+  "UserAnswer": "Да, сохраняется после обновлений и расчёта",
+  "Outcome": "PASS",
+  "AutomatedFormulaColourObservation": false
+}

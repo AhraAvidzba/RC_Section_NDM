@@ -4,14 +4,12 @@ Option Explicit
 ' Явное обновление интерфейса рецептов: новые концевые отступы и список типов.
 ' Не вызывается расчётом. Пользовательские размеры, арматура, LC и Results сохраняются.
 Public Sub UpdateSectionRecipeConfig()
-    Dim app As Object, calculation As Long, events As Boolean, updating As Boolean, alerts As Boolean
+    Dim guard As CExcelAppStateGuard
     Dim roundedTable As Object, hollowTable As Object, systemTable As Object, circleTable As Object, rectSetTable As Object
     Dim number As Long, source As String, description As String
-    Set app = ThisWorkbook.Application
-    calculation = app.Calculation: events = app.EnableEvents
-    updating = app.ScreenUpdating: alerts = app.DisplayAlerts
     On Error GoTo Failed
-    app.EnableEvents = False: app.ScreenUpdating = False: app.DisplayAlerts = False
+    Set guard = New CExcelAppStateGuard
+    guard.Enter ThisWorkbook.Application
     ' Все имена и заголовки проверяются до изменения первого диапазона.
     Set roundedTable = RequiredTable("rngRoundedRectangleGeometry")
     Set hollowTable = RequiredTable("rngHollowRectangleGeometry")
@@ -29,15 +27,12 @@ Public Sub UpdateSectionRecipeConfig()
     CanonicalRectSetHeaders rectSetTable
     ExplainClosedCircle circleTable
     UpdateRecipeTypeList systemTable
-Restore:
-    app.Calculation = calculation: app.EnableEvents = events
-    app.ScreenUpdating = updating: app.DisplayAlerts = alerts
-    On Error GoTo 0
-    If number <> 0 Then Err.Raise number, source, description
+    guard.Restore True
     Exit Sub
 Failed:
     number = Err.Number: source = Err.Source: description = Err.Description
-    Resume Restore
+    If Not guard Is Nothing Then guard.Restore
+    Err.Raise number, source, description
 End Sub
 
 ' Реестр является единственным источником выбора: новый класс и одна

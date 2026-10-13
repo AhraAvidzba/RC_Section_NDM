@@ -7588,7 +7588,9 @@ End Function
 ' пользовательский экземпляр Excel не используются.
 Public Function RunAudit03ExcelGuardTests() As String
     Dim stats As TUiTestStats
+    TestExcelGuardLocalCancellation stats
     TestAudit03ExcelGuardContracts stats
+    TestExcelGuardFaultRecovery stats
     AppendLine stats, "TOTAL_AUDIT03_EXCEL_GUARD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExcelGuardTests = stats.Report
 End Function
@@ -7668,6 +7670,122 @@ Cleanup:
     Set book = Nothing: Set otherExcel = Nothing
     On Error GoTo 0
 End Sub
+
+
+' ДЛЯ ТЕСТОВ: отказы каждого свойства при входе/выходе, включая ошибку 18.
+Private Sub TestExcelGuardFaultRecovery(ByRef stats As TUiTestStats)
+    Dim app As CTestExcelApplicationState, guard As CExcelAppStateGuard
+    Dim name As Variant, code As Long, reason As String, source As String
+    On Error GoTo Failed
+    For Each name In Array("EnableCancelKey", "ScreenUpdating", "EnableEvents", "DisplayAlerts", "Calculation")
+        Set app = New CTestExcelApplicationState: Set guard = New CExcelAppStateGuard
+        app.GetterFault = CStr(name)
+        On Error Resume Next
+        Err.Clear: guard.Enter app
+        code = Err.Number
+        On Error GoTo Failed
+        app.GetterFault = vbNullString
+        AssertTrue stats, "guard.getter." & name, code = 1004 And FakeExcelRestored(app)
+
+        app.FaultProperty = CStr(name): app.FaultsRemaining = 1: app.FaultNumber = 18
+        On Error Resume Next
+        Err.Clear: guard.Enter app
+        code = Err.Number: source = Err.Source: reason = Err.Description
+        On Error GoTo Failed
+        AssertTrue stats, "guard.enter.originalInterrupt." & name, code = 18 And source = "CTestExcelApplicationState" And reason = "set " & name
+        AssertTrue stats, "guard.enter.restored." & name, FakeExcelRestored(app)
+
+        app.FaultsRemaining = 0: guard.Enter app
+        app.FaultsRemaining = 1: guard.Restore True
+        AssertTrue stats, "guard.restore.transient." & name, FakeExcelRestored(app)
+
+        guard.Enter app
+        app.FaultsRemaining = -1
+        On Error Resume Next
+        Err.Clear: guard.Restore True
+        code = Err.Number
+        On Error GoTo Failed
+        AssertTrue stats, "guard.restore.persistentReported." & name, code = vbObjectError + 4181
+        On Error Resume Next
+        Err.Clear: guard.Enter app
+        code = Err.Number
+        On Error GoTo Failed
+        AssertTrue stats, "guard.restore.noSnapshotOverwrite." & name, code = vbObjectError + 4181
+        app.FaultsRemaining = 0: guard.Restore True
+        AssertTrue stats, "guard.restore.laterRecovery." & name, FakeExcelRestored(app)
+        guard.Restore True
+
+        guard.Enter app
+        app.FaultsRemaining = 1
+        Set guard = Nothing
+        AssertTrue stats, "guard.restore.destructor." & name, FakeExcelRestored(app)
+    Next name
+    Exit Sub
+Failed:
+    AssertTrue stats, "guard.faultRecovery.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
+
+Private Function FakeExcelRestored(ByVal app As CTestExcelApplicationState) As Boolean
+    FakeExcelRestored = app.ScreenUpdating And app.EnableEvents And app.DisplayAlerts And _
+        app.Calculation = xlCalculationAutomatic And app.EnableCancelKey = xlInterrupt
+End Function
+
+' Режим прерывания проверяется внутри выполняющего VBA экземпляра Excel:
+' чужой Application между COM-вызовами простаивает и сбрасывает его в xlInterrupt.
+Private Sub TestExcelGuardLocalCancellation(ByRef stats As TUiTestStats)
+    Dim app As Object, guard As CExcelAppStateGuard, mode As Variant, saved As Long
+    Set app = ThisWorkbook.Application: saved = app.EnableCancelKey
+    On Error GoTo Failed
+    AppendLine stats, "GUARD_LOCAL_HOST: globalHwnd=" & CStr(Application.Hwnd) & "; workbookHwnd=" & CStr(app.Hwnd) & "; books=" & CStr(app.Workbooks.Count)
+    For Each mode In Array(xlDisabled, xlInterrupt, xlErrorHandler)
+        app.EnableCancelKey = mode
+        Set guard = New CExcelAppStateGuard
+        guard.Enter app
+        AssertTrue stats, "guard.localCancel.handled." & CStr(mode), app.EnableCancelKey = xlErrorHandler
+        guard.Restore True
+        AssertTrue stats, "guard.localCancel.restored." & CStr(mode), app.EnableCancelKey = mode
+    Next mode
+    GoTo Done
+Failed:
+    AssertTrue stats, "guard.localCancel.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Done:
+    If Not guard Is Nothing Then guard.Restore
+    app.EnableCancelKey = saved
+End Sub
+
+' ДЛЯ ТЕСТОВ: штатный расчёт и отказ ввода проходят тот же общий cleanup.
+Public Function RunExcelGuardWorkflowTests() As String
+    Dim stats As TUiTestStats, app As Object, code As Long, message As String
+    Dim oldCancel As Long
+    On Error GoTo Failed
+    Set app = ThisWorkbook.Application
+    oldCancel = app.EnableCancelKey
+    AppendLine stats, "GUARD_WORKFLOW_HOST: globalHwnd=" & CStr(Application.Hwnd) & "; workbookHwnd=" & CStr(app.Hwnd) & "; books=" & CStr(app.Workbooks.Count) & "; name=" & ThisWorkbook.Name
+    ' Фиксированный небольшой пример, независимый от пользовательской сетки.
+    SetSystemSetting "Circle.Diameter", "400"
+    SetSystemSetting "Mesh.StepX", "50": SetSystemSetting "Mesh.StepY", "50"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "1"
+    SetSystemSetting "Rebar.Diameter2", "0": SetSystemSetting "Rebar.Diameter3", "0"
+    TestExcelApplicationStateGuardRestoresSettings stats
+    AssertTrue stats, "guard.workflow.cancelRestored", app.EnableCancelKey = oldCancel
+    Dim oldEvents As Boolean, oldScreen As Boolean, oldAlerts As Boolean, oldCalculation As Long
+    oldEvents = app.EnableEvents: oldScreen = app.ScreenUpdating
+    oldAlerts = app.DisplayAlerts: oldCalculation = app.Calculation
+    SetSystemSetting "Geometry.Type", "Invalid.Guard.Test"
+    On Error Resume Next
+    Err.Clear: message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    code = Err.Number
+    On Error GoTo Failed
+    AssertTrue stats, "guard.workflow.invalidInput", code <> 0
+    AssertTrue stats, "guard.workflow.failureRestored", app.EnableEvents = oldEvents And _
+        app.ScreenUpdating = oldScreen And app.DisplayAlerts = oldAlerts And _
+        app.Calculation = oldCalculation And app.EnableCancelKey = oldCancel
+    GoTo Done
+Failed:
+    AssertTrue stats, "guard.workflow.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Done:
+    RunExcelGuardWorkflowTests = stats.Report & "TOTAL_EXCEL_GUARD_WORKFLOW: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
 
 ' ================== ДЛЯ ТЕСТОВ: СПИСКИ И РАМКА CONFIG ==================
 

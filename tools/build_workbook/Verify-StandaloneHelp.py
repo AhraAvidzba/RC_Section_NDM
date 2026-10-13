@@ -41,7 +41,7 @@ def main():
     if references.search(native): errors.append('API comments refer to an external implementation file')
     if re.search(r'станци[а-яё]*', native, re.I): errors.append('Unexplained Russian station terminology remains')
     flattened = re.sub(r'\s+', ' ', '\n'.join(line.lstrip()[1:].strip() for line in native.splitlines()))
-    catalog = json.loads((ROOT/'docs/geometry_refactor/SECTION_RECIPE_API_MANIFEST.json').read_text(encoding='utf-8-sig'))
+    catalog = json.loads((ROOT/'docs/geometry_refactor/SECTION_RECIPE_AUTHOR_MANIFEST.json').read_text(encoding='utf-8-sig'))
     for member in catalog['members']:
         if re.sub(r'\s+', ' ', member['signature']) not in flattened:
             errors.append('API signature missing: '+member['id'])

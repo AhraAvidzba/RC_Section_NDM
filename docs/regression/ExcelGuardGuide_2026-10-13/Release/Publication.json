@@ -1,0 +1,12 @@
+﻿{
+    "PublishedAt":  "2026-10-13T20:25:04.8005594+03:00",
+    "WorkbookSHA256":  "1824EA710F54481126DEA53EE05EB3501AFB15614F21EBF75A5D9E2D676B4A76",
+    "AllCodeSHA256":  "B95B07062BB1DFF5AD490178DBBCE5B52917D91714B49A16150B62443D7652B1",
+    "UserExecutionReportUnchanged":  true,
+    "BeforeWorkbookSHA256":  "A1C4AFFD2EE576C32601DE6205EE93A0E4ABC25DA9E84B59AA468274B6B950ED",
+    "ManualColourAcceptance":  "User confirmed three refreshes and a calculation preserve colours without selecting chart.",
+    "ReadbackPending":  false,
+    "ReadbackNativeSHA256":  "B95B07062BB1DFF5AD490178DBBCE5B52917D91714B49A16150B62443D7652B1",
+    "PublishedCodeMatchesCandidate":  true,
+    "AllCodeMatchesActualWorkbookExport":  true
+}

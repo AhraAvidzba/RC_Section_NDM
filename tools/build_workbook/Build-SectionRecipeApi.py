@@ -165,7 +165,7 @@ def main():
         ready = examples.get("status") == "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH"
         status = "Сигнатуры, defaults и каждый контекстный вызов синхронизированы с source; native entrypoint/журнал указан у каждого члена. Workbook-расположение фиксирует NativeMap.json, итоговая приёмка книги — отдельный отчёт." if ready else "Стадия: DRAFT. Примеры/ссылки ещё сопоставляются; E04/E12 остаются открытыми."
         lines = ["# SECTION_RECIPE_API: каталог текущих сигнатур", "", status, "",
-                 actual["scope"], "", "Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Краткий порядок подключения — в ADDING_SECTION_TYPE.md; полный API — в modSectionRecipeApiGuide, тела методов — в исходных классах VBE.", ""]
+                 actual["scope"], "", "Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Краткий порядок подключения — в ADDING_SECTION_TYPE.md; методы автора сечения — в modSectionRecipeApiGuide, тела методов — в исходных классах VBE.", ""]
         owner = None
         for member in actual["members"]:
             if member["owner"] != owner:

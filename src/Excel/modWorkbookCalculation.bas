@@ -417,7 +417,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
             "Пошаговый отчет сохранен: " & report.FilePath
     End If
     CalculateResultsSheet workbook
-    excelGuard.Restore
+    excelGuard.Restore True
     Exit Function
 
 Failed:
@@ -427,11 +427,15 @@ Failed:
     errorNumber = Err.Number
     errorSource = Err.Source
     errorDescription = Err.Description
+    ' Интерфейс возвращаем до записи отчёта: недоступный каталог отчёта
+    ' не должен оставлять события и экран выключенными или подменять ошибку.
+    If Not excelGuard Is Nothing Then excelGuard.Restore
+    On Error Resume Next
     If Not report Is Nothing Then
         report.AddError "Расчет остановлен", errorDescription
         report.Save "Расчет не выполнен: " & errorDescription
     End If
-    If Not excelGuard Is Nothing Then excelGuard.Restore
+    On Error GoTo 0
     Err.Raise errorNumber, errorSource, errorDescription
 End Function
 

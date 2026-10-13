@@ -1,10 +1,11 @@
-"""Создаёт стандартный VBE-модуль только из комментариев текущего API."""
+"""Справочник автора геометрии, арматуры и аннотаций: только комментарии VBE."""
 import importlib.util
 import json
 import re
 import textwrap
 from pathlib import Path
-from SectionRecipeApiText import purpose, parameter_meaning, LIFECYCLE, ERRORS
+from SectionRecipeApiText import purpose, parameter_meaning
+from SectionRecipeAuthorScope import selected_members
 from VbeCommentText import readable
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -12,50 +13,142 @@ spec = importlib.util.spec_from_file_location('api', Path(__file__).with_name('B
 api = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(api)
 
+
+def author_text(text):
+    # Описание для автора сечения; технические имена API сохраняются.
+    replacements = {
+        'Интерфейс единственного класса типа. Возвращает опубликованное definition через общий фасад, без сетки/баров/Shapes в рецепте.':
+            'Обязательный метод класса нового типа. Возвращает завершённое описание сечения. Сетку, стержни и рисунок программа строит по этому описанию автоматически.',
+        'Подготовленный снимок CSectionRecipeContext, не live Excel.':
+            'Объект с копиями входных таблиц и системой единиц; ячейки Excel из рецепта не читаются.',
+        'Имя корневого блока snapshot.': 'Имя входной таблицы.',
+        'Число строк неизменяемого input snapshot.': 'Число строк в копии входной таблицы.',
+        'Число столбцов input snapshot.': 'Число столбцов в копии входной таблицы.',
+        'Читает scalar snapshot; ошибка Excel в ячейке даёт адресное исключение.':
+            'Возвращает исходное значение из копии таблицы. При ошибке Excel сообщает адрес ячейки, которую нужно исправить.',
+        'Явный fallback конкретного вызова. Пропущенный Optional Variant без default означает обязательное поле.':
+            'Значение для пустой ячейки. В Text и Number без этого параметра пустая ячейка считается ошибкой; остальные методы используют указанное в объявлении значение по умолчанию.',
+        'Nothing создаёт реальные default options.': 'Nothing создаёт условия размещения по умолчанию.',
+        'исходный immutable snapshot не меняется': 'исходная геометрия не меняется',
+        'Смысловой ID сущности для SourceMap.': 'Имя объекта, которому назначается ссылка на исходные данные.',
+        'Возвращает последнюю диагностику query фасада с SourceMap. Nothing означает отсутствие записанного отказа.':
+            'Возвращает последнюю геометрическую ошибку с адресом исходных данных. Если сохранённой ошибки нет, возвращает Nothing.',
+        'Реальный адрес/программный источник, добавленный SourceMap или правилом.':
+            'Адрес исходной ячейки либо пояснение, откуда взят параметр геометрии или арматуры.',
+    }
+    for original, replacement in replacements.items():
+        text = text.replace(original, replacement)
+    return text
+
+
 def build():
     inventory = api.inventory()
+    sections = selected_members(inventory)
     lines = ['Attribute VB_Name = "modSectionRecipeApiGuide"']
-    def comment(text=''):
-        text=readable(text)
-        lines.extend("' "+line if line else "'" for line in (textwrap.wrap(text, 104, break_long_words=False, break_on_hyphens=False) if text else ['']))
-    def separator(title):
-        comment('='*104); comment(title); comment('='*104)
-    separator('ДЕКЛАРАТИВНОЕ ОПИСАНИЕ СЕЧЕНИЯ — ПОЛНЫЙ СПРАВОЧНИК API')
-    comment('Модуль содержит только комментарии. Тела классов и методов находятся в соответствующих модулях VBE.')
-    comment('Поиск: Ctrl+F по имени класса или метода. Краткий порядок подключения — на листе Справка.')
-    comment('Внутренние единицы: мм, мм², Н, Н·мм, МПа; углы в радианах. Положительное N — растяжение.')
-    comment('Ввод преобразует CUnitSystem; рецепт получает снимки значений, не Excel-объекты.')
-    separator('ОСНОВНЫЕ ПОНЯТИЯ')
-    comment('Путь (Path) — непрерывная геометрическая линия: отрезок, дуга, окружность или последовательность таких участков. Замкнутый путь может задавать границу бетона или отверстия; путь размещения арматуры задаёт линию центров стержней.')
-    comment('Сегмент (Segment) — один отрезок или одна дуга в составе пути. Группа путей (PathGroup) объединяет независимые линии без соединений между ними.')
-    comment('Положение вдоль линии задаётся расстоянием от её начала в мм. В именах API это расстояние может называться Station; например, RebarAtStations задаёт места стержней массивом таких расстояний.')
-    comment('Правило арматуры (Rule) — описание диаметра и мест размещения стержней: по числу стержней, расстоянию между ними, отдельным местам или связи с другим рядом. Общий исполнитель по правилу создаёт физические стержни.')
-    comment('ID — уникальное текстовое имя объекта внутри описания сечения. Привязка (Anchor) — именованная точка, используемая для размеров и подписей.')
-    for title, mapping in (('ЖИЗНЕННЫЙ ЦИКЛ', LIFECYCLE), ('ОШИБКИ И ОГРАНИЧЕНИЯ', ERRORS)):
-        separator(title)
-        if isinstance(mapping, dict):
-            for name, text in mapping.items(): comment(str(name)+': '+str(text))
-        else:
-            for text in mapping: comment(str(text))
-    options = (ROOT/'src/Section/CRebarRuleOptions.cls').read_text(encoding='utf-8-sig')
+
+    def comment(text='', indent=0):
+        prefix = "' " + ' ' * indent
+        wrapped = textwrap.wrap(readable(text), 102 - indent, break_long_words=False, break_on_hyphens=False)
+        lines.extend(prefix + line for line in wrapped) if text else lines.append("'")
+
+    def heading(title):
+        comment(); comment()
+        comment('=' * 100)
+        comment(title)
+        comment('=' * 100)
+        comment()
+
+    heading('СОЗДАНИЕ СЕЧЕНИЯ: ГЕОМЕТРИЯ, АРМАТУРА И АННОТАЦИИ')
+    comment('Здесь собраны готовые методы для автора нового типа сечения. Описание задаёт, что нужно получить; программа по нему строит бетонную сетку, размещает стержни и готовит схему.', 2)
+    comment()
+    comment('Модуль состоит только из комментариев. Точные объявления методов приведены вместе с параметрами; код открывается в соответствующем классе через окно проекта Ctrl+R. Поиск по имени — Ctrl+F.', 2)
+    comment()
+    comment('СОДЕРЖАНИЕ')
+    for number, title, members in sections:
+        comment(number + '  ' + title, 4)
+    heading('КАК ЧИТАТЬ ОПИСАНИЕ')
+    for text in [
+        'Все координаты, длины и диаметры внутри рецепта задаются в мм, площади — в мм^2, углы — в радианах. Значения из таблиц переводит context.Units; повторно переводить уже полученные мм не нужно.',
+        'Path — геометрическая линия из отрезков и дуг. Замкнутая линия может быть границей бетона или отверстия. Линия центров стержней получается, например, смещением контура на as; вычислять координаты каждого стержня вручную не требуется.',
+        'Segment — один отрезок или одна дуга. PathGroup объединяет несколько независимых линий. Station в имени метода означает расстояние от начала линии в мм.',
+        'ID — уникальное текстовое имя линии, ряда, привязки или подписи. Anchor — именованная точка для размеров и пояснений. Rule — описание одного способа размещения стержней.',
+        'Optional означает необязательный параметр; его значение по умолчанию указано после знака =. ByVal передаёт значение, ByRef позволяет методу вернуть результат через параметр. Nothing вместо options создаёт обычные условия размещения.',
+    ]:
+        comment(text, 2); comment()
+    comment('МИНИМАЛЬНЫЙ ПРИМЕР', 2)
+    comment('Тело ISectionRecipe_CreateDefinition в классе с Implements ISectionRecipe. Пример задаёт прямоугольник и пять верхних стержней диаметром 20 мм:', 4)
+    comment()
+    for line in [
+        'Dim facade As CSectionDefinitionBuilder, path As CGeometryPath',
+        'Dim options As CRebarRuleOptions',
+        'Set facade = New CSectionDefinitionBuilder',
+        'facade.Initialize "MySection"',
+        'Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)',
+        'facade.Outer "OUTER", path.ID',
+        'Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)',
+        'Set options = New CRebarRuleOptions',
+        'options.AnnotationGroup = "Top"',
+        'facade.RebarByCount "Top.Main", path.ID, 5, 20#, options',
+        'facade.RebarRowLabel "Top", "Top.Main", 0#, 1#, 50#',
+        'facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#',
+        'Set ISectionRecipe_CreateDefinition = facade.Finish',
+    ]:
+        comment(line, 6)
+    comment()
+    comment('В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array() подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных таблиц.', 4)
+
+    options = (ROOT / 'src/Section/CRebarRuleOptions.cls').read_text(encoding='utf-8-sig')
     initialization = re.search(r'(?s)Private Sub Class_Initialize\(\)(.*?)End Sub', options)[1]
     defaults = dict(re.findall(r'(?m)^\s*(\w+) = ([^\r\n]+)', initialization))
-    owner = None
-    for member in inventory['members']:
-        if member['owner'] != owner:
-            owner = member['owner']; separator(owner)
-        comment('-'*104); comment(member['id']); comment(purpose(member)); comment(member['signature'])
-        if owner == 'CRebarRuleOptions' and member['kind'] == 'Field':
-            default = defaults.get(member['name'], 'False' if member.get('resultType') == 'Boolean' else '0' if member.get('resultType') in ('Long', 'Double') else 'пустое значение VBA')
-            comment('Default: '+default+'.')
-        for field in member.get('fields', []): comment(field)
-        for parameter in member.get('parameters', []):
-            comment(parameter['signature']+' — '+parameter_meaning(member, parameter))
-        comment('Код метода или объявление: '+member['owner']+' в окне проекта этой книги (Ctrl+R).')
-    body = '\n'.join(lines)+'\n'
+    notes = {
+        '04': 'Сначала задайте контур, затем объявите смещение на нужное as. Для второго и третьего независимого ряда задайте свои линии и свои as; связь с первым рядом не обязательна.',
+        '05': 'Нулевой диаметр или нулевое число стержней отключают ряд. Пустой диаметр из таблицы читает OptionalDiameter как 0; одиночный дефис недопустим. Для каждого независимого ряда используется свой ID.',
+        '06': 'Создайте New CRebarRuleOptions и измените только нужные свойства. Метод размещения копирует их при объявлении ряда, поэтому позднейшая правка options не меняет уже объявленные ряды.',
+        '07': 'Для общей подписи стороны задайте одинаковую AnnotationGroup всем её рядам. Подпись считает фактически созданные стержни всей группы и исчезает, если их нет. Смещение подписи в настройках плоттера отсчитывается от границы бетона.',
+        '08': 'Обычно достаточно готовых методов разделов 03–04. Для собственной последовательности отрезков и дуг: Initialize, AddLine/AddArc, Seal, затем facade.AddPath. После Seal менять состав линии нельзя.',
+        '09': 'Source связывает имя геометрического объекта с адресом исходных данных. Ошибка должна указывать, какой размер или ряд нужно исправить. LastGeometryDiagnostic может вернуть Nothing, если сохранённой ошибки нет.',
+    }
+    all_members = []
+    for number, title, members in sections:
+        heading(number + '  ' + title.upper())
+        if number in notes:
+            comment(notes[number], 2); comment()
+        owner = None
+        for member in members:
+            if member['owner'] != owner:
+                owner = member['owner']
+                comment(); comment('Класс / модуль: ' + owner, 2); comment()
+            comment('-' * 94, 4)
+            comment(member['id'], 4)
+            comment()
+            comment(author_text(purpose(member)), 6)
+            comment()
+            comment('Объявление:', 6)
+            comment(member['signature'], 8)
+            if owner == 'CRebarRuleOptions' and member['kind'] == 'Field':
+                default = defaults.get(member['name'], 'False' if member.get('resultType') == 'Boolean' else '0' if member.get('resultType') in ('Long', 'Double') else 'пустое значение VBA')
+                comment('По умолчанию: ' + default + '.', 6)
+            if member.get('fields'):
+                comment()
+                comment('Допустимые значения / состав:', 6)
+                for field in member['fields']:
+                    comment(field, 8)
+            if member.get('parameters'):
+                comment()
+                comment('Параметры:', 6)
+                for parameter in member['parameters']:
+                    comment(parameter['signature'], 8)
+                    comment(author_text(parameter_meaning(member, parameter)), 10)
+                    comment()
+            comment()
+            all_members.append(member)
     assert all(not line.strip() or line.lstrip().startswith("'") for line in lines[1:])
-    target = ROOT/'src/Common/modSectionRecipeApiGuide.bas'
-    target.write_text(body, encoding='utf-8', newline='\r\n')
-    print(json.dumps({'status': 'COMMENT_ONLY_VBE_API', 'members': len(inventory['members']), 'lines': len(lines), 'path': target.relative_to(ROOT).as_posix()}))
+    target = ROOT / 'src/Common/modSectionRecipeApiGuide.bas'
+    target.write_text('\n'.join(lines) + '\n', encoding='utf-8', newline='\r\n')
+    manifest = {'scope': 'Методы автора геометрии, арматуры и аннотаций', 'sections': [{'number': n, 'title': t, 'members': [m['id'] for m in ms]} for n, t, ms in sections], 'members': all_members}
+    (ROOT / 'docs/geometry_refactor/SECTION_RECIPE_AUTHOR_MANIFEST.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    print(json.dumps({'status': 'COMMENT_ONLY_VBE_API', 'members': len(all_members), 'sections': len(sections), 'lines': len(lines)}))
 
-if __name__ == '__main__': build()
+
+if __name__ == '__main__':
+    build()

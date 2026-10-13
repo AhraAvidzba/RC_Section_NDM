@@ -4,7 +4,7 @@
 
 Все Public члены фасада, его options/результатов и общего ввода/единиц; общие query/region и build diagnostics для проверок. Private/Friend не API рецепта.
 
-Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Краткий порядок подключения — в ADDING_SECTION_TYPE.md; полный API — в modSectionRecipeApiGuide, тела методов — в исходных классах VBE.
+Внутри мм/мм²/Н/Н*мм/МПа; углы в радианах. ByRef/Optional/default приведены в точной сигнатуре. Краткий порядок подключения — в ADDING_SECTION_TYPE.md; методы автора сечения — в modSectionRecipeApiGuide, тела методов — в исходных классах VBE.
 
 ## ISectionRecipe
 

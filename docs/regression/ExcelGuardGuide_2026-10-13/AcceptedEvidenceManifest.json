@@ -1,0 +1,587 @@
+{
+  "Archive": "AcceptedEvidence.zip",
+  "ArchiveSHA256": "6b3ee1003a87eb9a49ce17f78d8ff5b4ebe5131c6d47f30ed0527124b72c4443",
+  "ArchiveBytes": 27334123,
+  "Files": 96,
+  "CRCAndSHA256Verified": true,
+  "Acceptance": "Release final reports; user confirmation; ChartTypeCandidate RGB image equality.",
+  "History": "Other intermediate probes, rejected focus workaround and failed probes are not acceptance.",
+  "Entries": [
+    {
+      "Path": "ActiveExcelState.json",
+      "Bytes": 340,
+      "SHA256": "6cf16b28dc184f57a0bf50690ef911f960a83eb1b637a2a0472424c6e163f136",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ActualPlotProbe/ActualPlotProbe.txt",
+      "Bytes": 2674,
+      "SHA256": "34de7fd7e479a0073337dff409f8164b25e04a38c11be854e62ee5028d98b72b",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ActualPlotProbe/CSectionPlotter_Instrumented.txt",
+      "Bytes": 117688,
+      "SHA256": "bd04c1c176850d40ca7cfd6dcf57b51d93b8394e4c150e8d53a44894848a1a5b",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ActualPlotProbe/modActualPlotProbe.bas",
+      "Bytes": 2586,
+      "SHA256": "2b600c8134f0b3721048c8fcd51e0cc683f0c8efe7188fa40dd4bbcbb5a3e796",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/CSectionPlotter_NoReset.txt",
+      "Bytes": 115029,
+      "SHA256": "9711e66538e4bffab3f880189d0e2d6aff242f8e2aad71fd3061454db60535a2",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/ChartComparison.json",
+      "Bytes": 940,
+      "SHA256": "dff82f8a19119bcb83852c72503c3acd01f01dfbfca2bb9744f76670cd646b33",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/ChartImageEquality.json",
+      "Bytes": 143,
+      "SHA256": "c56d2dea0e6425d8951cb3c02ce76e161a3fa66b43ef5e5470fbc7ac12db6515",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/CodeUpdate.json",
+      "Bytes": 668,
+      "SHA256": "41ee4ae15d90159ec81f01809c3ff572671c6b8cae3bd1aab01ea0a2c4f835c5",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/NDM_LegacyChartType.png",
+      "Bytes": 79787,
+      "SHA256": "a73320041345d26df4b83f811e9d728593a5fe1c5bcb0529ac492ea35d1231e5",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/NDM_NoChartTypeReset.png",
+      "Bytes": 79787,
+      "SHA256": "a73320041345d26df4b83f811e9d728593a5fe1c5bcb0529ac492ea35d1231e5",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ChartTypeCandidate/RC_Section_NDM_execution_report.txt",
+      "Bytes": 48454,
+      "SHA256": "976d11f40cd7d2536e921fdc9db8f369ffc993ae1d3f3b9d69ad1e870828a257",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "CodeUpdate.json",
+      "Bytes": 780,
+      "SHA256": "956294abcbd740bfe8c237059c82a334fd25c755402ff1e1709ff74fb3deb15f",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ColorProbe/Ready.json",
+      "Bytes": 211,
+      "SHA256": "4e5868450bfb563fcfb3c7d6a762982d371c63bb9dc16725acc701661c71dd88",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ColorProbe/Result.json",
+      "Bytes": 119,
+      "SHA256": "1503d3b410af4b8fe78b70ea76ca32cb20cae82742adedc9145df4e4b3fa0963",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ColorProbe/Smoke.txt",
+      "Bytes": 1069,
+      "SHA256": "d91a3902ec60782d35243abae8cc27cf1b3312dd26224dc6dc1e66346a205670",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ColorProbe/ZOrderRuntime.txt",
+      "Bytes": 378,
+      "SHA256": "966ea00e95fd908b1e44c06fa5b201b6d8e9120a1fa6039c272a8a5f301137aa",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "ColorProbe/modChartColorProbe.bas",
+      "Bytes": 5147,
+      "SHA256": "0cb0ccb9d715fd63df4217927cd3a94f38903ac83f87c312828f6db72602f340",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusAcceptance.txt",
+      "Bytes": 17886,
+      "SHA256": "ab0da0c8cf4e0c0761ea471c29da34adbb8e3d9bdaa37c69b422aee45f1bf4cc",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusAcceptance.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusAcceptance.txt.stdout.log",
+      "Bytes": 706,
+      "SHA256": "3b460e242846099df8f5bcdd45dad5fed3054822ed3d5320c82836ebb0f4d4f8",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusEdges.txt",
+      "Bytes": 3195,
+      "SHA256": "f6f7853357f18fb46fdee3de64ea83201859c56c4e3f3ebf958d94b5eef060d1",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusEdges.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusEdges.txt.stdout.log",
+      "Bytes": 574,
+      "SHA256": "fe58195263f2fd2ad3746654f88c355e9d9b2eb3d101985588c632dce827e543",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusEdges2.txt",
+      "Bytes": 3260,
+      "SHA256": "9a46ce7243fa90022e30304c45f86977fb945a8f462c3afd72f3428dd2104085",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusEdges2.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "FocusEdges2.txt.stdout.log",
+      "Bytes": 495,
+      "SHA256": "635840ab6661fcbbe5ffb3f79e6d976256925a1350b75c1677562de09d075151",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAcceptance.txt",
+      "Bytes": 15085,
+      "SHA256": "0c4801c17e2f00af0fdba84ea43748b24ad21bfcbfe75fab69cc63228c006652",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAcceptance.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAcceptance.txt.stdout.log",
+      "Bytes": 569,
+      "SHA256": "8fef67ca2619382dab6e38ac19b9481646f80ddb7a214798c6307fb63e6759ac",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAfter.txt",
+      "Bytes": 32188,
+      "SHA256": "f637a7a432f41774fe4e7df412d7dd25dbd4e94034803486519f80bdf2514939",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAfter.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAfter.txt.stdout.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAfter2.txt",
+      "Bytes": 32177,
+      "SHA256": "3e6602b7492aaf061ae90e35bb9fe6bbbf9259879fee1474ee0108cb89dde77a",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAfter2.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardAfter2.txt.stdout.log",
+      "Bytes": 8069,
+      "SHA256": "c6d5930aad62bc6a3823e6d37bb39c7fd3318dc1f737c3ec2b51dc652de79ee6",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardBefore.txt",
+      "Bytes": 11010,
+      "SHA256": "63b76204cad7695dea8b3aff9cf48ca8759e2821b864838b67badbf6cc505558",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardBefore.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardBefore.txt.stdout.log",
+      "Bytes": 496,
+      "SHA256": "13c580c909f0b0b50461844e6a82cd59e84675fb546ffa1ec5d9d4fd8d6326c2",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardFinal.txt",
+      "Bytes": 14910,
+      "SHA256": "207cb030234d7ba679028fa7affee9cc23eaa7b59bbd534bf6e3f39c32a86281",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardFinal.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardFinal.txt.stdout.log",
+      "Bytes": 758,
+      "SHA256": "94d5afb619119e9de43f9a43ba127f182117a23a386359960c5a5fc3a7188ce0",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardNoFocus.txt",
+      "Bytes": 15253,
+      "SHA256": "c3b2c59242d7b3e2ddc4bf27513d391326a6b4a284707ad4689ba8193a12413e",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardNoFocus.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuardNoFocus.txt.stdout.log",
+      "Bytes": 569,
+      "SHA256": "b23c2fb79db84c8f12e83a8d53e8d2f362519c3f87635e48a1531966ed127c89",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "GuideUpdate.json",
+      "Bytes": 182,
+      "SHA256": "ab2b81445ee28b65bc972d04a2da8d3429aaac34d400ed8d2c1bcaafb2bf0b42",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "LiveNative.txt",
+      "Bytes": 6944388,
+      "SHA256": "6f102347fc4fcc3fa0dbe0c4ca11fa7bfd5cfaf4e221b3499bab4268ad3b99ae",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "LiveState.json",
+      "Bytes": 346,
+      "SHA256": "428f9232a571cf4d2df1d02357772c9031405537399b46c835f043566088f797",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "NativeVBA.txt",
+      "Bytes": 6830437,
+      "SHA256": "660708da8bffdadc5cefbfaad5e4ce4b87565b44a4541401277beaa1449ff82c",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "NativeVBA_BeforeFocusRemoval.txt",
+      "Bytes": 6829257,
+      "SHA256": "2b267c4fb2c9d4cedd53141395c5267ad63d1cc049956b622b70d972fbf038e2",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "NativeVBA_Preliminary.txt",
+      "Bytes": 6828906,
+      "SHA256": "bab0ea92ecb8fdeb26d384b0163110f22fefa9154821d4cf37473a3462a2d221",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "PrepareChartProbe/ActualPlotProbe.txt",
+      "Bytes": 1665,
+      "SHA256": "44bdd576c3d6a5018eb4a23a6e234d3c146464e386d42f7e74c359482fe6a139",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "PrepareChartProbe/Before.json",
+      "Bytes": 171,
+      "SHA256": "22f2e20e8957b75abdbf8925831e10d65c0b95c80454aba4fde6e1722eeebaa0",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "PrepareChartProbe/CSectionPlotter_Instrumented.txt",
+      "Bytes": 116992,
+      "SHA256": "ab3d16b3ed2bded6212ec717eeff2f4edd52015425821e1715745e77f973c567",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "PrepareChartProbe/modActualPlotProbe.txt",
+      "Bytes": 2604,
+      "SHA256": "f029dc962e08b9842ec2743ab4b30f6e54ff55436f29007497accc098e9c921f",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "Preservation.json",
+      "Bytes": 2327,
+      "SHA256": "d982586b46e69b45a6f9747ef4a300ba77d7b6dc9c264fdb4127b3f52d7b93f6",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "Rejected_CExcelChartFocusGuard.cls",
+      "Bytes": 4132,
+      "SHA256": "e6e7ea125a9ff767bb58d78d26f49669efb1372580b7af2ffe37c441bec5ca83",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "Rejected_FocusTests.txt",
+      "Bytes": 5143,
+      "SHA256": "2817fa07b13a9335ab43ef5b23eb822c8027d5c8868995f81b8be62f6b0264d8",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "Release/AllCodeBeforePublication.txt",
+      "Bytes": 6944466,
+      "SHA256": "8aa82603d9d0a498c4acf6fb9dd10a4544028be1ea4486c65b659b61c4359db1",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/Before.json",
+      "Bytes": 345,
+      "SHA256": "49431361ee08f685da6a65a17da0afad019e386e90c5944455728264f83052fe",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/Candidate.xlsm",
+      "Bytes": 7580653,
+      "SHA256": "1824ea710f54481126dea53ee05eb3501afb15614f21ebf75a5d9e2d676b4a76",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/CodeUpdate.json",
+      "Bytes": 646,
+      "SHA256": "6c192ae08e3ab73740697b70ed66ca053b65f59f14ab20597be5f68aa5dc41fa",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/FinalTargetedTests.txt",
+      "Bytes": 428555,
+      "SHA256": "62cc498252581532392fa9b80bc7c14592eb846f4186d7120cb8cc5a3c080baf",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/FinalTargetedTests.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/FinalTargetedTests.txt.stdout.log",
+      "Bytes": 650,
+      "SHA256": "ecc7d5d8985a65d2d0a1691aba32f0945a7151284bd40c55c41069fe515899af",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/GuideUpdate.json",
+      "Bytes": 250,
+      "SHA256": "4f83172b5764bc97012793cb02a95f87cea55e5413566daa719860b3366ad24d",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/LiveBefore.xlsm",
+      "Bytes": 8138341,
+      "SHA256": "a1c4affd2ee576c32601de6205ee93a0e4abc25da9e84b59aa468274b6b950ed",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/LiveNative.txt",
+      "Bytes": 6944462,
+      "SHA256": "db0aae1e1f41b809a7fdfd1cf8c127dcc89aa27d96d65f629739f814a408ab27",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/NativeVBA.txt",
+      "Bytes": 6831206,
+      "SHA256": "bed0c4db6d099183ad43bf7d3374d0d16cd1f393366a95a909c729c2290d79e8",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/NativeVBA_GuardGuideOnly.txt",
+      "Bytes": 6830437,
+      "SHA256": "db0e3af00da9f7dfbb20fa0434d2515ca714f69877fd7f20074253671be7bcf4",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/Preservation.json",
+      "Bytes": 2327,
+      "SHA256": "8475291384149d31f84956866652a7993ad721eafa5abc6e0693e245107a4e8b",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/Publication.json",
+      "Bytes": 742,
+      "SHA256": "0ff26daaf59e88467a8ab01e72c2be9d90d30bf4b124d412d952cf273968d424",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/PublishedNativeVBA.txt",
+      "Bytes": 6831211,
+      "SHA256": "b95b07062bb1dff5ad490178dbbce5b52917d91714b49a16150b62443d7652b1",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/PublishedSourceEquality.json",
+      "Bytes": 70049,
+      "SHA256": "898eab4dc1529c5030b3f242ef833d6cba96fca8c078c0c3faac3c6c076e2afa",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/PublishedStandaloneHelp.json",
+      "Bytes": 342,
+      "SHA256": "fd0e588f737d521845a8ac954391aa8e4314a6bcba00618cb6923ed3780c4364",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/SourceEquality.json",
+      "Bytes": 70049,
+      "SHA256": "c4457cdfb8243e5facd67572ba0e288c79bffe26a8b66bb4a6f85bdd868adc88",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/StandaloneHelp.json",
+      "Bytes": 342,
+      "SHA256": "3738588b0a143ad0ff5133edb763893c1c9fa4f3fb7467aa9d879ff778984bf4",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "Release/UserColourAcceptance.json",
+      "Bytes": 720,
+      "SHA256": "d36e4d264813a4f7105dcae58f13406f8b35f096e45ef3be2cd643ffd7dc8ee0",
+      "Classification": "Accepted"
+    },
+    {
+      "Path": "SourceEquality.json",
+      "Bytes": 70049,
+      "SHA256": "f50594cbebc74d5159ceb5c69e9c4e866f92a20baa58195c1a5dc0fe8fb49e56",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "StandaloneHelp.json",
+      "Bytes": 342,
+      "SHA256": "b914b6cbf5ba67f9136ef7be27143dd12747151f374340fa87b6fb226e214f10",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "UserBookState.json",
+      "Bytes": 478,
+      "SHA256": "9ae20efee7c771e5dbe4ee484fe774ef82e21781cf8f441bcaf7877b9c513324",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "WorkflowFresh.txt",
+      "Bytes": 2522,
+      "SHA256": "91d4fa7c12d3ed1ad91deb12f436bb961e8e6ab7366644d484bf5de5051cb551",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "WorkflowFresh.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "WorkflowFresh.txt.stdout.log",
+      "Bytes": 591,
+      "SHA256": "221fdc120629e37c53a85e7802b137fd0970efae8e24f4518aa8b0c9d492d1cd",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "WorkflowHost.txt",
+      "Bytes": 2622,
+      "SHA256": "f574986e5ec8fda4f60acb48ea35b811a36cac3a95e5fb0ed7eadcd0838ade29",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "WorkflowHost.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "WorkflowHost.txt.stdout.log",
+      "Bytes": 591,
+      "SHA256": "735367ce0af022ec3fc5a3367af4fc744725f39e21e5e30d1f664093858b69fc",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Build-ActualPlotProbe.ps1",
+      "Bytes": 2665,
+      "SHA256": "ec02665625b442d4b2345fa04c4ab44b359623bcd495b2f9f8791b609fdbbfde",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Build-ChartColorProbe.ps1",
+      "Bytes": 2761,
+      "SHA256": "f43206d57ddc28016b3de8f9215426939daaf4680b1d4bcb01903a7fcd3f2aa6",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Build-NoChartTypeReset.ps1",
+      "Bytes": 2939,
+      "SHA256": "13e9a4f6a0a7a7219204c202f064d719898308ee60b22981bba04de03a002ecb",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Build-PrepareChartProbe.ps1",
+      "Bytes": 2200,
+      "SHA256": "32159b6928be3d98d56a6a8860bd1ca3fa0f37275c7c5b1abe48b343ef405ef5",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Finalize-ExcelGuardGuideReadback.ps1",
+      "Bytes": 2155,
+      "SHA256": "7cc8c08981badc84f419ced1369323c576e7845c0e28008844f4dd54d76409cf",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Prepare-ExcelGuardGuideRelease.ps1",
+      "Bytes": 2280,
+      "SHA256": "684f55f0ebaf2354c07e8a13e4b7d2cf25d4dac990a6b5cad1310e87cb170060",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Probe-ZOrder.ps1",
+      "Bytes": 1917,
+      "SHA256": "340f9b0086571690cf5205806df89016e663181f0a1dc64c117e5adae70341b4",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/Publish-ExcelGuardGuide.ps1",
+      "Bytes": 4254,
+      "SHA256": "aa455b7027238209a283f53c01c9b62ff4f468ffaaa385a19beb17d7a5670f6f",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/make_actual_plot_probe.py",
+      "Bytes": 3108,
+      "SHA256": "c742a5b814989ea1d1b38e57436a445f7fe9451c0b6648b7c25b4206920058fa",
+      "Classification": "Diagnostic history"
+    },
+    {
+      "Path": "reproduction_scripts/make_prepare_chart_probe.py",
+      "Bytes": 2492,
+      "SHA256": "fad442852d42df810eb39c7646314a7e0f1362093c40c62446a96c155d114214",
+      "Classification": "Diagnostic history"
+    }
+  ]
+}

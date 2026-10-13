@@ -1,4 +1,4 @@
-"""Краткий гайд на листе; полный API находится в модуле комментариев VBE."""
+"""Краткий гайд на листе; API автора сечения находится в модуле комментариев VBE."""
 from __future__ import annotations
 
 import hashlib
@@ -35,7 +35,7 @@ def build() -> dict:
             'sourceHashes': {'docs/geometry_refactor/ADDING_SECTION_TYPE.md': sha(source),
                              'src/Common/modSectionRecipeApiGuide.bas': sha(ROOT/'src/Common/modSectionRecipeApiGuide.bas')},
             'rows': rows, 'sections': [], 'api': {}, 'apiStatus': 'COMMENT_ONLY_VBE_API',
-            'members': len(json.loads((DOCS/'SECTION_RECIPE_API_MANIFEST.json').read_text(encoding='utf-8-sig'))['members'])}
+            'members': len(json.loads((DOCS/'SECTION_RECIPE_AUTHOR_MANIFEST.json').read_text(encoding='utf-8-sig'))['members'])}
 
 
 if __name__ == "__main__":

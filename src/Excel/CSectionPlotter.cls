@@ -25,7 +25,10 @@ Option Explicit
 Private Const CHART_NAME As String = "chtNDMSectionPlot"
 Private Const SHAPE_PREFIX As String = "NDMPlot_"
 Private Const XL_XY_SCATTER As Long = -4169
+Private Const XL_XY_SCATTER_SMOOTH As Long = 72
+Private Const XL_XY_SCATTER_SMOOTH_NO_MARKERS As Long = 73
 Private Const XL_XY_SCATTER_LINES As Long = 74
+Private Const XL_XY_SCATTER_LINES_NO_MARKERS As Long = 75
 Private Const XL_CATEGORY As Long = 1
 Private Const XL_VALUE As Long = 2
 Private Const XL_PRIMARY As Long = 1
@@ -210,7 +213,6 @@ Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
     Set mChart = mChartObject.Chart
 
 
-    mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
     mChart.HasTitle = False
 
@@ -236,6 +238,15 @@ Private Function EnsureChart(ByVal sheet As Object) As Object
         Set chartObject = sheet.ChartObjects.Add(anchor.Left, anchor.Top, 820, 540)
         chartObject.Name = CHART_NAME
     End If
+    ' Существующая XY-схема уже имеет две числовые оси. Повторное присвоение
+    ' ChartType заполненной Shape-схеме сбивает подсветку ссылок Excel.
+    ' Новый контейнер или вручную изменённый иной тип переводим в XY один раз.
+    Select Case chartObject.Chart.ChartType
+        Case XL_XY_SCATTER, XL_XY_SCATTER_SMOOTH, XL_XY_SCATTER_SMOOTH_NO_MARKERS, _
+                XL_XY_SCATTER_LINES, XL_XY_SCATTER_LINES_NO_MARKERS
+        Case Else
+            chartObject.Chart.ChartType = XL_XY_SCATTER
+    End Select
     Set EnsureChart = chartObject
 End Function
 
@@ -248,7 +259,6 @@ Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)
     mPlotWidth = 0#
     mPlotHeight = 0#
 
-    mChart.ChartType = XL_XY_SCATTER
     mChart.HasLegend = False
     mChart.HasTitle = False
 

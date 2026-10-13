@@ -1,87 +1,111 @@
 Attribute VB_Name = "CExcelAppStateGuard"
 Option Explicit
 
-' ==========================================================================
-' Временный быстрый режим Excel
-' ==========================================================================
-' Класс на время длинного пользовательского сценария переводит текущий
-' экземпляр Excel в режим, который меньше зависит от других открытых книг:
-' отключает события, экранное обновление, предупреждения и автоматический
-' пересчет. Это не меняет расчетную модель NDM, а только защищает макрос от
-' лишней работы Excel-оболочки.
-'
-' Важно: настройки Excel.Application общие для всех книг в одном процессе
-' Excel. Поэтому guard должен жить только внутри одного макроса и обязан
-' восстановить исходные значения при любом завершении, включая ошибку.
+' Временно отключает лишнюю работу оболочки Excel и восстанавливает настройки.
+' Свойства Application общие для всех книг одного экземпляра Excel. Это
+' ускоряет макрос, но не изолирует книгу от остальных. Объект живёт один запуск.
+' Esc/Ctrl+Break передаются обработчику ошибок как ошибка 18. Принудительный
+' End, сброс проекта в VBE и завершение процесса обходят обработчики VBA.
 
-Private Const XL_CALCULATION_MANUAL As Long = -4135 ' xlCalculationManual; используем число, чтобы класс работал через late binding.
+Private mApplication As Object
+Private mValues(0 To 4) As Variant
+Private mPending(0 To 4) As Boolean
+Private mActive As Boolean
 
-Private mApplication As Object ' Экземпляр Excel, настройки которого временно изменены.
-Private mActive As Boolean ' True, пока быстрый режим включен и исходные настройки нужно вернуть.
-Private mScreenUpdating As Boolean ' Исходное состояние обновления экрана.
-Private mEnableEvents As Boolean ' Исходное состояние событий Excel.
-Private mDisplayAlerts As Boolean ' Исходное состояние предупреждений Excel.
-Private mCalculation As Variant ' Исходный режим пересчета: Automatic, Manual или Semiautomatic.
-
-' Включает быстрый режим для переданного Excel.Application.
-' Метод сохраняет исходные настройки до первого изменения, чтобы Restore
-' мог вернуть пользователю ровно то состояние Excel, которое было до запуска
-' расчета NDM. Отказ любого setter-а сразу возвращает уже измененные поля
-' и передает исходную COM-ошибку вызывающему коду без подмены.
+' Сначала сохраняет полный снимок. При частичном отказе Enter возвращает уже
+' изменённые свойства и сохраняет исходную ошибку, включая ошибку прерывания.
 Public Sub Enter(ByVal excelApplication As Object)
     If excelApplication Is Nothing Then Err.Raise vbObjectError + 4180, "CExcelAppStateGuard.Enter", "Excel.Application не передан."
+    If mActive Then Restore True
 
-    If mActive Then Restore
-
+    Dim i As Long, fastValues As Variant
     On Error GoTo Failed
     Set mApplication = excelApplication
-
-    mScreenUpdating = mApplication.ScreenUpdating
-    mEnableEvents = mApplication.EnableEvents
-    mDisplayAlerts = mApplication.DisplayAlerts
-    mCalculation = mApplication.Calculation
-
-    ' Снимок полон: с этого момента восстановление нужно даже при partial Enter.
+    For i = 0 To 4
+        mValues(i) = ReadProperty(i)
+    Next i
+    ' xlErrorHandler = 2; xlCalculationManual = -4135.
+    fastValues = Array(2, False, False, False, -4135)
     mActive = True
-    mApplication.ScreenUpdating = False
-    mApplication.EnableEvents = False
-    mApplication.DisplayAlerts = False
-    mApplication.Calculation = XL_CALCULATION_MANUAL
+    For i = 0 To 4
+        ' Без открытых книг Excel возвращает CVErr для Calculation. Такой
+        ' снимок нельзя присвоить обратно; исходную ошибку setter-а не меняем.
+        mPending(i) = Not IsError(mValues(i))
+        WriteProperty i, fastValues(i)
+    Next i
     Exit Sub
 Failed:
     Dim errorNumber As Long, errorSource As String, errorDescription As String
     errorNumber = Err.Number: errorSource = Err.Source: errorDescription = Err.Description
     Restore
-    Set mApplication = Nothing
     Err.Raise errorNumber, errorSource, errorDescription
 End Sub
 
-' Возвращает Excel.Application в состояние, которое было перед Enter.
-' Восстановление сделано максимально терпимым к ошибкам COM: если Excel уже
-' закрывается или недоступен, guard не должен маскировать исходную ошибку
-' расчета новой ошибкой восстановления интерфейса.
-Public Sub Restore()
+' Пробует вернуть каждое свойство независимо от ошибок остальных. При
+' временном COM-отказе повторяет попытку; невосстановленный снимок сохраняет
+' для следующего вызова или деструктора. На штатном выходе raiseOnFailure=True
+' не позволяет сообщить об успешном завершении с выключенным интерфейсом.
+Public Sub Restore(Optional ByVal raiseOnFailure As Boolean = False)
     If Not mActive Then Exit Sub
-    If mApplication Is Nothing Then
-        mActive = False
-        Exit Sub
-    End If
-
-    On Error Resume Next
-    mApplication.Calculation = mCalculation
-    mApplication.DisplayAlerts = mDisplayAlerts
-    mApplication.EnableEvents = mEnableEvents
-    mApplication.ScreenUpdating = mScreenUpdating
-    On Error GoTo 0
-
-    mActive = False
-    Set mApplication = Nothing
+    Dim attempt As Long, i As Long, failure As String
+    For attempt = 1 To 2
+        failure = vbNullString
+        On Error Resume Next
+        ' Пересчёт возвращаем до событий, обновление экрана — после событий,
+        ' исходный режим прерывания — последним.
+        For i = 4 To 0 Step -1
+            If mPending(i) Then
+                Err.Clear
+                WriteProperty i, mValues(i)
+                If Err.Number = 0 Then
+                    mPending(i) = False
+                Else
+                    failure = failure & PropertyName(i) & ": " & Err.Description & vbCrLf
+                End If
+            End If
+        Next i
+        On Error GoTo 0
+        If Len(failure) = 0 Then
+            mActive = False
+            Set mApplication = Nothing
+            Exit Sub
+        End If
+    Next attempt
+    If raiseOnFailure Then Err.Raise vbObjectError + 4181, "CExcelAppStateGuard.Restore", _
+        "Excel не смог восстановить настройки после макроса:" & vbCrLf & failure
 End Sub
 
-' Подстраховка на случай неожиданного выхода из процедуры.
-' Основной код все равно вызывает Restore явно, но деструктор помогает не
-' оставить Excel в ручном пересчете или с выключенными событиями при
-' нестандартном завершении объекта.
+Private Function PropertyName(ByVal index As Long) As String
+    Select Case index
+        Case 0: PropertyName = "EnableCancelKey"
+        Case 1: PropertyName = "ScreenUpdating"
+        Case 2: PropertyName = "EnableEvents"
+        Case 3: PropertyName = "DisplayAlerts"
+        Case 4: PropertyName = "Calculation"
+    End Select
+End Function
+
+' Явные обращения сохраняют поведение Excel COM и исходную ошибку свойства.
+Private Function ReadProperty(ByVal index As Long) As Variant
+    Select Case index
+        Case 0: ReadProperty = mApplication.EnableCancelKey
+        Case 1: ReadProperty = mApplication.ScreenUpdating
+        Case 2: ReadProperty = mApplication.EnableEvents
+        Case 3: ReadProperty = mApplication.DisplayAlerts
+        Case 4: ReadProperty = mApplication.Calculation
+    End Select
+End Function
+
+Private Sub WriteProperty(ByVal index As Long, ByVal value As Variant)
+    Select Case index
+        Case 0: mApplication.EnableCancelKey = value
+        Case 1: mApplication.ScreenUpdating = value
+        Case 2: mApplication.EnableEvents = value
+        Case 3: mApplication.DisplayAlerts = value
+        Case 4: mApplication.Calculation = value
+    End Select
+End Sub
+
 Private Sub Class_Terminate()
     Restore
 End Sub
