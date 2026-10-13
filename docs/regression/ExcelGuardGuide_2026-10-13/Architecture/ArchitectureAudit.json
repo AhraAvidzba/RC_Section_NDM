@@ -1,0 +1,4929 @@
+{
+  "reviewedCommit": "e2551c220d09330f788d931e967ac312df56bba1",
+  "scope": {
+    "coreClasses": 26,
+    "integrationClasses": 10,
+    "exampleClasses": 1,
+    "totalClasses": 37,
+    "integrationAndContractModules": [
+      "src/Excel/modWorkbookCalculation.bas",
+      "src/Excel/modAutoCADStressExport.bas",
+      "src/Excel/modSectionRecipeSetup.bas",
+      "src/Common/modGeometryTypes.bas",
+      "src/Common/modSectionRecipeTypes.bas"
+    ]
+  },
+  "classes": [
+    {
+      "class": "CFiberMeshBuilder",
+      "path": "src/Geometry/CFiberMeshBuilder.cls",
+      "lines": 300,
+      "dependencies": [
+        "CGeometryRegion",
+        "CSectionContours",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 29,
+          "declaration": "Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _"
+        },
+        {
+          "line": 147,
+          "declaration": "Private Sub AddSubcellFibers(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _"
+        },
+        {
+          "line": 169,
+          "declaration": "Private Sub GetCornerStatus(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _"
+        },
+        {
+          "line": 186,
+          "declaration": "Private Sub AddFiber(ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByVal materialID As Long)"
+        },
+        {
+          "line": 209,
+          "declaration": "Public Property Get FiberCount() As Long"
+        },
+        {
+          "line": 217,
+          "declaration": "Public Property Get FiberX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 226,
+          "declaration": "Public Property Get FiberY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 235,
+          "declaration": "Public Property Get FiberWidth(ByVal index As Long) As Double"
+        },
+        {
+          "line": 244,
+          "declaration": "Public Property Get FiberHeight(ByVal index As Long) As Double"
+        },
+        {
+          "line": 253,
+          "declaration": "Public Property Get FiberArea(ByVal index As Long) As Double"
+        },
+        {
+          "line": 262,
+          "declaration": "Public Property Get FiberFillFactor(ByVal index As Long) As Double"
+        },
+        {
+          "line": 271,
+          "declaration": "Public Property Get FiberMaterialID(ByVal index As Long) As Long"
+        },
+        {
+          "line": 278,
+          "declaration": "Private Sub CheckFiberIndex(ByVal index As Long)"
+        },
+        {
+          "line": 291,
+          "declaration": "Public Property Get BuildSeconds() As Double"
+        }
+      ],
+      "sha256": "8baaa7aa2092635642757cf471e200a9f0e120f05f11672db476c87d7b6de474"
+    },
+    {
+      "class": "CGeometryDiagnostic",
+      "path": "src/Geometry/CGeometryDiagnostic.cls",
+      "lines": 38,
+      "dependencies": [],
+      "methods": [
+        {
+          "line": 17,
+          "declaration": "Friend Sub Initialize(ByVal code As String, ByVal entityID As String, ByVal relatedEntityID As String, _"
+        },
+        {
+          "line": 26,
+          "declaration": "Public Property Get Code() As String: Code = mCode: End Property"
+        },
+        {
+          "line": 28,
+          "declaration": "Public Property Get EntityID() As String: EntityID = mEntity: End Property"
+        },
+        {
+          "line": 30,
+          "declaration": "Public Property Get RelatedEntityID() As String: RelatedEntityID = mRelated: End Property"
+        },
+        {
+          "line": 32,
+          "declaration": "Public Property Get Reason() As String: Reason = mReason: End Property"
+        },
+        {
+          "line": 34,
+          "declaration": "Public Property Get Detail1() As Double: Detail1 = mDetail1: End Property"
+        },
+        {
+          "line": 36,
+          "declaration": "Public Property Get Detail2() As Double: Detail2 = mDetail2: End Property"
+        },
+        {
+          "line": 38,
+          "declaration": "Public Property Get SourceReference() As String: SourceReference = mSource: End Property"
+        }
+      ],
+      "sha256": "5a8b139775a98457b368b8636dfa09b4fe2954c75c457e471549d320eaf2d78a"
+    },
+    {
+      "class": "CGeometryPath",
+      "path": "src/Geometry/CGeometryPath.cls",
+      "lines": 456,
+      "dependencies": [
+        "CGeometryDiagnostic",
+        "CGeometryPath",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 28,
+          "declaration": "Public Property Get LastDiagnostic() As CGeometryDiagnostic"
+        },
+        {
+          "line": 33,
+          "declaration": "Public Sub Initialize(ByVal pathID As String)"
+        },
+        {
+          "line": 41,
+          "declaration": "Public Sub AddLine(ByVal segmentID As String, ByVal x1 As Double, ByVal y1 As Double, _"
+        },
+        {
+          "line": 50,
+          "declaration": "Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal centerY As Double, _"
+        },
+        {
+          "line": 65,
+          "declaration": "Public Sub Seal(Optional ByVal closed As Boolean = False)"
+        },
+        {
+          "line": 81,
+          "declaration": "Public Property Get ID() As String: ID = mID: End Property"
+        },
+        {
+          "line": 83,
+          "declaration": "Public Property Get SegmentCount() As Long: SegmentCount = mCount: End Property"
+        },
+        {
+          "line": 85,
+          "declaration": "Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property"
+        },
+        {
+          "line": 87,
+          "declaration": "Public Property Get IsClosed() As Boolean: RequireSealed: IsClosed = mClosed: End Property"
+        },
+        {
+          "line": 89,
+          "declaration": "Public Property Get Length() As Double: RequireSealed: Length = mStations(mCount): End Property"
+        },
+        {
+          "line": 91,
+          "declaration": "Public Property Get SegmentID(ByVal index As Long) As String"
+        },
+        {
+          "line": 96,
+          "declaration": "Public Property Get SourcePathID(ByVal index As Long) As String"
+        },
+        {
+          "line": 101,
+          "declaration": "Public Property Get SourceSegmentID(ByVal index As Long) As String"
+        },
+        {
+          "line": 106,
+          "declaration": "Public Property Get SourceStartParameter(ByVal index As Long) As Double"
+        },
+        {
+          "line": 111,
+          "declaration": "Public Property Get SourceEndParameter(ByVal index As Long) As Double"
+        },
+        {
+          "line": 116,
+          "declaration": "Public Function SegmentIndex(ByVal segmentID As String) As Long"
+        },
+        {
+          "line": 126,
+          "declaration": "Public Function AnchorStation(ByVal segmentID As String, Optional ByVal parameter As Double = 0#) As Double"
+        },
+        {
+          "line": 138,
+          "declaration": "Public Function WithID(ByVal pathID As String) As CGeometryPath"
+        },
+        {
+          "line": 151,
+          "declaration": "Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As String, ByVal startParameter As Double, _"
+        },
+        {
+          "line": 179,
+          "declaration": "Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Double, _"
+        },
+        {
+          "line": 202,
+          "declaration": "Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Double, _"
+        },
+        {
+          "line": 217,
+          "declaration": "Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double) As CGeometryPath"
+        },
+        {
+          "line": 238,
+          "declaration": "Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double)"
+        },
+        {
+          "line": 255,
+          "declaration": "Friend Sub AddCollapsedSegment(ByVal segmentID As String, Optional ByVal station As Double = -1#)"
+        },
+        {
+          "line": 274,
+          "declaration": "Friend Sub CopyCollapsedAnchors(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double, _"
+        },
+        {
+          "line": 289,
+          "declaration": "Friend Property Get AccumulatedLength() As Double"
+        },
+        {
+          "line": 294,
+          "declaration": "Friend Function HasCollapsedSegmentID(ByVal segmentID As String) As Boolean"
+        },
+        {
+          "line": 302,
+          "declaration": "Private Function OriginParameter(ByVal index As Long, ByVal parameter As Double) As Double"
+        },
+        {
+          "line": 308,
+          "declaration": "Friend Function HasSegmentID(ByVal segmentID As String) As Boolean"
+        },
+        {
+          "line": 317,
+          "declaration": "Public Function Reversed() As CGeometryPath"
+        },
+        {
+          "line": 332,
+          "declaration": "Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, _"
+        },
+        {
+          "line": 355,
+          "declaration": "Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal directionX As Double, _"
+        },
+        {
+          "line": 373,
+          "declaration": "Friend Sub CopySegment(ByVal index As Long, ByRef edge As TRegionEdge)"
+        },
+        {
+          "line": 380,
+          "declaration": "Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional ByVal sourcePathID As String = \"\", _"
+        },
+        {
+          "line": 415,
+          "declaration": "Private Sub TransformPoint(ByRef x As Double, ByRef y As Double, ByVal shiftX As Double, ByVal shiftY As Double, _"
+        },
+        {
+          "line": 424,
+          "declaration": "Private Function PointsCoincide(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Boolean"
+        },
+        {
+          "line": 429,
+          "declaration": "Private Function CheckedDistance(ByVal distance As Double) As Double"
+        },
+        {
+          "line": 435,
+          "declaration": "Private Sub RequireMutable()"
+        },
+        {
+          "line": 441,
+          "declaration": "Private Sub RequireSealed()"
+        },
+        {
+          "line": 446,
+          "declaration": "Private Sub CheckIndex(ByVal index As Long)"
+        },
+        {
+          "line": 451,
+          "declaration": "Private Sub PathError(ByVal description As String, Optional ByVal code As String = \"PATH_INVALID\", _"
+        }
+      ],
+      "sha256": "2553dd48564fd578c63fdb05149f74c0279e6fd628b556312f207947585134d0"
+    },
+    {
+      "class": "CGeometryRegion",
+      "path": "src/Geometry/CGeometryRegion.cls",
+      "lines": 111,
+      "dependencies": [
+        "CConcreteRegion",
+        "CSectionContours",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 28,
+          "declaration": "Public Sub Initialize(ByVal region As CConcreteRegion)"
+        },
+        {
+          "line": 43,
+          "declaration": "Public Property Get MinX() As Double"
+        },
+        {
+          "line": 47,
+          "declaration": "Public Property Get MaxX() As Double"
+        },
+        {
+          "line": 51,
+          "declaration": "Public Property Get MinY() As Double"
+        },
+        {
+          "line": 55,
+          "declaration": "Public Property Get MaxY() As Double"
+        },
+        {
+          "line": 59,
+          "declaration": "Public Property Get Width() As Double"
+        },
+        {
+          "line": 63,
+          "declaration": "Public Property Get Height() As Double"
+        },
+        {
+          "line": 69,
+          "declaration": "Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean"
+        },
+        {
+          "line": 75,
+          "declaration": "Public Function IsValid(ByRef message As String) As Boolean"
+        },
+        {
+          "line": 87,
+          "declaration": "Public Function AnalyticalArea(ByRef available As Boolean) As Double"
+        },
+        {
+          "line": 93,
+          "declaration": "Public Sub AnalyticalCentroid(ByRef available As Boolean, ByRef X As Double, ByRef Y As Double)"
+        },
+        {
+          "line": 99,
+          "declaration": "Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)"
+        },
+        {
+          "line": 105,
+          "declaration": "Public Sub BuildContours(ByVal contours As CSectionContours)"
+        }
+      ],
+      "sha256": "240543a5a32d115c6a2a4e10ac9d3b4e0b1ee8ce679bed37df6736a0e6a6c119"
+    },
+    {
+      "class": "CSectionRecipeCircle",
+      "path": "src/Geometry/CSectionRecipeCircle.cls",
+      "lines": 112,
+      "dependencies": [
+        "CGeometryPath",
+        "CRebarRuleOptions",
+        "CSectionDefinition",
+        "CSectionDefinitionBuilder",
+        "CSectionInputTable",
+        "CSectionRecipeContext",
+        "CUnitSystem",
+        "ISectionRecipe"
+      ],
+      "methods": [
+        {
+          "line": 19,
+          "declaration": "Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition"
+        },
+        {
+          "line": 95,
+          "declaration": "Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal key As String, ByVal suffix As String, _"
+        },
+        {
+          "line": 110,
+          "declaration": "Private Sub Require(ByVal table As CSectionInputTable, ByVal key As String, ByVal condition As Boolean, ByVal reason As String)"
+        }
+      ],
+      "sha256": "7e4d03f779e518372ecf0facfa10c3586018ce260977271ac2d7d4854c542445"
+    },
+    {
+      "class": "CSectionRecipeHollowRectangle",
+      "path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "lines": 380,
+      "dependencies": [
+        "CGeometryPath",
+        "CRebarRuleOptions",
+        "CSectionDefinition",
+        "CSectionDefinitionBuilder",
+        "CSectionInputTable",
+        "CSectionRecipeContext",
+        "CUnitSystem",
+        "ISectionRecipe"
+      ],
+      "methods": [
+        {
+          "line": 52,
+          "declaration": "Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition"
+        },
+        {
+          "line": 71,
+          "declaration": "Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput)"
+        },
+        {
+          "line": 91,
+          "declaration": "Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput, ByRef faces() As THollowFace)"
+        },
+        {
+          "line": 136,
+          "declaration": "Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput)"
+        },
+        {
+          "line": 150,
+          "declaration": "Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal shapeID As String, _"
+        },
+        {
+          "line": 182,
+          "declaration": "Private Function Corners(ByVal B As Double, ByVal H As Double, ByVal x As Double, ByVal y As Double) As Variant"
+        },
+        {
+          "line": 187,
+          "declaration": "Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace)"
+        },
+        {
+          "line": 273,
+          "declaration": "Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, ByVal index As Long) As CGeometryPath"
+        },
+        {
+          "line": 340,
+          "declaration": "Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long, ByVal location As String, ByVal binding As String, ByVal distance As Double, ByVal normalSign As Double) As CRebarRuleOptions"
+        },
+        {
+          "line": 358,
+          "declaration": "Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput)"
+        },
+        {
+          "line": 378,
+          "declaration": "Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)"
+        }
+      ],
+      "sha256": "63af66840e4b6168f28668db9a05460cb693ae03d3806516001bd5a9197e5903"
+    },
+    {
+      "class": "CSectionRecipeRectSet",
+      "path": "src/Geometry/CSectionRecipeRectSet.cls",
+      "lines": 246,
+      "dependencies": [
+        "CGeometryPath",
+        "CRebarRuleOptions",
+        "CSectionDefinition",
+        "CSectionDefinitionBuilder",
+        "CSectionInputTable",
+        "CSectionRecipeContext",
+        "CUnitSystem",
+        "ISectionRecipe"
+      ],
+      "methods": [
+        {
+          "line": 31,
+          "declaration": "Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition"
+        },
+        {
+          "line": 59,
+          "declaration": "Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)"
+        },
+        {
+          "line": 88,
+          "declaration": "Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, _"
+        },
+        {
+          "line": 110,
+          "declaration": "Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, _"
+        },
+        {
+          "line": 138,
+          "declaration": "Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal table As CSectionInputTable, _"
+        },
+        {
+          "line": 226,
+          "declaration": "Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _"
+        },
+        {
+          "line": 244,
+          "declaration": "Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)"
+        }
+      ],
+      "sha256": "8d9d1986734b52dda47d16506f550400241506cb4438d43e84538ad230e28a96"
+    },
+    {
+      "class": "CSectionRecipeRoundedRectangle",
+      "path": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "lines": 310,
+      "dependencies": [
+        "CGeometryPath",
+        "CRebarRuleOptions",
+        "CSectionDefinition",
+        "CSectionDefinitionBuilder",
+        "CSectionInputTable",
+        "CSectionRecipeContext",
+        "CUnitSystem",
+        "ISectionRecipe"
+      ],
+      "methods": [
+        {
+          "line": 36,
+          "declaration": "Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition"
+        },
+        {
+          "line": 50,
+          "declaration": "Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRoundedInput)"
+        },
+        {
+          "line": 77,
+          "declaration": "Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput) As CGeometryPath"
+        },
+        {
+          "line": 133,
+          "declaration": "Private Sub AddCorner(ByRef points() As Variant, ByRef radii() As Variant, ByRef names() As Variant, _"
+        },
+        {
+          "line": 140,
+          "declaration": "Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal table As CSectionInputTable, _"
+        },
+        {
+          "line": 232,
+          "declaration": "Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, _"
+        },
+        {
+          "line": 267,
+          "declaration": "Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _"
+        },
+        {
+          "line": 286,
+          "declaration": "Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal outer As CGeometryPath)"
+        },
+        {
+          "line": 308,
+          "declaration": "Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)"
+        }
+      ],
+      "sha256": "d0b6b7d167f2936793d965de68d45d09fff3119e56cd4b7e1293d9b07d43edc1"
+    },
+    {
+      "class": "CConcreteRegion",
+      "path": "src/Section/CConcreteRegion.cls",
+      "lines": 152,
+      "dependencies": [
+        "CConcreteRegion"
+      ],
+      "methods": [
+        {
+          "line": 35,
+          "declaration": "Friend Sub SetGeometry(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 57,
+          "declaration": "Friend Sub SetBoundaryProbes(ByVal probes As Variant)"
+        },
+        {
+          "line": 63,
+          "declaration": "Friend Sub CopyEdges(ByRef edges() As TRegionEdge, ByRef count As Long)"
+        },
+        {
+          "line": 76,
+          "declaration": "Public Sub SetOwner(ByVal combinationID As String, ByVal standard As String, ByVal anchorID As String)"
+        },
+        {
+          "line": 82,
+          "declaration": "Public Sub GetSegment(ByVal index As Long, ByRef x1 As Double, ByRef y1 As Double, _"
+        },
+        {
+          "line": 93,
+          "declaration": "Public Property Get SegmentCount() As Long"
+        },
+        {
+          "line": 99,
+          "declaration": "Public Property Get BoundaryProbes() As Variant"
+        },
+        {
+          "line": 103,
+          "declaration": "Public Property Get BoundaryProbeCount() As Long"
+        },
+        {
+          "line": 107,
+          "declaration": "Public Property Get LoopCount() As Long"
+        },
+        {
+          "line": 113,
+          "declaration": "Public Property Get LoopIsOpening(ByVal index As Long) As Boolean"
+        },
+        {
+          "line": 118,
+          "declaration": "Public Property Get Area() As Double"
+        },
+        {
+          "line": 122,
+          "declaration": "Public Property Get Source() As String"
+        },
+        {
+          "line": 126,
+          "declaration": "Public Property Get SectionRevision() As Long"
+        },
+        {
+          "line": 130,
+          "declaration": "Public Property Get OwnerID() As String"
+        },
+        {
+          "line": 135,
+          "declaration": "Public Property Get Standard() As String"
+        },
+        {
+          "line": 139,
+          "declaration": "Public Property Get AnchorID() As String"
+        },
+        {
+          "line": 145,
+          "declaration": "Public Function Clone() As CConcreteRegion"
+        }
+      ],
+      "sha256": "bfa2f4ea356316d036a072c814f11af33b436c2105ff0b610202369f13e8f778"
+    },
+    {
+      "class": "CRebarGroupAnnotationBuilder",
+      "path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "lines": 89,
+      "dependencies": [
+        "CRebarLayout",
+        "CSectionAnnotations"
+      ],
+      "methods": [
+        {
+          "line": 21,
+          "declaration": "Public Sub AddRebarLabels(ByVal annotations As CSectionAnnotations, ByVal rebars As CRebarLayout)"
+        },
+        {
+          "line": 81,
+          "declaration": "Private Function FormatNumberInvariant(ByVal value As Double) As String"
+        }
+      ],
+      "sha256": "604b2488c70c1c45c3624a3801bafc6b4be113b7b6b98e497161a76fe35d1d82"
+    },
+    {
+      "class": "CRebarLayout",
+      "path": "src/Section/CRebarLayout.cls",
+      "lines": 377,
+      "dependencies": [
+        "CGeometryRegion"
+      ],
+      "methods": [
+        {
+          "line": 46,
+          "declaration": "Public Sub Clear()"
+        },
+        {
+          "line": 73,
+          "declaration": "Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord As Double, _"
+        },
+        {
+          "line": 118,
+          "declaration": "Private Sub EnsureIndexes()"
+        },
+        {
+          "line": 127,
+          "declaration": "Private Sub EnsureCapacity()"
+        },
+        {
+          "line": 142,
+          "declaration": "Private Function PositionBin(ByVal coordinate As Double) As Double"
+        },
+        {
+          "line": 151,
+          "declaration": "Private Function PositionKey(ByVal binX As Double, ByVal binY As Double) As String"
+        },
+        {
+          "line": 156,
+          "declaration": "Private Sub IndexPosition(ByVal index As Long)"
+        },
+        {
+          "line": 170,
+          "declaration": "Public Function FindBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Long"
+        },
+        {
+          "line": 192,
+          "declaration": "Public Sub AddMembership(ByVal index As Long, ByVal groupName As String)"
+        },
+        {
+          "line": 211,
+          "declaration": "Public Property Get BarMemberships(ByVal index As Long) As Variant"
+        },
+        {
+          "line": 222,
+          "declaration": "Public Property Get Count() As Long"
+        },
+        {
+          "line": 228,
+          "declaration": "Public Function HasBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Boolean"
+        },
+        {
+          "line": 235,
+          "declaration": "Public Property Get BarID(ByVal index As Long) As String"
+        },
+        {
+          "line": 241,
+          "declaration": "Public Property Get X(ByVal index As Long) As Double"
+        },
+        {
+          "line": 247,
+          "declaration": "Public Property Get Y(ByVal index As Long) As Double"
+        },
+        {
+          "line": 253,
+          "declaration": "Public Property Get Diameter(ByVal index As Long) As Double"
+        },
+        {
+          "line": 259,
+          "declaration": "Public Property Get Area(ByVal index As Long) As Double"
+        },
+        {
+          "line": 265,
+          "declaration": "Public Property Get SteelClass(ByVal index As Long) As String"
+        },
+        {
+          "line": 271,
+          "declaration": "Public Property Get Comment(ByVal index As Long) As String"
+        },
+        {
+          "line": 278,
+          "declaration": "Public Property Get BarAnnotationGroupName(ByVal index As Long) As String"
+        },
+        {
+          "line": 284,
+          "declaration": "Public Sub AddAnnotationAnchor(ByVal groupName As String, ByVal startX As Double, ByVal startY As Double, _"
+        },
+        {
+          "line": 310,
+          "declaration": "Public Property Get AnnotationCount() As Long"
+        },
+        {
+          "line": 315,
+          "declaration": "Public Property Get AnnotationGroupName(ByVal index As Long) As String"
+        },
+        {
+          "line": 321,
+          "declaration": "Public Property Get AnnotationStartX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 327,
+          "declaration": "Public Property Get AnnotationStartY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 333,
+          "declaration": "Public Property Get AnnotationEndX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 339,
+          "declaration": "Public Property Get AnnotationEndY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 345,
+          "declaration": "Public Property Get AnnotationNormalX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 351,
+          "declaration": "Public Property Get AnnotationNormalY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 357,
+          "declaration": "Public Property Get AnnotationAxisDistance(ByVal index As Long) As Double"
+        },
+        {
+          "line": 363,
+          "declaration": "Private Sub CheckIndex(ByVal index As Long)"
+        },
+        {
+          "line": 368,
+          "declaration": "Private Sub CheckAnnotationIndex(ByVal index As Long)"
+        }
+      ],
+      "sha256": "d062a15692d5e33d6fbe26bd6315701d1be4b452d7089a52d1e33a4e3b220d59"
+    },
+    {
+      "class": "CRebarRuleExecutor",
+      "path": "src/Section/CRebarRuleExecutor.cls",
+      "lines": 760,
+      "dependencies": [
+        "CConcreteRegion",
+        "CGeometryDiagnostic",
+        "CGeometryPath",
+        "CGeometryRegion",
+        "CRebarLayout",
+        "CSectionDefinition",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 34,
+          "declaration": "Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections: End Property"
+        },
+        {
+          "line": 36,
+          "declaration": "Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property"
+        },
+        {
+          "line": 38,
+          "declaration": "Public Property Get SkippedProjections() As Long: SkippedProjections = mSkippedProjections: End Property"
+        },
+        {
+          "line": 40,
+          "declaration": "Public Property Get MergedPositions() As Long: MergedPositions = mMergedPositions: End Property"
+        },
+        {
+          "line": 42,
+          "declaration": "Public Property Get Conflicts() As Long: Conflicts = mConflicts: End Property"
+        },
+        {
+          "line": 44,
+          "declaration": "Public Property Get BarOverlaps() As Long: BarOverlaps = mBarOverlaps: End Property"
+        },
+        {
+          "line": 46,
+          "declaration": "Public Property Get DiagnosticRecordsOmitted() As Long: DiagnosticRecordsOmitted = mDiagnosticRecordsOmitted: End Property"
+        },
+        {
+          "line": 48,
+          "declaration": "Public Property Get LastDiagnostic() As CGeometryDiagnostic: Set LastDiagnostic = mDiagnostic: End Property"
+        },
+        {
+          "line": 50,
+          "declaration": "Public Property Get DiagnosticCount() As Long"
+        },
+        {
+          "line": 55,
+          "declaration": "Public Function DiagnosticAt(ByVal index As Long) As CGeometryDiagnostic"
+        },
+        {
+          "line": 61,
+          "declaration": "Public Property Get PositionCount() As Long: PositionCount = mPositionCount: End Property"
+        },
+        {
+          "line": 63,
+          "declaration": "Public Function PositionRuleID(ByVal index As Long) As String"
+        },
+        {
+          "line": 67,
+          "declaration": "Public Function PositionPathID(ByVal index As Long) As String: PositionPathID = mPositions(index).PathID: End Function"
+        },
+        {
+          "line": 69,
+          "declaration": "Public Function PositionSourceID(ByVal index As Long) As String: PositionSourceID = mPositions(index).SourcePositionID: End Function"
+        },
+        {
+          "line": 72,
+          "declaration": "Public Function PositionPhysicalOwner(ByVal index As Long) As Long: PositionPhysicalOwner = mPhysicalOwner(index): End Function"
+        },
+        {
+          "line": 76,
+          "declaration": "Public Function RuleTrace(ByVal ruleID As String) As String"
+        },
+        {
+          "line": 91,
+          "declaration": "Public Sub RuleStepBounds(ByVal ruleID As String, ByRef stepCount As Long, ByRef minStep As Double, ByRef maxStep As Double, _"
+        },
+        {
+          "line": 121,
+          "declaration": "Private Sub AccumulateSpacing(ByVal first As Long, ByVal last As Long, ByVal step As Double, ByRef count As Long, _"
+        },
+        {
+          "line": 131,
+          "declaration": "Public Function DiagnosticsText() As String"
+        },
+        {
+          "line": 144,
+          "declaration": "Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout"
+        },
+        {
+          "line": 217,
+          "declaration": "Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition, ByVal result As CRebarLayout)"
+        },
+        {
+          "line": 243,
+          "declaration": "Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Long)"
+        },
+        {
+          "line": 257,
+          "declaration": "Private Sub ValidatePlacement(ByVal index As Long, ByVal x As Double, ByVal y As Double, ByVal diameter As Double, _"
+        },
+        {
+          "line": 270,
+          "declaration": "Private Sub Preflight()"
+        },
+        {
+          "line": 283,
+          "declaration": "Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef counts() As Double)"
+        },
+        {
+          "line": 319,
+          "declaration": "Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPath) As Double"
+        },
+        {
+          "line": 352,
+          "declaration": "Private Sub PrepareRule(ByVal index As Long)"
+        },
+        {
+          "line": 380,
+          "declaration": "Private Sub PrepareIndependent(ByVal index As Long)"
+        },
+        {
+          "line": 409,
+          "declaration": "Private Sub RankFromMiddle(ByVal first As Long, ByVal last As Long, ByVal length As Double)"
+        },
+        {
+          "line": 419,
+          "declaration": "Private Sub SortMiddle(ByRef order() As Long, ByRef scratch() As Long, ByVal first As Long, ByVal last As Long, ByVal middleStation As Double)"
+        },
+        {
+          "line": 440,
+          "declaration": "Friend Function RuleEnds(ByVal ruleID As String, ByRef startX As Double, ByRef startY As Double, ByRef endX As Double, ByRef endY As Double) As Boolean"
+        },
+        {
+          "line": 452,
+          "declaration": "Friend Function RuleBounds(ByVal ruleID As String, ByRef minX As Double, ByRef maxX As Double, _"
+        },
+        {
+          "line": 467,
+          "declaration": "Friend Function RuleExtremeEnds(ByVal ruleID As String, ByVal nx As Double, ByVal ny As Double, _"
+        },
+        {
+          "line": 486,
+          "declaration": "Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)"
+        },
+        {
+          "line": 503,
+          "declaration": "Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)"
+        },
+        {
+          "line": 559,
+          "declaration": "Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) As Variant"
+        },
+        {
+          "line": 614,
+          "declaration": "Private Function FixedStations(ByVal index As Long, ByVal path As CGeometryPath, ByVal first As Double, ByVal length As Double) As Variant"
+        },
+        {
+          "line": 648,
+          "declaration": "Private Sub ValidateOptions(ByVal index As Long)"
+        },
+        {
+          "line": 670,
+          "declaration": "Private Sub ValidateWorkInterval(ByVal index As Long, ByVal path As CGeometryPath)"
+        },
+        {
+          "line": 681,
+          "declaration": "Private Function PositionID(ByVal index As Long, ByVal ordinal As Long, ByVal sourceID As String) As String"
+        },
+        {
+          "line": 693,
+          "declaration": "Private Sub AppendPosition(ByRef value As TRebarPosition)"
+        },
+        {
+          "line": 703,
+          "declaration": "Private Sub SortOrder(ByRef order() As Long, ByRef scratch() As Long, ByVal first As Long, ByVal last As Long)"
+        },
+        {
+          "line": 725,
+          "declaration": "Private Function BeforePosition(ByVal a As Long, ByVal b As Long) As Boolean"
+        },
+        {
+          "line": 739,
+          "declaration": "Private Sub AddDiagnostic(ByVal index As Long, ByVal code As String, ByVal relatedEntityID As String, ByVal reason As String, _"
+        },
+        {
+          "line": 753,
+          "declaration": "Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVal code As String = \"RULE_INVALID\", _"
+        }
+      ],
+      "sha256": "1cb5776184d382aad71acaf72591e1bb18e2e92a781b32f5bebc25180aad2e47"
+    },
+    {
+      "class": "CRebarRuleOptions",
+      "path": "src/Section/CRebarRuleOptions.cls",
+      "lines": 72,
+      "dependencies": [],
+      "methods": [
+        {
+          "line": 42,
+          "declaration": "Private Sub Class_Initialize()"
+        },
+        {
+          "line": 55,
+          "declaration": "Friend Sub CopyTo(ByRef rule As TRebarRule)"
+        }
+      ],
+      "sha256": "8ba5addea68694477bd10fc0dfe8c19551338159d7cc4d88bafdefd8e60e6996"
+    },
+    {
+      "class": "CSectionAnnotationBuilder",
+      "path": "src/Section/CSectionAnnotationBuilder.cls",
+      "lines": 368,
+      "dependencies": [
+        "CConcreteRegion",
+        "CGeometryPath",
+        "CRebarGroupAnnotationBuilder",
+        "CRebarLayout",
+        "CRebarRuleExecutor",
+        "CSectionAnnotations",
+        "CSectionDefinition",
+        "CSectionGeometryQuery",
+        "CSectionModel"
+      ],
+      "methods": [
+        {
+          "line": 20,
+          "declaration": "Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarLayout, ByVal annotations As CSectionAnnotations, _"
+        },
+        {
+          "line": 104,
+          "declaration": "Private Sub AnchorDimension(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)"
+        },
+        {
+          "line": 125,
+          "declaration": "Private Sub ArcDimension(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)"
+        },
+        {
+          "line": 141,
+          "declaration": "Private Sub PointLabel(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)"
+        },
+        {
+          "line": 159,
+          "declaration": "Private Function DisplayValue(ByVal value As Double, ByVal increment As Double) As Double"
+        },
+        {
+          "line": 165,
+          "declaration": "Private Sub TargetBounds(ByVal definition As CSectionDefinition, ByVal target As String, _"
+        },
+        {
+          "line": 185,
+          "declaration": "Public Sub PrepareImportedSection(ByVal section As CSectionModel, ByVal bounds As Variant)"
+        },
+        {
+          "line": 243,
+          "declaration": "Private Function AnnotationExists(ByVal annotations As CSectionAnnotations, ByVal annotationID As String) As Boolean"
+        },
+        {
+          "line": 258,
+          "declaration": "Private Function AutoCADRebarSummaryText(ByVal section As CSectionModel) As String"
+        },
+        {
+          "line": 292,
+          "declaration": "Private Sub AddRebarDiameterGroup(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _"
+        },
+        {
+          "line": 313,
+          "declaration": "Private Sub SortRebarDiameterGroupsDescending(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _"
+        },
+        {
+          "line": 327,
+          "declaration": "Private Sub SwapRebarDiameterGroups(ByRef diameterTexts() As String, ByRef diameterValues() As Double, _"
+        },
+        {
+          "line": 348,
+          "declaration": "Private Function FormatRebarDiameterForAnnotation(ByVal value As Double) As String"
+        },
+        {
+          "line": 360,
+          "declaration": "Private Function RebarDiameterSymbol() As String"
+        },
+        {
+          "line": 366,
+          "declaration": "Private Function ApproxSign() As String"
+        }
+      ],
+      "sha256": "777f080e46970ab09f793d9f10977086ad521904e0fbc8e31e3dbf5eba52cf81"
+    },
+    {
+      "class": "CSectionAnnotations",
+      "path": "src/Section/CSectionAnnotations.cls",
+      "lines": 192,
+      "dependencies": [],
+      "methods": [
+        {
+          "line": 37,
+          "declaration": "Public Sub Clear()"
+        },
+        {
+          "line": 54,
+          "declaration": "Public Sub AddAnnotation(ByVal annotationType As String, ByVal annotationID As String, _"
+        },
+        {
+          "line": 95,
+          "declaration": "Public Sub AddDimension(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _"
+        },
+        {
+          "line": 102,
+          "declaration": "Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _"
+        },
+        {
+          "line": 110,
+          "declaration": "Public Property Get Count() As Long"
+        },
+        {
+          "line": 118,
+          "declaration": "Public Property Get AnnotationType(ByVal index As Long) As String"
+        },
+        {
+          "line": 124,
+          "declaration": "Public Property Get AnnotationID(ByVal index As Long) As String"
+        },
+        {
+          "line": 130,
+          "declaration": "Public Property Get StartX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 136,
+          "declaration": "Public Property Get StartY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 142,
+          "declaration": "Public Property Get EndX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 148,
+          "declaration": "Public Property Get EndY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 154,
+          "declaration": "Public Property Get NormalX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 160,
+          "declaration": "Public Property Get NormalY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 166,
+          "declaration": "Public Property Get Text(ByVal index As Long) As String"
+        },
+        {
+          "line": 172,
+          "declaration": "Public Property Get Value(ByVal index As Long) As Double"
+        },
+        {
+          "line": 178,
+          "declaration": "Public Property Get Unit(ByVal index As Long) As String"
+        },
+        {
+          "line": 184,
+          "declaration": "Public Property Get Comment(ByVal index As Long) As String"
+        },
+        {
+          "line": 190,
+          "declaration": "Private Sub CheckIndex(ByVal index As Long)"
+        }
+      ],
+      "sha256": "96299c57ea0cf4e2e4a0148b768a5cebe602446dc1c14bb410dd0f23a11c95f6"
+    },
+    {
+      "class": "CSectionBuilder",
+      "path": "src/Section/CSectionBuilder.cls",
+      "lines": 63,
+      "dependencies": [
+        "CFiberMeshBuilder",
+        "CGeometryRegion",
+        "CRebarLayout",
+        "CRebarRuleExecutor",
+        "CSectionAnnotationBuilder",
+        "CSectionDefinition",
+        "CSectionModel",
+        "CSectionModelBuilder"
+      ],
+      "methods": [
+        {
+          "line": 20,
+          "declaration": "Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions As TSectionMeshOptions) As CSectionModel"
+        },
+        {
+          "line": 48,
+          "declaration": "Public Property Get Mesh() As CFiberMeshBuilder"
+        },
+        {
+          "line": 54,
+          "declaration": "Public Property Get Rebars() As CRebarLayout"
+        },
+        {
+          "line": 60,
+          "declaration": "Public Property Get Rules() As CRebarRuleExecutor"
+        }
+      ],
+      "sha256": "df807e01fea0193bc1a1bada39670396c9384a52d7d0c28d4440b78d0405b948"
+    },
+    {
+      "class": "CSectionContours",
+      "path": "src/Section/CSectionContours.cls",
+      "lines": 181,
+      "dependencies": [
+        "CConcreteRegion"
+      ],
+      "methods": [
+        {
+          "line": 32,
+          "declaration": "Public Sub Clear()"
+        },
+        {
+          "line": 40,
+          "declaration": "Public Sub AddContourLine(ByVal contourID As String, ByVal startX As Double, ByVal startY As Double, _"
+        },
+        {
+          "line": 48,
+          "declaration": "Public Sub AddContourCircle(ByVal contourID As String, ByVal centerX As Double, ByVal centerY As Double, _"
+        },
+        {
+          "line": 57,
+          "declaration": "Public Sub AddContourArc(ByVal contourID As String, ByVal startX As Double, ByVal startY As Double, _"
+        },
+        {
+          "line": 68,
+          "declaration": "Public Sub AddMaterialRegion(ByVal region As CConcreteRegion, ByVal sourceID As String, ByVal commentValue As String, _"
+        },
+        {
+          "line": 89,
+          "declaration": "Private Sub AddSegment(ByVal kind As String, ByVal contourID As String, ByVal x1 As Double, ByVal y1 As Double, _"
+        },
+        {
+          "line": 111,
+          "declaration": "Public Property Get Count() As Long"
+        },
+        {
+          "line": 115,
+          "declaration": "Public Property Get Revision() As Long"
+        },
+        {
+          "line": 122,
+          "declaration": "Public Property Get SegmentType(ByVal index As Long) As String"
+        },
+        {
+          "line": 126,
+          "declaration": "Public Property Get ContourID(ByVal index As Long) As String"
+        },
+        {
+          "line": 130,
+          "declaration": "Public Property Get StartX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 134,
+          "declaration": "Public Property Get StartY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 138,
+          "declaration": "Public Property Get EndX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 142,
+          "declaration": "Public Property Get EndY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 146,
+          "declaration": "Public Property Get CenterX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 150,
+          "declaration": "Public Property Get CenterY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 154,
+          "declaration": "Public Property Get Radius(ByVal index As Long) As Double"
+        },
+        {
+          "line": 158,
+          "declaration": "Public Property Get SweepAngle(ByVal index As Long) As Double"
+        },
+        {
+          "line": 162,
+          "declaration": "Public Property Get LoopID(ByVal index As Long) As String"
+        },
+        {
+          "line": 166,
+          "declaration": "Public Property Get LoopRole(ByVal index As Long) As String"
+        },
+        {
+          "line": 170,
+          "declaration": "Public Property Get SourceID(ByVal index As Long) As String"
+        },
+        {
+          "line": 174,
+          "declaration": "Public Property Get Comment(ByVal index As Long) As String"
+        },
+        {
+          "line": 179,
+          "declaration": "Private Sub CheckIndex(ByVal index As Long)"
+        }
+      ],
+      "sha256": "a882187fc1638ed67aa7580ca7838691c57d1f7c4d4cc2a680c2975917432db1"
+    },
+    {
+      "class": "CSectionDefinition",
+      "path": "src/Section/CSectionDefinition.cls",
+      "lines": 380,
+      "dependencies": [
+        "CConcreteRegion",
+        "CGeometryDiagnostic",
+        "CGeometryPath",
+        "CSectionContours",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 24,
+          "declaration": "Public Property Get LastDiagnostic() As CGeometryDiagnostic"
+        },
+        {
+          "line": 30,
+          "declaration": "Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)"
+        },
+        {
+          "line": 41,
+          "declaration": "Friend Sub AddAnchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)"
+        },
+        {
+          "line": 48,
+          "declaration": "Public Sub AnchorCoordinates(ByVal anchorID As String, ByRef x As Double, ByRef y As Double)"
+        },
+        {
+          "line": 54,
+          "declaration": "Friend Sub AddSource(ByVal entityID As String, ByVal reference As String)"
+        },
+        {
+          "line": 61,
+          "declaration": "Public Function SourceReference(ByVal entityID As String) As String"
+        },
+        {
+          "line": 66,
+          "declaration": "Public Property Get TypeID() As String: TypeID = mTypeID: End Property"
+        },
+        {
+          "line": 68,
+          "declaration": "Public Property Get SchemaVersion() As Long: SchemaVersion = mVersion: End Property"
+        },
+        {
+          "line": 70,
+          "declaration": "Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property"
+        },
+        {
+          "line": 72,
+          "declaration": "Public Property Get PathCount() As Long: PathCount = mPaths.Count: End Property"
+        },
+        {
+          "line": 74,
+          "declaration": "Public Property Get LoopCount() As Long: LoopCount = mLoopCount: End Property"
+        },
+        {
+          "line": 76,
+          "declaration": "Public Property Get RuleCount() As Long: RuleCount = mRuleCount: End Property"
+        },
+        {
+          "line": 78,
+          "declaration": "Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property"
+        },
+        {
+          "line": 81,
+          "declaration": "Public Function Path(ByVal pathID As String) As CGeometryPath"
+        },
+        {
+          "line": 87,
+          "declaration": "Public Function TargetPaths(ByVal targetID As String) As Variant"
+        },
+        {
+          "line": 99,
+          "declaration": "Public Function ConcreteDomain() As CConcreteRegion"
+        },
+        {
+          "line": 105,
+          "declaration": "Friend Sub AddPath(ByVal path As CGeometryPath)"
+        },
+        {
+          "line": 114,
+          "declaration": "Friend Sub AddGroup(ByVal groupID As String, ByVal pathIDs As Variant)"
+        },
+        {
+          "line": 134,
+          "declaration": "Friend Sub AddLoop(ByRef value As TSectionLoop)"
+        },
+        {
+          "line": 160,
+          "declaration": "Friend Sub AddRule(ByRef value As TRebarRule)"
+        },
+        {
+          "line": 183,
+          "declaration": "Friend Sub AddAnnotation(ByRef value As TSectionAnnotation)"
+        },
+        {
+          "line": 195,
+          "declaration": "Friend Sub CopyRule(ByVal index As Long, ByRef value As TRebarRule)"
+        },
+        {
+          "line": 201,
+          "declaration": "Friend Sub CopyAnnotation(ByVal index As Long, ByRef value As TSectionAnnotation)"
+        },
+        {
+          "line": 207,
+          "declaration": "Friend Function RuleIndex(ByVal ruleID As String) As Long"
+        },
+        {
+          "line": 217,
+          "declaration": "Friend Sub Seal()"
+        },
+        {
+          "line": 256,
+          "declaration": "Private Sub ValidateAnnotation(ByRef value As TSectionAnnotation)"
+        },
+        {
+          "line": 279,
+          "declaration": "Private Sub RequireAnnotationAnchor(ByVal annotationID As String, ByVal anchorID As String)"
+        },
+        {
+          "line": 284,
+          "declaration": "Private Sub ValidateOneLoop(ByVal query As CSectionGeometryQuery, ByVal region As CConcreteRegion)"
+        },
+        {
+          "line": 292,
+          "declaration": "Private Sub ValidateRuleGraph(ByVal index As Long, ByRef visiting() As Long)"
+        },
+        {
+          "line": 308,
+          "declaration": "Public Function MaterialContours() As CSectionContours"
+        },
+        {
+          "line": 317,
+          "declaration": "Public Sub WriteContours(ByVal result As CSectionContours)"
+        },
+        {
+          "line": 326,
+          "declaration": "Private Function LoopContours(ByVal index As Long, ByVal forceOuter As Boolean) As CSectionContours"
+        },
+        {
+          "line": 334,
+          "declaration": "Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, ByVal forceOuter As Boolean)"
+        },
+        {
+          "line": 360,
+          "declaration": "Private Sub RequireMutable()"
+        },
+        {
+          "line": 365,
+          "declaration": "Private Sub RequireSealed()"
+        },
+        {
+          "line": 370,
+          "declaration": "Private Sub DefinitionError(ByVal reason As String, Optional ByVal entityID As String = \"\", _"
+        }
+      ],
+      "sha256": "180f9f9d0068237a9f951ae2571cfab05a470ebe052f06984b1b915fd3265607"
+    },
+    {
+      "class": "CSectionDefinitionBuilder",
+      "path": "src/Section/CSectionDefinitionBuilder.cls",
+      "lines": 448,
+      "dependencies": [
+        "CGeometryDiagnostic",
+        "CGeometryPath",
+        "CRebarRuleOptions",
+        "CSectionDefinition",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 19,
+          "declaration": "Public Sub Initialize(ByVal typeID As String, Optional ByVal schemaVersion As Long = 1)"
+        },
+        {
+          "line": 26,
+          "declaration": "Public Function CirclePath(ByVal pathID As String, ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As CGeometryPath"
+        },
+        {
+          "line": 36,
+          "declaration": "Public Function LinePath(ByVal pathID As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As CGeometryPath"
+        },
+        {
+          "line": 46,
+          "declaration": "Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal centerY As Double, _"
+        },
+        {
+          "line": 58,
+          "declaration": "Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _"
+        },
+        {
+          "line": 67,
+          "declaration": "Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _"
+        },
+        {
+          "line": 76,
+          "declaration": "Public Sub AddPath(ByVal path As CGeometryPath)"
+        },
+        {
+          "line": 82,
+          "declaration": "Public Sub Anchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)"
+        },
+        {
+          "line": 88,
+          "declaration": "Public Sub PathAnchor(ByVal anchorID As String, ByVal pathID As String, ByVal segmentID As String, Optional ByVal parameter As Double = 0#)"
+        },
+        {
+          "line": 97,
+          "declaration": "Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)"
+        },
+        {
+          "line": 104,
+          "declaration": "Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As String, ByVal shiftX As Double, ByVal shiftY As Double, _"
+        },
+        {
+          "line": 115,
+          "declaration": "Public Function Offset(ByVal pathID As String, ByVal sourcePathID As String, ByVal signedLeftDistance As Double) As CGeometryPath"
+        },
+        {
+          "line": 127,
+          "declaration": "Public Function ConstrainLine(ByVal pathID As String, ByVal sourcePathID As String, _"
+        },
+        {
+          "line": 141,
+          "declaration": "Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic"
+        },
+        {
+          "line": 153,
+          "declaration": "Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, _"
+        },
+        {
+          "line": 165,
+          "declaration": "Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, ByVal shiftX As Double, ByVal shiftY As Double, _"
+        },
+        {
+          "line": 175,
+          "declaration": "Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double) As CGeometryPath"
+        },
+        {
+          "line": 183,
+          "declaration": "Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath"
+        },
+        {
+          "line": 190,
+          "declaration": "Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)"
+        },
+        {
+          "line": 196,
+          "declaration": "Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = \"\", _"
+        },
+        {
+          "line": 207,
+          "declaration": "Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _"
+        },
+        {
+          "line": 219,
+          "declaration": "Public Sub RebarByCount(ByVal ruleID As String, ByVal target As String, ByVal count As Long, ByVal diameter As Double, _"
+        },
+        {
+          "line": 230,
+          "declaration": "Public Sub RebarByMaxStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, _"
+        },
+        {
+          "line": 239,
+          "declaration": "Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, _"
+        },
+        {
+          "line": 247,
+          "declaration": "Public Sub RebarAtStations(ByVal ruleID As String, ByVal target As String, ByVal stations As Variant, ByVal diameter As Double, _"
+        },
+        {
+          "line": 256,
+          "declaration": "Public Sub RebarDependent(ByVal ruleID As String, ByVal sourceRuleID As String, ByVal diameter As Double, _"
+        },
+        {
+          "line": 265,
+          "declaration": "Public Sub RebarProjected(ByVal ruleID As String, ByVal target As String, ByVal sourceRuleID As String, ByVal diameter As Double, _"
+        },
+        {
+          "line": 274,
+          "declaration": "Private Sub PrepareRule(ByRef value As TRebarRule, ByVal ruleID As String, ByVal target As String, ByVal mode As ERebarDistribution, _"
+        },
+        {
+          "line": 285,
+          "declaration": "Public Sub VerticalExtent(ByVal annotationID As String, ByVal target As String, ByVal name As String, _"
+        },
+        {
+          "line": 296,
+          "declaration": "Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String, ByVal name As String, _"
+        },
+        {
+          "line": 307,
+          "declaration": "Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String, _"
+        },
+        {
+          "line": 320,
+          "declaration": "Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, _"
+        },
+        {
+          "line": 332,
+          "declaration": "Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String, ByVal endAnchorID As String, _"
+        },
+        {
+          "line": 347,
+          "declaration": "Public Sub PathLength(ByVal annotationID As String, ByVal target As String, ByVal placementAnchorID As String, _"
+        },
+        {
+          "line": 358,
+          "declaration": "Public Sub Radius(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _"
+        },
+        {
+          "line": 365,
+          "declaration": "Public Sub Diameter(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _"
+        },
+        {
+          "line": 371,
+          "declaration": "Private Sub CircularDimension(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _"
+        },
+        {
+          "line": 383,
+          "declaration": "Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal textValue As String, _"
+        },
+        {
+          "line": 393,
+          "declaration": "Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double, _"
+        },
+        {
+          "line": 403,
+          "declaration": "Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _"
+        },
+        {
+          "line": 413,
+          "declaration": "Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _"
+        },
+        {
+          "line": 424,
+          "declaration": "Public Function Finish() As CSectionDefinition"
+        },
+        {
+          "line": 433,
+          "declaration": "Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal directionX As Double, ByVal directionY As Double, _"
+        },
+        {
+          "line": 446,
+          "declaration": "Private Sub RequireOpen()"
+        }
+      ],
+      "sha256": "63e16a19e29d0fddc1c6c0200e08e0117c3a7547af3c7cae4bc7ad930bcba1c1"
+    },
+    {
+      "class": "CSectionGeometryQuery",
+      "path": "src/Section/CSectionGeometryQuery.cls",
+      "lines": 2024,
+      "dependencies": [
+        "CConcreteRegion",
+        "CGeometryDiagnostic",
+        "CGeometryPath",
+        "CSectionContours",
+        "CSectionModel"
+      ],
+      "methods": [
+        {
+          "line": 32,
+          "declaration": "Public Property Get LastDiagnostic() As CGeometryDiagnostic"
+        },
+        {
+          "line": 37,
+          "declaration": "Public Sub TransformCoordinates(ByRef x As Double, ByRef y As Double, ByVal shiftX As Double, ByVal shiftY As Double, _"
+        },
+        {
+          "line": 49,
+          "declaration": "Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath, ByVal distance As Double) As CGeometryPath"
+        },
+        {
+          "line": 104,
+          "declaration": "Private Sub JoinOffsetEdges(ByVal pathID As String, ByVal segmentID As String, ByRef first As TRegionEdge, ByRef second As TRegionEdge)"
+        },
+        {
+          "line": 119,
+          "declaration": "Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryPath, _"
+        },
+        {
+          "line": 153,
+          "declaration": "Public Sub Initialize(ByVal section As CSectionModel)"
+        },
+        {
+          "line": 163,
+          "declaration": "Friend Sub EnsureSection(ByVal section As CSectionModel)"
+        },
+        {
+          "line": 174,
+          "declaration": "Friend Property Get DomainBuildCount() As Long"
+        },
+        {
+          "line": 180,
+          "declaration": "Public Function ConcreteDomain() As CConcreteRegion"
+        },
+        {
+          "line": 188,
+          "declaration": "Public Sub ProjectionBounds(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _"
+        },
+        {
+          "line": 206,
+          "declaration": "Friend Sub AccumulateEdgeProjection(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal ny As Double, _"
+        },
+        {
+          "line": 223,
+          "declaration": "Friend Function EdgeRayHit(ByRef edge As TRegionEdge, ByVal x As Double, ByVal y As Double, _"
+        },
+        {
+          "line": 249,
+          "declaration": "Public Sub OpeningBounds(ByVal contours As CSectionContours, ByRef bounds() As Double, ByRef openingCount As Long)"
+        },
+        {
+          "line": 275,
+          "declaration": "Public Function PolygonRegion(ByVal coordinates As Variant) As CConcreteRegion"
+        },
+        {
+          "line": 290,
+          "declaration": "Public Function CircleRegion(ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As CConcreteRegion"
+        },
+        {
+          "line": 301,
+          "declaration": "Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 350,
+          "declaration": "Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As Long)"
+        },
+        {
+          "line": 385,
+          "declaration": "Public Function LoopIsOpening(ByVal region As CConcreteRegion, ByVal loopID As Long) As Boolean"
+        },
+        {
+          "line": 397,
+          "declaration": "Public Function ConnectedRegionAtPoint(ByVal region As CConcreteRegion, ByVal x As Double, _"
+        },
+        {
+          "line": 431,
+          "declaration": "Private Function ContainingOuterLoop(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 453,
+          "declaration": "Public Function MergeDisjointRegions(ByVal regions As Collection) As CConcreteRegion"
+        },
+        {
+          "line": 474,
+          "declaration": "Public Function SubtractContainedRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion) As CConcreteRegion"
+        },
+        {
+          "line": 484,
+          "declaration": "Private Function BoundariesMeet(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean"
+        },
+        {
+          "line": 500,
+          "declaration": "Private Function MaterialSampleInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean"
+        },
+        {
+          "line": 514,
+          "declaration": "Private Function AllMaterialSamplesInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean"
+        },
+        {
+          "line": 527,
+          "declaration": "Private Function AnyBoundarySampleInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean"
+        },
+        {
+          "line": 538,
+          "declaration": "Public Function SubtractRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion) As CConcreteRegion"
+        },
+        {
+          "line": 557,
+          "declaration": "Public Function RegionsCoincide(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean"
+        },
+        {
+          "line": 575,
+          "declaration": "Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Double, _"
+        },
+        {
+          "line": 647,
+          "declaration": "Public Function ClipWindow(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _"
+        },
+        {
+          "line": 664,
+          "declaration": "Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVal nx As Double, _"
+        },
+        {
+          "line": 783,
+          "declaration": "Private Function InMaterialIntervalThroughPlane(ByVal region As CConcreteRegion, ByVal nx As Double, _"
+        },
+        {
+          "line": 801,
+          "declaration": "Private Sub AppendUniqueBoundary(ByRef edges() As TRegionEdge, ByRef count As Long, _"
+        },
+        {
+          "line": 823,
+          "declaration": "Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, _"
+        },
+        {
+          "line": 834,
+          "declaration": "Friend Function LabelBoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, _"
+        },
+        {
+          "line": 858,
+          "declaration": "Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double) As Double"
+        },
+        {
+          "line": 890,
+          "declaration": "Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _"
+        },
+        {
+          "line": 966,
+          "declaration": "Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _"
+        },
+        {
+          "line": 1025,
+          "declaration": "Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion"
+        },
+        {
+          "line": 1037,
+          "declaration": "Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath"
+        },
+        {
+          "line": 1084,
+          "declaration": "Private Sub ReadPolygonInput(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, _"
+        },
+        {
+          "line": 1110,
+          "declaration": "Private Function CutLineHasMaterial(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 1132,
+          "declaration": "Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges() As TRegionEdge, _"
+        },
+        {
+          "line": 1146,
+          "declaration": "Friend Sub CopyMeshOuterEdges(ByVal contours As CSectionContours, ByRef edges() As TRegionEdge, ByRef count As Long)"
+        },
+        {
+          "line": 1154,
+          "declaration": "Friend Sub MeshExtremePoints(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 1177,
+          "declaration": "Friend Function MeshBoundaryCrossesCell(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 1208,
+          "declaration": "Public Function LineIntervals(ByVal region As CConcreteRegion, ByVal pointX As Double, _"
+        },
+        {
+          "line": 1269,
+          "declaration": "Public Function SampleMaterialIntervals(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _"
+        },
+        {
+          "line": 1301,
+          "declaration": "Public Function ConcreteCoverFromPointAlongDirection(ByVal pointX As Double, ByVal pointY As Double, _"
+        },
+        {
+          "line": 1314,
+          "declaration": "Private Sub EnsureDomain()"
+        },
+        {
+          "line": 1360,
+          "declaration": "Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer() As TRegionEdge, _"
+        },
+        {
+          "line": 1395,
+          "declaration": "Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRegionEdge, ByRef count As Long)"
+        },
+        {
+          "line": 1440,
+          "declaration": "Public Function RegionFromContours(ByVal contours As CSectionContours) As CConcreteRegion"
+        },
+        {
+          "line": 1460,
+          "declaration": "Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, ByRef y As Double)"
+        },
+        {
+          "line": 1497,
+          "declaration": "Private Sub KeepOuterMeshContours(ByRef edges() As TRegionEdge, ByRef count As Long)"
+        },
+        {
+          "line": 1516,
+          "declaration": "Private Sub NormalizeBoundary(ByRef raw() As TRegionEdge, ByVal rawCount As Long, _"
+        },
+        {
+          "line": 1555,
+          "declaration": "Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 1586,
+          "declaration": "Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef ordered() As TRegionEdge, _"
+        },
+        {
+          "line": 1630,
+          "declaration": "Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal opening As Boolean)"
+        },
+        {
+          "line": 1646,
+          "declaration": "Private Function SignedLoopArea(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal loopID As Long) As Double"
+        },
+        {
+          "line": 1660,
+          "declaration": "Private Function EdgeSignedArea(ByRef edge As TRegionEdge, Optional ByVal originX As Double = 0#, _"
+        },
+        {
+          "line": 1681,
+          "declaration": "Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, _"
+        },
+        {
+          "line": 1744,
+          "declaration": "Private Sub HalfPlaneCuts(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal ny As Double, _"
+        },
+        {
+          "line": 1778,
+          "declaration": "Private Sub EdgeIntersectionCuts(ByRef a As TRegionEdge, ByRef b As TRegionEdge, _"
+        },
+        {
+          "line": 1823,
+          "declaration": "Private Function PointParameter(ByRef edge As TRegionEdge, ByVal x As Double, ByVal y As Double, ByRef u As Double) As Boolean"
+        },
+        {
+          "line": 1852,
+          "declaration": "Friend Sub EdgePoint(ByRef edge As TRegionEdge, ByVal u As Double, ByRef x As Double, ByRef y As Double)"
+        },
+        {
+          "line": 1864,
+          "declaration": "Friend Sub EdgeTangent(ByRef edge As TRegionEdge, ByVal u As Double, ByRef tx As Double, ByRef ty As Double)"
+        },
+        {
+          "line": 1876,
+          "declaration": "Friend Sub SubEdge(ByRef original As TRegionEdge, ByVal u1 As Double, ByVal u2 As Double, ByRef result As TRegionEdge)"
+        },
+        {
+          "line": 1884,
+          "declaration": "Friend Sub ReverseEdge(ByRef edge As TRegionEdge)"
+        },
+        {
+          "line": 1892,
+          "declaration": "Private Function EdgeTurn(ByRef previous As TRegionEdge, ByRef following As TRegionEdge) As Double"
+        },
+        {
+          "line": 1899,
+          "declaration": "Private Function AngleOf(ByVal x As Double, ByVal y As Double) As Double"
+        },
+        {
+          "line": 1912,
+          "declaration": "Private Sub ValidateArc(ByRef edge As TRegionEdge)"
+        },
+        {
+          "line": 1920,
+          "declaration": "Friend Function EdgeLength(ByRef edge As TRegionEdge) As Double"
+        },
+        {
+          "line": 1929,
+          "declaration": "Private Sub AddLine(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal x1 As Double, _"
+        },
+        {
+          "line": 1937,
+          "declaration": "Private Sub AddCircle(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal cx As Double, _"
+        },
+        {
+          "line": 1954,
+          "declaration": "Private Sub AppendEdge(ByRef edges() As TRegionEdge, ByRef count As Long, ByRef edge As TRegionEdge)"
+        },
+        {
+          "line": 1965,
+          "declaration": "Private Sub CopyArray(ByRef source() As TRegionEdge, ByVal count As Long, ByRef destination() As TRegionEdge)"
+        },
+        {
+          "line": 1977,
+          "declaration": "Private Sub AddScalar(ByRef values() As Double, ByRef count As Long, ByVal value As Double)"
+        },
+        {
+          "line": 1988,
+          "declaration": "Private Sub SortScalars(ByRef values() As Double, ByVal count As Long)"
+        },
+        {
+          "line": 2001,
+          "declaration": "Private Function SamePoint(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Boolean"
+        },
+        {
+          "line": 2007,
+          "declaration": "Private Function PointKey(ByVal x As Double, ByVal y As Double) As String"
+        },
+        {
+          "line": 2012,
+          "declaration": "Private Sub RequireRegion(ByVal region As CConcreteRegion)"
+        },
+        {
+          "line": 2018,
+          "declaration": "Private Sub GeometryError(ByVal description As String, Optional ByVal code As String = \"GEOMETRY_INVALID\", _"
+        }
+      ],
+      "sha256": "8933d9f602067442cc10559c6e2fcfd78bc7d5c396f503ed76c13abaea9e28f2"
+    },
+    {
+      "class": "CSectionInputTable",
+      "path": "src/Section/CSectionInputTable.cls",
+      "lines": 231,
+      "dependencies": [
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 20,
+          "declaration": "Public Sub Initialize(ByVal tableName As String, ByVal values As Variant, Optional ByVal addresses As Variant)"
+        },
+        {
+          "line": 57,
+          "declaration": "Public Property Get Name() As String: Name = mName: End Property"
+        },
+        {
+          "line": 59,
+          "declaration": "Public Property Get RowCount() As Long: RowCount = mRows: End Property"
+        },
+        {
+          "line": 61,
+          "declaration": "Public Property Get ColumnCount() As Long: ColumnCount = mColumns: End Property"
+        },
+        {
+          "line": 64,
+          "declaration": "Public Function SourceReference(ByVal row As Long, ByVal column As Long) As String"
+        },
+        {
+          "line": 69,
+          "declaration": "Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant"
+        },
+        {
+          "line": 76,
+          "declaration": "Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean"
+        },
+        {
+          "line": 81,
+          "declaration": "Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As String"
+        },
+        {
+          "line": 93,
+          "declaration": "Public Function Number(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As Double"
+        },
+        {
+          "line": 111,
+          "declaration": "Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Long = 0) As Long"
+        },
+        {
+          "line": 120,
+          "declaration": "Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As Variant, _"
+        },
+        {
+          "line": 131,
+          "declaration": "Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 138,
+          "declaration": "Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 149,
+          "declaration": "Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String) As Long"
+        },
+        {
+          "line": 165,
+          "declaration": "Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, _"
+        },
+        {
+          "line": 172,
+          "declaration": "Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As Long = 1, _"
+        },
+        {
+          "line": 205,
+          "declaration": "Private Function BlankValue(ByVal value As Variant) As Boolean"
+        },
+        {
+          "line": 214,
+          "declaration": "Private Sub CheckCell(ByVal row As Long, ByVal column As Long)"
+        },
+        {
+          "line": 220,
+          "declaration": "Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As String)"
+        }
+      ],
+      "sha256": "b3ac8124c50e6594493720bc2d1b1621a3d18ef30c42432c9309439777eb4c97"
+    },
+    {
+      "class": "CSectionModel",
+      "path": "src/Section/CSectionModel.cls",
+      "lines": 1039,
+      "dependencies": [
+        "CSectionAnnotations",
+        "CSectionContours"
+      ],
+      "methods": [
+        {
+          "line": 82,
+          "declaration": "Public Sub Clear()"
+        },
+        {
+          "line": 128,
+          "declaration": "Public Property Let SourceType(ByVal value As String)"
+        },
+        {
+          "line": 133,
+          "declaration": "Public Property Get SourceType() As String"
+        },
+        {
+          "line": 138,
+          "declaration": "Public Property Let ConcreteMeshSource(ByVal value As String)"
+        },
+        {
+          "line": 148,
+          "declaration": "Public Property Get ConcreteMeshSource() As String"
+        },
+        {
+          "line": 153,
+          "declaration": "Public Property Let GeometryDiagnosticsText(ByVal value As String)"
+        },
+        {
+          "line": 158,
+          "declaration": "Public Property Get GeometryDiagnosticsText() As String"
+        },
+        {
+          "line": 164,
+          "declaration": "Public Sub AppendRebarRecipeTrace(ByVal index As Long, ByVal ruleID As String, ByVal pathID As String, ByVal sourcePositionID As String)"
+        },
+        {
+          "line": 172,
+          "declaration": "Public Property Get RebarRecipeTrace(ByVal index As Long) As String"
+        },
+        {
+          "line": 178,
+          "declaration": "Private Function TraceToken(ByVal value As String) As String"
+        },
+        {
+          "line": 189,
+          "declaration": "Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, ByVal area As Double, _"
+        },
+        {
+          "line": 238,
+          "declaration": "Friend Sub ReserveElements(ByVal concreteCount As Long, ByVal rebarCount As Long)"
+        },
+        {
+          "line": 247,
+          "declaration": "Private Sub EnsureConcreteCapacity(ByVal required As Long, Optional ByVal exactSize As Boolean = False)"
+        },
+        {
+          "line": 284,
+          "declaration": "Private Sub EnsureRebarCapacity(ByVal required As Long, Optional ByVal exactSize As Boolean = False)"
+        },
+        {
+          "line": 311,
+          "declaration": "Public Property Get Revision() As Long"
+        },
+        {
+          "line": 324,
+          "declaration": "Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double, ByRef totalArea As Double)"
+        },
+        {
+          "line": 346,
+          "declaration": "Friend Function MaximumElementRadiusFromConcreteCenter() As Double"
+        },
+        {
+          "line": 371,
+          "declaration": "Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()"
+        },
+        {
+          "line": 393,
+          "declaration": "Public Function AverageKnownConcreteElementRotation() As Double"
+        },
+        {
+          "line": 420,
+          "declaration": "Private Function ElementContributesToAverageRotation(ByVal index As Long, ByVal statusText As String, _"
+        },
+        {
+          "line": 435,
+          "declaration": "Public Function IsConcreteEquivalentAreaFallback(ByVal index As Long) As Boolean"
+        },
+        {
+          "line": 444,
+          "declaration": "Public Function ConcreteBoundaryRectangle(ByVal index As Long, ByRef widthValue As Double, _"
+        },
+        {
+          "line": 453,
+          "declaration": "Public Function ConcreteBoundaryShapeType(ByVal index As Long) As String"
+        },
+        {
+          "line": 464,
+          "declaration": "Public Function ConcreteBoundaryHalfProjection(ByVal index As Long, ByVal axisX As Double, _"
+        },
+        {
+          "line": 476,
+          "declaration": "Public Sub ConcreteLocalInertiaComponents(ByVal index As Long, ByRef localIx As Double, _"
+        },
+        {
+          "line": 491,
+          "declaration": "Public Function LocalInertiaIsNearlySquare(ByVal localIx As Double, ByVal localIy As Double, _"
+        },
+        {
+          "line": 507,
+          "declaration": "Private Sub InterpretConcreteBoundary(ByVal index As Long, ByRef statusText As String, _"
+        },
+        {
+          "line": 526,
+          "declaration": "Private Sub CalculateConcreteBoundary(ByVal index As Long, ByRef statusText As String, _"
+        },
+        {
+          "line": 561,
+          "declaration": "Private Sub StoreBoundaryCache(ByVal index As Long, ByVal statusText As String, _"
+        },
+        {
+          "line": 572,
+          "declaration": "Private Sub InvalidateBoundaryCache(ByVal index As Long)"
+        },
+        {
+          "line": 582,
+          "declaration": "Private Sub ClearBoundaryCache()"
+        },
+        {
+          "line": 593,
+          "declaration": "Private Function TryInterpretAnisotropicBoundary(ByVal areaValue As Double, _"
+        },
+        {
+          "line": 632,
+          "declaration": "Public Sub PrincipalLocalInertia(ByVal localIx As Double, ByVal localIy As Double, _"
+        },
+        {
+          "line": 651,
+          "declaration": "Private Function HasExplicitRectangleGeometry(ByVal index As Long) As Boolean"
+        },
+        {
+          "line": 664,
+          "declaration": "Private Sub RectangleLocalInertiaComponents(ByVal areaValue As Double, _"
+        },
+        {
+          "line": 682,
+          "declaration": "Private Sub EquivalentSquareLocalInertiaComponents(ByVal areaValue As Double, _"
+        },
+        {
+          "line": 690,
+          "declaration": "Private Function RectangleHalfProjection(ByVal widthValue As Double, ByVal heightValue As Double, _"
+        },
+        {
+          "line": 705,
+          "declaration": "Private Function IsPositiveDefiniteInertia(ByVal localIx As Double, ByVal localIy As Double, _"
+        },
+        {
+          "line": 715,
+          "declaration": "Private Function LocalInertiaIsNumericallyIsotropic(ByVal localIx As Double, _"
+        },
+        {
+          "line": 725,
+          "declaration": "Private Function NormalizeAnglePi(ByVal angleValue As Double) As Double"
+        },
+        {
+          "line": 739,
+          "declaration": "Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _"
+        },
+        {
+          "line": 772,
+          "declaration": "Public Property Get ConcreteCount() As Long"
+        },
+        {
+          "line": 777,
+          "declaration": "Public Property Get RebarCount() As Long"
+        },
+        {
+          "line": 782,
+          "declaration": "Public Property Get ConcreteID(ByVal index As Long) As String"
+        },
+        {
+          "line": 788,
+          "declaration": "Public Property Get ConcreteSourceName(ByVal index As Long) As String"
+        },
+        {
+          "line": 794,
+          "declaration": "Public Property Get ConcreteSourceHandle(ByVal index As Long) As String"
+        },
+        {
+          "line": 800,
+          "declaration": "Public Property Get ConcreteX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 806,
+          "declaration": "Public Property Get ConcreteY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 812,
+          "declaration": "Public Property Get ConcreteArea(ByVal index As Long) As Double"
+        },
+        {
+          "line": 820,
+          "declaration": "Public Sub ConcreteElementForSolver(ByVal index As Long, ByRef xCoord As Double, _"
+        },
+        {
+          "line": 829,
+          "declaration": "Public Property Get ConcreteMaterialID(ByVal index As Long) As Long"
+        },
+        {
+          "line": 835,
+          "declaration": "Public Property Get ConcreteShapeType(ByVal index As Long) As String"
+        },
+        {
+          "line": 842,
+          "declaration": "Public Property Get ConcreteWidth(ByVal index As Long) As Double"
+        },
+        {
+          "line": 852,
+          "declaration": "Public Property Get ConcreteHeight(ByVal index As Long) As Double"
+        },
+        {
+          "line": 862,
+          "declaration": "Public Property Get ConcreteRotation(ByVal index As Long) As Double"
+        },
+        {
+          "line": 872,
+          "declaration": "Public Property Get ConcreteLocalIx(ByVal index As Long) As Double"
+        },
+        {
+          "line": 882,
+          "declaration": "Public Property Get ConcreteLocalIy(ByVal index As Long) As Double"
+        },
+        {
+          "line": 892,
+          "declaration": "Public Property Get ConcreteLocalIxy(ByVal index As Long) As Double"
+        },
+        {
+          "line": 902,
+          "declaration": "Public Property Get ConcreteComment(ByVal index As Long) As String"
+        },
+        {
+          "line": 908,
+          "declaration": "Public Property Get RebarID(ByVal index As Long) As String"
+        },
+        {
+          "line": 914,
+          "declaration": "Public Property Get RebarSourceHandle(ByVal index As Long) As String"
+        },
+        {
+          "line": 920,
+          "declaration": "Public Property Get RebarX(ByVal index As Long) As Double"
+        },
+        {
+          "line": 926,
+          "declaration": "Public Property Get RebarY(ByVal index As Long) As Double"
+        },
+        {
+          "line": 932,
+          "declaration": "Public Property Get RebarArea(ByVal index As Long) As Double"
+        },
+        {
+          "line": 940,
+          "declaration": "Public Sub RebarElementForSolver(ByVal index As Long, ByRef xCoord As Double, _"
+        },
+        {
+          "line": 949,
+          "declaration": "Public Property Get RebarDiameter(ByVal index As Long) As Double"
+        },
+        {
+          "line": 955,
+          "declaration": "Public Property Get RebarMaterialID(ByVal index As Long) As Long"
+        },
+        {
+          "line": 961,
+          "declaration": "Public Property Get RebarComment(ByVal index As Long) As String"
+        },
+        {
+          "line": 968,
+          "declaration": "Public Property Get Annotations() As CSectionAnnotations"
+        },
+        {
+          "line": 974,
+          "declaration": "Public Property Get Contours() As CSectionContours"
+        },
+        {
+          "line": 981,
+          "declaration": "Public Property Get AnnotationCount() As Long"
+        },
+        {
+          "line": 990,
+          "declaration": "Private Sub CheckConcreteIndex(ByVal index As Long)"
+        },
+        {
+          "line": 995,
+          "declaration": "Private Sub CheckRebarIndex(ByVal index As Long)"
+        },
+        {
+          "line": 1001,
+          "declaration": "Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double"
+        },
+        {
+          "line": 1030,
+          "declaration": "Public Property Get RebarSourceName(ByVal index As Long) As String"
+        },
+        {
+          "line": 1036,
+          "declaration": "Public Property Get RebarSteelClass(ByVal index As Long) As String"
+        }
+      ],
+      "sha256": "7220f202b730ddc5be4baad42358048ddaf8ddf3bbcbfbccbcc71fc37ae24fe2"
+    },
+    {
+      "class": "CSectionModelBuilder",
+      "path": "src/Section/CSectionModelBuilder.cls",
+      "lines": 66,
+      "dependencies": [
+        "CFiberMeshBuilder",
+        "CRebarLayout",
+        "CSectionModel"
+      ],
+      "methods": [
+        {
+          "line": 23,
+          "declaration": "Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _"
+        },
+        {
+          "line": 51,
+          "declaration": "Public Sub AppendConcreteMesh(ByVal model As CSectionModel, ByVal mesh As CFiberMeshBuilder, _"
+        }
+      ],
+      "sha256": "ef6fe7f552afa236b7af6b294c07e8343e8b14c3b8ec1229c9f359408d06369a"
+    },
+    {
+      "class": "CSectionPropertiesCalculator",
+      "path": "src/Section/CSectionPropertiesCalculator.cls",
+      "lines": 818,
+      "dependencies": [
+        "CMaterialModelProvider",
+        "CSectionModel",
+        "CSectionPropertiesCalculator"
+      ],
+      "methods": [
+        {
+          "line": 74,
+          "declaration": "Public Sub PrepareSnapshot(ByVal section As CSectionModel, Optional ByVal provider As CMaterialModelProvider = Nothing)"
+        },
+        {
+          "line": 88,
+          "declaration": "Public Sub ValidateSnapshot(ByVal section As CSectionModel, Optional ByVal requireTransformed As Boolean = False)"
+        },
+        {
+          "line": 96,
+          "declaration": "Public Property Get SnapshotBounds() As Variant"
+        },
+        {
+          "line": 100,
+          "declaration": "Public Property Get TransformedSnapshot() As CSectionPropertiesCalculator"
+        },
+        {
+          "line": 108,
+          "declaration": "Public Sub CalculateConcrete(ByVal section As CSectionModel)"
+        },
+        {
+          "line": 138,
+          "declaration": "Public Sub CalculateTransformed(ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 157,
+          "declaration": "Public Sub CalculateTransformedByModuli(ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 197,
+          "declaration": "Friend Sub EnsureConcrete(ByVal section As CSectionModel)"
+        },
+        {
+          "line": 204,
+          "declaration": "Friend Sub EnsureTransformed(ByVal section As CSectionModel, ByVal eb As Double, ByVal es As Double)"
+        },
+        {
+          "line": 210,
+          "declaration": "Private Sub StorePreparationContext(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double)"
+        },
+        {
+          "line": 217,
+          "declaration": "Private Function PreparationMatches(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double) As Boolean"
+        },
+        {
+          "line": 224,
+          "declaration": "Friend Property Get PreparationBuildCount() As Long"
+        },
+        {
+          "line": 232,
+          "declaration": "Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y As Double, _"
+        },
+        {
+          "line": 246,
+          "declaration": "Private Sub AddConcreteWeightedArea(ByVal section As CSectionModel, ByVal index As Long, _"
+        },
+        {
+          "line": 266,
+          "declaration": "Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Double, ByVal axisY As Double, _"
+        },
+        {
+          "line": 300,
+          "declaration": "Public Function ProjectionDepth(ByVal section As CSectionModel, ByVal axisX As Double, ByVal axisY As Double, _"
+        },
+        {
+          "line": 311,
+          "declaration": "Public Function RebarAreaTotal(ByVal section As CSectionModel) As Double"
+        },
+        {
+          "line": 324,
+          "declaration": "Public Function RebarInertiaAboutAxis(ByVal section As CSectionModel, ByVal axisX As Double, _"
+        },
+        {
+          "line": 356,
+          "declaration": "Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal axisX As Double, _"
+        },
+        {
+          "line": 394,
+          "declaration": "Private Function ReadMechanicalQuery(ByVal section As CSectionModel, ByVal kind As Long, _"
+        },
+        {
+          "line": 413,
+          "declaration": "Private Sub StoreMechanicalQuery(ByVal section As CSectionModel, ByVal kind As Long, _"
+        },
+        {
+          "line": 428,
+          "declaration": "Public Function ProjectedInertiaAboutCentroid(ByVal directionX As Double, ByVal directionY As Double) As Double"
+        },
+        {
+          "line": 444,
+          "declaration": "Public Sub PrincipalAxisDirection(ByVal axisIndex As Long, ByRef axisX As Double, ByRef axisY As Double)"
+        },
+        {
+          "line": 466,
+          "declaration": "Public Sub PrincipalPlaneNormalDirection(ByVal planeIndex As Long, ByRef normalX As Double, ByRef normalY As Double)"
+        },
+        {
+          "line": 479,
+          "declaration": "Public Function PrincipalPlaneDepth(ByVal section As CSectionModel, ByVal planeIndex As Long, _"
+        },
+        {
+          "line": 490,
+          "declaration": "Public Function PrincipalPlaneCoreDistance(ByVal section As CSectionModel, ByVal planeIndex As Long, _"
+        },
+        {
+          "line": 517,
+          "declaration": "Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directionX As Double, _"
+        },
+        {
+          "line": 561,
+          "declaration": "Private Sub CalculateLinearProjection(ByVal section As CSectionModel, ByVal axisX As Double, _"
+        },
+        {
+          "line": 587,
+          "declaration": "Private Sub ExtendProjection(ByRef initialized As Boolean, ByRef minProjection As Double, ByRef maxProjection As Double, _"
+        },
+        {
+          "line": 602,
+          "declaration": "Private Function ConcreteHalfProjection(ByVal section As CSectionModel, ByVal index As Long, _"
+        },
+        {
+          "line": 608,
+          "declaration": "Private Function RebarCircleInertia(ByVal areaValue As Double) As Double"
+        },
+        {
+          "line": 613,
+          "declaration": "Private Function RebarEquivalentRadius(ByVal areaValue As Double) As Double"
+        },
+        {
+          "line": 620,
+          "declaration": "Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCenter As Boolean = False, _"
+        },
+        {
+          "line": 665,
+          "declaration": "Public Sub Clear()"
+        },
+        {
+          "line": 695,
+          "declaration": "Public Property Get Area() As Double"
+        },
+        {
+          "line": 700,
+          "declaration": "Public Property Get StaticMomentX() As Double"
+        },
+        {
+          "line": 705,
+          "declaration": "Public Property Get StaticMomentY() As Double"
+        },
+        {
+          "line": 710,
+          "declaration": "Public Property Get CentroidX() As Double"
+        },
+        {
+          "line": 715,
+          "declaration": "Public Property Get CentroidY() As Double"
+        },
+        {
+          "line": 720,
+          "declaration": "Public Property Get Ix() As Double"
+        },
+        {
+          "line": 725,
+          "declaration": "Public Property Get Iy() As Double"
+        },
+        {
+          "line": 730,
+          "declaration": "Public Property Get Ixy() As Double"
+        },
+        {
+          "line": 735,
+          "declaration": "Public Property Get Ixc() As Double"
+        },
+        {
+          "line": 740,
+          "declaration": "Public Property Get Iyc() As Double"
+        },
+        {
+          "line": 745,
+          "declaration": "Public Property Get Ixyc() As Double"
+        },
+        {
+          "line": 750,
+          "declaration": "Public Property Get PrincipalI1() As Double"
+        },
+        {
+          "line": 755,
+          "declaration": "Public Property Get PrincipalI2() As Double"
+        },
+        {
+          "line": 760,
+          "declaration": "Public Property Get PrincipalAngleRad() As Double"
+        },
+        {
+          "line": 765,
+          "declaration": "Public Property Get RadiusX() As Double"
+        },
+        {
+          "line": 770,
+          "declaration": "Public Property Get RadiusY() As Double"
+        },
+        {
+          "line": 775,
+          "declaration": "Public Property Get PrincipalRadius1() As Double"
+        },
+        {
+          "line": 780,
+          "declaration": "Public Property Get PrincipalRadius2() As Double"
+        },
+        {
+          "line": 787,
+          "declaration": "Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double"
+        },
+        {
+          "line": 806,
+          "declaration": "Public Property Get LastCalculationSeconds() As Double"
+        }
+      ],
+      "sha256": "7df1885dab942be6e7b457973d23c0cbab02a7801554f47541acb6888cfb884d"
+    },
+    {
+      "class": "CSectionRecipeContext",
+      "path": "src/Section/CSectionRecipeContext.cls",
+      "lines": 53,
+      "dependencies": [
+        "CSectionInputTable",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 19,
+          "declaration": "Public Sub Initialize(ByVal units As CUnitSystem)"
+        },
+        {
+          "line": 28,
+          "declaration": "Public Sub AddTable(ByVal table As CSectionInputTable)"
+        },
+        {
+          "line": 37,
+          "declaration": "Public Sub Seal()"
+        },
+        {
+          "line": 43,
+          "declaration": "Public Function Table(ByVal tableName As String) As CSectionInputTable"
+        },
+        {
+          "line": 50,
+          "declaration": "Public Property Get Units() As CUnitSystem"
+        }
+      ],
+      "sha256": "7ee2cef284ab2fef14ccd3ce5692d98749856018312cbf7bdfc465290ef11170"
+    },
+    {
+      "class": "ISectionRecipe",
+      "path": "src/Section/ISectionRecipe.cls",
+      "lines": 15,
+      "dependencies": [
+        "CSectionDefinition",
+        "CSectionRecipeContext"
+      ],
+      "methods": [
+        {
+          "line": 14,
+          "declaration": "Public Function CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition"
+        }
+      ],
+      "sha256": "29c1d70147a864331358441c6cc517d0270f0e3d45aa21a3d434a02a1e1efe51"
+    },
+    {
+      "class": "CAutoCADContourReader",
+      "path": "src/Excel/CAutoCADContourReader.cls",
+      "lines": 191,
+      "dependencies": [
+        "CConcreteRegion",
+        "CSectionGeometryQuery"
+      ],
+      "methods": [
+        {
+          "line": 28,
+          "declaration": "Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion"
+        },
+        {
+          "line": 82,
+          "declaration": "Public Function IsEmptyStraightSegment(ByVal entity As Object) As Boolean"
+        },
+        {
+          "line": 103,
+          "declaration": "Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByRef count As Long, _"
+        },
+        {
+          "line": 156,
+          "declaration": "Private Sub ValidatePlaneNormal(ByVal entity As Object)"
+        },
+        {
+          "line": 167,
+          "declaration": "Private Sub ValidatePoint(ByVal point As Variant)"
+        },
+        {
+          "line": 175,
+          "declaration": "Private Sub AppendEdge(ByRef edges() As TRegionEdge, ByRef count As Long, ByRef edge As TRegionEdge)"
+        },
+        {
+          "line": 183,
+          "declaration": "Private Sub CleanupTemporary(ByVal temporary As Object, ByVal pieces As Variant)"
+        }
+      ],
+      "sha256": "ba135cf67d5474d959ab5a725397da444a1e6fcc89e815bcf05a8964e857c0d8"
+    },
+    {
+      "class": "CAutoCADSectionModelImporter",
+      "path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "lines": 915,
+      "dependencies": [
+        "CAutoCADContourReader",
+        "CConcreteRegion",
+        "CFiberMeshBuilder",
+        "CGeometryRegion",
+        "CSectionGeometryQuery",
+        "CSectionModel",
+        "CSectionModelBuilder",
+        "CSystemSettingsReader",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 34,
+          "declaration": "Public Property Get ImportComment() As String"
+        },
+        {
+          "line": 40,
+          "declaration": "Public Function ResultMessage(ByVal model As CSectionModel) As String"
+        },
+        {
+          "line": 59,
+          "declaration": "Private Sub AppendImportWarning(ByVal text As String)"
+        },
+        {
+          "line": 67,
+          "declaration": "Public Function ImportFromActiveDocument(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionModel"
+        },
+        {
+          "line": 86,
+          "declaration": "Public Function ImportFromDocument(ByVal document As Object, ByVal settings As CSystemSettingsReader, _"
+        },
+        {
+          "line": 97,
+          "declaration": "Private Sub RequireWorldCoordinateSystem(ByVal document As Object)"
+        },
+        {
+          "line": 120,
+          "declaration": "Public Function ImportConfiguredModelSpace(ByVal modelSpace As Object, ByVal settings As CSystemSettingsReader, _"
+        },
+        {
+          "line": 159,
+          "declaration": "Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteLayer As String, _"
+        },
+        {
+          "line": 220,
+          "declaration": "Private Sub GenerateConcreteFromContour(ByVal model As CSectionModel, ByVal domain As CConcreteRegion, _"
+        },
+        {
+          "line": 241,
+          "declaration": "Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _"
+        },
+        {
+          "line": 332,
+          "declaration": "Private Function FilterEmptyContourSegments(ByVal entities As Collection, ByVal reader As CAutoCADContourReader) As Collection"
+        },
+        {
+          "line": 355,
+          "declaration": "Private Function OptionalContourLayer(ByVal settings As CSystemSettingsReader, ByVal key As String) As String"
+        },
+        {
+          "line": 362,
+          "declaration": "Private Sub ValidateContourLayerMapping(ByVal concreteLayer As String, ByVal rebarLayer As String, _"
+        },
+        {
+          "line": 378,
+          "declaration": "Private Function ExistingContourLayer(ByVal layers As Object, ByVal layerName As String) As String"
+        },
+        {
+          "line": 394,
+          "declaration": "Private Function ReadMaterialContours(ByVal outers As Collection, ByVal openings As Collection, _"
+        },
+        {
+          "line": 430,
+          "declaration": "Private Function BoundaryLoopRegion(ByVal region As CConcreteRegion, ByVal loopID As Long, _"
+        },
+        {
+          "line": 445,
+          "declaration": "Private Function FindMatchingBoundaryLoop(ByVal domain As CConcreteRegion, ByVal boundary As CConcreteRegion, _"
+        },
+        {
+          "line": 462,
+          "declaration": "Private Sub AddConcreteRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, ByVal minArea As Double, _"
+        },
+        {
+          "line": 494,
+          "declaration": "Private Sub AddRebarRegionEntity(ByVal model As CSectionModel, ByVal entity As Object, _"
+        },
+        {
+          "line": 510,
+          "declaration": "Private Sub AddConcreteRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, ByVal minArea As Double)"
+        },
+        {
+          "line": 530,
+          "declaration": "Private Sub AddRebarRegionArray(ByVal model As CSectionModel, ByVal regions As Variant, _"
+        },
+        {
+          "line": 548,
+          "declaration": "Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double, _"
+        },
+        {
+          "line": 585,
+          "declaration": "Private Sub AddRebarRegion(ByVal model As CSectionModel, ByVal area As Double, _"
+        },
+        {
+          "line": 598,
+          "declaration": "Private Sub ReadCentralRegionInertia(ByVal entity As Object, ByVal area As Double, _"
+        },
+        {
+          "line": 633,
+          "declaration": "Private Function CentralProductOfInertia(ByVal product As Variant, ByVal area As Double, _"
+        },
+        {
+          "line": 647,
+          "declaration": "Private Function TryReadFirstStraightEdgeRotation(ByVal entity As Object, _"
+        },
+        {
+          "line": 682,
+          "declaration": "Private Function TryReadLineDirection(ByVal lineEntity As Object, ByVal units As CUnitSystem, _"
+        },
+        {
+          "line": 711,
+          "declaration": "Private Function IsLineEntity(ByVal entity As Object) As Boolean"
+        },
+        {
+          "line": 718,
+          "declaration": "Private Sub DeleteExplodedPiecesQuietly(ByVal pieces As Variant)"
+        },
+        {
+          "line": 732,
+          "declaration": "Private Sub DeleteAcadObjectQuietly(ByVal entity As Object)"
+        },
+        {
+          "line": 742,
+          "declaration": "Private Function HasExplicitRectangleGeometry(ByVal area As Double, ByVal width As Double, _"
+        },
+        {
+          "line": 756,
+          "declaration": "Private Function IsPositiveDefiniteInertia(ByVal localIx As Double, ByVal localIy As Double, _"
+        },
+        {
+          "line": 765,
+          "declaration": "Private Function IsRegionEntity(ByVal entity As Object) As Boolean"
+        },
+        {
+          "line": 773,
+          "declaration": "Private Function SameLayer(ByVal actualLayer As String, ByVal expectedLayer As String) As Boolean"
+        },
+        {
+          "line": 779,
+          "declaration": "Private Function EntityHandle(ByVal entity As Object) As String"
+        },
+        {
+          "line": 788,
+          "declaration": "Private Sub ValidateImportedModel(ByVal model As CSectionModel)"
+        },
+        {
+          "line": 799,
+          "declaration": "Private Function HasArrayRows(ByVal values As Variant) As Boolean"
+        },
+        {
+          "line": 813,
+          "declaration": "Private Function OptionalRegionDouble(ByVal values As Variant, ByVal rowIndex As Long, _"
+        },
+        {
+          "line": 828,
+          "declaration": "Private Function OptionalRegionString(ByVal values As Variant, ByVal rowIndex As Long, _"
+        },
+        {
+          "line": 840,
+          "declaration": "Private Function InputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 849,
+          "declaration": "Private Function InputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 856,
+          "declaration": "Private Function InputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 864,
+          "declaration": "Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double"
+        },
+        {
+          "line": 894,
+          "declaration": "Public Function BuildFromRegionArrays(ByVal concreteRegions As Variant, ByVal rebarRegions As Variant, _"
+        },
+        {
+          "line": 913,
+          "declaration": "Public Property Get DebugEdgeProbeCount() As Long"
+        }
+      ],
+      "sha256": "e8bfde0e4184ddea3ccea5f7bfc9441261cb32eaf5f1b03745644bbc7d69ddef"
+    },
+    {
+      "class": "CNDMResultsWriter",
+      "path": "src/Excel/CNDMResultsWriter.cls",
+      "lines": 1553,
+      "dependencies": [
+        "CBatchSectionCalculator",
+        "CCombinationResult",
+        "CConcreteRegion",
+        "CMaterialDiagram",
+        "CSectionAnnotations",
+        "CSectionContours",
+        "CSectionModel",
+        "CSectionPropertiesCalculator",
+        "CSectionStateResult",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 40,
+          "declaration": "Public Function OutputColumnCount(ByVal rangeName As String) As Long"
+        },
+        {
+          "line": 61,
+          "declaration": "Public Function EstimatedElementResultRows(ByVal elementCount As Long, ByVal namedStateCount As Long) As Long"
+        },
+        {
+          "line": 68,
+          "declaration": "Public Function EstimatedSectionPropertyRows(ByVal combinationCount As Long, ByVal namedStateCount As Long) As Long"
+        },
+        {
+          "line": 80,
+          "declaration": "Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 106,
+          "declaration": "Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 128,
+          "declaration": "Public Sub ClearResults(ByVal workbook As Object)"
+        },
+        {
+          "line": 146,
+          "declaration": "Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)"
+        },
+        {
+          "line": 175,
+          "declaration": "Private Function ExistingAnchoredRowCount(ByVal anchor As Object) As Long"
+        },
+        {
+          "line": 181,
+          "declaration": "Private Sub WriteSnapshotTitle(ByVal workbook As Object)"
+        },
+        {
+          "line": 203,
+          "declaration": "Private Sub ClearSnapshotTitle(ByVal workbook As Object)"
+        },
+        {
+          "line": 216,
+          "declaration": "Private Function SnapshotTitleRange(ByVal workbook As Object) As Object"
+        },
+        {
+          "line": 237,
+          "declaration": "Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 283,
+          "declaration": "Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 351,
+          "declaration": "Public Sub WriteSectionContours(ByVal workbook As Object, ByVal contours As CSectionContours, _"
+        },
+        {
+          "line": 390,
+          "declaration": "Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 492,
+          "declaration": "Private Function BooleanText(ByVal value As Boolean) As String"
+        },
+        {
+          "line": 507,
+          "declaration": "Private Sub WriteMaterialDiagrams(ByVal workbook As Object, _"
+        },
+        {
+          "line": 540,
+          "declaration": "Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 566,
+          "declaration": "Private Function MaterialDiagramId(ByVal profileId As String, ByVal stateResult As CSectionStateResult, _"
+        },
+        {
+          "line": 576,
+          "declaration": "Private Function MaterialDiagramModeText(ByVal diagram As CMaterialDiagram) As String"
+        },
+        {
+          "line": 588,
+          "declaration": "Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 617,
+          "declaration": "Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)"
+        },
+        {
+          "line": 634,
+          "declaration": "Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 662,
+          "declaration": "Private Sub PutTransformedSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 692,
+          "declaration": "Private Sub PutAxisCoreDistanceProperties(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 714,
+          "declaration": "Private Sub PutPrincipalCoreDistanceProperties(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 742,
+          "declaration": "Private Sub PutGeneralSectionCheckProperties(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 767,
+          "declaration": "Private Function SlendernessValue(ByVal geometricLength As Double, ByVal muValue As Double, _"
+        },
+        {
+          "line": 780,
+          "declaration": "Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 826,
+          "declaration": "Private Function NeutralLineAngleValue(ByVal kappaX As Double, ByVal kappaY As Double) As Variant"
+        },
+        {
+          "line": 836,
+          "declaration": "Private Function NeutralLineSignedDistanceValue(ByVal epsilon0 As Double, _"
+        },
+        {
+          "line": 849,
+          "declaration": "Private Function NeutralCurvatureNorm(ByVal kappaX As Double, ByVal kappaY As Double) As Double"
+        },
+        {
+          "line": 854,
+          "declaration": "Private Function OutputLengthVariant(ByVal value As Variant, ByVal units As CUnitSystem) As Variant"
+        },
+        {
+          "line": 863,
+          "declaration": "Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double"
+        },
+        {
+          "line": 887,
+          "declaration": "Private Function SectionPropertyRowCount(ByVal batch As CBatchSectionCalculator) As Long"
+        },
+        {
+          "line": 902,
+          "declaration": "Private Function MaterialDiagramRowCount(ByVal batch As CBatchSectionCalculator) As Long"
+        },
+        {
+          "line": 924,
+          "declaration": "Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 968,
+          "declaration": "Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As CSectionModel, _"
+        },
+        {
+          "line": 1014,
+          "declaration": "Private Sub WriteEmptyElementResults(ByVal workbook As Object, ByVal runID As Variant, ByVal units As CUnitSystem)"
+        },
+        {
+          "line": 1029,
+          "declaration": "Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID As Variant)"
+        },
+        {
+          "line": 1044,
+          "declaration": "Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)"
+        },
+        {
+          "line": 1081,
+          "declaration": "Private Sub ApplyResultNumberFormats(ByVal tableRange As Object)"
+        },
+        {
+          "line": 1096,
+          "declaration": "Private Sub AlignCommentColumns(ByVal tableRange As Object)"
+        },
+        {
+          "line": 1113,
+          "declaration": "Private Function ShouldRightAlignResultColumn(ByVal headerBase As String) As Boolean"
+        },
+        {
+          "line": 1123,
+          "declaration": "Private Function ResultHeaderBase(ByVal headerText As String) As String"
+        },
+        {
+          "line": 1135,
+          "declaration": "Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _"
+        },
+        {
+          "line": 1151,
+          "declaration": "Private Sub PutElementRow(ByRef data() As Variant, ByVal rowIndex As Long, ByVal runID As Variant, _"
+        },
+        {
+          "line": 1167,
+          "declaration": "Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)"
+        },
+        {
+          "line": 1180,
+          "declaration": "Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)"
+        },
+        {
+          "line": 1199,
+          "declaration": "Private Sub PutSectionPropertyHeaders(ByRef data() As Variant)"
+        },
+        {
+          "line": 1209,
+          "declaration": "Private Sub PutAnnotationHeaders(ByRef data() As Variant)"
+        },
+        {
+          "line": 1237,
+          "declaration": "Private Sub PutCrackRegionRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _"
+        },
+        {
+          "line": 1269,
+          "declaration": "Private Sub PutCrackBoundaryProbeRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _"
+        },
+        {
+          "line": 1293,
+          "declaration": "Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _"
+        },
+        {
+          "line": 1306,
+          "declaration": "Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _"
+        },
+        {
+          "line": 1330,
+          "declaration": "Private Function OutputAnnotationNormalX(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _"
+        },
+        {
+          "line": 1341,
+          "declaration": "Private Function OutputAnnotationNormalY(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _"
+        },
+        {
+          "line": 1354,
+          "declaration": "Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _"
+        },
+        {
+          "line": 1381,
+          "declaration": "Private Function FormatRoundedAnnotationLength(ByVal internalMmValue As Double, ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1393,
+          "declaration": "Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long) As String"
+        },
+        {
+          "line": 1423,
+          "declaration": "Private Function ApproxSign() As String"
+        },
+        {
+          "line": 1428,
+          "declaration": "Private Function OutputAnnotationValue(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _"
+        },
+        {
+          "line": 1440,
+          "declaration": "Private Function OutputAnnotationUnit(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _"
+        },
+        {
+          "line": 1450,
+          "declaration": "Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1455,
+          "declaration": "Private Function OutputArea(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1460,
+          "declaration": "Private Function OutputFourthPowerLength(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1465,
+          "declaration": "Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1470,
+          "declaration": "Private Function OutputMx(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1475,
+          "declaration": "Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1480,
+          "declaration": "Private Function OutputStress(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1485,
+          "declaration": "Private Function OutputCurvature(ByVal value As Double, ByVal units As CUnitSystem) As Double"
+        },
+        {
+          "line": 1490,
+          "declaration": "Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1495,
+          "declaration": "Private Function OutputAreaUnit(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1500,
+          "declaration": "Private Function OutputForceUnit(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1505,
+          "declaration": "Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1510,
+          "declaration": "Private Function OutputStressUnit(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1515,
+          "declaration": "Private Function OutputCurvatureUnit(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1520,
+          "declaration": "Private Function OutputSignN(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1525,
+          "declaration": "Private Function OutputSignMx(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1530,
+          "declaration": "Private Function OutputSignMy(ByVal units As CUnitSystem) As String"
+        },
+        {
+          "line": 1535,
+          "declaration": "Private Function FormatNumberInvariant(ByVal value As Double) As String"
+        },
+        {
+          "line": 1546,
+          "declaration": "Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double"
+        },
+        {
+          "line": 1551,
+          "declaration": "Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double"
+        }
+      ],
+      "sha256": "9e251234ab4a1ed38fd00397194db6806f325728a3a0d9b4c7b14150dfd3f0b3"
+    },
+    {
+      "class": "CPlotAnnotationLayout",
+      "path": "src/Excel/CPlotAnnotationLayout.cls",
+      "lines": 531,
+      "dependencies": [
+        "CSystemSettingsReader",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 85,
+          "declaration": "Private Sub Class_Initialize()"
+        },
+        {
+          "line": 99,
+          "declaration": "Public Sub ConfigureFromSettings(ByVal settings As CSystemSettingsReader)"
+        },
+        {
+          "line": 128,
+          "declaration": "Private Function AnnotationNumber(ByVal settings As CSystemSettingsReader, ByVal key As String, ByVal allowZero As Boolean) As Double"
+        },
+        {
+          "line": 145,
+          "declaration": "Public Sub Initialize(ByVal minX As Double, ByVal maxX As Double, ByVal minY As Double, ByVal maxY As Double, _"
+        },
+        {
+          "line": 167,
+          "declaration": "Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight As Double)"
+        },
+        {
+          "line": 187,
+          "declaration": "Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _"
+        },
+        {
+          "line": 227,
+          "declaration": "Public Sub AddPointLabel(ByVal x As Double, ByVal y As Double, ByVal textValue As String)"
+        },
+        {
+          "line": 241,
+          "declaration": "Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _"
+        },
+        {
+          "line": 289,
+          "declaration": "Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As Double, ByVal ey As Double, _"
+        },
+        {
+          "line": 314,
+          "declaration": "Private Sub RebarTextBox(ByVal anchorPxX As Double, ByVal anchorPxY As Double, ByVal normalPxX As Double, _"
+        },
+        {
+          "line": 339,
+          "declaration": "Private Function AnnotationRotation(ByVal dirX As Double, ByVal dirY As Double) As Double"
+        },
+        {
+          "line": 345,
+          "declaration": "Private Sub ApplyPlacement(ByRef normalPxX As Double, ByRef normalPxY As Double, ByVal placement As String)"
+        },
+        {
+          "line": 354,
+          "declaration": "Private Sub NormalizeModelVector(ByRef x As Double, ByRef y As Double, ByVal fallbackX As Double, ByVal fallbackY As Double)"
+        },
+        {
+          "line": 373,
+          "declaration": "Private Sub PixelUnitVector(ByVal modelX As Double, ByVal modelY As Double, ByRef pixelX As Double, ByRef pixelY As Double)"
+        },
+        {
+          "line": 388,
+          "declaration": "Private Function ModelToChartX(ByVal xCoord As Double) As Double"
+        },
+        {
+          "line": 393,
+          "declaration": "Private Function ModelToChartY(ByVal yCoord As Double) As Double"
+        },
+        {
+          "line": 399,
+          "declaration": "Private Function ModelScale() As Double"
+        },
+        {
+          "line": 405,
+          "declaration": "Private Function ModelMmToChartPoints(ByVal valueMm As Double) As Double"
+        },
+        {
+          "line": 412,
+          "declaration": "Private Function TextMetricToChartPoints(ByVal value As Double, ByVal unitName As String) As Double"
+        },
+        {
+          "line": 422,
+          "declaration": "Private Function LengthFactorToMm(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 429,
+          "declaration": "Private Sub AddLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 436,
+          "declaration": "Private Sub AddText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _"
+        },
+        {
+          "line": 444,
+          "declaration": "Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 476,
+          "declaration": "Private Function ClampDouble(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Double"
+        },
+        {
+          "line": 487,
+          "declaration": "Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double"
+        },
+        {
+          "line": 492,
+          "declaration": "Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double"
+        },
+        {
+          "line": 501,
+          "declaration": "Public Property Get Count() As Long: Count = mCount: End Property"
+        },
+        {
+          "line": 503,
+          "declaration": "Public Property Get ItemKind(ByVal index As Long) As String: ItemKind = mKind(index): End Property"
+        },
+        {
+          "line": 505,
+          "declaration": "Public Property Get X1(ByVal index As Long) As Double: X1 = mX1(index): End Property"
+        },
+        {
+          "line": 507,
+          "declaration": "Public Property Get Y1(ByVal index As Long) As Double: Y1 = mY1(index): End Property"
+        },
+        {
+          "line": 509,
+          "declaration": "Public Property Get X2(ByVal index As Long) As Double: X2 = mX2(index): End Property"
+        },
+        {
+          "line": 511,
+          "declaration": "Public Property Get Y2(ByVal index As Long) As Double: Y2 = mY2(index): End Property"
+        },
+        {
+          "line": 513,
+          "declaration": "Public Property Get Text(ByVal index As Long) As String: Text = mText(index): End Property"
+        },
+        {
+          "line": 515,
+          "declaration": "Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property"
+        },
+        {
+          "line": 517,
+          "declaration": "Public Property Get Color(ByVal index As Long) As Long: Color = mColor(index): End Property"
+        },
+        {
+          "line": 519,
+          "declaration": "Public Property Get Weight(ByVal index As Long) As Double: Weight = mWeight(index): End Property"
+        },
+        {
+          "line": 521,
+          "declaration": "Public Property Get Bold(ByVal index As Long) As Boolean: Bold = mBold(index): End Property"
+        },
+        {
+          "line": 523,
+          "declaration": "Public Property Get Arrowheads(ByVal index As Long) As Boolean: Arrowheads = mArrowheads(index): End Property"
+        },
+        {
+          "line": 525,
+          "declaration": "Public Property Get FontSize(ByVal index As Long) As Double: FontSize = mFontSize(index): End Property"
+        },
+        {
+          "line": 527,
+          "declaration": "Public Property Get VisualScale() As Double: VisualScale = mVisualScale: End Property"
+        },
+        {
+          "line": 529,
+          "declaration": "Public Property Get DimensionsEnabled() As Boolean: DimensionsEnabled = mDimensionsEnabled: End Property"
+        },
+        {
+          "line": 531,
+          "declaration": "Public Property Get RebarLabelsEnabled() As Boolean: RebarLabelsEnabled = mRebarLabelsEnabled: End Property"
+        }
+      ],
+      "sha256": "bc3a7213036b5770a5dbaa50e0b3f459ef2b33e16b50fbb388f5cdf54094de83"
+    },
+    {
+      "class": "CSectionInputSnapshotReader",
+      "path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "lines": 53,
+      "dependencies": [
+        "CSectionInputTable",
+        "CSectionRecipeContext",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 14,
+          "declaration": "Public Function Capture(ByVal workbook As Object, ByVal tableNames As Variant, _"
+        },
+        {
+          "line": 47,
+          "declaration": "Private Function ColumnName(ByVal column As Long) As String"
+        }
+      ],
+      "sha256": "d461a67460a37b8a2441a55ff86df706778609ba03347bb7f4467fde549f5751"
+    },
+    {
+      "class": "CSectionPlotDataReader",
+      "path": "src/Excel/CSectionPlotDataReader.cls",
+      "lines": 1290,
+      "dependencies": [
+        "CCalculationProfile",
+        "CCalculationProfileCatalog",
+        "CConcreteRegion",
+        "CResultStatusPolicy",
+        "CSectionContours",
+        "CSectionGeometryQuery",
+        "CSystemSettingsReader",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 91,
+          "declaration": "Private Sub Class_Initialize()"
+        },
+        {
+          "line": 99,
+          "declaration": "Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)"
+        },
+        {
+          "line": 125,
+          "declaration": "Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal settings As CSystemSettingsReader)"
+        },
+        {
+          "line": 156,
+          "declaration": "Public Sub LoadGeometryOnlyForMissingState(ByVal workbook As Object, _"
+        },
+        {
+          "line": 191,
+          "declaration": "Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String"
+        },
+        {
+          "line": 210,
+          "declaration": "Private Function ReadWorstCombinationID(ByVal workbook As Object) As String"
+        },
+        {
+          "line": 221,
+          "declaration": "Private Sub ApplyVisualizationProfile(ByVal workbook As Object)"
+        },
+        {
+          "line": 242,
+          "declaration": "Private Function ReadProfileIdForLoadCase(ByVal workbook As Object, ByVal loadCase As String) As String"
+        },
+        {
+          "line": 251,
+          "declaration": "Private Function ReadProfileIdFromElementResults(ByVal workbook As Object, ByVal loadCase As String) As String"
+        },
+        {
+          "line": 272,
+          "declaration": "Private Function ReadLoadCasePropertyText(ByVal workbook As Object, ByVal loadCase As String, ByVal propertyName As String) As String"
+        },
+        {
+          "line": 297,
+          "declaration": "Private Function FirstCalculatedLoadCaseFromResults(ByVal workbook As Object) As String"
+        },
+        {
+          "line": 317,
+          "declaration": "Private Function FirstLoadCaseFromSectionProperties(ByVal workbook As Object) As String"
+        },
+        {
+          "line": 338,
+          "declaration": "Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCase As String) As String"
+        },
+        {
+          "line": 360,
+          "declaration": "Private Sub ReadSectionProperties(ByVal workbook As Object)"
+        },
+        {
+          "line": 424,
+          "declaration": "Private Sub ReadCommonProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _"
+        },
+        {
+          "line": 463,
+          "declaration": "Private Sub ReadLoadCaseProperty(ByVal parameter As String, ByVal value As Variant, ByVal unitValue As Variant, _"
+        },
+        {
+          "line": 486,
+          "declaration": "Private Sub ReadGeometryAndResults(ByVal workbook As Object)"
+        },
+        {
+          "line": 563,
+          "declaration": "Private Sub ReadGeometryPreview(ByVal workbook As Object)"
+        },
+        {
+          "line": 607,
+          "declaration": "Private Function ReadGeometryNumber(ByRef data As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 616,
+          "declaration": "Private Function ReadSnapshotNumber(ByVal value As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 639,
+          "declaration": "Private Sub AppendElement(ByVal elementID As String, ByVal materialType As String, ByVal xCoord As Double, _"
+        },
+        {
+          "line": 668,
+          "declaration": "Private Sub EnsureElementCapacity(ByVal required As Long)"
+        },
+        {
+          "line": 695,
+          "declaration": "Private Sub ReadAnnotations(ByVal workbook As Object)"
+        },
+        {
+          "line": 760,
+          "declaration": "Private Function IsPlotLabelAnnotation(ByVal annotationType As String) As Boolean"
+        },
+        {
+          "line": 769,
+          "declaration": "Private Sub ReadMaterialContours(ByVal workbook As Object)"
+        },
+        {
+          "line": 798,
+          "declaration": "Private Function ReadAnnotationNumber(ByVal value As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 812,
+          "declaration": "Private Function ReadAnnotationText(ByVal value As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 821,
+          "declaration": "Private Function AnnotationInputMessage(ByVal anchor As Object, ByVal row As Long, ByVal column As Long, ByVal field As String) As String"
+        },
+        {
+          "line": 830,
+          "declaration": "Private Sub ResetReaderState()"
+        },
+        {
+          "line": 890,
+          "declaration": "Private Function ReadAnchoredResultTable(ByVal workbook As Object, ByVal rangeName As String) As Variant"
+        },
+        {
+          "line": 913,
+          "declaration": "Private Function AnchoredColumnCount(ByVal anchor As Object) As Long"
+        },
+        {
+          "line": 919,
+          "declaration": "Private Function AnchoredRowCount(ByVal anchor As Object) As Long"
+        },
+        {
+          "line": 925,
+          "declaration": "Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType As String) As String"
+        },
+        {
+          "line": 943,
+          "declaration": "Private Function IsCrackVisualizationState(ByVal stateType As String) As Boolean"
+        },
+        {
+          "line": 954,
+          "declaration": "Private Function ReadSnapshotBoolean(ByVal value As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 977,
+          "declaration": "Private Function ReadSnapshotStatus(ByVal value As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 989,
+          "declaration": "Private Function ReadSnapshotText(ByVal value As Variant, ByVal anchor As Object, _"
+        },
+        {
+          "line": 999,
+          "declaration": "Private Function ReadSnapshotUnit(ByVal value As Variant, ByVal dimension As String, _"
+        },
+        {
+          "line": 1024,
+          "declaration": "Private Function SnapshotMetadataInputMessage(ByVal anchor As Object, ByVal row As Long, _"
+        },
+        {
+          "line": 1032,
+          "declaration": "Private Function SafeText(ByVal value As Variant) As String"
+        },
+        {
+          "line": 1039,
+          "declaration": "Private Function UnitOrDefault(ByVal unitText As String, ByVal fallbackUnit As String, _"
+        },
+        {
+          "line": 1053,
+          "declaration": "Private Function HasRows(ByVal data As Variant) As Boolean"
+        },
+        {
+          "line": 1063,
+          "declaration": "Private Function ResultColumn(ByRef data As Variant, ByVal headerName As String) As Long"
+        },
+        {
+          "line": 1076,
+          "declaration": "Private Function ResultHeaderBase(ByVal headerText As String) As String"
+        },
+        {
+          "line": 1088,
+          "declaration": "Private Function ResultHeaderUnit(ByRef data As Variant, ByVal colIndex As Long, _"
+        },
+        {
+          "line": 1109,
+          "declaration": "Private Function OutputLengthToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double"
+        },
+        {
+          "line": 1114,
+          "declaration": "Private Function OutputAreaToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double"
+        },
+        {
+          "line": 1120,
+          "declaration": "Private Function OutputCurvatureToInternalByUnit(ByVal value As Double, ByVal unitText As String) As Double"
+        },
+        {
+          "line": 1126,
+          "declaration": "Public Property Get Count() As Long: Count = mCount: End Property"
+        },
+        {
+          "line": 1128,
+          "declaration": "Public Property Get ElementID(ByVal index As Long) As String: ElementID = mElementID(index): End Property"
+        },
+        {
+          "line": 1130,
+          "declaration": "Public Property Get MaterialType(ByVal index As Long) As String: MaterialType = mMaterialType(index): End Property"
+        },
+        {
+          "line": 1132,
+          "declaration": "Public Property Get X(ByVal index As Long) As Double: X = mX(index): End Property"
+        },
+        {
+          "line": 1134,
+          "declaration": "Public Property Get Y(ByVal index As Long) As Double: Y = mY(index): End Property"
+        },
+        {
+          "line": 1136,
+          "declaration": "Public Property Get Area(ByVal index As Long) As Double: Area = mArea(index): End Property"
+        },
+        {
+          "line": 1138,
+          "declaration": "Public Property Get Diameter(ByVal index As Long) As Double: Diameter = mDiameter(index): End Property"
+        },
+        {
+          "line": 1140,
+          "declaration": "Public Property Get ShapeType(ByVal index As Long) As String: ShapeType = mShapeType(index): End Property"
+        },
+        {
+          "line": 1142,
+          "declaration": "Public Property Get Width(ByVal index As Long) As Double: Width = mWidth(index): End Property"
+        },
+        {
+          "line": 1144,
+          "declaration": "Public Property Get Height(ByVal index As Long) As Double: Height = mHeight(index): End Property"
+        },
+        {
+          "line": 1147,
+          "declaration": "Public Property Get Rotation(ByVal index As Long) As Double: Rotation = mRotation(index): End Property"
+        },
+        {
+          "line": 1149,
+          "declaration": "Public Property Get ResultValue(ByVal index As Long) As Double: ResultValue = mResultValue(index): End Property"
+        },
+        {
+          "line": 1151,
+          "declaration": "Public Property Get PhysicalState(ByVal index As Long) As String: PhysicalState = mPhysicalState(index): End Property"
+        },
+        {
+          "line": 1153,
+          "declaration": "Public Property Get LoadCase() As String: LoadCase = mLoadCase: End Property"
+        },
+        {
+          "line": 1155,
+          "declaration": "Public Property Get LoadCaseComment() As String: LoadCaseComment = mLoadCaseComment: End Property"
+        },
+        {
+          "line": 1157,
+          "declaration": "Public Property Get ProfileId() As String: ProfileId = mProfileId: End Property"
+        },
+        {
+          "line": 1159,
+          "declaration": "Public Property Get StateType() As String: StateType = mStateType: End Property"
+        },
+        {
+          "line": 1161,
+          "declaration": "Public Property Get GeometryOnly() As Boolean: GeometryOnly = mGeometryOnly: End Property"
+        },
+        {
+          "line": 1163,
+          "declaration": "Public Property Get GeometryOnlyTitle() As String: GeometryOnlyTitle = mGeometryOnlyTitle: End Property"
+        },
+        {
+          "line": 1165,
+          "declaration": "Public Property Get GeometryOnlyNote() As String: GeometryOnlyNote = mGeometryOnlyNote: End Property"
+        },
+        {
+          "line": 1167,
+          "declaration": "Public Property Get GeometryReferenceItemsEnabled() As Boolean: GeometryReferenceItemsEnabled = mGeometryReferenceItemsEnabled: End Property"
+        },
+        {
+          "line": 1169,
+          "declaration": "Public Property Get VisualizationQuantity() As String: VisualizationQuantity = mVisualizationQuantity: End Property"
+        },
+        {
+          "line": 1171,
+          "declaration": "Public Property Get ResultUnit() As String: ResultUnit = mResultUnit: End Property"
+        },
+        {
+          "line": 1173,
+          "declaration": "Public Property Get ResultCaption() As String: ResultCaption = mResultCaption: End Property"
+        },
+        {
+          "line": 1175,
+          "declaration": "Public Property Get ResultPrecision() As Long: ResultPrecision = mResultPrecision: End Property"
+        },
+        {
+          "line": 1177,
+          "declaration": "Public Property Get LengthUnit() As String: LengthUnit = mLengthUnit: End Property"
+        },
+        {
+          "line": 1179,
+          "declaration": "Public Property Get AreaUnit() As String: AreaUnit = mAreaUnit: End Property"
+        },
+        {
+          "line": 1181,
+          "declaration": "Public Property Get MinX() As Double: MinX = mMinX: End Property"
+        },
+        {
+          "line": 1183,
+          "declaration": "Public Property Get MaxX() As Double: MaxX = mMaxX: End Property"
+        },
+        {
+          "line": 1185,
+          "declaration": "Public Property Get MinY() As Double: MinY = mMinY: End Property"
+        },
+        {
+          "line": 1187,
+          "declaration": "Public Property Get MaxY() As Double: MaxY = mMaxY: End Property"
+        },
+        {
+          "line": 1189,
+          "declaration": "Public Property Get CentroidX() As Double: CentroidX = mCentroidX: End Property"
+        },
+        {
+          "line": 1191,
+          "declaration": "Public Property Get CentroidY() As Double: CentroidY = mCentroidY: End Property"
+        },
+        {
+          "line": 1193,
+          "declaration": "Public Property Get PrincipalAngle() As Double: PrincipalAngle = mPrincipalAngle: End Property"
+        },
+        {
+          "line": 1197,
+          "declaration": "Public Function PrincipalAxesCentroidX(ByVal axesMode As String) As Double"
+        },
+        {
+          "line": 1206,
+          "declaration": "Public Function PrincipalAxesCentroidY(ByVal axesMode As String) As Double"
+        },
+        {
+          "line": 1215,
+          "declaration": "Public Function PrincipalAxesAngle(ByVal axesMode As String) As Double"
+        },
+        {
+          "line": 1223,
+          "declaration": "Public Property Get Epsilon0() As Double: Epsilon0 = mEpsilon0: End Property"
+        },
+        {
+          "line": 1225,
+          "declaration": "Public Property Get KappaX() As Double: KappaX = mKappaX: End Property"
+        },
+        {
+          "line": 1227,
+          "declaration": "Public Property Get KappaY() As Double: KappaY = mKappaY: End Property"
+        },
+        {
+          "line": 1229,
+          "declaration": "Public Property Get LoadReferenceX() As Double: LoadReferenceX = mLoadReferenceX: End Property"
+        },
+        {
+          "line": 1231,
+          "declaration": "Public Property Get LoadReferenceY() As Double: LoadReferenceY = mLoadReferenceY: End Property"
+        },
+        {
+          "line": 1233,
+          "declaration": "Public Property Get ExtensionUsed() As Boolean: ExtensionUsed = mExtensionUsed: End Property"
+        },
+        {
+          "line": 1235,
+          "declaration": "Public Property Get DirectStateStatus() As String: DirectStateStatus = mStateStatus: End Property"
+        },
+        {
+          "line": 1239,
+          "declaration": "Public Property Get PhysicalDiagramWarningRequired() As Boolean"
+        },
+        {
+          "line": 1245,
+          "declaration": "Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property"
+        },
+        {
+          "line": 1250,
+          "declaration": "Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double"
+        },
+        {
+          "line": 1274,
+          "declaration": "Public Property Get AnnotationType(ByVal index As Long) As String: AnnotationType = mAnnotationType(index): End Property"
+        },
+        {
+          "line": 1276,
+          "declaration": "Public Property Get AnnotationStartX(ByVal index As Long) As Double: AnnotationStartX = mAnnotationStartX(index): End Property"
+        },
+        {
+          "line": 1278,
+          "declaration": "Public Property Get AnnotationStartY(ByVal index As Long) As Double: AnnotationStartY = mAnnotationStartY(index): End Property"
+        },
+        {
+          "line": 1280,
+          "declaration": "Public Property Get AnnotationEndX(ByVal index As Long) As Double: AnnotationEndX = mAnnotationEndX(index): End Property"
+        },
+        {
+          "line": 1282,
+          "declaration": "Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEndY = mAnnotationEndY(index): End Property"
+        },
+        {
+          "line": 1284,
+          "declaration": "Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property"
+        },
+        {
+          "line": 1286,
+          "declaration": "Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property"
+        },
+        {
+          "line": 1288,
+          "declaration": "Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property"
+        },
+        {
+          "line": 1290,
+          "declaration": "Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: AnnotationSweepAngle = mAnnotationSweepAngle(index): End Property"
+        }
+      ],
+      "sha256": "76001f183bb037dd27898e024676f14acd630dddf3b8e2efed5884e6269908c7"
+    },
+    {
+      "class": "CSectionPlotter",
+      "path": "src/Excel/CSectionPlotter.cls",
+      "lines": 2123,
+      "dependencies": [
+        "CPlotAnnotationLayout",
+        "CResultStatusPolicy",
+        "CSectionPlotDataReader",
+        "CSystemSettingsReader",
+        "CUnitSystem"
+      ],
+      "methods": [
+        {
+          "line": 135,
+          "declaration": "Private Sub Class_Initialize()"
+        },
+        {
+          "line": 142,
+          "declaration": "Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)"
+        },
+        {
+          "line": 209,
+          "declaration": "Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)"
+        },
+        {
+          "line": 229,
+          "declaration": "Private Function EnsureChart(ByVal sheet As Object) As Object"
+        },
+        {
+          "line": 255,
+          "declaration": "Private Sub PrepareChart(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 282,
+          "declaration": "Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal settings As CSystemSettingsReader)"
+        },
+        {
+          "line": 342,
+          "declaration": "Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, ByVal lengthUnit As String, _"
+        },
+        {
+          "line": 369,
+          "declaration": "Private Function LengthMmToModel(ByVal valueMm As Double, ByVal lengthUnit As String) As Double"
+        },
+        {
+          "line": 376,
+          "declaration": "Private Function AnnotationTextMetricModel(ByVal value As Double, ByVal unitName As String, _"
+        },
+        {
+          "line": 399,
+          "declaration": "Private Sub HideChartAxes()"
+        },
+        {
+          "line": 422,
+          "declaration": "Private Sub CalculateResultRange(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 446,
+          "declaration": "Private Sub ResetMaterialLegendRanges()"
+        },
+        {
+          "line": 459,
+          "declaration": "Private Sub RegisterMaterialLegendMagnitude(ByVal materialType As String, ByVal compression As Boolean, ByVal value As Double)"
+        },
+        {
+          "line": 476,
+          "declaration": "Private Sub RegisterResultMagnitude(ByVal value As Double, ByRef maxAbs As Double, _"
+        },
+        {
+          "line": 490,
+          "declaration": "Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 529,
+          "declaration": "Private Function ShouldDrawElementShapeLayer(ByVal data As CSectionPlotDataReader) As Boolean"
+        },
+        {
+          "line": 536,
+          "declaration": "Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 554,
+          "declaration": "Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _"
+        },
+        {
+          "line": 572,
+          "declaration": "Private Sub AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long)"
+        },
+        {
+          "line": 588,
+          "declaration": "Private Function ElementBucketKey(ByVal data As CSectionPlotDataReader, ByVal index As Long) As String"
+        },
+        {
+          "line": 602,
+          "declaration": "Private Function ElementMarkerStyle(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long"
+        },
+        {
+          "line": 611,
+          "declaration": "Private Function ElementMarkerSize(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long"
+        },
+        {
+          "line": 622,
+          "declaration": "Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal bucketKey As String, ByVal indexes As Collection)"
+        },
+        {
+          "line": 665,
+          "declaration": "Private Function ElementColor(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Long"
+        },
+        {
+          "line": 688,
+          "declaration": "Private Function MaterialResultColor(ByVal materialType As String, ByVal state As String, ByVal value As Double) As Long"
+        },
+        {
+          "line": 710,
+          "declaration": "Private Function BucketConcreteMarkerSize(ByVal markerSize As Long) As Long"
+        },
+        {
+          "line": 722,
+          "declaration": "Private Function BucketResultColorRatio(ByVal t As Double) As Double"
+        },
+        {
+          "line": 735,
+          "declaration": "Private Function MaterialStateMaxAbs(ByVal materialType As String, ByVal state As String) As Double"
+        },
+        {
+          "line": 763,
+          "declaration": "Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Double) As Long"
+        },
+        {
+          "line": 779,
+          "declaration": "Private Sub DrawAnalysisOverlay(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 789,
+          "declaration": "Private Sub DrawGeometryReferenceOverlay(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 798,
+          "declaration": "Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 812,
+          "declaration": "Private Sub DrawGeometryOnlyNote(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 827,
+          "declaration": "Private Sub DrawPlotTitleOverlay(ByVal titleText As String)"
+        },
+        {
+          "line": 843,
+          "declaration": "Private Sub DrawAxisNameLabels()"
+        },
+        {
+          "line": 883,
+          "declaration": "Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 910,
+          "declaration": "Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 933,
+          "declaration": "Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Double, _"
+        },
+        {
+          "line": 975,
+          "declaration": "Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 1025,
+          "declaration": "Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _"
+        },
+        {
+          "line": 1046,
+          "declaration": "Private Sub CollectConcreteCenterBoundsIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _"
+        },
+        {
+          "line": 1075,
+          "declaration": "Private Sub AddSegmentLineIntersectionT(ByVal a As Double, ByVal b As Double, ByVal c As Double, _"
+        },
+        {
+          "line": 1094,
+          "declaration": "Private Sub AddCircleLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _"
+        },
+        {
+          "line": 1114,
+          "declaration": "Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _"
+        },
+        {
+          "line": 1138,
+          "declaration": "Private Sub AddArcIntersectionCandidate(ByVal x0 As Double, ByVal y0 As Double, _"
+        },
+        {
+          "line": 1151,
+          "declaration": "Private Function IsPointOnArcSweep(ByVal x As Double, ByVal y As Double, _"
+        },
+        {
+          "line": 1170,
+          "declaration": "Private Function NormalizePositiveAngle(ByVal angleValue As Double) As Double"
+        },
+        {
+          "line": 1182,
+          "declaration": "Private Sub AddUniqueLineT(ByVal t As Double, ByRef values() As Double, ByRef count As Long)"
+        },
+        {
+          "line": 1193,
+          "declaration": "Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMode As String)"
+        },
+        {
+          "line": 1214,
+          "declaration": "Private Function PlotPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 1222,
+          "declaration": "Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 1237,
+          "declaration": "Private Function PrincipalAxesModeDraws(ByVal axesMode As String) As Boolean"
+        },
+        {
+          "line": 1244,
+          "declaration": "Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _"
+        },
+        {
+          "line": 1284,
+          "declaration": "Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)"
+        },
+        {
+          "line": 1309,
+          "declaration": "Private Function DimensionArrowStyle() As Long"
+        },
+        {
+          "line": 1320,
+          "declaration": "Private Function DimensionArrowLength() As Long"
+        },
+        {
+          "line": 1329,
+          "declaration": "Private Function DimensionArrowWidth() As Long"
+        },
+        {
+          "line": 1340,
+          "declaration": "Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing As Double)"
+        },
+        {
+          "line": 1392,
+          "declaration": "Private Sub DrawLegend(ByVal data As CSectionPlotDataReader)"
+        },
+        {
+          "line": 1414,
+          "declaration": "Private Sub DrawChartLegendScale(ByVal data As CSectionPlotDataReader, ByVal leftPos As Double, _"
+        },
+        {
+          "line": 1434,
+          "declaration": "Private Function LegendCompressionText() As String"
+        },
+        {
+          "line": 1439,
+          "declaration": "Private Function LegendTensionText() As String"
+        },
+        {
+          "line": 1444,
+          "declaration": "Private Function MaterialLegendColor(ByVal materialType As String, ByVal position As Double) As Long"
+        },
+        {
+          "line": 1455,
+          "declaration": "Private Function LegendCompressionColor(ByVal materialType As String) As Long"
+        },
+        {
+          "line": 1464,
+          "declaration": "Private Function LegendTensionColor(ByVal materialType As String) As Long"
+        },
+        {
+          "line": 1473,
+          "declaration": "Private Function IsCommonLegendMode() As Boolean"
+        },
+        {
+          "line": 1478,
+          "declaration": "Private Function LegendValueText(ByVal hasValue As Boolean, ByVal value As Double, ByVal precision As Long) As String"
+        },
+        {
+          "line": 1487,
+          "declaration": "Private Sub AddLegendRect(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _"
+        },
+        {
+          "line": 1498,
+          "declaration": "Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 1507,
+          "declaration": "Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 1528,
+          "declaration": "Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 1541,
+          "declaration": "Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 1576,
+          "declaration": "Private Sub DrawChartDashedReferenceBand(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 1632,
+          "declaration": "Private Function ClipChartLineToPlotFrame(ByRef x1 As Double, ByRef y1 As Double, _"
+        },
+        {
+          "line": 1673,
+          "declaration": "Private Function ClipLineParameter(ByVal p As Double, ByVal q As Double, _"
+        },
+        {
+          "line": 1696,
+          "declaration": "Private Sub SetShapeCenter(ByVal shapeObject As Object, ByVal centerX As Double, ByVal centerY As Double)"
+        },
+        {
+          "line": 1705,
+          "declaration": "Private Sub BringShapeToFront(ByVal shapeObject As Object)"
+        },
+        {
+          "line": 1715,
+          "declaration": "Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal centerY As Double, _"
+        },
+        {
+          "line": 1745,
+          "declaration": "Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _"
+        },
+        {
+          "line": 1771,
+          "declaration": "Private Sub DrawPointMarker(ByVal xCoord As Double, ByVal yCoord As Double, ByVal sizeValue As Double, _"
+        },
+        {
+          "line": 1788,
+          "declaration": "Private Sub DrawTextAt(ByVal xCoord As Double, ByVal yCoord As Double, ByVal textValue As String, _"
+        },
+        {
+          "line": 1801,
+          "declaration": "Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _"
+        },
+        {
+          "line": 1845,
+          "declaration": "Private Function ModelToChartX(ByVal xCoord As Double) As Double"
+        },
+        {
+          "line": 1852,
+          "declaration": "Private Function ModelToChartY(ByVal yCoord As Double) As Double"
+        },
+        {
+          "line": 1859,
+          "declaration": "Private Function ChartScale() As Double"
+        },
+        {
+          "line": 1878,
+          "declaration": "Private Sub CapturePlotAreaMetrics()"
+        },
+        {
+          "line": 1916,
+          "declaration": "Private Sub EnsurePlotAreaMetrics()"
+        },
+        {
+          "line": 1922,
+          "declaration": "Private Function StablePlotFrameWidth() As Double"
+        },
+        {
+          "line": 1928,
+          "declaration": "Private Function StablePlotFrameHeight() As Double"
+        },
+        {
+          "line": 1935,
+          "declaration": "Private Function PlotCoordinateWidth() As Double"
+        },
+        {
+          "line": 1944,
+          "declaration": "Private Function PlotCoordinateHeight() As Double"
+        },
+        {
+          "line": 1954,
+          "declaration": "Private Sub ClearGeneratedShapes()"
+        },
+        {
+          "line": 1966,
+          "declaration": "Private Function ConcreteElementWidth(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double"
+        },
+        {
+          "line": 1972,
+          "declaration": "Private Function ConcreteElementHeight(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double"
+        },
+        {
+          "line": 1980,
+          "declaration": "Private Function ConcreteElementVisualRotation(ByVal data As CSectionPlotDataReader, ByVal index As Long, _"
+        },
+        {
+          "line": 1991,
+          "declaration": "Private Function AverageKnownConcreteElementRotation(ByVal data As CSectionPlotDataReader) As Double"
+        },
+        {
+          "line": 2014,
+          "declaration": "Private Function IsEquivalentAreaFallbackElement(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Boolean"
+        },
+        {
+          "line": 2022,
+          "declaration": "Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double"
+        },
+        {
+          "line": 2044,
+          "declaration": "Private Function ConcreteMarkerLength(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double"
+        },
+        {
+          "line": 2057,
+          "declaration": "Private Function EquivalentLengthFromArea(ByVal areaValue As Double, ByVal areaUnit As String, ByVal lengthUnit As String) As Double"
+        },
+        {
+          "line": 2067,
+          "declaration": "Private Function PlotTitlePrefix() As String"
+        },
+        {
+          "line": 2075,
+          "declaration": "Private Function PlotTitleText(ByVal data As CSectionPlotDataReader) As String"
+        },
+        {
+          "line": 2089,
+          "declaration": "Private Function FormatPlotValue(ByVal value As Double, ByVal precision As Long) As String"
+        },
+        {
+          "line": 2104,
+          "declaration": "Private Function RoundToLong(ByVal value As Double) As Long"
+        },
+        {
+          "line": 2109,
+          "declaration": "Private Function ClampDouble(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Double"
+        },
+        {
+          "line": 2116,
+          "declaration": "Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double"
+        },
+        {
+          "line": 2121,
+          "declaration": "Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double"
+        }
+      ],
+      "sha256": "87c8fdb3d0ed1e71e9a045bf1675748f35e04699863aa2cb1928278558ee50b5"
+    },
+    {
+      "class": "CSectionTypeRegistry",
+      "path": "src/Excel/CSectionTypeRegistry.cls",
+      "lines": 73,
+      "dependencies": [
+        "CSectionDefinition",
+        "CSectionRecipeCircle",
+        "CSectionRecipeContext",
+        "CSectionRecipeHollowRectangle",
+        "CSectionRecipeRectSet",
+        "CSectionRecipeRoundedRectangle",
+        "CSystemSettingsReader",
+        "ISectionRecipe"
+      ],
+      "methods": [
+        {
+          "line": 17,
+          "declaration": "Private Sub Class_Initialize()"
+        },
+        {
+          "line": 28,
+          "declaration": "Public Sub RegisterRecipe(ByVal typeID As String, ByVal recipe As ISectionRecipe, ByVal tableNames As Variant)"
+        },
+        {
+          "line": 45,
+          "declaration": "Public Function CreateRecipe(ByVal typeID As String) As ISectionRecipe"
+        },
+        {
+          "line": 51,
+          "declaration": "Public Function RecipeTableNames(ByVal typeID As String) As Variant"
+        },
+        {
+          "line": 57,
+          "declaration": "Public Function RegisteredRecipeTypes() As Variant"
+        },
+        {
+          "line": 62,
+          "declaration": "Public Function SelectedRecipeType(ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 68,
+          "declaration": "Public Function CreateDefinition(ByVal typeID As String, ByVal context As CSectionRecipeContext) As CSectionDefinition"
+        }
+      ],
+      "sha256": "1824c4c0eb832afccb04329eb4c2244a5475def6e4571645433f91fd7023f7ab"
+    },
+    {
+      "class": "CSystemSettingsReader",
+      "path": "src/Excel/CSystemSettingsReader.cls",
+      "lines": 921,
+      "dependencies": [],
+      "methods": [
+        {
+          "line": 40,
+          "declaration": "Public Sub LoadFromWorkbook(ByVal workbook As Object)"
+        },
+        {
+          "line": 54,
+          "declaration": "Private Sub AppendRequiredNamedSettingsRange(ByVal workbook As Object, ByVal rangeName As String, ByVal caption As String)"
+        },
+        {
+          "line": 70,
+          "declaration": "Private Sub ValidateWorkbookUnitAndSignKeys()"
+        },
+        {
+          "line": 87,
+          "declaration": "Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal rangeName As String)"
+        },
+        {
+          "line": 109,
+          "declaration": "Public Sub LoadFromRange(ByVal settingsRange As Object)"
+        },
+        {
+          "line": 118,
+          "declaration": "Private Sub NormalizeDiagramExtensionSetting(Optional ByVal requireWorkbookValue As Boolean = False)"
+        },
+        {
+          "line": 160,
+          "declaration": "Private Function DiagramExtensionValue(ByVal rawValue As String, ByVal settingKey As String) As String"
+        },
+        {
+          "line": 172,
+          "declaration": "Private Sub RemoveSettingAt(ByVal index As Long)"
+        },
+        {
+          "line": 186,
+          "declaration": "Public Property Get MigrationWarning() As String"
+        },
+        {
+          "line": 192,
+          "declaration": "Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal rangeName As String = vbNullString)"
+        },
+        {
+          "line": 298,
+          "declaration": "Private Sub RequireSettingsHeaders(ByRef data As Variant, ByVal tableCaption As String, _"
+        },
+        {
+          "line": 318,
+          "declaration": "Private Function ConfigCellText(ByVal cellValue As Variant, ByVal columnName As String, _"
+        },
+        {
+          "line": 334,
+          "declaration": "Private Function IsConcreteMaterialParametersRange(ByRef data As Variant) As Boolean"
+        },
+        {
+          "line": 344,
+          "declaration": "Private Sub AppendConcreteMaterialParameters(ByRef data As Variant)"
+        },
+        {
+          "line": 391,
+          "declaration": "Private Function IsSteelMaterialParametersRange(ByRef data As Variant) As Boolean"
+        },
+        {
+          "line": 401,
+          "declaration": "Private Sub AppendSteelMaterialParameters(ByRef data As Variant)"
+        },
+        {
+          "line": 439,
+          "declaration": "Private Function IsUnitSettingsRange(ByRef data As Variant) As Boolean"
+        },
+        {
+          "line": 449,
+          "declaration": "Private Function IsSignConventionSettingsRange(ByRef data As Variant) As Boolean"
+        },
+        {
+          "line": 459,
+          "declaration": "Private Function IsPlotAnnotationSettingsRange(ByRef data As Variant) As Boolean"
+        },
+        {
+          "line": 468,
+          "declaration": "Private Sub AppendPlotAnnotationSettings(ByRef data As Variant)"
+        },
+        {
+          "line": 483,
+          "declaration": "Private Sub AppendPlotAnnotationValue(ByRef data As Variant, ByVal keyValue As String, _"
+        },
+        {
+          "line": 499,
+          "declaration": "Private Sub AppendUnitSettings(ByRef data As Variant)"
+        },
+        {
+          "line": 517,
+          "declaration": "Private Sub AppendSignConventionSettings(ByRef data As Variant)"
+        },
+        {
+          "line": 533,
+          "declaration": "Private Function UnitQuantityKey(ByVal caption As String) As String"
+        },
+        {
+          "line": 545,
+          "declaration": "Private Function SignQuantityKey(ByVal caption As String) As String"
+        },
+        {
+          "line": 557,
+          "declaration": "Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String, _"
+        },
+        {
+          "line": 573,
+          "declaration": "Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _"
+        },
+        {
+          "line": 594,
+          "declaration": "Private Function InputCellLocation(ByVal rowIndex As Long, ByVal columnIndex As Long) As String"
+        },
+        {
+          "line": 611,
+          "declaration": "Public Function InputErrorMessage(ByVal key As String, ByVal reason As String, ByVal correction As String) As String"
+        },
+        {
+          "line": 621,
+          "declaration": "Private Function InputSettingsSection(ByVal key As String) As String"
+        },
+        {
+          "line": 641,
+          "declaration": "Public Sub Clear()"
+        },
+        {
+          "line": 658,
+          "declaration": "Public Function GetString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String"
+        },
+        {
+          "line": 673,
+          "declaration": "Public Function GetRawString(ByVal key As String, Optional ByVal defaultValue As String = vbNullString) As String"
+        },
+        {
+          "line": 686,
+          "declaration": "Private Sub AssertValueReadable(ByVal index As Long)"
+        },
+        {
+          "line": 695,
+          "declaration": "Public Function GetDouble(ByVal key As String, Optional ByVal defaultValue As Double = 0#, _"
+        },
+        {
+          "line": 724,
+          "declaration": "Public Function GetRequiredDouble(ByVal key As String) As Double"
+        },
+        {
+          "line": 744,
+          "declaration": "Public Function GetRequiredString(ByVal key As String) As String"
+        },
+        {
+          "line": 757,
+          "declaration": "Public Function GetRequiredChoice(ByVal key As String, ByVal choices As Variant) As String"
+        },
+        {
+          "line": 772,
+          "declaration": "Private Function RequiredInputCorrection(ByVal key As String, ByVal numericValue As Boolean) As String"
+        },
+        {
+          "line": 783,
+          "declaration": "Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0, _"
+        },
+        {
+          "line": 790,
+          "declaration": "Public Function GetRequiredLong(ByVal key As String) As Long"
+        },
+        {
+          "line": 796,
+          "declaration": "Private Function CheckedLong(ByVal key As String, ByVal value As Double) As Long"
+        },
+        {
+          "line": 806,
+          "declaration": "Public Function GetBoolean(ByVal key As String, Optional ByVal defaultValue As Boolean = False) As Boolean"
+        },
+        {
+          "line": 824,
+          "declaration": "Public Function GetRequiredBoolean(ByVal key As String) As Boolean"
+        },
+        {
+          "line": 832,
+          "declaration": "Public Function GetRequiredRgbColor(ByVal key As String) As Long"
+        },
+        {
+          "line": 855,
+          "declaration": "Public Function GetSource(ByVal key As String) As String"
+        },
+        {
+          "line": 866,
+          "declaration": "Public Function HasKey(ByVal key As String) As Boolean"
+        },
+        {
+          "line": 871,
+          "declaration": "Public Function KeyCount() As Long"
+        },
+        {
+          "line": 876,
+          "declaration": "Public Function KeyAt(ByVal index As Long) As String"
+        },
+        {
+          "line": 884,
+          "declaration": "Public Function DuplicateCount() As Long"
+        },
+        {
+          "line": 901,
+          "declaration": "Private Function FindKey(ByVal key As String) As Long"
+        },
+        {
+          "line": 914,
+          "declaration": "Private Function ApplicationDecimalSeparator() As String"
+        }
+      ],
+      "sha256": "9d61311db983892ab1bb7cef9ace36b1ab999e8f194fe1a62851d64718f64666"
+    },
+    {
+      "class": "CUnitSystem",
+      "path": "src/Excel/CUnitSystem.cls",
+      "lines": 418,
+      "dependencies": [
+        "CSystemSettingsReader"
+      ],
+      "methods": [
+        {
+          "line": 44,
+          "declaration": "Public Sub InitializeDefaults()"
+        },
+        {
+          "line": 59,
+          "declaration": "Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)"
+        },
+        {
+          "line": 82,
+          "declaration": "Public Function InputLengthToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 88,
+          "declaration": "Public Function InternalLengthToOutput(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double"
+        },
+        {
+          "line": 95,
+          "declaration": "Public Function OutputLengthToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double"
+        },
+        {
+          "line": 101,
+          "declaration": "Public Function InputAreaToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 106,
+          "declaration": "Public Function InternalAreaToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 112,
+          "declaration": "Public Function OutputAreaToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double"
+        },
+        {
+          "line": 118,
+          "declaration": "Public Function InputFourthPowerLengthToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 123,
+          "declaration": "Public Function InternalFourthPowerLengthToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 129,
+          "declaration": "Public Function OutputFourthPowerLengthToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double"
+        },
+        {
+          "line": 135,
+          "declaration": "Public Function InputForceToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 140,
+          "declaration": "Public Function InternalForceToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 147,
+          "declaration": "Public Function InternalForceLengthSquaredToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 152,
+          "declaration": "Public Function InputMomentMxToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 157,
+          "declaration": "Public Function InputMomentMyToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 164,
+          "declaration": "Public Function InputMomentPerLengthToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 169,
+          "declaration": "Public Function InternalMomentMxToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 174,
+          "declaration": "Public Function InternalMomentMyToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 179,
+          "declaration": "Public Function InternalMomentMagnitudeToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 184,
+          "declaration": "Public Function InputStressToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 189,
+          "declaration": "Public Function InternalStressToOutput(ByVal value As Double) As Double"
+        },
+        {
+          "line": 195,
+          "declaration": "Public Function OutputStressToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double"
+        },
+        {
+          "line": 201,
+          "declaration": "Public Function InputCurvatureToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 207,
+          "declaration": "Public Function InternalCurvatureToOutput(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double"
+        },
+        {
+          "line": 213,
+          "declaration": "Public Function OutputCurvatureToInternal(ByVal value As Double) As Double"
+        },
+        {
+          "line": 218,
+          "declaration": "Public Property Get OutputLengthUnit() As String"
+        },
+        {
+          "line": 223,
+          "declaration": "Public Property Get OutputAreaUnit() As String"
+        },
+        {
+          "line": 228,
+          "declaration": "Public Property Get OutputMomentUnit() As String"
+        },
+        {
+          "line": 233,
+          "declaration": "Public Property Get InputMomentPerLengthUnit() As String"
+        },
+        {
+          "line": 238,
+          "declaration": "Public Property Get OutputForceUnit() As String"
+        },
+        {
+          "line": 243,
+          "declaration": "Public Property Get OutputForceLengthSquaredUnit() As String"
+        },
+        {
+          "line": 248,
+          "declaration": "Public Property Get OutputStressUnit() As String"
+        },
+        {
+          "line": 253,
+          "declaration": "Public Property Get OutputCurvatureUnit() As String"
+        },
+        {
+          "line": 258,
+          "declaration": "Public Property Get OutputSignN() As String"
+        },
+        {
+          "line": 263,
+          "declaration": "Public Property Get OutputSignMx() As String"
+        },
+        {
+          "line": 268,
+          "declaration": "Public Property Get OutputSignMy() As String"
+        },
+        {
+          "line": 273,
+          "declaration": "Private Function LengthFactorToMm(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 283,
+          "declaration": "Private Function AreaFactorToMm2(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 293,
+          "declaration": "Private Function ForceFactorToN(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 303,
+          "declaration": "Private Function MomentFactorToNmm(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 313,
+          "declaration": "Private Function StressFactorToMPa(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 325,
+          "declaration": "Private Function CurvatureFactorToInvMm(ByVal unitName As String) As Double"
+        },
+        {
+          "line": 334,
+          "declaration": "Private Function NSignFactor() As Double"
+        },
+        {
+          "line": 339,
+          "declaration": "Private Function MxSignFactor() As Double"
+        },
+        {
+          "line": 344,
+          "declaration": "Private Function MySignFactor() As Double"
+        },
+        {
+          "line": 349,
+          "declaration": "Private Function ValidLengthUnit(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 357,
+          "declaration": "Private Function ValidAreaUnit(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 365,
+          "declaration": "Private Function ValidForceUnit(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 373,
+          "declaration": "Private Function ValidMomentUnit(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 381,
+          "declaration": "Private Function ValidStressUnit(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 389,
+          "declaration": "Private Function ValidCurvatureUnit(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 397,
+          "declaration": "Private Function ValidNSign(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 405,
+          "declaration": "Private Function ValidMxSign(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        },
+        {
+          "line": 413,
+          "declaration": "Private Function ValidMySign(ByVal value As String, ByVal settingKey As String, ByVal settings As CSystemSettingsReader) As String"
+        }
+      ],
+      "sha256": "84871a8cf17acad16b1301c8acaa240cc563837ca4c13150366bd4a5f77ef2b6"
+    }
+  ],
+  "example": {
+    "path": "docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls",
+    "sha256": "137d97121ebbbda8976491f1e0eb13584caaaadac05fdd5ae597e2ae04363cb9"
+  },
+  "classDependencyCycles": [
+    [
+      "CGeometryPath",
+      "CSectionGeometryQuery"
+    ]
+  ],
+  "cyclesAreNotObjectOwnershipOrConstructionCycles": true,
+  "commonLayerBranchesOnSectionFamily": [],
+  "guardAndRegressionAssertions": {
+    "passed": 914,
+    "failed": 0
+  },
+  "observedContractViolations": [
+    {
+      "id": "A01",
+      "fact": "Sealed recipe context shares a mutable CUnitSystem; 100 cm becomes 100 mm after external reset."
+    },
+    {
+      "id": "A02",
+      "fact": "Repeated annotation build on an existing layout retains stale anchors; requested normal -1 remains +1."
+    }
+  ],
+  "otherObservations": [
+    {
+      "id": "A03",
+      "fact": "Label axisDistance values 50 and 5000 produce identical final semantic annotations."
+    },
+    {
+      "id": "A04",
+      "fact": "Finish seals a ByMaxStep rule with zero step; executor rejects it. CSectionBuilder builds mesh before executor."
+    },
+    {
+      "id": "A05",
+      "fact": "CSectionGeometryQuery combines analytic operations with stateful model/domain reconstruction and caching."
+    }
+  ],
+  "productionFiles": [
+    {
+      "path": "workbook/output/RC_Section_NDM.xlsm",
+      "sha256": "80dbf11972c4990c75e8bd416ba56ab55333ad19a57fc5d845d4b819fdaa8c04",
+      "unchangedDuringAudit": true
+    },
+    {
+      "path": "workbook/output/VBA_All_Code.txt",
+      "sha256": "3ed7f1834b6589c609fa78c0beddec046d3bde5c6cbe384ea5fdcd28b79b25ac",
+      "unchangedDuringAudit": true
+    },
+    {
+      "path": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "sha256": "be95a1f0945322831d9193907606cd4fdcd590a32f89b6f6536f24174fbe4678",
+      "unchangedDuringAudit": true
+    }
+  ]
+}

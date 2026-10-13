@@ -1,5 +1,10 @@
 # Исходная Карта Зависимостей
 
+Актуальный аудит опубликованного кода от 13.10.2026:
+`docs/reports/GeometryArchitectureAudit_2026-10-13.md`.
+Ниже сохранена история переноса; её промежуточные статусы не являются
+текущим состоянием основной книги.
+
 Актуализация 12.10.2026: заменяемые компоненты ниже удалены из source и
 отдельного native staging; фактический состав — в LEGACY_RETIREMENT_MAP.md.
 Generated: CSectionInputSnapshotReader → ISectionRecipe → CSectionDefinition

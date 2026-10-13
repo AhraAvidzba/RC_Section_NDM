@@ -1,0 +1,15 @@
+﻿PASS: already registered path cannot be added twice
+PASS: returned path is the registered object
+PASS: two paths but only one concrete loop
+PASS: auxiliary axis excluded from concrete area
+PASS: options copied at declaration
+PASS: explicit positions copied at declaration
+PASS: published path rejects mutation
+PASS: finished facade rejects mutation
+PASS: returned domain is a deep geometric copy
+PASS: input values copied independently
+OBSERVED SHARED_UNITS: before_mm=1000; after_mm=100; sealed_context_changed=True
+OBSERVED LATE_RULE_VALIDATION: invalid_step_accepted_by_finish=True
+PASS: invalid step rejected by rule executor
+OBSERVED EXECUTOR_REJECTION: -2147215974; Ряд 'Row': Шаг должен быть положительным.
+TOTAL ARCHITECTURE GUARDS: passed=11; failed=0

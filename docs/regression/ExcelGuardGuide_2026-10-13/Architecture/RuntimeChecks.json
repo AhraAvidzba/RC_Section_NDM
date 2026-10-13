@@ -1,0 +1,39 @@
+﻿{
+    "Runs":  [
+                 {
+                     "Macro":  "modGeometryArchitectureProbe.RunGeometryArchitectureProbe",
+                     "Seconds":  0.0828853,
+                     "Passed":  true
+                 },
+                 {
+                     "Macro":  "modTestDeclarativeGeometry.RunCoreGeometryTests",
+                     "Seconds":  0.0928595,
+                     "Passed":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeDefinitionTests",
+                     "Seconds":  0.049492299999999996,
+                     "Passed":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.3761873,
+                     "Passed":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+                     "Seconds":  0.0362004,
+                     "Passed":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                     "Seconds":  22.6293732,
+                     "Passed":  true
+                 }
+             ],
+    "ProductionWorkbookUnchanged":  true,
+    "AllCodeUnchanged":  true,
+    "ExecutionReportUnchanged":  true,
+    "WorkbookSHA256":  "80DBF11972C4990C75E8BD416BA56AB55333AD19A57FC5D845D4B819FDAA8C04",
+    "FinishedAt":  "2026-10-13T23:11:43.4326170+03:00"
+}

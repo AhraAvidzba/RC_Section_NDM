@@ -1,0 +1,11 @@
+﻿PASS: one initial annotation
+PASS: repeated annotation build preserves physical bar count
+PASS: repeated annotation build produces one label
+OBSERVED ANNOTATION_SIDE_EFFECT: anchors_before=1; anchors_after=2
+PASS: one initial annotation
+PASS: repeated annotation build preserves physical bar count
+PASS: repeated annotation build produces one label
+OBSERVED ANNOTATION_SIDE_EFFECT: anchors_before=1; anchors_after=2
+OBSERVED LABEL_AXIS_DISTANCE: 50_and_5000_produce_same_annotation=True
+OBSERVED STALE_ANNOTATION: requested_normal_y=-1; actual_normal_y=1; stale_anchor=True
+TOTAL ANNOTATION OWNERSHIP: passed=6; failed=0

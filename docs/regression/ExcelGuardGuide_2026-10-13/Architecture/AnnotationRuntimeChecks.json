@@ -1,0 +1,14 @@
+﻿{
+    "Runs":  [
+                 {
+                     "Macro":  "modGeometryArchitectureProbe.RunAnnotationOwnershipProbe",
+                     "Seconds":  0.1101707,
+                     "Passed":  true
+                 }
+             ],
+    "ProductionWorkbookUnchanged":  true,
+    "AllCodeUnchanged":  true,
+    "ExecutionReportUnchanged":  true,
+    "WorkbookSHA256":  "80DBF11972C4990C75E8BD416BA56AB55333AD19A57FC5D845D4B819FDAA8C04",
+    "FinishedAt":  "2026-10-13T23:19:02.6945220+03:00"
+}
