@@ -1,0 +1,87 @@
+{
+  "Status": "ACCEPTED",
+  "Requirements": [
+    {
+      "ID": "1/A05",
+      "Status": "fixed",
+      "Evidence": [
+        "PrimitiveGeometryEquality.json",
+        "RegressionEquality.json"
+      ]
+    },
+    {
+      "ID": "2/A02",
+      "Status": "fixed",
+      "Evidence": [
+        "SolidTests/modTestGeometryPublication.RunAnnotationIsolationTests.txt",
+        "RegressionEquality.json"
+      ]
+    },
+    {
+      "ID": "3",
+      "Status": "fixed",
+      "Evidence": [
+        "SolidTests/modTestGeometryPublication.RunPublishedBuildTests.txt"
+      ]
+    },
+    {
+      "ID": "4/A04",
+      "Status": "fixed",
+      "Evidence": [
+        "SolidTests/modTestGeometryPublication.RunDefinitionLifecycleTests.txt",
+        "RegressionEquality.json"
+      ]
+    },
+    {
+      "ID": "5",
+      "Status": "already_fixed",
+      "Evidence": [
+        "FinalSourceEquality.json"
+      ],
+      "Note": "The properties wrapper is absent; query consumers retained"
+    },
+    {
+      "ID": "6/A01/A03",
+      "Status": "fixed",
+      "Evidence": [
+        "SolidTests/modTestGeometryPublication.RunRecipeContextFreezeTests.txt",
+        "StandaloneHelp.json",
+        "PublishedSourceEquality.json"
+      ]
+    }
+  ],
+  "Compilation": true,
+  "FinalAssertions": {
+    "GeometryAndApi": 4078,
+    "Equilibrium": 1512,
+    "TeachingRecipe": 356
+  },
+  "PriorPrimitiveAssertions": 2731,
+  "BitwiseNdsSolutions": 120,
+  "ExcelPngEqual": 9,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "CompleteLongOnOffRun": false,
+  "ManualFullUiRun": false,
+  "NewAutoCadRun": false,
+  "PublishedWorkbookSHA256": "268d5fd5728289b216f8f5d082c859368cf38c490f169f004939e4ba4b781249",
+  "AllCodeSHA256": "3f49f59aa08e17bb0963ff16e1ae8cb2e1e66e0620c9fbb024463c114be5baff",
+  "AllCodeIsActualWorkbookExport": true,
+  "ForeignExecutionReportUnchanged": true,
+  "MissingGates": [],
+  "EvidenceHashes": {
+    "RegressionEquality.json": "de4a22448439048db273f51d1cb3672dd1bd9b90a93e7d179552bede49f8b5a7",
+    "Preservation.json": "e75b5d36367d082615d09dac48e80c51d9aef48c3ed4843ee956015dbed52597",
+    "FinalSourceEquality.json": "49cde5e897b8b2d0c49acb4b9c8eab049b64a34b45b765c9c4c981be22e4682f",
+    "PublishedSourceEquality.json": "915f805e11dd1fa90971389322e35535d03b995d99a4cd10f007edf7130637a0",
+    "StandaloneHelp.json": "08ff13f2160a75273592ae3428e80e55892bb38e4bda52d6ca70b1bddfaa65cb",
+    "PublishedStandaloneHelp.json": "36192d2c16cb9db62c6bc25b3581c6c019a0de2a8a17491598a7851c2d6604f1",
+    "SolidTests/Run.json": "66e5163a3e041b0536ed1dd85e46c44f7bc1dc55a878d5cdbde6e0a7e55ee64b",
+    "SolidEquilibrium/Run.json": "a634e5057f0a1910ed5352881ebe26a405235565d285b5e1b33e2ae93b0f17fc",
+    "SolidExampleTestsFinal/Run.json": "3074863a2e5c253ba992fcc5ae8430d97395d104b87b1aee567d8e889e98f55f",
+    "Publication.json": "c0767b3123c324856775af7116856d1db0c2a7b61f4b87c3bfdfef0deda52830",
+    "EvidencePackage.json": "d73b1eae66a78c8293b23f18f96d6f9f5247f55c9ef5ae9143e7668f883d0a5b",
+    "SolidCodeUpdate.json": "6852b21a015201e1292b71397cdc4cae6f185a792ec27cb38920ab2f314b67b3",
+    "FinalCommentsCodeUpdate.json": "7c05d53a9f6144425d4bdf0fa1f05f6b729d82a697214971c1e7027298770fc8"
+  }
+}
