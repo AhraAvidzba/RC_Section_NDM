@@ -1,0 +1,12 @@
+{
+  "PublishedAt": "2026-10-13T21:19:26.1054654+03:00",
+  "WorkbookSHA256": "61C1B41CCFC7C4ADA385721B4B53AF1E205C7009E8FA7A1BE97FFDFEAD09A20F",
+  "AllCodeSHA256": "14B13D99A06A07ABD504F4D529F2EFF5367CB19742B25DA990EE97DD6829AE13",
+  "UserExecutionReportUnchanged": true,
+  "ExecutableCodeUnchanged": true,
+  "ExampleCommandsExplained": 13,
+  "ReadbackPending": false,
+  "AllCodeMatchesActualWorkbookExport": true,
+  "PublishedCodeMatchesCandidate": true,
+  "NativeComponents": 150
+}

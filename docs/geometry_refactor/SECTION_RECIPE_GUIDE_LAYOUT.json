@@ -4,7 +4,7 @@
   "bodySHA256": "5117305ed5cf8b3948c97153c7fcb942b01382ddff060b043ad504f6e44b0c2c",
   "sourceHashes": {
     "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "70802ae1d2705c93421cf88801291a23216d46d40dae0e16f1fc850fb3ee1e2b",
-    "src/Common/modSectionRecipeApiGuide.bas": "4a0f8b2f178bcbbf9fde265b7f01d938bf54c1b2c61d091c65fa4112e124a00a"
+    "src/Common/modSectionRecipeApiGuide.bas": "c6decec2779efbbdc6812d7489324336490530a807bb4712cab412c71e23d5f6"
   },
   "rows": [
     {
@@ -368,7 +368,7 @@
       "line": 66
     },
     {
-      "text": "NDM.RECIPE.GUIDE/2|5117305ed5cf8b3948c97153c7fcb942b01382ddff060b043ad504f6e44b0c2c|4a0f8b2f178bcbbf9fde265b7f01d938bf54c1b2c61d091c65fa4112e124a00a",
+      "text": "NDM.RECIPE.GUIDE/2|5117305ed5cf8b3948c97153c7fcb942b01382ddff060b043ad504f6e44b0c2c|c6decec2779efbbdc6812d7489324336490530a807bb4712cab412c71e23d5f6",
       "style": "footer"
     }
   ],
