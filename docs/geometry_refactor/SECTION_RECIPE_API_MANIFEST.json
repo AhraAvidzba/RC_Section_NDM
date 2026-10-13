@@ -7193,7 +7193,7 @@
         }
       ],
       "resultType": null,
-      "line": 159,
+      "line": 160,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeError",
       "anchor": "api-modsectionrecipetypes-sectionrecipeerror"
@@ -7222,7 +7222,7 @@
         }
       ],
       "resultType": null,
-      "line": 166,
+      "line": 173,
       "source": "src/Common/modSectionRecipeTypes.bas",
       "id": "modSectionRecipeTypes.SectionRecipeGeometryError",
       "anchor": "api-modsectionrecipetypes-sectionrecipegeometryerror"
@@ -7479,7 +7479,7 @@
     "src/Section/CSectionDefinition.cls": "180f9f9d0068237a9f951ae2571cfab05a470ebe052f06984b1b915fd3265607",
     "src/Section/CRebarRuleOptions.cls": "8ba5addea68694477bd10fc0dfe8c19551338159d7cc4d88bafdefd8e60e6996",
     "src/Geometry/CGeometryDiagnostic.cls": "5a8b139775a98457b368b8636dfa09b4fe2954c75c457e471549d320eaf2d78a",
-    "src/Section/CSectionInputTable.cls": "5ee30cf33eeef08f45791d12c2693b6a6e6f15d25638a5780e8dd63ed83172e8",
+    "src/Section/CSectionInputTable.cls": "b3ac8124c50e6594493720bc2d1b1621a3d18ef30c42432c9309439777eb4c97",
     "src/Section/CSectionRecipeContext.cls": "7ee2cef284ab2fef14ccd3ce5692d98749856018312cbf7bdfc465290ef11170",
     "src/Excel/CSectionInputSnapshotReader.cls": "d461a67460a37b8a2441a55ff86df706778609ba03347bb7f4467fde549f5751",
     "src/Excel/CSectionTypeRegistry.cls": "1824c4c0eb832afccb04329eb4c2244a5475def6e4571645433f91fd7023f7ab",
@@ -7488,7 +7488,7 @@
     "src/Excel/CUnitSystem.cls": "84871a8cf17acad16b1301c8acaa240cc563837ca4c13150366bd4a5f77ef2b6",
     "src/Section/CConcreteRegion.cls": "bfa2f4ea356316d036a072c814f11af33b436c2105ff0b610202369f13e8f778",
     "src/Section/CSectionGeometryQuery.cls": "8933d9f602067442cc10559c6e2fcfd78bc7d5c396f503ed76c13abaea9e28f2",
-    "src/Common/modSectionRecipeTypes.bas": "7053728a61ec8e1b0c8a8f54b5a7f1070d31d96dc7ea87e9bcd196cf408c2098",
+    "src/Common/modSectionRecipeTypes.bas": "67a97b73fd42f32beb77c7c08da992c3a063da37c98b722a32813aa07b2b662f",
     "src/Common/modGeometryTypes.bas": "9287e987cb0e4638ff5e946107110b6e256a31227eb178e767e4920d1190ee01"
   }
 }

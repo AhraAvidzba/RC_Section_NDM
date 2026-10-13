@@ -156,8 +156,15 @@ Public Type TRebarPosition
     PathID As String
 End Type
 
+' Дополняет адресную ошибку действием пользователя, сохраняя её причину и код.
 Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Optional ByVal sourceReference As String = "")
-    If Len(sourceReference) > 0 Then reason = sourceReference & ": " & reason
+    If Len(sourceReference) > 0 Then
+        If InStr(1, reason, "Введите", vbTextCompare) = 0 And InStr(1, reason, "Выберите", vbTextCompare) = 0 And _
+                InStr(1, reason, "Исправ", vbTextCompare) = 0 And InStr(1, reason, "Восстанов", vbTextCompare) = 0 Then
+            reason = reason & " Исправьте значение в указанной ячейке."
+        End If
+        reason = sourceReference & ": " & reason
+    End If
     Err.Raise vbObjectError + 5530, owner, reason
 End Sub
 

@@ -1183,8 +1183,12 @@ Private Sub TestConcreteCoverUsesLocalContour(ByRef stats As TTestStats)
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
 
+    Dim query As CSectionGeometryQuery
+    Set query = New CSectionGeometryQuery
+    query.Initialize section
+
     Dim localCover As Double
-    localCover = props.ConcreteCoverFromPointAlongDirection(section, 0#, 60#, 0#, 1#)
+    localCover = query.ConcreteCoverFromPointAlongDirection(0#, 60#, 0#, 1#)
     AssertClose stats, "geometry.cover.localContour", localCover, 40#, 0.000001
 
     Dim minS As Double

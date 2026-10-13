@@ -133,7 +133,16 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
                 oldAddress = source.Cells(CLng(field(0)), CLng(field(1))).Address(False, False)
                 prefix = "relocated." & CStr(names(index)) & ".p" & CStr(position) & "." & key
                 LogLine stats, "RUN: " & prefix & "; actual=" & sheet.Name & "!" & address
-                If index < 10 Then
+                If index >= 5 And index <= 8 Then
+                    Dim inputTable As CSectionInputTable
+                    Set inputTable = RelocatedRecipeTable(CStr(names(index)), units)
+                    reason = inputTable.SourceReference(CLng(field(0)), CLng(field(1)))
+                    Check stats, prefix & ".captured", inputTable.Name = CStr(names(index))
+                    Check stats, prefix & ".locationSheet", InStr(1, reason, sheet.Name, vbBinaryCompare) > 0
+                    Check stats, prefix & ".locationAddress", InStr(1, reason, address, vbBinaryCompare) > 0
+                    cell.Value2 = CVErr(xlErrDiv0)
+                    code = RelocatedRecipeError(CStr(names(index)), reason)
+                ElseIf index < 10 Then
                     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
                     reason = settings.InputErrorMessage(key, "Контроль адреса.", "Проверьте значение.")
                     Check stats, prefix & ".registered", settings.HasKey(key)
@@ -222,20 +231,23 @@ Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal so
                 Case 7: tail = "bind_3row": choices = Array("EachBar", "EverySecondBar")
             End Select
             first.Value2 = choices(0): second.Value2 = choices(1)
+            Dim inputTable As CSectionInputTable, units As CUnitSystem
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings
+            Set inputTable = RelocatedRecipeTable("rngRectSetGeometry", units)
             key = "RectSet." & CStr(face) & "." & tail
-            Check stats, prefix & ".firstIndependent", settings.GetRequiredChoice(key & "_1", choices) = choices(0)
-            Check stats, prefix & ".secondIndependent", settings.GetRequiredChoice(key & "_2", choices) = choices(1)
+            Check stats, prefix & ".firstIndependent", inputTable.Choice(row, CLng(column), choices) = choices(0)
+            Check stats, prefix & ".secondIndependent", inputTable.Choice(row + 1, CLng(column), choices) = choices(1)
             For side = 1 To 2
                 Set cell = source.Cells(row + side - 1, CLng(column))
                 cell.Value2 = CVErr(xlErrDiv0)
-                Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+                Set inputTable = RelocatedRecipeTable("rngRectSetGeometry", units)
                 On Error Resume Next
-                value = settings.GetRequiredChoice(key & "_" & CStr(side), choices)
+                value = inputTable.Choice(row + side - 1, CLng(column), choices)
                 code = Err.Number: reason = Err.Description: Err.Clear
                 On Error GoTo 0
                 Check stats, prefix & ".formulaRejected." & CStr(side), code <> 0
-                Check stats, prefix & ".formulaAddress." & CStr(side), InStr(1, reason, "ячейка " & cell.Address(False, False), vbBinaryCompare) > 0
+                Check stats, prefix & ".formulaAddress." & CStr(side), InStr(1, reason, cell.Address(False, False), vbBinaryCompare) > 0
                 Check stats, prefix & ".formulaSheet." & CStr(side), InStr(1, reason, source.Worksheet.Name, vbBinaryCompare) > 0
                 first.Value2 = choices(0): second.Value2 = choices(1)
             Next side
@@ -245,6 +257,46 @@ Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal so
         row = row + 2
     Next face
 End Sub
+
+' ДЛЯ ТЕСТОВ: перенос геометрии проверяется через общий снимок таблицы.
+' Общий settings reader больше не разбирает поля конкретных рецептов.
+Private Function RelocatedRecipeTable(ByVal rangeName As String, ByVal units As CUnitSystem) As CSectionInputTable
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext
+    Set reader = New CSectionInputSnapshotReader
+    Set context = reader.Capture(ThisWorkbook, Array(rangeName), units)
+    Set RelocatedRecipeTable = context.Table(rangeName)
+End Function
+
+' ДЛЯ ТЕСТОВ: ошибочное поле читает настоящий выбранный рецепт, а адрес
+' берётся из перемещённого именованного диапазона. Выбор формы восстанавливается.
+Private Function RelocatedRecipeError(ByVal rangeName As String, ByRef reason As String) As Long
+    Dim system As Object, cell As Object, row As Long, saved As Variant, typeID As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
+    On Error GoTo Failed
+    Select Case rangeName
+        Case "rngCircleGeometry": typeID = "Circle"
+        Case "rngRoundedRectangleGeometry": typeID = "RoundedRectangle"
+        Case "rngHollowRectangleGeometry": typeID = "HollowRectangle"
+        Case "rngRectSetGeometry": typeID = "RectSet"
+    End Select
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange
+    For row = 2 To system.Rows.Count
+        If CStr(system.Cells(row, 1).Value2) = "Geometry.Type" Then Set cell = system.Cells(row, 2): Exit For
+    Next row
+    If cell Is Nothing Then Err.Raise 5, , "Не найден Geometry.Type тестовой книги."
+    saved = cell.Formula: cell.Value2 = typeID
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    reason = vbNullString
+    GoTo Restore
+Failed:
+    RelocatedRecipeError = Err.Number: reason = Err.Description
+Restore:
+    On Error Resume Next
+    If Not cell Is Nothing Then cell.Formula = saved
+    On Error GoTo 0
+End Function
 
 ' Задает ожидаемые ключи независимо от private-методов reader-а. Позиции
 ' находятся по шапкам исходной таблицы, а абсолютные адреса не зашиты.
@@ -1590,13 +1642,12 @@ Private Sub CheckVisualizationValues(ByRef stats As TProfileStats, ByVal prefix 
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, i As Long, bar As Long
     Dim x As Double, y As Double, expected As Double, strain As Double, diagram As CMaterialDiagram
-    If state.ExtensionUsed Then
-        Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(state.MaterialSpec)
-        Set steel = provider.SteelMaterialForEquilibriumFromSpec(state.MaterialSpec)
-    Else
-        Set concrete = provider.ConcreteMaterialFromSpec(state.MaterialSpec)
-        Set steel = provider.SteelMaterialFromSpec(state.MaterialSpec)
-    End If
+    ' ExtensionUsed отмечает выход за физическую область, а не выбор диаграммы.
+    ' Ожидаемые значения схемы считаем по фактическим диаграммам этого НДС.
+    Check stats, prefix & ".materialSnapshot", state.HasMaterialSnapshot
+    If Not state.HasMaterialSnapshot Then Exit Sub
+    Set concrete = state.ConcreteDiagramSnapshot
+    Set steel = state.SteelDiagramSnapshot
     For i = 1 To reader.Count
         If i <= section.ConcreteCount Then
             x = section.ConcreteX(i): y = section.ConcreteY(i): Set diagram = concrete

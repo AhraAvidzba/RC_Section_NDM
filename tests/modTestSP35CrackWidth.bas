@@ -220,7 +220,7 @@ Private Function ReadSP35AnnotationTable(ByVal anchor As Object) As Variant
 End Function
 
 ' ДЛЯ ТЕСТОВ: проверяет штатный batch, относительный writer и реальный CAD export.
-Public Function RunSP35WorkbookTests() As String
+Public Function RunSP35WorkbookTests(Optional ByVal ownedApplication As Object = Nothing) As String
     Dim sheet As Object, settingsRange As Object, originalSettings As String, originalAnchor As String
     Dim values As Variant, expanded() As Variant, i As Long, j As Long, number As Long, description As String
     Dim section As CSectionModel, provider As CMaterialModelProvider, settings As CSystemSettingsReader
@@ -228,6 +228,8 @@ Public Function RunSP35WorkbookTests() As String
     Dim state As CSectionStateResult, width As CCrackWidthResult, units As CUnitSystem
     Dim writer As CNDMResultsWriter, summary As CCrackSummaryWriter, anchor As Object, annotations As Object
     Dim acad As Object, doc As Object, previousDoc As Object, entity As Object, countBefore As Long, totalArea As Double, maxArea As Double
+    Dim previousAlerts As Boolean
+    previousAlerts = ThisWorkbook.Application.DisplayAlerts
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = vbNullString
     originalSettings = ThisWorkbook.Names.Item("rngSystemSettings").RefersTo
@@ -308,7 +310,10 @@ Public Function RunSP35WorkbookTests() As String
         If CStr(values(i, 2)) = "CRACK_PROBE" And CStr(values(i, 14)) = "SP35_C" Then probeRows = probeRows + 1
     Next i
     Check "SP35.annotation.fiveBoundaryProbes", probeRows = 5
-    Set acad = ConnectToRunningAutoCAD()
+    ' Native runner передаёт собственный проверенный AutoCAD; тест создаёт
+    ' только свой документ. Без аргумента прежний ручной контракт сохранён.
+    Set acad = ownedApplication
+    If acad Is Nothing Then Set acad = ConnectToRunningAutoCAD()
     If acad.Documents.Count > 0 Then Set previousDoc = acad.ActiveDocument
     Set doc = acad.Documents.Add
     countBefore = doc.ModelSpace.Count
@@ -346,7 +351,11 @@ Restore:
     If Not previousDoc Is Nothing Then previousDoc.Activate
     ThisWorkbook.Names.Item("rngSystemSettings").RefersTo = originalSettings
     ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersTo = originalAnchor
-    If Not sheet Is Nothing Then sheet.Delete
+    If Not sheet Is Nothing Then
+        ThisWorkbook.Application.DisplayAlerts = False
+        sheet.Delete
+        ThisWorkbook.Application.DisplayAlerts = previousAlerts
+    End If
     On Error GoTo 0
     mReport = mReport & "TOTAL_SP35_WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
     RunSP35WorkbookTests = mReport
@@ -390,7 +399,7 @@ Private Sub CheckSP35HeaderLayout(ByVal anchor As Object, ByVal units As CUnitSy
         Array(2, 22, 2, 24), Array(1, 26, 2, 29), Array(1, 31, 1, 44), _
         Array(2, 31, 2, 36), Array(2, 37, 2, 40), Array(2, 41, 2, 44), _
         Array(1, 46, 1, 67), Array(2, 46, 2, 51), Array(2, 52, 2, 54), _
-        Array(2, 55, 2, 58), Array(2, 59, 2, 62), Array(2, 63, 2, 67), _
+        Array(2, 55, 2, 58), Array(2, 59, 2, 62), Array(2, 64, 2, 67), _
         Array(1, 69, 2, 72))
     Dim i As Long
     For i = LBound(merges) To UBound(merges)
@@ -408,6 +417,9 @@ Private Sub CheckSP35HeaderLayout(ByVal anchor As Object, ByVal units As CUnitSy
     Check "SP35.header.formationTitle", CStr(top.Cells(1, 11).Value2) = "Начало трещинообразования"
     Check "SP35.header.currentTitle", CStr(top.Cells(1, 26).Value2) = "равновесное состояние при заданных нагрузках"
     Check "SP35.header.stateColumn", CStr(top.Cells(4, 25).Value2) = "state" And Not CBool(top.Cells(2, 25).MergeCells)
+    ' E_s занимает отдельную колонку 63. Блок ширины начинается с a_crc (64),
+    ' поэтому объединение 63:67 ошибочно захватывало бы модуль упругости.
+    Check "SP35.header.esBeforeWidth", CStr(top.Cells(4, 63).Value2) = "Es, " & units.OutputStressUnit
     Dim labels As Variant
     labels = Array("Ar, " & units.OutputAreaUnit, ChrW$(&H3B2), "n", "d, " & units.OutputLengthUnit, _
         "Rr, " & units.OutputLengthUnit, ChrW$(&H3C8) & ", " & units.OutputLengthUnit, "rebars", "nrebars", _

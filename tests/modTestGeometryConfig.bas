@@ -1533,7 +1533,7 @@ Private Function RebarFieldRowSummary(ByVal bars As CRebarLayout, ByVal group As
     Dim count As Long, diameter As Double, X As Double, Y As Double, i As Long
     For i = 1 To bars.Count
         If bars.BarAnnotationGroupName(i) = group Then
-            If InStr(1, bars.BarID(i), ".row_" & CStr(rowNumber) & "-", vbBinaryCompare) > 0 Then
+            If RebarFieldBelongsToRow(bars.BarID(i), group, rowNumber) Then
                 count = count + 1: diameter = diameter + bars.Diameter(i)
                 X = X + bars.X(i): Y = Y + bars.Y(i)
             End If
@@ -1541,6 +1541,15 @@ Private Function RebarFieldRowSummary(ByVal bars As CRebarLayout, ByVal group As
     Next i
     If count > 0 Then diameter = diameter / count: X = X / count: Y = Y / count
     RebarFieldRowSummary = Array(count, diameter, X, Y)
+End Function
+
+' ДЛЯ ТЕСТОВ: ряд определяется по ID декларативного правила, а не по
+' удалённому формату имён legacy-раскладчика. Расчётные R1/R2 здесь не используются.
+Private Function RebarFieldBelongsToRow(ByVal barID As String, ByVal group As String, ByVal rowNumber As Long) As Boolean
+    Dim prefix As String
+    prefix = group & ".Row" & CStr(rowNumber) & "."
+    If rowNumber = 1 Then prefix = group & ".Main."
+    RebarFieldBelongsToRow = (Left$(barID, Len(prefix)) = prefix)
 End Function
 
 ' Находит для каждого дополнительного стержня ближайший базовый стержень
@@ -1555,10 +1564,10 @@ Private Sub CheckRebarRowOffsets(ByRef stats As TGeometryConfigStats, ByVal pref
     If stacked Then expectedNormal = expectedDistance
     For i = 1 To bars.Count
         If bars.BarAnnotationGroupName(i) = group And _
-                InStr(1, bars.BarID(i), ".row_" & CStr(rowNumber) & "-", vbBinaryCompare) > 0 Then
+                RebarFieldBelongsToRow(bars.BarID(i), group, rowNumber) Then
             closest = 0
             For j = 1 To bars.Count
-                If bars.BarAnnotationGroupName(j) = group And InStr(1, bars.BarID(j), ".row_1-", vbBinaryCompare) > 0 Then
+                If bars.BarAnnotationGroupName(j) = group And RebarFieldBelongsToRow(bars.BarID(j), group, 1) Then
                     distance = Sqr((bars.X(i) - bars.X(j)) ^ 2 + (bars.Y(i) - bars.Y(j)) ^ 2)
                     If closest = 0 Then
                         closest = j: minimum = distance

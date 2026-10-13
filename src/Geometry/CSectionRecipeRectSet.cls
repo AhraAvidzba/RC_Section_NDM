@@ -129,7 +129,7 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         options.PositionOrder = FromPathMiddle
         options.Publication = PublishPerSourcePosition
         options.Coincidence = KeepPublishedOwner
-        options.SourceReference = table.SourceReference(row, 2)
+        options.SourceReference = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 5) & "; " & table.SourceReference(row, 6)
         label = table.Text(row, 1) & " грань"
         Select Case side
             Case 1

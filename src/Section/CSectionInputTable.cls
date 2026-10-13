@@ -182,14 +182,19 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
     Next key
     caption = Join(keys, " / ")
     For row = firstRow To lastRow
-        value = CellValue(row, keyColumn)
-        If Not BlankValue(value) Then
-            For Each key In keys
-                If StrComp(Trim$(CStr(value)), CStr(key), vbTextCompare) = 0 Then
-                    If RowByAnyKey > 0 Then InputError row, keyColumn, "Повторный ключ '" & caption & "'."
-                    RowByAnyKey = row: Exit For
-                End If
-            Next key
+        ' Поиск подписи не читает значение каждого параметра в этом столбце.
+        ' Ошибка Excel в неактивном поле не является искомой подписью;
+        ' настоящий потребитель поля по-прежнему получает её через CellValue.
+        value = mValues(row, keyColumn)
+        If Not IsError(value) Then
+            If Not BlankValue(value) Then
+                For Each key In keys
+                    If StrComp(Trim$(CStr(value)), CStr(key), vbTextCompare) = 0 Then
+                        If RowByAnyKey > 0 Then InputError row, keyColumn, "Повторный ключ '" & caption & "'."
+                        RowByAnyKey = row: Exit For
+                    End If
+                Next key
+            End If
         End If
     Next row
     If RowByAnyKey = 0 Then InputError firstRow, keyColumn, "Не найден параметр '" & caption & "'. Восстановите строку параметра."

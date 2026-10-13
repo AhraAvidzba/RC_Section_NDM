@@ -48,7 +48,16 @@ public static class AuditExcelProcessIdentity {
 # Сохраняет ход прогона до COM-вызова: при зависании видно последнюю suite,
 # а уже завершенные проверки не теряются вместе с тестовым процессом Excel.
 function Save-Progress {
-    $lines | Set-Content -LiteralPath $fullReport -Encoding UTF8
+    # Прямой writer исключает provider-ошибку Set-Content при одновременном
+    # чтении progress внешним watchdog/наблюдателем. Содержимое журнала прежнее.
+    $reportStream=[IO.File]::Open($fullReport,[IO.FileMode]::Create,[IO.FileAccess]::Write,[IO.FileShare]::ReadWrite)
+    $reportWriter=$null
+    try {
+        $reportWriter=New-Object IO.StreamWriter($reportStream,(New-Object Text.UTF8Encoding($true)))
+        foreach ($line in $lines) {$reportWriter.WriteLine([string]$line)}
+    } finally {
+        if ($reportWriter) {$reportWriter.Dispose()} else {$reportStream.Dispose()}
+    }
 }
 
 # Диагностирует потерю COM-свойств после suite без повторного открытия книги

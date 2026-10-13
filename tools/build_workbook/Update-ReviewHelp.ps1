@@ -8,10 +8,11 @@ $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryReview_2026-10-12'))+[IO.Path]::DirectorySeparatorChar
 $endpointAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/RoundedEndpoint_2026-10-12'))+[IO.Path]::DirectorySeparatorChar
+$fullAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/GeometryFull_2026-10-13'))+[IO.Path]::DirectorySeparatorChar
 $directory=[IO.Path]::GetFullPath((Join-Path $root $ReportDirectory))
 $printAreas=@(Get-WorkbookPrintAreas $path)
 foreach ($target in @($path,($directory+[IO.Path]::DirectorySeparatorChar))) {
-    if (-not $target.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and -not $target.StartsWith($endpointAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only review evidence paths are allowed.'}
+    if (-not $target.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and -not $target.StartsWith($endpointAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $target.StartsWith($fullAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Only review evidence paths are allowed.'}
 }
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class ReviewHelpWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'

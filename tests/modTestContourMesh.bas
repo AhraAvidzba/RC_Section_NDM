@@ -115,11 +115,12 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
     Dim table As Object, profiles As Object, saved As Variant, savedProfiles As Variant
     Dim i As Long, settings As CSystemSettingsReader, concreteLayer As String, rebarLayer As String
     Dim entity As Object, count As Long, bars As Long, area As Double, expectedArea As Double, exported As Long, solves As Long
+    Dim exportCell As Object, snapshot As String, failure As Long, reason As String, objectsBefore As Long
     On Error GoTo Failed
     Set table = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange: saved = table.Formula
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange: savedProfiles = profiles.Formula
     For i = 2 To table.Rows.Count
-        If CStr(table.Cells(i, 1).Value2) = "AutoCAD.Export.CombinationID" Then table.Cells(i, 2).Value2 = "CM_BEND"
+        If CStr(table.Cells(i, 1).Value2) = "AutoCAD.Export.CombinationID" Then Set exportCell = table.Cells(i, 2): exportCell.Value2 = "CM_BEND"
     Next i
     For i = 2 To profiles.Rows.Count
         If CStr(profiles.Cells(i, 2).Value2) = "Visualization.State" Then profiles.Cells(i, 3).Value2 = "StrengthState"
@@ -128,6 +129,27 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
     concreteLayer = settings.GetRequiredString("AutoCAD.Common.ConcreteLayer")
     rebarLayer = settings.GetRequiredString("AutoCAD.Common.RebarLayer")
     solves = SectionEquilibriumSolveCount()
+    ' ДЛЯ ТЕСТОВ: CM_BEND остаётся нагруженным контрольным сочетанием.
+    ' При OFF его StrengthState отсутствует после численной несходимости;
+    ' экспорт обязан отказать, без новой попытки solve или рисования объектов.
+    objectsBefore = doc.ModelSpace.Count
+    If Not settings.GetBoolean("General.DiagramExtension", False) Then
+        On Error Resume Next
+        exported = Audit03ExportAutoCADDocumentForTests(doc)
+        failure = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        Check "native.fullExport.missingState.rejected", failure <> 0 And InStr(1, reason, "StrengthState", vbBinaryCompare) > 0 And InStr(1, reason, "CM_BEND", vbBinaryCompare) > 0
+        Check "native.fullExport.missingState.noObjects", doc.ModelSpace.Count = objectsBefore
+    Else
+        snapshot = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+        Check "native.fullExport.extendedState.available", InStr(1, snapshot, "CM_BEND|PR1|StrengthState|", vbBinaryCompare) = 1
+    End If
+    Check "native.fullExport.stateSelection.noSolve", solves = SectionEquilibriumSolveCount()
+    ' Успешный экспорт в обоих режимах использует пригодное сохранённое НДС.
+    ' Нагрузки исходного CM_BEND, его статусы и численные сравнения не меняются.
+    exportCell.Value2 = "CM_COMP"
+    snapshot = Audit02ReadExportSnapshotForTests(ThisWorkbook)
+    Check "native.fullExport.validState.available", InStr(1, snapshot, "CM_COMP|PR1|StrengthState|", vbBinaryCompare) = 1
     exported = Audit03ExportAutoCADDocumentForTests(doc)
     Check "native.fullExport.objects", exported > model.ConcreteCount + model.RebarCount
     Check "native.fullExport.noSolve", solves = SectionEquilibriumSolveCount()

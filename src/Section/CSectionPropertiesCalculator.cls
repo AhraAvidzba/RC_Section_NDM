@@ -305,23 +305,6 @@ Public Function ProjectionDepth(ByVal section As CSectionModel, ByVal axisX As D
     ProjectionDepth = maxProjection - minProjection
 End Function
 
-' Ищет расстояние от заданной точки до ближайшего выхода из бетонного контура
-' вдоль выбранного направления. В отличие от общей ProjectionDepth, метод не
-' берет глобальную опорную линию всего сечения: он проходит лучом через
-' конкретную точку, поэтому подходит для a_s в расчете трещин у несимметричных
-' сечений и косой нейтральной линии.
-' Делегирует пересечение общему движку трещин: достоверные контуры имеют
-' приоритет, неизвестная граница берется по КЭ. Возвращает -1 вне материала.
-Public Function ConcreteCoverFromPointAlongDirection(ByVal section As CSectionModel, _
-        ByVal pointX As Double, ByVal pointY As Double, _
-        ByVal directionX As Double, ByVal directionY As Double) As Double
-    Dim query As CSectionGeometryQuery
-    Set query = New CSectionGeometryQuery
-    query.Initialize section
-    ConcreteCoverFromPointAlongDirection = query.ConcreteCoverFromPointAlongDirection( _
-        pointX, pointY, directionX, directionY)
-End Function
-
 ' Возвращает суммарную площадь продольной арматуры.
 ' Метод живет в геометрическом калькуляторе, потому что это чистая
 ' характеристика CSectionModel и она нужна разным нормативным проверкам.

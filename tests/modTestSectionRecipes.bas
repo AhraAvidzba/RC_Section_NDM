@@ -84,6 +84,7 @@ Public Function RunWorkbookRecipeInputTests() As String
     SetSystemInput "Geometry.Type", "FixedMetadata"
     settings.LoadFromWorkbook ThisWorkbook
     Check "workbook.registry.dynamicChoice", registry.SelectedRecipeType(settings) = "FixedMetadata"
+    TestInputTableCaptionSearch
     GoTo Finished
 Failed:
     Check "workbook.recipe.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
@@ -95,6 +96,26 @@ Finished:
     On Error GoTo 0
     RunWorkbookRecipeInputTests = mReport & "TOTAL WORKBOOK RECIPE INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+' ДЛЯ ТЕСТОВ: поиск заголовка не потребляет неактивное ошибочное значение.
+' При прямом чтении этого же поля ошибка остаётся адресной и не маскируется.
+Private Sub TestInputTableCaptionSearch()
+    Dim values(1 To 3, 1 To 2) As Variant, addresses(1 To 3, 1 To 2) As String
+    Dim table As CSectionInputTable, row As Long, column As Long, value As Variant, number As Long, reason As String
+    values(1, 1) = "Header": values(1, 2) = "as"
+    values(2, 1) = "Disabled": values(2, 2) = CVErr(xlErrValue)
+    values(3, 1) = "Active": values(3, 2) = 50#
+    For row = 1 To 3
+        For column = 1 To 2: addresses(row, column) = "Moved!" & IIf(column = 1, "A", "B") & CStr(row): Next column
+    Next row
+    Set table = New CSectionInputTable: table.Initialize "CaptionFixture", values, addresses
+    Check "inputTable.caption.ignoresInactiveError", table.RowByKey("as", 2) = 1
+    On Error Resume Next
+    value = table.CellValue(2, 2): number = Err.Number: reason = Err.Description
+    Err.Clear: On Error GoTo 0
+    Check "inputTable.caption.activeReadRejects", number <> 0 And InStr(1, reason, "Moved!B2", vbBinaryCompare) > 0
+    Near "inputTable.caption.otherValuePreserved", table.Number(3, 2), 50#
+End Sub
 
 ' ДЛЯ ТЕСТОВ: шум координаты касания не меняет дробление соседней ячейки.
 Public Function RunRecipeMeshBoundaryTests() As String

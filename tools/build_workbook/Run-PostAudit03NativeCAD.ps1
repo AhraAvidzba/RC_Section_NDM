@@ -2,8 +2,9 @@
 # Existing user/SOFiPLUS instances are never edited, closed, or reused.
 param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [string]$ReportDirectory='docs/regression/PostAudit03/NativeCAD',
-      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests','RunRealAutoCADContourMeshTests','RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTests')]
+      [ValidateSet('RunRealAutoCADContourTests','RunRealAutoCADContourFormatTests','RunRealAutoCADContourMeshTests','RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTests','RunSP35WorkbookTests')]
       [string]$Macro='RunRealAutoCADContourTests',
+      [ValidateSet('No','Yes')][string]$Mode,
       [switch]$LaunchInstalledAutoCAD,
       [switch]$AcquireInsideExcel,
       [switch]$ShowOwnedWindow)
@@ -15,6 +16,8 @@ $path=Join-Path $directory 'RC_Section_NDM.xlsm'
 $sourcePath=$SourceWorkbook
 if (-not [IO.Path]::IsPathRooted($sourcePath)) { $sourcePath=Join-Path $root $sourcePath }
 $sourcePath=(Resolve-Path -LiteralPath $sourcePath).Path
+$sourceHash=(Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash
+$nativePassed=$false
 Copy-Item -LiteralPath $sourcePath -Destination $path -Force
 $class=(Get-ItemProperty -LiteralPath 'Registry::HKEY_CLASSES_ROOT\AutoCAD.Application.24.2\CLSID').'(default)'
 $server=(Get-ItemProperty -LiteralPath "Registry::HKEY_CLASSES_ROOT\CLSID\$class\LocalServer32").'(default)'
@@ -37,10 +40,13 @@ function Invoke-CadReady([scriptblock]$Action) {
     while ($true) {
         try { $value = & $Action; return ,$value }
         catch {
-            $errorCode=$_.Exception.HResult
-            $inner=$_.Exception.InnerException
-            if ($inner) { $errorCode=$inner.HResult }
+            # IDispatch через Reflection может иметь несколько оболочек.
+            # Повторяется только известный отказ COM занятого приложения.
+            $nativeException=$_.Exception
+            while ($nativeException.InnerException) {$nativeException=$nativeException.InnerException}
+            $errorCode=$nativeException.HResult
             if ($errorCode -notin @(-2147418111,-2147417846) -or [DateTime]::UtcNow -ge $deadline) { throw }
+            Write-Warning ('CAD_COM_READY_RETRY: HRESULT='+$errorCode)
             Start-Sleep -Milliseconds 1000
         }
     }
@@ -67,11 +73,11 @@ try {
         Write-Output ('CAD_ACTIVATE: ' + $server)
         $acad=New-Object -ComObject AutoCAD.Application.24.2
     }
-    $fullName=[string]$acad.GetType().InvokeMember('FullName',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
+    $fullName=[string](Invoke-CadReady { $acad.GetType().InvokeMember('FullName',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null) })
     if ([string]::IsNullOrWhiteSpace($fullName)) {throw 'AutoCAD FullName is unavailable through IDispatch.'}
     if ($fullName -notlike 'C:\Program Files\Autodesk\AutoCAD 2023\acad.exe') {throw "Not Autodesk AutoCAD: $fullName"}
     [uint32]$processId=0
-    $window=$acad.GetType().InvokeMember('HWND',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null)
+    $window=Invoke-CadReady { $acad.GetType().InvokeMember('HWND',[Reflection.BindingFlags]::GetProperty,$null,$acad,$null) }
     [void][PostAuditCADIdentity]::GetWindowThreadProcessId([IntPtr][long]$window,[ref]$processId)
     $pidValue=[int]$processId
     $owned=($pidValue -gt 0 -and $existing -notcontains $pidValue)
@@ -105,10 +111,23 @@ try {
     [ordered]@{OwnedPID=[int]$excelId; StartTicks=(Get-Process -Id $excelId).StartTime.ToUniversalTime().Ticks; ProcessName='EXCEL'} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeExcelOwnership.json') -Encoding UTF8
     $book=$excel.Workbooks.Open($path)
+    if ($Mode) {
+        # Режим меняется только в private native-копии; исходная книга не сохраняется.
+        $settingsTable=$book.Names.Item('rngSystemSettings').RefersToRange
+        $modeCell=$null
+        for ($r=2;$r -le $settingsTable.Rows.Count;$r++) {
+            if ([string]$settingsTable.Cells.Item($r,1).Value2 -ceq 'General.DiagramExtension') {$modeCell=$settingsTable.Cells.Item($r,2);break}
+        }
+        if ($null -eq $modeCell) {throw 'DiagramExtension is missing in native fixture.'}
+        $modeCell.Value2=$Mode
+        Write-Output ('NATIVE_DIAGRAM_MODE: '+$Mode+'; fixture only')
+    }
     # The saved candidate already contains the guarded optional CAD entrypoint.
     # Test it without replacing its VBA or saving fixture mutations.
     if ($AcquireInsideExcel) {
         $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.$Macro",$null,$template)
+    } elseif ($Macro -eq 'RunSP35WorkbookTests') {
+        $result=[string]$excel.Run("'$($book.Name)'!modTestSP35CrackWidth.$Macro",$acad)
     } else {
         $result=[string]$excel.Run("'$($book.Name)'!modTestAutoCADContours.$Macro",$acad,$template)
     }
@@ -117,6 +136,7 @@ try {
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADIdentity.json') -Encoding UTF8
     Write-Output (($result -split "`r?`n" | Where-Object {$_ -match '^TOTAL|^FAIL:|^NATIVE_DWG:'}) -join "`n")
     if ($result -notmatch 'TOTAL[^\r\n]*failed=0\b' -or $result -match '(?m)^FAIL:') {throw 'Native CAD test failed.'}
+    $nativePassed=$true
 } finally {
     if ($book) {try {$book.Close($false)} catch {}}
     if ($excel) {try {$excel.Quit()} catch {}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}
@@ -132,4 +152,8 @@ try {
         }
     }
     [GC]::Collect(); [GC]::WaitForPendingFinalizers()
+    $sourceUnchanged=(Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash -eq $sourceHash
+    $invocation=[ordered]@{Macro=$Macro;Mode=$Mode;SourceWorkbook=$sourcePath;SourceSHA256=$sourceHash;SourceUnchanged=$sourceUnchanged;Passed=$nativePassed;OwnedCadPID=$pidValue;LaunchedCadPID=$(if ($launchedCad) {$launchedCad.Id} else {0});LaunchedCadStartTicks=$launchedTicks}
+    [IO.File]::WriteAllText((Join-Path $directory 'NativeInvocation.json'),($invocation | ConvertTo-Json),[Text.Encoding]::UTF8)
+    if (-not $sourceUnchanged) {throw 'Native source workbook changed.'}
 }

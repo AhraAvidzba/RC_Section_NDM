@@ -1243,13 +1243,20 @@ Private Sub CheckCapacityNumericEffects(ByRef stats As TConfigTestStats, ByVal t
     CheckClose stats, prefix & ".Capacity.InitialLambda.sameLimit", changed.LambdaCapacity, baseline.LambdaCapacity, 0.000002
 
     table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
-    SetValue table, "Capacity.ToleranceLambda", 0.001
+    SetValue table, "Capacity.ToleranceLambda", 0.02
     Set changed = CapacityNumericRun(stats, prefix & ".Capacity.ToleranceLambda.coarse", section, provider, profiles, units)
     CheckCapacityNumericPoint stats, prefix & ".Capacity.ToleranceLambda.coarse", changed
     countBase = CapacityNumericRecordCount(baseline.DiagnosticLog, "probe=")
     countChanged = CapacityNumericRecordCount(changed.DiagnosticLog, "probe=")
-    Check stats, prefix & ".Capacity.ToleranceLambda.fewerProbes", countChanged < countBase And countChanged > 0
-    CheckClose stats, prefix & ".Capacity.ToleranceLambda.sameLimit", changed.LambdaCapacity, baseline.LambdaCapacity, 0.002
+    ' На плато предел подтверждается по предельной плоскости раньше силовой
+    ' бисекции; число этих проб не обязано зависеть от допуска lambda.
+    Check stats, prefix & ".Capacity.ToleranceLambda.probesRecorded", countChanged > 0 And countBase > 0
+    ' Грубая бисекция возвращает допустимую нижнюю сторону интервала.
+    ' Отличие ограничено заданным lambda-допуском плюс точность базового поиска.
+    CheckClose stats, prefix & ".Capacity.ToleranceLambda.sameLimit", changed.LambdaCapacity, baseline.LambdaCapacity, _
+        CDbl(ValueCell(table, "Capacity.ToleranceLambda", 2).Value2) + 0.000001
+    Check stats, prefix & ".Capacity.ToleranceLambda.conservative", changed.LambdaCapacity <= baseline.LambdaCapacity + 0.000001
+    CheckCapacityLambdaLinearEffects stats, table, units, section, prefix
 
     table.Formula = configured: SetValue table, "Capacity.SolutionStrategy", "LoadMultiplier"
     SetValue table, "Capacity.MaxLambda", 0.125: SetValue table, "Capacity.InitialLambda", 0.125
@@ -1351,6 +1358,32 @@ Private Sub CheckCapacityStrainToleranceBatch(ByRef stats As TConfigTestStats, B
         CapacityNumericRecordCount(coarse.DiagnosticLog, "ultimatePath iter=") Or _
         Abs(tight.LambdaCapacity - coarse.LambdaCapacity) > 0.000000000001 Or coarseError <= 0.000000001
     table.Formula = configured
+End Sub
+
+' ДЛЯ ТЕСТОВ: наблюдаем влияние допуска на обычную физическую скобку без
+' сингулярного плато. Материалы линейные, ограничения деформаций задаются явно;
+' настройки читаются из той же реальной (в том числе перемещённой) таблицы.
+Private Sub CheckCapacityLambdaLinearEffects(ByRef stats As TConfigTestStats, ByVal table As Object, _
+        ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal prefix As String)
+    Dim saved As Variant, settings As CSystemSettingsReader, concrete As CLinearConcreteMaterial, steel As CLinearSteelMaterial
+    Dim capacity(0 To 1) As CCapacitySolver, index As Long, counts(0 To 1) As Long
+    saved = table.Formula
+    Set concrete = New CLinearConcreteMaterial: concrete.Initialize 30000#
+    Set steel = New CLinearSteelMaterial: steel.Initialize 200000#
+    For index = 0 To 1
+        SetValue table, "Capacity.ToleranceLambda", IIf(index = 0, 0.000001, 0.001)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set capacity(index) = New CCapacitySolver: capacity(index).ApplySettings settings, units
+        capacity(index).ConcreteCompressionLimit = 0.0035
+        capacity(index).SteelCompressionLimit = 0.025: capacity(index).SteelTensionLimit = 0.025
+        capacity(index).SolveByLoadPathMultiplier section, concrete, steel, 0#, -50000#, 0#, 1000000#, 0#, 2000000#
+        Check stats, prefix & ".lambdaLinear.converged." & CStr(index), capacity(index).Converged
+        counts(index) = CapacityNumericRecordCount(capacity(index).DiagnosticLog, "probe=")
+        LogLine stats, "CAPACITY_LAMBDA_LINEAR: " & prefix & "; index=" & CStr(index) & "; probes=" & CStr(counts(index)) & "; lambda=" & CStr(capacity(index).LambdaUltimate)
+    Next index
+    Check stats, prefix & ".lambdaLinear.fewerProbes", counts(1) > 0 And counts(1) < counts(0)
+    CheckClose stats, prefix & ".lambdaLinear.sameLimit", capacity(1).LambdaUltimate, capacity(0).LambdaUltimate, 0.002
+    table.Formula = saved
 End Sub
 
 ' Независимо пересчитывает отклонение критической деформации от ее предела

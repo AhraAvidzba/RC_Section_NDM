@@ -93,16 +93,18 @@ Public Function MeasureFamilyWorkflow(Optional ByVal outputDirectory As String =
     Dim fixture As Variant, result As String, label As String, before As Long
     Dim config As Object, saved As Variant, settings As CSystemSettingsReader
     Dim reader As CSectionPlotDataReader, plotter As CSectionPlotter, chart As Object
+    Dim diagramMode As String
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    diagramMode = ReadDiagramMode()
     For Each fixture In Fixtures()
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
-        modTestPerformance.ConfigurePerformanceFixture "DIRECT", 1, "Newton", "Saved", "Normal", "No"
+        modTestPerformance.ConfigurePerformanceFixture "DIRECT", 1, "Newton", "Saved", "Normal", diagramMode
         SetSetting "Plot.Enabled", "Yes": SetSetting "Plot.AutoUpdateAfterCalculation", "Yes"
         SetSetting "Plot.LoadCase", "Worst": SetSetting "General.ExecutionReportEnabled", "Yes"
         SetProfile "Visualization.State", "StrengthState": SetProfile "Visualization.Quantity", "Stress"
         label = CStr(fixture)
-        result = result & "FAMILY_WORKFLOW: " & label & "; " & Replace(modTestPerformance.MeasurePerformanceBatch("Full"), Chr$(30), "; ") & vbCrLf
+        result = result & "FAMILY_WORKFLOW: " & label & "; diagramExtension=" & ReadDiagramMode() & "; " & Replace(modTestPerformance.MeasurePerformanceBatch("Full"), Chr$(30), "; ") & vbCrLf
         If Len(outputDirectory) > 0 Then
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
@@ -130,14 +132,16 @@ End Function
 ' ДЛЯ ТЕСТОВ: фазовый замер одного HollowOffset для объяснения общей
 ' разницы времени. Стратегии решения и число сочетаний прежние.
 Public Function MeasureFamilyStages() As String
+    Dim diagramMode As String
+    diagramMode = ReadDiagramMode()
     modTestShapeArchitecture.ConfigureShapeFixture "HollowOffset"
-    modTestPerformance.ConfigurePerformanceFixture "DIRECT", 1, "Newton", "Saved", "Normal", "No"
+    modTestPerformance.ConfigurePerformanceFixture "DIRECT", 1, "Newton", "Saved", "Normal", diagramMode
     SetSetting "Plot.Enabled", "Yes": SetSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSetting "Plot.LoadCase", "Worst": SetSetting "General.ExecutionReportEnabled", "Yes"
     SetProfile "Visualization.State", "StrengthState": SetProfile "Visualization.Quantity", "Stress"
     Dim i As Long, result As String
     For i = 1 To 3
-        result = result & "FAMILY_STAGES: HollowOffset.sample" & CStr(i) & "; " & Replace(modTestPerformance.MeasurePerformanceBatch("Staged"), Chr$(30), "; ") & vbCrLf
+        result = result & "FAMILY_STAGES: HollowOffset.sample" & CStr(i) & "; diagramExtension=" & ReadDiagramMode() & "; " & Replace(modTestPerformance.MeasurePerformanceBatch("Staged"), Chr$(30), "; ") & vbCrLf
     Next i
     MeasureFamilyStages = result
 End Function
@@ -145,8 +149,10 @@ End Function
 ' ДЛЯ ТЕСТОВ: один реальный полный LC с capacity/crack/stability,
 ' report и схемой. Это направленный замер, не полный on/off набор.
 Public Function MeasureMixedWorkflow() As String
+    Dim diagramMode As String
+    diagramMode = ReadDiagramMode()
     modTestShapeArchitecture.ConfigureShapeFixture "HollowOffset"
-    modTestPerformance.ConfigurePerformanceFixture "MIXED", 1, "Newton", "Saved", "Normal", "No"
+    modTestPerformance.ConfigurePerformanceFixture "MIXED", 1, "Newton", "Saved", "Normal", diagramMode
     SetSetting "Stability.ElementLength", "1000"
     SetSetting "Plot.Enabled", "Yes": SetSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSetting "Plot.LoadCase", "Worst": SetSetting "General.ExecutionReportEnabled", "Yes"
@@ -158,14 +164,16 @@ Public Function MeasureMixedWorkflow() As String
     loads.Cells(2, 2).Value2 = -50000# / units.InputForceToInternal(1#)
     loads.Cells(2, 3).Value2 = 150000000# / units.InputMomentMxToInternal(1#)
     loads.Cells(2, 4).Value2 = -30000000# / units.InputMomentMyToInternal(1#)
-    MeasureMixedWorkflow = "MIXED_WORKFLOW: " & Replace(modTestPerformance.MeasurePerformanceBatch("Full"), Chr$(30), "; ")
+    MeasureMixedWorkflow = "MIXED_WORKFLOW: diagramExtension=" & ReadDiagramMode() & "; " & Replace(modTestPerformance.MeasurePerformanceBatch("Full"), Chr$(30), "; ")
 End Function
 
 ' ДЛЯ ТЕСТОВ: current-projection gate требует применимого СП35 НДС;
 ' пользовательская книга может содержать AutoCAD/иной профиль без этой ветви.
 Public Function RunSP35ProjectionFixture() As String
+    Dim diagramMode As String
+    diagramMode = ReadDiagramMode()
     modTestShapeArchitecture.ConfigureShapeFixture "HollowOffset"
-    modTestPerformance.ConfigurePerformanceFixture "CRACK_SP35", 1, "Newton", "Saved", "Normal", "No"
+    modTestPerformance.ConfigurePerformanceFixture "CRACK_SP35", 1, "Newton", "Saved", "Normal", diagramMode
     Dim settings As CSystemSettingsReader, units As CUnitSystem, loads As Object
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -173,7 +181,19 @@ Public Function RunSP35ProjectionFixture() As String
     loads.Cells(2, 2).Value2 = -50000# / units.InputForceToInternal(1#)
     loads.Cells(2, 3).Value2 = 800000000# / units.InputMomentMxToInternal(1#)
     loads.Cells(2, 4).Value2 = -100000000# / units.InputMomentMyToInternal(1#)
-    RunSP35ProjectionFixture = modTestSP35CrackWidth.RunSP35CurrentProjectionTests()
+    RunSP35ProjectionFixture = "PROJECTION_DIAGRAM_MODE: " & ReadDiagramMode() & vbCrLf & modTestSP35CrackWidth.RunSP35CurrentProjectionTests()
+End Function
+
+' Сохраняет фактический режим runner-а до подготовки конкретной fixture.
+Private Function ReadDiagramMode() As String
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    If settings.GetRequiredBoolean("General.DiagramExtension") Then
+        ReadDiagramMode = "Yes"
+    Else
+        ReadDiagramMode = "No"
+    End If
 End Function
 
 Private Function Fixtures() As Variant
@@ -189,11 +209,15 @@ Public Function RunDirectedPlotModes(ByVal outputDirectory As String) As String
     Dim container As Object, marker As Object, state As Variant, quantity As Variant
     Dim before As Long, count As Long, minValue As Double, maxValue As Double, i As Long
     Dim initialCount As Long, originalWidth As Double, originalHeight As Double, label As String
+    Dim diagramMode As String
     ResetReport
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    diagramMode = ReadDiagramMode()
     modTestShapeArchitecture.ConfigureShapeFixture "HollowOffset"
-    modTestPerformance.ConfigurePerformanceFixture "DIRECT", 2, "Newton", "Saved", "Normal", "No"
+    modTestPerformance.ConfigurePerformanceFixture "DIRECT", 2, "Newton", "Saved", "Normal", diagramMode
+    Check "plotModes.diagramMode", ReadDiagramMode() = diagramMode
+    mReport = mReport & "PLOT_DIAGRAM_MODE: " & ReadDiagramMode() & vbCrLf
     SetSetting "Plot.Enabled", "Yes": SetSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSetting "Plot.LoadCase", "PERF_01": SetSetting "General.ExecutionReportEnabled", "No"
     SetProfile "Visualization.State", "StrengthState"
