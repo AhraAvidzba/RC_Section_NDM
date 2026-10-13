@@ -3824,9 +3824,12 @@
     "SourceCodeCommit": "037abc7c80269b49774b32337d5b40edc54d730a",
     "ActualVBAComponents": 149,
     "FullOnOff": "PASS",
-    "PushPerformed": false,
+    "PushPerformed": true,
     "CandidateExportSHA256": "70e84b3d256b9543e175e16b68491c1813e7547a254891d67c42ed4632cb913a",
-    "NativeOutputExport": "VBA_ActualPublished.txt"
+    "NativeOutputExport": "VBA_ActualPublished.txt",
+    "PushVerifiedUTC": "2026-10-13T06:13:57.806145+00:00",
+    "ArtifactCommit": "fc21fd852a49a9721617e62045bd9e952b6359c1",
+    "VerifiedRemoteHead": "fc21fd852a49a9721617e62045bd9e952b6359c1"
   },
   "HistoricalDirectedAcceptance": {
     "SpecVersion": "1.4",
@@ -12499,5 +12502,6 @@
       ],
       "status": "PASS"
     }
-  ]
+  ],
+  "PushEvidence": "docs/geometry_refactor/GEOMETRY_FULL_PUSH.json"
 }
