@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "PrimitiveGeometry",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpShapeArchitectureSnapshot",
+                     "Seconds":  2.5928852,
+                     "Characters":  2915119,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpCircleGeometryMatrix",
+                     "Seconds":  6.5091152,
+                     "Characters":  8761013,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpRectSetGeometryMatrix",
+                     "Seconds":  5.8802414,
+                     "Characters":  5027852,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpRoundedGeometryMatrix",
+                     "Seconds":  7.7111347,
+                     "Characters":  7698322,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpHollowGeometryMatrix",
+                     "Seconds":  10.427226,
+                     "Characters":  10671616,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix",
+                     "Seconds":  3.6558498999999998,
+                     "Characters":  3469654,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "B371B0A37425DE358D4DE3BB6741BC651342D64CBC5FD6C67AED55E81D245CEA",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T00:28:58.5240495+03:00"
+}

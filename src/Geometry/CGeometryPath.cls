@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' Непрерывный аналитический путь из линий и дуг. После Seal он неизменяем.
-' Длины и параметры готовятся один раз; общая математика остается в query.
+' Длины и параметры готовятся один раз; формулы сегментов находятся в независимом modGeometryPrimitives.
 Private Const PATH_TOLERANCE As Double = 0.000001 ' Допуск стыков, мм.
 Private mID As String
 Private mEdges() As TRegionEdge
@@ -21,7 +21,6 @@ Private mStations() As Double
 Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long
 Private mCount As Long, mCapacity As Long
 Private mSealed As Boolean, mClosed As Boolean
-Private mQuery As CSectionGeometryQuery
 Private mDiagnostic As CGeometryDiagnostic
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
@@ -34,7 +33,6 @@ Public Sub Initialize(ByVal pathID As String)
     If Len(mID) > 0 Then PathError "Путь уже инициализирован."
     If Len(Trim$(pathID)) = 0 Then PathError "Не задан ID пути."
     mID = pathID
-    Set mQuery = New CSectionGeometryQuery
 End Sub
 
 ' Добавляет прямой сегмент с устойчивым ID; начало совпадает с предыдущим концом.
@@ -192,8 +190,8 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
     Loop
     parameter = (distance - mStations(lo - 1)) / (mStations(lo) - mStations(lo - 1))
     parameter = GeomMax(0#, GeomMin(1#, parameter))
-    mQuery.EdgePoint mEdges(lo), parameter, x, y
-    mQuery.EdgeTangent mEdges(lo), parameter, tangentX, tangentY
+    modGeometryPrimitives.EdgePoint mEdges(lo), parameter, x, y
+    modGeometryPrimitives.EdgeTangent mEdges(lo), parameter, tangentX, tangentY
     norm = Sqr(tangentX * tangentX + tangentY * tangentY)
     tangentX = tangentX / norm: tangentY = tangentY / norm
 End Sub
@@ -208,7 +206,7 @@ Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Doub
     directionX = directionX / norm: directionY = directionY / norm
     minimum = 1E+100: maximum = -1E+100
     For i = 1 To mCount
-        mQuery.AccumulateEdgeProjection mEdges(i), directionX, directionY, minimum, maximum
+        modGeometryPrimitives.AccumulateEdgeProjection mEdges(i), directionX, directionY, minimum, maximum
     Next i
 End Sub
 
@@ -224,7 +222,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
         first = GeomMax(startDistance, mStations(i - 1)): last = GeomMin(endDistance, mStations(i))
         If last > first + PATH_TOLERANCE Then
             segmentLength = mStations(i) - mStations(i - 1)
-            mQuery.SubEdge mEdges(i), (first - mStations(i - 1)) / segmentLength, (last - mStations(i - 1)) / segmentLength, edge
+            modGeometryPrimitives.SubEdge mEdges(i), (first - mStations(i - 1)) / segmentLength, (last - mStations(i - 1)) / segmentLength, edge
             result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), _
                 OriginParameter(i, (first - mStations(i - 1)) / segmentLength), OriginParameter(i, (last - mStations(i - 1)) / segmentLength)
         End If
@@ -319,7 +317,7 @@ Public Function Reversed() As CGeometryPath
     Dim result As CGeometryPath, i As Long, edge As TRegionEdge
     Set result = New CGeometryPath: result.Initialize mID
     For i = mCount To 1 Step -1
-        LSet edge = mEdges(i): mQuery.ReverseEdge edge
+        LSet edge = mEdges(i): modGeometryPrimitives.ReverseEdge edge
         result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceEnd(i), mSourceStart(i)
     Next i
     CopyCollapsedAnchors result, 0#, Length, 0#, True
@@ -359,7 +357,7 @@ Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal d
     pathDistance = 0#: rayDistance = 0#
     If Sqr(directionX * directionX + directionY * directionY) <= GEOM_TOLERANCE Then PathError "Направление луча имеет нулевую длину."
     For i = 1 To mCount
-        If mQuery.EdgeRayHit(mEdges(i), originX, originY, directionX, directionY, distance, parameter) Then
+        If modGeometryPrimitives.EdgeRayHit(mEdges(i), originX, originY, directionX, directionY, distance, parameter) Then
             If Not RayHit Or distance < rayDistance Then
                 rayDistance = distance
                 pathDistance = mStations(i - 1) + parameter * (mStations(i) - mStations(i - 1))
@@ -388,7 +386,7 @@ Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional
     For i = 1 To mCollapsedCount
         If mCollapsedIDs(i) = segmentID Then PathError "Повторный ID привязки '" & segmentID & "'."
     Next i
-    segmentLength = mQuery.EdgeLength(edge)
+    segmentLength = modGeometryPrimitives.EdgeLength(edge)
     If segmentLength <= PATH_TOLERANCE Then PathError "Сегмент '" & segmentID & "' имеет нулевую длину."
     If mCount > 0 Then
         If Not PointsCoincide(mEdges(mCount).X2, mEdges(mCount).Y2, edge.X1, edge.Y1) Then _

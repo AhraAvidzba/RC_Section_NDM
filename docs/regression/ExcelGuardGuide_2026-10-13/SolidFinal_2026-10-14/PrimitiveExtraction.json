@@ -1,0 +1,74 @@
+{
+  "methods": [
+    {
+      "method": "AccumulateEdgeProjection",
+      "bodySHA256": "d347abce5e25773b96196c79bf4922e7a2887db6cf59572d9b6022fd534b213e",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "EdgeRayHit",
+      "bodySHA256": "dd9a2ca9910363c2eaf12fa037e71164ef3b19160b7e1386ad7b971469df8e05",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "HalfPlaneCuts",
+      "bodySHA256": "a0fb75f25c866f6ac78789e2dc592e397d88b9f4d71c9f7814a68a3adb1583cc",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "EdgeIntersectionCuts",
+      "bodySHA256": "04e952f86fb1ec3e5746770bdef8b73ffac938ffe467e7f7e81456a5348b47ca",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "PointParameter",
+      "bodySHA256": "d4495f4b26b3ff75b6461677a65958da6be2eaaf23e22ea72ecfbcfc8fb9e811",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "EdgePoint",
+      "bodySHA256": "0b1e0d7d1b54fd0579f44eb8fd147c213f7ec2cca666c0560b86a6fe5a6a349b",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "EdgeTangent",
+      "bodySHA256": "209f27fa1ac47ad00ff807f57b0eb02da8e274d562a9947151ccfd4125449c2f",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "SubEdge",
+      "bodySHA256": "b4e1782999bd2cf5b70f392fca640f7700ed94d4030149a7e98306bf9ff3935c",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "ReverseEdge",
+      "bodySHA256": "2687e64633c210886b83c7cf329e62a8b79761a11dac76a7b2e2fb3d4b999b5d",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "AngleOf",
+      "bodySHA256": "76e4d0f31c243eef3a4798dde41d13a3cfbd201ea9ac5634ab5ae84937082d50",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "EdgeLength",
+      "bodySHA256": "c4fbdf6f0bbc1fec34e5324e1e91247088c55935f0117f33351e7f663b5b032b",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "AddScalar",
+      "bodySHA256": "c392ac24dc6a9ae38245da5621d74f241e0b0ea693ad9ebefb21ff4b1a766ea9",
+      "arithmeticUnchanged": true
+    },
+    {
+      "method": "SamePoint",
+      "bodySHA256": "48ada50379bd793448ac809b14b52d24ee4ed3d03a1afa3023b839aea264be08",
+      "arithmeticUnchanged": true
+    }
+  ],
+  "newClasses": 0,
+  "module": "modGeometryPrimitives",
+  "pathDependsOnQuery": false,
+  "queryDependsOnPath": true,
+  "sameToleranceValues": true
+}

@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "BaselineGeometry",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpShapeArchitectureSnapshot",
+                     "Seconds":  2.1936515,
+                     "Characters":  2915119,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpCircleGeometryMatrix",
+                     "Seconds":  5.8993801,
+                     "Characters":  8761013,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpRectSetGeometryMatrix",
+                     "Seconds":  5.7493181,
+                     "Characters":  5027852,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpRoundedGeometryMatrix",
+                     "Seconds":  7.9632337999999994,
+                     "Characters":  7698322,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpHollowGeometryMatrix",
+                     "Seconds":  10.6947824,
+                     "Characters":  10671616,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix",
+                     "Seconds":  3.5801005999999997,
+                     "Characters":  3469654,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "80DBF11972C4990C75E8BD416BA56AB55333AD19A57FC5D845D4B819FDAA8C04",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T00:21:16.0237771+03:00"
+}

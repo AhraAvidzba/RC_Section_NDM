@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "snapshots": [
+    {
+      "snapshot": "modTestShapeArchitecture.DumpCircleGeometryMatrix.txt",
+      "equal": true,
+      "bytes": 10146788,
+      "baselineSHA256": "e6649ce6022a6afb0655709812bb5b407be53f408b2b96cc5a5d8c95a49970ac",
+      "actualSHA256": "e6649ce6022a6afb0655709812bb5b407be53f408b2b96cc5a5d8c95a49970ac"
+    },
+    {
+      "snapshot": "modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt",
+      "equal": true,
+      "bytes": 3887091,
+      "baselineSHA256": "83ad5ce57601f1434c4d907138c3113cc15dc1578b8038b12a3eda746da3a612",
+      "actualSHA256": "83ad5ce57601f1434c4d907138c3113cc15dc1578b8038b12a3eda746da3a612"
+    },
+    {
+      "snapshot": "modTestShapeArchitecture.DumpHollowGeometryMatrix.txt",
+      "equal": true,
+      "bytes": 11907359,
+      "baselineSHA256": "7a1b1aa4a827585480a71bf4a535fb9663c63f00dc74e97622a71d80dd3bdbd5",
+      "actualSHA256": "7a1b1aa4a827585480a71bf4a535fb9663c63f00dc74e97622a71d80dd3bdbd5"
+    },
+    {
+      "snapshot": "modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "equal": true,
+      "bytes": 5836000,
+      "baselineSHA256": "73485fe397a96998f2ba02bb10633692851d0c3e5121aa22cf897cc4d78ff447",
+      "actualSHA256": "73485fe397a96998f2ba02bb10633692851d0c3e5121aa22cf897cc4d78ff447"
+    },
+    {
+      "snapshot": "modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt",
+      "equal": true,
+      "bytes": 8837669,
+      "baselineSHA256": "9e0b233b37b31ed059c5c71778b202adc04bf1480fdee295938d95d15a5d9a1e",
+      "actualSHA256": "9e0b233b37b31ed059c5c71778b202adc04bf1480fdee295938d95d15a5d9a1e"
+    },
+    {
+      "snapshot": "modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt",
+      "equal": true,
+      "bytes": 3384727,
+      "baselineSHA256": "b491c48108ffc80868998a19997d452dd615c039be29cb96b97732d87348fa53",
+      "actualSHA256": "b491c48108ffc80868998a19997d452dd615c039be29cb96b97732d87348fa53"
+    }
+  ]
+}

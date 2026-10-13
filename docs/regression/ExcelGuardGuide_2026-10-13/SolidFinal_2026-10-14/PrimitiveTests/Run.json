@@ -1,0 +1,44 @@
+﻿{
+    "Stage":  "PrimitiveTests",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestDeclarativeGeometry.RunCoreGeometryTests",
+                     "Seconds":  0.1548918,
+                     "Characters":  29142,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryQuery.RunGeometryQueryTests",
+                     "Seconds":  0.2741837,
+                     "Characters":  77326,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeDefinitionTests",
+                     "Seconds":  0.0379832,
+                     "Characters":  443,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.3353638,
+                     "Characters":  7474,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometry.RunGeometryTests",
+                     "Seconds":  3.9436218,
+                     "Characters":  57409,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "B371B0A37425DE358D4DE3BB6741BC651342D64CBC5FD6C67AED55E81D245CEA",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T00:26:29.7614959+03:00"
+}

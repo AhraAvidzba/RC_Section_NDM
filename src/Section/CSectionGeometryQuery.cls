@@ -20,8 +20,8 @@ Option Explicit
 ' и ее площадь создаются вместе и далее не восстанавливаются из числа Ar.
 ' Устойчивость не переводится на этот движок: ее A/I/проекции сетки неизменны.
 
-Private Const QUERY_TOLERANCE As Double = 0.000001 ' Прежний допуск склейки бетонных интервалов, мм.
-Private Const PARAM_TOLERANCE As Double = 0.0000000001 ' Только безразмерный параметр аналитического сегмента.
+Private Const QUERY_TOLERANCE As Double = GEOM_BOUNDARY_TOLERANCE ' Прежний допуск склейки бетонных интервалов, мм.
+Private Const PARAM_TOLERANCE As Double = GEOM_PARAMETER_TOLERANCE ' Только безразмерный параметр аналитического сегмента.
 Private mSection As CSectionModel
 Private mRevision As Long
 Private mDomain As CConcreteRegion ' Неизменная область одной модели/query-session; потребитель получает clone.
@@ -54,7 +54,7 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
     For i = 1 To count
         source.CopySegment i, edges(i)
         If edges(i).Sweep = 0# Then
-            length = EdgeLength(edges(i)): tx = (edges(i).X2 - edges(i).X1) / length: ty = (edges(i).Y2 - edges(i).Y1) / length
+            length = modGeometryPrimitives.EdgeLength(edges(i)): tx = (edges(i).X2 - edges(i).X1) / length: ty = (edges(i).Y2 - edges(i).Y1) / length
             edges(i).X1 = edges(i).X1 - ty * distance: edges(i).X2 = edges(i).X2 - ty * distance
             edges(i).Y1 = edges(i).Y1 + tx * distance: edges(i).Y2 = edges(i).Y2 + tx * distance
         Else
@@ -124,7 +124,7 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryP
     If source.SegmentCount <> 1 Then GeometryError "Ограничение плоскостями требует одну прямую линию.", "CONSTRAINT_TARGET", pathID, source.ID
     source.CopySegment 1, edge
     If edge.Sweep <> 0# Then GeometryError "Ограничение плоскостями требует прямую линию.", "CONSTRAINT_TARGET", pathID, source.ID
-    length = EdgeLength(edge): tx = (edge.X2 - edge.X1) / length: ty = (edge.Y2 - edge.Y1) / length
+    length = modGeometryPrimitives.EdgeLength(edge): tx = (edge.X2 - edge.X1) / length: ty = (edge.Y2 - edge.Y1) / length
     denom = startNX * tx + startNY * ty
     If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Начальный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.ID
     first = (startBound - startNX * edge.X1 - startNY * edge.Y1) / denom
@@ -197,51 +197,9 @@ Public Sub ProjectionBounds(ByVal region As CConcreteRegion, ByVal nx As Double,
     region.CopyEdges edges, count
     minimum = 1E+100: maximum = -1E+100
     For i = 1 To count
-        AccumulateEdgeProjection edges(i), nx, ny, minimum, maximum
+        modGeometryPrimitives.AccumulateEdgeProjection edges(i), nx, ny, minimum, maximum
     Next i
 End Sub
-
-' Общие экстремумы аналитического сегмента для области и открытого пути.
-' Направление уже единичное; проверяются также внутренние экстремумы дуги.
-Friend Sub AccumulateEdgeProjection(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal ny As Double, _
-        ByRef minimum As Double, ByRef maximum As Double)
-    Dim radius As Double, u As Double, projection As Double
-    projection = nx * edge.X1 + ny * edge.Y1
-    minimum = GeomMin(minimum, projection): maximum = GeomMax(maximum, projection)
-    projection = nx * edge.X2 + ny * edge.Y2
-    minimum = GeomMin(minimum, projection): maximum = GeomMax(maximum, projection)
-    If Abs(edge.Sweep) > PARAM_TOLERANCE Then
-        radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
-        projection = nx * edge.CenterX + ny * edge.CenterY
-        If PointParameter(edge, edge.CenterX + radius * nx, edge.CenterY + radius * ny, u) Then maximum = GeomMax(maximum, projection + radius)
-        If PointParameter(edge, edge.CenterX - radius * nx, edge.CenterY - radius * ny, u) Then minimum = GeomMin(minimum, projection - radius)
-    End If
-End Sub
-
-' Ближайшее пересечение луча с ограниченным сегментом, а не с полной прямой
-' или окружностью. Используется тот же аналитический поиск, что при clipping.
-Friend Function EdgeRayHit(ByRef edge As TRegionEdge, ByVal x As Double, ByVal y As Double, _
-        ByVal dx As Double, ByVal dy As Double, ByRef distance As Double, ByRef parameter As Double) As Boolean
-    Dim norm As Double, cuts() As Double, count As Long, i As Long, px As Double, py As Double, candidate As Double
-    norm = Sqr(dx * dx + dy * dy)
-    If norm <= GEOM_TOLERANCE Then GeometryError "Направление луча имеет нулевую длину."
-    dx = dx / norm: dy = dy / norm
-    distance = 0#: parameter = 0#
-    If PointParameter(edge, x, y, parameter) Then
-        EdgeRayHit = True
-        Exit Function
-    End If
-    HalfPlaneCuts edge, -dy, dx, -dy * x + dx * y, cuts, count
-    For i = 1 To count
-        EdgePoint edge, cuts(i), px, py
-        candidate = (px - x) * dx + (py - y) * dy
-        If candidate >= -QUERY_TOLERANCE Then
-            If Not EdgeRayHit Or candidate < distance Then
-                distance = GeomMax(0#, candidate): parameter = cuts(i): EdgeRayHit = True
-            End If
-        End If
-    Next i
-End Function
 
 ' Возвращает точные габариты каждого явно классифицированного отверстия.
 ' Геометрический генератор сетки получает весь набор независимо от типа
@@ -303,7 +261,7 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
     If count <= 0 Then GeometryError "Заданный контур не содержит граничных сегментов."
     Dim i As Long, j As Long, ordered() As TRegionEdge, loops As Long
     For i = 1 To count
-        If EdgeLength(edges(i)) <= QUERY_TOLERANCE Then GeometryError "Заданный контур содержит ребро нулевой длины."
+        If modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then GeometryError "Заданный контур содержит ребро нулевой длины."
         If Abs(edges(i).Sweep) > PARAM_TOLERANCE Then ValidateArc edges(i)
     Next i
     StitchLoops edges, count, ordered, loops, True
@@ -316,7 +274,7 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
         If Abs(area) <= QUERY_TOLERANCE Then GeometryError "Заданная геометрия содержит замкнутый контур нулевой площади."
         For i = 1 To count
             If ordered(i).LoopID = loopID Then
-                EdgePoint ordered(i), 0.5, x, y
+                modGeometryPrimitives.EdgePoint ordered(i), 0.5, x, y
                 Exit For
             End If
         Next i
@@ -330,14 +288,14 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
                 ' Временный замкнутый контур должен иметь положительный winding для
                 ' геометрической проверки, независимо от исходного обхода.
                 If SignedLoopArea(ordered, count, otherLoop) < 0# Then
-                    For j = 1 To oneCount: ReverseEdge oneLoop(j): Next j
+                    For j = 1 To oneCount: modGeometryPrimitives.ReverseEdge oneLoop(j): Next j
                 End If
                 If ContainsRaw(oneLoop, oneCount, x, y, False) Then depth = depth + 1
             End If
         Next otherLoop
         If (area > 0# And depth Mod 2 = 1) Or (area < 0# And depth Mod 2 = 0) Then
             For i = 1 To count
-                If ordered(i).LoopID = loopID Then ReverseEdge ordered(i)
+                If ordered(i).LoopID = loopID Then modGeometryPrimitives.ReverseEdge ordered(i)
             Next i
         End If
     Next loopID
@@ -354,25 +312,25 @@ Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As 
         For j = i + 1 To count
             adjacent = False
             If edges(i).LoopID = edges(j).LoopID Then
-                adjacent = SamePoint(edges(i).X2, edges(i).Y2, edges(j).X1, edges(j).Y1) Or _
-                    SamePoint(edges(j).X2, edges(j).Y2, edges(i).X1, edges(i).Y1)
+                adjacent = modGeometryPrimitives.SamePoint(edges(i).X2, edges(i).Y2, edges(j).X1, edges(j).Y1) Or _
+                    modGeometryPrimitives.SamePoint(edges(j).X2, edges(j).Y2, edges(i).X1, edges(i).Y1)
             End If
             Erase cuts: cutCount = 0
-            EdgeIntersectionCuts edges(i), edges(j), cuts, cutCount
+            modGeometryPrimitives.EdgeIntersectionCuts edges(i), edges(j), cuts, cutCount
             For k = 1 To cutCount
                 If Not adjacent Or (cuts(k) > PARAM_TOLERANCE And cuts(k) < 1# - PARAM_TOLERANCE) Then _
                     GeometryError "Заданная геометрия содержит пересечение, касание независимых замкнутых контуров или дублирующее ребро."
             Next k
             Erase cuts: cutCount = 0
-            EdgeIntersectionCuts edges(j), edges(i), cuts, cutCount
+            modGeometryPrimitives.EdgeIntersectionCuts edges(j), edges(i), cuts, cutCount
             For k = 1 To cutCount
                 If Not adjacent Or (cuts(k) > PARAM_TOLERANCE And cuts(k) < 1# - PARAM_TOLERANCE) Then _
                     GeometryError "Заданная геометрия содержит пересечение, касание независимых замкнутых контуров или дублирующее ребро."
             Next k
             ' Полностью совпадающие сегменты могут иметь только концевые
             ' пересечения. Проверяем их середины без аппроксимации дуг.
-            EdgePoint edges(i), 0.5, x, y
-            If PointParameter(edges(j), x, y, u) Then
+            modGeometryPrimitives.EdgePoint edges(i), 0.5, x, y
+            If modGeometryPrimitives.PointParameter(edges(j), x, y, u) Then
                 If u > PARAM_TOLERANCE And u < 1# - PARAM_TOLERANCE Then _
                     GeometryError "Заданный контур содержит совпадающие граничные сегменты."
             End If
@@ -408,7 +366,7 @@ Public Function ConnectedRegionAtPoint(ByVal region As CConcreteRegion, ByVal x 
             If SignedLoopArea(edges, count, loopID) < 0# Then
                 For i = 1 To count
                     If edges(i).LoopID = loopID Then
-                        EdgePoint edges(i), 0.5, sampleX, sampleY
+                        modGeometryPrimitives.EdgePoint edges(i), 0.5, sampleX, sampleY
                         Exit For
                     End If
                 Next i
@@ -488,7 +446,7 @@ Private Function BoundariesMeet(ByVal first As CConcreteRegion, ByVal second As 
     For i = 1 To na
         For j = 1 To nb
             Erase cuts: count = 0
-            EdgeIntersectionCuts a(i), b(j), cuts, count
+            modGeometryPrimitives.EdgeIntersectionCuts a(i), b(j), cuts, count
             If count > 0 Then BoundariesMeet = True: Exit Function
         Next j
     Next i
@@ -501,7 +459,7 @@ Private Function MaterialSampleInside(ByVal first As CConcreteRegion, ByVal seco
     Dim edges() As TRegionEdge, count As Long, i As Long, x As Double, y As Double, tx As Double, ty As Double, length As Double
     first.CopyEdges edges, count
     For i = 1 To count
-        EdgePoint edges(i), 0.5, x, y: EdgeTangent edges(i), 0.5, tx, ty
+        modGeometryPrimitives.EdgePoint edges(i), 0.5, x, y: modGeometryPrimitives.EdgeTangent edges(i), 0.5, tx, ty
         length = Sqr(tx * tx + ty * ty)
         If ContainsPoint(second, x - ty / length * QUERY_TOLERANCE * 8#, y + tx / length * QUERY_TOLERANCE * 8#, False) Then _
             MaterialSampleInside = True: Exit Function
@@ -516,7 +474,7 @@ Private Function AllMaterialSamplesInside(ByVal first As CConcreteRegion, ByVal 
     first.CopyEdges edges, count
     If count = 0 Then Exit Function
     For i = 1 To count
-        EdgePoint edges(i), 0.5, x, y
+        modGeometryPrimitives.EdgePoint edges(i), 0.5, x, y
         If Not ContainsPoint(second, x, y, False) Then Exit Function
     Next i
     AllMaterialSamplesInside = True
@@ -528,7 +486,7 @@ Private Function AnyBoundarySampleInside(ByVal first As CConcreteRegion, ByVal s
     Dim edges() As TRegionEdge, count As Long, i As Long, x As Double, y As Double
     first.CopyEdges edges, count
     For i = 1 To count
-        EdgePoint edges(i), 0.5, x, y
+        modGeometryPrimitives.EdgePoint edges(i), 0.5, x, y
         If ContainsPoint(second, x, y, False) Then AnyBoundarySampleInside = True: Exit Function
     Next i
 End Function
@@ -542,7 +500,7 @@ Public Function SubtractRegion(ByVal outer As CConcreteRegion, ByVal opening As 
     outer.CopyEdges raw, count
     opening.CopyEdges holes, holeCount
     For i = 1 To holeCount
-        ReverseEdge holes(i)
+        modGeometryPrimitives.ReverseEdge holes(i)
         AppendEdge raw, count, holes(i)
     Next i
     Dim boundary() As TRegionEdge, boundaryCount As Long
@@ -559,9 +517,9 @@ Public Function RegionsCoincide(ByVal first As CConcreteRegion, ByVal second As 
     Dim edges() As TRegionEdge, count As Long, i As Long, perimeter As Double
     Dim difference As CConcreteRegion, tolerance As Double
     first.CopyEdges edges, count
-    For i = 1 To count: perimeter = perimeter + EdgeLength(edges(i)): Next i
+    For i = 1 To count: perimeter = perimeter + modGeometryPrimitives.EdgeLength(edges(i)): Next i
     second.CopyEdges edges, count
-    For i = 1 To count: perimeter = perimeter + EdgeLength(edges(i)): Next i
+    For i = 1 To count: perimeter = perimeter + modGeometryPrimitives.EdgeLength(edges(i)): Next i
     tolerance = QUERY_TOLERANCE * GeomMax(QUERY_TOLERANCE, perimeter)
     If Abs(first.Area - second.Area) > tolerance Then Exit Function
     Set difference = SubtractRegion(first, second)
@@ -603,20 +561,20 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
     Dim i As Long, j As Long, x As Double, y As Double, piece As TRegionEdge
     For i = 1 To rawCount
         Erase cuts: cutCount = 0
-        AddScalar cuts, cutCount, 0#: AddScalar cuts, cutCount, 1#
-        HalfPlaneCuts raw(i), nx, ny, bound, cuts, cutCount
+        modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
+        modGeometryPrimitives.HalfPlaneCuts raw(i), nx, ny, bound, cuts, cutCount
         SortScalars cuts, cutCount
         For j = 1 To cutCount
-            EdgePoint raw(i), cuts(j), x, y
+            modGeometryPrimitives.EdgePoint raw(i), cuts(j), x, y
             If Abs(nx * x + ny * y - bound) <= QUERY_TOLERANCE Then _
-                AddScalar lineCuts, lineCount, ny * x - nx * y
+                modGeometryPrimitives.AddScalar lineCuts, lineCount, ny * x - nx * y
         Next j
         For j = 1 To cutCount - 1
-            EdgePoint raw(i), 0.5 * (cuts(j) + cuts(j + 1)), x, y
+            modGeometryPrimitives.EdgePoint raw(i), 0.5 * (cuts(j) + cuts(j + 1)), x, y
             ' Короткая поддуга возле касания может целиком лежать внутри,
             ' но ближе допуска к прямой. Ее удаление разрывает контур.
             If nx * x + ny * y > bound Then
-                SubEdge raw(i), cuts(j), cuts(j + 1), piece
+                modGeometryPrimitives.SubEdge raw(i), cuts(j), cuts(j + 1), piece
                 ' Совпадающий с прямой отрезок создается ниже один раз.
                 If Abs(piece.Sweep) > PARAM_TOLERANCE Or _
                         Abs(nx * piece.X1 + ny * piece.Y1 - bound) > QUERY_TOLERANCE Or _
@@ -677,20 +635,20 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
     Dim i As Long, j As Long, k As Long, x As Double, y As Double, u As Double, radius As Double
     region.CopyEdges raw, rawCount
     For i = 1 To rawCount
-        AddScalar transverseCuts, transverseCount, -ny * raw(i).X1 + nx * raw(i).Y1
-        AddScalar transverseCuts, transverseCount, -ny * raw(i).X2 + nx * raw(i).Y2
+        modGeometryPrimitives.AddScalar transverseCuts, transverseCount, -ny * raw(i).X1 + nx * raw(i).Y1
+        modGeometryPrimitives.AddScalar transverseCuts, transverseCount, -ny * raw(i).X2 + nx * raw(i).Y2
         If Abs(raw(i).Sweep) > PARAM_TOLERANCE Then
             radius = Sqr((raw(i).X1 - raw(i).CenterX) ^ 2 + (raw(i).Y1 - raw(i).CenterY) ^ 2)
-            If PointParameter(raw(i), raw(i).CenterX - ny * radius, raw(i).CenterY + nx * radius, u) Then _
-                AddScalar transverseCuts, transverseCount, -ny * raw(i).CenterX + nx * raw(i).CenterY + radius
-            If PointParameter(raw(i), raw(i).CenterX + ny * radius, raw(i).CenterY - nx * radius, u) Then _
-                AddScalar transverseCuts, transverseCount, -ny * raw(i).CenterX + nx * raw(i).CenterY - radius
+            If modGeometryPrimitives.PointParameter(raw(i), raw(i).CenterX - ny * radius, raw(i).CenterY + nx * radius, u) Then _
+                modGeometryPrimitives.AddScalar transverseCuts, transverseCount, -ny * raw(i).CenterX + nx * raw(i).CenterY + radius
+            If modGeometryPrimitives.PointParameter(raw(i), raw(i).CenterX + ny * radius, raw(i).CenterY - nx * radius, u) Then _
+                modGeometryPrimitives.AddScalar transverseCuts, transverseCount, -ny * raw(i).CenterX + nx * raw(i).CenterY - radius
         End If
         Erase cuts: cutCount = 0
-        HalfPlaneCuts raw(i), nx, ny, seedPlane, cuts, cutCount
+        modGeometryPrimitives.HalfPlaneCuts raw(i), nx, ny, seedPlane, cuts, cutCount
         For j = 1 To cutCount
-            EdgePoint raw(i), cuts(j), x, y
-            AddScalar transverseCuts, transverseCount, -ny * x + nx * y
+            modGeometryPrimitives.EdgePoint raw(i), cuts(j), x, y
+            modGeometryPrimitives.AddScalar transverseCuts, transverseCount, -ny * x + nx * y
         Next j
     Next i
     SortScalars transverseCuts, transverseCount
@@ -702,23 +660,23 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
     ' на линейную аппроксимацию и сохраняют аналитический вклад в площадь.
     For i = 1 To rawCount
         Erase cuts: cutCount = 0
-        AddScalar cuts, cutCount, 0#: AddScalar cuts, cutCount, 1#
+        modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
         For j = 1 To transverseCount
-            HalfPlaneCuts raw(i), -ny, nx, transverseCuts(j), cuts, cutCount
+            modGeometryPrimitives.HalfPlaneCuts raw(i), -ny, nx, transverseCuts(j), cuts, cutCount
         Next j
         SortScalars cuts, cutCount
         For j = 1 To cutCount - 1
-            SubEdge raw(i), cuts(j), cuts(j + 1), piece
-            If EdgeLength(piece) > QUERY_TOLERANCE Then
-                EdgePoint piece, 0.5, x, y
-                EdgeTangent piece, 0.5, tangentX, tangentY
+            modGeometryPrimitives.SubEdge raw(i), cuts(j), cuts(j + 1), piece
+            If modGeometryPrimitives.EdgeLength(piece) > QUERY_TOLERANCE Then
+                modGeometryPrimitives.EdgePoint piece, 0.5, x, y
+                modGeometryPrimitives.EdgeTangent piece, 0.5, tangentX, tangentY
                 length = Sqr(tangentX * tangentX + tangentY * tangentY)
                 leftInside = InMaterialIntervalThroughPlane(region, nx, ny, seedPlane, _
                     x - tangentY / length * QUERY_TOLERANCE * 8#, y + tangentX / length * QUERY_TOLERANCE * 8#)
                 rightInside = InMaterialIntervalThroughPlane(region, nx, ny, seedPlane, _
                     x + tangentY / length * QUERY_TOLERANCE * 8#, y - tangentX / length * QUERY_TOLERANCE * 8#)
                 If leftInside <> rightInside Then
-                    If rightInside Then ReverseEdge piece
+                    If rightInside Then modGeometryPrimitives.ReverseEdge piece
                     AppendUniqueBoundary boundary, boundaryCount, piece, seen
                 End If
             End If
@@ -733,22 +691,22 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
         If Not IsEmpty(intervals) Then
             Erase nCuts: nCount = 0
             For j = LBound(intervals, 1) To UBound(intervals, 1)
-                AddScalar nCuts, nCount, intervals(j, 1): AddScalar nCuts, nCount, intervals(j, 2)
+                modGeometryPrimitives.AddScalar nCuts, nCount, intervals(j, 1): modGeometryPrimitives.AddScalar nCuts, nCount, intervals(j, 2)
             Next j
             ' На совпавшей грани opening общий interval включает boundary.
             ' Сохраняем также все реальные узлы пересечения: иначе можно
             ' ошибочно продолжить замыкающий отрезок за край пустоты.
             For k = 1 To rawCount
                 Erase cuts: cutCount = 0
-                HalfPlaneCuts raw(k), -ny, nx, t, cuts, cutCount
-                AddScalar cuts, cutCount, 0#: AddScalar cuts, cutCount, 1#
+                modGeometryPrimitives.HalfPlaneCuts raw(k), -ny, nx, t, cuts, cutCount
+                modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
                 For j = 1 To cutCount
-                    EdgePoint raw(k), cuts(j), x, y
+                    modGeometryPrimitives.EdgePoint raw(k), cuts(j), x, y
                     If Abs(-ny * x + nx * y - t) <= QUERY_TOLERANCE Then _
-                        AddScalar nCuts, nCount, nx * x + ny * y
+                        modGeometryPrimitives.AddScalar nCuts, nCount, nx * x + ny * y
                 Next j
             Next k
-            AddScalar nCuts, nCount, seedPlane
+            modGeometryPrimitives.AddScalar nCuts, nCount, seedPlane
             SortScalars nCuts, nCount
             For j = 1 To nCount - 1
                 n1 = nCuts(j): n2 = nCuts(j + 1)
@@ -763,7 +721,7 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
                         piece.X1 = nx * n1 - ny * t: piece.Y1 = ny * n1 + nx * t
                         piece.X2 = nx * n2 - ny * t: piece.Y2 = ny * n2 + nx * t
                         piece.CenterX = 0#: piece.CenterY = 0#: piece.Sweep = 0#: piece.LoopID = 0
-                        If rightInside Then ReverseEdge piece
+                        If rightInside Then modGeometryPrimitives.ReverseEdge piece
                         AppendUniqueBoundary boundary, boundaryCount, piece, seen
                     End If
                 End If
@@ -804,8 +762,8 @@ Private Sub AppendUniqueBoundary(ByRef edges() As TRegionEdge, ByRef count As Lo
     If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
         For i = 1 To count
             If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
-                If PointParameter(edges(i), edge.X1, edge.Y1, u1) And _
-                        PointParameter(edges(i), edge.X2, edge.Y2, u2) Then
+                If modGeometryPrimitives.PointParameter(edges(i), edge.X1, edge.Y1, u1) And _
+                        modGeometryPrimitives.PointParameter(edges(i), edge.X2, edge.Y2, u2) Then
                     If u2 > u1 Then Exit Sub
                 End If
             End If
@@ -842,11 +800,11 @@ Friend Function LabelBoundaryDistance(ByVal region As CConcreteRegion, ByVal x A
     region.CopyEdges edges, count: inside = ContainsRaw(edges, count, x, y, True)
     nearest = 1E+100: signedDistance = 0#
     For i = 1 To count
-        If EdgeRayHit(edges(i), x, y, normalX, normalY, distance, parameter) Then
+        If modGeometryPrimitives.EdgeRayHit(edges(i), x, y, normalX, normalY, distance, parameter) Then
             If distance < nearest Then nearest = distance: signedDistance = distance: LabelBoundaryDistance = True
         End If
         If Not inside Then
-            If EdgeRayHit(edges(i), x, y, -normalX, -normalY, distance, parameter) Then
+            If modGeometryPrimitives.EdgeRayHit(edges(i), x, y, -normalX, -normalY, distance, parameter) Then
                 If distance < nearest Then nearest = distance: signedDistance = -distance: LabelBoundaryDistance = True
             End If
         End If
@@ -869,7 +827,7 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
             dx = edges(i).X2 - edges(i).X1: dy = edges(i).Y2 - edges(i).Y1
             u = ((x - edges(i).X1) * dx + (y - edges(i).Y1) * dy) / (dx * dx + dy * dy)
             u = GeomMax(0#, GeomMin(1#, u))
-            EdgePoint edges(i), u, px, py
+            modGeometryPrimitives.EdgePoint edges(i), u, px, py
             distance = Sqr((x - px) ^ 2 + (y - py) ^ 2)
         Else
             dx = x - edges(i).CenterX: dy = y - edges(i).CenterY
@@ -877,7 +835,7 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
             radius = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
             If norm > QUERY_TOLERANCE Then
                 px = edges(i).CenterX + radius * dx / norm: py = edges(i).CenterY + radius * dy / norm
-                If PointParameter(edges(i), px, py, u) Then distance = GeomMin(distance, Abs(norm - radius))
+                If modGeometryPrimitives.PointParameter(edges(i), px, py, u) Then distance = GeomMin(distance, Abs(norm - radius))
             End If
         End If
         BoundaryDistance = GeomMin(BoundaryDistance, distance)
@@ -901,7 +859,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
         following = i Mod count + 1
         raw(i).X1 = points(i).X: raw(i).Y1 = points(i).Y
         raw(i).X2 = points(following).X: raw(i).Y2 = points(following).Y
-        lengths(i) = EdgeLength(raw(i))
+        lengths(i) = modGeometryPrimitives.EdgeLength(raw(i))
         If lengths(i) <= QUERY_TOLERANCE Then GeometryError pathID & ": нулевая грань Edge." & names(i) & "."
         directions(i).X = (raw(i).X2 - raw(i).X1) / lengths(i)
         directions(i).Y = (raw(i).Y2 - raw(i).Y1) / lengths(i)
@@ -913,7 +871,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
         previous = (i + count - 2) Mod count + 1
         cross = directions(previous).X * directions(i).Y - directions(previous).Y * directions(i).X
         dot = directions(previous).X * directions(i).X + directions(previous).Y * directions(i).Y
-        turns(i) = AngleOf(dot, cross)
+        turns(i) = modGeometryPrimitives.AngleOf(dot, cross)
         If radius(i) > 0# Then
             If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
                 GeometryError pathID & ": угол вершины '" & names(i) & "' не допускает скругления."
@@ -946,7 +904,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
         End If
         edge.X1 = last(i).X: edge.Y1 = last(i).Y: edge.X2 = first(following).X: edge.Y2 = first(following).Y
         edge.CenterX = 0#: edge.CenterY = 0#: edge.Sweep = 0#
-        If EdgeLength(edge) > QUERY_TOLERANCE Then
+        If modGeometryPrimitives.EdgeLength(edge) > QUERY_TOLERANCE Then
             result.Append "Edge." & names(i), edge
         Else
             result.AddCollapsedSegment "Edge." & names(i)
@@ -1115,7 +1073,7 @@ Private Function CutLineHasMaterial(ByRef edges() As TRegionEdge, ByVal count As
         If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
             If Abs(nx * edges(i).X1 + ny * edges(i).Y1 - bound) <= QUERY_TOLERANCE And _
                     Abs(nx * edges(i).X2 + ny * edges(i).Y2 - bound) <= QUERY_TOLERANCE Then
-                If PointParameter(edges(i), x, y, u) Then
+                If modGeometryPrimitives.PointParameter(edges(i), x, y, u) Then
                     CutLineHasMaterial = nx * (edges(i).Y1 - edges(i).Y2) + _
                         ny * (edges(i).X2 - edges(i).X1) > 0#
                     Exit Function
@@ -1133,7 +1091,7 @@ Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges()
         ByVal count As Long, ByVal x As Double, ByVal y As Double) As Boolean
     Dim i As Long, u As Double
     For i = 1 To count
-        If PointParameter(edges(i), x, y, u) Then
+        If modGeometryPrimitives.PointParameter(edges(i), x, y, u) Then
             ContainsMeshPoint = Not region.LoopIsOpening(edges(i).LoopID)
             Exit Function
         End If
@@ -1163,7 +1121,7 @@ Friend Sub MeshExtremePoints(ByRef edges() As TRegionEdge, ByVal count As Long, 
             For j = 0 To 3
                 x = edges(i).CenterX + radius * Cos(j * GEOM_PI / 2#)
                 y = edges(i).CenterY + radius * Sin(j * GEOM_PI / 2#)
-                If PointParameter(edges(i), x, y, u) Then
+                If modGeometryPrimitives.PointParameter(edges(i), x, y, u) Then
                     n = n + 1: pointX(n) = x: pointY(n) = y
                 End If
             Next j
@@ -1185,14 +1143,14 @@ Friend Function MeshBoundaryCrossesCell(ByRef edges() As TRegionEdge, ByVal coun
                     GeomMin(edges(i).Y1, edges(i).Y2) >= maxY - QUERY_TOLERANCE Then GoTo NextEdge
         End If
         Erase cuts: cutCount = 0
-        AddScalar cuts, cutCount, 0#: AddScalar cuts, cutCount, 1#
-        HalfPlaneCuts edges(i), 1#, 0#, minX, cuts, cutCount
-        HalfPlaneCuts edges(i), 1#, 0#, maxX, cuts, cutCount
-        HalfPlaneCuts edges(i), 0#, 1#, minY, cuts, cutCount
-        HalfPlaneCuts edges(i), 0#, 1#, maxY, cuts, cutCount
+        modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
+        modGeometryPrimitives.HalfPlaneCuts edges(i), 1#, 0#, minX, cuts, cutCount
+        modGeometryPrimitives.HalfPlaneCuts edges(i), 1#, 0#, maxX, cuts, cutCount
+        modGeometryPrimitives.HalfPlaneCuts edges(i), 0#, 1#, minY, cuts, cutCount
+        modGeometryPrimitives.HalfPlaneCuts edges(i), 0#, 1#, maxY, cuts, cutCount
         SortScalars cuts, cutCount
         For j = 1 To cutCount - 1
-            EdgePoint edges(i), (cuts(j) + cuts(j + 1)) / 2#, x, y
+            modGeometryPrimitives.EdgePoint edges(i), (cuts(j) + cuts(j + 1)) / 2#, x, y
             If x > minX + QUERY_TOLERANCE And x < maxX - QUERY_TOLERANCE And _
                     y > minY + QUERY_TOLERANCE And y < maxY - QUERY_TOLERANCE Then
                 MeshBoundaryCrossesCell = True: Exit Function
@@ -1222,13 +1180,13 @@ Public Function LineIntervals(ByVal region As CConcreteRegion, ByVal pointX As D
     lineBound = lineNormalX * pointX + lineNormalY * pointY
     For i = 1 To count
         Erase localCuts: localCount = 0
-        HalfPlaneCuts edges(i), lineNormalX, lineNormalY, lineBound, localCuts, localCount
-        AddScalar localCuts, localCount, 0#: AddScalar localCuts, localCount, 1#
+        modGeometryPrimitives.HalfPlaneCuts edges(i), lineNormalX, lineNormalY, lineBound, localCuts, localCount
+        modGeometryPrimitives.AddScalar localCuts, localCount, 0#: modGeometryPrimitives.AddScalar localCuts, localCount, 1#
         For j = 1 To localCount
-            EdgePoint edges(i), localCuts(j), x, y
+            modGeometryPrimitives.EdgePoint edges(i), localCuts(j), x, y
             If Abs(lineNormalX * x + lineNormalY * y - lineBound) <= QUERY_TOLERANCE Then
                 t = (x - pointX) * directionX + (y - pointY) * directionY
-                AddScalar cuts, cutCount, t
+                modGeometryPrimitives.AddScalar cuts, cutCount, t
             End If
         Next j
     Next i
@@ -1427,7 +1385,7 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
     Next i
     Dim remaining() As TRegionEdge, remainingCount As Long
     For i = 1 To edgeCount
-        If EdgeLength(edges(i)) > QUERY_TOLERANCE Then AppendEdge remaining, remainingCount, edges(i)
+        If modGeometryPrimitives.EdgeLength(edges(i)) > QUERY_TOLERANCE Then AppendEdge remaining, remainingCount, edges(i)
     Next i
     NormalizeBoundary remaining, remainingCount, boundary, count
     Dim ordered() As TRegionEdge, loopCount As Long
@@ -1477,7 +1435,7 @@ Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, By
             momentY = momentY - (edge.X2 - edge.X1) * (edge.Y1 ^ 2 + edge.Y1 * edge.Y2 + edge.Y2 ^ 2) / 6#
         Else
             radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
-            a = AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY): b = a + edge.Sweep
+            a = modGeometryPrimitives.AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY): b = a + edge.Sweep
             sa = Sin(a): sb = Sin(b): ca = Cos(a): cb = Cos(b)
             integralCos2 = edge.Sweep / 2# + (Sin(2# * b) - Sin(2# * a)) / 4#
             integralSin2 = edge.Sweep / 2# - (Sin(2# * b) - Sin(2# * a)) / 4#
@@ -1521,23 +1479,23 @@ Private Sub NormalizeBoundary(ByRef raw() As TRegionEdge, ByVal rawCount As Long
     Dim leftInside As Boolean, rightInside As Boolean, seen As Object, key As String
     Set seen = CreateObject("Scripting.Dictionary")
     For i = 1 To rawCount
-        If EdgeLength(raw(i)) <= QUERY_TOLERANCE Then GoTo NextEdge
+        If modGeometryPrimitives.EdgeLength(raw(i)) <= QUERY_TOLERANCE Then GoTo NextEdge
         Erase cuts: cutCount = 0
-        AddScalar cuts, cutCount, 0#: AddScalar cuts, cutCount, 1#
+        modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
         For j = 1 To rawCount
-            If i <> j Then EdgeIntersectionCuts raw(i), raw(j), cuts, cutCount
+            If i <> j Then modGeometryPrimitives.EdgeIntersectionCuts raw(i), raw(j), cuts, cutCount
         Next j
         SortScalars cuts, cutCount
         For k = 1 To cutCount - 1
-            SubEdge raw(i), cuts(k), cuts(k + 1), part
-            If EdgeLength(part) > QUERY_TOLERANCE Then
-                EdgePoint part, 0.5, x, y
-                EdgeTangent part, 0.5, tx, ty
+            modGeometryPrimitives.SubEdge raw(i), cuts(k), cuts(k + 1), part
+            If modGeometryPrimitives.EdgeLength(part) > QUERY_TOLERANCE Then
+                modGeometryPrimitives.EdgePoint part, 0.5, x, y
+                modGeometryPrimitives.EdgeTangent part, 0.5, tx, ty
                 length = Sqr(tx * tx + ty * ty)
                 leftInside = ContainsRaw(raw, rawCount, x - ty / length * QUERY_TOLERANCE * 8#, y + tx / length * QUERY_TOLERANCE * 8#, False)
                 rightInside = ContainsRaw(raw, rawCount, x + ty / length * QUERY_TOLERANCE * 8#, y - tx / length * QUERY_TOLERANCE * 8#, False)
                 If leftInside <> rightInside Then
-                    If rightInside Then ReverseEdge part
+                    If rightInside Then modGeometryPrimitives.ReverseEdge part
                     key = PointKey(part.X1, part.Y1) & "/" & PointKey(part.X2, part.Y2) & "/" & Format$(part.Sweep, "0.0000000000")
                     If Not seen.Exists(key) Then
                         AppendEdge boundary, boundaryCount, part
@@ -1600,16 +1558,16 @@ Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef
             Do
                 position = position + 1: current.LoopID = loopCount
                 LSet ordered(position) = current
-                If SamePoint(current.X2, current.Y2, first.X1, first.Y1) Then Exit Do
+                If modGeometryPrimitives.SamePoint(current.X2, current.Y2, first.X1, first.Y1) Then Exit Do
                 candidate = 0: bestTurn = -1E+100: reverseCandidate = False
                 For j = 1 To count
                     If Not used(j) Then
                         LSet testEdge = edges(j)
-                        If SamePoint(current.X2, current.Y2, testEdge.X1, testEdge.Y1) Then
+                        If modGeometryPrimitives.SamePoint(current.X2, current.Y2, testEdge.X1, testEdge.Y1) Then
                             turn = EdgeTurn(current, testEdge)
                             If turn > bestTurn Then candidate = j: bestTurn = turn: reverseCandidate = False
-                        ElseIf allowReverse And SamePoint(current.X2, current.Y2, testEdge.X2, testEdge.Y2) Then
-                            ReverseEdge testEdge
+                        ElseIf allowReverse And modGeometryPrimitives.SamePoint(current.X2, current.Y2, testEdge.X2, testEdge.Y2) Then
+                            modGeometryPrimitives.ReverseEdge testEdge
                             turn = EdgeTurn(current, testEdge)
                             If turn > bestTurn Then candidate = j: bestTurn = turn: reverseCandidate = True
                         End If
@@ -1617,7 +1575,7 @@ Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef
                 Next j
                 If candidate = 0 Then GeometryError "Контур не замкнут возле точки X=" & CStr(current.X2) & "; Y=" & CStr(current.Y2) & "."
                 LSet current = edges(candidate)
-                If reverseCandidate Then ReverseEdge current
+                If reverseCandidate Then modGeometryPrimitives.ReverseEdge current
                 used(candidate) = True
                 If position > count Then GeometryError "Нарушена топология замкнутых контуров."
             Loop
@@ -1635,7 +1593,7 @@ Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal
         If Abs(area) <= QUERY_TOLERANCE Then GeometryError "Заданный контур имеет нулевую площадь."
         If (area > 0# And opening) Or (area < 0# And Not opening) Then
             For i = 1 To count
-                If ordered(i).LoopID = loopID Then ReverseEdge ordered(i)
+                If ordered(i).LoopID = loopID Then modGeometryPrimitives.ReverseEdge ordered(i)
             Next i
         End If
     Next loopID
@@ -1685,7 +1643,7 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
     Dim countedStart As Boolean, countedEnd As Boolean
     For i = 1 To count
         If includeBoundary Then
-            If PointParameter(edges(i), x, y, u) Then ContainsRaw = True: Exit Function
+            If modGeometryPrimitives.PointParameter(edges(i), x, y, u) Then ContainsRaw = True: Exit Function
         End If
         If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
             ' Стык с дугой должен считаться одной вершиной: координата конца
@@ -1700,19 +1658,19 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
             End If
         Else
             Erase cuts: cutCount = 0
-            HalfPlaneCuts edges(i), 0#, 1#, y, cuts, cutCount
+            modGeometryPrimitives.HalfPlaneCuts edges(i), 0#, 1#, y, cuts, cutCount
             ' Угловой параметр может выйти за [0,1] при луче в пределах
             ' линейного допуска от конца дуги. Сохраняем саму общую вершину.
-            If Abs(edges(i).Y1 - y) <= QUERY_TOLERANCE Then AddScalar cuts, cutCount, 0#
-            If Abs(edges(i).Y2 - y) <= QUERY_TOLERANCE Then AddScalar cuts, cutCount, 1#
+            If Abs(edges(i).Y1 - y) <= QUERY_TOLERANCE Then modGeometryPrimitives.AddScalar cuts, cutCount, 0#
+            If Abs(edges(i).Y2 - y) <= QUERY_TOLERANCE Then modGeometryPrimitives.AddScalar cuts, cutCount, 1#
             countedStart = False: countedEnd = False
             For j = 1 To cutCount
                 u = cuts(j)
                 If u >= 0# And u <= 1# Then
                     ' Близкий к общей вершине arc-параметр согласуется с
                     ' прямым ребром по тому же линейному допуску, не по углу.
-                    If u * EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 0#
-                    If (1# - u) * EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 1#
+                    If u * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 0#
+                    If (1# - u) * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 1#
                     If u = 0# Then
                         If countedStart Then GoTo NextCrossing
                         countedStart = True
@@ -1720,8 +1678,8 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
                         If countedEnd Then GoTo NextCrossing
                         countedEnd = True
                     End If
-                    EdgePoint edges(i), u, px, py
-                    EdgeTangent edges(i), u, tx, ty
+                    modGeometryPrimitives.EdgePoint edges(i), u, px, py
+                    modGeometryPrimitives.EdgeTangent edges(i), u, tx, ty
                     dy = ty
                     ' Как у отрезков, учитываем нижний конец и исключаем
                     ' верхний. Просто [0,1) для дуги неверно при стыке с
@@ -1739,198 +1697,28 @@ NextCrossing:
     ContainsRaw = (winding > 0)
 End Function
 
-' Добавляет параметры пересечения сегмента с бесконечной линией n*P=bound.
-' Касание дает одну точку; совпадающий отрезок добавляет оба конца.
-Private Sub HalfPlaneCuts(ByRef edge As TRegionEdge, ByVal nx As Double, ByVal ny As Double, _
-        ByVal bound As Double, ByRef cuts() As Double, ByRef count As Long)
-    Dim f1 As Double, f2 As Double, u As Double
-    If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-        f1 = nx * edge.X1 + ny * edge.Y1 - bound
-        f2 = nx * edge.X2 + ny * edge.Y2 - bound
-        If Abs(f1) <= QUERY_TOLERANCE Then AddScalar cuts, count, 0#
-        If Abs(f2) <= QUERY_TOLERANCE Then AddScalar cuts, count, 1#
-        If Abs(f1 - f2) > GEOM_TOLERANCE Then
-            u = f1 / (f1 - f2)
-            If u > PARAM_TOLERANCE And u < 1# - PARAM_TOLERANCE Then AddScalar cuts, count, u
-        End If
-    Else
-        Dim radius As Double, norm As Double, distance As Double, bx As Double, by As Double, offset As Double
-        Dim roundoff As Double
-        radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
-        norm = Sqr(nx * nx + ny * ny)
-        distance = (bound - nx * edge.CenterX - ny * edge.CenterY) / norm
-        If Abs(distance) > radius + QUERY_TOLERANCE Then Exit Sub
-        roundoff = 3.5527136788005E-15 * _
-            ((Abs(bound) + Abs(nx * edge.CenterX) + Abs(ny * edge.CenterY)) / norm + radius + 1#)
-        If Abs(Abs(distance) - radius) <= roundoff Then distance = Sgn(distance) * radius
-        ' Допуск допускает касание снаружи, но не схлопывает настоящую
-        ' секущую изнутри: даже малая глубина дает два разных конца дуги.
-        If Abs(distance) > radius Then distance = Sgn(distance) * radius
-        bx = edge.CenterX + nx / norm * distance: by = edge.CenterY + ny / norm * distance
-        offset = Sqr(GeomMax((radius - Abs(distance)) * (radius + Abs(distance)), 0#))
-        If PointParameter(edge, bx - ny / norm * offset, by + nx / norm * offset, u) Then AddScalar cuts, count, u
-        If PointParameter(edge, bx + ny / norm * offset, by - nx / norm * offset, u) Then AddScalar cuts, count, u
-    End If
-End Sub
-
-' Вычисляет пересечения пары аналитических сегментов, включая совпадающие
-' линии/дуги. Параметры добавляются только на первом сегменте для его разбиения.
-Private Sub EdgeIntersectionCuts(ByRef a As TRegionEdge, ByRef b As TRegionEdge, _
-        ByRef cuts() As Double, ByRef count As Long)
-    Dim u As Double, v As Double, dx As Double, dy As Double, denominator As Double, x As Double, y As Double
-    If PointParameter(a, b.X1, b.Y1, u) Then AddScalar cuts, count, u
-    If PointParameter(a, b.X2, b.Y2, u) Then AddScalar cuts, count, u
-    If Abs(a.Sweep) <= PARAM_TOLERANCE And Abs(b.Sweep) <= PARAM_TOLERANCE Then
-        dx = a.X2 - a.X1: dy = a.Y2 - a.Y1
-        denominator = dx * (b.Y2 - b.Y1) - dy * (b.X2 - b.X1)
-        If Abs(denominator) <= GEOM_TOLERANCE Then Exit Sub
-        u = ((b.X1 - a.X1) * (b.Y2 - b.Y1) - (b.Y1 - a.Y1) * (b.X2 - b.X1)) / denominator
-        If u < -PARAM_TOLERANCE Or u > 1# + PARAM_TOLERANCE Then Exit Sub
-        EdgePoint a, u, x, y
-        If PointParameter(b, x, y, v) Then AddScalar cuts, count, GeomMax(0#, GeomMin(1#, u))
-    ElseIf Abs(a.Sweep) <= PARAM_TOLERANCE Or Abs(b.Sweep) <= PARAM_TOLERANCE Then
-        Dim arc As TRegionEdge, line As TRegionEdge, arcCuts() As Double, arcCount As Long, i As Long
-        If Abs(a.Sweep) > PARAM_TOLERANCE Then
-            LSet arc = a: LSet line = b
-        Else
-            LSet arc = b: LSet line = a
-        End If
-        dx = line.X2 - line.X1: dy = line.Y2 - line.Y1
-        HalfPlaneCuts arc, -dy, dx, -dy * line.X1 + dx * line.Y1, arcCuts, arcCount
-        For i = 1 To arcCount
-            EdgePoint arc, arcCuts(i), x, y
-            If PointParameter(line, x, y, v) And PointParameter(a, x, y, u) Then AddScalar cuts, count, u
-        Next i
-    Else
-        Dim r1 As Double, r2 As Double, distance As Double, along As Double, height As Double, bx As Double, by As Double
-        r1 = Sqr((a.X1 - a.CenterX) ^ 2 + (a.Y1 - a.CenterY) ^ 2)
-        r2 = Sqr((b.X1 - b.CenterX) ^ 2 + (b.Y1 - b.CenterY) ^ 2)
-        dx = b.CenterX - a.CenterX: dy = b.CenterY - a.CenterY: distance = Sqr(dx * dx + dy * dy)
-        If distance <= QUERY_TOLERANCE Then Exit Sub
-        If distance > r1 + r2 + QUERY_TOLERANCE Or distance < Abs(r1 - r2) - QUERY_TOLERANCE Then Exit Sub
-        along = (r1 * r1 - r2 * r2 + distance * distance) / (2# * distance)
-        height = Sqr(GeomMax(r1 * r1 - along * along, 0#))
-        bx = a.CenterX + along * dx / distance: by = a.CenterY + along * dy / distance
-        x = bx - height * dy / distance: y = by + height * dx / distance
-        If PointParameter(a, x, y, u) And PointParameter(b, x, y, v) Then AddScalar cuts, count, u
-        x = bx + height * dy / distance: y = by - height * dx / distance
-        If PointParameter(a, x, y, u) And PointParameter(b, x, y, v) Then AddScalar cuts, count, u
-    End If
-End Sub
-
-' Проверяет принадлежность точки аналитическому сегменту и возвращает u.
-' У дуг angle-wrap учитывается по signed sweep, без зависимости от глобальных осей.
-Private Function PointParameter(ByRef edge As TRegionEdge, ByVal x As Double, ByVal y As Double, ByRef u As Double) As Boolean
-    Dim dx As Double, dy As Double, lengthSquared As Double, px As Double, py As Double
-    If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-        dx = edge.X2 - edge.X1: dy = edge.Y2 - edge.Y1: lengthSquared = dx * dx + dy * dy
-        If lengthSquared <= QUERY_TOLERANCE * QUERY_TOLERANCE Then Exit Function
-        u = ((x - edge.X1) * dx + (y - edge.Y1) * dy) / lengthSquared
-        If u < -PARAM_TOLERANCE Or u > 1# + PARAM_TOLERANCE Then Exit Function
-        px = edge.X1 + u * dx: py = edge.Y1 + u * dy
-        PointParameter = SamePoint(px, py, x, y)
-    Else
-        Dim radius As Double, pointRadius As Double, startAngle As Double, pointAngle As Double, delta As Double
-        radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
-        pointRadius = Sqr((x - edge.CenterX) ^ 2 + (y - edge.CenterY) ^ 2)
-        If Abs(radius - pointRadius) > QUERY_TOLERANCE Then Exit Function
-        startAngle = AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY)
-        pointAngle = AngleOf(x - edge.CenterX, y - edge.CenterY)
-        delta = pointAngle - startAngle
-        If edge.Sweep > 0# Then
-            Do While delta < -PARAM_TOLERANCE: delta = delta + 2# * GEOM_PI: Loop
-        Else
-            Do While delta > PARAM_TOLERANCE: delta = delta - 2# * GEOM_PI: Loop
-        End If
-        u = delta / edge.Sweep
-        PointParameter = (u >= -PARAM_TOLERANCE And u <= 1# + PARAM_TOLERANCE)
-    End If
-    If PointParameter Then u = GeomMax(0#, GeomMin(1#, u))
-End Function
-
-' Возвращает точку аналитического сегмента по u от нуля до единицы.
-Friend Sub EdgePoint(ByRef edge As TRegionEdge, ByVal u As Double, ByRef x As Double, ByRef y As Double)
-    If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-        x = edge.X1 + u * (edge.X2 - edge.X1): y = edge.Y1 + u * (edge.Y2 - edge.Y1)
-    Else
-        Dim angle As Double, radius As Double
-        angle = AngleOf(edge.X1 - edge.CenterX, edge.Y1 - edge.CenterY) + u * edge.Sweep
-        radius = Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
-        x = edge.CenterX + radius * Cos(angle): y = edge.CenterY + radius * Sin(angle)
-    End If
-End Sub
-
-' Возвращает касательную в направлении обхода; ее длина не нормируется.
-Friend Sub EdgeTangent(ByRef edge As TRegionEdge, ByVal u As Double, ByRef tx As Double, ByRef ty As Double)
-    If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-        tx = edge.X2 - edge.X1: ty = edge.Y2 - edge.Y1
-    Else
-        Dim x As Double, y As Double
-        EdgePoint edge, u, x, y
-        tx = -(y - edge.CenterY) * edge.Sweep: ty = (x - edge.CenterX) * edge.Sweep
-    End If
-End Sub
-
-' Выделяет точный подотрезок/поддугу после пересечения; центр и signed sweep
-' остаются аналитическими, поэтому площадь не зависит от плотности рисунка.
-Friend Sub SubEdge(ByRef original As TRegionEdge, ByVal u1 As Double, ByVal u2 As Double, ByRef result As TRegionEdge)
-    LSet result = original
-    EdgePoint original, u1, result.X1, result.Y1
-    EdgePoint original, u2, result.X2, result.Y2
-    result.Sweep = original.Sweep * (u2 - u1): result.LoopID = 0
-End Sub
-
-' Обращает сегмент вместе со знаком дуги, сохраняя ту же физическую границу.
-Friend Sub ReverseEdge(ByRef edge As TRegionEdge)
-    Dim value As Double
-    value = edge.X1: edge.X1 = edge.X2: edge.X2 = value
-    value = edge.Y1: edge.Y1 = edge.Y2: edge.Y2 = value
-    edge.Sweep = -edge.Sweep
-End Sub
-
 ' Возвращает угол поворота касательной при обходе узла topology.
 Private Function EdgeTurn(ByRef previous As TRegionEdge, ByRef following As TRegionEdge) As Double
     Dim ax As Double, ay As Double, bx As Double, by As Double
-    EdgeTangent previous, 1#, ax, ay: EdgeTangent following, 0#, bx, by
-    EdgeTurn = AngleOf(ax * bx + ay * by, ax * by - ay * bx)
-End Function
-
-' Возвращает atan2 в диапазоне -pi..pi без обращения к Excel.
-Private Function AngleOf(ByVal x As Double, ByVal y As Double) As Double
-    If Abs(x) <= GEOM_TOLERANCE Then
-        AngleOf = Sgn(y) * GEOM_PI / 2#
-    Else
-        AngleOf = Atn(y / x)
-        If x < 0# Then
-            If y >= 0# Then AngleOf = AngleOf + GEOM_PI Else AngleOf = AngleOf - GEOM_PI
-        End If
-    End If
+    modGeometryPrimitives.EdgeTangent previous, 1#, ax, ay: modGeometryPrimitives.EdgeTangent following, 0#, bx, by
+    EdgeTurn = modGeometryPrimitives.AngleOf(ax * bx + ay * by, ax * by - ay * bx)
 End Function
 
 ' Проверяет соответствие концов дуги центру и signed sweep; неверный явный
 ' контур не подменяется fallback по сетке.
 Private Sub ValidateArc(ByRef edge As TRegionEdge)
     Dim x As Double, y As Double
-    If EdgeLength(edge) <= QUERY_TOLERANCE Then GeometryError "Заданная дуга имеет нулевую длину."
-    EdgePoint edge, 1#, x, y
-    If Not SamePoint(x, y, edge.X2, edge.Y2) Then GeometryError "Конец дуги не соответствует ее центру и углу."
+    If modGeometryPrimitives.EdgeLength(edge) <= QUERY_TOLERANCE Then GeometryError "Заданная дуга имеет нулевую длину."
+    modGeometryPrimitives.EdgePoint edge, 1#, x, y
+    If Not modGeometryPrimitives.SamePoint(x, y, edge.X2, edge.Y2) Then GeometryError "Конец дуги не соответствует ее центру и углу."
 End Sub
-
-' Возвращает физическую длину сегмента для исключения вырожденных ребер.
-Friend Function EdgeLength(ByRef edge As TRegionEdge) As Double
-    If Abs(edge.Sweep) <= PARAM_TOLERANCE Then
-        EdgeLength = Sqr((edge.X2 - edge.X1) ^ 2 + (edge.Y2 - edge.Y1) ^ 2)
-    Else
-        EdgeLength = Abs(edge.Sweep) * Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2)
-    End If
-End Function
 
 ' Добавляет невырожденный отрезок в рабочий массив границы.
 Private Sub AddLine(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal x1 As Double, _
         ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double)
     Dim edge As TRegionEdge
     edge.X1 = x1: edge.Y1 = y1: edge.X2 = x2: edge.Y2 = y2
-    If EdgeLength(edge) > QUERY_TOLERANCE Then AppendEdge edges, count, edge
+    If modGeometryPrimitives.EdgeLength(edge) > QUERY_TOLERANCE Then AppendEdge edges, count, edge
 End Sub
 
 ' Добавляет четыре точных четверти окружности с заданной ролью замкнутого контура.
@@ -1972,18 +1760,6 @@ Private Sub CopyArray(ByRef source() As TRegionEdge, ByVal count As Long, ByRef 
     Next i
 End Sub
 
-' Добавляет скалярный параметр без дублей; размерный допуск выбирается
-' вызывающим пересечением, а здесь сравнивается относительная точность Double.
-Private Sub AddScalar(ByRef values() As Double, ByRef count As Long, ByVal value As Double)
-    Dim i As Long
-    For i = 1 To count
-        If Abs(values(i) - value) <= PARAM_TOLERANCE Then Exit Sub
-    Next i
-    If count = 0 Then ReDim values(1 To 8)
-    If count = UBound(values) Then ReDim Preserve values(1 To UBound(values) * 2)
-    count = count + 1: values(count) = value
-End Sub
-
 ' Упорядочивает небольшие наборы параметров intersections без объектов на точку.
 Private Sub SortScalars(ByRef values() As Double, ByVal count As Long)
     Dim i As Long, j As Long, value As Double
@@ -1996,11 +1772,6 @@ Private Sub SortScalars(ByRef values() As Double, ByVal count As Long)
         values(j + 1) = value
     Next i
 End Sub
-
-' Централизует допуск совпадения концов, вершин и принадлежности границе.
-Private Function SamePoint(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As Boolean
-    SamePoint = (Abs(x1 - x2) <= QUERY_TOLERANCE And Abs(y1 - y2) <= QUERY_TOLERANCE)
-End Function
 
 ' Hash-ключ только ускоряет удаление полностью совпадающих внутренних ребер.
 ' Геометрическая принадлежность и частичные совпадения затем проверяются точно.
