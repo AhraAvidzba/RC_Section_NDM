@@ -1,6 +1,6 @@
 ﻿# Направленная native-приёмка общего updater на отдельной книге.
 param([Parameter(Mandatory=$true)][string]$WorkbookPath,
-    [Parameter(Mandatory=$true)][string]$ReportDirectory,[switch]$Verify)
+    [Parameter(Mandatory=$true)][string]$ReportDirectory,[switch]$Verify,[string]$PreviousLayoutPath='')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SectionRecipeGuide.ps1')
@@ -44,7 +44,7 @@ try {
     $namesBefore=@($book.Names | ForEach-Object {$_.Name})
     $excel.Calculation=-4135;$excel.ScreenUpdating=$true;$excel.EnableEvents=$false;$excel.DisplayAlerts=$true
     $state=States $excel
-    $first=Update-SectionRecipeGuide $book $root
+    $first=Update-SectionRecipeGuide $book $root $PreviousLayoutPath
     Assert-States $state $excel
     $first | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $directory 'NativeMap.json') -Encoding UTF8
     $errorStateTests=@()
@@ -80,7 +80,7 @@ try {
     $book.Save();$book.Close($false);$book=$null
     $book=$excel.Workbooks.Open($path,0,$true);$sheet=$book.Worksheets.Item('Справка')
     $range=$book.Names.Item('rngSectionRecipeGuide').RefersToRange
-    $lines=@(Get-RecipeGuideNativeLines $sheet $second.StartRow ($second.EndRow-1))
+    $lines=@(Get-RecipeGuideNativeLines $sheet $second.StartRow $second.EndRow)
     if ((Get-RecipeGuideTextHash $lines) -cne $second.BodySHA256) {throw 'Guide text changed after reopen.'}
     $navigation=@()
     if ($Verify) {

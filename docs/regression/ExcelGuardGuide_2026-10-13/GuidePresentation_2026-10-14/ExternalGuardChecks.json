@@ -1,0 +1,10 @@
+﻿{
+    "Passed":  true,
+    "Checks":  [
+                   "Current guide accepted without marker",
+                   "Legacy marker removable only with unchanged external text",
+                   "Explicit previous external layout accepted",
+                   "Manual edit rejected and retained",
+                   "Legacy marker cannot authorize edited guide"
+               ]
+}

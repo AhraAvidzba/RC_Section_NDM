@@ -1,7 +1,7 @@
 {
-  "schema": 2,
+  "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "508bc65230984b2b62496372312956ade1f1b7ae23e1ab288bd7648726b33797",
+  "bodySHA256": "4ea2d3dc1d8986154ed0851216b1924b7d8a58460606ca3642b394f640d0eb3b",
   "sourceHashes": {
     "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "86cc1aa8bce14b9b8f5fbcd365e5e7d3891627271c507eb3f047d022457f2f56",
     "src/Common/modSectionRecipeApiGuide.bas": "9c734479c34c38e7f218dcae2faf9ec2ee110e4a7c26d000a06fb4f60609f4b0"
@@ -368,8 +368,8 @@
       "line": 66
     },
     {
-      "text": "NDM.RECIPE.GUIDE/2|508bc65230984b2b62496372312956ade1f1b7ae23e1ab288bd7648726b33797|9c734479c34c38e7f218dcae2faf9ec2ee110e4a7c26d000a06fb4f60609f4b0",
-      "style": "footer"
+      "text": "",
+      "style": "spacer"
     }
   ],
   "sections": [],

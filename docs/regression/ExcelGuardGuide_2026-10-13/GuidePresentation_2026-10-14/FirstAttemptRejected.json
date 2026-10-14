@@ -1,0 +1,383 @@
+{
+  "Passed": false,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "HelpCellsChanged": [
+    "A612"
+  ],
+  "HelpRowHeights": [
+    {
+      "Row": 552,
+      "Before": 26.1,
+      "After": 24.0
+    },
+    {
+      "Row": 553,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 554,
+      "Before": 21.0,
+      "After": 18.0
+    },
+    {
+      "Row": 555,
+      "Before": 21.0,
+      "After": 18.0
+    },
+    {
+      "Row": 556,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 557,
+      "Before": 23.1,
+      "After": 21.0
+    },
+    {
+      "Row": 558,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 559,
+      "Before": 57.0,
+      "After": 44.1
+    },
+    {
+      "Row": 560,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 561,
+      "Before": 57.0,
+      "After": 44.1
+    },
+    {
+      "Row": 562,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 563,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 564,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 565,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 566,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 567,
+      "Before": 39.0,
+      "After": 18.95
+    },
+    {
+      "Row": 568,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 569,
+      "Before": 23.1,
+      "After": 21.0
+    },
+    {
+      "Row": 570,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 571,
+      "Before": 21.0,
+      "After": 18.0
+    },
+    {
+      "Row": 572,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 573,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 574,
+      "Before": 57.0,
+      "After": 44.1
+    },
+    {
+      "Row": 575,
+      "Before": 57.0,
+      "After": 30.95
+    },
+    {
+      "Row": 576,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 577,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 578,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 579,
+      "Before": 23.1,
+      "After": 21.0
+    },
+    {
+      "Row": 580,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 581,
+      "Before": 39.0,
+      "After": 18.95
+    },
+    {
+      "Row": 582,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 583,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 584,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 585,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 586,
+      "Before": 21.0,
+      "After": 18.0
+    },
+    {
+      "Row": 587,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 588,
+      "Before": 23.1,
+      "After": 21.0
+    },
+    {
+      "Row": 589,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 590,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 591,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 592,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 593,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 594,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 595,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 596,
+      "Before": 39.0,
+      "After": 30.95
+    },
+    {
+      "Row": 597,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 598,
+      "Before": 23.1,
+      "After": 21.0
+    },
+    {
+      "Row": 599,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 600,
+      "Before": 21.0,
+      "After": 18.0
+    },
+    {
+      "Row": 601,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 602,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 603,
+      "Before": 21.0,
+      "After": 18.95
+    },
+    {
+      "Row": 604,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 605,
+      "Before": 21.0,
+      "After": 18.0
+    },
+    {
+      "Row": 606,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 607,
+      "Before": 23.1,
+      "After": 21.0
+    },
+    {
+      "Row": 608,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 609,
+      "Before": 57.0,
+      "After": 30.95
+    },
+    {
+      "Row": 610,
+      "Before": 21.0,
+      "After": 9.0
+    },
+    {
+      "Row": 611,
+      "Before": 57.0,
+      "After": 30.95
+    },
+    {
+      "Row": 612,
+      "Before": 21.0,
+      "After": 9.0
+    }
+  ],
+  "NativeComponents": 157,
+  "NativeCodeUnchanged": true,
+  "NoEmbeddedMarkers": true,
+  "CandidateSHA256": "aadeaf91e9c0df498ba3ea7953a14a59b5627e47c50874bf2eb231efd14cbf6e",
+  "NativeSHA256": "760a59cbd31a4630b91386bae93dd258cf00892f92b272be16e284a9c36d4fb2",
+  "Errors": [
+    "Row metadata changed: Справка!552",
+    "Row metadata changed: Справка!553",
+    "Row metadata changed: Справка!554",
+    "Row metadata changed: Справка!555",
+    "Row metadata changed: Справка!556",
+    "Row metadata changed: Справка!557",
+    "Row metadata changed: Справка!558",
+    "Row metadata changed: Справка!559",
+    "Row metadata changed: Справка!560",
+    "Row metadata changed: Справка!561",
+    "Row metadata changed: Справка!562",
+    "Row metadata changed: Справка!563",
+    "Row metadata changed: Справка!564",
+    "Row metadata changed: Справка!565",
+    "Row metadata changed: Справка!566",
+    "Row metadata changed: Справка!567",
+    "Row metadata changed: Справка!568",
+    "Row metadata changed: Справка!569",
+    "Row metadata changed: Справка!570",
+    "Row metadata changed: Справка!571",
+    "Row metadata changed: Справка!572",
+    "Row metadata changed: Справка!573",
+    "Row metadata changed: Справка!574",
+    "Row metadata changed: Справка!575",
+    "Row metadata changed: Справка!576",
+    "Row metadata changed: Справка!577",
+    "Row metadata changed: Справка!578",
+    "Row metadata changed: Справка!579",
+    "Row metadata changed: Справка!580",
+    "Row metadata changed: Справка!581",
+    "Row metadata changed: Справка!582",
+    "Row metadata changed: Справка!583",
+    "Row metadata changed: Справка!584",
+    "Row metadata changed: Справка!585",
+    "Row metadata changed: Справка!586",
+    "Row metadata changed: Справка!587",
+    "Row metadata changed: Справка!588",
+    "Row metadata changed: Справка!589",
+    "Row metadata changed: Справка!590",
+    "Row metadata changed: Справка!591",
+    "Row metadata changed: Справка!592",
+    "Row metadata changed: Справка!593",
+    "Row metadata changed: Справка!594",
+    "Row metadata changed: Справка!595",
+    "Row metadata changed: Справка!596",
+    "Row metadata changed: Справка!597",
+    "Row metadata changed: Справка!598",
+    "Row metadata changed: Справка!599",
+    "Row metadata changed: Справка!600",
+    "Row metadata changed: Справка!601",
+    "Row metadata changed: Справка!602",
+    "Row metadata changed: Справка!603",
+    "Row metadata changed: Справка!604",
+    "Row metadata changed: Справка!605",
+    "Row metadata changed: Справка!606",
+    "Row metadata changed: Справка!607",
+    "Row metadata changed: Справка!608",
+    "Row metadata changed: Справка!609",
+    "Row metadata changed: Справка!610",
+    "Row metadata changed: Справка!611",
+    "Row metadata changed: Справка!612"
+  ]
+}

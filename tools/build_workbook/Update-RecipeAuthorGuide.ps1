@@ -1,5 +1,5 @@
-# Обновляет текст существующей справки автора, сохраняя её оформление и прочие данные.
-param([Parameter(Mandatory=$true)][string]$WorkbookPath)
+﻿# Обновляет текст существующей справки автора, сохраняя её оформление и прочие данные.
+param([Parameter(Mandatory=$true)][string]$WorkbookPath,[string]$PreviousLayoutPath='')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
@@ -25,26 +25,21 @@ try {
     $range=$book.Names.Item('rngSectionRecipeGuide').RefersToRange
     if($range.Columns.Count -ne 6 -or $range.Rows.Count -ne $layout.rows.Count){throw 'Unexpected guide layout.'}
     $old=@(Get-RecipeGuideNativeLines $range.Worksheet $range.Row ($range.Row+$range.Rows.Count-1))
-    if($old[-1] -notmatch '^NDM.RECIPE.GUIDE/2\|([a-f0-9]{64})\|[a-f0-9]{64}$'){throw 'Missing guide footer.'}
-    if((Get-RecipeGuideTextHash $old[0..($old.Count-2)]) -cne $Matches[1]){throw 'Guide was edited; reconcile before replacing.'}
+    Assert-RecipeGuidePreviousContent $old $layout $PreviousLayoutPath
     $changed=@()
     for($i=0;$i -lt $layout.rows.Count;$i++) {
         $text=[string]$layout.rows[$i].text
         if($old[$i] -ceq $text){continue}
         $cell=$range.Cells.Item($i+1,1)
-        $hidden=[bool]$cell.EntireRow.Hidden
         $cell.Value2=$text
-        if($layout.rows[$i].style -eq 'paragraph') {
-            $chars=[Math]::Max(20,[Math]::Floor(($cell.MergeArea.Width-16)/6.7))
-            $height=18*[Math]::Max(1,[Math]::Ceiling($text.Length/$chars))+3
-            $cell.EntireRow.RowHeight=[Math]::Max($cell.RowHeight,$height)
-            $cell.EntireRow.Hidden=$hidden
-        }
         $changed+=,[string]$cell.Address($false,$false)
     }
+    $heights=@(Set-RecipeGuideRowHeights $range.Worksheet $range.Row $layout)
+    $actual=@(Get-RecipeGuideNativeLines $range.Worksheet $range.Row ($range.Row+$range.Rows.Count-1))
+    if((Get-RecipeGuideTextHash $actual) -cne $layout.bodySHA256){throw 'Saved guide text differs from external layout.'}
     $book.Save();$book.Close($false);$book=$null
     Restore-WorkbookPrintAreas $path $areas
-    [ordered]@{ChangedCells=$changed;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path (Split-Path $path -Parent) 'GuideUpdate.json') -Encoding UTF8
+    [ordered]@{ChangedCells=$changed;RowHeights=$heights;WorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path (Split-Path $path -Parent) 'GuideUpdate.json') -Encoding UTF8
     Write-Output ('GUIDE_UPDATED: '+($changed -join ','))
 } finally {
     if($book){$book.Close($false)}

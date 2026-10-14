@@ -43,8 +43,68 @@ function Set-RecipeGuideMatrix($Target,[object[,]]$Matrix) {
     $Target.Value2=$Matrix
 }
 
+function Assert-RecipeGuidePreviousContent([string[]]$Actual,$Layout,[string]$PreviousLayoutPath='') {
+    # Проверка по внешнему описанию защищает ручные правки без меток внутри книги.
+    $expected=$Layout
+    if ($PreviousLayoutPath) {
+        $expected=Get-Content -LiteralPath $PreviousLayoutPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    }
+    if ($Actual.Count -ne $expected.rows.Count) {throw 'Guide row count differs from its external baseline.'}
+    for ($i=0;$i -lt $Actual.Count;$i++) {
+        $text=[string]$expected.rows[$i].text
+        if ($expected.rows[$i].cells) {$text=@($expected.rows[$i].cells) -join "`t"}
+        if ($Actual[$i] -ceq $text) {continue}
+        # Однократное удаление старой метки допускается только при точном
+        # совпадении всех остальных строк с внешним описанием.
+        if (-not $PreviousLayoutPath -and $i -eq $Actual.Count-1 -and $text -eq '' -and
+            $Actual[$i] -cmatch '^NDM\.RECIPE\.GUIDE/[12]\|[0-9a-f]{64}\|[0-9a-f]{64}$') {continue}
+        throw ('Guide owner content was edited; reconcile its external baseline before replacing row '+($i+1)+'.')
+    }
+}
+
+function Set-RecipeGuideRowHeights($Sheet,[int]$First,$Layout) {
+    # Excel не выполняет AutoFit для объединённых ячеек. Измеряем текст
+    # тем же шрифтом и по фактической ширине; прежняя высота не сохраняется.
+    Add-Type -AssemblyName System.Drawing
+    $bitmap=New-Object Drawing.Bitmap(1,1)
+    $bitmap.SetResolution(96,96)
+    $graphics=[Drawing.Graphics]::FromImage($bitmap)
+    $format=[Drawing.StringFormat]::GenericDefault.Clone()
+    $format.Trimming=[Drawing.StringTrimming]::None
+    $changes=@()
+    try {
+        for ($i=0;$i -lt $Layout.rows.Count;$i++) {
+            $cell=$Sheet.Cells.Item($First+$i,1)
+            $hidden=[bool]$cell.EntireRow.Hidden
+            $cell.EntireRow.Hidden=$false
+            $before=[double]$cell.RowHeight
+            $height=9.0
+            $fields=1
+            if ($Layout.rows[$i].cells) {$fields=$Layout.rows[$i].cells.Count}
+            for ($column=1;$column -le $fields;$column++) {
+                $field=$Sheet.Cells.Item($First+$i,$column)
+                $text=[string]$field.Value2
+                if ($text.Length -eq 0) {continue}
+                $style=[Drawing.FontStyle]::Regular
+                if ($field.Font.Bold) {$style=$style -bor [Drawing.FontStyle]::Bold}
+                if ($field.Font.Italic) {$style=$style -bor [Drawing.FontStyle]::Italic}
+                $font=New-Object Drawing.Font([string]$field.Font.Name,[single]$field.Font.Size,$style)
+                try {
+                    $width=[single][Math]::Max(20,($field.MergeArea.Width-12)*96/72)
+                    $size=$graphics.MeasureString($text,$font,$width,$format)
+                    $height=[Math]::Max($height,[Math]::Min(409,[Math]::Max(18,[Math]::Ceiling($size.Height*72/96)+4)))
+                } finally {$font.Dispose()}
+            }
+            $cell.EntireRow.RowHeight=$height
+            $cell.EntireRow.Hidden=$hidden
+            if ($before -ne $height) {$changes+=,[ordered]@{Row=$First+$i;Before=$before;After=$height}}
+        }
+    } finally {$format.Dispose();$graphics.Dispose();$bitmap.Dispose()}
+    return $changes
+}
+
 function Update-SectionRecipeGuide {
-    param([Parameter(Mandatory=$true)]$Workbook,[Parameter(Mandatory=$true)][string]$Root)
+    param([Parameter(Mandatory=$true)]$Workbook,[Parameter(Mandatory=$true)][string]$Root,[string]$PreviousLayoutPath='')
     $application=$Workbook.Application
     $saved=[ordered]@{Calculation=[int]$application.Calculation;ScreenUpdating=[bool]$application.ScreenUpdating;
         EnableEvents=[bool]$application.EnableEvents;DisplayAlerts=[bool]$application.DisplayAlerts}
@@ -53,13 +113,13 @@ function Update-SectionRecipeGuide {
         $application.Calculation=-4135
         $layoutPath=Join-Path $Root 'docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json'
         $layout=Get-Content -LiteralPath $layoutPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ($layout.schema -ne 2) {throw 'Unsupported guide layout schema.'}
+        if ($layout.schema -ne 3) {throw 'Unsupported guide layout schema.'}
         foreach ($property in $layout.sourceHashes.PSObject.Properties) {
             if ((Get-FileHash -LiteralPath (Join-Path $Root $property.Name)).Hash.ToLowerInvariant() -cne $property.Value) {
                 throw ('Guide content is stale: '+$property.Name)
             }
         }
-        if ((Get-RecipeGuideTextHash @($layout.rows | Select-Object -SkipLast 1 | ForEach-Object {$_.text})) -cne $layout.bodySHA256) {throw 'Guide layout hash mismatch.'}
+        if ((Get-RecipeGuideTextHash @($layout.rows | ForEach-Object {$_.text})) -cne $layout.bodySHA256) {throw 'Guide layout hash mismatch.'}
         $sheet=$Workbook.Worksheets.Item('Справка')
         $owner=$null
         foreach ($name in $Workbook.Names) {if ($name.Name -eq 'rngSectionRecipeGuide') {$owner=$name;break}}
@@ -69,11 +129,8 @@ function Update-SectionRecipeGuide {
             $oldStart=[int]$old.Row;$oldEnd=$oldStart+[int]$old.Rows.Count-1
             if ($old.Worksheet.Name -cne $sheet.Name -or $old.Column -ne 1 -or $old.Columns.Count -ne 6 -or $old.Rows.Count -lt 3) {throw 'Guide owner range is invalid.'}
             if ([string]$sheet.Cells.Item($oldStart,1).Value2 -cne $layout.title) {throw 'Guide owner title was changed; refusing to clear user content.'}
-            $footer=[string]$sheet.Cells.Item($oldEnd,1).Value2
-            if ($footer -notmatch '^NDM\.RECIPE\.GUIDE/[12]\|([0-9a-f]{64})\|[0-9a-f]{64}$') {throw 'Guide owner footer is invalid.'}
-            $expected=$Matches[1]
-            $oldLines=@(Get-RecipeGuideNativeLines $sheet $oldStart ($oldEnd-1))
-            if ((Get-RecipeGuideTextHash $oldLines) -cne $expected) {throw 'Guide owner content was edited; refusing to clear user content.'}
+            $oldLines=@(Get-RecipeGuideNativeLines $sheet $oldStart $oldEnd)
+            Assert-RecipeGuidePreviousContent $oldLines $layout $PreviousLayoutPath
             foreach ($shape in $sheet.Shapes) {
                 if ($shape.TopLeftCell.Row -le $oldEnd -and $shape.BottomRightCell.Row -ge $oldStart) {throw 'A user shape overlaps the owned guide.'}
             }
@@ -120,35 +177,17 @@ function Update-SectionRecipeGuide {
         $range.WrapText=$true;$range.VerticalAlignment=-4160;$range.HorizontalAlignment=-4131
         $range.Borders.LineStyle=1;$range.Borders.Color=14277081
         $range.EntireRow.Hidden=$false;$range.EntireRow.RowHeight=18
-        $byStyle=@{};$byHeight=@{}
+        $byStyle=@{}
         for ($i=0;$i -lt $layout.rows.Count;$i++) {
             $row=$start+$i;$style=[string]$layout.rows[$i].style
             if (-not $byStyle.ContainsKey($style)) {$byStyle[$style]=New-Object System.Collections.Generic.List[string]}
             $byStyle[$style].Add("A${row}:F${row}")
-            $size=11;$pointPerCharacter=6.7
-            if ($style -in 'title','h1') {$size=16;$pointPerCharacter=9.8}
-            elseif ($style -in 'h2','h3') {$size=13;$pointPerCharacter=8}
-            # Консервативная оценка с запасом; длинная строка остаётся одним
-            # исходным значением, чтобы пояснение или вызов можно было скопировать.
-            $characters=[Math]::Max(20,[Math]::Floor(($width-16)/$pointPerCharacter))
-            $lines=[Math]::Max(1,[Math]::Ceiling(([string]$layout.rows[$i].text).Length/$characters))
-            $height=[Math]::Min(409,($size+7)*$lines+3)
             if ($layout.rows[$i].cells) {
-                $fields=@($layout.rows[$i].cells);$maximumLines=1
-                for ($column=0;$column -lt $fields.Count;$column++) {
-                    $cell=$sheet.Cells.Item($row,$column+1)
-                    $cellWidth=[double]$cell.MergeArea.Width
-                    $span=[Math]::Max(10,[Math]::Floor(($cellWidth-12)/$pointPerCharacter))
-                    $maximumLines=[Math]::Max($maximumLines,[Math]::Ceiling(([string]$fields[$column]).Length/$span))
-                }
-                $height=[Math]::Min(409,($size+7)*$maximumLines+3)
                 if ($layout.rows[$i].tableHeader) {
                     $tableRow=$sheet.Range($sheet.Cells.Item($row,1),$sheet.Cells.Item($row,6))
                     $tableRow.Font.Bold=$true;$tableRow.Interior.Color=14277081
                 }
             }
-            if (-not $byHeight.ContainsKey($height)) {$byHeight[$height]=New-Object System.Collections.Generic.List[string]}
-            $byHeight[$height].Add("A${row}:F${row}")
         }
         foreach ($style in $byStyle.Keys) {
             $addresses=$byStyle[$style]
@@ -161,15 +200,9 @@ function Update-SectionRecipeGuide {
                 elseif ($style -in 'h2','h3') {$styled.Font.Size=13}
                 elseif ($style -eq 'code') {$styled.Font.Name='Consolas';$styled.Interior.Color=15921906}
                 elseif ($style -eq 'toc') {$styled.Font.Color=12611584;$styled.Font.Underline=2}
-                elseif ($style -eq 'footer') {$styled.Font.Color=7368816}
             }
         }
-        foreach ($height in $byHeight.Keys) {
-            $addresses=$byHeight[$height]
-            foreach ($run in (Get-RecipeGuideRowRuns $addresses)) {
-                $sheet.Range($sheet.Cells.Item($run.First,1),$sheet.Cells.Item($run.Last,6)).EntireRow.RowHeight=[double]$height
-            }
-        }
+        $heightChanges=@(Set-RecipeGuideRowHeights $sheet $start $layout)
         $sectionRows=@{}
         for ($i=0;$i -lt $layout.sections.Count;$i++) {
             $section=$layout.sections[$i];$sectionRow=$start+[int]$section.index
@@ -189,7 +222,7 @@ function Update-SectionRecipeGuide {
         }
         $ref="='Справка'!"+$range.Address()
         if ($null -eq $owner) {$Workbook.Names.Add('rngSectionRecipeGuide',$ref) | Out-Null} else {$owner.RefersTo=$ref}
-        $actualLines=@(Get-RecipeGuideNativeLines $sheet $start ($end-1))
+        $actualLines=@(Get-RecipeGuideNativeLines $sheet $start $end)
         if ((Get-RecipeGuideTextHash $actualLines) -cne $layout.bodySHA256) {
             $different=@()
             for ($i=0;$i -lt $actualLines.Count;$i++) {
@@ -207,7 +240,7 @@ function Update-SectionRecipeGuide {
         foreach ($property in $layout.api.PSObject.Properties) {$apiRows[$property.Name]=$start+[int]$property.Value}
         return [ordered]@{Status='NATIVE_GUIDE_TEXT_MATCH';StartRow=$start;EndRow=$end;OldStartRow=$oldStart;OldEndRow=$oldEnd;
             PreviousContentBottom=$bottom;WidthPoints=$width;Rows=$layout.rows.Count;Members=$layout.members;
-            BodySHA256=$layout.bodySHA256;ApiStatus=$layout.apiStatus;ApiRows=$apiRows;SectionRows=$sectionRows;Outline=$outline}
+            BodySHA256=$layout.bodySHA256;ApiStatus=$layout.apiStatus;ApiRows=$apiRows;SectionRows=$sectionRows;Outline=$outline;RowHeights=$heightChanges}
     } finally {
         $application.Calculation=$saved.Calculation
         $application.ScreenUpdating=$saved.ScreenUpdating

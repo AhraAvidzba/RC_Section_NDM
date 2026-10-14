@@ -1,0 +1,8 @@
+﻿{
+    "Passed":  true,
+    "Rows":  61,
+    "BlankLastRow":  true,
+    "Idempotent":  true,
+    "ManualEditRejected":  true,
+    "MainWorkbookUnchanged":  true
+}
