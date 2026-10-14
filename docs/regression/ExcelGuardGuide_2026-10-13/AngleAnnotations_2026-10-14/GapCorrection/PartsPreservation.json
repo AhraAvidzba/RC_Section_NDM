@@ -1,0 +1,8 @@
+{
+  "Passed": true,
+  "ChangedParts": [
+    "xl/vbaProject.bin"
+  ],
+  "EveryOtherPartByteIdentical": true,
+  "WorkbookSHA256": "e16ebefacb07e54eeffb7970fa8119d15492bb0762aaa230ceb71556420c4ab4"
+}

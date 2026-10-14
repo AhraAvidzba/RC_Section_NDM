@@ -1,0 +1,39 @@
+{
+  "Passed": true,
+  "NativeCases": 56,
+  "Checks": 1553,
+  "CardinalCoordinatesAndTypographyPreserved": [
+    1,
+    4,
+    8,
+    11,
+    15,
+    18,
+    22,
+    25,
+    29,
+    32,
+    36,
+    39,
+    43,
+    46,
+    50,
+    53
+  ],
+  "OnlyRightVerticalRebarTurned180": [
+    11,
+    18,
+    39,
+    46
+  ],
+  "ConfigTextGapCenterAllAnglesPoints": 9,
+  "ActualGlyphGapMatchesHorizontal": true,
+  "GlyphGapPoints": [
+    1.0649313195127235,
+    1.0650565338800941
+  ],
+  "TextRotationParallelAndReadable": true,
+  "DiagonalTextboxSeparationAndLineClearanceChecked": true,
+  "RepeatedDrawingCheckedInVBA": true,
+  "Errors": []
+}

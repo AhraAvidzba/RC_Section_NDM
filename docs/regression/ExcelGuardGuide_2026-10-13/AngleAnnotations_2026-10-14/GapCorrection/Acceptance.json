@@ -1,0 +1,46 @@
+{
+  "Passed": true,
+  "ConfigTextGapSameRuleAtAllAngles": true,
+  "OnlyRightVerticalRebarTurned180": true,
+  "LeftAndDimensionDirectionsPreserved": true,
+  "NativeCases": 56,
+  "NativeChecks": 1553,
+  "LayoutChecks": 928,
+  "GeneralPlotChecks": 3377,
+  "SnapshotChecks": 24,
+  "VisibleGlyphGapSameAtAllAngles": [
+    1.0649313195127235,
+    1.0650565338800941
+  ],
+  "UserDataAndAllNonVbaPartsByteIdentical": true,
+  "Publication": {
+    "PublishedAt": "2026-10-14T22:45:29.2269815+03:00",
+    "WorkbookSHA256": "E16EBEFACB07E54EEFFB7970FA8119D15492BB0762AAA230CEB71556420C4AB4",
+    "AllCodeSHA256": "88BD3C8ED764EE7AF5CC5BB5B117FFF0857C0AC4E403490AE96BBC11661EBB57",
+    "UserExecutionReportUnchanged": true,
+    "ReadbackPending": false,
+    "PublishedCodeMatchesCandidate": true,
+    "AllCodeMatchesActualWorkbookExport": true,
+    "NativeComponents": 157
+  },
+  "Screenshot": "TaperedFacet02/RoundedTapered.png",
+  "FullOnOffRun": false,
+  "Report": "docs/reports/AngleAnnotationGap_2026-10-14.md",
+  "Archives": [
+    {
+      "File": "NativeExports.zip",
+      "Bytes": 2647099,
+      "SHA256": "6c71b6d517ba7efa3871dc5abb86fc563d99d881aa767c29b7c4cd74e5bac512"
+    },
+    {
+      "File": "NativeAngleEvidence.zip",
+      "Bytes": 1056868,
+      "SHA256": "c110ba2efbaa8fc5275c07dfbceb17d1270eab1e7ed94a6ddf208929524c3d9d"
+    },
+    {
+      "File": "DirectedAndFacetEvidence.zip",
+      "Bytes": 91127,
+      "SHA256": "dfd3aa6e2f03bdfacbb0a488382baec5db850ae5a365439ef7b444949d2cfa90"
+    }
+  ]
+}

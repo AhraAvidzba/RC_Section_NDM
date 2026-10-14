@@ -1,0 +1,19 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\AngleAnnotations_2026-10-14\\GapCorrection\\Candidate.xlsm",
+    "WorkbookSHA256":  "0CE4C973038AD8BFB18140D44C324183A5BA7F6D183598468C7C32AD97E6412B",
+    "ProductionSHA256":  "6B2023576FC8058D0D02B37BC0746E26775905A147F087BC674F238DD1C90BC6",
+    "Compiled":  true,
+    "Modules":  [
+                    "CPlotAnnotationLayout",
+                    "CSectionPlotter",
+                    "modTestPlotConfig"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

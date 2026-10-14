@@ -1,0 +1,37 @@
+{
+  "Passed": true,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "InputResultsFormulasStylesAndHelpUnchanged": true,
+  "ChangedDrawings": [],
+  "NativeComponents": 157,
+  "ChangedNativeComponents": [
+    "CPlotAnnotationLayout",
+    "CSectionPlotter",
+    "modTestPlotConfig"
+  ],
+  "VBEIdentifierCaseOnlyComponents": [
+    "CBatchResultWriter",
+    "CCrackSummaryWriter",
+    "CLinearSystem3x3",
+    "CLoadMultiplierSearch",
+    "CSectionPropertiesCalculator",
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRectSet",
+    "CStabilityCalculator",
+    "CStabilitySummaryWriter",
+    "CStrengthSummaryWriter",
+    "modSectionRecipeSetup",
+    "modTestBatchCalculation",
+    "modTestProfileConfig",
+    "modTestWorkbookInterface"
+  ],
+  "NativeChangesRestricted": true,
+  "TemporaryHelpersAbsent": true,
+  "NoEmbeddedMarkers": true,
+  "SavedPrincipalAxesObjects": 2,
+  "SavedContourArcObjects": 4,
+  "CandidateSHA256": "e16ebefacb07e54eeffb7970fa8119d15492bb0762aaa230ceb71556420c4ab4",
+  "NativeSHA256": "88bd3c8ed764ee7af5cc5bb5b117fff0857c0ac4e403490ae96bbc11661ebb57",
+  "Errors": []
+}
