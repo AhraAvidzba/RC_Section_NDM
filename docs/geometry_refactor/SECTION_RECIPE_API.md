@@ -301,7 +301,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:83
         facade.Anchor "TextNote", 200#, 0#
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:154.
+Полный контекст: tests/modTestRecipeAnnotations.bas:235.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -365,7 +365,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:98
     facade.Source "Diagonal", "ProgramInputs.PointB"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:13.
+Полный контекст: tests/modTestRecipeAnnotations.bas:94.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -961,7 +961,7 @@ Public Sub VerticalExtent(ByVal annotationID As String, ByVal target As String, 
 | target | String; ByVal; обязательный | ID пути/PathGroup, разрешаемый в этом определении. |
 | name | String; ByVal; обязательный | Обозначение измерения или имя контейнера. |
 | placementX | Double; ByVal; обязательный | Модельная X размерной линии, мм. |
-| normalX | Double; ByVal; Optional; default=-1# | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
+| normalX | Double; ByVal; Optional; default=-1# | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
@@ -995,7 +995,7 @@ Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String
 | target | String; ByVal; обязательный | ID пути/PathGroup, разрешаемый в этом определении. |
 | name | String; ByVal; обязательный | Обозначение измерения или имя контейнера. |
 | placementY | Double; ByVal; обязательный | Модельная Y размерной линии, мм. |
-| normalY | Double; ByVal; Optional; default=1# | Y-компонента стороны размерной/подписной линии. |
+| normalY | Double; ByVal; Optional; default=1# | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
@@ -1030,7 +1030,7 @@ Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String
 | startX | Double; ByVal; обязательный | Модельная координата startX, мм; знаки соответствуют section XY/WCS. |
 | endX | Double; ByVal; обязательный | Модельная координата endX, мм; знаки соответствуют section XY/WCS. |
 | placementY | Double; ByVal; обязательный | Модельная Y размерной линии, мм. |
-| normalY | Double; ByVal; Optional; default=1# | Y-компонента стороны размерной/подписной линии. |
+| normalY | Double; ByVal; Optional; default=1# | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 | displayIncrement | Double; ByVal; Optional; default=0# | Неотрицательный шаг округления только видимого справочного значения, мм; 0 означает отсутствие такого округления. |
 
@@ -1066,7 +1066,7 @@ Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, 
 | startY | Double; ByVal; обязательный | Модельная координата startY, мм; знаки соответствуют section XY/WCS. |
 | endY | Double; ByVal; обязательный | Модельная координата endY, мм; знаки соответствуют section XY/WCS. |
 | placementX | Double; ByVal; обязательный | Модельная X размерной линии, мм. |
-| normalX | Double; ByVal; Optional; default=-1# | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
+| normalX | Double; ByVal; Optional; default=-1# | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
@@ -1081,7 +1081,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:325
     If previewPlacement Then facade.VerticalDistance "VerticalExplicit", "v", -100#, 0#, 150#, 1# Else facade.VerticalDistance "VerticalExplicit", "v", -100#, 0#, -50#
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:160.
+Полный контекст: tests/modTestRecipeAnnotations.bas:241.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -1090,7 +1090,7 @@ Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; ж
 <a id="api-csectiondefinitionbuilder-dimension"></a>
 ### CSectionDefinitionBuilder.Dimension
 
-Измеряет между двумя именованными точками: Horizontal/Vertical проекция или Aligned расстояние. Проекция размещается через первую точку.
+Измеряет между двумя именованными точками: Horizontal/Vertical — проекция, Aligned — истинное расстояние по соединяющей линии под любым углом. Текст параллелен размерной линии и автоматически разворачивается для удобного чтения. Проекция размещается через первую точку.
 
 ```vb
 Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String, ByVal endAnchorID As String, ByVal name As String, Optional ByVal measurement As String = "Aligned", Optional ByVal normalX As Double = 0#, Optional ByVal normalY As Double = 0#, Optional ByVal comment As String = "")
@@ -1103,8 +1103,8 @@ Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String
 | endAnchorID | String; ByVal; обязательный | ID конечной модельной точки измерения. |
 | name | String; ByVal; обязательный | Обозначение измерения или имя контейнера. |
 | measurement | String; ByVal; Optional; default="Aligned" | Ровно Horizontal, Vertical или Aligned; значение чувствительно к указанному контракту. |
-| normalX | Double; ByVal; Optional; default=0# | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
-| normalY | Double; ByVal; Optional; default=0# | Y-компонента стороны размерной/подписной линии. |
+| normalX | Double; ByVal; Optional; default=0# | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
+| normalY | Double; ByVal; Optional; default=0# | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
@@ -1119,7 +1119,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:337
     facade.Dimension "Diagonal", "A", "B", "s"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:159.
+Полный контекст: tests/modTestRecipeAnnotations.bas:240.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -1154,7 +1154,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:352
     facade.PathLength "Length", "Boundary", "LengthNote"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:171.
+Полный контекст: tests/modTestRecipeAnnotations.bas:252.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -1263,7 +1263,7 @@ Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал:
 <a id="api-csectiondefinitionbuilder-rebarlabel"></a>
 ### CSectionDefinitionBuilder.RebarLabel
 
-Привязывает фактическую подпись группы к габариту target-пути, со стороны normalX/Y.
+Привязывает подпись группы к выбранному пути со стороны normalX/normalY, включая диагональные направления. Опорная линия определяется по точным проекциям отрезков и дуг. Плоттер отсчитывает отступ от ближайшей бетонной границы по нормали; у отверстия сохраняется привязка к его границе. Текст параллелен линии подписи и разворачивается для удобного чтения.
 
 ```vb
 Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double)
@@ -1273,14 +1273,14 @@ Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal nor
 |---|---|---|
 | groupID | String; ByVal; обязательный | Смысловой ID группы; путь и арматурная annotation-group — разные контракты. |
 | target | String; ByVal; обязательный | ID пути/PathGroup, разрешаемый в этом определении. |
-| normalX | Double; ByVal; обязательный | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
-| normalY | Double; ByVal; обязательный | Y-компонента стороны размерной/подписной линии. |
+| normalX | Double; ByVal; обязательный | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
+| normalY | Double; ByVal; обязательный | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:398
+Source: src/Section/CSectionDefinitionBuilder.cls:399
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeExamples.RoundedFrameDefinition с его подготовленными локальными объектами/входом.
 
@@ -1305,14 +1305,14 @@ Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal 
 |---|---|---|
 | groupID | String; ByVal; обязательный | Смысловой ID группы; путь и арматурная annotation-group — разные контракты. |
 | ruleID | String; ByVal; обязательный | Непустой уникальный ID правила; при диагностике — ID ранее исполненного правила. |
-| normalX | Double; ByVal; обязательный | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
-| normalY | Double; ByVal; обязательный | Y-компонента стороны размерной/подписной линии. |
+| normalX | Double; ByVal; обязательный | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
+| normalY | Double; ByVal; обязательный | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:407
+Source: src/Section/CSectionDefinitionBuilder.cls:408
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
 
@@ -1337,15 +1337,15 @@ Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, 
 |---|---|---|
 | groupID | String; ByVal; обязательный | Смысловой ID группы; путь и арматурная annotation-group — разные контракты. |
 | ruleID | String; ByVal; обязательный | Непустой уникальный ID правила; при диагностике — ID ранее исполненного правила. |
-| normalX | Double; ByVal; обязательный | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
-| normalY | Double; ByVal; обязательный | Y-компонента стороны размерной/подписной линии. |
+| normalX | Double; ByVal; обязательный | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
+| normalY | Double; ByVal; обязательный | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 | reverseDirection | Boolean; ByVal; Optional; default=False | Обращает направление линии привязки подписи; физический ряд не меняется. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:416
+Source: src/Section/CSectionDefinitionBuilder.cls:417
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.
 
@@ -1372,7 +1372,7 @@ Public Function Finish() As CSectionDefinition
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:427
+Source: src/Section/CSectionDefinitionBuilder.cls:428
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunDefinitionLifecycleTests с его подготовленными локальными объектами/входом.
 
@@ -1399,14 +1399,14 @@ Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String,
 | ruleID | String; ByVal; обязательный | Непустой уникальный ID правила; при диагностике — ID ранее исполненного правила. |
 | directionX | Double; ByVal; обязательный | X-компонента направления проекции/выбора экстремума; вектор не нулевой, у RebarRowExtremeLabel единичный. |
 | directionY | Double; ByVal; обязательный | Y-компонента направления проекции/выбора экстремума. |
-| normalX | Double; ByVal; обязательный | X-компонента стороны размерной/подписной линии; layout нормирует вектор. |
-| normalY | Double; ByVal; обязательный | Y-компонента стороны размерной/подписной линии. |
+| normalX | Double; ByVal; обязательный | X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт любую, в том числе диагональную, нормаль; длина вектора нормируется. У отверстия направление обращено в пустоту. |
+| normalY | Double; ByVal; обязательный | Y-компонента той же нормали. Например, (1,1) задаёт диагональ вправо-вверх, (0,1) — вверх. Положение текста отсчитывается от соответствующей бетонной границы, включая границу отверстия. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:436
+Source: src/Section/CSectionDefinitionBuilder.cls:437
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
 
@@ -2571,7 +2571,7 @@ Source: src/Section/CSectionDefinition.cls:62
     Check "source.scalar", definition.SourceReference("Diagonal") = "ProgramInputs.PointB"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:15.
+Полный контекст: tests/modTestRecipeAnnotations.bas:96.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -5553,7 +5553,7 @@ Public Property Get IsReadOnly() As Boolean
 
 Ошибки/исправление: 5530: неверные options/длина/step/ClosedUniform, отсутствие hit, конфликт владельца/размещения. Читайте Code/ID/числа/source; Created — фактическое число.
 
-Source: src/Section/CRebarRuleExecutor.cls:774
+Source: src/Section/CRebarRuleExecutor.cls:777
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunPublishedBuildTests с его подготовленными локальными объектами/входом.
 
@@ -8720,7 +8720,7 @@ Source: src/Common/modSectionRecipeTypes.bas:151
     Dim mesh As TSectionMeshOptions
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:178.
+Полный контекст: tests/modTestRecipeAnnotations.bas:259.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 

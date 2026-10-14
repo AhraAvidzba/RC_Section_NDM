@@ -394,7 +394,8 @@ Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal te
     mDefinition.AddAnnotation value
 End Sub
 
-' Привязывает фактическую подпись группы к габариту target-пути, со стороны normalX/Y.
+' Привязывает подпись группы к выбранному пути со стороны normalX/Y.
+' Нормаль может быть наклонной; опорная линия определяется по точной геометрии пути.
 Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen
     Dim value As TSectionAnnotation

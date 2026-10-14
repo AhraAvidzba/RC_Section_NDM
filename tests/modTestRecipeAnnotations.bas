@@ -4,6 +4,94 @@ Option Explicit
 ' ДЛЯ ТЕСТОВ: измерения общего API и сохраненные подписи без повторной сборки.
 Private mPassed As Long, mFailed As Long, mReport As String
 
+' ДЛЯ ТЕСТОВ: точные привязки при наклонных нормалях и сохранность границы отверстия.
+Public Function RunArbitraryAnnotationGeometryTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim degrees As Variant, value As Variant, shape As Variant, angle As Double, nx As Double, ny As Double
+    Dim facade As CSectionDefinitionBuilder, definition As CSectionDefinition, builder As CSectionBuilder, model As CSectionModel
+    Dim path As CGeometryPath, polygon As CPolygonSpec, options As CRebarRuleOptions, support As Double, mx As Double, my As Double
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, distance As Double, prefix As String
+    Dim annotationBuilder As CSectionAnnotationBuilder, repeated As CSectionAnnotations, count As Long
+    degrees = Array(0#, 30#, 45#, 90#, 135#, 225#, 315#)
+    For Each shape In Array("Circle", "Rounded", "HollowRectangle")
+        For Each value In degrees
+            angle = CDbl(value) * GEOM_PI / 180#: nx = Cos(angle): ny = Sin(angle)
+            prefix = CStr(shape) & "." & CStr(value)
+            Set facade = New CSectionDefinitionBuilder: facade.Initialize "AngleFixture"
+            If shape = "HollowRectangle" Then
+                Set polygon = AngleRoundedPolygon(500#, 600#, 160#)
+                Set path = facade.RoundedPolygon("OuterBase", polygon)
+                Set path = facade.Transform("Outer", path.ID, 0#, 0#, angle)
+            Else
+                Set path = facade.CirclePath("Outer", 0#, 0#, 800#)
+            End If
+            facade.Outer "OUTER", path.ID
+            Set options = New CRebarRuleOptions: options.AnnotationGroup = "G"
+            If shape = "Circle" Then
+                Set path = facade.CirclePath("Axis", 0#, 0#, 150#)
+                options.EndMode = ClosedUniform: support = 150#
+                facade.RebarByCount "Bars", path.ID, 8, 10#, options
+            ElseIf shape = "Rounded" Then
+                Set polygon = AngleRoundedPolygon(200#, 300#, 40#)
+                Set path = facade.RoundedPolygon("Axis", polygon)
+                options.EndMode = ClosedUniform
+                support = 160# * Abs(nx) + 260# * Abs(ny) + 40#
+                facade.RebarByCount "Bars", path.ID, 12, 10#, options
+            Else
+                Set polygon = AngleRoundedPolygon(200#, 300#, 80#)
+                Set path = facade.RoundedPolygon("HoleBase", polygon)
+                Set path = facade.Transform("Hole", path.ID, 40#, 20#, angle)
+                facade.Opening "OPENING", path.ID, "OUTER"
+                Set path = facade.LinePath("AxisBase", -240#, -100#, -240#, 100#)
+                Set path = facade.Transform("Axis", path.ID, 40#, 20#, angle)
+                facade.RebarByCount "Bars", path.ID, 2, 10#, options
+            End If
+            facade.RebarLabel "G", path.ID, 2# * nx, 2# * ny
+            Set definition = facade.Finish: Set builder = New CSectionBuilder: Set model = BuildDefinition(definition, builder)
+            Check prefix & ".one.group", model.Annotations.Count = 1
+            mx = 0.5 * (model.Annotations.StartX(1) + model.Annotations.EndX(1))
+            my = 0.5 * (model.Annotations.StartY(1) + model.Annotations.EndY(1))
+            If shape = "HollowRectangle" Then
+                Near prefix & ".anchor.x", mx, 40# - 240# * nx
+                Near prefix & ".anchor.y", my, 20# - 240# * ny
+                Set query = New CSectionGeometryQuery: Set region = query.RegionFromContours(model.Contours)
+                Check prefix & ".hit", query.LabelBoundaryDistance(region, mx, my, nx, ny, distance)
+                Near prefix & ".opening.not.outer", distance, 40#
+                Check prefix & ".opening.role", model.Contours.LoopRole(model.Contours.Count) = "Opening"
+            Else
+                Near prefix & ".support.x", mx, support * nx
+                Near prefix & ".support.y", my, support * ny
+            End If
+            Near prefix & ".line.perpendicular", (model.Annotations.EndX(1) - model.Annotations.StartX(1)) * nx + _
+                (model.Annotations.EndY(1) - model.Annotations.StartY(1)) * ny, 0#
+            count = model.RebarCount
+            Set annotationBuilder = New CSectionAnnotationBuilder: Set repeated = New CSectionAnnotations
+            annotationBuilder.Build definition, builder.Rebars, repeated, builder.Rules
+            Check prefix & ".repeat", repeated.Count = 1 And builder.Rebars.Count = count
+            Near prefix & ".repeat.x", repeated.StartX(1), model.Annotations.StartX(1)
+            Near prefix & ".repeat.y", repeated.StartY(1), model.Annotations.StartY(1)
+        Next value
+    Next shape
+    GoTo Finished
+Failed:
+    Check "arbitrary.geometry.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    RunArbitraryAnnotationGeometryTests = mReport & "TOTAL ARBITRARY ANNOTATION GEOMETRY: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: симметричный скруглённый прямоугольник с известными проекциями.
+Private Function AngleRoundedPolygon(ByVal halfWidth As Double, ByVal halfHeight As Double, ByVal radius As Double) As CPolygonSpec
+    Dim polygon As CPolygonSpec
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "BL", -halfWidth, -halfHeight, radius
+    polygon.AddVertex "BR", halfWidth, -halfHeight, radius
+    polygon.AddVertex "TR", halfWidth, halfHeight, radius
+    polygon.AddVertex "TL", -halfWidth, halfHeight, radius
+    polygon.Seal
+    Set AngleRoundedPolygon = polygon
+End Function
+
 Public Function RunRecipeAnnotationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed

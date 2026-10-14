@@ -313,6 +313,87 @@ Public Function RunAudit03NamedAnnotationTests() As String
     RunAudit03NamedAnnotationTests = stats.Report
 End Function
 
+' ДЛЯ ТЕСТОВ: поворот и рамки наклонных подписей, единицы, стороны и повторный layout.
+Public Function RunArbitraryAnnotationLayoutTests() As String
+    Dim stats As TUiTestStats, fixture As Object, sheet As Object, table As Object, settings As CSystemSettingsReader
+    Dim layout As CPlotAnnotationLayout, degrees As Variant, value As Variant, unit As Variant, side As Variant, frame As Variant
+    Dim angle As Double, dx As Double, dy As Double, nx As Double, ny As Double, sx As Double, sy As Double
+    Dim px As Double, py As Double, length As Double, cx As Double, cy As Double, dot As Double, gap As Double, prefix As String
+    Dim normalX As Double, normalY As Double, sign As Double, qx As Double, qy As Double, item As Variant, counter As Long
+    Dim reverse As Variant, savedRotation As Double, savedLeft As Double
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "AngleLayout"
+    Set table = Audit03PlotSettingsTable(sheet.Range("A5")): Set settings = New CSystemSettingsReader
+    For Each value In Array("Dimensions", "RebarLabels")
+        Audit03SetPlotSetting table, "Plot." & CStr(value) & ".Enabled", "Yes"
+        Audit03SetPlotSetting table, "Plot." & CStr(value) & ".TextHeight", 13#
+        Audit03SetPlotSetting table, "Plot." & CStr(value) & ".TextGap", 9#
+        Audit03SetPlotSetting table, "Plot." & CStr(value) & ".Offset", 30#
+    Next value
+    Audit03SetPlotSetting table, "Plot.RebarLabels.LineEnabled", "Yes"
+    degrees = Array(0#, 30#, 45#, 90#, 135#, 225#, 315#)
+    For Each frame In Array(430#, 640#)
+        sx = 640# / 400#: sy = CDbl(frame) / 400#
+        For Each unit In Array("pt", "mm")
+            Audit03SetPlotSetting table, "Plot.Dimensions.TextUnits", CStr(unit)
+            Audit03SetPlotSetting table, "Plot.RebarLabels.TextUnits", CStr(unit)
+            For Each side In Array("Outside", "Inside")
+                Audit03SetPlotSetting table, "Plot.Dimensions.Placement", CStr(side)
+                Audit03SetPlotSetting table, "Plot.RebarLabels.Placement", CStr(side)
+                settings.LoadFromRange table
+                For Each value In degrees
+                    For Each reverse In Array(1#, -1#)
+                        counter = counter + 1: prefix = "arbitrary.layout." & CStr(counter)
+                        angle = CDbl(value) * GEOM_PI / 180#: dx = Cos(angle) * CDbl(reverse): dy = Sin(angle) * CDbl(reverse)
+                        nx = -dy: ny = dx
+                        Set layout = New CPlotAnnotationLayout: layout.ConfigureFromSettings settings
+                        layout.Initialize -200#, 200#, -200#, 200#, 0#, 0#, 640#, CDbl(frame), "mm"
+                        layout.AddDimension -50# * dx, -50# * dy, 50# * dx, 50# * dy, nx, ny, "L=100"
+                        layout.AddRebarLabel -50# * dx, -50# * dy, 50# * dx, 50# * dy, nx, ny, "8" & ChrW$(216) & "20"
+                        AssertTrue stats, prefix & ".count", layout.Count = 6
+                        px = dx * sx: py = -dy * sy: length = Sqr(px * px + py * py): px = px / length: py = py / length
+                        normalX = nx * sx: normalY = -ny * sy: length = Sqr(normalX * normalX + normalY * normalY)
+                        normalX = normalX / length: normalY = normalY / length
+                        sign = 1#: If side = "Inside" Then sign = -1#
+                        qx = -py: qy = px: If qx * normalX + qy * normalY < 0# Then qx = -qx: qy = -qy
+                        For Each item In Array(4, 6)
+                            If Abs(layout.Rotation(item)) = 90# Then
+                                AssertClose stats, prefix & ".vertical." & CStr(item), Abs(px), 0#, 0.000001
+                                AssertTrue stats, prefix & ".native.vertical." & CStr(item), layout.X2(item) < layout.Y2(item)
+                            Else
+                                angle = layout.Rotation(item) * GEOM_PI / 180#
+                                AssertClose stats, prefix & ".parallel." & CStr(item), Cos(angle) * py - Sin(angle) * px, 0#, 0.000001
+                                AssertTrue stats, prefix & ".readable." & CStr(item), Abs(layout.Rotation(item)) <= 90#
+                            End If
+                            If CDbl(value) <> 0# And CDbl(value) <> 90# Then
+                                cx = layout.X1(item) + layout.X2(item) / 2#: cy = layout.Y1(item) + layout.Y2(item) / 2#
+                                If item = 4 Then cx = cx - 0.5 * (layout.X1(3) + layout.X2(3)): cy = cy - 0.5 * (layout.Y1(3) + layout.Y2(3))
+                                If item = 6 Then cx = cx - 0.5 * (layout.X1(5) + layout.X2(5)): cy = cy - 0.5 * (layout.Y1(5) + layout.Y2(5))
+                                gap = 9#: If unit = "mm" Then gap = 9# * GeomMin(sx, sy)
+                                AssertClose stats, prefix & ".frame.clearance." & CStr(item), sign * (cx * qx + cy * qy) - layout.Y2(item) / 2#, gap, 0.000001
+                            End If
+                        Next item
+                        savedRotation = layout.Rotation(6): savedLeft = layout.X1(6)
+                        layout.Initialize -200#, 200#, -200#, 200#, 0#, 0#, 640#, CDbl(frame), "mm"
+                        layout.AddDimension -50# * dx, -50# * dy, 50# * dx, 50# * dy, nx, ny, "L=100"
+                        layout.AddRebarLabel -50# * dx, -50# * dy, 50# * dx, 50# * dy, nx, ny, "8" & ChrW$(216) & "20"
+                        AssertTrue stats, prefix & ".repeat", layout.Count = 6 And layout.Rotation(6) = savedRotation And layout.X1(6) = savedLeft
+                    Next reverse
+                Next value
+            Next side
+        Next unit
+    Next frame
+    GoTo Finished
+Failed:
+    AssertTrue stats, "arbitrary.layout.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    AppendLine stats, "TOTAL_ARBITRARY_ANNOTATION_LAYOUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunArbitraryAnnotationLayoutTests = stats.Report
+End Function
+
 ' Возвращает применимую ячейку исходной компактной таблицы по runtime-key.
 ' Названия RebarLabels/Dimensions переводятся только тестовой картой;
 ' production reader проверяется независимо через реальную ссылку имени.

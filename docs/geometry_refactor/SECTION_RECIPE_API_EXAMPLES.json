@@ -156,7 +156,7 @@
     },
     "CSectionDefinitionBuilder.Anchor": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 154,
+      "line": 235,
       "routine": "AnnotationFacade",
       "code": "        facade.Anchor \"TextNote\", 200#, 0#",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -203,7 +203,7 @@
     },
     "CSectionDefinitionBuilder.Source": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 13,
+      "line": 94,
       "routine": "RunRecipeAnnotationTests",
       "code": "    facade.Source \"Diagonal\", \"ProgramInputs.PointB\"",
       "context": "В теле modTestRecipeAnnotations.RunRecipeAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -655,7 +655,7 @@
     },
     "CSectionDefinitionBuilder.VerticalDistance": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 160,
+      "line": 241,
       "routine": "AnnotationFacade",
       "code": "    If previewPlacement Then facade.VerticalDistance \"VerticalExplicit\", \"v\", -100#, 0#, 150#, 1# Else facade.VerticalDistance \"VerticalExplicit\", \"v\", -100#, 0#, -50#",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -685,7 +685,7 @@
     },
     "CSectionDefinitionBuilder.Dimension": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 159,
+      "line": 240,
       "routine": "AnnotationFacade",
       "code": "    facade.Dimension \"Diagonal\", \"A\", \"B\", \"s\"",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -715,7 +715,7 @@
     },
     "CSectionDefinitionBuilder.PathLength": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 171,
+      "line": 252,
       "routine": "AnnotationFacade",
       "code": "    facade.PathLength \"Length\", \"Boundary\", \"LengthNote\"",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -1756,7 +1756,7 @@
     },
     "CSectionDefinition.SourceReference": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 15,
+      "line": 96,
       "routine": "RunRecipeAnnotationTests",
       "code": "    Check \"source.scalar\", definition.SourceReference(\"Diagonal\") = \"ProgramInputs.PointB\"",
       "context": "В теле modTestRecipeAnnotations.RunRecipeAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -5827,7 +5827,7 @@
     },
     "modSectionRecipeTypes.TSectionMeshOptions": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 178,
+      "line": 259,
       "routine": "BuildDefinition",
       "code": "    Dim mesh As TSectionMeshOptions",
       "context": "В теле modTestRecipeAnnotations.BuildDefinition с его подготовленными локальными объектами/входом.",
@@ -6164,7 +6164,7 @@
     "tests/modTestGeometryQuery.bas": "9641a29518f061625600a290c2b68bedadfd233747991d49334f703558a7db79",
     "tests/modTestGeometryReview.bas": "a6f0f2b816cd985a7f0fa440acc34b49ae939aeee0bbb89ea8527d0849b09612",
     "tests/modTestPolygonSpec.bas": "f840237ec27825e25617f0790ad4ecb4d405c1dfd80203aee8cd0cbebbe356b6",
-    "tests/modTestRecipeAnnotations.bas": "63eafeaa8bd03f91d1f2994276c24a5e23ae4f7f71b1de6b0c4694410b46968c",
+    "tests/modTestRecipeAnnotations.bas": "76412afc2b0ba215880cc4c38ac750d7fea58ab22b3e7185b93ffad1d5d92953",
     "tests/modTestRecipeApiCatalogue.bas": "e727da374e3126ad429612c0cc5f900f5b5b0512150538fd4647b6acd9d8ec61",
     "tests/modTestRecipeOperations.bas": "90e4c5609337c447932ac93de74b110255af716e30be866351c65365d5e07891",
     "tests/modTestRecipeSetbacks.bas": "8ffb354ceba0cb426cc515d8bb2e7a8e8f5fc17c035132d6d8d91792b75136cb",

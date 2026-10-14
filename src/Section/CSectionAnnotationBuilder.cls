@@ -29,7 +29,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     For i = 1 To definition.AnnotationCount
         definition.CopyAnnotation i, value
         Select Case value.Kind
-            Case "VerticalExtent", "HorizontalExtent", "RebarLabel"
+            Case "VerticalExtent", "HorizontalExtent"
                 TargetBounds definition, value.Target, minX, maxX, minY, maxY
         End Select
         Select Case value.Kind
@@ -49,15 +49,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                 annotations.AddDimension value.AnnotationID, minX, value.StartY, maxX, value.EndY, _
                     value.NormalX, value.NormalY, value.Name, maxX - minX, value.Comment
             Case "RebarLabel"
-                If Abs(value.NormalY) >= Abs(value.NormalX) Then
-                    value.StartX = minX: value.EndX = maxX
-                    If value.NormalY >= 0# Then value.StartY = maxY Else value.StartY = minY
-                    value.EndY = value.StartY
-                Else
-                    value.StartY = minY: value.EndY = maxY
-                    If value.NormalX >= 0# Then value.StartX = maxX Else value.StartX = minX
-                    value.EndX = value.StartX
-                End If
+                TargetLabelAnchor definition, value
                 AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
@@ -65,16 +57,11 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                     AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowExtentLabel"
                 If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
-                If rules.RuleBounds(value.Target, minX, maxX, minY, maxY) Then
-                    If Abs(value.NormalY) >= Abs(value.NormalX) Then
-                        value.StartX = minX: value.EndX = maxX
-                        If value.NormalY >= 0# Then value.StartY = maxY Else value.StartY = minY
-                        value.EndY = value.StartY
-                    Else
-                        value.StartY = minY: value.EndY = maxY
-                        If value.NormalX >= 0# Then value.StartX = maxX Else value.StartX = minX
-                        value.EndX = value.StartX
-                    End If
+                Dim nx As Double, ny As Double, tx As Double, ty As Double, support As Double
+                LabelDirections value.NormalX, value.NormalY, nx, ny, tx, ty
+                If rules.RuleBounds(value.Target, minX, maxX, minY, maxY, tx, ty) Then
+                    If -ty * nx + tx * ny >= 0# Then support = maxY Else support = -minY
+                    SetLabelAnchor value, nx, ny, tx, ty, minX, maxX, support
                     If value.ReverseDirection Then
                         Dim swap As Double
                         swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
@@ -98,6 +85,43 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     Dim labels As CRebarGroupAnnotationBuilder
     Set labels = New CRebarGroupAnnotationBuilder
     labels.AddRebarLabels annotations, rebars, anchors, anchorCount
+End Sub
+
+' Находит опорную линию подписи по точным проекциям выбранных отрезков и дуг.
+' Проекции берутся вдоль нормали и вдоль подписи, поэтому наклонный путь не
+' заменяется его X/Y-габаритом. Дальнейший перенос к бетону выполняет reader.
+Private Sub TargetLabelAnchor(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation)
+    Dim nx As Double, ny As Double, tx As Double, ty As Double, ids As Variant, id As Variant
+    Dim path As CGeometryPath, low As Double, high As Double, first As Double, last As Double, support As Double
+    LabelDirections value.NormalX, value.NormalY, nx, ny, tx, ty
+    ids = definition.TargetPaths(value.Target)
+    first = 1E+100: last = -1E+100: support = -1E+100
+    For Each id In ids
+        Set path = definition.Path(CStr(id))
+        path.ProjectionBounds tx, ty, low, high
+        first = GeomMin(first, low): last = GeomMax(last, high)
+        path.ProjectionBounds nx, ny, low, high
+        support = GeomMax(support, high)
+    Next id
+    SetLabelAnchor value, nx, ny, tx, ty, first, last, support
+End Sub
+
+' Готовит единичную нормаль и касательную. Порядок концов по X, затем по Y,
+' сохраняет прежние горизонтальные и вертикальные подписи при обеих нормалях.
+Private Sub LabelDirections(ByVal normalX As Double, ByVal normalY As Double, ByRef nx As Double, ByRef ny As Double, _
+        ByRef tx As Double, ByRef ty As Double)
+    Dim norm As Double
+    norm = Sqr(normalX ^ 2 + normalY ^ 2)
+    If norm <= GEOM_TOLERANCE Then nx = 0#: ny = 1# Else nx = normalX / norm: ny = normalY / norm
+    tx = ny: ty = -nx
+    If tx < 0# Or (tx = 0# And ty < 0#) Then tx = -tx: ty = -ty
+End Sub
+
+' Переводит проекционные границы в две точки опорной линии подписи.
+Private Sub SetLabelAnchor(ByRef value As TSectionAnnotation, ByVal nx As Double, ByVal ny As Double, _
+        ByVal tx As Double, ByVal ty As Double, ByVal first As Double, ByVal last As Double, ByVal support As Double)
+    value.StartX = first * tx + support * nx: value.StartY = first * ty + support * ny
+    value.EndX = last * tx + support * nx: value.EndY = last * ty + support * ny
 End Sub
 
 ' Привязки принадлежат только этому проходу построения аннотаций.

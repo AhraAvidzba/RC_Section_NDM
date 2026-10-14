@@ -453,16 +453,19 @@ Friend Function RuleEnds(ByVal ruleID As String, ByRef startX As Double, ByRef s
 End Function
 
 ' Аннотация измеряет подготовленный ряд; зависимые дополнительные позиции
-' не меняют его базовую привязку. Координаты стержней не пересчитываются.
+' не меняют его базовую привязку. basisX/Y задают единичную ось проекций;
+' без них возвращаются прежние X/Y-границы. Координаты стержней не пересчитываются.
 Friend Function RuleBounds(ByVal ruleID As String, ByRef minX As Double, ByRef maxX As Double, _
-        ByRef minY As Double, ByRef maxY As Double) As Boolean
-    Dim index As Long, i As Long
+        ByRef minY As Double, ByRef maxY As Double, Optional ByVal basisX As Double = 1#, Optional ByVal basisY As Double = 0#) As Boolean
+    Dim index As Long, i As Long, along As Double, across As Double
     index = mDefinition.RuleIndex(ruleID)
     If mCount(index) = 0 Then Exit Function
     minX = 1E+100: minY = 1E+100: maxX = -1E+100: maxY = -1E+100
     For i = mStart(index) To mStart(index) + mCount(index) - 1
-        minX = GeomMin(minX, mPositions(i).X): maxX = GeomMax(maxX, mPositions(i).X)
-        minY = GeomMin(minY, mPositions(i).Y): maxY = GeomMax(maxY, mPositions(i).Y)
+        along = mPositions(i).X * basisX + mPositions(i).Y * basisY
+        across = -mPositions(i).X * basisY + mPositions(i).Y * basisX
+        minX = GeomMin(minX, along): maxX = GeomMax(maxX, along)
+        minY = GeomMin(minY, across): maxY = GeomMax(maxY, across)
     Next i
     RuleBounds = True
 End Function

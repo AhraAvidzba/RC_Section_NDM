@@ -213,6 +213,16 @@ Public Function AngleOf(ByVal x As Double, ByVal y As Double) As Double
     End If
 End Function
 
+' Возвращает угол линии для читаемой подписи, в радианах. Направление обхода
+' не переворачивает текст вверх ногами; вертикальная подпись читается снизу вверх.
+Public Function ReadableLineAngle(ByVal directionX As Double, ByVal directionY As Double) As Double
+    Dim angle As Double
+    angle = AngleOf(directionX, directionY)
+    If angle > GEOM_PI / 2# Then angle = angle - GEOM_PI
+    If angle <= -GEOM_PI / 2# Then angle = angle + GEOM_PI
+    ReadableLineAngle = angle
+End Function
+
 ' Возвращает физическую длину сегмента для исключения вырожденных ребер.
 Public Function EdgeLength(ByRef edge As TRegionEdge) As Double
     If Abs(edge.Sweep) <= PARAM_TOLERANCE Then

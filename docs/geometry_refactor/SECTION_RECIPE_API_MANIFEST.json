@@ -1954,7 +1954,7 @@
         }
       ],
       "resultType": null,
-      "line": 398,
+      "line": 399,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarlabel"
@@ -1999,7 +1999,7 @@
         }
       ],
       "resultType": null,
-      "line": 407,
+      "line": 408,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowlabel"
@@ -2052,7 +2052,7 @@
         }
       ],
       "resultType": null,
-      "line": 416,
+      "line": 417,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtentLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextentlabel"
@@ -2064,7 +2064,7 @@
       "signature": "Public Function Finish() As CSectionDefinition",
       "parameters": [],
       "resultType": "CSectionDefinition",
-      "line": 427,
+      "line": 428,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Finish",
       "anchor": "api-csectiondefinitionbuilder-finish"
@@ -2125,7 +2125,7 @@
         }
       ],
       "resultType": null,
-      "line": 436,
+      "line": 437,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtremeLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextremelabel"
@@ -5016,7 +5016,7 @@
       "signature": "Public Property Get IsReadOnly() As Boolean",
       "parameters": [],
       "resultType": "Boolean",
-      "line": 774,
+      "line": 777,
       "source": "src/Section/CRebarRuleExecutor.cls",
       "id": "CRebarRuleExecutor.IsReadOnly",
       "anchor": "api-crebarruleexecutor-isreadonly"
@@ -7842,7 +7842,7 @@
   "scope": "Все Public члены фасада, его options/результатов и общего ввода/единиц; общие query/region и build diagnostics для проверок. Private/Friend не API рецепта.",
   "sourceHashes": {
     "src/Section/ISectionRecipe.cls": "29c1d70147a864331358441c6cc517d0270f0e3d45aa21a3d434a02a1e1efe51",
-    "src/Section/CSectionDefinitionBuilder.cls": "3cc58bf55d85641c73cc1a6123a841c7357d28b80e6dc6f557652dda1b1bbeea",
+    "src/Section/CSectionDefinitionBuilder.cls": "6aecf80072646d42ff4e0c97ac6d109a25bb326152f77bc3944c4f343aadec93",
     "src/Geometry/CGeometryPath.cls": "a6a364d1aa6133d2f87518776987e00033abe9462f143aa94c0e5024f39e5eb0",
     "src/Geometry/CPolygonSpec.cls": "741da7ebf1b4820bc97587cdf2c7a46ea2897d6330e84d25ce4e2e10a9a56839",
     "src/Section/CSectionDefinition.cls": "048afc60a59388b4a1291d68b9605c4bcc83b902dc9b91d788049036e598c813",
@@ -7853,7 +7853,7 @@
     "src/Excel/CSectionInputSnapshotReader.cls": "d461a67460a37b8a2441a55ff86df706778609ba03347bb7f4467fde549f5751",
     "src/Excel/CSectionTypeRegistry.cls": "1824c4c0eb832afccb04329eb4c2244a5475def6e4571645433f91fd7023f7ab",
     "src/Section/CSectionBuilder.cls": "7efd60282be3e4e8586ef84627293c18a4e4afba9add57c93a97c939f08581f5",
-    "src/Section/CRebarRuleExecutor.cls": "854c703d3103fe2878ad2511ae53bcd0c1a1ca80428b5daff8a37c1d74b747e2",
+    "src/Section/CRebarRuleExecutor.cls": "7ec849093a13a7df173429cc2561ff5e47a2635e02727f4dc5220bb7acb96376",
     "src/Excel/CUnitSystem.cls": "ddd7febfca7b5c462d1238995a9fc56ed6db95bc102ee82770c377c84fc6cbbe",
     "src/Section/CConcreteRegion.cls": "bfa2f4ea356316d036a072c814f11af33b436c2105ff0b610202369f13e8f778",
     "src/Section/CSectionGeometryQuery.cls": "984e96a0c8bd2a7f3cf6348769e1a91b70ddc3580296d99d8e6d5a4f5f94fb38",

@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "9dabf576b3e76926405e987c8c3dc3d516c471d1b73a68c58e491ec86b8b8933",
+  "bodySHA256": "34035949d1fcc2ebfc2ebf40a0b55c5567fb9ec4ec16be762fd83623e16b16b2",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "4db7ca1e85785c1ae5845a5bc5e780dfc9adedc134856bdebef6fda1ef5e9f1c",
-    "src/Common/modSectionRecipeApiGuide.bas": "9c734479c34c38e7f218dcae2faf9ec2ee110e4a7c26d000a06fb4f60609f4b0"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "d76d385577d486f2a9d490e0a466a4b885f3d8a3361aea864b3f728931f23fa8",
+    "src/Common/modSectionRecipeApiGuide.bas": "8e05afa5ad309315b1ab31d324f597d71dd34c8f68c77d4b99665facc00dd12c"
   },
   "rows": [
     {
@@ -98,7 +98,7 @@
       "line": 15
     },
     {
-      "text": "Размеры сечения, поясняющий текст и подписи числа и диаметра стержней задаются отдельно. На стороне без арматуры подпись числа и диаметра не выводится; остальные стороны подписываются по фактически созданным стержням.",
+      "text": "Размеры сечения, поясняющий текст и подписи числа и диаметра стержней задаются отдельно. RebarLabel поддерживает любую нормаль normalX/normalY, например (1,1) для диагонали; у отверстия её направляют в пустоту. Текст подписи и размера, в том числе Dimension с Aligned, следует своей линии и разворачивается для удобного чтения. На стороне без арматуры подпись не выводится.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 16

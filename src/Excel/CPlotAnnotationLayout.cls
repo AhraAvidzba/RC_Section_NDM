@@ -214,7 +214,7 @@ Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal en
     ApplyPlacement textNormalPxX, textNormalPxY, mDimensionPlacement
 
     Dim textLeft As Double, textTop As Double, textWidth As Double, textHeight As Double
-    DimensionTextBox sx, sy, ex, ey, textNormalPxX, textNormalPxY, rotation, textLeft, textTop, textWidth, textHeight
+    DimensionTextBox sx, sy, ex, ey, textNormalPxX, textNormalPxY, rotation, textValue, textLeft, textTop, textWidth, textHeight
 
     AddLine ModelToChartX(startX), ModelToChartY(startY), sx, sy, mDimensionExtensionColor, mExtensionLineWeight, False
     AddLine ModelToChartX(endX), ModelToChartY(endY), ex, ey, mDimensionExtensionColor, mExtensionLineWeight, False
@@ -244,6 +244,11 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
+    ' У одиночного стержня наклонную линию подписи задаёт нормаль;
+    ' прежний fallback для горизонтальных/вертикальных подписей сохраняется.
+    If Abs(dirX) + Abs(dirY) <= GEOM_TOLERANCE And Abs(normalX) > GEOM_TOLERANCE And Abs(normalY) > GEOM_TOLERANCE Then
+        dirX = normalY: dirY = -normalX
+    End If
     NormalizeModelVector dirX, dirY, 1#, 0#
     NormalizeModelVector normalX, normalY, -dirY, dirX
 
@@ -269,7 +274,7 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
     rotation = AnnotationRotation(dirX, dirY)
 
     Dim textLeft As Double, textTop As Double, textWidth As Double, textHeight As Double
-    RebarTextBox anchorPxX, anchorPxY, normalPxX, normalPxY, rotation, textLeft, textTop, textWidth, textHeight
+    RebarTextBox anchorPxX, anchorPxY, normalPxX, normalPxY, rotation, textValue, textLeft, textTop, textWidth, textHeight
 
     Dim halfLength As Double
     halfLength = MaxDouble(26# * mVisualScale, 0.22 * Sqr((ModelToChartX(endX) - ModelToChartX(startX)) * _
@@ -282,63 +287,56 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
     AddText textLeft, textTop, textWidth, textHeight, textValue, rotation, mRebarColor, True, mRebarFontSize
 End Sub
 
-' Определяет bbox текста размера вокруг середины размерной линии. TextGap
-' задает отступ центра подписи от размерной линии по выбранной нормали. Для
-' вертикальных размеров bbox сразу узкий и высокий: Excel затем создает
-' вертикальный текстовый Shape без поворота широкого горизонтального блока.
+' Размещает текст размера у середины его линии. Общая функция учитывает
+' поворот рамки и оставляет прежнее размещение горизонтального/вертикального текста.
 Private Sub DimensionTextBox(ByVal sx As Double, ByVal sy As Double, ByVal ex As Double, ByVal ey As Double, _
-        ByVal normalPxX As Double, ByVal normalPxY As Double, ByVal rotation As Double, _
+        ByVal normalPxX As Double, ByVal normalPxY As Double, ByVal rotation As Double, ByVal textValue As String, _
         ByRef leftPos As Double, ByRef topPos As Double, ByRef widthValue As Double, ByRef heightValue As Double)
-    If rotation = 0# Then
-        widthValue = 150# * mVisualScale
-        heightValue = MaxDouble(18# * mVisualScale, mDimensionFontSize * 1.65)
-    Else
-        widthValue = MaxDouble(18# * mVisualScale, mDimensionFontSize * 1.65)
-        heightValue = 150# * mVisualScale
-    End If
-
-    Dim textGap As Double
-    textGap = ClampDouble(TextMetricToChartPoints(mDimensionTextGapBase, mDimensionTextUnits), 0#, 80#)
-
-    Dim midX As Double, midY As Double
-    midX = 0.5 * (sx + ex) + normalPxX * textGap
-    midY = 0.5 * (sy + ey) + normalPxY * textGap
-
-    leftPos = midX - widthValue / 2#
-    topPos = midY - heightValue / 2#
+    PositionTextBox 0.5 * (sx + ex), 0.5 * (sy + ey), normalPxX, normalPxY, rotation, textValue, _
+        mDimensionFontSize, mDimensionTextGapBase, mDimensionTextUnits, leftPos, topPos, widthValue, heightValue
 End Sub
 
-' Определяет bbox групповой подписи арматуры. Положение считается от середины
-' anchor-линии, а не от крайних фактических стержней. Вертикальные подписи
-' получают узкий высокий bbox по той же причине, что и размерные подписи.
+' Размещает групповую подпись у её опорной линии. Положение зависит от
+' нормали и TextGap, а рамка наклонного текста поворачивается вместе с линией.
 Private Sub RebarTextBox(ByVal anchorPxX As Double, ByVal anchorPxY As Double, ByVal normalPxX As Double, _
-        ByVal normalPxY As Double, ByVal rotation As Double, ByRef leftPos As Double, ByRef topPos As Double, _
+        ByVal normalPxY As Double, ByVal rotation As Double, ByVal textValue As String, ByRef leftPos As Double, ByRef topPos As Double, _
         ByRef widthValue As Double, ByRef heightValue As Double)
-    If rotation = 0# Then
-        widthValue = 150# * mVisualScale
-        heightValue = MaxDouble(18# * mVisualScale, mRebarFontSize * 1.65)
-    Else
-        widthValue = MaxDouble(18# * mVisualScale, mRebarFontSize * 1.65)
-        heightValue = 150# * mVisualScale
-    End If
-
-    Dim textGap As Double
-    textGap = ClampDouble(TextMetricToChartPoints(mRebarTextGapBase, mRebarTextUnits), 0#, 80#)
-
-    Dim centerX As Double, centerY As Double
-    centerX = anchorPxX + normalPxX * textGap
-    centerY = anchorPxY + normalPxY * textGap
-
-    leftPos = centerX - widthValue / 2#
-    topPos = centerY - heightValue / 2#
+    PositionTextBox anchorPxX, anchorPxY, normalPxX, normalPxY, rotation, textValue, _
+        mRebarFontSize, mRebarTextGapBase, mRebarTextUnits, leftPos, topPos, widthValue, heightValue
 End Sub
 
-' Для текущей схемы достаточно горизонтального текста и поворота на 90 градусов.
-' Наклонные грани сохраняют направление anchor-линии, но текст не вращается на
-' произвольный угол, чтобы он оставался читаемым в Excel.
+' Возвращает читаемый угол по фактическому направлению линии на экране.
+' Разные масштабы X/Y и переворот Y учитываются до общей математики углов.
 Private Function AnnotationRotation(ByVal dirX As Double, ByVal dirY As Double) As Double
-    If Abs(dirY) > Abs(dirX) Then AnnotationRotation = 90# Else AnnotationRotation = 0#
+    Dim px As Double, py As Double
+    PixelUnitVector dirX, dirY, px, py
+    AnnotationRotation = modGeometryPrimitives.ReadableLineAngle(px, py) * 180# / GEOM_PI
 End Function
+
+' Наклонный текст хранится в обычной горизонтальной рамке и затем поворачивается.
+' Вся рамка отнесена от линии на TextGap; при растянутой рамке графика учитывается
+' угол между нормалью модели и перпендикуляром к экранной линии. Для 0/90 градусов
+' оставляем прежние размеры блока и отсчёт зазора, включая нативный вертикальный текст.
+Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, ByVal normalX As Double, ByVal normalY As Double, _
+        ByVal rotation As Double, ByVal textValue As String, ByVal fontSize As Double, ByVal gapBase As Double, ByVal textUnits As String, _
+        ByRef leftPos As Double, ByRef topPos As Double, ByRef widthValue As Double, ByRef heightValue As Double)
+    widthValue = 150# * mVisualScale
+    heightValue = MaxDouble(18# * mVisualScale, fontSize * 1.65)
+    Dim gap As Double, angle As Double, normalProjection As Double, swap As Double
+    gap = ClampDouble(TextMetricToChartPoints(gapBase, textUnits), 0#, 80#)
+    If rotation = 90# Then
+        swap = widthValue: widthValue = heightValue: heightValue = swap
+    ElseIf rotation <> 0# Then
+        ' Наклонной подписи не нужна широкая пустая рамка: длина следует тексту.
+        widthValue = MaxDouble(fontSize * 2#, Len(textValue) * fontSize * 0.62)
+        angle = rotation * GEOM_PI / 180#
+        normalProjection = Abs(-Sin(angle) * normalX + Cos(angle) * normalY)
+        ' Для корректной нормали проекция ненулевая; защитный минимум не допускает деления на ноль.
+        gap = (gap + heightValue / 2#) / MaxDouble(normalProjection, 0.000001)
+    End If
+    leftPos = anchorX + normalX * gap - widthValue / 2#
+    topPos = anchorY + normalY * gap - heightValue / 2#
+End Sub
 
 ' При Inside разворачивает наружную нормаль внутрь сечения. Так одна и та же
 ' semantic-аннотация может рисоваться по обе стороны своей anchor-линии.
