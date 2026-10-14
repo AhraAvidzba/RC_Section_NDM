@@ -256,19 +256,25 @@ Private Sub TestAudit03ContourArcContracts(ByRef stats As TUiTestStats)
             reader.LoadGeometryPreviewFromWorkbook fixture, settings
             plotter.Draw fixture, reader, settings
             count = 0
+            Dim arcShape As Object
+            Set arcShape = Nothing
             For Each shape In chart.Chart.Shapes
-                If InStr(1, shape.Name, "ContourArcLine", vbTextCompare) > 0 Then count = count + 1
+                If InStr(1, shape.Name, "ContourArcLine", vbTextCompare) > 0 Then
+                    count = count + 1: Set arcShape = shape
+                End If
             Next shape
             prefix = "audit03.contourArc.valid.p" & CStr(position) & "." & CStr(valid)
             AssertClose stats, prefix & ".angle", reader.AnnotationSweepAngle(1), CDbl(expected(index)), 0#
             AssertTrue stats, prefix & ".export", Audit03ReadContourArcSweepsForTests(fixture) = "1|" & CStr(expected(index)) & vbLf
+            AssertTrue stats, prefix & ".oneObject", count = 1
             If InStr(1, CStr(valid), "570796", vbBinaryCompare) > 0 Then
-                AssertTrue stats, prefix & ".segments", count = 18
+                AssertTrue stats, prefix & ".segments", arcShape.Nodes.Count = 19
             ElseIf CStr(valid) = "0" Then
-                AssertTrue stats, prefix & ".segments", count = 1
+                AssertTrue stats, prefix & ".line", arcShape.Type = 9
             Else
-                AssertTrue stats, prefix & ".segments", count = 6
+                AssertTrue stats, prefix & ".segments", arcShape.Nodes.Count = 7
             End If
+            If CStr(valid) <> "0" Then AssertTrue stats, prefix & ".openStroke", arcShape.Type = 5 And arcShape.Fill.Visible = 0
             actual = anchor.Resize(2, 17).Value2: Audit03ComparePlainSnapshot stats, prefix, baseline, actual, 1
             index = index + 1
         Next valid

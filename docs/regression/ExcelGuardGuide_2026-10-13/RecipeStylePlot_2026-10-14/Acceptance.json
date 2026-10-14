@@ -1,0 +1,24 @@
+{
+  "Passed": true,
+  "Requirements": {
+    "1_PlainRussianRecipeHeadersAnd30MethodComments": true,
+    "2_InlineShortCommentsAndNoUnnecessaryShortContinuations": true,
+    "3_EstablishedHeaderStyle": true,
+    "4_FewerObjectsWithPreservedFreeformAxesAndGeometry": true,
+    "DirectedPlotChecks": true,
+    "ActualGConcreteAndTransformedAxesRelativeToGeometryAndLoad": true,
+    "GCalculatedCoordinatesStressesAndStatusUnchanged": true,
+    "NativeScreenshotsOfCalculatedGAndRoundedHollow": true,
+    "CircleCodeImageMatchesPublishedSource": true,
+    "UserDataResultsFormulasStylesHelpPreserved": true,
+    "All152SourceComponentsMatchActualWorkbook": true,
+    "NoTemporaryCodeOrEmbeddedMarkers": true,
+    "FinalWorkbookAndAllCodePublishedAndReadBack": true,
+    "PublishedHashesStillMatch": true,
+    "UserExecutionReportUnchanged": true,
+    "AllCodeIsActualExportBytes": true
+  },
+  "FullOnOffOrLongUIPerformed": false,
+  "Scope": "Recipe comments, plot object minimization, actual calculated examples and coordinate acceptance",
+  "Errors": []
+}

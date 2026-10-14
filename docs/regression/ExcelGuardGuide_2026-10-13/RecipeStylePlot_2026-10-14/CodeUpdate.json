@@ -1,0 +1,22 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\RecipeStylePlot_2026-10-14\\Candidate.xlsm",
+    "WorkbookSHA256":  "F2FF9BA9C865EC96EADA3EF23A9407B3842406905B3E7648A4A86CAC62321E94",
+    "ProductionSHA256":  "2DCF5CFC7A1C241D2E26248F49225FF2340FFC751CFEF6E26178AAE2EC87B840",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionPlotter",
+                    "CSectionRecipeCircle",
+                    "CSectionRecipeHollowRectangle",
+                    "CSectionRecipeRectSet",
+                    "CSectionRecipeRoundedRectangle",
+                    "modTestPlotConfig"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

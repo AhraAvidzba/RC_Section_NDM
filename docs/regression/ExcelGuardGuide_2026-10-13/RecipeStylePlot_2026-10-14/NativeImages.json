@@ -1,0 +1,89 @@
+﻿{
+    "Passed":  true,
+    "Images":  [
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case10.xlsx",
+                       "Bytes":  22217,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case16.xlsx",
+                       "Bytes":  21734,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case19.xlsx",
+                       "Bytes":  21888,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case20.xlsx",
+                       "Bytes":  21888,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case21.xlsx",
+                       "Bytes":  28993,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case25.xlsx",
+                       "Bytes":  23596,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "BaselineObjects",
+                       "File":  "Case37.xlsx",
+                       "Bytes":  21595,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case10.xlsx",
+                       "Bytes":  22082,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case16.xlsx",
+                       "Bytes":  21969,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case19.xlsx",
+                       "Bytes":  24152,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case20.xlsx",
+                       "Bytes":  24152,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case21.xlsx",
+                       "Bytes":  32225,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case25.xlsx",
+                       "Bytes":  25879,
+                       "SourceUnchanged":  true
+                   },
+                   {
+                       "Stage":  "CandidateObjects",
+                       "File":  "Case37.xlsx",
+                       "Bytes":  24344,
+                       "SourceUnchanged":  true
+                   }
+               ]
+}

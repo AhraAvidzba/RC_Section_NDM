@@ -1,0 +1,10 @@
+{
+  "status": "STANDALONE_HELP_PASS",
+  "cellsChecked": 4731,
+  "apiMembers": 137,
+  "commentOnly": true,
+  "nativeCommentsMatchSource": true,
+  "workbookSHA256": "9d6c668f559f7aa428f7058c555049ac3c7a770508a2a39a6fc34f46cfde397f",
+  "dumpSHA256": "24ae32614c2c1408dc5adbe895df0d12156bebf5cdfee5c92cb9208c93b41122",
+  "errors": []
+}

@@ -1,0 +1,17 @@
+{
+  "Passed": true,
+  "Compiled": true,
+  "BeforeSHA256": "F2FF9BA9C865EC96EADA3EF23A9407B3842406905B3E7648A4A86CAC62321E94",
+  "AfterSHA256": "9D6C668F559F7AA428F7058C555049AC3C7A770508A2A39A6FC34F46CFDE397F",
+  "OldShapes": 262,
+  "NewShapes": 121,
+  "ChartFrame": [
+    1077,
+    0,
+    820,
+    540
+  ],
+  "RecalculationRun": false,
+  "InputAndResultsVerificationPending": false,
+  "InputAndResultsPreserved": true
+}

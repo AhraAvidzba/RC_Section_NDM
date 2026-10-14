@@ -1,0 +1,75 @@
+﻿{
+    "Passed":  true,
+    "Examples":  [
+                     {
+                         "Example":  "BaselineG",
+                         "Passed":  true,
+                         "Seconds":  1.4838204,
+                         "Loads":  [
+                                       50,
+                                       5,
+                                       2
+                                   ],
+                         "InputUnits":  [
+                                            "tf",
+                                            "tf*m",
+                                            "tf*m"
+                                        ],
+                         "LoadOffsets":  [
+                                             0,
+                                             0
+                                         ],
+                         "CalculationProfile":  "PR1",
+                         "SourceSHA256":  "2DCF5CFC7A1C241D2E26248F49225FF2340FFC751CFEF6E26178AAE2EC87B840",
+                         "WorkbookSHA256":  "E53DDBD757F1183834F01B7B651C1439D490024421BCCD63BED1A3BE13CB932A",
+                         "TemporaryHelperRemoved":  true
+                     },
+                     {
+                         "Example":  "GSection",
+                         "Passed":  true,
+                         "Seconds":  1.2914686,
+                         "Loads":  [
+                                       50,
+                                       5,
+                                       2
+                                   ],
+                         "InputUnits":  [
+                                            "tf",
+                                            "tf*m",
+                                            "tf*m"
+                                        ],
+                         "LoadOffsets":  [
+                                             0,
+                                             0
+                                         ],
+                         "CalculationProfile":  "PR1",
+                         "SourceSHA256":  "9D6C668F559F7AA428F7058C555049AC3C7A770508A2A39A6FC34F46CFDE397F",
+                         "WorkbookSHA256":  "254A9EE032D20FBC7DF98F5A64A36A2E6F872EBDAD4F603627562DE195D45F6A",
+                         "TemporaryHelperRemoved":  true
+                     },
+                     {
+                         "Example":  "HollowRounded",
+                         "Passed":  true,
+                         "Seconds":  2.2061281999999998,
+                         "Loads":  [
+                                       50,
+                                       5,
+                                       2
+                                   ],
+                         "InputUnits":  [
+                                            "tf",
+                                            "tf*m",
+                                            "tf*m"
+                                        ],
+                         "LoadOffsets":  [
+                                             0,
+                                             0
+                                         ],
+                         "CalculationProfile":  "PR1",
+                         "SourceSHA256":  "9D6C668F559F7AA428F7058C555049AC3C7A770508A2A39A6FC34F46CFDE397F",
+                         "WorkbookSHA256":  "E190179795722D26965BAD8496BE4084BD6410A73DD97DB62E76405242041201",
+                         "TemporaryHelperRemoved":  true
+                     }
+                 ],
+    "ProductionUnchanged":  true
+}

@@ -1,0 +1,35 @@
+{
+  "Passed": true,
+  "Cases": 162,
+  "Checks": 8649,
+  "ArcNodesChecked": 3942,
+  "OtherShapesCompared": 2187,
+  "UnclosedArcPathsInSavedBooks": 6,
+  "AxesObjects": "2 when enabled, 0 when disabled",
+  "ArcObjects": "1 per arc",
+  "DrawTimesSeconds": {
+    "Concrete": {
+      "BeforeMedian": 0.0390625,
+      "AfterMedian": 0.015625
+    },
+    "Transformed": {
+      "BeforeMedian": 0.046875,
+      "AfterMedian": 0.015625
+    },
+    "None": {
+      "BeforeMedian": 0.0234375,
+      "AfterMedian": 0.015625
+    }
+  },
+  "ObjectCounts": {
+    "Before": [
+      14.0,
+      151.0
+    ],
+    "After": [
+      14.0,
+      17.0
+    ]
+  },
+  "Errors": []
+}

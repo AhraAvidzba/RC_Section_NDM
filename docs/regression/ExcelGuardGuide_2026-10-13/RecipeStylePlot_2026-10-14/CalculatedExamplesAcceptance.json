@@ -1,0 +1,147 @@
+{
+  "Passed": true,
+  "BaselineGCalculationUnchanged": true,
+  "Cases": [
+    {
+      "Case": "GSection/Concrete/Original",
+      "ConcreteObjects": 294,
+      "AxesIntersectionErrorPt": 1.4253728636504093e-05,
+      "LoadMarkerErrorPt": 3.7262751675370964e-05,
+      "PNGMarkerErrorPx": 0.6334249548009439,
+      "RasterContourInsetPx": [
+        4.606747436523392,
+        4.286877152726447
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        381.40317633959853,
+        415.0445708085583
+      ],
+      "LoadMarkerPt": [
+        381.40313720703125,
+        415.0445556640625
+      ]
+    },
+    {
+      "Case": "GSection/Transformed/Original",
+      "ConcreteObjects": 294,
+      "AxesIntersectionErrorPt": 2.7671992370414955e-05,
+      "LoadMarkerErrorPt": 3.7262751675370964e-05,
+      "PNGMarkerErrorPx": 0.6334249548009439,
+      "RasterContourInsetPx": [
+        4.606747436523392,
+        4.286877152726447
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        380.3100764495932,
+        413.7497122064725
+      ],
+      "LoadMarkerPt": [
+        381.40313720703125,
+        415.0445556640625
+      ]
+    },
+    {
+      "Case": "GSection/Concrete/Moved",
+      "ConcreteObjects": 294,
+      "AxesIntersectionErrorPt": 1.4253728636504093e-05,
+      "LoadMarkerErrorPt": 3.7262751675370964e-05,
+      "PNGMarkerErrorPx": 0.6334249548009439,
+      "RasterContourInsetPx": [
+        5.54562255859372,
+        4.286877152726447
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        381.40317633959853,
+        415.0445708085583
+      ],
+      "LoadMarkerPt": [
+        381.40313720703125,
+        415.0445556640625
+      ]
+    },
+    {
+      "Case": "GSection/Transformed/Moved",
+      "ConcreteObjects": 294,
+      "AxesIntersectionErrorPt": 2.7671992370414955e-05,
+      "LoadMarkerErrorPt": 3.7262751675370964e-05,
+      "PNGMarkerErrorPx": 0.6334249548009439,
+      "RasterContourInsetPx": [
+        5.54562255859372,
+        4.286877152726447
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        380.3100764495932,
+        413.7497122064725
+      ],
+      "LoadMarkerPt": [
+        381.40313720703125,
+        415.0445556640625
+      ]
+    },
+    {
+      "Case": "GSection/Concrete/Resized",
+      "ConcreteObjects": 294,
+      "AxesIntersectionErrorPt": 5.782660707609466e-06,
+      "LoadMarkerErrorPt": 4.0308251584519894e-05,
+      "PNGMarkerErrorPx": 0.599615173339771,
+      "RasterContourInsetPx": [
+        5.2143808110554914,
+        4.4098566212373385
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        470.7315710591453,
+        477.46208160421696
+      ],
+      "LoadMarkerPt": [
+        470.7315673828125,
+        477.4620361328125
+      ]
+    },
+    {
+      "Case": "GSection/Transformed/Resized",
+      "ConcreteObjects": 294,
+      "AxesIntersectionErrorPt": 7.324929015339876e-06,
+      "LoadMarkerErrorPt": 4.0308251584519894e-05,
+      "PNGMarkerErrorPx": 0.599615173339771,
+      "RasterContourInsetPx": [
+        5.2143808110554914,
+        4.4098566212373385
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        469.45843110333084,
+        475.95401052199475
+      ],
+      "LoadMarkerPt": [
+        470.7315673828125,
+        477.4620361328125
+      ]
+    },
+    {
+      "Case": "HollowRounded/Transformed/Original",
+      "ConcreteObjects": 932,
+      "AxesIntersectionErrorPt": 3.334329886683918e-05,
+      "LoadMarkerErrorPt": 3.334329886683918e-05,
+      "PNGMarkerErrorPx": 1.000050888061537,
+      "RasterContourInsetPx": [
+        4.374951553344687,
+        4.649024911828917
+      ],
+      "RenderedAxisSamplesFound": 8,
+      "IntersectionPt": [
+        421.38307189941406,
+        365.01495361328125
+      ],
+      "LoadMarkerPt": [
+        421.383056640625,
+        365.01495361328125
+      ]
+    }
+  ],
+  "Errors": []
+}

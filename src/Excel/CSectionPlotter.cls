@@ -39,9 +39,6 @@ Private Const XL_CENTER As Long = -4108
 Private Const XL_VCENTER As Long = -4108
 Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1
 Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2
-Private Const MSO_LINE_SOLID As Long = 1
-Private Const MSO_LINE_DASH As Long = 4
-Private Const MSO_LINE_DASH_DOT As Long = 5
 Private Const MSO_SEGMENT_LINE As Long = 0
 Private Const MSO_EDITING_AUTO As Long = 0
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2
@@ -65,7 +62,7 @@ Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовы
 Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
 Private Const CONCRETE_SHAPE_FILL_RATIO As Double = 0.7 ' Визуальный размер бетонной ячейки: оставляет зазор между соседними элементами.
-Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина пунктирных главных осей; немного тоньше нейтральной линии.
+Private Const REFERENCE_AXIS_WEIGHT As Double = 0.56 ' Толщина сплошных главных осей; немного тоньше нейтральной линии.
 Private Const REFERENCE_BAND_MIN_THICKNESS As Double = 0.4 ' Минимальная толщина Freeform-полосы, чтобы тонкие оси оставались видимыми.
 Private Const PLOT_TITLE_TOP As Double = 6# ' Верхний отступ собственного Shape-заголовка схемы внутри Chart.
 Private Const PLOT_TITLE_HEIGHT As Double = 22# ' Высота собственного Shape-заголовка схемы.
@@ -919,7 +916,7 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
                 data.AnnotationStartX(i) + data.AnnotationEndX(i), _
                 data.AnnotationStartY(i) + data.AnnotationEndX(i), RGB(25, 25, 25), 1.7, "ContourCircle", False
         ElseIf StrComp(data.AnnotationType(i), "CONTOUR_ARC", vbTextCompare) = 0 Then
-            DrawContourArcAsLines data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
+            DrawContourArc data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
                 data.AnnotationStartX(i), data.AnnotationStartY(i), _
                 data.AnnotationEndX(i), data.AnnotationEndY(i), _
                 data.AnnotationSweepAngle(i), RGB(25, 25, 25), 1.7
@@ -927,10 +924,9 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
     Next i
 End Sub
 
-' Рисует дугу контура обычными линейными Shape-сегментами. Это самый
-' устойчивый вариант для Excel: каждая малая хорда является отдельной линией,
-' поэтому программа не дорисовывает большую фаску между концами дуги.
-Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Double, _
+' Рисует дугу одним открытым Freeform с прежними точками хорд через 5 градусов.
+' Незамкнутый путь и выключенная заливка не добавляют хорду между концами дуги.
+Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
     Dim radius As Double
@@ -949,11 +945,10 @@ Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Doub
     If segmentCount < 6 Then segmentCount = 6
 
     Dim i As Long
-    Dim prevX As Double, prevY As Double
     Dim nextX As Double, nextY As Double
     Dim angleValue As Double
-    prevX = startX
-    prevY = startY
+    Dim builder As Object, arcShape As Object
+    Set builder = mChart.Shapes.BuildFreeform(MSO_EDITING_AUTO, ModelToChartX(startX), ModelToChartY(startY))
     For i = 1 To segmentCount
         angleValue = startAngle + sweepAngle * CDbl(i) / CDbl(segmentCount)
         If i = segmentCount Then
@@ -963,10 +958,14 @@ Private Sub DrawContourArcAsLines(ByVal centerX As Double, ByVal centerY As Doub
             nextX = centerX + radius * Cos(angleValue)
             nextY = centerY + radius * Sin(angleValue)
         End If
-        DrawModelLine prevX, prevY, nextX, nextY, colorValue, weight, "ContourArcLine"
-        prevX = nextX
-        prevY = nextY
+        builder.AddNodes MSO_SEGMENT_LINE, MSO_EDITING_AUTO, ModelToChartX(nextX), ModelToChartY(nextY)
     Next i
+    Set arcShape = builder.ConvertToShape
+    arcShape.Name = SHAPE_PREFIX & "ContourArcLine" & CStr(mChart.Shapes.Count)
+    arcShape.Fill.Visible = False
+    arcShape.Line.Visible = True
+    arcShape.Line.ForeColor.RGB = colorValue
+    arcShape.Line.Weight = weight
 End Sub
 
 ' Строит нейтральную линию по сохраненной плоскости деформаций LC.
@@ -1017,7 +1016,7 @@ Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
     If maxT <= minT Then Exit Sub
 
     DrawModelReferenceLine x0 + minT * dx, y0 + minT * dy, x0 + maxT * dx, y0 + maxT * dy, _
-        RGB(105, 105, 105), 0.7, "NeutralAxis", MSO_LINE_SOLID
+        RGB(105, 105, 105), 0.7, "NeutralAxis"
 End Sub
 
 ' Собирает пересечения нейтральной линии с semantic-контуром.
@@ -1204,9 +1203,9 @@ Private Sub DrawPrincipalAxes(ByVal data As CSectionPlotDataReader, ByVal axesMo
     ca = Cos(angle)
     sa = Sin(angle)
     DrawModelReferenceLine centroidX - lengthValue * ca, centroidY - lengthValue * sa, _
-        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal1", MSO_LINE_DASH
+        centroidX + lengthValue * ca, centroidY + lengthValue * sa, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal1"
     DrawModelReferenceLine centroidX + lengthValue * sa, centroidY - lengthValue * ca, _
-        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal2", MSO_LINE_DASH
+        centroidX - lengthValue * sa, centroidY + lengthValue * ca, RGB(0, 0, 0), REFERENCE_AXIS_WEIGHT, "Principal2"
 End Sub
 
 ' Читает обязательный режим главных осей до очистки существующего Chart.
@@ -1501,11 +1500,11 @@ Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
         colorValue, weight, suffix)
 End Function
 
-' Рисует расчетную опорную линию поверх сетки устойчивыми Shape-полосами.
+' Рисует расчётную опорную линию одной тонкой сплошной Freeform-полосой.
 ' Для главных осей и нейтральной линии не используем Excel Line/Connector:
 ' у диагональных линий Excel может нестабильно трактовать рамку объекта.
 Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, Optional ByVal dashStyle As Long = MSO_LINE_SOLID)
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String)
     Dim cx1 As Double
     Dim cy1 As Double
     Dim cx2 As Double
@@ -1515,12 +1514,8 @@ Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal
     cx2 = ModelToChartX(x2)
     cy2 = ModelToChartY(y2)
 
-    If dashStyle = MSO_LINE_DASH Or dashStyle = MSO_LINE_DASH_DOT Then
-        DrawChartDashedReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
-    Else
-        If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then Exit Sub
-        DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
-    End If
+    If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then Exit Sub
+    DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
 End Sub
 
 ' Рисует линию в координатах Chart/PlotArea.
@@ -1570,61 +1565,6 @@ Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, 
     BringShapeToFront bandShape
     Set DrawChartReferenceBand = bandShape
 End Function
-
-' Рисует пунктирную расчетную линию короткими Freeform-сегментами.
-' Объектов немного: пунктир нужен только для опорных осей, а не для сетки.
-Private Sub DrawChartDashedReferenceBand(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String)
-    Dim dx As Double
-    Dim dy As Double
-    Dim lengthValue As Double
-    dx = x2 - x1
-    dy = y2 - y1
-    lengthValue = Sqr(dx * dx + dy * dy)
-    If lengthValue <= 0.0000001 Then Exit Sub
-
-    Const DASH_LENGTH As Double = 10#
-    Const GAP_LENGTH As Double = 6#
-
-    Dim cycleLength As Double
-    cycleLength = DASH_LENGTH + GAP_LENGTH
-
-    Dim position As Double
-    Dim segmentStart As Double
-    Dim segmentEnd As Double
-    Dim segmentIndex As Long
-    Dim t1 As Double
-    Dim t2 As Double
-    segmentIndex = 1
-    position = lengthValue / 2# - DASH_LENGTH / 2#
-    Do While position > 0#
-        position = position - cycleLength
-    Loop
-    Do While position + DASH_LENGTH < 0#
-        position = position + cycleLength
-    Loop
-
-    Do While position < lengthValue
-        segmentStart = MaxDouble(position, 0#)
-        segmentEnd = MinDouble(position + DASH_LENGTH, lengthValue)
-        If segmentEnd <= segmentStart Then GoTo NextSegment
-        t1 = segmentStart / lengthValue
-        t2 = segmentEnd / lengthValue
-        Dim sx1 As Double
-        Dim sy1 As Double
-        Dim sx2 As Double
-        Dim sy2 As Double
-        sx1 = x1 + dx * t1
-        sy1 = y1 + dy * t1
-        sx2 = x1 + dx * t2
-        sy2 = y1 + dy * t2
-        If ClipChartLineToPlotFrame(sx1, sy1, sx2, sy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then _
-            DrawChartReferenceBand sx1, sy1, sx2, sy2, colorValue, weight, suffix & "Dash" & CStr(segmentIndex)
-NextSegment:
-        position = position + cycleLength
-        segmentIndex = segmentIndex + 1
-    Loop
-End Sub
 
 ' Обрезает линию по текущей координатной рамке схемы.
 ' Это не меняет расчетную геометрию, а только не дает опорным осям выходить
