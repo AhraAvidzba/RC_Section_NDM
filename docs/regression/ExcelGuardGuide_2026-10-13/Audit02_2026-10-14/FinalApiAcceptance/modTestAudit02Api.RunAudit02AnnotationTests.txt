@@ -1,0 +1,10 @@
+﻿PASS: A01.horizontal.300
+PASS: A01.vertical.400
+PASS: A01.aligned.500
+PASS: A02.aligned.endpoints
+PASS: A02.aligned.normal
+PASS: A03.virtual.not.touch
+PASS: A04.mixed.length
+PASS: A04.not.chord
+PASS: A05.repeat
+TOTAL AUDIT02 ANNOTATIONS: passed=9; failed=0

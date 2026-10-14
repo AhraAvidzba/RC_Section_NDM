@@ -57,8 +57,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         facade.RebarByCount "Circle.Main", path.ID, count, d, options
         If d2 > 0# Then
             ' table — снимок таблицы армирования; "Rebar.Diameter2" — ключ диаметра дополнительного
-            ' ряда; "_R2" — суффикс имён ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; d / 2 +
-            ' d2 / 2 — расстояние между центрами стержней, мм.
+            ' ряда; "_R2" — суффикс имён ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; d —
+            ' диаметр основного стержня, мм; d2 — диаметр добавляемого стержня, мм.
             Set options = AdditionalOptions(table, "Rebar.Diameter2", "_R2", loc2, d, d2)
             ' "Circle.Row2" — имя дополнительного ряда; "Circle.Main" — исходный ряд, чьи позиции
             ' используются; d2 — диаметр дополнительного стержня, мм; options — смещение и выбор
@@ -68,8 +68,9 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         If d3 > 0# Then
             If d2 > 0# And loc2 = loc3 Then skipped = d2
             ' table — снимок таблицы армирования; "Rebar.Diameter3" — ключ диаметра дополнительного
-            ' ряда; "_R3" — суффикс имён ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; d / 2 +
-            ' skipped + d3 / 2 — расстояние между центрами стержней, мм.
+            ' ряда; "_R3" — суффикс имён ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; d —
+            ' диаметр основного стержня, мм; d3 — диаметр добавляемого стержня, мм; skipped — сумма
+            ' промежуточных номинальных диаметров, мм.
             Set options = AdditionalOptions(table, "Rebar.Diameter3", "_R3", loc3, d, d3, skipped)
             ' "Circle.Row3" — имя дополнительного ряда; "Circle.Main" — исходный ряд, чьи позиции
             ' используются; d3 — диаметр дополнительного стержня, мм; options — смещение и выбор

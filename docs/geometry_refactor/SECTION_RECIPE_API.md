@@ -31,15 +31,15 @@ Public Function CreateDefinition(ByVal context As CSectionRecipeContext) As CSec
 
 Source: src/Section/ISectionRecipe.cls:14
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.CircleInputCase с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRoundedTrapezoidExample.RunAudit02MinimalRecipeTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
+    Set definition = recipe.CreateDefinition(context)
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:665.
+Полный контекст: docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas:15.
 
-Native entrypoint: modTestSectionRecipes.RunCircleRecipeInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/InputTests.txt.
+Native entrypoint: modTestRoundedTrapezoidExample.RunAudit02MinimalRecipeTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/ExampleTests/modTestRoundedTrapezoidExample.RunAudit02MinimalRecipeTests.txt.
 
 ## CSectionDefinitionBuilder
 
@@ -140,7 +140,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:38
     Set path = facade.LinePath("P1", 0#, 0#, 100#, 0#)
 ```
 
-Полный контекст: tests/modTestGeometryReview.bas:359.
+Полный контекст: tests/modTestGeometryReview.bas:365.
 
 Native entrypoint: modTestGeometryReview.RunGeometryReviewTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryReview.RunGeometryReviewTests.txt.
 
@@ -183,18 +183,16 @@ Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/
 <a id="api-csectiondefinitionbuilder-roundedpolygon"></a>
 ### CSectionDefinitionBuilder.RoundedPolygon
 
-Создаёт согласованную границу по вершинам/радиусам/ID. Edge.ID начинается у указанной вершины, Corner.ID существует только при R>0.
+Создаёт и регистрирует согласованную границу по одному завершённому CPolygonSpec. Edge.ID начинается у исходной вершины; Corner.ID существует при R>0. Исходный описатель не меняется.
 
 ```vb
-Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
+Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | pathID | String; ByVal; обязательный | Непустой уникальный ID пути в определении. |
-| vertices | Variant; ByVal; обязательный | Двумерные вершины: Array(Array(x,y),...); координаты во внутренних мм. |
-| radii | Variant; ByVal; обязательный | Массив неотрицательных радиусов вершин в мм, длина равна vertices; clamp бетонного радиуса отсутствует. |
-| vertexIDs | Variant; ByVal; обязательный | Массив уникальных смысловых ID вершин; определяет Edge.ID/Corner.ID. |
+| polygon | CPolygonSpec; ByVal; обязательный | Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal набор отклоняются; порядок, радиусы и источники сохраняются. |
 
 Тип результата: CGeometryPath. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
 
@@ -204,31 +202,29 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
 
 Source: src/Section/CSectionDefinitionBuilder.cls:60
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeExamples.RoundedFrameDefinition с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set path = facade.RoundedPolygon("Outer", outerVertices, Array(80#, 80#, 80#, 80#), outerCorners)
+    Set path = facade.RoundedPolygon("Boundary", crossed)
 ```
 
-Полный контекст: tests/modTestDeclarativeExamples.bas:61.
+Полный контекст: tests/modTestAudit02Api.bas:39.
 
-Native entrypoint: modTestDeclarativeExamples.RunRoundedFrameExampleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiondefinitionbuilder-offsetroundedpolygon"></a>
 ### CSectionDefinitionBuilder.OffsetRoundedPolygon
 
-Смещает весь скруглённый многоугольник с согласованными стыками. Положительное расстояние внутрь площади; отрицательное наружу, из Opening в бетон.
+Создаёт и регистрирует смещённый скруглённый многоугольник по исходному CPolygonSpec, не меняя его. Положительное расстояние внутрь площади; отрицательное наружу, из Opening в бетон. Сохраняет привязки исчезнувших участков; отличается от signed-left Offset готового пути.
 
 ```vb
-Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | pathID | String; ByVal; обязательный | Непустой уникальный ID пути в определении. |
-| vertices | Variant; ByVal; обязательный | Двумерные вершины: Array(Array(x,y),...); координаты во внутренних мм. |
-| radii | Variant; ByVal; обязательный | Массив неотрицательных радиусов вершин в мм, длина равна vertices; clamp бетонного радиуса отсутствует. |
-| vertexIDs | Variant; ByVal; обязательный | Массив уникальных смысловых ID вершин; определяет Edge.ID/Corner.ID. |
+| polygon | CPolygonSpec; ByVal; обязательный | Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal набор отклоняются; порядок, радиусы и источники сохраняются. |
 | distance | Double; ByVal; обязательный | Signed offset, мм: положительно внутрь площади, отрицательно наружу; это не left-offset обхода. |
 
 Тип результата: CGeometryPath. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
@@ -237,17 +233,17 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As V
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:69
+Source: src/Section/CSectionDefinitionBuilder.cls:68
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeExamples.RoundedFrameDefinition с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02GuideExamplesTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set path = facade.OffsetRoundedPolygon("Outer.Axis", outerVertices, Array(80#, 80#, 80#, 80#), outerCorners, 60#)
+    Set path = facade.OffsetRoundedPolygon("OffsetPath", polygon, 50#)
 ```
 
-Полный контекст: tests/modTestDeclarativeExamples.bas:65.
+Полный контекст: tests/modTestAudit02Api.bas:234.
 
-Native entrypoint: modTestDeclarativeExamples.RunRoundedFrameExampleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-addpath"></a>
 ### CSectionDefinitionBuilder.AddPath
@@ -266,17 +262,17 @@ Public Sub AddPath(ByVal path As CGeometryPath)
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:79
+Source: src/Section/CSectionDefinitionBuilder.cls:77
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunDefinitionLifecycleTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
     facade.AddPath path
 ```
 
-Полный контекст: tests/modTestGeometryPublication.bas:193.
+Полный контекст: tests/modTestAudit02Api.bas:45.
 
-Native entrypoint: modTestGeometryPublication.RunDefinitionLifecycleTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryPublication.RunDefinitionLifecycleTests.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiondefinitionbuilder-anchor"></a>
 ### CSectionDefinitionBuilder.Anchor
@@ -297,7 +293,7 @@ Public Sub Anchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:85
+Source: src/Section/CSectionDefinitionBuilder.cls:83
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
 
@@ -331,19 +327,17 @@ Public Sub PathAnchor(ByVal anchorID As String, ByVal pathID As String, ByVal se
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:91
+Source: src/Section/CSectionDefinitionBuilder.cls:89
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    facade.PathAnchor "East", "Boundary", "Boundary", 0#
+    facade.PathAnchor "Touch", path.ID, "Edge.A", 0#
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:156.
+Полный контекст: tests/modTestAudit02Api.bas:165.
 
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
-
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02AnnotationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt.
 
 <a id="api-csectiondefinitionbuilder-source"></a>
 ### CSectionDefinitionBuilder.Source
@@ -363,7 +357,7 @@ Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:100
+Source: src/Section/CSectionDefinitionBuilder.cls:98
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.RunRecipeAnnotationTests с его подготовленными локальными объектами/входом.
 
@@ -397,17 +391,17 @@ Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As Str
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:107
+Source: src/Section/CSectionDefinitionBuilder.cls:105
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeOperationTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-    facade.Anchor "CornerAnchor", 100#, 0#: facade.TransformAnchor "MovedAnchor", "CornerAnchor", 500#, -200#, GEOM_PI / 2#, True
+    facade.TransformAnchor "MovedA", "A", 0#, 700#
 ```
 
-Полный контекст: tests/modTestRecipeOperations.bas:43.
+Полный контекст: tests/modTestAudit02Api.bas:316.
 
-Native entrypoint: modTestRecipeOperations.RunRecipeOperationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-offset"></a>
 ### CSectionDefinitionBuilder.Offset
@@ -430,7 +424,7 @@ Public Function Offset(ByVal pathID As String, ByVal sourcePathID As String, ByV
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:118
+Source: src/Section/CSectionDefinitionBuilder.cls:116
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -468,7 +462,7 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal sourcePathID As Stri
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:130
+Source: src/Section/CSectionDefinitionBuilder.cls:128
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeOperationTests с его подготовленными локальными объектами/входом.
 
@@ -495,7 +489,7 @@ Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:144
+Source: src/Section/CSectionDefinitionBuilder.cls:142
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -533,7 +527,7 @@ Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, ByVa
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:156
+Source: src/Section/CSectionDefinitionBuilder.cls:154
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -541,7 +535,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:156
     Set part = facade.Chain("Side", "Outer", "Edge.BR", 0#, "Edge.TR", 0#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:90.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:103.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -569,7 +563,7 @@ Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:168
+Source: src/Section/CSectionDefinitionBuilder.cls:166
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -577,7 +571,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:168
     Set changed = facade.Transform("MovedSide", "Side", 1000000#, -1000000#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:91.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:104.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -604,21 +598,17 @@ Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:178
+Source: src/Section/CSectionDefinitionBuilder.cls:176
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.LabelDefinition с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
+    Set path = facade.RectanglePath("Other", 200#, 0#, 100#, 100#)
 ```
 
-Полный контекст: tests/modTestGeometryPublication.bas:45.
+Полный контекст: tests/modTestAudit02Api.bas:50.
 
-Native entrypoint: modTestGeometryPublication.RunAnnotationIsolationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryPublication.RunAnnotationIsolationTests.txt.
-
-Native entrypoint: modTestGeometryPublication.RunPublishedBuildTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryPublication.RunPublishedBuildTests.txt.
-
-Native entrypoint: modTestGeometryPublication.RunDefinitionLifecycleTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryPublication.RunDefinitionLifecycleTests.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiondefinitionbuilder-adjacentrectangles"></a>
 ### CSectionDefinitionBuilder.AdjacentRectangles
@@ -640,7 +630,7 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:186
+Source: src/Section/CSectionDefinitionBuilder.cls:184
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -670,7 +660,7 @@ Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:193
+Source: src/Section/CSectionDefinitionBuilder.cls:191
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -688,7 +678,7 @@ Native entrypoint: modTestRecipeApiCatalogue.RunApiGeometryReadExamples; жур�
 Назначает замкнутому пути роль наружной границы материала. Не требует наличия арматуры.
 
 ```vb
-Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
+Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
@@ -698,22 +688,24 @@ Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal 
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 | contourIDs | Variant; ByVal; Optional; пропущенный Variant=Missing | Необязательный массив ID сегментов сохранённого контура, по одному на каждый сегмент пути. |
 | arcComment | String; ByVal; Optional; default="" | Отдельный комментарий аналитических дуг; пустой использует обычный comment. |
+| namingPolicy | EContourNamingPolicy; ByVal; Optional; default=PreserveSegmentIDs | PreserveSegmentIDs сохраняет имена сегментов/явные contourIDs; SequentialByKind создаёт префикс_LINE_i/ARC_i с общим номером сегмента. Явные ID несовместимы с SequentialByKind. |
+| namingPrefix | String; ByVal; Optional; default="" | Префикс только SequentialByKind; пустой использует CONTOUR. Разным границам нужны разные префиксы; рецепты Hollow явно задают CONTOUR_OUTER/CONTOUR_OPENING. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:199
+Source: src/Section/CSectionDefinitionBuilder.cls:197
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestHollowRectangleGeometry с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-    facade.Outer "OUTER", path.ID
+    facade.Outer "Outer", path.ID
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1922.
+Полный контекст: tests/modTestAudit02Api.bas:289.
 
-Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-opening"></a>
 ### CSectionDefinitionBuilder.Opening
@@ -721,7 +713,7 @@ Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regressi
 Назначает замкнутому пути роль отверстия с конкретным parentOuterID. Действительное вложение проверяется при Finish.
 
 ```vb
-Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
+Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
@@ -732,6 +724,8 @@ Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentO
 | comment | String; ByVal; Optional; default="" | Пояснение происхождения/инженерного смысла; не управляющий статус. |
 | contourIDs | Variant; ByVal; Optional; пропущенный Variant=Missing | Необязательный массив ID сегментов сохранённого контура, по одному на каждый сегмент пути. |
 | arcComment | String; ByVal; Optional; default="" | Отдельный комментарий аналитических дуг; пустой использует обычный comment. |
+| namingPolicy | EContourNamingPolicy; ByVal; Optional; default=PreserveSegmentIDs | PreserveSegmentIDs сохраняет имена сегментов/явные contourIDs; SequentialByKind создаёт префикс_LINE_i/ARC_i с общим номером сегмента. Явные ID несовместимы с SequentialByKind. |
+| namingPrefix | String; ByVal; Optional; default="" | Префикс только SequentialByKind; пустой использует CONTOUR. Разным границам нужны разные префиксы; рецепты Hollow явно задают CONTOUR_OUTER/CONTOUR_OPENING. |
 
 Жизненный цикл: New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.
 
@@ -745,7 +739,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:210
     facade.Opening "VOID", path.ID, "OUTER"
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1925.
+Полный контекст: tests/modTestGeometry.bas:1969.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -771,7 +765,7 @@ Public Sub RebarByCount(ByVal ruleID As String, ByVal target As String, ByVal co
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:222
+Source: src/Section/CSectionDefinitionBuilder.cls:224
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
 
@@ -805,7 +799,7 @@ Public Sub RebarByMaxStep(ByVal ruleID As String, ByVal target As String, ByVal 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:233
+Source: src/Section/CSectionDefinitionBuilder.cls:235
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.
 
@@ -839,7 +833,7 @@ Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVa
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:242
+Source: src/Section/CSectionDefinitionBuilder.cls:244
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.
 
@@ -873,7 +867,7 @@ Public Sub RebarAtStations(ByVal ruleID As String, ByVal target As String, ByVal
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:250
+Source: src/Section/CSectionDefinitionBuilder.cls:252
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
 
@@ -906,7 +900,7 @@ Public Sub RebarDependent(ByVal ruleID As String, ByVal sourceRuleID As String, 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:259
+Source: src/Section/CSectionDefinitionBuilder.cls:261
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestPerPath с его подготовленными локальными объектами/входом.
 
@@ -914,7 +908,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:259
     facade.RebarDependent "Extra", "Main", 8#, options
 ```
 
-Полный контекст: tests/modTestGeometryReview.bas:365.
+Полный контекст: tests/modTestGeometryReview.bas:371.
 
 Native entrypoint: modTestGeometryReview.RunGeometryReviewTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryReview.RunGeometryReviewTests.txt.
 
@@ -940,7 +934,7 @@ Public Sub RebarProjected(ByVal ruleID As String, ByVal target As String, ByVal 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:268
+Source: src/Section/CSectionDefinitionBuilder.cls:270
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
 
@@ -974,7 +968,7 @@ Public Sub VerticalExtent(ByVal annotationID As String, ByVal target As String, 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:288
+Source: src/Section/CSectionDefinitionBuilder.cls:290
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
 
@@ -1008,7 +1002,7 @@ Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:299
+Source: src/Section/CSectionDefinitionBuilder.cls:301
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestGeneratedContoursWithoutAnnotations с его подготовленными локальными объектами/входом.
 
@@ -1016,7 +1010,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:299
         facade.HorizontalExtent "DIM_B", "Boundary", "B", 0#
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:775.
+Полный контекст: tests/modTestGeometryQuery.bas:797.
 
 Native entrypoint: modTestGeometryQuery.RunGeneratedContourOwnershipTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -1044,7 +1038,7 @@ Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:310
+Source: src/Section/CSectionDefinitionBuilder.cls:312
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestAnnotationMeasurements с его подготовленными локальными объектами/входом.
 
@@ -1079,7 +1073,7 @@ Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:323
+Source: src/Section/CSectionDefinitionBuilder.cls:325
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
 
@@ -1117,7 +1111,7 @@ Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:335
+Source: src/Section/CSectionDefinitionBuilder.cls:337
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
 
@@ -1152,7 +1146,7 @@ Public Sub PathLength(ByVal annotationID As String, ByVal target As String, ByVa
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:350
+Source: src/Section/CSectionDefinitionBuilder.cls:352
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
 
@@ -1188,17 +1182,17 @@ Public Sub Radius(ByVal annotationID As String, ByVal pathID As String, ByVal se
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:361
+Source: src/Section/CSectionDefinitionBuilder.cls:363
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.InvalidAnnotation с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-        Case 2: facade.Radius "LineRadius", "Row", "Row"
+    facade.Radius "Radius", "Arc", "Arc", 0.5, "R"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:190.
+Полный контекст: tests/modTestAudit02Api.bas:321.
 
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-diameter"></a>
 ### CSectionDefinitionBuilder.Diameter
@@ -1222,19 +1216,17 @@ Public Sub Diameter(ByVal annotationID As String, ByVal pathID As String, ByVal 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:368
+Source: src/Section/CSectionDefinitionBuilder.cls:370
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-        facade.Diameter "Diameter", "Boundary", "Boundary", 0#
+    facade.Diameter "Diameter", "Hole", "Hole", 0.5, "D"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:169.
+Полный контекст: tests/modTestAudit02Api.bas:322.
 
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
-
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-text"></a>
 ### CSectionDefinitionBuilder.Text
@@ -1256,19 +1248,17 @@ Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal te
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:386
+Source: src/Section/CSectionDefinitionBuilder.cls:388
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-    facade.Text "Note", "TextNote", "Проверка привязки"
+    facade.Text "Note", "MovedA", "Учебный пример"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:172.
+Полный контекст: tests/modTestAudit02Api.bas:323.
 
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
-
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-rebarlabel"></a>
 ### CSectionDefinitionBuilder.RebarLabel
@@ -1290,7 +1280,7 @@ Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal nor
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:396
+Source: src/Section/CSectionDefinitionBuilder.cls:398
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeExamples.RoundedFrameDefinition с его подготовленными локальными объектами/входом.
 
@@ -1298,7 +1288,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:396
     facade.RebarLabel "OuterBars", "Outer.Axis", 0#, 1#
 ```
 
-Полный контекст: tests/modTestDeclarativeExamples.bas:79.
+Полный контекст: tests/modTestDeclarativeExamples.bas:120.
 
 Native entrypoint: modTestDeclarativeExamples.RunRoundedFrameExampleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt.
 
@@ -1322,7 +1312,7 @@ Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:405
+Source: src/Section/CSectionDefinitionBuilder.cls:407
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
 
@@ -1355,17 +1345,17 @@ Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, 
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:414
+Source: src/Section/CSectionDefinitionBuilder.cls:416
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestAnnotationMeasurements с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-    facade.RebarRowExtentLabel "CurveBars", "CurveMain", -1#, 0#, True
+    facade.RebarRowExtentLabel "H.Right", "H.Right.Main", 1#, 0#, True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:352.
+Полный контекст: tests/modTestAudit02Api.bas:275.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectiondefinitionbuilder-finish"></a>
 ### CSectionDefinitionBuilder.Finish
@@ -1382,7 +1372,7 @@ Public Function Finish() As CSectionDefinition
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:425
+Source: src/Section/CSectionDefinitionBuilder.cls:427
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunDefinitionLifecycleTests с его подготовленными локальными объектами/входом.
 
@@ -1416,7 +1406,7 @@ Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String,
 
 Ошибки/исправление: 5530: пустые/повторные ID, неверный режим, отрицательные d/count/setbacks, незакрытый фасад. Query/path ошибки связывайте SourceMap; геометрию/направление исправляйте по диагностике.
 
-Source: src/Section/CSectionDefinitionBuilder.cls:434
+Source: src/Section/CSectionDefinitionBuilder.cls:436
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
 
@@ -1517,7 +1507,7 @@ Source: src/Geometry/CGeometryPath.cls:39
     path.AddLine "Bottom", 0#, 0#, 100#, 0#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:593.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:789.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1553,7 +1543,7 @@ Source: src/Geometry/CGeometryPath.cls:48
         Case 3: path.AddArc "ZeroSweep", 0#, 0#, 1#, 0#, 0#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:609.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:805.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1584,7 +1574,7 @@ Source: src/Geometry/CGeometryPath.cls:63
     path.Seal
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:525.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:721.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1607,15 +1597,15 @@ Public Property Get ID() As String
 
 Source: src/Geometry/CGeometryPath.cls:79
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestHollowRectangleGeometry с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-    facade.Outer "OUTER", path.ID
+    facade.Outer "Outer", path.ID
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1922.
+Полный контекст: tests/modTestAudit02Api.bas:289.
 
-Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-cgeometrypath-segmentcount"></a>
 ### CGeometryPath.SegmentCount
@@ -1640,7 +1630,7 @@ Source: src/Geometry/CGeometryPath.cls:81
     For i = 1 To path.SegmentCount
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:166.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:193.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1696,7 +1686,7 @@ Source: src/Geometry/CGeometryPath.cls:85
     Check "circle.closed", path.IsClosed
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:480.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:676.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1725,7 +1715,7 @@ Source: src/Geometry/CGeometryPath.cls:87
         Case 6: value = path.Length
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:612.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:808.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1758,7 +1748,7 @@ Source: src/Geometry/CGeometryPath.cls:89
     Check "compound.slice.id", part.SegmentID(2) = "Corner"
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:507.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:703.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1791,7 +1781,7 @@ Source: src/Geometry/CGeometryPath.cls:94
     Check "anchor.facade.source", changed.SourcePathID(1) = "Outer" And changed.SourceSegmentID(1) = "Edge.BR"
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:94.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:107.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1853,7 +1843,7 @@ Source: src/Geometry/CGeometryPath.cls:104
     Near "anchor.reverse.first", part.SourceStartParameter(1), 0.75
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:64.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:65.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1884,7 +1874,7 @@ Source: src/Geometry/CGeometryPath.cls:109
     Near "anchor.wrap.first.end", part.SourceEndParameter(1), 1#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:56.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:57.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1915,7 +1905,7 @@ Source: src/Geometry/CGeometryPath.cls:114
             station = path.SegmentIndex("Corner.BL")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:125.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:145.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -1941,15 +1931,15 @@ Public Function AnchorStation(ByVal segmentID As String, Optional ByVal paramete
 
 Source: src/Geometry/CGeometryPath.cls:124
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
 ```vb
-        Case 0: station = path.AnchorStation("Missing")
+    station = path.AnchorStation("Corner.D")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:110.
+Полный контекст: tests/modTestGeometryReview.bas:205.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestGeometryReview.RunRoundedEndpointTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryReview.RunRoundedEndpointTests.txt.
 
 <a id="api-cgeometrypath-withid"></a>
 ### CGeometryPath.WithID
@@ -1972,15 +1962,15 @@ Public Function WithID(ByVal pathID As String) As CGeometryPath
 
 Source: src/Geometry/CGeometryPath.cls:136
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidAnchorRejected с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
 ```vb
-        Case 9: Set part = path.WithID("")
+    Set copy = path.WithID("Copy")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:126.
+Полный контекст: tests/modTestGeometryReview.bas:214.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestGeometryReview.RunRoundedEndpointTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryReview.RunRoundedEndpointTests.txt.
 
 <a id="api-cgeometrypath-betweenanchors"></a>
 ### CGeometryPath.BetweenAnchors
@@ -2009,15 +1999,15 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
 
 Source: src/Geometry/CGeometryPath.cls:149
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set part = path.BetweenAnchors("Chain", "Bottom", 0.25, "Corner", 0.5)
+    Set copy = path.BetweenAnchors("Empty", "Edge.A", 0#, "Edge.A", 1#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:27.
+Полный контекст: tests/modTestGeometryReview.bas:226.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestGeometryReview.RunRoundedEndpointTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryReview.RunRoundedEndpointTests.txt.
 
 <a id="api-cgeometrypath-atdistance"></a>
 ### CGeometryPath.AtDistance
@@ -2049,7 +2039,7 @@ Source: src/Geometry/CGeometryPath.cls:177
     part.AtDistance 0#, x, y, tx, ty
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:46.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:47.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2081,7 +2071,7 @@ Source: src/Geometry/CGeometryPath.cls:200
     path.ProjectionBounds 2#, 0#, minimum, maximum
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:426.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:622.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2109,15 +2099,15 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
 
 Source: src/Geometry/CGeometryPath.cls:215
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set part = changed.Slice(10#, 50#)
+    Set copy = path.Slice(0#, 300#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:38.
+Полный контекст: tests/modTestGeometryReview.bas:221.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestGeometryReview.RunRoundedEndpointTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryReview.RunRoundedEndpointTests.txt.
 
 <a id="api-cgeometrypath-reversed"></a>
 ### CGeometryPath.Reversed
@@ -2136,17 +2126,15 @@ Public Function Reversed() As CGeometryPath
 
 Source: src/Geometry/CGeometryPath.cls:315
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set changed = path.Reversed
+    Set copy = path.Reversed
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:428.
+Полный контекст: tests/modTestGeometryReview.bas:216.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
-
-Native entrypoint: modTestDeclarativeGeometry.RunPathTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/AnalyticPaths.txt.
+Native entrypoint: modTestGeometryReview.RunRoundedEndpointTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryReview.RunRoundedEndpointTests.txt.
 
 <a id="api-cgeometrypath-transformed"></a>
 ### CGeometryPath.Transformed
@@ -2178,7 +2166,7 @@ Source: src/Geometry/CGeometryPath.cls:330
     Set changed = path.Transformed(10#, 20#, GEOM_PI / 2#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:432.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:628.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2216,11 +2204,283 @@ Source: src/Geometry/CGeometryPath.cls:353
     Check "ray.circle.hit", path.RayHit(-20#, 0#, 2#, 0#, station, distance)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:562.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:758.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 Native entrypoint: modTestDeclarativeGeometry.RunPathTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/AnalyticPaths.txt.
+
+## CPolygonSpec
+
+New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+<a id="api-cpolygonspec-addvertex"></a>
+### CPolygonSpec.AddVertex
+
+Добавляет запись исходной вершины: X/Y, радиус, ID и текстовый источник. Проверяет структуру и числа без геометрических вычислений.
+
+```vb
+Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Double, Optional ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "")
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| vertexID | String; ByVal; обязательный | Непустое уникальное имя исходной вершины; регистр различается, повтор первой вершины для замыкания не нужен. |
+| x | Double; ByVal; обязательный | Модельная координата x, мм; знаки соответствуют section XY/WCS. |
+| y | Double; ByVal; обязательный | Модельная координата y, мм; знаки соответствуют section XY/WCS. |
+| filletRadius | Double; ByVal; Optional; default=0# | Неотрицательный конечный радиус сопряжения, мм. Ноль задаёт острый угол; фактические точки касания вычисляет общее ядро. |
+| sourceReference | String; ByVal; Optional; default="" | Строка исходного адреса/программного параметра; без объекта Excel. |
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:35
+
+Минимальный вызов; требуемый контекст: В теле modTestPolygonSpec.RunPolygonSpecTests с его подготовленными локальными объектами/входом.
+
+```vb
+    polygon.AddVertex "A", 0#, 0#
+```
+
+Полный контекст: tests/modTestPolygonSpec.bas:44.
+
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt.
+
+<a id="api-cpolygonspec-seal"></a>
+### CPolygonSpec.Seal
+
+Завершает набор из минимум трёх вершин в исходном порядке. Повторный Seal безопасен; неудачный оставляет описание открытым.
+
+```vb
+Public Sub Seal()
+```
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:60
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.
+
+```vb
+    polygon.Seal
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:263.
+
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
+
+<a id="api-cpolygonspec-count"></a>
+### CPolygonSpec.Count
+
+Число исходных вершин, доступное при заполнении и после Seal; не ограничено шестью.
+
+```vb
+Public Property Get Count() As Long
+```
+
+Тип результата: Long. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:68
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.
+
+```vb
+    For i = 1 To polygon.Count
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:352.
+
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
+
+<a id="api-cpolygonspec-issealed"></a>
+### CPolygonSpec.IsSealed
+
+True после успешного явного Seal; только такой набор принимает фасад.
+
+```vb
+Public Property Get IsSealed() As Boolean
+```
+
+Тип результата: Boolean. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:70
+
+Минимальный вызов; требуемый контекст: В теле modTestPolygonSpec.RunPolygonSpecTests с его подготовленными локальными объектами/входом.
+
+```vb
+        Check "sealed." & CStr(n), polygon.IsSealed
+```
+
+Полный контекст: tests/modTestPolygonSpec.bas:28.
+
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt.
+
+<a id="api-cpolygonspec-vertexid"></a>
+### CPolygonSpec.VertexID
+
+Имя исходной вершины по номеру 1..Count, доступное после Seal.
+
+```vb
+Public Function VertexID(ByVal index As Long) As String
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| index | Long; ByVal; обязательный | 1-based индекс в пределах соответствующего готового контейнера. |
+
+Тип результата: String. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:73
+
+Минимальный вызов; требуемый контекст: В теле modTestPolygonSpec.RunPolygonSpecTests с его подготовленными локальными объектами/входом.
+
+```vb
+        Check "kernel.copy.independent." & CStr(n), polygon.X(1) = 10# And polygon.FilletRadius(1) = 0# And polygon.VertexID(1) = "V1"
+```
+
+Полный контекст: tests/modTestPolygonSpec.bas:36.
+
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt.
+
+<a id="api-cpolygonspec-x"></a>
+### CPolygonSpec.X
+
+Исходная координата X, мм, по номеру 1..Count; не является автоматически точкой готового контура.
+
+```vb
+Public Function X(ByVal index As Long) As Double
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| index | Long; ByVal; обязательный | 1-based индекс в пределах соответствующего готового контейнера. |
+
+Тип результата: Double. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:77
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.
+
+```vb
+    Check "A03.virtual.not.touch", x <> polygon.X(1) Or y <> polygon.Y(1)
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:178.
+
+Native entrypoint: modTestAudit02Api.RunAudit02AnnotationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt.
+
+<a id="api-cpolygonspec-y"></a>
+### CPolygonSpec.Y
+
+Исходная координата Y, мм, по номеру 1..Count.
+
+```vb
+Public Function Y(ByVal index As Long) As Double
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| index | Long; ByVal; обязательный | 1-based индекс в пределах соответствующего готового контейнера. |
+
+Тип результата: Double. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:81
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.
+
+```vb
+    Check "A03.virtual.not.touch", x <> polygon.X(1) Or y <> polygon.Y(1)
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:178.
+
+Native entrypoint: modTestAudit02Api.RunAudit02AnnotationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt.
+
+<a id="api-cpolygonspec-filletradius"></a>
+### CPolygonSpec.FilletRadius
+
+Назначенный исходный радиус, мм, по номеру 1..Count; ноль — острый угол.
+
+```vb
+Public Function FilletRadius(ByVal index As Long) As Double
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| index | Long; ByVal; обязательный | 1-based индекс в пределах соответствующего готового контейнера. |
+
+Тип результата: Double. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:85
+
+Минимальный вызов; требуемый контекст: В теле modTestPolygonSpec.RunPolygonSpecTests с его подготовленными локальными объектами/входом.
+
+```vb
+        Check "kernel.copy.independent." & CStr(n), polygon.X(1) = 10# And polygon.FilletRadius(1) = 0# And polygon.VertexID(1) = "V1"
+```
+
+Полный контекст: tests/modTestPolygonSpec.bas:36.
+
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt.
+
+<a id="api-cpolygonspec-sourcereference"></a>
+### CPolygonSpec.SourceReference
+
+Скалярный текст происхождения вершины по номеру 1..Count; ссылки на Excel-объекты не хранятся.
+
+```vb
+Public Function SourceReference(ByVal index As Long) As String
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| index | Long; ByVal; обязательный | 1-based индекс в пределах соответствующего готового контейнера. |
+
+Тип результата: String. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.
+
+Ошибки/исправление: 5470: пустой/повторный ID, отрицательный/не конечный радиус или координата, меньше трёх вершин, добавление после Seal, чтение до Seal/неверный индекс. SourceReference сохраняет источник ошибки; при новых размерах создайте новый набор.
+
+Source: src/Geometry/CPolygonSpec.cls:89
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.
+
+```vb
+        SpecSnapshot = SpecSnapshot & polygon.VertexID(i) & "|" & CStr(polygon.X(i)) & "|" & CStr(polygon.Y(i)) & _
+            "|" & CStr(polygon.FilletRadius(i)) & "|" & polygon.SourceReference(i) & vbCrLf
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:353.
+
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 ## CSectionDefinition
 
@@ -2274,15 +2534,15 @@ Public Sub AnchorCoordinates(ByVal anchorID As String, ByRef x As Double, ByRef 
 
 Source: src/Section/CSectionDefinition.cls:49
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.RunRecipeAnnotationTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    definition.AnchorCoordinates "B", x, y
+    definition.AnchorCoordinates "A", x, y
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:17.
+Полный контекст: tests/modTestAudit02Api.bas:60.
 
-Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiondefinition-sourcereference"></a>
 ### CSectionDefinition.SourceReference
@@ -2413,15 +2673,15 @@ Public Property Get PathCount() As Long
 
 Source: src/Section/CSectionDefinition.cls:73
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunDefinitionLifecycleTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "definition.paths.once", definition.PathCount = 2
+    Check "P06.no.partial.path", definition.PathCount = 3
 ```
 
-Полный контекст: tests/modTestGeometryPublication.bas:205.
+Полный контекст: tests/modTestAudit02Api.bas:55.
 
-Native entrypoint: modTestGeometryPublication.RunDefinitionLifecycleTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryPublication.RunDefinitionLifecycleTests.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiondefinition-loopcount"></a>
 ### CSectionDefinition.LoopCount
@@ -2608,7 +2868,7 @@ Public Function MaterialContours() As CSectionContours
 
 Ошибки/исправление: 5530 либо исходный query/path код: топология Outer/Opening, отсутствующий target/anchor/rule, циклы зависимостей. Не выбирать соседний сегмент или fallback тип молча.
 
-Source: src/Section/CSectionDefinition.cls:308
+Source: src/Section/CSectionDefinition.cls:320
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeDefinitionTests с его подготовленными локальными объектами/входом.
 
@@ -2637,7 +2897,7 @@ Public Sub WriteContours(ByVal result As CSectionContours)
 
 Ошибки/исправление: 5530 либо исходный query/path код: топология Outer/Opening, отсутствующий target/anchor/rule, циклы зависимостей. Не выбирать соседний сегмент или fallback тип молча.
 
-Source: src/Section/CSectionDefinition.cls:317
+Source: src/Section/CSectionDefinition.cls:329
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestRoundedRectangleContourAnnotations с его подготовленными локальными объектами/входом.
 
@@ -2645,7 +2905,7 @@ Source: src/Section/CSectionDefinition.cls:317
     geom.WriteContours model.Contours
 ```
 
-Полный контекст: tests/modTestGeometry.bas:1752.
+Полный контекст: tests/modTestGeometry.bas:1785.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -2846,15 +3106,15 @@ Default после New: 0#. Поле изменяется до объявлен�
 
 Source: src/Section/CRebarRuleOptions.cls:20
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestRuleJointTangents с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-        Set options = New CRebarRuleOptions: options.NormalOffset = 10#
+    options.NormalOffset = 40#: options.TangentOffset = 10#
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:333.
+Полный контекст: tests/modTestAudit02Api.bas:308.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-crebarruleoptions-everysecond"></a>
 ### CRebarRuleOptions.EverySecond
@@ -2904,15 +3164,15 @@ Default после New: False. Поле изменяется до объявле
 
 Source: src/Section/CRebarRuleOptions.cls:22
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestRuleJointTangents с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-        options.IncomingTangentAtJoint = Not options.IncomingTangentAtJoint
+    options.IncomingTangentAtJoint = True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:332.
+Полный контекст: tests/modTestAudit02Api.bas:273.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-crebarruleoptions-directionx"></a>
 ### CRebarRuleOptions.DirectionX
@@ -3020,15 +3280,15 @@ Default после New: False. Поле изменяется до объявле
 
 Source: src/Section/CRebarRuleOptions.cls:26
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
 
 ```vb
-        options.SuccessfulProjectionOrdinal = Not options.SuccessfulProjectionOrdinal
+    options.SourceNormalSign = -1#: options.SuccessfulProjectionOrdinal = True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:304.
+Полный контекст: tests/modTestAudit02Api.bas:93.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
 
 <a id="api-crebarruleoptions-newpublicationroot"></a>
 ### CRebarRuleOptions.NewPublicationRoot
@@ -3049,15 +3309,15 @@ Default после New: False. Поле изменяется до объявле
 
 Source: src/Section/CRebarRuleOptions.cls:27
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
 
 ```vb
-        options.SuccessfulProjectionOrdinal = (mode = 1): options.NewPublicationRoot = True
+    options.SkipMissingProjection = True: options.NewPublicationRoot = True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:301.
+Полный контекст: tests/modTestAudit02Api.bas:94.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
 
 <a id="api-crebarruleoptions-skipmissingprojection"></a>
 ### CRebarRuleOptions.SkipMissingProjection
@@ -3136,15 +3396,15 @@ Default после New: AlongPath. Поле изменяется до объяв
 
 Source: src/Section/CRebarRuleOptions.cls:30
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.PositionOrder = FromPathMiddle: options.Publication = PublishPerSourcePosition
+    options.PositionOrder = FromPathMiddle: options.IncomingTangentAtJoint = True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:377.
+Полный контекст: tests/modTestAudit02Api.bas:92.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
 
 <a id="api-crebarruleoptions-coincidence"></a>
 ### CRebarRuleOptions.Coincidence
@@ -3378,6 +3638,71 @@ Source: src/Section/CRebarRuleOptions.cls:38
 
 Native entrypoint: modTestGeometryConfig.RunAudit03RebarCounterTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt.
 
+<a id="api-crebarruleoptions-setpublication"></a>
+### CRebarRuleOptions.SetPublication
+
+Задаёт строго AnnotationGroup/Publication/Coincidence. Концы, offsets, проверка размещения, source и настройки проекции не меняются.
+
+```vb
+Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As ERebarPublication, ByVal coincidence As ERebarCoincidence)
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| annotationGroup | String; ByVal; обязательный | Имя группы фактических стержней для общей подписи, независимо от расчётных групп трещин. |
+| publication | ERebarPublication; ByVal; обязательный | PublishByRule или PublishPerSourcePosition; порядок и происхождение опубликованных стержней. |
+| coincidence | ERebarCoincidence; ByVal; обязательный | RejectCoincidence, MergeIdentical или KeepPublishedOwner; ничего не меняет в концевых/проекционных настройках. |
+
+Жизненный цикл: New задаёт defaults; автор меняет поля до объявления правила. Фасад копирует options в definition; последующее изменение options не меняет правило.
+
+Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
+
+Source: src/Section/CRebarRuleOptions.cls:55
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
+
+```vb
+    options.SetPublication "Group", PublishPerSourcePosition, KeepPublishedOwner
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:95.
+
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
+
+<a id="api-crebarruleoptions-configuredependentcontact"></a>
+### CRebarRuleOptions.ConfigureDependentContact
+
+Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого диаметров и промежуточных полных диаметров. Вторая компонента обнуляется; остальные политики и source не наследуются.
+
+```vb
+Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, Optional ByVal interveningDiameterSum As Double = 0#)
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| baseDiameter | Double; ByVal; обязательный | Положительный диаметр основного стержня, мм; контактное расстояние начинается от его центра. |
+| diameter | Double; ByVal; обязательный | Диаметр стержня, мм; отрицательный запрещён, ноль выключает ряд. |
+| axis | ERebarOffsetAxis; ByVal; обязательный | RowNormal — смещение по левой нормали исходного ряда; RowTangent — вдоль его касательной. Ориентацию задают фактический путь и directionSign. |
+| directionSign | Double; ByVal; обязательный | Только -1 или +1: знак выбранной компоненты смещения; задаётся явно по направлению ряда. |
+| everySecond | Boolean; ByVal; обязательный | True выбирает локальные исходные позиции 1,3,5…; отсчёт успешных проекций остаётся отдельной настройкой. |
+| interveningDiameterSum | Double; ByVal; Optional; default=0# | Неотрицательная сумма диаметров номинально промежуточных стержней, мм. Для третьего ряда обычно d2 при том же направлении, иначе 0; пропуск EverySecond сам по себе её не уменьшает. |
+
+Жизненный цикл: New задаёт defaults; автор меняет поля до объявления правила. Фасад копирует options в definition; последующее изменение options не меняет правило.
+
+Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
+
+Source: src/Section/CRebarRuleOptions.cls:65
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
+
+```vb
+    options.ConfigureDependentContact 20#, 12#, RowNormal, 0#, False
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:114.
+
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
+
 ## CGeometryDiagnostic
 
 Создаётся сервисом как immutable snapshot. Читайте через LastDiagnostic/DiagnosticAt; диагностический объект не изменяет геометрию или статусы.
@@ -3602,7 +3927,7 @@ Source: src/Section/CSectionInputTable.cls:20
         Case 10: table.Initialize "Second", cells
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:380.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:531.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3685,7 +4010,7 @@ Source: src/Section/CSectionInputTable.cls:61
     Check "input.columns", table.ColumnCount = 3
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:318.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:469.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3719,7 +4044,7 @@ Source: src/Section/CSectionInputTable.cls:64
     Check "input.source", table.SourceReference(2, 2) = "Config!B12"
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:327.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:478.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3785,7 +4110,7 @@ Source: src/Section/CSectionInputTable.cls:76
     Check "input.blank", table.IsBlank(4, 3)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:328.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:479.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3853,7 +4178,7 @@ Source: src/Section/CSectionInputTable.cls:93
         Case 11: value = table.Number(3, 2)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:381.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:532.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3888,7 +4213,7 @@ Source: src/Section/CSectionInputTable.cls:111
     Check "input.count", table.Count(2, 2) = 4
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:324.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:475.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3924,7 +4249,7 @@ Source: src/Section/CSectionInputTable.cls:120
         Case 9: value = table.Choice(2, 2, Array("Stacked", "SideBySide"))
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:379.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:530.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -3959,11 +4284,77 @@ Source: src/Section/CSectionInputTable.cls:131
     Near "input.length", table.Length(4, 2, units), 16#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:333.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:484.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 Native entrypoint: modTestDeclarativeGeometry.RunInputTableTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/InputTables.txt.
+
+<a id="api-csectioninputtable-positivelength"></a>
+### CSectionInputTable.PositiveLength
+
+Читает обязательную длину существующим Length и один раз переводит её в мм; проверяет >0. Пустота/текст/ошибка не становятся нулём; отказ содержит фактический адрес. Не заменяет ограничения GEOM_TOLERANCE/as>d/2.
+
+```vb
+Public Function PositiveLength(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| row | Long; ByVal; обязательный | Номер строки снимка 1..RowCount. |
+| column | Long; ByVal; обязательный | Номер столбца снимка 1..ColumnCount. |
+| units | CUnitSystem; ByVal; обязательный | CUnitSystem, уже подготовленная вызывающим workflow; преобразование только через её методы. |
+
+Тип результата: Double. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: Initialize один раз копирует значения/адреса. Последующее изменение листа/исходного массива не меняет снимок; ошибка Excel не скрывается.
+
+Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
+
+Source: src/Section/CSectionInputTable.cls:137
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.
+
+```vb
+        number = table.PositiveLength(i, 1, units)
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:139.
+
+Native entrypoint: modTestAudit02Api.RunAudit02InputTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02InputTests.txt.
+
+<a id="api-csectioninputtable-nonnegativelength"></a>
+### CSectionInputTable.NonNegativeLength
+
+Читает обязательную длину существующим Length и один раз переводит её в мм; проверяет >=0. Пустота/текст/ошибка не становятся нулём; отказ содержит фактический адрес. Не заменяет ограничения GEOM_TOLERANCE/as>d/2.
+
+```vb
+Public Function NonNegativeLength(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| row | Long; ByVal; обязательный | Номер строки снимка 1..RowCount. |
+| column | Long; ByVal; обязательный | Номер столбца снимка 1..ColumnCount. |
+| units | CUnitSystem; ByVal; обязательный | CUnitSystem, уже подготовленная вызывающим workflow; преобразование только через её методы. |
+
+Тип результата: Double. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: Initialize один раз копирует значения/адреса. Последующее изменение листа/исходного массива не меняет снимок; ошибка Excel не скрывается.
+
+Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
+
+Source: src/Section/CSectionInputTable.cls:143
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.
+
+```vb
+    Check "input.nonnegative.zero", table.NonNegativeLength(2, 1, units) = 0#
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:136.
+
+Native entrypoint: modTestAudit02Api.RunAudit02InputTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02InputTests.txt.
 
 <a id="api-csectioninputtable-optionaldiameter"></a>
 ### CSectionInputTable.OptionalDiameter
@@ -3986,7 +4377,7 @@ Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal 
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:138
+Source: src/Section/CSectionInputTable.cls:150
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.
 
@@ -3994,7 +4385,7 @@ Source: src/Section/CSectionInputTable.cls:138
     Near "input.optional.zero", table.OptionalDiameter(3, 2, units), 0#
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:330.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:481.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -4020,7 +4411,7 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:149
+Source: src/Section/CSectionInputTable.cls:161
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4028,7 +4419,7 @@ Source: src/Section/CSectionInputTable.cls:149
         Case 6: value = table.ColumnByCaption(1, "Value")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:377.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:528.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -4056,7 +4447,7 @@ Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long =
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:165
+Source: src/Section/CSectionInputTable.cls:177
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.
 
@@ -4090,7 +4481,7 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:172
+Source: src/Section/CSectionInputTable.cls:184
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4098,7 +4489,7 @@ Source: src/Section/CSectionInputTable.cls:172
         Case 20: value = table.RowByAnyKey("Count")
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:388.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:539.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -4406,7 +4797,7 @@ Source: src/Excel/CSectionTypeRegistry.cls:57
     For Each id In registry.RegisteredRecipeTypes
 ```
 
-Полный контекст: docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas:18.
+Полный контекст: docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas:40.
 
 Native entrypoint: modTestRoundedTrapezoidExample.RunExampleBuildTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt.
 
@@ -4505,15 +4896,15 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
 
 Source: src/Section/CSectionBuilder.cls:22
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeExamples.RunRoundedFrameExampleTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02GuideExamplesTests с его подготовленными локальными объектами/входом.
 
 ```vb
     Set model = builder.Build(definition, mesh)
 ```
 
-Полный контекст: tests/modTestDeclarativeExamples.bas:20.
+Полный контекст: tests/modTestAudit02Api.bas:213.
 
-Native entrypoint: modTestDeclarativeExamples.RunRoundedFrameExampleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
 <a id="api-csectionbuilder-mesh"></a>
 ### CSectionBuilder.Mesh
@@ -4650,7 +5041,7 @@ Source: src/Section/CRebarRuleExecutor.cls:38
         AssertClose stats, prefix & ".beforeCoordinates", CDbl(builder.CreatedPositions), 0#, 0#
 ```
 
-Полный контекст: tests/modTestGeometry.bas:2590.
+Полный контекст: tests/modTestGeometry.bas:2654.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -6598,7 +6989,7 @@ Source: src/Section/CConcreteRegion.cls:122
     Check "knownOuter.noOpening.authoritative", region.Source = "AuthoritativeContour"
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:593.
+Полный контекст: tests/modTestGeometryQuery.bas:604.
 
 Native entrypoint: modTestGeometryQuery.RunGeometryQueryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -6625,7 +7016,7 @@ Source: src/Section/CConcreteRegion.cls:126
     revision = region.SectionRevision
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:608.
+Полный контекст: tests/modTestGeometryQuery.bas:619.
 
 Native entrypoint: modTestGeometryQuery.RunGeometryQueryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -6958,7 +7349,7 @@ Source: src/Section/CSectionGeometryQuery.cls:188
     query.ProjectionBounds region, Cos(angle), Sin(angle), minimum, maximum
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:715.
+Полный контекст: tests/modTestGeometryQuery.bas:726.
 
 Native entrypoint: modTestGeometryQuery.RunGeometryQueryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -6989,7 +7380,7 @@ Source: src/Section/CSectionGeometryQuery.cls:207
         query.OpeningBounds model.Contours, bounds, openingCount
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:786.
+Полный контекст: tests/modTestGeometryQuery.bas:808.
 
 Native entrypoint: modTestGeometryQuery.RunGeneratedContourOwnershipTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -7020,7 +7411,7 @@ Source: src/Section/CSectionGeometryQuery.cls:233
     Set region = query.PolygonRegion(points)
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:708.
+Полный контекст: tests/modTestGeometryQuery.bas:719.
 
 Native entrypoint: modTestGeometryQuery.RunGeometryQueryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -7214,7 +7605,7 @@ Source: src/Section/CSectionGeometryQuery.cls:432
     Set region = query.SubtractContainedRegion(region, query.CircleRegion(70#, 70#, 23#))
 ```
 
-Полный контекст: tests/modTestContourMesh.bas:507.
+Полный контекст: tests/modTestContourMesh.bas:523.
 
 Native entrypoint: modTestContourMesh.RunContourMeshTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt.
 
@@ -7349,7 +7740,7 @@ Source: src/Section/CSectionGeometryQuery.cls:625
     Set wall = query.ClipWindow(wall, 0#, 1#, 0#, 100#, -50#, -30#)
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:560.
+Полный контекст: tests/modTestGeometryQuery.bas:571.
 
 Native entrypoint: modTestGeometryQuery.RunGeometryQueryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -7383,7 +7774,7 @@ Source: src/Section/CSectionGeometryQuery.cls:642
     Set wall = query.MaterialRegionThroughPlane(region, 0#, 1#, 85#)
 ```
 
-Полный контекст: tests/modTestGeometryQuery.bas:554.
+Полный контекст: tests/modTestGeometryQuery.bas:565.
 
 Native entrypoint: modTestGeometryQuery.RunGeometryQueryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt.
 
@@ -7457,18 +7848,16 @@ Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/
 <a id="api-csectiongeometryquery-roundedpolygon"></a>
 ### CSectionGeometryQuery.RoundedPolygon
 
-Создаёт согласованную границу по вершинам/радиусам/ID. Edge.ID начинается у указанной вершины, Corner.ID существует только при R>0.
+Создаёт и регистрирует согласованную границу по одному завершённому CPolygonSpec. Edge.ID начинается у исходной вершины; Corner.ID существует при R>0. Исходный описатель не меняется.
 
 ```vb
-Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
+Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | pathID | String; ByVal; обязательный | Непустой уникальный ID пути в определении. |
-| vertices | Variant; ByVal; обязательный | Двумерные вершины: Array(Array(x,y),...); координаты во внутренних мм. |
-| radii | Variant; ByVal; обязательный | Массив неотрицательных радиусов вершин в мм, длина равна vertices; clamp бетонного радиуса отсутствует. |
-| vertexIDs | Variant; ByVal; обязательный | Массив уникальных смысловых ID вершин; определяет Edge.ID/Corner.ID. |
+| polygon | CPolygonSpec; ByVal; обязательный | Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal набор отклоняются; порядок, радиусы и источники сохраняются. |
 
 Тип результата: CGeometryPath. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
 
@@ -7476,33 +7865,31 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:868
+Source: src/Section/CSectionGeometryQuery.cls:869
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedOffsetTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set original = query.RoundedPolygon("ConcaveBase", vertices, radii, names)
+    Set path = query.RoundedPolygon("Base", polygon)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:254.
+Полный контекст: tests/modTestAudit02Api.bas:27.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiongeometryquery-offsetroundedpolygon"></a>
 ### CSectionGeometryQuery.OffsetRoundedPolygon
 
-Смещает весь скруглённый многоугольник с согласованными стыками. Положительное расстояние внутрь площади; отрицательное наружу, из Opening в бетон.
+Создаёт и регистрирует смещённый скруглённый многоугольник по исходному CPolygonSpec, не меняя его. Положительное расстояние внутрь площади; отрицательное наружу, из Opening в бетон. Сохраняет привязки исчезнувших участков; отличается от signed-left Offset готового пути.
 
 ```vb
-Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | pathID | String; ByVal; обязательный | Непустой уникальный ID пути в определении. |
-| vertices | Variant; ByVal; обязательный | Двумерные вершины: Array(Array(x,y),...); координаты во внутренних мм. |
-| radii | Variant; ByVal; обязательный | Массив неотрицательных радиусов вершин в мм, длина равна vertices; clamp бетонного радиуса отсутствует. |
-| vertexIDs | Variant; ByVal; обязательный | Массив уникальных смысловых ID вершин; определяет Edge.ID/Corner.ID. |
+| polygon | CPolygonSpec; ByVal; обязательный | Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal набор отклоняются; порядок, радиусы и источники сохраняются. |
 | distance | Double; ByVal; обязательный | Signed offset, мм: положительно внутрь площади, отрицательно наружу; это не left-offset обхода. |
 
 Тип результата: CGeometryPath. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
@@ -7511,15 +7898,15 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As V
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:944
+Source: src/Section/CSectionGeometryQuery.cls:952
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedOffsetTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set path = query.OffsetRoundedPolygon("ConcaveOffset", vertices, radii, names, 2#)
+    Set path = query.OffsetRoundedPolygon("Far", polygonSpec, 5#)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:256.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:395.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -7542,19 +7929,17 @@ Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1003
+Source: src/Section/CSectionGeometryQuery.cls:1026
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 
 ```vb
     Set region = query.RegionFromPath(path)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:164.
+Полный контекст: tests/modTestAudit02Api.bas:32.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
-
-Native entrypoint: modTestDeclarativeGeometry.RunRoundedPolygonTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/RoundedPolygons.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
 <a id="api-csectiongeometryquery-adjacentrectangles"></a>
 ### CSectionGeometryQuery.AdjacentRectangles
@@ -7576,7 +7961,7 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1015
+Source: src/Section/CSectionGeometryQuery.cls:1038
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.InvalidAdjacentRejected с его подготовленными локальными объектами/входом.
 
@@ -7613,7 +7998,7 @@ Public Function LineIntervals(ByVal region As CConcreteRegion, ByVal pointX As D
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1186
+Source: src/Section/CSectionGeometryQuery.cls:1209
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestIntervals с его подготовленными локальными объектами/входом.
 
@@ -7650,7 +8035,7 @@ Public Function SampleMaterialIntervals(ByVal region As CConcreteRegion, ByVal n
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1247
+Source: src/Section/CSectionGeometryQuery.cls:1270
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -7684,7 +8069,7 @@ Public Function ConcreteCoverFromPointAlongDirection(ByVal pointX As Double, ByV
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1279
+Source: src/Section/CSectionGeometryQuery.cls:1302
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometry.TestConcreteCoverUsesLocalContour с его подготовленными локальными объектами/входом.
 
@@ -7715,7 +8100,7 @@ Public Function RegionFromContours(ByVal contours As CSectionContours) As CConcr
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1418
+Source: src/Section/CSectionGeometryQuery.cls:1441
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestPreparedGeometry с его подготовленными локальными объектами/входом.
 
@@ -7746,7 +8131,7 @@ Public Sub RegionCentroid(ByVal region As CConcreteRegion, ByRef x As Double, By
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:1438
+Source: src/Section/CSectionGeometryQuery.cls:1461
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryQuery.TestPreparedGeometry с его подготовленными локальными объектами/входом.
 
@@ -7794,6 +8179,70 @@ Source: src/Common/modSectionRecipeTypes.bas:6
 
 Native entrypoint: modTestRecipeApiCatalogue.RunApiInputAndDataExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt.
 
+<a id="api-modsectionrecipetypes-econtournamingpolicy"></a>
+### modSectionRecipeTypes.EContourNamingPolicy
+
+PreserveSegmentIDs=0: исходные/явные ID; SequentialByKind=1: технический префикс_LINE_i/ARC_i с прежним общим номером сегмента.
+
+```vb
+Public Enum EContourNamingPolicy
+```
+
+Поля/селекторы по source:
+
+```vb
+PreserveSegmentIDs = 0
+SequentialByKind = 1
+```
+
+Жизненный цикл: Общие enum/UDT/error contracts, только внутренние единицы. Raw правила/аннотации заполняет фасад; автор не реализует координатные циклы баров через UDT.
+
+Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
+
+Source: src/Common/modSectionRecipeTypes.bas:12
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
+
+```vb
+    facade.Outer "Outer", path.ID, namingPolicy:=SequentialByKind
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:71.
+
+Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
+
+<a id="api-modsectionrecipetypes-erebaroffsetaxis"></a>
+### modSectionRecipeTypes.ERebarOffsetAxis
+
+RowNormal=1 или RowTangent=2: выбранная компонента контактного зависимого смещения; знак задаётся отдельно.
+
+```vb
+Public Enum ERebarOffsetAxis
+```
+
+Поля/селекторы по source:
+
+```vb
+RowNormal = 1
+RowTangent = 2
+```
+
+Жизненный цикл: Общие enum/UDT/error contracts, только внутренние единицы. Raw правила/аннотации заполняет фасад; автор не реализует координатные циклы баров через UDT.
+
+Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
+
+Source: src/Common/modSectionRecipeTypes.bas:18
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
+
+```vb
+    For Each axis In Array(RowNormal, RowTangent)
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:97.
+
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
+
 <a id="api-modsectionrecipetypes-erebarendmode"></a>
 ### modSectionRecipeTypes.ERebarEndMode
 
@@ -7817,7 +8266,7 @@ ClosedUniform = 5
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:11
+Source: src/Common/modSectionRecipeTypes.bas:23
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.
 
@@ -7853,7 +8302,7 @@ DependentOffset = 6
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:19
+Source: src/Common/modSectionRecipeTypes.bas:31
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -7884,7 +8333,7 @@ PerPath = 1
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:29
+Source: src/Common/modSectionRecipeTypes.bas:41
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
 
@@ -7917,7 +8366,7 @@ RemainderCenter = 3
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:33
+Source: src/Common/modSectionRecipeTypes.bas:45
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
 
@@ -7949,7 +8398,7 @@ PublishPerSourcePosition = 2
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:39
+Source: src/Common/modSectionRecipeTypes.bas:51
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
 
@@ -7981,17 +8430,17 @@ FromPathMiddle = 2
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:44
+Source: src/Common/modSectionRecipeTypes.bas:56
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.PositionOrder = FromPathMiddle: options.Publication = PublishPerSourcePosition
+    options.PositionOrder = FromPathMiddle: options.IncomingTangentAtJoint = True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:377.
+Полный контекст: tests/modTestAudit02Api.bas:92.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
 
 <a id="api-modsectionrecipetypes-erebarcoincidence"></a>
 ### modSectionRecipeTypes.ERebarCoincidence
@@ -8014,7 +8463,7 @@ KeepPublishedOwner = 3
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:49
+Source: src/Common/modSectionRecipeTypes.bas:61
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
 
@@ -8046,7 +8495,7 @@ CheckFullDisk = 2
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:55
+Source: src/Common/modSectionRecipeTypes.bas:67
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
 
@@ -8078,7 +8527,7 @@ RejectOverlap = 2
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:62
+Source: src/Common/modSectionRecipeTypes.bas:74
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
 
@@ -8109,13 +8558,15 @@ ParentID As String
 Comment As String
 ArcComment As String
 ContourIDs As Variant
+NamingPolicy As EContourNamingPolicy
+NamingPrefix As String
 ```
 
 Жизненный цикл: Общие enum/UDT/error contracts, только внутренние единицы. Raw правила/аннотации заполняет фасад; автор не реализует координатные циклы баров через UDT.
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:67
+Source: src/Common/modSectionRecipeTypes.bas:79
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -8180,7 +8631,7 @@ ExplicitStations As Variant
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:77
+Source: src/Common/modSectionRecipeTypes.bas:91
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -8229,7 +8680,7 @@ Comment As String
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:115
+Source: src/Common/modSectionRecipeTypes.bas:129
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestAnnotationOwnership с его подготовленными локальными объектами/входом.
 
@@ -8263,7 +8714,7 @@ MaterialID As Long
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:137
+Source: src/Common/modSectionRecipeTypes.bas:151
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeAnnotations.BuildDefinition с его подготовленными локальными объектами/входом.
 
@@ -8307,7 +8758,7 @@ PathID As String
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:144
+Source: src/Common/modSectionRecipeTypes.bas:158
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -8338,7 +8789,7 @@ Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Opt
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:160
+Source: src/Common/modSectionRecipeTypes.bas:174
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -8368,7 +8819,7 @@ Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReferen
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Common/modSectionRecipeTypes.bas:173
+Source: src/Common/modSectionRecipeTypes.bas:187
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -8434,7 +8885,7 @@ Source: src/Common/modGeometryTypes.bas:15
     If Abs(expected) <= GEOM_TOLERANCE Then
 ```
 
-Полный контекст: tests/modTestGeometry.bas:2508.
+Полный контекст: tests/modTestGeometry.bas:2572.
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
@@ -8444,7 +8895,7 @@ Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regressi
 Предел представимости счётчика позиций, не обещание доступности памяти для такого массива.
 
 ```vb
-Public Const GEOM_MAX_REBAR_COUNT As Double = 2147483646# ' Long-счетчик должен сохранять представимость следующего шага обхода.
+Public Const GEOM_MAX_REBAR_COUNT As Double = 2147483646#
 ```
 
 Тип результата: Double. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
@@ -8531,7 +8982,7 @@ Source: src/Common/modGeometryTypes.bas:26
     Dim edge As TRegionEdge, i As Long, radius As Double, scenario As Long
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:158.
+Полный контекст: tests/modTestDeclarativeGeometry.bas:179.
 
 Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 

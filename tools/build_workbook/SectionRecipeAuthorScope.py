@@ -10,10 +10,12 @@ SECTIONS = [
     ]),
     ('02', 'Входные размеры и единицы', [
         ('CSectionRecipeContext', 'Table Units'),
-        ('CSectionInputTable', 'Name RowCount ColumnCount SourceReference CellValue IsBlank Text Number Count Choice Length OptionalDiameter ColumnByCaption RowByKey RowByAnyKey'),
+        ('CSectionInputTable', 'Name RowCount ColumnCount SourceReference CellValue IsBlank Text Number Count Choice Length PositiveLength NonNegativeLength OptionalDiameter ColumnByCaption RowByKey RowByAnyKey'),
         ('CUnitSystem', 'InputLengthToInternal InputAreaToInternal'),
     ]),
     ('03', 'Границы бетона и отверстий', [
+        ('CPolygonSpec', '*'),
+        ('modSectionRecipeTypes', 'EContourNamingPolicy'),
         ('CSectionDefinitionBuilder', 'CirclePath LinePath ArcPath RectanglePath RoundedPolygon AdjacentRectangles AddPath Outer Opening'),
     ]),
     ('04', 'Линии центров стержней и преобразования', [
@@ -24,7 +26,7 @@ SECTIONS = [
     ]),
     ('06', 'Условия размещения стержней', [
         ('CRebarRuleOptions', '*'),
-        ('modSectionRecipeTypes', 'ERebarEndMode ERebarDistributionScope ERemainderPlacement ERebarPublication ERebarPositionOrder ERebarCoincidence ERebarPlacementCheck ERebarOverlapPolicy'),
+        ('modSectionRecipeTypes', 'ERebarOffsetAxis ERebarEndMode ERebarDistributionScope ERemainderPlacement ERebarPublication ERebarPositionOrder ERebarCoincidence ERebarPlacementCheck ERebarOverlapPolicy'),
     ]),
     ('07', 'Размеры, пояснения и подписи арматуры', [
         ('CSectionDefinitionBuilder', 'Anchor PathAnchor TransformAnchor VerticalExtent HorizontalExtent HorizontalDistance VerticalDistance Dimension PathLength Radius Diameter Text RebarLabel RebarRowLabel RebarRowExtentLabel RebarRowExtremeLabel'),

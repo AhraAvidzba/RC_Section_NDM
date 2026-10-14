@@ -44,8 +44,9 @@ def evidence():
                 if re.search(r"failed=0\b", body, re.I) and not re.search(r"failed=[1-9]|SUITE_ERROR|WATCHDOG_TIMEOUT", body, re.I):
                     result[match[1]].append(path.relative_to(ROOT).as_posix())
     # Новые адресные прогоны: отдельный текст каждого entrypoint и завершённый Run.json.
-    solid = ROOT / "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14"
-    for receipt in solid.glob("*/Run.json"):
+    folders = [ROOT / "docs/regression/ExcelGuardGuide_2026-10-13" / name for name in
+               ("SolidFinal_2026-10-14", "Audit02_2026-10-14")]
+    for receipt in (path for folder in folders for path in folder.glob("*/Run.json")):
         run = json.loads(receipt.read_text(encoding="utf-8-sig"))
         if not run.get("Passed") or not run.get("ProductionUnchanged"):
             continue

@@ -1,0 +1,23 @@
+﻿{
+    "Stage":  "GuideExamples",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02GuideExamplesTests",
+                     "Seconds":  0.25801189999999996,
+                     "Characters":  282,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryReview.RunGeometryReviewTests",
+                     "Seconds":  9.0739456,
+                     "Characters":  45000,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "D6C6BE9BFDF27BE9C17D7795B53B30943278C7B3A61A4530CCFD2315C5F80428",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T12:05:54.5193461+03:00"
+}

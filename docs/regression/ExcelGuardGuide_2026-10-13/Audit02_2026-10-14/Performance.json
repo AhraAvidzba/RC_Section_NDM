@@ -1,0 +1,136 @@
+{
+  "Scope": "Full BuildWorkbookSectionModel: input snapshot, recipe, region, rules, mesh, contours and annotations. No solver/output; one warmup then five timed repeats per fixture.",
+  "Claim": "No guaranteed acceleration; machine timings are observational.",
+  "Fixtures": {
+    "Circle": {
+      "BeforeMedian": 0.1149508,
+      "AfterMedian": 0.119015,
+      "BeforeRange": [
+        0.1102994,
+        0.1440021
+      ],
+      "AfterRange": [
+        0.1145838,
+        0.131009
+      ],
+      "RatioMedian": 1.0353559957825433
+    },
+    "Rectangle": {
+      "BeforeMedian": 0.0406083,
+      "AfterMedian": 0.0365877,
+      "BeforeRange": [
+        0.0396212,
+        0.0726353
+      ],
+      "AfterRange": [
+        0.0353823,
+        0.0620407
+      ],
+      "RatioMedian": 0.9009906841704775
+    },
+    "LSection": {
+      "BeforeMedian": 0.0646565,
+      "AfterMedian": 0.0698271,
+      "BeforeRange": [
+        0.0558611,
+        0.0878411
+      ],
+      "AfterRange": [
+        0.0638087,
+        0.0906257
+      ],
+      "RatioMedian": 1.0799703046097453
+    },
+    "TwoRectangles": {
+      "BeforeMedian": 0.0717139,
+      "AfterMedian": 0.0649664,
+      "BeforeRange": [
+        0.0661752,
+        0.1082108
+      ],
+      "AfterRange": [
+        0.0621103,
+        0.0909147
+      ],
+      "RatioMedian": 0.905910848524484
+    },
+    "RoundedSimple": {
+      "BeforeMedian": 0.0617939,
+      "AfterMedian": 0.0736036,
+      "BeforeRange": [
+        0.0603389,
+        0.0940517
+      ],
+      "AfterRange": [
+        0.0671021,
+        0.1305654
+      ],
+      "RatioMedian": 1.1911143332917975
+    },
+    "RoundedTapered": {
+      "BeforeMedian": 0.0891948,
+      "AfterMedian": 0.094174,
+      "BeforeRange": [
+        0.0787652,
+        0.1242073
+      ],
+      "AfterRange": [
+        0.0849697,
+        0.1249408
+      ],
+      "RatioMedian": 1.0558238821097192
+    },
+    "RoundedMixed": {
+      "BeforeMedian": 0.0794444,
+      "AfterMedian": 0.0774462,
+      "BeforeRange": [
+        0.0678394,
+        0.0984948
+      ],
+      "AfterRange": [
+        0.0746108,
+        0.1021921
+      ],
+      "RatioMedian": 0.9748478180966815
+    },
+    "RoundedMixedLeft": {
+      "BeforeMedian": 0.074705,
+      "AfterMedian": 0.0859765,
+      "BeforeRange": [
+        0.0699858,
+        0.1093891
+      ],
+      "AfterRange": [
+        0.0802074,
+        0.105537
+      ],
+      "RatioMedian": 1.1508801285054548
+    },
+    "HollowCentered": {
+      "BeforeMedian": 0.2603401,
+      "AfterMedian": 0.2413686,
+      "BeforeRange": [
+        0.2275155,
+        0.2794903
+      ],
+      "AfterRange": [
+        0.194301,
+        0.2641283
+      ],
+      "RatioMedian": 0.9271280144703024
+    },
+    "HollowOffset": {
+      "BeforeMedian": 0.2696662,
+      "AfterMedian": 0.2290199,
+      "BeforeRange": [
+        0.2394016,
+        0.2751675
+      ],
+      "AfterRange": [
+        0.2061055,
+        0.2626314
+      ],
+      "RatioMedian": 0.8492718034369898
+    }
+  }
+}

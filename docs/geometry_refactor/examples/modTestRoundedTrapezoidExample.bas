@@ -5,6 +5,28 @@ Option Explicit
 ' Геометрическая математика и расстановка стержней здесь отсутствуют.
 Private mPassed As Long, mFailed As Long, mReport As String
 
+' ДЛЯ ТЕСТОВ: полный минимальный класс из гайда исполняется через ISectionRecipe.
+Public Function RunAudit02MinimalRecipeTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim recipe As ISectionRecipe, context As CSectionRecipeContext, definition As CSectionDefinition
+    Dim builder As CSectionBuilder, mesh As TSectionMeshOptions, model As CSectionModel
+    Set recipe = New CSectionRecipeMySection: Set context = New CSectionRecipeContext
+    Set definition = recipe.CreateDefinition(context)
+    mesh.StepX = 50#: mesh.StepY = 50#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
+    Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
+    Check "minimal.area", definition.ConcreteDomain.Area = 600000#
+    Check "minimal.bars", model.RebarCount = 5
+    Check "minimal.annotations", model.Annotations.Count = 2
+    Check "minimal.x.first", model.RebarX(1) = 50# And model.RebarY(1) = 950#
+    Check "minimal.x.last", model.RebarX(5) = 550# And model.RebarY(5) = 950#
+    GoTo Finished
+Failed:
+    Check "minimal.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunAudit02MinimalRecipeTests = mReport & "TOTAL AUDIT02 MINIMAL RECIPE: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 Public Function RunExampleBuildTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed

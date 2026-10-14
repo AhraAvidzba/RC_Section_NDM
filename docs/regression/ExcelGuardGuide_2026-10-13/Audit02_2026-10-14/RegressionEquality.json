@@ -1,0 +1,177 @@
+{
+  "Passed": true,
+  "Snapshots": [
+    {
+      "Before": "BaselineGeometry/modTestGeometrySolidSnapshots.DumpSolidDirectNdsBits.txt",
+      "After": "UnifiedGeometry/modTestGeometrySolidSnapshots.DumpSolidDirectNdsBits.txt",
+      "Equal": true,
+      "BeforeSHA256": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0",
+      "AfterSHA256": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0"
+    },
+    {
+      "Before": "BaselineGeometry/modTestGeometrySolidSnapshots.DumpSolidPhysicalBits.txt",
+      "After": "UnifiedGeometry/modTestGeometrySolidSnapshots.DumpSolidPhysicalBits.txt",
+      "Equal": true,
+      "BeforeSHA256": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15",
+      "AfterSHA256": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15"
+    },
+    {
+      "Before": "BaselineGeometry/modTestShapeArchitecture.DumpCircleGeometryMatrix.txt",
+      "After": "UnifiedGeometry/modTestShapeArchitecture.DumpCircleGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "5851efc247546d9b02d6c9737ff9ca33ef1ecf6c48226e4ba3b11149022c827a",
+      "AfterSHA256": "5851efc247546d9b02d6c9737ff9ca33ef1ecf6c48226e4ba3b11149022c827a"
+    },
+    {
+      "Before": "BaselineGeometry/modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt",
+      "After": "UnifiedGeometry/modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "a2736ed46ad69c1f92544d47aaedd56ba365d1d4a8da620c664fd0124e88d490",
+      "AfterSHA256": "a2736ed46ad69c1f92544d47aaedd56ba365d1d4a8da620c664fd0124e88d490"
+    },
+    {
+      "Before": "BaselineGeometry/modTestShapeArchitecture.DumpHollowGeometryMatrix.txt",
+      "After": "UnifiedGeometry/modTestShapeArchitecture.DumpHollowGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "3a40de7e74735d007e4d6f2816282d7b1014eb6cb00b17b6e48d3732232dc698",
+      "AfterSHA256": "3a40de7e74735d007e4d6f2816282d7b1014eb6cb00b17b6e48d3732232dc698"
+    },
+    {
+      "Before": "BaselineGeometry/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "After": "UnifiedGeometry/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3",
+      "AfterSHA256": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3"
+    },
+    {
+      "Before": "BaselineGeometry/modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt",
+      "After": "UnifiedGeometry/modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "883ef56e76f969d16fbbe011349039693e6f05fa4889cb13ba75a20a55d217ae",
+      "AfterSHA256": "883ef56e76f969d16fbbe011349039693e6f05fa4889cb13ba75a20a55d217ae"
+    },
+    {
+      "Before": "BaselineGeometry/modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt",
+      "After": "UnifiedGeometry/modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt",
+      "Equal": true,
+      "BeforeSHA256": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f",
+      "AfterSHA256": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f"
+    },
+    {
+      "Before": "BaselineCalculationsSP35/modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "After": "UnifiedCalculationsSP35/modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Equal": true,
+      "BeforeSHA256": "c24054ca88ee3bc4054257c4c47c64a5eda82a3ae179200269eb2d0354eb194d",
+      "AfterSHA256": "c24054ca88ee3bc4054257c4c47c64a5eda82a3ae179200269eb2d0354eb194d"
+    },
+    {
+      "Before": "BaselineCalculationsSP63/modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "After": "UnifiedCalculationsSP63/modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Equal": true,
+      "BeforeSHA256": "9778fa9a749765693f9fcc17d02b8442c2ef12e0971868f662b9339072b12ad7",
+      "AfterSHA256": "9778fa9a749765693f9fcc17d02b8442c2ef12e0971868f662b9339072b12ad7"
+    },
+    {
+      "Before": "BaselinePreview/modTestShapeArchitecture.DumpShapePreviewSnapshot.txt",
+      "After": "UnifiedPreview/modTestShapeArchitecture.DumpShapePreviewSnapshot.txt",
+      "Equal": true,
+      "BeforeSHA256": "01f70e638e0427dfa21deaf841b2a1c5f59f9e8dbf506e77315bce123ff28e2a",
+      "AfterSHA256": "01f70e638e0427dfa21deaf841b2a1c5f59f9e8dbf506e77315bce123ff28e2a"
+    }
+  ],
+  "Images": [
+    {
+      "Image": "Circle.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "17fa0291e0816beaae0ab012cfab39b4eeb3eb4987e51e52fbee6ef4a3c12ce1",
+      "AfterSHA256": "17fa0291e0816beaae0ab012cfab39b4eeb3eb4987e51e52fbee6ef4a3c12ce1"
+    },
+    {
+      "Image": "HollowCentered.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "f9a933c58d65ed7f736af2c7fc2f485e64cd544951c98ed8a7760158ad39993c",
+      "AfterSHA256": "f9a933c58d65ed7f736af2c7fc2f485e64cd544951c98ed8a7760158ad39993c"
+    },
+    {
+      "Image": "HollowOffset.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "ec11b71e6643ac6213287cb2bfdc8696aaa3a21193b07afe0555d58243fa1e2b",
+      "AfterSHA256": "ec11b71e6643ac6213287cb2bfdc8696aaa3a21193b07afe0555d58243fa1e2b"
+    },
+    {
+      "Image": "LSection.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "1710c579ddb6af493e4e66627e15a5c0051cbc6f55661373497c7ba96f3c6394",
+      "AfterSHA256": "1710c579ddb6af493e4e66627e15a5c0051cbc6f55661373497c7ba96f3c6394"
+    },
+    {
+      "Image": "Rectangle.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "161ed09cd564debe4a6d087a03caa674c5807b8d97bdb0c1f0fd8c49fb622649",
+      "AfterSHA256": "161ed09cd564debe4a6d087a03caa674c5807b8d97bdb0c1f0fd8c49fb622649"
+    },
+    {
+      "Image": "RoundedMixed.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "c974e2e9affce6cbbbb57c8f965ddda3ce48c29af7054e81b1b02c95f3fbd55f",
+      "AfterSHA256": "c974e2e9affce6cbbbb57c8f965ddda3ce48c29af7054e81b1b02c95f3fbd55f"
+    },
+    {
+      "Image": "RoundedSimple.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "d9ebd2a46a89d0dc71f8d4affdb3b66469e830d46f3fa83f2ecb70b647e8994b",
+      "AfterSHA256": "d9ebd2a46a89d0dc71f8d4affdb3b66469e830d46f3fa83f2ecb70b647e8994b"
+    },
+    {
+      "Image": "RoundedTapered.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "400722b21140a070e32a9d8c05307a595ad32b76b52d4a38d6811ffb599ba495",
+      "AfterSHA256": "400722b21140a070e32a9d8c05307a595ad32b76b52d4a38d6811ffb599ba495"
+    },
+    {
+      "Image": "TwoRectangles.png",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ],
+      "BeforeSHA256": "3ff8459c6b13acd5e704ec482954864ca8ded3b982e88685889049e090f17e04",
+      "AfterSHA256": "3ff8459c6b13acd5e704ec482954864ca8ded3b982e88685889049e090f17e04"
+    }
+  ],
+  "AlignedPreview": "UnifiedPreview/Audit02Demo.png",
+  "FullOnOffSuiteRun": false,
+  "Comparison": "All rows and pixels; no exclusions or tolerance changes"
+}

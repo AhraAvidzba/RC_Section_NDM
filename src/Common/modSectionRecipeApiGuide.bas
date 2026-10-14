@@ -57,29 +57,148 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '   настройках плоттера.
 '
 '   МИНИМАЛЬНЫЙ ПРИМЕР
-'     Тело ISectionRecipe_CreateDefinition в классе с Implements ISectionRecipe. Пример задаёт
-'     прямоугольник и пять верхних стержней диаметром 20 мм:
+'     Полный класс CSectionRecipeMySection. Размеры заданы в мм; context требуется интерфейсу, входных
+'     таблиц в этом примере нет. Создайте Class Module с этим именем и вставьте текст:
 '
-'       Dim facade As CSectionDefinitionBuilder, path As CGeometryPath  ' Сборщик описания и геометрическая линия.
-'       Dim options As CRebarRuleOptions  ' Переменная условий размещения арматуры.
-'       Set facade = New CSectionDefinitionBuilder  ' Создаём сборщик описания сечения.
-'       facade.Initialize "MySection"  ' "MySection" — имя типа сечения.
-'       Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)  ' "Boundary" — имя прямоугольника; 0 — X левого нижнего угла, мм; 0 — Y левого нижнего угла, мм; 600 — ширина, мм; 1000 — высота, мм.
-'       facade.Outer "OUTER", path.ID  ' "OUTER" — имя наружной границы бетона; path.ID — замкнутый контур.
-'       Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)  ' "TopAxis" — имя линии; 50 — X начала, мм; 950 — Y начала, мм; 550 — X конца, мм; 950 — Y конца, мм.
-'       Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
-'       options.AnnotationGroup = "Top"  ' AnnotationGroup — имя общей подписи для всех рядов этой группы.
-'       facade.RebarByCount "Top.Main", path.ID, 5, 20#, options  ' "Top.Main" — имя нового ряда; path.ID — линия центров стержней; 5 — заданное число стержней; 20 — диаметр стержня, мм; options — отступы, нумерация и условия размещения.
+'       Option Explicit
+'
+'       ' Учебный минимальный рецепт: прямоугольник и пять верхних стержней.
+'       Implements ISectionRecipe
+'
+'       ' Постоянные размеры уже в мм; context обязателен интерфейсу, входных таблиц здесь нет.
+'       Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
+'           Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
+'           Dim options As CRebarRuleOptions
+'           Set facade = New CSectionDefinitionBuilder
+'           facade.Initialize "MySection"  ' "MySection" — имя типа сечения.
+'       ' "Boundary" — имя прямоугольника; 0 — X левого нижнего угла, мм; 0 — Y левого нижнего угла,
+'       ' мм; 600 — ширина, мм; 1000 — высота, мм.
+'           Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
+'           facade.Outer "OUTER", path.ID  ' "OUTER" — имя наружной границы бетона; path.ID — замкнутый контур.
+'           Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)  ' "TopAxis" — имя линии; 50 — X начала, мм; 950 — Y начала, мм; 550 — X конца, мм; 950 — Y конца, мм.
+'           Set options = New CRebarRuleOptions
+'           options.AnnotationGroup = "Top"
+'       ' "Top.Main" — имя нового ряда; path.ID — линия центров стержней; 5 — заданное число
+'       ' стержней; 20 — диаметр стержня, мм; options — отступы, нумерация и условия размещения.
+'           facade.RebarByCount "Top.Main", path.ID, 5, 20#, options
 '       ' "Top" — группа общей подписи всех её рядов; "Top.Main" — ряд, к концам которого привязана
 '       ' подпись; 0 — X-компонента направления подписи; 1 — Y-компонента направления подписи.
-'       facade.RebarRowLabel "Top", "Top.Main", 0#, 1#
-'       facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#  ' "DIM_B" — имя размера; "B" — обозначение на схеме; 0 — X первой точки, мм; 600 — X второй точки, мм; 1000 — уровень исходной размерной линии Y, мм.
-'       Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем описание сечения.
+'           facade.RebarRowLabel "Top", "Top.Main", 0#, 1#
+'       ' "DIM_B" — имя размера; "B" — обозначение на схеме; 0 — X первой точки, мм; 600 — X второй
+'       ' точки, мм; 1000 — уровень исходной размерной линии Y, мм.
+'           facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#
+'           Set ISectionRecipe_CreateDefinition = facade.Finish
+'       End Function
 '
 '     В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New
 '     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array()
 '     подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных
 '     таблиц.
+'     Ввод из Config передаётся в context общим CSectionInputSnapshotReader: table = context.Table("имя
+'     таблицы"), units = context.Units. table.PositiveLength/NonNegativeLength возвращают мм и проверяют
+'     знак; SourceReference возвращает адрес. Полный пример такого ввода —
+'     CSectionRecipeRoundedRectangle.
+'
+'   ОПИСАТЕЛЬ И ПРИВЯЗКИ
+'     CPolygonSpec объединяет исходные ID, X, Y, FilletRadius и SourceReference каждой вершины. New  ->
+'     AddVertex  ->  Seal. Состояние читают Count/IsSealed, значения —
+'     VertexID/X/Y/FilletRadius/SourceReference по индексу от 1. После Seal изменение запрещено;
+'     повторный Seal безопасен. Первую вершину в конце не повторяют.
+'     Исходная вершина до скругления может не лежать на контуре. PathAnchor задаёт точку готового
+'     сегмента, Anchor — заданную координату. Вершины не превращаются в anchors автоматически.
+'     OffsetRoundedPolygon: плюс внутрь исходного многоугольника; Offset: плюс влево от направления
+'     готовой линии. У группы независимых линий Offset отсутствует.
+'     Aligned измеряет истинное расстояние, его линия параллельна измеряемому участку. Горизонтальный и
+'     вертикальный размеры измеряют проекции; PathLength суммирует прямые и дуги. Поворот текста
+'     остаётся прежним, 0/90 градусов.
+'
+'   ПОЛНЫЙ ПРИМЕР: СКРУГЛЕНИЯ, АРМАТУРА И НАКЛОННЫЙ РАЗМЕР
+'     Это самостоятельная функция; b/h/w и все объекты объявлены внутри. Edge.TR — реальная ненулевая
+'     наклонная грань между точками касания. Армирование учебное, без проверки достаточности.
+'
+'       Private Function BuildAudit02DemoDefinition() As CSectionDefinition
+'           Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec
+'           Dim shapePath As CGeometryPath, boundary As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
+'           Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
+'           b = 600#: h = 1000#: w = 200#
+'           Set polygon = New CPolygonSpec
+'           polygon.AddVertex "TL", -b / 2#, h / 2#, 80#
+'           polygon.AddVertex "TR", b / 2#, h / 2#, 120#
+'           polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
+'           polygon.AddVertex "BR", b / 2#, -h / 2#, 120#
+'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#
+'           polygon.Seal
+'           Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
+'           Set shapePath = facade.RoundedPolygon("Shape", polygon)
+'           Set boundary = facade.Chain("Boundary", shapePath.ID, "Edge.BL", 0#, "Edge.BL", 0#, True, True)
+'           facade.Outer "OUTER", boundary.ID
+'           Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
+'           Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
+'           Set options = New CRebarRuleOptions
+'           options.SetPublication "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+'           options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
+'           options.IncomingTangentAtJoint = True
+'           facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
+'           facade.RebarRowExtentLabel "H.Right", "H.Right.Main", 1#, 0#, True
+'           facade.PathAnchor "Slope.A", shapePath.ID, "Edge.TR", 0#
+'           facade.PathAnchor "Slope.B", shapePath.ID, "Edge.TR", 1#
+'           facade.Dimension "DIM_SLOPE", "Slope.A", "Slope.B", "L", "Aligned"
+'           facade.HorizontalDistance "DIM_B", "B", -b / 2#, b / 2#, h / 2#, 1#
+'           facade.VerticalExtent "DIM_H", boundary.ID, "H", -b / 2#, -1#
+'           Set BuildAudit02DemoDefinition = facade.Finish
+'       End Function
+'
+'   ПОЛНЫЙ ПРИМЕР: ПРИМИТИВЫ, СМЕЩЕНИЯ И ПРОЕКЦИЯ
+'     Самостоятельная функция с постоянными данными в мм: прямоугольники смежные, отверстие внутри
+'     Outer, линии независимые. RowNormal=1 направлен влево от MainAxis; луч проекции (0,1) пересекает
+'     ProjectedAxis. Примеры можно поместить в тот же класс и вызвать вместо прямоугольного описания.
+'
+'       Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
+'           Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+'           Set facade = New CSectionDefinitionBuilder: facade.Initialize "OperationsExample"
+'           Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 1000#, 1000#), Array(1000#, 0#, 200#, 600#)))
+'           facade.Outer "Outer", path.ID
+'           Set path = facade.CirclePath("Hole", 900#, 800#, 50#): facade.Opening "Opening", path.ID, "Outer"
+'           Set path = facade.LinePath("MainAxis", 100#, 100#, 700#, 100#)
+'           Set path = facade.ArcPath("Arc", 500#, 600#, 100#, 0#, GEOM_PI / 2#)
+'           Set path = facade.Offset("ProjectedAxis", "MainAxis", 100#)
+'           Set path = facade.Transform("Rotated", "MainAxis", 900#, 100#, GEOM_PI / 2#, True)
+'           Set path = facade.ConstrainLine("Limited", "MainAxis", 1#, 0#, 150#, 1#, 0#, 650#)
+'           Set path = facade.LinePath("MaxStepAxis", 100#, 300#, 700#, 300#)
+'           Set path = facade.LinePath("FixedStepAxis", 100#, 400#, 700#, 400#)
+'           Set path = facade.LinePath("ExplicitAxis", 100#, 500#, 700#, 500#)
+'           facade.PathGroup "TwoLines", Array("MaxStepAxis", "FixedStepAxis")
+'           Set options = New CRebarRuleOptions
+'           options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+'           facade.RebarByCount "Main", "MainAxis", 5, 20#, options
+'           Set options = New CRebarRuleOptions
+'           options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+'           options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
+'           facade.RebarDependent "Contact", "Main", 16#, options
+'           Set options = New CRebarRuleOptions
+'           options.NormalOffset = 40#: options.TangentOffset = 10#
+'           facade.RebarDependent "Shifted", "Main", 12#, options
+'           Set options = New CRebarRuleOptions: options.DirectionY = 1#
+'           facade.RebarProjected "Projected", "ProjectedAxis", "Main", 16#, options
+'           facade.RebarByMaxStep "MaxStep", "MaxStepAxis", 150#, 16#
+'           facade.RebarByFixedStep "FixedStep", "FixedStepAxis", 150#, 16#
+'           facade.RebarAtStations "Explicit", "ExplicitAxis", Array(0#, 150#, 600#), 12#
+'           facade.Anchor "A", 100#, 100#: facade.Anchor "B", 700#, 500#
+'           facade.TransformAnchor "MovedA", "A", 0#, 700#
+'           facade.Dimension "H", "A", "B", "X", "Horizontal"
+'           facade.Dimension "V", "A", "B", "Y", "Vertical"
+'           facade.Dimension "L", "A", "B", "L", "Aligned"
+'           facade.PathLength "Length", "TwoLines", "MovedA", "SumL"
+'           facade.Radius "Radius", "Arc", "Arc", 0.5, "R"
+'           facade.Diameter "Diameter", "Hole", "Hole", 0.5, "D"
+'           facade.Text "Note", "MovedA", "Учебный пример"
+'           facade.RebarRowLabel "Bottom", "Main", 0#, -1#
+'           Set BuildAudit02OperationsDefinition = facade.Finish
+'       End Function
+'
+'     Миграция: прежние публичные массивы vertices/radii/vertexIDs заменены одним CPolygonSpec.
+'     AddCorner и циклы технической нумерации из рецептов удалены. Другого рабочего варианта этих
+'     операций нет.
 '
 '
 ' ====================================================================================================
@@ -371,6 +490,50 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '
 '     ----------------------------------------------------------------------------------------------
+'     CSectionInputTable.PositiveLength
+'
+'       Читает обязательную длину существующим Length и один раз переводит её в мм; проверяет >0.
+'       Пустота/текст/ошибка не становятся нулём; отказ содержит фактический адрес. Не заменяет
+'       ограничения GEOM_TOLERANCE/as>d/2.
+'
+'       Объявление:
+'         Public Function PositiveLength(ByVal row As Long, ByVal column As Long, ByVal units As
+'         CUnitSystem) As Double
+'
+'       Параметры:
+'         ByVal row As Long
+'           Номер строки снимка 1..RowCount.
+'
+'         ByVal column As Long
+'           Номер столбца снимка 1..ColumnCount.
+'
+'         ByVal units As CUnitSystem
+'           CUnitSystem, уже подготовленная вызывающим workflow; преобразование только через её методы.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputTable.NonNegativeLength
+'
+'       Читает обязательную длину существующим Length и один раз переводит её в мм; проверяет >=0.
+'       Пустота/текст/ошибка не становятся нулём; отказ содержит фактический адрес. Не заменяет
+'       ограничения GEOM_TOLERANCE/as>d/2.
+'
+'       Объявление:
+'         Public Function NonNegativeLength(ByVal row As Long, ByVal column As Long, ByVal units As
+'         CUnitSystem) As Double
+'
+'       Параметры:
+'         ByVal row As Long
+'           Номер строки снимка 1..RowCount.
+'
+'         ByVal column As Long
+'           Номер столбца снимка 1..ColumnCount.
+'
+'         ByVal units As CUnitSystem
+'           CUnitSystem, уже подготовленная вызывающим workflow; преобразование только через её методы.
+'
+'
+'     ----------------------------------------------------------------------------------------------
 '     CSectionInputTable.OptionalDiameter
 '
 '       Пустая ячейка или 0 отключают ряд; положительный диаметр переводится в мм. Текст, включая
@@ -494,6 +657,145 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 ' ====================================================================================================
 '
 '
+'   Класс / модуль: CPolygonSpec
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.AddVertex
+'
+'       Добавляет запись исходной вершины: X/Y, радиус, ID и текстовый источник. Проверяет структуру и
+'       числа без геометрических вычислений.
+'
+'       Объявление:
+'         Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Double, Optional
+'         ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "")
+'
+'       Параметры:
+'         ByVal vertexID As String
+'           Непустое уникальное имя исходной вершины; регистр различается, повтор первой вершины для
+'           замыкания не нужен.
+'
+'         ByVal x As Double
+'           Модельная координата x, мм; знаки соответствуют section XY/WCS.
+'
+'         ByVal y As Double
+'           Модельная координата y, мм; знаки соответствуют section XY/WCS.
+'
+'         Optional ByVal filletRadius As Double = 0#
+'           Неотрицательный конечный радиус сопряжения, мм. Ноль задаёт острый угол; фактические точки
+'           касания вычисляет общее ядро.
+'
+'         Optional ByVal sourceReference As String = ""
+'           Строка исходного адреса/программного параметра; без объекта Excel.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.Seal
+'
+'       Завершает набор из минимум трёх вершин в исходном порядке. Повторный Seal безопасен; неудачный
+'       оставляет описание открытым.
+'
+'       Объявление:
+'         Public Sub Seal()
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.Count
+'
+'       Число исходных вершин, доступное при заполнении и после Seal; не ограничено шестью.
+'
+'       Объявление:
+'         Public Property Get Count() As Long
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.IsSealed
+'
+'       True после успешного явного Seal; только такой набор принимает фасад.
+'
+'       Объявление:
+'         Public Property Get IsSealed() As Boolean
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.VertexID
+'
+'       Имя исходной вершины по номеру 1..Count, доступное после Seal.
+'
+'       Объявление:
+'         Public Function VertexID(ByVal index As Long) As String
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.X
+'
+'       Исходная координата X, мм, по номеру 1..Count; не является автоматически точкой готового
+'       контура.
+'
+'       Объявление:
+'         Public Function X(ByVal index As Long) As Double
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.Y
+'
+'       Исходная координата Y, мм, по номеру 1..Count.
+'
+'       Объявление:
+'         Public Function Y(ByVal index As Long) As Double
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.FilletRadius
+'
+'       Назначенный исходный радиус, мм, по номеру 1..Count; ноль — острый угол.
+'
+'       Объявление:
+'         Public Function FilletRadius(ByVal index As Long) As Double
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.SourceReference
+'
+'       Скалярный текст происхождения вершины по номеру 1..Count; ссылки на Excel-объекты не хранятся.
+'
+'       Объявление:
+'         Public Function SourceReference(ByVal index As Long) As String
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'
+'   Класс / модуль: modSectionRecipeTypes
+'
+'     ----------------------------------------------------------------------------------------------
+'     modSectionRecipeTypes.EContourNamingPolicy
+'
+'       PreserveSegmentIDs=0: исходные/явные ID; SequentialByKind=1: технический префикс_LINE_i/ARC_i с
+'       прежним общим номером сегмента.
+'
+'       Объявление:
+'         Public Enum EContourNamingPolicy
+'
+'       Допустимые значения / состав:
+'         PreserveSegmentIDs = 0
+'         SequentialByKind = 1
+'
+'
 '   Класс / модуль: CSectionDefinitionBuilder
 '
 '     ----------------------------------------------------------------------------------------------
@@ -604,26 +906,20 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.RoundedPolygon
 '
-'       Создаёт согласованную границу по вершинам/радиусам/ID. Edge.ID начинается у указанной вершины,
-'       Corner.ID существует только при R>0.
+'       Создаёт и регистрирует согласованную границу по одному завершённому CPolygonSpec. Edge.ID
+'       начинается у исходной вершины; Corner.ID существует при R>0. Исходный описатель не меняется.
 '
 '       Объявление:
-'         Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal radii
-'         As Variant, ByVal vertexIDs As Variant) As CGeometryPath
+'         Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As
+'         CGeometryPath
 '
 '       Параметры:
 '         ByVal pathID As String
 '           Непустой уникальный ID пути в определении.
 '
-'         ByVal vertices As Variant
-'           Двумерные вершины: Array(Array(x,y),...); координаты во внутренних мм.
-'
-'         ByVal radii As Variant
-'           Массив неотрицательных радиусов вершин в мм, длина равна vertices; clamp бетонного радиуса
-'           отсутствует.
-'
-'         ByVal vertexIDs As Variant
-'           Массив уникальных смысловых ID вершин; определяет Edge.ID/Corner.ID.
+'         ByVal polygon As CPolygonSpec
+'           Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal
+'           набор отклоняются; порядок, радиусы и источники сохраняются.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -667,7 +963,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As
-'         String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
+'         String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "",
+'         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal
+'         namingPrefix As String = "")
 '
 '       Параметры:
 '         ByVal loopID As String
@@ -685,6 +983,14 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         Optional ByVal arcComment As String = ""
 '           Отдельный комментарий аналитических дуг; пустой использует обычный comment.
 '
+'         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs
+'           PreserveSegmentIDs сохраняет имена сегментов/явные contourIDs; SequentialByKind создаёт
+'           префикс_LINE_i/ARC_i с общим номером сегмента. Явные ID несовместимы с SequentialByKind.
+'
+'         Optional ByVal namingPrefix As String = ""
+'           Префикс только SequentialByKind; пустой использует CONTOUR. Разным границам нужны разные
+'           префиксы; рецепты Hollow явно задают CONTOUR_OUTER/CONTOUR_OPENING.
+'
 '
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.Opening
@@ -695,7 +1001,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Объявление:
 '         Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As
 '         String, Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional
-'         ByVal arcComment As String = "")
+'         ByVal arcComment As String = "", Optional ByVal namingPolicy As EContourNamingPolicy =
+'         PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
 '
 '       Параметры:
 '         ByVal loopID As String
@@ -715,6 +1022,14 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '         Optional ByVal arcComment As String = ""
 '           Отдельный комментарий аналитических дуг; пустой использует обычный comment.
+'
+'         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs
+'           PreserveSegmentIDs сохраняет имена сегментов/явные contourIDs; SequentialByKind создаёт
+'           префикс_LINE_i/ARC_i с общим номером сегмента. Явные ID несовместимы с SequentialByKind.
+'
+'         Optional ByVal namingPrefix As String = ""
+'           Префикс только SequentialByKind; пустой использует CONTOUR. Разным границам нужны разные
+'           префиксы; рецепты Hollow явно задают CONTOUR_OUTER/CONTOUR_OPENING.
 '
 '
 '
@@ -753,26 +1068,21 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.OffsetRoundedPolygon
 '
-'       Смещает весь скруглённый многоугольник с согласованными стыками. Положительное расстояние внутрь
-'       площади; отрицательное наружу, из Opening в бетон.
+'       Создаёт и регистрирует смещённый скруглённый многоугольник по исходному CPolygonSpec, не меняя
+'       его. Положительное расстояние внутрь площади; отрицательное наружу, из Opening в бетон.
+'       Сохраняет привязки исчезнувших участков; отличается от signed-left Offset готового пути.
 '
 '       Объявление:
-'         Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, ByVal
-'         radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+'         Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec,
+'         ByVal distance As Double) As CGeometryPath
 '
 '       Параметры:
 '         ByVal pathID As String
 '           Непустой уникальный ID пути в определении.
 '
-'         ByVal vertices As Variant
-'           Двумерные вершины: Array(Array(x,y),...); координаты во внутренних мм.
-'
-'         ByVal radii As Variant
-'           Массив неотрицательных радиусов вершин в мм, длина равна vertices; clamp бетонного радиуса
-'           отсутствует.
-'
-'         ByVal vertexIDs As Variant
-'           Массив уникальных смысловых ID вершин; определяет Edge.ID/Corner.ID.
+'         ByVal polygon As CPolygonSpec
+'           Завершённый CPolygonSpec исходных вершин до скругления. Nothing и не закрытый через Seal
+'           набор отклоняются; порядок, радиусы и источники сохраняются.
 '
 '         ByVal distance As Double
 '           Signed offset, мм: положительно внутрь площади, отрицательно наружу; это не left-offset
@@ -1361,8 +1671,78 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         Public SourceReference As String
 '       По умолчанию: пустое значение VBA.
 '
+'     ----------------------------------------------------------------------------------------------
+'     CRebarRuleOptions.SetPublication
+'
+'       Задаёт строго AnnotationGroup/Publication/Coincidence. Концы, offsets, проверка размещения,
+'       source и настройки проекции не меняются.
+'
+'       Объявление:
+'         Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As
+'         ERebarPublication, ByVal coincidence As ERebarCoincidence)
+'
+'       Параметры:
+'         ByVal annotationGroup As String
+'           Имя группы фактических стержней для общей подписи, независимо от расчётных групп трещин.
+'
+'         ByVal publication As ERebarPublication
+'           PublishByRule или PublishPerSourcePosition; порядок и происхождение опубликованных стержней.
+'
+'         ByVal coincidence As ERebarCoincidence
+'           RejectCoincidence, MergeIdentical или KeepPublishedOwner; ничего не меняет в
+'           концевых/проекционных настройках.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarRuleOptions.ConfigureDependentContact
+'
+'       Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого
+'       диаметров и промежуточных полных диаметров. Вторая компонента обнуляется; остальные политики и
+'       source не наследуются.
+'
+'       Объявление:
+'         Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double,
+'         ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean,
+'         Optional ByVal interveningDiameterSum As Double = 0#)
+'
+'       Параметры:
+'         ByVal baseDiameter As Double
+'           Положительный диаметр основного стержня, мм; контактное расстояние начинается от его центра.
+'
+'         ByVal diameter As Double
+'           Диаметр стержня, мм; отрицательный запрещён, ноль выключает ряд.
+'
+'         ByVal axis As ERebarOffsetAxis
+'           RowNormal — смещение по левой нормали исходного ряда; RowTangent — вдоль его касательной.
+'           Ориентацию задают фактический путь и directionSign.
+'
+'         ByVal directionSign As Double
+'           Только -1 или +1: знак выбранной компоненты смещения; задаётся явно по направлению ряда.
+'
+'         ByVal everySecond As Boolean
+'           True выбирает локальные исходные позиции 1,3,5…; отсчёт успешных проекций остаётся отдельной
+'           настройкой.
+'
+'         Optional ByVal interveningDiameterSum As Double = 0#
+'           Неотрицательная сумма диаметров номинально промежуточных стержней, мм. Для третьего ряда
+'           обычно d2 при том же направлении, иначе 0; пропуск EverySecond сам по себе её не уменьшает.
+'
+'
 '
 '   Класс / модуль: modSectionRecipeTypes
+'
+'     ----------------------------------------------------------------------------------------------
+'     modSectionRecipeTypes.ERebarOffsetAxis
+'
+'       RowNormal=1 или RowTangent=2: выбранная компонента контактного зависимого смещения; знак
+'       задаётся отдельно.
+'
+'       Объявление:
+'         Public Enum ERebarOffsetAxis
+'
+'       Допустимые значения / состав:
+'         RowNormal = 1
+'         RowTangent = 2
 '
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarEndMode

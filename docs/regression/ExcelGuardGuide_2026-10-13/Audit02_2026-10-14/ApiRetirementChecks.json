@@ -1,0 +1,20 @@
+{
+  "Passed": true,
+  "Checks": {
+    "CSectionDefinitionBuilder.RoundedPolygon": true,
+    "CSectionDefinitionBuilder.OffsetRoundedPolygon": true,
+    "CSectionGeometryQuery.RoundedPolygon": true,
+    "CSectionGeometryQuery.OffsetRoundedPolygon": true,
+    "CSectionRecipeCircle.no.technical.id.loop": true,
+    "CSectionRecipeCircle.no.old.corner.arrays": true,
+    "CSectionRecipeHollowRectangle.no.technical.id.loop": true,
+    "CSectionRecipeHollowRectangle.no.old.corner.arrays": true,
+    "CSectionRecipeRectSet.no.technical.id.loop": true,
+    "CSectionRecipeRectSet.no.old.corner.arrays": true,
+    "CSectionRecipeRoundedRectangle.no.technical.id.loop": true,
+    "CSectionRecipeRoundedRectangle.no.old.corner.arrays": true,
+    "no.new.competing.api": true,
+    "production.no.example.components": true,
+    "test.copy.hash.matches.candidate": true
+  }
+}

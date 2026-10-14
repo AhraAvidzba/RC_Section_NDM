@@ -81,45 +81,41 @@ def build():
     ]:
         comment(text, 2); comment()
     comment('МИНИМАЛЬНЫЙ ПРИМЕР', 2)
-    comment('Тело ISectionRecipe_CreateDefinition в классе с Implements ISectionRecipe. Пример задаёт прямоугольник и пять верхних стержней диаметром 20 мм:', 4)
+    comment('Полный класс CSectionRecipeMySection. Размеры заданы в мм; context требуется интерфейсу, входных таблиц в этом примере нет. Создайте Class Module с этим именем и вставьте текст:', 4)
     comment()
-    for line, explanation in [
-        ('Dim facade As CSectionDefinitionBuilder, path As CGeometryPath',
-         'Сборщик описания и геометрическая линия.'),
-        ('Dim options As CRebarRuleOptions',
-         'Переменная условий размещения арматуры.'),
-        ('Set facade = New CSectionDefinitionBuilder',
-         'Создаём сборщик описания сечения.'),
-        ('facade.Initialize "MySection"',
-         'Начинаем описание сечения MySection.'),
-        ('Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)',
-         'Контур прямоугольника 600 x 1000 мм.'),
-        ('facade.Outer "OUTER", path.ID',
-         'Назначаем наружную границу бетона.'),
-        ('Set path = facade.LinePath("TopAxis", 50#, 950#, 550#, 950#)',
-         'Линия верхнего ряда с отступом as = 50 мм.'),
-        ('Set options = New CRebarRuleOptions',
-         'Создаём условия размещения арматуры.'),
-        ('options.AnnotationGroup = "Top"',
-         'Общая группа подписи верхних рядов.'),
-        ('facade.RebarByCount "Top.Main", path.ID, 5, 20#, options',
-         'Пять стержней диаметром 20 мм.'),
-        ('facade.RebarRowLabel "Top", "Top.Main", 0#, 1#',
-         'Подпись арматуры верхней стороны.'),
-        ('facade.HorizontalDistance "DIM_B", "B", 0#, 600#, 1000#',
-         'Размер ширины B = 600 мм.'),
-        ('Set ISectionRecipe_CreateDefinition = facade.Finish',
-         'Проверяем и возвращаем описание сечения.'),
-    ]:
-        explanation, arguments = argument_comment(line, 'MySection', builder_signatures, {}, explanation)
-        if len(line) + len(explanation) + 4 <= 240 and len(explanation) <= 170:
+    minimal = (ROOT/'docs/geometry_refactor/examples/CSectionRecipeMySection.cls').read_text(encoding='utf-8-sig')
+    minimal = minimal[minimal.index('Option Explicit'):]
+    for line in minimal.splitlines():
+        explanation = ''
+        if re.search(r'\bfacade\.', line) and not line.lstrip().startswith("'"):
+            explanation, _ = argument_comment(line.strip(), 'MySection', builder_signatures, {}, '')
+        if explanation and len(line) + len(explanation) <= 165:
             lines.append("'       " + line + "  ' " + readable(explanation))
         else:
-            for note in textwrap.wrap(readable(explanation), 90, break_long_words=False, break_on_hyphens=False):
-                lines.append("'       ' " + note)
-            lines.append("'       " + line)
+            if explanation:
+                for note in textwrap.wrap(readable(explanation), 90, break_long_words=False, break_on_hyphens=False):
+                    lines.append("'       ' " + note)
+            lines.append("'       " + line if line else "'")
     comment()
     comment('В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array() подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных таблиц.', 4)
+
+    comment('Ввод из Config передаётся в context общим CSectionInputSnapshotReader: table = context.Table("имя таблицы"), units = context.Units. table.PositiveLength/NonNegativeLength возвращают мм и проверяют знак; SourceReference возвращает адрес. Полный пример такого ввода — CSectionRecipeRoundedRectangle.', 4)
+    comment()
+    comment('ОПИСАТЕЛЬ И ПРИВЯЗКИ', 2)
+    comment('CPolygonSpec объединяет исходные ID, X, Y, FilletRadius и SourceReference каждой вершины. New → AddVertex → Seal. Состояние читают Count/IsSealed, значения — VertexID/X/Y/FilletRadius/SourceReference по индексу от 1. После Seal изменение запрещено; повторный Seal безопасен. Первую вершину в конце не повторяют.', 4)
+    comment('Исходная вершина до скругления может не лежать на контуре. PathAnchor задаёт точку готового сегмента, Anchor — заданную координату. Вершины не превращаются в anchors автоматически. OffsetRoundedPolygon: плюс внутрь исходного многоугольника; Offset: плюс влево от направления готовой линии. У группы независимых линий Offset отсутствует.', 4)
+    comment('Aligned измеряет истинное расстояние, его линия параллельна измеряемому участку. Горизонтальный и вертикальный размеры измеряют проекции; PathLength суммирует прямые и дуги. Поворот текста остаётся прежним, 0/90 градусов.', 4)
+    code = (ROOT/'tests/modTestAudit02Api.bas').read_text(encoding='utf-8-sig')
+    for name, title, condition in [
+        ('BuildAudit02DemoDefinition', 'ПОЛНЫЙ ПРИМЕР: СКРУГЛЕНИЯ, АРМАТУРА И НАКЛОННЫЙ РАЗМЕР',
+         'Это самостоятельная функция; b/h/w и все объекты объявлены внутри. Edge.TR — реальная ненулевая наклонная грань между точками касания. Армирование учебное, без проверки достаточности.'),
+        ('BuildAudit02OperationsDefinition', 'ПОЛНЫЙ ПРИМЕР: ПРИМИТИВЫ, СМЕЩЕНИЯ И ПРОЕКЦИЯ',
+         'Самостоятельная функция с постоянными данными в мм: прямоугольники смежные, отверстие внутри Outer, линии независимые. RowNormal=1 направлен влево от MainAxis; луч проекции (0,1) пересекает ProjectedAxis. Примеры можно поместить в тот же класс и вызвать вместо прямоугольного описания.')]:
+        comment(); comment(title, 2); comment(condition, 4); comment()
+        body = re.search(r'(?ms)^Private Function '+name+r'\(.*?^End Function', code).group(0)
+        for line in body.splitlines():
+            lines.append("'       " + line if line else "'")
+    comment(); comment('Миграция: прежние публичные массивы vertices/radii/vertexIDs заменены одним CPolygonSpec. AddCorner и циклы технической нумерации из рецептов удалены. Другого рабочего варианта этих операций нет.', 4)
 
     options = (ROOT / 'src/Section/CRebarRuleOptions.cls').read_text(encoding='utf-8-sig')
     initialization = re.search(r'(?s)Private Sub Class_Initialize\(\)(.*?)End Sub', options)[1]

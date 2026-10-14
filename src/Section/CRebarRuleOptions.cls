@@ -11,31 +11,31 @@ Option Explicit
 
 ' Необязательные параметры сложного ряда. Фасад копирует их в definition,
 ' поэтому последующее изменение этого объекта не изменяет готовый рецепт.
-Public StartSetback As Double
-Public EndSetback As Double
-Public EndMode As ERebarEndMode
-Public DistributionScope As ERebarDistributionScope
-Public RemainderPlacement As ERemainderPlacement
-Public TangentOffset As Double
-Public NormalOffset As Double
-Public EverySecond As Boolean
-Public IncomingTangentAtJoint As Boolean
-Public DirectionX As Double
-Public DirectionY As Double
-Public SourceNormalSign As Double
-Public SuccessfulProjectionOrdinal As Boolean
-Public NewPublicationRoot As Boolean
-Public SkipMissingProjection As Boolean
-Public Publication As ERebarPublication
-Public PositionOrder As ERebarPositionOrder
-Public Coincidence As ERebarCoincidence
-Public PlacementCheck As ERebarPlacementCheck
-Public OverlapPolicy As ERebarOverlapPolicy
-Public SourcePrefix As String
-Public SourceSuffix As String
-Public AnnotationGroup As String
-Public Comment As String
-Public SourceReference As String
+Public StartSetback As Double ' Начальное отсечение вдоль каждого target-пути, мм>=0; у полного ClosedUniform 0.
+Public EndSetback As Double ' Конечное отсечение вдоль каждого target-пути, мм>=0; ProjectFrom фильтрует hit без перераспределения.
+Public EndMode As ERebarEndMode ' IncludeBoth/ExcludeBoth/IncludeStart/IncludeEnd/ClosedUniform; последние требуют соответствующей замкнутости.
+Public DistributionScope As ERebarDistributionScope ' Допустимо только PerPath: число стержней, расстояния между ними и отступы от концов применяются отдельно к каждой независимой линии группы.
+Public RemainderPlacement As ERemainderPlacement ' RemainderStart/End/Center: положение остатка для точного шага.
+Public TangentOffset As Double ' Локальное связанное смещение вдоль касательной, мм; signed, не независимый шаг ряда.
+Public NormalOffset As Double ' Локальное связанное смещение по левой нормали (-ty,tx), мм; signed.
+Public EverySecond As Boolean ' Брать локальные исходные позиции 1, 3, ... отдельно на каждом пути; SuccessfulProjectionOrdinal задаёт отдельный отсчёт успешных проекций.
+Public IncomingTangentAtJoint As Boolean ' В точке соединения двух сегментов брать касательную предыдущего сегмента. По умолчанию берётся касательная следующего сегмента.
+Public DirectionX As Double ' Глобальная X направления ProjectFrom, используется при SourceNormalSign=0.
+Public DirectionY As Double ' Глобальная Y направления ProjectFrom; направление не нулевое.
+Public SourceNormalSign As Double ' -1/0/+1: локальная нормаль исходного ряда или глобальное DirectionX/Y при 0.
+Public SuccessfulProjectionOrdinal As Boolean ' True: заново нумеровать только стержни, для которых найдено пересечение с целевой линией, подряд по всей группе. False: сохранять исходные номера стержней с возможными пропусками отдельно на каждой линии.
+Public NewPublicationRoot As Boolean ' У ProjectFrom начинает новый корень публикации по успешным позициям.
+Public SkipMissingProjection As Boolean ' Разрешить пропуск без hit с PROJECTION_MISSING; False выдаёт ошибку.
+Public Publication As ERebarPublication ' PublishByRule или PublishPerSourcePosition; влияет на вывод, не геометрический шаг.
+Public PositionOrder As ERebarPositionOrder ' Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места стержней и их исходные номера сохраняются.
+Public Coincidence As ERebarCoincidence ' RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет явно выбранного опубликованного владельца.
+Public PlacementCheck As ERebarPlacementCheck ' CheckCenter или CheckFullDisk относительно Outer/Opening; ужесточение задаётся явно.
+Public OverlapPolicy As ERebarOverlapPolicy ' ReportOverlap или RejectOverlap. Контакт допустим; нормативный минимальный зазор не вводится.
+Public SourcePrefix As String ' Префикс SourcePositionId; пустой использует RuleId+'.' либо связь source+suffix.
+Public SourceSuffix As String ' Суффикс SourcePositionId, в том числе для связанных рядов.
+Public AnnotationGroup As String ' Смысловая принадлежность подписи физического стержня; не расчётная группа трещин СП35.
+Public Comment As String ' Инженерное пояснение правила; не selector или ResultCode.
+Public SourceReference As String ' Реальные адреса исходных параметров правила или программная ссылка.
 
 ' Задаёт реальные defaults раскладки, проекции, совпадений и публикации для нового объекта
 ' options.

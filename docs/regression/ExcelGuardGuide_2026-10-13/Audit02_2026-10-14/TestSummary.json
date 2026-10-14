@@ -1,0 +1,132 @@
+{
+  "Assertions": 4479,
+  "Failed": 0,
+  "EntryPoints": {
+    "modTestPolygonSpec.RunPolygonSpecTests": {
+      "PassedAssertions": 52,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestDeclarativeGeometry.RunCoreGeometryTests": {
+      "PassedAssertions": 445,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestGeometryPublication.RunAnnotationIsolationTests": {
+      "PassedAssertions": 12,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestGeometryPublication.RunRecipeContextFreezeTests": {
+      "PassedAssertions": 11,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestGeometryPublication.RunPublishedBuildTests": {
+      "PassedAssertions": 20,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestGeometryPublication.RunDefinitionLifecycleTests": {
+      "PassedAssertions": 10,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestSectionRecipes.RunRecipeDefinitionTests": {
+      "PassedAssertions": 15,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestSectionRecipes.RunRecipeRuleTests": {
+      "PassedAssertions": 187,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestSectionRecipes.RunRecipeMeshBoundaryTests": {
+      "PassedAssertions": 158,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestSectionRecipes.RunRecipeAnnotationCountTests": {
+      "PassedAssertions": 92,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestGeometryReview.RunRoundedEndpointTests": {
+      "PassedAssertions": 929,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestRecipeSetbacks.RunRecipeSetbackInputTests": {
+      "PassedAssertions": 20,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestRecipeApiCatalogue.RunAdvancedGuideExamples": {
+      "PassedAssertions": 16,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestRecipeApiCatalogue.RunApiGeometryReadExamples": {
+      "PassedAssertions": 29,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestRecipeApiCatalogue.RunApiInputAndDataExamples": {
+      "PassedAssertions": 17,
+      "FailedAssertions": 0,
+      "Stage": "UnifiedTestsCorrected"
+    },
+    "modTestAudit02Api.RunAudit02PolygonApiTests": {
+      "PassedAssertions": 16,
+      "FailedAssertions": 0,
+      "Stage": "FinalApiAcceptance"
+    },
+    "modTestAudit02Api.RunAudit02OptionsTests": {
+      "PassedAssertions": 15,
+      "FailedAssertions": 0,
+      "Stage": "FinalApiAcceptance"
+    },
+    "modTestAudit02Api.RunAudit02InputTests": {
+      "PassedAssertions": 5,
+      "FailedAssertions": 0,
+      "Stage": "FinalApiAcceptance"
+    },
+    "modTestAudit02Api.RunAudit02AnnotationTests": {
+      "PassedAssertions": 9,
+      "FailedAssertions": 0,
+      "Stage": "FinalApiAcceptance"
+    },
+    "modTestAudit02Api.RunAudit02GuideExamplesTests": {
+      "PassedAssertions": 11,
+      "FailedAssertions": 0,
+      "Stage": "FinalApiAcceptance"
+    },
+    "modTestGeometryReview.RunGeometryReviewTests": {
+      "PassedAssertions": 742,
+      "FailedAssertions": 0,
+      "Stage": "GuideExamples"
+    },
+    "modTestRoundedTrapezoidExample.RunExampleBuildTests": {
+      "PassedAssertions": 94,
+      "FailedAssertions": 0,
+      "Stage": "ExampleTests"
+    },
+    "modTestRoundedTrapezoidExample.RunExampleInputTests": {
+      "PassedAssertions": 250,
+      "FailedAssertions": 0,
+      "Stage": "ExampleTests"
+    },
+    "modTestRoundedTrapezoidExample.RunAudit02MinimalRecipeTests": {
+      "PassedAssertions": 5,
+      "FailedAssertions": 0,
+      "Stage": "ExampleTests"
+    },
+    "modTestGeometryQuery.RunGeometryQueryTests": {
+      "PassedAssertions": 1319,
+      "FailedAssertions": 0,
+      "Stage": "FinalApiAcceptance"
+    }
+  },
+  "FullOnOffRun": false
+}

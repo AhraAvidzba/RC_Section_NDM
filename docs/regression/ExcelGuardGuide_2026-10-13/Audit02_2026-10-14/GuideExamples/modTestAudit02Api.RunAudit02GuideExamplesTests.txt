@@ -1,0 +1,10 @@
+﻿PASS: D01.demo.bars
+PASS: A02.slope.start
+PASS: A02.slope.end
+PASS: A02.slope.length
+PASS: A02.slope.parallel
+PASS: D01.operations.build
+PASS: A05.annotations.repeat
+PASS: A06.zero.rejected.address
+PASS: A06.no.replacement
+TOTAL AUDIT02 GUIDE EXAMPLES: passed=9; failed=0

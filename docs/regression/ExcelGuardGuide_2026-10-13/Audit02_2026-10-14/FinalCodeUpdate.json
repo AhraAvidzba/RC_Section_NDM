@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\Audit02_2026-10-14\\Candidate.xlsm",
+    "WorkbookSHA256":  "30E20AA61416DDEAFBC6FE14A989377934ECBB9F4CAB090BACDAA1ADCEFEA25D",
+    "ProductionSHA256":  "268D5FD5728289B216F8F5D082C859368CF38C490F169F004939E4BA4B781249",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestAudit02Api"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

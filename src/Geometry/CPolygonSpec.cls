@@ -12,11 +12,11 @@ Option Explicit
 ' Исходные вершины многоугольника до скругления: координаты, радиусы, имена и источники.
 ' Не строит касания, пути или области. После явного Seal исходные данные неизменяемы.
 Private Type TVertex
-    ID As String
-    X As Double
-    Y As Double
-    Radius As Double
-    Source As String
+    ID As String ' Имя исходной вершины с различением регистра.
+    X As Double ' Исходная координата X до скругления, мм.
+    Y As Double ' Исходная координата Y до скругления, мм.
+    Radius As Double ' Радиус сопряжения данной вершины, мм; ноль оставляет острый угол.
+    Source As String ' Адрес или текстовое происхождение данных без ссылки на объект Excel.
 End Type
 Private Type TDoubleValue
     Value As Double

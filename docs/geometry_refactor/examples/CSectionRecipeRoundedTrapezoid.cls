@@ -80,23 +80,26 @@ Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionIn
     If parameters.BottomWidth <= 0# Or parameters.TopWidth <= 0# Or parameters.Height <= 0# Or parameters.CornerRadius <= 0# Or parameters.OpeningRadius <= 0# Then _
         SectionRecipeError "CSectionRecipeRoundedTrapezoid", "Размеры и радиусы должны быть положительными.", parameters.Source
     Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, openingPath As CGeometryPath, axis As CGeometryPath  ' Объявляем сборщик описания сечения.
-    Dim vertices As Variant, radii As Variant, corners As Variant, options As CRebarRuleOptions  ' Объявляем условия размещения арматуры.
+    Dim polygon As CPolygonSpec, options As CRebarRuleOptions  ' Объявляем условия размещения арматуры.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedTrapezoid"  ' "RoundedTrapezoid" — имя типа сечения.
-    ' Задаём координаты четырёх вершин трапеции.
-    vertices = Array(Array(-parameters.BottomWidth / 2#, -parameters.Height / 2#), Array(parameters.BottomWidth / 2#, -parameters.Height / 2#), Array(parameters.TopWidth / 2#, parameters.Height / 2#), Array(-parameters.TopWidth / 2#, parameters.Height / 2#))
-    radii = Array(parameters.CornerRadius, parameters.CornerRadius, parameters.CornerRadius, parameters.CornerRadius)  ' Назначаем радиусы скругления вершин.
-    corners = Array("BottomLeft", "BottomRight", "TopRight", "TopLeft")  ' Назначаем имена четырём вершинам трапеции.
+    ' Один исходный набор для контура и осевого смещения; порядок вершин прежний.
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "BottomLeft", -parameters.BottomWidth / 2#, -parameters.Height / 2#, parameters.CornerRadius, parameters.Source
+    polygon.AddVertex "BottomRight", parameters.BottomWidth / 2#, -parameters.Height / 2#, parameters.CornerRadius, parameters.Source
+    polygon.AddVertex "TopRight", parameters.TopWidth / 2#, parameters.Height / 2#, parameters.CornerRadius, parameters.Source
+    polygon.AddVertex "TopLeft", -parameters.TopWidth / 2#, parameters.Height / 2#, parameters.CornerRadius, parameters.Source
+    polygon.Seal
     facade.Source "Boundary", parameters.Source  ' "Boundary" — имя геометрии или ряда; parameters.Source — адреса исходных ячеек для сообщений об ошибках.
-    Set boundary = facade.RoundedPolygon("Boundary", vertices, radii, corners)  ' "Boundary" — имя контура; vertices — координаты вершин (X,Y), мм; radii — радиус каждой вершины, мм; corners — имена вершин для выбора участков.
+    Set boundary = facade.RoundedPolygon("Boundary", polygon)  ' "Boundary" — имя контура; polygon — завершённое описание исходных вершин и радиусов, мм.
     facade.Outer "Concrete", boundary.ID, "Наружная граница скругленной трапеции."  ' "Concrete" — имя наружной границы бетона; boundary.ID — замкнутый контур; comment — пояснение к границе.
     Set openingPath = facade.CirclePath("Opening.Circle", 0#, 0#, parameters.OpeningRadius)  ' "Opening.Circle" — имя новой окружности; 0 — X центра, мм; 0 — Y центра, мм; parameters.OpeningRadius — радиус, мм.
     ' "Opening" — имя отверстия; openingPath.ID — замкнутый контур отверстия; "Concrete" — наружная
     ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия.
     facade.Opening "Opening", openingPath.ID, "Concrete", "Круглое отверстие."
-    ' "Outer.Axis" — имя линии центров стержней; vertices — исходные вершины (X,Y), мм; radii —
-    ' исходные радиусы вершин, мм; corners — имена исходных вершин; parameters.OuterAxisDistance —
     ' смещение, мм: положительное внутрь, отрицательное наружу.
-    Set axis = facade.OffsetRoundedPolygon("Outer.Axis", vertices, radii, corners, parameters.OuterAxisDistance)
+    ' "Outer.Axis" — имя линии центров стержней; polygon — то же завершённое описание исходных вершин;
+    ' parameters.OuterAxisDistance — смещение, мм: положительное внутрь, отрицательное наружу.
+    Set axis = facade.OffsetRoundedPolygon("Outer.Axis", polygon, parameters.OuterAxisDistance)
     Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
     ' EndMode — ClosedUniform распределяет стержни по замкнутой линии без повторного конца;
     ' PlacementCheck — CheckFullDisk проверяет нахождение всего стержня в бетоне; OverlapPolicy —

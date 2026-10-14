@@ -98,6 +98,8 @@ Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes A
         ' высота, мм.
         Set outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.Offset, sizes.H2, sizes.B1, sizes.H1)))
     End If
+    ' "OUTER" — имя наружной границы бетона; outer.ID — замкнутый контур; comment — пояснение к
+    ' границе; SequentialByKind — способ публикации имён участков.
     facade.Outer "OUTER", outer.ID, "Сегмент контура сечения.", namingPolicy:=SequentialByKind
 
 End Sub
@@ -184,9 +186,9 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
             loc2 = table.Choice(extra, 3, Array("Stacked", "SideBySide"))
             ' table — снимок таблицы армирования; extra — строка дополнительных рядов; 2 — столбец их
             ' диаметра; groupID — общая группа подписи; label — название стороны; 2 — номер
-            ' дополнительного ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; diameter / 2 + d2 /
-            ' 2 — расстояние между центрами стержней, мм; sideSign — знак направления на данной
-            ' стороне.
+            ' дополнительного ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; diameter — диаметр
+            ' основного стержня, мм; d2 — диаметр добавляемого стержня, мм; sideSign — знак
+            ' направления на данной стороне.
             Set options = AdditionalOptions(table, extra, 2, groupID, label, 2, loc2, diameter, d2, sideSign)
             ' groupID & ".Row2" — имя дополнительного ряда; groupID & ".Main" — исходный ряд, чьи
             ' позиции используются; d2 — диаметр дополнительного стержня, мм; options — смещение и
@@ -200,8 +202,9 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
             If d2 > 0# And loc2 = loc3 Then distance = d2
             ' table — снимок таблицы армирования; extra — строка дополнительных рядов; 5 — столбец их
             ' диаметра; groupID — общая группа подписи; label — название стороны; 3 — номер
-            ' дополнительного ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; distance —
-            ' расстояние между центрами стержней, мм; sideSign — знак направления на данной стороне.
+            ' дополнительного ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; diameter — диаметр
+            ' основного стержня, мм; d3 — диаметр добавляемого стержня, мм; sideSign — знак
+            ' направления на данной стороне; distance — сумма промежуточных номинальных диаметров, мм.
             Set options = AdditionalOptions(table, extra, 5, groupID, label, 3, loc3, diameter, d3, sideSign, distance)
             ' groupID & ".Row3" — имя дополнительного ряда; groupID & ".Main" — исходный ряд, чьи
             ' позиции используются; d3 — диаметр дополнительного стержня, мм; options — смещение и

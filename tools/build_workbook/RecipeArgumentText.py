@@ -5,8 +5,8 @@ MEANINGS = {
  'Initialize': {'typeID':'имя типа сечения'},
  'CirclePath': {'pathID':'имя новой окружности','centerX':'X центра, мм','centerY':'Y центра, мм','radius':'радиус, мм'},
  'RectanglePath': {'pathID':'имя прямоугольника','x':'X левого нижнего угла, мм','y':'Y левого нижнего угла, мм','width':'ширина, мм','height':'высота, мм'},
- 'RoundedPolygon': {'pathID':'имя контура','vertices':'координаты вершин (X,Y), мм','radii':'радиус каждой вершины, мм','vertexIDs':'имена вершин для выбора участков'},
- 'OffsetRoundedPolygon': {'pathID':'имя линии центров стержней','vertices':'исходные вершины (X,Y), мм','radii':'исходные радиусы вершин, мм','vertexIDs':'имена исходных вершин','distance':'смещение, мм: положительное внутрь, отрицательное наружу'},
+ 'RoundedPolygon': {'pathID':'имя контура','polygon':'завершённое описание исходных вершин и радиусов, мм'},
+ 'OffsetRoundedPolygon': {'pathID':'имя линии центров стержней','polygon':'то же завершённое описание исходных вершин','distance':'смещение, мм: положительное внутрь, отрицательное наружу'},
  'Offset': {'pathID':'имя новой линии','sourcePathID':'исходная линия','signedLeftDistance':'смещение влево от обхода, мм; минус означает вправо'},
  'LinePath': {'pathID':'имя линии','x1':'X начала, мм','y1':'Y начала, мм','x2':'X конца, мм','y2':'Y конца, мм'},
  'AdjacentRectangles': {'pathID':'имя общего контура','rectangles':'прямоугольники: X,Y нижнего угла, ширина, высота, мм'},
@@ -122,7 +122,12 @@ def argument_comment(code, owner, builder_signatures, helper_signatures, fallbac
                 label=helper; values=call_args(code,helper); names=helper_signatures[label]; meanings=HELPERS[label]; break
     if label:
         assert len(values) <= len(names), (label,values,names)
-        args = [{'parameter':p,'value':v,'meaning':meanings[p]} for p,v in zip(names,values)]
+        args = []
+        for p,v in zip(names,values):
+            if ':=' in v:
+                p,v = v.split(':=',1)
+                p = p.strip()
+            args.append({'parameter':p,'value':v,'meaning':meanings[p]})
         for a in args:
             v = a['value'].replace('#','').strip()
             if label in ('VerticalExtent','HorizontalExtent','HorizontalDistance'):

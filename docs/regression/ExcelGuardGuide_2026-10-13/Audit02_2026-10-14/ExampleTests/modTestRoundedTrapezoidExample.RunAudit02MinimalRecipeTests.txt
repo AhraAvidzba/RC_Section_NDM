@@ -1,0 +1,1 @@
+﻿TOTAL AUDIT02 MINIMAL RECIPE: passed=5; failed=0

@@ -187,6 +187,157 @@ Finished:
     RunAudit02AnnotationTests = mReport & "TOTAL AUDIT02 ANNOTATIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' ДЛЯ ТЕСТОВ: полные примеры для комментарийного гайда и реальная наклонная грань.
+Public Function RunAudit02GuideExamplesTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim definition As CSectionDefinition, builder As CSectionBuilder, model As CSectionModel
+    Dim mesh As TSectionMeshOptions, path As CGeometryPath, edge As TRegionEdge, i As Long
+    Dim annotations As CSectionAnnotations, annotationBuilder As CSectionAnnotationBuilder, rebars As CRebarLayout
+    Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec, errorCode As Long, reason As String
+    mesh.StepX = 50#: mesh.StepY = 50#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
+    Set definition = BuildAudit02DemoDefinition()
+    Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
+    Check "D01.demo.bars", model.RebarCount = 15
+    Set path = definition.Path("Shape"): path.CopySegment path.SegmentIndex("Edge.TR"), edge
+    For i = 1 To model.Annotations.Count
+        If model.Annotations.AnnotationID(i) = "DIM_SLOPE" Then
+            Check "A02.slope.start", model.Annotations.StartX(i) = edge.X1 And model.Annotations.StartY(i) = edge.Y1
+            Check "A02.slope.end", model.Annotations.EndX(i) = edge.X2 And model.Annotations.EndY(i) = edge.Y2
+            Check "A02.slope.length", Abs(model.Annotations.Value(i) - Sqr((edge.X2 - edge.X1) ^ 2 + (edge.Y2 - edge.Y1) ^ 2)) < 0.000001
+            Check "A02.slope.parallel", Abs((edge.X2 - edge.X1) * model.Annotations.NormalX(i) + _
+                (edge.Y2 - edge.Y1) * model.Annotations.NormalY(i)) < 0.000001
+        End If
+    Next i
+    Set definition = BuildAudit02OperationsDefinition()
+    Set model = builder.Build(definition, mesh)
+    Check "D01.operations.build", model.RebarCount > 20 And model.ConcreteCount > 0
+    Set annotations = New CSectionAnnotations: Set annotationBuilder = New CSectionAnnotationBuilder
+    annotationBuilder.Build definition, builder.Rebars, annotations, builder.Rules
+    Check "A05.annotations.repeat", annotations.Count = model.Annotations.Count And builder.Rebars.Count = model.RebarCount
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Zero"
+    Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#): facade.Outer "Outer", path.ID
+    facade.Anchor "A", 20#, 20#: facade.Anchor "B", 20#, 20#
+    facade.Source "ZERO", "Config!TestZero": facade.Dimension "ZERO", "A", "B", "L", "Aligned"
+    Set definition = facade.Finish: Set rebars = New CRebarLayout
+    On Error Resume Next
+    annotationBuilder.Build definition, rebars, annotations
+    errorCode = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "A06.zero.rejected.address", errorCode <> 0 And InStr(reason, "ZERO") > 0 And InStr(reason, "Config!TestZero") > 0
+    Check "A06.no.replacement", annotations.Count = 0
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "TL", -300#, 500#, 300#: polygon.AddVertex "TR", 300#, 500#, 300#
+    polygon.AddVertex "BR", 300#, -500#, 300#: polygon.AddVertex "BL", -300#, -500#, 300#: polygon.Seal
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "CollapsedDimension"
+    Set path = facade.RoundedPolygon("OuterPath", polygon): facade.Outer "Outer", path.ID
+    Set path = facade.OffsetRoundedPolygon("OffsetPath", polygon, 50#)
+    facade.PathAnchor "A", path.ID, "Edge.TL", 0#: facade.PathAnchor "B", path.ID, "Edge.TL", 1#
+    facade.Source "COLLAPSED", "Config!TestCollapsed": facade.Dimension "COLLAPSED", "A", "B", "L", "Aligned"
+    Set definition = facade.Finish
+    On Error Resume Next
+    annotationBuilder.Build definition, rebars, annotations
+    errorCode = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "A06.collapsed.rejected.address", errorCode <> 0 And InStr(reason, "COLLAPSED") > 0 And InStr(reason, "Config!TestCollapsed") > 0
+    Check "A06.collapsed.no.replacement", annotations.Count = 0
+    GoTo Finished
+Failed:
+    Check "runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunAudit02GuideExamplesTests = mReport & "TOTAL AUDIT02 GUIDE EXAMPLES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: пример из Audit02, без подбора достаточного армирования.
+Private Function BuildAudit02DemoDefinition() As CSectionDefinition
+    Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec
+    Dim shapePath As CGeometryPath, boundary As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
+    Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
+    b = 600#: h = 1000#: w = 200#
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "TL", -b / 2#, h / 2#, 80#
+    polygon.AddVertex "TR", b / 2#, h / 2#, 120#
+    polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
+    polygon.AddVertex "BR", b / 2#, -h / 2#, 120#
+    polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#
+    polygon.Seal
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
+    Set shapePath = facade.RoundedPolygon("Shape", polygon)
+    Set boundary = facade.Chain("Boundary", shapePath.ID, "Edge.BL", 0#, "Edge.BL", 0#, True, True)
+    facade.Outer "OUTER", boundary.ID
+    Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
+    Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
+    Set options = New CRebarRuleOptions
+    options.SetPublication "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+    options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
+    options.IncomingTangentAtJoint = True
+    facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
+    facade.RebarRowExtentLabel "H.Right", "H.Right.Main", 1#, 0#, True
+    facade.PathAnchor "Slope.A", shapePath.ID, "Edge.TR", 0#
+    facade.PathAnchor "Slope.B", shapePath.ID, "Edge.TR", 1#
+    facade.Dimension "DIM_SLOPE", "Slope.A", "Slope.B", "L", "Aligned"
+    facade.HorizontalDistance "DIM_B", "B", -b / 2#, b / 2#, h / 2#, 1#
+    facade.VerticalExtent "DIM_H", boundary.ID, "H", -b / 2#, -1#
+    Set BuildAudit02DemoDefinition = facade.Finish
+End Function
+
+' ДЛЯ ТЕСТОВ: независимые примитивы, signed-left offset, распределения и проекция.
+Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "OperationsExample"
+    Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 1000#, 1000#), Array(1000#, 0#, 200#, 600#)))
+    facade.Outer "Outer", path.ID
+    Set path = facade.CirclePath("Hole", 900#, 800#, 50#): facade.Opening "Opening", path.ID, "Outer"
+    Set path = facade.LinePath("MainAxis", 100#, 100#, 700#, 100#)
+    Set path = facade.ArcPath("Arc", 500#, 600#, 100#, 0#, GEOM_PI / 2#)
+    Set path = facade.Offset("ProjectedAxis", "MainAxis", 100#)
+    Set path = facade.Transform("Rotated", "MainAxis", 900#, 100#, GEOM_PI / 2#, True)
+    Set path = facade.ConstrainLine("Limited", "MainAxis", 1#, 0#, 150#, 1#, 0#, 650#)
+    Set path = facade.LinePath("MaxStepAxis", 100#, 300#, 700#, 300#)
+    Set path = facade.LinePath("FixedStepAxis", 100#, 400#, 700#, 400#)
+    Set path = facade.LinePath("ExplicitAxis", 100#, 500#, 700#, 500#)
+    facade.PathGroup "TwoLines", Array("MaxStepAxis", "FixedStepAxis")
+    Set options = New CRebarRuleOptions
+    options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+    facade.RebarByCount "Main", "MainAxis", 5, 20#, options
+    Set options = New CRebarRuleOptions
+    options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+    options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
+    facade.RebarDependent "Contact", "Main", 16#, options
+    Set options = New CRebarRuleOptions
+    options.NormalOffset = 40#: options.TangentOffset = 10#
+    facade.RebarDependent "Shifted", "Main", 12#, options
+    Set options = New CRebarRuleOptions: options.DirectionY = 1#
+    facade.RebarProjected "Projected", "ProjectedAxis", "Main", 16#, options
+    facade.RebarByMaxStep "MaxStep", "MaxStepAxis", 150#, 16#
+    facade.RebarByFixedStep "FixedStep", "FixedStepAxis", 150#, 16#
+    facade.RebarAtStations "Explicit", "ExplicitAxis", Array(0#, 150#, 600#), 12#
+    facade.Anchor "A", 100#, 100#: facade.Anchor "B", 700#, 500#
+    facade.TransformAnchor "MovedA", "A", 0#, 700#
+    facade.Dimension "H", "A", "B", "X", "Horizontal"
+    facade.Dimension "V", "A", "B", "Y", "Vertical"
+    facade.Dimension "L", "A", "B", "L", "Aligned"
+    facade.PathLength "Length", "TwoLines", "MovedA", "SumL"
+    facade.Radius "Radius", "Arc", "Arc", 0.5, "R"
+    facade.Diameter "Diameter", "Hole", "Hole", 0.5, "D"
+    facade.Text "Note", "MovedA", "Учебный пример"
+    facade.RebarRowLabel "Bottom", "Main", 0#, -1#
+    Set BuildAudit02OperationsDefinition = facade.Finish
+End Function
+
+' ДЛЯ ТЕСТОВ: реальная Excel-схема наклонного размера и проверка повторного Draw.
+Public Function DumpAudit02DemoPreview(ByVal outputDirectory As String) As String
+    Dim definition As CSectionDefinition, builder As CSectionBuilder, mesh As TSectionMeshOptions, model As CSectionModel
+    Set definition = BuildAudit02DemoDefinition(): Set builder = New CSectionBuilder
+    mesh.StepX = 50#: mesh.StepY = 50#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
+    Set model = builder.Build(definition, mesh)
+    Dim first As String, second As String
+    first = modTestShapeArchitecture.PreparedPreviewSnapshot("Audit02Demo", model, outputDirectory)
+    second = modTestShapeArchitecture.PreparedPreviewSnapshot("Audit02Demo", model, outputDirectory)
+    If first <> second Then Err.Raise vbObjectError + 5490, "modTestAudit02Api", "Повторный Draw изменил данные/Shapes."
+    DumpAudit02DemoPreview = first
+End Function
+
 ' Исходный квадрат в прежнем CCW-порядке; имена не являются автоматическими anchors.
 Private Function RectangleSpec(ByVal radius As Double) As CPolygonSpec
     Dim polygon As CPolygonSpec: Set polygon = New CPolygonSpec

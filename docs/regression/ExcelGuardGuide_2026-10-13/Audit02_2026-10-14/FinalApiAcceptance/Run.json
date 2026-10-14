@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "FinalApiAcceptance",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestGeometryQuery.RunGeometryQueryTests",
+                     "Seconds":  0.35868479999999997,
+                     "Characters":  77323,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02PolygonApiTests",
+                     "Seconds":  0.029529999999999997,
+                     "Characters":  487,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02OptionsTests",
+                     "Seconds":  0.0021620999999999997,
+                     "Characters":  483,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02InputTests",
+                     "Seconds":  0.0027036,
+                     "Characters":  183,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02AnnotationTests",
+                     "Seconds":  0.0095915999999999987,
+                     "Characters":  267,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02GuideExamplesTests",
+                     "Seconds":  0.1499868,
+                     "Characters":  357,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "30E20AA61416DDEAFBC6FE14A989377934ECBB9F4CAB090BACDAA1ADCEFEA25D",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T12:21:22.8961275+03:00"
+}

@@ -1,0 +1,23 @@
+﻿{
+    "Stage":  "UnifiedPreview",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpShapePreviewSnapshot",
+                     "Seconds":  8.7124007,
+                     "Characters":  737325,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.DumpAudit02DemoPreview",
+                     "Seconds":  1.0839539999999999,
+                     "Characters":  68772,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "D6C6BE9BFDF27BE9C17D7795B53B30943278C7B3A61A4530CCFD2315C5F80428",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T12:09:15.0144204+03:00"
+}

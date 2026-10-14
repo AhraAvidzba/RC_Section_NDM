@@ -417,7 +417,7 @@ Private Function InvalidOffsetRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "TR", 100#, 80#, 10#
             polygonSpec.AddVertex "TL", 0#, 80#, 10#
             polygonSpec.Seal
-            Set path =query.OffsetRoundedPolygon("Collapsed", polygonSpec, 50#)
+            Set path = query.OffsetRoundedPolygon("Collapsed", polygonSpec, 50#)
         Case 1
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "BL", 0#, 0#, 10#
@@ -425,7 +425,7 @@ Private Function InvalidOffsetRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "TR", 100#, 80#, 10#
             polygonSpec.AddVertex "TL", 0#, 80#, 10#
             polygonSpec.Seal
-            Set path =query.OffsetRoundedPolygon("Reversed", polygonSpec, 100#)
+            Set path = query.OffsetRoundedPolygon("Reversed", polygonSpec, 100#)
         Case 2
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "BL", 0#, 0#, 60#
@@ -433,7 +433,7 @@ Private Function InvalidOffsetRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "TR", 100#, 80#, 60#
             polygonSpec.AddVertex "TL", 0#, 80#, 60#
             polygonSpec.Seal
-            Set path =query.OffsetRoundedPolygon("InvalidBase", polygonSpec, 50#)
+            Set path = query.OffsetRoundedPolygon("InvalidBase", polygonSpec, 50#)
     End Select
     Exit Function
 Rejected:
@@ -559,7 +559,7 @@ Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "TR", 100#, 80#, 0#
             polygonSpec.AddVertex "TL", 0#, 80#, 0#
             polygonSpec.Seal
-            Set path =query.RoundedPolygon("Negative", polygonSpec)
+            Set path = query.RoundedPolygon("Negative", polygonSpec)
         Case 1
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "BL", 0#, 0#, 60#
@@ -567,7 +567,7 @@ Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "TR", 100#, 80#, 60#
             polygonSpec.AddVertex "TL", 0#, 80#, 60#
             polygonSpec.Seal
-            Set path =query.RoundedPolygon("Overlap", polygonSpec)
+            Set path = query.RoundedPolygon("Overlap", polygonSpec)
         Case 2
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "A", 0#, 0#, 0#
@@ -575,7 +575,7 @@ Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "B", 100#, 80#, 0#
             polygonSpec.AddVertex "C", 0#, 80#, 0#
             polygonSpec.Seal
-            Set path =query.RoundedPolygon("Duplicate", polygonSpec)
+            Set path = query.RoundedPolygon("Duplicate", polygonSpec)
         Case 3
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "A", 0#, 0#, 0#
@@ -584,13 +584,13 @@ Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "D", 100#, 80#, 0#
             polygonSpec.AddVertex "E", 0#, 80#, 0#
             polygonSpec.Seal
-            Set path =query.RoundedPolygon("Collinear", polygonSpec)
+            Set path = query.RoundedPolygon("Collinear", polygonSpec)
         Case 4
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "BL", 0#, 0#, 0#
             polygonSpec.AddVertex "BR", 100#, 0#, 0#
             polygonSpec.Seal
-            Set path =query.RoundedPolygon("Missing", polygonSpec)
+            Set path = query.RoundedPolygon("Missing", polygonSpec)
         Case 5
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "BL", 0#, 0#, 0#
@@ -598,7 +598,7 @@ Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean
             polygonSpec.AddVertex "TR", 0#, 80#, 0#
             polygonSpec.AddVertex "TL", 100#, 0#, 0#
             polygonSpec.Seal
-            Set path =query.RoundedPolygon("Crossed", polygonSpec)
+            Set path = query.RoundedPolygon("Crossed", polygonSpec)
     End Select
     Exit Function
 Rejected:

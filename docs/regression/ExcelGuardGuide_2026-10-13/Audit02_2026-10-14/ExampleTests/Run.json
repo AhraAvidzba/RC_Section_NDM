@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "ExampleTests",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRoundedTrapezoidExample.RunExampleBuildTests",
+                     "Seconds":  0.6184741,
+                     "Characters":  44,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRoundedTrapezoidExample.RunExampleInputTests",
+                     "Seconds":  0.537569,
+                     "Characters":  45,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRoundedTrapezoidExample.RunAudit02MinimalRecipeTests",
+                     "Seconds":  0.074591499999999991,
+                     "Characters":  50,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "BC7DDC7EDA7BDCB64CA84A0A02CB39067AE4D36DC5D87E0039E7FEA1E70CD8FE",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T12:09:08.3395885+03:00"
+}

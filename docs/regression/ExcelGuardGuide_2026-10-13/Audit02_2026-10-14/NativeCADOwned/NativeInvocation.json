@@ -1,0 +1,11 @@
+﻿{
+    "Macro":  "RunRealAutoCADContourTests",
+    "Mode":  "",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\Audit02_2026-10-14\\Candidate.xlsm",
+    "SourceSHA256":  "D6C6BE9BFDF27BE9C17D7795B53B30943278C7B3A61A4530CCFD2315C5F80428",
+    "SourceUnchanged":  true,
+    "Passed":  false,
+    "OwnedCadPID":  9344,
+    "LaunchedCadPID":  18440,
+    "LaunchedCadStartTicks":  639275658820643759
+}

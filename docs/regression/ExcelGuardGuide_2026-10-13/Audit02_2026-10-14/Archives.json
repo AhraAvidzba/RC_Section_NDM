@@ -1,0 +1,61 @@
+{
+  "Archives": {
+    "UnifiedSnapshots.zip": {
+      "SHA256": "227cc6a5ed9e34b592b28150fc8cab8fcc98a9e9db643b5f8e9df6c45e2f4020",
+      "Bytes": 3027423,
+      "Entries": {
+        "UnifiedGeometry/modTestGeometrySolidSnapshots.DumpSolidDirectNdsBits.txt": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0",
+        "UnifiedGeometry/modTestGeometrySolidSnapshots.DumpSolidPhysicalBits.txt": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15",
+        "UnifiedGeometry/modTestShapeArchitecture.DumpCircleGeometryMatrix.txt": "5851efc247546d9b02d6c9737ff9ca33ef1ecf6c48226e4ba3b11149022c827a",
+        "UnifiedGeometry/modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt": "a2736ed46ad69c1f92544d47aaedd56ba365d1d4a8da620c664fd0124e88d490",
+        "UnifiedGeometry/modTestShapeArchitecture.DumpHollowGeometryMatrix.txt": "3a40de7e74735d007e4d6f2816282d7b1014eb6cb00b17b6e48d3732232dc698",
+        "UnifiedGeometry/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3",
+        "UnifiedGeometry/modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt": "883ef56e76f969d16fbbe011349039693e6f05fa4889cb13ba75a20a55d217ae",
+        "UnifiedGeometry/modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f",
+        "UnifiedGeometry/Run.json": "432f19e467df1b39b8159a78f253cde8b746b7c38fbb5c53706e956060bcfc86"
+      }
+    },
+    "ExcelPlots.zip": {
+      "SHA256": "d801de287a274903ad41d1e4e495e1b245b2b6eab1a2df1ee153fba5823176b3",
+      "Bytes": 835901,
+      "Entries": {
+        "BaselinePreview/Circle.png": "17fa0291e0816beaae0ab012cfab39b4eeb3eb4987e51e52fbee6ef4a3c12ce1",
+        "BaselinePreview/HollowCentered.png": "f9a933c58d65ed7f736af2c7fc2f485e64cd544951c98ed8a7760158ad39993c",
+        "BaselinePreview/HollowOffset.png": "ec11b71e6643ac6213287cb2bfdc8696aaa3a21193b07afe0555d58243fa1e2b",
+        "BaselinePreview/LSection.png": "1710c579ddb6af493e4e66627e15a5c0051cbc6f55661373497c7ba96f3c6394",
+        "BaselinePreview/Rectangle.png": "161ed09cd564debe4a6d087a03caa674c5807b8d97bdb0c1f0fd8c49fb622649",
+        "BaselinePreview/RoundedMixed.png": "c974e2e9affce6cbbbb57c8f965ddda3ce48c29af7054e81b1b02c95f3fbd55f",
+        "BaselinePreview/RoundedSimple.png": "d9ebd2a46a89d0dc71f8d4affdb3b66469e830d46f3fa83f2ecb70b647e8994b",
+        "BaselinePreview/RoundedTapered.png": "400722b21140a070e32a9d8c05307a595ad32b76b52d4a38d6811ffb599ba495",
+        "BaselinePreview/TwoRectangles.png": "3ff8459c6b13acd5e704ec482954864ca8ded3b982e88685889049e090f17e04",
+        "UnifiedPreview/Audit02Demo.png": "855924019da799731b770278e20e9c4f171620e1aeda572fecc0aaa73206edcf",
+        "UnifiedPreview/Circle.png": "17fa0291e0816beaae0ab012cfab39b4eeb3eb4987e51e52fbee6ef4a3c12ce1",
+        "UnifiedPreview/HollowCentered.png": "f9a933c58d65ed7f736af2c7fc2f485e64cd544951c98ed8a7760158ad39993c",
+        "UnifiedPreview/HollowOffset.png": "ec11b71e6643ac6213287cb2bfdc8696aaa3a21193b07afe0555d58243fa1e2b",
+        "UnifiedPreview/LSection.png": "1710c579ddb6af493e4e66627e15a5c0051cbc6f55661373497c7ba96f3c6394",
+        "UnifiedPreview/Rectangle.png": "161ed09cd564debe4a6d087a03caa674c5807b8d97bdb0c1f0fd8c49fb622649",
+        "UnifiedPreview/RoundedMixed.png": "c974e2e9affce6cbbbb57c8f965ddda3ce48c29af7054e81b1b02c95f3fbd55f",
+        "UnifiedPreview/RoundedSimple.png": "d9ebd2a46a89d0dc71f8d4affdb3b66469e830d46f3fa83f2ecb70b647e8994b",
+        "UnifiedPreview/RoundedTapered.png": "400722b21140a070e32a9d8c05307a595ad32b76b52d4a38d6811ffb599ba495",
+        "UnifiedPreview/TwoRectangles.png": "3ff8459c6b13acd5e704ec482954864ca8ded3b982e88685889049e090f17e04",
+        "BaselinePreview/modTestShapeArchitecture.DumpShapePreviewSnapshot.txt": "01f70e638e0427dfa21deaf841b2a1c5f59f9e8dbf506e77315bce123ff28e2a",
+        "UnifiedPreview/modTestAudit02Api.DumpAudit02DemoPreview.txt": "1b74b314700b7f0bc0b22b0d9f829b9b262b248164b33dc00562bab1a7a6641f",
+        "UnifiedPreview/modTestShapeArchitecture.DumpShapePreviewSnapshot.txt": "01f70e638e0427dfa21deaf841b2a1c5f59f9e8dbf506e77315bce123ff28e2a",
+        "BaselinePreview/Run.json": "4e0e620b439ccd975fceb2da32ce10222d5f97fce8dc45b893a889b32122da55",
+        "UnifiedPreview/Run.json": "6a80837a7e6c4fcafb038ed72277c9a7da33fc65b3144d15ca1fb15c71b0f636"
+      }
+    },
+    "NativeSnapshots.zip": {
+      "SHA256": "06f432eb0939a83712aa9bcda5960b2c9d0f69e15f3f0a68d9e8581e232b9790",
+      "Bytes": 5275074,
+      "Entries": {
+        "FinalNativeVBA.txt": "a5117b48fcc829cd864d37977763378fdea08ebd76679ef8a852f942f9cc4baf",
+        "TestedNativeVBA.txt": "0f3e0d78754fa9d2f575ecd6d1809b2c61c650347f75e79a2d533440f8023fba",
+        "PublishedNativeVBA.txt": "4b80ed51fbd2befede801c8f614b63fc0347d974d3fac3c97dbddb8ce698ddc5",
+        "ExampleNativeVBA.txt": "51211b3c9bd570f807c15d339a502fb51a536662098dd0211bb6586ffe41b134"
+      }
+    }
+  },
+  "ContainsTestWorkbooks": false,
+  "ContainsUserDrawings": false
+}

@@ -1,0 +1,164 @@
+{
+  "BaselineHead": "490f9363c803f5ae5833212887d7ee8674fd125d",
+  "Method": "Procedure-body statements; declarations/comments/closing delimiters excluded; inline Then counted separately; colon-separated statements counted individually",
+  "Recipes": {
+    "src/Geometry/CSectionRecipeCircle.cls": {
+      "Before": {
+        "Instructions": 53,
+        "Branches": 8,
+        "Methods": 3
+      },
+      "After": {
+        "Instructions": 54,
+        "Branches": 8,
+        "Methods": 3
+      },
+      "SourceSHA256": "7625b12196fa62fce39798c02b4840b75dad4c76952e9eaa09e41ddb87e504d8"
+    },
+    "src/Geometry/CSectionRecipeRectSet.cls": {
+      "Before": {
+        "Instructions": 117,
+        "Branches": 17,
+        "Methods": 7
+      },
+      "After": {
+        "Instructions": 115,
+        "Branches": 17,
+        "Methods": 7
+      },
+      "SourceSHA256": "fa3b08b92cedbcd714ecc59050321d63e0d8703f68ed29fba2c18d788c4f0a7c"
+    },
+    "src/Geometry/CSectionRecipeRoundedRectangle.cls": {
+      "Before": {
+        "Instructions": 150,
+        "Branches": 17,
+        "Methods": 9
+      },
+      "After": {
+        "Instructions": 132,
+        "Branches": 17,
+        "Methods": 9
+      },
+      "SourceSHA256": "66b45e1be24a2ace60b9e7642b09f4a564b57c64d575305f6d6bd29ed191023a"
+    },
+    "src/Geometry/CSectionRecipeHollowRectangle.cls": {
+      "Before": {
+        "Instructions": 197,
+        "Branches": 32,
+        "Methods": 11
+      },
+      "After": {
+        "Instructions": 201,
+        "Branches": 31,
+        "Methods": 11
+      },
+      "SourceSHA256": "bc6076683577e23b0c3cada9dd0787ec6fee2951c8b8c56061b2184740cd702d"
+    },
+    "docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls": {
+      "Before": {
+        "Instructions": 76,
+        "Branches": 4,
+        "Methods": 4
+      },
+      "After": {
+        "Instructions": 79,
+        "Branches": 4,
+        "Methods": 4
+      },
+      "SourceSHA256": "d615bce54530cf33570d21b028f06df9899b46064980bbbe0cd194456a2bce85"
+    }
+  },
+  "Common": {
+    "src/Geometry/CPolygonSpec.cls": {
+      "Before": {
+        "Instructions": 0,
+        "Branches": 0,
+        "Methods": 0
+      },
+      "After": {
+        "Instructions": 68,
+        "Branches": 14,
+        "Methods": 14
+      },
+      "SourceSHA256": "2424c3447582b35c1657c152d29d40f9bbf70b676067d4a5fae405e42493f040"
+    },
+    "src/Section/CSectionDefinitionBuilder.cls": {
+      "Before": {
+        "Instructions": 267,
+        "Branches": 14,
+        "Methods": 44
+      },
+      "After": {
+        "Instructions": 271,
+        "Branches": 14,
+        "Methods": 44
+      },
+      "SourceSHA256": "702ed959d9a0560e25fc018df12408494fea3acdceb2dcfccc105e6166530a2a"
+    },
+    "src/Section/CSectionDefinition.cls": {
+      "Before": {
+        "Instructions": 242,
+        "Branches": 66,
+        "Methods": 36
+      },
+      "After": {
+        "Instructions": 257,
+        "Branches": 74,
+        "Methods": 36
+      },
+      "SourceSHA256": "371b465b803210a6bb90185fb9f2e1fc125b200982fae68b954551b55556d662"
+    },
+    "src/Section/CSectionGeometryQuery.cls": {
+      "Before": {
+        "Instructions": 1298,
+        "Branches": 252,
+        "Methods": 72
+      },
+      "After": {
+        "Instructions": 1307,
+        "Branches": 254,
+        "Methods": 75
+      },
+      "SourceSHA256": "c4f3b002c74dfd74c189b7efb4680def394059d0b87b53b52204c3b4d50b7e6a"
+    },
+    "src/Section/CRebarRuleOptions.cls": {
+      "Before": {
+        "Instructions": 33,
+        "Branches": 0,
+        "Methods": 2
+      },
+      "After": {
+        "Instructions": 52,
+        "Branches": 6,
+        "Methods": 4
+      },
+      "SourceSHA256": "32aa96e13d8cce1ea635321a272279c5374130fdb274fa24442fea8e7c309aa2"
+    },
+    "src/Section/CSectionInputTable.cls": {
+      "Before": {
+        "Instructions": 139,
+        "Branches": 42,
+        "Methods": 19
+      },
+      "After": {
+        "Instructions": 145,
+        "Branches": 44,
+        "Methods": 21
+      },
+      "SourceSHA256": "3f1b2bd5dfbce0175bf0a9ad1ddd0b6516e073be571c9ba0e599b158bca37ef2"
+    },
+    "src/Common/modSectionRecipeTypes.bas": {
+      "Before": {
+        "Instructions": 11,
+        "Branches": 3,
+        "Methods": 2
+      },
+      "After": {
+        "Instructions": 11,
+        "Branches": 3,
+        "Methods": 2
+      },
+      "SourceSHA256": "1f6485f46894d1fab1013834e95a0f52deee5f6ed777fc94242a291f503cf10b"
+    }
+  }
+}

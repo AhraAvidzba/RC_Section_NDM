@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "Rows": [
+    {
+      "Component": "CSectionRecipeMySection",
+      "ExecutableEqual": true,
+      "SourceSHA256": "a175049e14da821f1104cfb9b32450f796ac0f81894889796810c8414f6d9da4"
+    },
+    {
+      "Component": "CSectionRecipeRoundedTrapezoid",
+      "ExecutableEqual": true,
+      "SourceSHA256": "683922e931803dcda92d8aca1cc677aba519a3aa848007b9317912b90995dace"
+    },
+    {
+      "Component": "modTestRoundedTrapezoidExample",
+      "ExecutableEqual": true,
+      "SourceSHA256": "af551e79ec8e5b97c29d4c5b3aa0a96b2b0dbb88687b903fc5e8ebcebb9efaa2"
+    }
+  ],
+  "OneRegistration": true,
+  "NativeComponents": 160,
+  "RunPassed": true,
+  "FixtureSHA256": "bc7ddc7eda7bdcb64ca84a0a02cb39067ae4d36dc5d87e0039e7fea1e70cd8fe",
+  "Checks": "94 build, 250 input, 5 minimal through ISectionRecipe. Code compared with literals unchanged, ignoring only comments/whitespace/VBE code case."
+}

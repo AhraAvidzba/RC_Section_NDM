@@ -72,9 +72,11 @@ Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef si
         ByVal polygon As CPolygonSpec) As CGeometryPath
     On Error GoTo InvalidGeometry
     Dim original As CGeometryPath, outer As CGeometryPath, first As String
-    Set original = facade.RoundedPolygon("Shape", polygon) ' Shape: имя; polygon: завершённые вершины с радиусами.
+    Set original = facade.RoundedPolygon("Shape", polygon)  ' "Shape" — имя контура; polygon — завершённое описание исходных вершин и радиусов, мм.
     If sizes.SideTypes(1) = "Tapered" Then first = "Edge.LeftNose" Else first = "Edge.BL"
     Set outer = facade.Chain("Boundary", original.ID, first, 0#, first, 0#, True, True) ' Полный обход от прежней грани.
+    ' "OUTER" — имя наружной границы бетона; outer.ID — замкнутый контур; comment — пояснение к
+    ' границе; _ — имена отдельных участков контура.
     facade.Outer "OUTER", outer.ID, "Прямой участок контура скругленного прямоугольника.", _
         arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
     Set AddGeometry = outer
@@ -151,9 +153,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
             loc2 = table.Choice(extra, 3, Array("Stacked", "SideBySide"))
             ' table — снимок таблицы армирования; extra — строка дополнительных рядов; 2 — столбец их
             ' диаметра; groupID — общая группа подписи; CStr(captions(index)) — название стороны; 2 —
-            ' номер дополнительного ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; diameter / 2
-            ' + d2 / 2 — расстояние между центрами стержней, мм; normalSign — знак смещения по
-            ' нормали.
+            ' номер дополнительного ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; diameter —
+            ' диаметр основного стержня, мм; d2 — диаметр добавляемого стержня, мм; normalSign — знак
+            ' смещения по нормали.
             Set options = AdditionalOptions(table, extra, 2, groupID, CStr(captions(index)), 2, loc2, diameter, d2, normalSign)
             ' groupID & ".Row2" — имя дополнительного ряда; groupID & ".Main" — исходный ряд, чьи
             ' позиции используются; d2 — диаметр дополнительного стержня, мм; options — смещение и
@@ -166,8 +168,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
             If d2 > 0# And loc2 = loc3 Then distance = d2
             ' table — снимок таблицы армирования; extra — строка дополнительных рядов; 5 — столбец их
             ' диаметра; groupID — общая группа подписи; CStr(captions(index)) — название стороны; 3 —
-            ' номер дополнительного ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; distance —
-            ' расстояние между центрами стержней, мм; normalSign — знак смещения по нормали.
+            ' номер дополнительного ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; diameter —
+            ' диаметр основного стержня, мм; d3 — диаметр добавляемого стержня, мм; normalSign — знак
+            ' смещения по нормали; distance — сумма промежуточных номинальных диаметров, мм.
             Set options = AdditionalOptions(table, extra, 5, groupID, CStr(captions(index)), 3, loc3, diameter, d3, normalSign, distance)
             ' groupID & ".Row3" — имя дополнительного ряда; groupID & ".Main" — исходный ряд, чьи
             ' позиции используются; d3 — диаметр дополнительного стержня, мм; options — смещение и
@@ -196,7 +199,8 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polyg
         ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String) As CGeometryPath
     On Error GoTo InvalidPath
     Dim offset As CGeometryPath  ' Объявляем линии и параметры геометрии.
-    ' — смещение, мм: положительное внутрь, отрицательное наружу.
+    ' "Offset." & groupID — имя линии центров стержней; polygon — то же завершённое описание исходных
+    ' вершин; axisDistance — смещение, мм: положительное внутрь, отрицательное наружу.
     Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, polygon, axisDistance)
     Select Case groupID
         ' groupID — имя новой линии; offset.ID — исходный контур; "Edge.TL" — участок начала; 0 —

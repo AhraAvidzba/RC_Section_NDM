@@ -142,14 +142,19 @@ End Sub
 Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal shapeID As String, _
         ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
     Dim shape As CGeometryPath, boundary As CGeometryPath, part As String, first As String
-    Set shape = facade.RoundedPolygon(shapeID, polygon) ' Линия регистрируется сразу; роль назначается ниже.
+    Set shape = facade.RoundedPolygon(shapeID, polygon)  ' shapeID — имя контура; polygon — завершённое описание исходных вершин и радиусов, мм.
     first = "Edge.BL": If Not shape.HasSegmentID(first) Then first = "Corner.TL"
     Set boundary = facade.Chain(loopID & ".Boundary", shape.ID, first, 0#, first, 0#, True, True)
     If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
     If opening Then
+        ' loopID — имя отверстия; boundary.ID — замкнутый контур отверстия; "OUTER" — наружная
+        ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия; _ —
+        ' имена отдельных участков.
         facade.Opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     Else
+        ' loopID — имя наружной границы бетона; boundary.ID — замкнутый контур; comment — пояснение к
+        ' границе; _ — имена отдельных участков контура.
         facade.Outer loopID, boundary.ID, "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     End If
@@ -208,8 +213,8 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         If faces(i).D2 > 0# Then
             ' faces(i) — параметры данной стороны; 2 — номер дополнительного ряда; faces(i).Location2
             ' — Stacked поперёк ряда, SideBySide вдоль; faces(i).Binding2 — EachBar все позиции,
-            ' EverySecondBar через одну; faces(i).Diameter / 2 + faces(i).D2 / 2 — межосевое
-            ' расстояние, мм; normalSign — знак смещения по нормали.
+            ' EverySecondBar через одну; faces(i).Diameter — диаметр основного стержня, мм;
+            ' faces(i).D2 — диаметр добавляемого стержня, мм; normalSign — знак смещения по нормали.
             Set options = ExtraOptions(faces(i), 2, faces(i).Location2, faces(i).Binding2, faces(i).Diameter, faces(i).D2, normalSign)
             ' faces(i).ID & ".Row2" — имя дополнительного ряда; faces(i).ID & ".Main" — исходный ряд,
             ' чьи позиции используются; faces(i).D2 — диаметр дополнительного стержня, мм; options —
@@ -221,8 +226,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
             If faces(i).D2 > 0# And faces(i).Location2 = faces(i).Location3 Then distance = faces(i).D2
             ' faces(i) — параметры данной стороны; 3 — номер дополнительного ряда; faces(i).Location3
             ' — Stacked поперёк ряда, SideBySide вдоль; faces(i).Binding3 — EachBar все позиции,
-            ' EverySecondBar через одну; distance — межосевое расстояние, мм; normalSign — знак
-            ' смещения по нормали.
+            ' EverySecondBar через одну; faces(i).Diameter — диаметр основного стержня, мм;
+            ' faces(i).D3 — диаметр добавляемого стержня, мм; normalSign — знак смещения по нормали;
+            ' distance — сумма промежуточных номинальных диаметров, мм.
             Set options = ExtraOptions(faces(i), 3, faces(i).Location3, faces(i).Binding3, faces(i).Diameter, faces(i).D3, normalSign, distance)
             ' faces(i).ID & ".Row3" — имя дополнительного ряда; faces(i).ID & ".Main" — исходный ряд,
             ' чьи позиции используются; faces(i).D3 — диаметр дополнительного стержня, мм; options —
@@ -290,10 +296,8 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
             Exit Function
         End If
     End If
-    ' "Offset." & faces(index).ID — имя линии центров стержней; Corners(B, H, x, y) — исходные вершины
-    ' (X,Y), мм; Array(radius, radius, radius, radius) — исходные радиусы вершин, мм; Array("TL",
-    ' "TR", "BR", "BL") — имена исходных вершин; offset — смещение, мм: положительное внутрь,
-    ' отрицательное наружу.
+    ' "Offset." & faces(index).ID — имя линии центров стержней; polygon — то же завершённое описание
+    ' исходных вершин; offset — смещение, мм: положительное внутрь, отрицательное наружу.
     Set shape = facade.OffsetRoundedPolygon("Offset." & faces(index).ID, polygon, offset)
     Select Case base
         Case 1, 2

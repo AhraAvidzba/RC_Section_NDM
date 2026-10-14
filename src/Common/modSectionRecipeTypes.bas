@@ -84,8 +84,8 @@ Public Type TSectionLoop
     Comment As String
     ArcComment As String
     ContourIDs As Variant
-    NamingPolicy As EContourNamingPolicy
-    NamingPrefix As String
+    NamingPolicy As EContourNamingPolicy ' Правило публикации имён участков этой границы.
+    NamingPrefix As String ' Независимый префикс границы при SequentialByKind.
 End Type
 
 Public Type TRebarRule

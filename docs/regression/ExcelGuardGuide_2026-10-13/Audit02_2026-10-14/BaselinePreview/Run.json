@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "BaselinePreview",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpShapePreviewSnapshot",
+                     "Seconds":  8.6169598,
+                     "Characters":  737325,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "268D5FD5728289B216F8F5D082C859368CF38C490F169F004939E4BA4B781249",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T12:05:28.5553426+03:00"
+}

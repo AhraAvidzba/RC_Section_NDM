@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DOCS = ROOT / "docs/geometry_refactor"
 SOURCES = [
     "src/Section/ISectionRecipe.cls", "src/Section/CSectionDefinitionBuilder.cls",
-    "src/Geometry/CGeometryPath.cls", "src/Section/CSectionDefinition.cls",
+    "src/Geometry/CGeometryPath.cls", "src/Geometry/CPolygonSpec.cls", "src/Section/CSectionDefinition.cls",
     "src/Section/CRebarRuleOptions.cls", "src/Geometry/CGeometryDiagnostic.cls",
     "src/Section/CSectionInputTable.cls", "src/Section/CSectionRecipeContext.cls",
     "src/Excel/CSectionInputSnapshotReader.cls", "src/Excel/CSectionTypeRegistry.cls",
@@ -47,6 +47,8 @@ def declarations(path: Path) -> list[dict]:
     owner = re.search(r'Attribute VB_Name = "([^"]+)"', source).group(1)
     logical, pending, first = [], "", 0
     for number, line in enumerate(source.splitlines(), 1):
+        # Комментарий после поля/объявления не является частью его сигнатуры.
+        line = re.split(r"'(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", line, 1)[0].rstrip()
         if not pending: first = number
         pending += line.strip()
         if pending.endswith(" _"):
@@ -184,7 +186,7 @@ def main():
                 lines.append("")
             if member.get("fields"):
                 lines.extend(["Поля/селекторы по source:", "", "```vb", *member["fields"], "```", ""])
-            if member["owner"] == "CRebarRuleOptions":
+            if member["owner"] == "CRebarRuleOptions" and member["kind"] == "Field":
                 implicit = {"String": "vbNullString", "Double": "0#", "Boolean": "False", "Long": "0"}
                 default = explicit_defaults.get(member["name"], implicit.get(member["resultType"], "0"))
                 lines.extend(["Default после New: " + default + ". Поле изменяется до объявления правила; facade копирует его значение.", ""])
