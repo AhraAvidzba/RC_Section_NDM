@@ -36,7 +36,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     ReadDimensions table, units, sizes
     Set facade = New CSectionDefinitionBuilder  ' Создаём описание составного сечения.
     facade.Initialize "RectSet"  ' "RectSet" — имя типа сечения.
-    ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы; upper —
+    ' facade — сборщик описания сечения; sizes — подготовленные размеры и параметры формы; upper —
     ' возвращаемый контур верхнего прямоугольника; lower — возвращаемый контур нижнего прямоугольника;
     ' outer — возвращаемая общая наружная граница.
     AddGeometry facade, sizes, upper, lower, outer
@@ -50,12 +50,17 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     ' прямоугольник; 0 — X нижнего левого угла, мм; 0 — Y нижнего левого угла, мм; sizes.B2 — ширина
     ' прямоугольника, мм; sizes.H2 — высота прямоугольника, мм.
     If sizes.Shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.Header, 4, 0#, 0#, sizes.B2, sizes.H2
-    AddDimensions facade, sizes, upper, lower, outer  ' facade — сборщик описания сечения; sizes — размеры и данные формы; upper — верхний прямоугольник; lower — нижний прямоугольник; outer — наружная граница для габаритов.
+    ' facade — сборщик описания сечения; sizes — размеры и данные формы; upper — верхний
+    ' прямоугольник; lower — нижний прямоугольник; outer — наружная граница для габаритов.
+    AddDimensions facade, sizes, upper, lower, outer
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
 End Function
 
 ' Каждый вариант читает только свои активные размеры; отсутствующая нижняя
 ' часть Rectangle не требует заполнения полей остальных двух вариантов.
+' В каждой паре сначала читаются оба числа, затем проверяется положительность H и B.
+' PositiveLength проверяет сразу: его прямой вызов изменил бы первую ошибку при H=0 и текстовом B.
+' Поэтому здесь сохранены Length + Require, прежние адреса/пояснения и один перевод каждого размера.
 Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)
     sizes.Shape = table.Choice(table.RowByKey("RectSet.SectionType"), 2, _
         Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))

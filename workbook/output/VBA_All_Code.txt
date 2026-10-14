@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-14 12:31:38
+Date: 2026-10-14 13:45:12
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -33491,10 +33491,9 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
     Next i
 End Function
 
-' Общий скругленный многоугольник: Array(Array(x,y),...), радиусы и имена
-' вершин того же размера. Индексы входа не становятся идентичностью грани.
-' Вогнутый угол получает противоположный sweep; радиусы не уменьшаются.
-' Принимает один закрытый набор исходных вершин; численная реализация остаётся прежней.
+' Общий скруглённый многоугольник из завершённого CPolygonSpec; исходные записи не меняются.
+' Имена вершин задают идентичность грани, порядок сохраняется. Вогнутый угол получает
+' противоположный sweep; радиусы не уменьшаются. Численная реализация остаётся прежней.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     Dim vertices As Variant, radii As Variant, vertexIDs As Variant
     PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
@@ -33502,6 +33501,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygon
 End Function
 
 ' Внутренний численный формат; к нему нет публичного массивного маршрута рецепта.
+' Array(Array(x,y),...), радиусы и имена вершин имеют одинаковый размер и получены из CPolygonSpec.
 Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
@@ -33574,7 +33574,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
     Set RoundedPolygonKernel = result
 End Function
 
-' Согласованный offset всего скругленного многоугольника. Положительное
+' Согласованный offset всего скруглённого многоугольника из завершённого CPolygonSpec. Положительное
 ' расстояние направлено внутрь его площади независимо от обхода; для пути
 ' от отверстия в бетон потребитель задает отрицательное расстояние.
 ' Исходные острые углы остаются острыми, уменьшившаяся до нуля дуга исчезает.
@@ -101877,7 +101877,7 @@ End Property
 ====================================================================================================
 COMPONENT: CRebarRuleOptions
 TYPE: 2
-LINES: 91
+LINES: 92
 ====================================================================================================
 Option Explicit
 
@@ -101934,6 +101934,7 @@ End Sub
 
 ' Контактное межцентровое расстояние: половины основного/добавляемого диаметров и полные промежуточные.
 ' Меняет только NormalOffset/TangentOffset/EverySecond; координаты и ориентацию исполняет общий executor.
+' Оба диаметра строго больше нуля; отключённый ряд рецепт пропускает до вызова, иначе будет ошибка.
 Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, _
         ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, _
         Optional ByVal interveningDiameterSum As Double = 0#)
@@ -102872,15 +102873,15 @@ Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal c
     Set ArcPath = result
 End Function
 
-' Создаёт согласованную границу по вершинам/радиусам/ID. Edge.ID начинается у указанной вершины,
-' Corner.ID существует только при R>0.
+' Создаёт и регистрирует границу из завершённого CPolygonSpec с исходными координатами, радиусами и ID.
+' Edge.ID начинается у указанной вершины; Corner.ID существует только при R>0.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     RequireOpen
     Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon)
     mDefinition.AddPath RoundedPolygon
 End Function
 
-' Смещает весь скруглённый многоугольник с согласованными стыками. Положительное расстояние
+' Смещает весь скруглённый многоугольник из того же CPolygonSpec, не меняя описатель. Положительное расстояние
 ' внутрь площади; отрицательное наружу, из Opening в бетон.
 Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
     RequireOpen
@@ -104699,7 +104700,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionRecipeRectSet
 TYPE: 2
-LINES: 239
+LINES: 244
 ====================================================================================================
 Option Explicit
 
@@ -104730,7 +104731,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     ReadDimensions table, units, sizes
     Set facade = New CSectionDefinitionBuilder  ' Создаём описание составного сечения.
     facade.Initialize "RectSet"  ' "RectSet" — имя типа сечения.
-    ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы; upper —
+    ' facade — сборщик описания сечения; sizes — подготовленные размеры и параметры формы; upper —
     ' возвращаемый контур верхнего прямоугольника; lower — возвращаемый контур нижнего прямоугольника;
     ' outer — возвращаемая общая наружная граница.
     AddGeometry facade, sizes, upper, lower, outer
@@ -104744,12 +104745,17 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     ' прямоугольник; 0 — X нижнего левого угла, мм; 0 — Y нижнего левого угла, мм; sizes.B2 — ширина
     ' прямоугольника, мм; sizes.H2 — высота прямоугольника, мм.
     If sizes.shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.header, 4, 0#, 0#, sizes.b2, sizes.h2
-    AddDimensions facade, sizes, upper, lower, outer  ' facade — сборщик описания сечения; sizes — размеры и данные формы; upper — верхний прямоугольник; lower — нижний прямоугольник; outer — наружная граница для габаритов.
+    ' facade — сборщик описания сечения; sizes — размеры и данные формы; upper — верхний
+    ' прямоугольник; lower — нижний прямоугольник; outer — наружная граница для габаритов.
+    AddDimensions facade, sizes, upper, lower, outer
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
 End Function
 
 ' Каждый вариант читает только свои активные размеры; отсутствующая нижняя
 ' часть Rectangle не требует заполнения полей остальных двух вариантов.
+' В каждой паре сначала читаются оба числа, затем проверяется положительность H и B.
+' PositiveLength проверяет сразу: его прямой вызов изменил бы первую ошибку при H=0 и текстовом B.
+' Поэтому здесь сохранены Length + Require, прежние адреса/пояснения и один перевод каждого размера.
 Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)
     sizes.shape = table.choice(table.RowByKey("RectSet.SectionType"), 2, _
         Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
@@ -104944,7 +104950,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionRecipeRoundedRectangle
 TYPE: 2
-LINES: 269
+LINES: 273
 ====================================================================================================
 Option Explicit
 
@@ -104976,8 +104982,11 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     ReadDimensions table, units, sizes
     Set polygon = DescribePolygon(sizes) ' Один исходный многоугольник для контура и всех осевых смещений.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle"  ' "RoundedRectangle" — имя типа сечения.
-    Set outer = AddGeometry(facade, sizes, polygon)  ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы.
-    AddReinforcement facade, table, units, sizes, polygon  ' facade — сборщик описания сечения; table — снимок таблицы армирования; units — перевод исходных размеров в мм; sizes — размеры и данные формы.
+    Set outer = AddGeometry(facade, sizes, polygon)  ' facade — сборщик описания сечения; sizes — подготовленные размеры и параметры формы; polygon — завершённые исходные вершины с радиусами.
+    ' facade — сборщик описания сечения; table — снимок таблицы армирования; units — перевод исходных
+    ' размеров в мм; sizes — размеры и данные формы; polygon — завершённые исходные вершины с
+    ' радиусами.
+    AddReinforcement facade, table, units, sizes, polygon
     AddDimensions facade, sizes, outer  ' facade — сборщик описания сечения; sizes — размеры и данные формы; outer — наружная граница для габаритов.
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
 End Function
@@ -105015,7 +105024,8 @@ Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef si
     If sizes.SideTypes(1) = "Tapered" Then first = "Edge.LeftNose" Else first = "Edge.BL"
     Set outer = facade.Chain("Boundary", original.id, first, 0#, first, 0#, True, True) ' Полный обход от прежней грани.
     ' "OUTER" — имя наружной границы бетона; outer.ID — замкнутый контур; comment — пояснение к
-    ' границе; _ — имена отдельных участков контура.
+    ' границе; arcComment — отдельное пояснение к дугам; SequentialByKind — способ публикации имён
+    ' участков.
     facade.outer "OUTER", outer.id, "Прямой участок контура скругленного прямоугольника.", _
         arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
     Set AddGeometry = outer
@@ -105057,9 +105067,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         If count = 0 Or diameter = 0# Then GoTo NextFace
         axisDistance = table.length(row, 2, units)
         Require table, row, 2, axisDistance > diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-        ' facade — сборщик описания сечения; sizes — размеры, вершины и радиусы контура; groupID — имя
-        ' стороны; axisDistance — as до центров стержней, мм; table.SourceReference(row, 2) — адрес
-        ' исходной ячейки для диагностики.
+        ' facade — сборщик описания сечения; polygon — завершённые исходные вершины с радиусами;
+        ' groupID — имя стороны; axisDistance — as до центров стержней, мм; table.SourceReference(row,
+        ' 2) — адрес исходной ячейки для диагностики.
         Set path = AxisPath(facade, polygon, groupID, axisDistance, table.SourceReference(row, 2))
         nx = 0#: ny = 0#
         Select Case groupID
@@ -105219,7 +105229,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionRecipeHollowRectangle
 TYPE: 2
-LINES: 364
+LINES: 378
 ====================================================================================================
 Option Explicit
 
@@ -105274,8 +105284,11 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set outerPolygon = DescribePolygon(sizes.b, sizes.h, 0#, 0#, sizes.r, sizes.GeometrySource)
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle"  ' "HollowRectangle" — имя типа сечения.
-    AddGeometry facade, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы.
-    AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; sizes — размеры и данные формы; faces — параметры всех наружных и внутренних сторон.
+    AddGeometry facade, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; outerPolygon — описание наружной границы; openingPolygon — описание отверстия.
+    ' facade — сборщик описания сечения; sizes — размеры и данные формы; faces — параметры всех
+    ' наружных и внутренних сторон; outerPolygon — описание наружной границы; openingPolygon —
+    ' описание отверстия.
+    AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon
     AddDimensions facade, sizes  ' facade — сборщик описания сечения; sizes — размеры и данные формы.
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
     Exit Function
@@ -105348,7 +105361,13 @@ End Sub
 ' сетки.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, _
         ByVal openingPolygon As CPolygonSpec)
+    ' facade — сборщик описания сечения; "OUTER" — имя бетонной границы; "Shape" — имя её исходного
+    ' контура; outerPolygon — завершённые исходные вершины с радиусами; False — True отверстие, False
+    ' наружная граница.
     AddBoundary facade, "OUTER", "Shape", outerPolygon, False
+    ' facade — сборщик описания сечения; "OPENING" — имя бетонной границы; "Opening.Shape" — имя её
+    ' исходного контура; openingPolygon — завершённые исходные вершины с радиусами; True — True
+    ' отверстие, False наружная граница.
     AddBoundary facade, "OPENING", "Opening.Shape", openingPolygon, True
 End Sub
 
@@ -105362,13 +105381,15 @@ Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID 
     If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
     If opening Then
         ' loopID — имя отверстия; boundary.ID — замкнутый контур отверстия; "OUTER" — наружная
-        ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия; _ —
-        ' имена отдельных участков.
+        ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия;
+        ' arcComment — отдельное пояснение к дугам; SequentialByKind — способ публикации имён
+        ' участков; "CONTOUR_" & loopID — независимый префикс отверстия.
         facade.opening loopID, boundary.id, "OUTER", "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     Else
         ' loopID — имя наружной границы бетона; boundary.ID — замкнутый контур; comment — пояснение к
-        ' границе; _ — имена отдельных участков контура.
+        ' границе; arcComment — отдельное пояснение к дугам; SequentialByKind — способ публикации имён
+        ' участков; "CONTOUR_" & loopID — префикс технических имён данной границы.
         facade.outer loopID, boundary.id, "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     End If
@@ -105395,7 +105416,10 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1
         If faces(i).diameter = 0# Or faces(base).count = 0 Or faces(base).diameter = 0# Then GoTo NextFace
-        Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Выбирает наружный/внутренний исходный набор по грани.
+        ' facade — сборщик описания сечения; sizes — скалярные размеры и параметры границы; faces —
+        ' параметры всех наружных и внутренних сторон; i — номер выбранной стороны; outerPolygon —
+        ' описание наружной границы; openingPolygon — описание отверстия.
+        Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon)
         Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback  ' StartSetback — отступ начала ряда от начала грани, мм; EndSetback — отступ конца ряда от конца грани, мм.
         ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям; Coincidence —
@@ -107718,7 +107742,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modSectionRecipeApiGuide
 TYPE: 1
-LINES: 2756
+LINES: 2762
 ====================================================================================================
 '
 '
@@ -107764,6 +107788,9 @@ LINES: 2756
 '   Optional означает необязательный параметр; его значение по умолчанию указано после знака =. ByVal
 '   передаёт значение, ByRef позволяет методу вернуть результат через параметр. Nothing вместо options
 '   создаёт обычные условия размещения.
+'
+'   Пробел и символ _ в конце строки VBA продолжают команду на следующей строке. Это знак записи кода, а
+'   не передаваемый параметр. Именованный аргумент записывается как имя:=значение.
 '
 '   Initialize открывает одно описание, Finish завершает его. CirclePath, LinePath, RectanglePath и
 '   другие создающие команды сами сохраняют линию. Возвращённый path уже зарегистрирован; Outer, Opening
@@ -109418,8 +109445,9 @@ LINES: 2756
 '     CRebarRuleOptions.ConfigureDependentContact
 '
 '       Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого
-'       диаметров и промежуточных полных диаметров. Вторая компонента обнуляется; остальные политики и
-'       source не наследуются.
+'       диаметров и промежуточных полных диаметров. Оба диаметра строго положительны: ноль вызывает
+'       ошибку. Отключённый ряд обрабатывает вызывающий рецепт до вызова. Вторая компонента обнуляется;
+'       остальные политики и source не наследуются.
 '
 '       Объявление:
 '         Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double,
@@ -109428,10 +109456,12 @@ LINES: 2756
 '
 '       Параметры:
 '         ByVal baseDiameter As Double
-'           Положительный диаметр основного стержня, мм; контактное расстояние начинается от его центра.
+'           Строго положительный диаметр основного стержня, мм (>0). Ноль и отрицательное значение
+'           вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.
 '
 '         ByVal diameter As Double
-'           Диаметр стержня, мм; отрицательный запрещён, ноль выключает ряд.
+'           Строго положительный диаметр добавляемого стержня, мм (>0). Ноль и отрицательное значение
+'           вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.
 '
 '         ByVal axis As ERebarOffsetAxis
 '           RowNormal — смещение по левой нормали исходного ряда; RowTangent — вдоль его касательной.
@@ -111578,7 +111608,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestAudit02Api
 TYPE: 1
-LINES: 364
+LINES: 558
 ====================================================================================================
 Option Explicit
 
@@ -111917,6 +111947,200 @@ Public Function DumpAudit02DemoPreview(ByVal outputDirectory As String) As Strin
     second = modTestShapeArchitecture.PreparedPreviewSnapshot("Audit02Demo", model, outputDirectory)
     If first <> second Then Err.Raise vbObjectError + 5490, "modTestAudit02Api", "Повторный Draw изменил данные/Shapes."
     DumpAudit02DemoPreview = first
+End Function
+
+' ДЛЯ ТЕСТОВ: нулевые диаметры запрещены внутри контактного helper, отказ не меняет options.
+Public Function RunAudit02CloseoutContactTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim options As CRebarRuleOptions, cases As Variant, item As Variant, code As Long, reason As String
+    Set options = New CRebarRuleOptions
+    options.SourceReference = "Program.Contact": options.StartSetback = 100#: options.EndSetback = 150#
+    options.SetPublication "Group", PublishPerSourcePosition, KeepPublishedOwner
+    options.NormalOffset = 12#: options.TangentOffset = 34#: options.everySecond = True
+    cases = Array(Array(0#, 16#, RowNormal, 1#, 0#), Array(-20#, 16#, RowNormal, 1#, 0#), _
+        Array(20#, 0#, RowNormal, 1#, 0#), Array(20#, -16#, RowNormal, 1#, 0#), _
+        Array(20#, 16#, RowNormal, 1#, -1#), Array(20#, 16#, 0, 1#, 0#), Array(20#, 16#, RowNormal, 0#, 0#))
+    For Each item In cases
+        On Error Resume Next
+        options.ConfigureDependentContact CDbl(item(0)), CDbl(item(1)), CLng(item(2)), CDbl(item(3)), False, CDbl(item(4))
+        code = Err.number: reason = Err.description: Err.clear
+        On Error GoTo Failed
+        Check "contact.reject.address." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(item(2)) & "." & CStr(item(3)), _
+            code <> 0 And InStr(reason, "Program.Contact") > 0
+        Check "contact.reject.atomic", options.NormalOffset = 12# And options.TangentOffset = 34# And options.everySecond
+        Check "contact.unrelated.fields", options.StartSetback = 100# And options.EndSetback = 150# And _
+            options.annotationGroup = "Group" And options.publication = PublishPerSourcePosition And options.coincidence = KeepPublishedOwner
+    Next item
+    options.ConfigureDependentContact 20#, 16#, RowNormal, -1#, False
+    Check "contact.valid.18", options.NormalOffset = -18# And options.TangentOffset = 0# And Not options.everySecond
+    options.ConfigureDependentContact 20#, 12#, RowTangent, 1#, True, 16#
+    Check "contact.valid.32", options.NormalOffset = 0# And options.TangentOffset = 32# And options.everySecond
+    GoTo Finished
+Failed:
+    Check "runtime: " & CStr(Err.number) & "; " & Err.description, False
+Finished:
+    RunAudit02CloseoutContactTests = mReport & "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: адресная матрица размеров, неактивных полей, знаков и порядка диагностик RectSet.
+Public Function RunAudit02CloseoutRectSetInputTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim records As String
+    records = CloseoutRectSetInputMatrix()
+    RunAudit02CloseoutRectSetInputTests = mReport & "TOTAL AUDIT02 CLOSEOUT RECTSET INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: полный снимок значений/ошибок той же матрицы для побайтной сверки baseline/candidate.
+Public Function DumpAudit02CloseoutInputContract() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    DumpAudit02CloseoutInputContract = CloseoutRectSetInputMatrix()
+    If mFailed > 0 Then Err.Raise vbObjectError + 5491, "modTestAudit02Api", mReport
+End Function
+
+' ДЛЯ ТЕСТОВ: только три схемы RectSet, без полного набора UI/ON-OFF.
+Public Function DumpAudit02CloseoutRectSetPreview(ByVal outputDirectory As String) As String
+    Dim fixture As Variant
+    For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
+        DumpAudit02CloseoutRectSetPreview = DumpAudit02CloseoutRectSetPreview & _
+            modTestShapeArchitecture.DumpShapePreviewSnapshot(outputDirectory, CStr(fixture))
+    Next fixture
+End Function
+
+' Снимок ошибок содержит номер, source и полный текст с реальным адресом, без маскирования различий.
+Private Function CloseoutRectSetInputMatrix() As String
+    Dim config As Object, saved As Variant, range As Object, block As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
+    Dim fixture As Variant, valueKind As Variant, unit As Variant, aliasName As Variant
+    Dim row As Long, column As Long, maxColumn As Long, offsetRow As Long, shapeRow As Long
+    Dim code As Long, source As String, reason As String, expectedAddress As String, area As Double
+    Dim result As String, factor As Double, pair As Variant, number As Double, otherCode As Long, otherReason As String
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.formula
+    For Each unit In Array("mm", "cm", "m")
+        config.formula = saved
+        ThisWorkbook.names("rngUnitSettings").RefersToRange.cells(2, 2).value2 = CStr(unit)
+        For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+            Set range = ThisWorkbook.names("rngRectSetGeometry").RefersToRange: block = range.formula
+            Set reader = New CSectionInputSnapshotReader
+            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.table("rngRectSetGeometry")
+            row = table.RowByKey("H1") + 1: offsetRow = table.RowByKey("RectSet.UpperOffsetX")
+            shapeRow = table.RowByKey("RectSet.SectionType")
+            Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+            Check "rect.valid." & CStr(unit) & "." & CStr(fixture), code = 0
+            If code <> 0 Then GoTo Failed
+            area = definition.ConcreteDomain.area
+            result = result & InputContractRow(CStr(unit), CStr(fixture), "base", code, source, reason, area)
+            maxColumn = 4: If CStr(fixture) = "Rectangle" Then maxColumn = 2
+            For column = 1 To maxColumn
+                expectedAddress = table.SourceReference(row, column)
+                For Each valueKind In Array("positive", "zero", "negative", "empty", "text")
+                    range.formula = block
+                    Select Case CStr(valueKind)
+                        Case "zero": range.cells(row, column).value2 = 0#
+                        Case "negative": range.cells(row, column).value2 = -1# / factor
+                        Case "empty": range.cells(row, column).ClearContents
+                        Case "text": range.cells(row, column).value2 = "bad dimension"
+                    End Select
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    If CStr(valueKind) = "positive" Then
+                        Check "rect.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column), code = 0
+                        Check "rect.unit.once", definition.ConcreteDomain.area = area
+                    Else
+                        Check "rect.reject.address." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column) & "." & CStr(valueKind), _
+                            code <> 0 And InStr(reason, expectedAddress) > 0
+                    End If
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(column) & "." & CStr(valueKind), code, source, reason, 0#)
+                Next valueKind
+            Next column
+            ' Для Rectangle нижние размеры и смещение не читаются; для LSection смещение также неактивно.
+            range.formula = block
+            If CStr(fixture) = "Rectangle" Then
+                range.cells(row, 3).value2 = "inactive H2": range.cells(row, 4).value2 = CVErr(xlErrValue)
+            End If
+            If CStr(fixture) <> "TwoRectangles" Then
+                range.cells(offsetRow, 2).value2 = "inactive offset"
+                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Check "rect.inactive.fields." & CStr(unit) & "." & CStr(fixture), code = 0 And definition.ConcreteDomain.area = area
+                result = result & InputContractRow(CStr(unit), CStr(fixture), "inactive", code, source, reason, 0#)
+            Else
+                For Each pair In Array(-100#, 0#, 100#)
+                    range.formula = block: range.cells(offsetRow, 2).value2 = CDbl(pair) / factor
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Check "rect.signed.offset." & CStr(unit) & "." & CStr(pair), code = 0
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), "offset." & CStr(pair), code, source, reason, 0#)
+                Next pair
+            End If
+            ' Контракт пары: числовое чтение второго поля предшествует проверке положительности первого.
+            For Each pair In Array(1, 3)
+                If CLng(pair) <= maxColumn Then
+                    range.formula = block: range.cells(row, CLng(pair)).value2 = 0#
+                    range.cells(row, CLng(pair) + 1).value2 = "bad dimension"
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Check "rect.pair.numeric.before.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(pair), _
+                        code <> 0 And InStr(reason, table.SourceReference(row, CLng(pair) + 1)) > 0
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), "pair." & CStr(pair), code, source, reason, 0#)
+                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.table("rngRectSetGeometry")
+                    On Error Resume Next
+                    number = table.PositiveLength(row, CLng(pair), units)
+                    otherCode = Err.number: otherReason = Err.description: Err.clear
+                    On Error GoTo Failed
+                    Check "rect.direct.helper.changes.first.address", otherCode <> 0 And _
+                        InStr(otherReason, table.SourceReference(row, CLng(pair))) > 0 And otherReason <> reason
+                End If
+            Next pair
+            range.formula = block
+            ' Составные условия остаются у рецепта и указывают соответствующее поле.
+            If CStr(fixture) = "LSection" Then
+                range.cells(row, 2).value2 = range.cells(row, 4).value2
+                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, table.SourceReference(row, 2)) > 0
+                result = result & InputContractRow(CStr(unit), CStr(fixture), "incompatible.widths", code, source, reason, 0#)
+            ElseIf CStr(fixture) = "TwoRectangles" Then
+                range.cells(offsetRow, 2).value2 = range.cells(row, 4).value2
+                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Check "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 2)) > 0
+                result = result & InputContractRow(CStr(unit), CStr(fixture), "nonadjacent", code, source, reason, 0#)
+            End If
+            For Each aliasName In Array("RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles")
+                If (CStr(fixture) = "LSection" And CStr(aliasName) = "RectSet") Or _
+                        (CStr(fixture) = "TwoRectangles" And CStr(aliasName) <> "RectSet") Then
+                    range.formula = block: range.cells(shapeRow, 2).value2 = CStr(aliasName)
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Check "rect.alias." & CStr(unit) & "." & CStr(aliasName), code = 0 And definition.ConcreteDomain.area = area
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(aliasName), code, source, reason, 0#)
+                End If
+            Next aliasName
+            range.formula = block
+        Next fixture
+    Next unit
+    GoTo Finished
+Failed:
+    Check "rect.runtime: " & CStr(Err.number) & "; " & Err.description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.formula = saved
+    CloseoutRectSetInputMatrix = result
+End Function
+
+' Перехватывает только результат штатного чтения definition; ожидания ошибки остаются у вызывающего теста.
+Private Function RectSetInputOutcome(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByRef code As Long, ByRef source As String, ByRef reason As String) As CSectionDefinition
+    code = 0: source = "": reason = ""
+    On Error GoTo invalid
+    Set RectSetInputOutcome = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Exit Function
+invalid:
+    code = Err.number: source = Err.source: reason = Err.description
+End Function
+
+Private Function InputContractRow(ByVal unit As String, ByVal fixture As String, ByVal name As String, _
+        ByVal code As Long, ByVal source As String, ByVal reason As String, ByVal area As Double) As String
+    InputContractRow = unit & "|" & fixture & "|" & name & "|" & CStr(code) & "|" & source & "|" & reason & "|" & CStr(area) & vbCrLf
 End Function
 
 ' Исходный квадрат в прежнем CCW-порядке; имена не являются автоматическими anchors.

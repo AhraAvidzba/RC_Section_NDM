@@ -3659,7 +3659,7 @@
         }
       ],
       "resultType": null,
-      "line": 65,
+      "line": 66,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"
@@ -6881,7 +6881,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 869,
+      "line": 868,
       "source": "src/Section/CSectionGeometryQuery.cls",
       "id": "CSectionGeometryQuery.RoundedPolygon",
       "anchor": "api-csectiongeometryquery-roundedpolygon"
@@ -7842,11 +7842,11 @@
   "scope": "Все Public члены фасада, его options/результатов и общего ввода/единиц; общие query/region и build diagnostics для проверок. Private/Friend не API рецепта.",
   "sourceHashes": {
     "src/Section/ISectionRecipe.cls": "29c1d70147a864331358441c6cc517d0270f0e3d45aa21a3d434a02a1e1efe51",
-    "src/Section/CSectionDefinitionBuilder.cls": "87fe6b3cfdf63f01ea51f11265185759b5cb42afd0c33f8c5372f5409d773c9b",
+    "src/Section/CSectionDefinitionBuilder.cls": "3cc58bf55d85641c73cc1a6123a841c7357d28b80e6dc6f557652dda1b1bbeea",
     "src/Geometry/CGeometryPath.cls": "a6a364d1aa6133d2f87518776987e00033abe9462f143aa94c0e5024f39e5eb0",
     "src/Geometry/CPolygonSpec.cls": "741da7ebf1b4820bc97587cdf2c7a46ea2897d6330e84d25ce4e2e10a9a56839",
     "src/Section/CSectionDefinition.cls": "048afc60a59388b4a1291d68b9605c4bcc83b902dc9b91d788049036e598c813",
-    "src/Section/CRebarRuleOptions.cls": "d86557da83d4852a41798bca94b7e4e9dd7fdc25fc1c73eeec9d12738705787e",
+    "src/Section/CRebarRuleOptions.cls": "1a448edd67923bb7981837fc60592bac1036ec4f23ba8c81934395a37994478f",
     "src/Geometry/CGeometryDiagnostic.cls": "5a8b139775a98457b368b8636dfa09b4fe2954c75c457e471549d320eaf2d78a",
     "src/Section/CSectionInputTable.cls": "76361e5b9a12bf4c030439d8fc608174ee1447c459af41899f06a68df4b4ef2e",
     "src/Section/CSectionRecipeContext.cls": "f21680031cdb9676caa51d11f10440a725125b2d36db3c93c9b840347aaf9019",
@@ -7856,7 +7856,7 @@
     "src/Section/CRebarRuleExecutor.cls": "854c703d3103fe2878ad2511ae53bcd0c1a1ca80428b5daff8a37c1d74b747e2",
     "src/Excel/CUnitSystem.cls": "ddd7febfca7b5c462d1238995a9fc56ed6db95bc102ee82770c377c84fc6cbbe",
     "src/Section/CConcreteRegion.cls": "bfa2f4ea356316d036a072c814f11af33b436c2105ff0b610202369f13e8f778",
-    "src/Section/CSectionGeometryQuery.cls": "3e9124f57c64f819f871068b3b1e6943d7be61e4a8105967d6ceec7ce3e6902f",
+    "src/Section/CSectionGeometryQuery.cls": "984e96a0c8bd2a7f3cf6348769e1a91b70ddc3580296d99d8e6d5a4f5f94fb38",
     "src/Common/modSectionRecipeTypes.bas": "950982afe963976c5a12ac2cbf2477496c72a156bdbe066882bfc56f1a1dc799",
     "src/Common/modGeometryTypes.bas": "9287e987cb0e4638ff5e946107110b6e256a31227eb178e767e4920d1190ee01"
   }

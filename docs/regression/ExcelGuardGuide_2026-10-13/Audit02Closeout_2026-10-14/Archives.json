@@ -1,0 +1,39 @@
+{
+  "Archives": {
+    "ModelAndInputSnapshots.zip": {
+      "SHA256": "32274339cfa2b12074af3c685413193068ec4f7abb496d5e08f4c27483f468a1",
+      "Bytes": 928704,
+      "Entries": {
+        "BaselineSnapshots/modTestAudit02Api.DumpAudit02CloseoutInputContract.txt": "ef2471e310e3089c3e87a79f99bd0453f20464628aa7f89c5510ac910402dc92",
+        "BaselineSnapshots/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3",
+        "CandidateSnapshots/modTestAudit02Api.DumpAudit02CloseoutInputContract.txt": "ef2471e310e3089c3e87a79f99bd0453f20464628aa7f89c5510ac910402dc92",
+        "CandidateSnapshots/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3"
+      }
+    },
+    "ExcelPlots.zip": {
+      "SHA256": "84c0d9aae99b5c186ce44ffe62a56c7964f4c223bc07327535f3c7cb00903c0e",
+      "Bytes": 244028,
+      "Entries": {
+        "BaselinePreview/LSection.png": "1710c579ddb6af493e4e66627e15a5c0051cbc6f55661373497c7ba96f3c6394",
+        "BaselinePreview/Rectangle.png": "161ed09cd564debe4a6d087a03caa674c5807b8d97bdb0c1f0fd8c49fb622649",
+        "BaselinePreview/TwoRectangles.png": "3ff8459c6b13acd5e704ec482954864ca8ded3b982e88685889049e090f17e04",
+        "CandidatePreview/LSection.png": "1710c579ddb6af493e4e66627e15a5c0051cbc6f55661373497c7ba96f3c6394",
+        "CandidatePreview/Rectangle.png": "161ed09cd564debe4a6d087a03caa674c5807b8d97bdb0c1f0fd8c49fb622649",
+        "CandidatePreview/TwoRectangles.png": "3ff8459c6b13acd5e704ec482954864ca8ded3b982e88685889049e090f17e04",
+        "BaselinePreview/modTestAudit02Api.DumpAudit02CloseoutRectSetPreview.txt": "db5c8b5f7e0af794036e482de8b5200131277a4eceb8551c3ee935f38937ac68",
+        "CandidatePreview/modTestAudit02Api.DumpAudit02CloseoutRectSetPreview.txt": "db5c8b5f7e0af794036e482de8b5200131277a4eceb8551c3ee935f38937ac68"
+      }
+    },
+    "NativeSnapshots.zip": {
+      "SHA256": "0cc6fb9cf0a875c99fe35914ddb5ba7f7462e287dcc4acce078b2f65a1d1bf8d",
+      "Bytes": 5285409,
+      "Entries": {
+        "BaselineNativeVBA.txt": "d0a7383dadb4bf56f5c35de31513ec175de2b15b3e38875cadc1ac526cf5faa3",
+        "FinalNativeVBA.txt": "16d2683a80d30dc2694440fefa8f138cf0d69e213a7479be529d1d5997fe2f1a",
+        "TestedNativeVBA.txt": "24b88ef0ccf04126ea522a6212b341a901602b2d0b9388f9ff11ad159108384b",
+        "PublishedNativeVBA.txt": "176fd1fefd32fe97304a84db90f67b5fbc0725cc2f32d82d9bdc6648e72e9aba"
+      }
+    }
+  },
+  "PrivateWorkbooksIncluded": false
+}

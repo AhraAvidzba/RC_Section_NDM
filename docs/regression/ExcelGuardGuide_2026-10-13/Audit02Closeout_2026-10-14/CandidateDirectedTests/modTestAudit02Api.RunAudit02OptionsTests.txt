@@ -1,0 +1,16 @@
+﻿PASS: R08.publication.only
+PASS: R03.contact.18.1.-1
+PASS: R04.contact.32.1.-1
+PASS: R04.other.direction.16.1.-1
+PASS: R03.contact.18.1.1
+PASS: R04.contact.32.1.1
+PASS: R04.other.direction.16.1.1
+PASS: R03.contact.18.2.-1
+PASS: R04.contact.32.2.-1
+PASS: R04.other.direction.16.2.-1
+PASS: R03.contact.18.2.1
+PASS: R04.contact.32.2.1
+PASS: R04.other.direction.16.2.1
+PASS: R08.independent.fields
+PASS: R08.reject.invalid.sign
+TOTAL AUDIT02 OPTIONS: passed=15; failed=0

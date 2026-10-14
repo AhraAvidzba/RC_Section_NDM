@@ -1,0 +1,55 @@
+{
+  "Passed": true,
+  "Rows": [
+    {
+      "Before": "BaselineSnapshots/modTestAudit02Api.DumpAudit02CloseoutInputContract.txt",
+      "After": "CandidateSnapshots/modTestAudit02Api.DumpAudit02CloseoutInputContract.txt",
+      "Equal": true,
+      "BeforeSHA256": "ef2471e310e3089c3e87a79f99bd0453f20464628aa7f89c5510ac910402dc92",
+      "AfterSHA256": "ef2471e310e3089c3e87a79f99bd0453f20464628aa7f89c5510ac910402dc92"
+    },
+    {
+      "Before": "BaselineSnapshots/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "After": "CandidateSnapshots/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3",
+      "AfterSHA256": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3"
+    },
+    {
+      "Before": "BaselinePreview/modTestAudit02Api.DumpAudit02CloseoutRectSetPreview.txt",
+      "After": "CandidatePreview/modTestAudit02Api.DumpAudit02CloseoutRectSetPreview.txt",
+      "Equal": true,
+      "BeforeSHA256": "db5c8b5f7e0af794036e482de8b5200131277a4eceb8551c3ee935f38937ac68",
+      "AfterSHA256": "db5c8b5f7e0af794036e482de8b5200131277a4eceb8551c3ee935f38937ac68"
+    }
+  ],
+  "Images": [
+    {
+      "Fixture": "Rectangle",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "Fixture": "LSection",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ]
+    },
+    {
+      "Fixture": "TwoRectangles",
+      "EqualPixels": true,
+      "Size": [
+        1094,
+        720
+      ]
+    }
+  ],
+  "Assertions": 290,
+  "FullOnOffRun": false,
+  "Comparison": "Complete rows, diagnostics and pixels; no exclusions"
+}

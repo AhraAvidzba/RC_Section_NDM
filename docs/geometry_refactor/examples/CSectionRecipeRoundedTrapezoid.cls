@@ -96,7 +96,6 @@ Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionIn
     ' "Opening" — имя отверстия; openingPath.ID — замкнутый контур отверстия; "Concrete" — наружная
     ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия.
     facade.Opening "Opening", openingPath.ID, "Concrete", "Круглое отверстие."
-    ' смещение, мм: положительное внутрь, отрицательное наружу.
     ' "Outer.Axis" — имя линии центров стержней; polygon — то же завершённое описание исходных вершин;
     ' parameters.OuterAxisDistance — смещение, мм: положительное внутрь, отрицательное наружу.
     Set axis = facade.OffsetRoundedPolygon("Outer.Axis", polygon, parameters.OuterAxisDistance)

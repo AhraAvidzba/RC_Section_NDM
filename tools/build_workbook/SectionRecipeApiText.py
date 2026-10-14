@@ -328,7 +328,7 @@ LIFECYCLE = {
 
 OPTIONS = {
     "SetPublication": "Задаёт строго AnnotationGroup/Publication/Coincidence. Концы, offsets, проверка размещения, source и настройки проекции не меняются.",
-    "ConfigureDependentContact": "Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого диаметров и промежуточных полных диаметров. Вторая компонента обнуляется; остальные политики и source не наследуются.",
+    "ConfigureDependentContact": "Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого диаметров и промежуточных полных диаметров. Оба диаметра строго положительны: ноль вызывает ошибку. Отключённый ряд обрабатывает вызывающий рецепт до вызова. Вторая компонента обнуляется; остальные политики и source не наследуются.",
     "StartSetback": "Начальное отсечение вдоль каждого target-пути, мм≥0; у полного ClosedUniform 0.",
     "EndSetback": "Конечное отсечение вдоль каждого target-пути, мм≥0; ProjectFrom фильтрует hit без перераспределения.",
     "EndMode": "IncludeBoth/ExcludeBoth/IncludeStart/IncludeEnd/ClosedUniform; последние требуют соответствующей замкнутости.",
@@ -435,7 +435,10 @@ def purpose(member):
 def parameter_meaning(member, parameter):
     import re
     name, passing = parameter["name"], parameter["passing"]
-    if name == "savedUnit" and member["name"] == "OutputFourthPowerLengthToInternal":
+    if member['owner'] == 'CRebarRuleOptions' and member['name'] == 'ConfigureDependentContact' and name in ('baseDiameter', 'diameter'):
+        role = 'основного' if name == 'baseDiameter' else 'добавляемого'
+        meaning = 'Строго положительный диаметр '+role+' стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.'
+    elif name == "savedUnit" and member["name"] == "OutputFourthPowerLengthToInternal":
         meaning = "Базовая единица длины сохранённого Results: mm/cm/m; степень 4 применяет сам метод. Не передавайте mm4/cm4/m4. Пустая строка использует текущую output-длину."
     elif name == "seedPlane" and member["name"] == "SampleMaterialIntervals":
         meaning = "Signed нормальная координата опорной плоскости, мм, относительно начала section XY; это скаляр Double, не объект плоскости."
@@ -454,7 +457,7 @@ def parameter_meaning(member, parameter):
     elif name in ("A", "B"): meaning = "Число той же размерности, что второй аргумент; helper единицы не преобразует."
     elif name in ("first", "second"): meaning = "Первая/вторая сравниваемая готовая область."
     elif name in ("parameterMin", "parameterMax"): meaning = "Граница нормированного параметра выбранной линии/интервала."
-    elif name in ("row2Diameter", "row3Diameter", "baseDiameter"): meaning = "Диаметр соответствующего ряда, мм≥0; 0 выключает дополнительный ряд."
+    elif name in ("row2Diameter", "row3Diameter"): meaning = "Диаметр соответствующего ряда, мм≥0; 0 выключает дополнительный ряд."
     elif name in ("row2Binding", "row3Binding"): meaning = "Принятый selector связи соответствующего ряда; EachBar/EverySecondBar."
     elif name in ("closed", "incomingTangentAtJoint"): meaning = "Явный Boolean режима замыкания/касательной; не исправляет геометрию автоматически."
     elif name in ("result", "mesh", "rebars", "source", "seedPlane"): meaning = "Подготовленный объект/контейнер выбранного запроса, без повторного чтения Excel или назначения типа."

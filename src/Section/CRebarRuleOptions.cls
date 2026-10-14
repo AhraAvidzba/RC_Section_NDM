@@ -62,6 +62,7 @@ End Sub
 
 ' Контактное межцентровое расстояние: половины основного/добавляемого диаметров и полные промежуточные.
 ' Меняет только NormalOffset/TangentOffset/EverySecond; координаты и ориентацию исполняет общий executor.
+' Оба диаметра строго больше нуля; отключённый ряд рецепт пропускает до вызова, иначе будет ошибка.
 Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, _
         ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, _
         Optional ByVal interveningDiameterSum As Double = 0#)

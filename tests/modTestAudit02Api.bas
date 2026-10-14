@@ -338,6 +338,200 @@ Public Function DumpAudit02DemoPreview(ByVal outputDirectory As String) As Strin
     DumpAudit02DemoPreview = first
 End Function
 
+' ДЛЯ ТЕСТОВ: нулевые диаметры запрещены внутри контактного helper, отказ не меняет options.
+Public Function RunAudit02CloseoutContactTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim options As CRebarRuleOptions, cases As Variant, item As Variant, code As Long, reason As String
+    Set options = New CRebarRuleOptions
+    options.SourceReference = "Program.Contact": options.StartSetback = 100#: options.EndSetback = 150#
+    options.SetPublication "Group", PublishPerSourcePosition, KeepPublishedOwner
+    options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
+    cases = Array(Array(0#, 16#, RowNormal, 1#, 0#), Array(-20#, 16#, RowNormal, 1#, 0#), _
+        Array(20#, 0#, RowNormal, 1#, 0#), Array(20#, -16#, RowNormal, 1#, 0#), _
+        Array(20#, 16#, RowNormal, 1#, -1#), Array(20#, 16#, 0, 1#, 0#), Array(20#, 16#, RowNormal, 0#, 0#))
+    For Each item In cases
+        On Error Resume Next
+        options.ConfigureDependentContact CDbl(item(0)), CDbl(item(1)), CLng(item(2)), CDbl(item(3)), False, CDbl(item(4))
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        Check "contact.reject.address." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(item(2)) & "." & CStr(item(3)), _
+            code <> 0 And InStr(reason, "Program.Contact") > 0
+        Check "contact.reject.atomic", options.NormalOffset = 12# And options.TangentOffset = 34# And options.EverySecond
+        Check "contact.unrelated.fields", options.StartSetback = 100# And options.EndSetback = 150# And _
+            options.AnnotationGroup = "Group" And options.Publication = PublishPerSourcePosition And options.Coincidence = KeepPublishedOwner
+    Next item
+    options.ConfigureDependentContact 20#, 16#, RowNormal, -1#, False
+    Check "contact.valid.18", options.NormalOffset = -18# And options.TangentOffset = 0# And Not options.EverySecond
+    options.ConfigureDependentContact 20#, 12#, RowTangent, 1#, True, 16#
+    Check "contact.valid.32", options.NormalOffset = 0# And options.TangentOffset = 32# And options.EverySecond
+    GoTo Finished
+Failed:
+    Check "runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunAudit02CloseoutContactTests = mReport & "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: адресная матрица размеров, неактивных полей, знаков и порядка диагностик RectSet.
+Public Function RunAudit02CloseoutRectSetInputTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim records As String
+    records = CloseoutRectSetInputMatrix()
+    RunAudit02CloseoutRectSetInputTests = mReport & "TOTAL AUDIT02 CLOSEOUT RECTSET INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: полный снимок значений/ошибок той же матрицы для побайтной сверки baseline/candidate.
+Public Function DumpAudit02CloseoutInputContract() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    DumpAudit02CloseoutInputContract = CloseoutRectSetInputMatrix()
+    If mFailed > 0 Then Err.Raise vbObjectError + 5491, "modTestAudit02Api", mReport
+End Function
+
+' ДЛЯ ТЕСТОВ: только три схемы RectSet, без полного набора UI/ON-OFF.
+Public Function DumpAudit02CloseoutRectSetPreview(ByVal outputDirectory As String) As String
+    Dim fixture As Variant
+    For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
+        DumpAudit02CloseoutRectSetPreview = DumpAudit02CloseoutRectSetPreview & _
+            modTestShapeArchitecture.DumpShapePreviewSnapshot(outputDirectory, CStr(fixture))
+    Next fixture
+End Function
+
+' Снимок ошибок содержит номер, source и полный текст с реальным адресом, без маскирования различий.
+Private Function CloseoutRectSetInputMatrix() As String
+    Dim config As Object, saved As Variant, range As Object, block As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
+    Dim fixture As Variant, valueKind As Variant, unit As Variant, aliasName As Variant
+    Dim row As Long, column As Long, maxColumn As Long, offsetRow As Long, shapeRow As Long
+    Dim code As Long, source As String, reason As String, expectedAddress As String, area As Double
+    Dim result As String, factor As Double, pair As Variant, number As Double, otherCode As Long, otherReason As String
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each unit In Array("mm", "cm", "m")
+        config.Formula = saved
+        ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = CStr(unit)
+        For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+            Set range = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange: block = range.Formula
+            Set reader = New CSectionInputSnapshotReader
+            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry")
+            row = table.RowByKey("H1") + 1: offsetRow = table.RowByKey("RectSet.UpperOffsetX")
+            shapeRow = table.RowByKey("RectSet.SectionType")
+            Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+            Check "rect.valid." & CStr(unit) & "." & CStr(fixture), code = 0
+            If code <> 0 Then GoTo Failed
+            area = definition.ConcreteDomain.Area
+            result = result & InputContractRow(CStr(unit), CStr(fixture), "base", code, source, reason, area)
+            maxColumn = 4: If CStr(fixture) = "Rectangle" Then maxColumn = 2
+            For column = 1 To maxColumn
+                expectedAddress = table.SourceReference(row, column)
+                For Each valueKind In Array("positive", "zero", "negative", "empty", "text")
+                    range.Formula = block
+                    Select Case CStr(valueKind)
+                        Case "zero": range.Cells(row, column).Value2 = 0#
+                        Case "negative": range.Cells(row, column).Value2 = -1# / factor
+                        Case "empty": range.Cells(row, column).ClearContents
+                        Case "text": range.Cells(row, column).Value2 = "bad dimension"
+                    End Select
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    If CStr(valueKind) = "positive" Then
+                        Check "rect.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column), code = 0
+                        Check "rect.unit.once", definition.ConcreteDomain.Area = area
+                    Else
+                        Check "rect.reject.address." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column) & "." & CStr(valueKind), _
+                            code <> 0 And InStr(reason, expectedAddress) > 0
+                    End If
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(column) & "." & CStr(valueKind), code, source, reason, 0#)
+                Next valueKind
+            Next column
+            ' Для Rectangle нижние размеры и смещение не читаются; для LSection смещение также неактивно.
+            range.Formula = block
+            If CStr(fixture) = "Rectangle" Then
+                range.Cells(row, 3).Value2 = "inactive H2": range.Cells(row, 4).Value2 = CVErr(xlErrValue)
+            End If
+            If CStr(fixture) <> "TwoRectangles" Then
+                range.Cells(offsetRow, 2).Value2 = "inactive offset"
+                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Check "rect.inactive.fields." & CStr(unit) & "." & CStr(fixture), code = 0 And definition.ConcreteDomain.Area = area
+                result = result & InputContractRow(CStr(unit), CStr(fixture), "inactive", code, source, reason, 0#)
+            Else
+                For Each pair In Array(-100#, 0#, 100#)
+                    range.Formula = block: range.Cells(offsetRow, 2).Value2 = CDbl(pair) / factor
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Check "rect.signed.offset." & CStr(unit) & "." & CStr(pair), code = 0
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), "offset." & CStr(pair), code, source, reason, 0#)
+                Next pair
+            End If
+            ' Контракт пары: числовое чтение второго поля предшествует проверке положительности первого.
+            For Each pair In Array(1, 3)
+                If CLng(pair) <= maxColumn Then
+                    range.Formula = block: range.Cells(row, CLng(pair)).Value2 = 0#
+                    range.Cells(row, CLng(pair) + 1).Value2 = "bad dimension"
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Check "rect.pair.numeric.before.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(pair), _
+                        code <> 0 And InStr(reason, table.SourceReference(row, CLng(pair) + 1)) > 0
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), "pair." & CStr(pair), code, source, reason, 0#)
+                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry")
+                    On Error Resume Next
+                    number = table.PositiveLength(row, CLng(pair), units)
+                    otherCode = Err.Number: otherReason = Err.Description: Err.Clear
+                    On Error GoTo Failed
+                    Check "rect.direct.helper.changes.first.address", otherCode <> 0 And _
+                        InStr(otherReason, table.SourceReference(row, CLng(pair))) > 0 And otherReason <> reason
+                End If
+            Next pair
+            range.Formula = block
+            ' Составные условия остаются у рецепта и указывают соответствующее поле.
+            If CStr(fixture) = "LSection" Then
+                range.Cells(row, 2).Value2 = range.Cells(row, 4).Value2
+                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, table.SourceReference(row, 2)) > 0
+                result = result & InputContractRow(CStr(unit), CStr(fixture), "incompatible.widths", code, source, reason, 0#)
+            ElseIf CStr(fixture) = "TwoRectangles" Then
+                range.Cells(offsetRow, 2).Value2 = range.Cells(row, 4).Value2
+                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Check "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 2)) > 0
+                result = result & InputContractRow(CStr(unit), CStr(fixture), "nonadjacent", code, source, reason, 0#)
+            End If
+            For Each aliasName In Array("RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles")
+                If (CStr(fixture) = "LSection" And CStr(aliasName) = "RectSet") Or _
+                        (CStr(fixture) = "TwoRectangles" And CStr(aliasName) <> "RectSet") Then
+                    range.Formula = block: range.Cells(shapeRow, 2).Value2 = CStr(aliasName)
+                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Check "rect.alias." & CStr(unit) & "." & CStr(aliasName), code = 0 And definition.ConcreteDomain.Area = area
+                    result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(aliasName), code, source, reason, 0#)
+                End If
+            Next aliasName
+            range.Formula = block
+        Next fixture
+    Next unit
+    GoTo Finished
+Failed:
+    Check "rect.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    CloseoutRectSetInputMatrix = result
+End Function
+
+' Перехватывает только результат штатного чтения definition; ожидания ошибки остаются у вызывающего теста.
+Private Function RectSetInputOutcome(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByRef code As Long, ByRef source As String, ByRef reason As String) As CSectionDefinition
+    code = 0: source = "": reason = ""
+    On Error GoTo Invalid
+    Set RectSetInputOutcome = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Exit Function
+Invalid:
+    code = Err.Number: source = Err.Source: reason = Err.Description
+End Function
+
+Private Function InputContractRow(ByVal unit As String, ByVal fixture As String, ByVal name As String, _
+        ByVal code As Long, ByVal source As String, ByVal reason As String, ByVal area As Double) As String
+    InputContractRow = unit & "|" & fixture & "|" & name & "|" & CStr(code) & "|" & source & "|" & reason & "|" & CStr(area) & vbCrLf
+End Function
+
 ' Исходный квадрат в прежнем CCW-порядке; имена не являются автоматическими anchors.
 Private Function RectangleSpec(ByVal radius As Double) As CPolygonSpec
     Dim polygon As CPolygonSpec: Set polygon = New CPolygonSpec

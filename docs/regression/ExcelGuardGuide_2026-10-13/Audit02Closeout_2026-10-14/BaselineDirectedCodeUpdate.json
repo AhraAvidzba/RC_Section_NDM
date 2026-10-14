@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\Audit02Closeout_2026-10-14\\BaselineDirected.xlsm",
+    "WorkbookSHA256":  "DBC62C96880138DBEF9F1A8C2B2DB158F204899FB48984EF2F32375C72846117",
+    "ProductionSHA256":  "30E20AA61416DDEAFBC6FE14A989377934ECBB9F4CAB090BACDAA1ADCEFEA25D",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestAudit02Api"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

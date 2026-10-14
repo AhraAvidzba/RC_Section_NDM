@@ -1,10 +1,10 @@
 {
   "schema": 2,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "fd4b861b253777c44e8bfd7d213ab7b09352a2626e83592694975ea00e7f6879",
+  "bodySHA256": "508bc65230984b2b62496372312956ade1f1b7ae23e1ab288bd7648726b33797",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "3a811526c3a89c306abfd827aa73318881f5b35c9592265aecf58febc494a883",
-    "src/Common/modSectionRecipeApiGuide.bas": "2c86263f0474e1a4377e10c92432faa0e81c63f81e5bc2933f5193f17ae7be3f"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "86cc1aa8bce14b9b8f5fbcd365e5e7d3891627271c507eb3f047d022457f2f56",
+    "src/Common/modSectionRecipeApiGuide.bas": "9c734479c34c38e7f218dcae2faf9ec2ee110e4a7c26d000a06fb4f60609f4b0"
   },
   "rows": [
     {
@@ -140,7 +140,7 @@
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. Условия размещения задаются в CRebarRuleOptions: SetPublication задаёт группу и публикацию, ConfigureDependentContact — контактное расстояние дополнительного ряда. Произвольное смещение задаётся полями NormalOffset/TangentOffset.",
+      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. Условия размещения задаются в CRebarRuleOptions: SetPublication задаёт группу и публикацию, ConfigureDependentContact — контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
@@ -368,7 +368,7 @@
       "line": 66
     },
     {
-      "text": "NDM.RECIPE.GUIDE/2|fd4b861b253777c44e8bfd7d213ab7b09352a2626e83592694975ea00e7f6879|2c86263f0474e1a4377e10c92432faa0e81c63f81e5bc2933f5193f17ae7be3f",
+      "text": "NDM.RECIPE.GUIDE/2|508bc65230984b2b62496372312956ade1f1b7ae23e1ab288bd7648726b33797|9c734479c34c38e7f218dcae2faf9ec2ee110e4a7c26d000a06fb4f60609f4b0",
       "style": "footer"
     }
   ],

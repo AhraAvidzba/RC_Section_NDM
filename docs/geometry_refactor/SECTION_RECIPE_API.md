@@ -2295,7 +2295,7 @@ Source: src/Geometry/CPolygonSpec.cls:68
     For i = 1 To polygon.Count
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:352.
+Полный контекст: tests/modTestAudit02Api.bas:546.
 
 Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
@@ -2478,7 +2478,7 @@ Source: src/Geometry/CPolygonSpec.cls:89
             "|" & CStr(polygon.FilletRadius(i)) & "|" & polygon.SourceReference(i) & vbCrLf
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:353.
+Полный контекст: tests/modTestAudit02Api.bas:547.
 
 Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
@@ -3135,15 +3135,15 @@ Default после New: False. Поле изменяется до объявле
 
 Source: src/Section/CRebarRuleOptions.cls:21
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02CloseoutContactTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.NormalOffset = 10#: options.EverySecond = True: options.SourceSuffix = "_Extra"
+    options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:218.
+Полный контекст: tests/modTestAudit02Api.bas:349.
 
-Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02CloseoutContactTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutContactTests.txt.
 
 <a id="api-crebarruleoptions-incomingtangentatjoint"></a>
 ### CRebarRuleOptions.IncomingTangentAtJoint
@@ -3672,7 +3672,7 @@ Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/
 <a id="api-crebarruleoptions-configuredependentcontact"></a>
 ### CRebarRuleOptions.ConfigureDependentContact
 
-Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого диаметров и промежуточных полных диаметров. Вторая компонента обнуляется; остальные политики и source не наследуются.
+Задаёт только NormalOffset/TangentOffset/EverySecond по сумме половин основного и добавляемого диаметров и промежуточных полных диаметров. Оба диаметра строго положительны: ноль вызывает ошибку. Отключённый ряд обрабатывает вызывающий рецепт до вызова. Вторая компонента обнуляется; остальные политики и source не наследуются.
 
 ```vb
 Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, Optional ByVal interveningDiameterSum As Double = 0#)
@@ -3680,8 +3680,8 @@ Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diamete
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| baseDiameter | Double; ByVal; обязательный | Положительный диаметр основного стержня, мм; контактное расстояние начинается от его центра. |
-| diameter | Double; ByVal; обязательный | Диаметр стержня, мм; отрицательный запрещён, ноль выключает ряд. |
+| baseDiameter | Double; ByVal; обязательный | Строго положительный диаметр основного стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника. |
+| diameter | Double; ByVal; обязательный | Строго положительный диаметр добавляемого стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника. |
 | axis | ERebarOffsetAxis; ByVal; обязательный | RowNormal — смещение по левой нормали исходного ряда; RowTangent — вдоль его касательной. Ориентацию задают фактический путь и directionSign. |
 | directionSign | Double; ByVal; обязательный | Только -1 или +1: знак выбранной компоненты смещения; задаётся явно по направлению ряда. |
 | everySecond | Boolean; ByVal; обязательный | True выбирает локальные исходные позиции 1,3,5…; отсчёт успешных проекций остаётся отдельной настройкой. |
@@ -3691,7 +3691,7 @@ Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diamete
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Section/CRebarRuleOptions.cls:65
+Source: src/Section/CRebarRuleOptions.cls:66
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
 
@@ -4038,17 +4038,15 @@ Public Function SourceReference(ByVal row As Long, ByVal column As Long) As Stri
 
 Source: src/Section/CSectionInputTable.cls:64
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "input.source", table.SourceReference(2, 2) = "Config!B12"
+                expectedAddress = table.SourceReference(row, column)
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:478.
+Полный контекст: tests/modTestAudit02Api.bas:430.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
-
-Native entrypoint: modTestDeclarativeGeometry.RunInputTableTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/InputTables.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02CloseoutRectSetInputTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt.
 
 <a id="api-csectioninputtable-cellvalue"></a>
 ### CSectionInputTable.CellValue
@@ -7865,7 +7863,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygon
 
 Ошибки/исправление: 5401: нарушенная топология/радиусы/ограничения/отсутствующая область. Новые offsets/constraints имеют явные Code/ID/числа; GEOMETRY_INVALID используется прочими контрактами.
 
-Source: src/Section/CSectionGeometryQuery.cls:869
+Source: src/Section/CSectionGeometryQuery.cls:868
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
 

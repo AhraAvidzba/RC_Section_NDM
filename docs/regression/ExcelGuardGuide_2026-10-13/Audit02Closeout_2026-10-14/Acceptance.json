@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "Requirements": {
+    "ContactDoc": "Strict >0, zero raises, caller disables; algorithm unchanged",
+    "StaleComments": "Fixed source/generators; full continued statement parsed; polygon named accurately",
+    "RectSet": "Documented exception: preserves paired numeric-before-positive diagnostics and original code/source/text; no alternative API",
+    "Tests": "23 contact +252 RectSet +15 options; 18 models and 3 schemes/pixels unchanged",
+    "Workbook": "107461 cells, 27 names, formatting/config preserved; 2 Help strings changed; 152 source=157 native; actual ALL CODE readback"
+  },
+  "Hashes": {
+    "RC_Section_NDM.xlsm": "F8936D03C37BB07CE0D574DCA9BA7A382F1F8F404E22D3FE5ED5E05BCF07FB14",
+    "VBA_All_Code.txt": "176FD1FEFD32FE97304A84DB90F67B5FBC0725CC2F32D82D9BDC6648E72E9ABA",
+    "RC_Section_NDM_execution_report.txt": "BE95A1F0945322831D9193907606CD4FDCD590A32F89B6F6536F24174FBE4678"
+  },
+  "FullOnOffRun": false,
+  "NewClasses": 0,
+  "ProductionExecutableChanges": 0
+}

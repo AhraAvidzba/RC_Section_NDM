@@ -2603,7 +2603,7 @@
         }
       ],
       "resultType": null,
-      "line": 65,
+      "line": 66,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"

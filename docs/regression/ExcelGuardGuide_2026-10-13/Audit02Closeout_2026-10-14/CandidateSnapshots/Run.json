@@ -1,0 +1,23 @@
+﻿{
+    "Stage":  "CandidateSnapshots",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpRectSetGeometryMatrix",
+                     "Seconds":  11.0834418,
+                     "Characters":  5007119,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.DumpAudit02CloseoutInputContract",
+                     "Seconds":  3.5866116999999997,
+                     "Characters":  23811,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "F8936D03C37BB07CE0D574DCA9BA7A382F1F8F404E22D3FE5ED5E05BCF07FB14",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T13:38:05.0878373+03:00"
+}

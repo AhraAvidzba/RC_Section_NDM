@@ -1,0 +1,16 @@
+{
+  "Passed": true,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "HelpCellsChanged": [
+    "A574",
+    "A612"
+  ],
+  "HelpRowsExpanded": [],
+  "FormulaCachedValuesChanged": 0,
+  "NativeComponents": 157,
+  "ExecutableCodeMatchesTestedVersion": true,
+  "CandidateSHA256": "f8936d03c37bb07ce0d574dca9ba7a382f1f8f404e22d3fe5ed5e05bcf07fb14",
+  "NativeSHA256": "16d2683a80d30dc2694440fefa8f138cf0d69e213a7479be529d1d5997fe2f1a",
+  "Errors": []
+}

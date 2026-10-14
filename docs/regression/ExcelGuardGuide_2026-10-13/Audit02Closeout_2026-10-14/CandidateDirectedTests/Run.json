@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "CandidateDirectedTests",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02CloseoutContactTests",
+                     "Seconds":  0.11508009999999999,
+                     "Characters":  808,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+                     "Seconds":  3.986471,
+                     "Characters":  10727,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02OptionsTests",
+                     "Seconds":  0.00283,
+                     "Characters":  483,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "F8936D03C37BB07CE0D574DCA9BA7A382F1F8F404E22D3FE5ED5E05BCF07FB14",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T13:37:56.4788232+03:00"
+}

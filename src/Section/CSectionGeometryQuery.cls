@@ -862,10 +862,9 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
     Next i
 End Function
 
-' Общий скругленный многоугольник: Array(Array(x,y),...), радиусы и имена
-' вершин того же размера. Индексы входа не становятся идентичностью грани.
-' Вогнутый угол получает противоположный sweep; радиусы не уменьшаются.
-' Принимает один закрытый набор исходных вершин; численная реализация остаётся прежней.
+' Общий скруглённый многоугольник из завершённого CPolygonSpec; исходные записи не меняются.
+' Имена вершин задают идентичность грани, порядок сохраняется. Вогнутый угол получает
+' противоположный sweep; радиусы не уменьшаются. Численная реализация остаётся прежней.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     Dim vertices As Variant, radii As Variant, vertexIDs As Variant
     PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
@@ -873,6 +872,7 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygon
 End Function
 
 ' Внутренний численный формат; к нему нет публичного массивного маршрута рецепта.
+' Array(Array(x,y),...), радиусы и имена вершин имеют одинаковый размер и получены из CPolygonSpec.
 Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
@@ -945,7 +945,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
     Set RoundedPolygonKernel = result
 End Function
 
-' Согласованный offset всего скругленного многоугольника. Положительное
+' Согласованный offset всего скруглённого многоугольника из завершённого CPolygonSpec. Положительное
 ' расстояние направлено внутрь его площади независимо от обхода; для пути
 ' от отверстия в бетон потребитель задает отрицательное расстояние.
 ' Исходные острые углы остаются острыми, уменьшившаяся до нуля дуга исчезает.

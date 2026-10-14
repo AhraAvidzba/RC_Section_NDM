@@ -37,8 +37,11 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     ReadDimensions table, units, sizes
     Set polygon = DescribePolygon(sizes) ' Один исходный многоугольник для контура и всех осевых смещений.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle"  ' "RoundedRectangle" — имя типа сечения.
-    Set outer = AddGeometry(facade, sizes, polygon)  ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы.
-    AddReinforcement facade, table, units, sizes, polygon  ' facade — сборщик описания сечения; table — снимок таблицы армирования; units — перевод исходных размеров в мм; sizes — размеры и данные формы.
+    Set outer = AddGeometry(facade, sizes, polygon)  ' facade — сборщик описания сечения; sizes — подготовленные размеры и параметры формы; polygon — завершённые исходные вершины с радиусами.
+    ' facade — сборщик описания сечения; table — снимок таблицы армирования; units — перевод исходных
+    ' размеров в мм; sizes — размеры и данные формы; polygon — завершённые исходные вершины с
+    ' радиусами.
+    AddReinforcement facade, table, units, sizes, polygon
     AddDimensions facade, sizes, outer  ' facade — сборщик описания сечения; sizes — размеры и данные формы; outer — наружная граница для габаритов.
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
 End Function
@@ -76,7 +79,8 @@ Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef si
     If sizes.SideTypes(1) = "Tapered" Then first = "Edge.LeftNose" Else first = "Edge.BL"
     Set outer = facade.Chain("Boundary", original.ID, first, 0#, first, 0#, True, True) ' Полный обход от прежней грани.
     ' "OUTER" — имя наружной границы бетона; outer.ID — замкнутый контур; comment — пояснение к
-    ' границе; _ — имена отдельных участков контура.
+    ' границе; arcComment — отдельное пояснение к дугам; SequentialByKind — способ публикации имён
+    ' участков.
     facade.Outer "OUTER", outer.ID, "Прямой участок контура скругленного прямоугольника.", _
         arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
     Set AddGeometry = outer
@@ -118,9 +122,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         If count = 0 Or diameter = 0# Then GoTo NextFace
         axisDistance = table.Length(row, 2, units)
         Require table, row, 2, axisDistance > diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-        ' facade — сборщик описания сечения; sizes — размеры, вершины и радиусы контура; groupID — имя
-        ' стороны; axisDistance — as до центров стержней, мм; table.SourceReference(row, 2) — адрес
-        ' исходной ячейки для диагностики.
+        ' facade — сборщик описания сечения; polygon — завершённые исходные вершины с радиусами;
+        ' groupID — имя стороны; axisDistance — as до центров стержней, мм; table.SourceReference(row,
+        ' 2) — адрес исходной ячейки для диагностики.
         Set path = AxisPath(facade, polygon, groupID, axisDistance, table.SourceReference(row, 2))
         nx = 0#: ny = 0#
         Select Case groupID

@@ -55,15 +55,15 @@ Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal c
     Set ArcPath = result
 End Function
 
-' Создаёт согласованную границу по вершинам/радиусам/ID. Edge.ID начинается у указанной вершины,
-' Corner.ID существует только при R>0.
+' Создаёт и регистрирует границу из завершённого CPolygonSpec с исходными координатами, радиусами и ID.
+' Edge.ID начинается у указанной вершины; Corner.ID существует только при R>0.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     RequireOpen
     Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon)
     mDefinition.AddPath RoundedPolygon
 End Function
 
-' Смещает весь скруглённый многоугольник с согласованными стыками. Положительное расстояние
+' Смещает весь скруглённый многоугольник из того же CPolygonSpec, не меняя описатель. Положительное расстояние
 ' внутрь площади; отрицательное наружу, из Opening в бетон.
 Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
     RequireOpen

@@ -1,0 +1,24 @@
+﻿PASS: contact.reject.address.0.16.1.1
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.reject.address.-20.16.1.1
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.reject.address.20.0.1.1
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.reject.address.20.-16.1.1
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.reject.address.20.16.1.1
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.reject.address.20.16.0.1
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.reject.address.20.16.1.0
+PASS: contact.reject.atomic
+PASS: contact.unrelated.fields
+PASS: contact.valid.18
+PASS: contact.valid.32
+TOTAL AUDIT02 CLOSEOUT CONTACT: passed=23; failed=0

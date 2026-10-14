@@ -60,8 +60,11 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource)
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle"  ' "HollowRectangle" — имя типа сечения.
-    AddGeometry facade, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы.
-    AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; sizes — размеры и данные формы; faces — параметры всех наружных и внутренних сторон.
+    AddGeometry facade, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; outerPolygon — описание наружной границы; openingPolygon — описание отверстия.
+    ' facade — сборщик описания сечения; sizes — размеры и данные формы; faces — параметры всех
+    ' наружных и внутренних сторон; outerPolygon — описание наружной границы; openingPolygon —
+    ' описание отверстия.
+    AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon
     AddDimensions facade, sizes  ' facade — сборщик описания сечения; sizes — размеры и данные формы.
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
     Exit Function
@@ -134,7 +137,13 @@ End Sub
 ' сетки.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, _
         ByVal openingPolygon As CPolygonSpec)
+    ' facade — сборщик описания сечения; "OUTER" — имя бетонной границы; "Shape" — имя её исходного
+    ' контура; outerPolygon — завершённые исходные вершины с радиусами; False — True отверстие, False
+    ' наружная граница.
     AddBoundary facade, "OUTER", "Shape", outerPolygon, False
+    ' facade — сборщик описания сечения; "OPENING" — имя бетонной границы; "Opening.Shape" — имя её
+    ' исходного контура; openingPolygon — завершённые исходные вершины с радиусами; True — True
+    ' отверстие, False наружная граница.
     AddBoundary facade, "OPENING", "Opening.Shape", openingPolygon, True
 End Sub
 
@@ -148,13 +157,15 @@ Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID 
     If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
     If opening Then
         ' loopID — имя отверстия; boundary.ID — замкнутый контур отверстия; "OUTER" — наружная
-        ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия; _ —
-        ' имена отдельных участков.
+        ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия;
+        ' arcComment — отдельное пояснение к дугам; SequentialByKind — способ публикации имён
+        ' участков; "CONTOUR_" & loopID — независимый префикс отверстия.
         facade.Opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     Else
         ' loopID — имя наружной границы бетона; boundary.ID — замкнутый контур; comment — пояснение к
-        ' границе; _ — имена отдельных участков контура.
+        ' границе; arcComment — отдельное пояснение к дугам; SequentialByKind — способ публикации имён
+        ' участков; "CONTOUR_" & loopID — префикс технических имён данной границы.
         facade.Outer loopID, boundary.ID, "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     End If
@@ -181,7 +192,10 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1
         If faces(i).Diameter = 0# Or faces(base).Count = 0 Or faces(base).Diameter = 0# Then GoTo NextFace
-        Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Выбирает наружный/внутренний исходный набор по грани.
+        ' facade — сборщик описания сечения; sizes — скалярные размеры и параметры границы; faces —
+        ' параметры всех наружных и внутренних сторон; i — номер выбранной стороны; outerPolygon —
+        ' описание наружной границы; openingPolygon — описание отверстия.
+        Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon)
         Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback  ' StartSetback — отступ начала ряда от начала грани, мм; EndSetback — отступ конца ряда от конца грани, мм.
         ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям; Coincidence —
