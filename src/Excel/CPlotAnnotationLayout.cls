@@ -272,6 +272,9 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
 
     Dim rotation As Double
     rotation = AnnotationRotation(dirX, dirY)
+    ' Правая вертикальная выноска читается сверху вниз, левая — снизу вверх.
+    ' Сторону определяет фактическая нормаль после применения Inside/Outside.
+    If rotation = 90# And normalPxX > 0# Then rotation = -90#
 
     Dim textLeft As Double, textTop As Double, textWidth As Double, textHeight As Double
     RebarTextBox anchorPxX, anchorPxY, normalPxX, normalPxY, rotation, textValue, textLeft, textTop, textWidth, textHeight
@@ -314,7 +317,8 @@ Private Function AnnotationRotation(ByVal dirX As Double, ByVal dirY As Double) 
 End Function
 
 ' Наклонный текст хранится в обычной горизонтальной рамке и затем поворачивается.
-' Вся рамка отнесена от линии на TextGap; при растянутой рамке графика учитывается
+' Центр текста отнесён от линии на TextGap, как у горизонтальных/вертикальных подписей.
+' При растянутой рамке графика учитывается
 ' угол между нормалью модели и перпендикуляром к экранной линии. Для 0/90 градусов
 ' оставляем прежние размеры блока и отсчёт зазора, включая нативный вертикальный текст.
 Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, ByVal normalX As Double, ByVal normalY As Double, _
@@ -324,7 +328,7 @@ Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, By
     heightValue = MaxDouble(18# * mVisualScale, fontSize * 1.65)
     Dim gap As Double, angle As Double, normalProjection As Double, swap As Double
     gap = ClampDouble(TextMetricToChartPoints(gapBase, textUnits), 0#, 80#)
-    If rotation = 90# Then
+    If Abs(rotation) = 90# Then
         swap = widthValue: widthValue = heightValue: heightValue = swap
     ElseIf rotation <> 0# Then
         ' Наклонной подписи не нужна широкая пустая рамка: длина следует тексту.
@@ -332,7 +336,7 @@ Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, By
         angle = rotation * GEOM_PI / 180#
         normalProjection = Abs(-Sin(angle) * normalX + Cos(angle) * normalY)
         ' Для корректной нормали проекция ненулевая; защитный минимум не допускает деления на ноль.
-        gap = (gap + heightValue / 2#) / MaxDouble(normalProjection, 0.000001)
+        gap = gap / MaxDouble(normalProjection, 0.000001)
     End If
     leftPos = anchorX + normalX * gap - widthValue / 2#
     topPos = anchorY + normalY * gap - heightValue / 2#

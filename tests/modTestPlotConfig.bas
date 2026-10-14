@@ -360,18 +360,25 @@ Public Function RunArbitraryAnnotationLayoutTests() As String
                             If Abs(layout.Rotation(item)) = 90# Then
                                 AssertClose stats, prefix & ".vertical." & CStr(item), Abs(px), 0#, 0.000001
                                 AssertTrue stats, prefix & ".native.vertical." & CStr(item), layout.X2(item) < layout.Y2(item)
+                                If item = 4 Then AssertClose stats, prefix & ".dimension.upward", layout.Rotation(item), 90#, 0#
+                                If item = 6 Then
+                                    If normalX * sign > 0# Then
+                                        AssertClose stats, prefix & ".rebar.right.downward", layout.Rotation(item), -90#, 0#
+                                    Else
+                                        AssertClose stats, prefix & ".rebar.left.upward", layout.Rotation(item), 90#, 0#
+                                    End If
+                                End If
                             Else
                                 angle = layout.Rotation(item) * GEOM_PI / 180#
                                 AssertClose stats, prefix & ".parallel." & CStr(item), Cos(angle) * py - Sin(angle) * px, 0#, 0.000001
                                 AssertTrue stats, prefix & ".readable." & CStr(item), Abs(layout.Rotation(item)) <= 90#
                             End If
-                            If CDbl(value) <> 0# And CDbl(value) <> 90# Then
+                            ' Один отсчёт TextGap от центра текста для всех углов, включая 0/90.
                                 cx = layout.X1(item) + layout.X2(item) / 2#: cy = layout.Y1(item) + layout.Y2(item) / 2#
                                 If item = 4 Then cx = cx - 0.5 * (layout.X1(3) + layout.X2(3)): cy = cy - 0.5 * (layout.Y1(3) + layout.Y2(3))
                                 If item = 6 Then cx = cx - 0.5 * (layout.X1(5) + layout.X2(5)): cy = cy - 0.5 * (layout.Y1(5) + layout.Y2(5))
                                 gap = 9#: If unit = "mm" Then gap = 9# * GeomMin(sx, sy)
-                                AssertClose stats, prefix & ".frame.clearance." & CStr(item), sign * (cx * qx + cy * qy) - layout.Y2(item) / 2#, gap, 0.000001
-                            End If
+                                AssertClose stats, prefix & ".text.center.gap." & CStr(item), sign * (cx * qx + cy * qy), gap, 0.000001
                         Next item
                         savedRotation = layout.Rotation(6): savedLeft = layout.X1(6)
                         layout.Initialize -200#, 200#, -200#, 200#, 0#, 0#, 640#, CDbl(frame), "mm"

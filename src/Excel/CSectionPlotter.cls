@@ -39,6 +39,7 @@ Private Const XL_CENTER As Long = -4108
 Private Const XL_VCENTER As Long = -4108
 Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1
 Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2
+Private Const MSO_TEXT_ORIENTATION_DOWNWARD As Long = 3
 Private Const MSO_SEGMENT_LINE As Long = 0
 Private Const MSO_EDITING_AUTO As Long = 0
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2
@@ -1750,7 +1751,10 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
 
     Dim orientation As Long
     orientation = MSO_TEXT_ORIENTATION_HORIZONTAL
-    If useNativeVerticalText And Abs(rotation) = 90# Then orientation = MSO_TEXT_ORIENTATION_UPWARD
+    If useNativeVerticalText And Abs(rotation) = 90# Then
+        ' Знак вертикального угла задаёт направление чтения, не меняя рамку подписи.
+        If rotation < 0# Then orientation = MSO_TEXT_ORIENTATION_DOWNWARD Else orientation = MSO_TEXT_ORIENTATION_UPWARD
+    End If
 
     Dim textShape As Object
     Set textShape = mChart.Shapes.AddTextbox(orientation, leftPos, topPos, widthValue, heightValue)
