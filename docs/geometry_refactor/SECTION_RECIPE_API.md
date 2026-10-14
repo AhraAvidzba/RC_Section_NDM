@@ -241,7 +241,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:68
     Set path = facade.OffsetRoundedPolygon("OffsetPath", polygon, 50#)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:234.
+Полный контекст: tests/modTestAudit02Api.bas:236.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -301,7 +301,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:83
         facade.Anchor "TextNote", 200#, 0#
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:235.
+Полный контекст: tests/modTestRecipeAnnotations.bas:242.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -335,7 +335,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:89
     facade.PathAnchor "Touch", path.ID, "Edge.A", 0#
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:165.
+Полный контекст: tests/modTestAudit02Api.bas:167.
 
 Native entrypoint: modTestAudit02Api.RunAudit02AnnotationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt.
 
@@ -365,7 +365,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:98
     facade.Source "Diagonal", "ProgramInputs.PointB"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:94.
+Полный контекст: tests/modTestRecipeAnnotations.bas:101.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -399,7 +399,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:105
     facade.TransformAnchor "MovedA", "A", 0#, 700#
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:316.
+Полный контекст: tests/modTestAudit02Api.bas:324.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -703,7 +703,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:197
     facade.Outer "Outer", path.ID
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:289.
+Полный контекст: tests/modTestAudit02Api.bas:293.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -1081,7 +1081,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:325
     If previewPlacement Then facade.VerticalDistance "VerticalExplicit", "v", -100#, 0#, 150#, 1# Else facade.VerticalDistance "VerticalExplicit", "v", -100#, 0#, -50#
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:241.
+Полный контекст: tests/modTestRecipeAnnotations.bas:248.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -1119,7 +1119,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:337
     facade.Dimension "Diagonal", "A", "B", "s"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:240.
+Полный контекст: tests/modTestRecipeAnnotations.bas:247.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -1154,7 +1154,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:352
     facade.PathLength "Length", "Boundary", "LengthNote"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:252.
+Полный контекст: tests/modTestRecipeAnnotations.bas:259.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -1190,7 +1190,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:363
     facade.Radius "Radius", "Arc", "Arc", 0.5, "R"
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:321.
+Полный контекст: tests/modTestAudit02Api.bas:329.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -1224,7 +1224,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:370
     facade.Diameter "Diameter", "Hole", "Hole", 0.5, "D"
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:322.
+Полный контекст: tests/modTestAudit02Api.bas:330.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -1256,7 +1256,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:388
     facade.Text "Note", "MovedA", "Учебный пример"
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:323.
+Полный контекст: tests/modTestAudit02Api.bas:331.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -1353,7 +1353,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:417
     facade.RebarRowExtentLabel "H.Right", "H.Right.Main", 1#, 0#, True
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:275.
+Полный контекст: tests/modTestAudit02Api.bas:279.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -1603,7 +1603,7 @@ Source: src/Geometry/CGeometryPath.cls:79
     facade.Outer "Outer", path.ID
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:289.
+Полный контекст: tests/modTestAudit02Api.bas:293.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -2268,7 +2268,7 @@ Source: src/Geometry/CPolygonSpec.cls:60
     polygon.Seal
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:263.
+Полный контекст: tests/modTestAudit02Api.bas:265.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -2295,7 +2295,7 @@ Source: src/Geometry/CPolygonSpec.cls:68
     For i = 1 To polygon.Count
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:546.
+Полный контекст: tests/modTestAudit02Api.bas:556.
 
 Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
@@ -2384,7 +2384,7 @@ Source: src/Geometry/CPolygonSpec.cls:77
     Check "A03.virtual.not.touch", x <> polygon.X(1) Or y <> polygon.Y(1)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:178.
+Полный контекст: tests/modTestAudit02Api.bas:180.
 
 Native entrypoint: modTestAudit02Api.RunAudit02AnnotationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt.
 
@@ -2415,7 +2415,7 @@ Source: src/Geometry/CPolygonSpec.cls:81
     Check "A03.virtual.not.touch", x <> polygon.X(1) Or y <> polygon.Y(1)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:178.
+Полный контекст: tests/modTestAudit02Api.bas:180.
 
 Native entrypoint: modTestAudit02Api.RunAudit02AnnotationTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt.
 
@@ -2478,7 +2478,7 @@ Source: src/Geometry/CPolygonSpec.cls:89
             "|" & CStr(polygon.FilletRadius(i)) & "|" & polygon.SourceReference(i) & vbCrLf
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:547.
+Полный контекст: tests/modTestAudit02Api.bas:557.
 
 Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
@@ -2571,7 +2571,7 @@ Source: src/Section/CSectionDefinition.cls:62
     Check "source.scalar", definition.SourceReference("Diagonal") = "ProgramInputs.PointB"
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:96.
+Полный контекст: tests/modTestRecipeAnnotations.bas:103.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 
@@ -3112,7 +3112,7 @@ Source: src/Section/CRebarRuleOptions.cls:20
     options.NormalOffset = 40#: options.TangentOffset = 10#
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:308.
+Полный контекст: tests/modTestAudit02Api.bas:316.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -3141,7 +3141,7 @@ Source: src/Section/CRebarRuleOptions.cls:21
     options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:349.
+Полный контекст: tests/modTestAudit02Api.bas:359.
 
 Native entrypoint: modTestAudit02Api.RunAudit02CloseoutContactTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutContactTests.txt.
 
@@ -3170,7 +3170,7 @@ Source: src/Section/CRebarRuleOptions.cls:22
     options.IncomingTangentAtJoint = True
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:273.
+Полный контекст: tests/modTestAudit02Api.bas:277.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -3638,37 +3638,6 @@ Source: src/Section/CRebarRuleOptions.cls:38
 
 Native entrypoint: modTestGeometryConfig.RunAudit03RebarCounterTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt.
 
-<a id="api-crebarruleoptions-setpublication"></a>
-### CRebarRuleOptions.SetPublication
-
-Задаёт строго AnnotationGroup/Publication/Coincidence. Концы, offsets, проверка размещения, source и настройки проекции не меняются.
-
-```vb
-Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As ERebarPublication, ByVal coincidence As ERebarCoincidence)
-```
-
-| Параметр | Тип / передача / default | Смысл и единицы |
-|---|---|---|
-| annotationGroup | String; ByVal; обязательный | Имя группы фактических стержней для общей подписи, независимо от расчётных групп трещин. |
-| publication | ERebarPublication; ByVal; обязательный | PublishByRule или PublishPerSourcePosition; порядок и происхождение опубликованных стержней. |
-| coincidence | ERebarCoincidence; ByVal; обязательный | RejectCoincidence, MergeIdentical или KeepPublishedOwner; ничего не меняет в концевых/проекционных настройках. |
-
-Жизненный цикл: New задаёт defaults; автор меняет поля до объявления правила. Фасад копирует options в definition; последующее изменение options не меняет правило.
-
-Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
-
-Source: src/Section/CRebarRuleOptions.cls:55
-
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
-
-```vb
-    options.SetPublication "Group", PublishPerSourcePosition, KeepPublishedOwner
-```
-
-Полный контекст: tests/modTestAudit02Api.bas:95.
-
-Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
-
 <a id="api-crebarruleoptions-configuredependentcontact"></a>
 ### CRebarRuleOptions.ConfigureDependentContact
 
@@ -3691,7 +3660,7 @@ Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diamete
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Section/CRebarRuleOptions.cls:66
+Source: src/Section/CRebarRuleOptions.cls:56
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
 
@@ -3699,7 +3668,7 @@ Source: src/Section/CRebarRuleOptions.cls:66
     options.ConfigureDependentContact 20#, 12#, RowNormal, 0#, False
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:114.
+Полный контекст: tests/modTestAudit02Api.bas:116.
 
 Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
 
@@ -4044,7 +4013,7 @@ Source: src/Section/CSectionInputTable.cls:64
                 expectedAddress = table.SourceReference(row, column)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:430.
+Полный контекст: tests/modTestAudit02Api.bas:440.
 
 Native entrypoint: modTestAudit02Api.RunAudit02CloseoutRectSetInputTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt.
 
@@ -4317,7 +4286,7 @@ Source: src/Section/CSectionInputTable.cls:137
         number = table.PositiveLength(i, 1, units)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:139.
+Полный контекст: tests/modTestAudit02Api.bas:141.
 
 Native entrypoint: modTestAudit02Api.RunAudit02InputTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02InputTests.txt.
 
@@ -4350,7 +4319,7 @@ Source: src/Section/CSectionInputTable.cls:143
     Check "input.nonnegative.zero", table.NonNegativeLength(2, 1, units) = 0#
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:136.
+Полный контекст: tests/modTestAudit02Api.bas:138.
 
 Native entrypoint: modTestAudit02Api.RunAudit02InputTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02InputTests.txt.
 
@@ -4900,7 +4869,7 @@ Source: src/Section/CSectionBuilder.cls:22
     Set model = builder.Build(definition, mesh)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:213.
+Полный контекст: tests/modTestAudit02Api.bas:215.
 
 Native entrypoint: modTestAudit02Api.RunAudit02GuideExamplesTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02GuideExamplesTests.txt.
 
@@ -8237,7 +8206,7 @@ Source: src/Common/modSectionRecipeTypes.bas:18
     For Each axis In Array(RowNormal, RowTangent)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:97.
+Полный контекст: tests/modTestAudit02Api.bas:99.
 
 Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
 
@@ -8720,7 +8689,7 @@ Source: src/Common/modSectionRecipeTypes.bas:151
     Dim mesh As TSectionMeshOptions
 ```
 
-Полный контекст: tests/modTestRecipeAnnotations.bas:259.
+Полный контекст: tests/modTestRecipeAnnotations.bas:266.
 
 Native entrypoint: modTestRecipeAnnotations.RunRecipeAnnotationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt.
 

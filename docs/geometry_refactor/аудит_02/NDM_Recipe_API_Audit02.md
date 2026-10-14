@@ -403,21 +403,19 @@ End Sub
 
 Все команды по-прежнему формируют один формат правил и используют одного исполнителя. Разные способы распределения не являются дублированием архитектуры.
 
-### 7.2. Помощник для общих политик
+### 7.2. Настройки группы, публикации и совпадений
 
-Предлагаемое расширение `CRebarRuleOptions`:
+Три существующих свойства `CRebarRuleOptions` задаются отдельно:
 
 ```vb
-' Контракт, не тело реализации.
-' Public Sub SetPublication( _
-'     ByVal annotationGroup As String, _
-'     ByVal publication As ERebarPublication, _
-'     ByVal coincidence As ERebarCoincidence)
+options.AnnotationGroup = "H.Right" ' Общая подпись арматуры правой стороны.
+options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 ```
 
-Он заполняет строго три соответствующих поля. Не включает скрыто `PerPath`, `ExcludeBoth`, `FromPathMiddle`, `CheckCenter` или поведение проекций.
+Эти присваивания меняют только указанные поля. Они не включают скрыто `PerPath`, `ExcludeBoth`, `FromPathMiddle`, `CheckCenter` или поведение проекций.
 
-Если современная версия уже имеет аналогичную фабрику/конструктор options, использовать её вместо добавления синонима. Прямой доступ к отдельным настройкам не является вторым маршрутом сборки: это один объект параметров с одним способом регистрации правила.
+Дополнительная команда для этих трёх присваиваний не нужна. Используется один объект параметров с одним способом регистрации правила.
 
 ### 7.3. Помощник для контактного зависимого ряда
 
@@ -475,8 +473,9 @@ Private Sub DescribeRightReinforcement( _
     Dim extraOptions As CRebarRuleOptions
 
     Set mainOptions = New CRebarRuleOptions
-    mainOptions.SetPublication _
-        "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+    mainOptions.AnnotationGroup = "H.Right" ' Общая подпись арматуры правой стороны.
+    mainOptions.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    mainOptions.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     mainOptions.EndMode = ExcludeBoth
     mainOptions.StartSetback = startSetback
     mainOptions.EndSetback = endSetback
@@ -489,8 +488,9 @@ Private Sub DescribeRightReinforcement( _
 
     If extraDiameter > 0# And count > 0 And diameter > 0# Then
         Set extraOptions = New CRebarRuleOptions
-        extraOptions.SetPublication _
-            "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+        extraOptions.AnnotationGroup = "H.Right" ' Дополнительный ряд входит в ту же подпись.
+        extraOptions.Publication = PublishPerSourcePosition ' Дополнительный стержень выводим рядом с основным.
+        extraOptions.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 
         extraOptions.ConfigureDependentContact _
             baseDiameter:=diameter, diameter:=extraDiameter, _
@@ -699,8 +699,9 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
         "Edge.TL", 1#, "Edge.BR", 0#)
 
     Set options = New CRebarRuleOptions
-    options.SetPublication _
-        "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+    options.AnnotationGroup = "H.Right" ' Общая подпись арматуры правой стороны.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.EndMode = ExcludeBoth
     options.StartSetback = 100#
     options.EndSetback = 150#

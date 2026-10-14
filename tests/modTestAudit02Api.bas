@@ -92,7 +92,9 @@ Public Function RunAudit02OptionsTests() As String
     options.PositionOrder = FromPathMiddle: options.IncomingTangentAtJoint = True
     options.SourceNormalSign = -1#: options.SuccessfulProjectionOrdinal = True
     options.SkipMissingProjection = True: options.NewPublicationRoot = True
-    options.SetPublication "Group", PublishPerSourcePosition, KeepPublishedOwner
+    options.AnnotationGroup = "Group" ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     Check "R08.publication.only", options.StartSetback = 100# And options.EndMode = ExcludeBoth And options.SourceNormalSign = -1#
     For Each axis In Array(RowNormal, RowTangent)
         For Each sign In Array(-1#, 1#)
@@ -268,7 +270,9 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
     Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
     Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
     Set options = New CRebarRuleOptions
-    options.SetPublication "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+    options.AnnotationGroup = "H.Right" ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
     options.IncomingTangentAtJoint = True
     facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -298,10 +302,14 @@ Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
     Set path = facade.LinePath("ExplicitAxis", 100#, 500#, 700#, 500#)
     facade.PathGroup "TwoLines", Array("MaxStepAxis", "FixedStepAxis")
     Set options = New CRebarRuleOptions
-    options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+    options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     facade.RebarByCount "Main", "MainAxis", 5, 20#, options
     Set options = New CRebarRuleOptions
-    options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+    options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
     facade.RebarDependent "Contact", "Main", 16#, options
     Set options = New CRebarRuleOptions
@@ -345,7 +353,9 @@ Public Function RunAudit02CloseoutContactTests() As String
     Dim options As CRebarRuleOptions, cases As Variant, item As Variant, code As Long, reason As String
     Set options = New CRebarRuleOptions
     options.SourceReference = "Program.Contact": options.StartSetback = 100#: options.EndSetback = 150#
-    options.SetPublication "Group", PublishPerSourcePosition, KeepPublishedOwner
+    options.AnnotationGroup = "Group" ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
     cases = Array(Array(0#, 16#, RowNormal, 1#, 0#), Array(-20#, 16#, RowNormal, 1#, 0#), _
         Array(20#, 0#, RowNormal, 1#, 0#), Array(20#, -16#, RowNormal, 1#, 0#), _

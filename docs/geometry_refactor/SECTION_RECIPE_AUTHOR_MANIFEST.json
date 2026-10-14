@@ -116,7 +116,6 @@
         "CRebarRuleOptions.AnnotationGroup",
         "CRebarRuleOptions.Comment",
         "CRebarRuleOptions.SourceReference",
-        "CRebarRuleOptions.SetPublication",
         "CRebarRuleOptions.ConfigureDependentContact",
         "modSectionRecipeTypes.ERebarOffsetAxis",
         "modSectionRecipeTypes.ERebarEndMode",
@@ -2512,43 +2511,6 @@
     },
     {
       "owner": "CRebarRuleOptions",
-      "name": "SetPublication",
-      "kind": "Sub",
-      "signature": "Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As ERebarPublication, ByVal coincidence As ERebarCoincidence)",
-      "parameters": [
-        {
-          "name": "annotationGroup",
-          "type": "String",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal annotationGroup As String"
-        },
-        {
-          "name": "publication",
-          "type": "ERebarPublication",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal publication As ERebarPublication"
-        },
-        {
-          "name": "coincidence",
-          "type": "ERebarCoincidence",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal coincidence As ERebarCoincidence"
-        }
-      ],
-      "resultType": null,
-      "line": 55,
-      "source": "src/Section/CRebarRuleOptions.cls",
-      "id": "CRebarRuleOptions.SetPublication",
-      "anchor": "api-crebarruleoptions-setpublication"
-    },
-    {
-      "owner": "CRebarRuleOptions",
       "name": "ConfigureDependentContact",
       "kind": "Sub",
       "signature": "Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, Optional ByVal interveningDiameterSum As Double = 0#)",
@@ -2603,7 +2565,7 @@
         }
       ],
       "resultType": null,
-      "line": 66,
+      "line": 56,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"

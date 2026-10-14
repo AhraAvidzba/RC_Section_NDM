@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
-  "members": 293,
+  "members": 292,
   "examples": {
     "ISectionRecipe.CreateDefinition": {
       "source": "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas",
@@ -122,7 +122,7 @@
     },
     "CSectionDefinitionBuilder.OffsetRoundedPolygon": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 234,
+      "line": 236,
       "routine": "RunAudit02GuideExamplesTests",
       "code": "    Set path = facade.OffsetRoundedPolygon(\"OffsetPath\", polygon, 50#)",
       "context": "В теле modTestAudit02Api.RunAudit02GuideExamplesTests с его подготовленными локальными объектами/входом.",
@@ -156,7 +156,7 @@
     },
     "CSectionDefinitionBuilder.Anchor": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 235,
+      "line": 242,
       "routine": "AnnotationFacade",
       "code": "        facade.Anchor \"TextNote\", 200#, 0#",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -186,7 +186,7 @@
     },
     "CSectionDefinitionBuilder.PathAnchor": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 165,
+      "line": 167,
       "routine": "RunAudit02AnnotationTests",
       "code": "    facade.PathAnchor \"Touch\", path.ID, \"Edge.A\", 0#",
       "context": "В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.",
@@ -203,7 +203,7 @@
     },
     "CSectionDefinitionBuilder.Source": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 94,
+      "line": 101,
       "routine": "RunRecipeAnnotationTests",
       "code": "    facade.Source \"Diagonal\", \"ProgramInputs.PointB\"",
       "context": "В теле modTestRecipeAnnotations.RunRecipeAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -223,7 +223,7 @@
     },
     "CSectionDefinitionBuilder.TransformAnchor": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 316,
+      "line": 324,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.TransformAnchor \"MovedA\", \"A\", 0#, 700#",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -406,7 +406,7 @@
     },
     "CSectionDefinitionBuilder.Outer": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 289,
+      "line": 293,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Outer \"Outer\", path.ID",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -655,7 +655,7 @@
     },
     "CSectionDefinitionBuilder.VerticalDistance": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 241,
+      "line": 248,
       "routine": "AnnotationFacade",
       "code": "    If previewPlacement Then facade.VerticalDistance \"VerticalExplicit\", \"v\", -100#, 0#, 150#, 1# Else facade.VerticalDistance \"VerticalExplicit\", \"v\", -100#, 0#, -50#",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -685,7 +685,7 @@
     },
     "CSectionDefinitionBuilder.Dimension": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 240,
+      "line": 247,
       "routine": "AnnotationFacade",
       "code": "    facade.Dimension \"Diagonal\", \"A\", \"B\", \"s\"",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -715,7 +715,7 @@
     },
     "CSectionDefinitionBuilder.PathLength": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 252,
+      "line": 259,
       "routine": "AnnotationFacade",
       "code": "    facade.PathLength \"Length\", \"Boundary\", \"LengthNote\"",
       "context": "В теле modTestRecipeAnnotations.AnnotationFacade с его подготовленными локальными объектами/входом.",
@@ -745,7 +745,7 @@
     },
     "CSectionDefinitionBuilder.Radius": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 321,
+      "line": 329,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Radius \"Radius\", \"Arc\", \"Arc\", 0.5, \"R\"",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -762,7 +762,7 @@
     },
     "CSectionDefinitionBuilder.Diameter": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 322,
+      "line": 330,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Diameter \"Diameter\", \"Hole\", \"Hole\", 0.5, \"D\"",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -779,7 +779,7 @@
     },
     "CSectionDefinitionBuilder.Text": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 323,
+      "line": 331,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Text \"Note\", \"MovedA\", \"Учебный пример\"",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -848,7 +848,7 @@
     },
     "CSectionDefinitionBuilder.RebarRowExtentLabel": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 275,
+      "line": 279,
       "routine": "BuildAudit02DemoDefinition",
       "code": "    facade.RebarRowExtentLabel \"H.Right\", \"H.Right.Main\", 1#, 0#, True",
       "context": "В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.",
@@ -1056,7 +1056,7 @@
     },
     "CGeometryPath.ID": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 289,
+      "line": 293,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Outer \"Outer\", path.ID",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -1588,7 +1588,7 @@
     },
     "CPolygonSpec.Seal": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 263,
+      "line": 265,
       "routine": "BuildAudit02DemoDefinition",
       "code": "    polygon.Seal",
       "context": "В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.",
@@ -1605,7 +1605,7 @@
     },
     "CPolygonSpec.Count": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 546,
+      "line": 556,
       "routine": "SpecSnapshot",
       "code": "    For i = 1 To polygon.Count",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1654,7 +1654,7 @@
     },
     "CPolygonSpec.X": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 178,
+      "line": 180,
       "routine": "RunAudit02AnnotationTests",
       "code": "    Check \"A03.virtual.not.touch\", x <> polygon.X(1) Or y <> polygon.Y(1)",
       "context": "В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.",
@@ -1671,7 +1671,7 @@
     },
     "CPolygonSpec.Y": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 178,
+      "line": 180,
       "routine": "RunAudit02AnnotationTests",
       "code": "    Check \"A03.virtual.not.touch\", x <> polygon.X(1) Or y <> polygon.Y(1)",
       "context": "В теле modTestAudit02Api.RunAudit02AnnotationTests с его подготовленными локальными объектами/входом.",
@@ -1704,7 +1704,7 @@
     },
     "CPolygonSpec.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 547,
+      "line": 557,
       "routine": "SpecSnapshot",
       "code": "        SpecSnapshot = SpecSnapshot & polygon.VertexID(i) & \"|\" & CStr(polygon.X(i)) & \"|\" & CStr(polygon.Y(i)) & _\n            \"|\" & CStr(polygon.FilletRadius(i)) & \"|\" & polygon.SourceReference(i) & vbCrLf",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1756,7 +1756,7 @@
     },
     "CSectionDefinition.SourceReference": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 96,
+      "line": 103,
       "routine": "RunRecipeAnnotationTests",
       "code": "    Check \"source.scalar\", definition.SourceReference(\"Diagonal\") = \"ProgramInputs.PointB\"",
       "context": "В теле modTestRecipeAnnotations.RunRecipeAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -2163,7 +2163,7 @@
     },
     "CRebarRuleOptions.NormalOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 308,
+      "line": 316,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    options.NormalOffset = 40#: options.TangentOffset = 10#",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -2180,7 +2180,7 @@
     },
     "CRebarRuleOptions.EverySecond": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 349,
+      "line": 359,
       "routine": "RunAudit02CloseoutContactTests",
       "code": "    options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True",
       "context": "В теле modTestAudit02Api.RunAudit02CloseoutContactTests с его подготовленными локальными объектами/входом.",
@@ -2196,7 +2196,7 @@
     },
     "CRebarRuleOptions.IncomingTangentAtJoint": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 273,
+      "line": 277,
       "routine": "BuildAudit02DemoDefinition",
       "code": "    options.IncomingTangentAtJoint = True",
       "context": "В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.",
@@ -2594,27 +2594,9 @@
         }
       ]
     },
-    "CRebarRuleOptions.SetPublication": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 95,
-      "routine": "RunAudit02OptionsTests",
-      "code": "    options.SetPublication \"Group\", PublishPerSourcePosition, KeepPublishedOwner",
-      "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
-      "nativeRoots": [
-        {
-          "entryPoint": "modTestAudit02Api.RunAudit02OptionsTests",
-          "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02OptionsTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestAudit02Api.RunAudit02OptionsTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestAudit02Api.RunAudit02OptionsTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt"
-          ]
-        }
-      ]
-    },
     "CRebarRuleOptions.ConfigureDependentContact": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 114,
+      "line": 116,
       "routine": "RunAudit02OptionsTests",
       "code": "    options.ConfigureDependentContact 20#, 12#, RowNormal, 0#, False",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -2867,7 +2849,7 @@
     },
     "CSectionInputTable.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 430,
+      "line": 440,
       "routine": "CloseoutRectSetInputMatrix",
       "code": "                expectedAddress = table.SourceReference(row, column)",
       "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
@@ -3091,7 +3073,7 @@
     },
     "CSectionInputTable.PositiveLength": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 139,
+      "line": 141,
       "routine": "RunAudit02InputTests",
       "code": "        number = table.PositiveLength(i, 1, units)",
       "context": "В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.",
@@ -3108,7 +3090,7 @@
     },
     "CSectionInputTable.NonNegativeLength": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 136,
+      "line": 138,
       "routine": "RunAudit02InputTests",
       "code": "    Check \"input.nonnegative.zero\", table.NonNegativeLength(2, 1, units) = 0#",
       "context": "В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.",
@@ -3484,7 +3466,7 @@
     },
     "CSectionBuilder.Build": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 213,
+      "line": 215,
       "routine": "RunAudit02GuideExamplesTests",
       "code": "    Set model = builder.Build(definition, mesh)",
       "context": "В теле modTestAudit02Api.RunAudit02GuideExamplesTests с его подготовленными локальными объектами/входом.",
@@ -5531,7 +5513,7 @@
     },
     "modSectionRecipeTypes.ERebarOffsetAxis": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 97,
+      "line": 99,
       "routine": "RunAudit02OptionsTests",
       "code": "    For Each axis In Array(RowNormal, RowTangent)",
       "context": "В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.",
@@ -5827,7 +5809,7 @@
     },
     "modSectionRecipeTypes.TSectionMeshOptions": {
       "source": "tests/modTestRecipeAnnotations.bas",
-      "line": 259,
+      "line": 266,
       "routine": "BuildDefinition",
       "code": "    Dim mesh As TSectionMeshOptions",
       "context": "В теле modTestRecipeAnnotations.BuildDefinition с его подготовленными локальными объектами/входом.",
@@ -6153,7 +6135,7 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "af551e79ec8e5b97c29d4c5b3aa0a96b2b0dbb88687b903fc5e8ebcebb9efaa2",
-    "tests/modTestAudit02Api.bas": "81f728730953e1ba29b37be842261b6c48c2feb38a2f5fad9227d91cb6b11ead",
+    "tests/modTestAudit02Api.bas": "017566efb5a5857a27340d913c74c1d0e38ba41e556791bbe8384c728ac66d52",
     "tests/modTestAutoCADContours.bas": "430ed8e1569e2012430d8b82d73cd25fcc28a4e2d618279c7f0f5bd14088676b",
     "tests/modTestContourMesh.bas": "9de226c7de9b76b8a22e869410c51c99c3b3a9bd0e26e844f42500999d49c9a4",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
@@ -6164,7 +6146,7 @@
     "tests/modTestGeometryQuery.bas": "9641a29518f061625600a290c2b68bedadfd233747991d49334f703558a7db79",
     "tests/modTestGeometryReview.bas": "a6f0f2b816cd985a7f0fa440acc34b49ae939aeee0bbb89ea8527d0849b09612",
     "tests/modTestPolygonSpec.bas": "f840237ec27825e25617f0790ad4ecb4d405c1dfd80203aee8cd0cbebbe356b6",
-    "tests/modTestRecipeAnnotations.bas": "76412afc2b0ba215880cc4c38ac750d7fea58ab22b3e7185b93ffad1d5d92953",
+    "tests/modTestRecipeAnnotations.bas": "3847af00d93a63a520806dbadff9870160da53ed7a714dd14b1d149bfa569845",
     "tests/modTestRecipeApiCatalogue.bas": "e727da374e3126ad429612c0cc5f900f5b5b0512150538fd4647b6acd9d8ec61",
     "tests/modTestRecipeOperations.bas": "90e4c5609337c447932ac93de74b110255af716e30be866351c65365d5e07891",
     "tests/modTestRecipeSetbacks.bas": "8ffb354ceba0cb426cc515d8bb2e7a8e8f5fc17c035132d6d8d91792b75136cb",

@@ -185,7 +185,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Получаем линию центров стержней выбранной стороны с отступом as.
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
-        options.SetPublication faces(i).ID, PublishPerSourcePosition, KeepPublishedOwner ' Общая подпись стороны; совпавший стержень остаётся у первого ряда.
+        options.AnnotationGroup = faces(i).ID ' Общая подпись арматуры этой группы.
+        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.SourceReference = faces(i).Source ' Адреса полей для сообщения об ошибке размещения.
         options.Comment = "HollowRectangle: " & faces(i).Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд 1"
@@ -287,7 +289,9 @@ Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long
     If location = "SideBySide" Then axis = RowTangent: directionSign = 1# ' Располагаем дополнительный стержень вдоль исходного ряда.
     options.SourceReference = face.Source ' Адреса полей для сообщения об ошибке размещения.
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, (binding = "EverySecondBar"), interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.SetPublication face.ID, PublishPerSourcePosition, KeepPublishedOwner ' Общая подпись стороны; совпавший стержень остаётся у первого ряда.
+    options.AnnotationGroup = face.ID ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.Comment = "HollowRectangle: " & face.Caption & IIf(Left$(face.ID, 8) = "Opening.", " грань Opening", " наружная грань") & ", ряд " & CStr(rowNumber)
     Set ExtraOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function

@@ -141,7 +141,9 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
                 groupID = "B" & prefix & ".as_2": nx = 0#: ny = -1#: sideSign = -1#
                 Set path = facade.LinePath(groupID, x + width, y + axisDistance, x, y + axisDistance) ' Нижняя грань на расстоянии as от бетона, справа налево.
         End Select
-        options.SetPublication groupID, PublishPerSourcePosition, KeepPublishedOwner ' Общая подпись стороны; совпавший стержень остаётся у первого ряда.
+        options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.
+        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
         options.Comment = "RectSet: " & label & ", ряд 1"
         facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
         d2 = table.OptionalDiameter(extra, 2, units)
@@ -178,7 +180,9 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     everySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar") ' Выбираем все позиции или через одну, начиная с первой.
     options.SourceReference = table.SourceReference(row, column) ' Адреса полей для сообщения об ошибке размещения.
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.SetPublication groupID, PublishPerSourcePosition, KeepPublishedOwner ' Общая подпись стороны; совпавший стержень остаётся у первого ряда.
+    options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)
     Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function

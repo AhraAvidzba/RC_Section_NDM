@@ -138,7 +138,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
 '           Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
 '           Set options = New CRebarRuleOptions
-'           options.SetPublication "H.Right", PublishPerSourcePosition, KeepPublishedOwner
+'           options.AnnotationGroup = "H.Right" ' Общая подпись арматуры этой группы.
+'           options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 '           options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
 '           options.IncomingTangentAtJoint = True
 '           facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -172,10 +174,14 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set path = facade.LinePath("ExplicitAxis", 100#, 500#, 700#, 500#)
 '           facade.PathGroup "TwoLines", Array("MaxStepAxis", "FixedStepAxis")
 '           Set options = New CRebarRuleOptions
-'           options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+'           options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
+'           options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 '           facade.RebarByCount "Main", "MainAxis", 5, 20#, options
 '           Set options = New CRebarRuleOptions
-'           options.SetPublication "Bottom", PublishPerSourcePosition, KeepPublishedOwner
+'           options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
+'           options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 '           options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
 '           facade.RebarDependent "Contact", "Main", 16#, options
 '           Set options = New CRebarRuleOptions
@@ -1673,28 +1679,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       Объявление:
 '         Public SourceReference As String
 '       По умолчанию: пустое значение VBA.
-'
-'     ----------------------------------------------------------------------------------------------
-'     CRebarRuleOptions.SetPublication
-'
-'       Задаёт строго AnnotationGroup/Publication/Coincidence. Концы, offsets, проверка размещения,
-'       source и настройки проекции не меняются.
-'
-'       Объявление:
-'         Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As
-'         ERebarPublication, ByVal coincidence As ERebarCoincidence)
-'
-'       Параметры:
-'         ByVal annotationGroup As String
-'           Имя группы фактических стержней для общей подписи, независимо от расчётных групп трещин.
-'
-'         ByVal publication As ERebarPublication
-'           PublishByRule или PublishPerSourcePosition; порядок и происхождение опубликованных стержней.
-'
-'         ByVal coincidence As ERebarCoincidence
-'           RejectCoincidence, MergeIdentical или KeepPublishedOwner; ничего не меняет в
-'           концевых/проекционных настройках.
-'
 '
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.ConfigureDependentContact

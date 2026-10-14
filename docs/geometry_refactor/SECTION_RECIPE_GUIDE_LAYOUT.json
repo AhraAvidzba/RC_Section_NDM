@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "34035949d1fcc2ebfc2ebf40a0b55c5567fb9ec4ec16be762fd83623e16b16b2",
+  "bodySHA256": "eb15a92a337c6e9f1030cff0f30537f7cbfde31cee8491e07f461315386e26a5",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "d76d385577d486f2a9d490e0a466a4b885f3d8a3361aea864b3f728931f23fa8",
-    "src/Common/modSectionRecipeApiGuide.bas": "8e05afa5ad309315b1ab31d324f597d71dd34c8f68c77d4b99665facc00dd12c"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "41ca806a3ec694e3f936a3da3ce1a7197d2999760ae0dc9baba8fbbf51762e57",
+    "src/Common/modSectionRecipeApiGuide.bas": "7cb885be7662e3be57f13b9be93a3634572ffa1949f59f0e87dac1b3e779ad92"
   },
   "rows": [
     {
@@ -140,7 +140,7 @@
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. Условия размещения задаются в CRebarRuleOptions: SetPublication задаёт группу и публикацию, ConfigureDependentContact — контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset.",
+      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. В CRebarRuleOptions поле AnnotationGroup объединяет стержни в одну подпись, Publication задаёт порядок их вывода, Coincidence — обработку совпавших позиций. ConfigureDependentContact задаёт контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
@@ -375,5 +375,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 137
+  "members": 136
 }

@@ -50,16 +50,6 @@ Private Sub Class_Initialize()
     OverlapPolicy = ReportOverlap
 End Sub
 
-' Задаёт только группу количественной подписи, порядок публикации и политику совпадения.
-' Концы, отступы, размещение и проекция остаются независимыми явными настройками.
-Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As ERebarPublication, ByVal coincidence As ERebarCoincidence)
-    If publication < PublishByRule Or publication > PublishPerSourcePosition Then _
-        SectionRecipeError "CRebarRuleOptions", "Неизвестная политика публикации позиций.", SourceReference
-    If coincidence < RejectCoincidence Or coincidence > KeepPublishedOwner Then _
-        SectionRecipeError "CRebarRuleOptions", "Неизвестная политика совпадения позиций.", SourceReference
-    Me.AnnotationGroup = annotationGroup: Me.Publication = publication: Me.Coincidence = coincidence
-End Sub
-
 ' Контактное межцентровое расстояние: половины основного/добавляемого диаметров и полные промежуточные.
 ' Меняет только NormalOffset/TangentOffset/EverySecond; координаты и ориентацию исполняет общий executor.
 ' Оба диаметра строго больше нуля; отключённый ряд рецепт пропускает до вызова, иначе будет ошибка.

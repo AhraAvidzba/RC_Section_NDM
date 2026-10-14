@@ -3568,43 +3568,6 @@
     },
     {
       "owner": "CRebarRuleOptions",
-      "name": "SetPublication",
-      "kind": "Sub",
-      "signature": "Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As ERebarPublication, ByVal coincidence As ERebarCoincidence)",
-      "parameters": [
-        {
-          "name": "annotationGroup",
-          "type": "String",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal annotationGroup As String"
-        },
-        {
-          "name": "publication",
-          "type": "ERebarPublication",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal publication As ERebarPublication"
-        },
-        {
-          "name": "coincidence",
-          "type": "ERebarCoincidence",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal coincidence As ERebarCoincidence"
-        }
-      ],
-      "resultType": null,
-      "line": 55,
-      "source": "src/Section/CRebarRuleOptions.cls",
-      "id": "CRebarRuleOptions.SetPublication",
-      "anchor": "api-crebarruleoptions-setpublication"
-    },
-    {
-      "owner": "CRebarRuleOptions",
       "name": "ConfigureDependentContact",
       "kind": "Sub",
       "signature": "Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, Optional ByVal interveningDiameterSum As Double = 0#)",
@@ -3659,7 +3622,7 @@
         }
       ],
       "resultType": null,
-      "line": 66,
+      "line": 56,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"
@@ -7846,7 +7809,7 @@
     "src/Geometry/CGeometryPath.cls": "a6a364d1aa6133d2f87518776987e00033abe9462f143aa94c0e5024f39e5eb0",
     "src/Geometry/CPolygonSpec.cls": "741da7ebf1b4820bc97587cdf2c7a46ea2897d6330e84d25ce4e2e10a9a56839",
     "src/Section/CSectionDefinition.cls": "048afc60a59388b4a1291d68b9605c4bcc83b902dc9b91d788049036e598c813",
-    "src/Section/CRebarRuleOptions.cls": "1a448edd67923bb7981837fc60592bac1036ec4f23ba8c81934395a37994478f",
+    "src/Section/CRebarRuleOptions.cls": "18356375647b7364a26d0f9258e306dc201e5e1d435ccb148058a07f94f6adbc",
     "src/Geometry/CGeometryDiagnostic.cls": "5a8b139775a98457b368b8636dfa09b4fe2954c75c457e471549d320eaf2d78a",
     "src/Section/CSectionInputTable.cls": "76361e5b9a12bf4c030439d8fc608174ee1447c459af41899f06a68df4b4ef2e",
     "src/Section/CSectionRecipeContext.cls": "f21680031cdb9676caa51d11f10440a725125b2d36db3c93c9b840347aaf9019",

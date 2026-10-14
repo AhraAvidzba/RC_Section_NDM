@@ -49,7 +49,9 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
 
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
         options.EndMode = ClosedUniform: options.SourcePrefix = "B" ' Равномерно по кругу без повторного конца; имена начинаются с B.
-        options.SetPublication "Circle", PublishPerSourcePosition, RejectCoincidence ' Одна подпись для всех рядов; совпадение стержней считаем ошибкой.
+        options.AnnotationGroup = "Circle" ' Одна подпись для всех рядов окружности.
+        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+        options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
         options.Comment = "Круг: основной ряд арматуры"
         ' Адреса полей для сообщения об ошибке размещения.
         options.SourceReference = table.SourceReference(table.RowByKey("Rebar.Count"), 2) & "; " & table.SourceReference(table.RowByKey("Rebar.AxisDistance"), 2)
@@ -83,7 +85,9 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal key 
     options.SourceReference = table.SourceReference(table.RowByKey(key), 2) ' Адреса полей для сообщения об ошибке размещения.
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, False, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
     options.SourceSuffix = suffix ' Добавляем к имени основного стержня суффикс ряда.
-    options.SetPublication "Circle", PublishPerSourcePosition, RejectCoincidence ' Одна подпись для всех рядов; совпадение стержней считаем ошибкой.
+    options.AnnotationGroup = "Circle" ' Одна подпись для всех рядов окружности.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
     options.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
     options.Comment = "Круг: дополнительный ряд арматуры"
     Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.

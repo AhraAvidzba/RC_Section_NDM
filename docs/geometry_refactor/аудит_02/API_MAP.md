@@ -14,7 +14,7 @@
 | facade/query.OffsetRoundedPolygon(pathID, vertices, radii, vertexIDs, distance) | OffsetRoundedPolygon(pathID, polygon, distance) | Принятый inward-отступ многоугольника, F02 и коллапс-привязки | Публичная массивная сигнатура |
 | Низкоуровневые массивы query | Private kernel и один Friend CopyKernelData описателя | Действующая математика без переписывания | Публичные адаптеры/V2/Ex не создаются |
 | Циклы CONTOUR_LINE_i/ARC_i в рецептах | Outer/Opening с политикой SequentialByKind и префиксом как данными | Общий номер сегмента; Hollow: CONTOUR_OUTER/OPENING, остальные CONTOUR | Техническая нумерация в рецептах |
-| Три поля публикации options | CRebarRuleOptions.SetPublication | Только AnnotationGroup/Publication/Coincidence | Повторные присваивания этих полей |
+| Настройки публикации options | AnnotationGroup, Publication, Coincidence | Группа подписи, порядок вывода и обработка совпадений задаются явно | Дублирующая команда настройки трёх полей |
 | Contact distance в AdditionalOptions/ExtraOptions | ConfigureDependentContact | RowNormal/RowTangent, знак, EverySecond, номинальный промежуточный диаметр | Повторная контактная формула |
 | Length + проверка >0/>=0 | PositiveLength/NonNegativeLength в CSectionInputTable | То же чтение и перевод единиц, фактический адрес | Только эквивалентные проверки; GEOM_TOLERANCE остаётся явным |
 | ColumnByCaption внутри цикла граней | Однократный ленивый поиск при первом активном ряде | Проверки неоднозначности; выключенные поля не начинают проверяться | Повторный поиск заголовков |
@@ -49,8 +49,9 @@ CONTOUR; для Hollow передаются CONTOUR_OUTER/CONTOUR_OPENING. Яв�
 смешивать с SequentialByKind; одинаковые последовательные префиксы разных
 границ отклоняются. Общий номер сегмента и весь прежний порядок сохранены.
 
-ERebarOffsetAxis: RowNormal=1, RowTangent=2. SetPublication меняет строго три
-поля; ConfigureDependentContact — только NormalOffset/TangentOffset/EverySecond.
+ERebarOffsetAxis: RowNormal=1, RowTangent=2. AnnotationGroup, Publication и
+Coincidence задаются отдельными присваиваниями; ConfigureDependentContact
+меняет только NormalOffset/TangentOffset/EverySecond.
 Все четыре семейства используют общую подготовку. Локальные AdditionalOptions
 и ExtraOptions сохраняют только конкретную интерпретацию ввода и направления,
 не исполняют арматуру. PositiveLength/NonNegativeLength используют прежний
@@ -75,9 +76,9 @@ Friend CopyKernelData принадлежит CPolygonSpec. Нет новых п�
 OuterPolygon, Custom или Offset группы. Статические gates — ApiRetirementChecks.json.
 
 Гайд modSectionRecipeApiGuide остаётся comment-only и содержит прежние девять
-разделов: 137 членов автора, полный минимальный ISectionRecipe и регистрация,
+разделов: 136 членов автора, полный минимальный ISectionRecipe и регистрация,
 два полных выполненных примера геометрии/правил/измерений. Общий каталог:
-293 члена, все с фактическими вызовами и native-журналами. Учебная трапеция
+292 члена, все с фактическими вызовами и native-журналами. Учебная трапеция
 перенесена и выполнена; учебные классы не добавляются в рабочий VBProject.
 Справка сохраняет 61 строку и перечисляет четыре штатных рецепта-примера.
 

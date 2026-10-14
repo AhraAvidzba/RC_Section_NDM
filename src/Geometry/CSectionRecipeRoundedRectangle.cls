@@ -137,7 +137,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         End If
         options.StartSetback = table.NonNegativeLength(row, startColumn, units) ' Отступ от начала линии, мм.
         options.EndSetback = table.NonNegativeLength(row, endColumn, units) ' Отступ от конца линии, мм.
-        options.SetPublication groupID, PublishPerSourcePosition, KeepPublishedOwner ' Общая подпись стороны; совпавший стержень остаётся у первого ряда.
+        options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.
+        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.Comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд 1"
         ' Адреса полей для сообщения об ошибке размещения.
@@ -201,7 +203,9 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     everySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar") ' Выбираем все позиции или через одну, начиная с первой.
     options.SourceReference = table.SourceReference(row, column) ' Адреса полей для сообщения об ошибке размещения.
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.SetPublication groupID, PublishPerSourcePosition, KeepPublishedOwner ' Общая подпись стороны; совпавший стержень остаётся у первого ряда.
+    options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.
+    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.Comment = "RoundedRectangle: " & caption & " грань, ряд " & CStr(rowNumber)
     Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function
