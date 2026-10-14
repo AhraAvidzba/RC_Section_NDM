@@ -1,0 +1,40 @@
+{
+  "Passed": true,
+  "BaselineHead": "6c32304beec56fd672a582a3b7632891bcf1e144",
+  "Requirement1ExistingFieldsUsedAtAll13Calls": true,
+  "Requirement2OwnRightCommentOnEachSingleLinePerUserCorrection": true,
+  "Requirement3DefaultsValuesOrderCoincidencesAndResultsPreserved": true,
+  "Requirement4ObsoleteMethodAndLiveReferencesAbsent": true,
+  "Requirement5DirectedRegressionPassed": true,
+  "AlgorithmAndOtherArchitectureChanges": false,
+  "UnchangedSourceComponents": 145,
+  "Tests": {
+    "modTestAudit02Api.RunAudit02OptionsTests": 15,
+    "modTestAudit02Api.RunAudit02GuideExamplesTests": 11,
+    "modTestAudit02Api.RunAudit02CloseoutContactTests": 23,
+    "modTestSectionRecipes.RunRecipeRuleTests": 187,
+    "modTestRecipeOperations.RunRecipeDiagnosticTests": 35,
+    "modTestGeometryPublication.RunPublishedBuildTests": 20,
+    "modTestGeometryPublication.RunAnnotationIsolationTests": 12
+  },
+  "Assertions": 303,
+  "ByteIdenticalModels": 9,
+  "ByteIdenticalControlNDS": 12,
+  "CellsCompared": 107461,
+  "NamedRangesCompared": 27,
+  "ChangedZIPParts": [
+    "xl/sharedStrings.xml",
+    "xl/vbaProject.bin",
+    "xl/worksheets/sheet2.xml"
+  ],
+  "NativeComponents": 157,
+  "SourceComponents": 152,
+  "APIInventory": 292,
+  "GuideMembers": 136,
+  "ActualNativeExportEqualsAllCode": true,
+  "TemporaryTestHelpersAbsent": true,
+  "UserExecutionReportPreservedAndExcludedFromCommit": true,
+  "WorkbookSHA256": "819A8AADDB6430F6E5240690B5D2009B8726B659C34689CCF165A6492D1EEC82",
+  "AllCodeSHA256": "F2A335EBA4654F0F53FE1DAE4DC8F0528C16BCC47F21F49F87ECDF14C2ED7AEE",
+  "FullOnOffRunsStarted": false
+}

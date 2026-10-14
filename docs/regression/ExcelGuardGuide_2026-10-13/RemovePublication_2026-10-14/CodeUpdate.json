@@ -1,0 +1,23 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\RemovePublication_2026-10-14\\Candidate.xlsm",
+    "WorkbookSHA256":  "8C1BBBA04D145FB0D9CDBD33CCF5709CD479A4D7CB4766FDBB680F4FCD5F2EC8",
+    "ProductionSHA256":  "E16EBEFACB07E54EEFFB7970FA8119D15492BB0762AAA230CEB71556420C4AB4",
+    "Compiled":  true,
+    "Modules":  [
+                    "modSectionRecipeApiGuide",
+                    "CSectionRecipeCircle",
+                    "CSectionRecipeHollowRectangle",
+                    "CSectionRecipeRectSet",
+                    "CSectionRecipeRoundedRectangle",
+                    "CRebarRuleOptions",
+                    "modTestAudit02Api"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

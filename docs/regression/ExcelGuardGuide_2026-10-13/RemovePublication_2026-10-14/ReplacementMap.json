@@ -1,0 +1,177 @@
+{
+  "Passed": true,
+  "CallsReplaced": 13,
+  "ValuesPreserved": true,
+  "OneStatementAndCommentPerLine": true,
+  "Records": [
+    {
+      "Source": "src/Geometry/CSectionRecipeCircle.cls",
+      "Arguments": [
+        "\"Circle\"",
+        "PublishPerSourcePosition",
+        "RejectCoincidence"
+      ],
+      "Statements": [
+        "        options.AnnotationGroup = \"Circle\" ' Одна подпись для всех рядов окружности.",
+        "        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "        options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeCircle.cls",
+      "Arguments": [
+        "\"Circle\"",
+        "PublishPerSourcePosition",
+        "RejectCoincidence"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = \"Circle\" ' Одна подпись для всех рядов окружности.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "Arguments": [
+        "faces(i).ID",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "        options.AnnotationGroup = faces(i).ID ' Общая подпись арматуры этой группы.",
+        "        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "Arguments": [
+        "face.ID",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = face.ID ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeRectSet.cls",
+      "Arguments": [
+        "groupID",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "        options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.",
+        "        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeRectSet.cls",
+      "Arguments": [
+        "groupID",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "Arguments": [
+        "groupID",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "        options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.",
+        "        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "Arguments": [
+        "groupID",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "tests/modTestAudit02Api.bas",
+      "Arguments": [
+        "\"Group\"",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = \"Group\" ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "tests/modTestAudit02Api.bas",
+      "Arguments": [
+        "\"H.Right\"",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = \"H.Right\" ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "tests/modTestAudit02Api.bas",
+      "Arguments": [
+        "\"Bottom\"",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = \"Bottom\" ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "tests/modTestAudit02Api.bas",
+      "Arguments": [
+        "\"Bottom\"",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = \"Bottom\" ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    },
+    {
+      "Source": "tests/modTestAudit02Api.bas",
+      "Arguments": [
+        "\"Group\"",
+        "PublishPerSourcePosition",
+        "KeepPublishedOwner"
+      ],
+      "Statements": [
+        "    options.AnnotationGroup = \"Group\" ' Общая подпись арматуры этой группы.",
+        "    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.",
+        "    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень."
+      ]
+    }
+  ]
+}

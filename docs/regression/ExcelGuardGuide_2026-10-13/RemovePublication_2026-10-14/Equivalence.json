@@ -1,0 +1,34 @@
+{
+  "Passed": true,
+  "BaselineHead": "6c32304beec56fd672a582a3b7632891bcf1e144",
+  "Calls": 13,
+  "OneLinePerPropertyWithOwnComment": true,
+  "RecipeAndTestCommandsEquivalent": [
+    "src/Geometry/CSectionRecipeCircle.cls",
+    "src/Geometry/CSectionRecipeHollowRectangle.cls",
+    "src/Geometry/CSectionRecipeRectSet.cls",
+    "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+    "tests/modTestAudit02Api.bas"
+  ],
+  "OnlyObsoleteMethodRemovedFromOptions": true,
+  "DefaultsUnchanged": true,
+  "CommonExecutorAndSolverUntouched": true,
+  "UnchangedSourceComponents": 145,
+  "LegacyModels": 9,
+  "ControlNDS": 12,
+  "Snapshots": [
+    {
+      "Snapshot": "Geometry",
+      "Bytes": 3376754,
+      "SHA256": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f",
+      "ByteIdentical": true
+    },
+    {
+      "Snapshot": "NDS",
+      "Bytes": 411732,
+      "SHA256": "6c21b42eb64b77877c8ebf5cfede42b4560bd2309206a1cab74d955788c7293e",
+      "ByteIdentical": true
+    }
+  ],
+  "NoLiveReferences": true
+}
