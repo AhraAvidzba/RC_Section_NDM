@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-14 22:01:21
+Date: 2026-10-14 22:45:34
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -14228,7 +14228,7 @@ End Sub
 Private Sub ApplySummaryBorders(ByVal area As Object)
     area.Borders.LineStyle = 1
     area.Borders.Color = RGB(0, 0, 0)
-    area.Borders.Weight = 2
+    area.Borders.weight = 2
 End Sub
 
 ' Красит статусные ячейки compact summary по единой палитре OK/FAIL/BaseFail/NumFail/InputErr/CalcErr/N/A.
@@ -15065,7 +15065,7 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal la
     Dim block As Object
     Set block = target.Offset(0, firstCol - 1).Resize(target.rows.count, lastCol - firstCol + 1)
     block.Borders.LineStyle = 1
-    block.Borders.Weight = 2
+    block.Borders.weight = 2
     block.rows(1).Resize(HEADER_ROWS).font.Bold = True
     target.Offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.Color = HEADER_COLOR
 End Sub
@@ -17906,7 +17906,7 @@ End Function
 ====================================================================================================
 COMPONENT: CPlotAnnotationLayout
 TYPE: 2
-LINES: 522
+LINES: 526
 ====================================================================================================
 Option Explicit
 
@@ -18173,6 +18173,9 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
 
     Dim rotation As Double
     rotation = AnnotationRotation(dirX, dirY)
+    ' Правая вертикальная выноска читается сверху вниз, левая — снизу вверх.
+    ' Сторону определяет фактическая нормаль после применения Inside/Outside.
+    If rotation = 90# And normalPxX > 0# Then rotation = -90#
 
     Dim textLeft As Double, textTop As Double, textWidth As Double, textHeight As Double
     RebarTextBox anchorPxX, anchorPxY, normalPxX, normalPxY, rotation, textValue, textLeft, textTop, textWidth, textHeight
@@ -18215,25 +18218,26 @@ Private Function AnnotationRotation(ByVal dirX As Double, ByVal dirY As Double) 
 End Function
 
 ' Наклонный текст хранится в обычной горизонтальной рамке и затем поворачивается.
-' Вся рамка отнесена от линии на TextGap; при растянутой рамке графика учитывается
+' Центр текста отнесён от линии на TextGap, как у горизонтальных/вертикальных подписей.
+' При растянутой рамке графика учитывается
 ' угол между нормалью модели и перпендикуляром к экранной линии. Для 0/90 градусов
 ' оставляем прежние размеры блока и отсчёт зазора, включая нативный вертикальный текст.
 Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        ByVal rotation As Double, ByVal textValue As String, ByVal FontSize As Double, ByVal gapBase As Double, ByVal textUnits As String, _
+        ByVal rotation As Double, ByVal textValue As String, ByVal fontSize As Double, ByVal gapBase As Double, ByVal textUnits As String, _
         ByRef leftPos As Double, ByRef topPos As Double, ByRef widthValue As Double, ByRef heightValue As Double)
     widthValue = 150# * mVisualScale
-    heightValue = MaxDouble(18# * mVisualScale, FontSize * 1.65)
+    heightValue = MaxDouble(18# * mVisualScale, fontSize * 1.65)
     Dim gap As Double, angle As Double, normalProjection As Double, swap As Double
     gap = ClampDouble(TextMetricToChartPoints(gapBase, textUnits), 0#, 80#)
-    If rotation = 90# Then
+    If Abs(rotation) = 90# Then
         swap = widthValue: widthValue = heightValue: heightValue = swap
     ElseIf rotation <> 0# Then
         ' Наклонной подписи не нужна широкая пустая рамка: длина следует тексту.
-        widthValue = MaxDouble(FontSize * 2#, Len(textValue) * FontSize * 0.62)
+        widthValue = MaxDouble(fontSize * 2#, Len(textValue) * fontSize * 0.62)
         angle = rotation * GEOM_PI / 180#
         normalProjection = Abs(-Sin(angle) * normalX + Cos(angle) * normalY)
         ' Для корректной нормали проекция ненулевая; защитный минимум не допускает деления на ноль.
-        gap = (gap + heightValue / 2#) / MaxDouble(normalProjection, 0.000001)
+        gap = gap / MaxDouble(normalProjection, 0.000001)
     End If
     leftPos = anchorX + normalX * gap - widthValue / 2#
     topPos = anchorY + normalY * gap - heightValue / 2#
@@ -18326,23 +18330,23 @@ End Function
 
 ' Добавляет линию в список layout-элементов; фактический Shape создаст plotter.
 Private Sub AddLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal Weight As Double, ByVal hasArrowheads As Boolean)
-    AppendItem ITEM_LINE, x1, y1, x2, y2, vbNullString, 0#, colorValue, Weight, False, hasArrowheads
+        ByVal colorValue As Long, ByVal weight As Double, ByVal hasArrowheads As Boolean)
+    AppendItem ITEM_LINE, x1, y1, x2, y2, vbNullString, 0#, colorValue, weight, False, hasArrowheads
 End Sub
 
 ' Добавляет текстовую подпись в список layout-элементов; фактический Shape
 ' создаст plotter внутри нужного Chart.
 Private Sub AddText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
-        ByVal colorValue As Long, ByVal isBold As Boolean, ByVal FontSize As Double)
-    AppendItem ITEM_TEXT, leftPos, topPos, widthValue, heightValue, textValue, rotation, colorValue, 0#, isBold, False, FontSize
+        ByVal colorValue As Long, ByVal isBold As Boolean, ByVal fontSize As Double)
+    AppendItem ITEM_TEXT, leftPos, topPos, widthValue, heightValue, textValue, rotation, colorValue, 0#, isBold, False, fontSize
 End Sub
 
 ' Складывает готовый layout-элемент в параллельные массивы. Это простой VBA-
 ' формат без классов на каждый Shape, чтобы обновление схемы оставалось легким.
 Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal textValue As String, ByVal rotation As Double, ByVal colorValue As Long, ByVal Weight As Double, _
-        ByVal isBold As Boolean, ByVal hasArrowheads As Boolean, Optional ByVal FontSize As Double = 0#)
+        ByVal textValue As String, ByVal rotation As Double, ByVal colorValue As Long, ByVal weight As Double, _
+        ByVal isBold As Boolean, ByVal hasArrowheads As Boolean, Optional ByVal fontSize As Double = 0#)
     mCount = mCount + 1
     ReDim Preserve mKind(1 To mCount)
     ReDim Preserve mX1(1 To mCount)
@@ -18365,10 +18369,10 @@ Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Dou
     mText(mCount) = textValue
     mRotation(mCount) = rotation
     mColor(mCount) = colorValue
-    mWeight(mCount) = Weight
+    mWeight(mCount) = weight
     mBold(mCount) = isBold
     mArrowheads(mCount) = hasArrowheads
-    mFontSize(mCount) = FontSize
+    mFontSize(mCount) = fontSize
 End Sub
 
 ' Ограничивает визуальные величины диапазоном, в котором они остаются читаемыми.
@@ -18415,19 +18419,19 @@ Public Property Get rotation(ByVal index As Long) As Double: rotation = mRotatio
 ' Цвет элемента Chart.Shape.
 Public Property Get Color(ByVal index As Long) As Long: Color = mColor(index): End Property
 ' Толщина линии; для текста не используется.
-Public Property Get Weight(ByVal index As Long) As Double: Weight = mWeight(index): End Property
+Public Property Get weight(ByVal index As Long) As Double: weight = mWeight(index): End Property
 ' Нужно ли делать текст полужирным.
 Public Property Get Bold(ByVal index As Long) As Boolean: Bold = mBold(index): End Property
 ' Нужно ли добавить стрелки с обеих сторон линии.
 Public Property Get Arrowheads(ByVal index As Long) As Boolean: Arrowheads = mArrowheads(index): End Property
 ' Размер шрифта конкретной текстовой подписи.
-Public Property Get FontSize(ByVal index As Long) As Double: FontSize = mFontSize(index): End Property
+Public Property Get fontSize(ByVal index As Long) As Double: fontSize = mFontSize(index): End Property
 ' Общий масштаб оформления относительно базового размера Chart.
 Public Property Get VisualScale() As Double: VisualScale = mVisualScale: End Property
 ' Активна ли группа размеров; выключенные параметры не читаются.
-Public Property Get DimensionsEnabled() As Boolean: DimensionsEnabled = mDimensionsEnabled: End Property
+Public Property Get dimensionsEnabled() As Boolean: dimensionsEnabled = mDimensionsEnabled: End Property
 ' Активна ли группа подписей арматуры.
-Public Property Get RebarLabelsEnabled() As Boolean: RebarLabelsEnabled = mRebarLabelsEnabled: End Property
+Public Property Get rebarLabelsEnabled() As Boolean: rebarLabelsEnabled = mRebarLabelsEnabled: End Property
 
 
 
@@ -19723,7 +19727,7 @@ Public Property Get AnnotationSweepAngle(ByVal index As Long) As Double: Annotat
 ====================================================================================================
 COMPONENT: CSectionPlotter
 TYPE: 2
-LINES: 2056
+LINES: 2060
 ====================================================================================================
 Option Explicit
 
@@ -19757,6 +19761,7 @@ Private Const XL_CENTER As Long = -4108
 Private Const XL_VCENTER As Long = -4108
 Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1
 Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2
+Private Const MSO_TEXT_ORIENTATION_DOWNWARD As Long = 3
 Private Const MSO_SEGMENT_LINE As Long = 0
 Private Const MSO_EDITING_AUTO As Long = 0
 Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2
@@ -19862,7 +19867,7 @@ Public Sub Draw(ByVal Workbook As Object, ByVal data As CSectionPlotDataReader, 
     ' Проверяем активное оформление до очистки существующей схемы.
     Set mAnnotationLayout = New CPlotAnnotationLayout
     mAnnotationLayout.ConfigureFromSettings settings
-    If mAnnotationLayout.DimensionsEnabled Then
+    If mAnnotationLayout.dimensionsEnabled Then
         mDimensionArrowType = settings.GetRequiredChoice("Plot.Dimensions.ArrowType", Array("Triangle", "Stealth", "Diamond", "Oval", "Open"))
         mDimensionArrowSize = settings.GetRequiredChoice("Plot.Dimensions.ArrowSize", Array("Small", "Medium", "Wide"))
     End If
@@ -20059,7 +20064,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     If settings Is Nothing Then Exit Function
 
     Dim marginModel As Double
-    If mAnnotationLayout.DimensionsEnabled Then
+    If mAnnotationLayout.dimensionsEnabled Then
         marginModel = MaxDouble(marginModel, _
             LengthMmToModel(settings.GetDouble("Plot.Dimensions.Offset", 100#), lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextGap", 9#), _
@@ -20067,7 +20072,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
             AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextHeight", 13#), _
                 settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY))
     End If
-    If mAnnotationLayout.RebarLabelsEnabled Then
+    If mAnnotationLayout.rebarLabelsEnabled Then
         marginModel = MaxDouble(marginModel, _
             LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 30#), lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 9#), _
@@ -20476,15 +20481,15 @@ End Function
 
 ' Линейно смешивает два RGB-цвета.
 Private Function BlendColor(ByVal c1 As Long, ByVal c2 As Long, ByVal t As Double) As Long
-    Dim r1 As Long, g1 As Long, B1 As Long
-    Dim r2 As Long, g2 As Long, B2 As Long
+    Dim r1 As Long, g1 As Long, b1 As Long
+    Dim r2 As Long, g2 As Long, b2 As Long
     r1 = c1 Mod 256
     g1 = (c1 \ 256) Mod 256
-    B1 = (c1 \ 65536) Mod 256
+    b1 = (c1 \ 65536) Mod 256
     r2 = c2 Mod 256
     g2 = (c2 \ 256) Mod 256
-    B2 = (c2 \ 65536) Mod 256
-    BlendColor = RGB(CLng(r1 + (r2 - r1) * t), CLng(g1 + (g2 - g1) * t), CLng(B1 + (B2 - B1) * t))
+    b2 = (c2 \ 65536) Mod 256
+    BlendColor = RGB(CLng(r1 + (r2 - r1) * t), CLng(g1 + (g2 - g1) * t), CLng(b1 + (b2 - b1) * t))
 End Function
 
 ' Добавляет верхний служебный оверлей поверх элементов и аннотаций.
@@ -20512,7 +20517,7 @@ End Sub
 ' читаются только из snapshot Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
     If mContourEnabled Then DrawConcreteContour data
-    DrawShapeAnnotations data, mAnnotationLayout.DimensionsEnabled, mAnnotationLayout.RebarLabelsEnabled
+    DrawShapeAnnotations data, mAnnotationLayout.dimensionsEnabled, mAnnotationLayout.rebarLabelsEnabled
     If data.GeometryOnly Then
         DrawGeometryOnlyNote data
         Exit Sub
@@ -20646,11 +20651,11 @@ End Sub
 ' Незамкнутый путь и выключенная заливка не добавляют хорду между концами дуги.
 Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
-        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal Weight As Double)
+        ByVal sweepAngle As Double, ByVal colorValue As Long, ByVal weight As Double)
     Dim radius As Double
     radius = Sqr((startX - centerX) * (startX - centerX) + (startY - centerY) * (startY - centerY))
     If radius <= 0# Or Abs(sweepAngle) <= 0.000000000001 Then
-        DrawModelLine startX, startY, endX, endY, colorValue, Weight, "ContourArcLine"
+        DrawModelLine startX, startY, endX, endY, colorValue, weight, "ContourArcLine"
         Exit Sub
     End If
 
@@ -20683,7 +20688,7 @@ Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
     arcShape.Fill.Visible = False
     arcShape.line.Visible = True
     arcShape.line.ForeColor.RGB = colorValue
-    arcShape.line.Weight = Weight
+    arcShape.line.weight = weight
 End Sub
 
 ' Строит нейтральную линию по сохраненной плоскости деформаций LC.
@@ -20959,8 +20964,8 @@ End Function
 ' Здесь нет логики конкретной формы: если аннотация есть, layout размещает ее;
 ' если import не дал semantic-данных, Plotter ничего не угадывает.
 Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
-        ByVal DimensionsEnabled As Boolean, ByVal RebarLabelsEnabled As Boolean)
-    If Not DimensionsEnabled And Not RebarLabelsEnabled Then Exit Sub
+        ByVal dimensionsEnabled As Boolean, ByVal rebarLabelsEnabled As Boolean)
+    If Not dimensionsEnabled And Not rebarLabelsEnabled Then Exit Sub
 
     Dim layout As CPlotAnnotationLayout
     Set layout = mAnnotationLayout
@@ -20969,7 +20974,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
         mPlotWidth, mPlotHeight, data.lengthUnit
 
     Dim i As Long
-    If RebarLabelsEnabled Then
+    If rebarLabelsEnabled Then
         For i = 1 To data.annotationCount
             If StrComp(data.annotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Then
                 layout.AddRebarLabel data.AnnotationStartX(i), data.AnnotationStartY(i), _
@@ -20979,7 +20984,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
         Next i
     End If
 
-    If DimensionsEnabled Then
+    If dimensionsEnabled Then
         For i = 1 To data.annotationCount
             If StrComp(data.annotationType(i), "DIMENSION", vbTextCompare) = 0 Then
                 layout.AddDimension data.AnnotationStartX(i), data.AnnotationStartY(i), _
@@ -21004,7 +21009,7 @@ Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
         If StrComp(layout.ItemKind(i), "LINE", vbTextCompare) = 0 Then
             Dim lineShape As Object
             Set lineShape = DrawChartLine(layout.x1(i), layout.y1(i), layout.x2(i), layout.y2(i), _
-                layout.Color(i), layout.Weight(i), "AnnotationLine")
+                layout.Color(i), layout.weight(i), "AnnotationLine")
             If layout.Arrowheads(i) Then
                 With lineShape.line
                     .BeginArrowheadStyle = DimensionArrowStyle()
@@ -21017,7 +21022,7 @@ Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
             End If
         ElseIf StrComp(layout.ItemKind(i), "TEXT", vbTextCompare) = 0 Then
             AddChartText layout.x1(i), layout.y1(i), layout.x2(i), layout.y2(i), _
-                layout.text(i), layout.rotation(i), layout.Color(i), layout.Bold(i), True, layout.FontSize(i), True
+                layout.text(i), layout.rotation(i), layout.Color(i), layout.Bold(i), True, layout.fontSize(i), True
         End If
     Next i
 End Sub
@@ -21213,16 +21218,16 @@ End Sub
 ' Рисует Shape-линию по координатам модели.
 ' Используется для контуров и аннотационных линий, когда нужен именно Chart.Shape.
 Private Function DrawModelLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal Weight As Double, ByVal suffix As String) As Object
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Set DrawModelLine = DrawChartLine(ModelToChartX(x1), ModelToChartY(y1), ModelToChartX(x2), ModelToChartY(y2), _
-        colorValue, Weight, suffix)
+        colorValue, weight, suffix)
 End Function
 
 ' Рисует расчётную опорную линию одной тонкой сплошной Freeform-полосой.
 ' Для главных осей и нейтральной линии не используем Excel Line/Connector:
 ' у диагональных линий Excel может нестабильно трактовать рамку объекта.
 Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal Weight As Double, ByVal suffix As String)
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String)
     Dim cx1 As Double
     Dim cy1 As Double
     Dim cx2 As Double
@@ -21232,19 +21237,19 @@ Private Sub DrawModelReferenceLine(ByVal x1 As Double, ByVal y1 As Double, ByVal
     cx2 = ModelToChartX(x2)
     cy2 = ModelToChartY(y2)
 
-    If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(Weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then Exit Sub
-    DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, Weight, suffix
+    If Not ClipChartLineToPlotFrame(cx1, cy1, cx2, cy2, MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS) / 2#) Then Exit Sub
+    DrawChartReferenceBand cx1, cy1, cx2, cy2, colorValue, weight, suffix
 End Sub
 
 ' Рисует линию в координатах Chart/PlotArea.
 ' Все model-to-chart преобразования должны быть сделаны до вызова этого метода.
 Private Function DrawChartLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal Weight As Double, ByVal suffix As String) As Object
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Dim lineShape As Object
     Set lineShape = mChart.shapes.AddLine(x1, y1, x2, y2)
     lineShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     lineShape.line.ForeColor.RGB = colorValue
-    lineShape.line.Weight = Weight
+    lineShape.line.weight = weight
     Set DrawChartLine = lineShape
 End Function
 
@@ -21252,7 +21257,7 @@ End Function
 ' Такая форма движется вместе с окном схемы, но не страдает от геометрии
 ' стандартного Excel Line/Connector на диагональных направлениях.
 Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal Weight As Double, ByVal suffix As String) As Object
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String) As Object
     Dim dx As Double
     Dim dy As Double
     Dim lengthValue As Double
@@ -21262,7 +21267,7 @@ Private Function DrawChartReferenceBand(ByVal x1 As Double, ByVal y1 As Double, 
     If lengthValue <= 0.0000001 Then Exit Function
 
     Dim thickness As Double
-    thickness = MaxDouble(Weight, REFERENCE_BAND_MIN_THICKNESS)
+    thickness = MaxDouble(weight, REFERENCE_BAND_MIN_THICKNESS)
     Dim nx As Double
     Dim ny As Double
     nx = -dy / lengthValue * thickness / 2#
@@ -21336,14 +21341,14 @@ Private Function ClipLineParameter(ByVal p As Double, ByVal q As Double, _
         Exit Function
     End If
 
-    Dim R As Double
-    R = q / p
+    Dim r As Double
+    r = q / p
     If p < 0# Then
-        If R > tMax Then Exit Function
-        If R > tMin Then tMin = R
+        If r > tMax Then Exit Function
+        If r > tMin Then tMin = r
     Else
-        If R < tMin Then Exit Function
-        If R < tMax Then tMax = R
+        If r < tMin Then Exit Function
+        If r < tMax Then tMax = r
     End If
     ClipLineParameter = True
 End Function
@@ -21372,7 +21377,7 @@ End Sub
 ' в расчетной модели Y направлена вверх, а в координатах листа Excel - вниз.
 Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal widthModel As Double, ByVal heightModel As Double, ByVal rotationRad As Double, _
-        ByVal fillColor As Long, ByVal lineColor As Long, ByVal Weight As Double, _
+        ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double, _
         ByVal suffix As String) As Object
     Dim centerChartX As Double
     Dim centerChartY As Double
@@ -21390,7 +21395,7 @@ Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal cente
     rectShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     rectShape.Fill.ForeColor.RGB = fillColor
     rectShape.line.ForeColor.RGB = lineColor
-    rectShape.line.Weight = Weight
+    rectShape.line.weight = weight
     If Abs(rotationRad) > 0.000000000001 Then
         rectShape.rotation = -rotationRad * 180# / GEOM_PI
         SetShapeCenter rectShape, centerChartX, centerChartY
@@ -21401,7 +21406,7 @@ End Function
 ' Рисует овал/круг в координатах модели как Shape.
 ' Нужен для кругового контура и для стержней в поэлементном Shape-режиме.
 Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
-        ByVal colorValue As Long, ByVal Weight As Double, ByVal suffix As String, ByVal filled As Boolean, _
+        ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean, _
         Optional ByVal fillColor As Long = -1) As Object
     Dim leftPos As Double, topPos As Double, widthValue As Double, heightValue As Double
     leftPos = ModelToChartX(MinDouble(x1, x2))
@@ -21414,7 +21419,7 @@ Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     Set ovalShape = mChart.shapes.AddShape(MSO_SHAPE_OVAL, leftPos, topPos, widthValue, heightValue)
     ovalShape.name = SHAPE_PREFIX & suffix & CStr(mChart.shapes.count)
     ovalShape.line.ForeColor.RGB = colorValue
-    ovalShape.line.Weight = Weight
+    ovalShape.line.weight = weight
     If filled Then
         If fillColor = -1 Then fillColor = colorValue
         ovalShape.Fill.ForeColor.RGB = fillColor
@@ -21459,7 +21464,7 @@ End Sub
 Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
         ByVal colorValue As Long, ByVal isBold As Boolean, Optional ByVal centered As Boolean = False, _
-        Optional ByVal FontSize As Double = 8#, Optional ByVal useNativeVerticalText As Boolean = False, _
+        Optional ByVal fontSize As Double = 8#, Optional ByVal useNativeVerticalText As Boolean = False, _
         Optional ByVal isItalic As Boolean = False) As Object
     Dim centerX As Double
     Dim centerY As Double
@@ -21468,14 +21473,17 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
 
     Dim orientation As Long
     orientation = MSO_TEXT_ORIENTATION_HORIZONTAL
-    If useNativeVerticalText And Abs(rotation) = 90# Then orientation = MSO_TEXT_ORIENTATION_UPWARD
+    If useNativeVerticalText And Abs(rotation) = 90# Then
+        ' Знак вертикального угла задаёт направление чтения, не меняя рамку подписи.
+        If rotation < 0# Then orientation = MSO_TEXT_ORIENTATION_DOWNWARD Else orientation = MSO_TEXT_ORIENTATION_UPWARD
+    End If
 
     Dim textShape As Object
     Set textShape = mChart.shapes.AddTextbox(orientation, leftPos, topPos, widthValue, heightValue)
     textShape.name = SHAPE_PREFIX & "Text" & CStr(mChart.shapes.count)
     textShape.TextFrame.Characters().text = textValue
-    If FontSize <= 0# Then FontSize = 8#
-    textShape.TextFrame.Characters().font.size = FontSize
+    If fontSize <= 0# Then fontSize = 8#
+    textShape.TextFrame.Characters().font.size = fontSize
     textShape.TextFrame.Characters().font.Color = colorValue
     textShape.TextFrame.Characters().font.Bold = isBold
     textShape.TextFrame.Characters().font.Italic = isItalic
@@ -22427,7 +22435,7 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstColumn As Long, ByVal
     Set block = target.Offset(0, firstColumn - 1).Resize(target.rows.count, lastColumn - firstColumn + 1)
     block.Borders.LineStyle = 1
     block.Borders.Color = RGB(0, 0, 0)
-    block.Borders.Weight = 2
+    block.Borders.weight = 2
     block.HorizontalAlignment = -4108
     block.VerticalAlignment = -4108
     target.Offset(0, firstColumn - 1).Resize(HEADER_ROWS, lastColumn - firstColumn + 1).Interior.Color = HEADER_COLOR
@@ -23361,7 +23369,7 @@ Private Sub FormatBlock(ByVal target As Object, ByVal firstCol As Long, ByVal la
     Dim block As Object
     Set block = target.Offset(0, firstCol - 1).Resize(target.rows.count, lastCol - firstCol + 1)
     block.Borders.LineStyle = 1
-    block.Borders.Weight = 2
+    block.Borders.weight = 2
     block.rows(1).Resize(HEADER_ROWS).font.Bold = True
     target.Offset(0, firstCol - 1).Resize(HEADER_ROWS, lastCol - firstCol + 1).Interior.Color = HEADER_COLOR
 End Sub
@@ -35736,15 +35744,15 @@ End Property
 ' Для бетонного сечения weight равен площади. Для приведенного сечения арматура
 ' добавляется как (n-1)*As, поэтому ее собственная инерция также умножается на
 ' тот же коэффициент приведения.
-Private Sub AddWeightedArea(ByVal Weight As Double, ByVal x As Double, ByVal y As Double, _
+Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y As Double, _
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
         Optional ByVal localIxy As Double = 0#)
-    mArea = mArea + Weight
-    mStaticMomentX = mStaticMomentX + Weight * y
-    mStaticMomentY = mStaticMomentY + Weight * x
-    mIx = mIx + localIx + Weight * y * y
-    mIy = mIy + localIy + Weight * x * x
-    mIxy = mIxy + localIxy + Weight * x * y
+    mArea = mArea + weight
+    mStaticMomentX = mStaticMomentX + weight * y
+    mStaticMomentY = mStaticMomentY + weight * x
+    mIx = mIx + localIx + weight * y * y
+    mIy = mIy + localIy + weight * x * x
+    mIxy = mIxy + localIxy + weight * x * y
 End Sub
 
 ' Добавляет бетонный элемент в накопление A/I через CSectionModel.
@@ -41092,11 +41100,11 @@ Private mFailureCode As ESolverFailureCode ' Причина последнего
 Public Function solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Double, _
         ByVal a21 As Double, ByVal a22 As Double, ByVal a23 As Double, _
         ByVal a31 As Double, ByVal a32 As Double, ByVal a33 As Double, _
-        ByVal B1 As Double, ByVal B2 As Double, ByVal b3 As Double) As Boolean
+        ByVal b1 As Double, ByVal b2 As Double, ByVal b3 As Double) As Boolean
 
     Dim a(1 To 3, 1 To 4) As Double
-    a(1, 1) = a11: a(1, 2) = a12: a(1, 3) = a13: a(1, 4) = B1
-    a(2, 1) = a21: a(2, 2) = a22: a(2, 3) = a23: a(2, 4) = B2
+    a(1, 1) = a11: a(1, 2) = a12: a(1, 3) = a13: a(1, 4) = b1
+    a(2, 1) = a21: a(2, 2) = a22: a(2, 3) = a23: a(2, 4) = b2
     a(3, 1) = a31: a(3, 2) = a32: a(3, 3) = a33: a(3, 4) = b3
 
     mSolved = False
@@ -41158,12 +41166,12 @@ Public Function solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
     Dim r1 As Double
     Dim r2 As Double
     Dim r3 As Double
-    r1 = a11 * mX1 + a12 * mX2 + a13 * mX3 - B1
-    r2 = a21 * mX1 + a22 * mX2 + a23 * mX3 - B2
+    r1 = a11 * mX1 + a12 * mX2 + a13 * mX3 - b1
+    r2 = a21 * mX1 + a22 * mX2 + a23 * mX3 - b2
     r3 = a31 * mX1 + a32 * mX2 + a33 * mX3 - b3
     mAbsoluteResidual = Abs(r1) + Abs(r2) + Abs(r3)
 
-    mRelativeResidual = CalculateRelativeResidual(mAbsoluteResidual, B1, B2, b3)
+    mRelativeResidual = CalculateRelativeResidual(mAbsoluteResidual, b1, b2, b3)
 
     If mRelativeResidual > 0.00000001 Then
         mFailureCode = sfcNumericalFailure
@@ -41195,10 +41203,10 @@ End Function
 ' Только при переполнении суммы модулей RHS вычисляет то же отношение
 ' через общий масштаб; большие конечные компоненты не считаются нулем.
 Private Function CalculateRelativeResidual(ByVal AbsoluteResidual As Double, _
-        ByVal B1 As Double, ByVal B2 As Double, ByVal b3 As Double) As Double
+        ByVal b1 As Double, ByVal b2 As Double, ByVal b3 As Double) As Double
     Dim bNorm As Double
     On Error GoTo ScaledNorm
-    bNorm = Abs(B1) + Abs(B2) + Abs(b3)
+    bNorm = Abs(b1) + Abs(b2) + Abs(b3)
     On Error GoTo 0
     If bNorm > 1E-18 Then
         CalculateRelativeResidual = AbsoluteResidual / bNorm
@@ -41210,11 +41218,11 @@ ScaledNorm:
     If Err.number <> 6 Then Err.Raise Err.number, Err.source, Err.description
     Err.clear
     Dim rhsScale As Double
-    rhsScale = Abs(B1)
-    If Abs(B2) > rhsScale Then rhsScale = Abs(B2)
+    rhsScale = Abs(b1)
+    If Abs(b2) > rhsScale Then rhsScale = Abs(b2)
     If Abs(b3) > rhsScale Then rhsScale = Abs(b3)
     CalculateRelativeResidual = (AbsoluteResidual / rhsScale) / _
-        (Abs(B1) / rhsScale + Abs(B2) / rhsScale + Abs(b3) / rhsScale)
+        (Abs(b1) / rhsScale + Abs(b2) / rhsScale + Abs(b3) / rhsScale)
 End Function
 
 ' Решение маленькой линейной системы 3x3 Этот класс нужен Newton/Secant-решателям для поправок
@@ -41739,7 +41747,7 @@ Private Function TryBrentStep(ByVal a As Double, ByVal b As Double, ByVal c As D
         ByVal fa As Double, ByVal fb As Double, ByVal fc As Double, ByVal xm As Double, _
         ByVal tol As Double, ByVal previousStep As Double, ByRef result As Double) As Boolean
     On Error GoTo UnsafeInterpolation
-    Dim s As Double, p As Double, q As Double, R As Double
+    Dim s As Double, p As Double, q As Double, r As Double
     If fa = 0# Or fc = 0# Then Exit Function
     s = fb / fa
     If a = c Then
@@ -41747,9 +41755,9 @@ Private Function TryBrentStep(ByVal a As Double, ByVal b As Double, ByVal c As D
         q = 1# - s
     Else
         q = fa / fc
-        R = fb / fc
-        p = s * (2# * xm * q * (q - R) - (b - a) * (R - 1#))
-        q = (q - 1#) * (R - 1#) * (s - 1#)
+        r = fb / fc
+        p = s * (2# * xm * q * (q - r) - (b - a) * (r - 1#))
+        q = (q - 1#) * (r - 1#) * (s - 1#)
     End If
     If q = 0# Then Exit Function
     If p > 0# Then q = -q
@@ -47887,14 +47895,14 @@ Private Sub FindBoundingRows(ByVal tableData As Variant, ByVal rowCount As Long,
         ByRef lowerRow As Long, ByRef upperRow As Long)
     lowerRow = 2
     upperRow = rowCount
-    Dim R As Long
-    For R = 2 To rowCount
-        If CDbl(tableData(R, 3)) <= slenderness Then lowerRow = R
-        If CDbl(tableData(R, 3)) >= slenderness Then
-            upperRow = R
+    Dim r As Long
+    For r = 2 To rowCount
+        If CDbl(tableData(r, 3)) <= slenderness Then lowerRow = r
+        If CDbl(tableData(r, 3)) >= slenderness Then
+            upperRow = r
             Exit For
         End If
-    Next R
+    Next r
     If slenderness <= CDbl(tableData(2, 3)) Then lowerRow = 2: upperRow = 2
     If slenderness >= CDbl(tableData(rowCount, 3)) Then lowerRow = rowCount: upperRow = rowCount
 End Sub
@@ -58881,8 +58889,8 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: собирает два прямоугольника с общей левой гранью и без смещения.
 ' Размеры заданы явно; функция не читает и не меняет Config.
-Private Function RectSetGeometry(ByVal B1 As Double, ByVal H1 As Double, ByVal B2 As Double, ByVal H2 As Double) As CGeometryRegion
-    Set RectSetGeometry = FixtureBoxes(Array(Array(0#, 0#, B2, H2), Array(0#, H2, B1, H1)))
+Private Function RectSetGeometry(ByVal b1 As Double, ByVal H1 As Double, ByVal b2 As Double, ByVal H2 As Double) As CGeometryRegion
+    Set RectSetGeometry = FixtureBoxes(Array(Array(0#, 0#, b2, H2), Array(0#, H2, b1, H1)))
 End Function
 
 ' ДЛЯ ТЕСТОВ: создает один круговой ряд A400 с заданным осевым отступом.
@@ -58905,18 +58913,18 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: воспроизводит фиксированную многогранную раскладку RectSet.
 ' Отступ и диаметр варьируются, числа стержней граней заданы самой fixture.
-Private Function RectSetRebars(ByVal B1 As Double, ByVal H1 As Double, ByVal B2 As Double, ByVal H2 As Double, _
+Private Function RectSetRebars(ByVal b1 As Double, ByVal H1 As Double, ByVal b2 As Double, ByVal H2 As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double) As CRebarLayout
     Dim a As Double, d As Double: a = axisDistance: d = barDiameter
-    Set RectSetRebars = FixtureStraightRows(Array(Array(0#, 0#, B2, H2), Array(0#, H2, B1, H1)), _
+    Set RectSetRebars = FixtureStraightRows(Array(Array(0#, 0#, b2, H2), Array(0#, H2, b1, H1)), _
         Array(Array("H1.as_1", a, H2, a, H2 + H1, 13, d, a, a), _
-              Array("H1.as_2", B1 - a, H2 + H1, B1 - a, H2, 12, d, a, a), _
-              Array("B1.as_1", 0#, H2 + H1 - a, B1, H2 + H1 - a, 6, d, a, a), _
-              Array("B1.as_2", B1, H2 + a, 0#, H2 + a, 6, d, a, a), _
+              Array("H1.as_2", b1 - a, H2 + H1, b1 - a, H2, 12, d, a, a), _
+              Array("B1.as_1", 0#, H2 + H1 - a, b1, H2 + H1 - a, 6, d, a, a), _
+              Array("B1.as_2", b1, H2 + a, 0#, H2 + a, 6, d, a, a), _
               Array("H2.as_1", a, 0#, a, H2, 6, d, a, a), _
-              Array("H2.as_2", B2 - a, H2, B2 - a, 0#, 6, d, a, a), _
-              Array("B2.as_1", 0#, H2 - a, B2, H2 - a, 13, d, a, a), _
-              Array("B2.as_2", B2, a, 0#, a, 12, d, a, a)))
+              Array("H2.as_2", b2 - a, H2, b2 - a, 0#, 6, d, a, a), _
+              Array("B2.as_1", 0#, H2 - a, b2, H2 - a, 13, d, a, a), _
+              Array("B2.as_2", b2, a, 0#, a, 12, d, a, a)))
 End Function
 
 ' Проверяет утвержденный словарь ResultMeta -> внешний статус.
@@ -63615,7 +63623,7 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
     Dim section As CSectionModel, provider As CMaterialModelProvider, props As CSectionPropertiesCalculator
     Dim row As Long, column As Long, j As Long, data As Variant, calc As CStabilityCalculator
     Dim baseline As CStabilityCalculator, q As Double, node As Double, prefix As String
-    Dim expectedM As Double, expectedL As Double, Weight As Double, delta As Double
+    Dim expectedM As Double, expectedL As Double, weight As Double, delta As Double
     Dim previous As Double, nextNode As Double, shift As Double, query As Double, expected As Double
     Dim covered As Long
     On Error GoTo Failed
@@ -63630,12 +63638,12 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
         For column = 1 To 8
             tableRange.formula = saved
             prefix = "audit03.table.behavior." & CStr(row) & "." & CStr(column)
-            q = 0.5: Weight = 0#: delta = 0.05
+            q = 0.5: weight = 0#: delta = 0.05
             Select Case column
-                Case 4: q = 0.125: Weight = 0.5
-                Case 5: q = 0.25: Weight = 1#
-                Case 6: q = 0.5: Weight = 1#
-                Case 7: q = 0.75: Weight = 0.5
+                Case 4: q = 0.125: weight = 0.5
+                Case 5: q = 0.25: weight = 1#
+                Case 6: q = 0.5: weight = 1#
+                Case 7: q = 0.75: weight = 0.5
             End Select
             If column = 3 Then
                 ' Только диагностические phi делают все узлы наблюдаемыми,
@@ -63695,7 +63703,7 @@ Public Function RunAudit03SP35TableBehaviorTests(Optional ByRef passed As Long =
                     AssertClose stats, prefix & ".unaffectedM", calc.PhiM1, expectedM, 0.00000001
                     AssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 Else
-                    AssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + Weight * delta, 0.00000001
+                    AssertClose stats, prefix & ".activeM", calc.PhiM1, expectedM + weight * delta, 0.00000001
                     AssertClose stats, prefix & ".unaffectedL", calc.PhiLTable1, expectedL, 0.00000001
                     AssertTrue stats, prefix & ".forceChanged", Abs(calc.Nultimate1 - baseline.Nultimate1) > 0.000001
                 End If
@@ -83045,7 +83053,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestPlotConfig
 TYPE: 1
-LINES: 1697
+LINES: 1704
 ====================================================================================================
 Option Explicit
 
@@ -83408,18 +83416,25 @@ Public Function RunArbitraryAnnotationLayoutTests() As String
                             If Abs(layout.rotation(item)) = 90# Then
                                 AssertClose stats, prefix & ".vertical." & CStr(item), Abs(px), 0#, 0.000001
                                 AssertTrue stats, prefix & ".native.vertical." & CStr(item), layout.x2(item) < layout.y2(item)
+                                If item = 4 Then AssertClose stats, prefix & ".dimension.upward", layout.rotation(item), 90#, 0#
+                                If item = 6 Then
+                                    If normalX * sign > 0# Then
+                                        AssertClose stats, prefix & ".rebar.right.downward", layout.rotation(item), -90#, 0#
+                                    Else
+                                        AssertClose stats, prefix & ".rebar.left.upward", layout.rotation(item), 90#, 0#
+                                    End If
+                                End If
                             Else
                                 angle = layout.rotation(item) * GEOM_PI / 180#
                                 AssertClose stats, prefix & ".parallel." & CStr(item), Cos(angle) * py - Sin(angle) * px, 0#, 0.000001
                                 AssertTrue stats, prefix & ".readable." & CStr(item), Abs(layout.rotation(item)) <= 90#
                             End If
-                            If CDbl(value) <> 0# And CDbl(value) <> 90# Then
+                            ' Один отсчёт TextGap от центра текста для всех углов, включая 0/90.
                                 cx = layout.x1(item) + layout.x2(item) / 2#: cy = layout.y1(item) + layout.y2(item) / 2#
                                 If item = 4 Then cx = cx - 0.5 * (layout.x1(3) + layout.x2(3)): cy = cy - 0.5 * (layout.y1(3) + layout.y2(3))
                                 If item = 6 Then cx = cx - 0.5 * (layout.x1(5) + layout.x2(5)): cy = cy - 0.5 * (layout.y1(5) + layout.y2(5))
                                 gap = 9#: If unit = "mm" Then gap = 9# * GeomMin(sx, sy)
-                                AssertClose stats, prefix & ".frame.clearance." & CStr(item), sign * (cx * qx + cy * qy) - layout.y2(item) / 2#, gap, 0.000001
-                            End If
+                                AssertClose stats, prefix & ".text.center.gap." & CStr(item), sign * (cx * qx + cy * qy), gap, 0.000001
                         Next item
                         savedRotation = layout.rotation(6): savedLeft = layout.x1(6)
                         layout.Initialize -200#, 200#, -200#, 200#, 0#, 0#, 640#, CDbl(frame), "mm"
@@ -83543,10 +83558,10 @@ Private Sub TestAudit03NamedAnnotationSettings(ByRef stats As TUiTestStats)
                     If itemIndex = 4 Then measured = 199.95 Else measured = 242.95
                     AssertClose stats, prefix & ".effect", layout.y1(itemIndex) + layout.y2(itemIndex) / 2#, measured, 0.000000001
                 Case "Offset": AssertClose stats, prefix & ".effect", layout.y1(itemIndex - 1), 172#, 0.000000001
-                Case "LineWeight": AssertClose stats, prefix & ".effect", layout.Weight(itemIndex - 1), 2.5, 0#
-                Case "ExtensionLineWeight": AssertClose stats, prefix & ".effect", layout.Weight(1), 1.25, 0#
-                Case "TextUnits": AssertClose stats, prefix & ".effect", layout.FontSize(itemIndex), 6#, 0.000000001
-                Case "TextHeight": AssertClose stats, prefix & ".effect", layout.FontSize(itemIndex), 17.2, 0.000000001
+                Case "LineWeight": AssertClose stats, prefix & ".effect", layout.weight(itemIndex - 1), 2.5, 0#
+                Case "ExtensionLineWeight": AssertClose stats, prefix & ".effect", layout.weight(1), 1.25, 0#
+                Case "TextUnits": AssertClose stats, prefix & ".effect", layout.fontSize(itemIndex), 6#, 0.000000001
+                Case "TextHeight": AssertClose stats, prefix & ".effect", layout.fontSize(itemIndex), 17.2, 0.000000001
                 Case "TextGap": AssertClose stats, prefix & ".effect", layout.y1(itemIndex) + layout.y2(itemIndex) / 2#, 182.75, 0.000000001
                 Case "Color": AssertTrue stats, prefix & ".effect", layout.Color(itemIndex - 1) = RGB(17, 34, 51) And layout.Color(itemIndex) = RGB(17, 34, 51)
                 Case "ExtensionLineColor": AssertTrue stats, prefix & ".effect", layout.Color(1) = RGB(51, 34, 17)
@@ -84511,9 +84526,9 @@ Private Sub TestAudit03AnnotationLayoutContracts(ByRef stats As TUiTestStats)
             layout.AddDimension -50#, 0#, 50#, 0#, 0#, 1#, "DIM"
             layout.AddRebarLabel -50#, 0#, 50#, 0#, 0#, 1#, "REBAR"
             Select Case CStr(metric(index))
-                Case "Font": measured = layout.FontSize(CLng(item(index)))
+                Case "Font": measured = layout.fontSize(CLng(item(index)))
                 Case "Y": measured = layout.y1(CLng(item(index)))
-                Case "Weight": measured = layout.Weight(CLng(item(index)))
+                Case "Weight": measured = layout.weight(CLng(item(index)))
                 Case "CenterY": measured = layout.y1(CLng(item(index))) + layout.y2(CLng(item(index))) / 2#
             End Select
             AssertClose stats, "audit03.annotation.mutation.p" & CStr(position) & "." & CStr(mutationKeys(index)), measured, CDbl(expected(index)), 0.000000001
@@ -84551,15 +84566,15 @@ Private Sub TestAudit03AnnotationLayoutContracts(ByRef stats As TUiTestStats)
                 AssertClose stats, prefix & ".dimension.x", layout.x1(3), 160#, 0.000000001
                 AssertClose stats, prefix & ".dimension.y", layout.y1(3), 193.5, 0.000000001
                 AssertClose stats, prefix & ".dimension.end", layout.x2(3), 480#, 0.000000001
-                AssertClose stats, prefix & ".font", layout.FontSize(4), font, 0.000000001
+                AssertClose stats, prefix & ".font", layout.fontSize(4), font, 0.000000001
                 AssertClose stats, prefix & ".textPlacement", layout.y1(4) + layout.y2(4) / 2#, 193.5 + sign * gap, 0.000000001
                 AssertClose stats, prefix & ".rebarPlacement", layout.y1(6) + layout.y2(6) / 2#, 215# + sign * (21.5 + gap), 0.000000001
                 AssertTrue stats, prefix & ".black", layout.Color(3) = 0 And layout.Color(4) = 0 And layout.Color(5) = 0
                 AssertTrue stats, prefix & ".extensionColor", layout.Color(1) = RGB(1, 2, 3)
-                AssertClose stats, prefix & ".lineWeight", layout.Weight(3), 1.5, 0#
-                AssertClose stats, prefix & ".extensionWeight", layout.Weight(1), 0.75, 0#
-                AssertClose stats, prefix & ".rebarWeight", layout.Weight(5), 1.5, 0#
-                AssertClose stats, prefix & ".rebarFont", layout.FontSize(6), font, 0.000000001
+                AssertClose stats, prefix & ".lineWeight", layout.weight(3), 1.5, 0#
+                AssertClose stats, prefix & ".extensionWeight", layout.weight(1), 0.75, 0#
+                AssertClose stats, prefix & ".rebarWeight", layout.weight(5), 1.5, 0#
+                AssertClose stats, prefix & ".rebarFont", layout.fontSize(6), font, 0.000000001
                 AssertTrue stats, prefix & ".arrows", layout.Arrowheads(3) And Not layout.Arrowheads(1) And Not layout.Arrowheads(5)
             Next placement
         Next units
@@ -86141,7 +86156,7 @@ Private Sub TestAnnotationLayoutValues(ByRef stats As TProfileStats, ByVal sourc
             prefix = "presentationConfig." & CStr(column) & ".Color." & CStr(Color)
             If column = 2 Then Check stats, prefix & ".text", layout.Color(6) = base Else Check stats, prefix & ".text", layout.Color(4) = base
             Check stats, prefix & ".extension", layout.Color(1) = base And layout.Color(2) = base
-            CheckClose stats, prefix & ".lineWeight", layout.Weight(3), 2#, 0#
+            CheckClose stats, prefix & ".lineWeight", layout.weight(3), 2#, 0#
             CheckClose stats, prefix & ".offset", layout.y1(3), 193.5, 0.000000000001
             layout.Initialize -500#, 500#, -500#, 500#, 0#, 0#, 640#, 430#, "mm"
             Check stats, prefix & ".reset", layout.count = 0
@@ -86159,7 +86174,7 @@ Private Sub TestAnnotationLayoutValues(ByRef stats As TProfileStats, ByVal sourc
             layout.AddRebarLabel -100#, 0#, 100#, 0#, 0#, 1#, "REBAR"
             prefix = "presentationConfig." & CStr(column) & ".TextUnits.mm." & CStr(height)
             If column = 2 Then base = 6 Else base = 4
-            CheckClose stats, prefix & ".font", layout.FontSize(base), CDbl(height) * 0.43, 0.000000000001
+            CheckClose stats, prefix & ".font", layout.fontSize(base), CDbl(height) * 0.43, 0.000000000001
             If column = 2 Then
                 Check stats, prefix & ".Inside", layout.y1(6) > 215#
             Else
@@ -95694,13 +95709,13 @@ End Sub
 Private Function Audit02SnapshotTablesEqual(ByRef beforeTable As Variant, ByRef afterTable As Variant) As Boolean
     If UBound(beforeTable, 1) <> UBound(afterTable, 1) Then Exit Function
     If UBound(beforeTable, 2) <> UBound(afterTable, 2) Then Exit Function
-    Dim R As Long
+    Dim r As Long
     Dim c As Long
-    For R = 1 To UBound(beforeTable, 1)
+    For r = 1 To UBound(beforeTable, 1)
         For c = 1 To UBound(beforeTable, 2)
-            If CStr(beforeTable(R, c)) <> CStr(afterTable(R, c)) Then Exit Function
+            If CStr(beforeTable(r, c)) <> CStr(afterTable(r, c)) Then Exit Function
         Next c
-    Next R
+    Next r
     Audit02SnapshotTablesEqual = True
 End Function
 
@@ -95798,18 +95813,18 @@ Private Sub TestAudit03ReaderRows(ByRef stats As TUiTestStats, ByVal sheet As Ob
     On Error GoTo Failed
     sheet.cells.ClearContents
     Dim data(1 To 13, 1 To 7) As Variant
-    Dim R As Long
-    For R = 2 To 13
-        data(R, 1) = "ROW_" & CStr(R)
-        data(R, 2) = 0#: data(R, 3) = 0#: data(R, 4) = 0#
-        data(R, 5) = "PR1"
-    Next R
+    Dim r As Long
+    For r = 2 To 13
+        data(r, 1) = "ROW_" & CStr(r)
+        data(r, 2) = 0#: data(r, 3) = 0#: data(r, 4) = 0#
+        data(r, 5) = "PR1"
+    Next r
     data(2, 2) = "abc": data(3, 3) = "abc": data(4, 4) = "abc"
     data(5, 2) = CVErr(xlErrDiv0)
     data(6, 2) = "   "
-    For R = 1 To 7
-        data(7, R) = Empty
-    Next R
+    For r = 1 To 7
+        data(7, r) = Empty
+    Next r
     data(8, 2) = CStr(42.5): data(8, 6) = "LambdaN"
     data(9, 6) = "LambdaN"
     data(10, 1) = " ": data(10, 2) = 1000#
@@ -95839,13 +95854,13 @@ Private Sub TestAudit03ReaderRows(ByRef stats As TUiTestStats, ByVal sheet As Ob
     AssertClose stats, "audit03.reader.rows.numericString", batch.n(5), 42.5, 0#
     AssertClose stats, "audit03.reader.rows.numericFormula", batch.n(6), 5#, 0#
     batch.Execute
-    For R = 1 To 4
-        AssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(R), batch.ResultAt(R).status, "InputErr"
-        AssertTrue stats, "audit03.reader.rows.comment." & CStr(R), Len(batch.ResultAt(R).OverallMeta.resultComment) > 0
-    Next R
-    For R = 7 To 9
-        AssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(R), batch.ResultAt(R).status, "InputErr"
-    Next R
+    For r = 1 To 4
+        AssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(r), batch.ResultAt(r).status, "InputErr"
+        AssertTrue stats, "audit03.reader.rows.comment." & CStr(r), Len(batch.ResultAt(r).OverallMeta.resultComment) > 0
+    Next r
+    For r = 7 To 9
+        AssertTextEquals stats, "audit03.reader.rows.invalid." & CStr(r), batch.ResultAt(r).status, "InputErr"
+    Next r
     AppendLine stats, "COMMENT: audit03.reader.rows.valid; " & batch.ResultAt(10).OverallMeta.resultComment
     AssertTrue stats, "audit03.reader.rows.validReachedResults", batch.ResultAt(10).status <> "InputErr"
     Exit Sub
@@ -99211,7 +99226,7 @@ Private Sub TestConfigSettingsRightBorder(ByRef stats As TUiTestStats)
         If cell.MergeCells Then Set cell = cell.MergeArea
         AssertTrue stats, "config.settings.rightBorder." & CStr(row), _
             cell.Borders(xlEdgeRight).LineStyle = xlDash And _
-            cell.Borders(xlEdgeRight).Weight = xlThin And _
+            cell.Borders(xlEdgeRight).weight = xlThin And _
             cell.Borders(xlEdgeRight).Color = RGB(0, 0, 0)
     Next row
     Exit Sub
@@ -104749,9 +104764,9 @@ Implements ISectionRecipe
 Private Type TRectSetDimensions
     shape As String
     header As Long
-    B1 As Double
+    b1 As Double
     H1 As Double
-    B2 As Double
+    b2 As Double
     H2 As Double
     Offset As Double
 End Type
@@ -104767,8 +104782,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set facade = New CSectionDefinitionBuilder ' Создаём сборщик описания сечения.
     facade.Initialize "RectSet" ' Начинаем описание выбранного типа.
     AddGeometry facade, sizes, upper, lower, Outer ' Добавляем подготовленные границы бетона.
-    AddRectangleRows facade, table, units, sizes.header, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1 ' Армирование четырёх граней верхнего прямоугольника.
-    If sizes.shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.header, 4, 0#, 0#, sizes.B2, sizes.H2 ' Армирование нижней части, если она есть.
+    AddRectangleRows facade, table, units, sizes.header, 0, sizes.Offset, sizes.H2, sizes.b1, sizes.H1 ' Армирование четырёх граней верхнего прямоугольника.
+    If sizes.shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.header, 4, 0#, 0#, sizes.b2, sizes.H2 ' Армирование нижней части, если она есть.
     AddDimensions facade, sizes, upper, lower, Outer ' Добавляем габариты и размеры сечения.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
 End Function
@@ -104783,34 +104798,34 @@ Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUn
     If sizes.shape <> "Rectangle" And sizes.shape <> "LSection" Then sizes.shape = "TwoRectangles"
     sizes.header = table.RowByKey("H1")
     sizes.H1 = table.length(sizes.header + 1, 1, units)
-    sizes.B1 = table.length(sizes.header + 1, 2, units)
+    sizes.b1 = table.length(sizes.header + 1, 2, units)
     Require table, sizes.header + 1, 1, sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
-    Require table, sizes.header + 1, 2, sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
+    Require table, sizes.header + 1, 2, sizes.b1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
     If sizes.shape <> "Rectangle" Then
         sizes.H2 = table.length(sizes.header + 1, 3, units)
-        sizes.B2 = table.length(sizes.header + 1, 4, units)
+        sizes.b2 = table.length(sizes.header + 1, 4, units)
         Require table, sizes.header + 1, 3, sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
-        Require table, sizes.header + 1, 4, sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
-        If sizes.shape = "LSection" Then Require table, sizes.header + 1, 2, sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
+        Require table, sizes.header + 1, 4, sizes.b2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
+        If sizes.shape = "LSection" Then Require table, sizes.header + 1, 2, sizes.b1 < sizes.b2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
     End If
     If sizes.shape = "TwoRectangles" Then
         Dim row As Long
         row = table.RowByKey("RectSet.UpperOffsetX")
         sizes.Offset = table.length(row, 2, units)
-        Require table, row, 2, sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
+        Require table, row, 2, sizes.Offset < sizes.b2 - GEOM_TOLERANCE And sizes.Offset + sizes.b1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
     End If
 End Sub
 
 ' Добавляет контуры верхнего и, если он нужен, нижнего прямоугольника. Через upper,
 ' lower и outer отдаёт их линии и общую наружную границу; для одного прямоугольника lower пуст.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByRef upper As CGeometryPath, ByRef lower As CGeometryPath, ByRef Outer As CGeometryPath)
-    Set upper = facade.RectanglePath("Upper", sizes.Offset, sizes.H2, sizes.B1, sizes.H1) ' Верхняя часть: левый нижний угол, ширина и высота, мм.
+    Set upper = facade.RectanglePath("Upper", sizes.Offset, sizes.H2, sizes.b1, sizes.H1) ' Верхняя часть: левый нижний угол, ширина и высота, мм.
     If sizes.shape = "Rectangle" Then
         Set Outer = upper ' У одиночного прямоугольника его контур и есть наружная граница.
     Else
-        Set lower = facade.RectanglePath("Lower", 0#, 0#, sizes.B2, sizes.H2) ' Нижняя часть начинается в (0, 0); B2 и H2 — её габариты, мм.
+        Set lower = facade.RectanglePath("Lower", 0#, 0#, sizes.b2, sizes.H2) ' Нижняя часть начинается в (0, 0); B2 и H2 — её габариты, мм.
         ' Получаем общую границу двух смежных прямоугольников.
-        Set Outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.Offset, sizes.H2, sizes.B1, sizes.H1)))
+        Set Outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.b2, sizes.H2), Array(sizes.Offset, sizes.H2, sizes.b1, sizes.H1)))
     End If
     facade.Outer "OUTER", Outer.id, "Сегмент контура сечения.", namingPolicy:=SequentialByKind ' Назначаем эту замкнутую линию наружной границей бетона.
 
@@ -104822,7 +104837,7 @@ Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     facade.VerticalExtent "DIM_H", Outer.id, "H", GeomMin(0#, sizes.Offset), -1#, "Общая высота RectSet-сечения." ' Полная высота сечения H; размер вынесен влево.
     facade.HorizontalExtent "DIM_TOP_WIDTH", upper.id, "B1", sizes.H1 + sizes.H2, 1#, "Ширина верхнего прямоугольника RectSet-сечения." ' Ширина верхнего прямоугольника; размер над сечением.
     If sizes.shape <> "Rectangle" Then
-        facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.id, "H2", sizes.B2, 1#, "Высота нижнего прямоугольника RectSet-сечения." ' Высота нижнего прямоугольника; размер справа.
+        facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.id, "H2", sizes.b2, 1#, "Высота нижнего прямоугольника RectSet-сечения." ' Высота нижнего прямоугольника; размер справа.
         ' Ненулевое смещение верхней части относительно нижней.
         If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), 0#, sizes.Offset, sizes.H2, 1#, "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
     End If
@@ -105162,7 +105177,7 @@ Implements ISectionRecipe
 Private Type THollowInput
     b As Double
     H As Double
-    R As Double
+    r As Double
     Bo As Double
     Ho As Double
     Ro As Double
@@ -105200,7 +105215,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set table = context.table("rngHollowRectangleGeometry"): Set units = context.units ' Берём копию входной таблицы и единицы измерения.
     ReadDimensions table, units, sizes ' Читаем и проверяем размеры сечения.
     ReadFaces table, units, sizes, faces ' Читаем армирование наружных и внутренних сторон.
-    Set outerPolygon = DescribePolygon(sizes.b, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
+    Set outerPolygon = DescribePolygon(sizes.b, sizes.H, 0#, 0#, sizes.r, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle" ' Создаём сборщик описания сечения.
     AddGeometry facade, outerPolygon, openingPolygon ' Добавляем подготовленные границы бетона.
@@ -105217,7 +105232,7 @@ End Function
 Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput)
     Dim row As Long, column As Long
     row = table.RowByKey("H", 1) + 1
-    sizes.H = table.PositiveLength(row, 1, units): sizes.b = table.PositiveLength(row, 2, units): sizes.R = table.NonNegativeLength(row, 3, units)
+    sizes.H = table.PositiveLength(row, 1, units): sizes.b = table.PositiveLength(row, 2, units): sizes.r = table.NonNegativeLength(row, 3, units)
     sizes.Ho = table.PositiveLength(row, 4, units): sizes.Bo = table.PositiveLength(row, 5, units): sizes.Ro = table.NonNegativeLength(row, 6, units)
     For column = 1 To 6
         sizes.GeometrySource = sizes.GeometrySource & table.sourceReference(row, column) & "; "
@@ -105372,7 +105387,7 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     Dim first As String, last As String, firstParameter As Double, lastParameter As Double
     Dim polygon As CPolygonSpec
     Set polygon = outerPolygon
-    b = sizes.b: H = sizes.H: radius = sizes.R: Offset = faces(index).axisDistance
+    b = sizes.b: H = sizes.H: radius = sizes.r: Offset = faces(index).axisDistance
     base = (index - 1) Mod 4 + 1
     If index > 4 Then
         Set polygon = openingPolygon
@@ -105823,7 +105838,7 @@ Private Sub UpgradeSetbackTable(ByVal table As Object, ByVal count As Long)
     target.NumberFormat = "0.########"
     table.cells(row, 8).Resize(count + 1, 1).HorizontalAlignment = xlLeft
     table.cells(row, 1).Resize(count + 1, 8).Borders.LineStyle = xlContinuous
-    table.cells(row, 1).Resize(count + 1, 8).Borders.Weight = xlThin
+    table.cells(row, 1).Resize(count + 1, 8).Borders.weight = xlThin
     table.cells(row, 1).Resize(1, 8).WrapText = True
     table.cells(row + 1, 1).Resize(count, 8).WrapText = False
 End Sub
