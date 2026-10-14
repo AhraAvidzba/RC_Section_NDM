@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "PolygonSpecTests",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestPolygonSpec.RunPolygonSpecTests",
+                     "Seconds":  0.1123401,
+                     "Characters":  1156,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "3FBBB1AB7996AF0B9AB77AA060CF1371146EE868B57F9B2F470CE8B7F4D3D9CD",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T11:01:11.4197320+03:00"
+}

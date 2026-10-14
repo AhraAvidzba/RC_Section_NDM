@@ -1,0 +1,66 @@
+{
+  "Head": "490f9363c803f5ae5833212887d7ee8674fd125d",
+  "Method": "Procedure-body statements; declarations/comments/closing delimiters excluded; inline Then counted separately; colon-separated statements counted individually",
+  "Sources": {
+    "src/Geometry/CSectionRecipeCircle.cls": {
+      "Instructions": 53,
+      "Branches": 8,
+      "Methods": 3
+    },
+    "src/Geometry/CSectionRecipeRectSet.cls": {
+      "Instructions": 117,
+      "Branches": 17,
+      "Methods": 7
+    },
+    "src/Geometry/CSectionRecipeRoundedRectangle.cls": {
+      "Instructions": 150,
+      "Branches": 17,
+      "Methods": 9
+    },
+    "src/Geometry/CSectionRecipeHollowRectangle.cls": {
+      "Instructions": 197,
+      "Branches": 32,
+      "Methods": 11
+    },
+    "docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls": {
+      "Instructions": 76,
+      "Branches": 4,
+      "Methods": 4
+    },
+    "src/Geometry/CPolygonSpec.cls": {
+      "Instructions": 0,
+      "Branches": 0,
+      "Methods": 0
+    },
+    "src/Section/CSectionDefinitionBuilder.cls": {
+      "Instructions": 267,
+      "Branches": 14,
+      "Methods": 44
+    },
+    "src/Section/CSectionDefinition.cls": {
+      "Instructions": 242,
+      "Branches": 66,
+      "Methods": 36
+    },
+    "src/Section/CSectionGeometryQuery.cls": {
+      "Instructions": 1298,
+      "Branches": 252,
+      "Methods": 72
+    },
+    "src/Section/CRebarRuleOptions.cls": {
+      "Instructions": 33,
+      "Branches": 0,
+      "Methods": 2
+    },
+    "src/Section/CSectionInputTable.cls": {
+      "Instructions": 139,
+      "Branches": 42,
+      "Methods": 19
+    },
+    "src/Common/modSectionRecipeTypes.bas": {
+      "Instructions": 11,
+      "Branches": 3,
+      "Methods": 2
+    }
+  }
+}

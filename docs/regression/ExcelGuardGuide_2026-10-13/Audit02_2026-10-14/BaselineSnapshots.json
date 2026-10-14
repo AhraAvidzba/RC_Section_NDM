@@ -1,0 +1,16 @@
+{
+  "Archive": "BaselineSnapshots.zip",
+  "SHA256": "dadc9de0c7e5300607722a673f2c680524c68c6069011bf6b981d619e3965f1e",
+  "Files": {
+    "BaselineGeometry/modTestGeometrySolidSnapshots.DumpSolidDirectNdsBits.txt": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0",
+    "BaselineGeometry/modTestGeometrySolidSnapshots.DumpSolidPhysicalBits.txt": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15",
+    "BaselineGeometry/modTestShapeArchitecture.DumpCircleGeometryMatrix.txt": "5851efc247546d9b02d6c9737ff9ca33ef1ecf6c48226e4ba3b11149022c827a",
+    "BaselineGeometry/modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt": "a2736ed46ad69c1f92544d47aaedd56ba365d1d4a8da620c664fd0124e88d490",
+    "BaselineGeometry/modTestShapeArchitecture.DumpHollowGeometryMatrix.txt": "3a40de7e74735d007e4d6f2816282d7b1014eb6cb00b17b6e48d3732232dc698",
+    "BaselineGeometry/modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3",
+    "BaselineGeometry/modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt": "883ef56e76f969d16fbbe011349039693e6f05fa4889cb13ba75a20a55d217ae",
+    "BaselineGeometry/modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f",
+    "BaselineGeometry/Run.json": "36f8d5eadbaa8105bc4bd33fe57692c7570d939ebf42ed732bb10aa4ef44959d",
+    "BaselineNativeVBA.txt": "d1f763d1f255d27591dfc57c3d39b7758afcdfde6e83bde6adc553aac4bcab2e"
+  }
+}
