@@ -1,0 +1,18 @@
+﻿PASS: table.name
+PASS: table.text
+PASS: context.normalizedUnit
+PASS: registry.recipe
+PASS: typed.selectors
+PASS: raw.loop
+PASS: raw.rule
+PASS: raw.annotation
+PASS: raw.position
+PASS: raw.point
+PASS: raw.fiber
+PASS: raw.properties
+PASS: limit.counter
+PASS: helper.min
+PASS: saved.sweep.strict
+PASS: error.address
+PASS: error.geometryAddress
+TOTAL API INPUT EXAMPLES: passed=17; failed=0

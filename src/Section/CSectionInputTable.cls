@@ -133,6 +133,18 @@ Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As C
     Length = units.InputLengthToInternal(Number(row, column))
 End Function
 
+' Читает и переводит длину единственным Length, затем проверяет строго положительный размер.
+Public Function PositiveLength(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
+    PositiveLength = Length(row, column, units)
+    If PositiveLength <= 0# Then InputError row, column, "Размер должен быть положительным. Введите значение больше нуля."
+End Function
+
+' Нулевой радиус или отступ допустим; пустота и недопустимый текст не становятся нулём.
+Public Function NonNegativeLength(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
+    NonNegativeLength = Length(row, column, units)
+    If NonNegativeLength < 0# Then InputError row, column, "Длина не может быть отрицательной. Введите значение не меньше нуля."
+End Function
+
 ' Пустая ячейка или ноль выключают ряд. Текст и отрицательный диаметр
 ' отклоняются; положительный диаметр переводится в мм через CUnitSystem.
 Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double

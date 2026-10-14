@@ -53,12 +53,15 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     On Error GoTo InvalidGeometry
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder  ' Объявляем сборщик описания сечения.
     Dim sizes As THollowInput, faces(1 To 8) As THollowFace
+    Dim outerPolygon As CPolygonSpec, openingPolygon As CPolygonSpec
     Set table = context.Table("rngHollowRectangleGeometry"): Set units = context.Units
     ReadDimensions table, units, sizes
     ReadFaces table, units, sizes, faces
+    Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource)
+    Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle"  ' "HollowRectangle" — имя типа сечения.
-    AddGeometry facade, sizes  ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы.
-    AddReinforcement facade, sizes, faces  ' facade — сборщик описания сечения; sizes — размеры и данные формы; faces — параметры всех наружных и внутренних сторон.
+    AddGeometry facade, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; sizes — подготовленные размеры и радиусы.
+    AddReinforcement facade, sizes, faces, outerPolygon, openingPolygon  ' facade — сборщик описания сечения; sizes — размеры и данные формы; faces — параметры всех наружных и внутренних сторон.
     AddDimensions facade, sizes  ' facade — сборщик описания сечения; sizes — размеры и данные формы.
     Set ISectionRecipe_CreateDefinition = facade.Finish  ' Проверяем и возвращаем готовое описание сечения.
     Exit Function
@@ -71,14 +74,11 @@ End Function
 Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput)
     Dim row As Long, column As Long
     row = table.RowByKey("H", 1) + 1
-    sizes.H = table.Length(row, 1, units): sizes.B = table.Length(row, 2, units): sizes.R = table.Length(row, 3, units)
-    sizes.Ho = table.Length(row, 4, units): sizes.Bo = table.Length(row, 5, units): sizes.Ro = table.Length(row, 6, units)
+    sizes.H = table.PositiveLength(row, 1, units): sizes.B = table.PositiveLength(row, 2, units): sizes.R = table.NonNegativeLength(row, 3, units)
+    sizes.Ho = table.PositiveLength(row, 4, units): sizes.Bo = table.PositiveLength(row, 5, units): sizes.Ro = table.NonNegativeLength(row, 6, units)
     For column = 1 To 6
-        If column <> 3 And column <> 6 Then Require table, row, column, table.Length(row, column, units) > 0#, "Размер должен быть положительным."
         sizes.GeometrySource = sizes.GeometrySource & table.SourceReference(row, column) & "; "
     Next column
-    Require table, row, 3, sizes.R >= 0#, "Радиус R не может быть отрицательным."
-    Require table, row, 6, sizes.Ro >= 0#, "Радиус R_o не может быть отрицательным."
     row = table.RowByKey("HollowRectangle.InnerOffsetX")
     sizes.Xo = table.Length(row, 2, units): sizes.GeometrySource = sizes.GeometrySource & table.SourceReference(row, 2) & "; "
     row = table.RowByKey("HollowRectangle.InnerOffsetY")
@@ -104,17 +104,16 @@ Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSys
             active = (.Diameter > 0# And (i > 4 Or .Count > 0))
             If i > 4 Then active = active And faces(i - 4).Count > 0 And faces(i - 4).Diameter > 0#
             If i > 4 Or active Then
-                .AxisDistance = table.Length(row, 2, units)
-                Require table, row, 2, .AxisDistance >= 0#, "Расстояние до оси не может быть отрицательным."
+                .AxisDistance = table.NonNegativeLength(row, 2, units)
             End If
             If active Then
                 Require table, row, 2, .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
-                startColumn = table.ColumnByCaption(sizes.MainHeader, "StartSetback")
-                endColumn = table.ColumnByCaption(sizes.MainHeader, "EndSetback")
-                .StartSetback = table.Length(row, startColumn, units)
-                .EndSetback = table.Length(row, endColumn, units)
-                Require table, row, startColumn, .StartSetback >= 0#, "StartSetback не может быть отрицательным."
-                Require table, row, endColumn, .EndSetback >= 0#, "EndSetback не может быть отрицательным."
+                If startColumn = 0 Then
+                    startColumn = table.ColumnByCaption(sizes.MainHeader, "StartSetback")
+                    endColumn = table.ColumnByCaption(sizes.MainHeader, "EndSetback")
+                End If
+                .StartSetback = table.NonNegativeLength(row, startColumn, units)
+                .EndSetback = table.NonNegativeLength(row, endColumn, units)
                 .Source = .Source & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
                 extra = table.RowByAnyKey(Array(.Caption, .ID, aliases(i - 1)), 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 8)
                 .D2 = table.OptionalDiameter(extra, 2, units): .D3 = table.OptionalDiameter(extra, 5, units)
@@ -133,70 +132,57 @@ End Sub
 
 ' Описывает аналитическую бетонную границу рецепта через общий фасад, без построения расчётной
 ' сетки.
-Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput)
-    ' facade — сборщик описания сечения; "OUTER" — имя бетонной границы; "Outer.Shape" — имя её
-    ' исходного контура; sizes.B — ширина, мм; sizes.H — высота, мм; sizes.R — радиус всех углов, мм;
-    ' 0 — X центра контура, мм; 0 — Y центра контура, мм; False — True отверстие, False наружная
-    ' граница.
-    AddBoundary facade, "OUTER", "Outer.Shape", sizes.B, sizes.H, sizes.R, 0#, 0#, False
-    ' facade — сборщик описания сечения; "OPENING" — имя бетонной границы; "Opening.Shape" — имя её
-    ' исходного контура; sizes.Bo — ширина, мм; sizes.Ho — высота, мм; sizes.Ro — радиус всех углов,
-    ' мм; sizes.Xo — X центра контура, мм; sizes.Yo — Y центра контура, мм; True — True отверстие,
-    ' False наружная граница.
-    AddBoundary facade, "OPENING", "Opening.Shape", sizes.Bo, sizes.Ho, sizes.Ro, sizes.Xo, sizes.Yo, True
+Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, _
+        ByVal openingPolygon As CPolygonSpec)
+    AddBoundary facade, "OUTER", "Shape", outerPolygon, False
+    AddBoundary facade, "OPENING", "Opening.Shape", openingPolygon, True
 End Sub
 
 ' Добавляет именованную бетонную границу и её сегменты, сохраняя назначенные скругления.
 Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal shapeID As String, _
-        ByVal B As Double, ByVal H As Double, ByVal radius As Double, ByVal x As Double, ByVal y As Double, ByVal opening As Boolean)
-    Dim shape As CGeometryPath, boundary As CGeometryPath, edge As TRegionEdge, ids() As String, i As Long, part As String, first As String  ' Объявляем линии и параметры геометрии.
-    ' shapeID — имя контура; Corners(B, H, x, y) — координаты вершин (X,Y), мм; Array(radius, radius,
-    ' radius, radius) — радиус каждой вершины, мм; Array("TL", "TR", "BR", "BL") — имена вершин для
-    ' выбора участков.
-    Set shape = facade.RoundedPolygon(shapeID, Corners(B, H, x, y), Array(radius, radius, radius, radius), Array("TL", "TR", "BR", "BL"))
+        ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
+    Dim shape As CGeometryPath, boundary As CGeometryPath, part As String, first As String
+    Set shape = facade.RoundedPolygon(shapeID, polygon) ' Линия регистрируется сразу; роль назначается ниже.
     first = "Edge.BL": If Not shape.HasSegmentID(first) Then first = "Corner.TL"
-    ' loopID & ".Boundary" — имя новой линии; shape.ID — исходный контур; first — участок начала; 0 —
-    ' точка начала участка: 0 начало, 1 конец; first — участок конца; 0 — точка конца участка: 0
-    ' начало, 1 конец; True — по обходу исходной линии; True — полный замкнутый контур при совпавших
-    ' концах.
     Set boundary = facade.Chain(loopID & ".Boundary", shape.ID, first, 0#, first, 0#, True, True)
-    ReDim ids(0 To boundary.SegmentCount - 1)  ' Готовим имена участков контура.
-    For i = 1 To boundary.SegmentCount
-        boundary.CopySegment i, edge  ' Получаем участок контура для назначения имени.
-        If edge.Sweep = 0# Then ids(i - 1) = "CONTOUR_" & loopID & "_LINE_" & CStr(i) Else ids(i - 1) = "CONTOUR_" & loopID & "_ARC_" & CStr(i)  ' Назначаем имена прямым и дуговым участкам контура.
-    Next i
     If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
     If opening Then
-        ' loopID — имя отверстия; boundary.ID — замкнутый контур отверстия; "OUTER" — наружная
-        ' граница, внутри которой находится отверстие; comment — пояснение к границе отверстия; ids —
-        ' имена отдельных участков; arcComment — отдельное пояснение к дугам.
-        facade.Opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", ids, "Дуга " & part & " HollowRectangle."
+        facade.Opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", _
+            arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     Else
-        ' loopID — имя наружной границы бетона; boundary.ID — замкнутый контур; comment — пояснение к
-        ' границе; ids — имена отдельных участков контура; arcComment — отдельное пояснение к дугам.
-        facade.Outer loopID, boundary.ID, "Прямой участок " & part & " HollowRectangle.", ids, "Дуга " & part & " HollowRectangle."
+        facade.Outer loopID, boundary.ID, "Прямой участок " & part & " HollowRectangle.", _
+            arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID
     End If
 End Sub
 
 ' Возвращает исходные вершины прямоугольной границы в порядке обхода.
-Private Function Corners(ByVal B As Double, ByVal H As Double, ByVal x As Double, ByVal y As Double) As Variant
-    Corners = Array(Array(x - B / 2#, y + H / 2#), Array(x + B / 2#, y + H / 2#), Array(x + B / 2#, y - H / 2#), Array(x - B / 2#, y - H / 2#))  ' Задаём четыре вершины прямоугольной границы.
+Private Function DescribePolygon(ByVal B As Double, ByVal H As Double, ByVal x As Double, ByVal y As Double, _
+        ByVal radius As Double, ByVal sourceReference As String) As CPolygonSpec
+    Dim polygon As CPolygonSpec
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "TL", x - B / 2#, y + H / 2#, radius, sourceReference
+    polygon.AddVertex "TR", x + B / 2#, y + H / 2#, radius, sourceReference
+    polygon.AddVertex "BR", x + B / 2#, y - H / 2#, radius, sourceReference
+    polygon.AddVertex "BL", x - B / 2#, y - H / 2#, radius, sourceReference
+    polygon.Seal
+    Set DescribePolygon = polygon
 End Function
 
 ' Описывает активные ряды и их зависимости; отключённая грань не создаёт стержней и подписи.
-Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace)
+Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
+        ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
     Dim i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions  ' Объявляем линии геометрии и условия армирования.
     Dim normalSign As Double, nx As Double, ny As Double, distance As Double, annotationSign As Double
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1
         If faces(i).Diameter = 0# Or faces(base).Count = 0 Or faces(base).Diameter = 0# Then GoTo NextFace
-        Set path = AxisPath(facade, sizes, faces, i)  ' facade — сборщик описания сечения; sizes — размеры, вершины и радиусы контура; faces — параметры всех наружных и внутренних сторон; i — номер выбранной стороны.
+        Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Выбирает наружный/внутренний исходный набор по грани.
         Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback  ' StartSetback — отступ начала ряда от начала грани, мм; EndSetback — отступ конца ряда от конца грани, мм.
         ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям; Coincidence —
         ' KeepPublishedOwner сохраняет первого владельца совпавшего стержня.
-        options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
-        options.IncomingTangentAtJoint = True: options.AnnotationGroup = faces(i).ID  ' IncomingTangentAtJoint — True использует входящую касательную на стыке участков; AnnotationGroup — имя общей подписи для всех рядов этой группы.
+        options.SetPublication faces(i).ID, PublishPerSourcePosition, KeepPublishedOwner
+        options.IncomingTangentAtJoint = True  ' IncomingTangentAtJoint — True использует входящую касательную на стыке участков; AnnotationGroup — имя общей подписи для всех рядов этой группы.
         options.SourceReference = faces(i).Source  ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
         options.Comment = "HollowRectangle: " & faces(i).Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд 1"  ' Comment — пояснение к стержням данного ряда.
         normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1#
@@ -224,20 +210,20 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
             ' — Stacked поперёк ряда, SideBySide вдоль; faces(i).Binding2 — EachBar все позиции,
             ' EverySecondBar через одну; faces(i).Diameter / 2 + faces(i).D2 / 2 — межосевое
             ' расстояние, мм; normalSign — знак смещения по нормали.
-            Set options = ExtraOptions(faces(i), 2, faces(i).Location2, faces(i).Binding2, faces(i).Diameter / 2# + faces(i).D2 / 2#, normalSign)
+            Set options = ExtraOptions(faces(i), 2, faces(i).Location2, faces(i).Binding2, faces(i).Diameter, faces(i).D2, normalSign)
             ' faces(i).ID & ".Row2" — имя дополнительного ряда; faces(i).ID & ".Main" — исходный ряд,
             ' чьи позиции используются; faces(i).D2 — диаметр дополнительного стержня, мм; options —
             ' смещение и выбор позиций исходного ряда.
             facade.RebarDependent faces(i).ID & ".Row2", faces(i).ID & ".Main", faces(i).D2, options
         End If
         If faces(i).D3 > 0# Then
-            distance = faces(i).Diameter / 2# + faces(i).D3 / 2#
-            If faces(i).D2 > 0# And faces(i).Location2 = faces(i).Location3 Then distance = distance + faces(i).D2
+            distance = 0#
+            If faces(i).D2 > 0# And faces(i).Location2 = faces(i).Location3 Then distance = faces(i).D2
             ' faces(i) — параметры данной стороны; 3 — номер дополнительного ряда; faces(i).Location3
             ' — Stacked поперёк ряда, SideBySide вдоль; faces(i).Binding3 — EachBar все позиции,
             ' EverySecondBar через одну; distance — межосевое расстояние, мм; normalSign — знак
             ' смещения по нормали.
-            Set options = ExtraOptions(faces(i), 3, faces(i).Location3, faces(i).Binding3, distance, normalSign)
+            Set options = ExtraOptions(faces(i), 3, faces(i).Location3, faces(i).Binding3, faces(i).Diameter, faces(i).D3, normalSign, distance)
             ' faces(i).ID & ".Row3" — имя дополнительного ряда; faces(i).ID & ".Main" — исходный ряд,
             ' чьи позиции используются; faces(i).D3 — диаметр дополнительного стержня, мм; options —
             ' смещение и выбор позиций исходного ряда.
@@ -268,13 +254,17 @@ End Sub
 
 ' B охватывает обе дуги, H только прямую. При R_o=0 соседние as задают
 ' концы целевых прямых независимо от наличия арматуры на соседней грани.
-Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, ByVal index As Long) As CGeometryPath
+Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
+        ByVal index As Long, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec) As CGeometryPath
     On Error GoTo InvalidPath
     Dim B As Double, H As Double, radius As Double, x As Double, y As Double, offset As Double, base As Long, shape As CGeometryPath  ' Объявляем линии и параметры геометрии.
     Dim first As String, last As String, firstParameter As Double, lastParameter As Double
+    Dim polygon As CPolygonSpec
+    Set polygon = outerPolygon
     B = sizes.B: H = sizes.H: radius = sizes.R: offset = faces(index).AxisDistance
     base = (index - 1) Mod 4 + 1
     If index > 4 Then
+        Set polygon = openingPolygon
         B = sizes.Bo: H = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset
         If radius <= GEOM_TOLERANCE Then
             facade.Source faces(index).ID, faces(index).Source  ' faces(index).ID — имя геометрии или ряда; faces(index).Source — адреса исходных ячеек для сообщений об ошибках.
@@ -304,7 +294,7 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     ' (X,Y), мм; Array(radius, radius, radius, radius) — исходные радиусы вершин, мм; Array("TL",
     ' "TR", "BR", "BL") — имена исходных вершин; offset — смещение, мм: положительное внутрь,
     ' отрицательное наружу.
-    Set shape = facade.OffsetRoundedPolygon("Offset." & faces(index).ID, Corners(B, H, x, y), Array(radius, radius, radius, radius), Array("TL", "TR", "BR", "BL"), offset)
+    Set shape = facade.OffsetRoundedPolygon("Offset." & faces(index).ID, polygon, offset)
     Select Case base
         Case 1, 2
             first = "Edge.BL": last = "Edge.TR"
@@ -335,19 +325,18 @@ InvalidPath:
 End Function
 
 ' Задаёт привязку и смещение дополнительного ряда без повторной раскладки исходных позиций.
-Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long, ByVal location As String, ByVal binding As String, ByVal distance As Double, ByVal normalSign As Double) As CRebarRuleOptions
+Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long, ByVal location As String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, _
+        Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
     Dim options As CRebarRuleOptions  ' Объявляем условия размещения арматуры.
     Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
     ' NormalOffset — знаковое смещение по нормали к исходному ряду, мм; TangentOffset — знаковое
     ' смещение вдоль исходного ряда, мм.
-    If location = "Stacked" Then options.NormalOffset = normalSign * distance Else options.TangentOffset = distance
-    ' EverySecond — True берёт первый, третий и следующие нечётные стержни; False все; Publication —
-    ' PublishPerSourcePosition сохраняет имена по исходным позициям.
-    options.EverySecond = (binding = "EverySecondBar"): options.Publication = PublishPerSourcePosition
-    ' Coincidence — KeepPublishedOwner сохраняет первого владельца совпавшего стержня; AnnotationGroup
-    ' — имя общей подписи для всех рядов этой группы; SourceReference — адреса ячеек, которые надо
-    ' исправить при ошибке размещения.
-    options.Coincidence = KeepPublishedOwner: options.AnnotationGroup = face.ID: options.SourceReference = face.Source
+    Dim axis As ERebarOffsetAxis, directionSign As Double
+    axis = RowNormal: directionSign = normalSign
+    If location = "SideBySide" Then axis = RowTangent: directionSign = 1#
+    options.SourceReference = face.Source
+    options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, (binding = "EverySecondBar"), interveningDiameterSum
+    options.SetPublication face.ID, PublishPerSourcePosition, KeepPublishedOwner
     options.Comment = "HollowRectangle: " & face.Caption & IIf(Left$(face.ID, 8) = "Opening.", " грань Opening", " наружная грань") & ", ряд " & CStr(rowNumber)  ' Comment — пояснение к стержням данного ряда.
     Set ExtraOptions = options  ' Возвращаем условия размещения дополнительного ряда.
 End Function

@@ -17,6 +17,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: именованные цепочки, обход через начало и source map.
 Public Function RunPathAnchorTests() As String
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
     Dim path As CGeometryPath, part As CGeometryPath, changed As CGeometryPath, edge As TRegionEdge
@@ -76,7 +77,13 @@ Public Function RunPathAnchorTests() As String
     Check "anchor.seam.reverse.closed", part.IsClosed
     Near "anchor.seam.reverse.source.first", part.SourceStartParameter(1), 1#
     Set query = New CSectionGeometryQuery
-    Set path = query.RoundedPolygon("Sharp", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 0#
+    polygonSpec.AddVertex "BR", 100#, 0#, 0#
+    polygonSpec.AddVertex "TR", 100#, 80#, 0#
+    polygonSpec.AddVertex "TL", 0#, 80#, 0#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Sharp", polygonSpec)
     Set part = path.BetweenAnchors("NamedSide", "Edge.BR", 0#, "Edge.TR", 0#)
     Check "anchor.zero.radius.named.edge", part.SegmentCount = 1 And part.SegmentID(1) = "Edge.BR"
     Near "anchor.zero.radius.length", part.Length, 80#
@@ -85,7 +92,13 @@ Public Function RunPathAnchorTests() As String
     Near "anchor.zero.radius.junction.start", path.AnchorStation("Corner.BL", 0#), path.AnchorStation("Edge.BL", 0#)
     Near "anchor.zero.radius.junction.end", path.AnchorStation("Corner.BL", 1#), path.AnchorStation("Edge.BL", 0#)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "AnchorFixture"
-    Set path = facade.RoundedPolygon("Outer", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 0#
+    polygonSpec.AddVertex "BR", 100#, 0#, 0#
+    polygonSpec.AddVertex "TR", 100#, 80#, 0#
+    polygonSpec.AddVertex "TL", 0#, 80#, 0#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("Outer", polygonSpec)
     facade.Outer "Concrete", path.ID
     Set part = facade.Chain("Side", "Outer", "Edge.BR", 0#, "Edge.TR", 0#)
     Set changed = facade.Transform("MovedSide", "Side", 1000000#, -1000000#)
@@ -103,6 +116,7 @@ Finished:
 End Function
 
 Private Function InvalidAnchorRejected(ByVal scenario As Long) As Boolean
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     On Error GoTo Rejected
     Dim path As CGeometryPath, part As CGeometryPath, query As CSectionGeometryQuery, station As Double
     Set path = CirclePath
@@ -121,7 +135,13 @@ Private Function InvalidAnchorRejected(ByVal scenario As Long) As Boolean
             Set part = path.BetweenAnchors("OpenLoop", "Bottom", 0.5, "Bottom", 0.5, True, True)
         Case 8
             Set query = New CSectionGeometryQuery
-            Set path = query.RoundedPolygon("Sharp", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 0#
+            polygonSpec.AddVertex "BR", 100#, 0#, 0#
+            polygonSpec.AddVertex "TR", 100#, 80#, 0#
+            polygonSpec.AddVertex "TL", 0#, 80#, 0#
+            polygonSpec.Seal
+            Set path = query.RoundedPolygon("Sharp", polygonSpec)
             station = path.SegmentIndex("Corner.BL")
         Case 9: Set part = path.WithID("")
     End Select
@@ -152,12 +172,19 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: скругление общим query, включая вогнутые вершины и R=0.
 Public Function RunRoundedPolygonTests() As String
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
     Dim query As CSectionGeometryQuery, path As CGeometryPath, region As CConcreteRegion
     Dim edge As TRegionEdge, i As Long, radius As Double, scenario As Long
     Set query = New CSectionGeometryQuery
-    Set path = query.RoundedPolygon("Outer", RectangleVertices, Array(10#, 10#, 10#, 10#), RectangleNames)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 10#
+    polygonSpec.AddVertex "BR", 100#, 0#, 10#
+    polygonSpec.AddVertex "TR", 100#, 80#, 10#
+    polygonSpec.AddVertex "TL", 0#, 80#, 10#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Outer", polygonSpec)
     Check "rounded.count", path.SegmentCount = 8
     Check "rounded.closed", path.IsClosed
     Near "rounded.length", path.Length, 280# + 20# * GEOM_PI
@@ -172,19 +199,37 @@ Public Function RunRoundedPolygonTests() As String
         End If
     Next i
     Check "rounded.named.edge", path.SegmentID(path.SegmentIndex("Edge.BR")) = "Edge.BR"
-    Set path = query.RoundedPolygon("Mixed", RectangleVertices, Array(0#, 10#, 20#, 5#), RectangleNames)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 0#
+    polygonSpec.AddVertex "BR", 100#, 0#, 10#
+    polygonSpec.AddVertex "TR", 100#, 80#, 20#
+    polygonSpec.AddVertex "TL", 0#, 80#, 5#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Mixed", polygonSpec)
     Check "rounded.zero.radius.count", path.SegmentCount = 7
     Check "rounded.zero.radius.edge", path.SegmentIndex("Edge.BL") = 1
     Set region = query.RegionFromPath(path)
     Near "rounded.individual.area", region.Area, 8000# - 525# * (1# - GEOM_PI / 4#)
-    Set path = query.RoundedPolygon("Sharp", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 0#
+    polygonSpec.AddVertex "BR", 100#, 0#, 0#
+    polygonSpec.AddVertex "TR", 100#, 80#, 0#
+    polygonSpec.AddVertex "TL", 0#, 80#, 0#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Sharp", polygonSpec)
     Near "rounded.sharp.length", path.Length, 360#
     Set region = query.RegionFromPath(path)
     Near "rounded.sharp.area", region.Area, 8000#
     ' Вогнутый угол сохраняет противоположное направление своей дуги.
-    Set path = query.RoundedPolygon("Concave", Array(Array(0#, 0#), Array(200#, 0#), Array(200#, 100#), _
-        Array(100#, 100#), Array(100#, 200#), Array(0#, 200#)), Array(10#, 10#, 10#, 10#, 10#, 10#), _
-        Array("BL", "BR", "Arm", "Inside", "TR", "TL"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 10#
+    polygonSpec.AddVertex "BR", 200#, 0#, 10#
+    polygonSpec.AddVertex "Arm", 200#, 100#, 10#
+    polygonSpec.AddVertex "Inside", 100#, 100#, 10#
+    polygonSpec.AddVertex "TR", 100#, 200#, 10#
+    polygonSpec.AddVertex "TL", 0#, 200#, 10#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Concave", polygonSpec)
     path.CopySegment path.SegmentIndex("Corner.Inside"), edge
     Near "rounded.concave.sweep", edge.Sweep, -GEOM_PI / 2#
     Near "rounded.concave.cx", edge.CenterX, 110#: Near "rounded.concave.cy", edge.CenterY, 110#
@@ -192,15 +237,25 @@ Public Function RunRoundedPolygonTests() As String
     Near "rounded.concave.end.x", edge.X2, 100#: Near "rounded.concave.end.y", edge.Y2, 110#
     Set region = query.RegionFromPath(path)
     Near "rounded.concave.area", region.Area, 30000# - 400# * (1# - GEOM_PI / 4#)
-    Set path = query.RoundedPolygon("Clockwise", Array(Array(0#, 0#), Array(0#, 80#), Array(100#, 80#), Array(100#, 0#)), _
-        Array(10#, 10#, 10#, 10#), Array("BL", "TL", "TR", "BR"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 10#
+    polygonSpec.AddVertex "TL", 0#, 80#, 10#
+    polygonSpec.AddVertex "TR", 100#, 80#, 10#
+    polygonSpec.AddVertex "BR", 100#, 0#, 10#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Clockwise", polygonSpec)
     path.CopySegment path.SegmentIndex("Corner.BL"), edge
     Near "rounded.clockwise.sweep", edge.Sweep, -GEOM_PI / 2#
     Set region = query.RegionFromPath(path)
     Near "rounded.clockwise.area", region.Area, 8000# - 400# + 100# * GEOM_PI
     ' Касание соседних дуг допустимо; исчезнувшая прямая не выбирается по индексу.
-    Set path = query.RoundedPolygon("Touching", Array(Array(0#, 0#), Array(100#, 0#), Array(100#, 100#), Array(0#, 100#)), _
-        Array(50#, 50#, 50#, 50#), RectangleNames)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 50#
+    polygonSpec.AddVertex "BR", 100#, 0#, 50#
+    polygonSpec.AddVertex "TR", 100#, 100#, 50#
+    polygonSpec.AddVertex "TL", 0#, 100#, 50#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Touching", polygonSpec)
     Check "rounded.touching.count", path.SegmentCount = 4
     Set region = query.RegionFromPath(path)
     Near "rounded.touching.area", region.Area, 2500# * GEOM_PI
@@ -216,6 +271,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: точные offset-дуги, вогнутый угол и независимость от обхода.
 Public Function RunRoundedOffsetTests() As String
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
     Dim query As CSectionGeometryQuery, path As CGeometryPath, region As CConcreteRegion
@@ -223,8 +279,20 @@ Public Function RunRoundedOffsetTests() As String
     Dim vertices As Variant, radii As Variant, names As Variant, scenario As Long, x As Double, y As Double, tx As Double, ty As Double
     Set query = New CSectionGeometryQuery
     radii = Array(10#, 10#, 10#, 10#)
-    Set original = query.RoundedPolygon("Base", RectangleVertices, radii, RectangleNames)
-    Set path = query.OffsetRoundedPolygon("Inward", RectangleVertices, radii, RectangleNames, 5#)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, CDbl(radii(LBound(radii) + 0))
+    polygonSpec.AddVertex "BR", 100#, 0#, CDbl(radii(LBound(radii) + 1))
+    polygonSpec.AddVertex "TR", 100#, 80#, CDbl(radii(LBound(radii) + 2))
+    polygonSpec.AddVertex "TL", 0#, 80#, CDbl(radii(LBound(radii) + 3))
+    polygonSpec.Seal
+    Set original = query.RoundedPolygon("Base", polygonSpec)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, CDbl(radii(LBound(radii) + 0))
+    polygonSpec.AddVertex "BR", 100#, 0#, CDbl(radii(LBound(radii) + 1))
+    polygonSpec.AddVertex "TR", 100#, 80#, CDbl(radii(LBound(radii) + 2))
+    polygonSpec.AddVertex "TL", 0#, 80#, CDbl(radii(LBound(radii) + 3))
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("Inward", polygonSpec, 5#)
     Check "offset.closed", path.IsClosed And path.SegmentCount = 8
     Near "offset.rectangle.length", path.Length, 280# + 10# * GEOM_PI
     Set region = query.RegionFromPath(path)
@@ -233,27 +301,78 @@ Public Function RunRoundedOffsetTests() As String
     Near "offset.rectangle.radius", Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2), 5#
     Near "offset.rectangle.center.x", edge.CenterX, 10#: Near "offset.rectangle.center.y", edge.CenterY, 10#
     Near "offset.original.unchanged", original.Length, 280# + 20# * GEOM_PI
-    Set path = query.OffsetRoundedPolygon("Outward", RectangleVertices, radii, RectangleNames, -5#)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, CDbl(radii(LBound(radii) + 0))
+    polygonSpec.AddVertex "BR", 100#, 0#, CDbl(radii(LBound(radii) + 1))
+    polygonSpec.AddVertex "TR", 100#, 80#, CDbl(radii(LBound(radii) + 2))
+    polygonSpec.AddVertex "TL", 0#, 80#, CDbl(radii(LBound(radii) + 3))
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("Outward", polygonSpec, -5#)
     Set region = query.RegionFromPath(path)
     Near "offset.outward.area", region.Area, 9900# - 900# + 225# * GEOM_PI
-    Set path = query.OffsetRoundedPolygon("VanishedArc", RectangleVertices, radii, RectangleNames, 15#)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, CDbl(radii(LBound(radii) + 0))
+    polygonSpec.AddVertex "BR", 100#, 0#, CDbl(radii(LBound(radii) + 1))
+    polygonSpec.AddVertex "TR", 100#, 80#, CDbl(radii(LBound(radii) + 2))
+    polygonSpec.AddVertex "TL", 0#, 80#, CDbl(radii(LBound(radii) + 3))
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("VanishedArc", polygonSpec, 15#)
     Check "offset.vanished.arc.count", path.SegmentCount = 4
     Check "offset.vanished.arc.named.edge", path.SegmentID(path.SegmentIndex("Edge.BL")) = "Edge.BL"
     Set region = query.RegionFromPath(path)
     Near "offset.vanished.arc.area", region.Area, 3500#
-    Set path = query.OffsetRoundedPolygon("SharpOutward", RectangleVertices, Array(0#, 0#, 0#, 0#), RectangleNames, -5#)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, 0#
+    polygonSpec.AddVertex "BR", 100#, 0#, 0#
+    polygonSpec.AddVertex "TR", 100#, 80#, 0#
+    polygonSpec.AddVertex "TL", 0#, 80#, 0#
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("SharpOutward", polygonSpec, -5#)
     Check "offset.sharp.preserved", path.SegmentCount = 4
     Set region = query.RegionFromPath(path): Near "offset.sharp.area", region.Area, 9900#
-    Set path = query.OffsetRoundedPolygon("Clockwise", Array(Array(0#, 0#), Array(0#, 80#), Array(100#, 80#), Array(100#, 0#)), _
-        radii, Array("BL", "TL", "TR", "BR"), 5#)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", 0#, 0#, CDbl(radii(LBound(radii) + 0))
+    polygonSpec.AddVertex "TL", 0#, 80#, CDbl(radii(LBound(radii) + 1))
+    polygonSpec.AddVertex "TR", 100#, 80#, CDbl(radii(LBound(radii) + 2))
+    polygonSpec.AddVertex "BR", 100#, 0#, CDbl(radii(LBound(radii) + 3))
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("Clockwise", polygonSpec, 5#)
     Set region = query.RegionFromPath(path): Near "offset.clockwise.area", region.Area, 6300# - 100# + 25# * GEOM_PI
     path.CopySegment path.SegmentIndex("Corner.BL"), edge
     Near "offset.clockwise.sweep", edge.Sweep, -GEOM_PI / 2#
     vertices = Array(Array(0#, 0#), Array(100#, 0#), Array(100#, 40#), Array(40#, 40#), Array(40#, 100#), Array(0#, 100#))
     radii = Array(5#, 5#, 5#, 5#, 5#, 5#): names = Array("BL", "BR", "Arm", "Inside", "TR", "TL")
-    Set original = query.RoundedPolygon("ConcaveBase", vertices, radii, names)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = vertices(LBound(vertices) + 0)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 0))
+    polygonPoint = vertices(LBound(vertices) + 1)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 1)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 1))
+    polygonPoint = vertices(LBound(vertices) + 2)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 2)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 2))
+    polygonPoint = vertices(LBound(vertices) + 3)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 3))
+    polygonPoint = vertices(LBound(vertices) + 4)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 4)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 4))
+    polygonPoint = vertices(LBound(vertices) + 5)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 5)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 5))
+    polygonSpec.Seal
+    Set original = query.RoundedPolygon("ConcaveBase", polygonSpec)
     Set originalRegion = query.RegionFromPath(original)
-    Set path = query.OffsetRoundedPolygon("ConcaveOffset", vertices, radii, names, 2#)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = vertices(LBound(vertices) + 0)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 0))
+    polygonPoint = vertices(LBound(vertices) + 1)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 1)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 1))
+    polygonPoint = vertices(LBound(vertices) + 2)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 2)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 2))
+    polygonPoint = vertices(LBound(vertices) + 3)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 3))
+    polygonPoint = vertices(LBound(vertices) + 4)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 4)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 4))
+    polygonPoint = vertices(LBound(vertices) + 5)
+    polygonSpec.AddVertex CStr(names(LBound(names) + 5)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), CDbl(radii(LBound(radii) + 5))
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("ConcaveOffset", polygonSpec, 2#)
     path.CopySegment path.SegmentIndex("Corner.Inside"), edge
     Near "offset.concave.radius", Sqr((edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2), 7#
     Near "offset.concave.center.x", edge.CenterX, 45#: Near "offset.concave.center.y", edge.CenterY, 45#
@@ -263,7 +382,17 @@ Public Function RunRoundedOffsetTests() As String
     Near "offset.boundary.distance", query.BoundaryDistance(originalRegion, x, y), 2#
     vertices = Array(Array(1000000#, -1000000#), Array(1000100#, -1000000#), _
         Array(1000100#, -999920#), Array(1000000#, -999920#))
-    Set path = query.OffsetRoundedPolygon("Far", vertices, Array(10#, 10#, 10#, 10#), RectangleNames, 5#)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = vertices(LBound(vertices) + 0)
+    polygonSpec.AddVertex "BL", CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 10#
+    polygonPoint = vertices(LBound(vertices) + 1)
+    polygonSpec.AddVertex "BR", CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 10#
+    polygonPoint = vertices(LBound(vertices) + 2)
+    polygonSpec.AddVertex "TR", CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 10#
+    polygonPoint = vertices(LBound(vertices) + 3)
+    polygonSpec.AddVertex "TL", CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 10#
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("Far", polygonSpec, 5#)
     Set region = query.RegionFromPath(path): Near "offset.far.area", region.Area, 6300# - 100# + 25# * GEOM_PI
     path.CopySegment path.SegmentIndex("Corner.BL"), edge
     Near "offset.far.center.x", edge.CenterX, 1000010#: Near "offset.far.center.y", edge.CenterY, -999990#
@@ -276,13 +405,35 @@ Finished:
 End Function
 
 Private Function InvalidOffsetRejected(ByVal scenario As Long) As Boolean
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     On Error GoTo Rejected
     Dim query As CSectionGeometryQuery, path As CGeometryPath
     Set query = New CSectionGeometryQuery
     Select Case scenario
-        Case 0: Set path = query.OffsetRoundedPolygon("Collapsed", RectangleVertices, Array(10#, 10#, 10#, 10#), RectangleNames, 50#)
-        Case 1: Set path = query.OffsetRoundedPolygon("Reversed", RectangleVertices, Array(10#, 10#, 10#, 10#), RectangleNames, 100#)
-        Case 2: Set path = query.OffsetRoundedPolygon("InvalidBase", RectangleVertices, Array(60#, 60#, 60#, 60#), RectangleNames, 50#)
+        Case 0
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 10#
+            polygonSpec.AddVertex "BR", 100#, 0#, 10#
+            polygonSpec.AddVertex "TR", 100#, 80#, 10#
+            polygonSpec.AddVertex "TL", 0#, 80#, 10#
+            polygonSpec.Seal
+            Set path =query.OffsetRoundedPolygon("Collapsed", polygonSpec, 50#)
+        Case 1
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 10#
+            polygonSpec.AddVertex "BR", 100#, 0#, 10#
+            polygonSpec.AddVertex "TR", 100#, 80#, 10#
+            polygonSpec.AddVertex "TL", 0#, 80#, 10#
+            polygonSpec.Seal
+            Set path =query.OffsetRoundedPolygon("Reversed", polygonSpec, 100#)
+        Case 2
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 60#
+            polygonSpec.AddVertex "BR", 100#, 0#, 60#
+            polygonSpec.AddVertex "TR", 100#, 80#, 60#
+            polygonSpec.AddVertex "TL", 0#, 80#, 60#
+            polygonSpec.Seal
+            Set path =query.OffsetRoundedPolygon("InvalidBase", polygonSpec, 50#)
     End Select
     Exit Function
 Rejected:
@@ -396,22 +547,67 @@ Rejected:
 End Function
 
 Private Function InvalidPolygonRejected(ByVal scenario As Long) As Boolean
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     On Error GoTo Rejected
     Dim query As CSectionGeometryQuery, path As CGeometryPath
     Set query = New CSectionGeometryQuery
     Select Case scenario
-        Case 0: Set path = query.RoundedPolygon("Negative", RectangleVertices, Array(-1#, 0#, 0#, 0#), RectangleNames)
-        Case 1: Set path = query.RoundedPolygon("Overlap", RectangleVertices, Array(60#, 60#, 60#, 60#), RectangleNames)
-        Case 2: Set path = query.RoundedPolygon("Duplicate", RectangleVertices, Array(0#, 0#, 0#, 0#), Array("A", "A", "B", "C"))
-        Case 3: Set path = query.RoundedPolygon("Collinear", Array(Array(0#, 0#), Array(50#, 0#), Array(100#, 0#), Array(100#, 80#), Array(0#, 80#)), _
-            Array(0#, 10#, 0#, 0#, 0#), Array("A", "B", "C", "D", "E"))
-        Case 4: Set path = query.RoundedPolygon("Missing", RectangleVertices, Array(0#, 0#, 0#), RectangleNames)
-        Case 5: Set path = query.RoundedPolygon("Crossed", Array(Array(0#, 0#), Array(100#, 80#), Array(0#, 80#), Array(100#, 0#)), _
-            Array(0#, 0#, 0#, 0#), RectangleNames)
+        Case 0
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, -1#
+            polygonSpec.AddVertex "BR", 100#, 0#, 0#
+            polygonSpec.AddVertex "TR", 100#, 80#, 0#
+            polygonSpec.AddVertex "TL", 0#, 80#, 0#
+            polygonSpec.Seal
+            Set path =query.RoundedPolygon("Negative", polygonSpec)
+        Case 1
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 60#
+            polygonSpec.AddVertex "BR", 100#, 0#, 60#
+            polygonSpec.AddVertex "TR", 100#, 80#, 60#
+            polygonSpec.AddVertex "TL", 0#, 80#, 60#
+            polygonSpec.Seal
+            Set path =query.RoundedPolygon("Overlap", polygonSpec)
+        Case 2
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "A", 0#, 0#, 0#
+            polygonSpec.AddVertex "A", 100#, 0#, 0#
+            polygonSpec.AddVertex "B", 100#, 80#, 0#
+            polygonSpec.AddVertex "C", 0#, 80#, 0#
+            polygonSpec.Seal
+            Set path =query.RoundedPolygon("Duplicate", polygonSpec)
+        Case 3
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "A", 0#, 0#, 0#
+            polygonSpec.AddVertex "B", 50#, 0#, 10#
+            polygonSpec.AddVertex "C", 100#, 0#, 0#
+            polygonSpec.AddVertex "D", 100#, 80#, 0#
+            polygonSpec.AddVertex "E", 0#, 80#, 0#
+            polygonSpec.Seal
+            Set path =query.RoundedPolygon("Collinear", polygonSpec)
+        Case 4
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 0#
+            polygonSpec.AddVertex "BR", 100#, 0#, 0#
+            polygonSpec.Seal
+            Set path =query.RoundedPolygon("Missing", polygonSpec)
+        Case 5
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", 0#, 0#, 0#
+            polygonSpec.AddVertex "BR", 100#, 80#, 0#
+            polygonSpec.AddVertex "TR", 0#, 80#, 0#
+            polygonSpec.AddVertex "TL", 100#, 0#, 0#
+            polygonSpec.Seal
+            Set path =query.RoundedPolygon("Crossed", polygonSpec)
     End Select
     Exit Function
 Rejected:
-    InvalidPolygonRejected = (Err.Source = "CSectionGeometryQuery" And Err.Number = vbObjectError + 5401)
+    If scenario = 0 Or scenario = 2 Or scenario = 4 Then
+        ' Структура теперь проверяется описателем до передачи геометрическому ядру.
+        InvalidPolygonRejected = (Err.Source = "CPolygonSpec" And Err.Number = vbObjectError + 5470)
+    Else
+        InvalidPolygonRejected = (Err.Source = "CSectionGeometryQuery" And Err.Number = vbObjectError + 5401)
+    End If
 End Function
 
 Private Sub TestLine()

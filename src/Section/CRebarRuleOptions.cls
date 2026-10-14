@@ -50,6 +50,32 @@ Private Sub Class_Initialize()
     OverlapPolicy = ReportOverlap
 End Sub
 
+' Задаёт только группу количественной подписи, порядок публикации и политику совпадения.
+' Концы, отступы, размещение и проекция остаются независимыми явными настройками.
+Public Sub SetPublication(ByVal annotationGroup As String, ByVal publication As ERebarPublication, ByVal coincidence As ERebarCoincidence)
+    If publication < PublishByRule Or publication > PublishPerSourcePosition Then _
+        SectionRecipeError "CRebarRuleOptions", "Неизвестная политика публикации позиций.", SourceReference
+    If coincidence < RejectCoincidence Or coincidence > KeepPublishedOwner Then _
+        SectionRecipeError "CRebarRuleOptions", "Неизвестная политика совпадения позиций.", SourceReference
+    Me.AnnotationGroup = annotationGroup: Me.Publication = publication: Me.Coincidence = coincidence
+End Sub
+
+' Контактное межцентровое расстояние: половины основного/добавляемого диаметров и полные промежуточные.
+' Меняет только NormalOffset/TangentOffset/EverySecond; координаты и ориентацию исполняет общий executor.
+Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, _
+        ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, _
+        Optional ByVal interveningDiameterSum As Double = 0#)
+    If baseDiameter <= 0# Or diameter <= 0# Or interveningDiameterSum < 0# Then _
+        SectionRecipeError "CRebarRuleOptions", "Для контактного ряда нужны положительные диаметры и неотрицательная сумма промежуточных диаметров.", SourceReference
+    If axis <> RowNormal And axis <> RowTangent Then SectionRecipeError "CRebarRuleOptions", "Неизвестное направление контактного ряда.", SourceReference
+    If directionSign <> -1# And directionSign <> 1# Then SectionRecipeError "CRebarRuleOptions", "Знак направления должен быть -1 или 1.", SourceReference
+    Dim distance As Double
+    distance = baseDiameter / 2# + interveningDiameterSum + diameter / 2#
+    NormalOffset = 0#: TangentOffset = 0#
+    If axis = RowNormal Then NormalOffset = directionSign * distance Else TangentOffset = directionSign * distance
+    Me.EverySecond = everySecond
+End Sub
+
 ' Копирует параметры options в декларативное правило, отделяя его от последующих изменений
 ' объекта.
 Friend Sub CopyTo(ByRef rule As TRebarRule)

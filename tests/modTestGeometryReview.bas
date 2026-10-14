@@ -185,12 +185,18 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: общие привязки с произвольными именами, без рецепта сечения.
 Private Sub TestCollapsedBoundaries()
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     On Error GoTo Failed
     Dim query As CSectionGeometryQuery, path As CGeometryPath, copy As CGeometryPath, edge As TRegionEdge
     Dim i As Long, x As Double, y As Double, tx As Double, ty As Double, errorNumber As Long, station As Double
     Set query = New CSectionGeometryQuery
-    Set path = query.OffsetRoundedPolygon("Generic", Array(Array(-300#, 600#), Array(300#, 600#), _
-        Array(300#, -600#), Array(-300#, -600#)), Array(50#, 550#, 550#, 50#), Array("A", "B", "C", "D"), 50#)
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "A", -300#, 600#, 50#
+    polygonSpec.AddVertex "B", 300#, 600#, 550#
+    polygonSpec.AddVertex "C", 300#, -600#, 550#
+    polygonSpec.AddVertex "D", -300#, -600#, 50#
+    polygonSpec.Seal
+    Set path = query.OffsetRoundedPolygon("Generic", polygonSpec, 50#)
     Check "core.onlyFourPhysicalSegments", path.SegmentCount = 4
     Check "core.noPhantomCorner", Not path.HasSegmentID("Corner.A") And Not path.HasSegmentID("Corner.D")
     Check "core.noPhantomEdge", Not path.HasSegmentID("Edge.A") And Not path.HasSegmentID("Edge.C")

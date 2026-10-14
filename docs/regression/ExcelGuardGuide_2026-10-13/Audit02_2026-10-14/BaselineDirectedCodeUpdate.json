@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\Audit02_2026-10-14\\BaselineDirected.xlsm",
+    "WorkbookSHA256":  "F13896CBAB6C4E6CA527873FDB4F567F6D02E427F5731307DE65E3C3E10FA33F",
+    "ProductionSHA256":  "268D5FD5728289B216F8F5D082C859368CF38C490F169F004939E4BA4B781249",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestAudit02Snapshots"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

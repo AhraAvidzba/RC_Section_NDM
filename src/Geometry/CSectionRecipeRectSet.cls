@@ -98,12 +98,8 @@ Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes A
         ' высота, мм.
         Set outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.Offset, sizes.H2, sizes.B1, sizes.H1)))
     End If
-    Dim contourIDs() As String, i As Long
-    ReDim contourIDs(0 To outer.SegmentCount - 1)  ' Готовим имена участков контура.
-    For i = 1 To outer.SegmentCount
-        contourIDs(i - 1) = "CONTOUR_LINE_" & CStr(i)  ' Назначаем имена прямым и дуговым участкам контура.
-    Next i
-    facade.Outer "OUTER", outer.ID, "Сегмент контура сечения.", contourIDs  ' "OUTER" — имя наружной границы бетона; outer.ID — замкнутый контур; comment — пояснение к границе; contourIDs — имена отдельных участков контура.
+    facade.Outer "OUTER", outer.ID, "Сегмент контура сечения.", namingPolicy:=SequentialByKind
+
 End Sub
 
 ' Описывает габариты и размерные привязки рецепта отдельно от расчётных контуров.
@@ -155,8 +151,7 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         options.StartSetback = table.Length(row, 5, units)  ' StartSetback — отступ начала ряда от начала грани, мм.
         options.EndSetback = table.Length(row, 6, units)  ' EndSetback — отступ конца ряда от конца грани, мм.
         options.PositionOrder = FromPathMiddle  ' PositionOrder — FromPathMiddle нумерует позиции от середины линии.
-        options.Publication = PublishPerSourcePosition  ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям.
-        options.Coincidence = KeepPublishedOwner  ' Coincidence — KeepPublishedOwner сохраняет первого владельца совпавшего стержня.
+        ' Публикация задаётся ниже после выбора смыслового groupID.  ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям.
         options.SourceReference = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 5) & "; " & table.SourceReference(row, 6)  ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
         label = table.Text(row, 1) & " грань"
         Select Case side
@@ -177,7 +172,7 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
                 groupID = "B" & prefix & ".as_2": nx = 0#: ny = -1#: sideSign = -1#
                 Set path = facade.LinePath(groupID, x + width, y + axisDistance, x, y + axisDistance)  ' groupID — имя линии; x + width — X начала, мм; y + axisDistance — Y начала, мм; x — X конца, мм; y + axisDistance — Y конца, мм.
         End Select
-        options.AnnotationGroup = groupID  ' AnnotationGroup — имя общей подписи для всех рядов этой группы.
+        options.SetPublication groupID, PublishPerSourcePosition, KeepPublishedOwner
         options.Comment = "RectSet: " & label & ", ряд 1"  ' Comment — пояснение к стержням данного ряда.
         ' groupID & ".Main" — имя нового ряда; path.ID — линия центров стержней; count — заданное
         ' число стержней; diameter — диаметр стержня, мм; options — отступы, нумерация и условия
@@ -192,7 +187,7 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
             ' дополнительного ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; diameter / 2 + d2 /
             ' 2 — расстояние между центрами стержней, мм; sideSign — знак направления на данной
             ' стороне.
-            Set options = AdditionalOptions(table, extra, 2, groupID, label, 2, loc2, diameter / 2# + d2 / 2#, sideSign)
+            Set options = AdditionalOptions(table, extra, 2, groupID, label, 2, loc2, diameter, d2, sideSign)
             ' groupID & ".Row2" — имя дополнительного ряда; groupID & ".Main" — исходный ряд, чьи
             ' позиции используются; d2 — диаметр дополнительного стержня, мм; options — смещение и
             ' выбор позиций исходного ряда.
@@ -201,13 +196,13 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         If d3 > 0# Then
             loc3 = table.Choice(extra, 6, Array("Stacked", "SideBySide"))
             Dim distance As Double
-            distance = diameter / 2# + d3 / 2#
-            If d2 > 0# And loc2 = loc3 Then distance = distance + d2
+            distance = 0#
+            If d2 > 0# And loc2 = loc3 Then distance = d2
             ' table — снимок таблицы армирования; extra — строка дополнительных рядов; 5 — столбец их
             ' диаметра; groupID — общая группа подписи; label — название стороны; 3 — номер
             ' дополнительного ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; distance —
             ' расстояние между центрами стержней, мм; sideSign — знак направления на данной стороне.
-            Set options = AdditionalOptions(table, extra, 5, groupID, label, 3, loc3, distance, sideSign)
+            Set options = AdditionalOptions(table, extra, 5, groupID, label, 3, loc3, diameter, d3, sideSign, distance)
             ' groupID & ".Row3" — имя дополнительного ряда; groupID & ".Main" — исходный ряд, чьи
             ' позиции используются; d3 — диаметр дополнительного стержня, мм; options — смещение и
             ' выбор позиций исходного ряда.
@@ -225,18 +220,20 @@ End Sub
 ' группу.
 Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _
         ByVal groupID As String, ByVal label As String, ByVal rowNumber As Long, ByVal location As String, _
-        ByVal distance As Double, ByVal sideSign As Double) As CRebarRuleOptions
+        ByVal baseDiameter As Double, ByVal diameter As Double, ByVal sideSign As Double, _
+        Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
     Dim options As CRebarRuleOptions  ' Объявляем условия размещения арматуры.
     Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
     ' NormalOffset — знаковое смещение по нормали к исходному ряду, мм; TangentOffset — знаковое
     ' смещение вдоль исходного ряда, мм.
-    If location = "Stacked" Then options.NormalOffset = -distance Else options.TangentOffset = sideSign * distance
-    options.EverySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar")  ' EverySecond — True берёт первый, третий и следующие нечётные стержни; False все.
-    options.Publication = PublishPerSourcePosition  ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям.
-    options.Coincidence = KeepPublishedOwner  ' Coincidence — KeepPublishedOwner сохраняет первого владельца совпавшего стержня.
-    options.AnnotationGroup = groupID  ' AnnotationGroup — имя общей подписи для всех рядов этой группы.
+    Dim axis As ERebarOffsetAxis, directionSign As Double, everySecond As Boolean
+    axis = RowNormal: directionSign = -1#
+    If location = "SideBySide" Then axis = RowTangent: directionSign = sideSign
+    everySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar")
+    options.SourceReference = table.SourceReference(row, column)
+    options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum
+    options.SetPublication groupID, PublishPerSourcePosition, KeepPublishedOwner
     options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)  ' Comment — пояснение к стержням данного ряда.
-    options.SourceReference = table.SourceReference(row, column)  ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
     Set AdditionalOptions = options  ' Возвращаем условия размещения дополнительного ряда.
 End Function
 

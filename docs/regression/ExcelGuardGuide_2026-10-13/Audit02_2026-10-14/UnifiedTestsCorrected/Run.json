@@ -1,0 +1,114 @@
+﻿{
+    "Stage":  "UnifiedTestsCorrected",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestPolygonSpec.RunPolygonSpecTests",
+                     "Seconds":  0.1121286,
+                     "Characters":  1156,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestDeclarativeGeometry.RunCoreGeometryTests",
+                     "Seconds":  0.0950371,
+                     "Characters":  29142,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunAnnotationIsolationTests",
+                     "Seconds":  0.0298663,
+                     "Characters":  340,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunRecipeContextFreezeTests",
+                     "Seconds":  0.0181618,
+                     "Characters":  368,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunPublishedBuildTests",
+                     "Seconds":  0.1103048,
+                     "Characters":  695,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryPublication.RunDefinitionLifecycleTests",
+                     "Seconds":  0.037035,
+                     "Characters":  402,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeDefinitionTests",
+                     "Seconds":  0.039795,
+                     "Characters":  443,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.3787548,
+                     "Characters":  7474,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+                     "Seconds":  0.0402279,
+                     "Characters":  7751,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                     "Seconds":  29.118375699999998,
+                     "Characters":  4055,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryReview.RunRoundedEndpointTests",
+                     "Seconds":  13.737211499999999,
+                     "Characters":  63667,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+                     "Seconds":  0.3604173,
+                     "Characters":  881,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+                     "Seconds":  0.087502299999999991,
+                     "Characters":  626,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunApiGeometryReadExamples",
+                     "Seconds":  0.0189245,
+                     "Characters":  882,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeApiCatalogue.RunApiInputAndDataExamples",
+                     "Seconds":  0.0066716,
+                     "Characters":  404,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "5B8FBE956446AEE34E68E548FD816FE6963E84DB7FA647DF8E356EB98ED0E1BE",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-14T11:41:09.7947880+03:00"
+}

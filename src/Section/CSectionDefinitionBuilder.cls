@@ -57,19 +57,17 @@ End Function
 
 ' Создаёт согласованную границу по вершинам/радиусам/ID. Edge.ID начинается у указанной вершины,
 ' Corner.ID существует только при R>0.
-Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
-        ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
+Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     RequireOpen
-    Set RoundedPolygon = mQuery.RoundedPolygon(pathID, vertices, radii, vertexIDs)
+    Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon)
     mDefinition.AddPath RoundedPolygon
 End Function
 
 ' Смещает весь скруглённый многоугольник с согласованными стыками. Положительное расстояние
 ' внутрь площади; отрицательное наружу, из Opening в бетон.
-Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
-        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
     RequireOpen
-    Set OffsetRoundedPolygon = mQuery.OffsetRoundedPolygon(pathID, vertices, radii, vertexIDs, distance)
+    Set OffsetRoundedPolygon = mQuery.OffsetRoundedPolygon(pathID, polygon, distance)
     mDefinition.AddPath OffsetRoundedPolygon
 End Function
 
@@ -197,10 +195,12 @@ End Sub
 
 ' Назначает замкнутому пути роль наружной границы материала. Не требует наличия арматуры.
 Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", _
-        Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
+        Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
+        Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
     RequireOpen
     Dim value As TSectionLoop
     value.LoopID = loopID: value.PathID = pathID: value.Role = LoopOuter: value.Comment = comment: value.ArcComment = arcComment
+    value.NamingPolicy = namingPolicy: value.NamingPrefix = namingPrefix
     If Not IsMissing(contourIDs) Then value.ContourIDs = contourIDs
     mDefinition.AddLoop value
 End Sub
@@ -208,11 +208,13 @@ End Sub
 ' Назначает замкнутому пути роль отверстия с конкретным parentOuterID. Действительное вложение
 ' проверяется при Finish.
 Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _
-        Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "")
+        Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
+        Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
     RequireOpen
     Dim value As TSectionLoop
     value.LoopID = loopID: value.PathID = pathID: value.Role = LoopOpening
     value.ParentID = parentOuterID: value.Comment = comment: value.ArcComment = arcComment
+    value.NamingPolicy = namingPolicy: value.NamingPrefix = namingPrefix
     If Not IsMissing(contourIDs) Then value.ContourIDs = contourIDs
     mDefinition.AddLoop value
 End Sub

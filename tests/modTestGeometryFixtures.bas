@@ -264,11 +264,10 @@ Public Function FixtureBoxes(ByVal rectangles As Variant) As CGeometryRegion
     Set FixtureBoxes = FixtureGeometry(query.RegionFromPath(path))
 End Function
 
-Public Function FixtureFillets(ByVal vertices As Variant, ByVal radii As Variant) As CGeometryRegion
-    Dim query As CSectionGeometryQuery, path As CGeometryPath, ids() As String, i As Long
-    ReDim ids(LBound(vertices) To UBound(vertices))
-    For i = LBound(vertices) To UBound(vertices): ids(i) = CStr(i): Next i
+Public Function FixtureFillets(ByVal polygon As CPolygonSpec) As CGeometryRegion
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
+    Dim query As CSectionGeometryQuery, path As CGeometryPath
     Set query = New CSectionGeometryQuery
-    Set path = query.RoundedPolygon("FixtureBoundary", vertices, radii, ids)
+    Set path = query.RoundedPolygon("FixtureBoundary", polygon)
     Set FixtureFillets = FixtureGeometry(query.RegionFromPath(path))
 End Function

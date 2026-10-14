@@ -211,6 +211,7 @@ Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSe
 End Sub
 
 Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "ContourMeshFixture"
     Select Case shape
@@ -223,16 +224,31 @@ Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
         Case 4
             Set path = facade.AdjacentRectangles("Boundary", Array(Array(-83#, 41#, 300#, 120#), Array(-23#, 161#, 200#, 240#)))
         Case 5
-            Set path = facade.RoundedPolygon("Boundary", Array(Array(-137#, -227#), Array(163#, -227#), _
-                Array(163#, 173#), Array(-137#, 173#)), Array(40#, 40#, 40#, 40#), Array("BL", "BR", "TR", "TL"))
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", -137#, -227#, 40#
+            polygonSpec.AddVertex "BR", 163#, -227#, 40#
+            polygonSpec.AddVertex "TR", 163#, 173#, 40#
+            polygonSpec.AddVertex "TL", -137#, 173#, 40#
+            polygonSpec.Seal
+            Set path = facade.RoundedPolygon("Boundary", polygonSpec)
         Case 6
-            Set path = facade.RoundedPolygon("Boundary", Array(Array(-200#, -250#), Array(200#, -250#), _
-                Array(200#, 250#), Array(-200#, 250#)), Array(35#, 35#, 35#, 35#), Array("BL", "BR", "TR", "TL"))
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", -200#, -250#, 35#
+            polygonSpec.AddVertex "BR", 200#, -250#, 35#
+            polygonSpec.AddVertex "TR", 200#, 250#, 35#
+            polygonSpec.AddVertex "TL", -200#, 250#, 35#
+            polygonSpec.Seal
+            Set path = facade.RoundedPolygon("Boundary", polygonSpec)
     End Select
     facade.Outer "OUTER", "Boundary"
     If shape = 6 Then
-        Set path = facade.RoundedPolygon("VoidPath", Array(Array(-83#, -163#), Array(117#, -163#), _
-            Array(117#, 117#), Array(-83#, 117#)), Array(25#, 25#, 25#, 25#), Array("BL", "BR", "TR", "TL"))
+        Set polygonSpec = New CPolygonSpec
+        polygonSpec.AddVertex "BL", -83#, -163#, 25#
+        polygonSpec.AddVertex "BR", 117#, -163#, 25#
+        polygonSpec.AddVertex "TR", 117#, 117#, 25#
+        polygonSpec.AddVertex "TL", -83#, 117#, 25#
+        polygonSpec.Seal
+        Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
         facade.Opening "VOID", "VoidPath", "OUTER"
     End If
     Set definition = facade.Finish

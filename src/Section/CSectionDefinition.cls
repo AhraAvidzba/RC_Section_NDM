@@ -144,6 +144,18 @@ Friend Sub AddLoop(ByRef value As TSectionLoop)
     Next i
     If value.Role = LoopOuter And Len(value.ParentID) > 0 Then DefinitionError "Наружный контур не имеет родительского отверстия."
     If value.Role = LoopOpening And Len(value.ParentID) = 0 Then DefinitionError "Для отверстия не указан наружный контур."
+    If value.NamingPolicy <> PreserveSegmentIDs And value.NamingPolicy <> SequentialByKind Then _
+        DefinitionError "Неизвестная политика имён контурных сегментов."
+    If value.NamingPolicy = PreserveSegmentIDs And Len(value.NamingPrefix) > 0 Then _
+        DefinitionError "Префикс технических имён применяется только с SequentialByKind."
+    If value.NamingPolicy = SequentialByKind Then
+        If Not IsEmpty(value.ContourIDs) Then DefinitionError "SequentialByKind нельзя совмещать с явным массивом ID сегментов."
+        If Len(Trim$(value.NamingPrefix)) = 0 Then value.NamingPrefix = "CONTOUR"
+        For i = 1 To mLoopCount
+            If mLoops(i).NamingPolicy = SequentialByKind And mLoops(i).NamingPrefix = value.NamingPrefix Then _
+                DefinitionError "Для разных границ задайте разные префиксы технических имён: '" & value.NamingPrefix & "'."
+        Next i
+    End If
     If IsArray(value.ContourIDs) Then
         If UBound(value.ContourIDs) - LBound(value.ContourIDs) + 1 <> path.SegmentCount Then _
             DefinitionError "Число ID контурных сегментов не совпадает с путем."
@@ -342,6 +354,9 @@ Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, By
         If edge.Sweep <> 0# And Len(mLoops(index).ArcComment) > 0 Then comment = mLoops(index).ArcComment
         contourID = path.SegmentID(i)
         If IsArray(mLoops(index).ContourIDs) Then contourID = CStr(mLoops(index).ContourIDs(LBound(mLoops(index).ContourIDs) + i - 1))
+        If mLoops(index).NamingPolicy = SequentialByKind Then
+            If edge.Sweep = 0# Then contourID = mLoops(index).NamingPrefix & "_LINE_" & CStr(i) Else contourID = mLoops(index).NamingPrefix & "_ARC_" & CStr(i)
+        End If
         If edge.Sweep = 0# Then
             result.AddContourLine contourID, edge.X1, edge.Y1, edge.X2, edge.Y2, comment, mLoops(index).LoopID, role
         Else

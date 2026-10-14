@@ -1,0 +1,53 @@
+{
+  "Passed": true,
+  "Rows": [
+    {
+      "File": "modTestGeometrySolidSnapshots.DumpSolidDirectNdsBits.txt",
+      "Equal": true,
+      "BeforeSHA256": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0",
+      "AfterSHA256": "830b7ea17478b09311a728fad8b1803186af3d47d13f6a1f168aa48534f09de0"
+    },
+    {
+      "File": "modTestGeometrySolidSnapshots.DumpSolidPhysicalBits.txt",
+      "Equal": true,
+      "BeforeSHA256": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15",
+      "AfterSHA256": "de7884382d653acb1773cf342aabe56444a32885cd23eab66e20e58376da2d15"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpCircleGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "5851efc247546d9b02d6c9737ff9ca33ef1ecf6c48226e4ba3b11149022c827a",
+      "AfterSHA256": "5851efc247546d9b02d6c9737ff9ca33ef1ecf6c48226e4ba3b11149022c827a"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpHollowEdgeGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "a2736ed46ad69c1f92544d47aaedd56ba365d1d4a8da620c664fd0124e88d490",
+      "AfterSHA256": "a2736ed46ad69c1f92544d47aaedd56ba365d1d4a8da620c664fd0124e88d490"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpHollowGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "3a40de7e74735d007e4d6f2816282d7b1014eb6cb00b17b6e48d3732232dc698",
+      "AfterSHA256": "3a40de7e74735d007e4d6f2816282d7b1014eb6cb00b17b6e48d3732232dc698"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpRectSetGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3",
+      "AfterSHA256": "d63156d7d0f98784b7164b6ad63cd3fccf50bf88e12d661e44f9908e72854bf3"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpRoundedGeometryMatrix.txt",
+      "Equal": true,
+      "BeforeSHA256": "883ef56e76f969d16fbbe011349039693e6f05fa4889cb13ba75a20a55d217ae",
+      "AfterSHA256": "883ef56e76f969d16fbbe011349039693e6f05fa4889cb13ba75a20a55d217ae"
+    },
+    {
+      "File": "modTestShapeArchitecture.DumpShapeArchitectureSnapshot.txt",
+      "Equal": true,
+      "BeforeSHA256": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f",
+      "AfterSHA256": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f"
+    }
+  ]
+}

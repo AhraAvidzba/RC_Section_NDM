@@ -865,7 +865,15 @@ End Function
 ' Общий скругленный многоугольник: Array(Array(x,y),...), радиусы и имена
 ' вершин того же размера. Индексы входа не становятся идентичностью грани.
 ' Вогнутый угол получает противоположный sweep; радиусы не уменьшаются.
-Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
+' Принимает один закрытый набор исходных вершин; численная реализация остаётся прежней.
+Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
+    Dim vertices As Variant, radii As Variant, vertexIDs As Variant
+    PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
+    Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs)
+End Function
+
+' Внутренний численный формат; к нему нет публичного массивного маршрута рецепта.
+Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
     ReadPolygonInput pathID, vertices, radii, vertexIDs, points, radius, names, count
@@ -934,18 +942,25 @@ Public Function RoundedPolygon(ByVal pathID As String, ByVal vertices As Variant
     ' Проверка конечной формы ловит и нелокальные пересечения скруглений.
     Dim prepared As CConcreteRegion
     Set prepared = RegionFromPath(result)
-    Set RoundedPolygon = result
+    Set RoundedPolygonKernel = result
 End Function
 
 ' Согласованный offset всего скругленного многоугольника. Положительное
 ' расстояние направлено внутрь его площади независимо от обхода; для пути
 ' от отверстия в бетон потребитель задает отрицательное расстояние.
 ' Исходные острые углы остаются острыми, уменьшившаяся до нуля дуга исчезает.
-Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As Variant, _
+Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
+    Dim vertices As Variant, radii As Variant, vertexIDs As Variant
+    PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
+    Set OffsetRoundedPolygon = OffsetRoundedPolygonKernel(pathID, vertices, radii, vertexIDs, distance)
+End Function
+
+' Прежний offset исходного многоугольника; не является signed-left offset готового Path.
+Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
     Dim original As CGeometryPath
-    Set original = RoundedPolygon(pathID, vertices, radii, vertexIDs)
-    If distance = 0# Then Set OffsetRoundedPolygon = original: Exit Function
+    Set original = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs)
+    If distance = 0# Then Set OffsetRoundedPolygonKernel = original: Exit Function
 
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
     ReadPolygonInput pathID, vertices, radii, vertexIDs, points, radius, names, count
@@ -995,8 +1010,16 @@ Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal vertices As V
         If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани Edge." & names(i) & ".", "OFFSET_DISAPPEARED", pathID, "Edge." & names(i), distance, dot
     Next i
     ' Существующий topology-контракт проверяет самопересечения и радиусы.
-    Set OffsetRoundedPolygon = RoundedPolygon(pathID, shiftedVertices, shiftedRadii, vertexIDs)
+    Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs)
 End Function
+
+' Единственная граница описателя и численного ядра; исходные данные не изменяются.
+Private Sub PolygonKernelData(ByVal pathID As String, ByVal polygon As CPolygonSpec, _
+        ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant)
+    If polygon Is Nothing Then GeometryError pathID & ": не передано описание исходных вершин."
+    If Not polygon.IsSealed Then GeometryError pathID & ": завершите описание исходных вершин методом Seal."
+    polygon.CopyKernelData vertices, radii, vertexIDs
+End Sub
 
 ' Путь хранит исходное направление и ID; область получает независимую
 ' нормализацию ролей/ориентации существующим topology-движком.

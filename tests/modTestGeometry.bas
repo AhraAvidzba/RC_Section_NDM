@@ -1676,8 +1676,15 @@ End Sub
 ' Сверяет сетку симметричного скругленного прямоугольника с аналитической
 ' площадью, нулевым центром/Ixy и ожидаемым направлением главных осей.
 Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
+    Dim filletPolygon As CPolygonSpec
     Dim geom As CGeometryRegion
-    Set geom = FixtureFillets(Array(Array(-150#, 80#), Array(150#, 80#), Array(150#, -80#), Array(-150#, -80#)), Array(25#, 25#, 25#, 25#))
+    Set filletPolygon = New CPolygonSpec
+    filletPolygon.AddVertex "0", -150#, 80#, 25#
+    filletPolygon.AddVertex "1", 150#, 80#, 25#
+    filletPolygon.AddVertex "2", 150#, -80#, 25#
+    filletPolygon.AddVertex "3", -150#, -80#, 25#
+    filletPolygon.Seal
+    Set geom = FixtureFillets(filletPolygon)
 
     Dim areaAvailable As Boolean
     Dim analyticalArea As Double
@@ -1698,9 +1705,17 @@ End Sub
 ' положение касательных и фактический габарит после скруглений.
 ' Допустимые большие радиусы различаются с действительно перекрывающимися.
 Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
+    Dim filletPolygon As CPolygonSpec
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim geom As CGeometryRegion
-    Set geom = FixtureFillets(Array(Array(-150#, 90#), Array(150#, 90#), Array(230#, 0#), _
-        Array(150#, -90#), Array(-150#, -90#)), Array(20#, 30#, 45#, 30#, 20#))
+    Set filletPolygon = New CPolygonSpec
+    filletPolygon.AddVertex "0", -150#, 90#, 20#
+    filletPolygon.AddVertex "1", 150#, 90#, 30#
+    filletPolygon.AddVertex "2", 230#, 0#, 45#
+    filletPolygon.AddVertex "3", 150#, -90#, 30#
+    filletPolygon.AddVertex "4", -150#, -90#, 20#
+    filletPolygon.Seal
+    Set geom = FixtureFillets(filletPolygon)
 
     Dim props25 As CSectionPropertiesCalculator, props125 As CSectionPropertiesCalculator
     Set props25 = MeshProps(geom, 25#, 25#): Set props125 = MeshProps(geom, 12.5, 12.5)
@@ -1713,8 +1728,14 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
 
     Dim query As CSectionGeometryQuery, path As CGeometryPath, wide As CGeometryRegion, top As TRegionEdge
     Set query = New CSectionGeometryQuery
-    Set path = query.RoundedPolygon("Wide", Array(Array(-500#, 250#), Array(500#, 250#), Array(750#, 0#), _
-        Array(500#, -250#), Array(-500#, -250#)), Array(150#, 300#, 100#, 300#, 150#), Array("TL", "TR", "Nose", "BR", "BL"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "TL", -500#, 250#, 150#
+    polygonSpec.AddVertex "TR", 500#, 250#, 300#
+    polygonSpec.AddVertex "Nose", 750#, 0#, 100#
+    polygonSpec.AddVertex "BR", 500#, -250#, 300#
+    polygonSpec.AddVertex "BL", -500#, -250#, 150#
+    polygonSpec.Seal
+    Set path = query.RoundedPolygon("Wide", polygonSpec)
     path.CopySegment path.SegmentIndex("Edge.TL"), top
     Set wide = FixtureGeometry(query.RegionFromPath(path))
     AssertClose stats, "rounded.tapered.variableAngle.topTangent", top.X2, 500# - 300# * (Sqr(2#) - 1#), 0.000001
@@ -1722,13 +1743,25 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     AssertTrue stats, "rounded.tapered.variableAngle.maxLessThanRawApex", wide.MaxX < 750#
 
     Dim largeR1 As CGeometryRegion, validMessage As String
-    Set largeR1 = FixtureFillets(Array(Array(-400#, 125#), Array(400#, 125#), Array(800#, 0#), _
-        Array(400#, -125#), Array(-400#, -125#)), Array(40#, 160#, 30#, 160#, 40#))
+    Set filletPolygon = New CPolygonSpec
+    filletPolygon.AddVertex "0", -400#, 125#, 40#
+    filletPolygon.AddVertex "1", 400#, 125#, 160#
+    filletPolygon.AddVertex "2", 800#, 0#, 30#
+    filletPolygon.AddVertex "3", 400#, -125#, 160#
+    filletPolygon.AddVertex "4", -400#, -125#, 40#
+    filletPolygon.Seal
+    Set largeR1 = FixtureFillets(filletPolygon)
     AssertTrue stats, "rounded.tapered.r1GreaterThanHalfHeight.valid", largeR1.IsValid(validMessage)
     Dim invalid As CGeometryRegion, number As Long, reason As String
     On Error Resume Next
-    Set invalid = FixtureFillets(Array(Array(-400#, 125#), Array(400#, 125#), Array(480#, 0#), _
-        Array(400#, -125#), Array(-400#, -125#)), Array(40#, 300#, 120#, 300#, 40#))
+    Set filletPolygon = New CPolygonSpec
+    filletPolygon.AddVertex "0", -400#, 125#, 40#
+    filletPolygon.AddVertex "1", 400#, 125#, 300#
+    filletPolygon.AddVertex "2", 480#, 0#, 120#
+    filletPolygon.AddVertex "3", 400#, -125#, 300#
+    filletPolygon.AddVertex "4", -400#, -125#, 40#
+    filletPolygon.Seal
+    Set invalid = FixtureFillets(filletPolygon)
     number = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo 0
     AssertTrue stats, "rounded.tapered.radiiOverlap.invalid", number <> 0 And Len(reason) > 0 And invalid Is Nothing
@@ -1890,6 +1923,7 @@ End Sub
 ' наружному RoundedRectangle минус Opening, а точки внутри отверстия не входят
 ' в бетонную часть сечения.
 Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim geom As CGeometryRegion, facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowGeometryFixture"
     Set path = facade.RectanglePath("Boundary", -250#, -400#, 500#, 800#): facade.Outer "OUTER", path.ID
@@ -1917,11 +1951,21 @@ Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
 
     Dim offsetGeom As CGeometryRegion
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "OffsetVoidFixture"
-    Set path = facade.RoundedPolygon("Boundary", Array(Array(-250#, -400#), Array(250#, -400#), _
-        Array(250#, 400#), Array(-250#, 400#)), Array(30#, 30#, 30#, 30#), Array("BL", "BR", "TR", "TL"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", -250#, -400#, 30#
+    polygonSpec.AddVertex "BR", 250#, -400#, 30#
+    polygonSpec.AddVertex "TR", 250#, 400#, 30#
+    polygonSpec.AddVertex "TL", -250#, 400#, 30#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("Boundary", polygonSpec)
     facade.Outer "OUTER", path.ID
-    Set path = facade.RoundedPolygon("Void", Array(Array(-60#, -180#), Array(140#, -180#), _
-        Array(140#, 120#), Array(-60#, 120#)), Array(20#, 20#, 20#, 20#), Array("BL", "BR", "TR", "TL"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", -60#, -180#, 20#
+    polygonSpec.AddVertex "BR", 140#, -180#, 20#
+    polygonSpec.AddVertex "TR", 140#, 120#, 20#
+    polygonSpec.AddVertex "TL", -60#, 120#, 20#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("Void", polygonSpec)
     facade.Opening "VOID", path.ID, "OUTER"
     Set definition = facade.Finish: Set offsetGeom = FixtureGeometry(definition.ConcreteDomain)
     areaValue = offsetGeom.AnalyticalArea(available)
@@ -2085,8 +2129,15 @@ End Sub
 ' Последнее уточнение проверяется прежними относительными допусками;
 ' численные результаты не заменяются текущей сеткой как новым эталоном.
 Private Sub TestMeshConvergence(ByRef stats As TTestStats)
+    Dim filletPolygon As CPolygonSpec
     Dim geom As CGeometryRegion
-    Set geom = FixtureFillets(Array(Array(-200#, 110#), Array(200#, 110#), Array(200#, -110#), Array(-200#, -110#)), Array(35#, 35#, 35#, 35#))
+    Set filletPolygon = New CPolygonSpec
+    filletPolygon.AddVertex "0", -200#, 110#, 35#
+    filletPolygon.AddVertex "1", 200#, 110#, 35#
+    filletPolygon.AddVertex "2", 200#, -110#, 35#
+    filletPolygon.AddVertex "3", -200#, -110#, 35#
+    filletPolygon.Seal
+    Set geom = FixtureFillets(filletPolygon)
 
     Dim p50 As CSectionPropertiesCalculator
     Dim p25 As CSectionPropertiesCalculator
@@ -2121,8 +2172,15 @@ End Sub
 ' Проверяет непустую сетку; время записывается как диагностика, без
 ' необоснованного требования ускорения отдельного случайного запуска.
 Private Sub TestPerformance(ByRef stats As TTestStats)
+    Dim filletPolygon As CPolygonSpec
     Dim geom As CGeometryRegion
-    Set geom = FixtureFillets(Array(Array(-400#, 250#), Array(400#, 250#), Array(400#, -250#), Array(-400#, -250#)), Array(40#, 40#, 40#, 40#))
+    Set filletPolygon = New CPolygonSpec
+    filletPolygon.AddVertex "0", -400#, 250#, 40#
+    filletPolygon.AddVertex "1", 400#, 250#, 40#
+    filletPolygon.AddVertex "2", 400#, -250#, 40#
+    filletPolygon.AddVertex "3", -400#, -250#, 40#
+    filletPolygon.Seal
+    Set geom = FixtureFillets(filletPolygon)
 
     Dim builder As CFiberMeshBuilder
     Set builder = New CFiberMeshBuilder
@@ -2221,14 +2279,20 @@ End Function
 Private Sub AssertInvalid(ByRef stats As TTestStats, ByVal name As String, _
         ByVal width As Double, ByVal height As Double, ByVal rtl As Double, ByVal rtr As Double, _
         ByVal rbr As Double, ByVal rbl As Double)
+    Dim filletPolygon As CPolygonSpec
     Dim geometry As CGeometryRegion, number As Long
     On Error Resume Next
     If width <= 0# Or height <= 0# Then
         Set geometry = FixtureGeometry(FixtureRoundedDefinition(Array(width, height, "Simple", "Simple", _
             0#, 0#, rtl, rtr, 0#, 0#)).ConcreteDomain)
     Else
-        Set geometry = FixtureFillets(Array(Array(-width / 2#, height / 2#), Array(width / 2#, height / 2#), _
-            Array(width / 2#, -height / 2#), Array(-width / 2#, -height / 2#)), Array(rtl, rtr, rbr, rbl))
+        Set filletPolygon = New CPolygonSpec
+        filletPolygon.AddVertex "0", -width / 2#, height / 2#, rtl
+        filletPolygon.AddVertex "1", width / 2#, height / 2#, rtr
+        filletPolygon.AddVertex "2", width / 2#, -height / 2#, rbr
+        filletPolygon.AddVertex "3", -width / 2#, -height / 2#, rbl
+        filletPolygon.Seal
+        Set geometry = FixtureFillets(filletPolygon)
     End If
     number = Err.Number: Err.Clear
     On Error GoTo 0

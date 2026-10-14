@@ -51,6 +51,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: все входы уже в мм; 24 наружных и 16 внутренних стержней.
 Public Function RoundedFrameDefinition() As CSectionDefinition
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim outerVertices As Variant, openingVertices As Variant, outerCorners As Variant, innerCorners As Variant
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedFrameExample"
@@ -58,16 +59,56 @@ Public Function RoundedFrameDefinition() As CSectionDefinition
     openingVertices = Array(Array(-250#, -170#), Array(350#, -170#), Array(350#, 130#), Array(-250#, 130#))
     outerCorners = Array("Outer.BL", "Outer.BR", "Outer.TR", "Outer.TL")
     innerCorners = Array("Inner.BL", "Inner.BR", "Inner.TR", "Inner.TL")
-    Set path = facade.RoundedPolygon("Outer", outerVertices, Array(80#, 80#, 80#, 80#), outerCorners)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = outerVertices(LBound(outerVertices) + 0)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonPoint = outerVertices(LBound(outerVertices) + 1)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 1)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonPoint = outerVertices(LBound(outerVertices) + 2)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 2)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonPoint = outerVertices(LBound(outerVertices) + 3)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("Outer", polygonSpec)
     facade.Outer "Concrete", path.ID
-    Set path = facade.RoundedPolygon("Opening", openingVertices, Array(40#, 40#, 40#, 40#), innerCorners)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = openingVertices(LBound(openingVertices) + 0)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonPoint = openingVertices(LBound(openingVertices) + 1)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 1)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonPoint = openingVertices(LBound(openingVertices) + 2)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 2)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonPoint = openingVertices(LBound(openingVertices) + 3)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("Opening", polygonSpec)
     facade.Opening "Void", path.ID, "Concrete"
-    Set path = facade.OffsetRoundedPolygon("Outer.Axis", outerVertices, Array(80#, 80#, 80#, 80#), outerCorners, 60#)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = outerVertices(LBound(outerVertices) + 0)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonPoint = outerVertices(LBound(outerVertices) + 1)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 1)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonPoint = outerVertices(LBound(outerVertices) + 2)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 2)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonPoint = outerVertices(LBound(outerVertices) + 3)
+    polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
+    polygonSpec.Seal
+    Set path = facade.OffsetRoundedPolygon("Outer.Axis", polygonSpec, 60#)
     Set options = New CRebarRuleOptions
     options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     options.AnnotationGroup = "OuterBars": options.SourcePrefix = "Outer."
     facade.RebarByCount "OuterBars", path.ID, 24, 20#, options
-    Set path = facade.OffsetRoundedPolygon("Inner.Axis", openingVertices, Array(40#, 40#, 40#, 40#), innerCorners, -45#)
+    Set polygonSpec = New CPolygonSpec
+    polygonPoint = openingVertices(LBound(openingVertices) + 0)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonPoint = openingVertices(LBound(openingVertices) + 1)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 1)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonPoint = openingVertices(LBound(openingVertices) + 2)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 2)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonPoint = openingVertices(LBound(openingVertices) + 3)
+    polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
+    polygonSpec.Seal
+    Set path = facade.OffsetRoundedPolygon("Inner.Axis", polygonSpec, -45#)
     Set options = New CRebarRuleOptions
     options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     options.AnnotationGroup = "InnerBars": options.SourcePrefix = "Inner."

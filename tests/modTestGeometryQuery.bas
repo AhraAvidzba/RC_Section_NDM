@@ -441,15 +441,26 @@ End Sub
 ' на уровне стыка прямой и скругления. Проверяем также отверстие, обе стороны
 ' стыка, перенос и поворот без подгонки допуска и без запуска НДС.
 Private Sub TestHollowArcJunctions(ByVal query As CSectionGeometryQuery)
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition, section As CSectionModel
     Dim domain As CConcreteRegion, rotated As CConcreteRegion, raw() As TRegionEdge, count As Long
     Dim angle As Variant, offset As Variant, side As Variant, i As Long, x As Double, y As Double
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowArcJunctionFixture"
-    Set path = facade.RoundedPolygon("Boundary", Array(Array(-250#, -400#), Array(250#, -400#), _
-        Array(250#, 400#), Array(-250#, 400#)), Array(180#, 180#, 180#, 180#), Array("BL", "BR", "TR", "TL"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", -250#, -400#, 180#
+    polygonSpec.AddVertex "BR", 250#, -400#, 180#
+    polygonSpec.AddVertex "TR", 250#, 400#, 180#
+    polygonSpec.AddVertex "TL", -250#, 400#, 180#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("Boundary", polygonSpec)
     facade.Outer "OUTER", "Boundary"
-    Set path = facade.RoundedPolygon("VoidPath", Array(Array(-100#, -250#), Array(100#, -250#), _
-        Array(100#, 250#), Array(-100#, 250#)), Array(30#, 30#, 30#, 30#), Array("BL", "BR", "TR", "TL"))
+    Set polygonSpec = New CPolygonSpec
+    polygonSpec.AddVertex "BL", -100#, -250#, 30#
+    polygonSpec.AddVertex "BR", 100#, -250#, 30#
+    polygonSpec.AddVertex "TR", 100#, 250#, 30#
+    polygonSpec.AddVertex "TL", -100#, 250#, 30#
+    polygonSpec.Seal
+    Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
     facade.Opening "VOID", "VoidPath", "OUTER": Set definition = facade.Finish
     Set section = New CSectionModel
     section.AddConcreteElement 0#, -300#, 10000#, 1, , , "Rectangle", 100#, 100#
@@ -743,6 +754,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: точные контуры появляются до аннотаций, а их повторное
 ' построение/очистка не меняют ни одну запись контура или геометрическую версию.
 Private Sub TestGeneratedContoursWithoutAnnotations()
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim kind As Variant, geometry As CGeometryRegion, facade As CSectionDefinitionBuilder
     Dim path As CGeometryPath, definition As CSectionDefinition, labels As CSectionAnnotationBuilder
     Dim model As CSectionModel, bars As CRebarLayout, mesh As CFiberMeshBuilder, query As CSectionGeometryQuery
@@ -758,8 +770,13 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
                 Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#)
                 expectedArea = 10000#
             Case "RoundedRectangle", "HollowRectangle"
-                Set path = facade.RoundedPolygon("Boundary", Array(Array(-50#, -50#), Array(50#, -50#), _
-                    Array(50#, 50#), Array(-50#, 50#)), Array(10#, 10#, 10#, 10#), Array("BL", "BR", "TR", "TL"))
+                Set polygonSpec = New CPolygonSpec
+                polygonSpec.AddVertex "BL", -50#, -50#, 10#
+                polygonSpec.AddVertex "BR", 50#, -50#, 10#
+                polygonSpec.AddVertex "TR", 50#, 50#, 10#
+                polygonSpec.AddVertex "TL", -50#, 50#, 10#
+                polygonSpec.Seal
+                Set path = facade.RoundedPolygon("Boundary", polygonSpec)
                 If CStr(kind) = "HollowRectangle" Then
                     expectedArea = 7600# - (4# - GEOM_PI) * 75#
                 Else
@@ -768,8 +785,13 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
         End Select
         facade.Outer "OUTER", "Boundary"
         If CStr(kind) = "HollowRectangle" Then
-            Set path = facade.RoundedPolygon("VoidPath", Array(Array(-20#, -30#), Array(20#, -30#), _
-                Array(20#, 30#), Array(-20#, 30#)), Array(5#, 5#, 5#, 5#), Array("BL", "BR", "TR", "TL"))
+            Set polygonSpec = New CPolygonSpec
+            polygonSpec.AddVertex "BL", -20#, -30#, 5#
+            polygonSpec.AddVertex "BR", 20#, -30#, 5#
+            polygonSpec.AddVertex "TR", 20#, 30#, 5#
+            polygonSpec.AddVertex "TL", -20#, 30#, 5#
+            polygonSpec.Seal
+            Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
             facade.Opening "VOID", "VoidPath", "OUTER"
         End If
         facade.HorizontalExtent "DIM_B", "Boundary", "B", 0#

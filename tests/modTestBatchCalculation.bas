@@ -7350,6 +7350,8 @@ End Function
 ' Сетка строится один раз и переиспользуется во всех LC этой формы.
 Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
         Optional ByRef preparedMesh As CFiberMeshBuilder = Nothing, Optional ByRef preparedRebars As CRebarLayout = Nothing) As CSectionModel
+    Dim filletPolygon As CPolygonSpec
+    Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim rebars As CRebarLayout, section As CSectionModel, x As Double, y As Double, i As Long
@@ -7382,30 +7384,58 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed"
             Select Case shapeName
                 Case "RoundedSimple"
-                    Set geometry = FixtureFillets(Array(Array(-150#, 100#), Array(150#, 100#), Array(150#, -100#), _
-                        Array(-150#, -100#)), Array(20#, 20#, 20#, 20#))
+                    Set filletPolygon = New CPolygonSpec
+                    filletPolygon.AddVertex "0", -150#, 100#, 20#
+                    filletPolygon.AddVertex "1", 150#, 100#, 20#
+                    filletPolygon.AddVertex "2", 150#, -100#, 20#
+                    filletPolygon.AddVertex "3", -150#, -100#, 20#
+                    filletPolygon.Seal
+                    Set geometry = FixtureFillets(filletPolygon)
                 Case "RoundedTapered"
-                    Set geometry = FixtureFillets(Array(Array(-150#, 90#), Array(150#, 90#), Array(250#, 0#), _
-                        Array(150#, -90#), Array(-150#, -90#), Array(-230#, 0#)), Array(20#, 30#, 45#, 30#, 20#, 35#))
+                    Set filletPolygon = New CPolygonSpec
+                    filletPolygon.AddVertex "0", -150#, 90#, 20#
+                    filletPolygon.AddVertex "1", 150#, 90#, 30#
+                    filletPolygon.AddVertex "2", 250#, 0#, 45#
+                    filletPolygon.AddVertex "3", 150#, -90#, 30#
+                    filletPolygon.AddVertex "4", -150#, -90#, 20#
+                    filletPolygon.AddVertex "5", -230#, 0#, 35#
+                    filletPolygon.Seal
+                    Set geometry = FixtureFillets(filletPolygon)
                 Case "RoundedMixed"
-                    Set geometry = FixtureFillets(Array(Array(-150#, 90#), Array(150#, 90#), Array(230#, 0#), _
-                        Array(150#, -90#), Array(-150#, -90#)), Array(20#, 30#, 45#, 30#, 20#))
+                    Set filletPolygon = New CPolygonSpec
+                    filletPolygon.AddVertex "0", -150#, 90#, 20#
+                    filletPolygon.AddVertex "1", 150#, 90#, 30#
+                    filletPolygon.AddVertex "2", 230#, 0#, 45#
+                    filletPolygon.AddVertex "3", 150#, -90#, 30#
+                    filletPolygon.AddVertex "4", -150#, -90#, 20#
+                    filletPolygon.Seal
+                    Set geometry = FixtureFillets(filletPolygon)
             End Select
         Case "HollowCentered", "HollowOffset", "HollowThin"
             Set facade = New CSectionDefinitionBuilder: facade.Initialize shapeName
             If shapeName = "HollowThin" Then
                 Set path = facade.RectanglePath("Boundary", -150#, -250#, 300#, 500#)
             Else
-                Set path = facade.RoundedPolygon("Boundary", Array(Array(-250#, -400#), Array(250#, -400#), _
-                    Array(250#, 400#), Array(-250#, 400#)), Array(30#, 30#, 30#, 30#), Array("BL", "BR", "TR", "TL"))
+                Set polygonSpec = New CPolygonSpec
+                polygonSpec.AddVertex "BL", -250#, -400#, 30#
+                polygonSpec.AddVertex "BR", 250#, -400#, 30#
+                polygonSpec.AddVertex "TR", 250#, 400#, 30#
+                polygonSpec.AddVertex "TL", -250#, 400#, 30#
+                polygonSpec.Seal
+                Set path = facade.RoundedPolygon("Boundary", polygonSpec)
             End If
             facade.Outer "OUTER", path.ID
             If shapeName = "HollowThin" Then
                 Set path = facade.RectanglePath("VoidPath", -120#, -220#, 240#, 440#)
             Else
                 x = 0#: y = 0#: If shapeName = "HollowOffset" Then x = 40#: y = -30#
-                Set path = facade.RoundedPolygon("VoidPath", Array(Array(x - 100#, y - 150#), Array(x + 100#, y - 150#), _
-                    Array(x + 100#, y + 150#), Array(x - 100#, y + 150#)), Array(20#, 20#, 20#, 20#), Array("BL", "BR", "TR", "TL"))
+                Set polygonSpec = New CPolygonSpec
+                polygonSpec.AddVertex "BL", x - 100#, y - 150#, 20#
+                polygonSpec.AddVertex "BR", x + 100#, y - 150#, 20#
+                polygonSpec.AddVertex "TR", x + 100#, y + 150#, 20#
+                polygonSpec.AddVertex "TL", x - 100#, y + 150#, 20#
+                polygonSpec.Seal
+                Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
             End If
             facade.Opening "VOID", path.ID, "OUTER": Set definition = facade.Finish
             Set geometry = FixtureGeometry(definition.ConcreteDomain)

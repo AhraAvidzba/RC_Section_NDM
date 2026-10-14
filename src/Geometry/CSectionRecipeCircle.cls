@@ -23,8 +23,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
 
     ' Ввод: дополнительные поля читаются только для активных рядов.
     Set table = context.Table("rngCircleGeometry"): Set units = context.Units
-    diameter = table.Length(table.RowByKey("Circle.Diameter"), 2, units)
-    Require table, "Circle.Diameter", diameter > 0#, "Диаметр бетонного круга должен быть положительным."
+    diameter = table.PositiveLength(table.RowByKey("Circle.Diameter"), 2, units)
     count = table.Count(table.RowByKey("Rebar.Count"), 2)
     d = table.OptionalDiameter(table.RowByKey("Rebar.Diameter"), 2, units)
 
@@ -48,8 +47,9 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         ' EndMode — ClosedUniform распределяет стержни по замкнутой линии без повторного конца;
         ' SourcePrefix — начало имён стержней; AnnotationGroup — имя общей подписи для всех рядов этой
         ' группы.
-        options.EndMode = ClosedUniform: options.SourcePrefix = "B": options.AnnotationGroup = "Circle"
-        options.Publication = PublishPerSourcePosition: options.Comment = "Круг: основной ряд арматуры"  ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям; Comment — пояснение к стержням данного ряда.
+        options.EndMode = ClosedUniform: options.SourcePrefix = "B"
+        options.SetPublication "Circle", PublishPerSourcePosition, RejectCoincidence
+        options.Comment = "Круг: основной ряд арматуры"  ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям; Comment — пояснение к стержням данного ряда.
         ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
         options.SourceReference = table.SourceReference(table.RowByKey("Rebar.Count"), 2) & "; " & table.SourceReference(table.RowByKey("Rebar.AxisDistance"), 2)
         ' "Circle.Main" — имя нового ряда; path.ID — линия центров стержней; count — заданное число
@@ -59,7 +59,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
             ' table — снимок таблицы армирования; "Rebar.Diameter2" — ключ диаметра дополнительного
             ' ряда; "_R2" — суффикс имён ряда; loc2 — Stacked поперёк ряда, SideBySide вдоль; d / 2 +
             ' d2 / 2 — расстояние между центрами стержней, мм.
-            Set options = AdditionalOptions(table, "Rebar.Diameter2", "_R2", loc2, d / 2# + d2 / 2#)
+            Set options = AdditionalOptions(table, "Rebar.Diameter2", "_R2", loc2, d, d2)
             ' "Circle.Row2" — имя дополнительного ряда; "Circle.Main" — исходный ряд, чьи позиции
             ' используются; d2 — диаметр дополнительного стержня, мм; options — смещение и выбор
             ' позиций исходного ряда.
@@ -70,7 +70,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
             ' table — снимок таблицы армирования; "Rebar.Diameter3" — ключ диаметра дополнительного
             ' ряда; "_R3" — суффикс имён ряда; loc3 — Stacked поперёк ряда, SideBySide вдоль; d / 2 +
             ' skipped + d3 / 2 — расстояние между центрами стержней, мм.
-            Set options = AdditionalOptions(table, "Rebar.Diameter3", "_R3", loc3, d / 2# + skipped + d3 / 2#)
+            Set options = AdditionalOptions(table, "Rebar.Diameter3", "_R3", loc3, d, d3, skipped)
             ' "Circle.Row3" — имя дополнительного ряда; "Circle.Main" — исходный ряд, чьи позиции
             ' используются; d3 — диаметр дополнительного стержня, мм; options — смещение и выбор
             ' позиций исходного ряда.
@@ -93,16 +93,21 @@ End Function
 ' Описывает смещение и привязку дополнительного ряда относительно основного, сохраняя смысловую
 ' группу.
 Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal key As String, ByVal suffix As String, _
-        ByVal location As String, ByVal distance As Double) As CRebarRuleOptions
+        ByVal location As String, ByVal baseDiameter As Double, ByVal diameter As Double, _
+        Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
     Dim options As CRebarRuleOptions  ' Объявляем условия размещения арматуры.
     Set options = New CRebarRuleOptions  ' Создаём условия размещения арматуры.
-    If location = "Stacked" Then options.NormalOffset = distance Else options.TangentOffset = -distance  ' NormalOffset — знаковое смещение по нормали к исходному ряду, мм; TangentOffset — знаковое смещение вдоль исходного ряда, мм.
-    options.SourceSuffix = suffix: options.AnnotationGroup = "Circle"  ' SourceSuffix — суффикс имён дополнительного ряда; AnnotationGroup — имя общей подписи для всех рядов этой группы.
+    Dim axis As ERebarOffsetAxis, directionSign As Double
+    axis = RowNormal: directionSign = 1#
+    If location = "SideBySide" Then axis = RowTangent: directionSign = -1#
+    options.SourceReference = table.SourceReference(table.RowByKey(key), 2)
+    options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, False, interveningDiameterSum
+    options.SourceSuffix = suffix
+    options.SetPublication "Circle", PublishPerSourcePosition, RejectCoincidence
     ' Publication — PublishPerSourcePosition сохраняет имена по исходным позициям; PlacementCheck —
     ' CheckFullDisk проверяет нахождение всего стержня в бетоне.
-    options.Publication = PublishPerSourcePosition: options.PlacementCheck = CheckFullDisk
+    options.PlacementCheck = CheckFullDisk
     options.Comment = "Круг: дополнительный ряд арматуры"  ' Comment — пояснение к стержням данного ряда.
-    options.SourceReference = table.SourceReference(table.RowByKey(key), 2)  ' SourceReference — адреса ячеек, которые надо исправить при ошибке размещения.
     Set AdditionalOptions = options  ' Возвращаем условия размещения дополнительного ряда.
 End Function
 

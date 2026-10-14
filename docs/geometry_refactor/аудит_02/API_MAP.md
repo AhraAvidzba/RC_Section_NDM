@@ -32,3 +32,37 @@ Cover-обёртка уже удалена. Старый пример RebarRowEx
 гайд/Справка → проверка данных и фактического VBA → FINAL_REPORT C01–C15.
 Полные ON/OFF не запускаются. Push разрешён последним прямым заданием
 пользователя; запрет push внутри исходного документа этим заменён.
+
+## Фактический перенос: геометрия и общие параметры
+
+RoundedPolygon/OffsetRoundedPolygon у фасада и query принимают только
+CPolygonSpec. Прежние массивы доступны исключительно Private-ядру query;
+один Friend CopyKernelData находится в описателе. Все 44 прямых тестовых
+вызова и десять fillet-fixtures перенесены; FixtureFillets также принимает
+CPolygonSpec. В RoundedRectangle удалены AddCorner, три массива и копирующий
+цикл; в Hollow два spec повторно используются при offsets. Circle/RectSet
+сохранили свои примитивы. Учебная трапеция перенесена на тот же формат.
+
+Технические ID публикует CSectionDefinition по EContourNamingPolicy:
+PreserveSegmentIDs=0, SequentialByKind=1. NamingPrefix — данные, по умолчанию
+CONTOUR; для Hollow передаются CONTOUR_OUTER/CONTOUR_OPENING. Явные ID нельзя
+смешивать с SequentialByKind; одинаковые последовательные префиксы разных
+границ отклоняются. Общий номер сегмента и весь прежний порядок сохранены.
+
+ERebarOffsetAxis: RowNormal=1, RowTangent=2. SetPublication меняет строго три
+поля; ConfigureDependentContact — только NormalOffset/TangentOffset/EverySecond.
+Все четыре семейства используют общую подготовку. Локальные AdditionalOptions
+и ExtraOptions сохраняют только конкретную интерпретацию ввода и направления,
+не исполняют арматуру. PositiveLength/NonNegativeLength используют прежний
+Length и адресный InputError; GEOM_TOLERANCE и составные проверки сохранены.
+Поиск заголовков в циклах Rounded/Hollow выполняется лениво один раз.
+
+Доказательства: UnifiedGeometryEquality.json — восемь полных снимков побайтно
+прежние; UnifiedCalculationsSP35/SP63 — по восемь сочетаний, числа/статусы и
+пояснения совпадают; UnifiedTestsCorrected и Audit02ContractTests — реальные
+native-прогоны. Ошибки исходных структурных ожиданий отдельно исправлены:
+их владелец теперь CPolygonSpec, топологических — прежний query.
+
+Остаются полный комментарийный гайд/примеры, визуализация и адресная матрица
+по всем критериям, измерения после переноса, CAD/export, приёмка и публикация
+книги и FINAL_REPORT. Этот список не сокращает согласованный объём.

@@ -1,0 +1,1018 @@
+﻿OK: core.onlyFourPhysicalSegments
+OK: core.noPhantomCorner
+OK: core.noPhantomEdge
+OK: core.collapsedParameters
+OK: core.consecutiveCollapsed
+OK: core.secondJoint
+OK: core.analyticRadius.1
+OK: core.analyticSweep.1
+OK: core.analyticRadius.3
+OK: core.analyticSweep.3
+OK: core.copyAlias
+OK: core.reverseAlias
+OK: core.transformedAlias
+OK: core.sliceAlias
+OK: core.wrapAlias
+OK: core.emptyStillRejected
+OK: core.unknownStillRejected
+OK: F02.Asymmetric.tenBars
+OK: F02.Asymmetric.outerArea
+OK: F02.Asymmetric.length.H.Left
+OK: F02.Asymmetric.start.H.Left
+OK: F02.Asymmetric.end.H.Left
+OK: F02.Asymmetric.position.H.Left.1
+OK: F02.Asymmetric.physical.H.Left.1
+BAR: F02.Asymmetric; H.Left; 1; x=-250; y=366.666666666667
+OK: F02.Asymmetric.position.H.Left.2
+OK: F02.Asymmetric.physical.H.Left.2
+BAR: F02.Asymmetric; H.Left; 2; x=-250; y=183.333333333333
+OK: F02.Asymmetric.position.H.Left.3
+OK: F02.Asymmetric.physical.H.Left.3
+BAR: F02.Asymmetric; H.Left; 3; x=-250; y=0
+OK: F02.Asymmetric.position.H.Left.4
+OK: F02.Asymmetric.physical.H.Left.4
+BAR: F02.Asymmetric; H.Left; 4; x=-250; y=-183.333333333333
+OK: F02.Asymmetric.position.H.Left.5
+OK: F02.Asymmetric.physical.H.Left.5
+BAR: F02.Asymmetric; H.Left; 5; x=-250; y=-366.666666666667
+OK: F02.Asymmetric.length.H.Right
+OK: F02.Asymmetric.start.H.Right
+OK: F02.Asymmetric.end.H.Right
+OK: F02.Asymmetric.position.H.Right.1
+OK: F02.Asymmetric.physical.H.Right.1
+BAR: F02.Asymmetric; H.Right; 1; x=14.2922079310364; y=474.44037134436
+OK: F02.Asymmetric.position.H.Right.2
+OK: F02.Asymmetric.physical.H.Right.2
+BAR: F02.Asymmetric; H.Right; 2; x=198.705131510679; y=270.598515307751
+OK: F02.Asymmetric.position.H.Right.3
+OK: F02.Asymmetric.physical.H.Right.3
+BAR: F02.Asymmetric; H.Right; 3; x=250; y=4.9737991503207E-14
+OK: F02.Asymmetric.position.H.Right.4
+OK: F02.Asymmetric.physical.H.Right.4
+BAR: F02.Asymmetric; H.Right; 4; x=198.705131510679; y=-270.598515307751
+OK: F02.Asymmetric.position.H.Right.5
+OK: F02.Asymmetric.physical.H.Right.5
+BAR: F02.Asymmetric; H.Right; 5; x=14.2922079310365; y=-474.44037134436
+PASS: equilibrium.F02.Asymmetric.1.0.converged
+PASS: equilibrium.F02.Asymmetric.1.0.sum.N
+PASS: equilibrium.F02.Asymmetric.1.0.sum.Mx
+PASS: equilibrium.F02.Asymmetric.1.0.sum.My
+PASS: equilibrium.F02.Asymmetric.1.0.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.F02.Asymmetric.1.0.residual.Mx; actual=2.35472725762518E-08; expected=2.35472725762518E-08
+PASS: equilibrium.F02.Asymmetric.1.0.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.Asymmetric.1.1.converged
+PASS: equilibrium.F02.Asymmetric.1.1.sum.N
+PASS: equilibrium.F02.Asymmetric.1.1.sum.Mx
+PASS: equilibrium.F02.Asymmetric.1.1.sum.My
+PASS: equilibrium.F02.Asymmetric.1.1.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.F02.Asymmetric.1.1.residual.Mx; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.F02.Asymmetric.1.1.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.Asymmetric.1.2.converged
+PASS: equilibrium.F02.Asymmetric.1.2.sum.N
+PASS: equilibrium.F02.Asymmetric.1.2.sum.Mx
+PASS: equilibrium.F02.Asymmetric.1.2.sum.My
+PASS: equilibrium.F02.Asymmetric.1.2.residual.N; actual=-2.79396772384644E-09; expected=-2.79396772384644E-09
+PASS: equilibrium.F02.Asymmetric.1.2.residual.Mx; actual=1.35041773319248E-08; expected=1.35041773319248E-08
+PASS: equilibrium.F02.Asymmetric.1.2.residual.My; actual=-4.65661287307739E-08; expected=-4.65661287307739E-08
+PASS: equilibrium.F02.Asymmetric.1.3.converged
+PASS: equilibrium.F02.Asymmetric.1.3.sum.N
+PASS: equilibrium.F02.Asymmetric.1.3.sum.Mx
+PASS: equilibrium.F02.Asymmetric.1.3.sum.My
+PASS: equilibrium.F02.Asymmetric.1.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.Asymmetric.1.3.residual.Mx; actual=4.17232513427734E-07; expected=4.17232513427734E-07
+PASS: equilibrium.F02.Asymmetric.1.3.residual.My; actual=-3.07336449623108E-08; expected=-3.07336449623108E-08
+PASS: equilibrium.F02.Asymmetric.2.0.converged
+PASS: equilibrium.F02.Asymmetric.2.0.sum.N
+PASS: equilibrium.F02.Asymmetric.2.0.sum.Mx
+PASS: equilibrium.F02.Asymmetric.2.0.sum.My
+PASS: equilibrium.F02.Asymmetric.2.0.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.Asymmetric.2.0.residual.Mx; actual=-7.06393166183277E-09; expected=-7.06393166183277E-09
+PASS: equilibrium.F02.Asymmetric.2.0.residual.My; actual=-1.86264514923096E-07; expected=-1.86264514923096E-07
+PASS: equilibrium.F02.Asymmetric.2.1.converged
+PASS: equilibrium.F02.Asymmetric.2.1.sum.N
+PASS: equilibrium.F02.Asymmetric.2.1.sum.Mx
+PASS: equilibrium.F02.Asymmetric.2.1.sum.My
+PASS: equilibrium.F02.Asymmetric.2.1.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.Asymmetric.2.1.residual.Mx; actual=-2.98023223876953E-07; expected=-2.98023223876953E-07
+PASS: equilibrium.F02.Asymmetric.2.1.residual.My; actual=-1.41561031341553E-07; expected=-1.41561031341553E-07
+PASS: equilibrium.F02.Asymmetric.2.2.converged
+PASS: equilibrium.F02.Asymmetric.2.2.sum.N
+PASS: equilibrium.F02.Asymmetric.2.2.sum.Mx
+PASS: equilibrium.F02.Asymmetric.2.2.sum.My
+PASS: equilibrium.F02.Asymmetric.2.2.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.Asymmetric.2.2.residual.Mx; actual=2.32768115893121E-08; expected=2.32768115893121E-08
+PASS: equilibrium.F02.Asymmetric.2.2.residual.My; actual=-3.16649675369263E-08; expected=-3.16649675369263E-08
+PASS: equilibrium.F02.Asymmetric.2.3.converged
+PASS: equilibrium.F02.Asymmetric.2.3.sum.N
+PASS: equilibrium.F02.Asymmetric.2.3.sum.Mx
+PASS: equilibrium.F02.Asymmetric.2.3.sum.My
+PASS: equilibrium.F02.Asymmetric.2.3.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.Asymmetric.2.3.residual.Mx; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.F02.Asymmetric.2.3.residual.My; actual=-4.09781932830811E-08; expected=-4.09781932830811E-08
+PASS: equilibrium.F02.Asymmetric.3.0.converged
+PASS: equilibrium.F02.Asymmetric.3.0.sum.N
+PASS: equilibrium.F02.Asymmetric.3.0.sum.Mx
+PASS: equilibrium.F02.Asymmetric.3.0.sum.My
+PASS: equilibrium.F02.Asymmetric.3.0.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.Asymmetric.3.0.residual.Mx; actual=-4.73758063890273E-08; expected=-4.73758063890273E-08
+PASS: equilibrium.F02.Asymmetric.3.0.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.Asymmetric.3.1.converged
+PASS: equilibrium.F02.Asymmetric.3.1.sum.N
+PASS: equilibrium.F02.Asymmetric.3.1.sum.Mx
+PASS: equilibrium.F02.Asymmetric.3.1.sum.My
+PASS: equilibrium.F02.Asymmetric.3.1.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.Asymmetric.3.1.residual.Mx; actual=1.49011611938477E-07; expected=1.49011611938477E-07
+PASS: equilibrium.F02.Asymmetric.3.1.residual.My; actual=1.49011611938477E-08; expected=1.49011611938477E-08
+PASS: equilibrium.F02.Asymmetric.3.2.converged
+PASS: equilibrium.F02.Asymmetric.3.2.sum.N
+PASS: equilibrium.F02.Asymmetric.3.2.sum.Mx
+PASS: equilibrium.F02.Asymmetric.3.2.sum.My
+PASS: equilibrium.F02.Asymmetric.3.2.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.Asymmetric.3.2.residual.Mx; actual=-1.01770183391635E-08; expected=-1.01770183391635E-08
+PASS: equilibrium.F02.Asymmetric.3.2.residual.My; actual=-6.70552253723145E-08; expected=-6.70552253723145E-08
+PASS: equilibrium.F02.Asymmetric.3.3.converged
+PASS: equilibrium.F02.Asymmetric.3.3.sum.N
+PASS: equilibrium.F02.Asymmetric.3.3.sum.Mx
+PASS: equilibrium.F02.Asymmetric.3.3.sum.My
+PASS: equilibrium.F02.Asymmetric.3.3.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.Asymmetric.3.3.residual.Mx; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.Asymmetric.3.3.residual.My; actual=1.26659870147705E-07; expected=1.26659870147705E-07
+OK: F02.Asymmetric.workbook.run
+OK: F02.Asymmetric.workbook.state
+WORKBOOK_RUN: F02.Asymmetric; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.Asymmetric
+OK: F02.Mirrored.tenBars
+OK: F02.Mirrored.outerArea
+OK: F02.Mirrored.length.H.Left
+OK: F02.Mirrored.start.H.Left
+OK: F02.Mirrored.end.H.Left
+OK: F02.Mirrored.position.H.Left.1
+OK: F02.Mirrored.physical.H.Left.1
+BAR: F02.Mirrored; H.Left; 1; x=-14.2922079310364; y=474.44037134436
+OK: F02.Mirrored.position.H.Left.2
+OK: F02.Mirrored.physical.H.Left.2
+BAR: F02.Mirrored; H.Left; 2; x=-198.705131510679; y=270.598515307751
+OK: F02.Mirrored.position.H.Left.3
+OK: F02.Mirrored.physical.H.Left.3
+BAR: F02.Mirrored; H.Left; 3; x=-250; y=4.9737991503207E-14
+OK: F02.Mirrored.position.H.Left.4
+OK: F02.Mirrored.physical.H.Left.4
+BAR: F02.Mirrored; H.Left; 4; x=-198.705131510679; y=-270.598515307751
+OK: F02.Mirrored.position.H.Left.5
+OK: F02.Mirrored.physical.H.Left.5
+BAR: F02.Mirrored; H.Left; 5; x=-14.2922079310365; y=-474.44037134436
+OK: F02.Mirrored.length.H.Right
+OK: F02.Mirrored.start.H.Right
+OK: F02.Mirrored.end.H.Right
+OK: F02.Mirrored.position.H.Right.1
+OK: F02.Mirrored.physical.H.Right.1
+BAR: F02.Mirrored; H.Right; 1; x=250; y=366.666666666667
+OK: F02.Mirrored.position.H.Right.2
+OK: F02.Mirrored.physical.H.Right.2
+BAR: F02.Mirrored; H.Right; 2; x=250; y=183.333333333333
+OK: F02.Mirrored.position.H.Right.3
+OK: F02.Mirrored.physical.H.Right.3
+BAR: F02.Mirrored; H.Right; 3; x=250; y=0
+OK: F02.Mirrored.position.H.Right.4
+OK: F02.Mirrored.physical.H.Right.4
+BAR: F02.Mirrored; H.Right; 4; x=250; y=-183.333333333333
+OK: F02.Mirrored.position.H.Right.5
+OK: F02.Mirrored.physical.H.Right.5
+BAR: F02.Mirrored; H.Right; 5; x=250; y=-366.666666666667
+PASS: equilibrium.F02.Mirrored.1.0.converged
+PASS: equilibrium.F02.Mirrored.1.0.sum.N
+PASS: equilibrium.F02.Mirrored.1.0.sum.Mx
+PASS: equilibrium.F02.Mirrored.1.0.sum.My
+PASS: equilibrium.F02.Mirrored.1.0.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.F02.Mirrored.1.0.residual.Mx; actual=-2.02321643882897E-08; expected=-2.02321643882897E-08
+PASS: equilibrium.F02.Mirrored.1.0.residual.My; actual=2.23517417907715E-08; expected=2.23517417907715E-08
+PASS: equilibrium.F02.Mirrored.1.1.converged
+PASS: equilibrium.F02.Mirrored.1.1.sum.N
+PASS: equilibrium.F02.Mirrored.1.1.sum.Mx
+PASS: equilibrium.F02.Mirrored.1.1.sum.My
+PASS: equilibrium.F02.Mirrored.1.1.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.Mirrored.1.1.residual.Mx; actual=1.49011611938477E-07; expected=1.49011611938477E-07
+PASS: equilibrium.F02.Mirrored.1.1.residual.My; actual=-8.19563865661621E-08; expected=-8.19563865661621E-08
+PASS: equilibrium.F02.Mirrored.1.2.converged
+PASS: equilibrium.F02.Mirrored.1.2.sum.N
+PASS: equilibrium.F02.Mirrored.1.2.sum.Mx
+PASS: equilibrium.F02.Mirrored.1.2.sum.My
+PASS: equilibrium.F02.Mirrored.1.2.residual.N; actual=-2.3283064365387E-09; expected=-2.3283064365387E-09
+PASS: equilibrium.F02.Mirrored.1.2.residual.Mx; actual=-4.55861481896136E-08; expected=-4.55861481896136E-08
+PASS: equilibrium.F02.Mirrored.1.2.residual.My; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.Mirrored.1.3.converged
+PASS: equilibrium.F02.Mirrored.1.3.sum.N
+PASS: equilibrium.F02.Mirrored.1.3.sum.Mx
+PASS: equilibrium.F02.Mirrored.1.3.sum.My
+PASS: equilibrium.F02.Mirrored.1.3.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.Mirrored.1.3.residual.Mx; actual=-1.19209289550781E-07; expected=-1.19209289550781E-07
+PASS: equilibrium.F02.Mirrored.1.3.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.F02.Mirrored.2.0.converged
+PASS: equilibrium.F02.Mirrored.2.0.sum.N
+PASS: equilibrium.F02.Mirrored.2.0.sum.Mx
+PASS: equilibrium.F02.Mirrored.2.0.sum.My
+PASS: equilibrium.F02.Mirrored.2.0.residual.N; actual=1.86264514923096E-09; expected=1.86264514923096E-09
+PASS: equilibrium.F02.Mirrored.2.0.residual.Mx; actual=-5.72026692680083E-09; expected=-5.72026692680083E-09
+PASS: equilibrium.F02.Mirrored.2.0.residual.My; actual=2.01165676116943E-07; expected=2.01165676116943E-07
+PASS: equilibrium.F02.Mirrored.2.1.converged
+PASS: equilibrium.F02.Mirrored.2.1.sum.N
+PASS: equilibrium.F02.Mirrored.2.1.sum.Mx
+PASS: equilibrium.F02.Mirrored.2.1.sum.My
+PASS: equilibrium.F02.Mirrored.2.1.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.Mirrored.2.1.residual.Mx; actual=-2.38418579101563E-07; expected=-2.38418579101563E-07
+PASS: equilibrium.F02.Mirrored.2.1.residual.My; actual=1.04308128356934E-07; expected=1.04308128356934E-07
+PASS: equilibrium.F02.Mirrored.2.2.converged
+PASS: equilibrium.F02.Mirrored.2.2.sum.N
+PASS: equilibrium.F02.Mirrored.2.2.sum.Mx
+PASS: equilibrium.F02.Mirrored.2.2.sum.My
+PASS: equilibrium.F02.Mirrored.2.2.residual.N; actual=3.95812094211578E-09; expected=3.95812094211578E-09
+PASS: equilibrium.F02.Mirrored.2.2.residual.Mx; actual=-1.05759454527288E-07; expected=-1.05759454527288E-07
+PASS: equilibrium.F02.Mirrored.2.2.residual.My; actual=3.87430191040039E-07; expected=3.87430191040039E-07
+PASS: equilibrium.F02.Mirrored.2.3.converged
+PASS: equilibrium.F02.Mirrored.2.3.sum.N
+PASS: equilibrium.F02.Mirrored.2.3.sum.Mx
+PASS: equilibrium.F02.Mirrored.2.3.sum.My
+PASS: equilibrium.F02.Mirrored.2.3.residual.N; actual=1.16415321826935E-09; expected=1.16415321826935E-09
+PASS: equilibrium.F02.Mirrored.2.3.residual.Mx; actual=-3.27825546264648E-07; expected=-3.27825546264648E-07
+PASS: equilibrium.F02.Mirrored.2.3.residual.My; actual=3.57627868652344E-07; expected=3.57627868652344E-07
+PASS: equilibrium.F02.Mirrored.3.0.converged
+PASS: equilibrium.F02.Mirrored.3.0.sum.N
+PASS: equilibrium.F02.Mirrored.3.0.sum.Mx
+PASS: equilibrium.F02.Mirrored.3.0.sum.My
+PASS: equilibrium.F02.Mirrored.3.0.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.Mirrored.3.0.residual.Mx; actual=5.45451257494278E-08; expected=5.45451257494278E-08
+PASS: equilibrium.F02.Mirrored.3.0.residual.My; actual=2.23517417907715E-08; expected=2.23517417907715E-08
+PASS: equilibrium.F02.Mirrored.3.1.converged
+PASS: equilibrium.F02.Mirrored.3.1.sum.N
+PASS: equilibrium.F02.Mirrored.3.1.sum.Mx
+PASS: equilibrium.F02.Mirrored.3.1.sum.My
+PASS: equilibrium.F02.Mirrored.3.1.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.Mirrored.3.1.residual.Mx; actual=1.19209289550781E-07; expected=1.19209289550781E-07
+PASS: equilibrium.F02.Mirrored.3.1.residual.My; actual=-2.23517417907715E-08; expected=-2.23517417907715E-08
+PASS: equilibrium.F02.Mirrored.3.2.converged
+PASS: equilibrium.F02.Mirrored.3.2.sum.N
+PASS: equilibrium.F02.Mirrored.3.2.sum.Mx
+PASS: equilibrium.F02.Mirrored.3.2.sum.My
+PASS: equilibrium.F02.Mirrored.3.2.residual.N; actual=-5.58793544769287E-09; expected=-5.58793544769287E-09
+PASS: equilibrium.F02.Mirrored.3.2.residual.Mx; actual=1.52717802848201E-08; expected=1.52717802848201E-08
+PASS: equilibrium.F02.Mirrored.3.2.residual.My; actual=-3.72529029846191E-07; expected=-3.72529029846191E-07
+PASS: equilibrium.F02.Mirrored.3.3.converged
+PASS: equilibrium.F02.Mirrored.3.3.sum.N
+PASS: equilibrium.F02.Mirrored.3.3.sum.Mx
+PASS: equilibrium.F02.Mirrored.3.3.sum.My
+PASS: equilibrium.F02.Mirrored.3.3.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.Mirrored.3.3.residual.Mx; actual=1.78813934326172E-07; expected=1.78813934326172E-07
+PASS: equilibrium.F02.Mirrored.3.3.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+OK: F02.Mirrored.workbook.run
+OK: F02.Mirrored.workbook.state
+WORKBOOK_RUN: F02.Mirrored; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.Mirrored
+OK: F02.NearRadius.tenBars
+OK: F02.NearRadius.outerArea
+OK: F02.NearRadius.length.H.Left
+OK: F02.NearRadius.start.H.Left
+OK: F02.NearRadius.end.H.Left
+OK: F02.NearRadius.position.H.Left.1
+OK: F02.NearRadius.physical.H.Left.1
+BAR: F02.NearRadius; H.Left; 1; x=-250; y=366.666666666667
+OK: F02.NearRadius.position.H.Left.2
+OK: F02.NearRadius.physical.H.Left.2
+BAR: F02.NearRadius; H.Left; 2; x=-250; y=183.333333333333
+OK: F02.NearRadius.position.H.Left.3
+OK: F02.NearRadius.physical.H.Left.3
+BAR: F02.NearRadius; H.Left; 3; x=-250; y=0
+OK: F02.NearRadius.position.H.Left.4
+OK: F02.NearRadius.physical.H.Left.4
+BAR: F02.NearRadius; H.Left; 4; x=-250; y=-183.333333333333
+OK: F02.NearRadius.position.H.Left.5
+OK: F02.NearRadius.physical.H.Left.5
+BAR: F02.NearRadius; H.Left; 5; x=-250; y=-366.666666666667
+OK: F02.NearRadius.length.H.Right
+OK: F02.NearRadius.start.H.Right
+OK: F02.NearRadius.end.H.Right
+OK: F02.NearRadius.position.H.Right.1
+OK: F02.NearRadius.physical.H.Right.1
+BAR: F02.NearRadius; H.Right; 1; x=14.2922079310364; y=474.44037134436
+OK: F02.NearRadius.position.H.Right.2
+OK: F02.NearRadius.physical.H.Right.2
+BAR: F02.NearRadius; H.Right; 2; x=198.705131510679; y=270.598515307751
+OK: F02.NearRadius.position.H.Right.3
+OK: F02.NearRadius.physical.H.Right.3
+BAR: F02.NearRadius; H.Right; 3; x=250; y=4.9737991503207E-14
+OK: F02.NearRadius.position.H.Right.4
+OK: F02.NearRadius.physical.H.Right.4
+BAR: F02.NearRadius; H.Right; 4; x=198.705131510679; y=-270.598515307751
+OK: F02.NearRadius.position.H.Right.5
+OK: F02.NearRadius.physical.H.Right.5
+BAR: F02.NearRadius; H.Right; 5; x=14.2922079310365; y=-474.44037134436
+PASS: equilibrium.F02.NearRadius.1.0.converged
+PASS: equilibrium.F02.NearRadius.1.0.sum.N
+PASS: equilibrium.F02.NearRadius.1.0.sum.Mx
+PASS: equilibrium.F02.NearRadius.1.0.sum.My
+PASS: equilibrium.F02.NearRadius.1.0.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.F02.NearRadius.1.0.residual.Mx; actual=2.35472725762518E-08; expected=2.35472725762518E-08
+PASS: equilibrium.F02.NearRadius.1.0.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.NearRadius.1.1.converged
+PASS: equilibrium.F02.NearRadius.1.1.sum.N
+PASS: equilibrium.F02.NearRadius.1.1.sum.Mx
+PASS: equilibrium.F02.NearRadius.1.1.sum.My
+PASS: equilibrium.F02.NearRadius.1.1.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.F02.NearRadius.1.1.residual.Mx; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.F02.NearRadius.1.1.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.NearRadius.1.2.converged
+PASS: equilibrium.F02.NearRadius.1.2.sum.N
+PASS: equilibrium.F02.NearRadius.1.2.sum.Mx
+PASS: equilibrium.F02.NearRadius.1.2.sum.My
+PASS: equilibrium.F02.NearRadius.1.2.residual.N; actual=-2.79396772384644E-09; expected=-2.79396772384644E-09
+PASS: equilibrium.F02.NearRadius.1.2.residual.Mx; actual=1.35041773319248E-08; expected=1.35041773319248E-08
+PASS: equilibrium.F02.NearRadius.1.2.residual.My; actual=-4.65661287307739E-08; expected=-4.65661287307739E-08
+PASS: equilibrium.F02.NearRadius.1.3.converged
+PASS: equilibrium.F02.NearRadius.1.3.sum.N
+PASS: equilibrium.F02.NearRadius.1.3.sum.Mx
+PASS: equilibrium.F02.NearRadius.1.3.sum.My
+PASS: equilibrium.F02.NearRadius.1.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.NearRadius.1.3.residual.Mx; actual=4.17232513427734E-07; expected=4.17232513427734E-07
+PASS: equilibrium.F02.NearRadius.1.3.residual.My; actual=-3.07336449623108E-08; expected=-3.07336449623108E-08
+PASS: equilibrium.F02.NearRadius.2.0.converged
+PASS: equilibrium.F02.NearRadius.2.0.sum.N
+PASS: equilibrium.F02.NearRadius.2.0.sum.Mx
+PASS: equilibrium.F02.NearRadius.2.0.sum.My
+PASS: equilibrium.F02.NearRadius.2.0.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.NearRadius.2.0.residual.Mx; actual=-7.06393166183277E-09; expected=-7.06393166183277E-09
+PASS: equilibrium.F02.NearRadius.2.0.residual.My; actual=-1.86264514923096E-07; expected=-1.86264514923096E-07
+PASS: equilibrium.F02.NearRadius.2.1.converged
+PASS: equilibrium.F02.NearRadius.2.1.sum.N
+PASS: equilibrium.F02.NearRadius.2.1.sum.Mx
+PASS: equilibrium.F02.NearRadius.2.1.sum.My
+PASS: equilibrium.F02.NearRadius.2.1.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.NearRadius.2.1.residual.Mx; actual=-2.98023223876953E-07; expected=-2.98023223876953E-07
+PASS: equilibrium.F02.NearRadius.2.1.residual.My; actual=-1.41561031341553E-07; expected=-1.41561031341553E-07
+PASS: equilibrium.F02.NearRadius.2.2.converged
+PASS: equilibrium.F02.NearRadius.2.2.sum.N
+PASS: equilibrium.F02.NearRadius.2.2.sum.Mx
+PASS: equilibrium.F02.NearRadius.2.2.sum.My
+PASS: equilibrium.F02.NearRadius.2.2.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.NearRadius.2.2.residual.Mx; actual=2.32768115893121E-08; expected=2.32768115893121E-08
+PASS: equilibrium.F02.NearRadius.2.2.residual.My; actual=-3.16649675369263E-08; expected=-3.16649675369263E-08
+PASS: equilibrium.F02.NearRadius.2.3.converged
+PASS: equilibrium.F02.NearRadius.2.3.sum.N
+PASS: equilibrium.F02.NearRadius.2.3.sum.Mx
+PASS: equilibrium.F02.NearRadius.2.3.sum.My
+PASS: equilibrium.F02.NearRadius.2.3.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.NearRadius.2.3.residual.Mx; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.F02.NearRadius.2.3.residual.My; actual=-4.09781932830811E-08; expected=-4.09781932830811E-08
+PASS: equilibrium.F02.NearRadius.3.0.converged
+PASS: equilibrium.F02.NearRadius.3.0.sum.N
+PASS: equilibrium.F02.NearRadius.3.0.sum.Mx
+PASS: equilibrium.F02.NearRadius.3.0.sum.My
+PASS: equilibrium.F02.NearRadius.3.0.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.NearRadius.3.0.residual.Mx; actual=-4.73758063890273E-08; expected=-4.73758063890273E-08
+PASS: equilibrium.F02.NearRadius.3.0.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.NearRadius.3.1.converged
+PASS: equilibrium.F02.NearRadius.3.1.sum.N
+PASS: equilibrium.F02.NearRadius.3.1.sum.Mx
+PASS: equilibrium.F02.NearRadius.3.1.sum.My
+PASS: equilibrium.F02.NearRadius.3.1.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.NearRadius.3.1.residual.Mx; actual=1.49011611938477E-07; expected=1.49011611938477E-07
+PASS: equilibrium.F02.NearRadius.3.1.residual.My; actual=1.49011611938477E-08; expected=1.49011611938477E-08
+PASS: equilibrium.F02.NearRadius.3.2.converged
+PASS: equilibrium.F02.NearRadius.3.2.sum.N
+PASS: equilibrium.F02.NearRadius.3.2.sum.Mx
+PASS: equilibrium.F02.NearRadius.3.2.sum.My
+PASS: equilibrium.F02.NearRadius.3.2.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.NearRadius.3.2.residual.Mx; actual=-1.01770183391635E-08; expected=-1.01770183391635E-08
+PASS: equilibrium.F02.NearRadius.3.2.residual.My; actual=-6.70552253723145E-08; expected=-6.70552253723145E-08
+PASS: equilibrium.F02.NearRadius.3.3.converged
+PASS: equilibrium.F02.NearRadius.3.3.sum.N
+PASS: equilibrium.F02.NearRadius.3.3.sum.Mx
+PASS: equilibrium.F02.NearRadius.3.3.sum.My
+PASS: equilibrium.F02.NearRadius.3.3.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.NearRadius.3.3.residual.Mx; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.NearRadius.3.3.residual.My; actual=1.26659870147705E-07; expected=1.26659870147705E-07
+OK: F02.NearRadius.workbook.run
+OK: F02.NearRadius.workbook.state
+WORKBOOK_RUN: F02.NearRadius; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.NearRadius
+OK: F02.NearOffset.tenBars
+OK: F02.NearOffset.outerArea
+OK: F02.NearOffset.length.H.Left
+OK: F02.NearOffset.start.H.Left
+OK: F02.NearOffset.end.H.Left
+OK: F02.NearOffset.position.H.Left.1
+OK: F02.NearOffset.physical.H.Left.1
+BAR: F02.NearOffset; H.Left; 1; x=-251; y=367.713864217863
+OK: F02.NearOffset.position.H.Left.2
+OK: F02.NearOffset.physical.H.Left.2
+BAR: F02.NearOffset; H.Left; 2; x=-251; y=183.856932108932
+OK: F02.NearOffset.position.H.Left.3
+OK: F02.NearOffset.physical.H.Left.3
+BAR: F02.NearOffset; H.Left; 3; x=-251; y=-5.15143483426073E-14
+OK: F02.NearOffset.position.H.Left.4
+OK: F02.NearOffset.physical.H.Left.4
+BAR: F02.NearOffset; H.Left; 4; x=-251; y=-183.856932108932
+OK: F02.NearOffset.position.H.Left.5
+OK: F02.NearOffset.physical.H.Left.5
+BAR: F02.NearOffset; H.Left; 5; x=-251; y=-367.713864217863
+OK: F02.NearOffset.length.H.Right
+OK: F02.NearOffset.start.H.Right
+OK: F02.NearOffset.end.H.Right
+OK: F02.NearOffset.position.H.Right.1
+OK: F02.NearOffset.physical.H.Right.1
+BAR: F02.NearOffset; H.Right; 1; x=14.7924957360193; y=475.306870626246
+OK: F02.NearOffset.position.H.Right.2
+OK: F02.NearOffset.physical.H.Right.2
+BAR: F02.NearOffset; H.Right; 2; x=199.573124657884; y=271.099537732097
+OK: F02.NearOffset.position.H.Right.3
+OK: F02.NearOffset.physical.H.Right.3
+BAR: F02.NearOffset; H.Right; 3; x=251; y=-1.77635683940025E-15
+OK: F02.NearOffset.position.H.Right.4
+OK: F02.NearOffset.physical.H.Right.4
+BAR: F02.NearOffset; H.Right; 4; x=199.573124657884; y=-271.099537732097
+OK: F02.NearOffset.position.H.Right.5
+OK: F02.NearOffset.physical.H.Right.5
+BAR: F02.NearOffset; H.Right; 5; x=14.7924957360192; y=-475.306870626246
+PASS: equilibrium.F02.NearOffset.1.0.converged
+PASS: equilibrium.F02.NearOffset.1.0.sum.N
+PASS: equilibrium.F02.NearOffset.1.0.sum.Mx
+PASS: equilibrium.F02.NearOffset.1.0.sum.My
+PASS: equilibrium.F02.NearOffset.1.0.residual.N; actual=-3.49245965480804E-09; expected=-3.49245965480804E-09
+PASS: equilibrium.F02.NearOffset.1.0.residual.Mx; actual=-2.11371116165533E-08; expected=-2.11371116165533E-08
+PASS: equilibrium.F02.NearOffset.1.0.residual.My; actual=1.26659870147705E-07; expected=1.26659870147705E-07
+PASS: equilibrium.F02.NearOffset.1.1.converged
+PASS: equilibrium.F02.NearOffset.1.1.sum.N
+PASS: equilibrium.F02.NearOffset.1.1.sum.Mx
+PASS: equilibrium.F02.NearOffset.1.1.sum.My
+PASS: equilibrium.F02.NearOffset.1.1.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.NearOffset.1.1.residual.Mx; actual=1.19209289550781E-07; expected=1.19209289550781E-07
+PASS: equilibrium.F02.NearOffset.1.1.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.NearOffset.1.2.converged
+PASS: equilibrium.F02.NearOffset.1.2.sum.N
+PASS: equilibrium.F02.NearOffset.1.2.sum.Mx
+PASS: equilibrium.F02.NearOffset.1.2.sum.My
+PASS: equilibrium.F02.NearOffset.1.2.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.NearOffset.1.2.residual.Mx; actual=1.25342012324835E-08; expected=1.25342012324835E-08
+PASS: equilibrium.F02.NearOffset.1.2.residual.My; actual=-1.23865902423859E-07; expected=-1.23865902423859E-07
+PASS: equilibrium.F02.NearOffset.1.3.converged
+PASS: equilibrium.F02.NearOffset.1.3.sum.N
+PASS: equilibrium.F02.NearOffset.1.3.sum.Mx
+PASS: equilibrium.F02.NearOffset.1.3.sum.My
+PASS: equilibrium.F02.NearOffset.1.3.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.NearOffset.1.3.residual.Mx; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.NearOffset.1.3.residual.My; actual=-1.16415321826935E-07; expected=-1.16415321826935E-07
+PASS: equilibrium.F02.NearOffset.2.0.converged
+PASS: equilibrium.F02.NearOffset.2.0.sum.N
+PASS: equilibrium.F02.NearOffset.2.0.sum.Mx
+PASS: equilibrium.F02.NearOffset.2.0.sum.My
+PASS: equilibrium.F02.NearOffset.2.0.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.NearOffset.2.0.residual.Mx; actual=-1.03540287454961E-08; expected=-1.03540287454961E-08
+PASS: equilibrium.F02.NearOffset.2.0.residual.My; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.NearOffset.2.1.converged
+PASS: equilibrium.F02.NearOffset.2.1.sum.N
+PASS: equilibrium.F02.NearOffset.2.1.sum.Mx
+PASS: equilibrium.F02.NearOffset.2.1.sum.My
+PASS: equilibrium.F02.NearOffset.2.1.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.F02.NearOffset.2.1.residual.Mx; actual=-4.17232513427734E-07; expected=-4.17232513427734E-07
+PASS: equilibrium.F02.NearOffset.2.1.residual.My; actual=-8.94069671630859E-08; expected=-8.94069671630859E-08
+PASS: equilibrium.F02.NearOffset.2.2.converged
+PASS: equilibrium.F02.NearOffset.2.2.sum.N
+PASS: equilibrium.F02.NearOffset.2.2.sum.Mx
+PASS: equilibrium.F02.NearOffset.2.2.sum.My
+PASS: equilibrium.F02.NearOffset.2.2.residual.N; actual=8.14907252788544E-09; expected=8.14907252788544E-09
+PASS: equilibrium.F02.NearOffset.2.2.residual.Mx; actual=3.4561367101559E-08; expected=3.4561367101559E-08
+PASS: equilibrium.F02.NearOffset.2.2.residual.My; actual=-2.86847352981567E-07; expected=-2.86847352981567E-07
+PASS: equilibrium.F02.NearOffset.2.3.converged
+PASS: equilibrium.F02.NearOffset.2.3.sum.N
+PASS: equilibrium.F02.NearOffset.2.3.sum.Mx
+PASS: equilibrium.F02.NearOffset.2.3.sum.My
+PASS: equilibrium.F02.NearOffset.2.3.residual.N; actual=-5.355104804039E-09; expected=-5.355104804039E-09
+PASS: equilibrium.F02.NearOffset.2.3.residual.Mx; actual=1.78813934326172E-07; expected=1.78813934326172E-07
+PASS: equilibrium.F02.NearOffset.2.3.residual.My; actual=1.87195837497711E-07; expected=1.87195837497711E-07
+PASS: equilibrium.F02.NearOffset.3.0.converged
+PASS: equilibrium.F02.NearOffset.3.0.sum.N
+PASS: equilibrium.F02.NearOffset.3.0.sum.Mx
+PASS: equilibrium.F02.NearOffset.3.0.sum.My
+PASS: equilibrium.F02.NearOffset.3.0.residual.N; actual=1.16415321826935E-09; expected=1.16415321826935E-09
+PASS: equilibrium.F02.NearOffset.3.0.residual.Mx; actual=1.52963366417679E-08; expected=1.52963366417679E-08
+PASS: equilibrium.F02.NearOffset.3.0.residual.My; actual=-3.72529029846191E-08; expected=-3.72529029846191E-08
+PASS: equilibrium.F02.NearOffset.3.1.converged
+PASS: equilibrium.F02.NearOffset.3.1.sum.N
+PASS: equilibrium.F02.NearOffset.3.1.sum.Mx
+PASS: equilibrium.F02.NearOffset.3.1.sum.My
+PASS: equilibrium.F02.NearOffset.3.1.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.NearOffset.3.1.residual.Mx; actual=8.94069671630859E-08; expected=8.94069671630859E-08
+PASS: equilibrium.F02.NearOffset.3.1.residual.My; actual=3.72529029846191E-08; expected=3.72529029846191E-08
+PASS: equilibrium.F02.NearOffset.3.2.converged
+PASS: equilibrium.F02.NearOffset.3.2.sum.N
+PASS: equilibrium.F02.NearOffset.3.2.sum.Mx
+PASS: equilibrium.F02.NearOffset.3.2.sum.My
+PASS: equilibrium.F02.NearOffset.3.2.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.F02.NearOffset.3.2.residual.Mx; actual=-3.04362401948302E-09; expected=-3.04362401948302E-09
+PASS: equilibrium.F02.NearOffset.3.2.residual.My; actual=7.26431608200073E-08; expected=7.26431608200073E-08
+PASS: equilibrium.F02.NearOffset.3.3.converged
+PASS: equilibrium.F02.NearOffset.3.3.sum.N
+PASS: equilibrium.F02.NearOffset.3.3.sum.Mx
+PASS: equilibrium.F02.NearOffset.3.3.sum.My
+PASS: equilibrium.F02.NearOffset.3.3.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.NearOffset.3.3.residual.Mx; actual=0; expected=0
+PASS: equilibrium.F02.NearOffset.3.3.residual.My; actual=-3.63215804100037E-08; expected=-3.63215804100037E-08
+OK: F02.NearOffset.workbook.run
+OK: F02.NearOffset.workbook.state
+WORKBOOK_RUN: F02.NearOffset; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.NearOffset
+OK: F02.Square.tenBars
+OK: F02.Square.outerArea
+OK: F02.Square.length.H.Left
+OK: F02.Square.start.H.Left
+OK: F02.Square.end.H.Left
+OK: F02.Square.position.H.Left.1
+OK: F02.Square.physical.H.Left.1
+BAR: F02.Square; H.Left; 1; x=-250; y=366.666666666667
+OK: F02.Square.position.H.Left.2
+OK: F02.Square.physical.H.Left.2
+BAR: F02.Square; H.Left; 2; x=-250; y=183.333333333333
+OK: F02.Square.position.H.Left.3
+OK: F02.Square.physical.H.Left.3
+BAR: F02.Square; H.Left; 3; x=-250; y=0
+OK: F02.Square.position.H.Left.4
+OK: F02.Square.physical.H.Left.4
+BAR: F02.Square; H.Left; 4; x=-250; y=-183.333333333333
+OK: F02.Square.position.H.Left.5
+OK: F02.Square.physical.H.Left.5
+BAR: F02.Square; H.Left; 5; x=-250; y=-366.666666666667
+OK: F02.Square.length.H.Right
+OK: F02.Square.start.H.Right
+OK: F02.Square.end.H.Right
+OK: F02.Square.position.H.Right.1
+OK: F02.Square.physical.H.Right.1
+BAR: F02.Square; H.Right; 1; x=250; y=366.666666666667
+OK: F02.Square.position.H.Right.2
+OK: F02.Square.physical.H.Right.2
+BAR: F02.Square; H.Right; 2; x=250; y=183.333333333333
+OK: F02.Square.position.H.Right.3
+OK: F02.Square.physical.H.Right.3
+BAR: F02.Square; H.Right; 3; x=250; y=0
+OK: F02.Square.position.H.Right.4
+OK: F02.Square.physical.H.Right.4
+BAR: F02.Square; H.Right; 4; x=250; y=-183.333333333333
+OK: F02.Square.position.H.Right.5
+OK: F02.Square.physical.H.Right.5
+BAR: F02.Square; H.Right; 5; x=250; y=-366.666666666667
+PASS: equilibrium.F02.Square.1.0.converged
+PASS: equilibrium.F02.Square.1.0.sum.N
+PASS: equilibrium.F02.Square.1.0.sum.Mx
+PASS: equilibrium.F02.Square.1.0.sum.My
+PASS: equilibrium.F02.Square.1.0.residual.N; actual=-1.09430402517319E-08; expected=-1.09430402517319E-08
+PASS: equilibrium.F02.Square.1.0.residual.Mx; actual=2.16639364225557E-08; expected=2.16639364225557E-08
+PASS: equilibrium.F02.Square.1.0.residual.My; actual=-8.11269273981452E-10; expected=-8.11269273981452E-10
+PASS: equilibrium.F02.Square.1.1.converged
+PASS: equilibrium.F02.Square.1.1.sum.N
+PASS: equilibrium.F02.Square.1.1.sum.Mx
+PASS: equilibrium.F02.Square.1.1.sum.My
+PASS: equilibrium.F02.Square.1.1.residual.N; actual=-1.86264514923096E-09; expected=-1.86264514923096E-09
+PASS: equilibrium.F02.Square.1.1.residual.Mx; actual=1.31130218505859E-06; expected=1.31130218505859E-06
+PASS: equilibrium.F02.Square.1.1.residual.My; actual=-1.16415321826935E-09; expected=-1.16415321826935E-09
+PASS: equilibrium.F02.Square.1.2.converged
+PASS: equilibrium.F02.Square.1.2.sum.N
+PASS: equilibrium.F02.Square.1.2.sum.Mx
+PASS: equilibrium.F02.Square.1.2.sum.My
+PASS: equilibrium.F02.Square.1.2.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.Square.1.2.residual.Mx; actual=-2.66577444563154E-08; expected=-2.66577444563154E-08
+PASS: equilibrium.F02.Square.1.2.residual.My; actual=-5.21540641784668E-08; expected=-5.21540641784668E-08
+PASS: equilibrium.F02.Square.1.3.converged
+PASS: equilibrium.F02.Square.1.3.sum.N
+PASS: equilibrium.F02.Square.1.3.sum.Mx
+PASS: equilibrium.F02.Square.1.3.sum.My
+PASS: equilibrium.F02.Square.1.3.residual.N; actual=-1.16415321826935E-09; expected=-1.16415321826935E-09
+PASS: equilibrium.F02.Square.1.3.residual.Mx; actual=4.76837158203125E-07; expected=4.76837158203125E-07
+PASS: equilibrium.F02.Square.1.3.residual.My; actual=1.49011611938477E-08; expected=1.49011611938477E-08
+PASS: equilibrium.F02.Square.2.0.converged
+PASS: equilibrium.F02.Square.2.0.sum.N
+PASS: equilibrium.F02.Square.2.0.sum.Mx
+PASS: equilibrium.F02.Square.2.0.sum.My
+PASS: equilibrium.F02.Square.2.0.residual.N; actual=-1.55996531248093E-08; expected=-1.55996531248093E-08
+PASS: equilibrium.F02.Square.2.0.residual.Mx; actual=-1.46677621160052E-08; expected=-1.46677621160052E-08
+PASS: equilibrium.F02.Square.2.0.residual.My; actual=-2.34649633057415E-10; expected=-2.34649633057415E-10
+PASS: equilibrium.F02.Square.2.1.converged
+PASS: equilibrium.F02.Square.2.1.sum.N
+PASS: equilibrium.F02.Square.2.1.sum.Mx
+PASS: equilibrium.F02.Square.2.1.sum.My
+PASS: equilibrium.F02.Square.2.1.residual.N; actual=3.25962901115417E-09; expected=3.25962901115417E-09
+PASS: equilibrium.F02.Square.2.1.residual.Mx; actual=-5.66244125366211E-07; expected=-5.66244125366211E-07
+PASS: equilibrium.F02.Square.2.1.residual.My; actual=-1.8644641386345E-09; expected=-1.8644641386345E-09
+PASS: equilibrium.F02.Square.2.2.converged
+PASS: equilibrium.F02.Square.2.2.sum.N
+PASS: equilibrium.F02.Square.2.2.sum.Mx
+PASS: equilibrium.F02.Square.2.2.sum.My
+PASS: equilibrium.F02.Square.2.2.residual.N; actual=-3.25962901115417E-09; expected=-3.25962901115417E-09
+PASS: equilibrium.F02.Square.2.2.residual.Mx; actual=3.58361376129324E-08; expected=3.58361376129324E-08
+PASS: equilibrium.F02.Square.2.2.residual.My; actual=-2.98023223876953E-08; expected=-2.98023223876953E-08
+PASS: equilibrium.F02.Square.2.3.converged
+PASS: equilibrium.F02.Square.2.3.sum.N
+PASS: equilibrium.F02.Square.2.3.sum.Mx
+PASS: equilibrium.F02.Square.2.3.sum.My
+PASS: equilibrium.F02.Square.2.3.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.Square.2.3.residual.Mx; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.Square.2.3.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.Square.3.0.converged
+PASS: equilibrium.F02.Square.3.0.sum.N
+PASS: equilibrium.F02.Square.3.0.sum.Mx
+PASS: equilibrium.F02.Square.3.0.sum.My
+PASS: equilibrium.F02.Square.3.0.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.F02.Square.3.0.residual.Mx; actual=1.28354713524459E-08; expected=1.28354713524459E-08
+PASS: equilibrium.F02.Square.3.0.residual.My; actual=8.49468051455915E-10; expected=8.49468051455915E-10
+PASS: equilibrium.F02.Square.3.1.converged
+PASS: equilibrium.F02.Square.3.1.sum.N
+PASS: equilibrium.F02.Square.3.1.sum.Mx
+PASS: equilibrium.F02.Square.3.1.sum.My
+PASS: equilibrium.F02.Square.3.1.residual.N; actual=-2.09547579288483E-09; expected=-2.09547579288483E-09
+PASS: equilibrium.F02.Square.3.1.residual.Mx; actual=1.9371509552002E-06; expected=1.9371509552002E-06
+PASS: equilibrium.F02.Square.3.1.residual.My; actual=-1.37515598908067E-09; expected=-1.37515598908067E-09
+PASS: equilibrium.F02.Square.3.2.converged
+PASS: equilibrium.F02.Square.3.2.sum.N
+PASS: equilibrium.F02.Square.3.2.sum.Mx
+PASS: equilibrium.F02.Square.3.2.sum.My
+PASS: equilibrium.F02.Square.3.2.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.Square.3.2.residual.Mx; actual=4.02742443839088E-08; expected=4.02742443839088E-08
+PASS: equilibrium.F02.Square.3.2.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.Square.3.3.converged
+PASS: equilibrium.F02.Square.3.3.sum.N
+PASS: equilibrium.F02.Square.3.3.sum.Mx
+PASS: equilibrium.F02.Square.3.3.sum.My
+PASS: equilibrium.F02.Square.3.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.Square.3.3.residual.Mx; actual=1.49011611938477E-07; expected=1.49011611938477E-07
+PASS: equilibrium.F02.Square.3.3.residual.My; actual=0; expected=0
+OK: F02.Square.workbook.run
+OK: F02.Square.workbook.state
+WORKBOOK_RUN: F02.Square; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.Square
+OK: F02.Ordinary.tenBars
+OK: F02.Ordinary.outerArea
+OK: F02.Ordinary.length.H.Left
+OK: F02.Ordinary.start.H.Left
+OK: F02.Ordinary.end.H.Left
+OK: F02.Ordinary.position.H.Left.1
+OK: F02.Ordinary.physical.H.Left.1
+BAR: F02.Ordinary; H.Left; 1; x=-250; y=385.693210893163
+OK: F02.Ordinary.position.H.Left.2
+OK: F02.Ordinary.physical.H.Left.2
+BAR: F02.Ordinary; H.Left; 2; x=-250; y=192.846605446582
+OK: F02.Ordinary.position.H.Left.3
+OK: F02.Ordinary.physical.H.Left.3
+BAR: F02.Ordinary; H.Left; 3; x=-250; y=3.90798504668055E-14
+OK: F02.Ordinary.position.H.Left.4
+OK: F02.Ordinary.physical.H.Left.4
+BAR: F02.Ordinary; H.Left; 4; x=-250; y=-192.846605446582
+OK: F02.Ordinary.position.H.Left.5
+OK: F02.Ordinary.physical.H.Left.5
+BAR: F02.Ordinary; H.Left; 5; x=-250; y=-385.693210893163
+OK: F02.Ordinary.length.H.Right
+OK: F02.Ordinary.start.H.Right
+OK: F02.Ordinary.end.H.Right
+OK: F02.Ordinary.position.H.Right.1
+OK: F02.Ordinary.physical.H.Right.1
+BAR: F02.Ordinary; H.Right; 1; x=248.124299813917; y=423.647236723071
+OK: F02.Ordinary.position.H.Right.2
+OK: F02.Ordinary.physical.H.Right.2
+BAR: F02.Ordinary; H.Right; 2; x=250; y=211.873149673078
+OK: F02.Ordinary.position.H.Right.3
+OK: F02.Ordinary.physical.H.Right.3
+BAR: F02.Ordinary; H.Right; 3; x=250; y=3.5527136788005E-15
+OK: F02.Ordinary.position.H.Right.4
+OK: F02.Ordinary.physical.H.Right.4
+BAR: F02.Ordinary; H.Right; 4; x=250; y=-211.873149673078
+OK: F02.Ordinary.position.H.Right.5
+OK: F02.Ordinary.physical.H.Right.5
+BAR: F02.Ordinary; H.Right; 5; x=248.124299813917; y=-423.647236723071
+PASS: equilibrium.F02.Ordinary.1.0.converged
+PASS: equilibrium.F02.Ordinary.1.0.sum.N
+PASS: equilibrium.F02.Ordinary.1.0.sum.Mx
+PASS: equilibrium.F02.Ordinary.1.0.sum.My
+PASS: equilibrium.F02.Ordinary.1.0.residual.N; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.Ordinary.1.0.residual.Mx; actual=3.25212567986455E-08; expected=3.25212567986455E-08
+PASS: equilibrium.F02.Ordinary.1.0.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.Ordinary.1.1.converged
+PASS: equilibrium.F02.Ordinary.1.1.sum.N
+PASS: equilibrium.F02.Ordinary.1.1.sum.Mx
+PASS: equilibrium.F02.Ordinary.1.1.sum.My
+PASS: equilibrium.F02.Ordinary.1.1.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.F02.Ordinary.1.1.residual.Mx; actual=4.4703483581543E-07; expected=4.4703483581543E-07
+PASS: equilibrium.F02.Ordinary.1.1.residual.My; actual=-1.58324837684631E-08; expected=-1.58324837684631E-08
+PASS: equilibrium.F02.Ordinary.1.2.converged
+PASS: equilibrium.F02.Ordinary.1.2.sum.N
+PASS: equilibrium.F02.Ordinary.1.2.sum.Mx
+PASS: equilibrium.F02.Ordinary.1.2.sum.My
+PASS: equilibrium.F02.Ordinary.1.2.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.Ordinary.1.2.residual.Mx; actual=-2.91820470010862E-08; expected=-2.91820470010862E-08
+PASS: equilibrium.F02.Ordinary.1.2.residual.My; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.F02.Ordinary.1.3.converged
+PASS: equilibrium.F02.Ordinary.1.3.sum.N
+PASS: equilibrium.F02.Ordinary.1.3.sum.Mx
+PASS: equilibrium.F02.Ordinary.1.3.sum.My
+PASS: equilibrium.F02.Ordinary.1.3.residual.N; actual=-1.62981450557709E-09; expected=-1.62981450557709E-09
+PASS: equilibrium.F02.Ordinary.1.3.residual.Mx; actual=4.17232513427734E-07; expected=4.17232513427734E-07
+PASS: equilibrium.F02.Ordinary.1.3.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.Ordinary.2.0.converged
+PASS: equilibrium.F02.Ordinary.2.0.sum.N
+PASS: equilibrium.F02.Ordinary.2.0.sum.Mx
+PASS: equilibrium.F02.Ordinary.2.0.sum.My
+PASS: equilibrium.F02.Ordinary.2.0.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.F02.Ordinary.2.0.residual.Mx; actual=2.04508978640661E-08; expected=2.04508978640661E-08
+PASS: equilibrium.F02.Ordinary.2.0.residual.My; actual=3.16649675369263E-08; expected=3.16649675369263E-08
+PASS: equilibrium.F02.Ordinary.2.1.converged
+PASS: equilibrium.F02.Ordinary.2.1.sum.N
+PASS: equilibrium.F02.Ordinary.2.1.sum.Mx
+PASS: equilibrium.F02.Ordinary.2.1.sum.My
+PASS: equilibrium.F02.Ordinary.2.1.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.Ordinary.2.1.residual.Mx; actual=-1.49011611938477E-07; expected=-1.49011611938477E-07
+PASS: equilibrium.F02.Ordinary.2.1.residual.My; actual=2.42143869400024E-08; expected=2.42143869400024E-08
+PASS: equilibrium.F02.Ordinary.2.2.converged
+PASS: equilibrium.F02.Ordinary.2.2.sum.N
+PASS: equilibrium.F02.Ordinary.2.2.sum.Mx
+PASS: equilibrium.F02.Ordinary.2.2.sum.My
+PASS: equilibrium.F02.Ordinary.2.2.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.Ordinary.2.2.residual.Mx; actual=-7.22945969755528E-09; expected=-7.22945969755528E-09
+PASS: equilibrium.F02.Ordinary.2.2.residual.My; actual=3.72529029846191E-08; expected=3.72529029846191E-08
+PASS: equilibrium.F02.Ordinary.2.3.converged
+PASS: equilibrium.F02.Ordinary.2.3.sum.N
+PASS: equilibrium.F02.Ordinary.2.3.sum.Mx
+PASS: equilibrium.F02.Ordinary.2.3.sum.My
+PASS: equilibrium.F02.Ordinary.2.3.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.Ordinary.2.3.residual.Mx; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.F02.Ordinary.2.3.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.Ordinary.3.0.converged
+PASS: equilibrium.F02.Ordinary.3.0.sum.N
+PASS: equilibrium.F02.Ordinary.3.0.sum.Mx
+PASS: equilibrium.F02.Ordinary.3.0.sum.My
+PASS: equilibrium.F02.Ordinary.3.0.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.Ordinary.3.0.residual.Mx; actual=-3.05067260342184E-08; expected=-3.05067260342184E-08
+PASS: equilibrium.F02.Ordinary.3.0.residual.My; actual=1.02445483207703E-08; expected=1.02445483207703E-08
+PASS: equilibrium.F02.Ordinary.3.1.converged
+PASS: equilibrium.F02.Ordinary.3.1.sum.N
+PASS: equilibrium.F02.Ordinary.3.1.sum.Mx
+PASS: equilibrium.F02.Ordinary.3.1.sum.My
+PASS: equilibrium.F02.Ordinary.3.1.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.F02.Ordinary.3.1.residual.Mx; actual=-1.19209289550781E-07; expected=-1.19209289550781E-07
+PASS: equilibrium.F02.Ordinary.3.1.residual.My; actual=1.39698386192322E-08; expected=1.39698386192322E-08
+PASS: equilibrium.F02.Ordinary.3.2.converged
+PASS: equilibrium.F02.Ordinary.3.2.sum.N
+PASS: equilibrium.F02.Ordinary.3.2.sum.Mx
+PASS: equilibrium.F02.Ordinary.3.2.sum.My
+PASS: equilibrium.F02.Ordinary.3.2.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.Ordinary.3.2.residual.Mx; actual=4.81695678899996E-08; expected=4.81695678899996E-08
+PASS: equilibrium.F02.Ordinary.3.2.residual.My; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.F02.Ordinary.3.3.converged
+PASS: equilibrium.F02.Ordinary.3.3.sum.N
+PASS: equilibrium.F02.Ordinary.3.3.sum.Mx
+PASS: equilibrium.F02.Ordinary.3.3.sum.My
+PASS: equilibrium.F02.Ordinary.3.3.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.Ordinary.3.3.residual.Mx; actual=8.94069671630859E-08; expected=8.94069671630859E-08
+PASS: equilibrium.F02.Ordinary.3.3.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+OK: F02.Ordinary.workbook.run
+OK: F02.Ordinary.workbook.state
+WORKBOOK_RUN: F02.Ordinary; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.Ordinary
+OK: F02.LeftLineGone.tenBars
+OK: F02.LeftLineGone.outerArea
+OK: F02.LeftLineGone.length.H.Left
+OK: F02.LeftLineGone.start.H.Left
+OK: F02.LeftLineGone.end.H.Left
+OK: F02.LeftLineGone.position.H.Left.1
+OK: F02.LeftLineGone.physical.H.Left.1
+BAR: F02.LeftLineGone; H.Left; 1; x=-125; y=216.50635094611
+OK: F02.LeftLineGone.position.H.Left.2
+OK: F02.LeftLineGone.physical.H.Left.2
+BAR: F02.LeftLineGone; H.Left; 2; x=-216.50635094611; y=125
+OK: F02.LeftLineGone.position.H.Left.3
+OK: F02.LeftLineGone.physical.H.Left.3
+BAR: F02.LeftLineGone; H.Left; 3; x=-250; y=2.48689957516035E-14
+OK: F02.LeftLineGone.position.H.Left.4
+OK: F02.LeftLineGone.physical.H.Left.4
+BAR: F02.LeftLineGone; H.Left; 4; x=-216.50635094611; y=-125
+OK: F02.LeftLineGone.position.H.Left.5
+OK: F02.LeftLineGone.physical.H.Left.5
+BAR: F02.LeftLineGone; H.Left; 5; x=-125; y=-216.50635094611
+OK: F02.LeftLineGone.length.H.Right
+OK: F02.LeftLineGone.start.H.Right
+OK: F02.LeftLineGone.end.H.Right
+OK: F02.LeftLineGone.position.H.Right.1
+OK: F02.LeftLineGone.physical.H.Right.1
+BAR: F02.LeftLineGone; H.Right; 1; x=250; y=166.666666666667
+OK: F02.LeftLineGone.position.H.Right.2
+OK: F02.LeftLineGone.physical.H.Right.2
+BAR: F02.LeftLineGone; H.Right; 2; x=250; y=83.3333333333333
+OK: F02.LeftLineGone.position.H.Right.3
+OK: F02.LeftLineGone.physical.H.Right.3
+BAR: F02.LeftLineGone; H.Right; 3; x=250; y=0
+OK: F02.LeftLineGone.position.H.Right.4
+OK: F02.LeftLineGone.physical.H.Right.4
+BAR: F02.LeftLineGone; H.Right; 4; x=250; y=-83.3333333333333
+OK: F02.LeftLineGone.position.H.Right.5
+OK: F02.LeftLineGone.physical.H.Right.5
+BAR: F02.LeftLineGone; H.Right; 5; x=250; y=-166.666666666667
+PASS: equilibrium.F02.LeftLineGone.1.0.converged
+PASS: equilibrium.F02.LeftLineGone.1.0.sum.N
+PASS: equilibrium.F02.LeftLineGone.1.0.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.1.0.sum.My
+PASS: equilibrium.F02.LeftLineGone.1.0.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.LeftLineGone.1.0.residual.Mx; actual=-5.89352566748858E-10; expected=-5.89352566748858E-10
+PASS: equilibrium.F02.LeftLineGone.1.0.residual.My; actual=0; expected=0
+PASS: equilibrium.F02.LeftLineGone.1.1.converged
+PASS: equilibrium.F02.LeftLineGone.1.1.sum.N
+PASS: equilibrium.F02.LeftLineGone.1.1.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.1.1.sum.My
+PASS: equilibrium.F02.LeftLineGone.1.1.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.LeftLineGone.1.1.residual.Mx; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.F02.LeftLineGone.1.1.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.LeftLineGone.1.2.converged
+PASS: equilibrium.F02.LeftLineGone.1.2.sum.N
+PASS: equilibrium.F02.LeftLineGone.1.2.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.1.2.sum.My
+PASS: equilibrium.F02.LeftLineGone.1.2.residual.N; actual=1.16415321826935E-10; expected=1.16415321826935E-10
+PASS: equilibrium.F02.LeftLineGone.1.2.residual.Mx; actual=3.19892023981083E-09; expected=3.19892023981083E-09
+PASS: equilibrium.F02.LeftLineGone.1.2.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.LeftLineGone.1.3.converged
+PASS: equilibrium.F02.LeftLineGone.1.3.sum.N
+PASS: equilibrium.F02.LeftLineGone.1.3.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.1.3.sum.My
+PASS: equilibrium.F02.LeftLineGone.1.3.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.LeftLineGone.1.3.residual.Mx; actual=6.70552253723145E-08; expected=6.70552253723145E-08
+PASS: equilibrium.F02.LeftLineGone.1.3.residual.My; actual=-2.23517417907715E-08; expected=-2.23517417907715E-08
+PASS: equilibrium.F02.LeftLineGone.2.0.converged
+PASS: equilibrium.F02.LeftLineGone.2.0.sum.N
+PASS: equilibrium.F02.LeftLineGone.2.0.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.2.0.sum.My
+PASS: equilibrium.F02.LeftLineGone.2.0.residual.N; actual=1.28056854009628E-09; expected=1.28056854009628E-09
+PASS: equilibrium.F02.LeftLineGone.2.0.residual.Mx; actual=3.93609411730722E-09; expected=3.93609411730722E-09
+PASS: equilibrium.F02.LeftLineGone.2.0.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.LeftLineGone.2.1.converged
+PASS: equilibrium.F02.LeftLineGone.2.1.sum.N
+PASS: equilibrium.F02.LeftLineGone.2.1.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.2.1.sum.My
+PASS: equilibrium.F02.LeftLineGone.2.1.residual.N; actual=1.04773789644241E-09; expected=1.04773789644241E-09
+PASS: equilibrium.F02.LeftLineGone.2.1.residual.Mx; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.F02.LeftLineGone.2.1.residual.My; actual=3.35276126861572E-08; expected=3.35276126861572E-08
+PASS: equilibrium.F02.LeftLineGone.2.2.converged
+PASS: equilibrium.F02.LeftLineGone.2.2.sum.N
+PASS: equilibrium.F02.LeftLineGone.2.2.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.2.2.sum.My
+PASS: equilibrium.F02.LeftLineGone.2.2.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.LeftLineGone.2.2.residual.Mx; actual=-9.11069264475373E-09; expected=-9.11069264475373E-09
+PASS: equilibrium.F02.LeftLineGone.2.2.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.LeftLineGone.2.3.converged
+PASS: equilibrium.F02.LeftLineGone.2.3.sum.N
+PASS: equilibrium.F02.LeftLineGone.2.3.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.2.3.sum.My
+PASS: equilibrium.F02.LeftLineGone.2.3.residual.N; actual=8.14907252788544E-10; expected=8.14907252788544E-10
+PASS: equilibrium.F02.LeftLineGone.2.3.residual.Mx; actual=-2.23517417907715E-08; expected=-2.23517417907715E-08
+PASS: equilibrium.F02.LeftLineGone.2.3.residual.My; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.F02.LeftLineGone.3.0.converged
+PASS: equilibrium.F02.LeftLineGone.3.0.sum.N
+PASS: equilibrium.F02.LeftLineGone.3.0.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.3.0.sum.My
+PASS: equilibrium.F02.LeftLineGone.3.0.residual.N; actual=8.14907252788544E-10; expected=8.14907252788544E-10
+PASS: equilibrium.F02.LeftLineGone.3.0.residual.Mx; actual=2.58899035543436E-09; expected=2.58899035543436E-09
+PASS: equilibrium.F02.LeftLineGone.3.0.residual.My; actual=2.60770320892334E-08; expected=2.60770320892334E-08
+PASS: equilibrium.F02.LeftLineGone.3.1.converged
+PASS: equilibrium.F02.LeftLineGone.3.1.sum.N
+PASS: equilibrium.F02.LeftLineGone.3.1.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.3.1.sum.My
+PASS: equilibrium.F02.LeftLineGone.3.1.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.LeftLineGone.3.1.residual.Mx; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.LeftLineGone.3.1.residual.My; actual=1.86264514923096E-08; expected=1.86264514923096E-08
+PASS: equilibrium.F02.LeftLineGone.3.2.converged
+PASS: equilibrium.F02.LeftLineGone.3.2.sum.N
+PASS: equilibrium.F02.LeftLineGone.3.2.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.3.2.sum.My
+PASS: equilibrium.F02.LeftLineGone.3.2.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.LeftLineGone.3.2.residual.Mx; actual=8.26332779979566E-09; expected=8.26332779979566E-09
+PASS: equilibrium.F02.LeftLineGone.3.2.residual.My; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.F02.LeftLineGone.3.3.converged
+PASS: equilibrium.F02.LeftLineGone.3.3.sum.N
+PASS: equilibrium.F02.LeftLineGone.3.3.sum.Mx
+PASS: equilibrium.F02.LeftLineGone.3.3.sum.My
+PASS: equilibrium.F02.LeftLineGone.3.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.LeftLineGone.3.3.residual.Mx; actual=-8.94069671630859E-08; expected=-8.94069671630859E-08
+PASS: equilibrium.F02.LeftLineGone.3.3.residual.My; actual=1.49011611938477E-08; expected=1.49011611938477E-08
+OK: F02.LeftLineGone.workbook.run
+OK: F02.LeftLineGone.workbook.state
+WORKBOOK_RUN: F02.LeftLineGone; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.LeftLineGone
+OK: F02.RightLineGone.tenBars
+OK: F02.RightLineGone.outerArea
+OK: F02.RightLineGone.length.H.Left
+OK: F02.RightLineGone.start.H.Left
+OK: F02.RightLineGone.end.H.Left
+OK: F02.RightLineGone.position.H.Left.1
+OK: F02.RightLineGone.physical.H.Left.1
+BAR: F02.RightLineGone; H.Left; 1; x=-250; y=166.666666666667
+OK: F02.RightLineGone.position.H.Left.2
+OK: F02.RightLineGone.physical.H.Left.2
+BAR: F02.RightLineGone; H.Left; 2; x=-250; y=83.3333333333333
+OK: F02.RightLineGone.position.H.Left.3
+OK: F02.RightLineGone.physical.H.Left.3
+BAR: F02.RightLineGone; H.Left; 3; x=-250; y=0
+OK: F02.RightLineGone.position.H.Left.4
+OK: F02.RightLineGone.physical.H.Left.4
+BAR: F02.RightLineGone; H.Left; 4; x=-250; y=-83.3333333333333
+OK: F02.RightLineGone.position.H.Left.5
+OK: F02.RightLineGone.physical.H.Left.5
+BAR: F02.RightLineGone; H.Left; 5; x=-250; y=-166.666666666667
+OK: F02.RightLineGone.length.H.Right
+OK: F02.RightLineGone.start.H.Right
+OK: F02.RightLineGone.end.H.Right
+OK: F02.RightLineGone.position.H.Right.1
+OK: F02.RightLineGone.physical.H.Right.1
+BAR: F02.RightLineGone; H.Right; 1; x=125; y=216.50635094611
+OK: F02.RightLineGone.position.H.Right.2
+OK: F02.RightLineGone.physical.H.Right.2
+BAR: F02.RightLineGone; H.Right; 2; x=216.50635094611; y=125
+OK: F02.RightLineGone.position.H.Right.3
+OK: F02.RightLineGone.physical.H.Right.3
+BAR: F02.RightLineGone; H.Right; 3; x=250; y=2.48689957516035E-14
+OK: F02.RightLineGone.position.H.Right.4
+OK: F02.RightLineGone.physical.H.Right.4
+BAR: F02.RightLineGone; H.Right; 4; x=216.50635094611; y=-125
+OK: F02.RightLineGone.position.H.Right.5
+OK: F02.RightLineGone.physical.H.Right.5
+BAR: F02.RightLineGone; H.Right; 5; x=125; y=-216.50635094611
+PASS: equilibrium.F02.RightLineGone.1.0.converged
+PASS: equilibrium.F02.RightLineGone.1.0.sum.N
+PASS: equilibrium.F02.RightLineGone.1.0.sum.Mx
+PASS: equilibrium.F02.RightLineGone.1.0.sum.My
+PASS: equilibrium.F02.RightLineGone.1.0.residual.N; actual=-3.49245965480804E-10; expected=-3.49245965480804E-10
+PASS: equilibrium.F02.RightLineGone.1.0.residual.Mx; actual=7.71160557633268E-09; expected=7.71160557633268E-09
+PASS: equilibrium.F02.RightLineGone.1.0.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.RightLineGone.1.1.converged
+PASS: equilibrium.F02.RightLineGone.1.1.sum.N
+PASS: equilibrium.F02.RightLineGone.1.1.sum.Mx
+PASS: equilibrium.F02.RightLineGone.1.1.sum.My
+PASS: equilibrium.F02.RightLineGone.1.1.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.RightLineGone.1.1.residual.Mx; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.F02.RightLineGone.1.1.residual.My; actual=-1.86264514923096E-08; expected=-1.86264514923096E-08
+PASS: equilibrium.F02.RightLineGone.1.2.converged
+PASS: equilibrium.F02.RightLineGone.1.2.sum.N
+PASS: equilibrium.F02.RightLineGone.1.2.sum.Mx
+PASS: equilibrium.F02.RightLineGone.1.2.sum.My
+PASS: equilibrium.F02.RightLineGone.1.2.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.F02.RightLineGone.1.2.residual.Mx; actual=-3.89172782888628E-09; expected=-3.89172782888628E-09
+PASS: equilibrium.F02.RightLineGone.1.2.residual.My; actual=-5.58793544769287E-09; expected=-5.58793544769287E-09
+PASS: equilibrium.F02.RightLineGone.1.3.converged
+PASS: equilibrium.F02.RightLineGone.1.3.sum.N
+PASS: equilibrium.F02.RightLineGone.1.3.sum.Mx
+PASS: equilibrium.F02.RightLineGone.1.3.sum.My
+PASS: equilibrium.F02.RightLineGone.1.3.residual.N; actual=-3.49245965480804E-10; expected=-3.49245965480804E-10
+PASS: equilibrium.F02.RightLineGone.1.3.residual.Mx; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.F02.RightLineGone.1.3.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.RightLineGone.2.0.converged
+PASS: equilibrium.F02.RightLineGone.2.0.sum.N
+PASS: equilibrium.F02.RightLineGone.2.0.sum.Mx
+PASS: equilibrium.F02.RightLineGone.2.0.sum.My
+PASS: equilibrium.F02.RightLineGone.2.0.residual.N; actual=1.74622982740402E-09; expected=1.74622982740402E-09
+PASS: equilibrium.F02.RightLineGone.2.0.residual.Mx; actual=6.45303543933541E-09; expected=6.45303543933541E-09
+PASS: equilibrium.F02.RightLineGone.2.0.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.F02.RightLineGone.2.1.converged
+PASS: equilibrium.F02.RightLineGone.2.1.sum.N
+PASS: equilibrium.F02.RightLineGone.2.1.sum.Mx
+PASS: equilibrium.F02.RightLineGone.2.1.sum.My
+PASS: equilibrium.F02.RightLineGone.2.1.residual.N; actual=1.16415321826935E-09; expected=1.16415321826935E-09
+PASS: equilibrium.F02.RightLineGone.2.1.residual.Mx; actual=5.21540641784668E-08; expected=5.21540641784668E-08
+PASS: equilibrium.F02.RightLineGone.2.1.residual.My; actual=-2.60770320892334E-08; expected=-2.60770320892334E-08
+PASS: equilibrium.F02.RightLineGone.2.2.converged
+PASS: equilibrium.F02.RightLineGone.2.2.sum.N
+PASS: equilibrium.F02.RightLineGone.2.2.sum.Mx
+PASS: equilibrium.F02.RightLineGone.2.2.sum.My
+PASS: equilibrium.F02.RightLineGone.2.2.residual.N; actual=-3.49245965480804E-10; expected=-3.49245965480804E-10
+PASS: equilibrium.F02.RightLineGone.2.2.residual.Mx; actual=-1.60054014486375E-09; expected=-1.60054014486375E-09
+PASS: equilibrium.F02.RightLineGone.2.2.residual.My; actual=6.70552253723145E-08; expected=6.70552253723145E-08
+PASS: equilibrium.F02.RightLineGone.2.3.converged
+PASS: equilibrium.F02.RightLineGone.2.3.sum.N
+PASS: equilibrium.F02.RightLineGone.2.3.sum.Mx
+PASS: equilibrium.F02.RightLineGone.2.3.sum.My
+PASS: equilibrium.F02.RightLineGone.2.3.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.RightLineGone.2.3.residual.Mx; actual=0; expected=0
+PASS: equilibrium.F02.RightLineGone.2.3.residual.My; actual=2.04890966415405E-08; expected=2.04890966415405E-08
+PASS: equilibrium.F02.RightLineGone.3.0.converged
+PASS: equilibrium.F02.RightLineGone.3.0.sum.N
+PASS: equilibrium.F02.RightLineGone.3.0.sum.Mx
+PASS: equilibrium.F02.RightLineGone.3.0.sum.My
+PASS: equilibrium.F02.RightLineGone.3.0.residual.N; actual=8.14907252788544E-10; expected=8.14907252788544E-10
+PASS: equilibrium.F02.RightLineGone.3.0.residual.Mx; actual=-1.16619958134838E-09; expected=-1.16619958134838E-09
+PASS: equilibrium.F02.RightLineGone.3.0.residual.My; actual=-2.98023223876953E-08; expected=-2.98023223876953E-08
+PASS: equilibrium.F02.RightLineGone.3.1.converged
+PASS: equilibrium.F02.RightLineGone.3.1.sum.N
+PASS: equilibrium.F02.RightLineGone.3.1.sum.Mx
+PASS: equilibrium.F02.RightLineGone.3.1.sum.My
+PASS: equilibrium.F02.RightLineGone.3.1.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.RightLineGone.3.1.residual.Mx; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.RightLineGone.3.1.residual.My; actual=-3.35276126861572E-08; expected=-3.35276126861572E-08
+PASS: equilibrium.F02.RightLineGone.3.2.converged
+PASS: equilibrium.F02.RightLineGone.3.2.sum.N
+PASS: equilibrium.F02.RightLineGone.3.2.sum.Mx
+PASS: equilibrium.F02.RightLineGone.3.2.sum.My
+PASS: equilibrium.F02.RightLineGone.3.2.residual.N; actual=1.74622982740402E-09; expected=1.74622982740402E-09
+PASS: equilibrium.F02.RightLineGone.3.2.residual.Mx; actual=9.58527834882251E-09; expected=9.58527834882251E-09
+PASS: equilibrium.F02.RightLineGone.3.2.residual.My; actual=1.30385160446167E-08; expected=1.30385160446167E-08
+PASS: equilibrium.F02.RightLineGone.3.3.converged
+PASS: equilibrium.F02.RightLineGone.3.3.sum.N
+PASS: equilibrium.F02.RightLineGone.3.3.sum.Mx
+PASS: equilibrium.F02.RightLineGone.3.3.sum.My
+PASS: equilibrium.F02.RightLineGone.3.3.residual.N; actual=-2.91785929584876E-02; expected=-2.91785929584876E-02
+PASS: equilibrium.F02.RightLineGone.3.3.residual.Mx; actual=-7.22170167416334; expected=-7.22170167416334
+PASS: equilibrium.F02.RightLineGone.3.3.residual.My; actual=8.46179189160466; expected=8.46179189160466
+OK: F02.RightLineGone.workbook.run
+OK: F02.RightLineGone.workbook.state
+WORKBOOK_RUN: F02.RightLineGone; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.RightLineGone
+TOTAL_ROUNDED_ENDPOINTS: passed=929; failed=0

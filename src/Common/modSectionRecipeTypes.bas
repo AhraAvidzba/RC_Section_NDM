@@ -8,6 +8,18 @@ Public Enum ESectionLoopRole
     LoopOpening = 2
 End Enum
 
+' Публикация технических ID сохраняет общий номер сегмента, без отдельных счётчиков прямых/дуг.
+Public Enum EContourNamingPolicy
+    PreserveSegmentIDs = 0
+    SequentialByKind = 1
+End Enum
+
+' Компонента межцентрового смещения зависимого контактного ряда.
+Public Enum ERebarOffsetAxis
+    RowNormal = 1
+    RowTangent = 2
+End Enum
+
 Public Enum ERebarEndMode
     IncludeBoth = 1
     ExcludeBoth = 2
@@ -72,6 +84,8 @@ Public Type TSectionLoop
     Comment As String
     ArcComment As String
     ContourIDs As Variant
+    NamingPolicy As EContourNamingPolicy
+    NamingPrefix As String
 End Type
 
 Public Type TRebarRule
