@@ -105,6 +105,19 @@ def build():
     comment('ОПИСАТЕЛЬ И ПРИВЯЗКИ', 2)
     comment('CPolygonSpec объединяет исходные ID, X, Y, FilletRadius и SourceReference каждой вершины. New → AddVertex → Seal. Состояние читают Count/IsSealed, значения — VertexID/X/Y/FilletRadius/SourceReference по индексу от 1. После Seal изменение запрещено; повторный Seal безопасен. Первую вершину в конце не повторяют.', 4)
     comment('Исходная вершина до скругления может не лежать на контуре. PathAnchor задаёт точку готового сегмента, Anchor — заданную координату. Вершины не превращаются в anchors автоматически. OffsetRoundedPolygon: плюс внутрь исходного многоугольника; Offset: плюс влево от направления готовой линии. У группы независимых линий Offset отсутствует.', 4)
+    comment('ВЫБОР УЧАСТКА ПО КООРДИНАТАМ', 2)
+    comment('ResolveAnchor находит существующий ID и параметр точки без знания автоматических имён сегментов. Координаты в мм должны лежать на готовой линии. В общем стыке нескольких сегментов возникает ошибка; выберите внутреннюю точку или задайте ID явно. Это поиск принадлежности, а не проекция ближайшей точки.', 4)
+    comment('Пример выбирает правую грань прямоугольника и создаёт участок сверху вниз. t — положение середины; в Chain явно задаются концы 1 и 0, False означает обратный обход.', 4)
+    for line in [
+        'Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, rightPath As CGeometryPath',
+        'Dim rightID As String, t As Double',
+        'Set facade = New CSectionDefinitionBuilder: facade.Initialize "AnchorExample"',
+        'Set path = facade.RectanglePath("Rect", 0#, 0#, 400#, 600#)',
+        'path.ResolveAnchor 400#, 300#, rightID, t',
+        'Set rightPath = facade.Chain("Right", path.ID, rightID, 1#, rightID, 0#, False)',
+    ]:
+        lines.append("'       " + line)
+    comment()
     comment('Aligned измеряет истинное расстояние, его линия параллельна измеряемому участку. Горизонтальный и вертикальный размеры измеряют проекции; PathLength суммирует прямые и дуги. Поворот текста остаётся прежним, 0/90 градусов.', 4)
     code = (ROOT/'tests/modTestAudit02Api.bas').read_text(encoding='utf-8-sig')
     for name, title, condition in [

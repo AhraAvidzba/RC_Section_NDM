@@ -165,6 +165,7 @@
         "CGeometryPath.SegmentID",
         "CGeometryPath.SegmentIndex",
         "CGeometryPath.AnchorStation",
+        "CGeometryPath.ResolveAnchor",
         "CGeometryPath.BetweenAnchors",
         "CGeometryPath.AtDistance",
         "CGeometryPath.Slice",
@@ -3889,6 +3890,51 @@
     },
     {
       "owner": "CGeometryPath",
+      "name": "ResolveAnchor",
+      "kind": "Sub",
+      "signature": "Public Sub ResolveAnchor(ByVal x As Double, ByVal y As Double, ByRef segmentID As String, ByRef parameter As Double)",
+      "parameters": [
+        {
+          "name": "x",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x As Double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y As Double"
+        },
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef segmentID As String"
+        },
+        {
+          "name": "parameter",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef parameter As Double"
+        }
+      ],
+      "resultType": null,
+      "line": 137,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.ResolveAnchor",
+      "anchor": "api-cgeometrypath-resolveanchor"
+    },
+    {
+      "owner": "CGeometryPath",
       "name": "BetweenAnchors",
       "kind": "Function",
       "signature": "Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As String, ByVal startParameter As Double, ByVal endSegmentID As String, ByVal endParameter As Double, Optional ByVal forward As Boolean = True, Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath",
@@ -3951,7 +3997,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 149,
+      "line": 170,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.BetweenAnchors",
       "anchor": "api-cgeometrypath-betweenanchors"
@@ -4012,7 +4058,7 @@
         }
       ],
       "resultType": null,
-      "line": 177,
+      "line": 198,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AtDistance",
       "anchor": "api-cgeometrypath-atdistance"
@@ -4041,7 +4087,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 215,
+      "line": 236,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -4053,7 +4099,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 315,
+      "line": 336,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -4098,7 +4144,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 330,
+      "line": 351,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"
@@ -4119,7 +4165,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 136,
+      "line": 157,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.WithID",
       "anchor": "api-cgeometrypath-withid"

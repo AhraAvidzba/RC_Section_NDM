@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "eb15a92a337c6e9f1030cff0f30537f7cbfde31cee8491e07f461315386e26a5",
+  "bodySHA256": "de47a93c404310c366724e3131509c8a3c534c130b15e6cf1dcd2032f0ffea75",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "41ca806a3ec694e3f936a3da3ce1a7197d2999760ae0dc9baba8fbbf51762e57",
-    "src/Common/modSectionRecipeApiGuide.bas": "08a729e3a8ece895e6a4419b7c5c3178bdabd15492c37e31d4ac69ba5cefe5ab"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "987fab6dc6acce05730106b4a20b7f81353ccd05362545a498cafe79332f6543",
+    "src/Common/modSectionRecipeApiGuide.bas": "d15c4dcd66390cc7525a02861e00abf23e4297b76e19796e2b26bdf1100f6119"
   },
   "rows": [
     {
@@ -56,7 +56,7 @@
       "line": 8
     },
     {
-      "text": "Готовую замкнутую линию назначьте наружной границей через Outer или отверстием через Opening, указав имя наружной границы. Для отдельных бетонных областей задают свои наружные контуры. Точные вызовы и примеры всех способов — в modSectionRecipeApiGuide.",
+      "text": "Для выбора участка методом Chain имя сегмента можно получить по координатам точки через path.ResolveAnchor. Выбирайте точку внутри нужного отрезка или дуги: общий стык нескольких сегментов неоднозначен. Подробный пример — в modSectionRecipeApiGuide. Готовую замкнутую линию назначьте наружной границей через Outer или отверстием через Opening, указав имя наружной границы. Для отдельных бетонных областей задают свои наружные контуры. Точные вызовы и примеры всех способов — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 9
@@ -375,5 +375,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 136
+  "members": 137
 }

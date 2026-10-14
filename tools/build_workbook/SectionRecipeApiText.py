@@ -158,6 +158,7 @@ METHODS = {
         "SourceEndParameter": "Конечный параметр исходного сегмента, включая обращённый обход.",
         "SegmentIndex": "Разрешает существующий смысловой ID в текущий индекс; исчезнувшая дуга даёт MISSING_SEGMENT.",
         "AnchorStation": "Находит расстояние от начала всей линии до точки заданного сегмента, мм. Точка задаётся именем сегмента и параметром [0;1]. Если при построении участок исчез, обе его границы сохраняют привязку к оставшемуся стыку. Неизвестное имя вызывает ошибку.",
+        "ResolveAnchor": "Находит существующий сегмент по координатам точки на завершённой линии. Возвращает SegmentID и локальный параметр [0;1]. Использует общие допуски принадлежности прямым и дугам. Точка вне линии вызывает ANCHOR_NOT_ON_PATH; стык или совпадающие сегменты — ANCHOR_AMBIGUOUS с именами кандидатов. Выходные аргументы при ошибке не меняются. На замкнутой окружности из одного сегмента начало и конец имеют одну геометрическую точку; возвращается параметр 0.",
         "WithID": "Копирует опубликованный путь с новым ID, сохраняя сегментные ссылки и исходное происхождение.",
         "BetweenAnchors": "Возвращает точную цепочку между привязками с явным направлением и правилом полного обхода.",
         "AtDistance": "Возвращает координаты точки на заданном расстоянии от начала линии и единичный вектор касательной в этой точке. На стыке можно выбрать касательную предыдущего сегмента.",
@@ -344,7 +345,7 @@ OPTIONS = {
     "NewPublicationRoot": "У ProjectFrom начинает новый корень публикации по успешным позициям.",
     "SkipMissingProjection": "Разрешить пропуск без hit с PROJECTION_MISSING; False выдаёт ошибку.",
     "Publication": "PublishByRule или PublishPerSourcePosition; влияет на вывод, не геометрический шаг.",
-    "PositionOrder": "Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места стержней и их исходные номера сохраняются.",
+    "PositionOrder": "Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner порядок также определяет владельца совпавшей позиции: сохраняются его диаметр и материал. Поэтому менять порядок в таком случае может изменить физическую арматуру.",
     "Coincidence": "RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет явно выбранного опубликованного владельца.",
     "PlacementCheck": "CheckCenter или CheckFullDisk относительно Outer/Opening; ужесточение задаётся явно.",
     "OverlapPolicy": "ReportOverlap или RejectOverlap. Контакт допустим; нормативный минимальный зазор не вводится.",
@@ -434,7 +435,11 @@ def purpose(member):
 def parameter_meaning(member, parameter):
     import re
     name, passing = parameter["name"], parameter["passing"]
-    if member['owner'] == 'CRebarRuleOptions' and member['name'] == 'ConfigureDependentContact' and name in ('baseDiameter', 'diameter'):
+    if member["name"] == "ResolveAnchor" and name == "segmentID":
+        meaning = "Возвращаемое существующее имя сегмента этой линии; не новое имя и не обязательно имя исходного контура."
+    elif member["name"] == "ResolveAnchor" and name == "parameter":
+        meaning = "Возвращаемая доля длины найденного сегмента [0;1]: 0 — начало, 1 — конец по направлению его обхода."
+    elif member['owner'] == 'CRebarRuleOptions' and member['name'] == 'ConfigureDependentContact' and name in ('baseDiameter', 'diameter'):
         role = 'основного' if name == 'baseDiameter' else 'добавляемого'
         meaning = 'Строго положительный диаметр '+role+' стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.'
     elif name == "savedUnit" and member["name"] == "OutputFourthPowerLengthToInternal":

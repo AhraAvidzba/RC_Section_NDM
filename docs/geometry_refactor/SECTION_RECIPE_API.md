@@ -600,15 +600,15 @@ Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y
 
 Source: src/Section/CSectionDefinitionBuilder.cls:176
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02PolygonApiTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunResolveAnchorTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set path = facade.RectanglePath("Other", 200#, 0#, 100#, 100#)
+    Set path = facade.RectanglePath("Rect", 0#, 0#, 400#, 600#)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:50.
+Полный контекст: tests/modTestRecipeOperations.bas:203.
 
-Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-csectiondefinitionbuilder-adjacentrectangles"></a>
 ### CSectionDefinitionBuilder.AdjacentRectangles
@@ -1439,15 +1439,15 @@ Public Property Get LastDiagnostic() As CGeometryDiagnostic
 
 Source: src/Geometry/CGeometryPath.cls:27
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.ExpectAnchorError с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set diagnostic = path.LastDiagnostic: Check "path.reason", Len(diagnostic.Reason) > 0
+    Set diagnostic = path.LastDiagnostic
 ```
 
-Полный контекст: tests/modTestRecipeApiCatalogue.bas:143.
+Полный контекст: tests/modTestRecipeOperations.bas:320.
 
-Native entrypoint: modTestRecipeApiCatalogue.RunApiGeometryReadExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrypath-initialize"></a>
 ### CGeometryPath.Initialize
@@ -1624,17 +1624,15 @@ Public Property Get SegmentCount() As Long
 
 Source: src/Geometry/CGeometryPath.cls:81
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunRoundedPolygonTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.CheckResolvedPath с его подготовленными локальными объектами/входом.
 
 ```vb
-    For i = 1 To path.SegmentCount
+    If path.SegmentCount > 1 Then
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:193.
+Полный контекст: tests/modTestRecipeOperations.bas:284.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
-
-Native entrypoint: modTestDeclarativeGeometry.RunRoundedPolygonTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/RoundedPolygons.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrypath-issealed"></a>
 ### CGeometryPath.IsSealed
@@ -1680,17 +1678,15 @@ Public Property Get IsClosed() As Boolean
 
 Source: src/Geometry/CGeometryPath.cls:85
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestArcs с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.CheckResolvedPath с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "circle.closed", path.IsClosed
+        If path.IsClosed Then
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:676.
+Полный контекст: tests/modTestRecipeOperations.bas:297.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
-
-Native entrypoint: modTestDeclarativeGeometry.RunPathTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CorePaths/AnalyticPaths.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrypath-length"></a>
 ### CGeometryPath.Length
@@ -1941,6 +1937,38 @@ Source: src/Geometry/CGeometryPath.cls:124
 
 Native entrypoint: modTestGeometryReview.RunRoundedEndpointTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryReview.RunRoundedEndpointTests.txt.
 
+<a id="api-cgeometrypath-resolveanchor"></a>
+### CGeometryPath.ResolveAnchor
+
+Находит существующий сегмент по координатам точки на завершённой линии. Возвращает SegmentID и локальный параметр [0;1]. Использует общие допуски принадлежности прямым и дугам. Точка вне линии вызывает ANCHOR_NOT_ON_PATH; стык или совпадающие сегменты — ANCHOR_AMBIGUOUS с именами кандидатов. Выходные аргументы при ошибке не меняются. На замкнутой окружности из одного сегмента начало и конец имеют одну геометрическую точку; возвращается параметр 0.
+
+```vb
+Public Sub ResolveAnchor(ByVal x As Double, ByVal y As Double, ByRef segmentID As String, ByRef parameter As Double)
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| x | Double; ByVal; обязательный | Модельная координата x, мм; знаки соответствуют section XY/WCS. |
+| y | Double; ByVal; обязательный | Модельная координата y, мм; знаки соответствуют section XY/WCS. |
+| segmentID | String; ByRef; обязательный | Возвращаемое существующее имя сегмента этой линии; не новое имя и не обязательно имя исходного контура. ByRef: возвращаемые скаляры/буфер можно изменять, исходный immutable snapshot не меняется. |
+| parameter | Double; ByRef; обязательный | Возвращаемая доля длины найденного сегмента [0;1]: 0 — начало, 1 — конец по направлению его обхода. ByRef: возвращаемые скаляры/буфер можно изменять, исходный immutable snapshot не меняется. |
+
+Жизненный цикл: New→Initialize→AddLine/AddArc→Seal. Методы чтения/slice/transform требуют Seal. Они возвращают отдельные опубликованные пути; исходный не меняется.
+
+Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
+
+Source: src/Geometry/CGeometryPath.cls:137
+
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunResolveAnchorTests с его подготовленными локальными объектами/входом.
+
+```vb
+    path.ResolveAnchor 400#, 300#, rightID, t
+```
+
+Полный контекст: tests/modTestRecipeOperations.bas:204.
+
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
+
 <a id="api-cgeometrypath-withid"></a>
 ### CGeometryPath.WithID
 
@@ -1960,7 +1988,7 @@ Public Function WithID(ByVal pathID As String) As CGeometryPath
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:136
+Source: src/Geometry/CGeometryPath.cls:157
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
@@ -1997,7 +2025,7 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:149
+Source: src/Geometry/CGeometryPath.cls:170
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
@@ -2031,7 +2059,7 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:177
+Source: src/Geometry/CGeometryPath.cls:198
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
 
@@ -2063,7 +2091,7 @@ Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Doub
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:200
+Source: src/Geometry/CGeometryPath.cls:221
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2097,7 +2125,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:215
+Source: src/Geometry/CGeometryPath.cls:236
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
@@ -2124,7 +2152,7 @@ Public Function Reversed() As CGeometryPath
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:315
+Source: src/Geometry/CGeometryPath.cls:336
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryReview.TestCollapsedBoundaries с его подготовленными локальными объектами/входом.
 
@@ -2158,7 +2186,7 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, Opti
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:330
+Source: src/Geometry/CGeometryPath.cls:351
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestLine с его подготовленными локальными объектами/входом.
 
@@ -2196,7 +2224,7 @@ Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal d
 
 Ошибки/исправление: 5520: пустой ID или сегмент, разрыв линии, недопустимый радиус или угол дуги, незамкнутые концы, отсутствие сегмента или заданное расстояние за пределами длины линии. Исправьте геометрию, имя сегмента или рабочий интервал.
 
-Source: src/Geometry/CGeometryPath.cls:353
+Source: src/Geometry/CGeometryPath.cls:374
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.TestRays с его подготовленными локальными объектами/входом.
 
@@ -3380,7 +3408,7 @@ Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/
 <a id="api-crebarruleoptions-positionorder"></a>
 ### CRebarRuleOptions.PositionOrder
 
-Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места стержней и их исходные номера сохраняются.
+Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner порядок также определяет владельца совпавшей позиции: сохраняются его диаметр и материал. Поэтому менять порядок в таком случае может изменить физическую арматуру.
 
 ```vb
 Public PositionOrder As ERebarPositionOrder
@@ -3693,15 +3721,15 @@ Public Property Get Code() As String
 
 Source: src/Geometry/CGeometryDiagnostic.cls:26
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.ExpectAnchorError с его подготовленными локальными объектами/входом.
 
 ```vb
-            Check "overlap.reject", i = vbObjectError + 5530 And diagnostic.Code = "BAR_OVERLAP"
+        Check path.ID & ".error.code", diagnostic.Code = code And diagnostic.EntityID = path.ID
 ```
 
-Полный контекст: tests/modTestRecipeOperations.bas:112.
+Полный контекст: tests/modTestRecipeOperations.bas:325.
 
-Native entrypoint: modTestRecipeOperations.RunRecipeDiagnosticTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrydiagnostic-entityid"></a>
 ### CGeometryDiagnostic.EntityID
@@ -3720,15 +3748,15 @@ Public Property Get EntityID() As String
 
 Source: src/Geometry/CGeometryDiagnostic.cls:28
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.ExpectAnchorError с его подготовленными локальными объектами/входом.
 
 ```vb
-            Check "overlap.source", diagnostic.EntityID = "Bars" And diagnostic.SourceReference = "ProgramInputs.Spacing"
+        Check path.ID & ".error.code", diagnostic.Code = code And diagnostic.EntityID = path.ID
 ```
 
-Полный контекст: tests/modTestRecipeOperations.bas:113.
+Полный контекст: tests/modTestRecipeOperations.bas:325.
 
-Native entrypoint: modTestRecipeOperations.RunRecipeDiagnosticTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrydiagnostic-relatedentityid"></a>
 ### CGeometryDiagnostic.RelatedEntityID
@@ -3747,15 +3775,15 @@ Public Property Get RelatedEntityID() As String
 
 Source: src/Geometry/CGeometryDiagnostic.cls:30
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.InvalidOperation с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.ExpectAnchorError с его подготовленными локальными объектами/входом.
 
 ```vb
-    If InvalidOperation Then InvalidOperation = diagnostic.Code = expected And diagnostic.EntityID = "Failed" And Len(diagnostic.RelatedEntityID) > 0
+        If code = "ANCHOR_AMBIGUOUS" Then Check path.ID & ".error.segments", InStr(diagnostic.RelatedEntityID, ", ") > 0
 ```
 
-Полный контекст: tests/modTestRecipeOperations.bas:90.
+Полный контекст: tests/modTestRecipeOperations.bas:329.
 
-Native entrypoint: modTestRecipeOperations.RunRecipeOperationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrydiagnostic-reason"></a>
 ### CGeometryDiagnostic.Reason
@@ -3828,15 +3856,15 @@ Public Property Get Detail2() As Double
 
 Source: src/Geometry/CGeometryDiagnostic.cls:36
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.InvalidOperation с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.ExpectAnchorError с его подготовленными локальными объектами/входом.
 
 ```vb
-    If scenario = 2 And InvalidOperation Then InvalidOperation = diagnostic.Detail1 = 10# And diagnostic.Detail2 = 20#
+            Near path.ID & ".error.x", diagnostic.Detail1, x: Near path.ID & ".error.y", diagnostic.Detail2, y
 ```
 
-Полный контекст: tests/modTestRecipeOperations.bas:91.
+Полный контекст: tests/modTestRecipeOperations.bas:327.
 
-Native entrypoint: modTestRecipeOperations.RunRecipeOperationTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-cgeometrydiagnostic-sourcereference"></a>
 ### CGeometryDiagnostic.SourceReference
@@ -8380,7 +8408,7 @@ Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/
 <a id="api-modsectionrecipetypes-erebarpositionorder"></a>
 ### modSectionRecipeTypes.ERebarPositionOrder
 
-Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места стержней и их исходные номера сохраняются.
+Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner порядок также определяет владельца совпавшей позиции: сохраняются его диаметр и материал. Поэтому менять порядок в таком случае может изменить физическую арматуру.
 
 ```vb
 Public Enum ERebarPositionOrder
@@ -8399,15 +8427,15 @@ FromPathMiddle = 2
 
 Source: src/Common/modSectionRecipeTypes.bas:56
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02OptionsTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.TestPositionOrderOwner с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.PositionOrder = FromPathMiddle: options.IncomingTangentAtJoint = True
+    For mode = AlongPath To FromPathMiddle
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:92.
+Полный контекст: tests/modTestRecipeOperations.bas:337.
 
-Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
+Native entrypoint: modTestRecipeOperations.RunResolveAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt.
 
 <a id="api-modsectionrecipetypes-erebarcoincidence"></a>
 ### modSectionRecipeTypes.ERebarCoincidence

@@ -193,6 +193,165 @@ Private Function DiagnosticFacade() As CSectionDefinitionBuilder
     Set DiagnosticFacade = facade
 End Function
 
+' ДЛЯ ТЕСТОВ: поиск по координатам не меняет линии и сохраняет контракт Chain.
+Public Function RunResolveAnchorTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, polygon As CPolygonSpec
+    Dim rightID As String, t As Double, right As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "ResolveAnchor"
+    Set path = facade.RectanglePath("Rect", 0#, 0#, 400#, 600#)
+    path.ResolveAnchor 400#, 300#, rightID, t
+    Near "rectangle.right.parameter", t, 0.5
+    Set right = facade.Chain("Right", path.ID, rightID, 1#, rightID, 0#, False)
+    Near "rectangle.right.length", right.Length, 600#
+    right.AtDistance 0#, x, y, tx, ty: Near "rectangle.right.start.x", x, 400#: Near "rectangle.right.start.y", y, 600#
+    right.AtDistance right.Length, x, y, tx, ty: Near "rectangle.right.end.y", y, 0#: Check "rectangle.right.direction", ty < 0#
+    CheckResolvedPath facade, path
+    Set path = facade.AdjacentRectangles("Adjacent", Array(Array(0#, 0#, 400#, 200#), Array(0#, 200#, 200#, 400#)))
+    CheckResolvedPath facade, path
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "BL", 0#, 0#, 30#: polygon.AddVertex "BR", 400#, 0#, 40#
+    polygon.AddVertex "TR", 400#, 600#, 50#: polygon.AddVertex "TL", 0#, 600#, 60#: polygon.Seal
+    Set path = facade.RoundedPolygon("Rounded", polygon): CheckResolvedPath facade, path
+    Set path = facade.OffsetRoundedPolygon("RoundedOffset", polygon, 10#): CheckResolvedPath facade, path
+    Set path = facade.CirclePath("Circle", 25#, -15#, 100#): CheckResolvedPath facade, path
+    Set path = facade.ArcPath("ArcCCW", 15#, 30#, 80#, 0.9 * GEOM_PI, 0.8 * GEOM_PI): CheckResolvedPath facade, path
+    ExpectAnchorError path, 15# + 80#, 30#, "ANCHOR_NOT_ON_PATH"
+    Set path = facade.ArcPath("ArcCW", -10#, 40#, 80#, -0.9 * GEOM_PI, -0.8 * GEOM_PI): CheckResolvedPath facade, path
+    Set path = facade.LinePath("Line", 0#, 0#, 100#, 0#): CheckResolvedPath facade, path
+    ' Преобразования проверяются и для прямых, и для скруглений; отражение меняет знак дуги.
+    Set path = facade.Transform("MovedRect", "Rect", 1000#, -700#, GEOM_PI / 3#, True): CheckResolvedPath facade, path
+    Set path = facade.Transform("MovedRounded", "Rounded", -900#, 700#, GEOM_PI / 3#, True): CheckResolvedPath facade, path
+    Set path = facade.Transform("MovedCircle", "Circle", 900#, -1700#, -GEOM_PI / 4#, True): CheckResolvedPath facade, path
+    Set path = facade.Transform("MovedArc", "ArcCW", -900#, -700#, GEOM_PI / 4#): CheckResolvedPath facade, path
+    ' Реальный общий допуск границы допускает малую поперечную погрешность, но не ближайшую произвольную точку.
+    Set path = facade.LinePath("Tolerance", 0#, 0#, 100#, 0#)
+    path.ResolveAnchor 50#, GEOM_BOUNDARY_TOLERANCE / 2#, rightID, t: Near "tolerance.accepted", t, 0.5
+    ExpectAnchorError path, 50#, GEOM_BOUNDARY_TOLERANCE * 2#, "ANCHOR_NOT_ON_PATH"
+    Set path = New CGeometryPath: path.Initialize "Retraced"
+    path.AddLine "Out", 0#, 0#, 100#, 0#: path.AddLine "Back", 100#, 0#, 0#, 0#: path.Seal
+    ExpectAnchorError path, 50#, 0#, "ANCHOR_AMBIGUOUS"
+    Set path = New CGeometryPath: path.Initialize "Unsealed": path.AddLine "Only", 0#, 0#, 100#, 0#
+    ExpectAnchorError path, 50#, 0#, "PATH_INVALID"
+    TestPositionOrderOwner
+    GoTo Finished
+Failed:
+    Check "anchor.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunResolveAnchorTests = mReport & "TOTAL RESOLVE ANCHOR: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' Проверяет реальные сегменты, оба направления Chain, их длину, концы и исходные интервалы.
+Private Sub CheckResolvedPath(ByVal facade As CSectionDefinitionBuilder, ByVal path As CGeometryPath)
+    Dim i As Long, edge As TRegionEdge, segment As String, parameter As Double, x As Double, y As Double
+    Dim chain As CGeometryPath, station As Double, tx As Double, ty As Double, a As Double, b As Double
+    Dim expectedX As Double, expectedY As Double, label As String, reverse As Long
+    station = 0#
+    For i = 1 To path.SegmentCount
+        label = path.ID & "." & CStr(i): path.CopySegment i, edge
+        modGeometryPrimitives.EdgePoint edge, 0.25, x, y
+        path.ResolveAnchor x, y, segment, parameter
+        Check label & ".id", segment = path.SegmentID(i): Near label & ".parameter", parameter, 0.25
+        For reverse = 0 To 1
+            a = 0.25: b = 0.75: If reverse = 1 Then a = 0.75: b = 0.25
+            Set chain = facade.Chain(label & ".Chain" & CStr(reverse), path.ID, segment, a, segment, b, reverse = 0)
+            Check label & ".chain.id", chain.SegmentCount = 1 And chain.SegmentID(1) = segment
+            Check label & ".source.id", chain.SourcePathID(1) = path.SourcePathID(i) And chain.SourceSegmentID(1) = path.SourceSegmentID(i)
+            Near label & ".source.start", chain.SourceStartParameter(1), path.SourceStartParameter(i) + a * (path.SourceEndParameter(i) - path.SourceStartParameter(i))
+            Near label & ".source.end", chain.SourceEndParameter(1), path.SourceStartParameter(i) + b * (path.SourceEndParameter(i) - path.SourceStartParameter(i))
+            Near label & ".length", chain.Length, modGeometryPrimitives.EdgeLength(edge) / 2#
+            modGeometryPrimitives.EdgePoint edge, a, expectedX, expectedY: chain.AtDistance 0#, x, y, tx, ty
+            Near label & ".start.x", x, expectedX: Near label & ".start.y", y, expectedY
+            modGeometryPrimitives.EdgePoint edge, b, expectedX, expectedY: chain.AtDistance chain.Length, x, y, tx, ty
+            Near label & ".end.x", x, expectedX: Near label & ".end.y", y, expectedY
+            modGeometryPrimitives.EdgeTangent edge, b, expectedX, expectedY
+            If reverse = 1 Then expectedX = -expectedX: expectedY = -expectedY
+            Check label & ".direction", tx * expectedX + ty * expectedY > 0#
+        Next reverse
+        If i > 1 Or path.IsClosed And path.SegmentCount > 1 Then
+            ExpectAnchorError path, edge.X1, edge.Y1, "ANCHOR_AMBIGUOUS"
+        Else
+            path.ResolveAnchor edge.X1, edge.Y1, segment, parameter: Near label & ".start.parameter", parameter, 0#
+        End If
+        If i = path.SegmentCount And Not path.IsClosed Then
+            path.ResolveAnchor edge.X2, edge.Y2, segment, parameter: Near label & ".end.parameter", parameter, 1#
+        End If
+        station = station + modGeometryPrimitives.EdgeLength(edge)
+    Next i
+    Near path.ID & ".unchanged.length", path.Length, station
+    ExpectAnchorError path, 100000#, -100000#, "ANCHOR_NOT_ON_PATH"
+    If path.SegmentCount > 1 Then
+        Dim first As TRegionEdge, last As TRegionEdge, startID As String, endID As String, startT As Double, endT As Double
+        path.CopySegment 1, first: path.CopySegment 2, last
+        modGeometryPrimitives.EdgePoint first, 0.75, x, y: path.ResolveAnchor x, y, startID, startT
+        modGeometryPrimitives.EdgePoint last, 0.25, x, y: path.ResolveAnchor x, y, endID, endT
+        Set chain = facade.Chain(path.ID & ".JointChain", path.ID, startID, startT, endID, endT)
+        Check path.ID & ".joint.chain.ids", chain.SegmentCount = 2 And chain.SegmentID(1) = startID And chain.SegmentID(2) = endID
+        Near path.ID & ".joint.chain.length", chain.Length, (modGeometryPrimitives.EdgeLength(first) + modGeometryPrimitives.EdgeLength(last)) / 4#
+        Check path.ID & ".joint.chain.origin", chain.SourceSegmentID(1) = path.SourceSegmentID(1) And chain.SourceSegmentID(2) = path.SourceSegmentID(2)
+        modGeometryPrimitives.EdgePoint first, 0.75, expectedX, expectedY: chain.AtDistance 0#, x, y, tx, ty
+        Near path.ID & ".joint.start.x", x, expectedX: Near path.ID & ".joint.start.y", y, expectedY
+        modGeometryPrimitives.EdgePoint last, 0.25, expectedX, expectedY: chain.AtDistance chain.Length, x, y, tx, ty
+        Near path.ID & ".joint.end.x", x, expectedX: Near path.ID & ".joint.end.y", y, expectedY
+        If path.IsClosed Then
+            path.CopySegment path.SegmentCount, last
+            modGeometryPrimitives.EdgePoint last, 0.75, x, y: path.ResolveAnchor x, y, startID, startT
+            modGeometryPrimitives.EdgePoint first, 0.25, x, y: path.ResolveAnchor x, y, endID, endT
+            Set chain = facade.Chain(path.ID & ".WrapChain", path.ID, startID, startT, endID, endT)
+            Check path.ID & ".wrap.ids", chain.SegmentCount = 2 And chain.SegmentID(1) = startID And chain.SegmentID(2) = endID
+            Near path.ID & ".wrap.length", chain.Length, (modGeometryPrimitives.EdgeLength(first) + modGeometryPrimitives.EdgeLength(last)) / 4#
+            Check path.ID & ".wrap.origin", chain.SourceSegmentID(1) = path.SourceSegmentID(path.SegmentCount) And chain.SourceSegmentID(2) = path.SourceSegmentID(1)
+            modGeometryPrimitives.EdgePoint last, 0.75, expectedX, expectedY: chain.AtDistance 0#, x, y, tx, ty
+            Near path.ID & ".wrap.start.x", x, expectedX: Near path.ID & ".wrap.start.y", y, expectedY
+            modGeometryPrimitives.EdgePoint first, 0.25, expectedX, expectedY: chain.AtDistance chain.Length, x, y, tx, ty
+            Near path.ID & ".wrap.end.x", x, expectedX: Near path.ID & ".wrap.end.y", y, expectedY
+        End If
+    End If
+End Sub
+
+' Ошибка оставляет переданные выходные значения неизменными и содержит координаты точки.
+Private Sub ExpectAnchorError(ByVal path As CGeometryPath, ByVal x As Double, ByVal y As Double, ByVal code As String)
+    Dim segment As String, parameter As Double, number As Long, reason As String, diagnostic As CGeometryDiagnostic
+    segment = "unchanged": parameter = -1#
+    On Error Resume Next
+    path.ResolveAnchor x, y, segment, parameter: number = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    Set diagnostic = path.LastDiagnostic
+    Check path.ID & ".error.number", number = vbObjectError + 5520 And InStr(reason, path.ID) > 0
+    Check path.ID & ".error.outputs", segment = "unchanged" And parameter = -1#
+    Check path.ID & ".error.diagnostic", Not diagnostic Is Nothing
+    If Not diagnostic Is Nothing Then
+        Check path.ID & ".error.code", diagnostic.Code = code And diagnostic.EntityID = path.ID
+        If code <> "PATH_INVALID" Then
+            Near path.ID & ".error.x", diagnostic.Detail1, x: Near path.ID & ".error.y", diagnostic.Detail2, y
+        End If
+        If code = "ANCHOR_AMBIGUOUS" Then Check path.ID & ".error.segments", InStr(diagnostic.RelatedEntityID, ", ") > 0
+    End If
+End Sub
+
+' Контрпример: при KeepPublishedOwner порядок определяет диаметр общего физического стержня.
+Private Sub TestPositionOrderOwner()
+    Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, path As CGeometryPath
+    Dim definition As CSectionDefinition, rules As CRebarRuleExecutor, layout As CRebarLayout, mode As Long, owner As Long
+    For mode = AlongPath To FromPathMiddle
+        Set facade = New CSectionDefinitionBuilder: facade.Initialize "PublicationOwner"
+        Set path = facade.RectanglePath("Concrete", -50#, -50#, 150#, 100#): facade.Outer "Outer", path.ID
+        Set path = facade.LinePath("Row", 0#, 0#, 30#, 0#)
+        Set options = New CRebarRuleOptions
+        options.PositionOrder = mode: options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
+        facade.RebarByCount "Main", path.ID, 3, 10#, options
+        Set options = New CRebarRuleOptions
+        options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner: options.TangentOffset = 15#
+        facade.RebarDependent "Extra", "Main", 20#, options
+        Set definition = facade.Finish: Set rules = New CRebarRuleExecutor: Set layout = FixtureAnnotatedLayout(definition, rules)
+        owner = layout.FindBarAt(15#, 0#): Check "position.order.owner.exists", owner > 0
+        If owner > 0 Then
+            If mode = AlongPath Then Near "position.order.along.diameter", layout.Diameter(owner), 20# Else Near "position.order.middle.diameter", layout.Diameter(owner), 10#
+        End If
+    Next mode
+End Sub
+
 Private Sub Check(ByVal name As String, ByVal value As Boolean)
     If value Then mPassed = mPassed + 1 Else mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
 End Sub

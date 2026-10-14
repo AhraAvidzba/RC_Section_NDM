@@ -132,6 +132,27 @@ Public Function AnchorStation(ByVal segmentID As String, Optional ByVal paramete
     AnchorStation = mStations(index - 1) + parameter * (mStations(index) - mStations(index - 1))
 End Function
 
+' Находит существующий сегмент по точке на линии; параметр — доля его длины.
+' Стык нескольких сегментов неоднозначен: для него задайте ID явно или выберите точку внутри участка.
+Public Sub ResolveAnchor(ByVal x As Double, ByVal y As Double, _
+        ByRef segmentID As String, ByRef parameter As Double)
+    RequireSealed
+    Dim i As Long, matched As Long, found As Long, candidate As Double, resolved As Double, matches As String
+    For i = 1 To mCount
+        If modGeometryPrimitives.PointParameter(mEdges(i), x, y, candidate) Then
+            If matched > 0 Then matches = matches & ", "
+            matches = matches & "'" & mSegmentIDs(i) & "'"
+            matched = matched + 1: found = i: resolved = candidate
+        End If
+    Next i
+    If matched = 0 Then PathError "Точка (" & CStr(x) & "; " & CStr(y) & ") не лежит на линии.", _
+        "ANCHOR_NOT_ON_PATH", "", x, y
+    If matched > 1 Then PathError "Точка (" & CStr(x) & "; " & CStr(y) & ") принадлежит нескольким сегментам: " & matches & _
+        ". Задайте ID нужного сегмента явно или выберите точку внутри него.", "ANCHOR_AMBIGUOUS", matches, x, y
+    ' Выходные аргументы меняются только после успешного однозначного поиска.
+    segmentID = mSegmentIDs(found): parameter = resolved
+End Sub
+
 ' Копирует опубликованный путь с новым ID, сохраняя сегментные ссылки и исходное происхождение.
 Public Function WithID(ByVal pathID As String) As CGeometryPath
     RequireSealed

@@ -27,7 +27,7 @@ Public SuccessfulProjectionOrdinal As Boolean ' True: заново нумеро�
 Public NewPublicationRoot As Boolean ' У ProjectFrom начинает новый корень публикации по успешным позициям.
 Public SkipMissingProjection As Boolean ' Разрешить пропуск без hit с PROJECTION_MISSING; False выдаёт ошибку.
 Public Publication As ERebarPublication ' PublishByRule или PublishPerSourcePosition; влияет на вывод, не геометрический шаг.
-Public PositionOrder As ERebarPositionOrder ' Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места стержней и их исходные номера сохраняются.
+Public PositionOrder As ERebarPositionOrder ' Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. При KeepPublishedOwner также определяет, чей диаметр и материал сохраняются в совпавшей позиции.
 Public Coincidence As ERebarCoincidence ' RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет явно выбранного опубликованного владельца.
 Public PlacementCheck As ERebarPlacementCheck ' CheckCenter или CheckFullDisk относительно Outer/Opening; ужесточение задаётся явно.
 Public OverlapPolicy As ERebarOverlapPolicy ' ReportOverlap или RejectOverlap. Контакт допустим; нормативный минимальный зазор не вводится.

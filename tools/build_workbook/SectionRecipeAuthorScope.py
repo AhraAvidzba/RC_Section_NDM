@@ -32,7 +32,7 @@ SECTIONS = [
         ('CSectionDefinitionBuilder', 'Anchor PathAnchor TransformAnchor VerticalExtent HorizontalExtent HorizontalDistance VerticalDistance Dimension PathLength Radius Diameter Text RebarLabel RebarRowLabel RebarRowExtentLabel RebarRowExtremeLabel'),
     ]),
     ('08', 'Составные линии и отдельные участки', [
-        ('CGeometryPath', 'Initialize AddLine AddArc Seal ID SegmentCount IsClosed Length SegmentID SegmentIndex AnchorStation BetweenAnchors AtDistance Slice Reversed Transformed WithID'),
+        ('CGeometryPath', 'Initialize AddLine AddArc Seal ID SegmentCount IsClosed Length SegmentID SegmentIndex AnchorStation ResolveAnchor BetweenAnchors AtDistance Slice Reversed Transformed WithID'),
         ('modGeometryTypes', 'GEOM_PI TPoint2D'),
     ]),
     ('09', 'Адреса ввода и сообщения об ошибках', [

@@ -2515,6 +2515,51 @@
     },
     {
       "owner": "CGeometryPath",
+      "name": "ResolveAnchor",
+      "kind": "Sub",
+      "signature": "Public Sub ResolveAnchor(ByVal x As Double, ByVal y As Double, ByRef segmentID As String, ByRef parameter As Double)",
+      "parameters": [
+        {
+          "name": "x",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal x As Double"
+        },
+        {
+          "name": "y",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal y As Double"
+        },
+        {
+          "name": "segmentID",
+          "type": "String",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef segmentID As String"
+        },
+        {
+          "name": "parameter",
+          "type": "Double",
+          "passing": "ByRef",
+          "optional": false,
+          "default": null,
+          "signature": "ByRef parameter As Double"
+        }
+      ],
+      "resultType": null,
+      "line": 137,
+      "source": "src/Geometry/CGeometryPath.cls",
+      "id": "CGeometryPath.ResolveAnchor",
+      "anchor": "api-cgeometrypath-resolveanchor"
+    },
+    {
+      "owner": "CGeometryPath",
       "name": "WithID",
       "kind": "Function",
       "signature": "Public Function WithID(ByVal pathID As String) As CGeometryPath",
@@ -2529,7 +2574,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 136,
+      "line": 157,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.WithID",
       "anchor": "api-cgeometrypath-withid"
@@ -2598,7 +2643,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 149,
+      "line": 170,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.BetweenAnchors",
       "anchor": "api-cgeometrypath-betweenanchors"
@@ -2659,7 +2704,7 @@
         }
       ],
       "resultType": null,
-      "line": 177,
+      "line": 198,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AtDistance",
       "anchor": "api-cgeometrypath-atdistance"
@@ -2704,7 +2749,7 @@
         }
       ],
       "resultType": null,
-      "line": 200,
+      "line": 221,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.ProjectionBounds",
       "anchor": "api-cgeometrypath-projectionbounds"
@@ -2733,7 +2778,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 215,
+      "line": 236,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -2745,7 +2790,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 315,
+      "line": 336,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -2790,7 +2835,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 330,
+      "line": 351,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"
@@ -2851,7 +2896,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 353,
+      "line": 374,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.RayHit",
       "anchor": "api-cgeometrypath-rayhit"
@@ -7806,10 +7851,10 @@
   "sourceHashes": {
     "src/Section/ISectionRecipe.cls": "29c1d70147a864331358441c6cc517d0270f0e3d45aa21a3d434a02a1e1efe51",
     "src/Section/CSectionDefinitionBuilder.cls": "6aecf80072646d42ff4e0c97ac6d109a25bb326152f77bc3944c4f343aadec93",
-    "src/Geometry/CGeometryPath.cls": "a6a364d1aa6133d2f87518776987e00033abe9462f143aa94c0e5024f39e5eb0",
+    "src/Geometry/CGeometryPath.cls": "160b437f3a3289a07180a31bc0eb756986d97d8e518a38af599a99620096355a",
     "src/Geometry/CPolygonSpec.cls": "741da7ebf1b4820bc97587cdf2c7a46ea2897d6330e84d25ce4e2e10a9a56839",
     "src/Section/CSectionDefinition.cls": "048afc60a59388b4a1291d68b9605c4bcc83b902dc9b91d788049036e598c813",
-    "src/Section/CRebarRuleOptions.cls": "18356375647b7364a26d0f9258e306dc201e5e1d435ccb148058a07f94f6adbc",
+    "src/Section/CRebarRuleOptions.cls": "6078c71b1772cb58383bd215ffeeac2c2ebf63ec05131c8e6fd21d7374c97822",
     "src/Geometry/CGeometryDiagnostic.cls": "5a8b139775a98457b368b8636dfa09b4fe2954c75c457e471549d320eaf2d78a",
     "src/Section/CSectionInputTable.cls": "76361e5b9a12bf4c030439d8fc608174ee1447c459af41899f06a68df4b4ef2e",
     "src/Section/CSectionRecipeContext.cls": "f21680031cdb9676caa51d11f10440a725125b2d36db3c93c9b840347aaf9019",
