@@ -1,9 +1,9 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "4ea2d3dc1d8986154ed0851216b1924b7d8a58460606ca3642b394f640d0eb3b",
+  "bodySHA256": "9dabf576b3e76926405e987c8c3dc3d516c471d1b73a68c58e491ec86b8b8933",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "86cc1aa8bce14b9b8f5fbcd365e5e7d3891627271c507eb3f047d022457f2f56",
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "4db7ca1e85785c1ae5845a5bc5e780dfc9adedc134856bdebef6fda1ef5e9f1c",
     "src/Common/modSectionRecipeApiGuide.bas": "9c734479c34c38e7f218dcae2faf9ec2ee110e4a7c26d000a06fb4f60609f4b0"
   },
   "rows": [
@@ -44,19 +44,19 @@
       "line": 6
     },
     {
-      "text": "",
+      "text": "Готовые контуры: facade.RectanglePath — прямоугольник; facade.CirclePath — окружность; facade.AdjacentRectangles — общий контур смежных прямоугольников без перекрытий.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 7
     },
     {
-      "text": "Границы бетона и отверстий можно описать прямыми отрезками, дугами, окружностями и многоугольниками со скруглёнными углами. Обычно наружный контур один; внутри него могут быть отверстия. Если бетон состоит из нескольких отдельных областей, для каждой задают свой наружный контур. Для скруглённого многоугольника создайте CPolygonSpec, добавьте вершины методом AddVertex (имя, X, Y, радиус, источник данных) и вызовите Seal. Один описатель можно использовать для наружного контура и его смещений. Дуги сохраняют свою точную форму.",
+      "text": "Многоугольник: задайте вершины и радиусы через CPolygonSpec.AddVertex (0 — без скругления), затем Seal и facade.RoundedPolygon. Замкнутую последовательность отрезков и дуг создают через CGeometryPath.AddLine / AddArc, затем Seal True и facade.AddPath.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 8
     },
     {
-      "text": "",
+      "text": "Готовую замкнутую линию назначьте наружной границей через Outer или отверстием через Opening, указав имя наружной границы. Для отдельных бетонных областей задают свои наружные контуры. Точные вызовы и примеры всех способов — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 9
@@ -122,7 +122,7 @@
       "line": 19
     },
     {
-      "text": "1. В VBE создайте класс с Implements ISectionRecipe и русской шапкой назначения. Каждый метод сопровождайте русским пояснением.",
+      "text": "1. В редакторе VBA (Alt+F11) создайте класс с Implements ISectionRecipe.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 20

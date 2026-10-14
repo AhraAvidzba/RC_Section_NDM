@@ -1,0 +1,26 @@
+﻿{
+    "ChangedCells":  [
+                         "A558",
+                         "A559",
+                         "A560",
+                         "A571"
+                     ],
+    "RowHeights":  [
+                       {
+                           "Row":  558,
+                           "Before":  9,
+                           "After":  18
+                       },
+                       {
+                           "Row":  559,
+                           "Before":  44,
+                           "After":  31
+                       },
+                       {
+                           "Row":  560,
+                           "Before":  9,
+                           "After":  31
+                       }
+                   ],
+    "WorkbookSHA256":  "2DCF5CFC7A1C241D2E26248F49225FF2340FFC751CFEF6E26178AAE2EC87B840"
+}

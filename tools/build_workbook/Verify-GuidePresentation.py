@@ -47,6 +47,7 @@ def main():
     old, new = reader.read(directory/'Baseline.xlsm'), reader.read(book)
     layout = json.loads((ROOT/'docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json').read_text(encoding='utf-8'))
     first, last = map(int, re.fullmatch(r"'?Справка'?!\$A\$(\d+):\$F\$(\d+)", old['names']['rngSectionRecipeGuide']).groups())
+    expected_text = {'A'+str(first+i): row['text'] for i, row in enumerate(layout['rows'])}
     errors, checked, changed_cells, heights = [], 0, [], []
 
     def require(value, reason):
@@ -62,10 +63,10 @@ def main():
         for address in data['cells'].keys() | actual['cells'].keys():
             a, b = data['cells'].get(address), actual['cells'].get(address)
             checked += 1
-            if sheet == 'Справка' and address == 'A'+str(last):
-                require(a is not None and b is not None, 'Guide spacer cell missing')
-                require(b['value'] in (None, ''), 'Technical footer remains')
-                require(all(a[k] == b[k] for k in ('formula', 'style', 'attrs')), 'Spacer formatting changed')
+            if sheet == 'Справка' and address in expected_text:
+                require(a is not None and b is not None, 'Guide cell missing: '+address)
+                require((b['value'] or '') == expected_text[address], 'Guide text mismatch: '+address)
+                require(all(a[k] == b[k] for k in ('formula', 'style', 'attrs')), 'Guide formatting changed: '+address)
                 if a != b:
                     changed_cells.append(address)
             else:
@@ -99,7 +100,7 @@ def main():
     require(not markers, 'Embedded technical markers: '+repr(markers))
     sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     result = {'Passed': not errors, 'CellsChecked': checked, 'NamedRanges': len(old['names']),
-              'HelpCellsChanged': changed_cells, 'HelpRowHeights': heights,
+              'HelpCellsChanged': sorted(changed_cells), 'HelpRowHeights': heights,
               'NativeComponents': len(final_native), 'NativeCodeUnchanged': native_unchanged,
               'NoEmbeddedMarkers': not markers, 'CandidateSHA256': sha(book), 'NativeSHA256': sha(dump), 'Errors': errors}
     (args.report or directory/'Preservation.json').write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')

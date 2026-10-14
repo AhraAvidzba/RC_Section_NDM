@@ -1,0 +1,34 @@
+{
+  "Passed": true,
+  "CellsChecked": 107461,
+  "NamedRanges": 27,
+  "HelpCellsChanged": [
+    "A571",
+    "A560",
+    "A559",
+    "A558"
+  ],
+  "HelpRowHeights": [
+    {
+      "Row": 558,
+      "Before": 9.0,
+      "After": 18.0
+    },
+    {
+      "Row": 559,
+      "Before": 44.1,
+      "After": 30.95
+    },
+    {
+      "Row": 560,
+      "Before": 9.0,
+      "After": 30.95
+    }
+  ],
+  "NativeComponents": 157,
+  "NativeCodeUnchanged": true,
+  "NoEmbeddedMarkers": true,
+  "CandidateSHA256": "2dcf5cfc7a1c241d2e26248f49225ff2340ffc751cfef6e26178aae2ec87b840",
+  "NativeSHA256": "2ab421c3731f93c627b1c0681ce3486da2409cfae93e1d7f92ef2891b93a3337",
+  "Errors": []
+}

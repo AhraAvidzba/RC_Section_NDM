@@ -1,0 +1,20 @@
+{
+  "Passed": true,
+  "ActualWorkbookReadback": true,
+  "NoAuthoringStyleDemandsInHelpOrApiGuide": true,
+  "NoEmbeddedMarkers": true,
+  "NativeCodeUnchanged": true,
+  "AllCodeMatchesNativeExport": true,
+  "UserReportUnchanged": true,
+  "GuideRows": 61,
+  "ChangedTextCells": [
+    "A558",
+    "A559",
+    "A560",
+    "A571"
+  ],
+  "VisualReview": "Native Candidate.png inspected; full text visible; no tall empty rows",
+  "WorkbookSHA256": "2DCF5CFC7A1C241D2E26248F49225FF2340FFC751CFEF6E26178AAE2EC87B840",
+  "AllCodeSHA256": "9F17CDBDCFC3D9B2BE28F34DBC415F21AD6DA902BE6CCC3F21DB38B97116E3AC",
+  "NativeEvidenceSHA256": "d1424d061f234e76976a89720c17656727c66e462c9dc1ae529f0093fab45196"
+}

@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "NoAuthoringStyleDemandsInHelpOrApiGuide": true,
+  "GuideRows": 61,
+  "ChangedTextCells": [
+    "A558",
+    "A559",
+    "A560",
+    "A571"
+  ],
+  "ContourMethodsCheckedAgainstActualSource": [
+    "RectanglePath",
+    "CirclePath",
+    "AdjacentRectangles",
+    "CPolygonSpec.AddVertex",
+    "RoundedPolygon",
+    "CGeometryPath.AddLine",
+    "CGeometryPath.AddArc",
+    "Seal",
+    "AddPath",
+    "Outer",
+    "Opening"
+  ],
+  "VisualReview": "Native Candidate.png inspected; full text visible; no tall empty rows"
+}

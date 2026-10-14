@@ -1848,3 +1848,18 @@ XML-частях и реальном VBA. Пять внешних guards и по
 пользовательский execution_report исключён из изменений. Расчётные
 прогоны не требуются. Отчёт: docs/reports/GuidePresentation_2026-10-14.md;
 доказательства: GuidePresentation_2026-10-14/.
+
+## 14.10.2026 — Справка: краткий обзор создания контуров
+
+Убраны требования к русской шапке и пояснениям методов. В трёх существующих
+строках описаны RectanglePath, CirclePath, AdjacentRectangles, CPolygonSpec
+с RoundedPolygon и CGeometryPath.AddLine/AddArc, назначение Outer/Opening.
+За аргументами и примерами справка направляет в modSectionRecipeApiGuide.
+В блоке осталось 61 строка; изменены четыре текста и три высоты.
+
+107461 ячейка и 27 имён проверены, все 157 native компонентов прежние,
+152 source совпадают. Данные, формулы, списки, рамки и группы сохранены.
+Основная книга обновлена с проверкой baseline; readback и синхронизация
+ALL CODE завершены. Расчётные прогоны не требуются. Отчёт:
+docs/reports/GuideContourSummary_2026-10-14.md; доказательства:
+GuideContourSummary_2026-10-14/.
