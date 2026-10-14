@@ -1,0 +1,49 @@
+{
+  "Passed": true,
+  "Classes": [
+    {
+      "Class": "CSectionRecipeCircle",
+      "MethodsReviewed": 3,
+      "CommandsAndStringLiteralsUnchanged": true,
+      "StructuredPurposeHeader": true,
+      "AllMethodsExplainActionAndReturn": true,
+      "ShortCommentsInline": true,
+      "UnnecessaryShortContinuations": 0,
+      "SourceSHA256": "5e6dd32e05bde0765dea251cd286e4d32622707f510664887ec027b0fcd6977c"
+    },
+    {
+      "Class": "CSectionRecipeRectSet",
+      "MethodsReviewed": 7,
+      "CommandsAndStringLiteralsUnchanged": true,
+      "StructuredPurposeHeader": true,
+      "AllMethodsExplainActionAndReturn": true,
+      "ShortCommentsInline": true,
+      "UnnecessaryShortContinuations": 0,
+      "SourceSHA256": "8c5ffe36de720f04d173247f6471501b420460d8c0d8030f80384101d0c0dafd"
+    },
+    {
+      "Class": "CSectionRecipeRoundedRectangle",
+      "MethodsReviewed": 9,
+      "CommandsAndStringLiteralsUnchanged": true,
+      "StructuredPurposeHeader": true,
+      "AllMethodsExplainActionAndReturn": true,
+      "ShortCommentsInline": true,
+      "UnnecessaryShortContinuations": 0,
+      "SourceSHA256": "316d943fcdd445ebfca3e8ff4dcb211683d0e6780e36c838a69532cd9471e488"
+    },
+    {
+      "Class": "CSectionRecipeHollowRectangle",
+      "MethodsReviewed": 11,
+      "CommandsAndStringLiteralsUnchanged": true,
+      "StructuredPurposeHeader": true,
+      "AllMethodsExplainActionAndReturn": true,
+      "ShortCommentsInline": true,
+      "UnnecessaryShortContinuations": 0,
+      "SourceSHA256": "8c2699162e9832fef713078780d9588037abecb108e6d49894c0c55484c6edb4"
+    }
+  ],
+  "ReferenceStyle": [
+    "CSectionModel",
+    "CMaterialDiagram"
+  ]
+}

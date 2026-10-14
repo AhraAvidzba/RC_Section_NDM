@@ -1,0 +1,64 @@
+[
+  {
+    "Class": "CSectionRecipeCircle",
+    "Methods": [
+      "ISectionRecipe_CreateDefinition",
+      "AdditionalOptions",
+      "Require"
+    ],
+    "CommandsUnchanged": true,
+    "BeforeLines": 118,
+    "AfterLines": 95
+  },
+  {
+    "Class": "CSectionRecipeRectSet",
+    "Methods": [
+      "ISectionRecipe_CreateDefinition",
+      "ReadDimensions",
+      "AddGeometry",
+      "AddDimensions",
+      "AddRectangleRows",
+      "AdditionalOptions",
+      "Require"
+    ],
+    "CommandsUnchanged": true,
+    "BeforeLines": 251,
+    "AfterLines": 189
+  },
+  {
+    "Class": "CSectionRecipeRoundedRectangle",
+    "Methods": [
+      "ISectionRecipe_CreateDefinition",
+      "ReadDimensions",
+      "AddGeometry",
+      "DescribePolygon",
+      "AddReinforcement",
+      "AxisPath",
+      "AdditionalOptions",
+      "AddDimensions",
+      "Require"
+    ],
+    "CommandsUnchanged": true,
+    "BeforeLines": 280,
+    "AfterLines": 225
+  },
+  {
+    "Class": "CSectionRecipeHollowRectangle",
+    "Methods": [
+      "ISectionRecipe_CreateDefinition",
+      "ReadDimensions",
+      "ReadFaces",
+      "AddGeometry",
+      "AddBoundary",
+      "DescribePolygon",
+      "AddReinforcement",
+      "AxisPath",
+      "ExtraOptions",
+      "AddDimensions",
+      "Require"
+    ],
+    "CommandsUnchanged": true,
+    "BeforeLines": 385,
+    "AfterLines": 307
+  }
+]
