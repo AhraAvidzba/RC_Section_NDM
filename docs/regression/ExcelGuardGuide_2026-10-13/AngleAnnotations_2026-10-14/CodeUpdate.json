@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\AngleAnnotations_2026-10-14\\Candidate.xlsm",
+    "WorkbookSHA256":  "04EF868B34EB04A8A249C4C7DB655820BB2E6503D9FDC38EF16B3DE6A3430554",
+    "ProductionSHA256":  "9D6C668F559F7AA428F7058C555049AC3C7A770508A2A39A6FC34F46CFDE397F",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestRecipeAnnotations"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

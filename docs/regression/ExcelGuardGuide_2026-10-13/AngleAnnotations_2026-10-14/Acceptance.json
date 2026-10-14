@@ -1,0 +1,77 @@
+{
+  "Passed": true,
+  "BaselineHead": "7d2c2dab181e57598a9e365903488b5c652131c7",
+  "AnglesDegrees": [
+    0,
+    30,
+    45,
+    90,
+    135,
+    225,
+    315
+  ],
+  "Requirements": {
+    "ExactProjectionSupportArbitraryNormal": "CandidateFinalDirected/Run.json",
+    "CircleRoundingHollowRectangleOpeningBoundary": "CandidateFinalDirected/Run.json",
+    "ReadableRotationInActualChartCoordinates": "NativeAngleAcceptance.json",
+    "TextBoundsClearanceSeparationRepeat": "NativeAngleAcceptance.json",
+    "CardinalPlacementAndTypographyExact": "NativeAngleAcceptance.json",
+    "LegacySettingsUnitsGroupingAndSnapshot": "CandidateDirected01/Run.json",
+    "PhysicalModelsAndExistingAnnotationsUnchanged": "LegacyGeometryEquality.json",
+    "NineExistingNativeSchemasPixelIdentical": "LegacyPreviewEquality.json",
+    "AvailableAutoCADGeometryRegression": "DocumentScopedCAD02/Run.json",
+    "RequestedFacetImageWithExistingAnnotations": "TaperedFacetAcceptance.json",
+    "WorkbookSourceAndAllCodeSynchronized": "PublishedSourceEquality.json",
+    "UserDataAndSavedSchemaPreserved": "PublishedPreservation.json",
+    "UpdatedVbaGuideAndHelpStandalone": "PublishedStandaloneHelp.json"
+  },
+  "Publication": {
+    "PublishedAt": "2026-10-14T22:01:16.7460840+03:00",
+    "WorkbookSHA256": "6B2023576FC8058D0D02B37BC0746E26775905A147F087BC674F238DD1C90BC6",
+    "AllCodeSHA256": "142FE5D2BB98C7136ED0DD9A902B50725BA5FCFE195A8F114A2C7884ABC32B96",
+    "UserExecutionReportUnchanged": true,
+    "ReadbackPending": false,
+    "PublishedCodeMatchesCandidate": true,
+    "AllCodeMatchesActualWorkbookExport": true,
+    "NativeComponents": 157
+  },
+  "UserExecutionReportUnchanged": true,
+  "FullOnOffRun": false,
+  "NewClassesOrParallelAPI": false,
+  "TemporaryHelpersInProduction": false,
+  "AutoCADAngleTextTested": false,
+  "Report": "docs/reports/AngleAnnotations_2026-10-14.md",
+  "Screenshot": "TaperedFacet02/RoundedTapered.png",
+  "Archives": [
+    {
+      "File": "NativeExports.zip",
+      "Bytes": 2642573,
+      "SHA256": "e4750fcf1c7bf68c381b8b13db33bc7c957e9298c25fc50e6dabe14b7b47874d",
+      "Files": 2
+    },
+    {
+      "File": "NativeAngles.zip",
+      "Bytes": 2112554,
+      "SHA256": "6e4a7558f62f04a8a53aa700b3e9f06b6384803f60aa66472801b302ffe32ae3",
+      "Files": 230
+    },
+    {
+      "File": "LegacyGeometryAndPreviews.zip",
+      "Bytes": 1282118,
+      "SHA256": "d7abafb649cb38a691ddaab3165c08dc5bef7ae61b7547b4769ec3d808d0f48d",
+      "Files": 28
+    },
+    {
+      "File": "DirectedAndCADLogs.zip",
+      "Bytes": 68059,
+      "SHA256": "0d40196c5698cc87405973fdc7d7152cd059da9e7a78a345c13c2a55e21fb061",
+      "Files": 16
+    },
+    {
+      "File": "TaperedFacetEvidence.zip",
+      "Bytes": 66587,
+      "SHA256": "56908e25c1721558ea76a0fce310a134d9a82950319aaa6f40955e6f88fa84cc",
+      "Files": 5
+    }
+  ]
+}

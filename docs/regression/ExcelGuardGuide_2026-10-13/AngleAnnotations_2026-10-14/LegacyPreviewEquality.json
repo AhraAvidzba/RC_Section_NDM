@@ -1,0 +1,41 @@
+{
+  "Passed": true,
+  "Images": [
+    {
+      "Image": "Circle.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "HollowCentered.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "HollowOffset.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "LSection.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "Rectangle.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "RoundedMixed.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "RoundedSimple.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "RoundedTapered.png",
+      "PixelsEqual": true
+    },
+    {
+      "Image": "TwoRectangles.png",
+      "PixelsEqual": true
+    }
+  ]
+}

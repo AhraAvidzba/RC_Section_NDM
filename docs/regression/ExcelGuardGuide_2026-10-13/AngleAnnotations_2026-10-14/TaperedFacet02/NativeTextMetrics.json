@@ -1,0 +1,119 @@
+﻿[
+    {
+        "Name":  "NDMPlot_Text360",
+        "Text":  "8Ø32",
+        "Left":  248.66346740722656,
+        "Top":  123.44574737548828,
+        "Width":  150,
+        "Height":  21.450000762939453,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text362",
+        "Text":  "8Ø32",
+        "Left":  248.66346740722656,
+        "Top":  397.8917236328125,
+        "Width":  150,
+        "Height":  21.450000762939453,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text364",
+        "Text":  "5Ø32",
+        "Left":  64.693153381347656,
+        "Top":  196.39370727539063,
+        "Width":  21.450000762939453,
+        "Height":  150,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text366",
+        "Text":  "5Ø32",
+        "Left":  574.8587646484375,
+        "Top":  196.39370727539063,
+        "Width":  21.450000762939453,
+        "Height":  150,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text368",
+        "Text":  "2Ø32",
+        "Left":  540.09661865234375,
+        "Top":  184.05172729492188,
+        "Width":  32.2400016784668,
+        "Height":  21.450000762939453,
+        "Rotation":  56.976131439208984
+    },
+    {
+        "Name":  "NDMPlot_Text372",
+        "Text":  "B=0.6 m",
+        "Left":  247.82330322265625,
+        "Top":  84.421340942382813,
+        "Width":  150,
+        "Height":  21.450000762939453,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text376",
+        "Text":  "H=0.4 m",
+        "Left":  25.668739318847656,
+        "Top":  196.39370727539063,
+        "Width":  21.450000762939453,
+        "Height":  150,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text380",
+        "Text":  "W\u0027=0.098 m",
+        "Left":  53.359371185302734,
+        "Top":  84.421340942382813,
+        "Width":  150,
+        "Height":  21.450000762939453,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text384",
+        "Text":  "W\u0027=0.125 m",
+        "Left":  449.96487426757813,
+        "Top":  84.421340942382813,
+        "Width":  150,
+        "Height":  21.450000762939453,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Text388",
+        "Text":  "L=0.201 m",
+        "Left":  554.1475830078125,
+        "Top":  165.06251525878906,
+        "Width":  72.540000915527344,
+        "Height":  21.450000762939453,
+        "Rotation":  56.976131439208984
+    },
+    {
+        "Name":  "NDMPlot_AxisLabelX",
+        "Text":  "Ось X",
+        "Left":  609.5,
+        "Top":  484,
+        "Width":  52.5,
+        "Height":  14,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_AxisLabelY",
+        "Text":  "Ось Y",
+        "Left":  34,
+        "Top":  42,
+        "Width":  14,
+        "Height":  52.5,
+        "Rotation":  0
+    },
+    {
+        "Name":  "NDMPlot_Title",
+        "Text":  "Наклонная грань: подпись арматуры и размер Aligned",
+        "Left":  8,
+        "Top":  6,
+        "Width":  804,
+        "Height":  22,
+        "Rotation":  0
+    }
+]
