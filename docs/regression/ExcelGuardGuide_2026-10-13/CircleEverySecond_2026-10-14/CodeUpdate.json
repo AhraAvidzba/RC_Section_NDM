@@ -1,0 +1,21 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\CircleEverySecond_2026-10-14\\Candidate.xlsm",
+    "WorkbookSHA256":  "0A4D2A1A1501F3DA795FB9FEC5B9017A1440BBFC660E54535424E82EFD652914",
+    "ProductionSHA256":  "819A8AADDB6430F6E5240690B5D2009B8726B659C34689CCF165A6492D1EEC82",
+    "Compiled":  true,
+    "Modules":  [
+                    "modSectionRecipeApiGuide",
+                    "CSectionRecipeCircle",
+                    "CSectionRecipeHollowRectangle",
+                    "CSectionRecipeRectSet",
+                    "CSectionRecipeRoundedRectangle"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

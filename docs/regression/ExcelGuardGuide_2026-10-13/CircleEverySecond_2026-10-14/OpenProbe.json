@@ -1,0 +1,29 @@
+﻿[
+    {
+        "Variant":  "NativeCodeOnly",
+        "Opened":  true
+    },
+    {
+        "Variant":  "Styles",
+        "Opened":  false,
+        "Error":  "Невозможно получить свойство Open класса Workbooks"
+    },
+    {
+        "Variant":  "Workbook",
+        "Opened":  true
+    },
+    {
+        "Variant":  "Config",
+        "Opened":  false,
+        "Error":  "Невозможно получить свойство Open класса Workbooks"
+    },
+    {
+        "Variant":  "Help",
+        "Opened":  true
+    },
+    {
+        "Variant":  "Chain",
+        "Opened":  false,
+        "Error":  "Невозможно получить свойство Open класса Workbooks"
+    }
+]

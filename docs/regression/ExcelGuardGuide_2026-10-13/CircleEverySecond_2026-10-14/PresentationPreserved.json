@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "HelpCellsChanged": [
+    "B738"
+  ],
+  "ConfigFormulaAdjustments": [
+    "N110",
+    "O120",
+    "N165",
+    "O175"
+  ],
+  "UnrelatedZIPPartsRestored": true,
+  "ExistingStylesRetained": true
+}

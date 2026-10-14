@@ -1,0 +1,53 @@
+{
+  "Passed": true,
+  "BaselineHead": "d9e1345670c5341e0c67f5ab302618b97c1d5683",
+  "CellsChecked": 107461,
+  "NamedRanges": 29,
+  "UserDataFormulasStylesNamesAndDrawingsPreserved": true,
+  "ChangedHelpCells": [
+    "B738"
+  ],
+  "AdjustedSharedFormulaBounds": [
+    "N110",
+    "O120",
+    "N165",
+    "O175"
+  ],
+  "NativeComponents": 157,
+  "ChangedNativeComponents": [
+    "CSectionRecipeCircle",
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRectSet",
+    "CSectionRecipeRoundedRectangle",
+    "modSectionRecipeApiGuide",
+    "modSectionRecipeSetup",
+    "modTestAudit02Api",
+    "modTestGeometryConfig",
+    "modTestGeometryFixtures",
+    "modTestSectionRecipes",
+    "modTestWorkbookInterface"
+  ],
+  "NativeChangesRestricted": true,
+  "UntouchedSourceComponents": 141,
+  "CommonExecutorAndSolverUntouched": true,
+  "IndependentBindingLists": true,
+  "DefaultEachBarPreserved": true,
+  "DefaultModels": 9,
+  "ModelsEqualExcept72NewInputCells": true,
+  "DefaultSnapshotSHA256": "c295b4af1a51c00ef429132413140d6a37e3c72e3a6e5aab366f348bab43b68f",
+  "Tests": {
+    "modTestSectionRecipes.RunCircleBindingTests": 4774,
+    "modTestSectionRecipes.RunCircleRecipeInputTests": 5,
+    "modTestGeometryConfig.RunAudit03CircleConfigTests": 53,
+    "modTestGeometryConfig.RunAudit03CircleRebarInputTests": 524,
+    "modTestGeometryConfig.RunAudit03ShapeConfigTests": 216,
+    "modTestSectionRecipes.RunRecipeRuleTests": 187,
+    "modTestSectionRecipes.RunRecipeAnnotationCountTests": 92,
+    "modTestSectionRecipes.RunCircleBindingWorkbookTests": 21
+  },
+  "Assertions": 5872,
+  "NoEmbeddedMarkers": true,
+  "CandidateSHA256": "d927030918b5de51c53f0dc6460e162e3adaa36f68adc7567cc92f6a5d3b0ce3",
+  "NativeSHA256": "655d74b539c0c05b41b04f425e9e9fedd454d2c3f08038001b653d7bfca189c4",
+  "Errors": []
+}
