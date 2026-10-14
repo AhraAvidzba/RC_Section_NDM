@@ -1,0 +1,44 @@
+﻿{
+    "Stage":  "Directed02",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRecipeOperations.RunResolveAnchorTests",
+                     "Seconds":  0.1629869,
+                     "Characters":  45,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeOperations.RunRecipeOperationTests",
+                     "Seconds":  0.0098567,
+                     "Characters":  46,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeOperations.RunRecipeDiagnosticTests",
+                     "Seconds":  0.11871409999999999,
+                     "Characters":  47,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.33035729999999996,
+                     "Characters":  7474,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPolygonSpec.RunPolygonSpecTests",
+                     "Seconds":  0.0138686,
+                     "Characters":  1156,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "8EF9BDA0B6EEEC11AF1617CC8A9BCC6A267B5378B63E3D43A0410679480B7A76",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T01:21:59.8031971+03:00"
+}

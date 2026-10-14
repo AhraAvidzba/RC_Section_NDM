@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "DirectedFinal",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRecipeOperations.RunResolveAnchorTests",
+                     "Seconds":  0.19256479999999998,
+                     "Characters":  45,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeOperations.RunRecipeOperationTests",
+                     "Seconds":  0.012115599999999999,
+                     "Characters":  46,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeOperations.RunRecipeDiagnosticTests",
+                     "Seconds":  0.17363979999999998,
+                     "Characters":  47,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.3706085,
+                     "Characters":  7474,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPolygonSpec.RunPolygonSpecTests",
+                     "Seconds":  0.0143412,
+                     "Characters":  1156,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02GuideExamplesTests",
+                     "Seconds":  0.1545416,
+                     "Characters":  357,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "1E5751AFB587201412183D1F68B28C83FED46838A23B769004BB3F82668BE832",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T01:22:34.5665618+03:00"
+}

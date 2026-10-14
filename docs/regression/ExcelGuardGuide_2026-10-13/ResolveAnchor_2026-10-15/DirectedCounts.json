@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "Assertions": {
+    "modTestRecipeOperations.RunResolveAnchorTests": 1475,
+    "modTestRecipeOperations.RunRecipeOperationTests": 32,
+    "modTestRecipeOperations.RunRecipeDiagnosticTests": 35,
+    "modTestSectionRecipes.RunRecipeRuleTests": 187,
+    "modTestPolygonSpec.RunPolygonSpecTests": 52,
+    "modTestAudit02Api.RunAudit02GuideExamplesTests": 11
+  },
+  "Total": 1792,
+  "ExistingCGeometryPathMethodsUnchanged": true,
+  "FullOnOffNotRun": true
+}

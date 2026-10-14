@@ -1,0 +1,316 @@
+﻿{
+    "Status":  "NATIVE_GUIDE_TEXT_MATCH",
+    "StartRow":  552,
+    "EndRow":  612,
+    "OldStartRow":  552,
+    "OldEndRow":  612,
+    "PreviousContentBottom":  1761,
+    "WidthPoints":  1282.5,
+    "Rows":  61,
+    "Members":  137,
+    "BodySHA256":  "de47a93c404310c366724e3131509c8a3c534c130b15e6cf1dcd2032f0ffea75",
+    "ApiStatus":  "COMMENT_ONLY_VBE_API",
+    "ApiRows":  {
+
+                },
+    "SectionRows":  {
+
+                    },
+    "Outline":  {
+                    "Titles":  [
+                                   "Подготовка геометрии в AutoCAD и импорт",
+                                   "Поиск НДС текущего сочетания",
+                                   "Поиск предельной несущей способности",
+                                   "Расчет ширины раскрытия нормальных трещин",
+                                   "Расчет продольного изгиба и устойчивости",
+                                   "Справка по результатам расчета листа Results",
+                                   "Добавление нового типа сечения",
+                                   "Справка по настройкам листа Config"
+                               ],
+                    "Rows":  [
+                                 1,
+                                 86,
+                                 129,
+                                 172,
+                                 394,
+                                 492,
+                                 552,
+                                 613
+                             ],
+                    "LastRow":  1761,
+                    "DefaultExpanded":  "Справка по настройкам листа Config",
+                    "Groups":  8
+                },
+    "RowHeights":  [
+                       {
+                           "Row":  552,
+                           "Before":  18,
+                           "After":  24
+                       },
+                       {
+                           "Row":  553,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  556,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  557,
+                           "Before":  18,
+                           "After":  21
+                       },
+                       {
+                           "Row":  559,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  560,
+                           "Before":  18,
+                           "After":  44
+                       },
+                       {
+                           "Row":  561,
+                           "Before":  18,
+                           "After":  44
+                       },
+                       {
+                           "Row":  562,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  563,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  564,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  565,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  566,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  567,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  568,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  569,
+                           "Before":  18,
+                           "After":  21
+                       },
+                       {
+                           "Row":  570,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  572,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  573,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  574,
+                           "Before":  18,
+                           "After":  44
+                       },
+                       {
+                           "Row":  575,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  576,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  577,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  578,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  579,
+                           "Before":  18,
+                           "After":  21
+                       },
+                       {
+                           "Row":  580,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  581,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  582,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  583,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  584,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  585,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  587,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  588,
+                           "Before":  18,
+                           "After":  21
+                       },
+                       {
+                           "Row":  589,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  590,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  591,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  592,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  593,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  594,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  595,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  596,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  597,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  598,
+                           "Before":  18,
+                           "After":  21
+                       },
+                       {
+                           "Row":  599,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  601,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  602,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  603,
+                           "Before":  18,
+                           "After":  19
+                       },
+                       {
+                           "Row":  604,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  606,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  607,
+                           "Before":  18,
+                           "After":  21
+                       },
+                       {
+                           "Row":  608,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  609,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  610,
+                           "Before":  18,
+                           "After":  9
+                       },
+                       {
+                           "Row":  611,
+                           "Before":  18,
+                           "After":  31
+                       },
+                       {
+                           "Row":  612,
+                           "Before":  18,
+                           "After":  9
+                       }
+                   ]
+}

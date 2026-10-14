@@ -1,0 +1,20 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\ResolveAnchor_2026-10-15\\Candidate.xlsm",
+    "WorkbookSHA256":  "313ABDB25572155B49A22078EF728E0D5C5CC2237606B111394408EAE7ABCB6D",
+    "ProductionSHA256":  "D927030918B5DE51C53F0DC6460E162E3ADAA36F68ADC7567CC92F6A5D3B0CE3",
+    "Compiled":  true,
+    "Modules":  [
+                    "modSectionRecipeApiGuide",
+                    "CGeometryPath",
+                    "CRebarRuleOptions",
+                    "modTestRecipeOperations"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

@@ -1,0 +1,29 @@
+{
+  "Status": "RESOLVE_ANCHOR_ACCEPTANCE_PASS",
+  "Requirements": {
+    "PositionOrderPhysicalEffectProvedAndOptionPreserved": true,
+    "ResolveAnchorExactRequestedSignature": true,
+    "ActualExistingSegmentIDAndLocalParameter": true,
+    "CommonPointParameterAndExistingTolerancesReused": true,
+    "MissingAndAmbiguousPointsHaveDiagnostics": true,
+    "OutputsAtomicOnFailure": true,
+    "RectangleAdjacentRoundedOffsetCircleArcAndTransformsTested": true,
+    "EndpointsJointsArcsOutsideOverlapAndUnsealedCasesTested": true,
+    "ChainEndsDirectionLengthAndOriginIntervalsTested": true,
+    "ExistingPathMethodsFacadeAndWorkingRecipesUnchanged": true,
+    "NineModelsAndTwelveNDSExactlyUnchanged": true,
+    "GuideAndShortHelpUpdatedExampleOnlyInDetailedGuide": true,
+    "NoNewClassOrParallelAPIOrSegmentRename": true,
+    "FocusedRegressionOnlyNoFullOnOff": true,
+    "ProductionReadbackAndAllCodeVerified": true,
+    "UserDataAndForeignExecutionReportPreserved": true
+  },
+  "FocusedAssertions": 1792,
+  "CellsChecked": 107483,
+  "NamedRanges": 29,
+  "NativeComponents": 157,
+  "WorkbookSHA256": "1e5751afb587201412183d1f68b28c83fed46838a23b769004bb3f82668be832",
+  "AllCodeSHA256": "83585f32b9dffbd68a520b0e72e65c118eb8b4234b0a5602734293db15631006",
+  "ForeignExecutionReportSHA256": "821a544b460f08657c64701dff744a10141b27fd22e7f32334cb456b8f623d52",
+  "Errors": []
+}
