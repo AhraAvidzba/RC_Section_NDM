@@ -6135,13 +6135,13 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "af551e79ec8e5b97c29d4c5b3aa0a96b2b0dbb88687b903fc5e8ebcebb9efaa2",
-    "tests/modTestAudit02Api.bas": "017566efb5a5857a27340d913c74c1d0e38ba41e556791bbe8384c728ac66d52",
+    "tests/modTestAudit02Api.bas": "7f36a35df1b7bd932bd14f53b0240ae4eb91b031b5bd4b242f51b43089d06b12",
     "tests/modTestAutoCADContours.bas": "430ed8e1569e2012430d8b82d73cd25fcc28a4e2d618279c7f0f5bd14088676b",
     "tests/modTestContourMesh.bas": "9de226c7de9b76b8a22e869410c51c99c3b3a9bd0e26e844f42500999d49c9a4",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
     "tests/modTestDeclarativeGeometry.bas": "4eba91a978b9fda5fe83a33469bcfee3668627c41087a838b3159966489da1ea",
     "tests/modTestGeometry.bas": "409bc4e037e9aaea7345b1a936317dd4c55fd133aaf971f8cdb00c6d45b9a223",
-    "tests/modTestGeometryConfig.bas": "929bf92b2be2b86e270d83f21584c128aea6cefdd09663afe979960b98f43a34",
+    "tests/modTestGeometryConfig.bas": "39776ea9d9dd87468b5efe80376b435deed19af48cce5d5b4897fbf74937dc9a",
     "tests/modTestGeometryPublication.bas": "20ee6f70af5beed46670be220e17d7ed25c983115513b0cddc1accea317441a4",
     "tests/modTestGeometryQuery.bas": "9641a29518f061625600a290c2b68bedadfd233747991d49334f703558a7db79",
     "tests/modTestGeometryReview.bas": "a6f0f2b816cd985a7f0fa440acc34b49ae939aeee0bbb89ea8527d0849b09612",
@@ -6150,7 +6150,7 @@
     "tests/modTestRecipeApiCatalogue.bas": "e727da374e3126ad429612c0cc5f900f5b5b0512150538fd4647b6acd9d8ec61",
     "tests/modTestRecipeOperations.bas": "90e4c5609337c447932ac93de74b110255af716e30be866351c65365d5e07891",
     "tests/modTestRecipeSetbacks.bas": "8ffb354ceba0cb426cc515d8bb2e7a8e8f5fc17c035132d6d8d91792b75136cb",
-    "tests/modTestSectionRecipes.bas": "341468c921b67b201b5ac0ea3ac60523ee67b22e612ae758b22d76a84160f455",
+    "tests/modTestSectionRecipes.bas": "d2dc72c061e49055102e2cb5faa671212e42547cd39635cc7017e39b6cb984ce",
     "tests/modTestSectionSolver.bas": "abaa8e4cdd6805b1612c8da3e44f11a90db75cc2d36ca68d288cf2e678b5233f"
   },
   "reportHashes": {

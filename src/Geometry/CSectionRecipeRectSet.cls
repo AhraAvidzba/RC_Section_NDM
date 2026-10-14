@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -14,9 +14,10 @@ Option Explicit
 ' ==========================================================================
 ' Класс описывает один прямоугольник, Г-образное сечение или два смежных прямоугольника.
 ' В составном сечении верхняя часть может быть смещена относительно нижней.
-' У каждой грани свои отступы и армирование; дополнительные ряды связаны с основным.
+' По каждой стороне свои отступы и армирование; дополнительные ряды арматуры связаны с основным.
 '
-' Размеры читаются из таблицы выбранного варианта. Контуры, ряды и размеры передаются
+' Параметры читаются из таблицы выбранного варианта. Граница бетона, расположение
+' арматуры и аннотации схемы (размеры сечения, количество и диаметры стержней) передаются
 ' в CSectionDefinitionBuilder, а стержни и бетонную сетку создаёт общий CSectionBuilder.
 
 Implements ISectionRecipe
@@ -31,8 +32,9 @@ Private Type TRectSetDimensions
     Offset As Double
 End Type
 
-' Читает выбранный вариант сечения и его армирование. Возвращает описание общей
-' наружной границы, рядов на гранях и размеров для общего сборщика.
+' Читает форму сечения и параметры армирования. Формирует описание наружной границы
+' бетона, размещения стержней вдоль сторон и аннотаций схемы (размеры сечения,
+' суммарное количество стержней каждого диаметра по каждой стороне) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
     Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
@@ -103,7 +105,7 @@ Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     End If
 End Sub
 
-' Задаёт основной и дополнительные ряды на четырёх гранях одного прямоугольника.
+' Задаёт основной и дополнительные ряды арматуры вдоль четырёх сторон одного прямоугольника.
 ' Отступы считаются от полной грани; подпись каждой стороны объединяет все её ряды.
 Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal table As CSectionInputTable, _
         ByVal units As CUnitSystem, ByVal header As Long, ByVal base As Long, _
@@ -141,8 +143,8 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
                 groupID = "B" & prefix & ".as_2": nx = 0#: ny = -1#: sideSign = -1#
                 Set path = facade.LinePath(groupID, x + width, y + axisDistance, x, y + axisDistance) ' Нижняя грань на расстоянии as от бетона, справа налево.
         End Select
-        options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.
-        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+        options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+        options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
         options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
         options.Comment = "RectSet: " & label & ", ряд 1"
         facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
@@ -166,7 +168,7 @@ NextSide:
     Next side
 End Sub
 
-' Возвращает настройки дополнительного ряда: контактное расстояние, направление
+' Возвращает настройки дополнительного ряда арматуры: контактное расстояние, направление
 ' и размещение у каждого основного стержня или через один. Все ряды стороны имеют общую подпись.
 Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _
         ByVal groupID As String, ByVal label As String, ByVal rowNumber As Long, ByVal location As String, _
@@ -180,8 +182,8 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     everySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar") ' Выбираем все позиции или через одну, начиная с первой.
     options.SourceReference = table.SourceReference(row, column) ' Адреса полей для сообщения об ошибке размещения.
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.AnnotationGroup = groupID ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)
     Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.

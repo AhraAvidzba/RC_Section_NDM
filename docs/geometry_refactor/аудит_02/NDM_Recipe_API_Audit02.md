@@ -409,7 +409,7 @@ End Sub
 
 ```vb
 options.AnnotationGroup = "H.Right" ' Общая подпись арматуры правой стороны.
-options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
 options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 ```
 
@@ -474,7 +474,7 @@ Private Sub DescribeRightReinforcement( _
 
     Set mainOptions = New CRebarRuleOptions
     mainOptions.AnnotationGroup = "H.Right" ' Общая подпись арматуры правой стороны.
-    mainOptions.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    mainOptions.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     mainOptions.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     mainOptions.EndMode = ExcludeBoth
     mainOptions.StartSetback = startSetback
@@ -700,7 +700,7 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
 
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "H.Right" ' Общая подпись арматуры правой стороны.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.EndMode = ExcludeBoth
     options.StartSetback = 100#

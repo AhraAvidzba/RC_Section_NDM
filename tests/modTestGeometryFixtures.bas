@@ -74,20 +74,22 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: форматирование численных исходных данных рецептов. Здесь нет
 ' вычисления позиций, пересечений или формы; всю математику выполняет рецепт.
-' Circle: [D, as, n, d, d2, d3, loc2, loc3].
+' Circle: [D, as, n, d, d2, d3, loc2, loc3, bind2, bind3].
 Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSectionDefinition
     Dim values As Variant, table As CSectionInputTable, recipe As ISectionRecipe, keys As Variant, i As Long
     values = ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2
     Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", values
     keys = Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
-        "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row")
-    For i = 0 To 7
+        "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row", "Rebar.Bind2row", "Rebar.Bind3row")
+    For i = 0 To 9
         If i <= UBound(parameters) Then
             values(table.RowByKey(CStr(keys(i))), 2) = parameters(i)
         ElseIf i < 6 Then
             values(table.RowByKey(CStr(keys(i))), 2) = 0#
-        Else
+        ElseIf i < 8 Then
             values(table.RowByKey(CStr(keys(i))), 2) = "Stacked"
+        Else
+            values(table.RowByKey(CStr(keys(i))), 2) = "EachBar"
         End If
     Next i
     Set recipe = New CSectionRecipeCircle

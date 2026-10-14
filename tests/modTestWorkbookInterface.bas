@@ -8000,6 +8000,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "ArrowType": ExpectedConfigDropdownOptions = "Triangle|Stealth|Diamond|Oval|Open"
         Case "ArrowSize": ExpectedConfigDropdownOptions = "Small|Medium|Wide"
         Case "Rebar.Loc2row", "Rebar.Loc3row": ExpectedConfigDropdownOptions = "Stacked|SideBySide"
+        Case "Rebar.Bind2row", "Rebar.Bind3row": ExpectedConfigDropdownOptions = "EachBar|EverySecondBar"
         Case "RectSet.SectionType": ExpectedConfigDropdownOptions = "Rectangle|LSection|TwoRectangles"
     End Select
 End Function

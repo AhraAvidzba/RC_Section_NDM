@@ -698,6 +698,8 @@ Private Sub ConfigureCircle(ByVal target As Object)
     SetKey target, "Rebar.Diameter3", 10#
     SetKey target, "Rebar.Loc2row", "Stacked"
     SetKey target, "Rebar.Loc3row", "Stacked"
+    SetKey target, "Rebar.Bind2row", "EachBar"
+    SetKey target, "Rebar.Bind3row", "EachBar"
 End Sub
 
 ' Oracle первой позиции не использует builder: ось основного ряда лежит на +X,

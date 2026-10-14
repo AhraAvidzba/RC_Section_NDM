@@ -138,8 +138,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
 '           Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
 '           Set options = New CRebarRuleOptions
-'           options.AnnotationGroup = "H.Right" ' Общая подпись арматуры этой группы.
-'           options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+'           options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+'           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
 '           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 '           options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
 '           options.IncomingTangentAtJoint = True
@@ -174,13 +174,13 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set path = facade.LinePath("ExplicitAxis", 100#, 500#, 700#, 500#)
 '           facade.PathGroup "TwoLines", Array("MaxStepAxis", "FixedStepAxis")
 '           Set options = New CRebarRuleOptions
-'           options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
-'           options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+'           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+'           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
 '           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 '           facade.RebarByCount "Main", "MainAxis", 5, 20#, options
 '           Set options = New CRebarRuleOptions
-'           options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
-'           options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+'           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+'           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
 '           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
 '           options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
 '           facade.RebarDependent "Contact", "Main", 16#, options

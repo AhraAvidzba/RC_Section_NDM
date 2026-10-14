@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -14,10 +14,12 @@ Option Explicit
 ' ==========================================================================
 ' Класс описывает наружный прямоугольник и внутреннее отверстие со скруглёнными углами.
 ' Отверстие может быть смещено относительно центра наружного контура.
-' Наружные ряды задаются по числу стержней. Ряды у отверстия получаются проекцией
-' наружных рядов; на каждой стороне могут быть ещё два дополнительных ряда.
+' Арматура вдоль наружных сторон задаётся по числу стержней. Положения стержней
+' у отверстия получают проекцией наружной арматуры; по каждой стороне могут быть
+' ещё два дополнительных ряда арматуры.
 '
-' Рецепт возвращает описание обеих границ, армирования и размеров. Построение дуг,
+' Рецепт описывает границы бетона и отверстия, расположение арматуры и аннотации
+' схемы (размеры сечения и отверстия, количество и диаметры стержней). Построение дуг,
 ' проекцию стержней и создание бетонной сетки выполняют общие классы.
 
 Implements ISectionRecipe
@@ -53,8 +55,9 @@ Private Type THollowFace
     Source As String
 End Type
 
-' Читает размеры обеих границ и параметры армирования. Возвращает описание бетона
-' с отверстием, наружных и внутренних рядов и размеров для общего сборщика.
+' Читает размеры сечения и отверстия, параметры арматуры вдоль их сторон. Формирует
+' описание границ бетона, размещения стержней и аннотаций схемы (размеры сечения
+' и отверстия, суммарное количество стержней каждого диаметра по каждой стороне).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     On Error GoTo InvalidGeometry
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
@@ -173,7 +176,7 @@ Private Function DescribePolygon(ByVal B As Double, ByVal H As Double, ByVal x A
     Set DescribePolygon = polygon ' Возвращаем подготовленный многоугольник.
 End Function
 
-' Задаёт наружные ряды по числу стержней, а внутренние — проекцией соответствующих наружных.
+' Задаёт арматуру вдоль наружных сторон по числу стержней, а вдоль отверстия — проекцией наружной арматуры.
 ' Добавляет связанные ряды и общую подпись каждой стороны по фактически созданной арматуре.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
         ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
@@ -185,8 +188,8 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Получаем линию центров стержней выбранной стороны с отступом as.
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
-        options.AnnotationGroup = faces(i).ID ' Общая подпись арматуры этой группы.
-        options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+        options.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+        options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
         options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.SourceReference = faces(i).Source ' Адреса полей для сообщения об ошибке размещения.
@@ -278,7 +281,7 @@ InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeHollowRectangle", faces(index).Source
 End Function
 
-' Возвращает настройки дополнительного ряда: контактное расстояние, направление
+' Возвращает настройки дополнительного ряда арматуры: контактное расстояние, направление
 ' и размещение у каждого основного стержня или через один, начиная с первого.
 Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long, ByVal location As String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, _
         Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
@@ -289,8 +292,8 @@ Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long
     If location = "SideBySide" Then axis = RowTangent: directionSign = 1# ' Располагаем дополнительный стержень вдоль исходного ряда.
     options.SourceReference = face.Source ' Адреса полей для сообщения об ошибке размещения.
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, (binding = "EverySecondBar"), interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.AnnotationGroup = face.ID ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = face.ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.Comment = "HollowRectangle: " & face.Caption & IIf(Left$(face.ID, 8) = "Opening.", " грань Opening", " наружная грань") & ", ряд " & CStr(rowNumber)
     Set ExtraOptions = options ' Возвращаем настройки дополнительного ряда.

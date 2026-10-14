@@ -253,7 +253,9 @@ function Get-GeometrySettingsCatalog {
             @("Rebar.Diameter2", "", "мм", "Диаметр второго ряда. Ряд появляется только если есть первый ряд и этот диаметр больше 0."),
             @("Rebar.Diameter3", "", "мм", "Диаметр третьего ряда. Строится от первого ряда; при совпадении направления со вторым рядом перескакивает его, чтобы стержни не легли друг на друга."),
             @("Rebar.Loc2row", "Stacked", "-", "Куда ставить второй ряд относительно каждого стержня первого ряда: Stacked - внутрь по радиусу, SideBySide - по касательной справа по часовой стрелке."),
-            @("Rebar.Loc3row", "Stacked", "-", "Куда ставить третий ряд относительно первого ряда. Если выбран тот же путь, что у второго ряда, программа отодвигает третий ряд дальше.")
+            @("Rebar.Loc3row", "Stacked", "-", "Куда ставить третий ряд относительно первого ряда. Если выбран тот же путь, что у второго ряда, программа отодвигает третий ряд дальше."),
+            @("Rebar.Bind2row", "EachBar", "-", "Второй ряд: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных стержней."),
+            @("Rebar.Bind3row", "EachBar", "-", "Третий ряд: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных стержней. Выбирается независимо от второго ряда.")
         )},
         @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; RoundedRectangleTable = $true; Rows = @(
             @("Размеры сечения", "800", "250", "мм", "B - длина горизонтальной базы, H - полная высота сечения."),
@@ -419,9 +421,10 @@ function Get-NextConfigValidationColumn {
 # Возвращает прямую ссылку на вертикальный список допустимых значений.
 # Одинаковые наборы переиспользуются; различные наборы всегда имеют разные источники.
 function Get-ConfigValidationListAddress {
-    param([object]$Sheet, [array]$Options)
+    param([object]$Sheet, [array]$Options, [string]$IndependentName = '')
     if ($Options.Count -eq 0) { throw 'Пустой список допустимых значений Config.' }
     $key = ConvertTo-Json -InputObject @($Options) -Compress
+    if ($IndependentName) { $key = $IndependentName + ':' + $key }
     if ($script:ConfigValidationLists.ContainsKey($key)) { return $script:ConfigValidationLists[$key] }
     $column = Get-NextConfigValidationColumn $Sheet
     for ($i = 0; $i -lt $Options.Count; $i++) {
@@ -429,6 +432,10 @@ function Get-ConfigValidationListAddress {
     }
     $colName = ConvertTo-ExcelColumn $column
     $address = '=$' + $colName + '$1:$' + $colName + '$' + $Options.Count
+    if ($IndependentName) {
+        Set-WorkbookNameByBounds $Sheet.Parent $IndependentName $Sheet 1 $column $Options.Count $column
+        $address = '=' + $IndependentName
+    }
     $script:ConfigValidationLists[$key] = $address
     return $address
 }
@@ -728,6 +735,14 @@ function Get-SettingInstructionLines {
             "Stacked: внутрь по радиусу к центру. SideBySide: справа по часовой касательной.",
             "Выбор обязателен только для существующего третьего ряда. Пустое или неизвестное положение активного ряда дает InputErr; у отключенного ряда оно не читается.",
             "Если второй ряд уже занимает выбранное направление, третий ряд ставится дальше, за вторым рядом."
+        ) }
+        "Rebar.Bind2row" { return @($lead) + @(
+            "Выбирает стержни первого ряда, рядом с которыми создаётся второй ряд: EachBar — все стержни; EverySecondBar — первый, третий и следующие нечётные.",
+            "При нечётном числе основных стержней выбирается (n+1)/2 позиций. При отключённом втором или первом ряде настройка не используется."
+        ) }
+        "Rebar.Bind3row" { return @($lead) + @(
+            "Выбирает стержни первого ряда для третьего ряда независимо от второго: EachBar — все; EverySecondBar — первый, третий и следующие нечётные.",
+            "При отключённом третьем или первом ряде настройка не используется. Положение Stacked/SideBySide выбирается отдельно."
         ) }
         "RoundedRectangle.*" { return @($lead) + @(
             "Эта настройка задается на Config в таблице «Скругленный прямоугольник». Геометрия выбирается через Geometry.Source = Generated и Geometry.Type = RoundedRectangle.",
@@ -1470,7 +1485,7 @@ function Get-SettingsInstructionCatalog {
         "Circle.Diameter - наружный диаметр бетона. Rebar.AxisDistance - расстояние от наружной границы до оси первого ряда стержней, а не до поверхности арматуры. Для активного ряда оно больше половины Rebar.Diameter и меньше половины Circle.Diameter.",
         "Rebar.Count задает число равномерно расположенных стержней первого ряда, Rebar.Diameter - их диаметр. Для активного ряда число целое, не меньше 2. Пустой или нулевой Count либо Diameter выключает первый ряд и его дополнительные стержни.",
         "Rebar.Diameter2 и Rebar.Diameter3 - диаметры второго и третьего рядов. Пустое значение или 0 означает отсутствие соответствующего ряда.",
-        "Rebar.Loc2row и Rebar.Loc3row задают положение дополнительных стержней: Stacked - внутрь по радиусу к центру, SideBySide - рядом по часовой касательной. Третий ряд строится относительно первого; при совпадении направлений и наличии второго ряда он ставится дальше, за вторым.",
+        "Rebar.Loc2row и Rebar.Loc3row задают положение дополнительных стержней: Stacked - внутрь по радиусу к центру, SideBySide - рядом по часовой касательной. Третий ряд строится относительно первого; при совпадении направлений и наличии второго ряда он ставится дальше, за вторым. Rebar.Bind2row и Rebar.Bind3row выбираются независимо: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных. По умолчанию оба ряда используют EachBar.",
         "Заполняйте положение только существующего дополнительного ряда. Ошибка неактивного поля не мешает построению; при включении ряда программа попросит исправить его данные. Отрицательные диаметры и количества недопустимы.",
         "Габаритный диаметр и подписи арматуры сохраняются вместе с геометрией и используются на схеме и при экспорте."
     )}) | Out-Null
@@ -4769,6 +4784,15 @@ function Add-GeometrySettingsTable {
             $cell.Validation.Delete()
             $cell.Validation.Add(3, 1, 1, $listAddress)
             $cell.Validation.IgnoreBlank = $true
+            $cell.Validation.InCellDropdown = $true
+        }
+        if ($parameterName -eq 'Rebar.Bind2row' -or $parameterName -eq 'Rebar.Bind3row') {
+            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 1)
+            $choiceName = 'rngCircleBind' + $parameterName.Substring(10,1) + 'Choices'
+            $bindingList = Get-ConfigValidationListAddress $Sheet @('EachBar','EverySecondBar') $choiceName
+            $cell.Validation.Delete()
+            $cell.Validation.Add(3,1,1,$bindingList)
+            $cell.Validation.IgnoreBlank = $false
             $cell.Validation.InCellDropdown = $true
         }
     }

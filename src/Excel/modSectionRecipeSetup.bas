@@ -1,7 +1,7 @@
 Attribute VB_Name = "modSectionRecipeSetup"
 Option Explicit
 
-' Явное обновление интерфейса рецептов: новые концевые отступы и список типов.
+' Явное обновление интерфейса рецептов: отступы, привязки рядов и список типов.
 ' Не вызывается расчётом. Пользовательские размеры, арматура, LC и Results сохраняются.
 Public Sub UpdateSectionRecipeConfig()
     Dim guard As CExcelAppStateGuard
@@ -21,11 +21,13 @@ Public Sub UpdateSectionRecipeConfig()
     Dim checkedRow As Long
     checkedRow = HeaderRow(systemTable, "Geometry.Type", 1)
     checkedRow = HeaderRow(circleTable, "Rebar.Count", 1)
+    ValidateCircleBindings circleTable
     checkedRow = HeaderRow(rectSetTable, "as", 2)
     UpgradeSetbackTable roundedTable, 4
     UpgradeSetbackTable hollowTable, 8
     CanonicalRectSetHeaders rectSetTable
     ExplainClosedCircle circleTable
+    UpgradeCircleBindings circleTable, rectSetTable.Columns.Count
     UpdateRecipeTypeList systemTable
     guard.Restore True
     Exit Sub
@@ -33,6 +35,73 @@ Failed:
     number = Err.Number: source = Err.Source: description = Err.Description
     If Not guard Is Nothing Then guard.Restore
     Err.Raise number, source, description
+End Sub
+
+' Проверяет структуру круга до миграции; новые строки не заменяют пользовательские данные.
+Private Sub ValidateCircleBindings(ByVal table As Object)
+    Dim last As Long
+    last = HeaderRow(table, "Rebar.Loc3row", 1)
+    If table.Columns.Count <> 4 Then SectionRecipeError "modSectionRecipeSetup", "Неверная ширина таблицы круглого сечения."
+    If table.Rows.Count = last Then Exit Sub
+    If table.Rows.Count <> last + 2 Then SectionRecipeError "modSectionRecipeSetup", "Неполная таблица привязок рядов круга."
+    If CStr(table.Cells(last + 1, 1).Value2) <> "Rebar.Bind2row" Or CStr(table.Cells(last + 2, 1).Value2) <> "Rebar.Bind3row" Then _
+        SectionRecipeError "modSectionRecipeSetup", "Восстановите строки Rebar.Bind2row и Rebar.Bind3row в таблице круга."
+End Sub
+
+' Добавляет два независимых выбора у каждого/через один; остальные таблицы сдвигаются целиком.
+Private Sub UpgradeCircleBindings(ByVal table As Object, ByVal geometryWidth As Long)
+    Dim last As Long, row As Long, column As Long, target As Object, source As Object, expanded As Object
+    Dim keys As Variant, comments As Variant, listName As String, index As Long
+    last = HeaderRow(table, "Rebar.Loc3row", 1)
+    keys = Array("Rebar.Bind2row", "Rebar.Bind3row")
+    comments = Array("Второй ряд: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных.", _
+        "Третий ряд: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных. Выбирается независимо от второго ряда.")
+    If table.Rows.Count = last Then
+        ' Сдвигаем всю ширину составных геометрических таблиц, сохраняя их поля и именованные ссылки.
+        table.Cells(last + 1, 1).Resize(2, geometryWidth).Insert xlShiftDown
+        Set expanded = table.Resize(last + 2, 4)
+        ThisWorkbook.Names("rngCircleGeometry").RefersTo = "='" & Replace$(table.Worksheet.Name, "'", "''") & "'!" & expanded.Address(True, True, xlA1)
+        For index = 0 To 1
+            row = last + 1 + index
+            For column = 1 To 4
+                Set source = table.Cells(last, column): Set target = expanded.Cells(row, column)
+                target.NumberFormat = source.NumberFormat: target.Interior.Color = source.Interior.Color
+                target.Font.Name = source.Font.Name: target.Font.Size = source.Font.Size: target.Font.Color = source.Font.Color
+                target.Font.Bold = source.Font.Bold: target.Locked = source.Locked
+                target.HorizontalAlignment = source.HorizontalAlignment: target.VerticalAlignment = source.VerticalAlignment
+                target.WrapText = source.WrapText: target.Borders.LineStyle = xlContinuous: target.Borders.Weight = xlThin
+            Next column
+            expanded.Cells(row, 1).Value2 = keys(index): expanded.Cells(row, 2).Value2 = "EachBar"
+            expanded.Cells(row, 3).Value2 = "-": expanded.Cells(row, 4).Value2 = comments(index)
+        Next index
+    Else
+        Set expanded = table
+    End If
+    For index = 0 To 1
+        Set target = expanded.Cells(last + 1 + index, 2)
+        target.HorizontalAlignment = xlCenter: target.VerticalAlignment = xlCenter
+        listName = "rngCircleBind" & CStr(index + 2) & "Choices"
+        CircleBindingList target, listName
+    Next index
+End Sub
+
+' У каждого ряда собственный именованный список; повтор сохраняет выбранное значение.
+Private Sub CircleBindingList(ByVal cell As Object, ByVal listName As String)
+    Dim list As Object, column As Long
+    On Error Resume Next
+    Set list = ThisWorkbook.Names(listName).RefersToRange
+    On Error GoTo 0
+    If list Is Nothing Then
+        column = cell.Worksheet.UsedRange.Column + cell.Worksheet.UsedRange.Columns.Count
+        If column > cell.Worksheet.Columns.Count Then SectionRecipeError "modSectionRecipeSetup", "Нет свободной колонки для списка привязки ряда."
+        Set list = cell.Worksheet.Cells(1, column).Resize(2, 1)
+        list.Cells(1, 1).Value2 = "EachBar": list.Cells(2, 1).Value2 = "EverySecondBar"
+        list.EntireColumn.Hidden = True
+        ThisWorkbook.Names.Add Name:=listName, RefersTo:="='" & Replace$(cell.Worksheet.Name, "'", "''") & "'!" & list.Address(True, True, xlA1)
+    End If
+    cell.Validation.Delete
+    cell.Validation.Add xlValidateList, xlValidAlertStop, xlBetween, "=" & listName
+    cell.Validation.IgnoreBlank = False: cell.Validation.InCellDropdown = True
 End Sub
 
 ' Реестр является единственным источником выбора: новый класс и одна

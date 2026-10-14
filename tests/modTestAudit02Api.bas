@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestAudit02Api"
+﻿Attribute VB_Name = "modTestAudit02Api"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: новые контракты описателя, options, технических имён и прежних измерений.
@@ -92,8 +92,8 @@ Public Function RunAudit02OptionsTests() As String
     options.PositionOrder = FromPathMiddle: options.IncomingTangentAtJoint = True
     options.SourceNormalSign = -1#: options.SuccessfulProjectionOrdinal = True
     options.SkipMissingProjection = True: options.NewPublicationRoot = True
-    options.AnnotationGroup = "Group" ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = "Group" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     Check "R08.publication.only", options.StartSetback = 100# And options.EndMode = ExcludeBoth And options.SourceNormalSign = -1#
     For Each axis In Array(RowNormal, RowTangent)
@@ -270,8 +270,8 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
     Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
     Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
     Set options = New CRebarRuleOptions
-    options.AnnotationGroup = "H.Right" ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
     options.IncomingTangentAtJoint = True
@@ -302,13 +302,13 @@ Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
     Set path = facade.LinePath("ExplicitAxis", 100#, 500#, 700#, 500#)
     facade.PathGroup "TwoLines", Array("MaxStepAxis", "FixedStepAxis")
     Set options = New CRebarRuleOptions
-    options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     facade.RebarByCount "Main", "MainAxis", 5, 20#, options
     Set options = New CRebarRuleOptions
-    options.AnnotationGroup = "Bottom" ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
     facade.RebarDependent "Contact", "Main", 16#, options
@@ -353,8 +353,8 @@ Public Function RunAudit02CloseoutContactTests() As String
     Dim options As CRebarRuleOptions, cases As Variant, item As Variant, code As Long, reason As String
     Set options = New CRebarRuleOptions
     options.SourceReference = "Program.Contact": options.StartSetback = 100#: options.EndSetback = 150#
-    options.AnnotationGroup = "Group" ' Общая подпись арматуры этой группы.
-    options.Publication = PublishPerSourcePosition ' Связанные стержни выводим рядом с основным.
+    options.AnnotationGroup = "Group" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
     options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
     cases = Array(Array(0#, 16#, RowNormal, 1#, 0#), Array(-20#, 16#, RowNormal, 1#, 0#), _

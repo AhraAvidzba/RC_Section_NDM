@@ -1101,6 +1101,145 @@ Private Sub SetCircleInput(ByVal key As String, ByVal value As Variant)
     Err.Raise vbObjectError + 5531, "modTestSectionRecipes", "Не найден ключ тестового ввода '" & key & "'."
 End Sub
 
+' ДЛЯ ТЕСТОВ: обе независимые привязки круга, нечётные n, направления и реальные подписи.
+Public Function RunCircleBindingTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim number As Variant, loc2 As Variant, loc3 As Variant, bind2 As Variant, bind3 As Variant
+    Dim definition As CSectionDefinition, reference As CRebarLayout, actual As CRebarLayout
+    Dim before As CRebarRuleExecutor, after As CRebarRuleExecutor, annotations As CSectionAnnotations
+    Dim ordinal As Long, row As Long, position As Long, original As Long, owner As Long, oldOwner As Long, previous As Long
+    Dim expected As Long, selected As Boolean, id As String, prefix As String, binding As String
+    On Error GoTo Failed
+    For Each number In Array(2, 3, 8, 9)
+        For Each loc2 In Array("Stacked", "SideBySide")
+            For Each loc3 In Array("Stacked", "SideBySide")
+                Set definition = FixtureCircleDefinition(Array(1000#, 50#, number, 20#, 12#, 10#, loc2, loc3, "EachBar", "EachBar"))
+                Set before = New CRebarRuleExecutor: Set reference = FixtureAnnotatedLayout(definition, before)
+                For Each bind2 In Array("EachBar", "EverySecondBar")
+                    For Each bind3 In Array("EachBar", "EverySecondBar")
+                        prefix = "circle.bind.n" & CStr(number) & "." & loc2 & "." & loc3 & "." & bind2 & "." & bind3
+                        Set definition = FixtureCircleDefinition(Array(1000#, 50#, number, 20#, 12#, 10#, loc2, loc3, bind2, bind3))
+                        Set after = New CRebarRuleExecutor: Set actual = FixtureAnnotatedLayout(definition, after, annotations)
+                        expected = CLng(number) + IIf(bind2 = "EachBar", number, (CLng(number) + 1) \ 2) + IIf(bind3 = "EachBar", number, (CLng(number) + 1) \ 2)
+                        Check prefix & ".count", actual.Count = expected
+                        Check prefix & ".annotation", AnnotatedBarCount(annotations) = actual.Count
+                        previous = 0
+                        For ordinal = 1 To CLng(number)
+                            For row = 1 To 3
+                                id = "B" & CStr(ordinal): binding = "EachBar"
+                                If row = 2 Then id = id & "_R2": binding = CStr(bind2)
+                                If row = 3 Then id = id & "_R3": binding = CStr(bind3)
+                                selected = (binding = "EachBar" Or ordinal Mod 2 = 1)
+                                position = CircleSourcePosition(after, id)
+                                Check prefix & ".selected." & id, (position > 0) = selected
+                                If selected And position > 0 Then
+                                    original = CircleSourcePosition(before, id)
+                                    owner = after.PositionPhysicalOwner(position): oldOwner = before.PositionPhysicalOwner(original)
+                                    Near prefix & ".x." & id, actual.X(owner), reference.X(oldOwner)
+                                    Near prefix & ".y." & id, actual.Y(owner), reference.Y(oldOwner)
+                                    Near prefix & ".d." & id, actual.Diameter(owner), reference.Diameter(oldOwner)
+                                    Check prefix & ".order." & id, owner > previous
+                                    previous = owner
+                                End If
+                            Next row
+                        Next ordinal
+                    Next bind3
+                Next bind2
+            Next loc3
+        Next loc2
+    Next number
+    Check "circle.bind.invalid.active2", CircleBindingInputCase(12#, 0#, "bad", "bad", False)
+    Check "circle.bind.invalid.active3", CircleBindingInputCase(0#, 10#, "bad", "bad", False)
+    Check "circle.bind.blank.active2", CircleBindingInputCase(12#, 0#, "", "EachBar", False)
+    Check "circle.bind.inactive.rows", CircleBindingInputCase(0#, 0#, "bad", "bad", True)
+    Check "circle.bind.inactive.row2", CircleBindingInputCase(0#, 10#, "bad", "EverySecondBar", True)
+    Check "circle.bind.inactive.row3", CircleBindingInputCase(12#, 0#, "EverySecondBar", "bad", True)
+    GoTo Finished
+Failed:
+    Check "circle.bind.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunCircleBindingTests = mReport & "TOTAL CIRCLE BINDINGS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' Ищет исходный ID, не предполагая совпадения номера публикации и номера исходного стержня.
+Private Function CircleSourcePosition(ByVal executor As CRebarRuleExecutor, ByVal id As String) As Long
+    Dim i As Long
+    For i = 1 To executor.PositionCount
+        If executor.PositionSourceID(i) = id Then CircleSourcePosition = i: Exit Function
+    Next i
+End Function
+
+' Проверяет обязательный выбор только для существующего дополнительного ряда.
+Private Function CircleBindingInputCase(ByVal diameter2 As Double, ByVal diameter3 As Double, _
+        ByVal binding2 As String, ByVal binding3 As String, ByVal valid As Boolean) As Boolean
+    On Error GoTo Rejected
+    Dim definition As CSectionDefinition
+    Set definition = FixtureCircleDefinition(Array(1000#, 50#, 8, 20#, diameter2, diameter3, "Stacked", "Stacked", binding2, binding3))
+    CircleBindingInputCase = valid
+    Exit Function
+Rejected:
+    CircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngCircleGeometry", vbBinaryCompare) > 0
+End Function
+
+' ДЛЯ ТЕСТОВ: два реальных выпадающих списка, независимость и адрес ошибки Config.
+Public Function RunCircleBindingWorkbookTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim table As Object, saved As Variant, values As CSectionInputTable, row As Long, index As Long
+    Dim keys As Variant, names As Variant, choices As Object, optionValue As Variant, cell As Object
+    On Error GoTo Failed
+    Set table = ThisWorkbook.Names("rngCircleGeometry").RefersToRange: saved = table.Formula
+    Set values = New CSectionInputTable: values.Initialize "rngCircleGeometry", table.Value2
+    keys = Array("Rebar.Bind2row", "Rebar.Bind3row"): names = Array("rngCircleBind2Choices", "rngCircleBind3Choices")
+    Check "circle.bind.lists.independent", ThisWorkbook.Names(names(0)).RefersToRange.Address <> ThisWorkbook.Names(names(1)).RefersToRange.Address
+    For index = 0 To 1
+        row = values.RowByKey(CStr(keys(index))): Set cell = table.Cells(row, 2)
+        Set choices = ThisWorkbook.Names(names(index)).RefersToRange
+        Check "circle.bind.list.name." & CStr(index), cell.Validation.Formula1 = "=" & names(index)
+        Check "circle.bind.list.size." & CStr(index), choices.Rows.Count = 2 And choices.Columns.Count = 1
+        Check "circle.bind.list.hidden." & CStr(index), choices.EntireColumn.Hidden
+        Check "circle.bind.list.values." & CStr(index), choices.Cells(1, 1).Value2 = "EachBar" And choices.Cells(2, 1).Value2 = "EverySecondBar"
+        Check "circle.bind.list.center." & CStr(index), cell.HorizontalAlignment = xlCenter
+        For Each optionValue In Array("EachBar", "EverySecondBar")
+            cell.Value2 = optionValue
+            Check "circle.bind.list.accept." & CStr(index) & "." & optionValue, cell.Validation.Value
+        Next optionValue
+        cell.Value2 = "bad": Check "circle.bind.list.reject." & CStr(index), Not cell.Validation.Value
+    Next index
+    SetCircleInput "Rebar.Bind2row", "EverySecondBar": SetCircleInput "Rebar.Bind3row", "EachBar"
+    modSectionRecipeSetup.UpdateSectionRecipeConfig
+    Check "circle.bind.update.preserves2", table.Cells(values.RowByKey("Rebar.Bind2row"), 2).Value2 = "EverySecondBar"
+    Check "circle.bind.update.preserves3", table.Cells(values.RowByKey("Rebar.Bind3row"), 2).Value2 = "EachBar"
+    Check "circle.bind.workbook.address2", CircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2", table, values)
+    Check "circle.bind.workbook.address3", CircleBindingWorkbookRejected("Rebar.Bind3row", "Rebar.Diameter3", table, values)
+    GoTo Restore
+Failed:
+    Check "circle.bind.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Restore:
+    If Not table Is Nothing And Not IsEmpty(saved) Then table.Formula = saved
+    RunCircleBindingWorkbookTests = mReport & "TOTAL CIRCLE BINDING WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' Ошибка активной привязки должна содержать действительный адрес её пользовательской ячейки.
+Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diameterKey As String, _
+        ByVal table As Object, ByVal values As CSectionInputTable) As Boolean
+    On Error GoTo Rejected
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, context As CSectionRecipeContext, reader As CSectionInputSnapshotReader
+    Dim recipe As ISectionRecipe, definition As CSectionDefinition, factor As Double
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    SetCircleInput "Circle.Diameter", 1000# / factor: SetCircleInput "Rebar.AxisDistance", 50# / factor
+    SetCircleInput "Rebar.Count", 8: SetCircleInput "Rebar.Diameter", 20# / factor
+    SetCircleInput "Rebar.Diameter2", 0#: SetCircleInput "Rebar.Diameter3", 0#
+    SetCircleInput diameterKey, 12# / factor: SetCircleInput "Rebar.Loc2row", "Stacked": SetCircleInput "Rebar.Loc3row", "Stacked"
+    SetCircleInput key, "bad"
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
+    Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
+    Exit Function
+Rejected:
+    CircleBindingWorkbookRejected = InStr(1, Err.Description, table.Cells(values.RowByKey(key), 2).Address(False, False), vbBinaryCompare) > 0 And _
+        InStr(1, Err.Description, table.Worksheet.Name, vbBinaryCompare) > 0
+End Function
+
 ' ДЛЯ ТЕСТОВ: НДС/несущая/трещины для фактической модели нового Circle.
 Public Function DumpCircleRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
     DumpCircleRecipeCalculations = RecipeCalculations("Circle", Array("Circle"), crackCode)
