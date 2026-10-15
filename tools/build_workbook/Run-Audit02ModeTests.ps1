@@ -204,6 +204,9 @@ try {
     $excel.AutomationSecurity = 1
     $openBooks = Get-RequiredComProperty $excel 'Workbooks'
     $workbook = $openBooks.Open($fixturePath)
+    # Workbook_Open может вернуть DisplayAlerts=True. Параметр относится только
+    # к собственному тестовому Excel и заново задаётся после каждого открытия.
+    $excel.DisplayAlerts = $false
     (Get-ModeSettingCell $workbook $SettingKey).Value2 = $Mode
     if ($CrackCode) {
         (Get-ModeSettingCell $workbook 'SLS.Crack.Code').Value2 = $CrackCode
@@ -238,6 +241,7 @@ try {
     foreach ($macro in $macros) {
         $openBooks = Get-RequiredComProperty $excel 'Workbooks'
         $workbook = $openBooks.Open($fixturePath, $null, $true)
+        $excel.DisplayAlerts = $false
         $lines.Add("===== $macro =====")
         $lines.Add("SUITE_STARTED: $macro; $([DateTime]::Now.ToString('s'))")
         Save-Progress
@@ -250,6 +254,8 @@ try {
         # перед каждым Run; зависание по-прежнему ограничивает внешний watchdog.
         $excel.EnableCancelKey = 0
         $lines.Add('TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only')
+        $excel.DisplayAlerts = $false
+        $lines.Add("TEST_MACRO_DISPLAY_ALERTS: $($excel.DisplayAlerts); isolated Excel instance only")
         if ($MacroArgument2) { $result = [string]$excel.Run($macroName, $MacroArgument1, $MacroArgument2) }
         elseif ($MacroArgument1) { $result = [string]$excel.Run($macroName, $MacroArgument1) }
         else { $result = [string]$excel.Run($macroName) }
@@ -291,6 +297,7 @@ try {
             $workbook.Close($false)
             $openBooks = Get-RequiredComProperty $excel 'Workbooks'
             $workbook = $openBooks.Open($savedPath, $null, $true)
+            $excel.DisplayAlerts = $false
             $afterHash = Get-ResultsValueHash $workbook
             $lines.Add("RESULTS_SAVE_REOPEN: before=$beforeHash; after=$afterHash; equal=$($beforeHash -eq $afterHash); file=$savedPath")
             if ($beforeHash -ne $afterHash) { throw "Значения или комментарии Results изменились после save/reopen." }

@@ -180,7 +180,7 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
     If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'. Восстановите заголовок столбца."
 End Function
 
-' Находит уникальную строку смыслового ключа в указанном подблоке.
+' Находит единственную строку с заданным названием параметра в указанной части таблицы.
 Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, _
         Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long
     RowByKey = RowByAnyKey(Array(key), keyColumn, firstRow, lastRow)

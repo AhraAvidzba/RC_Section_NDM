@@ -77,7 +77,7 @@ Private Type TPlaneResult
 End Type
 
 Private mCode As String ' Нормативная ветвь, выбранная настройкой Stability.Code.
-Private mBranch As String ' Внутренняя трассировка расчетной ветви для execution report и диагностики.
+Private mBranch As String ' Название применённого способа проверки устойчивости для отчёта и диагностики.
 Private mApplicable As Boolean ' False, если сжатия нет и устойчивость не требуется.
 Private mInputValid As Boolean ' False при нехватке обязательных исходных данных.
 Private mResultInitialized As Boolean ' Был вызван расчет; новый объект не является готовым результатом.
@@ -1341,7 +1341,7 @@ Public Property Get Code() As String
     Code = mCode
 End Property
 
-' Внутренняя трассировка расчетной ветви для execution report и диагностики.
+' Название применённого способа проверки устойчивости для отчёта и диагностики.
 Public Property Get Branch() As String
     Branch = mBranch
 End Property

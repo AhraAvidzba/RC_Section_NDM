@@ -22,7 +22,7 @@ Private mSourceType As String ' Диагностическая метка ист
 Private mConcreteMeshSource As String ' Способ получения бетонных элементов, отдельно от источника арматуры/контуров.
 
 Private mConcreteID() As String ' Расчетные имена бетонных элементов: C1, C2, ...
-Private mConcreteSourceName() As String ' Необязательное исходное имя области для трассировки.
+Private mConcreteSourceName() As String ' Необязательное имя исходной бетонной области для диагностики.
 Private mConcreteSourceHandle() As String ' Необязательный AutoCAD handle для поиска исходного Region.
 Private mConcreteX() As Double ' X центра тяжести бетонного элемента во внутренней системе координат, мм.
 Private mConcreteY() As Double ' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
@@ -53,7 +53,7 @@ Private mRebarX() As Double ' X центра стержня, мм.
 Private mRebarY() As Double ' Y центра стержня, мм.
 Private mRebarArea() As Double ' Площадь стержня, мм2.
 Private mRebarDiameter() As Double ' Диаметр стержня, мм.
-Private mRebarSteelClass() As String ' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
+Private mRebarSteelClass() As String ' Название материала, переданное при добавлении стержня.
 Private mRebarMaterialID() As Long ' Номер материала стержня; в текущем НДС используется одна подготовленная диаграмма арматуры.
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
 Private mRebarRecipeTrace() As String ' Происхождение всех позиций физического стержня; metadata, не геометрия.
@@ -61,7 +61,7 @@ Private mGeometryDiagnostics As String ' Пояснения и предупре�
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
 
-Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
+Private mAnnotations As CSectionAnnotations ' Готовые размеры, подписи арматуры и другие аннотации схемы.
 Private mContours As CSectionContours ' Достоверные outer/opening, принадлежащие исходной геометрии.
 Private mRevision As Long ' Версия геометрии: после её изменения ранее найденное НДС для этой модели использовать нельзя.
 Private mObservedContourRevision As Long ' Последняя учтенная версия достоверного outer/opening.
@@ -171,7 +171,7 @@ Public Property Get RebarRecipeTrace(ByVal index As Long) As String
     RebarRecipeTrace = mRebarRecipeTrace(index)
 End Property
 
-' Экранирует текстовое поле геометрической трассировки для однозначного разделения записей.
+' Заменяет служебные разделители в сведениях о происхождении стержня, чтобы отличать их от текста данных.
 Private Function TraceToken(ByVal value As String) As String
     value = Replace$(value, "%", "%25"): value = Replace$(value, "|", "%7C"): value = Replace$(value, ";", "%3B")
     value = Replace$(value, "=", "%3D"): value = Replace$(value, vbCr, "%0D"): value = Replace$(value, vbLf, "%0A")
@@ -780,7 +780,7 @@ Public Property Get ConcreteID(ByVal index As Long) As String
     ConcreteID = mConcreteID(index)
 End Property
 
-' Необязательное исходное имя области для трассировки.
+' Необязательное имя исходной бетонной области для диагностики.
 Public Property Get ConcreteSourceName(ByVal index As Long) As String
     CheckConcreteIndex index
     ConcreteSourceName = mConcreteSourceName(index)
@@ -1029,7 +1029,7 @@ Public Property Get RebarSourceName(ByVal index As Long) As String
     RebarSourceName = mRebarSourceName(index)
 End Property
 
-' ДЛЯ ТЕСТОВ: расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
+' ДЛЯ ТЕСТОВ: возвращает название материала, переданное при добавлении стержня.
 Public Property Get RebarSteelClass(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSteelClass = mRebarSteelClass(index)

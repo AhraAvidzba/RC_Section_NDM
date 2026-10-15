@@ -968,9 +968,9 @@ Private Sub DrawContourArc(ByVal centerX As Double, ByVal centerY As Double, _
     arcShape.Line.Weight = weight
 End Sub
 
-' Строит нейтральную линию по сохраненной плоскости деформаций LC.
-' Линия обрезается по semantic-контуру, а если контура нет - по условному
-' контуру бетонных элементов.
+' Строит нейтральную линию по сохранённому полю деформаций сочетания.
+' Обрезает её по сохранённому контуру сечения. Если контура нет,
+' определяет границы по бетонным элементам.
 Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
     Dim a As Double, b As Double, c As Double
     a = data.KappaY
@@ -1019,7 +1019,7 @@ Private Sub DrawNeutralLine(ByVal data As CSectionPlotDataReader)
         RGB(105, 105, 105), 0.7, "NeutralAxis"
 End Sub
 
-' Собирает пересечения нейтральной линии с semantic-контуром.
+' Находит пересечения нейтральной линии с сохранённым контуром сечения.
 ' Для Generated-сечений это основной и наиболее точный путь обрезки линии.
 Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _
         ByVal b As Double, ByVal c As Double, ByVal x0 As Double, ByVal y0 As Double, _
@@ -1041,7 +1041,7 @@ Private Sub CollectContourIntersections(ByVal data As CSectionPlotDataReader, By
 End Sub
 
 ' Резервно обрезает линию по габариту центров бетонных элементов.
-' Используется, когда точного semantic-контура нет, например после AutoCAD import.
+' Используется при отсутствии точного наружного контура, в том числе у импортированной сетки.
 Private Sub CollectConcreteCenterBoundsIntersections(ByVal data As CSectionPlotDataReader, ByVal a As Double, _
         ByVal b As Double, ByVal c As Double, ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByRef values() As Double, ByRef count As Long)

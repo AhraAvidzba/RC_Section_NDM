@@ -2149,8 +2149,8 @@ Public Property Get StrengthLoadPointMy(ByVal index As Long) As Double
     StrengthLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
-' Возвращают запросы разделов из профиля конкретного сочетания, а не факт их
-' выполнения. Не найденный профиль не включает расчет и обрабатывается workflow.
+' Показывает, запрошено ли НДС прочности профилем сочетания.
+' Если профиля нет, возвращает False; ошибку профиля обрабатывает общий запуск.
 Public Property Get StrengthDirectStateRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StrengthDirectStateRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthDirectStateEnabled

@@ -17,6 +17,8 @@ if ([DateTimeOffset]::UtcNow.AddHours($ForecastHours).AddMinutes(15) -ge $limit)
 [void][IO.Directory]::CreateDirectory((Join-Path $directory 'Source'))
 $frozen=Join-Path $directory 'Source/RC_Section_NDM.xlsm'
 Copy-Item -LiteralPath $source -Destination $frozen
+Copy-Item -LiteralPath $PSCommandPath -Destination (Join-Path $directory 'FullRunner.ps1')
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Destination (Join-Path $directory 'ModeRunner.ps1')
 $sourceHash=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash
 if ((Get-FileHash -LiteralPath $frozen -Algorithm SHA256).Hash -ne $sourceHash) {throw 'Source copy mismatch.'}
 $geometry=@(
@@ -65,6 +67,7 @@ foreach ($mode in @('No','Yes')) {
 $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToString('o');Deadline=$limit.ToString('o');ForecastHours=$ForecastHours;
     SourceCommit=(& git -C $root rev-parse HEAD);SourceWorkbook=$source;SourceSHA256=$sourceHash;FrozenWorkbook=$frozen;
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
+    ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
     GeometryTypeInTestCopies='RectSet';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
@@ -93,6 +96,9 @@ foreach ($job in $jobs) {
 }
 $manifest.SourceChanged=(Get-FileHash -LiteralPath $frozen -Algorithm SHA256).Hash -ne $sourceHash
 if ($manifest.SourceChanged) {$failed=$true}
+$manifest['RunnerChanged']=((Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash -ne $manifest.RunnerSHA256 -or
+    (Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash -ne $manifest.ModeRunnerSHA256)
+if ($manifest.RunnerChanged) {$failed=$true}
 $manifest['FinishedUTC']=[DateTimeOffset]::UtcNow.ToString('o')
 if ($manifest.Status -eq 'RUNNING') {$manifest.Status=if($failed){'REVIEW_REQUIRED'}else{'COMPLETED_PENDING_LOG_REVIEW'}}
 Save-Run

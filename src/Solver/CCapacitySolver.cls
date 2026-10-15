@@ -74,7 +74,7 @@ Private mSolverToleranceMy As Double ' Допуск внутреннего ра�
 Private mSolverMethod As String ' Метод внутреннего CSectionSolver: Newton или Secant.
 Private mSolverSecantMaxRestarts As Long ' Настройка рестартов внутреннего secant-решателя.
 Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
-Private mDiagnosticLog As String ' Текстовая трассировка lambda-точек и причин остановки.
+Private mDiagnosticLog As String ' Журнал проверенных значений λ и причин остановки поиска.
 Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long ' Строки журнала, число записанных строк и вместимость массива.
 Private mDiagnosticJoined As String, mDiagnosticDirty As Boolean ' Собранный текст журнала и признак появления новых строк после его сборки.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.

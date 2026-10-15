@@ -731,8 +731,8 @@ Private Function SameLayer(ByVal actualLayer As String, ByVal expectedLayer As S
     SameLayer = (StrComp(Trim$(actualLayer), Trim$(expectedLayer), vbTextCompare) = 0)
 End Function
 
-' Возвращает AutoCAD handle исходной сущности для трассировки. Если COM
-' не отдал handle, импорт продолжается без него.
+' Возвращает уникальный номер исходного объекта AutoCAD для диагностики импорта.
+' Если номер недоступен через COM, импорт продолжается без него.
 Private Function EntityHandle(ByVal entity As Object) As String
     On Error Resume Next
     EntityHandle = CStr(entity.Handle)

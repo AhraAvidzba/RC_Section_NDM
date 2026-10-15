@@ -342,8 +342,8 @@ Private Sub PositionTextBox(ByVal anchorX As Double, ByVal anchorY As Double, By
     topPos = anchorY + normalY * gap - heightValue / 2#
 End Sub
 
-' При Inside разворачивает наружную нормаль внутрь сечения. Так одна и та же
-' semantic-аннотация может рисоваться по обе стороны своей anchor-линии.
+' При Inside направляет вынос аннотации внутрь сечения.
+' Положение линии размера или подписи при этом задаётся теми же исходными точками.
 Private Sub ApplyPlacement(ByRef normalPxX As Double, ByRef normalPxY As Double, ByVal placement As String)
     If StrComp(placement, "Inside", vbTextCompare) = 0 Then
         normalPxX = -normalPxX

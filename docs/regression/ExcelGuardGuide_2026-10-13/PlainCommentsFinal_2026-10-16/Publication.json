@@ -1,0 +1,14 @@
+{
+  "Status": "FINAL_WORDING_READBACK_PASS",
+  "WorkbookSHA256": "C5224DA78EDBD56E6D8B482163D81919959ACAF2167822C4819F241406E077E5",
+  "AllCodeSHA256": "9B6CB0A95012C6361461C1A9856D77BB8C491964E9E52D4F83B86A314F2956FC",
+  "AllCodeEqualsActualPublishedReadback": true,
+  "ActualReadbackPending": false,
+  "NativeComponents": 157,
+  "SourceComponents": 152,
+  "CommentsOnlyComparedWith66fe634": true,
+  "MethodOrderUnchanged": true,
+  "NonVBAPartsByteIdentical": true,
+  "ExecutionReportUnchanged": true,
+  "ExecutionReportSHA256": "158A1C3A4D047EAFEA07B78517EBF62420289999485CDF91231419A548DA746B"
+}

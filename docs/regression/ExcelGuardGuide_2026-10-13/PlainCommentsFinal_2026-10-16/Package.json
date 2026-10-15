@@ -1,0 +1,27 @@
+{
+  "Status": "FINAL_WORDING_PACKAGE_PASS",
+  "NativeComponents": 157,
+  "ChangedComponents": [
+    "CAutoCADSectionModelImporter",
+    "CBatchSectionCalculator",
+    "CCapacitySolver",
+    "CExecutionReport",
+    "CNDMResultsWriter",
+    "CPlotAnnotationLayout",
+    "CSectionInputTable",
+    "CSectionModel",
+    "CSectionPlotDataReader",
+    "CSectionPlotter",
+    "CStabilityCalculator",
+    "modSectionRecipeApiGuide"
+  ],
+  "MethodBodiesOrDeclarationsChanged": [],
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "UserDataFormulasSettingsFormattingPreserved": true,
+  "WorkbookSHA256": "C5224DA78EDBD56E6D8B482163D81919959ACAF2167822C4819F241406E077E5",
+  "Errors": [],
+  "CommentsOnly": true,
+  "MethodOrderUnchanged": true
+}

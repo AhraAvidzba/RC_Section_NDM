@@ -77,8 +77,8 @@ Private mAnnotationStartX() As Double ' Начало линии/размера �
 Private mAnnotationStartY() As Double ' Начало линии/размера в координатах модели.
 Private mAnnotationEndX() As Double ' Конец линии/размера в координатах модели.
 Private mAnnotationEndY() As Double ' Конец линии/размера в координатах модели.
-Private mAnnotationNormalX() As Double ' Наружная нормаль semantic-аннотации.
-Private mAnnotationNormalY() As Double ' Наружная нормаль semantic-аннотации.
+Private mAnnotationNormalX() As Double ' Заданная компонента направления выноса аннотации.
+Private mAnnotationNormalY() As Double ' Заданная компонента направления выноса аннотации.
 Private mAnnotationText() As String ' Готовый текст подписи или размера.
 Private mAnnotationSweepAngle() As Double ' Проверенный signed sweep CONTOUR_ARC, рад; для остальных типов 0.
 Private mUnits As CUnitSystem ' Общий перевод единиц, сохранённых с результатами; текущие единицы Config на эти значения не влияют.
@@ -679,7 +679,7 @@ Private Sub EnsureElementCapacity(ByVal required As Long)
     mElementCapacity = capacity
 End Sub
 
-' Читает semantic-аннотации схемы.
+' Читает сохранённые размеры, подписи и другие аннотации схемы.
 ' Если таблица отсутствует или пуста, схема все равно строится: для AutoCAD
 ' import это нормальный сценарий, потому что характерные грани могут быть неизвестны.
 Private Sub ReadAnnotations(ByVal workbook As Object)
@@ -1285,9 +1285,9 @@ Public Property Get AnnotationStartY(ByVal index As Long) As Double: AnnotationS
 Public Property Get AnnotationEndX(ByVal index As Long) As Double: AnnotationEndX = mAnnotationEndX(index): End Property
 ' Конец линии/размера в координатах модели.
 Public Property Get AnnotationEndY(ByVal index As Long) As Double: AnnotationEndY = mAnnotationEndY(index): End Property
-' Наружная нормаль semantic-аннотации.
+' Заданная компонента направления выноса аннотации.
 Public Property Get AnnotationNormalX(ByVal index As Long) As Double: AnnotationNormalX = mAnnotationNormalX(index): End Property
-' Наружная нормаль semantic-аннотации.
+' Заданная компонента направления выноса аннотации.
 Public Property Get AnnotationNormalY(ByVal index As Long) As Double: AnnotationNormalY = mAnnotationNormalY(index): End Property
 ' Готовый текст подписи или размера.
 Public Property Get AnnotationText(ByVal index As Long) As String: AnnotationText = mAnnotationText(index): End Property

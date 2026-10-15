@@ -80,10 +80,8 @@ Public Sub AddValue(ByVal label As String, ByVal valueText As String)
     AddRawLine TimePrefix() & " " & Trim$(label) & ": " & Trim$(valueText)
 End Sub
 
-' Добавляет многострочный диагностический блок, например журнал итераций
-' CSectionSolver или одномерного поиска несущей способности. Метод не
-' анализирует текст журнала: он только аккуратно вкладывает готовую трассировку
-' в общий отчет запуска.
+' Записывает заголовок и готовый многострочный журнал итераций в общий отчёт запуска.
+' Подходит для решения НДС и одномерного поиска несущей способности.
 Public Sub AddBlock(ByVal title As String, ByVal body As String)
     If Not mEnabled Then Exit Sub
     body = Trim$(body)

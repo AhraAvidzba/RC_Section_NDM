@@ -616,9 +616,9 @@ Private Sub PutMaterialDiagramHeaders(ByRef data() As Variant, ByVal units As CU
     data(1, 11) = "Stress, " & OutputStressUnit(units)
 End Sub
 
-' Записывает справочные свойства бетонной части сечения.
-' Координаты бетонного центра нужны для трассировки пользовательского
-' Load.ReferenceOffset и для вывода бетонных главных осей на схему/AutoCAD.
+' Записывает справочные свойства бетонной части сечения. По координатам центра
+' можно проверить пользовательское смещение Load.ReferenceOffset
+' и построить бетонные главные оси на схеме или в AutoCAD.
 Private Sub PutConcreteSectionProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal section As CSectionModel, _
         ByVal props As CSectionPropertiesCalculator, ByVal units As CUnitSystem)
@@ -1009,9 +1009,8 @@ Private Sub WriteEmptyElementResults(ByVal workbook As Object, ByVal runID As Va
     FormatResultsBlock target, 1, ELEMENT_RESULT_COLUMNS, "Результаты элементов по сочетаниям"
 End Sub
 
-' Оставляет таблицу аннотаций с одной шапкой.
-' У импортированной AutoCAD-сетки semantic-граней обычно нет, поэтому preview
-' не должен наследовать старые размеры и подписи.
+' Очищает прежние аннотации, оставляя строку заголовков.
+' Используется, когда в модели нет готовых размеров и подписей.
 Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID As Variant)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
@@ -1192,7 +1191,7 @@ Private Sub PutSectionPropertyHeaders(ByRef data() As Variant)
     data(1, 6) = "Comment"
 End Sub
 
-' Формирует заголовки semantic-аннотаций для схемы и AutoCAD export.
+' Формирует заголовки таблицы размеров, подписей и других аннотаций схемы и экспорта AutoCAD.
 Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 1) = "RunID"
     data(1, 2) = "AnnotationType"
