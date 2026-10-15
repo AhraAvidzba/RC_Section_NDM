@@ -100,8 +100,8 @@ Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     facade.HorizontalExtent "DIM_TOP_WIDTH", upper.ID, "B1", sizes.H1 + sizes.H2, 1#, "Ширина верхнего прямоугольника RectSet-сечения." ' Ширина верхнего прямоугольника; размер над сечением.
     If sizes.Shape <> "Rectangle" Then
         facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.ID, "H2", sizes.B2, 1#, "Высота нижнего прямоугольника RectSet-сечения." ' Высота нижнего прямоугольника; размер справа.
-        ' Ненулевое смещение верхней части относительно нижней.
-        If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), 0#, sizes.Offset, sizes.H2, 1#, "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
+        ' Размер идёт слева направо: его величина равна Abs(sizes.Offset), а выноски остаются у смещённых граней.
+        If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), GeomMin(0#, sizes.Offset), GeomMax(0#, sizes.Offset), sizes.H2, 1#, "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
     End If
 End Sub
 

@@ -1,0 +1,38 @@
+{
+  "Status": "RECTSET_OFFSET_PACKAGE_PASS",
+  "DirectedChecksBefore": 15,
+  "DirectedChecksAfter": 15,
+  "OffsetsMM": [
+    -50,
+    0,
+    50
+  ],
+  "DimensionValuesAfter": [
+    "50",
+    "not displayed",
+    "50"
+  ],
+  "SnapshotRowsPerVersion": 5913,
+  "ChangedSnapshotKeys": [
+    [
+      "Offset-50",
+      "ANNOTATION",
+      "DIM_UPPER_OFFSET_X"
+    ]
+  ],
+  "ChangedFields": [
+    "StartX order",
+    "EndX order",
+    "absolute display value"
+  ],
+  "AllSectionGeometryMeshRebarsPropertiesAndInputsBitwiseEqual": true,
+  "OtherAnnotationsBitwiseEqual": true,
+  "ChangedNativeComponents": [
+    "CSectionRecipeRectSet"
+  ],
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "WorkbookSHA256": "38849FAFF50DD3CC6FD1F83A55A99409507991637E602257EDAD44F772A0932F",
+  "NoEquilibriumCalculationExecuted": true
+}
