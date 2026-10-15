@@ -1,0 +1,38 @@
+{
+  "status": "NOT_ACCEPTED_PRIOR_RUN",
+  "completedObservedSuites": {
+    "expected": 80,
+    "observed": 60,
+    "finished": 59
+  },
+  "testFailures": {
+    "Full_Off": 14,
+    "Full_On": 2,
+    "numericLastFailedIterates": 12,
+    "staleListValues": 4
+  },
+  "testCorrectionsCommit": "cf2f5190e2cc1044dcc14f34ef29383a156cfa78",
+  "focusedRetestBothModes": {
+    "inputUnitsPassed": 1534,
+    "inputPrefixPassed": 4235,
+    "failures": 0
+  },
+  "listCacheProbe": {
+    "passed": 2,
+    "failed": 0
+  },
+  "geometryOnRunnerFailure": {
+    "afterMacro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+    "returnedTests": {
+      "passed": 92,
+      "failed": 0
+    },
+    "postMacroOperation": "Get-RequiredComProperty Excel.Workbooks",
+    "HRESULT": "0x80010100 RPC_E_SYS_CALL_FAILED",
+    "notAcceptedAsSuccessfulSuite": true,
+    "unstartedFollowingSuites": 20
+  },
+  "newFullAcceptance": "../PlainCommentsFinalAcceptance_2026-10-16/Run.json",
+  "oldInputPreserved": true,
+  "runnersUnchangedDuringRun": true
+}
