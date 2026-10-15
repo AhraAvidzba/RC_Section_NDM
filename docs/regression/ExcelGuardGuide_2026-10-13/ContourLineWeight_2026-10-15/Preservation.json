@@ -1,0 +1,23 @@
+{
+  "Passed": true,
+  "CellsChecked": 107483,
+  "NamedRanges": 29,
+  "ExistingValuesFormulasStylesAndDrawingsPreserved": true,
+  "ChangedZIPParts": [
+    "xl/workbook.xml",
+    "xl/worksheets/sheet1.xml",
+    "xl/worksheets/sheet2.xml",
+    "xl/vbaProject.bin"
+  ],
+  "ChangedNativeComponents": [
+    "CSectionPlotter",
+    "CSystemSettingsReader",
+    "modTestPlotConfig"
+  ],
+  "Default": 2,
+  "Unit": "pt",
+  "NewTitle": "Настройки оформления схемы",
+  "WorkbookSHA256": "121e47f1f7c52cf941705560ade37f49630678bbc9d3a4a055b36a8a32d286ec",
+  "NativeSHA256": "3e791010110e9e8715f9732ad54660316d17f1e790030af0d341e9df020ea9ff",
+  "Errors": []
+}

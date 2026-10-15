@@ -1,0 +1,48 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\NativeGuide\RC_Section_NDM.xlsm
+SOURCE_SHA256: 71B5298276A40B2239D992E3E622FD06E0CC4B45CC675C4DBFEBBDD0C48469EE
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d9428e8ea22848539c5f4061aff32f54\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=31612; startTicks=639274048482058270
+===== modTestRecipeApiCatalogue.RunAdvancedGuideExamples =====
+SUITE_STARTED: modTestRecipeApiCatalogue.RunAdvancedGuideExamples; 2026-10-12T15:27:33
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=106602496; privateBytes=103137280; cpu=930.5
+EXCEL_AFTER_SUITE: pid=3456; workingSet=204546048; privateBytes=134541312; cpu=93.515625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=109424640; privateBytes=102842368; cpu=628.1875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=108228608; privateBytes=104034304; cpu=606.984375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=105410560; privateBytes=101937152; cpu=595.859375
+EXCEL_AFTER_SUITE: pid=12376; workingSet=105877504; privateBytes=122494976; cpu=597.046875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=104939520; privateBytes=102019072; cpu=607.59375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=108912640; privateBytes=103329792; cpu=610.84375
+EXCEL_AFTER_SUITE: pid=22900; workingSet=109223936; privateBytes=102510592; cpu=609.203125
+EXCEL_AFTER_SUITE: pid=25276; workingSet=105738240; privateBytes=123580416; cpu=611.15625
+EXCEL_AFTER_SUITE: pid=25816; workingSet=105992192; privateBytes=101949440; cpu=594.0625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=109121536; privateBytes=102301696; cpu=607.328125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=106172416; privateBytes=101990400; cpu=596.703125
+EXCEL_AFTER_SUITE: pid=27976; workingSet=109506560; privateBytes=104689664; cpu=625.703125
+EXCEL_AFTER_SUITE: pid=28560; workingSet=110379008; privateBytes=104312832; cpu=613.875
+EXCEL_AFTER_SUITE: pid=30264; workingSet=109268992; privateBytes=111677440; cpu=616.9375
+EXCEL_AFTER_SUITE: pid=31612; workingSet=132435968; privateBytes=82571264; cpu=5.15625
+PASS: advanced.chain.segments.False
+PASS: advanced.chain.namedNose.False
+PASS: advanced.physical.count.False
+PASS: advanced.projection.skips.False
+PASS: advanced.noOverlap.False
+PASS: advanced.verticalExtent.False
+PASS: advanced.actualLabel.False
+PASS: advanced.dependentTrace.False
+PASS: advanced.chain.segments.True
+PASS: advanced.chain.namedNose.True
+PASS: advanced.physical.count.True
+PASS: advanced.projection.skips.True
+PASS: advanced.noOverlap.True
+PASS: advanced.verticalExtent.True
+PASS: advanced.actualLabel.True
+PASS: advanced.dependentTrace.True
+TOTAL ADVANCED GUIDE EXAMPLES: passed=16; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d9428e8ea22848539c5f4061aff32f54\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeApiCatalogue.RunAdvancedGuideExamples; 2026-10-12T15:27:34
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,47 @@
+{
+  "Passed": true,
+  "Removed": [
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/InitialNativeVBA.txt",
+      "Bytes": 7071616,
+      "Reason": "Verified in NativeSnapshots.zip"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/BaselineNativeVBA.txt",
+      "Bytes": 7071616,
+      "Reason": "Verified in NativeSnapshots.zip"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/FinalNativeVBA.txt",
+      "Bytes": 7080260,
+      "Reason": "Verified in NativeSnapshots.zip"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/PublishedNativeVBA.txt",
+      "Bytes": 7080265,
+      "Reason": "Verified in NativeSnapshots.zip"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/Candidate.xlsm",
+      "Bytes": 7797693,
+      "Reason": "Disposable copy after publication readback"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/Directed02/GeometrySolidProbe.xlsm",
+      "Bytes": 7802360,
+      "Reason": "Disposable copy after publication readback"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/Directed03/GeometrySolidProbe.xlsm",
+      "Bytes": 7797693,
+      "Reason": "Disposable copy after publication readback"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/ContourLineWeight_2026-10-15/AllCodeBeforePublication.txt",
+      "Bytes": 7071622,
+      "Reason": "Previous tracked ALL CODE remains in Git"
+    }
+  ],
+  "BytesRemoved": 58773125,
+  "PrivateBaselineRetained": true
+}

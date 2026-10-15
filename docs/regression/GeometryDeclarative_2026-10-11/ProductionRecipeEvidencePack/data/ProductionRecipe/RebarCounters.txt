@@ -1,0 +1,73 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\ProductionRecipe\RC_Section_NDM.xlsm
+SOURCE_SHA256: E1F2639704F20C0DFF320AED2AAEFEB2ED90751740EA2E4A55708BECA3A31A3A
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_472cda0288bb4d10b25720872b6dd222\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=21124; startTicks=639273586838101321
+===== modTestGeometryConfig.RunAudit03RebarCounterTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03RebarCounterTests; 2026-10-12T02:38:08
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=160002048; privateBytes=103591936; cpu=907.453125
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162918400; privateBytes=102858752; cpu=610.8125
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163160064; privateBytes=104034304; cpu=592.546875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158085120; privateBytes=101773312; cpu=579.28125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161517568; privateBytes=122408960; cpu=581.65625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157970432; privateBytes=102019072; cpu=590.3125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=163033088; privateBytes=103428096; cpu=593.6875
+EXCEL_AFTER_SUITE: pid=21124; workingSet=136667136; privateBytes=87011328; cpu=7.84375
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162357248; privateBytes=102461440; cpu=592.703125
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162492416; privateBytes=123662336; cpu=593.890625
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158982144; privateBytes=101842944; cpu=578.609375
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161992704; privateBytes=102236160; cpu=591.703125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158609408; privateBytes=101892096; cpu=580.640625
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163303424; privateBytes=104783872; cpu=608.25
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165027840; privateBytes=104345600; cpu=597.890625
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166039552; privateBytes=111648768; cpu=600.96875
+OK: rebarCounter.RectSet.0.typed
+OK: rebarCounter.RectSet.0.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=0; error=-2147215974; comment=Config!I108: Ряд 'H1.as_1.Main': Количество позиций превышает диапазон счетчиков.
+OK: rebarCounter.RectSet.1.typed
+OK: rebarCounter.RectSet.1.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=1; error=-2147215974; comment=Config!I109: Ряд 'H1.as_2.Main': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+OK: rebarCounter.RectSet.2.typed
+OK: rebarCounter.RectSet.2.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=2; error=-2147215974; comment=Config!I118: Ряд 'H1.as_1.Row2': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+OK: rebarCounter.RectSet.disabled
+OK: rebarCounter.RectSet.recovery
+OK: rebarCounter.RoundedRectangle.0.typed
+OK: rebarCounter.RoundedRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=0; error=-2147215974; comment=Config!I140: Ряд 'H.Left.Main': Количество позиций превышает диапазон счетчиков.
+OK: rebarCounter.RoundedRectangle.1.typed
+OK: rebarCounter.RoundedRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=1; error=-2147215974; comment=Config!I141: Ряд 'H.Right.Main': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+OK: rebarCounter.RoundedRectangle.2.typed
+OK: rebarCounter.RoundedRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=2; error=-2147215974; comment=Config!I146: Ряд 'H.Left.Row2': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+OK: rebarCounter.RoundedRectangle.disabled
+OK: rebarCounter.RoundedRectangle.recovery
+OK: rebarCounter.HollowRectangle.0.typed
+OK: rebarCounter.HollowRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=0; error=-2147215974; comment=Config!I163: Ряд 'H.Left.Main': Количество позиций превышает диапазон счетчиков.
+OK: rebarCounter.HollowRectangle.1.typed
+OK: rebarCounter.HollowRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=1; error=-2147215974; comment=Config!I164: Ряд 'H.Right.Main': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+OK: rebarCounter.HollowRectangle.2.typed
+OK: rebarCounter.HollowRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=2; error=-2147215974; comment=Config!I163: Ряд 'H.Left.Row2': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+OK: rebarCounter.HollowRectangle.disabled
+OK: rebarCounter.HollowRectangle.recovery
+OK: rebarCounter.RectSet.inactiveLower
+OK: rebarCounter.binding.odd
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.odd; actual=11; expected=11
+OK: rebarCounter.binding.even
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.even; actual=15; expected=15
+OK: rebarCounter.binding.maxLong
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.maxLong; actual=3221225471; expected=3221225471
+OK: rebarCounter.binding.disabled
+CIRCLE_CONFIG_NUMBER: rebarCounter.binding.disabled; actual=0; expected=0
+TOTAL_REBAR_COUNTER: passed=29; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_472cda0288bb4d10b25720872b6dd222\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03RebarCounterTests; 2026-10-12T02:38:12
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

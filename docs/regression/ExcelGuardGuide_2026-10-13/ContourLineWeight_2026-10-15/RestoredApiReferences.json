@@ -1,0 +1,451 @@
+{
+  "Passed": true,
+  "RestoredReferencedReports": [
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestAudit02Api.RunAudit02AnnotationTests.txt",
+      "Bytes": 270,
+      "SHA256": "19cd4ecd208dd7f785bf714f650ce301d0355904f1a31c465aad69c45bd38251"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
+      "Bytes": 285,
+      "SHA256": "1696d31abfedef11fe924eab9c8e0904b6962ccadbe50eed48b1f2972a62bcd9"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestAudit02Api.RunAudit02InputTests.txt",
+      "Bytes": 186,
+      "SHA256": "aace1b8a4d546479534b5dea48afab5154e4f003d38776242e1101c0a6ed3291"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestAudit02Api.RunAudit02OptionsTests.txt",
+      "Bytes": 486,
+      "SHA256": "718a91c0d1b17a403d49605665cd22525fcf8e3e879b6ff3626e8c1524c186ca"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt",
+      "Bytes": 490,
+      "SHA256": "d0210e1dd5e2010be5750365eb7bb579b72b051a60bb67fe748edd19eb99a2e7"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+      "Bytes": 77326,
+      "SHA256": "5b472b607a704cdf252ff6c4afd47ba886bc5e236c2673ebdf0afc0b4801d8fe"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometry.RunGeometryTests.txt",
+      "Bytes": 58481,
+      "SHA256": "d40451994ecb04187cb7470ebe13557fbcbdde1e7d018a8e3465858d26c221a7"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryPublication.RunPublishedBuildTests.txt",
+      "Bytes": 698,
+      "SHA256": "6303efa0bbd2519b08111b78a4202ad2bf250c316a0562ccbcc890c68b63ae9e"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryPublication.RunRecipeContextFreezeTests.txt",
+      "Bytes": 371,
+      "SHA256": "f0ddc2ac6cd4739e3b040eb0065c4b298008d046ecc2637ab22915e7050dad75"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryReview.RunGeometryReviewTests.txt",
+      "Bytes": 45165,
+      "SHA256": "b382f4f240c834324b64d251a45ebb9968d2fe6789576c9d8547433fd8edd64a"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+      "Bytes": 7477,
+      "SHA256": "629165dddc02dba31a8f5ee24a3c9b0e6ca0e42b1c71689c335b6a748db1b2a6"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/CoreGeometry.txt",
+      "Bytes": 24845,
+      "SHA256": "3440a41f576e12ea9a670dbbfa49170115f3f762daa8fcd92f003f73eec1c913"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
+      "Bytes": 2961,
+      "SHA256": "748831eaa338b0d3f8d1bc72f366b122a16a8d20a4c7e27c17d91d72364bca71"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/InputTests.txt",
+      "Bytes": 2671,
+      "SHA256": "40a96920670795f981cd1910adc42fa6a5eb0538bf3b06a05b4b0601cf7b3637"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/RuleTests.txt",
+      "Bytes": 4959,
+      "SHA256": "0aacc2738cc0fa2395931bec35d80cda495971884a29289a3d2210503a5d449b"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/AnalyticPaths.txt",
+      "Bytes": 21207,
+      "SHA256": "190954b18cf9881a16405362b715070c01cca4d28273fa93e8800abb30278bee"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
+      "Bytes": 24835,
+      "SHA256": "ecf7d8f6d1accb03f805c1b8fe6572b7ef16d83ba2d87d7d703dc50515fba392"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/InputTables.txt",
+      "Bytes": 3630,
+      "SHA256": "91b75df1dbdc353f06455987691a462e078250fb4d0ec0be8c4cc395b3de313a"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/RoundedPolygons.txt",
+      "Bytes": 4892,
+      "SHA256": "070faa13d42dd0877c8646a33e25f9d4fd3364f7b3ad03ec457ff0a4eefa28e1"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/AnnotationCountFinal.txt",
+      "Bytes": 6582,
+      "SHA256": "7742bd5830deebbcfe6e6aa20edef1a1044f9e354228f94de36073cebaad7968"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/AnnotationCounts1.txt",
+      "Bytes": 6313,
+      "SHA256": "5ed734b035795695bc59554f45857ca6800df6b9b6c0fc9e3dae14601c63db90"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
+      "Bytes": 31333,
+      "SHA256": "e643976be4bd5b0d023215ada7d3892d85377c645ae4948227c36bbbb96bd96e"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
+      "Bytes": 31337,
+      "SHA256": "4064bfa1b5ddef8c189bf714cf61777b86b99f341a9df58899bfb35f8ac47868"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/EdgeEquilibriumNo.txt",
+      "Bytes": 41990,
+      "SHA256": "10160c67e04ca4ee3625ba1e41257d4e4d8bbb9a17ab170fa016edf9ee7cb18f"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/EdgeEquilibriumYes.txt",
+      "Bytes": 41985,
+      "SHA256": "97db5e5f293b852731ad8c7ffd75586cd2c2f5247c9ac9218c6b4eddd34e232c"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/EquilibriumTests.txt",
+      "Bytes": 54972,
+      "SHA256": "2a86e9f54dab62508b043047eee31759767551de0174c7167139df30507cdb7c"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RoundedEquilibrium.txt",
+      "Bytes": 27099,
+      "SHA256": "3eeecf49b7b8cee012ec241ff3e8a16f44c8a690fdc06fe4e3f7bb767870ac45"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
+      "Bytes": 9975,
+      "SHA256": "250f74555da536bb03031bf4d633c55bb8212d43a0b7efd67ea77c13791188ee"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
+      "Bytes": 9972,
+      "SHA256": "ee44290344bae0d1fe434371c1b05a349eea646ba3bc1482d68207d53ac6ffa3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/AnnotationCountFinal.txt",
+      "Bytes": 6582,
+      "SHA256": "7742bd5830deebbcfe6e6aa20edef1a1044f9e354228f94de36073cebaad7968"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/AnnotationCounts1.txt",
+      "Bytes": 6313,
+      "SHA256": "5ed734b035795695bc59554f45857ca6800df6b9b6c0fc9e3dae14601c63db90"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreFinal.txt",
+      "Bytes": 31333,
+      "SHA256": "e643976be4bd5b0d023215ada7d3892d85377c645ae4948227c36bbbb96bd96e"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreTests.txt",
+      "Bytes": 31337,
+      "SHA256": "4064bfa1b5ddef8c189bf714cf61777b86b99f341a9df58899bfb35f8ac47868"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/EdgeEquilibriumNo.txt",
+      "Bytes": 41990,
+      "SHA256": "10160c67e04ca4ee3625ba1e41257d4e4d8bbb9a17ab170fa016edf9ee7cb18f"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/EdgeEquilibriumYes.txt",
+      "Bytes": 41985,
+      "SHA256": "97db5e5f293b852731ad8c7ffd75586cd2c2f5247c9ac9218c6b4eddd34e232c"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/EquilibriumTests.txt",
+      "Bytes": 54972,
+      "SHA256": "2a86e9f54dab62508b043047eee31759767551de0174c7167139df30507cdb7c"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/RoundedEquilibrium.txt",
+      "Bytes": 27099,
+      "SHA256": "3eeecf49b7b8cee012ec241ff3e8a16f44c8a690fdc06fe4e3f7bb767870ac45"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/RuleFinal.txt",
+      "Bytes": 9975,
+      "SHA256": "250f74555da536bb03031bf4d633c55bb8212d43a0b7efd67ea77c13791188ee"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/RuleTests1.txt",
+      "Bytes": 9972,
+      "SHA256": "ee44290344bae0d1fe434371c1b05a349eea646ba3bc1482d68207d53ac6ffa3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/CoreGeometry.txt",
+      "Bytes": 31373,
+      "SHA256": "07155c406393bea95523f1852ceacb948cf5d0d25095cbfd1bc68f08060e0642"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/RebarCounters.txt",
+      "Bytes": 6645,
+      "SHA256": "78b64d03856540a8f62bd591e1073877035f31d05dcc5223a5c6286412d09e21"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
+      "Bytes": 23691,
+      "SHA256": "10ea8176e39d3317e626f4137e542b802b637c67cfed995e326ea299aab46e97"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/CoreGeometry.txt",
+      "Bytes": 31373,
+      "SHA256": "07155c406393bea95523f1852ceacb948cf5d0d25095cbfd1bc68f08060e0642"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt",
+      "Bytes": 6645,
+      "SHA256": "78b64d03856540a8f62bd591e1073877035f31d05dcc5223a5c6286412d09e21"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt",
+      "Bytes": 23691,
+      "SHA256": "10ea8176e39d3317e626f4137e542b802b637c67cfed995e326ea299aab46e97"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/CoreGeometry.txt",
+      "Bytes": 24845,
+      "SHA256": "3440a41f576e12ea9a670dbbfa49170115f3f762daa8fcd92f003f73eec1c913"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
+      "Bytes": 2961,
+      "SHA256": "748831eaa338b0d3f8d1bc72f366b122a16a8d20a4c7e27c17d91d72364bca71"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/InputTests.txt",
+      "Bytes": 2671,
+      "SHA256": "40a96920670795f981cd1910adc42fa6a5eb0538bf3b06a05b4b0601cf7b3637"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
+      "Bytes": 4959,
+      "SHA256": "0aacc2738cc0fa2395931bec35d80cda495971884a29289a3d2210503a5d449b"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RectSetEvidencePack/Actual/AnnotationCounts.txt",
+      "Bytes": 4498,
+      "SHA256": "18090f5cea7baf811b62fe4b5eda9b6f33f50820a26073d9c458f958323e5b6c"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RectSetEvidencePack/Actual/RuleTests.txt",
+      "Bytes": 7779,
+      "SHA256": "bdcf9c6ded8bda854f2788e60b7445300af0ca1f4654dbb1e14d64b68e591451"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RectSetRules/AnnotationCounts.txt",
+      "Bytes": 4498,
+      "SHA256": "18090f5cea7baf811b62fe4b5eda9b6f33f50820a26073d9c458f958323e5b6c"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RectSetRules/RuleTests.txt",
+      "Bytes": 7779,
+      "SHA256": "bdcf9c6ded8bda854f2788e60b7445300af0ca1f4654dbb1e14d64b68e591451"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/AnnotationCounts.txt",
+      "Bytes": 5596,
+      "SHA256": "4f2d9dacd1b2b0927c15c731a77b4650a11340d87f7a4720b75239d36872b591"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/CoreTests.txt",
+      "Bytes": 31337,
+      "SHA256": "3aa9aa9428cf863eb0be09a65ee111a692a6e067dbd316fb89c4291208e94c5f"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/EquilibriumTests.txt",
+      "Bytes": 27051,
+      "SHA256": "dccae1eba515c5075453c3f9fd876d4a689a4518f301648af684d32279d58221"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/MeasurementRuleTests.txt",
+      "Bytes": 8645,
+      "SHA256": "c653886cd82afeefc2b1da3f0e04247de5d903242d8d006793fbd6dfa0daaa63"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/RuleTests.txt",
+      "Bytes": 8859,
+      "SHA256": "b939b238b55230b5a0462a6833f1d2f5678b43c09c4b0f1cf301a90412313dad"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/AnnotationCounts.txt",
+      "Bytes": 5596,
+      "SHA256": "4f2d9dacd1b2b0927c15c731a77b4650a11340d87f7a4720b75239d36872b591"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/CoreTests.txt",
+      "Bytes": 31337,
+      "SHA256": "3aa9aa9428cf863eb0be09a65ee111a692a6e067dbd316fb89c4291208e94c5f"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/EquilibriumTests.txt",
+      "Bytes": 27051,
+      "SHA256": "dccae1eba515c5075453c3f9fd876d4a689a4518f301648af684d32279d58221"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/RuleTests.txt",
+      "Bytes": 8859,
+      "SHA256": "b939b238b55230b5a0462a6833f1d2f5678b43c09c4b0f1cf301a90412313dad"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/AnnotationCounts.txt",
+      "Bytes": 4496,
+      "SHA256": "91d084f494d5928e2a4de9542386e73af99130a461a257ebf20e9364736812ef"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/CoreGeometry.txt",
+      "Bytes": 30379,
+      "SHA256": "13b9e9206e7a7cd0a39dcc8178231a7091e8361108abfeba14e978b056e16abf"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/RuleTests.txt",
+      "Bytes": 7783,
+      "SHA256": "e669ef5b7ab109ccfee0814069326444ff1b9da442321bc1079a5ccab10aa68e"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
+      "Bytes": 7582,
+      "SHA256": "6a9995837ac78c981bed8f684ca9df2b8dab00f4000a3e3304982c5fc9dbff45"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
+      "Bytes": 3492,
+      "SHA256": "3d3b26b29757627333d29e66e31e98a1b94d9afbfeb23fc5ee07fd5c69df8ec9"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
+      "Bytes": 65089,
+      "SHA256": "12de22fc04c62e669b70559dd9c4d09b96da8a6e0b62536e106493cb35aac268"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.failed-probe.txt",
+      "Bytes": 15423,
+      "SHA256": "8d564bd95703d72898e365fa87e0fb2c62676bb4cbc9564311af6811dfd3d006"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
+      "Bytes": 7442,
+      "SHA256": "12f2d1717f3068aefada27efcd0611e296ae3fa18fd0797b215174f23ccdcbbd"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.unit-probe.txt",
+      "Bytes": 7442,
+      "SHA256": "12f2d1717f3068aefada27efcd0611e296ae3fa18fd0797b215174f23ccdcbbd"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
+      "Bytes": 20876,
+      "SHA256": "07e874edc24115f8c1fc69d03c00d44332e643891bd24d4624e9b54e242be599"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
+      "Bytes": 396478,
+      "SHA256": "bf854c2f89825a987eb94690566f2d8bb26843806a5fbad896b3d403ef6d8cc8"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalApiAnnotations.txt",
+      "Bytes": 12514,
+      "SHA256": "f7bb036b1483db400c5cf530a0a7a2b25d8ff24a8971c27aefd4e8a037156699"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
+      "Bytes": 165529,
+      "SHA256": "c6057a1ccf5a3f81386d11bdf009801a946ad573d8fd58141219a3dbfdeb13c6"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalMetadataSnapshot.txt",
+      "Bytes": 2797,
+      "SHA256": "2c35f6b01759ddf6b6d380b95cb2a68cce1126893fe1d944da58ca876102c48b"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
+      "Bytes": 14212,
+      "SHA256": "bb62c3d59e35573fdb97749b77cc6e699cd8609e0cf7db3c9993bade1d6cd4ac"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
+      "Bytes": 66556,
+      "SHA256": "9f0facbdb33f61eedfcb1e6cf2371da12c992dbcff15b8c1ccbf4edd3e2fff1e"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt",
+      "Bytes": 222337,
+      "SHA256": "1b9ae679f5d2298a3032e31c1cfb30ab937493b2dad3fb4099bb45e4715ed0aa"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt",
+      "Bytes": 9839,
+      "SHA256": "4689f727494825c7436167a4615d488519e92dd9fa12c52d252aad0291662adb"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt",
+      "Bytes": 3240,
+      "SHA256": "576d003feee0f5fd324fed3f399af446837e2ba0f9b454d6f08a372d217ad09b"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt",
+      "Bytes": 8955,
+      "SHA256": "c0056a6828c405c94d646aa8d971dd99bbc3f2dc1713d57a2622d1da70f34a72"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt",
+      "Bytes": 5922,
+      "SHA256": "af444c65a0a324592c4ef2bec9d8905c5a2571c39407ee5f8f3069c01a796082"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/Build.txt",
+      "Bytes": 2668,
+      "SHA256": "82cbc8a14c82ed20d29c1574b2011bf2c9c1312122e66bc843a49cb2e3ccdae2"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/E09.txt",
+      "Bytes": 2859,
+      "SHA256": "fc284cc6547136b0a7ce57526ffd7c60a8a665fd84f6477b45d8d4beac9ef0d3"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt",
+      "Bytes": 7188,
+      "SHA256": "35efb6cd1565caa9113c5872b99989669b086157fddbb938b9162ce7b9cac3ae"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt",
+      "Bytes": 102905,
+      "SHA256": "7b887fe724d8e88f020cec956de823f1bf3073871acbfbe9c6b242b8b4a94841"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt",
+      "Bytes": 226941,
+      "SHA256": "5a366129218f79ec78d4781882a2d92c51573d40bffbcfa4c714ba97470b0ae4"
+    },
+    {
+      "Path": "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt",
+      "Bytes": 120331,
+      "SHA256": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed"
+    }
+  ],
+  "Bytes": 2683365
+}

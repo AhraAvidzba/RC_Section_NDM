@@ -1,0 +1,4 @@
+﻿OK: contourWeight.default.p0; actual=2; expected=2
+OK: contourWeight.singleKey.p0
+FAIL: contourWeight.runtime.-2147217128.Неверная запись контура: Results!EZ7:FP7. Проверьте ID, порядок, роль, тип и единицы.
+TOTAL_CONTOUR_LINE_WEIGHT: passed=2; failed=1

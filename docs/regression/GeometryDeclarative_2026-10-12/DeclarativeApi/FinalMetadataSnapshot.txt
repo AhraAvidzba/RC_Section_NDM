@@ -1,0 +1,33 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\DeclarativeApi\RC_Section_NDM.xlsm
+SOURCE_SHA256: 968508E94E37C3F48838A6FE187B26A61A936D90D338002DF9ED3F8643BAA219
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_447b1920295b4952b8d8cf00e1b96d72\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=29492; startTicks=639273958737187413
+===== modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests =====
+SUITE_STARTED: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; 2026-10-12T12:57:59
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=111456256; privateBytes=102920192; cpu=927.703125
+EXCEL_AFTER_SUITE: pid=3688; workingSet=114569216; privateBytes=102854656; cpu=626.046875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=113352704; privateBytes=104108032; cpu=605.3125
+EXCEL_AFTER_SUITE: pid=8844; workingSet=110501888; privateBytes=102174720; cpu=593.734375
+EXCEL_AFTER_SUITE: pid=12376; workingSet=110911488; privateBytes=122404864; cpu=594.953125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=110546944; privateBytes=102064128; cpu=605.359375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=114229248; privateBytes=103219200; cpu=608.578125
+EXCEL_AFTER_SUITE: pid=22900; workingSet=114618368; privateBytes=102543360; cpu=607.140625
+EXCEL_AFTER_SUITE: pid=25276; workingSet=110878720; privateBytes=123572224; cpu=609.046875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=110739456; privateBytes=101978112; cpu=592.46875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=114024448; privateBytes=102322176; cpu=605.484375
+EXCEL_AFTER_SUITE: pid=27384; workingSet=111075328; privateBytes=101949440; cpu=594.921875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=114348032; privateBytes=104751104; cpu=623.3125
+EXCEL_AFTER_SUITE: pid=28032; workingSet=155197440; privateBytes=104087552; cpu=7.671875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=115621888; privateBytes=104394752; cpu=612.03125
+EXCEL_AFTER_SUITE: pid=29492; workingSet=141266944; privateBytes=101801984; cpu=8.078125
+EXCEL_AFTER_SUITE: pid=29700; workingSet=143204352; privateBytes=117755904; cpu=39.890625
+EXCEL_AFTER_SUITE: pid=30264; workingSet=114135040; privateBytes=111706112; cpu=615.140625
+TOTAL RECIPE ANNOTATION SNAPSHOT: passed=24; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_447b1920295b4952b8d8cf00e1b96d72\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; 2026-10-12T12:58:03
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

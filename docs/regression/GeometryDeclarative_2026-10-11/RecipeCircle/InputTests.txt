@@ -1,0 +1,36 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\RecipeCircle\RC_Section_NDM.xlsm
+SOURCE_SHA256: 97F6B567A83E90385DA7DFD05DEA2F733F5B37D3577C2410B6A65CA5754A2487
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f832d1d0d0f34627a2a2adadd18e154a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=32936; startTicks=639273427162665543
+===== modTestSectionRecipes.RunCircleRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunCircleRecipeInputTests; 2026-10-11T22:12:01
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159997952; privateBytes=103608320; cpu=904.09375
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162926592; privateBytes=102924288; cpu=607.046875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163147776; privateBytes=104050688; cpu=589.640625
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158007296; privateBytes=101646336; cpu=575.84375
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161501184; privateBytes=122408960; cpu=578.859375
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157937664; privateBytes=102006784; cpu=586.546875
+EXCEL_AFTER_SUITE: pid=19004; workingSet=163020800; privateBytes=103444480; cpu=590.15625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162279424; privateBytes=102375424; cpu=589.953125
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162439168; privateBytes=123645952; cpu=590.375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158973952; privateBytes=101859328; cpu=575.75
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162004992; privateBytes=102301696; cpu=589.03125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158334976; privateBytes=101646336; cpu=577.765625
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163188736; privateBytes=104673280; cpu=604.90625
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165040128; privateBytes=104407040; cpu=595.078125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166035456; privateBytes=111652864; cpu=598.203125
+EXCEL_AFTER_SUITE: pid=32936; workingSet=137949184; privateBytes=88514560; cpu=7.34375
+PASS: circle.input.0
+PASS: circle.input.1
+PASS: circle.input.2
+PASS: circle.input.3
+PASS: circle.input.4
+TOTAL CIRCLE INPUT: passed=5; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f832d1d0d0f34627a2a2adadd18e154a\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunCircleRecipeInputTests; 2026-10-11T22:12:04
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

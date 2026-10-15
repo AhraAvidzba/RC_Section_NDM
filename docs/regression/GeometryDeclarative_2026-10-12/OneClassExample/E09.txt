@@ -1,0 +1,34 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\OneClassExample\RC_Section_NDM.xlsm
+SOURCE_SHA256: E81598D36F9CAADE415E773ADAA144BE9B6403E1DBB9FFD9B1B8A2E0370C65A6
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_876b1bf31be346cd8a8a832d3b50ed6f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=10888; startTicks=639273973405288832
+===== modTestDeclarativeExamples.RunRoundedFrameExampleTests =====
+SUITE_STARTED: modTestDeclarativeExamples.RunRoundedFrameExampleTests; 2026-10-12T13:22:35
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=107499520; privateBytes=102948864; cpu=928.0625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=110788608; privateBytes=102940672; cpu=626.328125
+EXCEL_AFTER_SUITE: pid=7832; workingSet=109084672; privateBytes=104120320; cpu=605.53125
+EXCEL_AFTER_SUITE: pid=8844; workingSet=106409984; privateBytes=102109184; cpu=594.125
+EXCEL_AFTER_SUITE: pid=10544; workingSet=135737344; privateBytes=85843968; cpu=7.078125
+EXCEL_AFTER_SUITE: pid=10888; workingSet=131907584; privateBytes=89538560; cpu=5.546875
+EXCEL_AFTER_SUITE: pid=12376; workingSet=107167744; privateBytes=122490880; cpu=595.125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=106532864; privateBytes=102174720; cpu=605.703125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=110051328; privateBytes=103219200; cpu=608.890625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=110211072; privateBytes=102445056; cpu=607.4375
+EXCEL_AFTER_SUITE: pid=23028; workingSet=137576448; privateBytes=94740480; cpu=14.96875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=106864640; privateBytes=123736064; cpu=609.375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=106807296; privateBytes=101933056; cpu=592.703125
+EXCEL_AFTER_SUITE: pid=26240; workingSet=109543424; privateBytes=102227968; cpu=605.671875
+EXCEL_AFTER_SUITE: pid=27384; workingSet=107110400; privateBytes=101961728; cpu=595.140625
+EXCEL_AFTER_SUITE: pid=27976; workingSet=110321664; privateBytes=104718336; cpu=623.765625
+EXCEL_AFTER_SUITE: pid=28560; workingSet=111345664; privateBytes=104505344; cpu=612.28125
+EXCEL_AFTER_SUITE: pid=29700; workingSet=143605760; privateBytes=118255616; cpu=40.375
+EXCEL_AFTER_SUITE: pid=30264; workingSet=109215744; privateBytes=111771648; cpu=615.390625
+TOTAL ROUNDED FRAME EXAMPLE: passed=12; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_876b1bf31be346cd8a8a832d3b50ed6f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestDeclarativeExamples.RunRoundedFrameExampleTests; 2026-10-12T13:22:44
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

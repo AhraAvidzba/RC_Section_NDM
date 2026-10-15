@@ -1,0 +1,17 @@
+﻿PASS: P01.kernel.4
+PASS: P01.kernel.5
+PASS: P01.kernel.6
+PASS: P01.kernel.9
+PASS: P05.spec.unchanged
+PASS: P05.paths.independent
+PASS: P02.radius.geometry
+PASS: P06.invalid.topology.rejected
+PASS: P07.creator.registers.once
+PASS: P06.no.partial.path
+PASS: P08.external.path
+PASS: G10.multiple.prefixes
+PASS: G10.loop.roles
+PASS: A03.no.implicit.anchor
+PASS: G10.explicit.policy.conflict
+PASS: G10.duplicate.prefix.rejected
+TOTAL AUDIT02 POLYGON API: passed=16; failed=0

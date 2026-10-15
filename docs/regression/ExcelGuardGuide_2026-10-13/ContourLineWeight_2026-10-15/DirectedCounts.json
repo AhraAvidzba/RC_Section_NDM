@@ -1,0 +1,26 @@
+{
+  "Passed": true,
+  "Groups": [
+    {
+      "Macro": "modTestPlotConfig.RunContourLineWeightTests",
+      "Passed": 123,
+      "Failed": 0
+    },
+    {
+      "Macro": "modTestPlotConfig.RunAudit03ContourArcTests",
+      "Passed": 423,
+      "Failed": 0
+    },
+    {
+      "Macro": "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+      "Passed": 425,
+      "Failed": 0
+    },
+    {
+      "Macro": "modTestAutoCADContours.RunImportedDimensionTests",
+      "Passed": 23,
+      "Failed": 0
+    }
+  ],
+  "Total": 994
+}

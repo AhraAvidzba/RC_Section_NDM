@@ -1,0 +1,11 @@
+﻿{
+    "Passed":  true,
+    "CurrentInput":  "Config!I84:J84",
+    "Default":  2,
+    "Units":  "pt",
+    "CommonInputMergedAndCentered":  true,
+    "PositiveValidation":  true,
+    "TableAllEdgesPresent":  true,
+    "HelpNavigation":  true,
+    "FreshBuilderSameSetting":  true
+}

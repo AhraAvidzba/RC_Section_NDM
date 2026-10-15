@@ -1,0 +1,96 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\NativeGuide\RC_Section_NDM.xlsm
+SOURCE_SHA256: 446C43E90F52189E50C3BBE20226484A353115ADCEDB1ED05EFD536779706D76
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f241f01c89d14768af36135c885786f0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=31820; startTicks=639274038662425117
+===== modTestRecipeApiCatalogue.RunApiGeometryReadExamples =====
+SUITE_STARTED: modTestRecipeApiCatalogue.RunApiGeometryReadExamples; 2026-10-12T15:11:11
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=107581440; privateBytes=103227392; cpu=930.078125
+EXCEL_AFTER_SUITE: pid=3456; workingSet=172310528; privateBytes=106409984; cpu=23.15625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=110133248; privateBytes=102854656; cpu=627.875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=108187648; privateBytes=104173568; cpu=606.703125
+EXCEL_AFTER_SUITE: pid=8844; workingSet=105824256; privateBytes=101941248; cpu=595.53125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=106336256; privateBytes=122482688; cpu=596.546875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=105353216; privateBytes=102162432; cpu=607.28125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=109019136; privateBytes=103251968; cpu=610.390625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=110010368; privateBytes=102420480; cpu=608.921875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=106602496; privateBytes=123736064; cpu=610.734375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=106328064; privateBytes=102002688; cpu=593.75
+EXCEL_AFTER_SUITE: pid=26240; workingSet=109010944; privateBytes=102232064; cpu=607.03125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=106057728; privateBytes=101871616; cpu=596.5
+EXCEL_AFTER_SUITE: pid=27976; workingSet=109821952; privateBytes=104656896; cpu=625.34375
+EXCEL_AFTER_SUITE: pid=28560; workingSet=110977024; privateBytes=104394752; cpu=613.53125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=109944832; privateBytes=111706112; cpu=616.484375
+EXCEL_AFTER_SUITE: pid=31820; workingSet=131600384; privateBytes=85753856; cpu=5.15625
+PASS: defaults.remainder
+PASS: defaults.tangent
+PASS: defaults.projectionDirection
+PASS: definition.type
+PASS: definition.schema
+PASS: definition.annotationCount
+PASS: group.independent
+PASS: definition.successDiagnostic
+PASS: builder.preparedMesh
+PASS: rules.positionCount
+PASS: rules.diagnosticsText
+PASS: query.loopRole.outer
+PASS: query.loopRole.opening
+PASS: query.subtractedArea
+PASS: query.samples.shape
+PASS: query.samples.hit
+PASS: query.samples.firstX
+PASS: query.samples.lastX
+PASS: region.scalarSegment
+PASS: isometry.reflectThenRotate.x
+PASS: isometry.reflectThenRotate.y
+PASS: path.successDiagnostic
+PASS: path.invalidIndexCode
+PASS: path.reason
+PASS: definition.missingPathCode
+PASS: definition.errorDiagnostic
+PASS: offset.failure
+PASS: facade.offsetDiagnostic
+PASS: facade.offsetReason
+TOTAL API GEOMETRY EXAMPLES: passed=29; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f241f01c89d14768af36135c885786f0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeApiCatalogue.RunApiGeometryReadExamples; 2026-10-12T15:11:12
+===== modTestRecipeApiCatalogue.RunApiUnitExamples =====
+SUITE_STARTED: modTestRecipeApiCatalogue.RunApiUnitExamples; 2026-10-12T15:11:12
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=107581440; privateBytes=103227392; cpu=930.078125
+EXCEL_AFTER_SUITE: pid=3456; workingSet=172310528; privateBytes=106409984; cpu=23.15625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=110133248; privateBytes=102854656; cpu=627.875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=108187648; privateBytes=104173568; cpu=606.703125
+EXCEL_AFTER_SUITE: pid=8844; workingSet=105824256; privateBytes=101941248; cpu=595.53125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=106336256; privateBytes=122482688; cpu=596.546875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=105353216; privateBytes=102162432; cpu=607.28125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=109019136; privateBytes=103251968; cpu=610.390625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=110010368; privateBytes=102420480; cpu=608.921875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=106536960; privateBytes=123588608; cpu=610.734375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=106328064; privateBytes=102002688; cpu=593.75
+EXCEL_AFTER_SUITE: pid=26240; workingSet=109010944; privateBytes=102232064; cpu=607.03125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=106057728; privateBytes=101871616; cpu=596.5
+EXCEL_AFTER_SUITE: pid=27976; workingSet=109821952; privateBytes=104656896; cpu=625.34375
+EXCEL_AFTER_SUITE: pid=28560; workingSet=110977024; privateBytes=104394752; cpu=613.53125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=109944832; privateBytes=111706112; cpu=616.484375
+EXCEL_AFTER_SUITE: pid=31820; workingSet=133967872; privateBytes=88498176; cpu=6.40625
+PASS: units.inputLength
+PASS: units.outputLength
+PASS: units.savedLength
+PASS: units.inputArea
+PASS: units.outputArea
+PASS: units.savedArea
+PASS: units.inputFourth
+PASS: units.outputFourth
+FAIL: units.runtime: -2147216984; Недопустимая единица длины: cm4
+TOTAL API UNIT EXAMPLES: passed=8; failed=1
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f241f01c89d14768af36135c885786f0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeApiCatalogue.RunApiUnitExamples; 2026-10-12T15:11:13
+FAIL_FAST: remaining suites were not run after a completed failed suite
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

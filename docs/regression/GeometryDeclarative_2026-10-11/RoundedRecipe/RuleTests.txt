@@ -1,0 +1,200 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\RoundedRecipe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 7CBCA17918D53DF828CACCBCEFFC3A7B45668599BE2A29D0F2BDDAFB02C62DD7
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c708b85b0eb84541a868a00619958001\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=7980; startTicks=639273506862365949
+===== modTestSectionRecipes.RunRecipeRuleTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-12T00:24:51
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159911936; privateBytes=103428096; cpu=905.625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162902016; privateBytes=102854656; cpu=608.890625
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163225600; privateBytes=104144896; cpu=591.03125
+EXCEL_AFTER_SUITE: pid=7980; workingSet=129052672; privateBytes=92061696; cpu=4.859375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158052352; privateBytes=101699584; cpu=577.625
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161509376; privateBytes=122413056; cpu=580.15625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157945856; privateBytes=102010880; cpu=588.359375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=163069952; privateBytes=103518208; cpu=592.078125
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162308096; privateBytes=102387712; cpu=591.1875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162430976; privateBytes=123580416; cpu=592.046875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158978048; privateBytes=101851136; cpu=577.15625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162004992; privateBytes=102301696; cpu=590.390625
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158539776; privateBytes=101797888; cpu=579.03125
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163250176; privateBytes=104693760; cpu=606.71875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164999168; privateBytes=104321024; cpu=596.53125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166035456; privateBytes=111644672; cpu=599.578125
+PASS: ends.count.1
+PASS: ends.station.1.1; actual=10; expected=10
+PASS: ends.station.1.2; actual=45; expected=45
+PASS: ends.station.1.3; actual=80; expected=80
+PASS: ends.count.2
+PASS: ends.station.2.1; actual=27.5; expected=27.5
+PASS: ends.station.2.2; actual=45; expected=45
+PASS: ends.station.2.3; actual=62.5; expected=62.5
+PASS: ends.count.3
+PASS: ends.station.3.1; actual=10; expected=10
+PASS: ends.station.3.2; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.3.3; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.count.4
+PASS: ends.station.4.1; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.4.2; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.station.4.3; actual=80; expected=80
+PASS: one.midpoint; actual=45; expected=45
+PASS: closed.count
+PASS: closed.start.x; actual=100; expected=100
+PASS: closed.start.y; actual=0; expected=0
+PASS: closed.last.x; actual=-1.83690953073357E-14; expected=0
+PASS: closed.last.y; actual=-100; expected=-100
+PASS: maxstep.count
+PASS: maxstep.first; actual=10; expected=10
+PASS: maxstep.last; actual=80; expected=80
+PASS: maxstep.actual; actual=23.3333333333333; expected=23.3333333333333
+PASS: fixed.count
+PASS: fixed.first; actual=5; expected=5
+PASS: fixed.last; actual=95; expected=95
+PASS: fixed.step.2; actual=30; expected=30
+PASS: fixed.step.3; actual=30; expected=30
+PASS: fixed.step.4; actual=30; expected=30
+PASS: explicit.count
+PASS: explicit.last; actual=90; expected=90
+PASS: dependent.count
+PASS: dependent.first.x; actual=0; expected=0
+PASS: dependent.last.x; actual=100; expected=100
+PASS: dependent.normal; actual=10; expected=10
+PASS: dependent.source
+PASS: projection.count
+PASS: projection.skips
+PASS: projection.x; actual=50; expected=50
+PASS: projection.y; actual=100; expected=100
+PASS: projection.source
+PASS: projection.secondhit.count
+PASS: projection.secondhit.x; actual=50; expected=50
+PASS: projection.secondhit.y; actual=150; expected=150
+PASS: group.perpath
+PASS: group.secondpath; actual=100; expected=100
+PASS: distance.center; actual=100; expected=100
+PASS: distance.inside; actual=20; expected=20
+PASS: distance.outside; actual=40; expected=40
+PASS: rule.invalid.0
+PASS: rule.invalid.1
+PASS: rule.invalid.2
+PASS: rule.invalid.3
+PASS: rule.invalid.4
+PASS: rule.invalid.5
+PASS: rule.invalid.6
+PASS: rule.invalid.7
+PASS: middle.count
+PASS: middle.order.1; actual=45; expected=45
+PASS: middle.order.2; actual=45; expected=45
+PASS: middle.order.3; actual=62.5; expected=62.5
+PASS: middle.order.4; actual=27.5; expected=27.5
+PASS: middle.order.5; actual=80; expected=80
+PASS: middle.order.6; actual=80; expected=80
+PASS: middle.order.7; actual=10; expected=10
+PASS: middle.order.8; actual=10; expected=10
+PASS: middle.first.extra; actual=10; expected=10
+PASS: middle.anchor.first; actual=10; expected=10
+PASS: middle.anchor.last; actual=80; expected=80
+PASS: coincidence.physical.count
+PASS: coincidence.requested
+PASS: coincidence.memberships
+PASS: coincidence.annotation.owner
+PASS: coincidence.labels
+PASS: coincidence.labels.total
+PASS: coincidence.invalid.0
+PASS: coincidence.invalid.1
+PASS: coincidence.invalid.2
+PASS: coincidence.invalid.3
+PASS: coincidence.explicit.owner
+PASS: coincidence.owner.diameter; actual=10; expected=10
+PASS: annotations.partial.physical
+PASS: annotations.partial.groups
+PASS: annotations.partial.first
+PASS: annotations.partial.second
+PASS: annotations.partial.total
+PASS: annotations.repeated.anchor
+PASS: annotations.repeated.total
+PASS: index.oracle.1.-1.01
+PASS: index.oracle.1.-1
+PASS: index.oracle.1.-0.9
+PASS: index.oracle.1.0
+PASS: index.oracle.1.0.9
+PASS: index.oracle.1.1
+PASS: index.oracle.1.1.01
+PASS: index.oracle.2.-1.01
+PASS: index.oracle.2.-1
+PASS: index.oracle.2.-0.9
+PASS: index.oracle.2.0
+PASS: index.oracle.2.0.9
+PASS: index.oracle.2.1
+PASS: index.oracle.2.1.01
+PASS: index.oracle.3.-1.01
+PASS: index.oracle.3.-1
+PASS: index.oracle.3.-0.9
+PASS: index.oracle.3.0
+PASS: index.oracle.3.0.9
+PASS: index.oracle.3.1
+PASS: index.oracle.3.1.01
+PASS: index.oracle.4.-1.01
+PASS: index.oracle.4.-1
+PASS: index.oracle.4.-0.9
+PASS: index.oracle.4.0
+PASS: index.oracle.4.0.9
+PASS: index.oracle.4.1
+PASS: index.oracle.4.1.01
+PASS: index.oracle.5.-1.01
+PASS: index.oracle.5.-1
+PASS: index.oracle.5.-0.9
+PASS: index.oracle.5.0
+PASS: index.oracle.5.0.9
+PASS: index.oracle.5.1
+PASS: index.oracle.5.1.01
+PASS: index.oracle.6.-1.01
+PASS: index.oracle.6.-1
+PASS: index.oracle.6.-0.9
+PASS: index.oracle.6.0
+PASS: index.oracle.6.0.9
+PASS: index.oracle.6.1
+PASS: index.oracle.6.1.01
+PASS: index.oracle.7.-1.01
+PASS: index.oracle.7.-1
+PASS: index.oracle.7.-0.9
+PASS: index.oracle.7.0
+PASS: index.oracle.7.0.9
+PASS: index.oracle.7.1
+PASS: index.oracle.7.1.01
+PASS: index.clear
+PASS: index.reuse
+PASS: adjacent.area; actual=240000; expected=240000
+PASS: adjacent.closed
+PASS: adjacent.lower
+PASS: adjacent.upper
+PASS: adjacent.concavity
+PASS: adjacent.three.area; actual=30000; expected=30000
+PASS: adjacent.three.concavity
+PASS: adjacent.overlap.rejected
+PASS: adjacent.disjoint.rejected
+PASS: adjacent.corner.rejected
+PASS: measurements.rule.bounds
+PASS: measurements.min.x; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.max.x; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.min.y; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.max.y; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.anchor.x; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.anchor.start; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.anchor.end; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.round.positive; actual=124; expected=124
+PASS: measurements.round.negative; actual=-124; expected=-124
+PASS: measurements.round.exact; actual=123.6; expected=123.6
+PASS: measurements.coordinates.unchanged; actual=123.6; expected=123.6
+PASS: measurements.count
+PASS: joint.rule.default.x; actual=90; expected=90
+PASS: joint.rule.default.y; actual=0; expected=0
+PASS: joint.rule.incoming.x; actual=100; expected=100
+PASS: joint.rule.incoming.y; actual=10; expected=10
+TOTAL RECIPE RULES: passed=169; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c708b85b0eb84541a868a00619958001\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-12T00:24:51
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

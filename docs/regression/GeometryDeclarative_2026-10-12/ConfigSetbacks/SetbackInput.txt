@@ -1,0 +1,52 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\ConfigSetbacks\RC_Section_NDM.xlsm
+SOURCE_SHA256: EED488C27B4C30682CDCB2FE41D59FA386E97A4282E262D2960AAD7BEA151D52
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_54e1f327121d43d2bc4bd02dc4a046b6\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=29084; startTicks=639273878106082003
+===== modTestRecipeSetbacks.RunRecipeSetbackInputTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-12T10:43:36
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=108564480; privateBytes=103428096; cpu=924.1875
+EXCEL_AFTER_SUITE: pid=3688; workingSet=112324608; privateBytes=102866944; cpu=623.1875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=110227456; privateBytes=104009728; cpu=603.140625
+EXCEL_AFTER_SUITE: pid=8844; workingSet=108810240; privateBytes=102252544; cpu=591.203125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=106868736; privateBytes=122433536; cpu=592.859375
+EXCEL_AFTER_SUITE: pid=12560; workingSet=107876352; privateBytes=102232064; cpu=602.703125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=110219264; privateBytes=103419904; cpu=606.0625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=111718400; privateBytes=102359040; cpu=604.875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=106635264; privateBytes=123723776; cpu=606.25
+EXCEL_AFTER_SUITE: pid=25816; workingSet=108113920; privateBytes=101851136; cpu=590.265625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=110252032; privateBytes=102273024; cpu=603.203125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=107470848; privateBytes=102010880; cpu=592.71875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=111550464; privateBytes=104652800; cpu=620.71875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=112492544; privateBytes=104542208; cpu=609.84375
+EXCEL_AFTER_SUITE: pid=29084; workingSet=132726784; privateBytes=83988480; cpu=5.203125
+EXCEL_AFTER_SUITE: pid=29700; workingSet=167497728; privateBytes=111165440; cpu=31.90625
+EXCEL_AFTER_SUITE: pid=30264; workingSet=110256128; privateBytes=111779840; cpu=613.0625
+OK: rounded.start.header
+OK: rounded.end.header
+OK: rounded.editable.centered
+OK: rounded.zero.first; actual=-360; expected=-360
+OK: rounded.start.actual; actual=-350; expected=-350
+OK: rounded.end.actual; actual=365.518002592747; expected=365.518002592747
+OK: rounded.concrete.unchanged; actual=215943.067096035; expected=215943.067096035
+OK: rounded.count.unchanged
+OK: rounded.opposite.row.unchanged; actual=-85; expected=-85
+OK: rounded.active.empty.rejected
+OK: rounded.active.negative.rejected
+OK: rounded.inactive.error.ignored
+OK: hollow.start.header
+OK: hollow.end.header
+OK: hollow.zero.projected.count
+OK: hollow.projection.filtered
+OK: hollow.skips.diagnostic
+OK: hollow.positions.not.redistributed
+OK: hollow.other.projections.unchanged
+OK: hollow.concrete.unchanged; actual=300000; expected=300000
+TOTAL_RECIPE_SETBACK_INPUT: passed=20; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_54e1f327121d43d2bc4bd02dc4a046b6\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-12T10:43:37
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

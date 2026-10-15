@@ -1,0 +1,6 @@
+﻿PASS: input.positive
+PASS: input.nonnegative.zero
+PASS: input.reject.address.2
+PASS: input.reject.address.3
+PASS: input.reject.address.4
+TOTAL AUDIT02 INPUT: passed=5; failed=0

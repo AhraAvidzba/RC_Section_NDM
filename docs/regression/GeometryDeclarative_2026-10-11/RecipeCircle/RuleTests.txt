@@ -1,0 +1,91 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\RecipeCircle\RC_Section_NDM.xlsm
+SOURCE_SHA256: B379C1F4C2F0DAE22FCB8F61C89FB27FA34B4683BE6F30633CDEDAA56BD1CF73
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_669d9ec9dc1742738d3b138694107a3d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=21792; startTicks=639273435493639644
+===== modTestSectionRecipes.RunRecipeRuleTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-11T22:25:54
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159883264; privateBytes=103411712; cpu=904.15625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162910208; privateBytes=102866944; cpu=607.265625
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163192832; privateBytes=104128512; cpu=589.796875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158003200; privateBytes=101634048; cpu=576.078125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161546240; privateBytes=122486784; cpu=579.03125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157970432; privateBytes=102076416; cpu=586.75
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162983936; privateBytes=103411712; cpu=590.40625
+EXCEL_AFTER_SUITE: pid=21792; workingSet=128258048; privateBytes=81133568; cpu=4.578125
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162304000; privateBytes=102395904; cpu=590.125
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162443264; privateBytes=123641856; cpu=590.640625
+EXCEL_AFTER_SUITE: pid=25816; workingSet=159023104; privateBytes=101941248; cpu=575.984375
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161996800; privateBytes=102293504; cpu=589.203125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158400512; privateBytes=101752832; cpu=577.890625
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163168256; privateBytes=104611840; cpu=605.125
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165060608; privateBytes=104423424; cpu=595.34375
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166060032; privateBytes=111714304; cpu=598.421875
+PASS: ends.count.1
+PASS: ends.station.1.1; actual=10; expected=10
+PASS: ends.station.1.2; actual=45; expected=45
+PASS: ends.station.1.3; actual=80; expected=80
+PASS: ends.count.2
+PASS: ends.station.2.1; actual=27.5; expected=27.5
+PASS: ends.station.2.2; actual=45; expected=45
+PASS: ends.station.2.3; actual=62.5; expected=62.5
+PASS: ends.count.3
+PASS: ends.station.3.1; actual=10; expected=10
+PASS: ends.station.3.2; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.3.3; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.count.4
+PASS: ends.station.4.1; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.4.2; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.station.4.3; actual=80; expected=80
+PASS: one.midpoint; actual=45; expected=45
+PASS: closed.count
+PASS: closed.start.x; actual=100; expected=100
+PASS: closed.start.y; actual=0; expected=0
+PASS: closed.last.x; actual=-1.83690953073357E-14; expected=0
+PASS: closed.last.y; actual=-100; expected=-100
+PASS: maxstep.count
+PASS: maxstep.first; actual=10; expected=10
+PASS: maxstep.last; actual=80; expected=80
+PASS: maxstep.actual; actual=23.3333333333333; expected=23.3333333333333
+PASS: fixed.count
+PASS: fixed.first; actual=5; expected=5
+PASS: fixed.last; actual=95; expected=95
+PASS: fixed.step.2; actual=30; expected=30
+PASS: fixed.step.3; actual=30; expected=30
+PASS: fixed.step.4; actual=30; expected=30
+PASS: explicit.count
+PASS: explicit.last; actual=90; expected=90
+PASS: dependent.count
+PASS: dependent.first.x; actual=0; expected=0
+PASS: dependent.last.x; actual=100; expected=100
+PASS: dependent.normal; actual=10; expected=10
+PASS: dependent.source
+PASS: projection.count
+PASS: projection.skips
+PASS: projection.x; actual=50; expected=50
+PASS: projection.y; actual=100; expected=100
+PASS: projection.source
+PASS: projection.secondhit.count
+PASS: projection.secondhit.x; actual=50; expected=50
+PASS: projection.secondhit.y; actual=150; expected=150
+PASS: group.perpath
+PASS: group.secondpath; actual=100; expected=100
+PASS: distance.center; actual=100; expected=100
+PASS: distance.inside; actual=20; expected=20
+PASS: distance.outside; actual=40; expected=40
+PASS: rule.invalid.0
+PASS: rule.invalid.1
+PASS: rule.invalid.2
+PASS: rule.invalid.3
+PASS: rule.invalid.4
+PASS: rule.invalid.5
+PASS: rule.invalid.6
+PASS: rule.invalid.7
+TOTAL RECIPE RULES: passed=60; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_669d9ec9dc1742738d3b138694107a3d\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-11T22:25:54
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

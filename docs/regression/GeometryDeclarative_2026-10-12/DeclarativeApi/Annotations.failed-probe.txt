@@ -1,0 +1,279 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\DeclarativeApi\RC_Section_NDM.xlsm
+SOURCE_SHA256: C294B19330CBBFDDA14594254E485E4BE39536DB436933304485D775DC124CC7
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e11f507ed7544dd481f4c0390635c6d5\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=6472; startTicks=639273911496106099
+===== modTestRecipeAnnotations.RunRecipeAnnotationTests =====
+SUITE_STARTED: modTestRecipeAnnotations.RunRecipeAnnotationTests; 2026-10-12T11:39:15
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=109371392; privateBytes=103415808; cpu=924.890625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=113668096; privateBytes=102854656; cpu=624.15625
+EXCEL_AFTER_SUITE: pid=6472; workingSet=131653632; privateBytes=82747392; cpu=4.59375
+EXCEL_AFTER_SUITE: pid=7832; workingSet=112054272; privateBytes=104103936; cpu=603.6875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=109150208; privateBytes=102096896; cpu=591.90625
+EXCEL_AFTER_SUITE: pid=12376; workingSet=108556288; privateBytes=122503168; cpu=593.40625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=109596672; privateBytes=102182912; cpu=603.34375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=112807936; privateBytes=103362560; cpu=606.640625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=113668096; privateBytes=102453248; cpu=605.5
+EXCEL_AFTER_SUITE: pid=25276; workingSet=110235648; privateBytes=123748352; cpu=607.03125
+EXCEL_AFTER_SUITE: pid=25816; workingSet=109215744; privateBytes=102002688; cpu=590.6875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=112660480; privateBytes=102215680; cpu=603.828125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=109461504; privateBytes=101871616; cpu=593.375
+EXCEL_AFTER_SUITE: pid=27976; workingSet=112803840; privateBytes=104734720; cpu=621.421875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=115793920; privateBytes=104419328; cpu=610.40625
+EXCEL_AFTER_SUITE: pid=29700; workingSet=138629120; privateBytes=116912128; cpu=35.578125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=113516544; privateBytes=111796224; cpu=613.5
+TOTAL RECIPE ANNOTATIONS: passed=39; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e11f507ed7544dd481f4c0390635c6d5\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeAnnotations.RunRecipeAnnotationTests; 2026-10-12T11:39:16
+===== modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests =====
+SUITE_STARTED: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; 2026-10-12T11:39:17
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=109371392; privateBytes=103415808; cpu=924.890625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=113668096; privateBytes=102854656; cpu=624.15625
+EXCEL_AFTER_SUITE: pid=6472; workingSet=141729792; privateBytes=90394624; cpu=8.859375
+EXCEL_AFTER_SUITE: pid=7832; workingSet=112054272; privateBytes=104103936; cpu=603.6875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=109150208; privateBytes=102096896; cpu=591.90625
+EXCEL_AFTER_SUITE: pid=12376; workingSet=108556288; privateBytes=122503168; cpu=593.40625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=109596672; privateBytes=102182912; cpu=603.34375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=112807936; privateBytes=103362560; cpu=606.640625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=113668096; privateBytes=102453248; cpu=605.5
+EXCEL_AFTER_SUITE: pid=25276; workingSet=110235648; privateBytes=123748352; cpu=607.03125
+EXCEL_AFTER_SUITE: pid=25816; workingSet=109215744; privateBytes=102002688; cpu=590.6875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=112660480; privateBytes=102215680; cpu=603.828125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=109461504; privateBytes=101871616; cpu=593.375
+EXCEL_AFTER_SUITE: pid=27976; workingSet=112803840; privateBytes=104734720; cpu=621.421875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=115793920; privateBytes=104419328; cpu=610.40625
+EXCEL_AFTER_SUITE: pid=29700; workingSet=138629120; privateBytes=116912128; cpu=35.578125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=113483776; privateBytes=111710208; cpu=613.5
+FAIL: snapshot.length.text.mm
+FAIL: snapshot.length.text.cm
+TOTAL RECIPE ANNOTATION SNAPSHOT: passed=13; failed=2
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e11f507ed7544dd481f4c0390635c6d5\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests; 2026-10-12T11:39:21
+===== modTestSectionRecipes.RunRecipeRuleTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-12T11:39:21
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=109371392; privateBytes=103415808; cpu=924.890625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=113668096; privateBytes=102854656; cpu=624.15625
+EXCEL_AFTER_SUITE: pid=6472; workingSet=145362944; privateBytes=95088640; cpu=10.421875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=112054272; privateBytes=104103936; cpu=603.6875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=109150208; privateBytes=102096896; cpu=591.90625
+EXCEL_AFTER_SUITE: pid=12376; workingSet=108732416; privateBytes=122576896; cpu=593.40625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=109596672; privateBytes=102182912; cpu=603.34375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=112812032; privateBytes=103362560; cpu=606.640625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=113668096; privateBytes=102453248; cpu=605.5
+EXCEL_AFTER_SUITE: pid=25276; workingSet=110235648; privateBytes=123748352; cpu=607.03125
+EXCEL_AFTER_SUITE: pid=25816; workingSet=109215744; privateBytes=102002688; cpu=590.6875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=112660480; privateBytes=102215680; cpu=603.828125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=109465600; privateBytes=101871616; cpu=593.375
+EXCEL_AFTER_SUITE: pid=27976; workingSet=112803840; privateBytes=104734720; cpu=621.421875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=115793920; privateBytes=104419328; cpu=610.40625
+EXCEL_AFTER_SUITE: pid=29700; workingSet=138629120; privateBytes=116912128; cpu=35.578125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=113483776; privateBytes=111710208; cpu=613.5
+PASS: ends.count.1
+PASS: ends.station.1.1; actual=10; expected=10
+PASS: ends.station.1.2; actual=45; expected=45
+PASS: ends.station.1.3; actual=80; expected=80
+PASS: ends.count.2
+PASS: ends.station.2.1; actual=27.5; expected=27.5
+PASS: ends.station.2.2; actual=45; expected=45
+PASS: ends.station.2.3; actual=62.5; expected=62.5
+PASS: ends.count.3
+PASS: ends.station.3.1; actual=10; expected=10
+PASS: ends.station.3.2; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.3.3; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.count.4
+PASS: ends.station.4.1; actual=33.3333333333333; expected=33.3333333333333
+PASS: ends.station.4.2; actual=56.6666666666667; expected=56.6666666666667
+PASS: ends.station.4.3; actual=80; expected=80
+PASS: one.midpoint; actual=45; expected=45
+PASS: closed.count
+PASS: closed.start.x; actual=100; expected=100
+PASS: closed.start.y; actual=0; expected=0
+PASS: closed.last.x; actual=-1.83690953073357E-14; expected=0
+PASS: closed.last.y; actual=-100; expected=-100
+PASS: maxstep.count
+PASS: maxstep.first; actual=10; expected=10
+PASS: maxstep.last; actual=80; expected=80
+PASS: maxstep.actual; actual=23.3333333333333; expected=23.3333333333333
+PASS: fixed.count
+PASS: fixed.first; actual=5; expected=5
+PASS: fixed.last; actual=95; expected=95
+PASS: fixed.step.2; actual=30; expected=30
+PASS: fixed.step.3; actual=30; expected=30
+PASS: fixed.step.4; actual=30; expected=30
+PASS: explicit.count
+PASS: explicit.last; actual=90; expected=90
+PASS: dependent.count
+PASS: dependent.first.x; actual=0; expected=0
+PASS: dependent.last.x; actual=100; expected=100
+PASS: dependent.normal; actual=10; expected=10
+PASS: dependent.source
+PASS: projection.count
+PASS: projection.skips
+PASS: projection.x; actual=50; expected=50
+PASS: projection.y; actual=100; expected=100
+PASS: projection.source
+PASS: projection.secondhit.count
+PASS: projection.secondhit.x; actual=50; expected=50
+PASS: projection.secondhit.y; actual=150; expected=150
+PASS: group.perpath
+PASS: group.secondpath; actual=100; expected=100
+PASS: distance.center; actual=100; expected=100
+PASS: distance.inside; actual=20; expected=20
+PASS: distance.outside; actual=40; expected=40
+PASS: rule.invalid.0
+PASS: rule.invalid.1
+PASS: rule.invalid.2
+PASS: rule.invalid.3
+PASS: rule.invalid.4
+PASS: rule.invalid.5
+PASS: rule.invalid.6
+PASS: rule.invalid.7
+PASS: middle.count
+PASS: middle.order.1; actual=45; expected=45
+PASS: middle.order.2; actual=45; expected=45
+PASS: middle.order.3; actual=62.5; expected=62.5
+PASS: middle.order.4; actual=27.5; expected=27.5
+PASS: middle.order.5; actual=80; expected=80
+PASS: middle.order.6; actual=80; expected=80
+PASS: middle.order.7; actual=10; expected=10
+PASS: middle.order.8; actual=10; expected=10
+PASS: middle.first.extra; actual=10; expected=10
+PASS: middle.anchor.first; actual=10; expected=10
+PASS: middle.anchor.last; actual=80; expected=80
+PASS: coincidence.physical.count
+PASS: coincidence.requested
+PASS: coincidence.memberships
+PASS: coincidence.annotation.owner
+PASS: coincidence.labels
+PASS: coincidence.labels.total
+PASS: coincidence.invalid.0
+PASS: coincidence.invalid.1
+PASS: coincidence.invalid.2
+PASS: coincidence.invalid.3
+PASS: coincidence.explicit.owner
+PASS: coincidence.owner.diameter; actual=10; expected=10
+PASS: annotations.partial.physical
+PASS: annotations.partial.groups
+PASS: annotations.partial.first
+PASS: annotations.partial.second
+PASS: annotations.partial.total
+PASS: annotations.repeated.anchor
+PASS: annotations.repeated.total
+PASS: index.oracle.1.-1.01
+PASS: index.oracle.1.-1
+PASS: index.oracle.1.-0.9
+PASS: index.oracle.1.0
+PASS: index.oracle.1.0.9
+PASS: index.oracle.1.1
+PASS: index.oracle.1.1.01
+PASS: index.oracle.2.-1.01
+PASS: index.oracle.2.-1
+PASS: index.oracle.2.-0.9
+PASS: index.oracle.2.0
+PASS: index.oracle.2.0.9
+PASS: index.oracle.2.1
+PASS: index.oracle.2.1.01
+PASS: index.oracle.3.-1.01
+PASS: index.oracle.3.-1
+PASS: index.oracle.3.-0.9
+PASS: index.oracle.3.0
+PASS: index.oracle.3.0.9
+PASS: index.oracle.3.1
+PASS: index.oracle.3.1.01
+PASS: index.oracle.4.-1.01
+PASS: index.oracle.4.-1
+PASS: index.oracle.4.-0.9
+PASS: index.oracle.4.0
+PASS: index.oracle.4.0.9
+PASS: index.oracle.4.1
+PASS: index.oracle.4.1.01
+PASS: index.oracle.5.-1.01
+PASS: index.oracle.5.-1
+PASS: index.oracle.5.-0.9
+PASS: index.oracle.5.0
+PASS: index.oracle.5.0.9
+PASS: index.oracle.5.1
+PASS: index.oracle.5.1.01
+PASS: index.oracle.6.-1.01
+PASS: index.oracle.6.-1
+PASS: index.oracle.6.-0.9
+PASS: index.oracle.6.0
+PASS: index.oracle.6.0.9
+PASS: index.oracle.6.1
+PASS: index.oracle.6.1.01
+PASS: index.oracle.7.-1.01
+PASS: index.oracle.7.-1
+PASS: index.oracle.7.-0.9
+PASS: index.oracle.7.0
+PASS: index.oracle.7.0.9
+PASS: index.oracle.7.1
+PASS: index.oracle.7.1.01
+PASS: index.clear
+PASS: index.reuse
+PASS: adjacent.area; actual=240000; expected=240000
+PASS: adjacent.closed
+PASS: adjacent.lower
+PASS: adjacent.upper
+PASS: adjacent.concavity
+PASS: adjacent.three.area; actual=30000; expected=30000
+PASS: adjacent.three.concavity
+PASS: adjacent.overlap.rejected
+PASS: adjacent.disjoint.rejected
+PASS: adjacent.corner.rejected
+PASS: measurements.rule.bounds
+PASS: measurements.min.x; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.max.x; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.min.y; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.max.y; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.anchor.x; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.anchor.start; actual=92.3879532511287; expected=92.3879532511287
+PASS: measurements.anchor.end; actual=38.268343236509; expected=38.268343236509
+PASS: measurements.round.positive; actual=124; expected=124
+PASS: measurements.round.negative; actual=-124; expected=-124
+PASS: measurements.round.exact; actual=123.6; expected=123.6
+PASS: measurements.coordinates.unchanged; actual=123.6; expected=123.6
+PASS: measurements.count
+PASS: joint.rule.default.x; actual=90; expected=90
+PASS: joint.rule.default.y; actual=0; expected=0
+PASS: joint.rule.incoming.x; actual=100; expected=100
+PASS: joint.rule.incoming.y; actual=10; expected=10
+PASS: projection.normal.count
+PASS: projection.normal.x.1; actual=200; expected=200
+PASS: projection.normal.y.1; actual=0; expected=0
+PASS: projection.normal.x.2; actual=141.42135623731; expected=141.42135623731
+PASS: projection.normal.y.2; actual=141.421356237309; expected=141.421356237309
+PASS: projection.normal.x.3; actual=1.22460635382238E-14; expected=1.22460635382238E-14
+PASS: projection.normal.y.3; actual=200; expected=200
+PASS: extreme.anchor.start; actual=6.12303176911189E-15; expected=0
+PASS: extreme.anchor.end; actual=6.12303176911189E-15; expected=0
+PASS: extreme.anchor.y; actual=100; expected=100
+PASS: projection.ordinal.count.0
+PASS: projection.publication.first.0; actual=0; expected=0
+PASS: projection.ordinal.source.x; actual=66.6666666666667; expected=66.6666666666667
+PASS: projection.ordinal.source.y; actual=110; expected=110
+PASS: projection.ordinal.count.1
+PASS: projection.publication.first.1; actual=0; expected=0
+PASS: projection.ordinal.success.x; actual=33.3333333333333; expected=33.3333333333333
+PASS: projection.ordinal.success.y; actual=110; expected=110
+TOTAL RECIPE RULES: passed=187; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e11f507ed7544dd481f4c0390635c6d5\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeRuleTests; 2026-10-12T11:39:22
+===== modTestSectionRecipes.RunDefinitionTests =====
+SUITE_STARTED: modTestSectionRecipes.RunDefinitionTests; 2026-10-12T11:39:23
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+SCRIPT ERROR: Исключение при вызове "Run" с "1" аргументами: "Не удается выполнить макрос "'RC_Section_NDM.xlsm'!modTestSectionRecipes.RunDefinitionTests". Возможно, этот макрос отсутствует в текущей книге либо все макросы отключены."
+SCRIPT_ERROR_CONTEXT: macro=modTestSectionRecipes.RunDefinitionTests; exceptionType=System.Management.Automation.MethodInvocationException
+SCRIPT_ERROR_POSITION: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1:246 знак:16
++         else { $result = [string]$excel.Run($macroName) }
++                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SCRIPT_ERROR_STACK: в <ScriptBlock>, C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Run-Audit02ModeTests.ps1: строка 246
+WATCHDOG_COMPLETED: exit=1; source unchanged=True

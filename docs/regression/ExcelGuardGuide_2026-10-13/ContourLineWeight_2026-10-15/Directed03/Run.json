@@ -1,0 +1,37 @@
+﻿{
+    "Stage":  "Directed03",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestPlotConfig.RunContourLineWeightTests",
+                     "Seconds":  0.6818133,
+                     "Characters":  8264,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPlotConfig.RunAudit03ContourArcTests",
+                     "Seconds":  2.330616,
+                     "Characters":  31467,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+                     "Seconds":  4.6876744,
+                     "Characters":  74851,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAutoCADContours.RunImportedDimensionTests",
+                     "Seconds":  0.6186881,
+                     "Characters":  915,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "121E47F1F7C52CF941705560ADE37F49630678BBC9D3A4A055B36A8A32D286EC",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T12:52:30.0850340+03:00"
+}

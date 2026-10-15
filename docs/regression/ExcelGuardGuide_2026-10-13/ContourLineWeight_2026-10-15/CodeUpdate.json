@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\ContourLineWeight_2026-10-15\\Candidate.xlsm",
+    "WorkbookSHA256":  "23EE55109824C644CD87D78800C2B788F7679CDBD7420115F0A2BF0352E1BFB6",
+    "ProductionSHA256":  "761AAB94CA350F5D6B93B1C1ADAA7F24481A54C88979E25F295A2ECAD10E15B5",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestPlotConfig"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

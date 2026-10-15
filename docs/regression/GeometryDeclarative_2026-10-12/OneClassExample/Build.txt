@@ -1,0 +1,32 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\OneClassExample\RC_Section_NDM.xlsm
+SOURCE_SHA256: 7B4DFE83364363825F29F686BD5136FB28CFD2371A11E7073DCD1CA9E3986C12
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0d296d1b48ba4857933124463dc77595\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=21532; startTicks=639273972226743171
+===== modTestRoundedTrapezoidExample.RunExampleBuildTests =====
+SUITE_STARTED: modTestRoundedTrapezoidExample.RunExampleBuildTests; 2026-10-12T13:20:27
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=107520000; privateBytes=102969344; cpu=927.984375
+EXCEL_AFTER_SUITE: pid=3688; workingSet=110444544; privateBytes=102920192; cpu=626.21875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=109076480; privateBytes=104124416; cpu=605.484375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=106459136; privateBytes=102199296; cpu=594.03125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=107085824; privateBytes=122392576; cpu=595.078125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=106258432; privateBytes=102141952; cpu=605.625
+EXCEL_AFTER_SUITE: pid=19004; workingSet=110026752; privateBytes=103206912; cpu=608.84375
+EXCEL_AFTER_SUITE: pid=21532; workingSet=140357632; privateBytes=88301568; cpu=7.890625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=110133248; privateBytes=102367232; cpu=607.3125
+EXCEL_AFTER_SUITE: pid=25276; workingSet=106569728; privateBytes=123662336; cpu=609.34375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=106889216; privateBytes=102100992; cpu=592.625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=109506560; privateBytes=102223872; cpu=605.65625
+EXCEL_AFTER_SUITE: pid=27384; workingSet=107077632; privateBytes=101945344; cpu=595.125
+EXCEL_AFTER_SUITE: pid=27976; workingSet=110329856; privateBytes=104779776; cpu=623.640625
+EXCEL_AFTER_SUITE: pid=28560; workingSet=111034368; privateBytes=104407040; cpu=612.234375
+EXCEL_AFTER_SUITE: pid=29700; workingSet=143589376; privateBytes=118239232; cpu=40.296875
+EXCEL_AFTER_SUITE: pid=30264; workingSet=109199360; privateBytes=111759360; cpu=615.296875
+TOTAL ONE CLASS BUILD: passed=94; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0d296d1b48ba4857933124463dc77595\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRoundedTrapezoidExample.RunExampleBuildTests; 2026-10-12T13:20:31
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

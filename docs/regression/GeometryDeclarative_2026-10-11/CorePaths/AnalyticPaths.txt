@@ -1,0 +1,296 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\CorePaths\RC_Section_NDM.xlsm
+SOURCE_SHA256: 54910414424E10586E5B3804E917B02C3E50392D9CD897DF260F711E078B6088
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_76da29998602425ba8d4be222f8efc87\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=31596; startTicks=639273388250126605
+===== modTestDeclarativeGeometry.RunPathTests =====
+SUITE_STARTED: modTestDeclarativeGeometry.RunPathTests; 2026-10-11T21:07:09
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159862784; privateBytes=103403520; cpu=903.5
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162869248; privateBytes=102830080; cpu=606.328125
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163147776; privateBytes=104087552; cpu=588.9375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157978624; privateBytes=101629952; cpu=575.3125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161525760; privateBytes=122474496; cpu=578.265625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157929472; privateBytes=102006784; cpu=585.9375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162918400; privateBytes=103333888; cpu=589.40625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162332672; privateBytes=102473728; cpu=589.390625
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162402304; privateBytes=123613184; cpu=589.671875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158986240; privateBytes=101920768; cpu=575.140625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162029568; privateBytes=102326272; cpu=588.359375
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158347264; privateBytes=101670912; cpu=577.21875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163106816; privateBytes=104513536; cpu=604.296875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164986880; privateBytes=104321024; cpu=594.609375
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166006784; privateBytes=111624192; cpu=597.671875
+EXCEL_AFTER_SUITE: pid=31596; workingSet=128434176; privateBytes=81977344; cpu=4.28125
+PASS: line.length; actual=5.000000000000000; expected=5.000000000000000
+PASS: line.x; actual=1.500000000000000; expected=1.500000000000000
+PASS: line.y; actual=2.000000000000000; expected=2.000000000000000
+PASS: line.tx; actual=0.600000000000000; expected=0.600000000000000
+PASS: line.ty; actual=0.800000000000000; expected=0.800000000000000
+PASS: line.minimum; actual=0.000000000000000; expected=0.000000000000000
+PASS: line.maximum; actual=3.000000000000000; expected=3.000000000000000
+PASS: line.reverse.x; actual=3.000000000000000; expected=3.000000000000000
+PASS: line.reverse.y; actual=4.000000000000000; expected=4.000000000000000
+PASS: line.reverse.tx; actual=-0.600000000000000; expected=-0.600000000000000
+PASS: line.reverse.ty; actual=-0.800000000000000; expected=-0.800000000000000
+PASS: line.rotate.x; actual=6.000000000000000; expected=6.000000000000000
+PASS: line.rotate.y; actual=23.000000000000000; expected=23.000000000000000
+PASS: line.rotate.tx; actual=-0.800000000000000; expected=-0.800000000000000
+PASS: line.rotate.ty; actual=0.600000000000000; expected=0.600000000000000
+PASS: line.transform.id
+PASS: line.transform.length; actual=5.000000000000000; expected=5.000000000000000
+PASS: line.sealed
+PASS: line.open
+PASS: arc.length; actual=31.415926535897900; expected=31.415926535897900
+PASS: arc.internal.x; actual=0.000000000000001; expected=0.000000000000000
+PASS: arc.internal.y; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.internal.tx; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: arc.internal.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: arc.bounds.y.min; actual=-7.071067811865470; expected=-7.071067811865470
+PASS: arc.bounds.y.max; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.bounds.x.min; actual=-10.000000000000000; expected=-10.000000000000000
+PASS: arc.bounds.x.max; actual=7.071067811865480; expected=7.071067811865470
+PASS: arc.reverse.end.x; actual=7.071067811865470; expected=7.071067811865470
+PASS: arc.reverse.end.y; actual=7.071067811865480; expected=7.071067811865470
+PASS: arc.reverse.end.tx; actual=0.707106781186548; expected=0.707106781186547
+PASS: arc.reverse.end.ty; actual=-0.707106781186547; expected=-0.707106781186547
+PASS: arc.reflection.sweep; actual=-3.141592653589790; expected=-3.141592653589790
+PASS: arc.reflection.x; actual=1000000.000000000000000; expected=1000000.000000000000000
+PASS: arc.reflection.y; actual=-1000010.000000000000000; expected=-1000010.000000000000000
+PASS: arc.reflection.length; actual=31.415926536145700; expected=31.415926535897900
+PASS: arc.reflection.id
+PASS: arc.negative.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.negative.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: arc.negative.tx; actual=0.000000000000000; expected=0.000000000000000
+PASS: arc.negative.ty; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: arc.negative.max; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.negative.min; actual=-7.071067811865470; expected=-7.071067811865470
+PASS: circle.closed
+PASS: circle.length; actual=62.831853071795900; expected=62.831853071795900
+PASS: circle.start.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: circle.start.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: circle.end.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: circle.end.y; actual=-0.000000000000002; expected=0.000000000000000
+PASS: circle.min; actual=-10.000000000000000; expected=-10.000000000000000
+PASS: circle.max; actual=10.000000000000000; expected=10.000000000000000
+PASS: compound.length; actual=228.539816339745000; expected=228.539816339745000
+PASS: compound.count
+PASS: compound.arc.x; actual=135.355339059327000; expected=135.355339059327000
+PASS: compound.arc.y; actual=14.644660940672600; expected=14.644660940672600
+PASS: compound.arc.tx; actual=0.707106781186547; expected=0.707106781186547
+PASS: compound.arc.ty; actual=0.707106781186547; expected=0.707106781186547
+PASS: compound.join.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: compound.join.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: compound.join.tx; actual=1.000000000000000; expected=1.000000000000000
+PASS: compound.join.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: compound.slice.length; actual=153.539816339745000; expected=153.539816339745000
+PASS: compound.slice.segments
+PASS: compound.slice.id
+PASS: compound.slice.start.x; actual=50.000000000000000; expected=50.000000000000000
+PASS: compound.slice.start.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: compound.slice.end.x; actual=150.000000000000000; expected=150.000000000000000
+PASS: compound.slice.end.y; actual=75.000000000000000; expected=75.000000000000000
+PASS: compound.source.unchanged; actual=228.539816339745000; expected=228.539816339745000
+PASS: compound.transform.x; actual=1100.000000000000000; expected=1100.000000000000000
+PASS: compound.transform.y; actual=-1850.000000000000000; expected=-1850.000000000000000
+PASS: compound.transform.tx; actual=1.000000000000000; expected=1.000000000000000
+PASS: compound.transform.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: split.length; actual=392.699081698724000; expected=392.699081698724000
+PASS: split.x.0; actual=95.710678118654700; expected=95.710678118654700
+PASS: split.y.0; actual=-110.710678118655000; expected=-110.710678118655000
+PASS: split.tx.0; actual=0.707106781186548; expected=0.707106781186548
+PASS: split.ty.0; actual=0.707106781186547; expected=0.707106781186547
+PASS: split.x.1; actual=102.301045336274000; expected=102.301045336274000
+PASS: split.y.1; actual=-103.439328416365000; expected=-103.439328416365000
+PASS: split.tx.1; actual=0.634393284163646; expected=0.634393284163645
+PASS: split.ty.1; actual=0.773010453362737; expected=0.773010453362737
+PASS: split.x.2; actual=108.146961230255000; expected=108.146961230255000
+PASS: split.y.2; actual=-95.557023301960300; expected=-95.557023301960200
+PASS: split.tx.2; actual=0.555570233019603; expected=0.555570233019602
+PASS: split.ty.2; actual=0.831469612302545; expected=0.831469612302545
+PASS: split.x.3; actual=113.192126434836000; expected=113.192126434836000
+PASS: split.y.3; actual=-87.139673682599800; expected=-87.139673682599800
+PASS: split.tx.3; actual=0.471396736825998; expected=0.471396736825998
+PASS: split.ty.3; actual=0.881921264348355; expected=0.881921264348355
+PASS: split.x.4; actual=117.387953251129000; expected=117.387953251129000
+PASS: split.y.4; actual=-78.268343236509000; expected=-78.268343236509000
+PASS: split.tx.4; actual=0.382683432365090; expected=0.382683432365090
+PASS: split.ty.4; actual=0.923879532511287; expected=0.923879532511287
+PASS: split.x.5; actual=120.694033573221000; expected=120.694033573221000
+PASS: split.y.5; actual=-69.028467725446200; expected=-69.028467725446300
+PASS: split.tx.5; actual=0.290284677254463; expected=0.290284677254463
+PASS: split.ty.5; actual=0.956940335732209; expected=0.956940335732209
+PASS: split.x.6; actual=123.078528040323000; expected=123.078528040323000
+PASS: split.y.6; actual=-59.509032201612800; expected=-59.509032201612800
+PASS: split.tx.6; actual=0.195090322016128; expected=0.195090322016128
+PASS: split.ty.6; actual=0.980785280403230; expected=0.980785280403230
+PASS: split.x.7; actual=124.518472667220000; expected=124.518472667220000
+PASS: split.y.7; actual=-49.801714032956100; expected=-49.801714032956100
+PASS: split.tx.7; actual=0.098017140329561; expected=0.098017140329561
+PASS: split.ty.7; actual=0.995184726672197; expected=0.995184726672197
+PASS: split.x.8; actual=125.000000000000000; expected=125.000000000000000
+PASS: split.y.8; actual=-40.000000000000000; expected=-40.000000000000000
+PASS: split.tx.8; actual=0.000000000000000; expected=0.000000000000000
+PASS: split.ty.8; actual=1.000000000000000; expected=1.000000000000000
+PASS: split.x.9; actual=124.518472667220000; expected=124.518472667220000
+PASS: split.y.9; actual=-30.198285967044000; expected=-30.198285967044000
+PASS: split.tx.9; actual=-0.098017140329561; expected=-0.098017140329560
+PASS: split.ty.9; actual=0.995184726672197; expected=0.995184726672197
+PASS: split.x.10; actual=123.078528040323000; expected=123.078528040323000
+PASS: split.y.10; actual=-20.490967798387200; expected=-20.490967798387200
+PASS: split.tx.10; actual=-0.195090322016128; expected=-0.195090322016128
+PASS: split.ty.10; actual=0.980785280403230; expected=0.980785280403230
+PASS: split.x.11; actual=120.694033573221000; expected=120.694033573221000
+PASS: split.y.11; actual=-10.971532274553800; expected=-10.971532274553800
+PASS: split.tx.11; actual=-0.290284677254462; expected=-0.290284677254462
+PASS: split.ty.11; actual=0.956940335732209; expected=0.956940335732209
+PASS: split.x.12; actual=117.387953251129000; expected=117.387953251129000
+PASS: split.y.12; actual=-1.731656763491050; expected=-1.731656763491050
+PASS: split.tx.12; actual=-0.382683432365090; expected=-0.382683432365090
+PASS: split.ty.12; actual=0.923879532511287; expected=0.923879532511287
+PASS: split.x.13; actual=113.192126434836000; expected=113.192126434836000
+PASS: split.y.13; actual=7.139673682599740; expected=7.139673682599750
+PASS: split.tx.13; actual=-0.471396736825997; expected=-0.471396736825998
+PASS: split.ty.13; actual=0.881921264348355; expected=0.881921264348355
+PASS: split.x.14; actual=108.146961230255000; expected=108.146961230255000
+PASS: split.y.14; actual=15.557023301960200; expected=15.557023301960200
+PASS: split.tx.14; actual=-0.555570233019602; expected=-0.555570233019602
+PASS: split.ty.14; actual=0.831469612302545; expected=0.831469612302545
+PASS: split.x.15; actual=102.301045336274000; expected=102.301045336274000
+PASS: split.y.15; actual=23.439328416364600; expected=23.439328416364500
+PASS: split.tx.15; actual=-0.634393284163645; expected=-0.634393284163645
+PASS: split.ty.15; actual=0.773010453362737; expected=0.773010453362737
+PASS: split.x.16; actual=95.710678118654800; expected=95.710678118654800
+PASS: split.y.16; actual=30.710678118654700; expected=30.710678118654700
+PASS: split.tx.16; actual=-0.707106781186547; expected=-0.707106781186547
+PASS: split.ty.16; actual=0.707106781186548; expected=0.707106781186548
+PASS: split.x.17; actual=88.439328416364600; expected=88.439328416364600
+PASS: split.y.17; actual=37.301045336273700; expected=37.301045336273700
+PASS: split.tx.17; actual=-0.773010453362737; expected=-0.773010453362737
+PASS: split.ty.17; actual=0.634393284163646; expected=0.634393284163646
+PASS: split.x.18; actual=80.557023301960200; expected=80.557023301960200
+PASS: split.y.18; actual=43.146961230254500; expected=43.146961230254500
+PASS: split.tx.18; actual=-0.831469612302545; expected=-0.831469612302545
+PASS: split.ty.18; actual=0.555570233019602; expected=0.555570233019602
+PASS: split.x.19; actual=72.139673682599800; expected=72.139673682599800
+PASS: split.y.19; actual=48.192126434835500; expected=48.192126434835500
+PASS: split.tx.19; actual=-0.881921264348355; expected=-0.881921264348355
+PASS: split.ty.19; actual=0.471396736825998; expected=0.471396736825998
+PASS: split.x.20; actual=63.268343236509000; expected=63.268343236509000
+PASS: split.y.20; actual=52.387953251128700; expected=52.387953251128700
+PASS: split.tx.20; actual=-0.923879532511287; expected=-0.923879532511287
+PASS: split.ty.20; actual=0.382683432365090; expected=0.382683432365090
+PASS: split.x.21; actual=54.028467725446200; expected=54.028467725446200
+PASS: split.y.21; actual=55.694033573220900; expected=55.694033573220900
+PASS: split.tx.21; actual=-0.956940335732209; expected=-0.956940335732209
+PASS: split.ty.21; actual=0.290284677254463; expected=0.290284677254463
+PASS: split.x.22; actual=44.509032201612900; expected=44.509032201612900
+PASS: split.y.22; actual=58.078528040323000; expected=58.078528040323000
+PASS: split.tx.22; actual=-0.980785280403230; expected=-0.980785280403230
+PASS: split.ty.22; actual=0.195090322016129; expected=0.195090322016129
+PASS: split.x.23; actual=34.801714032956100; expected=34.801714032956100
+PASS: split.y.23; actual=59.518472667219700; expected=59.518472667219700
+PASS: split.tx.23; actual=-0.995184726672197; expected=-0.995184726672197
+PASS: split.ty.23; actual=0.098017140329561; expected=0.098017140329561
+PASS: split.x.24; actual=25.000000000000000; expected=25.000000000000000
+PASS: split.y.24; actual=60.000000000000000; expected=60.000000000000000
+PASS: split.tx.24; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: split.ty.24; actual=0.000000000000000; expected=0.000000000000000
+PASS: split.x.25; actual=15.198285967044000; expected=15.198285967044000
+PASS: split.y.25; actual=59.518472667219700; expected=59.518472667219700
+PASS: split.tx.25; actual=-0.995184726672197; expected=-0.995184726672197
+PASS: split.ty.25; actual=-0.098017140329560; expected=-0.098017140329560
+PASS: split.x.26; actual=5.490967798387310; expected=5.490967798387200
+PASS: split.y.26; actual=58.078528040323100; expected=58.078528040323100
+PASS: split.tx.26; actual=-0.980785280403231; expected=-0.980785280403230
+PASS: split.ty.26; actual=-0.195090322016127; expected=-0.195090322016128
+PASS: split.x.27; actual=-4.028467725446110; expected=-4.028467725446180
+PASS: split.y.27; actual=55.694033573220900; expected=55.694033573220900
+PASS: split.tx.27; actual=-0.956940335732209; expected=-0.956940335732209
+PASS: split.ty.27; actual=-0.290284677254461; expected=-0.290284677254462
+PASS: split.x.28; actual=-13.268343236508900; expected=-13.268343236508900
+PASS: split.y.28; actual=52.387953251128700; expected=52.387953251128700
+PASS: split.tx.28; actual=-0.923879532511287; expected=-0.923879532511287
+PASS: split.ty.28; actual=-0.382683432365090; expected=-0.382683432365089
+PASS: split.x.29; actual=-22.139673682599800; expected=-22.139673682599700
+PASS: split.y.29; actual=48.192126434835500; expected=48.192126434835500
+PASS: split.tx.29; actual=-0.881921264348354; expected=-0.881921264348355
+PASS: split.ty.29; actual=-0.471396736825998; expected=-0.471396736825997
+PASS: split.x.30; actual=-30.557023301960300; expected=-30.557023301960200
+PASS: split.y.30; actual=43.146961230254500; expected=43.146961230254500
+PASS: split.tx.30; actual=-0.831469612302545; expected=-0.831469612302545
+PASS: split.ty.30; actual=-0.555570233019603; expected=-0.555570233019602
+PASS: split.x.31; actual=-38.439328416364500; expected=-38.439328416364500
+PASS: split.y.31; actual=37.301045336273700; expected=37.301045336273700
+PASS: split.tx.31; actual=-0.773010453362737; expected=-0.773010453362737
+PASS: split.ty.31; actual=-0.634393284163645; expected=-0.634393284163645
+PASS: split.x.32; actual=-45.710678118654600; expected=-45.710678118654700
+PASS: split.y.32; actual=30.710678118654900; expected=30.710678118654800
+PASS: split.tx.32; actual=-0.707106781186549; expected=-0.707106781186548
+PASS: split.ty.32; actual=-0.707106781186546; expected=-0.707106781186547
+PASS: split.x.33; actual=-52.301045336273600; expected=-52.301045336273700
+PASS: split.y.33; actual=23.439328416364600; expected=23.439328416364600
+PASS: split.tx.33; actual=-0.634393284163646; expected=-0.634393284163646
+PASS: split.ty.33; actual=-0.773010453362736; expected=-0.773010453362737
+PASS: split.x.34; actual=-58.146961230254500; expected=-58.146961230254500
+PASS: split.y.34; actual=15.557023301960300; expected=15.557023301960300
+PASS: split.tx.34; actual=-0.555570233019603; expected=-0.555570233019603
+PASS: split.ty.34; actual=-0.831469612302545; expected=-0.831469612302545
+PASS: split.x.35; actual=-63.192126434835500; expected=-63.192126434835500
+PASS: split.y.35; actual=7.139673682599790; expected=7.139673682599790
+PASS: split.tx.35; actual=-0.471396736825998; expected=-0.471396736825998
+PASS: split.ty.35; actual=-0.881921264348355; expected=-0.881921264348355
+PASS: split.x.36; actual=-67.387953251128700; expected=-67.387953251128700
+PASS: split.y.36; actual=-1.731656763491090; expected=-1.731656763491010
+PASS: split.tx.36; actual=-0.382683432365089; expected=-0.382683432365090
+PASS: split.ty.36; actual=-0.923879532511287; expected=-0.923879532511287
+PASS: split.x.37; actual=-70.694033573220900; expected=-70.694033573220900
+PASS: split.y.37; actual=-10.971532274553700; expected=-10.971532274553800
+PASS: split.tx.37; actual=-0.290284677254463; expected=-0.290284677254462
+PASS: split.ty.37; actual=-0.956940335732209; expected=-0.956940335732209
+PASS: split.x.38; actual=-73.078528040323000; expected=-73.078528040323100
+PASS: split.y.38; actual=-20.490967798387100; expected=-20.490967798387100
+PASS: split.tx.38; actual=-0.195090322016129; expected=-0.195090322016129
+PASS: split.ty.38; actual=-0.980785280403230; expected=-0.980785280403230
+PASS: split.x.39; actual=-74.518472667219700; expected=-74.518472667219700
+PASS: split.y.39; actual=-30.198285967043800; expected=-30.198285967043900
+PASS: split.tx.39; actual=-0.098017140329562; expected=-0.098017140329561
+PASS: split.ty.39; actual=-0.995184726672197; expected=-0.995184726672197
+PASS: split.x.40; actual=-75.000000000000000; expected=-75.000000000000000
+PASS: split.y.40; actual=-39.999999999999900; expected=-40.000000000000000
+PASS: split.tx.40; actual=-0.000000000000001; expected=0.000000000000000
+PASS: split.ty.40; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: ray.circle.hit
+PASS: ray.circle.nearest; actual=10.000000000000000; expected=10.000000000000000
+PASS: ray.circle.station; actual=31.415926535897900; expected=31.415926535897900
+PASS: ray.circle.away
+PASS: ray.circle.tangent
+PASS: ray.circle.tangent.distance; actual=20.000000000000000; expected=20.000000000000000
+PASS: ray.compound.hit
+PASS: ray.compound.distance; actual=50.000000000000000; expected=50.000000000000000
+PASS: ray.compound.station; actual=203.539816339745000; expected=203.539816339745000
+PASS: ray.line.beyond.target
+PASS: ray.line.collinear
+PASS: ray.line.collinear.distance; actual=0.000000000000000; expected=0.000000000000000
+PASS: ray.line.collinear.station; actual=2.500000000000000; expected=2.500000000000000
+PASS: ray.arc.beyond.target
+PASS: path.invalid.0
+PASS: path.invalid.1
+PASS: path.invalid.2
+PASS: path.invalid.3
+PASS: path.invalid.4
+PASS: path.invalid.5
+PASS: path.invalid.6
+PASS: path.invalid.7
+PASS: path.invalid.8
+PASS: path.invalid.9
+PASS: path.invalid.10
+PASS: path.invalid.11
+PASS: path.invalid.12
+TOTAL ANALYTIC PATHS: passed=265; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_76da29998602425ba8d4be222f8efc87\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestDeclarativeGeometry.RunPathTests; 2026-10-11T21:07:10
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

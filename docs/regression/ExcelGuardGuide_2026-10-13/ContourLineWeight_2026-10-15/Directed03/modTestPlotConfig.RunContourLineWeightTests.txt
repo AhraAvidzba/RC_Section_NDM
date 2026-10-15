@@ -1,0 +1,124 @@
+﻿OK: contourWeight.default.p0; actual=2; expected=2
+OK: contourWeight.singleKey.p0
+OK: contourWeight.render.0.2.0.NDMPlot_Contour3; actual=2; expected=2
+OK: contourWeight.render.0.2.0.NDMPlot_ContourArcLine4; actual=2; expected=2
+OK: contourWeight.render.0.2.0.NDMPlot_ContourCircle5; actual=2; expected=2
+OK: contourWeight.render.0.2.0.NDMPlot_Contour6; actual=2; expected=2
+OK: contourWeight.render.0.2.0.NDMPlot_ContourArcLine7; actual=2; expected=2
+OK: contourWeight.render.0.2.0.NDMPlot_ContourCircle8; actual=2; expected=2
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.0.2.1.NDMPlot_Contour3; actual=2; expected=2
+OK: contourWeight.render.0.2.1.NDMPlot_ContourArcLine4; actual=2; expected=2
+OK: contourWeight.render.0.2.1.NDMPlot_ContourCircle5; actual=2; expected=2
+OK: contourWeight.render.0.2.1.NDMPlot_Contour6; actual=2; expected=2
+OK: contourWeight.render.0.2.1.NDMPlot_ContourArcLine7; actual=2; expected=2
+OK: contourWeight.render.0.2.1.NDMPlot_ContourCircle8; actual=2; expected=2
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.0.0.7.0.NDMPlot_Contour3; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.0.NDMPlot_ContourArcLine4; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.0.NDMPlot_ContourCircle5; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.0.NDMPlot_Contour6; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.0.NDMPlot_ContourArcLine7; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.0.NDMPlot_ContourCircle8; actual=0.699999988079071; expected=0.7
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.0.0.7.1.NDMPlot_Contour3; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.1.NDMPlot_ContourArcLine4; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.1.NDMPlot_ContourCircle5; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.1.NDMPlot_Contour6; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.1.NDMPlot_ContourArcLine7; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.0.0.7.1.NDMPlot_ContourCircle8; actual=0.699999988079071; expected=0.7
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.0.3.25.0.NDMPlot_Contour3; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.0.NDMPlot_ContourArcLine4; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.0.NDMPlot_ContourCircle5; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.0.NDMPlot_Contour6; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.0.NDMPlot_ContourArcLine7; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.0.NDMPlot_ContourCircle8; actual=3.25; expected=3.25
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.0.3.25.1.NDMPlot_Contour3; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.1.NDMPlot_ContourArcLine4; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.1.NDMPlot_ContourCircle5; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.1.NDMPlot_Contour6; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.1.NDMPlot_ContourArcLine7; actual=3.25; expected=3.25
+OK: contourWeight.render.0.3.25.1.NDMPlot_ContourCircle8; actual=3.25; expected=3.25
+OK: contourWeight.sixBoundaries
+OK: contourWeight.invalid.p0.type8.rejected
+OK: contourWeight.invalid.p0.type8.address
+OK: contourWeight.invalid.p0.type8.preserved
+OK: contourWeight.invalid.p0.type8.rejected
+OK: contourWeight.invalid.p0.type8.address
+OK: contourWeight.invalid.p0.type8.preserved
+OK: contourWeight.invalid.p0.type5.rejected
+OK: contourWeight.invalid.p0.type5.address
+OK: contourWeight.invalid.p0.type5.preserved
+OK: contourWeight.invalid.p0.type5.rejected
+OK: contourWeight.invalid.p0.type5.address
+OK: contourWeight.invalid.p0.type5.preserved
+OK: contourWeight.invalid.p0.type10.rejected
+OK: contourWeight.invalid.p0.type10.address
+OK: contourWeight.invalid.p0.type10.preserved
+OK: contourWeight.disabled.ignoresError.p0
+OK: contourWeight.missing.p0
+OK: contourWeight.default.p1; actual=2; expected=2
+OK: contourWeight.singleKey.p1
+OK: contourWeight.render.1.2.0.NDMPlot_Contour3; actual=2; expected=2
+OK: contourWeight.render.1.2.0.NDMPlot_ContourArcLine4; actual=2; expected=2
+OK: contourWeight.render.1.2.0.NDMPlot_ContourCircle5; actual=2; expected=2
+OK: contourWeight.render.1.2.0.NDMPlot_Contour6; actual=2; expected=2
+OK: contourWeight.render.1.2.0.NDMPlot_ContourArcLine7; actual=2; expected=2
+OK: contourWeight.render.1.2.0.NDMPlot_ContourCircle8; actual=2; expected=2
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.1.2.1.NDMPlot_Contour3; actual=2; expected=2
+OK: contourWeight.render.1.2.1.NDMPlot_ContourArcLine4; actual=2; expected=2
+OK: contourWeight.render.1.2.1.NDMPlot_ContourCircle5; actual=2; expected=2
+OK: contourWeight.render.1.2.1.NDMPlot_Contour6; actual=2; expected=2
+OK: contourWeight.render.1.2.1.NDMPlot_ContourArcLine7; actual=2; expected=2
+OK: contourWeight.render.1.2.1.NDMPlot_ContourCircle8; actual=2; expected=2
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.1.0.7.0.NDMPlot_Contour3; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.0.NDMPlot_ContourArcLine4; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.0.NDMPlot_ContourCircle5; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.0.NDMPlot_Contour6; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.0.NDMPlot_ContourArcLine7; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.0.NDMPlot_ContourCircle8; actual=0.699999988079071; expected=0.7
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.1.0.7.1.NDMPlot_Contour3; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.1.NDMPlot_ContourArcLine4; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.1.NDMPlot_ContourCircle5; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.1.NDMPlot_Contour6; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.1.NDMPlot_ContourArcLine7; actual=0.699999988079071; expected=0.7
+OK: contourWeight.render.1.0.7.1.NDMPlot_ContourCircle8; actual=0.699999988079071; expected=0.7
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.1.3.25.0.NDMPlot_Contour3; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.0.NDMPlot_ContourArcLine4; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.0.NDMPlot_ContourCircle5; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.0.NDMPlot_Contour6; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.0.NDMPlot_ContourArcLine7; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.0.NDMPlot_ContourCircle8; actual=3.25; expected=3.25
+OK: contourWeight.sixBoundaries
+OK: contourWeight.render.1.3.25.1.NDMPlot_Contour3; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.1.NDMPlot_ContourArcLine4; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.1.NDMPlot_ContourCircle5; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.1.NDMPlot_Contour6; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.1.NDMPlot_ContourArcLine7; actual=3.25; expected=3.25
+OK: contourWeight.render.1.3.25.1.NDMPlot_ContourCircle8; actual=3.25; expected=3.25
+OK: contourWeight.sixBoundaries
+OK: contourWeight.invalid.p1.type8.rejected
+OK: contourWeight.invalid.p1.type8.address
+OK: contourWeight.invalid.p1.type8.preserved
+OK: contourWeight.invalid.p1.type8.rejected
+OK: contourWeight.invalid.p1.type8.address
+OK: contourWeight.invalid.p1.type8.preserved
+OK: contourWeight.invalid.p1.type5.rejected
+OK: contourWeight.invalid.p1.type5.address
+OK: contourWeight.invalid.p1.type5.preserved
+OK: contourWeight.invalid.p1.type5.rejected
+OK: contourWeight.invalid.p1.type5.address
+OK: contourWeight.invalid.p1.type5.preserved
+OK: contourWeight.invalid.p1.type10.rejected
+OK: contourWeight.invalid.p1.type10.address
+OK: contourWeight.invalid.p1.type10.preserved
+OK: contourWeight.disabled.ignoresError.p1
+OK: contourWeight.missing.p1
+OK: contourWeight.noSolve
+TOTAL_CONTOUR_LINE_WEIGHT: passed=123; failed=0

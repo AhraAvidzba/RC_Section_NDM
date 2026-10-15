@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "Directed02",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestPlotConfig.RunContourLineWeightTests",
+                     "Seconds":  0.27103279999999996,
+                     "Characters":  258,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "B40827834F1390C71C3C715C35C9A93E967AC0AFC51282C95FF7FE3105BAD02B",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T12:50:32.1777533+03:00"
+}

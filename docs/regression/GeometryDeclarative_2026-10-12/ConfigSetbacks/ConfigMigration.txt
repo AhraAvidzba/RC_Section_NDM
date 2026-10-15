@@ -1,0 +1,132 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-12\ConfigSetbacks\RC_Section_NDM.xlsm
+SOURCE_SHA256: 8D857BDC265943FA0C5A40D51F615BC8DB4B4050BF9C0BC81C4A9F02482120AF
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_36a9cee9a3bd4ae18bbe8e32378c1b29\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=27256; startTicks=639273885051452572
+===== modTestRecipeSetbacks.RunRecipeConfigMigrationTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeConfigMigrationTests; 2026-10-12T10:55:09
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=108879872; privateBytes=103428096; cpu=924.1875
+EXCEL_AFTER_SUITE: pid=3688; workingSet=112521216; privateBytes=102866944; cpu=623.234375
+EXCEL_AFTER_SUITE: pid=7832; workingSet=110485504; privateBytes=104177664; cpu=603.21875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=108683264; privateBytes=102154240; cpu=591.296875
+EXCEL_AFTER_SUITE: pid=12376; workingSet=107470848; privateBytes=122556416; cpu=592.921875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=108220416; privateBytes=101986304; cpu=602.734375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=109379584; privateBytes=103460864; cpu=606.15625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=111980544; privateBytes=102432768; cpu=604.9375
+EXCEL_AFTER_SUITE: pid=25276; workingSet=107667456; privateBytes=123637760; cpu=606.375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=108175360; privateBytes=101904384; cpu=590.296875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=110575616; privateBytes=102207488; cpu=603.296875
+EXCEL_AFTER_SUITE: pid=27256; workingSet=139194368; privateBytes=100925440; cpu=7.1875
+EXCEL_AFTER_SUITE: pid=27384; workingSet=107245568; privateBytes=101933056; cpu=592.796875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=111198208; privateBytes=104636416; cpu=620.796875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=113500160; privateBytes=104325120; cpu=609.890625
+EXCEL_AFTER_SUITE: pid=29700; workingSet=172314624; privateBytes=117161984; cpu=34.484375
+EXCEL_AFTER_SUITE: pid=30264; workingSet=111063040; privateBytes=111628288; cpu=613.125
+OK: migration.nonzero.start.saved; actual=37.5; expected=37.5
+OK: migration.nonzero.end.saved; actual=11.25; expected=11.25
+OK: migration.names.idempotent
+OK: migration.row.unchanged.1
+OK: migration.row.unchanged.2
+OK: migration.row.unchanged.3
+OK: migration.row.unchanged.4
+OK: migration.row.unchanged.5
+OK: migration.row.unchanged.6
+OK: migration.row.unchanged.7
+OK: migration.row.unchanged.8
+OK: migration.row.unchanged.9
+OK: migration.row.unchanged.10
+OK: migration.row.unchanged.11
+OK: migration.row.unchanged.12
+OK: migration.row.unchanged.13
+OK: migration.row.unchanged.14
+OK: migration.row.unchanged.15
+OK: migration.row.unchanged.16
+OK: migration.row.unchanged.17
+OK: migration.row.unchanged.18
+OK: migration.row.unchanged.19
+OK: migration.row.unchanged.20
+OK: migration.row.unchanged.21
+OK: migration.row.unchanged.22
+OK: migration.registry.choice.count
+OK: migration.registry.choice.1
+OK: migration.registry.choice.2
+OK: migration.registry.choice.3
+OK: migration.registry.choice.4
+OK: migration.state.success
+OK: migration.invalid.name.rejected
+OK: migration.state.failure
+OK: migration.failure.row.unchanged.1
+OK: migration.failure.row.unchanged.2
+OK: migration.failure.row.unchanged.3
+OK: migration.failure.row.unchanged.4
+OK: migration.failure.row.unchanged.5
+OK: migration.failure.row.unchanged.6
+OK: migration.failure.row.unchanged.7
+OK: migration.failure.row.unchanged.8
+OK: migration.failure.row.unchanged.9
+OK: migration.failure.row.unchanged.10
+OK: migration.failure.row.unchanged.11
+OK: migration.failure.row.unchanged.12
+OK: migration.failure.row.unchanged.13
+OK: migration.failure.row.unchanged.14
+OK: migration.failure.row.unchanged.15
+OK: migration.failure.row.unchanged.16
+OK: migration.failure.row.unchanged.17
+OK: migration.failure.row.unchanged.18
+OK: migration.failure.row.unchanged.19
+OK: migration.failure.row.unchanged.20
+OK: migration.failure.row.unchanged.21
+OK: migration.failure.row.unchanged.22
+TOTAL_RECIPE_CONFIG_MIGRATION: passed=55; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_36a9cee9a3bd4ae18bbe8e32378c1b29\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeConfigMigrationTests; 2026-10-12T10:55:12
+===== modTestRecipeSetbacks.RunRecipeSetbackInputTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-12T10:55:13
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=108879872; privateBytes=103428096; cpu=924.1875
+EXCEL_AFTER_SUITE: pid=3688; workingSet=112521216; privateBytes=102866944; cpu=623.234375
+EXCEL_AFTER_SUITE: pid=7832; workingSet=110485504; privateBytes=104177664; cpu=603.21875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=108683264; privateBytes=102154240; cpu=591.296875
+EXCEL_AFTER_SUITE: pid=12376; workingSet=107470848; privateBytes=122556416; cpu=592.921875
+EXCEL_AFTER_SUITE: pid=12560; workingSet=108220416; privateBytes=101986304; cpu=602.734375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=109379584; privateBytes=103460864; cpu=606.15625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=111980544; privateBytes=102432768; cpu=604.9375
+EXCEL_AFTER_SUITE: pid=25276; workingSet=107696128; privateBytes=123637760; cpu=606.375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=108175360; privateBytes=101904384; cpu=590.296875
+EXCEL_AFTER_SUITE: pid=26240; workingSet=110575616; privateBytes=102207488; cpu=603.296875
+EXCEL_AFTER_SUITE: pid=27256; workingSet=143753216; privateBytes=91934720; cpu=8.703125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=107245568; privateBytes=101933056; cpu=592.796875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=111198208; privateBytes=104636416; cpu=620.796875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=113500160; privateBytes=104325120; cpu=609.890625
+EXCEL_AFTER_SUITE: pid=29700; workingSet=172314624; privateBytes=117161984; cpu=34.484375
+EXCEL_AFTER_SUITE: pid=30264; workingSet=111063040; privateBytes=111628288; cpu=613.125
+OK: rounded.start.header
+OK: rounded.end.header
+OK: rounded.editable.centered
+OK: rounded.zero.first; actual=-360; expected=-360
+OK: rounded.start.actual; actual=-350; expected=-350
+OK: rounded.end.actual; actual=365.518002592747; expected=365.518002592747
+OK: rounded.concrete.unchanged; actual=215943.067096035; expected=215943.067096035
+OK: rounded.count.unchanged
+OK: rounded.opposite.row.unchanged; actual=-85; expected=-85
+OK: rounded.active.empty.rejected
+OK: rounded.active.negative.rejected
+OK: rounded.inactive.error.ignored
+OK: hollow.start.header
+OK: hollow.end.header
+OK: hollow.zero.projected.count
+OK: hollow.projection.filtered
+OK: hollow.skips.diagnostic
+OK: hollow.positions.not.redistributed
+OK: hollow.other.projections.unchanged
+OK: hollow.concrete.unchanged; actual=300000; expected=300000
+TOTAL_RECIPE_SETBACK_INPUT: passed=20; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_36a9cee9a3bd4ae18bbe8e32378c1b29\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-12T10:55:14
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

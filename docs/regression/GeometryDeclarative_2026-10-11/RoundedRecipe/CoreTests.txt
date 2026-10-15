@@ -1,0 +1,473 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\RoundedRecipe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 7CBCA17918D53DF828CACCBCEFFC3A7B45668599BE2A29D0F2BDDAFB02C62DD7
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_143c414747b84e6a96d2adc80329ef6d\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=3272; startTicks=639273506676035610
+===== modTestDeclarativeGeometry.RunCoreGeometryTests =====
+SUITE_STARTED: modTestDeclarativeGeometry.RunCoreGeometryTests; 2026-10-12T00:24:32
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159920128; privateBytes=103440384; cpu=905.609375
+EXCEL_AFTER_SUITE: pid=3272; workingSet=129146880; privateBytes=82268160; cpu=4.578125
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162934784; privateBytes=102924288; cpu=608.859375
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163225600; privateBytes=104144896; cpu=591.03125
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158019584; privateBytes=101629952; cpu=577.625
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161550336; privateBytes=122490880; cpu=580.15625
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157945856; privateBytes=102010880; cpu=588.34375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=163106816; privateBytes=103604224; cpu=592.0625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162308096; privateBytes=102387712; cpu=591.1875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162430976; privateBytes=123580416; cpu=592.046875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158978048; privateBytes=101851136; cpu=577.125
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161968128; privateBytes=102227968; cpu=590.359375
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158584832; privateBytes=101879808; cpu=579.015625
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163250176; privateBytes=104693760; cpu=606.703125
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164999168; privateBytes=104321024; cpu=596.53125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166035456; privateBytes=111644672; cpu=599.578125
+PASS: line.length; actual=5.000000000000000; expected=5.000000000000000
+PASS: line.x; actual=1.500000000000000; expected=1.500000000000000
+PASS: line.y; actual=2.000000000000000; expected=2.000000000000000
+PASS: line.tx; actual=0.600000000000000; expected=0.600000000000000
+PASS: line.ty; actual=0.800000000000000; expected=0.800000000000000
+PASS: line.minimum; actual=0.000000000000000; expected=0.000000000000000
+PASS: line.maximum; actual=3.000000000000000; expected=3.000000000000000
+PASS: line.reverse.x; actual=3.000000000000000; expected=3.000000000000000
+PASS: line.reverse.y; actual=4.000000000000000; expected=4.000000000000000
+PASS: line.reverse.tx; actual=-0.600000000000000; expected=-0.600000000000000
+PASS: line.reverse.ty; actual=-0.800000000000000; expected=-0.800000000000000
+PASS: line.rotate.x; actual=6.000000000000000; expected=6.000000000000000
+PASS: line.rotate.y; actual=23.000000000000000; expected=23.000000000000000
+PASS: line.rotate.tx; actual=-0.800000000000000; expected=-0.800000000000000
+PASS: line.rotate.ty; actual=0.600000000000000; expected=0.600000000000000
+PASS: line.transform.id
+PASS: line.transform.length; actual=5.000000000000000; expected=5.000000000000000
+PASS: line.sealed
+PASS: line.open
+PASS: arc.length; actual=31.415926535897900; expected=31.415926535897900
+PASS: arc.internal.x; actual=0.000000000000001; expected=0.000000000000000
+PASS: arc.internal.y; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.internal.tx; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: arc.internal.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: arc.bounds.y.min; actual=-7.071067811865470; expected=-7.071067811865470
+PASS: arc.bounds.y.max; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.bounds.x.min; actual=-10.000000000000000; expected=-10.000000000000000
+PASS: arc.bounds.x.max; actual=7.071067811865480; expected=7.071067811865470
+PASS: arc.reverse.end.x; actual=7.071067811865470; expected=7.071067811865470
+PASS: arc.reverse.end.y; actual=7.071067811865480; expected=7.071067811865470
+PASS: arc.reverse.end.tx; actual=0.707106781186548; expected=0.707106781186547
+PASS: arc.reverse.end.ty; actual=-0.707106781186547; expected=-0.707106781186547
+PASS: arc.reflection.sweep; actual=-3.141592653589790; expected=-3.141592653589790
+PASS: arc.reflection.x; actual=1000000.000000000000000; expected=1000000.000000000000000
+PASS: arc.reflection.y; actual=-1000010.000000000000000; expected=-1000010.000000000000000
+PASS: arc.reflection.length; actual=31.415926536145700; expected=31.415926535897900
+PASS: arc.reflection.id
+PASS: arc.negative.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.negative.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: arc.negative.tx; actual=0.000000000000000; expected=0.000000000000000
+PASS: arc.negative.ty; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: arc.negative.max; actual=10.000000000000000; expected=10.000000000000000
+PASS: arc.negative.min; actual=-7.071067811865470; expected=-7.071067811865470
+PASS: circle.closed
+PASS: circle.length; actual=62.831853071795900; expected=62.831853071795900
+PASS: circle.start.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: circle.start.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: circle.end.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: circle.end.y; actual=-0.000000000000002; expected=0.000000000000000
+PASS: circle.min; actual=-10.000000000000000; expected=-10.000000000000000
+PASS: circle.max; actual=10.000000000000000; expected=10.000000000000000
+PASS: compound.length; actual=228.539816339745000; expected=228.539816339745000
+PASS: compound.count
+PASS: compound.arc.x; actual=135.355339059327000; expected=135.355339059327000
+PASS: compound.arc.y; actual=14.644660940672600; expected=14.644660940672600
+PASS: compound.arc.tx; actual=0.707106781186547; expected=0.707106781186547
+PASS: compound.arc.ty; actual=0.707106781186547; expected=0.707106781186547
+PASS: compound.join.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: compound.join.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: compound.join.tx; actual=1.000000000000000; expected=1.000000000000000
+PASS: compound.join.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: compound.slice.length; actual=153.539816339745000; expected=153.539816339745000
+PASS: compound.slice.segments
+PASS: compound.slice.id
+PASS: compound.slice.start.x; actual=50.000000000000000; expected=50.000000000000000
+PASS: compound.slice.start.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: compound.slice.end.x; actual=150.000000000000000; expected=150.000000000000000
+PASS: compound.slice.end.y; actual=75.000000000000000; expected=75.000000000000000
+PASS: compound.source.unchanged; actual=228.539816339745000; expected=228.539816339745000
+PASS: compound.transform.x; actual=1100.000000000000000; expected=1100.000000000000000
+PASS: compound.transform.y; actual=-1850.000000000000000; expected=-1850.000000000000000
+PASS: compound.transform.tx; actual=1.000000000000000; expected=1.000000000000000
+PASS: compound.transform.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: joint.default.tx; actual=0.000000000000000; expected=0.000000000000000
+PASS: joint.default.ty; actual=1.000000000000000; expected=1.000000000000000
+PASS: joint.incoming.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: joint.incoming.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: joint.incoming.tx; actual=1.000000000000000; expected=1.000000000000000
+PASS: joint.incoming.ty; actual=0.000000000000000; expected=0.000000000000000
+PASS: joint.roundoff.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: joint.roundoff.y; actual=0.000000000000000; expected=0.000000000000000
+PASS: joint.after.tx; actual=0.000000000000000; expected=0.000000000000000
+PASS: joint.after.ty; actual=1.000000000000000; expected=1.000000000000000
+PASS: split.length; actual=392.699081698724000; expected=392.699081698724000
+PASS: split.x.0; actual=95.710678118654700; expected=95.710678118654700
+PASS: split.y.0; actual=-110.710678118655000; expected=-110.710678118655000
+PASS: split.tx.0; actual=0.707106781186548; expected=0.707106781186548
+PASS: split.ty.0; actual=0.707106781186547; expected=0.707106781186547
+PASS: split.x.1; actual=102.301045336274000; expected=102.301045336274000
+PASS: split.y.1; actual=-103.439328416365000; expected=-103.439328416365000
+PASS: split.tx.1; actual=0.634393284163646; expected=0.634393284163645
+PASS: split.ty.1; actual=0.773010453362737; expected=0.773010453362737
+PASS: split.x.2; actual=108.146961230255000; expected=108.146961230255000
+PASS: split.y.2; actual=-95.557023301960300; expected=-95.557023301960200
+PASS: split.tx.2; actual=0.555570233019603; expected=0.555570233019602
+PASS: split.ty.2; actual=0.831469612302545; expected=0.831469612302545
+PASS: split.x.3; actual=113.192126434836000; expected=113.192126434836000
+PASS: split.y.3; actual=-87.139673682599800; expected=-87.139673682599800
+PASS: split.tx.3; actual=0.471396736825998; expected=0.471396736825998
+PASS: split.ty.3; actual=0.881921264348355; expected=0.881921264348355
+PASS: split.x.4; actual=117.387953251129000; expected=117.387953251129000
+PASS: split.y.4; actual=-78.268343236509000; expected=-78.268343236509000
+PASS: split.tx.4; actual=0.382683432365090; expected=0.382683432365090
+PASS: split.ty.4; actual=0.923879532511287; expected=0.923879532511287
+PASS: split.x.5; actual=120.694033573221000; expected=120.694033573221000
+PASS: split.y.5; actual=-69.028467725446200; expected=-69.028467725446300
+PASS: split.tx.5; actual=0.290284677254463; expected=0.290284677254463
+PASS: split.ty.5; actual=0.956940335732209; expected=0.956940335732209
+PASS: split.x.6; actual=123.078528040323000; expected=123.078528040323000
+PASS: split.y.6; actual=-59.509032201612800; expected=-59.509032201612800
+PASS: split.tx.6; actual=0.195090322016128; expected=0.195090322016128
+PASS: split.ty.6; actual=0.980785280403230; expected=0.980785280403230
+PASS: split.x.7; actual=124.518472667220000; expected=124.518472667220000
+PASS: split.y.7; actual=-49.801714032956100; expected=-49.801714032956100
+PASS: split.tx.7; actual=0.098017140329561; expected=0.098017140329561
+PASS: split.ty.7; actual=0.995184726672197; expected=0.995184726672197
+PASS: split.x.8; actual=125.000000000000000; expected=125.000000000000000
+PASS: split.y.8; actual=-40.000000000000000; expected=-40.000000000000000
+PASS: split.tx.8; actual=0.000000000000000; expected=0.000000000000000
+PASS: split.ty.8; actual=1.000000000000000; expected=1.000000000000000
+PASS: split.x.9; actual=124.518472667220000; expected=124.518472667220000
+PASS: split.y.9; actual=-30.198285967044000; expected=-30.198285967044000
+PASS: split.tx.9; actual=-0.098017140329561; expected=-0.098017140329560
+PASS: split.ty.9; actual=0.995184726672197; expected=0.995184726672197
+PASS: split.x.10; actual=123.078528040323000; expected=123.078528040323000
+PASS: split.y.10; actual=-20.490967798387200; expected=-20.490967798387200
+PASS: split.tx.10; actual=-0.195090322016128; expected=-0.195090322016128
+PASS: split.ty.10; actual=0.980785280403230; expected=0.980785280403230
+PASS: split.x.11; actual=120.694033573221000; expected=120.694033573221000
+PASS: split.y.11; actual=-10.971532274553800; expected=-10.971532274553800
+PASS: split.tx.11; actual=-0.290284677254462; expected=-0.290284677254462
+PASS: split.ty.11; actual=0.956940335732209; expected=0.956940335732209
+PASS: split.x.12; actual=117.387953251129000; expected=117.387953251129000
+PASS: split.y.12; actual=-1.731656763491050; expected=-1.731656763491050
+PASS: split.tx.12; actual=-0.382683432365090; expected=-0.382683432365090
+PASS: split.ty.12; actual=0.923879532511287; expected=0.923879532511287
+PASS: split.x.13; actual=113.192126434836000; expected=113.192126434836000
+PASS: split.y.13; actual=7.139673682599740; expected=7.139673682599750
+PASS: split.tx.13; actual=-0.471396736825997; expected=-0.471396736825998
+PASS: split.ty.13; actual=0.881921264348355; expected=0.881921264348355
+PASS: split.x.14; actual=108.146961230255000; expected=108.146961230255000
+PASS: split.y.14; actual=15.557023301960200; expected=15.557023301960200
+PASS: split.tx.14; actual=-0.555570233019602; expected=-0.555570233019602
+PASS: split.ty.14; actual=0.831469612302545; expected=0.831469612302545
+PASS: split.x.15; actual=102.301045336274000; expected=102.301045336274000
+PASS: split.y.15; actual=23.439328416364600; expected=23.439328416364500
+PASS: split.tx.15; actual=-0.634393284163645; expected=-0.634393284163645
+PASS: split.ty.15; actual=0.773010453362737; expected=0.773010453362737
+PASS: split.x.16; actual=95.710678118654800; expected=95.710678118654800
+PASS: split.y.16; actual=30.710678118654700; expected=30.710678118654700
+PASS: split.tx.16; actual=-0.707106781186547; expected=-0.707106781186547
+PASS: split.ty.16; actual=0.707106781186548; expected=0.707106781186548
+PASS: split.x.17; actual=88.439328416364600; expected=88.439328416364600
+PASS: split.y.17; actual=37.301045336273700; expected=37.301045336273700
+PASS: split.tx.17; actual=-0.773010453362737; expected=-0.773010453362737
+PASS: split.ty.17; actual=0.634393284163646; expected=0.634393284163646
+PASS: split.x.18; actual=80.557023301960200; expected=80.557023301960200
+PASS: split.y.18; actual=43.146961230254500; expected=43.146961230254500
+PASS: split.tx.18; actual=-0.831469612302545; expected=-0.831469612302545
+PASS: split.ty.18; actual=0.555570233019602; expected=0.555570233019602
+PASS: split.x.19; actual=72.139673682599800; expected=72.139673682599800
+PASS: split.y.19; actual=48.192126434835500; expected=48.192126434835500
+PASS: split.tx.19; actual=-0.881921264348355; expected=-0.881921264348355
+PASS: split.ty.19; actual=0.471396736825998; expected=0.471396736825998
+PASS: split.x.20; actual=63.268343236509000; expected=63.268343236509000
+PASS: split.y.20; actual=52.387953251128700; expected=52.387953251128700
+PASS: split.tx.20; actual=-0.923879532511287; expected=-0.923879532511287
+PASS: split.ty.20; actual=0.382683432365090; expected=0.382683432365090
+PASS: split.x.21; actual=54.028467725446200; expected=54.028467725446200
+PASS: split.y.21; actual=55.694033573220900; expected=55.694033573220900
+PASS: split.tx.21; actual=-0.956940335732209; expected=-0.956940335732209
+PASS: split.ty.21; actual=0.290284677254463; expected=0.290284677254463
+PASS: split.x.22; actual=44.509032201612900; expected=44.509032201612900
+PASS: split.y.22; actual=58.078528040323000; expected=58.078528040323000
+PASS: split.tx.22; actual=-0.980785280403230; expected=-0.980785280403230
+PASS: split.ty.22; actual=0.195090322016129; expected=0.195090322016129
+PASS: split.x.23; actual=34.801714032956100; expected=34.801714032956100
+PASS: split.y.23; actual=59.518472667219700; expected=59.518472667219700
+PASS: split.tx.23; actual=-0.995184726672197; expected=-0.995184726672197
+PASS: split.ty.23; actual=0.098017140329561; expected=0.098017140329561
+PASS: split.x.24; actual=25.000000000000000; expected=25.000000000000000
+PASS: split.y.24; actual=60.000000000000000; expected=60.000000000000000
+PASS: split.tx.24; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: split.ty.24; actual=0.000000000000000; expected=0.000000000000000
+PASS: split.x.25; actual=15.198285967044000; expected=15.198285967044000
+PASS: split.y.25; actual=59.518472667219700; expected=59.518472667219700
+PASS: split.tx.25; actual=-0.995184726672197; expected=-0.995184726672197
+PASS: split.ty.25; actual=-0.098017140329560; expected=-0.098017140329560
+PASS: split.x.26; actual=5.490967798387310; expected=5.490967798387200
+PASS: split.y.26; actual=58.078528040323100; expected=58.078528040323100
+PASS: split.tx.26; actual=-0.980785280403231; expected=-0.980785280403230
+PASS: split.ty.26; actual=-0.195090322016127; expected=-0.195090322016128
+PASS: split.x.27; actual=-4.028467725446110; expected=-4.028467725446180
+PASS: split.y.27; actual=55.694033573220900; expected=55.694033573220900
+PASS: split.tx.27; actual=-0.956940335732209; expected=-0.956940335732209
+PASS: split.ty.27; actual=-0.290284677254461; expected=-0.290284677254462
+PASS: split.x.28; actual=-13.268343236508900; expected=-13.268343236508900
+PASS: split.y.28; actual=52.387953251128700; expected=52.387953251128700
+PASS: split.tx.28; actual=-0.923879532511287; expected=-0.923879532511287
+PASS: split.ty.28; actual=-0.382683432365090; expected=-0.382683432365089
+PASS: split.x.29; actual=-22.139673682599800; expected=-22.139673682599700
+PASS: split.y.29; actual=48.192126434835500; expected=48.192126434835500
+PASS: split.tx.29; actual=-0.881921264348354; expected=-0.881921264348355
+PASS: split.ty.29; actual=-0.471396736825998; expected=-0.471396736825997
+PASS: split.x.30; actual=-30.557023301960300; expected=-30.557023301960200
+PASS: split.y.30; actual=43.146961230254500; expected=43.146961230254500
+PASS: split.tx.30; actual=-0.831469612302545; expected=-0.831469612302545
+PASS: split.ty.30; actual=-0.555570233019603; expected=-0.555570233019602
+PASS: split.x.31; actual=-38.439328416364500; expected=-38.439328416364500
+PASS: split.y.31; actual=37.301045336273700; expected=37.301045336273700
+PASS: split.tx.31; actual=-0.773010453362737; expected=-0.773010453362737
+PASS: split.ty.31; actual=-0.634393284163645; expected=-0.634393284163645
+PASS: split.x.32; actual=-45.710678118654600; expected=-45.710678118654700
+PASS: split.y.32; actual=30.710678118654900; expected=30.710678118654800
+PASS: split.tx.32; actual=-0.707106781186549; expected=-0.707106781186548
+PASS: split.ty.32; actual=-0.707106781186546; expected=-0.707106781186547
+PASS: split.x.33; actual=-52.301045336273600; expected=-52.301045336273700
+PASS: split.y.33; actual=23.439328416364600; expected=23.439328416364600
+PASS: split.tx.33; actual=-0.634393284163646; expected=-0.634393284163646
+PASS: split.ty.33; actual=-0.773010453362736; expected=-0.773010453362737
+PASS: split.x.34; actual=-58.146961230254500; expected=-58.146961230254500
+PASS: split.y.34; actual=15.557023301960300; expected=15.557023301960300
+PASS: split.tx.34; actual=-0.555570233019603; expected=-0.555570233019603
+PASS: split.ty.34; actual=-0.831469612302545; expected=-0.831469612302545
+PASS: split.x.35; actual=-63.192126434835500; expected=-63.192126434835500
+PASS: split.y.35; actual=7.139673682599790; expected=7.139673682599790
+PASS: split.tx.35; actual=-0.471396736825998; expected=-0.471396736825998
+PASS: split.ty.35; actual=-0.881921264348355; expected=-0.881921264348355
+PASS: split.x.36; actual=-67.387953251128700; expected=-67.387953251128700
+PASS: split.y.36; actual=-1.731656763491090; expected=-1.731656763491010
+PASS: split.tx.36; actual=-0.382683432365089; expected=-0.382683432365090
+PASS: split.ty.36; actual=-0.923879532511287; expected=-0.923879532511287
+PASS: split.x.37; actual=-70.694033573220900; expected=-70.694033573220900
+PASS: split.y.37; actual=-10.971532274553700; expected=-10.971532274553800
+PASS: split.tx.37; actual=-0.290284677254463; expected=-0.290284677254462
+PASS: split.ty.37; actual=-0.956940335732209; expected=-0.956940335732209
+PASS: split.x.38; actual=-73.078528040323000; expected=-73.078528040323100
+PASS: split.y.38; actual=-20.490967798387100; expected=-20.490967798387100
+PASS: split.tx.38; actual=-0.195090322016129; expected=-0.195090322016129
+PASS: split.ty.38; actual=-0.980785280403230; expected=-0.980785280403230
+PASS: split.x.39; actual=-74.518472667219700; expected=-74.518472667219700
+PASS: split.y.39; actual=-30.198285967043800; expected=-30.198285967043900
+PASS: split.tx.39; actual=-0.098017140329562; expected=-0.098017140329561
+PASS: split.ty.39; actual=-0.995184726672197; expected=-0.995184726672197
+PASS: split.x.40; actual=-75.000000000000000; expected=-75.000000000000000
+PASS: split.y.40; actual=-39.999999999999900; expected=-40.000000000000000
+PASS: split.tx.40; actual=-0.000000000000001; expected=0.000000000000000
+PASS: split.ty.40; actual=-1.000000000000000; expected=-1.000000000000000
+PASS: ray.circle.hit
+PASS: ray.circle.nearest; actual=10.000000000000000; expected=10.000000000000000
+PASS: ray.circle.station; actual=31.415926535897900; expected=31.415926535897900
+PASS: ray.circle.away
+PASS: ray.circle.tangent
+PASS: ray.circle.tangent.distance; actual=20.000000000000000; expected=20.000000000000000
+PASS: ray.compound.hit
+PASS: ray.compound.distance; actual=50.000000000000000; expected=50.000000000000000
+PASS: ray.compound.station; actual=203.539816339745000; expected=203.539816339745000
+PASS: ray.line.beyond.target
+PASS: ray.line.collinear
+PASS: ray.line.collinear.distance; actual=0.000000000000000; expected=0.000000000000000
+PASS: ray.line.collinear.station; actual=2.500000000000000; expected=2.500000000000000
+PASS: ray.arc.beyond.target
+PASS: path.invalid.0
+PASS: path.invalid.1
+PASS: path.invalid.2
+PASS: path.invalid.3
+PASS: path.invalid.4
+PASS: path.invalid.5
+PASS: path.invalid.6
+PASS: path.invalid.7
+PASS: path.invalid.8
+PASS: path.invalid.9
+PASS: path.invalid.10
+PASS: path.invalid.11
+PASS: path.invalid.12
+PASS: path.invalid.13
+TOTAL ANALYTIC PATHS: passed=276; failed=0
+PASS: anchor.named.station; actual=139.269908169872000; expected=139.269908169872000
+PASS: anchor.chain.id
+PASS: anchor.chain.count
+PASS: anchor.chain.length; actual=114.269908169872000; expected=114.269908169872000
+PASS: anchor.chain.source.path
+PASS: anchor.chain.source.segment
+PASS: anchor.chain.source.first; actual=0.250000000000000; expected=0.250000000000000
+PASS: anchor.chain.source.last; actual=0.500000000000000; expected=0.500000000000000
+PASS: anchor.reverse.source.first; actual=0.800000000000000; expected=0.800000000000000
+PASS: anchor.reverse.source.last; actual=0.200000000000000; expected=0.200000000000000
+PASS: anchor.nested.source.first; actual=0.700000000000000; expected=0.700000000000000
+PASS: anchor.nested.source.last; actual=0.300000000000000; expected=0.300000000000000
+PASS: anchor.transform.id
+PASS: anchor.transform.source
+PASS: anchor.transform.source.first; actual=0.700000000000000; expected=0.700000000000000
+PASS: anchor.transform.source.last; actual=0.300000000000000; expected=0.300000000000000
+PASS: anchor.transform.x; actual=1000.000000000000000; expected=1000.000000000000000
+PASS: anchor.transform.y; actual=-1930.000000000000000; expected=-1930.000000000000000
+PASS: anchor.source.unchanged; actual=228.539816339745000; expected=228.539816339745000
+PASS: anchor.wrap.count
+PASS: anchor.wrap.unique.ids
+PASS: anchor.wrap.source
+PASS: anchor.wrap.length; actual=31.415926535897900; expected=31.415926535897900
+PASS: anchor.wrap.first.start; actual=0.750000000000000; expected=0.750000000000000
+PASS: anchor.wrap.first.end; actual=1.000000000000000; expected=1.000000000000000
+PASS: anchor.wrap.second.start; actual=0.000000000000000; expected=0.000000000000000
+PASS: anchor.wrap.second.end; actual=0.250000000000000; expected=0.250000000000000
+PASS: anchor.wrap.no.chord.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: anchor.wrap.no.chord.y; actual=0.000000000000003; expected=0.000000000000000
+PASS: anchor.reverse.count
+PASS: anchor.reverse.length; actual=31.415926535897900; expected=31.415926535897900
+PASS: anchor.reverse.first; actual=0.750000000000000; expected=0.750000000000000
+PASS: anchor.reverse.last; actual=0.250000000000000; expected=0.250000000000000
+PASS: anchor.reverse.other.side.x; actual=-10.000000000000000; expected=-10.000000000000000
+PASS: anchor.reverse.other.side.y; actual=-0.000000000000006; expected=0.000000000000000
+PASS: anchor.reverse.sweep; actual=-3.141592653589790; expected=-3.141592653589790
+PASS: anchor.full.loop.closed
+PASS: anchor.full.loop.length; actual=62.831853071795900; expected=62.831853071795900
+PASS: anchor.seam.loop.closed
+PASS: anchor.seam.loop.length; actual=62.831853071795900; expected=62.831853071795900
+PASS: anchor.seam.reverse.closed
+PASS: anchor.seam.reverse.source.first; actual=1.000000000000000; expected=1.000000000000000
+PASS: anchor.zero.radius.named.edge
+PASS: anchor.zero.radius.length; actual=80.000000000000000; expected=80.000000000000000
+PASS: anchor.facade.registered
+PASS: anchor.facade.source
+PASS: anchor.facade.moved.x; actual=1000100.000000000000000; expected=1000100.000000000000000
+PASS: anchor.facade.moved.y; actual=-1000000.000000000000000; expected=-1000000.000000000000000
+PASS: anchor.invalid.0
+PASS: anchor.invalid.1
+PASS: anchor.invalid.2
+PASS: anchor.invalid.3
+PASS: anchor.invalid.4
+PASS: anchor.invalid.5
+PASS: anchor.invalid.6
+PASS: anchor.invalid.7
+PASS: anchor.invalid.8
+PASS: anchor.invalid.9
+TOTAL PATH ANCHORS: passed=58; failed=0
+PASS: rounded.count
+PASS: rounded.closed
+PASS: rounded.length; actual=342.831853071796000; expected=342.831853071796000
+PASS: rounded.area; actual=7914.159265358980000; expected=7914.159265358980000
+PASS: rounded.radius.1; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.1; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.3; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.3; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.5; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.5; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.7; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.7; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.named.edge
+PASS: rounded.zero.radius.count
+PASS: rounded.zero.radius.edge
+PASS: rounded.individual.area; actual=7887.334035783660000; expected=7887.334035783660000
+PASS: rounded.sharp.length; actual=360.000000000000000; expected=360.000000000000000
+PASS: rounded.sharp.area; actual=8000.000000000000000; expected=8000.000000000000000
+PASS: rounded.concave.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: rounded.concave.cx; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.cy; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.start.x; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.start.y; actual=100.000000000000000; expected=100.000000000000000
+PASS: rounded.concave.end.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: rounded.concave.end.y; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.area; actual=29914.159265359000000; expected=29914.159265359000000
+PASS: rounded.clockwise.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: rounded.clockwise.area; actual=7914.159265358980000; expected=7914.159265358980000
+PASS: rounded.touching.count
+PASS: rounded.touching.area; actual=7853.981633974480000; expected=7853.981633974480000
+PASS: rounded.invalid.0
+PASS: rounded.invalid.1
+PASS: rounded.invalid.2
+PASS: rounded.invalid.3
+PASS: rounded.invalid.4
+PASS: rounded.invalid.5
+TOTAL ROUNDED POLYGONS: passed=36; failed=0
+PASS: offset.closed
+PASS: offset.rectangle.length; actual=311.415926535898000; expected=311.415926535898000
+PASS: offset.rectangle.area; actual=6278.539816339740000; expected=6278.539816339740000
+PASS: offset.rectangle.radius; actual=5.000000000000000; expected=5.000000000000000
+PASS: offset.rectangle.center.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: offset.rectangle.center.y; actual=10.000000000000000; expected=10.000000000000000
+PASS: offset.original.unchanged; actual=342.831853071796000; expected=342.831853071796000
+PASS: offset.outward.area; actual=9706.858347057700000; expected=9706.858347057700000
+PASS: offset.vanished.arc.count
+PASS: offset.vanished.arc.named.edge
+PASS: offset.vanished.arc.area; actual=3500.000000000000000; expected=3500.000000000000000
+PASS: offset.sharp.preserved
+PASS: offset.sharp.area; actual=9900.000000000000000; expected=9900.000000000000000
+PASS: offset.clockwise.area; actual=6278.539816339740000; expected=6278.539816339740000
+PASS: offset.clockwise.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: offset.concave.radius; actual=7.000000000000000; expected=7.000000000000000
+PASS: offset.concave.center.x; actual=45.000000000000000; expected=45.000000000000000
+PASS: offset.concave.center.y; actual=45.000000000000000; expected=45.000000000000000
+PASS: offset.concave.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: offset.concave.area; actual=5616.858407346410000; expected=5616.858407346410000
+PASS: offset.boundary.distance; actual=2.000000000000000; expected=2.000000000000000
+PASS: offset.far.area; actual=6278.539816339740000; expected=6278.539816339740000
+PASS: offset.far.center.x; actual=1000010.000000000000000; expected=1000010.000000000000000
+PASS: offset.far.center.y; actual=-999990.000000000000000; expected=-999990.000000000000000
+PASS: offset.invalid.0
+PASS: offset.invalid.1
+PASS: offset.invalid.2
+TOTAL ROUNDED OFFSET: passed=27; failed=0
+PASS: input.rows
+PASS: input.columns
+PASS: input.caption
+PASS: input.key
+PASS: input.key.scoped
+PASS: input.key.alias
+PASS: input.number; actual=4.000000000000000; expected=4.000000000000000
+PASS: input.count
+PASS: input.choice
+PASS: input.choice.default
+PASS: input.source
+PASS: input.blank
+PASS: input.number.default; actual=7.000000000000000; expected=7.000000000000000
+PASS: input.optional.todo; actual=0.000000000000000; expected=0.000000000000000
+PASS: input.optional.blank; actual=0.000000000000000; expected=0.000000000000000
+PASS: input.optional.active; actual=16.000000000000000; expected=16.000000000000000
+PASS: input.length; actual=16.000000000000000; expected=16.000000000000000
+PASS: input.value.immutable; actual=4.000000000000000; expected=4.000000000000000
+PASS: input.source.immutable
+PASS: input.invalid.0
+PASS: input.invalid.1
+PASS: input.invalid.2
+PASS: input.invalid.3
+PASS: input.invalid.4
+PASS: input.invalid.5
+PASS: input.invalid.6
+PASS: input.invalid.7
+PASS: input.invalid.8
+PASS: input.invalid.9
+PASS: input.invalid.10
+PASS: input.invalid.11
+PASS: input.invalid.12
+PASS: input.invalid.13
+PASS: input.invalid.14
+PASS: input.invalid.15
+PASS: input.invalid.16
+PASS: input.invalid.17
+PASS: input.invalid.18
+PASS: input.invalid.19
+PASS: input.invalid.20
+PASS: input.invalid.21
+TOTAL INPUT TABLES: passed=41; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_143c414747b84e6a96d2adc80329ef6d\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestDeclarativeGeometry.RunCoreGeometryTests; 2026-10-12T00:24:33
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

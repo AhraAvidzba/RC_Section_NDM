@@ -1,0 +1,703 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\HollowRecipe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 1BC010AED8CB79937AB132037B597CF9F6170AF7DFD7F410785221EAF166B00F
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3dab6727da5941f286f8af1b2a81efee\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=32004; startTicks=639273542867471588
+===== modTestSectionRecipes.RunHollowRecipeEquilibriumTests =====
+SUITE_STARTED: modTestSectionRecipes.RunHollowRecipeEquilibriumTests; 2026-10-12T01:24:51
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=160006144; privateBytes=103591936; cpu=906.625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=163024896; privateBytes=103038976; cpu=609.75
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163209216; privateBytes=104124416; cpu=591.875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158048256; privateBytes=101662720; cpu=578.453125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161538048; privateBytes=122441728; cpu=580.953125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=158044160; privateBytes=102178816; cpu=589.328125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=163004416; privateBytes=103370752; cpu=592.921875
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162353152; privateBytes=102465536; cpu=591.875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162516992; privateBytes=123727872; cpu=592.921875
+EXCEL_AFTER_SUITE: pid=25816; workingSet=159088640; privateBytes=102068224; cpu=577.765625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162045952; privateBytes=102371328; cpu=591.015625
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158601216; privateBytes=101892096; cpu=579.921875
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163229696; privateBytes=104636416; cpu=607.421875
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165068800; privateBytes=104427520; cpu=597.15625
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166047744; privateBytes=111697920; cpu=600.140625
+EXCEL_AFTER_SUITE: pid=32004; workingSet=143982592; privateBytes=96956416; cpu=12.53125
+PASS: equilibrium.HollowCentered.case0.1.0.converged
+PASS: equilibrium.HollowCentered.case0.1.0.sum.N
+PASS: equilibrium.HollowCentered.case0.1.0.sum.Mx
+PASS: equilibrium.HollowCentered.case0.1.0.sum.My
+PASS: equilibrium.HollowCentered.case0.1.0.residual.N; actual=2.63098627328873E-08; expected=2.63098627328873E-08
+PASS: equilibrium.HollowCentered.case0.1.0.residual.Mx; actual=8.81004780239891E-09; expected=8.81004780239891E-09
+PASS: equilibrium.HollowCentered.case0.1.0.residual.My; actual=9.42964106798172E-09; expected=9.42964106798172E-09
+PASS: equilibrium.HollowCentered.case0.1.1.converged
+PASS: equilibrium.HollowCentered.case0.1.1.sum.N
+PASS: equilibrium.HollowCentered.case0.1.1.sum.Mx
+PASS: equilibrium.HollowCentered.case0.1.1.sum.My
+PASS: equilibrium.HollowCentered.case0.1.1.residual.N; actual=-9.77888703346252E-09; expected=-9.77888703346252E-09
+PASS: equilibrium.HollowCentered.case0.1.1.residual.Mx; actual=-1.51991844177246E-06; expected=-1.51991844177246E-06
+PASS: equilibrium.HollowCentered.case0.1.1.residual.My; actual=1.13504938781261E-09; expected=1.13504938781261E-09
+PASS: equilibrium.HollowCentered.case0.1.2.converged
+PASS: equilibrium.HollowCentered.case0.1.2.sum.N
+PASS: equilibrium.HollowCentered.case0.1.2.sum.Mx
+PASS: equilibrium.HollowCentered.case0.1.2.sum.My
+PASS: equilibrium.HollowCentered.case0.1.2.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.HollowCentered.case0.1.2.residual.Mx; actual=-7.5123807619093E-08; expected=-7.5123807619093E-08
+PASS: equilibrium.HollowCentered.case0.1.2.residual.My; actual=0; expected=0
+PASS: equilibrium.HollowCentered.case0.1.3.converged
+PASS: equilibrium.HollowCentered.case0.1.3.sum.N
+PASS: equilibrium.HollowCentered.case0.1.3.sum.Mx
+PASS: equilibrium.HollowCentered.case0.1.3.sum.My
+PASS: equilibrium.HollowCentered.case0.1.3.residual.N; actual=-2.56113708019257E-09; expected=-2.56113708019257E-09
+PASS: equilibrium.HollowCentered.case0.1.3.residual.Mx; actual=-1.19209289550781E-06; expected=-1.19209289550781E-06
+PASS: equilibrium.HollowCentered.case0.1.3.residual.My; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.HollowCentered.case0.2.0.converged
+PASS: equilibrium.HollowCentered.case0.2.0.sum.N
+PASS: equilibrium.HollowCentered.case0.2.0.sum.Mx
+PASS: equilibrium.HollowCentered.case0.2.0.sum.My
+PASS: equilibrium.HollowCentered.case0.2.0.residual.N; actual=6.51925802230835E-09; expected=6.51925802230835E-09
+PASS: equilibrium.HollowCentered.case0.2.0.residual.Mx; actual=5.22891241416801E-08; expected=5.22891241416801E-08
+PASS: equilibrium.HollowCentered.case0.2.0.residual.My; actual=7.49423634260893E-10; expected=7.49423634260893E-10
+PASS: equilibrium.HollowCentered.case0.2.1.converged
+PASS: equilibrium.HollowCentered.case0.2.1.sum.N
+PASS: equilibrium.HollowCentered.case0.2.1.sum.Mx
+PASS: equilibrium.HollowCentered.case0.2.1.sum.My
+PASS: equilibrium.HollowCentered.case0.2.1.residual.N; actual=-2.56113708019257E-09; expected=-2.56113708019257E-09
+PASS: equilibrium.HollowCentered.case0.2.1.residual.Mx; actual=-7.15255737304688E-07; expected=-7.15255737304688E-07
+PASS: equilibrium.HollowCentered.case0.2.1.residual.My; actual=-3.34694050252438E-09; expected=-3.34694050252438E-09
+PASS: equilibrium.HollowCentered.case0.2.2.converged
+PASS: equilibrium.HollowCentered.case0.2.2.sum.N
+PASS: equilibrium.HollowCentered.case0.2.2.sum.Mx
+PASS: equilibrium.HollowCentered.case0.2.2.sum.My
+PASS: equilibrium.HollowCentered.case0.2.2.residual.N; actual=-4.42378222942352E-09; expected=-4.42378222942352E-09
+PASS: equilibrium.HollowCentered.case0.2.2.residual.Mx; actual=-1.45925696415361E-07; expected=-1.45925696415361E-07
+PASS: equilibrium.HollowCentered.case0.2.2.residual.My; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.HollowCentered.case0.2.3.converged
+PASS: equilibrium.HollowCentered.case0.2.3.sum.N
+PASS: equilibrium.HollowCentered.case0.2.3.sum.Mx
+PASS: equilibrium.HollowCentered.case0.2.3.sum.My
+PASS: equilibrium.HollowCentered.case0.2.3.residual.N; actual=-1.62981450557709E-09; expected=-1.62981450557709E-09
+PASS: equilibrium.HollowCentered.case0.2.3.residual.Mx; actual=2.98023223876953E-07; expected=2.98023223876953E-07
+PASS: equilibrium.HollowCentered.case0.2.3.residual.My; actual=0; expected=0
+PASS: equilibrium.HollowCentered.case0.3.0.converged
+PASS: equilibrium.HollowCentered.case0.3.0.sum.N
+PASS: equilibrium.HollowCentered.case0.3.0.sum.Mx
+PASS: equilibrium.HollowCentered.case0.3.0.sum.My
+PASS: equilibrium.HollowCentered.case0.3.0.residual.N; actual=1.69966369867325E-08; expected=1.69966369867325E-08
+PASS: equilibrium.HollowCentered.case0.3.0.residual.Mx; actual=1.99332816919195E-08; expected=1.99332816919195E-08
+PASS: equilibrium.HollowCentered.case0.3.0.residual.My; actual=1.01717887446284E-08; expected=1.01717887446284E-08
+PASS: equilibrium.HollowCentered.case0.3.1.converged
+PASS: equilibrium.HollowCentered.case0.3.1.sum.N
+PASS: equilibrium.HollowCentered.case0.3.1.sum.Mx
+PASS: equilibrium.HollowCentered.case0.3.1.sum.My
+PASS: equilibrium.HollowCentered.case0.3.1.residual.N; actual=6.51925802230835E-09; expected=6.51925802230835E-09
+PASS: equilibrium.HollowCentered.case0.3.1.residual.Mx; actual=-4.17232513427734E-07; expected=-4.17232513427734E-07
+PASS: equilibrium.HollowCentered.case0.3.1.residual.My; actual=-8.58562998473644E-09; expected=-8.58562998473644E-09
+PASS: equilibrium.HollowCentered.case0.3.2.converged
+PASS: equilibrium.HollowCentered.case0.3.2.sum.N
+PASS: equilibrium.HollowCentered.case0.3.2.sum.Mx
+PASS: equilibrium.HollowCentered.case0.3.2.sum.My
+PASS: equilibrium.HollowCentered.case0.3.2.residual.N; actual=-6.05359673500061E-09; expected=-6.05359673500061E-09
+PASS: equilibrium.HollowCentered.case0.3.2.residual.Mx; actual=2.39186761064047E-07; expected=2.39186761064047E-07
+PASS: equilibrium.HollowCentered.case0.3.2.residual.My; actual=8.94069671630859E-08; expected=8.94069671630859E-08
+PASS: equilibrium.HollowCentered.case0.3.3.converged
+PASS: equilibrium.HollowCentered.case0.3.3.sum.N
+PASS: equilibrium.HollowCentered.case0.3.3.sum.Mx
+PASS: equilibrium.HollowCentered.case0.3.3.sum.My
+PASS: equilibrium.HollowCentered.case0.3.3.residual.N; actual=0; expected=0
+PASS: equilibrium.HollowCentered.case0.3.3.residual.Mx; actual=2.08616256713867E-07; expected=2.08616256713867E-07
+PASS: equilibrium.HollowCentered.case0.3.3.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.HollowCentered.case1.1.0.converged
+PASS: equilibrium.HollowCentered.case1.1.0.sum.N
+PASS: equilibrium.HollowCentered.case1.1.0.sum.Mx
+PASS: equilibrium.HollowCentered.case1.1.0.sum.My
+PASS: equilibrium.HollowCentered.case1.1.0.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowCentered.case1.1.0.residual.Mx; actual=2.67706099066345E-07; expected=2.67706099066345E-07
+PASS: equilibrium.HollowCentered.case1.1.0.residual.My; actual=-2.58355612459127E-08; expected=-2.58355612459127E-08
+PASS: equilibrium.HollowCentered.case1.1.1.converged
+PASS: equilibrium.HollowCentered.case1.1.1.sum.N
+PASS: equilibrium.HollowCentered.case1.1.1.sum.Mx
+PASS: equilibrium.HollowCentered.case1.1.1.sum.My
+PASS: equilibrium.HollowCentered.case1.1.1.residual.N; actual=2.79396772384644E-09; expected=2.79396772384644E-09
+PASS: equilibrium.HollowCentered.case1.1.1.residual.Mx; actual=1.78813934326172E-07; expected=1.78813934326172E-07
+PASS: equilibrium.HollowCentered.case1.1.1.residual.My; actual=-3.64480001735501E-09; expected=-3.64480001735501E-09
+PASS: equilibrium.HollowCentered.case1.1.2.converged
+PASS: equilibrium.HollowCentered.case1.1.2.sum.N
+PASS: equilibrium.HollowCentered.case1.1.2.sum.Mx
+PASS: equilibrium.HollowCentered.case1.1.2.sum.My
+PASS: equilibrium.HollowCentered.case1.1.2.residual.N; actual=4.65661287307739E-09; expected=4.65661287307739E-09
+PASS: equilibrium.HollowCentered.case1.1.2.residual.Mx; actual=-8.05413264970412E-08; expected=-8.05413264970412E-08
+PASS: equilibrium.HollowCentered.case1.1.2.residual.My; actual=-2.98023223876953E-08; expected=-2.98023223876953E-08
+PASS: equilibrium.HollowCentered.case1.1.3.converged
+PASS: equilibrium.HollowCentered.case1.1.3.sum.N
+PASS: equilibrium.HollowCentered.case1.1.3.sum.Mx
+PASS: equilibrium.HollowCentered.case1.1.3.sum.My
+PASS: equilibrium.HollowCentered.case1.1.3.residual.N; actual=5.82076609134674E-09; expected=5.82076609134674E-09
+PASS: equilibrium.HollowCentered.case1.1.3.residual.Mx; actual=1.19209289550781E-07; expected=1.19209289550781E-07
+PASS: equilibrium.HollowCentered.case1.1.3.residual.My; actual=-2.08616256713867E-07; expected=-2.08616256713867E-07
+PASS: equilibrium.HollowCentered.case1.2.0.converged
+PASS: equilibrium.HollowCentered.case1.2.0.sum.N
+PASS: equilibrium.HollowCentered.case1.2.0.sum.Mx
+PASS: equilibrium.HollowCentered.case1.2.0.sum.My
+PASS: equilibrium.HollowCentered.case1.2.0.residual.N; actual=3.49245965480804E-09; expected=3.49245965480804E-09
+PASS: equilibrium.HollowCentered.case1.2.0.residual.Mx; actual=-5.32311901224602E-08; expected=-5.32311901224602E-08
+PASS: equilibrium.HollowCentered.case1.2.0.residual.My; actual=-5.85680481890449E-09; expected=-5.85680481890449E-09
+PASS: equilibrium.HollowCentered.case1.2.1.converged
+PASS: equilibrium.HollowCentered.case1.2.1.sum.N
+PASS: equilibrium.HollowCentered.case1.2.1.sum.Mx
+PASS: equilibrium.HollowCentered.case1.2.1.sum.My
+PASS: equilibrium.HollowCentered.case1.2.1.residual.N; actual=4.19095158576965E-09; expected=4.19095158576965E-09
+PASS: equilibrium.HollowCentered.case1.2.1.residual.Mx; actual=-8.94069671630859E-08; expected=-8.94069671630859E-08
+PASS: equilibrium.HollowCentered.case1.2.1.residual.My; actual=6.30666363576893E-09; expected=6.30666363576893E-09
+PASS: equilibrium.HollowCentered.case1.2.2.converged
+PASS: equilibrium.HollowCentered.case1.2.2.sum.N
+PASS: equilibrium.HollowCentered.case1.2.2.sum.Mx
+PASS: equilibrium.HollowCentered.case1.2.2.sum.My
+PASS: equilibrium.HollowCentered.case1.2.2.residual.N; actual=4.88944351673126E-09; expected=4.88944351673126E-09
+PASS: equilibrium.HollowCentered.case1.2.2.residual.Mx; actual=-1.50539378296344E-07; expected=-1.50539378296344E-07
+PASS: equilibrium.HollowCentered.case1.2.2.residual.My; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.HollowCentered.case1.2.3.converged
+PASS: equilibrium.HollowCentered.case1.2.3.sum.N
+PASS: equilibrium.HollowCentered.case1.2.3.sum.Mx
+PASS: equilibrium.HollowCentered.case1.2.3.sum.My
+PASS: equilibrium.HollowCentered.case1.2.3.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowCentered.case1.2.3.residual.Mx; actual=-7.15255737304688E-07; expected=-7.15255737304688E-07
+PASS: equilibrium.HollowCentered.case1.2.3.residual.My; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.HollowCentered.case1.3.0.converged
+PASS: equilibrium.HollowCentered.case1.3.0.sum.N
+PASS: equilibrium.HollowCentered.case1.3.0.sum.Mx
+PASS: equilibrium.HollowCentered.case1.3.0.sum.My
+PASS: equilibrium.HollowCentered.case1.3.0.residual.N; actual=-2.56113708019257E-09; expected=-2.56113708019257E-09
+PASS: equilibrium.HollowCentered.case1.3.0.residual.Mx; actual=-2.64304702568552E-07; expected=-2.64304702568552E-07
+PASS: equilibrium.HollowCentered.case1.3.0.residual.My; actual=1.26710801851004E-08; expected=1.26710801851004E-08
+PASS: equilibrium.HollowCentered.case1.3.1.converged
+PASS: equilibrium.HollowCentered.case1.3.1.sum.N
+PASS: equilibrium.HollowCentered.case1.3.1.sum.Mx
+PASS: equilibrium.HollowCentered.case1.3.1.sum.My
+PASS: equilibrium.HollowCentered.case1.3.1.residual.N; actual=-2.09547579288483E-09; expected=-2.09547579288483E-09
+PASS: equilibrium.HollowCentered.case1.3.1.residual.Mx; actual=-1.49011611938477E-07; expected=-1.49011611938477E-07
+PASS: equilibrium.HollowCentered.case1.3.1.residual.My; actual=1.40273641591193E-08; expected=1.40273641591193E-08
+PASS: equilibrium.HollowCentered.case1.3.2.converged
+PASS: equilibrium.HollowCentered.case1.3.2.sum.N
+PASS: equilibrium.HollowCentered.case1.3.2.sum.Mx
+PASS: equilibrium.HollowCentered.case1.3.2.sum.My
+PASS: equilibrium.HollowCentered.case1.3.2.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.HollowCentered.case1.3.2.residual.Mx; actual=2.7315471129441E-07; expected=2.7315471129441E-07
+PASS: equilibrium.HollowCentered.case1.3.2.residual.My; actual=1.78813934326172E-07; expected=1.78813934326172E-07
+PASS: equilibrium.HollowCentered.case1.3.3.converged
+PASS: equilibrium.HollowCentered.case1.3.3.sum.N
+PASS: equilibrium.HollowCentered.case1.3.3.sum.Mx
+PASS: equilibrium.HollowCentered.case1.3.3.sum.My
+PASS: equilibrium.HollowCentered.case1.3.3.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.HollowCentered.case1.3.3.residual.Mx; actual=-8.94069671630859E-08; expected=-8.94069671630859E-08
+PASS: equilibrium.HollowCentered.case1.3.3.residual.My; actual=0; expected=0
+PASS: equilibrium.HollowCentered.case2.1.0.converged
+PASS: equilibrium.HollowCentered.case2.1.0.sum.N
+PASS: equilibrium.HollowCentered.case2.1.0.sum.Mx
+PASS: equilibrium.HollowCentered.case2.1.0.sum.My
+PASS: equilibrium.HollowCentered.case2.1.0.residual.N; actual=3.49245965480804E-09; expected=3.49245965480804E-09
+PASS: equilibrium.HollowCentered.case2.1.0.residual.Mx; actual=1.65881033353799E-07; expected=1.65881033353799E-07
+PASS: equilibrium.HollowCentered.case2.1.0.residual.My; actual=-1.65869096235838E-08; expected=-1.65869096235838E-08
+PASS: equilibrium.HollowCentered.case2.1.1.converged
+PASS: equilibrium.HollowCentered.case2.1.1.sum.N
+PASS: equilibrium.HollowCentered.case2.1.1.sum.Mx
+PASS: equilibrium.HollowCentered.case2.1.1.sum.My
+PASS: equilibrium.HollowCentered.case2.1.1.residual.N; actual=5.355104804039E-09; expected=5.355104804039E-09
+PASS: equilibrium.HollowCentered.case2.1.1.residual.Mx; actual=-4.4703483581543E-07; expected=-4.4703483581543E-07
+PASS: equilibrium.HollowCentered.case2.1.1.residual.My; actual=6.70138433633838E-09; expected=6.70138433633838E-09
+PASS: equilibrium.HollowCentered.case2.1.2.converged
+PASS: equilibrium.HollowCentered.case2.1.2.sum.N
+PASS: equilibrium.HollowCentered.case2.1.2.sum.Mx
+PASS: equilibrium.HollowCentered.case2.1.2.sum.My
+PASS: equilibrium.HollowCentered.case2.1.2.residual.N; actual=4.42378222942352E-09; expected=4.42378222942352E-09
+PASS: equilibrium.HollowCentered.case2.1.2.residual.Mx; actual=6.92306230121176E-08; expected=6.92306230121176E-08
+PASS: equilibrium.HollowCentered.case2.1.2.residual.My; actual=0; expected=0
+PASS: equilibrium.HollowCentered.case2.1.3.converged
+PASS: equilibrium.HollowCentered.case2.1.3.sum.N
+PASS: equilibrium.HollowCentered.case2.1.3.sum.Mx
+PASS: equilibrium.HollowCentered.case2.1.3.sum.My
+PASS: equilibrium.HollowCentered.case2.1.3.residual.N; actual=4.19095158576965E-09; expected=4.19095158576965E-09
+PASS: equilibrium.HollowCentered.case2.1.3.residual.Mx; actual=-3.57627868652344E-07; expected=-3.57627868652344E-07
+PASS: equilibrium.HollowCentered.case2.1.3.residual.My; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.HollowCentered.case2.2.0.converged
+PASS: equilibrium.HollowCentered.case2.2.0.sum.N
+PASS: equilibrium.HollowCentered.case2.2.0.sum.Mx
+PASS: equilibrium.HollowCentered.case2.2.0.sum.My
+PASS: equilibrium.HollowCentered.case2.2.0.residual.N; actual=4.42378222942352E-09; expected=4.42378222942352E-09
+PASS: equilibrium.HollowCentered.case2.2.0.residual.Mx; actual=3.02195758195012E-07; expected=3.02195758195012E-07
+PASS: equilibrium.HollowCentered.case2.2.0.residual.My; actual=-1.06241486719227E-08; expected=-1.06241486719227E-08
+PASS: equilibrium.HollowCentered.case2.2.1.converged
+PASS: equilibrium.HollowCentered.case2.2.1.sum.N
+PASS: equilibrium.HollowCentered.case2.2.1.sum.Mx
+PASS: equilibrium.HollowCentered.case2.2.1.sum.My
+PASS: equilibrium.HollowCentered.case2.2.1.residual.N; actual=2.56113708019257E-09; expected=2.56113708019257E-09
+PASS: equilibrium.HollowCentered.case2.2.1.residual.Mx; actual=4.76837158203125E-07; expected=4.76837158203125E-07
+PASS: equilibrium.HollowCentered.case2.2.1.residual.My; actual=-7.04858393874019E-11; expected=-7.04858393874019E-11
+PASS: equilibrium.HollowCentered.case2.2.2.converged
+PASS: equilibrium.HollowCentered.case2.2.2.sum.N
+PASS: equilibrium.HollowCentered.case2.2.2.sum.Mx
+PASS: equilibrium.HollowCentered.case2.2.2.sum.My
+PASS: equilibrium.HollowCentered.case2.2.2.residual.N; actual=3.49245965480804E-09; expected=3.49245965480804E-09
+PASS: equilibrium.HollowCentered.case2.2.2.residual.Mx; actual=-4.7013259063533E-08; expected=-4.7013259063533E-08
+PASS: equilibrium.HollowCentered.case2.2.2.residual.My; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.HollowCentered.case2.2.3.converged
+PASS: equilibrium.HollowCentered.case2.2.3.sum.N
+PASS: equilibrium.HollowCentered.case2.2.3.sum.Mx
+PASS: equilibrium.HollowCentered.case2.2.3.sum.My
+PASS: equilibrium.HollowCentered.case2.2.3.residual.N; actual=5.12227416038513E-09; expected=5.12227416038513E-09
+PASS: equilibrium.HollowCentered.case2.2.3.residual.Mx; actual=0; expected=0
+PASS: equilibrium.HollowCentered.case2.2.3.residual.My; actual=-2.98023223876953E-08; expected=-2.98023223876953E-08
+PASS: equilibrium.HollowCentered.case2.3.0.converged
+PASS: equilibrium.HollowCentered.case2.3.0.sum.N
+PASS: equilibrium.HollowCentered.case2.3.0.sum.Mx
+PASS: equilibrium.HollowCentered.case2.3.0.sum.My
+PASS: equilibrium.HollowCentered.case2.3.0.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.HollowCentered.case2.3.0.residual.Mx; actual=4.07689526582544E-08; expected=4.07689526582544E-08
+PASS: equilibrium.HollowCentered.case2.3.0.residual.My; actual=1.14255271910224E-09; expected=1.14255271910224E-09
+PASS: equilibrium.HollowCentered.case2.3.1.converged
+PASS: equilibrium.HollowCentered.case2.3.1.sum.N
+PASS: equilibrium.HollowCentered.case2.3.1.sum.Mx
+PASS: equilibrium.HollowCentered.case2.3.1.sum.My
+PASS: equilibrium.HollowCentered.case2.3.1.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.HollowCentered.case2.3.1.residual.Mx; actual=-2.08616256713867E-07; expected=-2.08616256713867E-07
+PASS: equilibrium.HollowCentered.case2.3.1.residual.My; actual=-3.08841663354542E-09; expected=-3.08841663354542E-09
+PASS: equilibrium.HollowCentered.case2.3.2.converged
+PASS: equilibrium.HollowCentered.case2.3.2.sum.N
+PASS: equilibrium.HollowCentered.case2.3.2.sum.Mx
+PASS: equilibrium.HollowCentered.case2.3.2.sum.My
+PASS: equilibrium.HollowCentered.case2.3.2.residual.N; actual=9.31322574615479E-10; expected=9.31322574615479E-10
+PASS: equilibrium.HollowCentered.case2.3.2.residual.Mx; actual=-2.97428812245926E-07; expected=-2.97428812245926E-07
+PASS: equilibrium.HollowCentered.case2.3.2.residual.My; actual=8.94069671630859E-08; expected=8.94069671630859E-08
+PASS: equilibrium.HollowCentered.case2.3.3.converged
+PASS: equilibrium.HollowCentered.case2.3.3.sum.N
+PASS: equilibrium.HollowCentered.case2.3.3.sum.Mx
+PASS: equilibrium.HollowCentered.case2.3.3.sum.My
+PASS: equilibrium.HollowCentered.case2.3.3.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.HollowCentered.case2.3.3.residual.Mx; actual=-6.85453414916992E-07; expected=-6.85453414916992E-07
+PASS: equilibrium.HollowCentered.case2.3.3.residual.My; actual=1.19209289550781E-07; expected=1.19209289550781E-07
+PASS: equilibrium.HollowCentered.case3.1.0.converged
+PASS: equilibrium.HollowCentered.case3.1.0.sum.N
+PASS: equilibrium.HollowCentered.case3.1.0.sum.Mx
+PASS: equilibrium.HollowCentered.case3.1.0.sum.My
+PASS: equilibrium.HollowCentered.case3.1.0.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowCentered.case3.1.0.residual.Mx; actual=-2.60770320892334E-06; expected=-2.60770320892334E-06
+PASS: equilibrium.HollowCentered.case3.1.0.residual.My; actual=3.05473804473877E-07; expected=3.05473804473877E-07
+PASS: equilibrium.HollowCentered.case3.1.1.converged
+PASS: equilibrium.HollowCentered.case3.1.1.sum.N
+PASS: equilibrium.HollowCentered.case3.1.1.sum.Mx
+PASS: equilibrium.HollowCentered.case3.1.1.sum.My
+PASS: equilibrium.HollowCentered.case3.1.1.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowCentered.case3.1.1.residual.Mx; actual=-1.9371509552002E-06; expected=-1.9371509552002E-06
+PASS: equilibrium.HollowCentered.case3.1.1.residual.My; actual=4.32133674621582E-07; expected=4.32133674621582E-07
+PASS: equilibrium.HollowCentered.case3.1.2.converged
+PASS: equilibrium.HollowCentered.case3.1.2.sum.N
+PASS: equilibrium.HollowCentered.case3.1.2.sum.Mx
+PASS: equilibrium.HollowCentered.case3.1.2.sum.My
+PASS: equilibrium.HollowCentered.case3.1.2.residual.N; actual=5.12227416038513E-09; expected=5.12227416038513E-09
+PASS: equilibrium.HollowCentered.case3.1.2.residual.Mx; actual=-2.50339508056641E-06; expected=-2.50339508056641E-06
+PASS: equilibrium.HollowCentered.case3.1.2.residual.My; actual=-1.34110450744629E-07; expected=-1.34110450744629E-07
+PASS: equilibrium.HollowCentered.case3.1.3.converged
+PASS: equilibrium.HollowCentered.case3.1.3.sum.N
+PASS: equilibrium.HollowCentered.case3.1.3.sum.Mx
+PASS: equilibrium.HollowCentered.case3.1.3.sum.My
+PASS: equilibrium.HollowCentered.case3.1.3.residual.N; actual=6.05359673500061E-09; expected=6.05359673500061E-09
+PASS: equilibrium.HollowCentered.case3.1.3.residual.Mx; actual=-2.41398811340332E-06; expected=-2.41398811340332E-06
+PASS: equilibrium.HollowCentered.case3.1.3.residual.My; actual=-1.63912773132324E-07; expected=-1.63912773132324E-07
+PASS: equilibrium.HollowCentered.case3.2.0.converged
+PASS: equilibrium.HollowCentered.case3.2.0.sum.N
+PASS: equilibrium.HollowCentered.case3.2.0.sum.Mx
+PASS: equilibrium.HollowCentered.case3.2.0.sum.My
+PASS: equilibrium.HollowCentered.case3.2.0.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowCentered.case3.2.0.residual.Mx; actual=5.27501106262207E-06; expected=5.27501106262207E-06
+PASS: equilibrium.HollowCentered.case3.2.0.residual.My; actual=-4.02331352233887E-07; expected=-4.02331352233887E-07
+PASS: equilibrium.HollowCentered.case3.2.1.converged
+PASS: equilibrium.HollowCentered.case3.2.1.sum.N
+PASS: equilibrium.HollowCentered.case3.2.1.sum.Mx
+PASS: equilibrium.HollowCentered.case3.2.1.sum.My
+PASS: equilibrium.HollowCentered.case3.2.1.residual.N; actual=-1.62981450557709E-09; expected=-1.62981450557709E-09
+PASS: equilibrium.HollowCentered.case3.2.1.residual.Mx; actual=2.95042991638184E-06; expected=2.95042991638184E-06
+PASS: equilibrium.HollowCentered.case3.2.1.residual.My; actual=-1.86264514923096E-07; expected=-1.86264514923096E-07
+PASS: equilibrium.HollowCentered.case3.2.2.converged
+PASS: equilibrium.HollowCentered.case3.2.2.sum.N
+PASS: equilibrium.HollowCentered.case3.2.2.sum.Mx
+PASS: equilibrium.HollowCentered.case3.2.2.sum.My
+PASS: equilibrium.HollowCentered.case3.2.2.residual.N; actual=3.02679836750031E-09; expected=3.02679836750031E-09
+PASS: equilibrium.HollowCentered.case3.2.2.residual.Mx; actual=4.54485416412354E-06; expected=4.54485416412354E-06
+PASS: equilibrium.HollowCentered.case3.2.2.residual.My; actual=-7.0035457611084E-07; expected=-7.0035457611084E-07
+PASS: equilibrium.HollowCentered.case3.2.3.converged
+PASS: equilibrium.HollowCentered.case3.2.3.sum.N
+PASS: equilibrium.HollowCentered.case3.2.3.sum.Mx
+PASS: equilibrium.HollowCentered.case3.2.3.sum.My
+PASS: equilibrium.HollowCentered.case3.2.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.HollowCentered.case3.2.3.residual.Mx; actual=3.27825546264648E-06; expected=3.27825546264648E-06
+PASS: equilibrium.HollowCentered.case3.2.3.residual.My; actual=-5.21540641784668E-07; expected=-5.21540641784668E-07
+PASS: equilibrium.HollowCentered.case3.3.0.converged
+PASS: equilibrium.HollowCentered.case3.3.0.sum.N
+PASS: equilibrium.HollowCentered.case3.3.0.sum.Mx
+PASS: equilibrium.HollowCentered.case3.3.0.sum.My
+PASS: equilibrium.HollowCentered.case3.3.0.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.HollowCentered.case3.3.0.residual.Mx; actual=-2.16066837310791E-06; expected=-2.16066837310791E-06
+PASS: equilibrium.HollowCentered.case3.3.0.residual.My; actual=4.99188899993896E-07; expected=4.99188899993896E-07
+PASS: equilibrium.HollowCentered.case3.3.1.converged
+PASS: equilibrium.HollowCentered.case3.3.1.sum.N
+PASS: equilibrium.HollowCentered.case3.3.1.sum.Mx
+PASS: equilibrium.HollowCentered.case3.3.1.sum.My
+PASS: equilibrium.HollowCentered.case3.3.1.residual.N; actual=3.02679836750031E-09; expected=3.02679836750031E-09
+PASS: equilibrium.HollowCentered.case3.3.1.residual.Mx; actual=-2.23517417907715E-06; expected=-2.23517417907715E-06
+PASS: equilibrium.HollowCentered.case3.3.1.residual.My; actual=3.87430191040039E-07; expected=3.87430191040039E-07
+PASS: equilibrium.HollowCentered.case3.3.2.converged
+PASS: equilibrium.HollowCentered.case3.3.2.sum.N
+PASS: equilibrium.HollowCentered.case3.3.2.sum.Mx
+PASS: equilibrium.HollowCentered.case3.3.2.sum.My
+PASS: equilibrium.HollowCentered.case3.3.2.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.HollowCentered.case3.3.2.residual.Mx; actual=-1.63912773132324E-06; expected=-1.63912773132324E-06
+PASS: equilibrium.HollowCentered.case3.3.2.residual.My; actual=1.04308128356934E-07; expected=1.04308128356934E-07
+PASS: equilibrium.HollowCentered.case3.3.3.converged
+PASS: equilibrium.HollowCentered.case3.3.3.sum.N
+PASS: equilibrium.HollowCentered.case3.3.3.sum.Mx
+PASS: equilibrium.HollowCentered.case3.3.3.sum.My
+PASS: equilibrium.HollowCentered.case3.3.3.residual.N; actual=3.02679836750031E-09; expected=3.02679836750031E-09
+PASS: equilibrium.HollowCentered.case3.3.3.residual.Mx; actual=-2.02655792236328E-06; expected=-2.02655792236328E-06
+PASS: equilibrium.HollowCentered.case3.3.3.residual.My; actual=-1.34110450744629E-07; expected=-1.34110450744629E-07
+PASS: equilibrium.HollowOffset.case0.1.0.converged
+PASS: equilibrium.HollowOffset.case0.1.0.sum.N
+PASS: equilibrium.HollowOffset.case0.1.0.sum.Mx
+PASS: equilibrium.HollowOffset.case0.1.0.sum.My
+PASS: equilibrium.HollowOffset.case0.1.0.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.HollowOffset.case0.1.0.residual.Mx; actual=1.91107392311096E-06; expected=1.91107392311096E-06
+PASS: equilibrium.HollowOffset.case0.1.0.residual.My; actual=8.00937414169312E-08; expected=8.00937414169312E-08
+PASS: equilibrium.HollowOffset.case0.1.1.converged
+PASS: equilibrium.HollowOffset.case0.1.1.sum.N
+PASS: equilibrium.HollowOffset.case0.1.1.sum.Mx
+PASS: equilibrium.HollowOffset.case0.1.1.sum.My
+PASS: equilibrium.HollowOffset.case0.1.1.residual.N; actual=-5.12227416038513E-09; expected=-5.12227416038513E-09
+PASS: equilibrium.HollowOffset.case0.1.1.residual.Mx; actual=2.5331974029541E-06; expected=2.5331974029541E-06
+PASS: equilibrium.HollowOffset.case0.1.1.residual.My; actual=9.31322574615479E-08; expected=9.31322574615479E-08
+PASS: equilibrium.HollowOffset.case0.1.2.converged
+PASS: equilibrium.HollowOffset.case0.1.2.sum.N
+PASS: equilibrium.HollowOffset.case0.1.2.sum.Mx
+PASS: equilibrium.HollowOffset.case0.1.2.sum.My
+PASS: equilibrium.HollowOffset.case0.1.2.residual.N; actual=-1.62981450557709E-09; expected=-1.62981450557709E-09
+PASS: equilibrium.HollowOffset.case0.1.2.residual.Mx; actual=1.81794166564941E-06; expected=1.81794166564941E-06
+PASS: equilibrium.HollowOffset.case0.1.2.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.HollowOffset.case0.1.3.converged
+PASS: equilibrium.HollowOffset.case0.1.3.sum.N
+PASS: equilibrium.HollowOffset.case0.1.3.sum.Mx
+PASS: equilibrium.HollowOffset.case0.1.3.sum.My
+PASS: equilibrium.HollowOffset.case0.1.3.residual.N; actual=-5.12227416038513E-09; expected=-5.12227416038513E-09
+PASS: equilibrium.HollowOffset.case0.1.3.residual.Mx; actual=1.96695327758789E-06; expected=1.96695327758789E-06
+PASS: equilibrium.HollowOffset.case0.1.3.residual.My; actual=-1.63912773132324E-07; expected=-1.63912773132324E-07
+PASS: equilibrium.HollowOffset.case0.2.0.converged
+PASS: equilibrium.HollowOffset.case0.2.0.sum.N
+PASS: equilibrium.HollowOffset.case0.2.0.sum.Mx
+PASS: equilibrium.HollowOffset.case0.2.0.sum.My
+PASS: equilibrium.HollowOffset.case0.2.0.residual.N; actual=2.09547579288483E-09; expected=2.09547579288483E-09
+PASS: equilibrium.HollowOffset.case0.2.0.residual.Mx; actual=-5.91203570365906E-06; expected=-5.91203570365906E-06
+PASS: equilibrium.HollowOffset.case0.2.0.residual.My; actual=4.4703483581543E-08; expected=4.4703483581543E-08
+PASS: equilibrium.HollowOffset.case0.2.1.converged
+PASS: equilibrium.HollowOffset.case0.2.1.sum.N
+PASS: equilibrium.HollowOffset.case0.2.1.sum.Mx
+PASS: equilibrium.HollowOffset.case0.2.1.sum.My
+PASS: equilibrium.HollowOffset.case0.2.1.residual.N; actual=3.25962901115417E-09; expected=3.25962901115417E-09
+PASS: equilibrium.HollowOffset.case0.2.1.residual.Mx; actual=-6.13927841186523E-06; expected=-6.13927841186523E-06
+PASS: equilibrium.HollowOffset.case0.2.1.residual.My; actual=5.40167093276978E-08; expected=5.40167093276978E-08
+PASS: equilibrium.HollowOffset.case0.2.2.converged
+PASS: equilibrium.HollowOffset.case0.2.2.sum.N
+PASS: equilibrium.HollowOffset.case0.2.2.sum.Mx
+PASS: equilibrium.HollowOffset.case0.2.2.sum.My
+PASS: equilibrium.HollowOffset.case0.2.2.residual.N; actual=-9.31322574615479E-10; expected=-9.31322574615479E-10
+PASS: equilibrium.HollowOffset.case0.2.2.residual.Mx; actual=-5.32343983650208E-06; expected=-5.32343983650208E-06
+PASS: equilibrium.HollowOffset.case0.2.2.residual.My; actual=2.83122062683105E-07; expected=2.83122062683105E-07
+PASS: equilibrium.HollowOffset.case0.2.3.converged
+PASS: equilibrium.HollowOffset.case0.2.3.sum.N
+PASS: equilibrium.HollowOffset.case0.2.3.sum.Mx
+PASS: equilibrium.HollowOffset.case0.2.3.sum.My
+PASS: equilibrium.HollowOffset.case0.2.3.residual.N; actual=3.95812094211578E-09; expected=3.95812094211578E-09
+PASS: equilibrium.HollowOffset.case0.2.3.residual.Mx; actual=-6.70552253723145E-06; expected=-6.70552253723145E-06
+PASS: equilibrium.HollowOffset.case0.2.3.residual.My; actual=1.78813934326172E-07; expected=1.78813934326172E-07
+PASS: equilibrium.HollowOffset.case0.3.0.converged
+PASS: equilibrium.HollowOffset.case0.3.0.sum.N
+PASS: equilibrium.HollowOffset.case0.3.0.sum.Mx
+PASS: equilibrium.HollowOffset.case0.3.0.sum.My
+PASS: equilibrium.HollowOffset.case0.3.0.residual.N; actual=1.39698386192322E-09; expected=1.39698386192322E-09
+PASS: equilibrium.HollowOffset.case0.3.0.residual.Mx; actual=-2.7194619178772E-06; expected=-2.7194619178772E-06
+PASS: equilibrium.HollowOffset.case0.3.0.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.HollowOffset.case0.3.1.converged
+PASS: equilibrium.HollowOffset.case0.3.1.sum.N
+PASS: equilibrium.HollowOffset.case0.3.1.sum.Mx
+PASS: equilibrium.HollowOffset.case0.3.1.sum.My
+PASS: equilibrium.HollowOffset.case0.3.1.residual.N; actual=5.82076609134674E-09; expected=5.82076609134674E-09
+PASS: equilibrium.HollowOffset.case0.3.1.residual.Mx; actual=-3.24845314025879E-06; expected=-3.24845314025879E-06
+PASS: equilibrium.HollowOffset.case0.3.1.residual.My; actual=-1.67638063430786E-08; expected=-1.67638063430786E-08
+PASS: equilibrium.HollowOffset.case0.3.2.converged
+PASS: equilibrium.HollowOffset.case0.3.2.sum.N
+PASS: equilibrium.HollowOffset.case0.3.2.sum.Mx
+PASS: equilibrium.HollowOffset.case0.3.2.sum.My
+PASS: equilibrium.HollowOffset.case0.3.2.residual.N; actual=9.31322574615479E-10; expected=9.31322574615479E-10
+PASS: equilibrium.HollowOffset.case0.3.2.residual.Mx; actual=-2.54809856414795E-06; expected=-2.54809856414795E-06
+PASS: equilibrium.HollowOffset.case0.3.2.residual.My; actual=1.19209289550781E-07; expected=1.19209289550781E-07
+PASS: equilibrium.HollowOffset.case0.3.3.converged
+PASS: equilibrium.HollowOffset.case0.3.3.sum.N
+PASS: equilibrium.HollowOffset.case0.3.3.sum.Mx
+PASS: equilibrium.HollowOffset.case0.3.3.sum.My
+PASS: equilibrium.HollowOffset.case0.3.3.residual.N; actual=2.3283064365387E-09; expected=2.3283064365387E-09
+PASS: equilibrium.HollowOffset.case0.3.3.residual.Mx; actual=-3.01003456115723E-06; expected=-3.01003456115723E-06
+PASS: equilibrium.HollowOffset.case0.3.3.residual.My; actual=1.9371509552002E-07; expected=1.9371509552002E-07
+PASS: equilibrium.HollowOffset.case1.1.0.converged
+PASS: equilibrium.HollowOffset.case1.1.0.sum.N
+PASS: equilibrium.HollowOffset.case1.1.0.sum.Mx
+PASS: equilibrium.HollowOffset.case1.1.0.sum.My
+PASS: equilibrium.HollowOffset.case1.1.0.residual.N; actual=5.12227416038513E-09; expected=5.12227416038513E-09
+PASS: equilibrium.HollowOffset.case1.1.0.residual.Mx; actual=-2.96533107757568E-06; expected=-2.96533107757568E-06
+PASS: equilibrium.HollowOffset.case1.1.0.residual.My; actual=-8.94069671630859E-08; expected=-8.94069671630859E-08
+PASS: equilibrium.HollowOffset.case1.1.1.converged
+PASS: equilibrium.HollowOffset.case1.1.1.sum.N
+PASS: equilibrium.HollowOffset.case1.1.1.sum.Mx
+PASS: equilibrium.HollowOffset.case1.1.1.sum.My
+PASS: equilibrium.HollowOffset.case1.1.1.residual.N; actual=6.28642737865448E-09; expected=6.28642737865448E-09
+PASS: equilibrium.HollowOffset.case1.1.1.residual.Mx; actual=-2.92062759399414E-06; expected=-2.92062759399414E-06
+PASS: equilibrium.HollowOffset.case1.1.1.residual.My; actual=-5.96046447753906E-08; expected=-5.96046447753906E-08
+PASS: equilibrium.HollowOffset.case1.1.2.converged
+PASS: equilibrium.HollowOffset.case1.1.2.sum.N
+PASS: equilibrium.HollowOffset.case1.1.2.sum.Mx
+PASS: equilibrium.HollowOffset.case1.1.2.sum.My
+PASS: equilibrium.HollowOffset.case1.1.2.residual.N; actual=3.25962901115417E-09; expected=3.25962901115417E-09
+PASS: equilibrium.HollowOffset.case1.1.2.residual.Mx; actual=-2.57790088653564E-06; expected=-2.57790088653564E-06
+PASS: equilibrium.HollowOffset.case1.1.2.residual.My; actual=-1.49011611938477E-07; expected=-1.49011611938477E-07
+PASS: equilibrium.HollowOffset.case1.1.3.converged
+PASS: equilibrium.HollowOffset.case1.1.3.sum.N
+PASS: equilibrium.HollowOffset.case1.1.3.sum.Mx
+PASS: equilibrium.HollowOffset.case1.1.3.sum.My
+PASS: equilibrium.HollowOffset.case1.1.3.residual.N; actual=8.14907252788544E-09; expected=8.14907252788544E-09
+PASS: equilibrium.HollowOffset.case1.1.3.residual.Mx; actual=-2.98023223876953E-06; expected=-2.98023223876953E-06
+PASS: equilibrium.HollowOffset.case1.1.3.residual.My; actual=-2.98023223876953E-07; expected=-2.98023223876953E-07
+PASS: equilibrium.HollowOffset.case1.2.0.converged
+PASS: equilibrium.HollowOffset.case1.2.0.sum.N
+PASS: equilibrium.HollowOffset.case1.2.0.sum.Mx
+PASS: equilibrium.HollowOffset.case1.2.0.sum.My
+PASS: equilibrium.HollowOffset.case1.2.0.residual.N; actual=6.51925802230835E-09; expected=6.51925802230835E-09
+PASS: equilibrium.HollowOffset.case1.2.0.residual.Mx; actual=1.34855508804321E-06; expected=1.34855508804321E-06
+PASS: equilibrium.HollowOffset.case1.2.0.residual.My; actual=1.11758708953857E-08; expected=1.11758708953857E-08
+PASS: equilibrium.HollowOffset.case1.2.1.converged
+PASS: equilibrium.HollowOffset.case1.2.1.sum.N
+PASS: equilibrium.HollowOffset.case1.2.1.sum.Mx
+PASS: equilibrium.HollowOffset.case1.2.1.sum.My
+PASS: equilibrium.HollowOffset.case1.2.1.residual.N; actual=3.49245965480804E-09; expected=3.49245965480804E-09
+PASS: equilibrium.HollowOffset.case1.2.1.residual.Mx; actual=1.43051147460938E-06; expected=1.43051147460938E-06
+PASS: equilibrium.HollowOffset.case1.2.1.residual.My; actual=1.11758708953857E-08; expected=1.11758708953857E-08
+PASS: equilibrium.HollowOffset.case1.2.2.converged
+PASS: equilibrium.HollowOffset.case1.2.2.sum.N
+PASS: equilibrium.HollowOffset.case1.2.2.sum.Mx
+PASS: equilibrium.HollowOffset.case1.2.2.sum.My
+PASS: equilibrium.HollowOffset.case1.2.2.residual.N; actual=3.25962901115417E-09; expected=3.25962901115417E-09
+PASS: equilibrium.HollowOffset.case1.2.2.residual.Mx; actual=1.43051147460938E-06; expected=1.43051147460938E-06
+PASS: equilibrium.HollowOffset.case1.2.2.residual.My; actual=2.68220901489258E-07; expected=2.68220901489258E-07
+PASS: equilibrium.HollowOffset.case1.2.3.converged
+PASS: equilibrium.HollowOffset.case1.2.3.sum.N
+PASS: equilibrium.HollowOffset.case1.2.3.sum.Mx
+PASS: equilibrium.HollowOffset.case1.2.3.sum.My
+PASS: equilibrium.HollowOffset.case1.2.3.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.HollowOffset.case1.2.3.residual.Mx; actual=4.17232513427734E-07; expected=4.17232513427734E-07
+PASS: equilibrium.HollowOffset.case1.2.3.residual.My; actual=2.08616256713867E-07; expected=2.08616256713867E-07
+PASS: equilibrium.HollowOffset.case1.3.0.converged
+PASS: equilibrium.HollowOffset.case1.3.0.sum.N
+PASS: equilibrium.HollowOffset.case1.3.0.sum.Mx
+PASS: equilibrium.HollowOffset.case1.3.0.sum.My
+PASS: equilibrium.HollowOffset.case1.3.0.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.HollowOffset.case1.3.0.residual.Mx; actual=-6.74277544021606E-07; expected=-6.74277544021606E-07
+PASS: equilibrium.HollowOffset.case1.3.0.residual.My; actual=2.42143869400024E-08; expected=2.42143869400024E-08
+PASS: equilibrium.HollowOffset.case1.3.1.converged
+PASS: equilibrium.HollowOffset.case1.3.1.sum.N
+PASS: equilibrium.HollowOffset.case1.3.1.sum.Mx
+PASS: equilibrium.HollowOffset.case1.3.1.sum.My
+PASS: equilibrium.HollowOffset.case1.3.1.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.HollowOffset.case1.3.1.residual.Mx; actual=-1.19209289550781E-06; expected=-1.19209289550781E-06
+PASS: equilibrium.HollowOffset.case1.3.1.residual.My; actual=-2.23517417907715E-08; expected=-2.23517417907715E-08
+PASS: equilibrium.HollowOffset.case1.3.2.converged
+PASS: equilibrium.HollowOffset.case1.3.2.sum.N
+PASS: equilibrium.HollowOffset.case1.3.2.sum.Mx
+PASS: equilibrium.HollowOffset.case1.3.2.sum.My
+PASS: equilibrium.HollowOffset.case1.3.2.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.HollowOffset.case1.3.2.residual.Mx; actual=-9.08970832824707E-07; expected=-9.08970832824707E-07
+PASS: equilibrium.HollowOffset.case1.3.2.residual.My; actual=1.9371509552002E-07; expected=1.9371509552002E-07
+PASS: equilibrium.HollowOffset.case1.3.3.converged
+PASS: equilibrium.HollowOffset.case1.3.3.sum.N
+PASS: equilibrium.HollowOffset.case1.3.3.sum.Mx
+PASS: equilibrium.HollowOffset.case1.3.3.sum.My
+PASS: equilibrium.HollowOffset.case1.3.3.residual.N; actual=1.16415321826935E-09; expected=1.16415321826935E-09
+PASS: equilibrium.HollowOffset.case1.3.3.residual.Mx; actual=-2.98023223876953E-07; expected=-2.98023223876953E-07
+PASS: equilibrium.HollowOffset.case1.3.3.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.HollowOffset.case2.1.0.converged
+PASS: equilibrium.HollowOffset.case2.1.0.sum.N
+PASS: equilibrium.HollowOffset.case2.1.0.sum.Mx
+PASS: equilibrium.HollowOffset.case2.1.0.sum.My
+PASS: equilibrium.HollowOffset.case2.1.0.residual.N; actual=4.88944351673126E-09; expected=4.88944351673126E-09
+PASS: equilibrium.HollowOffset.case2.1.0.residual.Mx; actual=-1.65402889251709E-06; expected=-1.65402889251709E-06
+PASS: equilibrium.HollowOffset.case2.1.0.residual.My; actual=-2.04890966415405E-08; expected=-2.04890966415405E-08
+PASS: equilibrium.HollowOffset.case2.1.1.converged
+PASS: equilibrium.HollowOffset.case2.1.1.sum.N
+PASS: equilibrium.HollowOffset.case2.1.1.sum.Mx
+PASS: equilibrium.HollowOffset.case2.1.1.sum.My
+PASS: equilibrium.HollowOffset.case2.1.1.residual.N; actual=6.98491930961609E-09; expected=6.98491930961609E-09
+PASS: equilibrium.HollowOffset.case2.1.1.residual.Mx; actual=-1.81794166564941E-06; expected=-1.81794166564941E-06
+PASS: equilibrium.HollowOffset.case2.1.1.residual.My; actual=-1.30385160446167E-08; expected=-1.30385160446167E-08
+PASS: equilibrium.HollowOffset.case2.1.2.converged
+PASS: equilibrium.HollowOffset.case2.1.2.sum.N
+PASS: equilibrium.HollowOffset.case2.1.2.sum.Mx
+PASS: equilibrium.HollowOffset.case2.1.2.sum.My
+PASS: equilibrium.HollowOffset.case2.1.2.residual.N; actual=4.88944351673126E-09; expected=4.88944351673126E-09
+PASS: equilibrium.HollowOffset.case2.1.2.residual.Mx; actual=-1.74716114997864E-06; expected=-1.74716114997864E-06
+PASS: equilibrium.HollowOffset.case2.1.2.residual.My; actual=4.02331352233887E-07; expected=4.02331352233887E-07
+PASS: equilibrium.HollowOffset.case2.1.3.converged
+PASS: equilibrium.HollowOffset.case2.1.3.sum.N
+PASS: equilibrium.HollowOffset.case2.1.3.sum.Mx
+PASS: equilibrium.HollowOffset.case2.1.3.sum.My
+PASS: equilibrium.HollowOffset.case2.1.3.residual.N; actual=6.05359673500061E-09; expected=6.05359673500061E-09
+PASS: equilibrium.HollowOffset.case2.1.3.residual.Mx; actual=-1.66893005371094E-06; expected=-1.66893005371094E-06
+PASS: equilibrium.HollowOffset.case2.1.3.residual.My; actual=3.42726707458496E-07; expected=3.42726707458496E-07
+PASS: equilibrium.HollowOffset.case2.2.0.converged
+PASS: equilibrium.HollowOffset.case2.2.0.sum.N
+PASS: equilibrium.HollowOffset.case2.2.0.sum.Mx
+PASS: equilibrium.HollowOffset.case2.2.0.sum.My
+PASS: equilibrium.HollowOffset.case2.2.0.residual.N; actual=1.00117176771164E-08; expected=1.00117176771164E-08
+PASS: equilibrium.HollowOffset.case2.2.0.residual.Mx; actual=-1.80304050445557E-06; expected=-1.80304050445557E-06
+PASS: equilibrium.HollowOffset.case2.2.0.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.HollowOffset.case2.2.1.converged
+PASS: equilibrium.HollowOffset.case2.2.1.sum.N
+PASS: equilibrium.HollowOffset.case2.2.1.sum.Mx
+PASS: equilibrium.HollowOffset.case2.2.1.sum.My
+PASS: equilibrium.HollowOffset.case2.2.1.residual.N; actual=4.65661287307739E-09; expected=4.65661287307739E-09
+PASS: equilibrium.HollowOffset.case2.2.1.residual.Mx; actual=-5.0663948059082E-07; expected=-5.0663948059082E-07
+PASS: equilibrium.HollowOffset.case2.2.1.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.HollowOffset.case2.2.2.converged
+PASS: equilibrium.HollowOffset.case2.2.2.sum.N
+PASS: equilibrium.HollowOffset.case2.2.2.sum.Mx
+PASS: equilibrium.HollowOffset.case2.2.2.sum.My
+PASS: equilibrium.HollowOffset.case2.2.2.residual.N; actual=5.355104804039E-09; expected=5.355104804039E-09
+PASS: equilibrium.HollowOffset.case2.2.2.residual.Mx; actual=-1.24797224998474E-06; expected=-1.24797224998474E-06
+PASS: equilibrium.HollowOffset.case2.2.2.residual.My; actual=2.83122062683105E-07; expected=2.83122062683105E-07
+PASS: equilibrium.HollowOffset.case2.2.3.converged
+PASS: equilibrium.HollowOffset.case2.2.3.sum.N
+PASS: equilibrium.HollowOffset.case2.2.3.sum.Mx
+PASS: equilibrium.HollowOffset.case2.2.3.sum.My
+PASS: equilibrium.HollowOffset.case2.2.3.residual.N; actual=4.19095158576965E-09; expected=4.19095158576965E-09
+PASS: equilibrium.HollowOffset.case2.2.3.residual.Mx; actual=-6.85453414916992E-07; expected=-6.85453414916992E-07
+PASS: equilibrium.HollowOffset.case2.2.3.residual.My; actual=2.38418579101563E-07; expected=2.38418579101563E-07
+PASS: equilibrium.HollowOffset.case2.3.0.converged
+PASS: equilibrium.HollowOffset.case2.3.0.sum.N
+PASS: equilibrium.HollowOffset.case2.3.0.sum.Mx
+PASS: equilibrium.HollowOffset.case2.3.0.sum.My
+PASS: equilibrium.HollowOffset.case2.3.0.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.HollowOffset.case2.3.0.residual.Mx; actual=-2.33203172683716E-06; expected=-2.33203172683716E-06
+PASS: equilibrium.HollowOffset.case2.3.0.residual.My; actual=2.04890966415405E-08; expected=2.04890966415405E-08
+PASS: equilibrium.HollowOffset.case2.3.1.converged
+PASS: equilibrium.HollowOffset.case2.3.1.sum.N
+PASS: equilibrium.HollowOffset.case2.3.1.sum.Mx
+PASS: equilibrium.HollowOffset.case2.3.1.sum.My
+PASS: equilibrium.HollowOffset.case2.3.1.residual.N; actual=4.65661287307739E-09; expected=4.65661287307739E-09
+PASS: equilibrium.HollowOffset.case2.3.1.residual.Mx; actual=-2.47359275817871E-06; expected=-2.47359275817871E-06
+PASS: equilibrium.HollowOffset.case2.3.1.residual.My; actual=-4.2840838432312E-08; expected=-4.2840838432312E-08
+PASS: equilibrium.HollowOffset.case2.3.2.converged
+PASS: equilibrium.HollowOffset.case2.3.2.sum.N
+PASS: equilibrium.HollowOffset.case2.3.2.sum.Mx
+PASS: equilibrium.HollowOffset.case2.3.2.sum.My
+PASS: equilibrium.HollowOffset.case2.3.2.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.HollowOffset.case2.3.2.residual.Mx; actual=-2.32085585594177E-06; expected=-2.32085585594177E-06
+PASS: equilibrium.HollowOffset.case2.3.2.residual.My; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.HollowOffset.case2.3.3.converged
+PASS: equilibrium.HollowOffset.case2.3.3.sum.N
+PASS: equilibrium.HollowOffset.case2.3.3.sum.Mx
+PASS: equilibrium.HollowOffset.case2.3.3.sum.My
+PASS: equilibrium.HollowOffset.case2.3.3.residual.N; actual=3.25962901115417E-09; expected=3.25962901115417E-09
+PASS: equilibrium.HollowOffset.case2.3.3.residual.Mx; actual=-1.69873237609863E-06; expected=-1.69873237609863E-06
+PASS: equilibrium.HollowOffset.case2.3.3.residual.My; actual=2.98023223876953E-08; expected=2.98023223876953E-08
+PASS: equilibrium.HollowOffset.case3.1.0.converged
+PASS: equilibrium.HollowOffset.case3.1.0.sum.N
+PASS: equilibrium.HollowOffset.case3.1.0.sum.Mx
+PASS: equilibrium.HollowOffset.case3.1.0.sum.My
+PASS: equilibrium.HollowOffset.case3.1.0.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowOffset.case3.1.0.residual.Mx; actual=-2.60770320892334E-06; expected=-2.60770320892334E-06
+PASS: equilibrium.HollowOffset.case3.1.0.residual.My; actual=3.05473804473877E-07; expected=3.05473804473877E-07
+PASS: equilibrium.HollowOffset.case3.1.1.converged
+PASS: equilibrium.HollowOffset.case3.1.1.sum.N
+PASS: equilibrium.HollowOffset.case3.1.1.sum.Mx
+PASS: equilibrium.HollowOffset.case3.1.1.sum.My
+PASS: equilibrium.HollowOffset.case3.1.1.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowOffset.case3.1.1.residual.Mx; actual=-1.9371509552002E-06; expected=-1.9371509552002E-06
+PASS: equilibrium.HollowOffset.case3.1.1.residual.My; actual=4.32133674621582E-07; expected=4.32133674621582E-07
+PASS: equilibrium.HollowOffset.case3.1.2.converged
+PASS: equilibrium.HollowOffset.case3.1.2.sum.N
+PASS: equilibrium.HollowOffset.case3.1.2.sum.Mx
+PASS: equilibrium.HollowOffset.case3.1.2.sum.My
+PASS: equilibrium.HollowOffset.case3.1.2.residual.N; actual=5.12227416038513E-09; expected=5.12227416038513E-09
+PASS: equilibrium.HollowOffset.case3.1.2.residual.Mx; actual=-2.50339508056641E-06; expected=-2.50339508056641E-06
+PASS: equilibrium.HollowOffset.case3.1.2.residual.My; actual=-1.34110450744629E-07; expected=-1.34110450744629E-07
+PASS: equilibrium.HollowOffset.case3.1.3.converged
+PASS: equilibrium.HollowOffset.case3.1.3.sum.N
+PASS: equilibrium.HollowOffset.case3.1.3.sum.Mx
+PASS: equilibrium.HollowOffset.case3.1.3.sum.My
+PASS: equilibrium.HollowOffset.case3.1.3.residual.N; actual=6.05359673500061E-09; expected=6.05359673500061E-09
+PASS: equilibrium.HollowOffset.case3.1.3.residual.Mx; actual=-2.41398811340332E-06; expected=-2.41398811340332E-06
+PASS: equilibrium.HollowOffset.case3.1.3.residual.My; actual=-1.63912773132324E-07; expected=-1.63912773132324E-07
+PASS: equilibrium.HollowOffset.case3.2.0.converged
+PASS: equilibrium.HollowOffset.case3.2.0.sum.N
+PASS: equilibrium.HollowOffset.case3.2.0.sum.Mx
+PASS: equilibrium.HollowOffset.case3.2.0.sum.My
+PASS: equilibrium.HollowOffset.case3.2.0.residual.N; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.HollowOffset.case3.2.0.residual.Mx; actual=5.27501106262207E-06; expected=5.27501106262207E-06
+PASS: equilibrium.HollowOffset.case3.2.0.residual.My; actual=-4.02331352233887E-07; expected=-4.02331352233887E-07
+PASS: equilibrium.HollowOffset.case3.2.1.converged
+PASS: equilibrium.HollowOffset.case3.2.1.sum.N
+PASS: equilibrium.HollowOffset.case3.2.1.sum.Mx
+PASS: equilibrium.HollowOffset.case3.2.1.sum.My
+PASS: equilibrium.HollowOffset.case3.2.1.residual.N; actual=-1.62981450557709E-09; expected=-1.62981450557709E-09
+PASS: equilibrium.HollowOffset.case3.2.1.residual.Mx; actual=2.95042991638184E-06; expected=2.95042991638184E-06
+PASS: equilibrium.HollowOffset.case3.2.1.residual.My; actual=-1.86264514923096E-07; expected=-1.86264514923096E-07
+PASS: equilibrium.HollowOffset.case3.2.2.converged
+PASS: equilibrium.HollowOffset.case3.2.2.sum.N
+PASS: equilibrium.HollowOffset.case3.2.2.sum.Mx
+PASS: equilibrium.HollowOffset.case3.2.2.sum.My
+PASS: equilibrium.HollowOffset.case3.2.2.residual.N; actual=3.02679836750031E-09; expected=3.02679836750031E-09
+PASS: equilibrium.HollowOffset.case3.2.2.residual.Mx; actual=4.54485416412354E-06; expected=4.54485416412354E-06
+PASS: equilibrium.HollowOffset.case3.2.2.residual.My; actual=-7.0035457611084E-07; expected=-7.0035457611084E-07
+PASS: equilibrium.HollowOffset.case3.2.3.converged
+PASS: equilibrium.HollowOffset.case3.2.3.sum.N
+PASS: equilibrium.HollowOffset.case3.2.3.sum.Mx
+PASS: equilibrium.HollowOffset.case3.2.3.sum.My
+PASS: equilibrium.HollowOffset.case3.2.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.HollowOffset.case3.2.3.residual.Mx; actual=3.27825546264648E-06; expected=3.27825546264648E-06
+PASS: equilibrium.HollowOffset.case3.2.3.residual.My; actual=-5.21540641784668E-07; expected=-5.21540641784668E-07
+PASS: equilibrium.HollowOffset.case3.3.0.converged
+PASS: equilibrium.HollowOffset.case3.3.0.sum.N
+PASS: equilibrium.HollowOffset.case3.3.0.sum.Mx
+PASS: equilibrium.HollowOffset.case3.3.0.sum.My
+PASS: equilibrium.HollowOffset.case3.3.0.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.HollowOffset.case3.3.0.residual.Mx; actual=-2.16066837310791E-06; expected=-2.16066837310791E-06
+PASS: equilibrium.HollowOffset.case3.3.0.residual.My; actual=4.99188899993896E-07; expected=4.99188899993896E-07
+PASS: equilibrium.HollowOffset.case3.3.1.converged
+PASS: equilibrium.HollowOffset.case3.3.1.sum.N
+PASS: equilibrium.HollowOffset.case3.3.1.sum.Mx
+PASS: equilibrium.HollowOffset.case3.3.1.sum.My
+PASS: equilibrium.HollowOffset.case3.3.1.residual.N; actual=3.02679836750031E-09; expected=3.02679836750031E-09
+PASS: equilibrium.HollowOffset.case3.3.1.residual.Mx; actual=-2.23517417907715E-06; expected=-2.23517417907715E-06
+PASS: equilibrium.HollowOffset.case3.3.1.residual.My; actual=3.87430191040039E-07; expected=3.87430191040039E-07
+PASS: equilibrium.HollowOffset.case3.3.2.converged
+PASS: equilibrium.HollowOffset.case3.3.2.sum.N
+PASS: equilibrium.HollowOffset.case3.3.2.sum.Mx
+PASS: equilibrium.HollowOffset.case3.3.2.sum.My
+PASS: equilibrium.HollowOffset.case3.3.2.residual.N; actual=-6.98491930961609E-10; expected=-6.98491930961609E-10
+PASS: equilibrium.HollowOffset.case3.3.2.residual.Mx; actual=-1.63912773132324E-06; expected=-1.63912773132324E-06
+PASS: equilibrium.HollowOffset.case3.3.2.residual.My; actual=1.04308128356934E-07; expected=1.04308128356934E-07
+PASS: equilibrium.HollowOffset.case3.3.3.converged
+PASS: equilibrium.HollowOffset.case3.3.3.sum.N
+PASS: equilibrium.HollowOffset.case3.3.3.sum.Mx
+PASS: equilibrium.HollowOffset.case3.3.3.sum.My
+PASS: equilibrium.HollowOffset.case3.3.3.residual.N; actual=3.02679836750031E-09; expected=3.02679836750031E-09
+PASS: equilibrium.HollowOffset.case3.3.3.residual.Mx; actual=-2.02655792236328E-06; expected=-2.02655792236328E-06
+PASS: equilibrium.HollowOffset.case3.3.3.residual.My; actual=-1.34110450744629E-07; expected=-1.34110450744629E-07
+TOTAL HOLLOW EQUILIBRIUM: passed=672; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_3dab6727da5941f286f8af1b2a81efee\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunHollowRecipeEquilibriumTests; 2026-10-12T01:24:59
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,101 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\RoundedRecipe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 2ADBA958AE2D2A898AD1D5B6198979AF2ADBC1036F44D7B881124A5938FF131B
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5f3b2bcbd6ce46bd82081caae7447689\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=3536; startTicks=639273512371647748
+===== modTestSectionRecipes.RunRecipeAnnotationCountTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeAnnotationCountTests; 2026-10-12T00:34:02
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159924224; privateBytes=103444480; cpu=905.765625
+EXCEL_AFTER_SUITE: pid=3536; workingSet=138977280; privateBytes=89661440; cpu=20.84375
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162959360; privateBytes=102948864; cpu=609.015625
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163176448; privateBytes=104058880; cpu=591.109375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=158105600; privateBytes=101793792; cpu=577.78125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161550336; privateBytes=122490880; cpu=580.3125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157958144; privateBytes=102023168; cpu=588.4375
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162963456; privateBytes=103333888; cpu=592.25
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162349056; privateBytes=102461440; cpu=591.265625
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162488320; privateBytes=123674624; cpu=592.15625
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158982144; privateBytes=101855232; cpu=577.265625
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162037760; privateBytes=102326272; cpu=590.46875
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158580736; privateBytes=101875712; cpu=579.109375
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163258368; privateBytes=104701952; cpu=606.859375
+EXCEL_AFTER_SUITE: pid=28560; workingSet=165011456; privateBytes=104333312; cpu=596.640625
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166076416; privateBytes=111722496; cpu=599.65625
+PASS: annotations.total.Circle.n2.case0
+PASS: annotations.total.Circle.n2.case1
+PASS: annotations.total.Circle.n2.case2
+PASS: annotations.total.Circle.n2.case3
+PASS: annotations.total.Circle.n2.case4
+PASS: annotations.total.Circle.n2.case5
+PASS: annotations.total.Circle.n2.case6
+PASS: annotations.total.Circle.n3.case0
+PASS: annotations.total.Circle.n3.case1
+PASS: annotations.total.Circle.n3.case2
+PASS: annotations.total.Circle.n3.case3
+PASS: annotations.total.Circle.n3.case4
+PASS: annotations.total.Circle.n3.case5
+PASS: annotations.total.Circle.n3.case6
+PASS: annotations.total.Circle.n12.case0
+PASS: annotations.total.Circle.n12.case1
+PASS: annotations.total.Circle.n12.case2
+PASS: annotations.total.Circle.n12.case3
+PASS: annotations.total.Circle.n12.case4
+PASS: annotations.total.Circle.n12.case5
+PASS: annotations.total.Circle.n12.case6
+PASS: annotations.total.Circle.n13.case0
+PASS: annotations.total.Circle.n13.case1
+PASS: annotations.total.Circle.n13.case2
+PASS: annotations.total.Circle.n13.case3
+PASS: annotations.total.Circle.n13.case4
+PASS: annotations.total.Circle.n13.case5
+PASS: annotations.total.Circle.n13.case6
+PASS: annotations.total.Rectangle.case0
+PASS: annotations.total.Rectangle.case1
+PASS: annotations.total.Rectangle.case2
+PASS: annotations.total.Rectangle.case3
+PASS: annotations.total.Rectangle.case4
+PASS: annotations.total.Rectangle.case5
+PASS: annotations.total.LSection.case0
+PASS: annotations.total.LSection.case1
+PASS: annotations.total.LSection.case2
+PASS: annotations.total.LSection.case3
+PASS: annotations.total.LSection.case4
+PASS: annotations.total.LSection.case5
+PASS: annotations.total.TwoRectangles.case0
+PASS: annotations.total.TwoRectangles.case1
+PASS: annotations.total.TwoRectangles.case2
+PASS: annotations.total.TwoRectangles.case3
+PASS: annotations.total.TwoRectangles.case4
+PASS: annotations.total.TwoRectangles.case5
+PASS: annotations.total.RoundedSimple.case0
+PASS: annotations.total.RoundedSimple.case1
+PASS: annotations.total.RoundedSimple.case2
+PASS: annotations.total.RoundedSimple.case3
+PASS: annotations.total.RoundedSimple.case4
+PASS: annotations.total.RoundedSimple.case5
+PASS: annotations.total.RoundedTapered.case0
+PASS: annotations.total.RoundedTapered.case1
+PASS: annotations.total.RoundedTapered.case2
+PASS: annotations.total.RoundedTapered.case3
+PASS: annotations.total.RoundedTapered.case4
+PASS: annotations.total.RoundedTapered.case5
+PASS: annotations.total.RoundedMixed.case0
+PASS: annotations.total.RoundedMixed.case1
+PASS: annotations.total.RoundedMixed.case2
+PASS: annotations.total.RoundedMixed.case3
+PASS: annotations.total.RoundedMixed.case4
+PASS: annotations.total.RoundedMixed.case5
+PASS: annotations.total.RoundedMixedLeft.case0
+PASS: annotations.total.RoundedMixedLeft.case1
+PASS: annotations.total.RoundedMixedLeft.case2
+PASS: annotations.total.RoundedMixedLeft.case3
+PASS: annotations.total.RoundedMixedLeft.case4
+PASS: annotations.total.RoundedMixedLeft.case5
+TOTAL RECIPE ANNOTATIONS: passed=70; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5f3b2bcbd6ce46bd82081caae7447689\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeAnnotationCountTests; 2026-10-12T00:34:19
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

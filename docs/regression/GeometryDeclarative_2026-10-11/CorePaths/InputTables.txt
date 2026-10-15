@@ -1,0 +1,61 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\CorePaths\RC_Section_NDM.xlsm
+SOURCE_SHA256: 5FCB391B6750A6C137EFF8477BD4A1C4CB31CFF6903E4AAC27294959117CCC28
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_363eb740dd294453a0e7f3b641c143bb\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=15084; startTicks=639273394605773744
+===== modTestDeclarativeGeometry.RunInputTableTests =====
+SUITE_STARTED: modTestDeclarativeGeometry.RunInputTableTests; 2026-10-11T21:17:45
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159965184; privateBytes=103591936; cpu=903.625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162918400; privateBytes=102916096; cpu=606.421875
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163147776; privateBytes=104050688; cpu=589.09375
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157970432; privateBytes=101621760; cpu=575.453125
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161501184; privateBytes=122413056; cpu=578.359375
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157945856; privateBytes=102019072; cpu=586.109375
+EXCEL_AFTER_SUITE: pid=15084; workingSet=128180224; privateBytes=81555456; cpu=4.546875
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162922496; privateBytes=103337984; cpu=589.5625
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162287616; privateBytes=102387712; cpu=589.46875
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162377728; privateBytes=123547648; cpu=589.84375
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158920704; privateBytes=101806080; cpu=575.234375
+EXCEL_AFTER_SUITE: pid=26240; workingSet=162025472; privateBytes=102322176; cpu=588.46875
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158375936; privateBytes=101736448; cpu=577.328125
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163184640; privateBytes=104665088; cpu=604.40625
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164990976; privateBytes=104325120; cpu=594.703125
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166014976; privateBytes=111632384; cpu=597.75
+PASS: input.rows
+PASS: input.columns
+PASS: input.caption
+PASS: input.key
+PASS: input.number; actual=4.000000000000000; expected=4.000000000000000
+PASS: input.count
+PASS: input.choice
+PASS: input.choice.default
+PASS: input.source
+PASS: input.blank
+PASS: input.number.default; actual=7.000000000000000; expected=7.000000000000000
+PASS: input.optional.todo; actual=0.000000000000000; expected=0.000000000000000
+PASS: input.optional.blank; actual=0.000000000000000; expected=0.000000000000000
+PASS: input.optional.active; actual=16.000000000000000; expected=16.000000000000000
+PASS: input.length; actual=16.000000000000000; expected=16.000000000000000
+PASS: input.value.immutable; actual=4.000000000000000; expected=4.000000000000000
+PASS: input.source.immutable
+PASS: input.invalid.0
+PASS: input.invalid.1
+PASS: input.invalid.2
+PASS: input.invalid.3
+PASS: input.invalid.4
+PASS: input.invalid.5
+PASS: input.invalid.6
+PASS: input.invalid.7
+PASS: input.invalid.8
+PASS: input.invalid.9
+PASS: input.invalid.10
+PASS: input.invalid.11
+PASS: input.invalid.12
+TOTAL INPUT TABLES: passed=30; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_363eb740dd294453a0e7f3b641c143bb\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestDeclarativeGeometry.RunInputTableTests; 2026-10-11T21:17:45
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

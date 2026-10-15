@@ -1,0 +1,67 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\GeometryDeclarative_2026-10-11\CorePaths\RC_Section_NDM.xlsm
+SOURCE_SHA256: D1E2529D6B578CCE7E6B21DE33666A4BFD01F5663B90841C9E11FC124D7AF692
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bfa3bb2c7df747bbbb6375fd0d6e7d8f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=32808; startTicks=639273392178436359
+===== modTestDeclarativeGeometry.RunRoundedPolygonTests =====
+SUITE_STARTED: modTestDeclarativeGeometry.RunRoundedPolygonTests; 2026-10-11T21:13:42
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=3220; workingSet=159916032; privateBytes=103493632; cpu=903.5625
+EXCEL_AFTER_SUITE: pid=3688; workingSet=162918400; privateBytes=102916096; cpu=606.375
+EXCEL_AFTER_SUITE: pid=7832; workingSet=163123200; privateBytes=104026112; cpu=589.046875
+EXCEL_AFTER_SUITE: pid=8844; workingSet=157970432; privateBytes=101621760; cpu=575.375
+EXCEL_AFTER_SUITE: pid=12376; workingSet=161533952; privateBytes=122482688; cpu=578.3125
+EXCEL_AFTER_SUITE: pid=12560; workingSet=157945856; privateBytes=102023168; cpu=586.078125
+EXCEL_AFTER_SUITE: pid=19004; workingSet=162914304; privateBytes=103329792; cpu=589.484375
+EXCEL_AFTER_SUITE: pid=22900; workingSet=162283520; privateBytes=102383616; cpu=589.4375
+EXCEL_AFTER_SUITE: pid=25276; workingSet=162377728; privateBytes=123547648; cpu=589.765625
+EXCEL_AFTER_SUITE: pid=25816; workingSet=158920704; privateBytes=101810176; cpu=575.203125
+EXCEL_AFTER_SUITE: pid=26240; workingSet=161988608; privateBytes=102248448; cpu=588.453125
+EXCEL_AFTER_SUITE: pid=27384; workingSet=158392320; privateBytes=101752832; cpu=577.3125
+EXCEL_AFTER_SUITE: pid=27976; workingSet=163160064; privateBytes=104603648; cpu=604.359375
+EXCEL_AFTER_SUITE: pid=28560; workingSet=164990976; privateBytes=104325120; cpu=594.6875
+EXCEL_AFTER_SUITE: pid=30264; workingSet=166051840; privateBytes=111706112; cpu=597.703125
+EXCEL_AFTER_SUITE: pid=32808; workingSet=127868928; privateBytes=90456064; cpu=4.296875
+PASS: rounded.count
+PASS: rounded.closed
+PASS: rounded.length; actual=342.831853071796000; expected=342.831853071796000
+PASS: rounded.area; actual=7914.159265358980000; expected=7914.159265358980000
+PASS: rounded.radius.1; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.1; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.3; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.3; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.5; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.5; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.7; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.7; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.named.edge
+PASS: rounded.zero.radius.count
+PASS: rounded.zero.radius.edge
+PASS: rounded.individual.area; actual=7887.334035783660000; expected=7887.334035783660000
+PASS: rounded.sharp.length; actual=360.000000000000000; expected=360.000000000000000
+PASS: rounded.sharp.area; actual=8000.000000000000000; expected=8000.000000000000000
+PASS: rounded.concave.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: rounded.concave.cx; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.cy; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.start.x; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.start.y; actual=100.000000000000000; expected=100.000000000000000
+PASS: rounded.concave.end.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: rounded.concave.end.y; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.area; actual=29914.159265359000000; expected=29914.159265359000000
+PASS: rounded.clockwise.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: rounded.clockwise.area; actual=7914.159265358980000; expected=7914.159265358980000
+PASS: rounded.touching.count
+PASS: rounded.touching.area; actual=7853.981633974480000; expected=7853.981633974480000
+PASS: rounded.invalid.0
+PASS: rounded.invalid.1
+PASS: rounded.invalid.2
+PASS: rounded.invalid.3
+PASS: rounded.invalid.4
+PASS: rounded.invalid.5
+TOTAL ROUNDED POLYGONS: passed=36; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bfa3bb2c7df747bbbb6375fd0d6e7d8f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestDeclarativeGeometry.RunRoundedPolygonTests; 2026-10-11T21:13:43
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

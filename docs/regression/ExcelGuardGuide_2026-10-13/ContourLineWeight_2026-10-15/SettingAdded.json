@@ -1,0 +1,42 @@
+{
+  "Passed": true,
+  "Default": 2,
+  "Unit": "pt",
+  "InputCell": "Config!I84",
+  "InputMerge": "I84:J84",
+  "TableName": "rngPlotAnnotationSettings",
+  "TableRange": "Config!$H$70:$M$84",
+  "HelpStartRow": 1763,
+  "NewConfigCells": [
+    "H84",
+    "I84",
+    "J84",
+    "K84",
+    "L84",
+    "M84"
+  ],
+  "NewHelpRows": [
+    1763,
+    1764,
+    1765
+  ],
+  "CaptionChanges": [
+    "Config!H69",
+    "Справка!A724",
+    "Справка!B725",
+    "Справка!A1543",
+    "Справка!A1548",
+    "Справка!A1553",
+    "Справка!A1562",
+    "Справка!A1567",
+    "Справка!A1572",
+    "Справка!A1577",
+    "Справка!A1586",
+    "Справка!A1594",
+    "Справка!A1601",
+    "Справка!A1606",
+    "Справка!A1611",
+    "Справка!A1616"
+  ],
+  "PreservedOtherZipParts": true
+}
