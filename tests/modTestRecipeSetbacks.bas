@@ -68,74 +68,91 @@ Failed:
     Resume Restore
 End Function
 
-' ДЛЯ ТЕСТОВ: повторное обновление сохраняет введённые отступы и Excel-state;
-' принудительный отказ именованного диапазона происходит до изменения данных.
-Public Function RunRecipeConfigMigrationTests() As String
-    Dim table As Object, snapshot As CSectionInputTable, saved As Variant, row As Long, ids As Variant, choices As Object
-    Dim namesBefore As Long, i As Long, number As Long, reference As String, expected As Variant, after As Variant
+' ДЛЯ ТЕСТОВ: обновление реестра не перестраивает Config и не требует таблиц геометрии.
+Public Function RunRecipeTypeListTests() As String
+    Dim config As Object, saved As Variant, expected As Variant, list As Object, ids As Variant
+    Dim originalList As String, originalCircle As String, brokenCircle As String, i As Long, count As Long, code As Long
     Dim calculation As Long, events As Boolean, updating As Boolean, alerts As Boolean
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = ""
     calculation = Application.Calculation: events = Application.EnableEvents
     updating = Application.ScreenUpdating: alerts = Application.DisplayAlerts
-    Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange: saved = table.Formula
-    Set snapshot = New CSectionInputTable: snapshot.Initialize "rngRoundedRectangleGeometry", table.Value2
-    row = snapshot.RowByKey("as", 2) + 1
-    table.Cells(row, 5).Value2 = 37.5: table.Cells(row, 6).Value2 = 11.25
-    expected = table.Formula: namesBefore = ThisWorkbook.Names.Count
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    originalList = ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo
+    originalCircle = ThisWorkbook.Names("rngCircleGeometry").RefersTo
+    Set list = ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange
+    ids = RegisteredSectionRecipeTypes: count = UBound(ids) - LBound(ids) + 1
     Application.Calculation = xlCalculationManual: Application.EnableEvents = False
     Application.ScreenUpdating = False: Application.DisplayAlerts = False
-    modSectionRecipeSetup.UpdateSectionRecipeConfig
-    Near "migration.nonzero.start.saved", table.Cells(row, 5).Value2, 37.5
-    Near "migration.nonzero.end.saved", table.Cells(row, 6).Value2, 11.25
-    Check "migration.names.idempotent", ThisWorkbook.Names.Count = namesBefore
-    after = table.Formula
-    For i = 1 To UBound(expected, 1)
-        Check "migration.row.unchanged." & CStr(i), SameInputRow(expected, after, i)
-    Next i
-    ids = RegisteredSectionRecipeTypes: Set choices = ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange
-    Check "migration.registry.choice.count", choices.Rows.Count = UBound(ids) - LBound(ids) + 1
-    For i = 1 To choices.Rows.Count
-        Check "migration.registry.choice." & CStr(i), choices.Cells(i, 1).Value2 = ids(LBound(ids) + i - 1)
-    Next i
-    Check "migration.state.success", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And _
-        Not Application.ScreenUpdating And Not Application.DisplayAlerts
-    reference = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersTo
-    ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersTo = "=#REF!"
+    ' Даже повреждённая чужая таблица не участвует в обновлении списка.
+    ThisWorkbook.Names("rngCircleGeometry").RefersTo = "=#REF!"
+    brokenCircle = ThisWorkbook.Names("rngCircleGeometry").RefersTo
+    list.Value2 = "stale choice": expected = config.Formula
+    modSectionRecipeSetup.UpdateSectionRecipeTypes
+    Check "types.config.outside.list", SameConfigOutsideTypeList(config, expected, list.Resize(count, 1))
+    Check "types.current.selection", SameConfigOutsideTypeList(config, saved, list.Resize(count, 1))
+    Check "types.unrelated.name", ThisWorkbook.Names("rngCircleGeometry").RefersTo = brokenCircle
+    For i = 1 To count: Check "types.registered." & CStr(i), list.Cells(i, 1).Value2 = ids(LBound(ids) + i - 1): Next i
+    Check "types.state.success", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
+    expected = config.Formula: modSectionRecipeSetup.UpdateSectionRecipeTypes
+    Check "types.idempotent", SameConfigOutsideTypeList(config, expected, Nothing)
+    ' Сокращённый список расширяется только на свободные ячейки своего столбца.
+    list.Cells(count, 1).ClearContents
+    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count - 1, 1).Address(True, True, xlA1, True)
+    modSectionRecipeSetup.UpdateSectionRecipeTypes
+    Check "types.grow", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count And list.Cells(count, 1).Value2 = ids(UBound(ids))
+    ' Занятое продолжение отклоняется до записи значений и имени.
+    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count - 1, 1).Address(True, True, xlA1, True)
+    list.Cells(count, 1).Value2 = "user data": expected = config.Formula
     On Error Resume Next
-    modSectionRecipeSetup.UpdateSectionRecipeConfig
-    number = Err.Number: Err.Clear
+    modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.Number: Err.Clear
     On Error GoTo Failed
-    ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersTo = reference: reference = ""
-    Check "migration.invalid.name.rejected", number <> 0
-    Check "migration.state.failure", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And _
-        Not Application.ScreenUpdating And Not Application.DisplayAlerts
-    after = table.Formula
-    For i = 1 To UBound(expected, 1)
-        Check "migration.failure.row.unchanged." & CStr(i), SameInputRow(expected, after, i)
-    Next i
-    mReport = mReport & "TOTAL_RECIPE_CONFIG_MIGRATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    Check "types.occupied.rejected", code <> 0
+    Check "types.occupied.data", SameConfigOutsideTypeList(config, expected, Nothing)
+    Check "types.occupied.name", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count - 1
+    Check "types.state.failure", Application.Calculation = xlCalculationManual And Not Application.EnableEvents And Not Application.ScreenUpdating And Not Application.DisplayAlerts
+    ' Лишняя прежняя запись удаляется только из принадлежащего списку диапазона.
+    ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=" & list.Resize(count + 1, 1).Address(True, True, xlA1, True)
+    list.Cells(count + 1, 1).Value2 = "removed type": modSectionRecipeSetup.UpdateSectionRecipeTypes
+    Check "types.shrink", ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange.Rows.Count = count And IsEmpty(list.Cells(count + 1, 1).Value2)
+    expected = config.Formula: ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = "=#REF!": code = 0
+    On Error Resume Next
+    modSectionRecipeSetup.UpdateSectionRecipeTypes: code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "types.missing.rejected", code <> 0
+    Check "types.missing.data", SameConfigOutsideTypeList(config, expected, Nothing)
+    GoTo Restore
+Failed:
+    Check "types.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Restore:
     On Error Resume Next
-    If Len(reference) > 0 Then ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersTo = reference
-    If Not table Is Nothing Then table.Formula = saved
+    If Len(originalList) > 0 Then ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = originalList
+    If Len(originalCircle) > 0 Then ThisWorkbook.Names("rngCircleGeometry").RefersTo = originalCircle
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
     Application.Calculation = calculation: Application.EnableEvents = events
     Application.ScreenUpdating = updating: Application.DisplayAlerts = alerts
     On Error GoTo 0
-    RunRecipeConfigMigrationTests = mReport
-    Exit Function
-Failed:
-    mFailed = mFailed + 1: mReport = mReport & "FAIL: migration.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
-    Resume Restore
+    RunRecipeTypeListTests = mReport & "TOTAL RECIPE TYPE LIST: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-Private Function SameInputRow(ByVal first As Variant, ByVal second As Variant, ByVal row As Long) As Boolean
-    Dim column As Long
-    For column = 1 To UBound(first, 2)
-        If VarType(first(row, column)) <> VarType(second(row, column)) Then Exit Function
-        If CStr(first(row, column)) <> CStr(second(row, column)) Then Exit Function
-    Next column
-    SameInputRow = True
+' Сравнивает весь Config, кроме явно разрешённого служебного списка.
+Private Function SameConfigOutsideTypeList(ByVal config As Object, ByVal expected As Variant, ByVal list As Object) As Boolean
+    Dim actual As Variant, row As Long, column As Long, sheetRow As Long, sheetColumn As Long, skip As Boolean
+    actual = config.Formula
+    For row = 1 To UBound(expected, 1)
+        For column = 1 To UBound(expected, 2)
+            skip = False
+            If Not list Is Nothing Then
+                sheetRow = config.Row + row - 1: sheetColumn = config.Column + column - 1
+                skip = sheetColumn = list.Column And sheetRow >= list.Row And sheetRow < list.Row + list.Rows.Count
+            End If
+            If Not skip Then
+                If VarType(actual(row, column)) <> VarType(expected(row, column)) Then Exit Function
+                If CStr(actual(row, column)) <> CStr(expected(row, column)) Then Exit Function
+            End If
+        Next column
+    Next row
+    SameConfigOutsideTypeList = True
 End Function
 
 Public Function RunRecipeSetbackInputTests() As String

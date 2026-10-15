@@ -2877,7 +2877,7 @@ Source: src/Section/CSectionDefinition.cls:100
     geometryArea = def.ConcreteDomain.Area
 ```
 
-Полный контекст: tests/modTestRecipeSetbacks.bas:202.
+Полный контекст: tests/modTestRecipeSetbacks.bas:219.
 
 Native entrypoint: modTestRecipeSetbacks.RunRecipeSetbackInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt.
 
@@ -3980,7 +3980,7 @@ Source: src/Section/CSectionInputTable.cls:59
             For row = 1 To table.RowCount
 ```
 
-Полный контекст: tests/modTestSectionSolver.bas:504.
+Полный контекст: tests/modTestSectionSolver.bas:477.
 
 Native entrypoint: modTestSectionSolver.RunSectionSolverTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt.
 
@@ -4450,7 +4450,7 @@ Source: src/Section/CSectionInputTable.cls:177
     main = table.RowByKey("as", 2)
 ```
 
-Полный контекст: tests/modTestRecipeSetbacks.bas:191.
+Полный контекст: tests/modTestRecipeSetbacks.bas:208.
 
 Native entrypoint: modTestRecipeSetbacks.RunRecipeSetbackInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt.
 
@@ -5610,15 +5610,15 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
 
 Source: src/Excel/CUnitSystem.cls:61
 
-Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunRecipeContextFreezeTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestMaterialDiagrams.Audit03MaterialConfigProvider с его подготовленными локальными объектами/входом.
 
 ```vb
-    captured.LoadFromSettings settings
+    units.LoadFromSettings settings
 ```
 
-Полный контекст: tests/modTestGeometryPublication.bas:83.
+Полный контекст: tests/modTestMaterialDiagrams.bas:1053.
 
-Native entrypoint: modTestGeometryPublication.RunRecipeContextFreezeTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryPublication.RunRecipeContextFreezeTests.txt.
+Native entrypoint: modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests.txt.
 
 <a id="api-cunitsystem-clone"></a>
 ### CUnitSystem.Clone
@@ -6899,7 +6899,7 @@ Source: src/Section/CConcreteRegion.cls:107
     For i = 1 To region.LoopCount
 ```
 
-Полный контекст: tests/modTestAutoCADContours.bas:1024.
+Полный контекст: tests/modTestAutoCADContours.bas:1165.
 
 Native entrypoint: modTestAutoCADContours.RunAutoCADContourTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt.
 

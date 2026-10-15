@@ -539,7 +539,10 @@ try {
 
     Import-VbaSourceTree $workbook $root
     Add-WorkbookEventHandlers $workbook
-    $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeConfig")
+    # Начальная структура нового шаблона создаётся сборщиком, а не рабочим VBA.
+    $recipeTypes = @($excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.RegisteredSectionRecipeTypes"))
+    Get-ConfigValidationListAddress $system $recipeTypes 'rngSectionRecipeTypes' | Out-Null
+    $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeTypes")
 
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"

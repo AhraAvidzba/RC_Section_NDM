@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "de47a93c404310c366724e3131509c8a3c534c130b15e6cf1dcd2032f0ffea75",
+  "bodySHA256": "e0ca1aab42b0836d634d8a08937665aac197411cc45157a007849d06f5a5d1b7",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "987fab6dc6acce05730106b4a20b7f81353ccd05362545a498cafe79332f6543",
-    "src/Common/modSectionRecipeApiGuide.bas": "d15c4dcd66390cc7525a02861e00abf23e4297b76e19796e2b26bdf1100f6119"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "733062f4d4be3e51f4fff941a156286c875ee1f5242115c31491f3aefebeb70c",
+    "src/Common/modSectionRecipeApiGuide.bas": "405fecb89b80814ab601a82b13b88ffa82553bd7fab1cedf20512c8161f56942"
   },
   "rows": [
     {
@@ -152,7 +152,7 @@
       "line": 24
     },
     {
-      "text": "6. В CSectionTypeRegistry.Class_Initialize добавьте вызов RegisterRecipe с именем типа, экземпляром нового класса и именами его входных таблиц. Запустите макрос UpdateSectionRecipeConfig через Alt+F8: он обновит список Geometry.Type по реестру.",
+      "text": "6. В CSectionTypeRegistry.Class_Initialize добавьте вызов RegisterRecipe с именем типа, экземпляром нового класса и именами его входных таблиц. Запустите макрос UpdateSectionRecipeTypes через Alt+F8: он обновит только список Geometry.Type по реестру, сохранив выбранный тип и остальные таблицы Config.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 25

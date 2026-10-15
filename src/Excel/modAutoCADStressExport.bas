@@ -1808,19 +1808,10 @@ Private Sub RaiseGeometryLayerCollision(ByVal settings As CSystemSettingsReader,
             "Введите отдельное имя слоя бетона или арматуры, отличное от слоев подписей, контура и RC_NDM_Axes/LoadPoint/NeutralLine/Warnings.")
 End Sub
 
-' Читает обязательный режим осей. Совместимый Boolean-ключ используется
-' только при отсутствии PrincipalAxesMode; пустое каноническое поле ошибочно.
+' Читает обязательный текущий режим осей; отсутствие строки не заменяется другим ключом.
 Private Function AutoCADPrincipalAxesMode(ByVal settings As CSystemSettingsReader) As String
     Dim rawValue As String
-    If Not settings.HasKey("AutoCAD.Export.PrincipalAxesMode") And settings.HasKey("AutoCAD.Export.PrincipalAxesEnabled") Then
-        If settings.GetRequiredBoolean("AutoCAD.Export.PrincipalAxesEnabled") Then
-            rawValue = "Transformed"
-        Else
-            rawValue = "None"
-        End If
-    Else
-        rawValue = settings.GetRequiredString("AutoCAD.Export.PrincipalAxesMode")
-    End If
+    rawValue = settings.GetRequiredString("AutoCAD.Export.PrincipalAxesMode")
     On Error GoTo InvalidMode
     AutoCADPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, "AutoCAD.Export.PrincipalAxesMode")
     Exit Function

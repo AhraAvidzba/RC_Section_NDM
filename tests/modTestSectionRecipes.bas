@@ -1206,7 +1206,7 @@ Public Function RunCircleBindingWorkbookTests() As String
         cell.Value2 = "bad": Check "circle.bind.list.reject." & CStr(index), Not cell.Validation.Value
     Next index
     SetCircleInput "Rebar.Bind2row", "EverySecondBar": SetCircleInput "Rebar.Bind3row", "EachBar"
-    modSectionRecipeSetup.UpdateSectionRecipeConfig
+    modSectionRecipeSetup.UpdateSectionRecipeTypes
     Check "circle.bind.update.preserves2", table.Cells(values.RowByKey("Rebar.Bind2row"), 2).Value2 = "EverySecondBar"
     Check "circle.bind.update.preserves3", table.Cells(values.RowByKey("Rebar.Bind3row"), 2).Value2 = "EachBar"
     Check "circle.bind.workbook.address2", CircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2", table, values)

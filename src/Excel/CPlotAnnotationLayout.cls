@@ -35,6 +35,7 @@ Private mScaleX As Double ' Количество chart-points на одну ед
 Private mScaleY As Double ' Количество chart-points на одну единицу модели по Y.
 Private mLengthUnitFactorToMm As Double ' Пересчет единицы переданной модели в мм через CUnitSystem.
 Private mVisualScale As Double ' Общий масштаб оформления относительно базового размера Chart.
+Private mOffsetScale As Double ' Общий коэффициент отступов, переданный плоттером по габариту сечения.
 Private mDimensionFontSize As Double ' Итоговый размер текста размеров в points.
 Private mRebarFontSize As Double ' Итоговый размер текста групповых подписей арматуры в points.
 Private mDimensionBaseGap As Double ' Отступ размерной линии от своей anchor-линии в points.
@@ -144,7 +145,9 @@ End Function
 ' mm или pt в реальные points Chart.
 Public Sub Initialize(ByVal minX As Double, ByVal maxX As Double, ByVal minY As Double, ByVal maxY As Double, _
         ByVal plotLeft As Double, ByVal plotTop As Double, ByVal plotWidth As Double, ByVal plotHeight As Double, _
-        Optional ByVal lengthUnit As String = "mm")
+        Optional ByVal lengthUnit As String = "mm", Optional ByVal offsetScale As Double = 1#)
+    If offsetScale < 1# Then Err.Raise vbObjectError + 4811, "CPlotAnnotationLayout", "Коэффициент отступов должен быть не меньше 1."
+    mOffsetScale = offsetScale
     mMinX = minX
     mMaxX = maxX
     mMinY = minY
@@ -172,8 +175,8 @@ Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight 
 
     mDimensionFontSize = ClampDouble(TextMetricToChartPoints(mDimensionTextHeightBase, mDimensionTextUnits), 5#, 28#)
     mRebarFontSize = ClampDouble(TextMetricToChartPoints(mRebarTextHeightBase, mRebarTextUnits), 5#, 28#)
-    mDimensionBaseGap = ClampDouble(ModelMmToChartPoints(mDimensionBaseGapBase), 4#, 180#)
-    mRebarBaseGap = ClampDouble(ModelMmToChartPoints(mRebarBaseGapBase), 2#, 120#)
+    mDimensionBaseGap = ClampDouble(ModelMmToChartPoints(mDimensionBaseGapBase * mOffsetScale), 4#, 180#)
+    mRebarBaseGap = ClampDouble(ModelMmToChartPoints(mRebarBaseGapBase * mOffsetScale), 2#, 120#)
     mDimensionLineWeight = mDimensionLineWeightBase * mVisualScale
     mExtensionLineWeight = mExtensionLineWeightBase * mVisualScale
     mRebarLineWeight = mRebarLineWeightBase * mVisualScale

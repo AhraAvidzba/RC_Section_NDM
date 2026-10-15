@@ -31,7 +31,6 @@ Private mLoadingSheet As String ' Имя листа текущей входно�
 Private mLoadingRow As Long ' Первая строка таблицы; считывается один раз, без COM на каждый ключ.
 Private mLoadingColumn As Long ' Первый столбец таблицы для вычисления абсолютного адреса значения.
 Private mCount As Long ' Количество загруженных ключей.
-Private mMigrationWarning As String ' Предупреждение о конфликте старого и канонического ключа Extension.
 
 ' Загружает все настройки книги, нужные расчету и выводу.
 ' Метод объединяет разные именованные диапазоны Config в один внутренний
@@ -46,7 +45,7 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object)
     AppendNamedSettingsRangeIfExists workbook, "rngConcreteMaterialParameters"
     AppendNamedSettingsRangeIfExists workbook, "rngSteelMaterialParameters"
     AppendRequiredNamedSettingsRange workbook, "rngPlotAnnotationSettings", "Подписи и размеры схемы"
-    NormalizeDiagramExtensionSetting True
+    ValidateDiagramExtensionSetting True
 End Sub
 
 ' Различает поврежденное имя обязательной таблицы и ошибку ее значения.
@@ -109,50 +108,24 @@ End Sub
 Public Sub LoadFromRange(ByVal settingsRange As Object)
     Clear
     AppendSettingsRange settingsRange
-    NormalizeDiagramExtensionSetting
+    ValidateDiagramExtensionSetting
 End Sub
 
-' Читает старый формат только на границе Excel. До любых defaults сохраняет
-' явно введенное значение, затем удаляет старый ключ из runtime-настроек.
-' Конфликт не скрывается: новый ключ имеет приоритет, причина доступна отчету.
-Private Sub NormalizeDiagramExtensionSetting(Optional ByVal requireWorkbookValue As Boolean = False)
-    Const canonicalKey As String = "General.DiagramExtension"
-    Const legacyKey As String = "Solver.DirectState.DiagramExtension"
-    Dim canonicalIndex As Long
-    Dim legacyIndex As Long
-    Dim valueText As String
-    Dim legacyValue As String
-    canonicalIndex = FindKey(canonicalKey)
-    legacyIndex = FindKey(legacyKey)
-    If canonicalIndex > 0 Then
-        valueText = DiagramExtensionValue(mValues(canonicalIndex), canonicalKey)
-        If legacyIndex > 0 Then
-            legacyValue = UCase$(Trim$(mValues(legacyIndex)))
-            Select Case legacyValue
-                Case "YES", "TRUE", "1", "ДА": legacyValue = "Yes"
-                Case "NO", "FALSE", "0", "НЕТ": legacyValue = "No"
-            End Select
-            If StrComp(valueText, legacyValue, vbTextCompare) <> 0 Then
-                mMigrationWarning = "Настройки численного продолжения диаграмм заданы дважды. " & _
-                    "Использовано значение " & valueText & " из General.DiagramExtension; " & _
-                    "старый Solver.DirectState.DiagramExtension больше не управляет расчетом."
-            End If
-        End If
-        mValues(canonicalIndex) = valueText
-    ElseIf legacyIndex > 0 Then
-        valueText = DiagramExtensionValue(mValues(legacyIndex), legacyKey)
-        mKeys(legacyIndex) = canonicalKey
-        mValues(legacyIndex) = valueText
-        legacyIndex = 0
-    Else
-        If requireWorkbookValue Then Err.Raise vbObjectError + 4313, "CSystemSettingsReader", _
-            InputErrorMessage(canonicalKey, "Обязательная строка настройки отсутствует.", _
+' Проверяет текущий переключатель без преобразования структуры и переименования ключей.
+' Неполный автономный LoadFromRange сохраняет свой default; полной книге строка обязательна.
+Private Sub ValidateDiagramExtensionSetting(Optional ByVal requireWorkbookValue As Boolean = False)
+    Const key As String = "General.DiagramExtension"
+    Dim index As Long
+    index = FindKey(key)
+    If index > 0 Then
+        mValues(index) = DiagramExtensionValue(mValues(index), key)
+    ElseIf requireWorkbookValue Then
+        Err.Raise vbObjectError + 4313, "CSystemSettingsReader", _
+            InputErrorMessage(key, "Обязательная строка настройки отсутствует.", _
                 "Восстановите строку в системных настройках Config и выберите Yes или No.")
-        ' Неполный автономный LoadFromRange сохраняет контракт reader-а;
-        ' в полной пользовательской книге отсутствие строки является ошибкой.
-        AppendSetting canonicalKey, "Yes", "Yes", "Численное продолжение активных диаграмм."
+    Else
+        AppendSetting key, "Yes", "Yes", "Численное продолжение активных диаграмм."
     End If
-    If legacyIndex > 0 Then RemoveSettingAt legacyIndex
 End Sub
 
 ' Возвращает каноническое Yes/No, сохраняя поддержанные логические формы.
@@ -166,26 +139,6 @@ Private Function DiagramExtensionValue(ByVal rawValue As String, ByVal settingKe
                 InputErrorMessage(settingKey, "Значение переключателя не распознано.", "Выберите Yes или No.")
     End Select
 End Function
-
-' Убирает мигрированный старый ключ из уже прочитанных массивов. Остальные
-' настройки сохраняют порядок и значения; runtime не видит двух переключателей.
-Private Sub RemoveSettingAt(ByVal index As Long)
-    Dim i As Long
-    For i = index To mCount - 1
-        mKeys(i) = mKeys(i + 1)
-        mValues(i) = mValues(i + 1)
-        mValueErrors(i) = mValueErrors(i + 1)
-        mDefaults(i) = mDefaults(i + 1)
-        mSources(i) = mSources(i + 1)
-        mLocations(i) = mLocations(i + 1)
-    Next i
-    mCount = mCount - 1
-End Sub
-
-' Предупреждение о конфликте старого и канонического ключа Extension.
-Public Property Get MigrationWarning() As String
-    MigrationWarning = mMigrationWarning
-End Property
 
 ' Добавляет одну непрерывную таблицу общих настроек. Несмежные области отвергаются до Value2:
 ' иначе Excel возвращает только первую область и часть ввода теряется.
@@ -649,7 +602,6 @@ Public Sub Clear()
     mLoadingRow = 0
     mLoadingColumn = 0
     mCount = 0
-    mMigrationWarning = vbNullString
 End Sub
 
 ' Возвращает строковое значение настройки.

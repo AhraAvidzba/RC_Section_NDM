@@ -1957,7 +1957,7 @@
     },
     "CSectionDefinition.ConcreteDomain": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 202,
+      "line": 219,
       "routine": "RunRecipeSetbackInputTests",
       "code": "    geometryArea = def.ConcreteDomain.Area",
       "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
@@ -1965,6 +1965,8 @@
         {
           "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
@@ -2824,7 +2826,7 @@
     },
     "CSectionInputTable.RowCount": {
       "source": "tests/modTestSectionSolver.bas",
-      "line": 504,
+      "line": 477,
       "routine": "TestRecipeInputCatalog",
       "code": "            For row = 1 To table.RowCount",
       "context": "В теле modTestSectionSolver.TestRecipeInputCatalog с его подготовленными локальными объектами/входом.",
@@ -3203,7 +3205,7 @@
     },
     "CSectionInputTable.RowByKey": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 191,
+      "line": 208,
       "routine": "RunRecipeSetbackInputTests",
       "code": "    main = table.RowByKey(\"as\", 2)",
       "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
@@ -3211,6 +3213,8 @@
         {
           "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
@@ -3983,18 +3987,16 @@
       ]
     },
     "CUnitSystem.LoadFromSettings": {
-      "source": "tests/modTestGeometryPublication.bas",
-      "line": 83,
-      "routine": "RunRecipeContextFreezeTests",
-      "code": "    captured.LoadFromSettings settings",
-      "context": "В теле modTestGeometryPublication.RunRecipeContextFreezeTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestMaterialDiagrams.bas",
+      "line": 1053,
+      "routine": "Audit03MaterialConfigProvider",
+      "code": "    units.LoadFromSettings settings",
+      "context": "В теле modTestMaterialDiagrams.Audit03MaterialConfigProvider с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestGeometryPublication.RunRecipeContextFreezeTests",
+          "entryPoint": "modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestGeometryPublication.RunRecipeContextFreezeTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryPublication.RunRecipeContextFreezeTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PublicationTests/modTestGeometryPublication.RunRecipeContextFreezeTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests.txt"
           ]
         }
       ]
@@ -4701,7 +4703,7 @@
     },
     "CConcreteRegion.LoopCount": {
       "source": "tests/modTestAutoCADContours.bas",
-      "line": 1024,
+      "line": 1165,
       "routine": "CheckNestedRegion",
       "code": "    For i = 1 To region.LoopCount",
       "context": "В теле modTestAutoCADContours.CheckNestedRegion с его подготовленными локальными объектами/входом.",
@@ -4709,6 +4711,7 @@
         {
           "entryPoint": "modTestAutoCADContours.RunAutoCADContourTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestAutoCADContours.RunAutoCADContourTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt"
           ]
         }
@@ -5098,6 +5101,7 @@
         {
           "entryPoint": "modTestAutoCADContours.RunAutoCADContourTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestAutoCADContours.RunAutoCADContourTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/FinalAcceptance/FakeCAD.txt"
           ]
         }
@@ -6211,9 +6215,9 @@
   "missingCalls": [],
   "missingNativeRoots": [],
   "sourceHashes": {
-    "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "af551e79ec8e5b97c29d4c5b3aa0a96b2b0dbb88687b903fc5e8ebcebb9efaa2",
+    "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "b97483929d19e3b7bbbdc345003b1e53a14432b8e5be69f98df0cfc7b5441a6a",
     "tests/modTestAudit02Api.bas": "7f36a35df1b7bd932bd14f53b0240ae4eb91b031b5bd4b242f51b43089d06b12",
-    "tests/modTestAutoCADContours.bas": "430ed8e1569e2012430d8b82d73cd25fcc28a4e2d618279c7f0f5bd14088676b",
+    "tests/modTestAutoCADContours.bas": "e7e84f6ad15daa52d5ee7db56ed5f34794b8b24d205d5b3fc7ec2267dbe5ba29",
     "tests/modTestContourMesh.bas": "9de226c7de9b76b8a22e869410c51c99c3b3a9bd0e26e844f42500999d49c9a4",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
     "tests/modTestDeclarativeGeometry.bas": "4eba91a978b9fda5fe83a33469bcfee3668627c41087a838b3159966489da1ea",
@@ -6222,13 +6226,14 @@
     "tests/modTestGeometryPublication.bas": "20ee6f70af5beed46670be220e17d7ed25c983115513b0cddc1accea317441a4",
     "tests/modTestGeometryQuery.bas": "9641a29518f061625600a290c2b68bedadfd233747991d49334f703558a7db79",
     "tests/modTestGeometryReview.bas": "a6f0f2b816cd985a7f0fa440acc34b49ae939aeee0bbb89ea8527d0849b09612",
+    "tests/modTestMaterialDiagrams.bas": "355f24453685363dd79c422de33fa63894dfe5239edceb82a0c42f55caf044d0",
     "tests/modTestPolygonSpec.bas": "f840237ec27825e25617f0790ad4ecb4d405c1dfd80203aee8cd0cbebbe356b6",
     "tests/modTestRecipeAnnotations.bas": "3847af00d93a63a520806dbadff9870160da53ed7a714dd14b1d149bfa569845",
     "tests/modTestRecipeApiCatalogue.bas": "e727da374e3126ad429612c0cc5f900f5b5b0512150538fd4647b6acd9d8ec61",
     "tests/modTestRecipeOperations.bas": "852721ad806c7b5d15290abb6829006b860cc31eb9415e86c50a637fcf0e6c45",
-    "tests/modTestRecipeSetbacks.bas": "8ffb354ceba0cb426cc515d8bb2e7a8e8f5fc17c035132d6d8d91792b75136cb",
-    "tests/modTestSectionRecipes.bas": "d2dc72c061e49055102e2cb5faa671212e42547cd39635cc7017e39b6cb984ce",
-    "tests/modTestSectionSolver.bas": "abaa8e4cdd6805b1612c8da3e44f11a90db75cc2d36ca68d288cf2e678b5233f"
+    "tests/modTestRecipeSetbacks.bas": "808b7d49677fa8aab21dc88bd1ca689e925ffdbbde441bf958b6a4e7bb71ddc0",
+    "tests/modTestSectionRecipes.bas": "dffc70af7eb4eff85c105d88a5f2610aab6a6a8e781d6101c2764f499fb5b376",
+    "tests/modTestSectionSolver.bas": "73d814f01a11eac8f0e59829a1c6d4da4fc552058ca39aa0871d98c7ad4daea1"
   },
   "reportHashes": {
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutContactTests.txt": "405a0972515efc8117b30d727e3ef96d32049201b83701ee7ea0cfeb61cffbbb",
@@ -6270,6 +6275,10 @@
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt": "9b03394155c6a89785dfee87bdbccc5e47bd9d2f21f5438dcf9fc1561f9e6bde",
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt": "df3e7d62facf068c8614c4d42575db799ced0e42b2686f62a13577ff3767e635",
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt": "629165dddc02dba31a8f5ee24a3c9b0e6ca0e42b1c71689c335b6a748db1b2a6",
+    "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestAutoCADContours.RunAutoCADContourTests.txt": "667ccdbc8407e22157625703ddd498e8c57d219e992804fca70baacef7758140",
+    "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests.txt": "98b7209be5835b60f909ec25bcaefab34e709ce9334a9681f1e8f27c447a3e9a",
+    "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b",
+    "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b",
     "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt": "1c7b36abe87c11301013df4f86a9276c34fad83b000ea8c2ffce75e0be0939f2",
     "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt": "9978165c1f707e8d222d283318efd4d610d95148b5f43b90d165a67bcd0ed3d4",
     "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeOperationTests.txt": "c043508b41fcb9bea1f2f6d7f864dcadf6505dfd493d805999b73ec86fbe1951",

@@ -760,8 +760,8 @@ function Get-SettingInstructionLines {
         "Offset" { return @($lead) + @(
             "Offset остается геометрическим отступом в миллиметрах сечения и не зависит от TextUnits.",
             "Для включенного типа аннотаций значение обязательно и не меньше нуля. Пустая ячейка, текст или ошибка формулы не заменяются запасным отступом.",
-            "Для размерных линий значение задает расстояние от грани или линии размера до самой размерной линии.",
-            "Для подписей арматуры Offset задает отступ от бетонной границы до линии подписи. При Placement = Outside на прямой грани расстояние от оси ряда до линии подписи равно as + Offset. Зазор между линией и текстом задает TextGap.",
+            "У размеров полученный отступ задаёт расстояние от измеряемой границы до размерной линии. Для сечений до 1000 мм включительно базовый Offset не увеличивается.",
+            "У арматуры полученный отступ отсчитывается от бетонной границы. При Outside на прямой стороне расстояние от оси ряда до линии подписи равно as + Offset × max(1; D/1000). TextGap задаёт отдельный зазор от линии до текста и этим коэффициентом не умножается.",
             "После перевода в экранные points отступ ограничивается для читаемости: 4–180 pt у размеров и 2–120 pt у арматуры. Это ограничение отображения, а не изменение геометрии сечения.",
             "Для постоянного экранного размера текста и зазора применяется TextUnits = pt; Offset остается геометрическим отступом."
         ) }
@@ -1474,7 +1474,7 @@ function Get-SettingsInstructionCatalog {
     $items.Add(@{ Key = "PlotAnnotationSettings"; Title = "Аннотации схемы"; Lines = @(
         "Таблица «Аннотации схемы» на Config управляет размерными линиями и подписями арматуры на Excel-схеме. Колонка арматуры соответствует ключам Plot.RebarLabels.*, колонка размеров - Plot.Dimensions.*. Звездочка означает имя строки: например, Enabled дает Plot.RebarLabels.Enabled или Plot.Dimensions.Enabled.",
         "Enabled включает соответствующие подписи. При No остальные параметры этой колонки не используются. Эти настройки не меняют расчет и экспорт в AutoCAD.",
-        "Offset - расстояние в реальных миллиметрах сечения от бетонной границы до размерной линии или линии подписи арматуры. Для арматуры Placement выбирает сторону отступа от этой границы: Inside - внутрь бетона, Outside - наружу. Для размеров меняется только сторона текста относительно размерной линии.",
+        "Offset — базовый отступ в мм от бетона до размерной линии или линии подписи арматуры. Для обеих групп он умножается на max(1; D/1000), где D — наибольший габарит сечения в мм. При D ≤ 1000 мм коэффициент равен 1. Placement выбирает сторону подписи арматуры или текста размера.",
         "TextUnits выбирает pt - пункты Excel или mm - миллиметры сечения. TextHeight задает высоту текста, TextGap - зазор между текстом и линией в выбранных единицах. При pt размер шрифта почти не зависит от масштаба схемы; при mm он меняется вместе с геометрией.",
         "LineWeight - толщина основной линии в пунктах. Plot.RebarLabels.LineEnabled оставляет или убирает короткую линию рядом с подписью. Plot.Dimensions.ExtensionLineWeight задает толщину выносных линий, Plot.Dimensions.ArrowType и Plot.Dimensions.ArrowSize - вид и размер стрелок.",
         "Color задает цвет текста и основной линии; Plot.Dimensions.ExtensionLineColor - цвет выносных линий. Формат RGB: три целых компонента 0...255.",
@@ -3794,7 +3794,7 @@ function Get-PlotAnnotationSettingsCatalog {
     @(
         @("Enabled", "Yes", "Yes", "Yes/No", "Обязательный выбор Yes/No для соответствующего типа аннотаций. При No параметры отключенной группы не читаются."),
         @("Placement", "Outside", "Outside", "-", "Для арматуры задает сторону подписи от бетонной границы: Outside - наружу, Inside - внутрь бетона; для размеров задает только сторону текста относительно размерной линии."),
-        @("Offset", "30", "100", "мм", "Отступ в реальных миллиметрах сечения от бетонной границы до линии подписи арматуры или размерной линии. Для арматуры Placement задает сторону отступа, TextGap - дополнительный зазор до текста."),
+        @("Offset", "30", "100", "мм", "Базовый отступ, мм. Для размеров и арматуры умножается на max(1; D/1000), D — наибольший габарит сечения в мм. У арматуры отсчёт от бетона; Placement — сторона, TextGap — зазор до текста."),
         @("LineEnabled", "Yes", "-", "Yes/No", "Показывать короткую линию обозначения арматуры; если No, остается только текст подписи."),
         @("LineWeight", "1.35", "1.75", "pt", "Толщина основной линии аннотации."),
         @("ExtensionLineWeight", "-", "0.85", "pt", "Толщина выносных линий; применяется только для размерных линий."),
@@ -4307,126 +4307,7 @@ function Restore-WorkbookPrintAreas {
     } finally { $zip.Dispose() }
 }
 
-# Проверяет логическое значение мигрируемой настройки без подстановки default.
-function ConvertTo-DiagramExtensionValue {
-    param([object]$Value, [string]$Key)
-    switch (([string]$Value).Trim().ToUpperInvariant()) {
-        { $_ -in @("YES", "TRUE", "1", "ДА") } { return "Yes" }
-        { $_ -in @("NO", "FALSE", "0", "НЕТ") } { return "No" }
-        default { throw "На листе Config настройка $Key должна быть Yes или No." }
-    }
-}
-
-# Переносит только настройку Extension в существующей книге. Не пересобирает
-# Config и не заменяет пользовательские соседние настройки каталогом defaults.
-# Значение выбирается до создания новой строки; повтор не меняет порядок строк.
-function Invoke-DiagramExtensionMigration {
-    param([object]$Workbook)
-    $canonicalKey = "General.DiagramExtension"
-    $legacyKey = "Solver.DirectState.DiagramExtension"
-    $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
-    $data = $range.Value2
-    $canonicalRow = 0
-    $legacyRow = 0
-    $generalRow = 0
-    for ($r = 2; $r -le $range.Rows.Count; $r++) {
-        $key = ([string]$data[$r, 1]).Trim()
-        if ($key -eq $canonicalKey) {
-            if ($canonicalRow) { throw "В Config несколько строк $canonicalKey." }
-            $canonicalRow = $r
-        }
-        if ($key -eq $legacyKey) {
-            if ($legacyRow) { throw "В Config несколько строк $legacyKey." }
-            $legacyRow = $r
-        }
-        if ($key -eq "[Общие]") { $generalRow = $r }
-    }
-    $warning = ""
-    $value = "Yes"
-    if ($canonicalRow) {
-        $value = ConvertTo-DiagramExtensionValue $data[$canonicalRow, 2] $canonicalKey
-        if ($legacyRow) {
-            try { $legacyValue = ConvertTo-DiagramExtensionValue $data[$legacyRow, 2] $legacyKey }
-            catch { $legacyValue = [string]$data[$legacyRow, 2] }
-            if ($value -ne $legacyValue) {
-                $warning = "В Config заданы два значения численного продолжения диаграмм. Сохранено $value из $canonicalKey; старый ключ удален."
-            }
-        }
-    } elseif ($legacyRow) {
-        $value = ConvertTo-DiagramExtensionValue $data[$legacyRow, 2] $legacyKey
-    }
-    if (-not $generalRow) { throw "В Config не найден блок [Общие] для миграции $canonicalKey." }
-    $generalEnd = $range.Rows.Count + 1
-    for ($r = $generalRow + 1; $r -le $range.Rows.Count; $r++) {
-        if (([string]$data[$r, 1]).Trim().StartsWith("[")) { $generalEnd = $r; break }
-    }
-    $targetRow = $canonicalRow
-    if (-not $targetRow -or $targetRow -le $generalRow -or $targetRow -ge $generalEnd) {
-        $targetRow = 0
-        for ($r = $generalRow + 1; $r -lt $generalEnd; $r++) {
-            if ([string]::IsNullOrWhiteSpace([string]($data[$r, 1]))) { $targetRow = $r; break }
-        }
-        if (-not $targetRow) {
-            # Сдвигаются только ячейки реестра настроек, не целые строки Config.
-            $range.Rows.Item($generalEnd).Insert(-4121) | Out-Null
-            $targetRow = $generalEnd
-            if ($canonicalRow -ge $targetRow) { $canonicalRow++ }
-            if ($legacyRow -ge $targetRow) { $legacyRow++ }
-            $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
-        }
-        $sourceRow = $canonicalRow
-        if (-not $sourceRow) { $sourceRow = $legacyRow }
-        if ($sourceRow) { $range.Rows.Item($sourceRow).Copy($range.Rows.Item($targetRow)) | Out-Null }
-    }
-    foreach ($obsoleteRow in @($legacyRow, $canonicalRow)) {
-        if ($obsoleteRow -gt 0 -and $obsoleteRow -ne $targetRow) {
-            $range.Rows.Item($obsoleteRow).ClearContents()
-            $range.Rows.Item($obsoleteRow).Hyperlinks.Delete()
-            $range.Rows.Item($obsoleteRow).Validation.Delete()
-        }
-    }
-    $setting = @(Get-SystemSettingsCatalog)[0].Rows | Where-Object { $_[0] -eq $canonicalKey }
-    $range.Cells.Item($targetRow, 1).Value2 = $canonicalKey
-    $range.Cells.Item($targetRow, 2).Value2 = $value
-    $range.Cells.Item($targetRow, 3).Value2 = "-"
-    $range.Cells.Item($targetRow, 4).Value2 = [string]$setting[3]
-    $inputCell = $range.Cells.Item($targetRow, 2)
-    $inputCell.HorizontalAlignment = -4108
-    $inputCell.VerticalAlignment = -4108
-    $inputCell.Validation.Delete()
-    $separator = [string]$Workbook.Application.International(5)
-    $inputCell.Validation.Add(3, 1, 1, "Yes${separator}No")
-    $inputCell.Validation.IgnoreBlank = $false
-    $inputCell.Validation.InCellDropdown = $true
-
-    # Для старой книги добавляется актуальный самостоятельный блок справки.
-    # Остальные блоки и их ссылки не перестраиваются при точечной миграции.
-    $guide = $Workbook.Worksheets.Item("Справка")
-    $marker = "Численное продолжение диаграмм (General.DiagramExtension)"
-    $anchor = 0
-    $used = $guide.UsedRange
-    for ($r = 1; $r -le $used.Row + $used.Rows.Count; $r++) {
-        if ([string]$guide.Cells.Item($r, 1).Value2 -eq $marker) { $anchor = $r; break }
-    }
-    if (-not $anchor) { $anchor = $used.Row + $used.Rows.Count + 2 }
-    $guide.Cells.Item($anchor, 1).Value2 = $marker
-    $guide.Cells.Item($anchor, 1).Font.Bold = $true
-    $helpLines = @(Get-SettingInstructionLines $canonicalKey ([string]$setting[3]))
-    for ($i = 0; $i -lt $helpLines.Count; $i++) {
-        $helpRow = $guide.Range($guide.Cells.Item($anchor + $i + 1, 1), $guide.Cells.Item($anchor + $i + 1, 6))
-        $helpRow.Merge()
-        $helpRow.Cells.Item(1, 1).Value2 = [string]$helpLines[$i]
-        $helpRow.WrapText = $true
-        $helpRow.VerticalAlignment = -4160
-        $helpRow.RowHeight = 55
-    }
-    Add-InstructionHyperlink $range.Cells.Item($targetRow, 5) $guide.Name $anchor
-    $Workbook.Application.CutCopyMode = $false
-    if ($warning) { Write-Warning $warning }
-    return @{ Value = $value; Warning = $warning; Row = $range.Row + $targetRow - 1 }
-}
-
-# Выполняет служебный шаг сборочного или проверочного сценария.
+# Создаёт структуру нового шаблона; готовая книга не вызывает этот сборщик.
 function Apply-SystemSettingsLayout {
     param([object]$Workbook, [object]$Sheet)
 
@@ -5369,207 +5250,6 @@ function Set-SettingInstructionBlock {
 # Добавляет независимый допуск трещинообразования в существующую книгу.
 # Сдвигается только A:E реестра; пользовательские значения и соседние таблицы
 # не пересобираются. Повторный вызов сохраняет уже введенный допуск.
-function Update-CrackLambdaSetting {
-    param([object]$Workbook)
-    $key = "SLS.Crack.ToleranceLambda"
-    $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
-    $data = $range.Value2
-    $found = 0
-    $strategy = 0
-    for ($row = 2; $row -le $range.Rows.Count; $row++) {
-        if ([string]$data[$row, 1] -ceq $key) {
-            if ($found) { throw "В Config несколько строк $key." }
-            $found = $row
-        }
-        if ([string]$data[$row, 1] -ceq "SLS.Crack.InitiationSolutionStrategy") { $strategy = $row }
-    }
-    if (-not $strategy) { throw "В Config нет способа поиска трещинообразования." }
-    $setting = @((Get-SystemSettingsCatalog | Where-Object Name -eq "OutputSettings").Rows |
-        Where-Object { $_[0] -ceq $key })
-    if ($setting.Count -ne 1) { throw "В каталоге нет однозначного определения $key." }
-    $added = -not [bool]$found
-    if ($added) {
-        $found = $strategy + 1
-        $rowCount = $range.Rows.Count
-        $formulas = $range.Formula
-        $expanded = $range.Resize($rowCount + 1, $range.Columns.Count)
-        $tail = $expanded.Rows.Item($rowCount + 1).Value2
-        for ($column = 1; $column -le $range.Columns.Count; $column++) {
-            if ([string]$tail[1, $column] -ne '') { throw "Под реестром Config нет свободной строки для $key." }
-        }
-        # Insert меняет ссылки ROW(A...) в соседних источниках списков.
-        # Копирование снизу вверх сохраняет их и все формулы дословно.
-        for ($row = $rowCount; $row -ge $found; $row--) {
-            $target = $expanded.Rows.Item($row + 1)
-            $target.UnMerge() | Out-Null
-            $range.Rows.Item($row).Copy($target) | Out-Null
-            $rowData = New-Object 'object[,]' 1,$range.Columns.Count
-            for ($column = 1; $column -le $range.Columns.Count; $column++) {
-                $rowData[0, ($column - 1)] = $formulas[$row, $column]
-            }
-            $target.Formula = $rowData
-        }
-        $Workbook.Names.Item("rngSystemSettings").RefersTo = "='Config'!" + $expanded.Address()
-        $range = $expanded
-        $range.Rows.Item($found).UnMerge() | Out-Null
-        $range.Rows.Item($strategy).Copy($range.Rows.Item($found)) | Out-Null
-        $range.Rows.Item($found).Validation.Delete()
-        $range.Rows.Item($found).Hyperlinks.Delete()
-        $range.Cells.Item($found, 2).Value2 = [double]::Parse([string]$setting[0][1], [Globalization.CultureInfo]::InvariantCulture)
-    }
-    $range.Cells.Item([int]$found, 1).Value2 = [string]$key
-    $range.Cells.Item([int]$found, 3).Value2 = "-"
-    $range.Cells.Item([int]$found, 4).Value2 = [string]$setting[0][3]
-    $range.Cells.Item([int]$found, 2).HorizontalAlignment = -4108
-    $range.Cells.Item([int]$found, 2).VerticalAlignment = -4108
-    $guide = $Workbook.Worksheets.Item("Справка")
-    $anchor = 0
-    $last = $guide.UsedRange.Row + $guide.UsedRange.Rows.Count - 1
-    for ($row = 1; $row -le $last; $row++) {
-        if ([string]$guide.Cells.Item($row, 1).Value2 -ceq $key) { $anchor = $row; break }
-    }
-    if (-not $anchor) {
-        $anchor = $last + 2
-        $helpEnd = 0
-    } else {
-        $helpEnd = $anchor
-        while ([string]$guide.Cells.Item($helpEnd + 1, 1).Value2 -ne '' -and -not $guide.Cells.Item($helpEnd + 1, 1).Font.Bold) { $helpEnd++ }
-    }
-    Set-SettingInstructionBlock $guide $anchor $key (Get-SettingInstructionLines $key ([string]$setting[0][3])) $helpEnd | Out-Null
-    Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
-    $newRow = $range.Rows.Item([int]$found)
-    $newRow.Borders.LineStyle = -4115
-    $newRow.Borders.Weight = 2
-    $newRow.Borders.Color = 0
-    $right = $range.Cells.Item([int]$found, 5).Borders.Item(10)
-    $right.Weight = 2
-    $right.Color = 0
-    $right.LineStyle = -4115
-    $Workbook.Application.CutCopyMode = $false
-    return @{ Added = $added; Address = $range.Cells.Item($found, 2).Address($false, $false); HelpRow = $anchor }
-}
-
-# Дополняет существующий реестр без пересборки соседних таблиц и их списков.
-# Копирование снизу вверх сохраняет формулы ROW(A...) скрытых источников.
-function Update-PlateauSlopeFactorSetting {
-    param([object]$Workbook)
-    $key = "General.PlateauSlopeFactor"
-    $oldKey = "Solver.PlateauSlope.Enabled"
-    $range = $Workbook.Names.Item("rngSystemSettings").RefersToRange
-    $data = $range.Value2
-    $found = 0; $method = 0; $extension = 0
-    for ($row = 2; $row -le $range.Rows.Count; $row++) {
-        if ([string]$data[$row, 1] -in @($key, $oldKey)) {
-            if ($found) { throw "В Config несколько строк $key." }
-            $found = $row
-        }
-        if ([string]$data[$row, 1] -ceq "Solver.Method") { $method = $row }
-        if ([string]$data[$row, 1] -ceq "General.DiagramExtension") { $extension = $row }
-    }
-    if (-not $method -or -not $extension) { throw "В Config нет обязательных настроек решателя." }
-    $definition = @((Get-SystemSettingsCatalog | Where-Object Name -eq "GeneralSettings").Rows | Where-Object { $_[0] -ceq $key })
-    if ($definition.Count -ne 1) { throw "Неоднозначное определение $key в каталоге." }
-    $factor = 0.001
-    $settingFormula = $null
-    if ($found) {
-        if ([string]$data[$found, 1] -ceq $oldKey) {
-            switch -CaseSensitive ([string]$data[$found, 2]) {
-                'Yes' {$factor = 0.001}
-                'No' {$factor = 0.0}
-                default {throw "Прежнее значение $oldKey не равно Yes или No."}
-            }
-        } else {
-            $factor = [double]::Parse(([string]$data[$found, 2]), [Globalization.CultureInfo]::InvariantCulture)
-            if ($factor -lt 0 -or [double]::IsInfinity($factor) -or [double]::IsNaN($factor)) {throw 'Недопустимый коэффициент наклона плато.'}
-            $settingFormula = $range.Cells.Item($found, 2).Formula
-        }
-    }
-    $added = -not [bool]$found
-    if ($added) {
-        $found = $extension
-        $rowCount = $range.Rows.Count
-        $formulas = $range.Formula
-        $expanded = $range.Resize($rowCount + 1, $range.Columns.Count)
-        $tail = $expanded.Rows.Item($rowCount + 1).Value2
-        for ($column = 1; $column -le $range.Columns.Count; $column++) {
-            if ([string]$tail[1, $column] -ne '') { throw "Под Config нет свободной строки." }
-        }
-        for ($row = $rowCount; $row -ge $found; $row--) {
-            $target = $expanded.Rows.Item($row + 1)
-            $target.UnMerge() | Out-Null
-            $range.Rows.Item($row).Copy($target) | Out-Null
-            $values = New-Object 'object[,]' 1,$range.Columns.Count
-            for ($column = 1; $column -le $range.Columns.Count; $column++) { $values[0, ($column - 1)] = $formulas[$row, $column] }
-            $target.Formula = $values
-        }
-        $Workbook.Names.Item("rngSystemSettings").RefersTo = "='Config'!" + $expanded.Address()
-        $range = $expanded
-        $range.Rows.Item($found).UnMerge() | Out-Null
-        $range.Rows.Item($found + 1).Copy($range.Rows.Item($found)) | Out-Null
-        $range.Rows.Item($found).Validation.Delete()
-        $range.Rows.Item($found).Hyperlinks.Delete()
-    }
-    elseif ($found -ne $extension - 1) {
-        # Копируем только A:E. Вставка ячеек могла бы изменить ROW(A...) в
-        # независимых источниках списков справа и их смысл после переноса.
-        $order = New-Object 'System.Collections.Generic.List[int]'
-        for ($row = 1; $row -le $range.Rows.Count; $row++) {
-            if ($row -eq $extension) {$order.Add($found)}
-            if ($row -ne $found) {$order.Add($row)}
-        }
-        $temporary = $Workbook.Worksheets.Add()
-        try {
-            $range.Copy($temporary.Range('A1')) | Out-Null
-            $formulas = $range.Formula
-            for ($row = 1; $row -le $range.Rows.Count; $row++) {
-                $sourceRow = $order[$row-1]
-                if ($sourceRow -eq $row) {continue}
-                $target = $range.Rows.Item($row)
-                $target.UnMerge() | Out-Null
-                $temporary.Range('A1').Resize($range.Rows.Count, 5).Rows.Item($sourceRow).Copy($target) | Out-Null
-                $values = New-Object 'object[,]' 1,5
-                for ($column = 1; $column -le 5; $column++) {$values[0,($column-1)] = $formulas[$sourceRow,$column]}
-                $target.Formula = $values
-            }
-            $found = $order.IndexOf($found) + 1
-        } finally {$temporary.Delete()}
-    }
-    $range.Cells.Item([int]$found, 1).Value2 = $key
-    $range.Cells.Item([int]$found, 3).Value2 = "-"
-    $range.Cells.Item([int]$found, 4).Value2 = [string]$definition[0][3]
-    $cell = $range.Cells.Item([int]$found, 2)
-    if ($null -ne $settingFormula) {$cell.Formula = $settingFormula} else {$cell.Value2 = [double]$factor}
-    $cell.NumberFormat = '0.########'
-    $cell.HorizontalAlignment = -4108; $cell.VerticalAlignment = -4108
-    $cell.Validation.Delete(); $cell.Validation.Add(2, 1, 7, '0')
-    $cell.Validation.IgnoreBlank = $false
-    $cell.Validation.ShowError = $true
-    $cell.Validation.ErrorTitle = 'Коэффициент наклона плато'
-    $cell.Validation.ErrorMessage = 'Введите число не меньше нуля. 0 — горизонтальное плато; по умолчанию 0,001, наклон плато 0,001·E.'
-    $guide = $Workbook.Worksheets.Item("Справка")
-    $last = $guide.UsedRange.Row + $guide.UsedRange.Rows.Count - 1
-    $anchor = 0
-    for ($row = 1; $row -le $last; $row++) {
-        if ([string]$guide.Cells.Item($row, 1).Value2 -in @($key, $oldKey)) { $anchor = $row; break }
-    }
-    if (-not $anchor) {
-        $anchor = $last + 2
-        $helpEnd = 0
-    } else {
-        $helpEnd = $anchor
-        while ([string]$guide.Cells.Item($helpEnd + 1, 1).Value2 -ne '' -and -not $guide.Cells.Item($helpEnd + 1, 1).Font.Bold) { $helpEnd++ }
-    }
-    Set-SettingInstructionBlock $guide $anchor $key (Get-SettingInstructionLines $key ([string]$definition[0][3])) $helpEnd | Out-Null
-    Add-InstructionHyperlink $range.Cells.Item($found, 5) $guide.Name $anchor
-    $range.Rows.Item([int]$found).Borders.LineStyle = -4115
-    $range.Rows.Item([int]$found).Borders.Weight = 2
-    $range.Rows.Item([int]$found).Borders.Color = 0
-    $right = $range.Cells.Item([int]$found, 5).Borders.Item(10)
-    $right.Weight = 2; $right.Color = 0; $right.LineStyle = -4115
-    $Workbook.Application.CutCopyMode = $false
-    return @{ Added = $added; Address = $cell.Address($false, $false); HelpRow = $anchor; Factor = $factor }
-}
-
 function Add-SystemSettings {
     param([object]$Sheet)
     $result = Apply-SystemSettingsLayout $Sheet.Parent $Sheet

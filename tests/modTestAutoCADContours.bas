@@ -529,6 +529,147 @@ Private Sub CheckImportedContourDimensions()
     Next kind
 End Sub
 
+' ДЛЯ ТЕСТОВ: два габарита после настоящего конвейера импорта, записи Results и отрисовки Excel.
+Public Function RunImportedDimensionTests(Optional ByVal imageDirectory As String = "") As String
+    Dim section As CSectionModel, space As Collection, layers As Collection, cell As CFakeAcadRegion
+    Dim importer As CAutoCADSectionModelImporter, outer As CFakeAcadContour, writer As CNDMResultsWriter
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim annotations As CSectionAnnotations, chart As Object, shape As Object, system As Object, plotSettings As Object
+    Dim savedSystem As Variant, savedPlot As Variant, kind As Long, row As Long, i As Long, mode As Long
+    Dim b As Long, h As Long, count As Long, horizontal As Long, vertical As Long, textCount As Long
+    Dim enabledRow As Long, lineBottom As Double, contourBottom As Double, layerName As Variant
+    On Error GoTo Failed
+    mPassed = 0: mFailed = 0: mReport = ""
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange: savedSystem = system.Formula
+    Set plotSettings = ThisWorkbook.Names("rngPlotAnnotationSettings").RefersToRange: savedPlot = plotSettings.Formula
+    For row = 2 To system.Rows.Count
+        If CStr(system.Cells(row, 1).Value2) = "Plot.RebarLabels.Enabled" Then system.Cells(row, 2).Value2 = "No"
+        If CStr(system.Cells(row, 1).Value2) = "Plot.Enabled" Then system.Cells(row, 2).Value2 = "Yes"
+    Next row
+    For row = 2 To plotSettings.Rows.Count
+        If CStr(plotSettings.Cells(row, 1).Value2) = "Enabled" Then enabledRow = row: Exit For
+    Next row
+    If enabledRow = 0 Then Err.Raise 5, , "Нет строки Enabled в таблице аннотаций."
+    plotSettings.Cells(enabledRow, 2).Value2 = "No"
+    For kind = 0 To 1
+        Set space = New Collection: Set layers = New Collection
+        For Each layerName In Array("CONCRETE", "REBAR", "OUTER", "OPENING")
+            Set outer = New CFakeAcadContour: layers.Add outer, CStr(layerName)
+        Next layerName
+        Set cell = New CFakeAcadRegion: cell.Initialize 19200#, 0#, 0#, 1#, 1#, 0#, "CONCRETE", "Mesh": space.Add cell
+        Set cell = New CFakeAcadRegion: cell.Initialize GEOM_PI * 100#, 0#, 0#, 1#, 1#, 0#, "REBAR", "Bar": space.Add cell
+        If kind = 1 Then
+            Set outer = Contour("AcDbPolyline", RectangleEdges(-100#, -150#, 200#, 300#), "OUTER"): space.Add outer
+        End If
+        Set importer = New CAutoCADSectionModelImporter
+        Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
+        Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
+        Set annotations = section.Annotations: count = annotations.Count
+        PrepareSectionSnapshot section
+        Check "import.dimension.idempotent." & CStr(kind), annotations.Count = count
+        b = 0: h = 0
+        For i = 1 To annotations.Count
+            If annotations.AnnotationID(i) = "DIM_AUTO_BOUNDS_B" Then b = i
+            If annotations.AnnotationID(i) = "DIM_AUTO_BOUNDS_H" Then h = i
+        Next i
+        Check "import.dimension.both." & CStr(kind), b > 0 And h > 0
+        If b = 0 Or h = 0 Then Err.Raise 5, , "Отсутствует габаритная аннотация."
+        Check "import.dimension.width.bottom." & CStr(kind), annotations.StartY(b) = annotations.EndY(b) And annotations.EndX(b) > annotations.StartX(b) And annotations.NormalX(b) = 0# And annotations.NormalY(b) = -1#
+        Check "import.dimension.height.left." & CStr(kind), annotations.StartX(h) = annotations.EndX(h) And annotations.EndY(h) > annotations.StartY(h) And annotations.NormalX(h) = -1# And annotations.NormalY(h) = 0#
+        Check "import.dimension.exact.sign." & CStr(kind), (annotations.Text(b) = ChrW$(&H2248)) = (kind = 0) And (annotations.Text(h) = ChrW$(&H2248)) = (kind = 0)
+        For mode = 0 To 1
+            plotSettings.Cells(enabledRow, 3).Value2 = IIf(mode = 0, "Yes", "No")
+            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+            Set reader = New CSectionPlotDataReader: reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
+            Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
+            Set chart = ThisWorkbook.Worksheets("Расчет").ChartObjects("chtNDMSectionPlot").Chart
+            horizontal = 0: vertical = 0: lineBottom = 0#: contourBottom = 0#
+            For Each shape In chart.Shapes
+                If InStr(shape.Name, "AnnotationLine") > 0 Then
+                    If shape.Line.BeginArrowheadStyle <> 1 And shape.Line.EndArrowheadStyle <> 1 Then
+                        If shape.Width > 1# And shape.Height < 0.01 Then horizontal = horizontal + 1: lineBottom = shape.Top
+                        Check "import.dimension.line.in.chart", shape.Left >= 0# And shape.Top >= 0# And shape.Left + shape.Width <= chart.ChartArea.Width And shape.Top + shape.Height <= chart.ChartArea.Height
+                        If shape.Height > 1# And shape.Width < 0.01 Then vertical = vertical + 1
+                    End If
+                End If
+                If InStr(shape.Name, "Contour") > 0 Then
+                    If shape.Top + shape.Height > contourBottom Then contourBottom = shape.Top + shape.Height
+                End If
+            Next shape
+            Check "import.dimension.render.horizontal." & CStr(kind) & "." & CStr(mode), horizontal = IIf(mode = 0, 1, 0)
+            Check "import.dimension.render.vertical." & CStr(kind) & "." & CStr(mode), vertical = IIf(mode = 0, 1, 0)
+            If kind = 1 And mode = 0 Then Check "import.dimension.render.below", contourBottom > 0# And lineBottom > contourBottom
+            If Len(imageDirectory) > 0 Then Check "import.dimension.png", chart.Export(imageDirectory & "\ImportDimensions_" & CStr(kind) & "_" & CStr(mode) & ".png", "PNG")
+        Next mode
+    Next kind
+    GoTo Restore
+Failed:
+    Check "import.dimension.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Restore:
+    If Not system Is Nothing And Not IsEmpty(savedSystem) Then system.Formula = savedSystem
+    If Not plotSettings Is Nothing And Not IsEmpty(savedPlot) Then plotSettings.Formula = savedPlot
+    RunImportedDimensionTests = mReport & "TOTAL IMPORTED DIMENSIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: реальные линии обоих Offset для сечений меньше, равных и больше 1000 мм.
+Public Function RunAnnotationSectionScaleTests() As String
+    Dim system As Object, table As Object, savedSystem As Variant, saved As Variant, value As Variant, d As Double
+    Dim row As Long, section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim writer As CNDMResultsWriter, reader As CSectionPlotDataReader, settings As CSystemSettingsReader, plotter As CSectionPlotter
+    Dim chart As Object, shape As Object, contourTop As Double, contourBottom As Double, dimensionY As Double, rebarY As Double, pixelsPerMm As Double, expected As Double
+    On Error GoTo Failed
+    mPassed = 0: mFailed = 0: mReport = ""
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange: savedSystem = system.Formula
+    Set table = ThisWorkbook.Names("rngPlotAnnotationSettings").RefersToRange: saved = table.Formula
+    For row = 2 To table.Rows.Count
+        Select Case CStr(table.Cells(row, 1).Value2)
+            Case "Enabled": table.Cells(row, 2).Value2 = "Yes": table.Cells(row, 3).Value2 = "Yes"
+            Case "Offset": table.Cells(row, 2).Value2 = 25#: table.Cells(row, 3).Value2 = 60#
+            Case "Placement": table.Cells(row, 2).Value2 = "Outside": table.Cells(row, 3).Value2 = "Outside"
+            Case "LineEnabled": table.Cells(row, 2).Value2 = "Yes"
+        End Select
+    Next row
+    For Each value In Array(500#, 1000#, 2000#, 4000#)
+        d = CDbl(value): Set section = New CSectionModel: section.SourceType = "AutoCADImport"
+        section.AddConcreteElement 0#, 0#, d * d / 2#, 1, , , "Rectangle", d / 2#, d
+        section.AddRebarElement 0#, 0#, 20#, GEOM_PI * 100#, "Rebar"
+        Set query = New CSectionGeometryQuery: Set region = query.PolygonRegion(ContourRectanglePoints(-d / 4#, -d / 2#, d / 4#, d / 2#))
+        section.Contours.AddMaterialRegion region, "OUTER", "Габарит для проверки масштаба оформления."
+        Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set reader = New CSectionPlotDataReader: reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
+        Set plotter = New CSectionPlotter: plotter.Draw ThisWorkbook, reader, settings
+        Set chart = ThisWorkbook.Worksheets("Расчет").ChartObjects("chtNDMSectionPlot").Chart
+        contourTop = 1E+30: contourBottom = -1E+30: dimensionY = 0#: rebarY = 0#
+        For Each shape In chart.Shapes
+            If InStr(shape.Name, "Contour") > 0 Then
+                If shape.Top < contourTop Then contourTop = shape.Top
+                If shape.Top + shape.Height > contourBottom Then contourBottom = shape.Top + shape.Height
+            End If
+        Next shape
+        For Each shape In chart.Shapes
+            If InStr(shape.Name, "AnnotationLine") > 0 And shape.Width > 1# And shape.Height < 0.01 Then
+                If shape.Line.BeginArrowheadStyle <> 1 And shape.Line.EndArrowheadStyle <> 1 Then dimensionY = shape.Top
+                If shape.Line.BeginArrowheadStyle = 1 And shape.Top < contourTop - 0.1 Then rebarY = shape.Top
+            End If
+        Next shape
+        pixelsPerMm = (contourBottom - contourTop) / d: expected = 1#: If d > 1000# Then expected = d / 1000#
+        Check "offset.pixelsPerMm.lines." & CStr(d), pixelsPerMm > 0# And dimensionY > contourBottom And rebarY < contourTop
+        If pixelsPerMm > 0# Then
+            Check "offset.pixelsPerMm.dimension." & CStr(d), Abs((dimensionY - contourBottom) / pixelsPerMm - 60# * expected) < 0.01
+            ' Общая привязка к бетону исключает исходное смещение опорной линии подписи.
+            Check "offset.pixelsPerMm.rebar." & CStr(d), Abs((contourTop - rebarY) / pixelsPerMm - 25# * expected) < 0.01
+        End If
+    Next value
+    GoTo Restore
+Failed:
+    Check "offset.pixelsPerMm.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Restore:
+    If Not system Is Nothing And Not IsEmpty(savedSystem) Then system.Formula = savedSystem
+    If Not table Is Nothing And Not IsEmpty(saved) Then table.Formula = saved
+    RunAnnotationSectionScaleTests = mReport & "TOTAL ANNOTATION SECTION SCALE: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: все объекты слоев читаются независимо от прежних меток.
 ' Чистый набор сохраняется в Results; наложенные копии не пропускаются.
 Private Sub CheckMixedContourSources()

@@ -13,7 +13,7 @@ RegisterRecipe "RoundedTrapezoid", New CSectionRecipeRoundedTrapezoid, Array("rn
 
 Регистрация включена только в отдельной fixture-книге. Производственный
 реестр сохраняет четыре текущих семейства. Из реестра строится выбор типов
-при явном вызове modSectionRecipeSetup.UpdateSectionRecipeConfig.
+при явном вызове modSectionRecipeSetup.UpdateSectionRecipeTypes.
 
 ## Собственные исходные данные
 

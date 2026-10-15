@@ -1,4 +1,4 @@
-# Явная идемпотентная миграция Config рецептов; исходники импортируются отдельно.
+﻿# Обновление только списка типов сечений по реестру; исходники импортируются отдельно.
 param([Parameter(Mandatory=$true)][string]$WorkbookPath)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -18,13 +18,13 @@ try {
     $inputNames=@('rngLoadCombinations','rngCalculationProfiles','rngUnitSettings','rngSignConventionSettings')
     $inputsBefore=@{}
     foreach ($name in $inputNames) {$inputsBefore[$name]=$book.Names.Item($name).RefersToRange.Formula}
-    $macro="'"+$book.Name+"'!modSectionRecipeSetup.UpdateSectionRecipeConfig"
+    $macro="'"+$book.Name+"'!modSectionRecipeSetup.UpdateSectionRecipeTypes"
     $excel.Run($macro)
     foreach ($name in $inputNames) {
         $after=$book.Names.Item($name).RefersToRange.Formula
         if ((ConvertTo-Json -InputObject $inputsBefore[$name] -Compress -Depth 4) -cne (ConvertTo-Json -InputObject $after -Compress -Depth 4)) {throw ('Unrelated input changed: '+$name)}
     }
-    # Повтор: уже введённые значения не заменяются нулевыми defaults.
+    # Повторное обновление сохраняет геометрические таблицы и выбранные параметры.
     $first=@{}
     foreach ($name in @('rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngRectSetGeometry','rngCircleGeometry')) {$first[$name]=$book.Names.Item($name).RefersToRange.Formula}
     $excel.Run($macro)
@@ -35,8 +35,8 @@ try {
     $namesAfter=@($book.Names | ForEach-Object {$_.Name})
     $book.Close($false); $book=$null
     [ordered]@{Status='PASS';BeforeSHA256=$beforeHash;AfterSHA256=(Get-FileHash -LiteralPath $path).Hash;NamesBefore=$namesBefore;NamesAfter=$namesAfter;UnrelatedInputsUnchanged=$true;Idempotent=$true} |
-        ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path (Split-Path -Parent $path) 'RecipeConfigUpdate.json') -Encoding UTF8
-    Write-Output 'RECIPE_CONFIG_READY: preserved inputs; idempotent=True'
+        ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path (Split-Path -Parent $path) 'RecipeTypesUpdate.json') -Encoding UTF8
+    Write-Output 'RECIPE_TYPES_READY: preserved inputs; idempotent=True'
 } finally {
     if ($book) {$book.Close($false)}
     if ($excel) {$excel.Quit(); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}

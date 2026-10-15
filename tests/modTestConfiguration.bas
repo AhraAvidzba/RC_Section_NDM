@@ -24,6 +24,63 @@ Private Const FIXTURE_MY As Double = 2600000#
 Private Const FORCE_TOLERANCE As Double = 0.01 ' Точный solve для независимого oracle предельной деформации.
 Private Const MOMENT_TOLERANCE As Double = 1#
 
+' ДЛЯ ТЕСТОВ: текущий ключ продолжения диаграмм, допустимый ввод и обязательность в полной книге.
+Public Function RunCurrentDiagramSettingTests() As String
+    Dim stats As TConfigTestStats, sheet As Object, table As Object, settings As CSystemSettingsReader
+    Dim value As Variant, code As Long, reason As String, saved As Variant, system As Object, row As Long, i As Long
+    Dim alerts As Boolean
+    On Error GoTo FailedRun
+    alerts = Application.DisplayAlerts
+    Set sheet = ThisWorkbook.Worksheets.Add: Set table = sheet.Range("A1:C3")
+    table.Cells(1, 1).Value2 = "Key": table.Cells(1, 2).Value2 = "Value": table.Cells(1, 3).Value2 = "Unit"
+    table.Cells(2, 1).Value2 = "General.DiagramExtension"
+    table.Cells(3, 1).Value2 = "Solver.MaxIterations": table.Cells(3, 2).Value2 = 37
+    For Each value In Array("Yes", "No", "true", "false", "1", "0", "Да", "Нет")
+        table.Cells(2, 2).Value2 = value: Set settings = New CSystemSettingsReader
+        settings.LoadFromRange table
+        Check stats, "diagram.current.normalized." & CStr(value), _
+            settings.GetRawString("General.DiagramExtension") = IIf(LCase$(CStr(value)) = "yes" Or LCase$(CStr(value)) = "true" Or CStr(value) = "1" Or CStr(value) = "Да", "Yes", "No")
+        Check stats, "diagram.current.neighbor." & CStr(value), settings.GetRequiredLong("Solver.MaxIterations") = 37
+    Next value
+    For Each value In Array("", "invalid", CVErr(2015))
+        table.Cells(2, 2).Value2 = value: Set settings = New CSystemSettingsReader: code = 0
+        On Error Resume Next
+        settings.LoadFromRange table: code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo FailedRun
+        Check stats, "diagram.current.invalid", code = vbObjectError + 4310 Or code = vbObjectError + 4309
+        Check stats, "diagram.current.address", InStr(reason, "B2") > 0
+    Next value
+    table.Cells(2, 1).ClearContents: table.Cells(2, 2).ClearContents
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange table
+    Check stats, "diagram.partial.default", settings.GetRequiredBoolean("General.DiagramExtension")
+    Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange: saved = system.Formula
+    For i = 2 To system.Rows.Count
+        If CStr(system.Cells(i, 1).Value2) = "General.DiagramExtension" Then row = i: Exit For
+    Next i
+    Check stats, "diagram.workbook.current.key", row > 0
+    If row > 0 Then
+        system.Cells(row, 1).Value2 = "Unused.ForMissingSettingTest": Set settings = New CSystemSettingsReader: code = 0
+        On Error Resume Next
+        settings.LoadFromWorkbook ThisWorkbook: code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo FailedRun
+        Check stats, "diagram.workbook.missing.rejected", code = vbObjectError + 4313
+        Check stats, "diagram.workbook.missing.named.address", InStr(reason, "General.DiagramExtension") > 0 And InStr(reason, "Config") > 0
+        Check stats, "diagram.workbook.structure.not.repaired", system.Cells(row, 1).Value2 = "Unused.ForMissingSettingTest"
+    End If
+    GoTo Restore
+FailedRun:
+    Check stats, "diagram.current.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Restore:
+    On Error Resume Next
+    If Not system Is Nothing And Not IsEmpty(saved) Then system.Formula = saved
+    Application.DisplayAlerts = False
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = alerts
+    On Error GoTo 0
+    LogLine stats, "TOTAL CURRENT DIAGRAM SETTING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunCurrentDiagramSettingTests = stats.Report
+End Function
+
 ' ДЛЯ ТЕСТОВ: проверяет все стратегии, одномерные методы и пути Formation.
 ' Возвращает отчет и счетчики для отдельного runner-а и полного batch-suite.
 Public Function RunAudit03SearchConfigTests(Optional ByRef passed As Long = 0, _

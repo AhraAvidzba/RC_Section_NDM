@@ -211,7 +211,7 @@ Public Sub InstallExampleInput()
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     SetSetting "Geometry.Type", "RoundedTrapezoid": SetSetting "Geometry.Source", "Generated"
     SetSetting "Mesh.StepX", "80": SetSetting "Mesh.StepY", "80": SetSetting "Mesh.BoundarySubdivisions", "4"
-    modSectionRecipeSetup.UpdateSectionRecipeConfig
+    modSectionRecipeSetup.UpdateSectionRecipeTypes
 End Sub
 
 Private Sub ConfigureSmoke()

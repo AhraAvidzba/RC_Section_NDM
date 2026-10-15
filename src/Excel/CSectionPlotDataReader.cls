@@ -790,6 +790,22 @@ Private Sub ReadMaterialContours(ByVal workbook As Object)
         mAnnotationNormalY(mAnnotationCount) = contours.CenterY(i)
         mAnnotationSweepAngle(mAnnotationCount) = contours.SweepAngle(i)
     Next i
+    ' Границы представления включают наружные линии и дуги без перестройки расчётной области.
+    ' Нулевой sweep остаётся прямым отрезком, как в поддерживаемом формате отрисовки.
+    Dim edge As TRegionEdge
+    For i = 1 To contours.Count
+        If StrComp(contours.LoopRole(i), "Outer", vbTextCompare) = 0 Then
+            edge.X1 = contours.StartX(i): edge.Y1 = contours.StartY(i)
+            edge.X2 = contours.EndX(i): edge.Y2 = contours.EndY(i)
+            edge.CenterX = contours.CenterX(i): edge.CenterY = contours.CenterY(i): edge.Sweep = contours.SweepAngle(i)
+            If contours.SegmentType(i) = "CONTOUR_CIRCLE" Then
+                edge.X1 = edge.CenterX + contours.Radius(i): edge.Y1 = edge.CenterY
+                edge.X2 = edge.X1: edge.Y2 = edge.Y1: edge.Sweep = 2# * GEOM_PI
+            End If
+            modGeometryPrimitives.AccumulateEdgeProjection edge, 1#, 0#, mMinX, mMaxX
+            modGeometryPrimitives.AccumulateEdgeProjection edge, 0#, 1#, mMinY, mMaxY
+        End If
+    Next i
 End Sub
 
 ' Читает координату/нормаль сохраненной аннотации без подмены ошибки нулем.

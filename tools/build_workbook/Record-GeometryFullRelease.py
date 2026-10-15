@@ -194,7 +194,7 @@ Config начинается со строки 613 и открывается ра
 RegisterRecipe "RoundedTrapezoid", New CSectionRecipeRoundedTrapezoid, Array("rngRoundedTrapezoidGeometry")
 ```
 
-Затем `UpdateSectionRecipeConfig` обновляет список типов. Проверочные копии
+Затем `UpdateSectionRecipeTypes` обновляет список типов. Проверочные копии
 и команды находятся в архивированном FinalOneClassOnOff.ps1. В production
 не добавлены демонстрационный тип, private helper или лишние классы/имена.
 Удалённые legacy-компоненты не возвращены; карта удаления актуальна.

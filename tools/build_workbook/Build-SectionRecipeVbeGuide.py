@@ -98,7 +98,7 @@ def build():
                     lines.append("'       ' " + note)
             lines.append("'       " + line if line else "'")
     comment()
-    comment('В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array() подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных таблиц.', 4)
+    comment('В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeTypes. Пустой Array() подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных таблиц.', 4)
 
     comment('Ввод из Config передаётся в context общим CSectionInputSnapshotReader: table = context.Table("имя таблицы"), units = context.Units. table.PositiveLength/NonNegativeLength возвращают мм и проверяют знак; SourceReference возвращает адрес. Полный пример такого ввода — CSectionRecipeRoundedRectangle.', 4)
     comment()
@@ -129,7 +129,7 @@ def build():
         body = re.search(r'(?ms)^Private Function '+name+r'\(.*?^End Function', code).group(0)
         for line in body.splitlines():
             lines.append("'       " + line if line else "'")
-    comment(); comment('Миграция: прежние публичные массивы vertices/radii/vertexIDs заменены одним CPolygonSpec. AddCorner и циклы технической нумерации из рецептов удалены. Другого рабочего варианта этих операций нет.', 4)
+    comment()
 
     options = (ROOT / 'src/Section/CRebarRuleOptions.cls').read_text(encoding='utf-8-sig')
     initialization = re.search(r'(?s)Private Sub Class_Initialize\(\)(.*?)End Sub', options)[1]

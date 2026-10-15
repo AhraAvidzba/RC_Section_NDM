@@ -93,8 +93,7 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
     mInitialized = True
 End Sub
 
-' Читает единственную эффективную настройку. Миграция старого формата
-' выполняется Excel-reader-ом до передачи настроек материальному слою.
+' Читает обязательную текущую настройку численного продолжения диаграмм.
 Private Function ReadDiagramExtensionSetting(ByVal settings As CSystemSettingsReader) As Boolean
     ReadDiagramExtensionSetting = settings.GetRequiredBoolean("General.DiagramExtension")
 End Function

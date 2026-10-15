@@ -126,6 +126,7 @@ Private mLegendEnabled As Boolean ' Цветовая легенда расчет
 Private mResultLabelSpacing As Double ' Пространственный шаг подписей в фиксированных модельных мм.
 Private mPrincipalAxesMode As String ' Проверенный режим reference-осей текущего Draw.
 Private mAnnotationLayout As CPlotAnnotationLayout ' Проверенные настройки и размещение аннотаций одного прохода Draw.
+Private mAnnotationOffsetScale As Double ' Один коэффициент для обоих Offset: max(1; наибольший габарит / 1000 мм).
 Private mUnits As CUnitSystem ' Единицы переданной модели схемы, без повторного применения пользовательских знаков.
 
 ' Создает единый адаптер визуальных длин/площадей. Физические значения уже
@@ -289,6 +290,7 @@ Private Sub ConfigureEqualScale(ByVal data As CSectionPlotDataReader, ByVal sett
     dy = rawMaxY - rawMinY
     If dx <= 0# Then dx = 1#
     If dy <= 0# Then dy = 1#
+    mAnnotationOffsetScale = MaxDouble(1#, MaxDouble(dx, dy) / 1000#)
 
     Dim annotationMargin As Double
     annotationMargin = AnnotationMarginModel(settings, data.LengthUnit, dx, dy)
@@ -344,7 +346,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     Dim marginModel As Double
     If mAnnotationLayout.DimensionsEnabled Then
         marginModel = MaxDouble(marginModel, _
-            LengthMmToModel(settings.GetDouble("Plot.Dimensions.Offset", 100#), lengthUnit) + _
+            LengthMmToModel(settings.GetDouble("Plot.Dimensions.Offset", 100#) * mAnnotationOffsetScale, lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextGap", 9#), _
                 settings.GetString("Plot.Dimensions.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.Dimensions.TextHeight", 13#), _
@@ -352,7 +354,7 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     End If
     If mAnnotationLayout.RebarLabelsEnabled Then
         marginModel = MaxDouble(marginModel, _
-            LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 30#), lengthUnit) + _
+            LengthMmToModel(settings.GetDouble("Plot.RebarLabels.Offset", 30#) * mAnnotationOffsetScale, lengthUnit) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextGap", 9#), _
                 settings.GetString("Plot.RebarLabels.TextUnits", "pt"), lengthUnit, rangeX, rangeY) + _
             AnnotationTextMetricModel(settings.GetDouble("Plot.RebarLabels.TextHeight", 13#), _
@@ -1249,7 +1251,7 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
     Set layout = mAnnotationLayout
     EnsurePlotAreaMetrics
     layout.Initialize mMinX, mMaxX, mMinY, mMaxY, mPlotLeft, mPlotTop, _
-        mPlotWidth, mPlotHeight, data.LengthUnit
+        mPlotWidth, mPlotHeight, data.LengthUnit, mAnnotationOffsetScale
 
     Dim i As Long
     If rebarLabelsEnabled Then

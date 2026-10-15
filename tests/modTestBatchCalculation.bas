@@ -5268,7 +5268,7 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
         retryRepository.FindState(sstStrengthState) Is successfulState
 End Sub
 
-' Проверяет финальный контракт именования: после миграции принимаются только
+' Проверяет текущий контракт именования: принимаются только
 ' канонические PreCrackState/PostCrackState без старых Before/AfterMcrc alias.
 Private Sub TestPrePostCrackStateNames(ByRef stats As TBatchTestStats)
     AssertTrue stats, "stateName.preCanonical", _

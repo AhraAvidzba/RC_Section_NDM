@@ -94,7 +94,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       End Function
 '
 '     В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New
-'     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeConfig. Пустой Array()
+'     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeTypes. Пустой Array()
 '     подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных
 '     таблиц.
 '     Ввод из Config передаётся в context общим CSectionInputSnapshotReader: table = context.Table("имя
@@ -219,9 +219,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set BuildAudit02OperationsDefinition = facade.Finish
 '       End Function
 '
-'     Миграция: прежние публичные массивы vertices/radii/vertexIDs заменены одним CPolygonSpec.
-'     AddCorner и циклы технической нумерации из рецептов удалены. Другого рабочего варианта этих
-'     операций нет.
 '
 '
 ' ====================================================================================================
