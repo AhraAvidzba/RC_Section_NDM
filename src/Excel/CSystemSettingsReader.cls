@@ -416,16 +416,20 @@ Private Function IsPlotAnnotationSettingsRange(ByRef data As Variant) As Boolean
         StrComp(Trim$(CStr(data(3, 1))), "Placement", vbTextCompare) = 0
 End Function
 
-' Разворачивает таблицу аннотаций в обычные ключи Plot.RebarLabels.*
-' и Plot.Dimensions.*, чтобы остальной код читал настройки единообразно.
+' Разворачивает общую толщину контура и отдельные параметры подписей/размеров.
 Private Sub AppendPlotAnnotationSettings(ByRef data As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
         Dim settingName As String
         settingName = ConfigCellText(data(rowIndex, 1), "параметр аннотации", rowIndex, vbNullString, False, 1)
         If Len(settingName) > 0 And Left$(settingName, 1) <> "[" Then
-            AppendPlotAnnotationValue data, "Plot.RebarLabels." & settingName, rowIndex, 2
-            AppendPlotAnnotationValue data, "Plot.Dimensions." & settingName, rowIndex, 3
+            If settingName = "ContourLineWeight" Then
+                AppendDeferredInputValue data, "Plot.ContourLineWeight", rowIndex, 2, _
+                    ConfigCellText(data(rowIndex, 5), "комментарий", rowIndex, "Plot.ContourLineWeight", True, 5)
+            Else
+                AppendPlotAnnotationValue data, "Plot.RebarLabels." & settingName, rowIndex, 2
+                AppendPlotAnnotationValue data, "Plot.Dimensions." & settingName, rowIndex, 3
+            End If
         End If
     Next rowIndex
 End Sub

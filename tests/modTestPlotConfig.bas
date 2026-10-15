@@ -133,6 +133,115 @@ Public Function RunAudit03ContourArcTests() As String
     RunAudit03ContourArcTests = stats.Report
 End Function
 
+' ДЛЯ ТЕСТОВ: реальная толщина прямых, дуг и окружностей Outer/Opening;
+' перенос таблицы, масштаб Chart и ошибки ввода не должны менять этот контракт.
+Public Function RunContourLineWeightTests() As String
+    Dim stats As TUiTestStats, fixture As Object, config As Object, sheet As Object
+    Dim table As Object, source As Object, target As Object, cell As Object, chart As Object, shape As Object, marker As Object
+    Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
+    Dim addresses As Variant, name As Variant, kind As Variant, weight As Variant, bad As Variant
+    Dim contours(1 To 7, 1 To 17) As Variant, segment As Variant, props(1 To 2, 1 To 4) As Variant, baseline As Variant
+    Dim i As Long, j As Long, position As Long, role As Long, row As Long, count As Long, size As Long, code As Long, solves As Long
+    Dim reason As String, prefix As String
+    On Error GoTo Failed
+    solves = SectionEquilibriumSolveCount()
+    Set fixture = Application.Workbooks.Add(-4167): Set config = fixture.Worksheets(1): config.Name = "Config"
+    Set sheet = fixture.Worksheets.Add: sheet.Name = "Results": fixture.Worksheets.Add.Name = "Расчет"
+    addresses = Array("A5", "H5", "P5", "P25"): i = 0
+    For Each name In Array("rngSystemSettings", "rngPlotAnnotationSettings", "rngUnitSettings", "rngSignConventionSettings")
+        Set source = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set target = config.Range(CStr(addresses(i))).Resize(source.Rows.Count, source.Columns.Count)
+        target.NumberFormat = "@": target.Value2 = source.Value2
+        fixture.Names.Add Name:=CStr(name), RefersTo:="=Config!" & target.Address: i = i + 1
+    Next name
+    Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
+    Audit03SetPlotSetting table, "Plot.ContourEnabled", "Yes"
+    Set table = fixture.Names.Item("rngPlotAnnotationSettings").RefersToRange
+    Audit03NamedAnnotationCell(table, "Plot.Dimensions.Enabled").Value2 = "No"
+    Audit03NamedAnnotationCell(table, "Plot.RebarLabels.Enabled").Value2 = "No"
+    baseline = table.Value2
+    sheet.Range("A5").Resize(3, 15).Value2 = Audit03ContourGeometrySnapshot("CONTOUR_LINE")
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="=Results!$A$5"
+    props(1, 1) = "LoadCase": props(1, 2) = "Parameter": props(1, 3) = "Value": props(1, 4) = "Unit"
+    props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
+    sheet.Range("R5").Resize(2, 4).Value2 = props
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
+    row = 1
+    For role = 0 To 1
+        For Each kind In Array("CONTOUR_LINE", "CONTOUR_ARC", "CONTOUR_CIRCLE")
+            segment = Audit03ContourSnapshot(CStr(kind))
+            For j = 1 To 17: contours(1, j) = segment(1, j): contours(row + 1, j) = segment(2, j): Next j
+            contours(row + 1, 2) = "LOOP_" & CStr(row): contours(row + 1, 3) = "SEG_" & CStr(row)
+            contours(row + 1, 4) = row
+            If role = 1 Then contours(row + 1, 5) = "Opening"
+            row = row + 1
+        Next kind
+    Next role
+    sheet.Range("EZ5").Resize(7, 17).Value2 = contours
+    fixture.Names.Add Name:="rngNDMSectionContours", RefersTo:="=Results!$EZ$5"
+    Set chart = fixture.Worksheets("Расчет").ChartObjects.Add(10#, 10#, 640#, 430#): chart.Name = "chtNDMSectionPlot"
+    Set settings = New CSystemSettingsReader: Set reader = New CSectionPlotDataReader: Set plotter = New CSectionPlotter
+    For position = 0 To 1
+        If position = 0 Then Set table = config.Range("H5").Resize(UBound(baseline, 1), 6) Else Set table = config.Range("CH800").Resize(UBound(baseline, 1), 6)
+        table.NumberFormat = "@": table.Value2 = baseline
+        fixture.Names.Item("rngPlotAnnotationSettings").RefersTo = "=Config!" & table.Address
+        For i = 2 To table.Rows.Count
+            If CStr(table.Cells(i, 1).Value2) = "ContourLineWeight" Then Set cell = table.Cells(i, 2)
+        Next i
+        settings.LoadFromWorkbook fixture
+        AssertClose stats, "contourWeight.default.p" & CStr(position), settings.GetRequiredDouble("Plot.ContourLineWeight"), 2#, 0#
+        AssertTrue stats, "contourWeight.singleKey.p" & CStr(position), Not settings.HasKey("Plot.RebarLabels.ContourLineWeight") And Not settings.HasKey("Plot.Dimensions.ContourLineWeight")
+        reader.LoadGeometryPreviewFromWorkbook fixture, settings
+        For Each weight In Array(2#, 0.7, 3.25)
+            cell.Value2 = weight: settings.LoadFromWorkbook fixture
+            For size = 0 To 1
+                chart.Width = 640# + size * 260#: chart.Height = 430# + size * 170#
+                plotter.Draw fixture, reader, settings: count = 0
+                For Each shape In chart.Chart.Shapes
+                    If InStr(shape.Name, "NDMPlot_Contour") = 1 Then
+                        count = count + 1
+                        AssertClose stats, "contourWeight.render." & CStr(position) & "." & CStr(weight) & "." & CStr(size) & "." & shape.Name, shape.Line.Weight, CDbl(weight), 0.000001
+                    End If
+                Next shape
+                AssertTrue stats, "contourWeight.sixBoundaries", count = 6
+            Next size
+        Next weight
+        For Each bad In Array("", "wrong", 0#, -1#, CVErr(2015))
+            cell.Value2 = bad: settings.LoadFromWorkbook fixture
+            Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_ThicknessSentinel"
+            On Error Resume Next
+            Err.Clear: plotter.Draw fixture, reader, settings: code = Err.Number: reason = Err.Description
+            On Error GoTo Failed
+            prefix = "contourWeight.invalid.p" & CStr(position) & ".type" & CStr(VarType(bad))
+            AssertTrue stats, prefix & ".rejected", code <> 0 And InStr(reason, "Plot.ContourLineWeight") > 0
+            AssertTrue stats, prefix & ".address", InStr(reason, "Config") > 0 And InStr(reason, cell.Address(False, False)) > 0
+            AssertTrue stats, prefix & ".preserved", Audit03PlotShapeExists(chart, "ThicknessSentinel")
+            marker.Delete
+        Next bad
+        Set target = fixture.Names.Item("rngSystemSettings").RefersToRange
+        Audit03SetPlotSetting target, "Plot.ContourEnabled", "No"
+        settings.LoadFromWorkbook fixture: plotter.Draw fixture, reader, settings
+        AssertTrue stats, "contourWeight.disabled.ignoresError.p" & CStr(position), Not Audit03PlotShapeExists(chart, "Contour")
+        Audit03SetPlotSetting target, "Plot.ContourEnabled", "Yes"
+        cell.Offset(0, -1).Value2 = "MissingContourWeight": settings.LoadFromWorkbook fixture
+        On Error Resume Next
+        Err.Clear: plotter.Draw fixture, reader, settings: code = Err.Number: reason = Err.Description
+        On Error GoTo Failed
+        AssertTrue stats, "contourWeight.missing.p" & CStr(position), code <> 0 And InStr(reason, "Plot.ContourLineWeight") > 0
+        cell.Offset(0, -1).Value2 = "ContourLineWeight"
+    Next position
+    AssertTrue stats, "contourWeight.noSolve", SectionEquilibriumSolveCount() = solves
+    GoTo Cleanup
+Failed:
+    AssertTrue stats, "contourWeight.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Cleanup:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    AppendLine stats, "TOTAL_CONTOUR_LINE_WEIGHT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunContourLineWeightTests = stats.Report
+End Function
+
 ' Испытывает полное чтение Text, signed sweep и recovery после повреждения.
 ' Для quarter-circle число хорд задано независимо: шаг схемы 5 градусов,
 ' поэтому четверть окружности содержит 18 сегментов. НДС не решается.

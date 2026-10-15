@@ -757,6 +757,10 @@ function Get-SettingInstructionLines {
             "Равновесие внутренних усилий НДМ соответствует общей постановке СП 63.13330.2018, п. 8.1.23. Принятая в программе система координат и знаков описана в начале этой справки и на листе Config в блоках Единицы измерения и Система знаков.",
             "Практическая проверка: при чистом N и нулевом offset нагрузка проходит через бетонный центр тяжести. Для сечения с несимметричной арматурой небольшая кривизна может появиться уже физически, потому что приведенный центр и бетонный центр не обязаны совпадать."
         ) }
+        "ContourLineWeight" { return @(
+            "ContourLineWeight — общая толщина наружных границ и границ отверстий на Excel-схеме, в пунктах (pt). Значение по умолчанию — 2 pt.",
+            "Одинаково применяется к прямым, дугам и окружностям у созданных программой и импортированных сечений. Не зависит от единиц длины и масштаба диаграммы. Введите положительное число; при Plot.ContourEnabled = No значение не используется."
+        ) }
         "Offset" { return @($lead) + @(
             "Offset остается геометрическим отступом в миллиметрах сечения и не зависит от TextUnits.",
             "Для включенного типа аннотаций значение обязательно и не меньше нуля. Пустая ячейка, текст или ошибка формулы не заменяются запасным отступом.",
@@ -1471,8 +1475,8 @@ function Get-SettingsInstructionCatalog {
         "Расчет строит диаграммы по параметрам материалов, а не читает эти контрольные точки. Не редактируйте формулы таблицы: результаты от этого не изменятся, но контрольный график станет неверным.",
         "На графиках показаны диаграммы I группы предельных состояний. Материальные модели конкретного расчета выбирайте на Config в расчетных профилях."
     )}) | Out-Null
-    $items.Add(@{ Key = "PlotAnnotationSettings"; Title = "Аннотации схемы"; Lines = @(
-        "Таблица «Аннотации схемы» на Config управляет размерными линиями и подписями арматуры на Excel-схеме. Колонка арматуры соответствует ключам Plot.RebarLabels.*, колонка размеров - Plot.Dimensions.*. Звездочка означает имя строки: например, Enabled дает Plot.RebarLabels.Enabled или Plot.Dimensions.Enabled.",
+    $items.Add(@{ Key = "PlotAnnotationSettings"; Title = "Настройки оформления схемы"; Lines = @(
+        "Таблица «Настройки оформления схемы» на Config управляет размерами, подписями арматуры и толщиной границ сечения на Excel-схеме. Колонка арматуры соответствует ключам Plot.RebarLabels.*, колонка размеров - Plot.Dimensions.*. Звездочка означает имя строки: например, Enabled дает Plot.RebarLabels.Enabled или Plot.Dimensions.Enabled.",
         "Enabled включает соответствующие подписи. При No остальные параметры этой колонки не используются. Эти настройки не меняют расчет и экспорт в AutoCAD.",
         "Offset — базовый отступ в мм от бетона до размерной линии или линии подписи арматуры. Для обеих групп он умножается на max(1; D/1000), где D — наибольший габарит сечения в мм. При D ≤ 1000 мм коэффициент равен 1. Placement выбирает сторону подписи арматуры или текста размера.",
         "TextUnits выбирает pt - пункты Excel или mm - миллиметры сечения. TextHeight задает высоту текста, TextGap - зазор между текстом и линией в выбранных единицах. При pt размер шрифта почти не зависит от масштаба схемы; при mm он меняется вместе с геометрией.",
@@ -1537,7 +1541,7 @@ function Get-SettingsInstructionCatalog {
     }
     foreach ($row in (Get-PlotAnnotationSettingsCatalog)) {
         $key = [string]$row[0]
-        $items.Add(@{ Key = $key; Title = "Аннотации схемы: $key"; Lines = (Get-SettingInstructionLines $key ([string]$row[4])) }) | Out-Null
+        $items.Add(@{ Key = $key; Title = "Настройки оформления схемы: $key"; Lines = (Get-SettingInstructionLines $key ([string]$row[4])) }) | Out-Null
     }
     foreach ($row in (Get-ConcreteMaterialParametersCatalog)) {
         $key = [string]$row[0]
@@ -3431,7 +3435,7 @@ function Add-SettingsInstructions {
         "Материал арматуры" = "SteelMaterialParameters"
         "Настройка расчетных профилей" = "CalculationProfiles"
         "Контрольные точки диаграмм" = "MaterialDiagramControlTables"
-        "Аннотации схемы" = "PlotAnnotationSettings"
+        "Настройки оформления схемы" = "PlotAnnotationSettings"
         "Круглое сечение" = "CircleGeometry"
         "Скругленный прямоугольник" = "RoundedRectangleGeometry"
         "Пустотелый скругленный прямоугольник" = "HollowRectangleGeometry"
@@ -3804,7 +3808,8 @@ function Get-PlotAnnotationSettingsCatalog {
         @("ArrowType", "-", "Triangle", "-", "Тип стрелки размерной линии."),
         @("ArrowSize", "-", "Medium", "-", "Размер стрелок размерной линии."),
         @("Color", "20,30,90", "20,30,90", "RGB", "Цвет текста и основной линии: три целых RGB-компонента 0–255. Значение 0,0,0 означает черный цвет."),
-        @("ExtensionLineColor", "-", "140,140,140", "RGB", "Цвет выносных линий размеров: три целых RGB-компонента 0–255. Значение 0,0,0 означает черный цвет.")
+        @("ExtensionLineColor", "-", "140,140,140", "RGB", "Цвет выносных линий размеров: три целых RGB-компонента 0–255. Значение 0,0,0 означает черный цвет."),
+        @("ContourLineWeight", "2", "", "pt", "Общая толщина наружного контура и границ отверстий на Excel-схеме. Прямые, дуги и окружности используют одно значение > 0; по умолчанию 2 pt.")
     )
 }
 
@@ -3812,7 +3817,7 @@ function Get-PlotAnnotationSettingsCatalog {
 function Add-PlotAnnotationSettingsTable {
     param([object]$Workbook, [object]$Sheet, [int]$HeaderRow, [int]$StartColumn)
 
-    $title = "Аннотации схемы"
+    $title = "Настройки оформления схемы"
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $title
     $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 5)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
@@ -3834,6 +3839,14 @@ function Add-PlotAnnotationSettingsTable {
                 $cell.NumberFormat = "@"
             }
             $cell.Value2 = $rows[$r][$c]
+        }
+        if ([string]$rows[$r][0] -eq "ContourLineWeight") {
+            $contourInput = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 1).Resize(1, 2)
+            $contourInput.Merge() | Out-Null
+            $contourInput.HorizontalAlignment = -4108
+            $contourInput.Validation.Add(2, 1, 5, 0)
+            $contourInput.Validation.IgnoreBlank = $false
+            $contourInput.Validation.ShowError = $true
         }
     }
 

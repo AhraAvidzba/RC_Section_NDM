@@ -119,6 +119,7 @@ Private mElementGroupingEnabled As Boolean ' True - включено укруп�
 Private mAxisLabelsEnabled As Boolean ' Нужно ли выводить маленькие подписи глобальных осей X/Y.
 Private mAxisLabelFontSize As Double ' Размер шрифта подписей глобальных осей X/Y в пунктах Excel.
 Private mContourEnabled As Boolean ' Контур нужен как расчетной, так и geometry-only схеме.
+Private mContourLineWeight As Double ' Общая толщина наружных границ и отверстий, в пунктах Excel.
 Private mNeutralLineEnabled As Boolean ' Нейтральная линия доступна только для сохраненного НДС.
 Private mLoadPointEnabled As Boolean ' Точка нагрузки для активного reference-слоя.
 Private mResultLabelsEnabled As Boolean ' Подписи готовых Stress/Strain, без повторного solve.
@@ -165,6 +166,11 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
             settings.InputErrorMessage("Plot.AxisLabelsFontSize", "Высота подписей осей должна быть больше нуля.", "Введите положительное число в пунктах Excel.")
     End If
     mContourEnabled = settings.GetRequiredBoolean("Plot.ContourEnabled")
+    If mContourEnabled Then
+        mContourLineWeight = settings.GetRequiredDouble("Plot.ContourLineWeight")
+        If mContourLineWeight <= 0# Then Err.Raise vbObjectError + 4812, "CSectionPlotter", _
+            settings.InputErrorMessage("Plot.ContourLineWeight", "Толщина линий контура должна быть больше нуля.", "Введите положительное число в пунктах Excel.")
+    End If
     mNeutralLineEnabled = False: mResultLabelsEnabled = False: mLegendEnabled = False
     mLoadPointEnabled = False: mPrincipalAxesMode = "None"
     If Not data.GeometryOnly Then
@@ -912,17 +918,17 @@ Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
     For i = 1 To data.AnnotationCount
         If StrComp(data.AnnotationType(i), "CONTOUR_LINE", vbTextCompare) = 0 Then
             DrawModelLine data.AnnotationStartX(i), data.AnnotationStartY(i), _
-                data.AnnotationEndX(i), data.AnnotationEndY(i), RGB(25, 25, 25), 1.7, "Contour"
+                data.AnnotationEndX(i), data.AnnotationEndY(i), RGB(25, 25, 25), mContourLineWeight, "Contour"
         ElseIf StrComp(data.AnnotationType(i), "CONTOUR_CIRCLE", vbTextCompare) = 0 Then
             DrawModelOval data.AnnotationStartX(i) - data.AnnotationEndX(i), _
                 data.AnnotationStartY(i) - data.AnnotationEndX(i), _
                 data.AnnotationStartX(i) + data.AnnotationEndX(i), _
-                data.AnnotationStartY(i) + data.AnnotationEndX(i), RGB(25, 25, 25), 1.7, "ContourCircle", False
+                data.AnnotationStartY(i) + data.AnnotationEndX(i), RGB(25, 25, 25), mContourLineWeight, "ContourCircle", False
         ElseIf StrComp(data.AnnotationType(i), "CONTOUR_ARC", vbTextCompare) = 0 Then
             DrawContourArc data.AnnotationNormalX(i), data.AnnotationNormalY(i), _
                 data.AnnotationStartX(i), data.AnnotationStartY(i), _
                 data.AnnotationEndX(i), data.AnnotationEndY(i), _
-                data.AnnotationSweepAngle(i), RGB(25, 25, 25), 1.7
+                data.AnnotationSweepAngle(i), RGB(25, 25, 25), mContourLineWeight
         End If
     Next i
 End Sub
