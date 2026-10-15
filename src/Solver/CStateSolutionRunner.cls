@@ -34,7 +34,7 @@ Private mExtensionUsed As Boolean ' Признак использования в
 Private mWithinPhysicalRange As Boolean ' True, если все элементы остались в физических eps-пределах.
 Private mDiagnosticLog As String ' Краткий журнал повторных попыток решения НДС.
 Private mInitialGuessApplied As Boolean ' True, если стартовая плоскость была задана не нулевой.
-Private mSolverCallCount As Long ' Сколько раз runner действительно запускал CSectionSolver.Solve.
+Private mSolverCallCount As Long ' Количество фактических вызовов CSectionSolver.Solve.
 Private mRetryAttemptFailures As Collection ' Краткие итоги точно совпадающих неудачных повторных попыток в пределах одного поиска.
 Private mRetryContextSection As CSectionModel ' Модель и материалы текущего поиска для проверки применимости сохранённых попыток; конечные НДС здесь не хранятся.
 Private mRetryContextConcrete As Object ' Свойства диаграммы бетона для проверки точного совпадения повторной попытки.
@@ -718,7 +718,7 @@ Public Property Get Iterations() As Long
     If Not mSolver Is Nothing Then Iterations = mSolver.Iterations
 End Property
 
-' Сколько раз runner действительно запускал CSectionSolver.Solve.
+' Количество фактических вызовов CSectionSolver.Solve.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property

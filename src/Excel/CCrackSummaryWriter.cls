@@ -116,7 +116,7 @@ Public Function RequiredRows(ByVal combinationCount As Long) As Long
 End Function
 
 ' Возвращает число строк данных, которое нужно оформить по текущему диапазону
-' сочетаний. Пустые доступные строки тоже получают рамки, как в batch summary.
+' сочетаний. Пустые доступные строки тоже получают рамки, как в общей сводке.
 Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1

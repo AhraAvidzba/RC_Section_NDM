@@ -98,14 +98,14 @@ Private mProbeCacheState(1 To PROBE_CACHE_SIZE) As String ' Классифика
 Private mProbeCacheCriticalStrain(1 To PROBE_CACHE_SIZE) As Double ' Критическая деформация, восстановленная без повторного solve.
 Private mProbeCacheCriticalElement(1 To PROBE_CACHE_SIZE) As String ' Критический элемент для сохранённой оценки нагрузки.
 Private mProbeCacheCriticalType(1 To PROBE_CACHE_SIZE) As String ' Вид определяющего предела для каждой сохранённой пробной точки.
-Private mProbeCacheCriticalUtil(1 To PROBE_CACHE_SIZE) As Double ' Utilization критической деформации для целевой функции.
+Private mProbeCacheCriticalUtil(1 To PROBE_CACHE_SIZE) As Double ' Коэффициент использования предельной деформации для поиска границы допустимых нагрузок.
 Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' НДС пробной нагрузки для начального приближения следующего решения.
 
 ' ------------------------------
 ' Настройки по умолчанию
 ' ------------------------------
 ' Начальные значения предназначены для автономного API и модульных тестов.
-' Пользовательский Batch получает обязательные настройки через calculator;
+' При расчёте сочетаний используются обязательные настройки из Config;
 ' отсутствующий или неверный ввод книги не заменяется этим набором.
 Private Sub Class_Initialize()
     mConcreteCompressionLimit = -0.0035

@@ -33,8 +33,8 @@ Private mSolverMethod As String ' Newton или Secant для внутренни
 Private mSolverSecantMaxRestarts As Long ' Максимум рестартов Secant-решателя.
 Private mDiagnosticsEnabled As Boolean ' True, если нужно писать подробный журнал итераций.
 
-' Задает безопасные значения по умолчанию на случай прямых unit-тестов.
-' Основной batch-сценарий всегда переопределяет их настройками Config.
+' Задаёт начальные параметры для прямого вызова в модульных тестах.
+' При расчёте книги параметры всегда читаются с Config.
 Private Sub Class_Initialize()
     mInitialLambdaStep = 1#
     mSolutionStrategy = "Auto"

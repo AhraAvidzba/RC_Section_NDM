@@ -1457,10 +1457,10 @@ Private Function EffectiveLoadScalingWarmStart(ByVal startSolver As CSectionSolv
     Set EffectiveLoadScalingWarmStart = startSolver
 End Function
 
-' Строит активную стартовую плоскость для отдельной lambda-точки.
-' Используется тем же CStateGuessBuilder, что и общий runner прямого НДС:
-' это помогает lambda*N/lambda*NMxy начинать не с нулевой плоскости и не
-' зависеть от плохой соседней точки bracket-а.
+' Задаёт начальные деформации для поиска равновесия при пробной нагрузке.
+' Общий CStateGuessBuilder подбирает ненулевое начальное приближение.
+' При увеличении N или всех усилий это позволяет начать расчёт заново,
+' если на соседнем конце интервала равновесие не было найдено.
 Private Function LoadScalingProbeGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal probeN As Double, ByVal probeMx As Double, ByVal probeMy As Double) As CSectionSolver

@@ -52,7 +52,7 @@ Private Const SUM_COL_RESERVE_SP35_P2_TABLE As Long = 24 ' Запас СП35, п
 Private Const SUM_COL_RESERVE_SP63_P1 As Long = 25 ' Запас СП63, плоскость 1: Ncr/N.
 Private Const SUM_COL_RESERVE_SP63_P2 As Long = 26 ' Запас СП63, плоскость 2: Ncr/N.
 
-Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между summary и словарем статусов.
+Private Const STATUS_LEGEND_GAP_COLUMNS As Long = 1 ' Один пустой столбец между общей сводкой и расшифровкой статусов.
 Private Const STATUS_LEGEND_COLUMNS As Long = 2 ' Ширина правого словаря статусов: код и текстовая расшифровка.
 Private Const STATUS_LEGEND_ROWS As Long = 9 ' Заголовок, шапка и семь пользовательских статусов.
 
@@ -60,7 +60,7 @@ Private Const DEFAULT_SUMMARY_ROWS As Long = 42 ' Штатная высота ш
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Светло-серый фон заголовков.
 
-' Возвращает высоту основной таблицы Summary для фактического количества LC.
+' Возвращает число строк общей сводки для заданного количества сочетаний.
 Public Function RequiredSummaryRows(ByVal combinationCount As Long) As Long
     If combinationCount < 0 Then combinationCount = 0
     RequiredSummaryRows = FIRST_DATA_ROW - 1 + combinationCount
@@ -69,7 +69,7 @@ Public Function RequiredSummaryRows(ByVal combinationCount As Long) As Long
 End Function
 
 ' Возвращает число строк LC по высоте rngLoadCombinations. Это нужно для
-' пустой сетки summary: пользователь видит все доступные строки сочетаний,
+' пустых строк общей сводки: пользователь видит все доступные строки сочетаний,
 ' даже если часть из них сейчас не заполнена.
 Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
@@ -87,7 +87,7 @@ SafeExit:
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
 End Function
 
-' Возвращает высоту summary для фактической книги с учетом доступных строк rngLoadCombinations.
+' Возвращает число строк общей сводки с учётом доступных строк rngLoadCombinations.
 Public Function RequiredSummaryRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
     RequiredSummaryRowsForWorkbook = RequiredSummaryRows(RequiredDataRowsForWorkbook(workbook, combinationCount))
 End Function
@@ -205,7 +205,7 @@ Private Function SummaryTargetRange(ByVal workbook As Object, Optional ByVal req
     Set SummaryTargetRange = target.Resize(requiredRows, TARGET_COLUMNS)
 End Function
 
-' Возвращает область безопасной очистки Summary до шапки следующего блока.
+' Возвращает область очистки общей сводки до заголовка следующей таблицы.
 ' Так старые строки от большего числа LC не остаются после уменьшения rngLoadCombinations.
 Private Function SummaryClearRange(ByVal workbook As Object) As Object
     Dim anchor As Object
@@ -236,7 +236,7 @@ Private Sub PrepareSummaryTarget(ByVal target As Object)
     ClearSummaryBody target
 End Sub
 
-' Полностью очищает область summary, включая старые объединения и форматы.
+' Полностью очищает область общей сводки, включая старые объединения и форматы.
 Private Sub ClearSummaryBody(ByVal target As Object)
     target.UnMerge
     target.Clear
@@ -290,7 +290,7 @@ Private Sub ClearCrackSummary(ByVal workbook As Object)
     writer.ClearSummary workbook
 End Sub
 
-' Заполняет четыре верхние строки summary: worst-сочетание, комментарий,
+' Заполняет четыре верхние строки общей сводки: определяющее сочетание, комментарий,
 ' число вызовов CSectionSolver, стартов UltimateStrain, итерации и время.
 Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     data(1, 1) = batch.WorstCombinationID
@@ -328,7 +328,7 @@ Private Sub PutSubgroupHeaders(ByRef data() As Variant)
     data(SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_SP63_P1) = "устойчивость по СП63"
 End Sub
 
-' Заполняет строки обозначений и комментариев к каждому столбцу summary.
+' Заполняет строки обозначений и пояснений к каждому столбцу общей сводки.
 Private Sub PutColumnHeaders(ByRef data() As Variant, ByVal units As CUnitSystem, ByVal batch As CBatchSectionCalculator)
     Dim sp35EtaLabel As String
     sp35EtaLabel = SP35EtaReserveLabel(batch)
@@ -441,9 +441,9 @@ Private Sub PutWorstCheck(ByRef data() As Variant, ByVal batch As CBatchSectionC
     End If
 End Sub
 
-' Записывает одну строку сочетания в compact summary. Все статусы идут через
-' CResultStatusPolicy, а коэффициенты берутся из подробных расчетных результатов
-' batch, чтобы summary совпадала с детальными таблицами ниже.
+' Записывает строку сочетания в общую сводку. CResultStatusPolicy задаёт
+' обозначения статусов, а численные коэффициенты берутся из подробных
+' результатов того же сочетания, показанных в таблицах ниже.
 Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim policy As CResultStatusPolicy
@@ -549,8 +549,8 @@ Private Function StabilityBranchReserve(ByVal batch As CBatchSectionCalculator, 
     End If
 End Function
 
-' Проверяет, относится ли расчет устойчивости LC к конкретному столбцу
-' compact summary: СП 35/СП 63, номер плоскости и ветвь table/eta.
+' Проверяет, в какой столбец общей сводки записать результат устойчивости:
+' учитывает нормативный документ, главную плоскость и способ проверки.
 Private Function StabilityBranchApplies(ByVal batch As CBatchSectionCalculator, _
         ByVal index As Long, ByVal planeIndex As Long, ByVal branchKey As String) As Boolean
     If Not batch.StabilityRequested(index) Then Exit Function
@@ -613,7 +613,7 @@ Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _
     If reserveValue > 0# Then data(rowIndex, columnIndex) = reserveValue
 End Sub
 
-' Применяет визуальное оформление compact summary: объединения, серые шапки,
+' Оформляет общую сводку: объединения, серые заголовки,
 ' статусную палитру, единые шрифты и рамки.
 Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     On Error GoTo Failed
@@ -776,7 +776,7 @@ Private Sub MergeSummaryHeader(ByVal target As Object, ByVal rowIndex As Long, B
     area.Merge
 End Sub
 
-' Объединяет прямоугольный блок шапки summary.
+' Объединяет прямоугольный блок заголовка общей сводки.
 Private Sub MergeSummaryBlock(ByVal target As Object, ByVal firstRow As Long, ByVal lastRow As Long, _
         ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim area As Object
@@ -801,7 +801,7 @@ Private Sub ApplySummaryBorders(ByVal area As Object)
     area.Borders.Weight = 2
 End Sub
 
-' Красит статусные ячейки compact summary по единой палитре OK/FAIL/BaseFail/NumFail/InputErr/CalcErr/N/A.
+' Задаёт цвет ячеек статусов общей сводки по единой палитре modStatusFormatting.
 Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Exit Sub
     If batch.Count <= 0 Then Exit Sub

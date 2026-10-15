@@ -282,8 +282,8 @@ Public Property Get MyBase() As Double
     MyBase = mPath.MyBase
 End Property
 
-' Возвращает расчетный вектор нагрузки на выбранной lambda без дублирования
-' формулы Offset + lambda*Base в batch-слое.
+' Вычисляет N, Mx, My при заданном множителе lambda по формуле Offset + lambda*Base.
+' Все сочетания используют этот метод, чтобы одинаково формировать пробную нагрузку.
 Public Sub Target(ByVal lambdaValue As Double, ByRef nValue As Double, _
         ByRef mxValue As Double, ByRef myValue As Double)
     mPath.Target lambdaValue, nValue, mxValue, myValue

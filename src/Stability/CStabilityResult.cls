@@ -275,7 +275,8 @@ Private Function StabilityBranchDisplayName(ByVal branchText As String) As Strin
     End Select
 End Function
 
-' Обновляет финальный расчетный вектор после общего zero-filter batch-слоя.
+' Сохраняет расчётные N, Mx, My после обнуления малых моментов.
+' Вычисляет моменты в главных осях для вывода в Results.
 Public Sub UpdateDesignLoads(ByVal designNValue As Double, ByVal designMxValue As Double, _
         ByVal designMyValue As Double, ByVal principalAngleRad As Double)
     AssertWritable

@@ -48,7 +48,7 @@ Public Function RequiredRows(ByVal combinationCount As Long) As Long
 End Function
 
 ' Возвращает число строк данных, которое нужно оформить под доступные LC.
-' Заполненные сочетания берутся из batch, а пустая сетка - из высоты rngLoadCombinations.
+' Учитывает рассчитанные сочетания и все доступные строки rngLoadCombinations, включая пустые.
 Public Function RequiredDataRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
     RequiredDataRowsForWorkbook = combinationCount
     If RequiredDataRowsForWorkbook < 1 Then RequiredDataRowsForWorkbook = 1
@@ -686,9 +686,9 @@ Private Function PlaneStatus(ByVal batch As CBatchSectionCalculator, ByVal index
     End If
 End Function
 
-' Однотипные accessors ниже выбирают данные первой или второй главной
-' плоскости из batch-результата. Они держат разметку таблицы независимой от
-' конкретных имен свойств Stability...1/Stability...2.
+' Методы ниже выбирают готовые величины и статусы первой или второй главной
+' плоскости из результата сочетания. Разметка таблицы использует одинаковые
+' методы для обеих плоскостей.
 Private Function PlaneApplicable(ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal planeIndex As Long) As Boolean
     If planeIndex = 1 Then PlaneApplicable = batch.ResultAt(index).StabilityResult.PlaneApplicable1 Else PlaneApplicable = batch.ResultAt(index).StabilityResult.PlaneApplicable2
 End Function
@@ -783,8 +783,8 @@ Private Function PlaneReserve(ByVal batch As CBatchSectionCalculator, ByVal inde
     If planeIndex = 1 Then PlaneReserve = batch.ResultAt(index).StabilityResult.Reserve1 Else PlaneReserve = batch.ResultAt(index).StabilityResult.Reserve2
 End Function
 
-' Возвращает пустую ячейку для численного нуля, чтобы summary не шумела
-' несущественными расчетными величинами.
+' Оставляет ячейку пустой, если абсолютное значение не превышает SMALL_VALUE.
+' Так малые остатки вычислений не выводятся вместо нуля.
 Private Function OptionalValue(ByVal value As Double) As Variant
     If Abs(value) > SMALL_VALUE Then OptionalValue = value Else OptionalValue = vbNullString
 End Function

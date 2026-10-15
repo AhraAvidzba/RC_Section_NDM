@@ -51,7 +51,7 @@ Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCal
     Next rowIndex
 End Sub
 
-' Читает одну строку LC и добавляет ее в batch.
+' Читает одну строку таблицы нагрузок и добавляет сочетание в CBatchSectionCalculator.
 ' Ошибки ввода не прерывают весь расчет: строка попадает в отчет как InvalidInput,
 ' остальные сочетания продолжают считаться.
 Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator, ByVal rowIndex As Long, _

@@ -30,7 +30,6 @@ Private mFailureCode As ESolverFailureCode ' Причина последнего
 ' Решает систему 3x3 методом Гаусса с выбором ведущей строки. Возвращает False
 ' при вырожденной матрице или непредставимой арифметике. Найденные поправки
 ' пригодны только при Solved=True; точный тип отказа передается в FailureCode.
-' Выбор pivot, порог вырождения и допуск невязки не зависят от этого guard-а.
 Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Double, _
         ByVal a21 As Double, ByVal a22 As Double, ByVal a23 As Double, _
         ByVal a31 As Double, ByVal a32 As Double, ByVal a33 As Double, _

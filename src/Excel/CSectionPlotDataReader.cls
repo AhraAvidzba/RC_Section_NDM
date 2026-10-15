@@ -180,7 +180,7 @@ Failed:
 End Sub
 
 ' Определяет, какой LC показывать на схеме.
-' Значение Worst разворачивается в LC из верхней строки batch summary
+' При выборе Worst используется сочетание из верхней строки общей сводки
 ' "Определяющее сочетание". Критерий выбора задает
 ' General.WorstCombinationCriterion, а схема только читает сохраненный результат.
 Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As String) As String
@@ -324,7 +324,7 @@ Failed:
 End Function
 
 ' Находит комментарий выбранного LC для заголовка схемы.
-' Если комментария нет или batch summary еще пустой, возвращается пустая строка
+' Если комментария нет или общая сводка ещё пуста, возвращается пустая строка
 ' без ошибки: сама схема может строиться и без комментария.
 Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCase As String) As String
     On Error GoTo Failed

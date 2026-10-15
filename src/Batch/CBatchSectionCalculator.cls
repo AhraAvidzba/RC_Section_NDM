@@ -1103,7 +1103,7 @@ Private Sub CrackReferencePointForCombination(ByVal index As Long, _
 End Sub
 
 ' Возвращает центр приведенного сечения для расчетов по модели прочности.
-' Именно относительно этой точки strength summary показывает N/Mx/My
+' Относительно этой точки таблица прочности показывает N, Mx, My
 ' в группе "относительно центральных осей приведенного сечения".
 Private Sub StrengthReferencePointForCombination(ByVal index As Long, _
         ByRef referenceX As Double, ByRef referenceY As Double)
@@ -1582,7 +1582,7 @@ Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormation
 End Sub
 
 ' Проверяет, нужен ли подробный журнал внутренних итераций.
-' Короткая batch-сводка всегда остается в памяти для тестов и диагностики, но
+' Краткая сводка по сочетаниям всегда остаётся в памяти для тестов и диагностики, но
 ' тяжелые строки CSectionSolver/CCapacitySolver/CCrackWidthCalculator имеют
 ' смысл только тогда, когда пользователь включил txt-отчет выполнения.
 Private Function DetailedDiagnosticsEnabled() As Boolean

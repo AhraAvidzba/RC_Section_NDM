@@ -11,7 +11,7 @@ Option Explicit
 Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых строк между крупными таблицами Results.
 
 ' Запускает полный сценарий кнопки расчета для текущей книги и показывает итог.
-' Чтение, расчет и запись делегируются workbook-entrypoint; ошибка выводится
+' Чтение, расчёт и запись выполняет RunSectionCalculationForWorkbook; ошибка выводится
 ' независимо от настройки необязательных информационных сообщений.
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
@@ -805,7 +805,7 @@ SafeExit:
 End Sub
 
 ' Готовит итоговое сообщение о запуске, отдельно выделяя ошибки входных строк.
-' Не назначает инженерные статусы: они уже сохранены в результатах batch.
+' Берёт инженерные статусы из готовых результатов расчёта сочетаний.
 Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader, _
         ByVal batch As CBatchSectionCalculator) As String
     Dim calculationCaption As String
@@ -1071,9 +1071,9 @@ Private Sub RecordDurationTableError(ByVal batch As CBatchSectionCalculator, ByV
 End Sub
 
 ' Возвращает таблицу 7.21 СП 35 как массив и причину неверного ввода.
-' Инженерную допустимость проверяет calculator, а Excel-слой добавляет адрес
-' фактического named range. Ошибка передается через batch и применяется только
-' тогда, когда выбранной плоскости действительно нужна табличная ветвь СП 35.
+' Сообщение содержит адрес именованного диапазона таблицы. CStabilityCalculator
+' проверяет применимость её значений. Ошибка относится только к той главной
+' плоскости, для которой выбран табличный метод СП 35.
 Public Function ReadSP35Table721FromWorkbook(ByVal workbook As Object, ByRef inputError As String) As Variant
     inputError = vbNullString
     If workbook Is Nothing Then Err.Raise vbObjectError + 4135, _
