@@ -1,0 +1,25 @@
+{
+  "Status": "OVERLOAD_FULL_ACCEPTANCE_PASS",
+  "Requirements": {
+    "Measured2x3x4xFromConfirmedCapacity": true,
+    "ReportedSlowCircleCaseReproducedAt19to20Seconds": true,
+    "CauseVerifiedByActualIterationCountsAndRuntimeLogs": true,
+    "BisectionSevenIterationsAtConfiguredToleranceVerified": true,
+    "RedundantUltimateAttemptsRemovedInCommonClasses": true,
+    "NoRecipeBranchesOrReducedPrecision": true,
+    "NoPhysicalFailureInferredFromNumericalFailure": true,
+    "BoundaryPlanesAndStatusesPreservedForComparedLoads": true,
+    "AllMeasuredCandidateRunsUnder10Seconds": true,
+    "ActualWorkbookSourceAndAllCodeSynchronized": true,
+    "UserDataAndExecutionReportPreserved": true
+  },
+  "RegressionAssertions": 2016,
+  "NativeComponents": 157,
+  "SourceComponents": 152,
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "WorkbookSHA256": "709dff46f9e62cf89d51ec9796e86a8149b4eb090acf1c194e304923498856d0",
+  "AllCodeSHA256": "7d24d343dfe1c796e07866363cd02c5e191db9ebaa40ff79b5247fe1a4b6e630",
+  "Errors": []
+}

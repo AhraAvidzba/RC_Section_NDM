@@ -1,0 +1,19 @@
+{
+  "Status": "OVERLOAD_RELEASE_PACKAGE_PASS",
+  "NativeComponents": 157,
+  "ChangedNativeComponents": [
+    "CCapacityLimitSearchProblem",
+    "CCapacitySolver",
+    "CLimitSearchCoordinator",
+    "CUltimateStrainSearch",
+    "modTestCapacitySolver"
+  ],
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllCellsFormulasSettingsNamesValidationFormattingDrawingsPreserved": true,
+  "NoMeasurementHelpersInProduction": true,
+  "BaselineSHA256": "e73e895c8c7c45ac5774ba554fd90aede638b9300edc11ca04cb59cc61627e60",
+  "WorkbookSHA256": "709dff46f9e62cf89d51ec9796e86a8149b4eb090acf1c194e304923498856d0",
+  "Errors": []
+}

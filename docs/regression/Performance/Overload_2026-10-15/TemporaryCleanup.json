@@ -1,0 +1,56 @@
+{
+  "OnlyOwnedHashVerifiedCopiesRemoved": true,
+  "UserBaselineRetained": "Release/Baseline.xlsm",
+  "Removed": [
+    {
+      "Path": "docs\\regression\\Performance\\Overload_2026-10-15\\ProbeBaseline\\RC_Section_NDM.xlsm",
+      "Bytes": 8335014,
+      "SHA256": "E73E895C8C7C45AC5774BA554FD90AEDE638B9300EDC11CA04CB59CC61627E60"
+    },
+    {
+      "Path": "docs\\regression\\Performance\\Overload_2026-10-15\\ProbeBaseline02\\RC_Section_NDM.xlsm",
+      "Bytes": 8372044,
+      "SHA256": "3589118BB51FFEA7D77C9417F97B0132AFE54655A98F0D141380D2C2C1641804"
+    },
+    {
+      "Path": "docs\\regression\\Performance\\Overload_2026-10-15\\ProbeCandidate\\RC_Section_NDM.xlsm",
+      "Bytes": 8365666,
+      "SHA256": "8D047F5318ECCAF608095FC6E6D6C82E44F5472D77EBB75B259CE834EFAAC939"
+    },
+    {
+      "Path": "docs\\regression\\Performance\\Overload_2026-10-15\\ProbeCandidate02\\RC_Section_NDM.xlsm",
+      "Bytes": 8379962,
+      "SHA256": "F10CE27FF0434D5B600602B567ACC5D63F3F965489B7273C001807DF5E982399"
+    },
+    {
+      "Path": "docs\\regression\\Performance\\Overload_2026-10-15\\Release\\Candidate\\RC_Section_NDM.xlsm",
+      "Bytes": 8353538,
+      "SHA256": "5F7E4A4E17D075FE63DF97935B9C466F084AA740D3FDEC1E3D113E45F4E0AB86"
+    },
+    {
+      "Path": "docs\\regression\\Performance\\Overload_2026-10-15\\Release\\Accepted.xlsm",
+      "Bytes": 7813890,
+      "SHA256": "709DFF46F9E62CF89D51EC9796E86A8149B4EB090ACF1C194E304923498856D0"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/BaselineNativeVBA.txt",
+      "Bytes": 7080259,
+      "SHA256": "56EBF6C7F770F828FE7284DC42F4F61C9882832B29EF4F87572EAEECD29ACEF3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/CandidateNativeVBA.txt",
+      "Bytes": 7088965,
+      "SHA256": "C54D51A6CAE9248F57E196615596D43CA6CE2198CF66763AEAF4B22F480FAB7C"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Overload_2026-10-15/CandidateNativeVBA.txt",
+      "Bytes": 7088965,
+      "SHA256": "C54D51A6CAE9248F57E196615596D43CA6CE2198CF66763AEAF4B22F480FAB7C"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Overload_2026-10-15/PublishedNativeVBA.txt",
+      "Bytes": 7088965,
+      "SHA256": "7D24D343DFE1C796E07866363CD02C5E191DB9EBAA40FF79B5247FE1A4B6E630"
+    }
+  ]
+}

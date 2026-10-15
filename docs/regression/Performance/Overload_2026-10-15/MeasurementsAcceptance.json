@@ -1,0 +1,215 @@
+{
+  "Status": "OVERLOAD_TIMING_ACCEPTANCE_PASS",
+  "HeavyCase": [
+    {
+      "Axis": "Mx",
+      "BeforeSeconds": 19.296875,
+      "AfterSeconds": [
+        1.6796875,
+        1.4375,
+        1.203125
+      ],
+      "AfterMedianSeconds": 1.4375,
+      "BeforeUltimateIterations": 192,
+      "AfterUltimateIterations": 4,
+      "Lambda": "0.092195495675",
+      "BoundaryPlaneExactlyEqual": true
+    },
+    {
+      "Axis": "My",
+      "BeforeSeconds": 20.15625,
+      "AfterSeconds": [
+        1.296875,
+        1.2890625,
+        1.3984375
+      ],
+      "AfterMedianSeconds": 1.296875,
+      "BeforeUltimateIterations": 190,
+      "AfterUltimateIterations": 4,
+      "Lambda": "0.092195495674",
+      "BoundaryPlaneExactlyEqual": true
+    }
+  ],
+  "ControlLoads": [
+    {
+      "Shape": "Circle",
+      "Specification": "Circle|Circle_UserRatio_calibration|-4903325|980665000|0|λ*NMxy|Auto",
+      "id": "Circle_UserRatio_calibration",
+      "seconds": "1.6953125",
+      "fibers": "716",
+      "bars": "8",
+      "solves": "1",
+      "iterations": "5",
+      "ultimateStarts": "1",
+      "ultimateIterations": "4",
+      "overall": "FAIL",
+      "direct": "FAIL",
+      "capacity": "FAIL",
+      "lambda": "0.092195495675",
+      "method": "UltimateStrain",
+      "path": "LambdaNMxy",
+      "plateauFactor": "0.001"
+    },
+    {
+      "Shape": "Circle",
+      "Specification": "Circle|Circle_UserRatio_0.5x_Auto_1|-226032.23941530968|45206447.883061938|0|Auto|Auto",
+      "id": "Circle_UserRatio_0.5x_Auto_1",
+      "seconds": "1.34375",
+      "fibers": "716",
+      "bars": "8",
+      "solves": "2",
+      "iterations": "6",
+      "ultimateStarts": "1",
+      "ultimateIterations": "4",
+      "overall": "OK",
+      "direct": "OK",
+      "capacity": "OK",
+      "lambda": "1.895695167007",
+      "method": "UltimateStrain",
+      "path": "LambdaMx",
+      "plateauFactor": "0.001"
+    },
+    {
+      "Shape": "Circle",
+      "Specification": "Circle|Circle_UserRatio_0.9x_Auto_1|-406858.03094755742|81371606.1895115|0|Auto|Auto",
+      "id": "Circle_UserRatio_0.9x_Auto_1",
+      "seconds": "1.3125",
+      "fibers": "716",
+      "bars": "8",
+      "solves": "2",
+      "iterations": "7",
+      "ultimateStarts": "1",
+      "ultimateIterations": "5",
+      "overall": "OK",
+      "direct": "OK",
+      "capacity": "OK",
+      "lambda": "1.10589568969",
+      "method": "UltimateStrain",
+      "path": "LambdaMx",
+      "plateauFactor": "0.001"
+    },
+    {
+      "Shape": "Circle",
+      "Specification": "Circle|Circle_UserRatio_2x_Auto_1|-904128.95766123873|180825791.53224775|0|Auto|Auto",
+      "id": "Circle_UserRatio_2x_Auto_1",
+      "seconds": "1.2578125",
+      "fibers": "716",
+      "bars": "8",
+      "solves": "2",
+      "iterations": "16",
+      "ultimateStarts": "1",
+      "ultimateIterations": "4",
+      "overall": "FAIL",
+      "direct": "FAIL",
+      "capacity": "FAIL",
+      "lambda": "0.409689020965",
+      "method": "UltimateStrain",
+      "path": "LambdaMx",
+      "plateauFactor": "0.001"
+    },
+    {
+      "Shape": "Circle",
+      "Specification": "Circle|Circle_UserRatio_3x_Auto_1|-1356193.4364918582|271238687.29837161|0|Auto|Auto",
+      "id": "Circle_UserRatio_3x_Auto_1",
+      "seconds": "1.28125",
+      "fibers": "716",
+      "bars": "8",
+      "solves": "2",
+      "iterations": "12",
+      "ultimateStarts": "1",
+      "ultimateIterations": "4",
+      "overall": "FAIL",
+      "direct": "FAIL",
+      "capacity": "FAIL",
+      "lambda": "0.180844327679",
+      "method": "UltimateStrain",
+      "path": "LambdaMx",
+      "plateauFactor": "0.001"
+    },
+    {
+      "Shape": "Circle",
+      "Specification": "Circle|Circle_UserRatio_4x_Auto_1|-1808257.9153224775|361651583.0644955|0|Auto|Auto",
+      "id": "Circle_UserRatio_4x_Auto_1",
+      "seconds": "1.2421875",
+      "fibers": "716",
+      "bars": "8",
+      "solves": "2",
+      "iterations": "10",
+      "ultimateStarts": "1",
+      "ultimateIterations": "5",
+      "overall": "FAIL",
+      "direct": "FAIL",
+      "capacity": "FAIL",
+      "lambda": "0.037486167929",
+      "method": "UltimateStrain",
+      "path": "LambdaMx",
+      "plateauFactor": "0.001"
+    }
+  ],
+  "ControlsAndBoundaryPlanesExactlyEqual": true,
+  "Bisection": [
+    {
+      "ID": "Circle_UserRatio_2x_LoadMultiplier_1",
+      "Seconds": 1.3125,
+      "LambdaProbes": [
+        0.0,
+        1.0,
+        0.5,
+        0.25,
+        0.375,
+        0.4375,
+        0.40625,
+        0.421875,
+        0.4140625
+      ],
+      "BisectionIterations": 7,
+      "ConfiguredToleranceLambda": 0.01
+    },
+    {
+      "ID": "Circle_UserRatio_3x_LoadMultiplier_1",
+      "Seconds": 1.453125,
+      "LambdaProbes": [
+        0.0,
+        1.0,
+        0.5,
+        0.25,
+        0.125,
+        0.1875,
+        0.15625,
+        0.171875,
+        0.1796875
+      ],
+      "BisectionIterations": 7,
+      "ConfiguredToleranceLambda": 0.01
+    },
+    {
+      "ID": "Circle_UserRatio_4x_LoadMultiplier_1",
+      "Seconds": 1.6328125,
+      "LambdaProbes": [
+        0.0,
+        1.0,
+        0.5,
+        0.25,
+        0.125,
+        0.0625,
+        0.03125,
+        0.046875,
+        0.0390625
+      ],
+      "BisectionIterations": 7,
+      "ConfiguredToleranceLambda": 0.01
+    }
+  ],
+  "RegressionAssertions": {
+    "FinalCapacityYes.txt": 606,
+    "FinalCapacityNo.txt": 606,
+    "FinalGuardsYes.txt": 51,
+    "FinalGuardsNo.txt": 51,
+    "FinalUltimateContracts.txt": 702
+  },
+  "TotalRegressionAssertions": 2016,
+  "NumericalFailureNotConvertedToPhysicalFailure": true,
+  "NoToleranceIterationsOrDiagramParametersRelaxed": true,
+  "NoFullOnOffOrFullUIRuns": true,
+  "Errors": []
+}

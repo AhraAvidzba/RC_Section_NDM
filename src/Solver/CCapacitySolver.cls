@@ -728,15 +728,24 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String, _
-        Optional ByVal startSolver As CSectionSolver = Nothing) As Boolean
+        Optional ByVal startSolver As CSectionSolver = Nothing, _
+        Optional ByVal allowRetries As Boolean = True) As Boolean
     mSearchExecuted = True
     Dim nValue As Double
     Dim mxValue As Double
     Dim myValue As Double
     loadPath.Target lambdaValue, nValue, mxValue, myValue
 
-    probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, _
-        nValue, mxValue, myValue, lambdaValue, startSolver)
+    If allowRetries Then
+        probeState = ProbeWithRetries(section, concreteMaterial, steelMaterial, _
+            nValue, mxValue, myValue, lambdaValue, startSolver)
+    Else
+        ' Предварительная проверка UltimateStrain требует только доказанного
+        ' физического отказа. Неудачная проба не запускает удвоение ступеней:
+        ' основной поиск сохранит все свои обычные старты и бюджеты.
+        probeState = ProbeOnce(section, concreteMaterial, steelMaterial, _
+            nValue, mxValue, myValue, lambdaValue, 0, startSolver)
+    End If
     If probeState = STATE_ACCEPTABLE Then
         functionValue = mCriticalStrainUtilization - 1#
         RecordAcceptableState mLastSolver, nValue, mxValue, myValue

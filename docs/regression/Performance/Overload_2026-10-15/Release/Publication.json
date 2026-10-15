@@ -1,0 +1,9 @@
+﻿{
+    "Status":  "OVERLOAD_RELEASE_PUBLISHED",
+    "PublishedAt":  "2026-10-15T18:39:50.9356972+03:00",
+    "WorkbookSHA256":  "709DFF46F9E62CF89D51EC9796E86A8149B4EB090ACF1C194E304923498856D0",
+    "AllCodeSHA256":  "7D24D343DFE1C796E07866363CD02C5E191DB9EBAA40FF79B5247FE1A4B6E630",
+    "UserExecutionReportUnchanged":  true,
+    "ActualWorkbookReadbackPending":  false,
+    "AllCodeMatchesActualNativeExport":  true
+}

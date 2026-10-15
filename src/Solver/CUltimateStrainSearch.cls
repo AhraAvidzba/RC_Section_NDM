@@ -40,6 +40,13 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
         request.MyOffset, request.MyBase
     RunCapacityUltimateNewton request, loadPath
 
+    Dim initialResult As CLimitSearchResult
+    Set initialResult = request.Problem.BuildResult(request, request.Problem.Converged)
+    If initialResult.Meta.ResultCode = rcInitialStateBeyondLimit Then
+        Set ExecuteCapacity = initialResult
+        Exit Function
+    End If
+
     If request.ForceOnly And _
             StrComp(request.SolutionStrategy, "UltimateStrain", vbTextCompare) = 0 And _
             Not request.Problem.Converged And _

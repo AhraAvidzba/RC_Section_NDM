@@ -373,8 +373,30 @@ End Function
 ' Передает общему Newton уже проверенную Capacity-постановку.
 Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector) As Boolean
-    ILimitSearchProblem_PrepareUltimate = mCapacity.LimitSearchPrepareCapacityUltimate( _
-        request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath)
+    If Not mCapacity.LimitSearchPrepareCapacityUltimate( _
+            request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath) Then Exit Function
+    If loadPath.NOffset <> 0# Or loadPath.MxOffset <> 0# Or loadPath.MyOffset <> 0# Then
+        ' У аффинного пути сначала проверяем постоянную нагрузку. Равновесная
+        ' точка за пределом деформаций отклоняется тем же правилом, что в
+        ' LoadMultiplier; искать ее границу через Newton уже не требуется.
+        Dim value As Double, state As String, solver As CSectionSolver
+        If mCapacity.LimitSearchEvaluateCapacityLoadMultiplier(request.Section, _
+                request.ConcreteMaterial, request.SteelMaterial, loadPath, 0#, value, state, Nothing, False) Then
+            If ILimitSearchProblem_IsLimitState(state) Then
+                Set solver = mCapacity.LastSolver
+                ILimitSearchProblem_PrepareUltimate = ILimitSearchProblem_AcceptInitialPoint( _
+                    request, loadPath, value, state, solver)
+                mCapacity.LimitSearchAppendCapacityDiagnostic "UltimateStrain: lambda=0 уже за физическим пределом; итерации предельной плоскости не запускаются."
+                Exit Function
+            End If
+        End If
+        If mCapacity.LimitSearchHasTerminalFailure Then Exit Function
+        ' Численная неудача начальной пробы не доказывает физический отказ.
+        ' Сохраняем прежний Newton и его старты, без переноса пробного состояния.
+        If Not mCapacity.LimitSearchPrepareCapacityUltimate( _
+                request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath) Then Exit Function
+    End If
+    ILimitSearchProblem_PrepareUltimate = True
 End Function
 
 ' Повторяет общий Newton с независимым стартом, подготовленным Capacity.

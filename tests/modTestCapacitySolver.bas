@@ -109,6 +109,8 @@ Public Function RunCapacitySolverTests() As String
     TestSearchMethodInputErrors stats
     AppendLine stats, "RUN: TestInitialLambdaFailureStatusMapping"
     TestInitialLambdaFailureStatusMapping stats
+    TestUltimateInitialPhysicalRejection stats
+    TestUltimateInitialNumericalFailure stats
     AppendLine stats, "RUN: TestSearchMethodPerformanceComparison"
     TestSearchMethodPerformanceComparison stats
 
@@ -162,6 +164,85 @@ Public Function RunCapacityOutputContractTests() As String
 Failed:
     RunCapacityOutputContractTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
+
+' ДЛЯ ТЕСТОВ: постоянная перегрузка пути проверяется до поиска предельной
+' плоскости; неудачный НДС не становится физическим отказом.
+Public Function RunOverloadInitialPointTests() As String
+    Dim stats As TCapacityTestStats
+    On Error GoTo Failed
+    TestUltimateInitialPhysicalRejection stats
+    TestUltimateInitialNumericalFailure stats
+    TestInitialLambdaFailureStatusMapping stats
+    AppendLine stats, "TOTAL_OVERLOAD_INITIAL_POINT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunOverloadInitialPointTests = stats.Report
+    Exit Function
+Failed:
+    RunOverloadInitialPointTests = stats.Report & "FAIL: overload.initial.runtime; " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' Линейные материалы позволяют получить точное равновесие при заведомом
+' превышении физической деформации, без эвристической оценки несущей.
+Private Sub TestUltimateInitialPhysicalRejection(ByRef stats As TCapacityTestStats)
+    Dim section As CSectionModel, strategy As Variant, cap As CCapacitySolver
+    Dim request As CLimitSearchRequest, result As CLimitSearchResult, coordinator As CLimitSearchCoordinator
+    Dim forceOnly As Variant, prefix As String, nBase As Double, mxOffset As Double, mxBase As Double
+    Set section = New CSectionModel
+    section.AddConcreteElement -100#, -100#, 10000#
+    section.AddConcreteElement 100#, -100#, 10000#
+    section.AddConcreteElement -100#, 100#, 10000#
+    section.AddConcreteElement 100#, 100#, 10000#
+    section.AddRebarElement -80#, -80#, 20#, 0#, "A400"
+    section.AddRebarElement 80#, 80#, 20#, 0#, "A400"
+    For Each forceOnly In Array(False, True)
+    For Each strategy In Array("Auto", "UltimateStrain", "LoadMultiplier")
+        nBase = 0#: mxOffset = 0#: mxBase = 1000000#
+        If CBool(forceOnly) Then nBase = 100000#: mxOffset = 1000000#: mxBase = 0#
+        prefix = "overload.initial." & CStr(strategy) & ".forceOnly=" & CStr(forceOnly)
+        Set cap = New CCapacitySolver: ConfigureCapacity cap
+        Set request = New CLimitSearchRequest
+        InitializeCapacitySearchRequest request, cap, section, LinearConcrete(), LinearSteel(), CStr(strategy), _
+            -10000000#, nBase, mxOffset, mxBase, 0#, 0#, CBool(forceOnly), False
+        Set coordinator = New CLimitSearchCoordinator
+        ResetSectionEquilibriumSolveCount
+        Set result = coordinator.ExecuteCapacity(request)
+        AssertTrue stats, prefix & ".baseFailure", result.Meta.ResultCode = rcInitialStateBeyondLimit
+        AssertTrue stats, prefix & ".notNumericalFailure", result.Meta.InternalStatus = rsCheckFailed
+        AssertTrue stats, prefix & ".noInventedLimit", Not result.HasLimitPoint
+        AssertClose stats, prefix & ".zeroLambda", result.LambdaUltimate, 0#, 0#
+        AssertTrue stats, prefix & ".equilibriumChecked", SectionEquilibriumSolveCount() = 1
+        AssertTrue stats, prefix & ".noUltimateIterations", UltimateStrainIterationCount() = 0
+        AssertTrue stats, prefix & ".reason", Len(result.Meta.ResultComment) > 0
+    Next strategy
+    Next forceOnly
+End Sub
+
+' Неподтвержденное равновесие при нагрузке выше плато без продолжения
+' не разрешает объявить физический отказ. UltimateStrain вправе искать предел.
+Private Sub TestUltimateInitialNumericalFailure(ByRef stats As TCapacityTestStats)
+    Dim section As CSectionModel, cap As CCapacitySolver, request As CLimitSearchRequest, path As CLoadPathVector
+    Dim value As Double, state As String, solver As CSectionSolver
+    Set section = New CSectionModel
+    section.AddConcreteElement -100#, -100#, 10000#
+    section.AddConcreteElement 100#, -100#, 10000#
+    section.AddConcreteElement -100#, 100#, 10000#
+    section.AddConcreteElement 100#, 100#, 10000#
+    Set cap = New CCapacitySolver: ConfigureCapacity cap
+    cap.SolverMaxIterations = 1
+    cap.MaxRetries = 3
+    Set request = New CLimitSearchRequest
+    InitializeCapacitySearchRequest request, cap, section, ProvisionalConcrete(), LinearSteel(), "UltimateStrain", _
+        -1000000#, 0#, 0#, 1000000#, 0#, 0#, False, False
+    Set path = New CLoadPathVector: path.Initialize -1000000#, 0#, 0#, 1000000#, 0#, 0#
+    AssertTrue stats, "overload.initial.numerical.fixturePrepared", request.Problem.Prepare(request)
+    AssertTrue stats, "overload.initial.numerical.fixtureEvaluated", _
+        request.Problem.EvaluatePoint(request, path, Nothing, 0#, value, state, solver)
+    AssertTrue stats, "overload.initial.numerical.fixtureReallyFailed", request.Problem.IsNumericalFailureState(state)
+    ResetSectionEquilibriumSolveCount
+    AssertTrue stats, "overload.initial.numerical.searchStillAllowed", request.Problem.PrepareUltimate(request, path)
+    AssertTrue stats, "overload.initial.numerical.notPhysicalFailure", Not cap.LimitSearchInitialLambdaRejected
+    AssertTrue stats, "overload.initial.numerical.noRepeatedPreflight", SectionEquilibriumSolveCount() = 1
+    AssertTrue stats, "overload.initial.numerical.noInventedLimit", Not cap.Converged
+End Sub
 
 ' ДЛЯ ТЕСТОВ: стартовая плоскость внутри физических пределов, включая перенос на 1000 м.
 Public Function RunLimitGuessScalingTests() As String

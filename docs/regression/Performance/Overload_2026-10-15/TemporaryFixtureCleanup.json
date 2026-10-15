@@ -1,0 +1,66 @@
+{
+  "OnlyFixturesNamedInOwnReportsRemoved": true,
+  "Removed": [
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_e19248fcfe8a4992bbc88cd4754eed00\\RC_Section_NDM.xlsm",
+      "Bytes": 8371265,
+      "SHA256": "D2505685924642C5F1EAC39B234723B1C2010A96C4DEBA2F9AB8E52393F80C6D"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_589ba29125b54cd0b03b30afbbd2b8e4\\RC_Section_NDM.xlsm",
+      "Bytes": 8365670,
+      "SHA256": "55C8A62246B2A74AB09E2BBAD6CD5604BB3C6863DF76B4DB7FBFA7C6209DD218"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_96558bfe072346028452852c3ba4d784\\RC_Section_NDM.xlsm",
+      "Bytes": 8379939,
+      "SHA256": "F8B2E7FE620E388E3DA89F7C3579A64EE4E4B63AA0FE36BC7C2CA30B24130C30"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_ca0baf94152f47e18ae0b766a6685d6b\\RC_Section_NDM.xlsm",
+      "Bytes": 8379941,
+      "SHA256": "F9BB1F1D5CBE1E7B37623F4A481161E078BB256D3F9B8EC4414B1B43AA56BBF0"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_27de42b7ef2741bcbf4c32e8c8b2df79\\RC_Section_NDM.xlsm",
+      "Bytes": 8379956,
+      "SHA256": "3C786754DE13B4193B901FE5896322D6856F5F50387EF3D19D10E79B101051BE"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_bbe092545598421ca3c6f2c68d56101b\\RC_Section_NDM.xlsm",
+      "Bytes": 8379947,
+      "SHA256": "F9613DD85C7F94D1E2D4A96816D696F2A29F4E37A60520F633A80D7F3536BCE1"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_f9e97e93a1d3472d821f0f70c8408d20\\RC_Section_NDM.xlsm",
+      "Bytes": 8372630,
+      "SHA256": "DDF934E85DD40CA398FD170B3CEBC5DC59645ECC12F9C6409A1DFA9F6FC56BBF"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_482a5d5ee1ec4017a792de22e85997f9\\RC_Section_NDM.xlsm",
+      "Bytes": 8372638,
+      "SHA256": "E13B902F2749D1B209076D27E758EBBEA6A0111DB8472022EFC0FBF1A231B337"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_92294d84b39f40a19cf434bed21bec93\\RC_Section_NDM.xlsm",
+      "Bytes": 8374952,
+      "SHA256": "F5A72C7FD2E376E66B31190285EF5350AEAE8902E50B7CFE7BF030AD1EC370AF"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_384b7617c79745c98ab6c38656599013\\RC_Section_NDM.xlsm",
+      "Bytes": 8371278,
+      "SHA256": "AE2A0A256C23EF8EC8C4199F8F7235216E84DCE0DD24C56727A95268218FEC04"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_28c674f51b3244d6bfb291694aad3460\\RC_Section_NDM.xlsm",
+      "Bytes": 8375944,
+      "SHA256": "2E26305331C7D962E6085C40794F39F35F2D9E7CCB49F58E112EEC0029C3B1DF"
+    },
+    {
+      "Path": "C:\\Users\\avidzba\\AppData\\Local\\Temp\\RC_NDM_ModeSuite_570abf0c0df242478e51114d00ab444a\\RC_Section_NDM.xlsm",
+      "Bytes": 8353447,
+      "SHA256": "2170BBC0467EA39A87F77B3272AD4D4183E0356ED9A7D4AF37CBFC8F426EED59"
+    }
+  ],
+  "RetainedLocked": []
+}

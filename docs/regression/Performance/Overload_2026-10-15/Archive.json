@@ -1,0 +1,857 @@
+{
+  "Status": "OVERLOAD_EVIDENCE_ARCHIVE_PASS",
+  "Bytes": 17840250,
+  "SHA256": "c2f7aaece1b1e37f8015fde5b3723d52ea70636dc52a9d4ecfc1f7a5fcbd206b",
+  "Entries": [
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Overload_2026-10-15/CandidateNativeVBA.txt",
+      "Bytes": 7088965,
+      "SHA256": "c54d51a6cae9248f57e196615596d43ca6ce2198cf66763aeaf4b22f480fab7c"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Overload_2026-10-15/CandidateSourceEquality.json",
+      "Bytes": 73438,
+      "SHA256": "7b58556cb8fb1ed24b9a1e3df6882fc619b7a1dd436e5e019d5306d87cc8daf2"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Overload_2026-10-15/PublishedNativeVBA.txt",
+      "Bytes": 7088965,
+      "SHA256": "7d24d343dfe1c796e07866363cd02c5e191db9ebaa40ff79b5247fe1a4b6e630"
+    },
+    {
+      "Path": "docs/regression/ExcelGuardGuide_2026-10-13/Overload_2026-10-15/PublishedSourceEquality.json",
+      "Bytes": 73438,
+      "SHA256": "97d307886b2103cef10a68fadaa0352c57f77b9c8d6c2ee40990e554a5740c4d"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Acceptance.json",
+      "Bytes": 1056,
+      "SHA256": "2f374132dd7734c97fe53957e357d7a6c33c55aa718a28999b905c136e94eec0"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Before.json",
+      "Bytes": 702,
+      "SHA256": "03eff8706f898913deb7e88bbd8c730f311afcf1238a5ad1b5f05b1a40404e96"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_2x_LoadMultiplier_1.execution.txt",
+      "Bytes": 37372,
+      "SHA256": "a7e68a46c16ab6a07d742f86705bec36b4fb1b7bc5ff069ef8fdb99802f741b6"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_2x_LoadMultiplier_1.txt",
+      "Bytes": 4055,
+      "SHA256": "77937d01abf4198fa2bb5fb2559b4e31c02a58bbf3f7ab96e28144bc2d58a46e"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_3x_LoadMultiplier_1.execution.txt",
+      "Bytes": 32772,
+      "SHA256": "eed534a10bc0bc71c6a0ba413d1b955bdd65cd861f1eea75444717b161fd55eb"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_3x_LoadMultiplier_1.txt",
+      "Bytes": 4051,
+      "SHA256": "7046a33c96132e65755bdeb8d07a8b9143e9f6d23cb46dd3747b02e886f5e9b9"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_4x_LoadMultiplier_1.execution.txt",
+      "Bytes": 34326,
+      "SHA256": "2a96350a91e2f22a2f0b67ae737ca7da5b345175256f7f6493bf41e7fdadd3ef"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_4x_LoadMultiplier_1.txt",
+      "Bytes": 4080,
+      "SHA256": "eca56054db6ad3c28c9b861c28d4989c18f20a532cbdf1fd0701f7239917d751"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_calibration.execution.txt",
+      "Bytes": 28254,
+      "SHA256": "4498cda6101dbe593f980457c6ff548e258753f05fe9d390bc6833a9bc71ff32"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Circle_UserRatio_calibration.txt",
+      "Bytes": 3306,
+      "SHA256": "f9e27cbc00ed7bf1052de0ec1c21d2d28e43b3b46816f3f551787d7eea2f90a9"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Completion.json",
+      "Bytes": 107,
+      "SHA256": "be912e608c5f1b9809ff7a2de4f1259ad31ffa7ed2830d063cd264681f96bcfa"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Environment.json",
+      "Bytes": 222,
+      "SHA256": "8cd862f41fcf24a0fdc000a414cd33ed3106bec0d1dfe3627f258de221d2e013"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/BisectionOverloads/Measurements.json",
+      "Bytes": 2627,
+      "SHA256": "00c9bf389f9af3c039dcba87e222cead1bcd282d70f5b144be0d4f053742672e"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/Completion.json",
+      "Bytes": 107,
+      "SHA256": "f698db7c6ae78d2dd86c652d9393f2c6d87acb853e71ef106382028cf81dffe0"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/Environment.json",
+      "Bytes": 222,
+      "SHA256": "4d24bbc678a9136ba80c2cba728a4471233a5ffe74ef623370cc9a4304b92246"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/Measurements.json",
+      "Bytes": 1225,
+      "SHA256": "ac0c013c93bbb04f67cddf0ce935e471a99091d46ffd2b1598eb29f4faa62b54"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/UserCircle500N100Mx.execution.txt",
+      "Bytes": 31184,
+      "SHA256": "44e44e77dd5bb27c02f68899e1bf96fb209b5aa1e1999dfd5d03a0bc3c6860f4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/UserCircle500N100Mx.txt",
+      "Bytes": 4475,
+      "SHA256": "d25478e21f280894ae5449a204b5a9fd5ddcb7b382898df605c522efeab9a011"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/UserCircle500N100My.execution.txt",
+      "Bytes": 31232,
+      "SHA256": "999ba2cc4ee88eaecf0bd8352f5383db28b670916d6a17f1195ad192065149fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CandidateUserCircleMesh10/UserCircle500N100My.txt",
+      "Bytes": 4501,
+      "SHA256": "e7a73b8619666442b21222f8ad40ea7ed17f32efa0a25fbc3f8f1a7020559dbb"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CapacityOutputContractsNo.txt",
+      "Bytes": 54095,
+      "SHA256": "dd41426a8613ed8916cc198a364ff496bd47f79a9ff16da4f536a54c2bcf0269"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CapacityOutputContractsNo.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CapacityOutputContractsNo.txt.stdout.log",
+      "Bytes": 531,
+      "SHA256": "281a2543b7504f6db501a3f1893a197d62503b2e70d429a3c0936580830e822a"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CapacityOutputContractsYes.txt",
+      "Bytes": 54093,
+      "SHA256": "b30005a6e5abd8a7238b683dc9c445998e2f6aaf4b23ff9dc6c98e5af961e3b2"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CapacityOutputContractsYes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CapacityOutputContractsYes.txt.stdout.log",
+      "Bytes": 531,
+      "SHA256": "9e20d594737b849c970bd9c29b0b65631558cf7f33fb2338aafbd6680b0a8e2f"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_2x_Auto_1.execution.txt",
+      "Bytes": 23192,
+      "SHA256": "cda912da60b4c01d1335949ee843e5b22134ff9f046340a5869408fe3498598f"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_2x_Auto_1.txt",
+      "Bytes": 1498,
+      "SHA256": "ce71ab74a073778deda4d7f04e4a31e61cad839fc1c121da357505417c540d70"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_3x_Auto_1.execution.txt",
+      "Bytes": 22512,
+      "SHA256": "73a9a9655f52970a17f9ad851100939c79749b5ec2d2dbd4358dde809354f8ef"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_3x_Auto_1.txt",
+      "Bytes": 1521,
+      "SHA256": "1afb29dd433e94121652ef38fff7b13075cf86641071baddfa117002eff27390"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_4x_Auto_1.execution.txt",
+      "Bytes": 22470,
+      "SHA256": "70db9b8f1d533e8ab64ff938da8a20160f92706eeb3efb8de564ea43b76118b5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_4x_Auto_1.txt",
+      "Bytes": 1495,
+      "SHA256": "82ed1ed8c8166bcc1ad86c29bed9d80fc718a6ebaee8a79c3a9d9f24c60f1f26"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_calibration.execution.txt",
+      "Bytes": 23262,
+      "SHA256": "025d072300f4fcd4c851a34fa5da19d5fff3436da80851de6bd3a83fb3c8deb4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Circle_Axial_calibration.txt",
+      "Bytes": 1524,
+      "SHA256": "c832d7ace9ef01f51037928d4587e4c7c6d4a85b89d70af061c58eaa6360d153"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Completion.json",
+      "Bytes": 107,
+      "SHA256": "be912e608c5f1b9809ff7a2de4f1259ad31ffa7ed2830d063cd264681f96bcfa"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Environment.json",
+      "Bytes": 222,
+      "SHA256": "7f08fcbbdef6cfaff661111a6690bf061ee5d3448a869aef362f29b0963356f2"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleAxialBaseline/Measurements.json",
+      "Bytes": 2436,
+      "SHA256": "073b2010542e6b508190bbbedcacfcb221de22151b77cd9b17be70a9143c88e8"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10/Circle_UserRatio_calibration.execution.txt",
+      "Bytes": 28262,
+      "SHA256": "6716f8e0840527f66837c51d7a615dca635498bd9d752e487b163ba1301188c5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10/Circle_UserRatio_calibration.txt",
+      "Bytes": 3310,
+      "SHA256": "819dc1132dba83020d76f9893ace16dac4c4589383aa0d125681e60d7eedc8d5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10/Environment.json",
+      "Bytes": 222,
+      "SHA256": "9f959b9068003ccde6f5611cd6e09932dfe6ecfa4e2366846884b9ff45fa03a4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10/Measurements.json",
+      "Bytes": 636,
+      "SHA256": "79674a3a303a97aaca0ed692f3aa4e5a583e48cb15c17cddcf3a38110eb141b8"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_2x_Auto_1.execution.txt",
+      "Bytes": 34372,
+      "SHA256": "11f47967f5251d7c2c088eb3283e058dc05b15debd38b45a3b9c0d0ced0772d7"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_2x_Auto_1.txt",
+      "Bytes": 3185,
+      "SHA256": "fd3fd4fd3e0a77203296c7106245727590c694b05a42b8c8c14517a492d639ba"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_3x_Auto_1.execution.txt",
+      "Bytes": 31316,
+      "SHA256": "dcb5c1a26a87af1632a8fb0b4ccc5c2484a1231a964f254193755c4b66792999"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_3x_Auto_1.txt",
+      "Bytes": 3190,
+      "SHA256": "d1a17e707fefa1e18f2b4036737ea51dd6d35eb2b56b50242a1e524fc828e247"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_4x_Auto_1.execution.txt",
+      "Bytes": 32226,
+      "SHA256": "1b6a843a6f3b4d1019687cafdc95b6d30f0421e86661bbe6288f8b51a04bf09e"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_4x_Auto_1.txt",
+      "Bytes": 4030,
+      "SHA256": "4b15d00ccae9392a274a92554ef0e373f9f369dd518457bf0524b1481ca72b39"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_calibration.execution.txt",
+      "Bytes": 28264,
+      "SHA256": "a996ea3811d3bd58edc4bb0e7b8abf52b89bb236c43dfea7d944daf90b07283c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Circle_UserRatio_calibration.txt",
+      "Bytes": 3312,
+      "SHA256": "f3126bc903b990749efeaf4e39cf749a8b98c6782d5f55c1b888652b33970cc5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Completion.json",
+      "Bytes": 107,
+      "SHA256": "be912e608c5f1b9809ff7a2de4f1259ad31ffa7ed2830d063cd264681f96bcfa"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Environment.json",
+      "Bytes": 222,
+      "SHA256": "0bb4086047320098690594c49064731c2172a1d214d09392cc434d0defff286a"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/CircleOverloadsMesh10b/Measurements.json",
+      "Bytes": 2559,
+      "SHA256": "ec2ea214627d5012e636c5ce3b1925db463e1ce5e009c0af8d6085d6d16ffb97"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_0.5x_Auto_1.execution.txt",
+      "Bytes": 26296,
+      "SHA256": "2666542b0d1567843a3914e0d06ebf462a5112be28d30c144b324b4b3c2a262f"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_0.5x_Auto_1.txt",
+      "Bytes": 3243,
+      "SHA256": "bd205a5ab13ad4e44c7a51fb5c28c1e8215df575a1986220ff0a3354a4487e0c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_0.9x_Auto_1.execution.txt",
+      "Bytes": 29286,
+      "SHA256": "d5df2d82ce1ab03b0fab38d66749cc9c9fc0c26a81161d693879be9bfb766bab"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_0.9x_Auto_1.txt",
+      "Bytes": 3997,
+      "SHA256": "6c48143c42de7f983ac1dea4a519d8980659f44f75de563c6adc164668101ce3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_2x_Auto_1.execution.txt",
+      "Bytes": 34374,
+      "SHA256": "18085fe6ebc8847332ad0c2a71f101f66472efcd41961a207872d28ef9391f50"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_2x_Auto_1.txt",
+      "Bytes": 3183,
+      "SHA256": "f854e32e4f422d3ea56968d4855ae5ca977b457f196823cd381ca953b895a38a"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_3x_Auto_1.execution.txt",
+      "Bytes": 31314,
+      "SHA256": "d2df5bb65856c84bea7e6154eef4b1114c52e8c4b1bcc972fe52144d5d0068dd"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_3x_Auto_1.txt",
+      "Bytes": 3192,
+      "SHA256": "0d301b16f6f42041d9c740c4fd061735aa9f65c70874abde552bd0d40a80baf7"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_4x_Auto_1.execution.txt",
+      "Bytes": 32226,
+      "SHA256": "f9fa429df25384a58057f2efe93b8c41d733be5642824126b2c83891cbc60ef3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_4x_Auto_1.txt",
+      "Bytes": 4030,
+      "SHA256": "5abc7481918a3eaef15ce3bd5d8a1f2a8ca95f7e13e7df9cfafc017d089bc15b"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_calibration.execution.txt",
+      "Bytes": 28260,
+      "SHA256": "28cb11084c4f2a968e544a323c164453bbf92aa1d31e74b32b37baf595bde8c5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Circle_UserRatio_calibration.txt",
+      "Bytes": 3311,
+      "SHA256": "d5e7c50fe551803dd79ee3ad098213700eb3869ed59d1ecaa3a60980253ef3ac"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Completion.json",
+      "Bytes": 107,
+      "SHA256": "294cb58b36f39794d5258556c6f32aa889ff1d71b716d14c8b69538f552be0d4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Environment.json",
+      "Bytes": 222,
+      "SHA256": "4147615423615a7aea3e1427c3be4867a5adc1d0a90a5b2a432993d96b96661d"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalBaselineControls/Measurements.json",
+      "Bytes": 3826,
+      "SHA256": "93cf9491eb767f2480376d87760a08adc296bd070514ab11283e6e977dc45536"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_0.5x_Auto_1.execution.txt",
+      "Bytes": 26296,
+      "SHA256": "b8e5546ca7d54dfa106c23afd875d0e9fe9e0bedb9ab0cf103feaacda708ceae"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_0.5x_Auto_1.txt",
+      "Bytes": 3244,
+      "SHA256": "3ebac831a04716a4a4545116f737e33e0994fcb81f20be322fcbc404d563c5f6"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_0.9x_Auto_1.execution.txt",
+      "Bytes": 29284,
+      "SHA256": "546d433192bcc592544bde20540b7ad21240414424da113f00fef97db3148dca"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_0.9x_Auto_1.txt",
+      "Bytes": 4000,
+      "SHA256": "a2d3ead238c54d24ea2c54f7edbcddab7e1ed42479260f49d19fcc762b108a0f"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_2x_Auto_1.execution.txt",
+      "Bytes": 34368,
+      "SHA256": "e07ad33decad198bea05bec97676c24efa88550b270c018ad51148f553de9016"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_2x_Auto_1.txt",
+      "Bytes": 3186,
+      "SHA256": "7407d64ddbbe88f5449c5f3f97c00dc7b9c406d0face9205734bdfcc3d851ba8"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_3x_Auto_1.execution.txt",
+      "Bytes": 31326,
+      "SHA256": "fefb5aca59375283997a9a48f9df7bf94526afc9228bfd84d33ec440ab8ab5ad"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_3x_Auto_1.txt",
+      "Bytes": 3192,
+      "SHA256": "1437fa49a2ba8b33ede13b36efea9e821da20c9fea1becaf949164647080c6a1"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_4x_Auto_1.execution.txt",
+      "Bytes": 32232,
+      "SHA256": "5be999f26ce3e6bee4c2bdd49bf36107ce1f1e9bfbbe0b1d7284a6a1e23c72f2"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_4x_Auto_1.txt",
+      "Bytes": 4032,
+      "SHA256": "01fed020baca3aa813cffb881b907720fac040317d10f5162b234f48e0257ec9"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_calibration.execution.txt",
+      "Bytes": 28266,
+      "SHA256": "48a440ecf644b574ecc123f6da6e7f4cc2df45eb3ea9ac8c27c92e042d32f331"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Circle_UserRatio_calibration.txt",
+      "Bytes": 3313,
+      "SHA256": "eec78eeb8def6c846a0dca785b0c4b2977356a43b12ea42999d5c6ddf348c9d1"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Completion.json",
+      "Bytes": 107,
+      "SHA256": "294cb58b36f39794d5258556c6f32aa889ff1d71b716d14c8b69538f552be0d4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Environment.json",
+      "Bytes": 222,
+      "SHA256": "f044d967abd4150ffe31e782e069c2876d4303150df4eab7d776ee323da2ef34"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCandidateControls/Measurements.json",
+      "Bytes": 3831,
+      "SHA256": "9a00ee507ca2bfbbfe836658809774f19f3c4fb96bf18b4ef2e4228db062ae61"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCapacityNo.txt",
+      "Bytes": 54093,
+      "SHA256": "410d2e4204a716eb3dd29fd99bd2c61dd3426686f8f4af334e91d6b4037337fb"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCapacityNo.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCapacityNo.txt.stdout.log",
+      "Bytes": 531,
+      "SHA256": "3ee8496de2d147e22db78f17996f98cbb344021f2641db69daa1f4ea74a3d793"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCapacityYes.txt",
+      "Bytes": 54186,
+      "SHA256": "ca84c7391adce42916a8cbfed11489f85620ce93bdf44a219dcb340fae2b8503"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCapacityYes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalCapacityYes.txt.stdout.log",
+      "Bytes": 533,
+      "SHA256": "720fdf4a7d082d0a0745621198512a07f4b4240ea721ba38c2ff30faafbe998b"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalGuardsNo.txt",
+      "Bytes": 4583,
+      "SHA256": "df18d2bbf179336706eb99973eadb4f3a68ab2d5c441d812ba3d731898c64074"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalGuardsNo.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalGuardsNo.txt.stdout.log",
+      "Bytes": 528,
+      "SHA256": "d7a91aaa7acbf1f243235a64226d4efed5913a0b8eb826eb4ecadabbd117b22a"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalGuardsYes.txt",
+      "Bytes": 4671,
+      "SHA256": "377d390c0dca034146860fc8639687a374cd30fce2179866fc008260f240ae21"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalGuardsYes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalGuardsYes.txt.stdout.log",
+      "Bytes": 530,
+      "SHA256": "8a93366cae5394bd66836091514cd0a3a4f6db121bd6221e3d57b2e30d1ec72b"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalInitialPoint.txt",
+      "Bytes": 2794,
+      "SHA256": "2a9dc8ea9d55f237e8b0e785cc418e63276c6395397f51e3abebbd2272850712"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalInitialPoint.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalInitialPoint.txt.stdout.log",
+      "Bytes": 530,
+      "SHA256": "92f0f88235369c9c9a278954c67d4940f047b1f0bd947d49d5276199d3975c58"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUltimateContracts.txt",
+      "Bytes": 42466,
+      "SHA256": "bdfa4fa6d8f303f5beded6c567d7814ea2346ca2c6807a973158259e44724b61"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUltimateContracts.txt.progress.txt",
+      "Bytes": 34792,
+      "SHA256": "6be8de1dc4d9614d719dd640050b0709df714b58be384f1eb97c4e63deaa2793"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUltimateContracts.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUltimateContracts.txt.stdout.log",
+      "Bytes": 535,
+      "SHA256": "a8c86a29c8f5597b37b7a218924877f4fb03ccdafb282d9128ff943270a04eea"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/Completion.json",
+      "Bytes": 107,
+      "SHA256": "294cb58b36f39794d5258556c6f32aa889ff1d71b716d14c8b69538f552be0d4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/Environment.json",
+      "Bytes": 222,
+      "SHA256": "b87fda0fa54f6b43feb662e6372eb9d44b56833381ae475f65db7b2ba6a75207"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/Measurements.json",
+      "Bytes": 3699,
+      "SHA256": "b51901c68428a82b61ef67cc063984034c160d2ab87f9b99c91ef7435cb553cc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100Mx_r1.execution.txt",
+      "Bytes": 31202,
+      "SHA256": "9e4096d2a597167879faa951dcd6b67602a2d79645933ede8ad6e3808b88fbff"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100Mx_r1.txt",
+      "Bytes": 4485,
+      "SHA256": "d298fdd0955938d647d5a71369c5848403e4d54d7c16c62fb01e11f1a553793e"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100Mx_r2.execution.txt",
+      "Bytes": 31204,
+      "SHA256": "0ae7bf3f05989718b37a12cc16c3c4219ba6c609449aa52868d71d830405d777"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100Mx_r2.txt",
+      "Bytes": 4482,
+      "SHA256": "30553bb14c09fa1142b18ac1dceae613c31ae14eb82f2f8797790ab4d04fe6b6"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100Mx_r3.execution.txt",
+      "Bytes": 31200,
+      "SHA256": "d2ba33a1f936a836c283af4cf64c234a5dfe1dc484adfd48fbfd757692b17204"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100Mx_r3.txt",
+      "Bytes": 4484,
+      "SHA256": "fcf862f814778a6653f0c29ffe5ac353c18b8d4fafadb89815ac3b2a16a6f431"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100My_r1.execution.txt",
+      "Bytes": 31262,
+      "SHA256": "dd6318d787a59bbd1023db78a6b624426b8174fbf5d7b2c525fa2f7056edfa44"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100My_r1.txt",
+      "Bytes": 4509,
+      "SHA256": "5e66ebd04a575a580d05f99db8ef56f2776a2239f4e8c01dfccb624a5be0f7e7"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100My_r2.execution.txt",
+      "Bytes": 31262,
+      "SHA256": "2a5ddaf6bceba58573df6ff99c40d126458ef11a67edbb742895cb160a6baae3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100My_r2.txt",
+      "Bytes": 4510,
+      "SHA256": "28772338b2ce1426116d5bcc2e0aafa95c13889a1a2040a49392bc9bd34e2bf4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100My_r3.execution.txt",
+      "Bytes": 31254,
+      "SHA256": "8a3b628d78f85f8b3c38cd38d8d395f211f44539b80e2085159b9595111f02ff"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/FinalUserCircleMesh10/UserCircle500N100My_r3.txt",
+      "Bytes": 4510,
+      "SHA256": "ae751de0ca95a42e5f46f35b339ec4d6498f6c2756efdfb54e3a563359721683"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointConfirmed.txt",
+      "Bytes": 2798,
+      "SHA256": "238b016133e49ea6fe0ffcfa5713d0fd28fe20574549e1ad384ac4a438d59759"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointConfirmed.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointConfirmed.txt.stdout.log",
+      "Bytes": 584,
+      "SHA256": "e5dfeae3d680072859e9c2aeaa1678cf97ae4061d9be6c07f3f7201471749917"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointConfirmed02.txt",
+      "Bytes": 2795,
+      "SHA256": "9e9dd1db9ba3f28a85d67545c7c19b97d65e356d916b78ffd893b7536537254c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointConfirmed02.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointConfirmed02.txt.stdout.log",
+      "Bytes": 530,
+      "SHA256": "6d7ecef9342ebab9152fddce2aafd1541210e5d79a7e5764b0b437f5dd8eb24c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointYes.txt",
+      "Bytes": 2646,
+      "SHA256": "b11ed9d0115e1c77f9fbcefd6f54c3dcd5f72bda4b7ffbb96891ce18bd8c1eed"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointYes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/InitialPointYes.txt.stdout.log",
+      "Bytes": 530,
+      "SHA256": "5b7e02bc91bbb43b82c313f2f1c396003555c53ede699a2696408b4d478f8740"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/MeasurementsAcceptance.json",
+      "Bytes": 5861,
+      "SHA256": "cacde00a2b0c80cad8ebbc0eeb6d1c4b1be98218f1fa021043eddd2e3c4f77e5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/ProbeBaseline02/Preparation.json",
+      "Bytes": 853,
+      "SHA256": "f46e123eb39dcff367e1fc8cfed865959504f7b8d24e2bf1aa8090faa3d963b1"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/ProbeBaseline02/RC_Section_NDM_execution_report.txt",
+      "Bytes": 32226,
+      "SHA256": "f9fa429df25384a58057f2efe93b8c41d733be5642824126b2c83891cbc60ef3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/ProbeCandidate/Preparation.json",
+      "Bytes": 521,
+      "SHA256": "c013e3f16ac79c480e81ac8f5ddc1c51cb7aa023ee43c1508a17c2be057252da"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/ProbeCandidate/RC_Section_NDM_execution_report.txt",
+      "Bytes": 31232,
+      "SHA256": "999ba2cc4ee88eaecf0bd8352f5383db28b670916d6a17f1195ad192065149fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/ProbeCandidate02/Preparation.json",
+      "Bytes": 646,
+      "SHA256": "67ea393c5245eb9fd515958cd5077b02fd695930704570c0a66f5f684740bebc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/ProbeCandidate02/RC_Section_NDM_execution_report.txt",
+      "Bytes": 32232,
+      "SHA256": "5be999f26ce3e6bee4c2bdd49bf36107ce1f1e9bfbbe0b1d7284a6a1e23c72f2"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/README.md",
+      "Bytes": 4112,
+      "SHA256": "33d1a5eb544202c69fd6ac371fca68902ab014e6c583f8d35fe7ad8b513088d5"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/BaselineNativeVBA.txt",
+      "Bytes": 7080259,
+      "SHA256": "56ebf6c7f770f828fe7284dc42f4f61c9882832b29ef4f87572eaeecd29acef3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/Before.json",
+      "Bytes": 381,
+      "SHA256": "a8808f49e34dc8a8c487096d6db21a1e805b86f17cd60e0803157371086cfdec"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/Candidate/Preparation.json",
+      "Bytes": 646,
+      "SHA256": "3b368c54c0b81bc4cb12d629dcc46a919d8c52fd7687162dfc73c23b3f94dd0a"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/CandidateNativeVBA.txt",
+      "Bytes": 7088965,
+      "SHA256": "c54d51a6cae9248f57e196615596d43ca6ce2198cf66763aeaf4b22f480fab7c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/OutputGuards.txt",
+      "Bytes": 4571,
+      "SHA256": "ef531f997b8667b0d18440e340cde2da571f44fc85651f433afde405e8a27c6c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/OutputGuards.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/OutputGuards.txt.stdout.log",
+      "Bytes": 515,
+      "SHA256": "86f7c75ef12cfee9bbae952697f4ca0eff5c88e3f49013444f722fea74f87d3f"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/Package.json",
+      "Bytes": 642,
+      "SHA256": "42faf397f3b48c3964a17052b463895fe8e4ae908a6ca8f7950c21af5670b40b"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/Release/Publication.json",
+      "Bytes": 433,
+      "SHA256": "1d974c29adfbca7872b4b2112db8f91cdda9f161177ec4de0000cc693e3bcd3c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/Environment.json",
+      "Bytes": 222,
+      "SHA256": "fbe448789ec5bfe2dfec1dc3fcf49093fb44323b6f9a1081cd6d30583dd5c8a9"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/Measurements.json",
+      "Bytes": 1230,
+      "SHA256": "38eb4d7b6c7e1788286fd052f34f3702ab952ca7530dc2ace5b2cb3ba021fe7a"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/UserCircle500N100Mx.execution.txt",
+      "Bytes": 14235446,
+      "SHA256": "949138027b0a238576e4bdde6e82c894f068ff5275111302f8e9c8d90e0ff6c4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/UserCircle500N100Mx.txt",
+      "Bytes": 5045154,
+      "SHA256": "328df8e7a19714dba050eb16497e79ddf265a40db143ac9e25aca3d97c245180"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/UserCircle500N100My.execution.txt",
+      "Bytes": 13897856,
+      "SHA256": "780c46a8906d4ca4ef709160449b0051c9fbc09205d2a8db721309f9035bc61d"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircle/UserCircle500N100My.txt",
+      "Bytes": 4927763,
+      "SHA256": "d0f49284fe4694f9126ec55bb485fb01c460c91762d01cf253e724f9155e987c"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/CircleInputs.json",
+      "Bytes": 386,
+      "SHA256": "f40aa41b686446d578064136faacb79612059552e7d5f5e2efca40b291f627fc"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/Completion.json",
+      "Bytes": 107,
+      "SHA256": "f698db7c6ae78d2dd86c652d9393f2c6d87acb853e71ef106382028cf81dffe0"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/Environment.json",
+      "Bytes": 222,
+      "SHA256": "84a7a5168e05b41a40e8306904457dfcee28303b0a91bcffba0b464e16c22ee3"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/Measurements.json",
+      "Bytes": 1231,
+      "SHA256": "4f85a1e452a252f9541534357b781c53ce6b9f8620e278e35bfb7ddde13142aa"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/UserCircle500N100Mx.execution.txt",
+      "Bytes": 14490256,
+      "SHA256": "6365a98526815d769af966c2fdfe43714b003bd07233b2091db67423bbaaba24"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/UserCircle500N100Mx.txt",
+      "Bytes": 5150809,
+      "SHA256": "b95f8bee829acadbad9638b8eb95e9949a4f5d4b611bb9b6f3c5219000f18471"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/UserCircle500N100My.execution.txt",
+      "Bytes": 14537738,
+      "SHA256": "0ff5f593e2e22d5693b6d5a225a57605f8a879956ca0d69f5a6b31b1a494ade4"
+    },
+    {
+      "Path": "docs/regression/Performance/Overload_2026-10-15/UserCircleMesh10/UserCircle500N100My.txt",
+      "Bytes": 5180729,
+      "SHA256": "e7d787fb9728b4b973001fc40c61b656164b6f76e160a4cf6005cf92c29c5b55"
+    },
+    {
+      "Path": "Restore/OriginalVbaProject.bin",
+      "Bytes": 17475398,
+      "SHA256": "895cec7aaf1b3d3ec946af5e5728b4d4aac9e528b91190027df27e690ffc0569"
+    }
+  ]
+}
