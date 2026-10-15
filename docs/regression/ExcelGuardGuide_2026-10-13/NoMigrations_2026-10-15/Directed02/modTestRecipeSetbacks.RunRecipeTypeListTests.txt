@@ -1,0 +1,18 @@
+﻿OK: types.config.outside.list
+OK: types.current.selection
+FAIL: types.unrelated.name
+OK: types.registered.1
+OK: types.registered.2
+OK: types.registered.3
+OK: types.registered.4
+OK: types.state.success
+OK: types.idempotent
+OK: types.grow
+OK: types.occupied.rejected
+OK: types.occupied.data
+OK: types.occupied.name
+OK: types.state.failure
+OK: types.shrink
+OK: types.missing.rejected
+OK: types.missing.data
+TOTAL RECIPE TYPE LIST: passed=16; failed=1

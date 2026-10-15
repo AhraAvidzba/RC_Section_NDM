@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "FinalPlotAccepted",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+                     "Seconds":  4.1883361,
+                     "Characters":  74851,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPlotConfig.RunArbitraryAnnotationLayoutTests",
+                     "Seconds":  0.3693239,
+                     "Characters":  50181,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPlotConfig.RunAudit03ContourArcTests",
+                     "Seconds":  0.9895138,
+                     "Characters":  15114,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "65AC7A25E76362FE74343B3AC4879FF4373C32B305266B82041538C4BD3BBE25",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:58:40.7893700+03:00"
+}

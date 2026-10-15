@@ -1,0 +1,13 @@
+﻿{
+    "Passed":  true,
+    "TextsChecked":  7,
+    "RegistryTypes":  [
+                          "Circle",
+                          "RectSet",
+                          "RoundedRectangle",
+                          "HollowRectangle"
+                      ],
+    "BootstrapMatchesBuilder":  true,
+    "OtherConfigDataAndNamesUnchanged":  true,
+    "ProductionUnchanged":  true
+}

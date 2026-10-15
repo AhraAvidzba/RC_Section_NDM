@@ -1,0 +1,24 @@
+﻿OK: import.dimension.idempotent.0
+OK: import.dimension.both.0
+OK: import.dimension.width.bottom.0
+OK: import.dimension.height.left.0
+OK: import.dimension.exact.sign.0
+OK: import.dimension.render.horizontal.0.0
+OK: import.dimension.render.vertical.0.0
+OK: import.dimension.png
+OK: import.dimension.render.horizontal.0.1
+OK: import.dimension.render.vertical.0.1
+OK: import.dimension.png
+OK: import.dimension.idempotent.1
+OK: import.dimension.both.1
+OK: import.dimension.width.bottom.1
+OK: import.dimension.height.left.1
+OK: import.dimension.exact.sign.1
+OK: import.dimension.render.horizontal.1.0
+OK: import.dimension.render.vertical.1.0
+FAIL: import.dimension.render.below
+OK: import.dimension.png
+OK: import.dimension.render.horizontal.1.1
+OK: import.dimension.render.vertical.1.1
+OK: import.dimension.png
+TOTAL IMPORTED DIMENSIONS: passed=22; failed=1

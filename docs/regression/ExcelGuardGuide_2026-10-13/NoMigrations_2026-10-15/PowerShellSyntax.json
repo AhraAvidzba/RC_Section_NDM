@@ -1,0 +1,10 @@
+{
+  "Passed": true,
+  "Files": [
+    "tools/build_workbook/Build-Workbook.ps1",
+    "tools/build_workbook/SettingsCatalog.ps1",
+    "tools/build_workbook/Update-SectionRecipeTypes.ps1",
+    "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Publish.ps1",
+    "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Finalize.ps1"
+  ]
+}

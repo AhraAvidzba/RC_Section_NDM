@@ -1,0 +1,10 @@
+﻿{
+    "Stage":  "Directed01",
+    "Passed":  false,
+    "Runs":  [
+
+             ],
+    "SourceSHA256":  "1E5751AFB587201412183D1F68B28C83FED46838A23B769004BB3F82668BE832",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:26:31.1655867+03:00"
+}

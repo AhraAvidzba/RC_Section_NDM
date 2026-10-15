@@ -1,0 +1,21 @@
+﻿OK: rounded.start.header
+OK: rounded.end.header
+OK: rounded.editable.centered
+OK: rounded.zero.first; actual=-360; expected=-360
+OK: rounded.start.actual; actual=-350; expected=-350
+OK: rounded.end.actual; actual=365.518002592747; expected=365.518002592747
+OK: rounded.concrete.unchanged; actual=215943.067096035; expected=215943.067096035
+OK: rounded.count.unchanged
+OK: rounded.opposite.row.unchanged; actual=-85; expected=-85
+OK: rounded.active.empty.rejected
+OK: rounded.active.negative.rejected
+OK: rounded.inactive.error.ignored
+OK: hollow.start.header
+OK: hollow.end.header
+OK: hollow.zero.projected.count
+OK: hollow.projection.filtered
+OK: hollow.skips.diagnostic
+OK: hollow.positions.not.redistributed
+OK: hollow.other.projections.unchanged
+OK: hollow.concrete.unchanged; actual=300000; expected=300000
+TOTAL_RECIPE_SETBACK_INPUT: passed=20; failed=0

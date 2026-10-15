@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "Directed02",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRecipeSetbacks.RunRecipeTypeListTests",
+                     "Seconds":  2.1568937999999998,
+                     "Characters":  466,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "F9FFFCAD1E193250055490E6597BD4D5A59D199228AAA642B2F8334D9DD8D7E3",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:27:34.2273312+03:00"
+}

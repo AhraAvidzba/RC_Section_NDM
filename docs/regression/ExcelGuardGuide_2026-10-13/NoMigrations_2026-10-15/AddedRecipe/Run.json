@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "AddedRecipe",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRecipeSetbacks.RunRecipeTypeListTests",
+                     "Seconds":  2.3523525,
+                     "Characters":  488,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "C5E61F5372A50B6342AE724A25DDE065482A5892A7726EF337C5A13A76D84350",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:45:05.4147007+03:00"
+}

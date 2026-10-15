@@ -1,0 +1,10 @@
+﻿{
+    "Stage":  "OffsetScale01",
+    "Passed":  false,
+    "Runs":  [
+
+             ],
+    "SourceSHA256":  "EB41F3811D84B3DF918F46F807FCC0697A1CA53E0178D324B6C380BD21F63A03",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:42:19.2683751+03:00"
+}

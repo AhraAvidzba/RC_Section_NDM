@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "ImportDimensions02",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAutoCADContours.RunImportedDimensionTests",
+                     "Seconds":  0.8941637,
+                     "Characters":  877,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "EB41F3811D84B3DF918F46F807FCC0697A1CA53E0178D324B6C380BD21F63A03",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:34:11.7732641+03:00"
+}

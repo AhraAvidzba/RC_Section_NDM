@@ -1,0 +1,2 @@
+﻿FAIL: import.dimension.runtime; -2147217098; Не найдено арматурных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Common.RebarLayer и порог AutoCAD.Import.MinArea на листе Config.
+TOTAL IMPORTED DIMENSIONS: passed=0; failed=1

@@ -1,0 +1,37 @@
+﻿{
+    "Stage":  "Compatibility",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+                     "Seconds":  10.2310537,
+                     "Characters":  142797,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAutoCADContours.RunAutoCADContourTests",
+                     "Seconds":  1.5238859999999999,
+                     "Characters":  25720,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests",
+                     "Seconds":  1.7484269,
+                     "Characters":  165179,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestMaterialDiagrams.RunPlateauSlopeTests",
+                     "Seconds":  1.4554144,
+                     "Characters":  483140,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "D3F5B6BF4272D4A7408E7C4E2E3A8496C0CD22389E469EC3635CB2D2997329A7",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:49:04.0423222+03:00"
+}

@@ -1,0 +1,118 @@
+{
+  "Passed": true,
+  "Groups": [
+    {
+      "Stage": "FinalSettings",
+      "Macro": "modTestRecipeSetbacks.RunRecipeTypeListTests",
+      "Passed": 17,
+      "Failed": 0,
+      "ReportSHA256": "ea22202e0d4567725fd0627a26e53d04d8186d94d3c4881d1ef469f771996588"
+    },
+    {
+      "Stage": "FinalSettings",
+      "Macro": "modTestConfiguration.RunCurrentDiagramSettingTests",
+      "Passed": 27,
+      "Failed": 0,
+      "ReportSHA256": "b11cd11924be0e882dd03b9064aef415ede836581e2d49eb00b09e828989793c"
+    },
+    {
+      "Stage": "FinalSettings",
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Passed": 20,
+      "Failed": 0,
+      "ReportSHA256": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b"
+    },
+    {
+      "Stage": "FinalSettings",
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "Passed": 75,
+      "Failed": 0,
+      "ReportSHA256": "7191bc9dc1dfc0d6bec091d1d14b80f27608f30bd77ff6a67e9173f2ee8baf25"
+    },
+    {
+      "Stage": "FinalSettings",
+      "Macro": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+      "Passed": 21,
+      "Failed": 0,
+      "ReportSHA256": "21049c5b3a444e2e5401673beb636ea83628534479dd7b7d53740f6f9c5ae360"
+    },
+    {
+      "Stage": "FinalSettings",
+      "Macro": "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+      "Passed": 583,
+      "Failed": 0,
+      "ReportSHA256": "cc96c652238dcea8320864e3bf9bfd3085cd5b58dc28419f0e396a2c85da10bd"
+    },
+    {
+      "Stage": "Compatibility",
+      "Macro": "modTestAutoCADConfig.RunAudit03AutoCADConfigTests",
+      "Passed": 1243,
+      "Failed": 0,
+      "ReportSHA256": "adc24109aa1c0173a552577ee7ab3b651c898a72a22b7e73f8cb911e56ec0a42"
+    },
+    {
+      "Stage": "Compatibility",
+      "Macro": "modTestAutoCADContours.RunAutoCADContourTests",
+      "Passed": 622,
+      "Failed": 0,
+      "ReportSHA256": "667ccdbc8407e22157625703ddd498e8c57d219e992804fca70baacef7758140"
+    },
+    {
+      "Stage": "Compatibility",
+      "Macro": "modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests",
+      "Passed": 1442,
+      "Failed": 0,
+      "ReportSHA256": "98b7209be5835b60f909ec25bcaefab34e709ce9334a9681f1e8f27c447a3e9a"
+    },
+    {
+      "Stage": "Compatibility",
+      "Macro": "modTestMaterialDiagrams.RunPlateauSlopeTests",
+      "Passed": 4108,
+      "Failed": 0,
+      "ReportSHA256": "5a090b0c6a3d43d58f8176c8f71e8a5342bb1c7b66af462989e00ee91f09302f"
+    },
+    {
+      "Stage": "FinalPlotAccepted2",
+      "Macro": "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+      "Passed": 425,
+      "Failed": 0,
+      "ReportSHA256": "b2d486ae4e98d978c403888e3d354484706dcea6f190ab7aa8ecbf71dd894500"
+    },
+    {
+      "Stage": "FinalPlotAccepted2",
+      "Macro": "modTestPlotConfig.RunArbitraryAnnotationLayoutTests",
+      "Passed": 928,
+      "Failed": 0,
+      "ReportSHA256": "37922fa928fd0255bdb8747112ee315011b29025562e6646518e8e0c755498ce"
+    },
+    {
+      "Stage": "FinalPlotAccepted2",
+      "Macro": "modTestPlotConfig.RunAudit03ContourArcTests",
+      "Passed": 423,
+      "Failed": 0,
+      "ReportSHA256": "6adc5035d207152fcd9449c6f26b6faad0fe3e8525e46778d08ad361afde3d09"
+    },
+    {
+      "Stage": "FinalPlotAccepted2",
+      "Macro": "modTestAutoCADContours.RunImportedDimensionTests",
+      "Passed": 23,
+      "Failed": 0,
+      "ReportSHA256": "2e8199123e8b5827c3ee72c48882c40f4b6d9d1002679ac8b5346e0acd2033b2"
+    },
+    {
+      "Stage": "FinalPlotAccepted2",
+      "Macro": "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+      "Passed": 12,
+      "Failed": 0,
+      "ReportSHA256": "1a61af15bb10b31acaa4ddb5d301e665e13a1647d43aa2d4ce9b9ed57f9a6f90"
+    },
+    {
+      "Stage": "AddedRecipe",
+      "Macro": "modTestRecipeSetbacks.RunRecipeTypeListTests",
+      "Passed": 18,
+      "Failed": 0,
+      "ReportSHA256": "41b33a37cdf7bfdcd76205c982f77a1da3ab19220983275eb98f29b8b33c15f2"
+    }
+  ],
+  "Total": 9987
+}

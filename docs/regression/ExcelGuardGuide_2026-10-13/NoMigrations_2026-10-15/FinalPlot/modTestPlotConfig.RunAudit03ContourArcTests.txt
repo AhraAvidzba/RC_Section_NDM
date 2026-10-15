@@ -1,0 +1,10 @@
+﻿OK: audit03.contourArc.p0.bad1.rejected
+OK: audit03.contourArc.p0.bad1.address
+OK: audit03.contourArc.p0.bad1.reason
+OK: audit03.contourArc.p0.bad1.empty
+OK: audit03.contourArc.p0.bad1.export
+OK: audit03.contourArc.p0.bad1.entrypoint
+OK: audit03.contourArc.p0.bad1.chart
+CONTOUR_ARC_ERROR: audit03.contourArc.p0.bad1|В сохраненном контуре угол дуги (Results!FM6) должен быть полностью задан числом в радианах: десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.
+FAIL: audit03.contourArc.runtime.-2147216103.Контур не замкнут возле точки X=-1.03411555577373E-11; Y=100.
+TOTAL_AUDIT03_CONTOUR_ARC: passed=7; failed=1

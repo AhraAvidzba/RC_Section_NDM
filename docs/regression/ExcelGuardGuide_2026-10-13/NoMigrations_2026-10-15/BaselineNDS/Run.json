@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "BaselineNDS",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestShapeArchitecture.DumpPublicationControlStates",
+                     "Seconds":  1.4955017,
+                     "Characters":  411729,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "1E5751AFB587201412183D1F68B28C83FED46838A23B769004BB3F82668BE832",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:24:21.0884905+03:00"
+}

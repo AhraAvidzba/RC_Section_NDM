@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "OffsetScaleFinal",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+                     "Seconds":  0.99418029999999991,
+                     "Characters":  486,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "D3F5B6BF4272D4A7408E7C4E2E3A8496C0CD22389E469EC3635CB2D2997329A7",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:48:47.9223729+03:00"
+}

@@ -1,0 +1,13 @@
+﻿OK: offset.pixelsPerMm.lines.500
+OK: offset.pixelsPerMm.dimension.500
+FAIL: offset.pixelsPerMm.rebar.500
+OK: offset.pixelsPerMm.lines.1000
+OK: offset.pixelsPerMm.dimension.1000
+FAIL: offset.pixelsPerMm.rebar.1000
+OK: offset.pixelsPerMm.lines.2000
+OK: offset.pixelsPerMm.dimension.2000
+FAIL: offset.pixelsPerMm.rebar.2000
+OK: offset.pixelsPerMm.lines.4000
+OK: offset.pixelsPerMm.dimension.4000
+FAIL: offset.pixelsPerMm.rebar.4000
+TOTAL ANNOTATION SECTION SCALE: passed=8; failed=4

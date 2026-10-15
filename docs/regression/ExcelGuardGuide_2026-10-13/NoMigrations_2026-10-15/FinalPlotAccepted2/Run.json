@@ -1,0 +1,44 @@
+﻿{
+    "Stage":  "FinalPlotAccepted2",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+                     "Seconds":  2.7714665,
+                     "Characters":  74851,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPlotConfig.RunArbitraryAnnotationLayoutTests",
+                     "Seconds":  0.46588609999999997,
+                     "Characters":  50181,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestPlotConfig.RunAudit03ContourArcTests",
+                     "Seconds":  1.9395786,
+                     "Characters":  31467,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAutoCADContours.RunImportedDimensionTests",
+                     "Seconds":  0.5250804,
+                     "Characters":  915,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+                     "Seconds":  0.5759423,
+                     "Characters":  486,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "44227790BB7B934CC3010DDDA22895AA4687CD6796559A38750488CACA701422",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T11:02:27.9383538+03:00"
+}

@@ -1,0 +1,929 @@
+﻿OK: arbitrary.layout.1.count
+OK: arbitrary.layout.1.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.1.readable.4
+OK: arbitrary.layout.1.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.1.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.1.readable.6
+OK: arbitrary.layout.1.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.1.repeat
+OK: arbitrary.layout.2.count
+OK: arbitrary.layout.2.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.2.readable.4
+OK: arbitrary.layout.2.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.2.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.2.readable.6
+OK: arbitrary.layout.2.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.2.repeat
+OK: arbitrary.layout.3.count
+OK: arbitrary.layout.3.parallel.4; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.3.readable.4
+OK: arbitrary.layout.3.text.center.gap.4; actual=9.00000000000002; expected=9
+OK: arbitrary.layout.3.parallel.6; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.3.readable.6
+OK: arbitrary.layout.3.text.center.gap.6; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.3.repeat
+OK: arbitrary.layout.4.count
+OK: arbitrary.layout.4.parallel.4; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.4.readable.4
+OK: arbitrary.layout.4.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.4.parallel.6; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.4.readable.6
+OK: arbitrary.layout.4.text.center.gap.6; actual=8.99999999999998; expected=9
+OK: arbitrary.layout.4.repeat
+OK: arbitrary.layout.5.count
+OK: arbitrary.layout.5.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.5.readable.4
+OK: arbitrary.layout.5.text.center.gap.4; actual=9.00000000000004; expected=9
+OK: arbitrary.layout.5.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.5.readable.6
+OK: arbitrary.layout.5.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.5.repeat
+OK: arbitrary.layout.6.count
+OK: arbitrary.layout.6.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.6.readable.4
+OK: arbitrary.layout.6.text.center.gap.4; actual=8.99999999999996; expected=9
+OK: arbitrary.layout.6.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.6.readable.6
+OK: arbitrary.layout.6.text.center.gap.6; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.6.repeat
+OK: arbitrary.layout.7.count
+OK: arbitrary.layout.7.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.7.native.vertical.4
+OK: arbitrary.layout.7.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.7.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.7.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.7.native.vertical.6
+OK: arbitrary.layout.7.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.7.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.7.repeat
+OK: arbitrary.layout.8.count
+OK: arbitrary.layout.8.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.8.native.vertical.4
+OK: arbitrary.layout.8.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.8.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.8.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.8.native.vertical.6
+OK: arbitrary.layout.8.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.8.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.8.repeat
+OK: arbitrary.layout.9.count
+OK: arbitrary.layout.9.parallel.4; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.9.readable.4
+OK: arbitrary.layout.9.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.9.parallel.6; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.9.readable.6
+OK: arbitrary.layout.9.text.center.gap.6; actual=8.99999999999998; expected=9
+OK: arbitrary.layout.9.repeat
+OK: arbitrary.layout.10.count
+OK: arbitrary.layout.10.parallel.4; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.10.readable.4
+OK: arbitrary.layout.10.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.10.parallel.6; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.10.readable.6
+OK: arbitrary.layout.10.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.10.repeat
+OK: arbitrary.layout.11.count
+OK: arbitrary.layout.11.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.11.readable.4
+OK: arbitrary.layout.11.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.11.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.11.readable.6
+OK: arbitrary.layout.11.text.center.gap.6; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.11.repeat
+OK: arbitrary.layout.12.count
+OK: arbitrary.layout.12.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.12.readable.4
+OK: arbitrary.layout.12.text.center.gap.4; actual=9.00000000000004; expected=9
+OK: arbitrary.layout.12.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.12.readable.6
+OK: arbitrary.layout.12.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.12.repeat
+OK: arbitrary.layout.13.count
+OK: arbitrary.layout.13.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.13.readable.4
+OK: arbitrary.layout.13.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.13.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.13.readable.6
+OK: arbitrary.layout.13.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.13.repeat
+OK: arbitrary.layout.14.count
+OK: arbitrary.layout.14.parallel.4; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.14.readable.4
+OK: arbitrary.layout.14.text.center.gap.4; actual=9.00000000000002; expected=9
+OK: arbitrary.layout.14.parallel.6; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.14.readable.6
+OK: arbitrary.layout.14.text.center.gap.6; actual=8.99999999999998; expected=9
+OK: arbitrary.layout.14.repeat
+OK: arbitrary.layout.15.count
+OK: arbitrary.layout.15.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.15.readable.4
+OK: arbitrary.layout.15.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.15.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.15.readable.6
+OK: arbitrary.layout.15.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.15.repeat
+OK: arbitrary.layout.16.count
+OK: arbitrary.layout.16.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.16.readable.4
+OK: arbitrary.layout.16.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.16.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.16.readable.6
+OK: arbitrary.layout.16.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.16.repeat
+OK: arbitrary.layout.17.count
+OK: arbitrary.layout.17.parallel.4; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.17.readable.4
+OK: arbitrary.layout.17.text.center.gap.4; actual=8.99999999999998; expected=9
+OK: arbitrary.layout.17.parallel.6; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.17.readable.6
+OK: arbitrary.layout.17.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.17.repeat
+OK: arbitrary.layout.18.count
+OK: arbitrary.layout.18.parallel.4; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.18.readable.4
+OK: arbitrary.layout.18.text.center.gap.4; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.18.parallel.6; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.18.readable.6
+OK: arbitrary.layout.18.text.center.gap.6; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.18.repeat
+OK: arbitrary.layout.19.count
+OK: arbitrary.layout.19.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.19.readable.4
+OK: arbitrary.layout.19.text.center.gap.4; actual=8.99999999999997; expected=9
+OK: arbitrary.layout.19.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.19.readable.6
+OK: arbitrary.layout.19.text.center.gap.6; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.19.repeat
+OK: arbitrary.layout.20.count
+OK: arbitrary.layout.20.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.20.readable.4
+OK: arbitrary.layout.20.text.center.gap.4; actual=9.00000000000004; expected=9
+OK: arbitrary.layout.20.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.20.readable.6
+OK: arbitrary.layout.20.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.20.repeat
+OK: arbitrary.layout.21.count
+OK: arbitrary.layout.21.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.21.native.vertical.4
+OK: arbitrary.layout.21.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.21.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.21.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.21.native.vertical.6
+OK: arbitrary.layout.21.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.21.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.21.repeat
+OK: arbitrary.layout.22.count
+OK: arbitrary.layout.22.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.22.native.vertical.4
+OK: arbitrary.layout.22.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.22.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.22.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.22.native.vertical.6
+OK: arbitrary.layout.22.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.22.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.22.repeat
+OK: arbitrary.layout.23.count
+OK: arbitrary.layout.23.parallel.4; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.23.readable.4
+OK: arbitrary.layout.23.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.23.parallel.6; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.23.readable.6
+OK: arbitrary.layout.23.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.23.repeat
+OK: arbitrary.layout.24.count
+OK: arbitrary.layout.24.parallel.4; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.24.readable.4
+OK: arbitrary.layout.24.text.center.gap.4; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.24.parallel.6; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.24.readable.6
+OK: arbitrary.layout.24.text.center.gap.6; actual=8.99999999999998; expected=9
+OK: arbitrary.layout.24.repeat
+OK: arbitrary.layout.25.count
+OK: arbitrary.layout.25.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.25.readable.4
+OK: arbitrary.layout.25.text.center.gap.4; actual=9.00000000000002; expected=9
+OK: arbitrary.layout.25.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.25.readable.6
+OK: arbitrary.layout.25.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.25.repeat
+OK: arbitrary.layout.26.count
+OK: arbitrary.layout.26.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.26.readable.4
+OK: arbitrary.layout.26.text.center.gap.4; actual=8.99999999999997; expected=9
+OK: arbitrary.layout.26.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.26.readable.6
+OK: arbitrary.layout.26.text.center.gap.6; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.26.repeat
+OK: arbitrary.layout.27.count
+OK: arbitrary.layout.27.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.27.readable.4
+OK: arbitrary.layout.27.text.center.gap.4; actual=9.00000000000001; expected=9
+OK: arbitrary.layout.27.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.27.readable.6
+OK: arbitrary.layout.27.text.center.gap.6; actual=8.99999999999998; expected=9
+OK: arbitrary.layout.27.repeat
+OK: arbitrary.layout.28.count
+OK: arbitrary.layout.28.parallel.4; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.28.readable.4
+OK: arbitrary.layout.28.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.28.parallel.6; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.28.readable.6
+OK: arbitrary.layout.28.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.28.repeat
+OK: arbitrary.layout.29.count
+OK: arbitrary.layout.29.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.29.readable.4
+OK: arbitrary.layout.29.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.29.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.29.readable.6
+OK: arbitrary.layout.29.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.29.repeat
+OK: arbitrary.layout.30.count
+OK: arbitrary.layout.30.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.30.readable.4
+OK: arbitrary.layout.30.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.30.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.30.readable.6
+OK: arbitrary.layout.30.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.30.repeat
+OK: arbitrary.layout.31.count
+OK: arbitrary.layout.31.parallel.4; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.31.readable.4
+OK: arbitrary.layout.31.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.31.parallel.6; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.31.readable.6
+OK: arbitrary.layout.31.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.31.repeat
+OK: arbitrary.layout.32.count
+OK: arbitrary.layout.32.parallel.4; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.32.readable.4
+OK: arbitrary.layout.32.text.center.gap.4; actual=9.67499999999999; expected=9.675
+OK: arbitrary.layout.32.parallel.6; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.32.readable.6
+OK: arbitrary.layout.32.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.32.repeat
+OK: arbitrary.layout.33.count
+OK: arbitrary.layout.33.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.33.readable.4
+OK: arbitrary.layout.33.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.33.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.33.readable.6
+OK: arbitrary.layout.33.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.33.repeat
+OK: arbitrary.layout.34.count
+OK: arbitrary.layout.34.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.34.readable.4
+OK: arbitrary.layout.34.text.center.gap.4; actual=9.67499999999997; expected=9.675
+OK: arbitrary.layout.34.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.34.readable.6
+OK: arbitrary.layout.34.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.34.repeat
+OK: arbitrary.layout.35.count
+OK: arbitrary.layout.35.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.35.native.vertical.4
+OK: arbitrary.layout.35.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.35.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.35.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.35.native.vertical.6
+OK: arbitrary.layout.35.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.35.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.35.repeat
+OK: arbitrary.layout.36.count
+OK: arbitrary.layout.36.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.36.native.vertical.4
+OK: arbitrary.layout.36.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.36.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.36.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.36.native.vertical.6
+OK: arbitrary.layout.36.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.36.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.36.repeat
+OK: arbitrary.layout.37.count
+OK: arbitrary.layout.37.parallel.4; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.37.readable.4
+OK: arbitrary.layout.37.text.center.gap.4; actual=9.67499999999997; expected=9.675
+OK: arbitrary.layout.37.parallel.6; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.37.readable.6
+OK: arbitrary.layout.37.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.37.repeat
+OK: arbitrary.layout.38.count
+OK: arbitrary.layout.38.parallel.4; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.38.readable.4
+OK: arbitrary.layout.38.text.center.gap.4; actual=9.675; expected=9.675
+OK: arbitrary.layout.38.parallel.6; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.38.readable.6
+OK: arbitrary.layout.38.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.38.repeat
+OK: arbitrary.layout.39.count
+OK: arbitrary.layout.39.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.39.readable.4
+OK: arbitrary.layout.39.text.center.gap.4; actual=9.67499999999999; expected=9.675
+OK: arbitrary.layout.39.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.39.readable.6
+OK: arbitrary.layout.39.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.39.repeat
+OK: arbitrary.layout.40.count
+OK: arbitrary.layout.40.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.40.readable.4
+OK: arbitrary.layout.40.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.40.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.40.readable.6
+OK: arbitrary.layout.40.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.40.repeat
+OK: arbitrary.layout.41.count
+OK: arbitrary.layout.41.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.41.readable.4
+OK: arbitrary.layout.41.text.center.gap.4; actual=9.675; expected=9.675
+OK: arbitrary.layout.41.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.41.readable.6
+OK: arbitrary.layout.41.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.41.repeat
+OK: arbitrary.layout.42.count
+OK: arbitrary.layout.42.parallel.4; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.42.readable.4
+OK: arbitrary.layout.42.text.center.gap.4; actual=9.67499999999999; expected=9.675
+OK: arbitrary.layout.42.parallel.6; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.42.readable.6
+OK: arbitrary.layout.42.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.42.repeat
+OK: arbitrary.layout.43.count
+OK: arbitrary.layout.43.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.43.readable.4
+OK: arbitrary.layout.43.text.center.gap.4; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.43.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.43.readable.6
+OK: arbitrary.layout.43.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.43.repeat
+OK: arbitrary.layout.44.count
+OK: arbitrary.layout.44.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.44.readable.4
+OK: arbitrary.layout.44.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.44.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.44.readable.6
+OK: arbitrary.layout.44.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.44.repeat
+OK: arbitrary.layout.45.count
+OK: arbitrary.layout.45.parallel.4; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.45.readable.4
+OK: arbitrary.layout.45.text.center.gap.4; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.45.parallel.6; actual=4.01696904905879E-17; expected=0
+OK: arbitrary.layout.45.readable.6
+OK: arbitrary.layout.45.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.45.repeat
+OK: arbitrary.layout.46.count
+OK: arbitrary.layout.46.parallel.4; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.46.readable.4
+OK: arbitrary.layout.46.text.center.gap.4; actual=9.67499999999999; expected=9.675
+OK: arbitrary.layout.46.parallel.6; actual=-1.43656787854329E-16; expected=0
+OK: arbitrary.layout.46.readable.6
+OK: arbitrary.layout.46.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.46.repeat
+OK: arbitrary.layout.47.count
+OK: arbitrary.layout.47.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.47.readable.4
+OK: arbitrary.layout.47.text.center.gap.4; actual=9.67499999999997; expected=9.675
+OK: arbitrary.layout.47.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.47.readable.6
+OK: arbitrary.layout.47.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.47.repeat
+OK: arbitrary.layout.48.count
+OK: arbitrary.layout.48.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.48.readable.4
+OK: arbitrary.layout.48.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.48.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.48.readable.6
+OK: arbitrary.layout.48.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.48.repeat
+OK: arbitrary.layout.49.count
+OK: arbitrary.layout.49.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.49.native.vertical.4
+OK: arbitrary.layout.49.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.49.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.49.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.49.native.vertical.6
+OK: arbitrary.layout.49.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.49.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.49.repeat
+OK: arbitrary.layout.50.count
+OK: arbitrary.layout.50.vertical.4; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.50.native.vertical.4
+OK: arbitrary.layout.50.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.50.text.center.gap.4; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.50.vertical.6; actual=9.11334960984095E-17; expected=0
+OK: arbitrary.layout.50.native.vertical.6
+OK: arbitrary.layout.50.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.50.text.center.gap.6; actual=9.67500000000001; expected=9.675
+OK: arbitrary.layout.50.repeat
+OK: arbitrary.layout.51.count
+OK: arbitrary.layout.51.parallel.4; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.51.readable.4
+OK: arbitrary.layout.51.text.center.gap.4; actual=9.675; expected=9.675
+OK: arbitrary.layout.51.parallel.6; actual=1.5406512871019E-16; expected=0
+OK: arbitrary.layout.51.readable.6
+OK: arbitrary.layout.51.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.51.repeat
+OK: arbitrary.layout.52.count
+OK: arbitrary.layout.52.parallel.4; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.52.readable.4
+OK: arbitrary.layout.52.text.center.gap.4; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.52.parallel.6; actual=-6.19079440489223E-17; expected=0
+OK: arbitrary.layout.52.readable.6
+OK: arbitrary.layout.52.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.52.repeat
+OK: arbitrary.layout.53.count
+OK: arbitrary.layout.53.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.53.readable.4
+OK: arbitrary.layout.53.text.center.gap.4; actual=9.67499999999999; expected=9.675
+OK: arbitrary.layout.53.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.53.readable.6
+OK: arbitrary.layout.53.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.53.repeat
+OK: arbitrary.layout.54.count
+OK: arbitrary.layout.54.parallel.4; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.54.readable.4
+OK: arbitrary.layout.54.text.center.gap.4; actual=9.67499999999997; expected=9.675
+OK: arbitrary.layout.54.parallel.6; actual=6.19350491032344E-17; expected=0
+OK: arbitrary.layout.54.readable.6
+OK: arbitrary.layout.54.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.54.repeat
+OK: arbitrary.layout.55.count
+OK: arbitrary.layout.55.parallel.4; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.55.readable.4
+OK: arbitrary.layout.55.text.center.gap.4; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.55.parallel.6; actual=1.84314369322536E-16; expected=0
+OK: arbitrary.layout.55.readable.6
+OK: arbitrary.layout.55.text.center.gap.6; actual=9.67499999999998; expected=9.675
+OK: arbitrary.layout.55.repeat
+OK: arbitrary.layout.56.count
+OK: arbitrary.layout.56.parallel.4; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.56.readable.4
+OK: arbitrary.layout.56.text.center.gap.4; actual=9.67499999999999; expected=9.675
+OK: arbitrary.layout.56.parallel.6; actual=-9.21571846612679E-17; expected=0
+OK: arbitrary.layout.56.readable.6
+OK: arbitrary.layout.56.text.center.gap.6; actual=9.675; expected=9.675
+OK: arbitrary.layout.56.repeat
+OK: arbitrary.layout.57.count
+OK: arbitrary.layout.57.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.57.readable.4
+OK: arbitrary.layout.57.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.57.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.57.readable.6
+OK: arbitrary.layout.57.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.57.repeat
+OK: arbitrary.layout.58.count
+OK: arbitrary.layout.58.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.58.readable.4
+OK: arbitrary.layout.58.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.58.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.58.readable.6
+OK: arbitrary.layout.58.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.58.repeat
+OK: arbitrary.layout.59.count
+OK: arbitrary.layout.59.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.59.readable.4
+OK: arbitrary.layout.59.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.59.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.59.readable.6
+OK: arbitrary.layout.59.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.59.repeat
+OK: arbitrary.layout.60.count
+OK: arbitrary.layout.60.parallel.4; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.60.readable.4
+OK: arbitrary.layout.60.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.60.parallel.6; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.60.readable.6
+OK: arbitrary.layout.60.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.60.repeat
+OK: arbitrary.layout.61.count
+OK: arbitrary.layout.61.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.61.readable.4
+OK: arbitrary.layout.61.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.61.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.61.readable.6
+OK: arbitrary.layout.61.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.61.repeat
+OK: arbitrary.layout.62.count
+OK: arbitrary.layout.62.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.62.readable.4
+OK: arbitrary.layout.62.text.center.gap.4; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.62.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.62.readable.6
+OK: arbitrary.layout.62.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.62.repeat
+OK: arbitrary.layout.63.count
+OK: arbitrary.layout.63.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.63.native.vertical.4
+OK: arbitrary.layout.63.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.63.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.63.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.63.native.vertical.6
+OK: arbitrary.layout.63.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.63.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.63.repeat
+OK: arbitrary.layout.64.count
+OK: arbitrary.layout.64.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.64.native.vertical.4
+OK: arbitrary.layout.64.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.64.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.64.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.64.native.vertical.6
+OK: arbitrary.layout.64.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.64.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.64.repeat
+OK: arbitrary.layout.65.count
+OK: arbitrary.layout.65.parallel.4; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.65.readable.4
+OK: arbitrary.layout.65.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.65.parallel.6; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.65.readable.6
+OK: arbitrary.layout.65.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.65.repeat
+OK: arbitrary.layout.66.count
+OK: arbitrary.layout.66.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.66.readable.4
+OK: arbitrary.layout.66.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.66.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.66.readable.6
+OK: arbitrary.layout.66.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.66.repeat
+OK: arbitrary.layout.67.count
+OK: arbitrary.layout.67.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.67.readable.4
+OK: arbitrary.layout.67.text.center.gap.4; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.67.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.67.readable.6
+OK: arbitrary.layout.67.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.67.repeat
+OK: arbitrary.layout.68.count
+OK: arbitrary.layout.68.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.68.readable.4
+OK: arbitrary.layout.68.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.68.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.68.readable.6
+OK: arbitrary.layout.68.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.68.repeat
+OK: arbitrary.layout.69.count
+OK: arbitrary.layout.69.parallel.4; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.69.readable.4
+OK: arbitrary.layout.69.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.69.parallel.6; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.69.readable.6
+OK: arbitrary.layout.69.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.69.repeat
+OK: arbitrary.layout.70.count
+OK: arbitrary.layout.70.parallel.4; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.70.readable.4
+OK: arbitrary.layout.70.text.center.gap.4; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.70.parallel.6; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.70.readable.6
+OK: arbitrary.layout.70.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.70.repeat
+OK: arbitrary.layout.71.count
+OK: arbitrary.layout.71.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.71.readable.4
+OK: arbitrary.layout.71.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.71.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.71.readable.6
+OK: arbitrary.layout.71.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.71.repeat
+OK: arbitrary.layout.72.count
+OK: arbitrary.layout.72.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.72.readable.4
+OK: arbitrary.layout.72.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.72.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.72.readable.6
+OK: arbitrary.layout.72.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.72.repeat
+OK: arbitrary.layout.73.count
+OK: arbitrary.layout.73.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.73.readable.4
+OK: arbitrary.layout.73.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.73.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.73.readable.6
+OK: arbitrary.layout.73.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.73.repeat
+OK: arbitrary.layout.74.count
+OK: arbitrary.layout.74.parallel.4; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.74.readable.4
+OK: arbitrary.layout.74.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.74.parallel.6; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.74.readable.6
+OK: arbitrary.layout.74.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.74.repeat
+OK: arbitrary.layout.75.count
+OK: arbitrary.layout.75.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.75.readable.4
+OK: arbitrary.layout.75.text.center.gap.4; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.75.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.75.readable.6
+OK: arbitrary.layout.75.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.75.repeat
+OK: arbitrary.layout.76.count
+OK: arbitrary.layout.76.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.76.readable.4
+OK: arbitrary.layout.76.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.76.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.76.readable.6
+OK: arbitrary.layout.76.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.76.repeat
+OK: arbitrary.layout.77.count
+OK: arbitrary.layout.77.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.77.native.vertical.4
+OK: arbitrary.layout.77.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.77.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.77.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.77.native.vertical.6
+OK: arbitrary.layout.77.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.77.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.77.repeat
+OK: arbitrary.layout.78.count
+OK: arbitrary.layout.78.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.78.native.vertical.4
+OK: arbitrary.layout.78.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.78.text.center.gap.4; actual=9; expected=9
+OK: arbitrary.layout.78.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.78.native.vertical.6
+OK: arbitrary.layout.78.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.78.text.center.gap.6; actual=9; expected=9
+OK: arbitrary.layout.78.repeat
+OK: arbitrary.layout.79.count
+OK: arbitrary.layout.79.parallel.4; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.79.readable.4
+OK: arbitrary.layout.79.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.79.parallel.6; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.79.readable.6
+OK: arbitrary.layout.79.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.79.repeat
+OK: arbitrary.layout.80.count
+OK: arbitrary.layout.80.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.80.readable.4
+OK: arbitrary.layout.80.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.80.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.80.readable.6
+OK: arbitrary.layout.80.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.80.repeat
+OK: arbitrary.layout.81.count
+OK: arbitrary.layout.81.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.81.readable.4
+OK: arbitrary.layout.81.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.81.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.81.readable.6
+OK: arbitrary.layout.81.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.81.repeat
+OK: arbitrary.layout.82.count
+OK: arbitrary.layout.82.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.82.readable.4
+OK: arbitrary.layout.82.text.center.gap.4; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.82.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.82.readable.6
+OK: arbitrary.layout.82.text.center.gap.6; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.82.repeat
+OK: arbitrary.layout.83.count
+OK: arbitrary.layout.83.parallel.4; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.83.readable.4
+OK: arbitrary.layout.83.text.center.gap.4; actual=9.00000000000003; expected=9
+OK: arbitrary.layout.83.parallel.6; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.83.readable.6
+OK: arbitrary.layout.83.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.83.repeat
+OK: arbitrary.layout.84.count
+OK: arbitrary.layout.84.parallel.4; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.84.readable.4
+OK: arbitrary.layout.84.text.center.gap.4; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.84.parallel.6; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.84.readable.6
+OK: arbitrary.layout.84.text.center.gap.6; actual=8.99999999999999; expected=9
+OK: arbitrary.layout.84.repeat
+OK: arbitrary.layout.85.count
+OK: arbitrary.layout.85.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.85.readable.4
+OK: arbitrary.layout.85.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.85.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.85.readable.6
+OK: arbitrary.layout.85.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.85.repeat
+OK: arbitrary.layout.86.count
+OK: arbitrary.layout.86.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.86.readable.4
+OK: arbitrary.layout.86.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.86.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.86.readable.6
+OK: arbitrary.layout.86.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.86.repeat
+OK: arbitrary.layout.87.count
+OK: arbitrary.layout.87.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.87.readable.4
+OK: arbitrary.layout.87.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.87.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.87.readable.6
+OK: arbitrary.layout.87.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.87.repeat
+OK: arbitrary.layout.88.count
+OK: arbitrary.layout.88.parallel.4; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.88.readable.4
+OK: arbitrary.layout.88.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.88.parallel.6; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.88.readable.6
+OK: arbitrary.layout.88.text.center.gap.6; actual=14.4000000000001; expected=14.4
+OK: arbitrary.layout.88.repeat
+OK: arbitrary.layout.89.count
+OK: arbitrary.layout.89.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.89.readable.4
+OK: arbitrary.layout.89.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.89.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.89.readable.6
+OK: arbitrary.layout.89.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.89.repeat
+OK: arbitrary.layout.90.count
+OK: arbitrary.layout.90.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.90.readable.4
+OK: arbitrary.layout.90.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.90.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.90.readable.6
+OK: arbitrary.layout.90.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.90.repeat
+OK: arbitrary.layout.91.count
+OK: arbitrary.layout.91.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.91.native.vertical.4
+OK: arbitrary.layout.91.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.91.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.91.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.91.native.vertical.6
+OK: arbitrary.layout.91.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.91.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.91.repeat
+OK: arbitrary.layout.92.count
+OK: arbitrary.layout.92.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.92.native.vertical.4
+OK: arbitrary.layout.92.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.92.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.92.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.92.native.vertical.6
+OK: arbitrary.layout.92.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.92.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.92.repeat
+OK: arbitrary.layout.93.count
+OK: arbitrary.layout.93.parallel.4; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.93.readable.4
+OK: arbitrary.layout.93.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.93.parallel.6; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.93.readable.6
+OK: arbitrary.layout.93.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.93.repeat
+OK: arbitrary.layout.94.count
+OK: arbitrary.layout.94.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.94.readable.4
+OK: arbitrary.layout.94.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.94.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.94.readable.6
+OK: arbitrary.layout.94.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.94.repeat
+OK: arbitrary.layout.95.count
+OK: arbitrary.layout.95.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.95.readable.4
+OK: arbitrary.layout.95.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.95.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.95.readable.6
+OK: arbitrary.layout.95.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.95.repeat
+OK: arbitrary.layout.96.count
+OK: arbitrary.layout.96.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.96.readable.4
+OK: arbitrary.layout.96.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.96.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.96.readable.6
+OK: arbitrary.layout.96.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.96.repeat
+OK: arbitrary.layout.97.count
+OK: arbitrary.layout.97.parallel.4; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.97.readable.4
+OK: arbitrary.layout.97.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.97.parallel.6; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.97.readable.6
+OK: arbitrary.layout.97.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.97.repeat
+OK: arbitrary.layout.98.count
+OK: arbitrary.layout.98.parallel.4; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.98.readable.4
+OK: arbitrary.layout.98.text.center.gap.4; actual=14.4000000000001; expected=14.4
+OK: arbitrary.layout.98.parallel.6; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.98.readable.6
+OK: arbitrary.layout.98.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.98.repeat
+OK: arbitrary.layout.99.count
+OK: arbitrary.layout.99.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.99.readable.4
+OK: arbitrary.layout.99.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.99.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.99.readable.6
+OK: arbitrary.layout.99.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.99.repeat
+OK: arbitrary.layout.100.count
+OK: arbitrary.layout.100.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.100.readable.4
+OK: arbitrary.layout.100.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.100.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.100.readable.6
+OK: arbitrary.layout.100.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.100.repeat
+OK: arbitrary.layout.101.count
+OK: arbitrary.layout.101.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.101.readable.4
+OK: arbitrary.layout.101.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.101.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.101.readable.6
+OK: arbitrary.layout.101.text.center.gap.6; actual=14.4000000000001; expected=14.4
+OK: arbitrary.layout.101.repeat
+OK: arbitrary.layout.102.count
+OK: arbitrary.layout.102.parallel.4; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.102.readable.4
+OK: arbitrary.layout.102.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.102.parallel.6; actual=9.61416276451521E-17; expected=0
+OK: arbitrary.layout.102.readable.6
+OK: arbitrary.layout.102.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.102.repeat
+OK: arbitrary.layout.103.count
+OK: arbitrary.layout.103.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.103.readable.4
+OK: arbitrary.layout.103.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.103.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.103.readable.6
+OK: arbitrary.layout.103.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.103.repeat
+OK: arbitrary.layout.104.count
+OK: arbitrary.layout.104.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.104.readable.4
+OK: arbitrary.layout.104.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.104.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.104.readable.6
+OK: arbitrary.layout.104.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.104.repeat
+OK: arbitrary.layout.105.count
+OK: arbitrary.layout.105.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.105.native.vertical.4
+OK: arbitrary.layout.105.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.105.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.105.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.105.native.vertical.6
+OK: arbitrary.layout.105.rebar.right.downward; actual=-90; expected=-90
+OK: arbitrary.layout.105.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.105.repeat
+OK: arbitrary.layout.106.count
+OK: arbitrary.layout.106.vertical.4; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.106.native.vertical.4
+OK: arbitrary.layout.106.dimension.upward; actual=90; expected=90
+OK: arbitrary.layout.106.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.106.vertical.6; actual=6.12303176911189E-17; expected=0
+OK: arbitrary.layout.106.native.vertical.6
+OK: arbitrary.layout.106.rebar.left.upward; actual=90; expected=90
+OK: arbitrary.layout.106.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.106.repeat
+OK: arbitrary.layout.107.count
+OK: arbitrary.layout.107.parallel.4; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.107.readable.4
+OK: arbitrary.layout.107.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.107.parallel.6; actual=-1.57019579630213E-16; expected=0
+OK: arbitrary.layout.107.readable.6
+OK: arbitrary.layout.107.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.107.repeat
+OK: arbitrary.layout.108.count
+OK: arbitrary.layout.108.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.108.readable.4
+OK: arbitrary.layout.108.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.108.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.108.readable.6
+OK: arbitrary.layout.108.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.108.repeat
+OK: arbitrary.layout.109.count
+OK: arbitrary.layout.109.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.109.readable.4
+OK: arbitrary.layout.109.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.109.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.109.readable.6
+OK: arbitrary.layout.109.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.109.repeat
+OK: arbitrary.layout.110.count
+OK: arbitrary.layout.110.parallel.4; actual=0; expected=0
+OK: arbitrary.layout.110.readable.4
+OK: arbitrary.layout.110.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.110.parallel.6; actual=0; expected=0
+OK: arbitrary.layout.110.readable.6
+OK: arbitrary.layout.110.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.110.repeat
+OK: arbitrary.layout.111.count
+OK: arbitrary.layout.111.parallel.4; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.111.readable.4
+OK: arbitrary.layout.111.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.111.parallel.6; actual=7.85233423422627E-17; expected=0
+OK: arbitrary.layout.111.readable.6
+OK: arbitrary.layout.111.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.111.repeat
+OK: arbitrary.layout.112.count
+OK: arbitrary.layout.112.parallel.4; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.112.readable.4
+OK: arbitrary.layout.112.text.center.gap.4; actual=14.4; expected=14.4
+OK: arbitrary.layout.112.parallel.6; actual=-2.35515816918164E-16; expected=0
+OK: arbitrary.layout.112.readable.6
+OK: arbitrary.layout.112.text.center.gap.6; actual=14.4; expected=14.4
+OK: arbitrary.layout.112.repeat
+TOTAL_ARBITRARY_ANNOTATION_LAYOUT: passed=928; failed=0

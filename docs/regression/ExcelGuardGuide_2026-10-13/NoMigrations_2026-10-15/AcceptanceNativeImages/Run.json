@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "AcceptanceNativeImages",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAutoCADContours.RunImportedDimensionTests",
+                     "Seconds":  0.9560761,
+                     "Characters":  1019,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "427ED4735A3C3A5F260FBE28346C10131277AD5F2CDDFB2FD1BE9A14F78F815F",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T11:14:18.5593246+03:00"
+}

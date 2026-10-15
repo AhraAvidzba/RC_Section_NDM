@@ -1,0 +1,21 @@
+{
+  "Passed": true,
+  "Snapshots": [
+    {
+      "Kind": "Models",
+      "AcceptedStage": "AcceptanceModels",
+      "ExactByteEquality": true,
+      "Bytes": 3388974,
+      "SHA256": "96af31bdffb882c5ec8468ab13ae1d4817e6a02030b2e3dcebe934fbed0b7366",
+      "Models": 9
+    },
+    {
+      "Kind": "NDS",
+      "AcceptedStage": "AcceptanceNDS",
+      "ExactByteEquality": true,
+      "Bytes": 411732,
+      "SHA256": "6c21b42eb64b77877c8ebf5cfede42b4560bd2309206a1cab74d955788c7293e",
+      "ControlStates": 12
+    }
+  ]
+}

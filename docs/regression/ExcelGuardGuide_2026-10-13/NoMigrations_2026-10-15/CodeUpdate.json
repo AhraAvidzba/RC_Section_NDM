@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\NoMigrations_2026-10-15\\Candidate.xlsm",
+    "WorkbookSHA256":  "44227790BB7B934CC3010DDDA22895AA4687CD6796559A38750488CACA701422",
+    "ProductionSHA256":  "1E5751AFB587201412183D1F68B28C83FED46838A23B769004BB3F82668BE832",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionPlotDataReader"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

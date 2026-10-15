@@ -1,0 +1,591 @@
+{
+  "Passed": true,
+  "NativeComponentsAudited": 157,
+  "BaselineProceduresInventoried": 5431,
+  "BaselineStructuralWriteAndDynamicCallCandidates": 2407,
+  "RetiredSymbolsAbsent": [
+    "UpdateSectionRecipeConfig",
+    "ValidateCircleBindings",
+    "UpgradeCircleBindings",
+    "CircleBindingList",
+    "ValidateSetbackTable",
+    "UpgradeSetbackTable",
+    "CanonicalRectSetHeaders",
+    "ExplainClosedCircle",
+    "UpdateRecipeTypeList",
+    "NormalizeDiagramExtensionSetting",
+    "RemoveSettingAt",
+    "MigrationWarning",
+    "TestAudit02DiagramExtensionReaderMigration",
+    "Audit02LoadMigrationRange",
+    "RunRecipeConfigMigrationTests",
+    "SameInputRow",
+    "Solver.DirectState.DiagramExtension",
+    "AutoCAD.Export.PrincipalAxesEnabled",
+    "mMigrationWarning"
+  ],
+  "ScopedRetiredSymbolsAbsent": {
+    "modSectionRecipeSetup": [
+      "HeaderRow"
+    ]
+  },
+  "TypeUpdaterTables": [
+    "rngSectionRecipeTypes",
+    "rngSystemSettings"
+  ],
+  "SupportedReadersImportExportAndDWGChecksRetained": true,
+  "CalculationAndGeometryAlgorithmsUnchanged": true,
+  "SourceInventory": [
+    {
+      "Path": "src/Batch/CBatchSectionCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "c12f06c5e0a96511ce014d30eacad0cca62d53ba94b3a073589adc82acdf2aff"
+    },
+    {
+      "Path": "src/Batch/CCalculationProfile.cls",
+      "Unchanged": true,
+      "SHA256": "1c637aeb8d297790af5a14202be87c8d349242ffb2523a6dd2712ad7685668ca"
+    },
+    {
+      "Path": "src/Batch/CCalculationProfileCatalog.cls",
+      "Unchanged": true,
+      "SHA256": "1f123ffa55878a06922655f52ecd1613dd5185af691c1c664304c9e76380e566"
+    },
+    {
+      "Path": "src/Batch/CCombinationResult.cls",
+      "Unchanged": true,
+      "SHA256": "4729fe37d47734a211b223168611339fac9b37cb57346d30eea16d45ed98f16a"
+    },
+    {
+      "Path": "src/Batch/CDirectStateResult.cls",
+      "Unchanged": true,
+      "SHA256": "1996cc98d5343d35727d01f418605daa5951e2f3170a07af39fd6f8f92829c80"
+    },
+    {
+      "Path": "src/Batch/CSectionStateResult.cls",
+      "Unchanged": true,
+      "SHA256": "36faa4d060d1f79e2f20db145736c56a3e3ba4cbc09a1006735e183894e4a06d"
+    },
+    {
+      "Path": "src/Batch/CStateProvider.cls",
+      "Unchanged": true,
+      "SHA256": "1d7687decadc5705014be35a97481437557819659eb410f3793c3eb459c61662"
+    },
+    {
+      "Path": "src/Batch/CStateRepository.cls",
+      "Unchanged": true,
+      "SHA256": "ca726fea1e0985af68821a3bedd66f2a5946e4538ffb93cccaa30bda2b75bed2"
+    },
+    {
+      "Path": "src/Batch/CStateRequest.cls",
+      "Unchanged": true,
+      "SHA256": "12a6226f32ab5ee2fc770b72ebaf9f265ef003aff09fe2966949f39509213827"
+    },
+    {
+      "Path": "src/Batch/CStrengthResult.cls",
+      "Unchanged": true,
+      "SHA256": "dc4787ee8f50cf4f63ef80e11bcce206f1df4cec63697b5fd2b7feae49fd59e1"
+    },
+    {
+      "Path": "src/Common/CLoadPathDescriptor.cls",
+      "Unchanged": true,
+      "SHA256": "399d71e2f0e3aac98b2b19ea0f305e36c6bb0fa637ee79436650a1acdcd30505"
+    },
+    {
+      "Path": "src/Common/CLoadPathMath.cls",
+      "Unchanged": true,
+      "SHA256": "2562122be0da1073ec56cd5c4b2d2c21f2e34bd4aa6695a974614e06ee20198c"
+    },
+    {
+      "Path": "src/Common/CLoadPathVector.cls",
+      "Unchanged": true,
+      "SHA256": "6505c60be86d30a5936571946a037c34c0d8dafb3041b98f32f37f7c35191665"
+    },
+    {
+      "Path": "src/Common/CMomentZeroFilter.cls",
+      "Unchanged": true,
+      "SHA256": "cf8a304702c6e500b7c62c1d48175ee490faa9e72e3b399b3811a7d91bf583b3"
+    },
+    {
+      "Path": "src/Common/CResultMeta.cls",
+      "Unchanged": true,
+      "SHA256": "31efecff612d848cf095b1d0e6433f9a72e56d228eba82496931571b24f76db9"
+    },
+    {
+      "Path": "src/Common/CResultStatusPolicy.cls",
+      "Unchanged": true,
+      "SHA256": "06537b18a5e51ca8af40982c3207af2766f261cc19ba1fcfe8f4a7f05af211b8"
+    },
+    {
+      "Path": "src/Common/CSectionLoadState.cls",
+      "Unchanged": true,
+      "SHA256": "e8f2f2a038207bfe4e7b17a8a992dae0354e67c63bee955af253b4789003392e"
+    },
+    {
+      "Path": "src/Common/modCalculationPurpose.bas",
+      "Unchanged": true,
+      "SHA256": "927584fda512c7cab12b2df739e216fc7d99839a26135776bf3b939ee1834834"
+    },
+    {
+      "Path": "src/Common/modGeometryPrimitives.bas",
+      "Unchanged": true,
+      "SHA256": "47b989a4282d74b7060419f567a8acd7be70975f0b34bac4ed3d210b8cce311a"
+    },
+    {
+      "Path": "src/Common/modGeometryTypes.bas",
+      "Unchanged": true,
+      "SHA256": "9287e987cb0e4638ff5e946107110b6e256a31227eb178e767e4920d1190ee01"
+    },
+    {
+      "Path": "src/Common/modResultStatus.bas",
+      "Unchanged": true,
+      "SHA256": "3a77173cbc7b1284bdca9aa7c40774b9679800374cd6a7b070d907cf32dd8d60"
+    },
+    {
+      "Path": "src/Common/modSectionRecipeApiGuide.bas",
+      "Unchanged": false,
+      "SHA256": "405fecb89b80814ab601a82b13b88ffa82553bd7fab1cedf20512c8161f56942"
+    },
+    {
+      "Path": "src/Common/modSectionRecipeTypes.bas",
+      "Unchanged": true,
+      "SHA256": "950982afe963976c5a12ac2cbf2477496c72a156bdbe066882bfc56f1a1dc799"
+    },
+    {
+      "Path": "src/Common/modSolverWorkStats.bas",
+      "Unchanged": true,
+      "SHA256": "bca5413e2d1bd630173881e804026cca8eab0508c267b4946c7c33fc1f9d15f0"
+    },
+    {
+      "Path": "src/Crack/CCrackFormationCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "baa4bba5f69b71529d0806fee1449a44acc73ac33731dd9a6ab2897fa2689c43"
+    },
+    {
+      "Path": "src/Crack/CCrackFormationResult.cls",
+      "Unchanged": true,
+      "SHA256": "eeb6de098110a1920443a2c301f8f51134f579479d7cec76570c4cbb61065db2"
+    },
+    {
+      "Path": "src/Crack/CCrackResult.cls",
+      "Unchanged": true,
+      "SHA256": "84210eb73c3ad490c4bf0e34e9ced50cc7a215b86e7f0376069bdd7646f81d1a"
+    },
+    {
+      "Path": "src/Crack/CCrackWidthCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "2287b609274e3bc1dd5610abf0cc9f8940613f9beab83dcece9b881c4dcdee26"
+    },
+    {
+      "Path": "src/Crack/CCrackWidthResult.cls",
+      "Unchanged": true,
+      "SHA256": "d9442894077db12d16fe138b497a7b33c53d8d4f9a52270a4c97eb9cd3ccd951"
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "75a202330b24da98c9b17b76ca5bc4c5f9792d7b931bf75a19e56388ac876353"
+    },
+    {
+      "Path": "src/Crack/CLongitudinalCrackResult.cls",
+      "Unchanged": true,
+      "SHA256": "7bad085c04be11447b688d27d343c0c0e45e998c8cf93ed860b745b177595f1f"
+    },
+    {
+      "Path": "src/Crack/CSP35CrackData.cls",
+      "Unchanged": true,
+      "SHA256": "6a79684517c56052c370c44a5863caf86ddfde30819ea08b1c9b7dca82991744"
+    },
+    {
+      "Path": "src/Excel/CAutoCADContourReader.cls",
+      "Unchanged": true,
+      "SHA256": "ba135cf67d5474d959ab5a725397da444a1e6fcc89e815bcf05a8964e857c0d8"
+    },
+    {
+      "Path": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Unchanged": true,
+      "SHA256": "e8bfde0e4184ddea3ccea5f7bfc9441261cb32eaf5f1b03745644bbc7d69ddef"
+    },
+    {
+      "Path": "src/Excel/CBatchResultWriter.cls",
+      "Unchanged": true,
+      "SHA256": "c844b6eb42dc696acd55149d7a546eebfc6cfb11f86985f2d072865a5426064b"
+    },
+    {
+      "Path": "src/Excel/CCrackSummaryWriter.cls",
+      "Unchanged": true,
+      "SHA256": "ebb820962697dfaa6426efbff01003481fc6996c5f7498b347d714def2f4ceba"
+    },
+    {
+      "Path": "src/Excel/CExcelAppStateGuard.cls",
+      "Unchanged": true,
+      "SHA256": "eb445dbd10a47cf268c4c01f28fde3fba9065f0c340817a7e92fae4a740af8f5"
+    },
+    {
+      "Path": "src/Excel/CExecutionReport.cls",
+      "Unchanged": false,
+      "SHA256": "dedfd1db8e16301e8e6706eeee65e0f0e8e69711519c70e51e7389e14e8058ac"
+    },
+    {
+      "Path": "src/Excel/CLoadCombinationReader.cls",
+      "Unchanged": true,
+      "SHA256": "b3b16b2806e761ea70c65dd7ebea0f26e2f2257a0aa4de43cc0717d19623d2a4"
+    },
+    {
+      "Path": "src/Excel/CNDMResultsWriter.cls",
+      "Unchanged": true,
+      "SHA256": "9e251234ab4a1ed38fd00397194db6806f325728a3a0d9b4c7b14150dfd3f0b3"
+    },
+    {
+      "Path": "src/Excel/CPlotAnnotationLayout.cls",
+      "Unchanged": false,
+      "SHA256": "199448d9f6a596d2f6ffc08994dda68f6aa7b5515bb380790428b877844a282d"
+    },
+    {
+      "Path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "Unchanged": true,
+      "SHA256": "d461a67460a37b8a2441a55ff86df706778609ba03347bb7f4467fde549f5751"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotDataReader.cls",
+      "Unchanged": false,
+      "SHA256": "62ba904c779dc809db5b5a6dec8e7115c707f34a627cc22e7d37405309590310"
+    },
+    {
+      "Path": "src/Excel/CSectionPlotter.cls",
+      "Unchanged": false,
+      "SHA256": "14027e353c202306ad0ffd4e483064db24b8e50d3f2e9f20e890e2e65821ac63"
+    },
+    {
+      "Path": "src/Excel/CSectionTypeRegistry.cls",
+      "Unchanged": true,
+      "SHA256": "1824c4c0eb832afccb04329eb4c2244a5475def6e4571645433f91fd7023f7ab"
+    },
+    {
+      "Path": "src/Excel/CStabilitySummaryWriter.cls",
+      "Unchanged": true,
+      "SHA256": "828f3485595b10f272c83f2fe1fdc79c4c28876e467aeb36962e8ee06b48f60b"
+    },
+    {
+      "Path": "src/Excel/CStrengthSummaryWriter.cls",
+      "Unchanged": true,
+      "SHA256": "9cee1c3a0062f8ed0a402cb975da18097bfa7f6fa4df1b70e49febd66287bec3"
+    },
+    {
+      "Path": "src/Excel/CSystemSettingsReader.cls",
+      "Unchanged": false,
+      "SHA256": "d523ad9a891c4cac59f6c4e415e0e719a63eb2bfb6a186d763b5a6e59cee211d"
+    },
+    {
+      "Path": "src/Excel/CUnitSystem.cls",
+      "Unchanged": true,
+      "SHA256": "ddd7febfca7b5c462d1238995a9fc56ed6db95bc102ee82770c377c84fc6cbbe"
+    },
+    {
+      "Path": "src/Excel/modAutoCADStressExport.bas",
+      "Unchanged": false,
+      "SHA256": "805c40e9bde07464a18880368000fd10e39976b3a1a8f93f248abca41a02f145"
+    },
+    {
+      "Path": "src/Excel/modMeshConfiguration.bas",
+      "Unchanged": true,
+      "SHA256": "0779eff400c9f5f752154a53425673fc83c76982973239da8a82701743c0cea2"
+    },
+    {
+      "Path": "src/Excel/modSectionRecipeSetup.bas",
+      "Unchanged": false,
+      "SHA256": "6144a1fa8c4602d919af22e40737ae04716941cbb2ace9d58097a8854d95d3d6"
+    },
+    {
+      "Path": "src/Excel/modStatusFormatting.bas",
+      "Unchanged": true,
+      "SHA256": "bd4f75cbdfc5c644973b28a7ad9d1fc000a9e7ac27e3f0be304b6c457ed855a8"
+    },
+    {
+      "Path": "src/Excel/modWorkbookCalculation.bas",
+      "Unchanged": true,
+      "SHA256": "9bc15527660c3eaf8ae092ea02956560b8b4faa262c45c9ac21f97846d14696b"
+    },
+    {
+      "Path": "src/Excel/modWorkbookMessages.bas",
+      "Unchanged": true,
+      "SHA256": "d67370809b7b6573f82f61b54d2e96fb68d036c65a30ddc8f32ab45edd113d36"
+    },
+    {
+      "Path": "src/Geometry/CFiberMeshBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "c1acae4632a97c80908c36211c4ef796aea5c20f3717c44fd81cdcebdac7143f"
+    },
+    {
+      "Path": "src/Geometry/CGeometryDiagnostic.cls",
+      "Unchanged": true,
+      "SHA256": "5a8b139775a98457b368b8636dfa09b4fe2954c75c457e471549d320eaf2d78a"
+    },
+    {
+      "Path": "src/Geometry/CGeometryPath.cls",
+      "Unchanged": true,
+      "SHA256": "160b437f3a3289a07180a31bc0eb756986d97d8e518a38af599a99620096355a"
+    },
+    {
+      "Path": "src/Geometry/CGeometryRegion.cls",
+      "Unchanged": true,
+      "SHA256": "240543a5a32d115c6a2a4e10ac9d3b4e0b1ee8ce679bed37df6736a0e6a6c119"
+    },
+    {
+      "Path": "src/Geometry/CPolygonSpec.cls",
+      "Unchanged": true,
+      "SHA256": "741da7ebf1b4820bc97587cdf2c7a46ea2897d6330e84d25ce4e2e10a9a56839"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeCircle.cls",
+      "Unchanged": true,
+      "SHA256": "2b229bb111f8fed9fcaba6735a3c57c442cc0419d1dd59299a20e8e41d3bc276"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "Unchanged": true,
+      "SHA256": "dba63f5c55f5c6af2c383b64fa7eff2a28eb140d25a16490d69030188974aae4"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRectSet.cls",
+      "Unchanged": true,
+      "SHA256": "257ba9a98fe80e19a52b84f45af11d24b5470fb8346f8d786ebd246a9677fbd0"
+    },
+    {
+      "Path": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "Unchanged": true,
+      "SHA256": "21c689097f8a77d4ebd96a9e87534c4ac9b4f45d8389af3646c3a70abad409a3"
+    },
+    {
+      "Path": "src/Interfaces/ILimitSearchProblem.cls",
+      "Unchanged": true,
+      "SHA256": "81c95c90255f7978bc3618e0d06b352d23724a68d53d644c4d0e8a1cdb664982"
+    },
+    {
+      "Path": "src/Materials/CConcreteMaterialParameters.cls",
+      "Unchanged": true,
+      "SHA256": "b8498da1c2693fcc2f9fee66225fd6bd41101f375579728183ebfd6821c8b971"
+    },
+    {
+      "Path": "src/Materials/CLinearConcreteMaterial.cls",
+      "Unchanged": true,
+      "SHA256": "9f44e37b19456ebca4a3c8ee1bde820384f599a239bee3c4ca2ee273372bc6ab"
+    },
+    {
+      "Path": "src/Materials/CLinearSteelMaterial.cls",
+      "Unchanged": true,
+      "SHA256": "750d982e118e19ac1b62f2d933f99c53ec96c1e1ef61b0a5fe224297b53f9988"
+    },
+    {
+      "Path": "src/Materials/CMaterialDiagram.cls",
+      "Unchanged": true,
+      "SHA256": "bf0c7ceeafa7bee37481c7a407553c04c3f389bda789bf41232068c3e7ac2f77"
+    },
+    {
+      "Path": "src/Materials/CMaterialModelProvider.cls",
+      "Unchanged": false,
+      "SHA256": "ab65cd9eff95563f75226312afc7701eb0d7625880aa6d4326cf74245e945ceb"
+    },
+    {
+      "Path": "src/Materials/CMaterialModelSpec.cls",
+      "Unchanged": true,
+      "SHA256": "b477313f4b753a8389e92de9b00f97ea4da96e668f3dd1e142df279ac7a16b32"
+    },
+    {
+      "Path": "src/Materials/CSteelMaterialParameters.cls",
+      "Unchanged": true,
+      "SHA256": "df037c9baab831f17a08445057146bc8eb6dff641367d58163bb249594100211"
+    },
+    {
+      "Path": "src/Section/CConcreteRegion.cls",
+      "Unchanged": true,
+      "SHA256": "bfa2f4ea356316d036a072c814f11af33b436c2105ff0b610202369f13e8f778"
+    },
+    {
+      "Path": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "934bace83209d1f55477dde8c66997c8d5d9c2e0724f9995f3386e67905f385d"
+    },
+    {
+      "Path": "src/Section/CRebarLayout.cls",
+      "Unchanged": true,
+      "SHA256": "beb4c640580e145039c9f62f36b5061da3099373315e3641b38ea6fc82bf1328"
+    },
+    {
+      "Path": "src/Section/CRebarRuleExecutor.cls",
+      "Unchanged": true,
+      "SHA256": "7ec849093a13a7df173429cc2561ff5e47a2635e02727f4dc5220bb7acb96376"
+    },
+    {
+      "Path": "src/Section/CRebarRuleOptions.cls",
+      "Unchanged": true,
+      "SHA256": "6078c71b1772cb58383bd215ffeeac2c2ebf63ec05131c8e6fd21d7374c97822"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotationBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "28badcc20a426622f3500277c6986b6893d43d67bebdc2d7cbe42c22b71d43b9"
+    },
+    {
+      "Path": "src/Section/CSectionAnnotations.cls",
+      "Unchanged": true,
+      "SHA256": "96299c57ea0cf4e2e4a0148b768a5cebe602446dc1c14bb410dd0f23a11c95f6"
+    },
+    {
+      "Path": "src/Section/CSectionBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "7efd60282be3e4e8586ef84627293c18a4e4afba9add57c93a97c939f08581f5"
+    },
+    {
+      "Path": "src/Section/CSectionContours.cls",
+      "Unchanged": true,
+      "SHA256": "a882187fc1638ed67aa7580ca7838691c57d1f7c4d4cc2a680c2975917432db1"
+    },
+    {
+      "Path": "src/Section/CSectionDefinition.cls",
+      "Unchanged": true,
+      "SHA256": "048afc60a59388b4a1291d68b9605c4bcc83b902dc9b91d788049036e598c813"
+    },
+    {
+      "Path": "src/Section/CSectionDefinitionBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "6aecf80072646d42ff4e0c97ac6d109a25bb326152f77bc3944c4f343aadec93"
+    },
+    {
+      "Path": "src/Section/CSectionGeometryQuery.cls",
+      "Unchanged": true,
+      "SHA256": "984e96a0c8bd2a7f3cf6348769e1a91b70ddc3580296d99d8e6d5a4f5f94fb38"
+    },
+    {
+      "Path": "src/Section/CSectionInputTable.cls",
+      "Unchanged": true,
+      "SHA256": "76361e5b9a12bf4c030439d8fc608174ee1447c459af41899f06a68df4b4ef2e"
+    },
+    {
+      "Path": "src/Section/CSectionModel.cls",
+      "Unchanged": true,
+      "SHA256": "7220f202b730ddc5be4baad42358048ddaf8ddf3bbcbfbccbcc71fc37ae24fe2"
+    },
+    {
+      "Path": "src/Section/CSectionModelBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "ef6fe7f552afa236b7af6b294c07e8343e8b14c3b8ec1229c9f359408d06369a"
+    },
+    {
+      "Path": "src/Section/CSectionPropertiesCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "7df1885dab942be6e7b457973d23c0cbab02a7801554f47541acb6888cfb884d"
+    },
+    {
+      "Path": "src/Section/CSectionRecipeContext.cls",
+      "Unchanged": true,
+      "SHA256": "f21680031cdb9676caa51d11f10440a725125b2d36db3c93c9b840347aaf9019"
+    },
+    {
+      "Path": "src/Section/ISectionRecipe.cls",
+      "Unchanged": true,
+      "SHA256": "29c1d70147a864331358441c6cc517d0270f0e3d45aa21a3d434a02a1e1efe51"
+    },
+    {
+      "Path": "src/Solver/CCapacityCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "d1cecbe07238d0cbd9997a3862c6dbdd5aacd65b77b4d7d6ba88c8863903dd15"
+    },
+    {
+      "Path": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "Unchanged": true,
+      "SHA256": "7c729b3c19dc8c531ac9b9c1f262f9deace9bb1a79748c7bc67dab919b706f2e"
+    },
+    {
+      "Path": "src/Solver/CCapacityResult.cls",
+      "Unchanged": true,
+      "SHA256": "786750600f4a6874f9cc3f7d9a5dda73c1a6d05e7fb2b819ddc7dcac51c905da"
+    },
+    {
+      "Path": "src/Solver/CCapacitySolver.cls",
+      "Unchanged": true,
+      "SHA256": "c3776cfbc3b1ddb24955182a7a2400d839d0b73a3c4028dc6a3535798599f3a5"
+    },
+    {
+      "Path": "src/Solver/CCrackLimitSearchProblem.cls",
+      "Unchanged": true,
+      "SHA256": "e659e8c37352d38e7f106d218fbc40716ded6cae8dc273b15c2282929963dfc2"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchCoordinator.cls",
+      "Unchanged": true,
+      "SHA256": "9e5f7cc605d004c20168f08c897ecebe8f20be5284572e8247d41badb9a1fc02"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchRequest.cls",
+      "Unchanged": true,
+      "SHA256": "e7d1412f78530378e6e170d099b7b4ddb8515e0a3368a692ba3164ae76e5bea8"
+    },
+    {
+      "Path": "src/Solver/CLimitSearchResult.cls",
+      "Unchanged": true,
+      "SHA256": "178488484f155e5b47f3ee84d53019868b76d8623db2281ff5340981e1d878d4"
+    },
+    {
+      "Path": "src/Solver/CLinearSystem3x3.cls",
+      "Unchanged": true,
+      "SHA256": "e43e7a790b49ae91245a6b38628b89b8d6b7874f1163ddf3bae211372487748a"
+    },
+    {
+      "Path": "src/Solver/CLoadMultiplierSearch.cls",
+      "Unchanged": true,
+      "SHA256": "64d3ba6744bfa01c5ecba4e2b701fabef6aa5a2d3a4394a682be0f5b90b30e1f"
+    },
+    {
+      "Path": "src/Solver/CSectionNumericalFrame.cls",
+      "Unchanged": true,
+      "SHA256": "94500684bc8b4c3072c5136392c053c5cebf6ca0cf4eb75c9aadffb2c911f8a1"
+    },
+    {
+      "Path": "src/Solver/CSectionSolver.cls",
+      "Unchanged": true,
+      "SHA256": "866944a0514a08419dc422095358009228e07d76bbeba8c90ffb7b8d7944e3c4"
+    },
+    {
+      "Path": "src/Solver/CSectionStrainLimits.cls",
+      "Unchanged": true,
+      "SHA256": "895bcb22910fe3fc91192822ed5460a0497142f35cced9d88a7feb652c27c277"
+    },
+    {
+      "Path": "src/Solver/CStateGuessBuilder.cls",
+      "Unchanged": true,
+      "SHA256": "8da1c41c109ee5e320f96ccdea20ff2c4604daceb9b20f8f74d57323f8ee4e7b"
+    },
+    {
+      "Path": "src/Solver/CStateSolutionRunner.cls",
+      "Unchanged": true,
+      "SHA256": "8f759e8300a7f9ecf3797a12693bc3b6d08a5db7c794d5dcb0aadddef244469f"
+    },
+    {
+      "Path": "src/Solver/CUltimateStrainSearch.cls",
+      "Unchanged": true,
+      "SHA256": "1210444843d20631e086cb75586737474fd811f17cc3516b6cd662a5490b1e98"
+    },
+    {
+      "Path": "src/Solver/modLimitSearchRequestFactory.bas",
+      "Unchanged": true,
+      "SHA256": "357b1846a1a4502c4830d4c718037deaebbf29b9e4af165777d5e9f25747ee3e"
+    },
+    {
+      "Path": "src/Solver/modNonlinearStepControl.bas",
+      "Unchanged": true,
+      "SHA256": "c3320ae5b95f59012478362ef1f360fc59d0e7ee5d1c84c6d68cfb97d920156e"
+    },
+    {
+      "Path": "src/Stability/CStabilityCalculator.cls",
+      "Unchanged": true,
+      "SHA256": "e77f0ee5d1ef2628aa2d72ea793b3988b8c91194c3a29706695752faad930ffe"
+    },
+    {
+      "Path": "src/Stability/CStabilityResult.cls",
+      "Unchanged": true,
+      "SHA256": "700b3827324a50b6b4b35f62d21889e8583704e771a87aaa93f1e1d34b18eaae"
+    }
+  ],
+  "Errors": []
+}

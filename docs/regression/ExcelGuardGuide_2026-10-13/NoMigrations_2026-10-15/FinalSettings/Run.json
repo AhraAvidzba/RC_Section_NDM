@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "FinalSettings",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestRecipeSetbacks.RunRecipeTypeListTests",
+                     "Seconds":  2.6718984999999997,
+                     "Characters":  464,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestConfiguration.RunCurrentDiagramSettingTests",
+                     "Seconds":  0.0988916,
+                     "Characters":  971,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+                     "Seconds":  0.26650589999999996,
+                     "Characters":  881,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+                     "Seconds":  0.1454016,
+                     "Characters":  4638,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+                     "Seconds":  0.1086487,
+                     "Characters":  803,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestConfiguration.RunAudit03SettingsTableGuardTests",
+                     "Seconds":  3.4251574999999996,
+                     "Characters":  80750,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "03959EBC72672E92CA6A75FE5E4B71D9414D96AA3216366E83E5CFE592298D02",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-15T10:53:32.3767783+03:00"
+}
