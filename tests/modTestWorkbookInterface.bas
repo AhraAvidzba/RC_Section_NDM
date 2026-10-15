@@ -2238,6 +2238,8 @@ Private Function AutoCADCombinationValidationIsDynamic() As Boolean
 
             Dim listRange As Object
             Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
+            ' Данные сочетаний изменены тестом; обновляем формулы списка и при ручном пересчёте.
+            listRange.Calculate
             AutoCADCombinationValidationIsDynamic = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
                 CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
             Exit Function
@@ -2268,6 +2270,8 @@ Private Function LoadCaseValidationIsDynamicForSetting(ByVal settingKey As Strin
 
             Dim listRange As Object
             Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
+            ' Данные сочетаний изменены тестом; обновляем формулы списка и при ручном пересчёте.
+            listRange.Calculate
             LoadCaseValidationIsDynamicForSetting = (CStr(listRange.Cells.Item(1, 1).Value2) = "Worst" And _
                 CStr(listRange.Cells.Item(2, 1).Value2) = "LC1" And listRange.Cells.Item(2, 1).HasFormula)
             Exit Function
@@ -6223,6 +6227,12 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
         loads.Cells(i + 2, 2).Value2 = IIf((i Mod 2) = 0, -100000#, 30000#)
         loads.Cells(i + 2, 3).Value2 = IIf((i Mod 2) = 0, 30000000#, -20000000#)
         loads.Cells(i + 2, 4).Value2 = IIf((i Mod 2) = 0, -20000000#, 15000000#)
+        ' Для трещин сравниваем найденное НДС при эксплуатационных моментах,
+        ' а не последние приближения поиска, который закончился без равновесия.
+        If i >= 2 Then
+            loads.Cells(i + 2, 3).Value2 = loads.Cells(i + 2, 3).Value2 / 10#
+            loads.Cells(i + 2, 4).Value2 = loads.Cells(i + 2, 4).Value2 / 10#
+        End If
         loads.Cells(i + 2, 5).Value2 = IIf(i < 2, "PR1", "PR2")
         loads.Cells(i + 2, 6).Value2 = ChrW$(&H3BB) & "*NMxy"
     Next i
@@ -6254,6 +6264,8 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                     AssertTrue stats, prefix & ".strengthState", ResultsPropertyExists("INPUT1", "State.StrengthState.Epsilon0")
                     AssertTrue stats, prefix & ".capacityState", ResultsPropertyExists("INPUT1", "State.CapacityState.Epsilon0")
                     AssertTrue stats, prefix & ".crackedState", ResultsPropertyExists("INPUT3", "State.CrackedState.Epsilon0")
+                    AssertTextEquals stats, prefix & ".crackedState.INPUT3.ok", ResultsPropertyValue("INPUT3", "State.CrackedState.Status"), "OK"
+                    AssertTextEquals stats, prefix & ".crackedState.INPUT4.ok", ResultsPropertyValue("INPUT4", "State.CrackedState.Status"), "OK"
                     If lengthIndex = 0 And stressIndex = 0 And curvatureIndex = 0 Then
                         baselineElements = ResultTable("rngNDMElementResults")
                         baselineGeometry = ResultTable("rngNDMSectionGeometry")

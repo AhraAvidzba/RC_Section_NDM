@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "baseRef": "7a9b53a",
+  "sourceComponents": 156,
+  "unchangedWorkingComponents": 110,
+  "changedTestMethods": [
+    {
+      "path": "tests/modTestGeometry.bas",
+      "procedures": [
+        "assertinvalid"
+      ]
+    },
+    {
+      "path": "tests/modTestWorkbookInterface.bas",
+      "procedures": [
+        "autocadcombinationvalidationisdynamic",
+        "loadcasevalidationisdynamicforsetting",
+        "testaudit03inputunitconsumers"
+      ]
+    }
+  ],
+  "declaredMethodsAndFieldsUnchanged": true,
+  "solverTolerancesUnchanged": true
+}
