@@ -9,8 +9,15 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Общий Excel-адаптер: один Value2 на зарегистрированную таблицу.
-' Не знает ее структуры и не передает Range/Workbook в definition.
+' ==========================================================================
+' Чтение входных таблиц рецепта из Excel
+' ==========================================================================
+' Читает каждую зарегистрированную таблицу одним обращением Value2
+' и сохраняет значения с адресами ячеек для диагностики.
+' Структуру таблиц разбирает рецепт; ссылки на Range и Workbook в него не передаются.
+
+' Одним чтением Value2 получает значения каждой зарегистрированной таблицы
+' и сохраняет адреса её ячеек для ошибок ввода, без передачи объектов Excel рецепту.
 Public Function Capture(ByVal workbook As Object, ByVal tableNames As Variant, _
         ByVal units As CUnitSystem) As CSectionRecipeContext
     Dim result As CSectionRecipeContext, name As Variant, range As Object

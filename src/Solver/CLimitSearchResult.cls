@@ -9,14 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' ===========================================================================
-' Самодостаточный результат общего поиска предельной точки
-' ===========================================================================
-' Хранит численный исход, фактический метод, диагностику и подтвержденное НДС
-' найденной точки. Не обращается к рабочему solver-у или инженерному calculator-у.
-' Смысл физического критерия и проверка текущего LC остаются у доменной задачи.
-' Для низкоуровневых материалов без material spec сохраняется численный вектор;
-' production named-state передается готовым снимком.
+' ==========================================================================
+' Сохранённый результат общего поиска предельной нагрузки
+' ==========================================================================
+' Хранит исход поиска, фактический метод, диагностику и подтверждённое НДС
+' найденной точки. Для материалов без CMaterialModelSpec сохраняет численные
+' усилия; готовое именованное состояние передаётся отдельным снимком.
+' Физический смысл критерия и проверку текущего сочетания определяет инженерная задача.
 
 Private mMeta As CResultMeta ' Машинный исход, подготовленный владельцем задачи.
 Private mRequestedStrategy As String ' Запрошенная численная стратегия.
@@ -138,7 +137,7 @@ Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone
 End Property
 
-' Простые getters ниже читают только сохраненный снимок.
+' Возвращает стратегию поиска, указанную в исходном запросе.
 Public Property Get RequestedStrategy() As String
     RequestedStrategy = mRequestedStrategy
 End Property
@@ -148,12 +147,12 @@ Public Property Get ActualMethod() As String
     ActualMethod = mActualMethod
 End Property
 
-' Машинный исход, подготовленный владельцем задачи.
+' Возвращает вид инженерной проверки, для которой выполнен поиск.
 Public Property Get ResultKind() As EResultKind
     ResultKind = mMeta.ResultKind
 End Property
 
-' Машинный исход, подготовленный владельцем задачи.
+' Показывает, признан ли сохранённый исход успешным по статусу результата.
 Public Property Get Succeeded() As Boolean
     Succeeded = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
@@ -168,7 +167,7 @@ Public Property Get Converged() As Boolean
     Converged = mHasLimitPoint
 End Property
 
-' Машинный исход, подготовленный владельцем задачи.
+' Возвращает сохранённое пояснение причины завершения поиска.
 Public Property Get StopReason() As String
     StopReason = mMeta.ResultComment
 End Property

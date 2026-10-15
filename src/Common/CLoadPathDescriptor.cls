@@ -10,19 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Универсальная lambda-траектория поиска предельной точки
+' Разбор заданного способа изменения нагрузки
 ' ==========================================================================
-' CLoadPathDescriptor переводит пользовательский выбор Auto, lambda*Mx,
-' lambda*My, lambda*Mxy, lambda*N или lambda*NMxy в единую математическую форму
-' общего LimitSearch для несущей способности и образования трещины:
-'
-'     Target(lambda) = Offset + lambda * Base
-'
-' Класс не ищет равновесие и не знает о диаграммах материалов. Его задача -
-' один раз разобрать строку из таблицы сочетаний, отделить постоянную часть
-' нагрузки от масштабируемой и сохранить служебные признаки, которые нужны
-' batch-слою для выбора численной политики: есть ли вообще масштабируемая
-' нагрузка и является ли путь фактически силовым осевым случаем.
+' Преобразует выбор Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N
+' или lambda*NMxy в общую зависимость Target(lambda) = Offset + lambda*Base.
+' Отделяет постоянную часть усилий от масштабируемой и сохраняет признаки
+' для выбора численного метода, включая осевую силовую траекторию.
 
 Private Const KEY_NONE As String = "None" ' Начальное состояние описателя до назначения нагрузки.
 Private Const KEY_AUTO As String = "Auto" ' Общий Search выбирает и перебирает конкретные пути.
@@ -216,7 +209,7 @@ Public Property Get Key() As String
     Key = mKey
 End Property
 
-' Нормализованный внутренний ключ lambda-траектории.
+' Возвращает название выбранной траектории нагрузки для вывода пользователю.
 Public Property Get DisplayName() As String
     DisplayName = DisplayNameForKey(mKey)
 End Property
@@ -261,32 +254,32 @@ Public Property Get ScalesMy() As Boolean
     ScalesMy = mScalesMy
 End Property
 
-' Общий вектор Offset + lambda*Base для передачи в solver.
+' Возвращает постоянную часть продольной силы в N = NOffset + lambda*NBase, Н.
 Public Property Get NOffset() As Double
     NOffset = mPath.NOffset
 End Property
 
-' Общий вектор Offset + lambda*Base для передачи в solver.
+' Возвращает масштабируемую часть продольной силы в N = NOffset + lambda*NBase, Н.
 Public Property Get NBase() As Double
     NBase = mPath.NBase
 End Property
 
-' Общий вектор Offset + lambda*Base для передачи в solver.
+' Возвращает постоянную часть момента в Mx = MxOffset + lambda*MxBase, Н*мм.
 Public Property Get MxOffset() As Double
     MxOffset = mPath.MxOffset
 End Property
 
-' Общий вектор Offset + lambda*Base для передачи в solver.
+' Возвращает масштабируемую часть момента в Mx = MxOffset + lambda*MxBase, Н*мм.
 Public Property Get MxBase() As Double
     MxBase = mPath.MxBase
 End Property
 
-' Общий вектор Offset + lambda*Base для передачи в solver.
+' Возвращает постоянную часть момента в My = MyOffset + lambda*MyBase, Н*мм.
 Public Property Get MyOffset() As Double
     MyOffset = mPath.MyOffset
 End Property
 
-' Общий вектор Offset + lambda*Base для передачи в solver.
+' Возвращает масштабируемую часть момента в My = MyOffset + lambda*MyBase, Н*мм.
 Public Property Get MyBase() As Double
     MyBase = mPath.MyBase
 End Property

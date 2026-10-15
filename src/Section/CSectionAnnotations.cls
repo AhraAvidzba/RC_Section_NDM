@@ -10,12 +10,11 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Контейнер semantic-аннотаций рассчитанного сечения
+' Размеры, подписи и расчётные области схемы сечения
 ' ==========================================================================
-' Здесь хранятся размеры и групповые подписи арматуры. Writer дополняет их
-' LC-зависимыми расчетными областями трещин в rngNDMSectionAnnotations.
-' Исходные outer/opening принадлежат CSectionContours и геометрическому
-' снимку, поэтому не смешиваются с оформлением или результатами проверок.
+' Хранит аннотации в координатах модели. При записи Results к размерам
+' и подписям арматуры добавляются области трещин выбранного сочетания.
+' Исходные наружные границы и отверстия хранятся отдельно в CSectionContours.
 
 Private mType() As String
 Private mAnnotationID() As String
@@ -106,7 +105,7 @@ Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, B
     AddAnnotation "REBAR_ANNOTATION", annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
 End Sub
 
-' Количество записей, сохранённых в контейнере этого класса.
+' Возвращает количество сохранённых записей.
 Public Property Get Count() As Long
     Count = mCount
 End Property

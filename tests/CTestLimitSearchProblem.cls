@@ -10,15 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: простая доменная задача общего LimitSearch
+' ДЛЯ ТЕСТОВ: управляемая задача общего поиска предела
 ' ==========================================================================
-' Класс намеренно не использует CSectionSolver и реальные материалы. Он задает
-' линейную функцию предела f(lambda) = lambda - lambdaRoot и позволяет проверять
-' поведение общего search-ядра без влияния железобетонной физики.
-'
-' Такой тест защищает архитектурное требование: Bisection/Secant/Brent должны
-' работать через ILimitSearchProblem, а не через конкретный Capacity или Crack
-' calculator.
+' Задаёт функцию f(lambda) = lambda - lambdaRoot и дополнительные
+' аналитические невязки для проверки численных алгоритмов без материалов.
+' Проверяет, что общий поиск работает через ILimitSearchProblem независимо
+' от расчётов несущей способности и образования трещины.
 
 Implements ILimitSearchProblem
 
@@ -38,7 +35,7 @@ Private mConverged As Boolean ' True, если search финализировал
 Private mFinalLambda As Double ' Lambda, фактически принятая общим search.
 Private mFinalMethod As String ' Метод, которым была принята итоговая точка.
 Private mFinalIterations As Long ' Число итераций, переданное при финализации.
-Private mLimitState As String ' Последний машинный статус fake-задачи.
+Private mLimitState As String ' Последний сохранённый статус тестовой задачи.
 Private mDiagnosticLog As String ' Накопленный диагностический текст.
 Private mIterationLimitHit As Boolean ' True, если search остановился по лимиту итераций.
 Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
@@ -181,7 +178,7 @@ Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Последний машинный статус fake-задачи.
+' Последний сохранённый статус тестовой задачи.
 Public Property Get LimitState() As String
     LimitState = mLimitState
 End Property
@@ -231,7 +228,7 @@ Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mConverged
 End Property
 
-' Последний машинный статус fake-задачи.
+' Последний сохранённый статус тестовой задачи.
 Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mLimitState
 End Property
@@ -676,7 +673,7 @@ Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
         mFailureCode = sfcInvalidInput Or mFailureCode = sfcInternalError)
 End Property
 
-' Последний машинный статус fake-задачи.
+' Последний сохранённый статус тестовой задачи.
 Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mLimitState
 End Property
@@ -702,7 +699,7 @@ Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _
     AppendDiagnosticLine successMessage
 End Sub
 
-' Добавляет строку в диагностический журнал fake-задачи.
+' Добавляет строку в диагностический журнал тестовой задачи.
 Private Sub AppendDiagnosticLine(ByVal text As String)
     If Len(mDiagnosticLog) > 0 Then mDiagnosticLog = mDiagnosticLog & vbCrLf
     mDiagnosticLog = mDiagnosticLog & text

@@ -9,8 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Необязательные параметры сложного ряда. Фасад копирует их в definition,
-' поэтому последующее изменение этого объекта не изменяет готовый рецепт.
+' ==========================================================================
+' Дополнительные параметры расстановки арматуры
+' ==========================================================================
+' Хранит отступы, способ размещения концов ряда, зависимости и оформление.
+' CSectionDefinitionBuilder копирует параметры при объявлении правила,
+' поэтому последующее изменение этого объекта не меняет готовое описание сечения.
+
 Public StartSetback As Double ' Начальное отсечение вдоль каждого target-пути, мм>=0; у полного ClosedUniform 0.
 Public EndSetback As Double ' Конечное отсечение вдоль каждого target-пути, мм>=0; ProjectFrom фильтрует hit без перераспределения.
 Public EndMode As ERebarEndMode ' IncludeBoth/ExcludeBoth/IncludeStart/IncludeEnd/ClosedUniform; последние требуют соответствующей замкнутости.
@@ -37,8 +42,7 @@ Public AnnotationGroup As String ' Смысловая принадлежност
 Public Comment As String ' Инженерное пояснение правила; не selector или ResultCode.
 Public SourceReference As String ' Реальные адреса исходных параметров правила или программная ссылка.
 
-' Задаёт реальные defaults раскладки, проекции, совпадений и публикации для нового объекта
-' options.
+' Задаёт начальные параметры шага, смещений, проекции, совпадений и подписей арматуры.
 Private Sub Class_Initialize()
     EndMode = IncludeBoth
     DistributionScope = PerPath
@@ -50,9 +54,10 @@ Private Sub Class_Initialize()
     OverlapPolicy = ReportOverlap
 End Sub
 
-' Контактное межцентровое расстояние: половины основного/добавляемого диаметров и полные промежуточные.
-' Меняет только NormalOffset/TangentOffset/EverySecond; координаты и ориентацию исполняет общий executor.
-' Оба диаметра строго больше нуля; отключённый ряд рецепт пропускает до вызова, иначе будет ошибка.
+' Задаёт смещения зависимого ряда для касания стержней: учитывает половины диаметров
+' основного и добавляемого стержней и полные диаметры промежуточных рядов.
+' Меняет NormalOffset, TangentOffset и EverySecond; координаты рассчитывает CRebarRuleExecutor.
+' Оба диаметра должны быть положительными; отключённый ряд пропускается до вызова.
 Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, _
         ByVal axis As ERebarOffsetAxis, ByVal directionSign As Double, ByVal everySecond As Boolean, _
         Optional ByVal interveningDiameterSum As Double = 0#)
@@ -67,8 +72,8 @@ Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diamete
     Me.EverySecond = everySecond
 End Sub
 
-' Копирует параметры options в декларативное правило, отделяя его от последующих изменений
-' объекта.
+' Копирует параметры в правило расстановки, чтобы дальнейшие изменения объекта
+' не изменяли уже объявленное армирование.
 Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.StartSetback = StartSetback: rule.EndSetback = EndSetback
     rule.DistributionScope = DistributionScope

@@ -1,11 +1,14 @@
 Attribute VB_Name = "CExcelAppStateGuard"
 Option Explicit
 
-' Временно отключает лишнюю работу оболочки Excel и восстанавливает настройки.
-' Свойства Application общие для всех книг одного экземпляра Excel. Это
-' ускоряет макрос, но не изолирует книгу от остальных. Объект живёт один запуск.
-' Esc/Ctrl+Break передаются обработчику ошибок как ошибка 18. Принудительный
-' End, сброс проекта в VBE и завершение процесса обходят обработчики VBA.
+' ==========================================================================
+' Временные настройки Excel на время макроса
+' ==========================================================================
+' Сохраняет настройки приложения, отключает обновления на время работы
+' и восстанавливает исходные значения при выходе, в том числе после ошибки.
+' Настройки Application общие для всех книг одного экземпляра Excel.
+' Esc/Ctrl+Break передаются обработчику как ошибка 18; команда End, сброс
+' проекта в VBE и завершение процесса обходят обычное восстановление VBA.
 
 Private mApplication As Object
 Private mValues(0 To 4) As Variant
@@ -75,6 +78,7 @@ Public Sub Restore(Optional ByVal raiseOnFailure As Boolean = False)
         "Excel не смог восстановить настройки после макроса:" & vbCrLf & failure
 End Sub
 
+' Возвращает имя настройки Excel по индексу для сообщения об ошибке восстановления.
 Private Function PropertyName(ByVal index As Long) As String
     Select Case index
         Case 0: PropertyName = "EnableCancelKey"
@@ -85,7 +89,7 @@ Private Function PropertyName(ByVal index As Long) As String
     End Select
 End Function
 
-' Явные обращения сохраняют поведение Excel COM и исходную ошибку свойства.
+' Читает исходное значение настройки Excel, сохраняя обычное поведение и ошибки COM.
 Private Function ReadProperty(ByVal index As Long) As Variant
     Select Case index
         Case 0: ReadProperty = mApplication.EnableCancelKey
@@ -96,6 +100,7 @@ Private Function ReadProperty(ByVal index As Long) As Variant
     End Select
 End Function
 
+' Записывает значение выбранной настройки Excel; ошибку передаёт вызывающему обработчику.
 Private Sub WriteProperty(ByVal index As Long, ByVal value As Variant)
     Select Case index
         Case 0: mApplication.EnableCancelKey = value
@@ -106,6 +111,7 @@ Private Sub WriteProperty(ByVal index As Long, ByVal value As Variant)
     End Select
 End Sub
 
+' Повторяет восстановление оставшихся настроек при освобождении объекта.
 Private Sub Class_Terminate()
     Restore
 End Sub

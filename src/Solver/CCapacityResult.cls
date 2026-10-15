@@ -10,16 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Инженерный результат расчета несущей способности
+' Результат расчёта несущей способности
 ' ==========================================================================
-' CCapacityResult отделяет найденную limit-search точку от batch-таблицы.
-' Класс принимает уже выполненный общий LimitSearch, вытаскивает из него
-' физически значимые capacity-величины, переносит полный предельный вектор в
-' пользовательскую точку приложения нагрузки и при необходимости готовит
-' named-state CapacityState для Results snapshot.
-'
-' Здесь нет выбора search-алгоритма и нет чтения Config. Эти обязанности
-' остаются соответственно в CLimitSearch* и вызывающем orchestration-слое.
+' Принимает итог общего поиска предела и сохраняет инженерные величины.
+' Переносит полный предельный вектор нагрузки в пользовательскую точку
+' приложения и при наличии решения сохраняет CapacityState для Results.
+' Способ поиска и чтение настроек остаются у вызывающего расчёта.
 
 Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private Const CAPACITY_PATH_NONE As String = "None" ' Единый маркер: capacity для LC не выполнялся.
@@ -307,7 +303,7 @@ Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
     End If
 End Function
 
-' Итоговый reusable named-state CapacityState, если он найден.
+' Возвращает сохранённое предельное состояние CapacityState или Nothing, если оно не получено.
 Public Property Get StateResult() As CSectionStateResult
     Set StateResult = mStateResult
 End Property
@@ -366,12 +362,14 @@ Public Property Get CapacityStateN() As Double
     If Not mStateResult Is Nothing Then CapacityStateN = mStateResult.Nint
 End Property
 
-' Итоговый reusable named-state CapacityState, если он найден.
+' Возвращает внутренний момент Mx предельного состояния относительно начала модели, Н*мм.
+' При отсутствии состояния возвращает 0; его наличие проверяется отдельно.
 Public Property Get CapacityStateMx() As Double
     If Not mStateResult Is Nothing Then CapacityStateMx = mStateResult.Mxint
 End Property
 
-' Итоговый reusable named-state CapacityState, если он найден.
+' Возвращает внутренний момент My предельного состояния относительно начала модели, Н*мм.
+' При отсутствии состояния возвращает 0; его наличие проверяется отдельно.
 Public Property Get CapacityStateMy() As Double
     If Not mStateResult Is Nothing Then CapacityStateMy = mStateResult.Myint
 End Property
@@ -381,7 +379,7 @@ Public Property Get MomentUltimate() As Double
     MomentUltimate = mMomentUltimate
 End Property
 
-' Итоговый reusable named-state CapacityState, если он найден.
+' Показывает, сохранено ли предельное напряжённо-деформированное состояние CapacityState.
 Public Property Get CapacityStateAvailable() As Boolean
     CapacityStateAvailable = Not mStateResult Is Nothing
 End Property
@@ -392,12 +390,14 @@ Public Property Get CapacityEpsilon0() As Double
     If Not mStateResult Is Nothing Then CapacityEpsilon0 = mStateResult.Epsilon0
 End Property
 
-' Итоговый reusable named-state CapacityState, если он найден.
+' Возвращает сохранённую кривизну kappaX предельного состояния, 1/мм.
+' Ноль при отсутствии состояния не подтверждает найденное равновесие.
 Public Property Get CapacityKappaX() As Double
     If Not mStateResult Is Nothing Then CapacityKappaX = mStateResult.KappaX
 End Property
 
-' Итоговый reusable named-state CapacityState, если он найден.
+' Возвращает сохранённую кривизну kappaY предельного состояния, 1/мм.
+' Ноль при отсутствии состояния не подтверждает найденное равновесие.
 Public Property Get CapacityKappaY() As Double
     If Not mStateResult Is Nothing Then CapacityKappaY = mStateResult.KappaY
 End Property
@@ -417,7 +417,7 @@ Public Property Get ReserveFactor() As Double
     ReserveFactor = mLambdaCapacity
 End Property
 
-' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Завершает заполнение и защищает результат от дальнейших изменений.
 ' Закрывает сохраненное CapacityState вместе с предельными числами и meta.
 ' Если точки нет, НДС не создается; повторный вызов безопасен.
 Friend Sub Freeze()
@@ -426,8 +426,8 @@ Friend Sub Freeze()
     mFrozen = True
 End Sub
 
-' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
-' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+' Запрещает изменение результата после передачи потребителям.
+' Для повторного расчёта создаётся новый объект, а прежний результат сохраняется.
 Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCapacityResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."

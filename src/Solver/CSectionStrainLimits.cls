@@ -9,8 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Общий критерий предельной плоскости: бетон в сжатии/растяжении и арматура
-' в обоих направлениях. Оценивает фактические деформации, не прогноз усилий.
+' ==========================================================================
+' Проверка предельных деформаций бетона и арматуры
+' ==========================================================================
+' Сопоставляет фактические деформации элементов с заданными пределами:
+' сжатие бетона, активное растяжение бетона и оба знака деформаций арматуры.
+' Сохраняет наибольшее использование предела и соответствующий элемент.
+
 Private mConcreteCompression As Double, mConcreteTension As Double
 Private mSteelCompression As Double, mSteelTension As Double
 Private mTensionEnabled As Boolean
@@ -113,8 +118,7 @@ Private Sub StoreIfLarger(ByVal value As Double, ByVal strain As Double, _
     mState = state: mDescription = description
 End Sub
 
-' Сохранённый коэффициент использования проверяемого предела; смысл предела задаёт результат
-' этого класса.
+' Возвращает наибольшее отношение фактической деформации к её физическому пределу.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property

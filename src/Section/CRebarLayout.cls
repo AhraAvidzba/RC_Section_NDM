@@ -203,7 +203,7 @@ Public Property Get BarMemberships(ByVal index As Long) As Variant
     End If
 End Property
 
-' Количество записей, сохранённых в контейнере этого класса.
+' Возвращает количество сохранённых записей.
 Public Property Get Count() As Long
     Count = mCount
 End Property

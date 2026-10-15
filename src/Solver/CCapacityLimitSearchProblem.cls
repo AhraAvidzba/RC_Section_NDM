@@ -10,11 +10,11 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Адаптер Capacity для общего LimitSearch
+' Связь расчёта несущей способности с общим поиском предела
 ' ==========================================================================
-' Класс прячет CCapacitySolver за общим ILimitSearchProblem. Одномерный
-' search работает с этим адаптером как с источником probe-функции и приемником
-' результата, не зная о внутренних полях несущей способности.
+' Реализует ILimitSearchProblem через CCapacitySolver: передаёт оценку пробных
+' точек, критерии и приём результата. Общий численный поиск использует
+' эти операции независимо от внутренних данных расчёта несущей способности.
 
 Implements ILimitSearchProblem
 
@@ -44,22 +44,22 @@ Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCapacity
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает начальный шаг множителя нагрузки lambda для поиска предела.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = mCapacity.LimitSearchInitialLambdaStep
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает заданную техническую верхнюю границу множителя lambda.
 Private Property Get ILimitSearchProblem_MaxLambda() As Double
     ILimitSearchProblem_MaxLambda = mCapacity.LimitSearchMaxLambda
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает допуск уточнения предельного множителя нагрузки lambda.
 Private Property Get ILimitSearchProblem_LambdaTolerance() As Double
     ILimitSearchProblem_LambdaTolerance = mCapacity.LimitSearchLambdaTolerance
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает максимальное число итераций общего поиска предела.
 Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCapacity.LimitSearchMaxIterations
 End Property
@@ -70,22 +70,22 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = 0
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает выбранный численный метод поиска предельной нагрузки.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = mCapacity.LimitSearchCapacitySearchMethod()
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Показывает, подтверждена ли сходимость поиска предельной точки.
 Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mCapacity.Converged
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает сохранённый код физического предела или исхода поиска.
 Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCapacity.LimitState
 End Property
 
-' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+' Возвращает накопленный диагностический журнал поиска предела.
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     If Not mCapacity Is Nothing Then ILimitSearchProblem_DiagnosticLog = mCapacity.DiagnosticLog
 End Property
@@ -505,7 +505,7 @@ Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
         ILimitSearchProblem_StoppedTerminally = mCapacity.Converged Or mCapacity.LimitSearchHasTerminalFailure
 End Property
 
-' Возвращает причину текущей задачи; без Capacity причина остается пустой.
+' Возвращает сохранённое пояснение причины остановки поиска.
 Private Property Get ILimitSearchProblem_StopReason() As String
     If Not mCapacity Is Nothing Then ILimitSearchProblem_StopReason = mCapacity.StopReason
 End Property

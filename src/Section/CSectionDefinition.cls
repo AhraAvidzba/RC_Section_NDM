@@ -9,10 +9,14 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Неизменяемое описание формы, путей, армирования и аннотаций.
-' После публикации содержит только подготовленную геометрию и данные;
-' заполнение доступно общему фасаду; Excel/context не сохраняются.
-' Определение хранит роли и ссылки. Query проверяет геометрию; executor проверяет размещение при Build.
+' ==========================================================================
+' Готовое описание геометрии, армирования и аннотаций сечения
+' ==========================================================================
+' Хранит линии, роли бетонных границ, правила размещения арматуры и связи
+' аннотаций. Заполняется через CSectionDefinitionBuilder и после Seal не изменяется.
+' Геометрию проверяет CSectionGeometryQuery; фактическое размещение стержней
+' проверяет CRebarRuleExecutor при сборке. Ссылки на Excel не сохраняются.
+
 Private mTypeID As String, mVersion As Long, mSealed As Boolean ' Тип, версия схемы и завершение деклараций.
 Private mPaths As Object, mGroups As Object, mAnchors As Object, mSources As Object ' Именованные линии, группы, точки и адреса ввода.
 Private mLoops() As TSectionLoop, mLoopCount As Long ' Роли Outer/Opening и явные связи отверстий с наружными границами.
@@ -45,7 +49,8 @@ Friend Sub AddAnchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Dou
     mAnchors.Add anchorID, Array(x, y)
 End Sub
 
-' Возвращаются скаляры: изменение переменных вызывающей стороны не меняет снимок.
+' Возвращает координаты именованной точки отдельными числами;
+' изменение полученных переменных не меняет сохранённое описание.
 Public Sub AnchorCoordinates(ByVal anchorID As String, ByRef x As Double, ByRef y As Double)
     If Not mAnchors.Exists(anchorID) Then DefinitionError "Не найдена привязка '" & anchorID & "'.", anchorID, "MISSING_ANCHOR"
     x = CDbl(mAnchors(anchorID)(0)): y = CDbl(mAnchors(anchorID)(1))
@@ -58,7 +63,7 @@ Friend Sub AddSource(ByVal entityID As String, ByVal reference As String)
     mSources(entityID) = reference
 End Sub
 
-' Читает скалярный SourceMap по ID; отсутствующая связь возвращает пустую строку.
+' Возвращает адрес исходного параметра по ID; при отсутствии связи возвращает пустую строку.
 Public Function SourceReference(ByVal entityID As String) As String
     If mSources.Exists(entityID) Then SourceReference = CStr(mSources(entityID))
 End Function
@@ -67,15 +72,15 @@ End Function
 Public Property Get TypeID() As String: TypeID = mTypeID: End Property
 ' Положительная версия схемы определения.
 Public Property Get SchemaVersion() As Long: SchemaVersion = mVersion: End Property
-' Опубликован ли объект; published геометрия не изменяется.
+' Показывает, завершено ли описание; после завершения его геометрия не изменяется.
 Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
 ' Число зарегистрированных путей.
 Public Property Get PathCount() As Long: PathCount = mPaths.Count: End Property
-' Число подготовленных материальных loops.
+' Возвращает число замкнутых границ бетона: наружных контуров и отверстий.
 Public Property Get LoopCount() As Long: LoopCount = mLoopCount: End Property
 ' Число объявленных правил, включая выключенные.
 Public Property Get RuleCount() As Long: RuleCount = mRuleCount: End Property
-' Число объявленных annotation rules.
+' Возвращает число объявленных размеров, подписей и текстовых аннотаций.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 
 ' Читает опубликованный неизменяемый путь по ID.
@@ -95,8 +100,8 @@ Public Function TargetPaths(ByVal targetID As String) As Variant
     End If
 End Function
 
-' Возвращает clone подготовленной бетонной области, без Excel или повторной интерпретации
-' рецепта.
+' Возвращает независимую копию подготовленной области бетона
+' без повторного чтения или выполнения рецепта.
 Public Function ConcreteDomain() As CConcreteRegion
     RequireSealed
     Set ConcreteDomain = mRegion.Clone
@@ -169,7 +174,7 @@ Friend Sub AddLoop(ByRef value As TSectionLoop)
     mLoops(mLoopCount) = value
 End Sub
 
-' Сохраняет арматурное правило и его независимый снимок options.
+' Сохраняет правило размещения арматуры с независимой копией дополнительных параметров.
 Friend Sub AddRule(ByRef value As TRebarRule)
     RequireMutable
     If value.DistributionScope <> PerPath Then DefinitionError "Правило '" & value.RuleID & "': поддерживается DistributionScope=PerPath."
@@ -225,8 +230,8 @@ Friend Function RuleIndex(ByVal ruleID As String) As Long
     DefinitionError "Не найден исходный ряд '" & ruleID & "'."
 End Function
 
-' Общая topology проверяет фактическое вложение в заявленный Outer, все
-' отверстия и независимые области. Нельзя переопределить Role по имени.
+' Проверяет наружные контуры, отверстия, их вложенность и независимые бетонные области.
+' После успешной проверки запрещает дальнейшее изменение описания.
 Friend Sub Seal()
     RequireMutable
     If mLoopCount = 0 Then DefinitionError "Не задан наружный контур бетона."
@@ -316,7 +321,7 @@ Private Sub ValidateRuleGraph(ByVal index As Long, ByRef visiting() As Long)
     visiting(index) = 2
 End Sub
 
-' Возвращает отдельный контейнер аналитических материальных Outer/Opening.
+' Возвращает отдельный контейнер точных наружных границ и отверстий бетона.
 Public Function MaterialContours() As CSectionContours
     Dim result As CSectionContours, i As Long
     Set result = New CSectionContours
@@ -324,8 +329,7 @@ Public Function MaterialContours() As CSectionContours
     Set MaterialContours = result
 End Function
 
-' Записывает единственный контурный snapshot в переданный контейнер; destination предварительно
-' очищается.
+' Копирует точные границы бетона в переданный контейнер, предварительно очищая его.
 Public Sub WriteContours(ByVal result As CSectionContours)
     RequireSealed
     If result Is Nothing Then DefinitionError "Контейнер контуров не передан."

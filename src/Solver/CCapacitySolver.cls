@@ -12,17 +12,12 @@ Option Explicit
 ' ==========================================================================
 ' Поиск несущей способности сечения
 ' ==========================================================================
-' Класс готовит strength-критерий, стартовые плоскости и итог несущей способности.
-' Численные циклы выполняют общие CLoadMultiplierSearch/CUltimateStrainSearch.
-' Обычные пробные НДС решает CStateSolutionRunner; для предельной плоскости
-' общий Search использует оценку усилий CSectionSolver и доменные невязки.
-' Локальные пробные точки не публикуются как конечные named states.
-'
-' На вход класса передается универсальная траектория нагрузки:
-' N = N0 + lambda*Nbase, Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
-' Это позволяет одним алгоритмом считать lambda*Mx, lambda*My, lambda*Mxy,
-' lambda*N и lambda*NMxy,
-' не плодя отдельные пользовательские ветви внутри расчетного ядра.
+' Готовит критерий прочности, начальные поля деформаций и итоговый результат.
+' Численные циклы выполняют CLoadMultiplierSearch и CUltimateStrainSearch;
+' обычное равновесие пробных нагрузок решает CStateSolutionRunner.
+' Нагрузка задаётся общей зависимостью: N = N0 + lambda*Nbase,
+' Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
+' Промежуточные пробы не выдаются как конечные расчётные состояния.
 
 Private Const STATE_ACCEPTABLE As String = "Acceptable"
 Private Const STATE_CONCRETE_LIMIT As String = "ConcreteStrainLimit"

@@ -10,19 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Запуск прямого состояния НДС
+' Решение НДС для заданных N + Mx + My
 ' ==========================================================================
-' CStateSolutionRunner управляет обычным равновесием для заданных N + Mx + My,
-' включая named-state и промежуточные пробы общего поиска. Он создает
-' CSectionSolver, задает ему настройки,
-' подбирает стартовую плоскость через CStateGuessBuilder и, если первая попытка
-' не сошлась, пробует согласованные повторные старты в technical extension.
-'
-' В классе нет выбора расчетного профиля, диаграмм Strength/CrackedNDS и нет записи
-' Results. Материалы уже должны быть подготовлены CMaterialModelProvider, а
-' инженерный orchestration-слой после этого только читает готовый результат: сошелся
-' ли solver, вышло ли состояние в extension и находится ли оно в физических
-' пределах диаграммы.
+' Настраивает CSectionSolver и получает начальное приближение через
+' CStateGuessBuilder. При несходимости выполняет предусмотренные повторные
+' старты, в том числе с разрешённым техническим продолжением диаграмм.
+' Возвращает сходимость, использование продолжения и проверку физических
+' пределов. Модели материалов заранее готовит CMaterialModelProvider.
 
 Private Const NEAR_ZERO As Double = 0.000000001 ' Общий допуск для распознавания почти нулевого усилия/момента.
 
@@ -714,23 +708,22 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
-' Последний solver прямого НДС, успешный или диагностический.
+' Возвращает объект последней попытки решения НДС, в том числе неуспешной.
 Public Property Get ResultSolver() As CSectionSolver
     Set ResultSolver = mSolver
 End Property
 
-' Возвращают сходимость, причину остановки и число итераций последнего solver-а.
-' Если попытки еще не было, значения остаются False, пустой строкой и нулем.
+' Показывает, найдено ли равновесие последней попыткой; до первого запуска возвращает False.
 Public Property Get Converged() As Boolean
     If Not mSolver Is Nothing Then Converged = mSolver.Converged
 End Property
 
-' Последний solver прямого НДС, успешный или диагностический.
+' Возвращает причину остановки последней попытки решения НДС.
 Public Property Get StopReason() As String
     If Not mSolver Is Nothing Then StopReason = mSolver.StopReason
 End Property
 
-' Последний solver прямого НДС, успешный или диагностический.
+' Возвращает число итераций последней попытки решения НДС.
 Public Property Get Iterations() As Long
     If Not mSolver Is Nothing Then Iterations = mSolver.Iterations
 End Property

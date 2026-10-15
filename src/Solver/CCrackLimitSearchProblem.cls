@@ -10,11 +10,11 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Адаптер CrackFormation для общего LimitSearch
+' Связь расчёта образования трещины с общим поиском предела
 ' ==========================================================================
-' Класс прячет CCrackFormationCalculator за общим ILimitSearchProblem. Доменный
-' калькулятор хранит критерий образования трещины, Pre/Post-state и
-' crack-диагностику, но общий search обращается к нему только через контракт.
+' Реализует ILimitSearchProblem через CCrackFormationCalculator.
+' Передаёт оценку пробной нагрузки и приём результата; критерий бетона,
+' состояния до и после трещины и диагностику хранит расчёт образования трещины.
 
 Implements ILimitSearchProblem
 
@@ -52,22 +52,22 @@ Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = rkCrackFormation
 End Property
 
-' Начальный шаг множителя нагрузки lambda для предельного поиска.
+' Возвращает начальный шаг множителя нагрузки lambda для поиска предела.
 Private Property Get ILimitSearchProblem_InitialLambdaStep() As Double
     ILimitSearchProblem_InitialLambdaStep = 1#
 End Property
 
-' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+' Возвращает заданную техническую верхнюю границу множителя lambda.
 Private Property Get ILimitSearchProblem_MaxLambda() As Double
     ILimitSearchProblem_MaxLambda = mCrack.LimitSearchCrackBracketLimit
 End Property
 
-' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+' Возвращает допуск уточнения предельного множителя нагрузки lambda.
 Private Property Get ILimitSearchProblem_LambdaTolerance() As Double
     ILimitSearchProblem_LambdaTolerance = mCrack.LimitSearchCrackLambdaTolerance
 End Property
 
-' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+' Возвращает максимальное число итераций общего поиска предела.
 Private Property Get ILimitSearchProblem_MaxIterations() As Long
     ILimitSearchProblem_MaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
@@ -77,23 +77,22 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = mCrack.LimitSearchCrackMaxIterations
 End Property
 
-' Настроенный метод поиска предела для данной задачи.
+' Возвращает выбранный численный метод поиска предельной нагрузки.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = "Bisection"
 End Property
 
-' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+' Показывает, подтверждена ли сходимость поиска предельной точки.
 Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mCrack.Converged
 End Property
 
-' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+' Возвращает сохранённый код физического предела или исхода поиска.
 Private Property Get ILimitSearchProblem_LimitState() As String
     ILimitSearchProblem_LimitState = mCrack.StopReason
 End Property
 
-' Возвращает журнал текущей Formation-задачи; отсутствие задачи оставляет
-' строку пустой и не создает новый расчет для получения диагностики.
+' Возвращает накопленный диагностический журнал поиска предела.
 Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     If Not mCrack Is Nothing Then ILimitSearchProblem_DiagnosticLog = mCrack.DiagnosticLog
 End Property
@@ -385,7 +384,7 @@ Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = mCrack.LimitSearchStoppedTerminally()
 End Property
 
-' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+' Возвращает сохранённое пояснение причины остановки поиска.
 Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mCrack.StopReason
 End Property

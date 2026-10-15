@@ -9,14 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Неизменяемый табличный снимок для рецептов. Только значения и адреса;
-' нет ссылок на Excel и знаний о Circle/RectSet или других типах сечений.
+' ==========================================================================
+' Сохранённые значения входной таблицы рецепта
+' ==========================================================================
+' Хранит неизменяемую копию значений и адресов ячеек, без ссылок на Excel.
+' Проверяет типы значений и предоставляет общий способ чтения параметров;
+' назначение строк и столбцов определяет конкретный рецепт сечения.
+
 Private mName As String
 Private mValues As Variant, mAddresses As Variant
 Private mRows As Long, mColumns As Long
 
-' Копирует двумерные scalar values и согласованные addresses один раз; Excel-объекты не
-' сохраняет.
+' Копирует двумерные значения и соответствующие адреса ячеек один раз.
+' Объекты Excel в таблице не сохраняются.
 Public Sub Initialize(ByVal tableName As String, ByVal values As Variant, Optional ByVal addresses As Variant)
     If mRows > 0 Then InputError 0, 0, "Снимок таблицы уже создан; повторная инициализация запрещена."
     On Error GoTo Invalid
@@ -53,11 +58,11 @@ Invalid:
     Err.Raise vbObjectError + 5525, "CSectionInputTable", "Таблица '" & tableName & "': требуется двумерный массив значений без объектов и согласованный массив адресов."
 End Sub
 
-' Имя корневого блока snapshot.
+' Возвращает имя сохранённой входной таблицы.
 Public Property Get Name() As String: Name = mName: End Property
-' Число строк неизменяемого input snapshot.
+' Возвращает число строк сохранённой входной таблицы.
 Public Property Get RowCount() As Long: RowCount = mRows: End Property
-' Число столбцов input snapshot.
+' Возвращает число столбцов сохранённой входной таблицы.
 Public Property Get ColumnCount() As Long: ColumnCount = mColumns: End Property
 
 ' Возвращает исходный адрес ячейки или программный tableName[row,col].
@@ -65,7 +70,7 @@ Public Function SourceReference(ByVal row As Long, ByVal column As Long) As Stri
     CheckCell row, column: SourceReference = mAddresses(row, column)
 End Function
 
-' Читает scalar snapshot; ошибка Excel в ячейке даёт адресное исключение.
+' Возвращает сохранённое значение ячейки; ошибка Excel вызывает исключение с её адресом.
 Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant
     CheckCell row, column
     If IsError(mValues(row, column)) Then InputError row, column, "Ячейка содержит ошибку Excel. Исправьте значение или формулу."
@@ -77,7 +82,8 @@ Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean
     IsBlank = BlankValue(CellValue(row, column))
 End Function
 
-' Читает непустой текст либо явно переданный fallback, обрезая крайние пробелы.
+' Читает текст с удалением пробелов по краям; для пустого значения использует
+' явно переданную замену, иначе сообщает об ошибке.
 Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Variant) As String
     Dim value As Variant
     value = CellValue(row, column)
@@ -106,8 +112,8 @@ Invalid:
     InputError row, column, "Число выходит за допустимый диапазон. Введите число меньшего модуля."
 End Function
 
-' Читает весь неотрицательный диапазон Long. Допустимость общего числа
-' активных позиций проверяет executor до выделения массива или цикла.
+' Читает неотрицательное целое число в диапазоне Long. Общее число активных
+' позиций проверяет CRebarRuleExecutor до выделения массивов и расстановки.
 Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As Long = 0) As Long
     Dim value As Double
     value = Number(row, column, defaultValue)
@@ -116,7 +122,8 @@ Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal de
     Count = CLng(value)
 End Function
 
-' Проверяет вариант по allowed без учёта регистра и возвращает каноническое значение allowed.
+' Проверяет значение по списку allowed без учёта регистра
+' и возвращает написание, указанное в этом списке.
 Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As Variant, _
         Optional ByVal defaultValue As String = vbNullString) As String
     Dim value As String, item As Variant
@@ -127,7 +134,7 @@ Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As
     InputError row, column, "Недопустимый вариант '" & value & "'. Выберите: " & Join(allowed, ", ") & "."
 End Function
 
-' Читает обязательное число и один раз переводит input length в мм через CUnitSystem.
+' Читает обязательную длину и переводит её из входных единиц в мм через CUnitSystem.
 Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then InputError row, column, "Не передана система единиц."
     Length = units.InputLengthToInternal(Number(row, column))

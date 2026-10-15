@@ -10,15 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Пакетный расчет сочетаний нагрузок
+' Пакетный расчёт сочетаний нагрузок
 ' ==========================================================================
-' CBatchSectionCalculator выполняет для каждого LC расчеты, включенные его
-' профилем: прямое НДС, несущую способность, устойчивость и трещины. Класс
-' хранит исходные строки и готовые typed results каждого сочетания, чтобы
-' writer мог выгрузить сводку и Results без повторного обращения к solver-ам.
-'
-' Здесь нет чтения Excel-ячеек и нет генерации геометрии. На вход уже должны
-' прийти CSectionModel, материалы и нормализованные усилия N + Mx + My.
+' Выполняет для каждого сочетания проверки, включённые его расчётным профилем:
+' НДС, несущую способность, устойчивость и трещины. Сохраняет исходные нагрузки
+' и результаты для записи на лист Results без повторного решения равновесия.
+' Получает готовую модель CSectionModel, материалы и усилия N + Mx + My
+' во внутренних единицах; чтение ячеек Excel и построение геометрии выполняются отдельно.
 
 Private Const INITIAL_COMBINATION_CAPACITY As Long = 20 ' Начальный размер внутренних массивов; при расширении rngLoadCombinations хранилище растет.
 Private Const COMBINATION_CAPACITY_STEP As Long = 20 ' Шаг расширения, чтобы не делать ReDim Preserve на каждой новой строке LC.
@@ -1832,27 +1830,27 @@ Public Property Get InputProfileId(ByVal index As Long) As String
     InputProfileId = mInputs(index).ProfileId
 End Property
 
-' Рабочие усилия текущего запуска; исходная строка не изменяется.
+' Возвращает рабочую продольную силу текущего расчёта, Н; исходная строка сочетания сохраняется.
 Public Property Get N(ByVal index As Long) As Double
     N = mWorkingLoads(index).N
 End Property
 
-' Рабочие усилия текущего запуска; исходная строка не изменяется.
+' Возвращает рабочий момент Mx относительно начала координат модели, Н*мм.
 Public Property Get Mx(ByVal index As Long) As Double
     Mx = mWorkingLoads(index).InternalMx
 End Property
 
-' Рабочие усилия текущего запуска; исходная строка не изменяется.
+' Возвращает рабочий момент My относительно начала координат модели, Н*мм.
 Public Property Get My(ByVal index As Long) As Double
     My = mWorkingLoads(index).InternalMy
 End Property
 
-' Рабочие усилия текущего запуска; исходная строка не изменяется.
+' Возвращает рабочий момент Mx в пользовательской точке приложения нагрузки, Н*мм.
 Public Property Get UserMx(ByVal index As Long) As Double
     UserMx = mWorkingLoads(index).LoadPointMx
 End Property
 
-' Рабочие усилия текущего запуска; исходная строка не изменяется.
+' Возвращает рабочий момент My в пользовательской точке приложения нагрузки, Н*мм.
 Public Property Get UserMy(ByVal index As Long) As Double
     UserMy = mWorkingLoads(index).LoadPointMy
 End Property
@@ -1901,7 +1899,7 @@ Public Property Get ResultAt(ByVal index As Long) As CCombinationResult
     Set ResultAt = mResults(index)
 End Property
 
-' Рабочие усилия текущего запуска; исходная строка не изменяется.
+' Возвращает Mx после учёта устойчивости в пользовательской точке приложения нагрузки, Н*мм.
 Public Property Get StabilityLoadPointMx(ByVal index As Long) As Double
     StabilityLoadPointMx = mWorkingLoads(index).LoadPointMx
 End Property
@@ -2026,7 +2024,7 @@ Public Property Get GoverningCombinationID() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationID = mInputs(mGoverningCombinationIndex).CombinationID
 End Property
 
-' Индекс LC, который стал определяющим в batch summary.
+' Возвращает имя определяющего сочетания для общей сводки пакетного расчёта.
 Public Property Get GoverningCombinationName() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationName = mInputs(mGoverningCombinationIndex).Comment
 End Property
@@ -2042,7 +2040,7 @@ Public Property Get CrackGoverningCombinationID() As String
     If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationID = mInputs(mCrackGoverningCombinationIndex).CombinationID
 End Property
 
-' Индекс LC с минимальным запасом по раскрытию трещин.
+' Возвращает имя сочетания с минимальным запасом по раскрытию трещин.
 Public Property Get CrackGoverningCombinationName() As String
     If mCrackGoverningCombinationIndex > 0 Then CrackGoverningCombinationName = mInputs(mCrackGoverningCombinationIndex).Comment
 End Property
@@ -2185,19 +2183,19 @@ Public Property Get StrengthDirectStateRequested(ByVal index As Long) As Boolean
         StrengthDirectStateRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthDirectStateEnabled
 End Property
 
-' Каталог расчетных профилей PR1/PR2/... из Config.
+' Показывает, запрошена ли проверка несущей способности профилем данного сочетания.
 Public Property Get StrengthCapacityRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StrengthCapacityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StrengthCapacityEnabled
 End Property
 
-' Каталог расчетных профилей PR1/PR2/... из Config.
+' Показывает, запрошен ли расчёт ширины раскрытия трещин профилем данного сочетания.
 Public Property Get CrackWidthRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         CrackWidthRequested = mProfiles.ProfileById(mInputs(index).ProfileId).CrackWidthEnabled
 End Property
 
-' Каталог расчетных профилей PR1/PR2/... из Config.
+' Показывает, запрошена ли проверка устойчивости профилем данного сочетания.
 Public Property Get StabilityRequested(ByVal index As Long) As Boolean
     If mProfiles.HasProfile(mInputs(index).ProfileId) Then _
         StabilityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StabilityEnabled

@@ -10,12 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Канонический результат одного сочетания нагрузок
+' Общий результат одного сочетания нагрузок
 ' ==========================================================================
-' Содержит typed subtrees прочности, трещин и устойчивости и repository named
-' states. Численные данные принадлежат конечным result-объектам и не копируются
-' в плоскую таблицу. Здесь собираются только итоговые meta и комментарии LC;
-' класс не решает равновесие, не читает Config и не пишет Excel.
+' Объединяет результаты прочности, трещин и устойчивости и хранит полученные
+' расчётные состояния. Численные данные остаются в соответствующих объектах;
+' здесь собираются итоговый статус сочетания и пояснения к нему.
+' Класс получает готовые результаты и передаёт их средствам записи на лист Results.
 
 Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
 Private mProfileId As String ' Снимок выбранного профиля одной строки сочетаний.
@@ -47,19 +47,18 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     mDiagramExtensionEnabled = False
 End Sub
 
-' Display-статусы являются производными от typed meta и не имеют setter-а.
+' Возвращает внешний статус сочетания по сохранённым статусам отдельных проверок.
 Public Property Get Status() As String
     Status = Policy.ExternalStatus(OverallMeta)
 End Property
 
-' Возвращает display-итог образования/раскрытия нормальной трещины;
-' независимая проверка продольных трещин в этот статус не включается.
+' Возвращает общий статус образования и раскрытия нормальных трещин.
+' Продольные трещины проверяются отдельно и в этот статус не входят.
 Public Property Get NormalCrackStatus() As String
     NormalCrackStatus = Policy.ExternalStatus(CrackMeta)
 End Property
 
-' Возвращает display-итог всего crack subtree, включая продольные трещины.
-' Источником является готовая агрегированная meta, а не строки соседних ячеек.
+' Возвращает общий статус проверок трещин, включая продольные.
 Public Property Get CrackSummaryStatus() As String
     CrackSummaryStatus = Policy.ExternalStatus(CrackSummaryMeta)
 End Property
@@ -130,12 +129,12 @@ Public Property Get StrengthMeta() As CResultMeta
     Set StrengthMeta = mStrengthResult.ResultMeta
 End Property
 
-' Возвращает meta непосредственно из канонического result-subtree.
+' Возвращает статус и пояснение расчёта НДС при заданной нагрузке.
 Public Property Get DirectStateMeta() As CResultMeta
     Set DirectStateMeta = mStrengthResult.DirectMeta
 End Property
 
-' DirectState и Capacity.
+' Возвращает статус и пояснение расчёта несущей способности.
 Public Property Get CapacityMeta() As CResultMeta
     Set CapacityMeta = mStrengthResult.CapacityMeta
 End Property
@@ -188,42 +187,42 @@ Public Property Get CrackSummaryMeta() As CResultMeta
     Set CrackSummaryMeta = mCrackResult.ResultMeta
 End Property
 
-' Возвращает meta соответствующего узла без параллельного кэша статусов.
+' Возвращает статус и пояснение определения нагрузки образования трещины.
 Public Property Get CrackFormationMeta() As CResultMeta
     Set CrackFormationMeta = mCrackResult.Formation.ResultMeta
 End Property
 
-' Возвращает meta соответствующего узла без параллельного кэша статусов.
+' Возвращает статус и пояснение текущего НДС для расчёта трещин.
 Public Property Get CrackCurrentStateMeta() As CResultMeta
     Set CrackCurrentStateMeta = mCrackResult.CurrentStateMeta
 End Property
 
-' Возвращает meta соответствующего узла без параллельного кэша статусов.
+' Возвращает статус и пояснение расчёта ширины раскрытия нормальных трещин.
 Public Property Get CrackWidthMeta() As CResultMeta
     Set CrackWidthMeta = mCrackResult.Width.ResultMeta
 End Property
 
-' Возвращает meta соответствующего узла без параллельного кэша статусов.
+' Возвращает статус и пояснение проверки продольных трещин.
 Public Property Get LongitudinalCrackMeta() As CResultMeta
     Set LongitudinalCrackMeta = mCrackResult.Longitudinal.ResultMeta
 End Property
 
-' Возвращает meta соответствующего узла без параллельного кэша статусов.
+' Возвращает статус и пояснение проверки устойчивости.
 Public Property Get StabilityMeta() As CResultMeta
     Set StabilityMeta = mStabilityResult.Meta
 End Property
 
-' Возвращает structured-subtree расчетов по модели прочности.
+' Возвращает готовые результаты НДС по прочности и несущей способности.
 Public Property Get StrengthResult() As CStrengthResult
     Set StrengthResult = mStrengthResult
 End Property
 
-' Возвращает structured-subtree расчета трещин.
+' Возвращает готовые результаты образования, раскрытия и продольных трещин.
 Public Property Get CrackResult() As CCrackResult
     Set CrackResult = mCrackResult
 End Property
 
-' Возвращает structured-subtree проверки устойчивости.
+' Возвращает сохранённый результат проверки устойчивости.
 Public Property Get StabilityResult() As CStabilityResult
     Set StabilityResult = mStabilityResult
 End Property
@@ -347,7 +346,7 @@ Friend Sub SetDiagramExtensionEnabled(ByVal value As Boolean)
     mDiagramExtensionEnabled = value
 End Sub
 
-' Завершает жизненный цикл заполнения перед передачей snapshot потребителю.
+' Завершает заполнение и защищает результат от дальнейших изменений.
 ' Закрывает все три расчетных поддерева и repository данного LC. Общие
 ' State-ссылки не дублируются; повторный вызов безопасен для публикации.
 Friend Sub Freeze()
@@ -359,8 +358,8 @@ Friend Sub Freeze()
     mFrozen = True
 End Sub
 
-' Явно отклоняет изменение уже выданного результата вместо тихой порчи снимка.
-' Для повторного расчета workflow создает новый объект, сохраняя прежние ссылки.
+' Запрещает изменение результата после передачи потребителям.
+' Для повторного расчёта создаётся новый объект, а прежний результат сохраняется.
 Private Sub AssertWritable()
     If mFrozen Then Err.Raise vbObjectError + 4220, "CCombinationResult", _
         "Опубликованный результат нельзя изменить; для нового расчета нужен новый объект."

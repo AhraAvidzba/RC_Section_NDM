@@ -10,8 +10,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Общий исполнитель арматурных правил: позиции, зависимости, проекции и публикация
+' Расстановка арматуры по общим правилам рецепта
 ' ==========================================================================
+' Выполняет независимую расстановку, зависимые ряды и проекцию стержней.
+' Проверяет зависимости правил, попадание в бетон и совпадения позиций.
+' Возвращает готовую CRebarLayout и сохраняет фактические шаги, количество
+' стержней и сведения о правилах, по которым они созданы.
 
 Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Счетчики полные; подробные образцы ограничены по памяти.
 
@@ -36,7 +40,7 @@ Private mDiagnosticRecordsOmitted As Long ' Число событий сверх
 Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections: End Property
 ' Действительно добавленные физические стержни текущего Build, даже при отказе в середине.
 Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property
-' Число явно разрешённых пропусков target hit.
+' Возвращает число позиций без пересечения с целевой линией, пропуск которых разрешён правилом.
 Public Property Get SkippedProjections() As Long: SkippedProjections = mSkippedProjections: End Property
 ' Число заявленных позиций, объединённых с физическим владельцем.
 Public Property Get MergedPositions() As Long: MergedPositions = mMergedPositions: End Property
@@ -48,7 +52,7 @@ Public Property Get BarOverlaps() As Long: BarOverlaps = mBarOverlaps: End Prope
 Public Property Get DiagnosticRecordsOmitted() As Long: DiagnosticRecordsOmitted = mDiagnosticRecordsOmitted: End Property
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic: Set LastDiagnostic = mDiagnostic: End Property
-' Число сохранённых подробных immutable образцов, 0..128.
+' Возвращает число сохранённых подробных диагностических записей, от 0 до 128.
 Public Property Get DiagnosticCount() As Long
     If Not mDiagnostics Is Nothing Then DiagnosticCount = mDiagnostics.Count
 End Property
@@ -773,7 +777,7 @@ Friend Sub Freeze()
     mReadOnly = True
 End Sub
 
-' Статус исполнителя последней успешно собранной модели.
+' Показывает, защищены ли данные исполненных правил от дальнейших изменений.
 Public Property Get IsReadOnly() As Boolean
     IsReadOnly = mReadOnly
 End Property

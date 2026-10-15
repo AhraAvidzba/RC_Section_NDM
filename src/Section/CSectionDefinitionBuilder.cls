@@ -9,22 +9,28 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Декларативный фасад рецепта. Общая математика выполняется query/path;
-' обычный ряд задаётся коротким вызовом, сложный — типизированными options.
-' Initialize открывает одну сборку; Finish закрывает её. Каждая создающая команда сама регистрирует линию.
-' Возвращённый path — ссылка на уже сохранённую линию; Outer/Opening/правило используют её ID.
+' ==========================================================================
+' Команды декларативного описания сечения
+' ==========================================================================
+' Позволяет рецепту задать границы бетона и отверстий, размещение арматуры,
+' размеры и подписи. Геометрические вычисления выполняют общие классы.
+' Initialize начинает описание, Finish проверяет и завершает его.
+' Команда создания линии сразу сохраняет её в описании; возвращённый объект
+' уже зарегистрирован. Другие команды связываются с этой линией по её ID.
+
 Private mDefinition As CSectionDefinition ' Единственное заполняемое определение; после Finish только читается.
 Private mQuery As CSectionGeometryQuery ' Общие операции над линиями и областями, без собственной математики фасада.
 Private mFinished As Boolean ' Повторный Finish и новые команды для опубликованного определения запрещены.
 
-' Открывает один новый фасад с TypeID и версией схемы. Повторная инициализация запрещена.
+' Начинает описание сечения с именем TypeID и версией схемы; повторный вызов запрещён.
 Public Sub Initialize(ByVal typeID As String, Optional ByVal schemaVersion As Long = 1)
     If Not mDefinition Is Nothing Then SectionRecipeError "CSectionDefinitionBuilder", "Фасад уже создан."
     Set mDefinition = New CSectionDefinition: mDefinition.Initialize typeID, schemaVersion
     Set mQuery = New CSectionGeometryQuery
 End Sub
 
-' Создаёт замкнутую окружность CCW от точки +X; один сегмент с тем же ID, что путь.
+' Создаёт и сохраняет окружность: обход против часовой стрелки от направления +X.
+' Окружность содержит один сегмент с тем же ID, что и вся линия.
 Public Function CirclePath(ByVal pathID As String, ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As CGeometryPath
     RequireOpen
     Dim result As CGeometryPath
@@ -34,7 +40,7 @@ Public Function CirclePath(ByVal pathID As String, ByVal centerX As Double, ByVa
     Set CirclePath = result
 End Function
 
-' Создаёт непрерывный открытый путь из одной прямой от первого конца ко второму.
+' Создаёт и сохраняет отрезок от первой заданной точки ко второй.
 Public Function LinePath(ByVal pathID As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double) As CGeometryPath
     RequireOpen
     Dim result As CGeometryPath
@@ -44,7 +50,8 @@ Public Function LinePath(ByVal pathID As String, ByVal x1 As Double, ByVal y1 As
     Set LinePath = result
 End Function
 
-' Создаёт точную дугу по центру/радиусу/startAngle/signed sweep; полный оборот замкнут.
+' Создаёт и сохраняет дугу по центру, радиусу, начальному углу и углу обхода со знаком.
+' Полный оборот образует замкнутую окружность.
 Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal radius As Double, ByVal startAngle As Double, ByVal sweep As Double) As CGeometryPath
     RequireOpen
@@ -79,13 +86,13 @@ Public Sub AddPath(ByVal path As CGeometryPath)
     mDefinition.AddPath path
 End Sub
 
-' Привязки принадлежат модели; пиксельные координаты в рецепте не используются.
+' Сохраняет именованную точку привязки в координатах сечения, мм.
 Public Sub Anchor(ByVal anchorID As String, ByVal x As Double, ByVal y As Double)
     RequireOpen
     mDefinition.AddAnchor anchorID, x, y
 End Sub
 
-' Получает точку конкретного сегмента по ID и параметру [0;1], объявляет именованную привязку.
+' Создаёт именованную точку на выбранном сегменте: параметр от 0 до 1 идёт от начала к концу.
 Public Sub PathAnchor(ByVal anchorID As String, ByVal pathID As String, ByVal segmentID As String, Optional ByVal parameter As Double = 0#)
     RequireOpen
     Dim path As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
@@ -94,7 +101,7 @@ Public Sub PathAnchor(ByVal anchorID As String, ByVal pathID As String, ByVal se
     mDefinition.AddAnchor anchorID, x, y
 End Sub
 
-' Связывает смысловой ID со строкой источника/адреса без сохранения объекта Excel.
+' Связывает ID геометрии или правила с адресом исходного параметра без ссылки на Excel.
 Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)
     RequireOpen
     mDefinition.AddSource entityID, sourceReference
@@ -111,8 +118,8 @@ Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As Str
     mDefinition.AddAnchor anchorID, x, y
 End Sub
 
-' Смещает линию/аналитическую цепочку слева от обхода при положительном signedLeftDistance.
-' Line/line стыки miter; arc стыки должны быть гладкими.
+' Создаёт смещённую линию: положительное signedLeftDistance направлено влево по обходу.
+' Прямые соединяются пересечением продолжений; стыки с дугами должны быть гладкими.
 Public Function Offset(ByVal pathID As String, ByVal sourcePathID As String, ByVal signedLeftDistance As Double) As CGeometryPath
     RequireOpen
     On Error GoTo Failed
@@ -137,8 +144,8 @@ Failed:
     SectionRecipeGeometryError "CSectionDefinitionBuilder", mDefinition.SourceReference(pathID)
 End Function
 
-' Возвращает последнюю диагностику query фасада с SourceMap. Nothing означает отсутствие
-' записанного отказа.
+' Возвращает последнюю причину геометрической ошибки с адресом исходного параметра.
+' Если ошибка не записана, возвращает Nothing.
 Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic
     Dim raw As CGeometryDiagnostic, mapped As CGeometryDiagnostic
     If mQuery Is Nothing Then Exit Property
@@ -161,8 +168,8 @@ Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, _
     mDefinition.AddPath Chain
 End Function
 
-' Создаёт новый путь из существующего изометрией; сохраняет сегментные ID и происхождение,
-' отражение меняет знак sweep.
+' Создаёт новую линию отражением, поворотом и переносом исходной.
+' Сохраняет ID сегментов и сведения об источнике; отражение меняет знак угла дуг.
 Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, ByVal shiftX As Double, ByVal shiftY As Double, _
         Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False) As CGeometryPath
     RequireOpen
@@ -171,8 +178,8 @@ Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, 
     Set Transform = result.WithID(pathID): mDefinition.AddPath Transform
 End Function
 
-' Создаёт замкнутую наружную границу одного прямоугольника от (x,y) с положительными
-' width/height.
+' Создаёт и сохраняет замкнутый прямоугольник от точки (x, y).
+' Ширина width и высота height задаются положительными, мм.
 Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double) As CGeometryPath
     RequireOpen
     Set RectanglePath = mQuery.AdjacentRectangles(pathID, Array(Array(x, y, width, height)))
@@ -187,7 +194,8 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
     mDefinition.AddPath AdjacentRectangles
 End Function
 
-' Объявляет массив ID независимых путей; порядок значим, фиктивные соединения отсутствуют.
+' Объединяет ID независимых линий в именованную группу, сохраняя их порядок.
+' Соединяющие отрезки между линиями не добавляются.
 Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     RequireOpen
     mDefinition.AddGroup groupID, pathIDs
@@ -219,8 +227,8 @@ Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentO
     mDefinition.AddLoop value
 End Sub
 
-' Объявляет n станций на всём рабочем пути с выбранным EndMode; для группы n применяется к
-' каждому пути. n=0 или d=0 выключает правило.
+' Задаёт n мест установки стержней на рабочей части линии с выбранным EndMode.
+' Для группы линий n применяется к каждой линии; n = 0 или d = 0 отключает правило.
 Public Sub RebarByCount(ByVal ruleID As String, ByVal target As String, ByVal count As Long, ByVal diameter As Double, _
         Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule
@@ -230,8 +238,8 @@ Public Sub RebarByCount(ByVal ruleID As String, ByVal target As String, ByVal co
     mDefinition.AddRule value
 End Sub
 
-' Объявляет распределение с достаточным количеством станций для ограничения максимального шага.
-' Фактический шаг может быть меньше заданного.
+' Задаёт размещение стержней с шагом не больше указанного.
+' Общий исполнитель выбирает достаточное количество стержней и фактический шаг.
 Public Sub RebarByMaxStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, _
         Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule
@@ -239,8 +247,8 @@ Public Sub RebarByMaxStep(ByVal ruleID As String, ByVal target As String, ByVal 
     value.Step = step: mDefinition.AddRule value
 End Sub
 
-' Объявляет точный шаг и явное размещение остатка. IncludeBoth/ClosedUniform требуют
-' совместимости рабочей длины с шагом.
+' Задаёт постоянный шаг стержней и способ распределения остатка длины.
+' Режимы IncludeBoth и ClosedUniform требуют совместимости длины с этим шагом.
 Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVal step As Double, ByVal diameter As Double, _
         Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule
@@ -248,7 +256,8 @@ Public Sub RebarByFixedStep(ByVal ruleID As String, ByVal target As String, ByVa
     value.Step = step: mDefinition.AddRule value
 End Sub
 
-' Объявляет явные станции по длине пути. Порядок массива задаёт исходные ordinals.
+' Задаёт стержни в перечисленных расстояниях от начала линии, мм.
+' Порядок значений в массиве определяет исходный порядок позиций.
 Public Sub RebarAtStations(ByVal ruleID As String, ByVal target As String, ByVal stations As Variant, ByVal diameter As Double, _
         Optional ByVal options As CRebarRuleOptions = Nothing, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule
@@ -256,8 +265,8 @@ Public Sub RebarAtStations(ByVal ruleID As String, ByVal target As String, ByVal
     value.ExplicitStations = stations: mDefinition.AddRule value
 End Sub
 
-' Получает связанные позиции по TangentOffset/NormalOffset исходного ряда; не выполняет
-' независимое перераспределение на новом пути.
+' Задаёт зависимый ряд смещениями TangentOffset и NormalOffset от исходных стержней.
+' Зависимые стержни сохраняют связь с исходными, без новой равномерной расстановки.
 Public Sub RebarDependent(ByVal ruleID As String, ByVal sourceRuleID As String, ByVal diameter As Double, _
         ByVal options As CRebarRuleOptions, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule
@@ -265,8 +274,8 @@ Public Sub RebarDependent(ByVal ruleID As String, ByVal sourceRuleID As String, 
     value.SourceRuleID = sourceRuleID: mDefinition.AddRule value
 End Sub
 
-' Проецирует исходные позиции на конечный target. Setbacks фильтруют целевой участок; отсутствие
-' hit обрабатывается явно.
+' Задаёт проекцию исходных позиций на целевую линию. Концевые отступы ограничивают
+' допустимый участок; поведение при отсутствии пересечения задаётся параметрами правила.
 Public Sub RebarProjected(ByVal ruleID As String, ByVal target As String, ByVal sourceRuleID As String, ByVal diameter As Double, _
         ByVal options As CRebarRuleOptions, Optional ByVal steelClass As String = "Rebar")
     Dim value As TRebarRule
@@ -274,8 +283,8 @@ Public Sub RebarProjected(ByVal ruleID As String, ByVal target As String, ByVal 
     value.SourceRuleID = sourceRuleID: mDefinition.AddRule value
 End Sub
 
-' Заполняет общие поля правила и копирует options; диаметр 0 отключает правило, отрицательный
-' отклоняется.
+' Заполняет общие поля правила и копирует дополнительные параметры.
+' Нулевой диаметр отключает правило, отрицательный вызывает ошибку.
 Private Sub PrepareRule(ByRef value As TRebarRule, ByVal ruleID As String, ByVal target As String, ByVal mode As ERebarDistribution, _
         ByVal diameter As Double, ByVal steelClass As String, ByVal options As CRebarRuleOptions)
     RequireOpen
@@ -286,7 +295,8 @@ Private Sub PrepareRule(ByRef value As TRebarRule, ByVal ruleID As String, ByVal
     If diameter < 0# Then SectionRecipeError "CSectionDefinitionBuilder", "Диаметр не может быть отрицательным.", value.SourceReference
 End Sub
 
-' Измерение выбирается по точной геометрии, размещение - отдельно.
+' Задаёт полный вертикальный габарит выбранных линий по их точной геометрии.
+' Сторона размещения размерной линии указывается отдельно.
 Public Sub VerticalExtent(ByVal annotationID As String, ByVal target As String, ByVal name As String, _
         ByVal placementX As Double, Optional ByVal normalX As Double = -1#, Optional ByVal comment As String = "")
     RequireOpen
@@ -296,8 +306,8 @@ Public Sub VerticalExtent(ByVal annotationID As String, ByVal target As String, 
     mDefinition.AddAnnotation value
 End Sub
 
-' Измеряет полный горизонтальный габарит выбранного пути/группы. Это не длина пути и не исходная
-' ширина до скругления.
+' Задаёт полный горизонтальный габарит выбранных линий по их точной геометрии.
+' Измеряется габарит, а не длина линии или ширина до скругления.
 Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String, ByVal name As String, _
         ByVal placementY As Double, Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = "")
     RequireOpen
@@ -307,8 +317,8 @@ Public Sub HorizontalExtent(ByVal annotationID As String, ByVal target As String
     mDefinition.AddAnnotation value
 End Sub
 
-' Объявляет размер между двумя заданными X на уровне placementY. DisplayIncrement округляет
-' только подпись, не геометрию.
+' Задаёт размер от startX до endX на высоте placementY, мм; значение равно endX - startX.
+' DisplayIncrement округляет только подпись. Для положительного размера концы задаются слева направо.
 Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String, _
         ByVal startX As Double, ByVal endX As Double, ByVal placementY As Double, _
         Optional ByVal normalY As Double = 1#, Optional ByVal comment As String = "", Optional ByVal displayIncrement As Double = 0#)
@@ -321,7 +331,8 @@ Public Sub HorizontalDistance(ByVal annotationID As String, ByVal name As String
     mDefinition.AddAnnotation value
 End Sub
 
-' Объявляет вертикальный размер между двумя Y на линии placementX; значение — модуль разности.
+' Задаёт размер между startY и endY на вертикали placementX, мм.
+' Значение равно модулю разности координат; округление подписи не меняет геометрию.
 Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, _
         ByVal startY As Double, ByVal endY As Double, ByVal placementX As Double, _
         Optional ByVal normalX As Double = -1#, Optional ByVal comment As String = "")
@@ -333,7 +344,8 @@ Public Sub VerticalDistance(ByVal annotationID As String, ByVal name As String, 
     mDefinition.AddAnnotation value
 End Sub
 
-' Размер между именованными привязками: Horizontal/Vertical/Aligned.
+' Задаёт размер между двумя именованными точками: горизонтальный, вертикальный
+' или вдоль соединяющего их отрезка, согласно выбранному виду.
 Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String, ByVal endAnchorID As String, _
         ByVal name As String, Optional ByVal measurement As String = "Aligned", _
         Optional ByVal normalX As Double = 0#, Optional ByVal normalY As Double = 0#, Optional ByVal comment As String = "")
@@ -347,8 +359,8 @@ Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String
     mDefinition.AddAnnotation value
 End Sub
 
-' Объявляет точную суммарную длину target-путей и текстовую привязку; не создаёт фиктивную
-' соединяющую линию группы.
+' Задаёт размер по точной суммарной длине выбранных линий и его текстовую привязку.
+' Разрывы между линиями группы не включаются в длину.
 Public Sub PathLength(ByVal annotationID As String, ByVal target As String, ByVal placementAnchorID As String, _
         Optional ByVal name As String = "L", Optional ByVal comment As String = "")
     RequireOpen
@@ -358,15 +370,15 @@ Public Sub PathLength(ByVal annotationID As String, ByVal target As String, ByVa
     mDefinition.AddAnnotation value
 End Sub
 
-' Измеряет радиус конкретной Arc/Circle; параметр выбирает конечную точку радиуса. Прямая —
-' ошибка.
+' Задаёт радиус дуги или окружности; параметр сегмента выбирает конец радиусной линии.
+' Для прямого отрезка вызов отклоняется.
 Public Sub Radius(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _
         Optional ByVal parameter As Double = 0.5, Optional ByVal name As String = "R", Optional ByVal comment As String = "")
     CircularDimension annotationID, pathID, segmentID, parameter, name, comment, False
 End Sub
 
-' Измеряет диаметр конкретной Arc/Circle с противоположным концом на той же окружности. Прямая —
-' ошибка.
+' Задаёт диаметр дуги или окружности; второй конец лежит напротив на той же окружности.
+' Для прямого отрезка вызов отклоняется.
 Public Sub Diameter(ByVal annotationID As String, ByVal pathID As String, ByVal segmentID As String, _
         Optional ByVal parameter As Double = 0.5, Optional ByVal name As String = "D", Optional ByVal comment As String = "")
     CircularDimension annotationID, pathID, segmentID, parameter, name, comment, True
@@ -384,7 +396,8 @@ Private Sub CircularDimension(ByVal annotationID As String, ByVal pathID As Stri
     mDefinition.AddAnnotation value
 End Sub
 
-' Объявляет простой текст на именованной модельной привязке; пиксели/шрифт задаёт общий layout.
+' Задаёт текст с привязкой к именованной точке модели.
+' Шрифт и положение на диаграмме определяет общее оформление схемы.
 Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal textValue As String, _
         Optional ByVal comment As String = "")
     RequireOpen
@@ -394,8 +407,8 @@ Public Sub Text(ByVal annotationID As String, ByVal anchorID As String, ByVal te
     mDefinition.AddAnnotation value
 End Sub
 
-' Привязывает подпись группы к выбранному пути со стороны normalX/Y.
-' Нормаль может быть наклонной; опорная линия определяется по точной геометрии пути.
+' Привязывает общую подпись арматурной группы к выбранной линии.
+' Направление выноски normalX/normalY может быть наклонным.
 Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen
     Dim value As TSectionAnnotation
@@ -404,7 +417,7 @@ Public Sub RebarLabel(ByVal groupID As String, ByVal target As String, ByVal nor
     mDefinition.AddAnnotation value
 End Sub
 
-' Привязывает фактическую подпись группы к концам исполненного ruleID.
+' Привязывает подпись арматурной группы к фактическим концам ряда, заданного ruleID.
 Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen
     Dim value As TSectionAnnotation
@@ -413,7 +426,8 @@ Public Sub RebarRowLabel(ByVal groupID As String, ByVal ruleID As String, ByVal 
     mDefinition.AddAnnotation value
 End Sub
 
-' Подпись по фактическим экстремумам основного ряда, а не по всей траектории.
+' Размещает подпись по крайним координатам стержней основного ряда,
+' а не по полной длине исходной линии расстановки.
 Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, ByVal normalX As Double, ByVal normalY As Double, _
         Optional ByVal reverseDirection As Boolean = False)
     RequireOpen
@@ -423,8 +437,9 @@ Public Sub RebarRowExtentLabel(ByVal groupID As String, ByVal ruleID As String, 
     mDefinition.AddAnnotation value
 End Sub
 
-' Проверяет контуры, ссылки, зависимости и виды аннотаций; публикует неизменяемое описание.
-' Фасад после этого закрыт. Параметры и фактическое размещение стержней проверяет Build до создания сетки.
+' Проверяет контуры, ссылки, зависимости и аннотации и возвращает готовое описание.
+' После этого изменение описания запрещено; фактическую расстановку арматуры
+' проверяет CSectionBuilder до построения бетонной сетки.
 Public Function Finish() As CSectionDefinition
     RequireOpen
     mDefinition.Seal

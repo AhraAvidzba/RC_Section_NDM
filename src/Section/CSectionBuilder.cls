@@ -9,16 +9,23 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Единственная сборка definition -> область -> сетка/арматура -> модель.
-' Тип сечения не анализируется. Источники mesh/layout доступны для проверок
-' из этой же сборки, без повторного вызова рецепта или старых генераторов.
-Private mMesh As CFiberMeshBuilder ' Та же закрытая сетка успешной сборки; getter не копирует массив элементов.
-Private mRebars As CRebarLayout ' Та же закрытая физическая раскладка; getter не копирует стержни.
-Private mRules As CRebarRuleExecutor ' Закрытые позиции и диагностика одной успешной сборки.
+' ==========================================================================
+' Сборка параметрического сечения по описанию рецепта
+' ==========================================================================
+' По готовому CSectionDefinition строит бетонную сетку, размещает арматуру
+' и добавляет размеры и подписи в единую модель CSectionModel.
+' Для всех типов сечения использует одни общие правила построения.
+' Сохраняет сетку и данные расстановки последней успешной сборки:
+' их можно прочитать для проверки без повторного построения сечения.
+
+Private mMesh As CFiberMeshBuilder ' Готовая сетка последней сборки, доступная только для чтения.
+Private mRebars As CRebarLayout ' Готовые стержни последней сборки, доступные только для чтения.
+Private mRules As CRebarRuleExecutor ' Позиции стержней и диагностика последней успешной сборки.
 Private mModel As CSectionModel ' Модель, для которой подготовлены выдаваемые данные.
 Private mModelRevision As Long ' Изменение модели запрещает чтение уже не соответствующей ей сборки.
 
-' Единая сборка definition -> область -> сетка/правила -> CSectionModel -> аннотации; не ветвится по типу.
+' Создаёт единую модель: проверяет описание и арматуру, строит сетку бетона
+' и добавляет контуры, размеры и подписи сечения.
 Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions As TSectionMeshOptions) As CSectionModel
     Set mMesh = Nothing: Set mRebars = Nothing: Set mRules = Nothing: Set mModel = Nothing
     If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Определение не передано."
@@ -28,7 +35,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout, rules As CRebarRuleExecutor
     Dim modelBuilder As CSectionModelBuilder, annotationBuilder As CSectionAnnotationBuilder, model As CSectionModel
     Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
-    ' Правила и размещение проверяются до потенциально дорогой сетки; единственный владелец проверок — rules.
+    ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
     Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry)
     If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "Для параметрического сечения не задан ни один стержень арматуры."
     Set mesh = New CFiberMeshBuilder
@@ -48,30 +55,29 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set Build = model
 End Function
 
-' CFiberMeshBuilder только последней успешно собранной модели; готовую сетку повторно не
-' создавайте.
+' Возвращает готовую бетонную сетку последней успешной сборки без её повторного построения.
 Public Property Get Mesh() As CFiberMeshBuilder
     RequireCurrentModel
     If mMesh Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной сетки."
     Set Mesh = mMesh
 End Property
 
-' Физическая раскладка последней успешной сборки; совпадения уже обработаны явно.
+' Возвращает стержни последней успешной сборки с уже обработанными совпадениями позиций.
 Public Property Get Rebars() As CRebarLayout
     RequireCurrentModel
     If mRebars Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной арматуры."
     Set Rebars = mRebars
 End Property
 
-' Исполнитель последней успешной сборки с фактическими счётчиками/шагами/происхождением.
+' Возвращает исполненные правила расстановки: количество, шаги, связи стержней и диагностику.
 Public Property Get Rules() As CRebarRuleExecutor
     RequireCurrentModel
     If mRules Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно исполненных правил."
     Set Rules = mRules
 End Property
 
-' Запрещает выдачу внутренних данных для модели, геометрия которой уже изменилась.
-' Большие массивы не копируются: проверяются принадлежность и ревизия одного готового объекта.
+' Проверяет, что сохранённые сетка, арматура и правила ещё соответствуют модели.
+' После изменения её геометрии требует новую сборку; большие массивы не копирует.
 Private Sub RequireCurrentModel()
     If mModel Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной модели."
     If mModel.Revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; прежние сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."

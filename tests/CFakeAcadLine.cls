@@ -10,10 +10,10 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Тестовая имитация AutoCAD Line
+' ДЛЯ ТЕСТОВ: имитация отрезка AutoCAD
 ' ==========================================================================
-' Класс нужен только unit-тестам AutoCAD importer-а. Он дает минимальный COM-
-' контракт прямой грани Region: ObjectName, StartPoint, EndPoint и Delete.
+' Предоставляет ObjectName, StartPoint, EndPoint и Delete
+' для проверки чтения прямой грани Region без запуска AutoCAD.
 
 Private mStartPoint(0 To 2) As Double ' Начальная точка тестовой линии в единицах теста.
 Private mEndPoint(0 To 2) As Double ' Конечная точка тестовой линии в единицах теста.

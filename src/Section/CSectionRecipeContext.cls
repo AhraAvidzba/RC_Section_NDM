@@ -9,8 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Ввод рецепта: неизменяемые таблицы и единицы. Готовое definition не хранит
-' context, reader или таблицы; к расчетному ядру передаются только числа.
+' ==========================================================================
+' Входные данные рецепта сечения
+' ==========================================================================
+' Передаёт неизменяемые входные таблицы и правила перевода единиц.
+' Готовое описание сечения не хранит этот контекст или ссылки на Excel;
+' в расчётное ядро поступают подготовленные геометрические данные.
+
 Private mTables As Object
 Private mUnits As CUnitSystem ' Независимая закрытая конфигурация; внешний units не влияет на снимок.
 Private mSealed As Boolean
@@ -25,7 +30,7 @@ Public Sub Initialize(ByVal units As CUnitSystem)
     mTables.CompareMode = vbTextCompare
 End Sub
 
-' Добавляет immutable input snapshot с уникальным именем до Seal.
+' Добавляет сохранённую входную таблицу с уникальным именем до завершения контекста.
 Public Sub AddTable(ByVal table As CSectionInputTable)
     If mTables Is Nothing Or mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст не открыт для заполнения."
     If table Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Таблица не передана."

@@ -212,64 +212,43 @@ Public Property Get FiberCount() As Long
     FiberCount = mFiberCount
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает координату X центра бетонного элемента по индексу, мм.
 Public Property Get FiberX(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberX = mFibers(index).X
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает координату Y центра бетонного элемента по индексу, мм.
 Public Property Get FiberY(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberY = mFibers(index).Y
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает ширину прямоугольной ячейки бетонного элемента, мм.
 Public Property Get FiberWidth(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberWidth = mFibers(index).Width
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает высоту прямоугольной ячейки бетонного элемента, мм.
 Public Property Get FiberHeight(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberHeight = mFibers(index).Height
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает площадь прямоугольной ячейки бетонного элемента: ширина * высота, мм2.
 Public Property Get FiberArea(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberArea = mFibers(index).Area
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает долю площади прямоугольной ячейки, занятую бетоном.
 Public Property Get FiberFillFactor(ByVal index As Long) As Double
     CheckFiberIndex index
     FiberFillFactor = mFibers(index).FillFactor
 End Property
 
-' Генератор бетонной расчетной сетки CFiberMeshBuilder разбивает бетонную геометрию на конечные
-' волокна заданного шага. На выходе получается набор центров и площадей бетонных элементов,
-' который затем переносится в CSectionModel. Класс не знает о нагрузках, материалах и solver-ах:
-' он отвечает только за геометрическую дискретизацию бетонной области.
+' Возвращает идентификатор материала бетонного элемента по индексу.
 Public Property Get FiberMaterialID(ByVal index As Long) As Long
     CheckFiberIndex index
     FiberMaterialID = mFibers(index).MaterialID
@@ -307,7 +286,7 @@ Friend Sub Freeze()
     mReadOnly = True
 End Sub
 
-' Режим сетки последней успешной сборки.
+' Показывает, защищена ли готовая сетка от дальнейших изменений.
 Public Property Get IsReadOnly() As Boolean
     IsReadOnly = mReadOnly
 End Property

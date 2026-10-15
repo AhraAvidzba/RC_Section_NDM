@@ -9,7 +9,12 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Машинная причина отказа геометрии; скалярный снимок без Excel и статуса НДС.
+' ==========================================================================
+' Причина ошибки построения геометрии
+' ==========================================================================
+' Хранит код причины, пояснение и связь с исходными данными.
+' Этот объект описывает геометрическую ошибку независимо от Excel и статуса расчёта НДС.
+
 Private mCode As String, mEntity As String, mRelated As String, mReason As String, mSource As String
 Private mDetail1 As Double, mDetail2 As Double
 
@@ -28,11 +33,11 @@ Public Property Get Code() As String: Code = mCode: End Property
 Public Property Get EntityID() As String: EntityID = mEntity: End Property
 ' ID связанного сегмента/позиции/стержня для локализации причины.
 Public Property Get RelatedEntityID() As String: RelatedEntityID = mRelated: End Property
-' Человекочитаемая причина; не selector/status.
+' Возвращает пояснение причины для человека; код ошибки хранится отдельно в Code.
 Public Property Get Reason() As String: Reason = mReason: End Property
-' Первое численное поле конкретного Code; единицы определяет Code.
+' Возвращает первое численное уточнение причины; смысл и единицы зависят от Code.
 Public Property Get Detail1() As Double: Detail1 = mDetail1: End Property
-' Второе численное поле конкретного Code.
+' Возвращает второе численное уточнение причины; смысл и единицы зависят от Code.
 Public Property Get Detail2() As Double: Detail2 = mDetail2: End Property
 ' Реальный адрес/программный источник, добавленный SourceMap или правилом.
 Public Property Get SourceReference() As String: SourceReference = mSource: End Property

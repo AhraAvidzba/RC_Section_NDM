@@ -1,0 +1,755 @@
+{
+  "schema": 2,
+  "status": "PASS",
+  "classes": 104,
+  "methods": 3530,
+  "missingHeaderCount": 0,
+  "missingMethodCount": 0,
+  "missingHeaders": [],
+  "missingMethods": [],
+  "nonstandardHeaders": [],
+  "baseRef": "480c597",
+  "executableCodeChanges": [],
+  "commentChanges": [
+    {
+      "path": "docs/geometry_refactor/examples/CSectionRecipeMySection.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Batch/CBatchSectionCalculator.cls",
+      "headerChanged": true,
+      "methodCount": 11,
+      "methods": [
+        "N",
+        "Mx",
+        "My",
+        "UserMx",
+        "UserMy",
+        "StabilityLoadPointMx",
+        "GoverningCombinationName",
+        "CrackGoverningCombinationName",
+        "StrengthCapacityRequested",
+        "CrackWidthRequested",
+        "StabilityRequested"
+      ]
+    },
+    {
+      "path": "src/Batch/CCalculationProfile.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Batch/CCalculationProfileCatalog.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Batch/CCombinationResult.cls",
+      "headerChanged": true,
+      "methodCount": 15,
+      "methods": [
+        "Status",
+        "NormalCrackStatus",
+        "CrackSummaryStatus",
+        "DirectStateMeta",
+        "CapacityMeta",
+        "CrackFormationMeta",
+        "CrackCurrentStateMeta",
+        "CrackWidthMeta",
+        "LongitudinalCrackMeta",
+        "StabilityMeta",
+        "StrengthResult",
+        "CrackResult",
+        "StabilityResult",
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Batch/CDirectStateResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Batch/CSectionStateResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Batch/CStateProvider.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Batch/CStateRepository.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Batch/CStateRequest.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Batch/CStrengthResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Common/CLoadPathDescriptor.cls",
+      "headerChanged": true,
+      "methodCount": 7,
+      "methods": [
+        "DisplayName",
+        "NOffset",
+        "NBase",
+        "MxOffset",
+        "MxBase",
+        "MyOffset",
+        "MyBase"
+      ]
+    },
+    {
+      "path": "src/Common/CLoadPathMath.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Common/CLoadPathVector.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Common/CResultMeta.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Common/CResultStatusPolicy.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Crack/CCrackFormationCalculator.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Crack/CCrackFormationResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Crack/CCrackResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Crack/CCrackWidthCalculator.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Crack/CCrackWidthResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Crack/CLongitudinalCrackResult.cls",
+      "headerChanged": true,
+      "methodCount": 2,
+      "methods": [
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Crack/CSP35CrackData.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CAutoCADContourReader.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CBatchResultWriter.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CCrackSummaryWriter.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CExcelAppStateGuard.cls",
+      "headerChanged": true,
+      "methodCount": 4,
+      "methods": [
+        "PropertyName",
+        "ReadProperty",
+        "WriteProperty",
+        "Class_Terminate"
+      ]
+    },
+    {
+      "path": "src/Excel/CNDMResultsWriter.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CPlotAnnotationLayout.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CSectionInputSnapshotReader.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "Capture"
+      ]
+    },
+    {
+      "path": "src/Excel/CSectionPlotDataReader.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CSectionPlotter.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CSectionTypeRegistry.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CStabilitySummaryWriter.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CStrengthSummaryWriter.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CSystemSettingsReader.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Excel/CUnitSystem.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Geometry/CFiberMeshBuilder.cls",
+      "headerChanged": false,
+      "methodCount": 8,
+      "methods": [
+        "FiberX",
+        "FiberY",
+        "FiberWidth",
+        "FiberHeight",
+        "FiberArea",
+        "FiberFillFactor",
+        "FiberMaterialID",
+        "IsReadOnly"
+      ]
+    },
+    {
+      "path": "src/Geometry/CGeometryDiagnostic.cls",
+      "headerChanged": true,
+      "methodCount": 3,
+      "methods": [
+        "Reason",
+        "Detail1",
+        "Detail2"
+      ]
+    },
+    {
+      "path": "src/Geometry/CGeometryPath.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Geometry/CPolygonSpec.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "RequireSealed"
+      ]
+    },
+    {
+      "path": "src/Interfaces/ILimitSearchProblem.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Materials/CLinearConcreteMaterial.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Materials/CLinearSteelMaterial.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Materials/CMaterialDiagram.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Materials/CMaterialModelProvider.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Materials/CMaterialModelSpec.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Section/CConcreteRegion.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "LoopCount"
+      ]
+    },
+    {
+      "path": "src/Section/CRebarLayout.cls",
+      "headerChanged": false,
+      "methodCount": 1,
+      "methods": [
+        "Count"
+      ]
+    },
+    {
+      "path": "src/Section/CRebarRuleExecutor.cls",
+      "headerChanged": true,
+      "methodCount": 3,
+      "methods": [
+        "SkippedProjections",
+        "DiagnosticCount",
+        "IsReadOnly"
+      ]
+    },
+    {
+      "path": "src/Section/CRebarRuleOptions.cls",
+      "headerChanged": true,
+      "methodCount": 3,
+      "methods": [
+        "Class_Initialize",
+        "ConfigureDependentContact",
+        "CopyTo"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionAnnotationBuilder.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Section/CSectionAnnotations.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "Count"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionBuilder.cls",
+      "headerChanged": true,
+      "methodCount": 5,
+      "methods": [
+        "Build",
+        "Mesh",
+        "Rebars",
+        "Rules",
+        "RequireCurrentModel"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionContours.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "Revision"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionDefinition.cls",
+      "headerChanged": true,
+      "methodCount": 10,
+      "methods": [
+        "AnchorCoordinates",
+        "SourceReference",
+        "IsSealed",
+        "LoopCount",
+        "AnnotationCount",
+        "ConcreteDomain",
+        "AddRule",
+        "Seal",
+        "MaterialContours",
+        "WriteContours"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionDefinitionBuilder.cls",
+      "headerChanged": true,
+      "methodCount": 32,
+      "methods": [
+        "Initialize",
+        "CirclePath",
+        "LinePath",
+        "ArcPath",
+        "Anchor",
+        "PathAnchor",
+        "Source",
+        "Offset",
+        "LastGeometryDiagnostic",
+        "Transform",
+        "RectanglePath",
+        "PathGroup",
+        "RebarByCount",
+        "RebarByMaxStep",
+        "RebarByFixedStep",
+        "RebarAtStations",
+        "RebarDependent",
+        "RebarProjected",
+        "PrepareRule",
+        "VerticalExtent",
+        "HorizontalExtent",
+        "HorizontalDistance",
+        "VerticalDistance",
+        "Dimension",
+        "PathLength",
+        "Radius",
+        "Diameter",
+        "Text",
+        "RebarLabel",
+        "RebarRowLabel",
+        "RebarRowExtentLabel",
+        "Finish"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionGeometryQuery.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Section/CSectionInputTable.cls",
+      "headerChanged": true,
+      "methodCount": 9,
+      "methods": [
+        "Initialize",
+        "Name",
+        "RowCount",
+        "ColumnCount",
+        "CellValue",
+        "Text",
+        "Count",
+        "Choice",
+        "Length"
+      ]
+    },
+    {
+      "path": "src/Section/CSectionModel.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Section/CSectionModelBuilder.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Section/CSectionRecipeContext.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "AddTable"
+      ]
+    },
+    {
+      "path": "src/Section/ISectionRecipe.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "CreateDefinition"
+      ]
+    },
+    {
+      "path": "src/Solver/CCapacityCalculator.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "headerChanged": true,
+      "methodCount": 9,
+      "methods": [
+        "ILimitSearchProblem_InitialLambdaStep",
+        "ILimitSearchProblem_MaxLambda",
+        "ILimitSearchProblem_LambdaTolerance",
+        "ILimitSearchProblem_MaxIterations",
+        "ILimitSearchProblem_SearchMethod",
+        "ILimitSearchProblem_Converged",
+        "ILimitSearchProblem_LimitState",
+        "ILimitSearchProblem_DiagnosticLog",
+        "ILimitSearchProblem_StopReason"
+      ]
+    },
+    {
+      "path": "src/Solver/CCapacityResult.cls",
+      "headerChanged": true,
+      "methodCount": 8,
+      "methods": [
+        "StateResult",
+        "CapacityStateMx",
+        "CapacityStateMy",
+        "CapacityStateAvailable",
+        "CapacityKappaX",
+        "CapacityKappaY",
+        "Freeze",
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "src/Solver/CCapacitySolver.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CCrackLimitSearchProblem.cls",
+      "headerChanged": true,
+      "methodCount": 9,
+      "methods": [
+        "ILimitSearchProblem_InitialLambdaStep",
+        "ILimitSearchProblem_MaxLambda",
+        "ILimitSearchProblem_LambdaTolerance",
+        "ILimitSearchProblem_MaxIterations",
+        "ILimitSearchProblem_SearchMethod",
+        "ILimitSearchProblem_Converged",
+        "ILimitSearchProblem_LimitState",
+        "ILimitSearchProblem_DiagnosticLog",
+        "ILimitSearchProblem_StopReason"
+      ]
+    },
+    {
+      "path": "src/Solver/CLimitSearchCoordinator.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CLimitSearchRequest.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CLimitSearchResult.cls",
+      "headerChanged": true,
+      "methodCount": 4,
+      "methods": [
+        "RequestedStrategy",
+        "ResultKind",
+        "Succeeded",
+        "StopReason"
+      ]
+    },
+    {
+      "path": "src/Solver/CLoadMultiplierSearch.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CSectionNumericalFrame.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CSectionStrainLimits.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "Utilization"
+      ]
+    },
+    {
+      "path": "src/Solver/CStateGuessBuilder.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Solver/CStateSolutionRunner.cls",
+      "headerChanged": true,
+      "methodCount": 4,
+      "methods": [
+        "ResultSolver",
+        "Converged",
+        "StopReason",
+        "Iterations"
+      ]
+    },
+    {
+      "path": "src/Solver/CUltimateStrainSearch.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Stability/CStabilityCalculator.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "src/Stability/CStabilityResult.cls",
+      "headerChanged": true,
+      "methodCount": 1,
+      "methods": [
+        "AssertWritable"
+      ]
+    },
+    {
+      "path": "tests/CFakeAcadContour.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "tests/CFakeAcadContourExport.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "tests/CFakeAcadLine.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "tests/CFakeAcadRegion.cls",
+      "headerChanged": true,
+      "methodCount": 0,
+      "methods": []
+    },
+    {
+      "path": "tests/CTestExcelApplicationState.cls",
+      "headerChanged": true,
+      "methodCount": 13,
+      "methods": [
+        "Class_Initialize",
+        "BeforeGet",
+        "BeforeSet",
+        "EnableCancelKey",
+        "EnableCancelKey",
+        "ScreenUpdating",
+        "ScreenUpdating",
+        "EnableEvents",
+        "EnableEvents",
+        "DisplayAlerts",
+        "DisplayAlerts",
+        "Calculation",
+        "Calculation"
+      ]
+    },
+    {
+      "path": "tests/CTestLimitSearchProblem.cls",
+      "headerChanged": true,
+      "methodCount": 4,
+      "methods": [
+        "LimitState",
+        "ILimitSearchProblem_LimitState",
+        "ILimitSearchProblem_StopReason",
+        "AppendDiagnosticLine"
+      ]
+    }
+  ]
+}
