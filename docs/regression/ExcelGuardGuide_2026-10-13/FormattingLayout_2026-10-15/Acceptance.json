@@ -1,0 +1,20 @@
+{
+  "Status": "CONFIG_FORMATTING_LAYOUT_ACCEPTANCE_PASS",
+  "EmptyRowAfterFormattingTable": 85,
+  "AllFourLowerGeometryTablesMovedOneRow": true,
+  "BlueUnderlinedHeadingLinkNativeExcelVerified": true,
+  "NamedRangesValidationMergesAndFormulasPreserved": true,
+  "ExistingCellsChecked": 107483,
+  "MovedCells": 882,
+  "SourceComponents": 152,
+  "NativeComponents": 157,
+  "AllCodeMatchesActualWorkbookExceptExportDate": true,
+  "AllCodeUnchanged": true,
+  "UserExecutionReportUnchanged": true,
+  "NoCalculationOrFullOnOffRuns": true,
+  "WorkbookSHA256": "f200cc939ac012c2ba4ad9fc285ab2646744065eddfd9706fb99e51c6bf6140f",
+  "AllCodeSHA256": "283817b8e940392827c6bffdf895c1be91a77e43c232e71d672245e81d3efb40",
+  "NativeExportSHA256": "cb0b8e5797b6ab008967cd0ab9f6605d9cd1401e0570a94458671621af8a14c4",
+  "BaselineGitCommit": "ab230004f1280a9863ceafe2a3877104ab596d25",
+  "Errors": []
+}

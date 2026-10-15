@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "ExistingCellsChecked": 107483,
+  "MovedGeometryCells": 882,
+  "Separator": "Config!H85:P85",
+  "BlueUnderlinedLink": true,
+  "HeadingTarget": "'Справка'!A724",
+  "MovedNamedRanges": [
+    "rngCircleGeometry",
+    "rngHollowRectangleGeometry",
+    "rngRectSetGeometry",
+    "rngRoundedRectangleGeometry"
+  ],
+  "DataValidationsPreserved": 55,
+  "ContourLineWeightPreserved": "2",
+  "VbaProjectByteIdentical": true,
+  "AllOtherSheetsAndDrawingsByteIdentical": true,
+  "ChangedZIPParts": [
+    "xl/workbook.xml",
+    "xl/worksheets/sheet1.xml",
+    "xl/calcChain.xml"
+  ],
+  "WorkbookSHA256": "f200cc939ac012c2ba4ad9fc285ab2646744065eddfd9706fb99e51c6bf6140f",
+  "Errors": []
+}

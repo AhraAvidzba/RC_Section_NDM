@@ -1,0 +1,28 @@
+{
+  "Status": "CONFIG_LAYOUT_APPLIED",
+  "MovedCells": 882,
+  "EmptySeparator": "Config!H85:P85",
+  "MovedRange": "Config!H85:P182 -> H86:P183",
+  "NamesChanged": {
+    "rngCircleGeometry": [
+      "Config!$H$86:$K$97",
+      "Config!$H$87:$K$98"
+    ],
+    "rngHollowRectangleGeometry": [
+      "Config!$H$155:$P$182",
+      "Config!$H$156:$P$183"
+    ],
+    "rngRectSetGeometry": [
+      "Config!$H$100:$P$127",
+      "Config!$H$101:$P$128"
+    ],
+    "rngRoundedRectangleGeometry": [
+      "Config!$H$130:$P$151",
+      "Config!$H$131:$P$152"
+    ]
+  },
+  "CalculationChainAddressesMoved": 54,
+  "LinkTarget": "'Справка'!A724",
+  "LinkFormattingCopiedFrom": "Config!H85",
+  "WorkbookSHA256": "f200cc939ac012c2ba4ad9fc285ab2646744065eddfd9706fb99e51c6bf6140f"
+}

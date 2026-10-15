@@ -1,0 +1,34 @@
+﻿{
+    "Passed":  true,
+    "OpenedWithoutRepair":  true,
+    "ReadOnly":  true,
+    "SeparatorEmptyAndWithoutBorders":  true,
+    "BlueUnderlinedLink":  true,
+    "CaptionBlackWithoutUnderline":  true,
+    "LinkTarget":  "\u0027Справка\u0027!A724",
+    "Names":  {
+                  "rngPlotAnnotationSettings":  "H70:M84",
+                  "rngCircleGeometry":  "H87:K98",
+                  "rngRectSetGeometry":  "H101:P128",
+                  "rngRoundedRectangleGeometry":  "H131:P152",
+                  "rngHollowRectangleGeometry":  "H156:P183",
+                  "rngSystemSettings":  "A3:E138"
+              },
+    "CircleIndependentRowChoices":  [
+                                        "I97",
+                                        "I98"
+                                    ],
+    "MovedUnitFormulas":  {
+                              "J88":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+                              "N111":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+                              "O121":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+                              "K133":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+                              "N166":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+                              "O176":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)",
+                              "O183":  "=INDEX(rngUnitSettings,MATCH(\"Length\",INDEX(rngUnitSettings,,1),0),2)"
+                          },
+    "NativeComponents":  157,
+    "UserContourLineWeight":  2,
+    "FreshBuilderCircleHeaderRow":  87,
+    "OwnedExcelPID":  23308
+}

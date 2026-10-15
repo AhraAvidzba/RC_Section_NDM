@@ -1,0 +1,21 @@
+{
+  "OnlyOwnedVerifiedDuplicatesRemoved": true,
+  "BaselineAvailableAtGitCommit": "ab230004f1280a9863ceafe2a3877104ab596d25",
+  "Removed": [
+    {
+      "Name": "Candidate.xlsm",
+      "Bytes": 7797844,
+      "SHA256": "f200cc939ac012c2ba4ad9fc285ab2646744065eddfd9706fb99e51c6bf6140f"
+    },
+    {
+      "Name": "PublishedNativeVBA.txt",
+      "Bytes": 7080265,
+      "SHA256": "cb0b8e5797b6ab008967cd0ab9f6605d9cd1401e0570a94458671621af8a14c4"
+    },
+    {
+      "Name": "Baseline.xlsm",
+      "Bytes": 7797693,
+      "SHA256": "121E47F1F7C52CF941705560ADE37F49630678BBC9D3A4A055B36A8A32D286EC"
+    }
+  ]
+}
