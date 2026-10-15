@@ -2,10 +2,10 @@ Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
-' Тесты структуры книги и пользовательского интерфейса
+' ДЛЯ ТЕСТОВ: структура книги и пользовательский интерфейс
 ' ==========================================================================
-' Модуль проверяет именованные диапазоны, выпадающие списки, листы и макросы
-' workbook-слоя, чтобы сборка книги оставалась воспроизводимой.
+' Проверяет именованные диапазоны, выпадающие списки, листы и макросы
+' для воспроизводимой сборки книги.
 
 Private Type TUiTestStats
     Passed As Long
@@ -3272,8 +3272,8 @@ Private Function HollowRectangleFaceSettingAddress(ByVal key As String, _
     HollowRectangleFaceSettingAddress = True
 End Function
 
-' Возвращает канонический префикс и номер одной из восьми граней сечения.
-' Четыре грани отверстия не смешиваются с наружными сторонами.
+' Возвращает принятое начало имени и номер одной из восьми сторон.
+' Стороны отверстия проверяются отдельно от наружных.
 Private Function HollowRectangleFacePrefix(ByVal key As String, ByRef faceOrdinal As Long) As String
     If InStr(1, key, "HollowRectangle.H.Left.", vbTextCompare) = 1 Then
         HollowRectangleFacePrefix = "HollowRectangle.H.Left": faceOrdinal = 1
@@ -3373,8 +3373,8 @@ Private Function SettingsRangeSearchOrder() As Variant
     End If
 End Function
 
-' Читает тип геометрии для адресации тестовых ячеек, не строя модель сечения.
-' Circle используется только как fallback инфраструктуры при отсутствии fixture.
+' Читает тип геометрии для поиска тестовых ячеек без построения модели.
+' При отсутствии тестовых данных инфраструктура использует Circle.
 Private Function SystemGeometryType() As String
     On Error GoTo Failed
     Dim settings As Object
@@ -3445,8 +3445,8 @@ Private Function SystemSettingUnitCellReferencesQuantity(ByVal key As String, By
 Failed:
 End Function
 
-' Читает сохраненный output-блок от именованного anchor до конца его данных.
-' Не вызывает solver и не использует текущие геометрические исходные данные.
+' Читает сохранённую таблицу от её именованной начальной ячейки до конца данных.
+' Новый расчёт и текущие исходные размеры сечения не используются.
 Private Function ResultTable(ByVal rangeName As String) As Variant
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
@@ -3462,8 +3462,8 @@ Private Function ResultTable(ByVal rangeName As String) As Variant
     ResultTable = anchor.Resize(rowCount, columnCount).Value2
 End Function
 
-' Определяет высоту непрерывного сохраненного блока по первой ключевой колонке.
-' Пустая строка завершает именно табличный snapshot, не таблицу входных LC.
+' Определяет число непрерывно заполненных строк сохранённой таблицы
+' по первому ключевому столбцу до первой пустой строки.
 Private Function ResultTableRowCount(ByVal rangeName As String) As Long
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange
@@ -3475,8 +3475,8 @@ Private Function ResultTableRowCount(ByVal rangeName As String) As Long
     Next rowOffset
 End Function
 
-' Находит число колонок output-блока с учетом следующего соседнего anchor.
-' Helpers ниже ограничивают чтение своим блоком Results без захвата чужих данных.
+' Определяет ширину сохранённой таблицы с учётом соседнего именованного начала
+' справа. Чтение ограничено своим блоком Results.
 Private Function ResultTableColumnCount(ByVal anchor As Object) As Long
     Dim maxColumns As Long
     maxColumns = ColumnsUntilNextResultAnchor(anchor)
@@ -3694,8 +3694,8 @@ Private Function LoadCombinationValidationHasOptions(ByVal valueColumn As Long, 
 Failed:
 End Function
 
-' Проверяет, что dropdown LC содержит формульные display names всех профилей.
-' Измененное имя профиля должно попадать в список без пересборки исходного VBA.
+' Список сочетаний должен содержать вычисленные формулами названия всех профилей.
+' Смена имени профиля обновляет список без изменения VBA.
 Private Function LoadProfileValidationUsesDisplayNames() As Boolean
     On Error GoTo Failed
 
@@ -3738,8 +3738,8 @@ Private Function LoadProfileFirstValueHasNoFormula() As Boolean
 Failed:
 End Function
 
-' Проверяет точный состав и порядок actual validation-list одной ячейки fixture.
-' Нечитаемый или неформульный список возвращает False, не пропускает assertion.
+' Проверяет точный состав и порядок списка допустимых значений ячейки.
+' Если список не читается или задан неверным способом, проверка даёт False.
 Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
@@ -4053,8 +4053,8 @@ Private Sub SetUserRectSetMainRow(ByVal faceName As String, ByVal count1 As Long
     SetSystemSetting "RectSet." & faceName & ".EndOffset2", "80"
 End Sub
 
-' Отключает дополнительные ряды всех граней пустыми диаметрами по контракту Config.
-' Режимы размещения/привязки задаются явно для воспроизводимости последующих тестов.
+' Отключает дополнительные ряды всех сторон пустыми диаметрами.
+' Расположение и привязку задаёт явно для воспроизводимости следующих проверок.
 Private Sub ClearUserRectSetExtraRows()
     Dim faces As Variant
     faces = Array("H1", "B1", "H2", "B2")
@@ -4304,16 +4304,14 @@ Failed:
     RunAudit02ReportDiagnostic = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ
-' Повторяет расчетную часть workbook-сценария без writer-ов и схемы.
-' Возвращает счетчик solve и время; физических ожиданий не изменяет.
+' ДЛЯ ТЕСТОВ: повторяет расчётную часть обычного запуска без записи таблиц
+' и схемы. Возвращает число решений и время без изменения физических ожиданий.
 Public Function RunAudit02BatchOnlyDiagnostic() As String
     RunAudit02BatchOnlyDiagnostic = RunAudit02WorkbookPhases(False)
 End Function
 
-' ДЛЯ ТЕСТОВ
-' Измеряет последовательные writer-ы на одинаковом каноническом результате.
-' Каждая отметка содержит время и память единственного тестового Excel.
+' ДЛЯ ТЕСТОВ: измеряет последовательную запись таблиц по одному готовому результату.
+' Каждая отметка содержит время и память собственного тестового Excel.
 Public Function RunAudit02WriterPhasesDiagnostic() As String
     RunAudit02WriterPhasesDiagnostic = RunAudit02WorkbookPhases(True)
 End Function
@@ -4415,9 +4413,8 @@ Public Function RunAudit03InputPrefixDiagnosticTests() As String
     mAudit03StopBeforeUnitSign = False
 End Function
 
-' ДЛЯ ТЕСТОВ
-' Записывает численные Results без обновления схемы; нужна для локализации
-' роста памяти между расчетом, табличным выводом и построением Chart.
+' ДЛЯ ТЕСТОВ: записывает численные Results без обновления схемы.
+' Помогает определить, на каком этапе растёт память: расчёт, таблицы или диаграмма.
 Public Function RunAudit02NoPlotDiagnostic() As String
     On Error GoTo Failed
     PrepareCircleInput
@@ -4554,8 +4551,8 @@ Private Sub AssertAudit02PlotSnapshot(ByRef stats As TUiTestStats, ByVal quantit
     Next i
 End Sub
 
-' ДЛЯ ТЕСТОВ
-' Сравнивает все ячейки двух снимков, включая model spec и effective Extension.
+' ДЛЯ ТЕСТОВ: сравнивает все ячейки двух сохранённых наборов данных,
+' включая характеристики материалов и фактический режим продолжения диаграмм.
 Private Function Audit02SnapshotTablesEqual(ByRef beforeTable As Variant, ByRef afterTable As Variant) As Boolean
     If UBound(beforeTable, 1) <> UBound(afterTable, 1) Then Exit Function
     If UBound(beforeTable, 2) <> UBound(afterTable, 2) Then Exit Function
@@ -4839,8 +4836,8 @@ CleanUp:
     On Error GoTo 0
 End Sub
 
-' Проверяет точный контракт публичного API; описание ошибки сохраняется в логе
-' для содержательной ревизии. Перехват относится только к ожидаемому test input.
+' Проверяет точный номер и полный текст ошибки публичного метода.
+' Перехватывает только ожидаемый ошибочный ввод текущего теста.
 Private Sub Audit03AssertInputError(ByRef stats As TUiTestStats, ByVal source As Object, _
         ByVal operation As String, ByVal prefix As String, ByVal expectedCode As Long)
     Dim description As String, actualCode As Long
@@ -5007,9 +5004,9 @@ Public Function RunAudit03NumericSettingsInputTests() As String
     RunAudit03NumericSettingsInputTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: явная пустая/TODO численная настройка не должна возвращать
-' default. Отсутствующий optional key и пустой optional диаметр имеют другой
-' контракт; проверяем их отдельно без изменения пользовательского Config.
+' ДЛЯ ТЕСТОВ: явно пустая численная настройка или TODO не заменяется значением
+' по умолчанию. Отсутствующий необязательный ключ и пустой диаметр
+' имеют собственные правила чтения и проверяются отдельно.
 Private Sub TestAudit03NumericSettingsInputContracts(ByRef stats As TUiTestStats)
     Dim sheet As Object, oldAlerts As Boolean, operationValue As Variant, keyValue As Variant
     Dim key As String, operation As String, value As Variant, actualCode As Long
@@ -5259,8 +5256,8 @@ CleanUp:
     On Error GoTo 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: различает раннюю ошибку Excel-ячейки у reader-а и сохраненный
-' отказ Batch. Ни один неверный численный ввод не должен запускать equilibrium.
+' ДЛЯ ТЕСТОВ: различает ошибку ячейки при чтении и сохранённый отказ расчёта
+' сочетаний. Неверный численный ввод не должен запускать поиск равновесия.
 Private Sub Audit03CheckBatchNumericInput(ByRef stats As TUiTestStats, _
         ByVal batch As CBatchSectionCalculator, ByVal key As String, ByVal value As Variant)
     Dim settings As CSystemSettingsReader, result As CCombinationResult, prefix As String
@@ -5386,10 +5383,9 @@ Failed:
     AppendLine stats, "FAIL: rectset.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
-' ДЛЯ ТЕСТОВ: меняем каждый из 32 селекторов через registered snapshot -> recipe.
-' Меняются только три дополнительных стержня выбранной стороны; шесть
-' стержней противоположной стороны сохраняют координаты и диаметры.
-' Ошибочный/пустой активный ввод дает адресную ошибку, отключенный не читается.
+' ДЛЯ ТЕСТОВ: меняет каждый из 32 вариантов размещения через обычное чтение
+' таблиц и рецепт. Меняются только три дополнительных стержня выбранной стороны;
+' шесть стержней противоположной стороны сохраняются.
 Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
     Dim source As Object, sheet As Object, target As Object, savedReference As String
     Dim units As CUnitSystem
@@ -5893,7 +5889,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
                 If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".batch.done; " & Audit02ExcelMemory()
                 solveCount = batch.SolverCallCount
                 AssertTrue stats, prefix & ".solved", solveCount > 0
-                ' Выбор OUTPUT меняем уже после получения всех физических состояний.
+                ' Выходные единицы меняются после получения всех физических состояний.
                 unitRange.Cells(2, 4).Value2 = lengthNames(caseIndex Mod 3)
                 unitRange.Cells(3, 4).Value2 = areaNames((caseIndex \ 3) Mod 3)
                 unitRange.Cells(4, 4).Value2 = forceNames((caseIndex \ 9) Mod 3)
@@ -6110,9 +6106,9 @@ Private Function Audit03InertiaRoundoffLimit(ByRef properties As Variant, ByVal 
     Audit03InertiaRoundoffLimit = 8# * (2# ^ -52#) * Sqr(Abs(ix)) * Sqr(Abs(iy))
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет реальный reader геометрии AutoCAD export при всех
-' OUTPUT единицах. Он обязан вернуть координаты/диаметры в мм, площади в мм2
-' и инерции в мм4 из сохраненных заголовков Results, не вызывая новый solve.
+' ДЛЯ ТЕСТОВ: проверяет обычное восстановление геометрии для экспорта AutoCAD
+' при всех выходных единицах. Координаты и диаметры должны возвращаться
+' в мм, площади — в мм2, моменты инерции — в мм4.
 Private Sub Audit03AssertAutoCADMmGeometry(ByRef stats As TUiTestStats, ByVal prefix As String, _
         ByVal expected As CSectionModel)
     Dim actual As CSectionModel, beforeSolves As Long, same As Boolean, i As Long, j As Long
@@ -6324,7 +6320,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
             End Select
         Next row
     Next name
-    ' Порог имеет размерность момент/длина: моментные INPUT единицы неизменны.
+    ' Порог имеет размерность момент/длина; входные единицы момента не меняются.
     SetSystemSetting "Calculation.ZeroMomentPerDepth", CStr(0.001 * lengthFactor)
     Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
     Audit03DivideNumericInput target.Cells(4, 2), lengthFactor
@@ -6632,7 +6628,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             AssertTextEquals stats, prefix & ".previewAreaHeader", CStr(preview(1, ResultHeaderColumnByBaseName(preview, "Area"))), "Area, " & CStr(areaNames(beforeIndex))
             Audit03AssertAutoCADMmGeometry stats, prefix & ".beforeChange", section
 
-            ' Меняем текущие единицы, но не переписываем импортированный snapshot.
+            ' Меняем текущие единицы, сохраняя прежнюю импортированную геометрию и её единицы.
             lengthFactor = CDbl(lengthFactors(afterIndex)): stressFactor = CDbl(stressFactors(afterIndex))
             forceFactor = CDbl(forceFactors(afterIndex)): momentFactor = CDbl(momentFactors(afterIndex))
             Audit03RescaleInputTables lengthFactor, stressFactor
@@ -7060,9 +7056,9 @@ End Sub
 
 ' ==================== ДЛЯ ТЕСТОВ: ВОССТАНОВЛЕНИЕ ГЕОМЕТРИИ ====================
 
-' Проверяет публичное восстановление модели и reader схемы без AutoCAD/solve.
-' Временная книга содержит только заданные численные snapshots и закрывается
-' без сохранения; корректность размеров и инерций проверяется независимо.
+' Проверяет восстановление модели и чтение схемы без AutoCAD и решения НДС.
+' Временная книга содержит только заданные численные результаты
+' и закрывается без сохранения.
 Public Function RunAudit03GeometrySnapshotTests() As String
     Dim stats As TUiTestStats
     TestAudit03GeometrySnapshotContract stats
@@ -7070,7 +7066,8 @@ Public Function RunAudit03GeometrySnapshotTests() As String
     RunAudit03GeometrySnapshotTests = stats.Report
 End Function
 
-' Новый обязательный блок пустого v1-снимка в изолированных reader-fixtures.
+' Пустой сохранённый набор версии 1 требует нового обязательного блока;
+' проверка выполняется в отдельной временной книге.
 Private Sub InitializeEmptyContourFixture(ByVal workbook As Object, ByVal sheet As Object)
     workbook.Names.Add Name:="rngNDMSectionContours", RefersTo:="='" & sheet.Name & "'!$GR$5"
     Dim writer As CNDMResultsWriter, contours As CSectionContours
@@ -7255,8 +7252,8 @@ Restore:
     AppendLine stats, "CASES_GEOMETRY_SNAPSHOT: independentGeometryFixtures=1; inputVariants=" & CStr(cases) & "; equilibriumCases=0"
 End Sub
 
-' Сохраняет ошибку preview через тот же экземпляр reader-а. После исправления
-' fixture этот reader должен загрузить данные заново без прежних элементов.
+' Сохраняет ошибку предварительного просмотра и повторяет чтение тем же объектом.
+' После исправления входных данных прежние элементы должны быть очищены.
 Private Sub Audit03CapturePlotGeometryError(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByVal reader As CSectionPlotDataReader, ByRef number As Long, ByRef description As String, _
         Optional ByVal readState As Boolean = False)
@@ -7311,8 +7308,8 @@ Private Sub Audit03CheckRestoredGeometry(ByRef stats As TUiTestStats, ByVal pref
     End If
 End Sub
 
-' Сохраняет фактическую ошибку публичного чтения, не интерпретируя ее текст.
-' Перехват локален test fixture и позволяет проверить recovery после ошибки.
+' Сохраняет номер и текст ошибки публичного чтения без их трактовки.
+' Отдельный перехват позволяет проверить повторную работу после исправления данных.
 Private Sub Audit03CaptureGeometrySnapshotError(ByVal workbook As Object, ByRef number As Long, ByRef description As String)
     Dim model As CSectionModel
     number = 0: description = vbNullString
@@ -7480,7 +7477,7 @@ Private Sub TestAudit03ReadLifecycleContracts(ByRef stats As TUiTestStats)
             Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
             AssertTrue stats, "audit03.readLifecycle.reader.baseline.p" & CStr(position) & ".m" & CStr(mode), code = 0 And reader.Count = 2
             For index = 0 To UBound(keys)
-                If mode = 1 And index >= 12 Then Exit For ' AutoCAD-preview не использует плоскость выбранного State.
+                If mode = 1 And index >= 12 Then Exit For ' Предварительный просмотр импортированной геометрии не использует поле деформаций выбранного НДС.
                 For badIndex = 0 To 4
                     bad = badValues(badIndex)
                     row = index + 2: target.Cells(row, 3).Value2 = bad
@@ -7556,8 +7553,8 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Сохраняет typed VBA-ошибку конкретного публичного reader-режима. Повторное
-' чтение выполняется на том же объекте; helper не подменяет snapshot/Config.
+' Сохраняет номер и текст ошибки выбранного режима чтения. Повторное чтение
+' выполняется на том же объекте без подстановки других Results или Config.
 Private Sub Audit03ReadLifecycleLoad(ByVal reader As CSectionPlotDataReader, ByVal workbook As Object, _
         ByVal settings As CSystemSettingsReader, ByVal mode As Long, ByRef code As Long, ByRef reason As String)
     code = 0: reason = vbNullString
@@ -7583,9 +7580,9 @@ End Function
 
 ' ==================== ДЛЯ ТЕСТОВ: СОСТОЯНИЕ EXCEL.APPLICATION ====================
 
-' Проверяет восстановление настоящего отдельного Excel.Application, включая
-' реальный отказ Calculation setter без открытых книг. Fake-классы и
-' пользовательский экземпляр Excel не используются.
+' Проверяет восстановление настроек собственного настоящего Excel.Application,
+' включая отказ записи Calculation без открытых книг. Подставные классы
+' и пользовательский Excel в этой проверке не используются.
 Public Function RunAudit03ExcelGuardTests() As String
     Dim stats As TUiTestStats
     TestExcelGuardLocalCancellation stats
@@ -7631,7 +7628,7 @@ Private Sub TestAudit03ExcelGuardContracts(ByRef stats As TUiTestStats)
         guard.Restore
         AssertTrue stats, prefix & ".restore", otherExcel.ScreenUpdating = screen And otherExcel.EnableEvents = events And otherExcel.DisplayAlerts = alerts
         AppendLine stats, "EXCEL_GUARD_ERROR: " & prefix & "|code=" & CStr(code) & "|source=" & source & "|" & reason
-        ' Возвращаем fixture в заданное состояние и при negative реализации.
+        ' Возвращаем тестовую копию в заданное состояние также при ожидаемой неудаче.
         otherExcel.ScreenUpdating = screen: otherExcel.EnableEvents = events: otherExcel.DisplayAlerts = alerts
     Next flags
     Set book = otherExcel.Workbooks.Add(-4167)

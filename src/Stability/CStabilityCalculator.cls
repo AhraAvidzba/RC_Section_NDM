@@ -36,44 +36,44 @@ Private Const PASS_TOLERANCE As Double = 0.000000001 ' Малый допуск �
 Private Const SP35_REBAR_AREA_LIMIT_RATIO As Double = 0.03 ' Порог 3% площади арматуры по СП 35.
 
 Private Type TPlaneResult
-    Moment As Double
-    SustainedMoment As Double
-    DesignMoment As Double
-    InertiaConcrete As Double
-    InertiaSteel As Double
-    Radius As Double
-    CoreDistancePositive As Double
-    CoreDistanceNegative As Double
-    Depth As Double
-    GeometricLength As Double
-    EffectiveLength As Double
-    Slenderness As Double
-    NormalX As Double
-    NormalY As Double
-    CentroidX As Double
-    CentroidY As Double
-    ConcreteMinProjection As Double
-    ConcreteMaxProjection As Double
-    AccidentalEccentricity As Double
-    Eccentricity As Double
-    CoreDistance As Double
-    PhiL As Double
-    PhiLTable As Double
-    PhiM As Double
-    PhiValue As Double
-    PhiP As Double
-    DeltaValue As Double
-    Kb As Double
-    Ks As Double
-    Eta As Double
-    StiffnessD As Double
-    CriticalForce As Double
-    NcrForce As Double
-    NultimateForce As Double
-    ReserveFactor As Double
-    CheckPassed As Boolean
-    Applicable As Boolean
-    BranchName As String
+    Moment As Double ' Исходный момент в рассматриваемой главной плоскости, Н*мм.
+    SustainedMoment As Double ' Постоянная и длительная часть момента, Н*мм.
+    DesignMoment As Double ' Момент после учёта устойчивости, Н*мм.
+    InertiaConcrete As Double ' Момент инерции бетона относительно расчётной оси, мм4.
+    InertiaSteel As Double ' Момент инерции арматуры относительно расчётной оси, мм4.
+    Radius As Double ' Радиус инерции приведённого сечения, мм.
+    CoreDistancePositive As Double ' Ядровое расстояние в положительном направлении нормали, мм.
+    CoreDistanceNegative As Double ' Ядровое расстояние в отрицательном направлении нормали, мм.
+    Depth As Double ' Высота сечения в рассматриваемой плоскости, мм.
+    GeometricLength As Double ' Геометрическая длина элемента, мм.
+    EffectiveLength As Double ' Расчётная длина элемента, мм.
+    Slenderness As Double ' Гибкость как отношение расчётной длины к радиусу инерции.
+    NormalX As Double ' Компонента X нормали рассматриваемой главной плоскости.
+    NormalY As Double ' Компонента Y нормали рассматриваемой главной плоскости.
+    CentroidX As Double ' Координата X центра приведённого сечения, мм.
+    CentroidY As Double ' Координата Y центра приведённого сечения, мм.
+    ConcreteMinProjection As Double ' Наименьшая координата бетонной границы вдоль нормали, мм.
+    ConcreteMaxProjection As Double ' Наибольшая координата бетонной границы вдоль нормали, мм.
+    AccidentalEccentricity As Double ' Случайный эксцентриситет, мм.
+    Eccentricity As Double ' Принятый расчётный эксцентриситет, мм.
+    CoreDistance As Double ' Ядровое расстояние со стороны рассматриваемого эксцентриситета, мм.
+    PhiL As Double ' Коэффициент влияния длительности нагрузки.
+    PhiLTable As Double ' Табличный коэффициент φl по СП 35.
+    PhiM As Double ' Табличный коэффициент φm по СП 35.
+    PhiValue As Double ' Итоговый коэффициент φ табличной проверки СП 35.
+    PhiP As Double ' Коэффициент φp по СП 35.
+    DeltaValue As Double ' Принятое относительное значение эксцентриситета для выбранной нормативной ветви.
+    Kb As Double ' Коэффициент вклада бетона в жёсткость по СП 63.
+    Ks As Double ' Коэффициент вклада арматуры в жёсткость по СП 63.
+    Eta As Double ' Коэффициент увеличения момента из-за прогиба.
+    StiffnessD As Double ' Условная изгибная жёсткость D, Н*мм2.
+    CriticalForce As Double ' Контрольная сила выбранной нормативной проверки, Н.
+    NcrForce As Double ' Критическая сила Ncr для расчёта увеличения момента, Н.
+    NultimateForce As Double ' Предельная сжимающая сила табличной проверки СП 35, Н.
+    ReserveFactor As Double ' Коэффициент запаса в рассматриваемой плоскости.
+    CheckPassed As Boolean ' Выполнена ли проверка в рассматриваемой плоскости.
+    Applicable As Boolean ' Требуется ли проверка для рассматриваемой плоскости.
+    BranchName As String ' Название применённой нормативной расчётной ветви.
 End Type
 
 Private mCode As String ' Нормативная ветвь, выбранная настройкой Stability.Code.
@@ -82,7 +82,7 @@ Private mApplicable As Boolean ' False, если сжатия нет и усто
 Private mInputValid As Boolean ' False при нехватке обязательных исходных данных.
 Private mResultInitialized As Boolean ' Был вызван расчет; новый объект не является готовым результатом.
 Private mCalculationStarted As Boolean ' Выполнялась собственная инженерная проверка после валидации.
-Private mInternalError As Boolean ' Нарушение программного контракта или неожиданный runtime-отказ, не ошибка пользователя.
+Private mInternalError As Boolean ' Признак отсутствующих обязательных объектов или неожиданной ошибки программы; не относится к пользовательскому вводу.
 Private mCheckPassed As Boolean ' Итог проверки по выбранной ветви.
 Private mStopReason As String ' Подробная внутренняя причина, если расчет не выполнен.
 Private mSP35TableInputError As String ' Адресная причина из Excel-слоя; не влияет на ветви, которым таблица не нужна.
@@ -145,7 +145,7 @@ Private mPlaneApplicable1 As Boolean ' True, если первая плоско�
 Private mPlaneApplicable2 As Boolean ' True, если вторая плоскость участвовала в проверке.
 Private mPlanePassed1 As Boolean ' True, если первая плоскость прошла свою проверку.
 Private mPlanePassed2 As Boolean ' True, если вторая плоскость прошла свою проверку.
-Private mPreparedTransformedProperties As CSectionPropertiesCalculator
+Private mPreparedTransformedProperties As CSectionPropertiesCalculator ' Заранее подготовленные характеристики приведённого сечения для всех проверок запуска.
 Private mPreparedConcreteProperties As CSectionPropertiesCalculator ' Только механическая геометрия; LC-dependent Ncr/eta не переиспользуются.
 
 ' Подключает подготовку одного запуска. Реальные Eb/Es и геометрия проверяются
@@ -155,10 +155,10 @@ Friend Sub UseMechanicalPreparation(ByVal transformed As CSectionPropertiesCalcu
     Set mPreparedConcreteProperties = concrete
 End Sub
 
-' Проверяет допустимость настроек до геометрии и раннего выхода без сжатия.
-' Значения уже нормализованы по единицам; reader нужен только для текущего
-' адреса Config. Нулевые delta-границы отключают соответствующее ограничение,
-' а не подменяются нормативным значением. Проверка не решает НДС.
+' Проверяет настройки устойчивости до геометрических вычислений и раннего
+' выхода при отсутствии сжатия. Единицы уже переведены; адрес ошибки берёт
+' из прочитанного Config. Нулевая граница delta отключает соответствующее
+' ограничение без подстановки другого значения. НДС не решается.
 Public Sub ValidateSettings(ByVal codeText As String, ByVal elementLength As Double, _
         ByVal mu1 As Double, ByVal mu2 As Double, ByVal systemType As String, _
         ByVal zeroMomentSign1 As Double, ByVal zeroMomentSign2 As Double, _
@@ -691,9 +691,9 @@ Private Function CombinedSP35Branch(ByRef plane1 As TPlaneResult, ByRef plane2 A
     End If
 End Function
 
-' Проверяет обязательные геометрические величины одной главной плоскости и
-' пишет в StopReason фактические значения. Это особенно важно для импортированной
-' AutoCAD-геометрии, где размеры элемента могут восстанавливаться по fallback-ам.
+' Проверяет положительность обязательных геометрических величин главной плоскости.
+' При ошибке записывает фактические значения, в том числе
+' для размеров элементов, восстановленных при импорте AutoCAD.
 Private Sub EnsurePositivePlaneGeometry(ByRef plane As TPlaneResult, _
         ByVal codeText As String, ByVal planeLabel As String)
     If plane.EffectiveLength > 0# And plane.InertiaConcrete > 0# And _
@@ -827,9 +827,9 @@ Private Sub CalculateSP35EtaPlane(ByVal nCompression As Double, ByVal sustainedC
     plane.BranchName = "SP35-eta"
 End Sub
 
-' Возвращает запас для специального условия СП 35 eta-ветви:
-' N/Ncr <= Stability.SP35.NOverNcrLimit. В Results и batch summary
-' показывается именно проверочный запас limit*Ncr/N, а не сырое Ncr/N.
+' Вычисляет запас для условия СП 35 N/Ncr <= Stability.SP35.NOverNcrLimit.
+' В Results показывается запас limit*Ncr/N, соответствующий
+' проверяемому условию, а не простое отношение Ncr/N.
 Private Function SP35EtaReserveByLimit(ByVal ncrForce As Double, ByVal nCompression As Double, _
         ByVal nOverNcrLimit As Double) As Double
     If nOverNcrLimit <= 0# Then Exit Function
@@ -1314,8 +1314,9 @@ Private Function NormalizeCode(ByVal value As String) As String
     End Select
 End Function
 
-' Добавляет к причине ключ и текущее место Config. При автономном вызове
-' без reader сохраняет ключ и действие, не придумывая адрес ячейки.
+' Добавляет к ошибке имя настройки и фактический адрес Config.
+' При отдельном программном вызове сохраняет имя и способ исправления
+' без вымышленного адреса ячейки.
 Private Sub RaiseSettingInput(ByVal key As String, ByVal reason As String, _
         ByVal correction As String, ByVal settings As CSystemSettingsReader)
     Dim message As String
@@ -1392,9 +1393,9 @@ Private Function StabilityCheckComment() As String
     StabilityCheckComment = StabilityCheckComment & "."
 End Function
 
-' Формирует инженерную meta собственной проверки устойчивости. Ни writer,
-' ни display-policy не повторяют эти условия и не придумывают причину по
-' Branch. Отсутствующие программные зависимости отличаются от ошибочного Config.
+' Формирует статус и пояснение самой проверки устойчивости.
+' При записи на лист они не определяются заново по названию метода Branch.
+' Отсутствие программного объекта и ошибка Config имеют разные причины.
 Public Property Get ResultMeta() As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -1432,9 +1433,9 @@ Public Property Get DesignMy() As Double
     DesignMy = mDesignMy
 End Property
 
-' Возвращает угол главных осей приведенного сечения, использованный в расчете.
-' Batch применяет его только для обновления итогового Results snapshot после
-' общего фильтра практически нулевых моментов.
+' Возвращает угол главных осей приведённого сечения, использованный в устойчивости.
+' Пакетный расчёт сохраняет его вместе с итоговыми данными
+' после фильтра практически нулевых моментов.
 Public Property Get PrincipalAngleRad() As Double
     PrincipalAngleRad = mPrincipalAngleRad
 End Property

@@ -38,7 +38,7 @@ Private mDiagnosticLog As String ' Текстовая диагностика в�
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mWidthInternalStatus As EResultInternalStatus ' Машинный статус формульного расчета ширины нормальной трещины.
 Private mWidthResultCode As EResultCode ' Машинный код причины результата формульной ширины трещины.
-Private mFormulaCalculated As Boolean ' Собственная формула уже выполнялась; готовая Formation сама по себе этого не означает.
+Private mFormulaCalculated As Boolean ' Признак фактического выполнения формулы ширины; полученный результат образования трещины ещё не означает расчёт ширины.
 Private mAllowableCrackWidth As Double ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Private mCrackWidth As Double ' Расчетная ширина раскрытия a_crc, мм.
 Private mUtilization As Double ' Коэффициент использования по трещине: a_crc / a_crc,ult.
@@ -88,8 +88,8 @@ Private mSP35NeighborRatioLimit As Double ' Безразмерный порог 
 Private mSP35RadiusDiameterMode As String ' Max/Min/Average только для геометрических радиусов.
 Private mSP35InteractionRadiusMode As String ' 3d/5d/6d: нормативный множитель диаметра.
 Private mSP35RebarProfile As String ' Periodic/Smooth выбирает формулу psi СП 35.
-Private mSP35Data As CSP35CrackData ' Готовый неизменяемый снимок всех якорных расчетов.
-Private mSP35CriticalCandidate As Long ' Кандидат с максимальным раскрытием, не с максимальной площадью.
+Private mSP35Data As CSP35CrackData ' Готовые данные всех проверяемых областей взаимодействия СП 35 с запретом изменений.
+Private mSP35CriticalCandidate As Long ' Номер проверяемой области с наибольшей шириной трещины; наибольшая площадь не является критерием выбора.
 Private mSP35Radius As Double, mSP35PsiCm As Double ' Rr в мм; размерный psi в см, не psi_s СП 63.
 
 
@@ -163,10 +163,10 @@ Private Sub ClearResult()
 End Sub
 
 
-' Принимает готовый Formation без поиска НДС. Отсутствие точки не блокирует
-' ширину: по допустимому текущему НДС используется psi_s = 1 с предупреждением.
-' Подтвержденный NotCracked, в том числе доказанное недостижение критерия без
-' пороговой точки, исключает расчет ширины независимо от режима коэффициентов.
+' Принимает готовую проверку образования трещины без нового решения НДС.
+' Если порог не найден, пригодное текущее НДС позволяет рассчитать ширину
+' с psi_s = 1 и предупреждением. Подтверждённое отсутствие трещины NotCracked
+' исключает расчёт ширины независимо от режима коэффициентов.
 Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
     ClearResult
     Set mFormation = formation
@@ -199,11 +199,10 @@ Public Sub InitializeForFormation(ByVal formation As CCrackFormationResult)
     SetWidthResult rsNotApplicable, rcCrackNotFormed, formation.StopReason
 End Sub
 
-' Готовит зону, арматуру и коэффициенты по готовым состояниям. Сам поиск
-' образования трещины и Pre/Post НДС здесь не выполняется; чистая формула
-' получает только подготовленные числа и не знает о State/status. Общая Query
-' передается на один вызов после штатного сброса Formation; автономный caller
-' без нее создает прежнюю новую session.
+' Готовит область, арматуру и коэффициенты по сохранённым состояниям.
+' Нагрузку образования трещины и НДС до и после неё заново не ищет.
+' Формула получает только числа; геометрические операции использует
+' переданные на один вызов или создаёт самостоятельно при отдельном вызове класса.
 Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal formation As CCrackFormationResult, ByVal loadStateForClassification As CSectionLoadState, _
@@ -248,7 +247,7 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
     End If
 End Sub
 
-' Дает доступ к единственному готовому formation-узлу, не копируя его поля.
+' Возвращает готовый результат образования трещины без отдельного копирования его полей.
 Public Property Get FormationResult() As CCrackFormationResult
     Set FormationResult = mFormation
 End Property
@@ -295,9 +294,9 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     ValidateSettings settings
 End Sub
 
-' Готовит численные данные СП 35 по существующему текущему НДС и выбирает
-' максимальное раскрытие среди доступных якорей. Ни Formation, ни Post здесь
-' не пересчитываются; psi_s СП 63 и его предупреждения в этой ветке не нужны.
+' Готовит данные СП 35 по текущему НДС и выбирает наибольшую ширину
+' среди пригодных областей взаимодействия. Образование трещины и НДС
+' после неё не пересчитывает; коэффициент psi_s СП 63 здесь не применяется.
 Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal section As CSectionModel, ByVal steelMaterial As Object)
     On Error GoTo Failed
     Dim gradient As Double, central As Boolean
@@ -334,7 +333,7 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
         Exit Sub
     End If
 
-    ' Сохраняем именно критическую область и ее состав, а не усреднение якорей.
+    ' Сохраняем область с наибольшей шириной трещины и её фактическую арматуру.
     mAbt = mInteractionRegion.Area: mSigmaS = mSP35Data.CandidateSigmaS(mSP35CriticalCandidate)
     Dim rows As Variant, members As Variant, group As Long, j As Long, bar As Long
     rows = mSP35Data.CandidateRows(mSP35CriticalCandidate)
@@ -377,7 +376,6 @@ Failed:
 End Sub
 
 
-
 ' Выполняет отдельную ветку СП для истинного центрального растяжения.
 ' Здесь нет нейтральной линии, поэтому Abt принимается равной всей площади
 ' бетона, а As - всей продольной арматуре, которая растянута в текущем НДС.
@@ -410,7 +408,6 @@ Private Sub CalculateCentralTension(ByVal currentSolver As CSectionStateResult, 
 End Sub
 
 
-
 ' Выполняет общий расчет для N + Mx + My при существующей нейтральной линии.
 ' Все геометрические величины строятся в координате s вдоль нормали к
 ' нейтральной линии, направленной в сторону растяжения.
@@ -423,8 +420,9 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     Dim ny As Double
     Dim normK As Double
     normK = Sqr(currentSolver.KappaX * currentSolver.KappaX + currentSolver.KappaY * currentSolver.KappaY)
-    ' У равномерного поля нет нейтральной линии. После fallback Formation
-    ' его нужно классифицировать по текущему НДС, а не делить на нулевую кривизну.
+    ' При равномерной деформации нейтральной линии нет. Если порог образования
+    ' трещины не выделен, определяем состояние по текущему НДС,
+    ' не деля на нулевую кривизну.
     If normK <= NEAR_ZERO_STRAIN Then
         If currentSolver.Epsilon0 > NEAR_ZERO_STRAIN Then
             CalculateCentralTension currentSolver, section, materialProvider, loadStateForClassification
@@ -491,7 +489,6 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
 End Sub
 
 
-
 ' Завершает подготовку нормативной формулы раскрытия трещин после выбора
 ' растянутой зоны и арматуры. Метод собирает As, Abt, d_s,eq, sigma_s и
 ' расстояние между трещинами l_s; сам коэффициент psi_s уточняется ниже.
@@ -514,7 +511,6 @@ Private Sub CompleteCrackFormula(ByVal solver As CSectionStateResult, ByVal sect
     mLsRaw = 0.5 * (mAbt / mAs) * mDsEquivalent
     mLs = LimitedCrackSpacing(mLsRaw, mDsEquivalent)
 End Sub
-
 
 
 ' Завершает расчет раскрытия с учетом режима psi_s.
@@ -597,7 +593,6 @@ Private Function FinalizeWithPsiMode(ByVal section As CSectionModel, ByVal mater
 End Function
 
 
-
 ' Объясняет фактически примененный коэффициент после подготовки PostCrackState.
 ' Неположительное среднее напряжение не является несходимостью и не уменьшает
 ' раскрытие; текст результата должен явно объяснять принятие psi_s = 1.
@@ -642,11 +637,9 @@ Private Function ResolveAutoPsiIfPossible(ByVal section As CSectionModel, _
 End Function
 
 
-
-' Заполняет справочное sigma_s,crc без дополнительных solve-вызовов.
-' Если состояние PostCrackState уже найдено предварительной проверкой
-' образования трещины, берем плоскость деформаций из сохраненного State.
-' Живой solver не нужен. Для fallback-путей отдельной точки sigma_s,crc нет.
+' Получает справочное sigma_s,crc по сохранённому НДС после образования трещины.
+' Новое равновесие не решается и действующий объект решателя не требуется.
+' Если отдельная пороговая точка не определена, соответствующего sigma_s,crc нет.
 Private Sub CaptureSigmaSCrcIfAvailable(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByRef selected() As Boolean)
     If mSigmaSCrc > NEAR_ZERO_STRESS Then Exit Sub
@@ -669,7 +662,6 @@ Private Sub CaptureSigmaSCrcIfAvailable(ByVal section As CSectionModel, _
     mSigmaSCrc = AverageSelectedSteelStress(postState.Epsilon0, postState.KappaX, postState.KappaY, section, _
         materialProvider.SteelMaterialFromSpec(mCrackedStateSpec), selected, False, IncludeCompressedStressForSigmaSCrc())
 End Sub
-
 
 
 ' Завершает расчет по формуле СП 63 п. 8.2.15 для продолжительного раскрытия.
@@ -705,9 +697,9 @@ Private Sub FinalizeWidth(ByVal reason As String)
         "; ls=" & FormatNumberInvariant(mLs)
 End Sub
 
-' Выполняет только численную формулу a_crc по готовым коэффициентам,
-' напряжению, модулю и расстоянию между трещинами. Не получает State,
-' не выбирает арматуру и не меняет статус либо рабочий результат calculator-а.
+' Вычисляет a_crc только по переданным коэффициентам, напряжению,
+' модулю и расстоянию между трещинами. Состав арматуры, НДС
+' и статус проверки этим методом не определяются.
 Public Function CrackWidthFromData(ByVal phi1 As Double, ByVal phi2 As Double, _
         ByVal phi3 As Double, ByVal psiS As Double, ByVal sigmaS As Double, _
         ByVal steelEs As Double, ByVal crackSpacing As Double) As Double
@@ -724,9 +716,9 @@ Public Function UtilizationFromData(ByVal crackWidthValue As Double, ByVal allow
 End Function
 
 ' ------------------------------ ЧИСТЫЕ ФОРМУЛЫ СП 35 ------------------------------
-' [SP35] П. 7.110, пособие (4.310): радиус армирования во внутренних мм.
-' Зона и состав групп уже подготовлены вне формулы; здесь нет геометрии,
-' выбора арматуры, State, Search, статусов или комментариев результата.
+' [SP35] П. 7.110, пособие (4.310): вычисляет радиус армирования, мм.
+' Область взаимодействия и состав групп подготовлены заранее;
+' формула получает числа и не выполняет геометрический поиск или решение НДС.
 Public Function SP35ReinforcementRadiusFromData(ByVal interactionArea As Double, ByVal betaDiameterSum As Double) As Double
     If interactionArea < 0# Or betaDiameterSum <= 0# Then _
         Err.Raise vbObjectError + 3780, "CCrackWidthCalculator", _
@@ -750,8 +742,8 @@ Public Function SP35PsiFromData(ByVal reinforcementRadiusMm As Double, ByVal reb
 End Function
 
 ' [SP35] П. 7.105, пособие (4.306): a_cr=(sigma_s/Es)*psi.
-' Напряжение и модуль заданы в одинаковых МПа; psi в см, результат в мм.
-' Максимальное напряжение якоря и соответствующий модуль выбираются до вызова.
+' Напряжение и модуль задаются в МПа, psi — в см; результат возвращается в мм.
+' До вызова выбираются наибольшее напряжение проверяемой группы и соответствующий модуль.
 Public Function SP35CrackWidthFromData(ByVal sigmaS As Double, ByVal steelEs As Double, ByVal psiCm As Double) As Double
     If sigmaS < 0# Or steelEs <= 0# Or psiCm < 0# Then _
         Err.Raise vbObjectError + 3783, "CCrackWidthCalculator", _
@@ -759,9 +751,9 @@ Public Function SP35CrackWidthFromData(ByVal sigmaS As Double, ByVal steelEs As 
     SP35CrackWidthFromData = (sigmaS / steelEs) * psiCm * 10#
 End Function
 
-' Публикует машинный итог только формульного этапа. Получение Formation/State
-' не объявляет формулу выполненной; отсутствующий итог является внутренней
-' ошибкой, а не повторной численной несходимостью или успешным fallback.
+' Возвращает статус именно выполнения формулы ширины. Получение НДС
+' или проверка образования трещины не считается выполненной формулой.
+' Отсутствие обязательного итога отмечается как внутренняя ошибка программы.
 Public Property Get ResultMeta() As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -776,7 +768,6 @@ Public Property Get ResultMeta() As CResultMeta
 End Property
 
 
-
 ' Записывает машинный результат формульной части ширины раскрытия.
 Private Sub SetWidthResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal reason As String)
@@ -784,7 +775,6 @@ Private Sub SetWidthResult(ByVal internalStatus As EResultInternalStatus, _
     mWidthResultCode = resultCode
     mStopReason = UserStopReason(reason)
 End Sub
-
 
 
 ' Готовит короткий пользовательский комментарий из внутренней причины.
@@ -805,14 +795,12 @@ Private Function UserStopReason(ByVal reason As String) As String
 End Function
 
 
-
 ' Помечает ошибку входных данных, найденную уже при подготовке данных формулы.
 Private Sub SetWidthInvalidInput(ByVal reason As String)
     mConverged = False
     mCrackFormed = False
     SetWidthResult rsInvalidInput, rcInvalidInput, reason
 End Sub
-
 
 
 ' Помечает расчет как корректно завершенный без раскрытой трещины.
@@ -830,7 +818,6 @@ Private Sub FinishNoCrack(ByVal reason As String)
 End Sub
 
 
-
 ' Выбирает все растянутые стержни для центрального растяжения.
 Private Sub SelectAllTensionRebars(ByVal solver As CSectionStateResult, ByVal section As CSectionModel, ByRef selected() As Boolean)
     Dim i As Long
@@ -841,7 +828,6 @@ Private Sub SelectAllTensionRebars(ByVal solver As CSectionStateResult, ByVal se
         End If
     Next i
 End Sub
-
 
 
 ' Находит крайнюю растянутую арматуру по нормали к нейтральной линии.
@@ -860,7 +846,6 @@ Private Function FindMostTensionRebarProjection(ByVal solver As CSectionStateRes
 End Function
 
 
-
 ' Выбирает смысл расстояния a_s по настройке CoverMode. NearestContour
 ' использует локальный выход луча от стержня к бетонному контуру;
 ' GlobalExtreme считает расстояние до опорной линии всего сечения.
@@ -877,7 +862,6 @@ Private Function CoverDistanceForRebar(ByVal section As CSectionModel, ByVal reb
 End Function
 
 
-
 ' Для a_s нужна не глобальная крайняя проекция всего сечения, а расстояние от
 ' оси выбранного растянутого стержня до ближайшего бетонного контура по нормали
 ' к нейтральной линии. Это особенно важно для Г-сечений и импортированных
@@ -892,7 +876,6 @@ Private Function LocalConcreteCoverForRebar(ByVal section As CSectionModel, ByVa
     LocalConcreteCoverForRebar = mGeometryQuery.ConcreteCoverFromPointAlongDirection( _
         section.RebarX(rebarIndex), section.RebarY(rebarIndex), nx, ny)
 End Function
-
 
 
 ' Определяет нижнюю границу расчетной зоны в координате s.
@@ -918,7 +901,6 @@ Private Function TensionZoneLowerBound(ByVal st As Double, ByVal sc As Double, B
 End Function
 
 
-
 ' Отсекает фактическую бетонную область по нормативной границе зоны СП 63.
 ' Площадь частичных элементов и отверстий принадлежит общему движку; эта же
 ' конечная область сохраняется для Results и экспорта, без второго построения.
@@ -926,7 +908,6 @@ Private Function ConcreteAreaInZone(ByVal nx As Double, ByVal ny As Double, ByVa
     Set mInteractionRegion = mGeometryQuery.ClipHalfPlane(mGeometryQuery.ConcreteDomain, nx, ny, lowerS)
     ConcreteAreaInZone = mInteractionRegion.Area
 End Function
-
 
 
 ' Формирует набор стержней As по той же полосе, которая принята для Abt,
@@ -947,15 +928,13 @@ Private Sub SelectRebarsInZone(ByVal solver As CSectionStateResult, ByVal sectio
 End Sub
 
 
-
-' Крайние проекции трещин берутся из общей конечной бетонной области.
-' Достоверный контур имеет приоритет; fallback трассирует границы КЭ.
-' Устойчивость продолжает использовать прежние дискретные проекции properties.
+' Получает крайние проекции из готовой бетонной области: по точному контуру,
+' если он задан, иначе по границам бетонных элементов. Для устойчивости
+' проекции сетки вычисляет отдельно CSectionPropertiesCalculator.
 Private Sub ProjectionBoundsByConcreteContour(ByVal section As CSectionModel, _
         ByVal nx As Double, ByVal ny As Double, ByRef st As Double, ByRef sc As Double)
     mGeometryQuery.ProjectionBounds mGeometryQuery.ConcreteDomain, nx, ny, sc, st
 End Sub
-
 
 
 ' Считает средневзвешенное напряжение выбранной арматуры. В формулу раскрытия
@@ -984,7 +963,6 @@ Private Function AverageSelectedSteelStress(ByVal epsilon0 As Double, ByVal kapp
 End Function
 
 
-
 ' Возвращает режим усреднения именно для sigma_s,crc. Текущее sigma_s основной
 ' формулы раскрытия по-прежнему считается только по растягивающей части
 ' выбранной группы; этот переключатель нужен для состояния PostCrackState,
@@ -995,7 +973,6 @@ Private Function IncludeCompressedStressForSigmaSCrc() As Boolean
 End Function
 
 
-
 ' Считает площадь выбранной арматуры.
 Private Function SelectedRebarArea(ByVal section As CSectionModel, ByRef selected() As Boolean) As Double
     Dim i As Long
@@ -1003,7 +980,6 @@ Private Function SelectedRebarArea(ByVal section As CSectionModel, ByRef selecte
         If selected(i) Then SelectedRebarArea = SelectedRebarArea + section.RebarArea(i)
     Next i
 End Function
-
 
 
 ' Перечисляет имена выбранных стержней для контрольной таблицы напряжений.
@@ -1018,7 +994,6 @@ Private Function SelectedRebarIds(ByVal section As CSectionModel, ByRef selected
     Next i
     SelectedRebarIds = result
 End Function
-
 
 
 ' Для разных диаметров используется принятое обобщение эквивалентного диаметра:
@@ -1039,7 +1014,6 @@ Private Function EquivalentDiameter(ByVal section As CSectionModel, ByRef select
     Next i
     If denominator > 0# Then EquivalentDiameter = numerator / denominator
 End Function
-
 
 
 ' Ограничивает ls снизу, затем сверху по принятой расчетной последовательности.
@@ -1063,7 +1037,6 @@ Private Function LimitedCrackSpacing(ByVal rawLs As Double, ByVal ds As Double) 
 End Function
 
 
-
 ' Формула psi_s = 1 - 0.8*sigma_s,crc/sigma_s. Ограничение 0...1 является
 ' численной защитой от отрицательного psi_s при почти равных напряжениях или
 ' случайных малых несоответствиях solve-ов.
@@ -1078,7 +1051,6 @@ Private Function AutoPsi(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As D
 End Function
 
 
-
 ' Суммарная площадь бетона модели.
 Private Function TotalConcreteArea(ByVal section As CSectionModel) As Double
     Dim i As Long
@@ -1088,12 +1060,10 @@ Private Function TotalConcreteArea(ByVal section As CSectionModel) As Double
 End Function
 
 
-
 ' Деформация бетонного КЭ.
 Private Function ConcreteStrain(ByVal solver As CSectionStateResult, ByVal section As CSectionModel, ByVal index As Long) As Double
     ConcreteStrain = solver.Epsilon0 + solver.KappaX * section.ConcreteY(index) + solver.KappaY * section.ConcreteX(index)
 End Function
-
 
 
 ' Деформация стержня арматуры.
@@ -1102,12 +1072,10 @@ Private Function RebarStrain(ByVal solver As CSectionStateResult, ByVal section 
 End Function
 
 
-
 ' Проекция точки на нормаль к нейтральной линии.
 Private Function Projection(ByVal xCoord As Double, ByVal yCoord As Double, ByVal nx As Double, ByVal ny As Double) As Double
     Projection = nx * xCoord + ny * yCoord
 End Function
-
 
 
 ' Обновляет максимум деформации и напряжения арматуры для диагностики.
@@ -1120,7 +1088,6 @@ Private Sub TrackMaxSteel(ByVal section As CSectionModel, ByVal index As Long, B
         mMaxSteelStress = stress
     End If
 End Sub
-
 
 
 ' Возвращает phi3 для текущего LC. В Auto используется принятое правило СП:
@@ -1137,20 +1104,17 @@ Private Function ResolvePhi3(ByVal loadStateForClassification As CSectionLoadSta
 End Function
 
 
-
-' Определяет растягивающий характер продольной силы только через единый
-' объект нагрузки. Так central tension и phi3 используют ту же интерпретацию
-' Load.ReferenceOffset и фильтра малых моментов, что batch/stability/capacity.
+' Определяет знак продольной силы через общий объект нагрузки.
+' Центральное растяжение и phi3 используют те же правила точки приложения
+' и малых моментов, что прочность, несущая способность и устойчивость.
 Private Function IsTensionLoad(ByVal loadStateForClassification As CSectionLoadState) As Boolean
     IsTensionLoad = loadStateForClassification.IsTension(NEAR_ZERO_FORCE)
 End Function
 
 
-
-' Нормализует режимы и проверяет коэффициенты независимо от применимости
-' формулы. Batch вызывает этот gate до Formation/current solve; автономный
-' потребитель проверяется до выхода NotCracked. При переданном reader ошибка
-' содержит фактический адрес Config. Метод не решает НДС и не меняет результат.
+' Проверяет режимы и коэффициенты до решения НДС и до выхода «трещины нет».
+' При чтении Config ошибка содержит фактический адрес ячейки.
+' Равновесие не решается и готовый результат этой проверкой не меняется.
 Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = Nothing)
     Select Case UCase$(Trim$(mStandardCode))
         Case "SP63", "SP35": mStandardCode = UCase$(Trim$(mStandardCode))
@@ -1216,8 +1180,9 @@ Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = N
     If mSteelEs <= 0# Then Err.Raise vbObjectError + 3713, "CCrackWidthCalculator", "Steel.Es должен быть положительным для расчета трещин."
 End Sub
 
-' Проверяет только применяемые настройки СП 35 с адресами reader-а. Выбор
-' диаметра не заменяет реальные диаметры в сумме beta*nd, допуски уже в мм.
+' Проверяет применяемые настройки СП 35 и при ошибке указывает адрес Config.
+' Выбранный справочный диаметр не заменяет реальные диаметры
+' в сумме beta*nd; допуски длин уже переданы в мм.
 Private Sub ValidateSP35Settings(ByVal settings As CSystemSettingsReader)
     If mSP35GroupGapTolerance < 0# Then RaiseInvalidSetting 3787, "SLS.Crack.SP35.GroupGapTolerance", "Чистый зазор не может быть отрицательным.", "Введите неотрицательную длину в единицах INPUT Length.", settings
     If mSP35RowTolerance < 0# Then RaiseInvalidSetting 3788, "SLS.Crack.SP35.RowTolerance", "Допуск ряда не может быть отрицательным.", "Введите неотрицательную длину в единицах INPUT Length.", settings
@@ -1240,9 +1205,9 @@ Private Sub ValidateSP35Settings(ByVal settings As CSystemSettingsReader)
     End Select
 End Sub
 
-' Сохраняет согласованный машинный номер ошибки инженерной настройки. Reader
-' добавляет место ввода, но не принимает решение о допустимости коэффициента;
-' автономный API без reader получает тот же ключ и понятное исправление.
+' Сохраняет код ошибки инженерной настройки. CSystemSettingsReader добавляет адрес
+' ввода, но допустимость значения проверяет расчёт. При программном вызове
+' без него сохраняются тот же ключ параметра и понятное пояснение.
 Private Sub RaiseInvalidSetting(ByVal errorCode As Long, ByVal key As String, _
         ByVal reason As String, ByVal correction As String, ByVal settings As CSystemSettingsReader)
     Dim message As String
@@ -1255,8 +1220,7 @@ Private Sub RaiseInvalidSetting(ByVal errorCode As Long, ByVal key As String, _
 End Sub
 
 
-
-' Проверяет расчетный контракт класса.
+' Проверяет, переданы ли обязательные модель и материалы для расчёта ширины трещины.
 Private Sub ValidateInputs(ByVal currentSolver As CSectionStateResult, ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider)
     If currentSolver Is Nothing Then Err.Raise vbObjectError + 3700, "CCrackWidthCalculator", "Результат решателя сечения не передан."
@@ -1268,13 +1232,11 @@ Private Sub ValidateInputs(ByVal currentSolver As CSectionStateResult, ByVal sec
 End Sub
 
 
-
 ' Добавляет строку в диагностический журнал.
 Private Sub AppendDiagnostic(ByVal text As String)
     If Not mDiagnosticsEnabled Then Exit Sub
     mDiagnosticLog = mDiagnosticLog & text & vbCrLf
 End Sub
-
 
 
 ' Форматирует числа журнала и инженерного комментария через точку.
@@ -1286,12 +1248,10 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
 End Function
 
 
-
 ' Утилитарный минимум без WorksheetFunction в расчетном ядре трещин.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
-
 
 
 ' Утилитарный максимум без WorksheetFunction в расчетном ядре трещин.
@@ -1300,17 +1260,15 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 
-
 ' --------------------------------------------------------------------------
 ' Свойства результатов
 ' --------------------------------------------------------------------------
-' Writer-ы и тесты читают эти значения после Calculate. Свойства ничего не
-' пересчитывают и не обращаются к solver-у повторно.
+' Возвращает сохранённые после Calculate значения для вывода и тестов
+' без повторного расчёта и решения равновесия.
 
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
-
 
 
 ' Инженерная причина результата или предупреждение по готовым входным состояниям.
@@ -1319,12 +1277,10 @@ Public Property Get StopReason() As String
 End Property
 
 
-
 ' Машинный статус формульного расчета ширины нормальной трещины.
 Public Property Get CrackWidthInternalStatus() As EResultInternalStatus
     CrackWidthInternalStatus = mWidthInternalStatus
 End Property
-
 
 
 ' Машинный код причины результата формульной ширины трещины.
@@ -1333,12 +1289,10 @@ Public Property Get CrackWidthResultCode() As EResultCode
 End Property
 
 
-
 ' True, если по выбранной ветке расчета трещина считается образованной.
 Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
-
 
 
 ' Сколько стержней попало в расчетную растянутую арматуру As.
@@ -1347,12 +1301,10 @@ Public Property Get TensionRebarCount() As Long
 End Property
 
 
-
 ' Максимальная растягивающая деформация среди выбранных стержней As.
 Public Property Get MaxSteelStrain() As Double
     MaxSteelStrain = mMaxSteelStrain
 End Property
-
 
 
 ' Напряжение в стержне с максимальной растягивающей деформацией, МПа.
@@ -1361,12 +1313,10 @@ Public Property Get MaxSteelStress() As Double
 End Property
 
 
-
 ' Расчетная ширина раскрытия a_crc, мм.
 Public Property Get CrackWidth() As Double
     CrackWidth = mCrackWidth
 End Property
-
 
 
 ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
@@ -1375,12 +1325,10 @@ Public Property Get AllowableCrackWidth() As Double
 End Property
 
 
-
 ' Коэффициент использования по трещине: a_crc / a_crc,ult.
 Public Property Get Utilization() As Double
     Utilization = mUtilization
 End Property
-
 
 
 ' Текстовая диагностика выбора зоны, арматуры, ls и psi_s.
@@ -1389,12 +1337,10 @@ Public Property Get DiagnosticLog() As String
 End Property
 
 
-
 ' User, Auto или AlwaysCalc: как принимать psi_s в формуле раскрытия.
 Public Property Get PsiMode() As String
     PsiMode = mPsiMode
 End Property
-
 
 
 ' Как усреднять sigma_s,crc по ранее выбранной группе стержней.
@@ -1403,12 +1349,10 @@ Public Property Get SigmaSCrcAveragingMode() As String
 End Property
 
 
-
 ' Effective или FullTension: способ задания бетонной зоны Abt.
 Public Property Get TensionZoneMode() As String
     TensionZoneMode = mTensionZoneMode
 End Property
-
 
 
 ' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
@@ -1417,12 +1361,10 @@ Public Property Get CoverMode() As String
 End Property
 
 
-
 ' Коэффициент длительности действия нагрузки.
 Public Property Get Phi1() As Double
     Phi1 = mPhi1
 End Property
-
 
 
 ' Пользовательский коэффициент, учитывающий поверхность арматуры.
@@ -1431,12 +1373,10 @@ Public Property Get Phi2() As Double
 End Property
 
 
-
 ' Коэффициент характера нагружения.
 Public Property Get Phi3() As Double
     Phi3 = mPhi3
 End Property
-
 
 
 ' Коэффициент неравномерности деформаций арматуры между трещинами.
@@ -1445,12 +1385,10 @@ Public Property Get PsiS() As Double
 End Property
 
 
-
 ' Средневзвешенное напряжение выбранной растянутой арматуры при текущей нагрузке, МПа.
 Public Property Get SigmaS() As Double
     SigmaS = mSigmaS
 End Property
-
 
 
 ' Среднее той же группы в AfterMcrcState выбранного пути с учетом режима усреднения, МПа.
@@ -1458,17 +1396,19 @@ Public Property Get SigmaSCrc() As Double
     SigmaSCrc = mSigmaSCrc
 End Property
 
-' Возвращает конечную расчетную область, а не ее повторное построение.
-' Копия защищает снимок calculator-а от изменения downstream-потребителем.
+' Возвращает независимую копию готовой расчётной области без повторного построения.
+' Вызывающий код не может изменить область, сохранённую в результате проверки.
 Public Property Get InteractionRegion() As CConcreteRegion
     If Not mInteractionRegion Is Nothing Then Set InteractionRegion = mInteractionRegion.Clone
 End Property
 
-' Снимок СП 35 закрыт для изменения; writer получает все ряды и якорные числа.
+' Возвращает защищённые от изменений данные СП 35 для вывода всех рядов
+' и расчётных величин выбранной области взаимодействия.
 Public Property Get SP35Data() As CSP35CrackData
     Set SP35Data = mSP35Data
 End Property
-' Кандидат с максимальным раскрытием, не с максимальной площадью.
+' Возвращает номер области с наибольшей шириной трещины; наибольшая площадь не является
+' критерием выбора.
 Public Property Get SP35CriticalCandidate() As Long
     SP35CriticalCandidate = mSP35CriticalCandidate
 End Property
@@ -1481,8 +1421,8 @@ Public Property Get SP35PsiCm() As Double
     SP35PsiCm = mSP35PsiCm
 End Property
 
-' Настройки методики применяются только при следующем Calculate, не меняя
-' готовый result-tree. Численные длины автономного API задаются во внутренних мм.
+' Новые настройки применяются при следующем Calculate, не меняя готовые результаты.
+' При программном вызове численные длины передаются во внутренних мм.
 Public Property Get StandardCode() As String
     StandardCode = mStandardCode
 End Property
@@ -1516,12 +1456,10 @@ Public Property Let SP35RebarProfile(ByVal value As String)
 End Property
 
 
-
 ' Es для формулы раскрытия трещины, МПа.
 Public Property Get SteelEs() As Double
     SteelEs = mSteelEs
 End Property
-
 
 
 ' Площадь выбранной растянутой арматуры, мм2.
@@ -1530,12 +1468,10 @@ Public Property Get AsTension() As Double
 End Property
 
 
-
 ' Площадь бетона, попавшая в расчетную растянутую зону, мм2.
 Public Property Get Abt() As Double
     Abt = mAbt
 End Property
-
 
 
 ' Эквивалентный диаметр выбранных стержней для разных d, мм.
@@ -1544,12 +1480,10 @@ Public Property Get DsEquivalent() As Double
 End Property
 
 
-
 ' Нормативная длина ls до ограничений 10ds/100/40ds/400, мм.
 Public Property Get CrackSpacingRaw() As Double
     CrackSpacingRaw = mLsRaw
 End Property
-
 
 
 ' Итоговое расстояние между трещинами после ограничений, мм.
@@ -1558,12 +1492,10 @@ Public Property Get CrackSpacing() As Double
 End Property
 
 
-
 ' Имена стержней, вошедших в расчет sigma_s и As, через запятую.
 Public Property Get TensionRebarIds() As String
     TensionRebarIds = mTensionRebarIds
 End Property
-
 
 
 ' Габарит сечения по нормали к нейтральной линии по общему бетонному контуру КЭ.
@@ -1572,12 +1504,10 @@ Public Property Get SectionDepthH() As Double
 End Property
 
 
-
 ' Расстояние a_s по выбранному режиму CoverDistanceMode, мм.
 Public Property Get CoverA() As Double
     CoverA = mCoverA
 End Property
-
 
 
 ' Фактическая глубина растянутой бетонной зоны до нейтральной линии, мм.
@@ -1586,12 +1516,10 @@ Public Property Get TensionDepth() As Double
 End Property
 
 
-
 ' Глубина зоны Abt, реально использованная после ограничений, мм.
 Public Property Get EffectiveZoneDepth() As Double
     EffectiveZoneDepth = mEffectiveZoneDepth
 End Property
-
 
 
 ' True, если сработала отдельная ветка центрального растяжения.
@@ -1600,12 +1528,10 @@ Public Property Get CentralTensionBranch() As Boolean
 End Property
 
 
-
 ' Пользовательский предел a_crc,ult во внутренних единицах длины, мм.
 Public Property Let AllowableCrackWidth(ByVal value As Double)
     mAllowableCrackWidth = value
 End Property
-
 
 
 ' User, Auto или AlwaysCalc: как принимать psi_s в формуле раскрытия.
@@ -1614,12 +1540,10 @@ Public Property Let PsiMode(ByVal value As String)
 End Property
 
 
-
 ' Как усреднять sigma_s,crc по ранее выбранной группе стержней.
 Public Property Let SigmaSCrcAveragingMode(ByVal value As String)
     mSigmaSCrcAveragingMode = value
 End Property
-
 
 
 ' Пользовательское значение phi1 для формулы раскрытия.
@@ -1628,12 +1552,10 @@ Public Property Let Phi1(ByVal value As Double)
 End Property
 
 
-
 ' Пользовательское значение phi2 для формулы раскрытия.
 Public Property Let Phi2(ByVal value As Double)
     mPhi2Input = value
 End Property
-
 
 
 ' User или Auto: брать phi3 из Config или выбирать по характеру продольной силы.
@@ -1642,12 +1564,10 @@ Public Property Let Phi3Mode(ByVal value As String)
 End Property
 
 
-
 ' Пользовательское значение phi3, если Phi3Mode = User.
 Public Property Let Phi3(ByVal value As Double)
     mPhi3Input = value
 End Property
-
 
 
 ' Пользовательское значение psi_s, если PsiMode = User.
@@ -1656,12 +1576,10 @@ Public Property Let PsiS(ByVal value As Double)
 End Property
 
 
-
 ' Effective или FullTension: способ задания бетонной зоны Abt.
 Public Property Let TensionZoneMode(ByVal value As String)
     mTensionZoneMode = value
 End Property
-
 
 
 ' NearestContour или GlobalExtreme: способ измерения расстояния a_s.
@@ -1670,15 +1588,18 @@ Public Property Let CoverMode(ByVal value As String)
 End Property
 
 
-
 ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 
-' Проверяет подписанные входы действующей формулы psi без подмены найденных
+' ДЛЯ ТЕСТОВ: проверяет подписанные входы действующей формулы psi без подмены найденных
 ' НДС и напряжений. Пользовательский режим User этот расчет не использует.
 Public Function Audit02AutoPsiForTests(ByVal sigmaS As Double, ByVal sigmaSCrc As Double) As Double
     Audit02AutoPsiForTests = AutoPsi(sigmaS, sigmaSCrc)

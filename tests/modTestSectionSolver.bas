@@ -13,8 +13,8 @@ Private Type TSectionSolverTestStats
     Report As String
 End Type
 
-' Выполняет регрессии равновесия, единиц, численных методов и State-контрактов.
-' Возвращает все assertions и итог; ошибка suite остается отдельной диагностикой.
+' Проверяет равновесие, единицы, численные методы и сохранение НДС.
+' Возвращает результаты отдельных проверок и итог; ошибка запуска отмечается отдельно.
 Public Function RunSectionSolverTests() As String
     On Error GoTo Failed
 
@@ -906,9 +906,8 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
-' ДЛЯ ТЕСТОВ
-' Запускает направленные проверки typed failure через настоящий provider,
-' runner и solver, отдельно от полного набора задач равновесия.
+' ДЛЯ ТЕСТОВ: отдельно проверяет передачу кодов отказа через обычные
+' CStateProvider, CStateSolutionRunner и CSectionSolver.
 Public Function RunAudit03StateTests() As String
     Dim stats As TSectionSolverTestStats
     TestAudit03TypedStateFailures stats
@@ -916,9 +915,8 @@ Public Function RunAudit03StateTests() As String
     RunAudit03StateTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ
-' Ошибка метода, вырожденная геометрия, бюджет итераций и отсутствующий
-' контекст не должны терять свою причину при формировании named-state.
+' ДЛЯ ТЕСТОВ: неизвестный метод, вырожденная геометрия, исчерпание итераций
+' и отсутствие исходных объектов должны сохранять собственные причины отказа в НДС.
 Private Sub TestAudit03TypedStateFailures(ByRef stats As TSectionSolverTestStats)
     Dim scenario As Long
     For scenario = 1 To 11
@@ -1012,9 +1010,9 @@ End Sub
 
 
 
-' ДЛЯ ТЕСТОВ
-' Создает изолированный реальный маршрут одного отказа. Неуспешный snapshot
-' сохраняется для диагностики, но не становится reusable и допускает retry.
+' ДЛЯ ТЕСТОВ: выполняет отдельный обычный расчёт с ожидаемой неудачей.
+' Отказ сохраняется для диагностики, но не возвращается как пригодное НДС
+' и не запрещает повторное решение.
 Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestStats, ByVal scenario As Long)
     On Error GoTo Failed
     Dim settings As CSystemSettingsReader
@@ -1050,8 +1048,8 @@ Private Sub TestAudit03TypedStateFailureCase(ByRef stats As TSectionSolverTestSt
     Dim request As CStateRequest
     Set request = New CStateRequest
     request.Initialize sstStrengthState, cpStrength, spec, -100000#, 10000000#, 2000000#, False, True
-    ' Численные контракты проверяются на силово допустимых нагрузках:
-    ' у единственного волокна моменты нулевые, при малом бюджете есть НДС.
+    ' Проверки выполняются при силово допустимых нагрузках: у одного волокна
+    ' моменты нулевые, а при малом бюджете существует подходящее равновесие.
     If scenario = 2 Then request.Initialize sstStrengthState, cpStrength, spec, -100000#, 0#, 0#, False, True
     If scenario = 3 Then request.Initialize sstStrengthState, cpStrength, spec, _
         -0.95 * materials.ConcreteCompressionResistanceFromSpec(spec) * 20000#, 0#, 0#, False, True
@@ -1200,8 +1198,8 @@ Private Sub TestAudit02StateSnapshotIsolation(ByRef stats As TSectionSolverTestS
     AssertTrue stats, "audit02.stateSnapshot.emptyCode", state.ResultCode = rcInternalError
 End Sub
 
-' Проверяет отсутствие фиктивных экстремумов отсутствующего знака напряжений:
-' полностью растянутое или сжатое сечение не возвращает sentinel в snapshot.
+' Полностью растянутое или сжатое сечение не должно возвращать
+' фиктивные крайние напряжения отсутствующего знака.
 Private Sub TestAudit02AbsentStressSign(ByRef stats As TSectionSolverTestStats)
     Dim concrete As CLinearConcreteMaterial
     Set concrete = New CLinearConcreteMaterial
@@ -1353,8 +1351,9 @@ Failed:
     AppendLine stats, "FAIL: " & prefix & ".runtime; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
-' Проверяет память только идентичных численных retries. Иные старты/options,
-' новое сечение/материалы, новая session и успех не блокируются прежней неудачей.
+' Повторная неудача запоминается только при полном совпадении численной попытки.
+' Новые старты, параметры, сечение, материалы, сеанс и успешное решение
+' не блокируются прежним отказом.
 Public Function RunAudit03RetryAttemptSessionTests() As String
     On Error GoTo Failed
     Dim stats As TSectionSolverTestStats
@@ -1366,8 +1365,9 @@ Failed:
     RunAudit03RetryAttemptSessionTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' Переход между двумя участками диаграммы требует двух поправок. Бюджет
-' одной поправки дает управляемую неудачу для проверки точного retry-кэша.
+' Переход между двумя участками диаграммы требует двух поправок.
+' Бюджет одной поправки даёт воспроизводимую неудачу для проверки
+' запоминания только точно совпавших попыток.
 Private Sub TestAudit03RetryAttemptSession(ByRef stats As TSectionSolverTestStats)
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(BuildMesh(RectangleGeometry(200#, 100#), 20#), Nothing)
@@ -1451,8 +1451,8 @@ End Sub
 
 ' ============================== ДЛЯ ТЕСТОВ: AUDIT03 EXTREME INPUTS ==============================
 
-' Проверяет конечность и typed-исход прямого НДС при представимых нагрузках
-' около верхней границы Double. Это отдельный gate, а не обычный overload 1e6.
+' ДЛЯ ТЕСТОВ: проверяет конечность чисел и код исхода НДС при представимых
+' нагрузках около предела Double. Это отдельная проверка численных границ.
 Public Function RunAudit03ExtremeStateInputTests() As String
     Dim stats As TSectionSolverTestStats
     TestAudit03ExtremeStateInputs stats
@@ -1540,8 +1540,9 @@ End Sub
 
 ' ============================== ДЛЯ ТЕСТОВ: AUDIT03 SOLVER SETTINGS ==============================
 
-' Проверяет активное действие численных настроек через настоящий reader и Solve.
-' Изменение входа должно менять ограничения/ветвь, а не только прочитанное поле.
+' Проверяет действие численных настроек через обычные чтение и Solve.
+' Изменённая настройка должна менять ограничение или метод решения,
+' а не только значение прочитанного свойства.
 Public Function RunAudit03SolverSettingEffectTests() As String
     On Error GoTo Failed
     Dim stats As TSectionSolverTestStats
@@ -1640,8 +1641,8 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Формирует полный численный fixture и заменяет ровно один key до чтения Range.
-' Значения внутренних допусков фиксированы; пользовательская книга не меняется.
+' Задаёт полный численный пример и заменяет один ключ перед чтением диапазона.
+' Внутренние допуски фиксированы; пользовательская книга не меняется.
 Private Function Audit03ConfiguredSolver(ByVal sheet As Worksheet, ByVal key As String, _
         ByVal value As Variant, Optional ByVal method As String = "Newton", _
         Optional ByVal units As CUnitSystem = Nothing) As CSectionSolver
@@ -1758,9 +1759,9 @@ Public Function RunAudit03ExtremeLinearSystemTests() As String
     RunAudit03ExtremeLinearSystemTests = stats.Report
 End Function
 
-' Проверяет причины настоящего линейного solve, а не вручную созданную meta.
-' Большая сумма RHS проходит масштабированную проверку, но непредставимая
-' поправка остается численной ошибкой; recovery очищает прошлый FailureCode.
+' Проверяет причины отказа настоящего линейного решения. Большая сумма
+' правых частей допускает нормировку; непредставимая поправка остаётся
+' численной ошибкой. Следующий корректный запуск должен очищать прежний код отказа.
 Private Sub TestAudit03LinearFailureCodes(ByRef stats As TSectionSolverTestStats)
     Dim system As CLinearSystem3x3
     Set system = New CLinearSystem3x3

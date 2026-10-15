@@ -83,8 +83,8 @@ Private Sub ConfigureFixture(ByVal system As Object)
     SetValue system, "Calculation.ZeroMomentPerDepth", 0#
 End Sub
 
-' Сохраняет два настоящих прямых НДС с разными ID и напряжениями.
-' Проверка выбора сочетания затем читает этот snapshot без нового solve.
+' Сохраняет два рассчитанных НДС с разными номерами сочетаний и напряжениями.
+' Проверка выбора сочетания читает эти данные без нового расчёта.
 Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByVal profiles As Object)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
     Dim provider As CMaterialModelProvider, batch As CBatchSectionCalculator, writer As CNDMResultsWriter
@@ -123,8 +123,8 @@ Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByV
     LogLine stats, "AUTOCAD_SNAPSHOT: " & batch.ResultAt(2).OverallMeta.ResultComment
     Check stats, "autoCADConfig.snapshot.state1", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
     Check stats, "autoCADConfig.snapshot.state2", batch.ResultAt(2).DirectStateMeta.InternalStatus = rsSuccess
-    ' Worst должен принадлежать тому же тестовому snapshot, а не сводке
-    ' предыдущего пользовательского расчета или другого тестового набора.
+    ' Определяющее сочетание Worst должно относиться к текущим тестовым результатам,
+    ' а не к прежнему пользовательскому расчёту или другому тесту.
     Set summaryWriter = New CBatchResultWriter: summaryWriter.WriteSummary ThisWorkbook, batch
     Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
 End Sub
@@ -189,8 +189,8 @@ Private Sub CheckPresentation(ByRef stats As TCadStats, ByVal system As Object, 
     system.Formula = saved
 End Sub
 
-' Выбор каждого импортного слоя меняет реальный набор Region и координаты;
-' геометрия источника остается в мм независимо от пользовательского INPUT.
+' Выбор каждого слоя импорта меняет набор читаемых Region и их координаты.
+' Геометрия чертежа остаётся в мм независимо от пользовательских входных единиц.
 Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVal position As Long)
     Dim model As CSectionModel, importer As CAutoCADSectionModelImporter, regions As Collection
     Dim settings As CSystemSettingsReader, prefix As String, saved As Variant
@@ -272,9 +272,9 @@ Private Sub CheckCleanup(ByRef stats As TCadStats, ByVal system As Object, ByVal
     stats.Cases = stats.Cases + 2
 End Sub
 
-' Меняет каждый экспортный слой и цвет независимо. Ожидается изменение
-' именно предназначенного поля оформления; чувствительность не доказывается
-' одним чтением default или сравнением полного snapshot с другим ID.
+' Меняет каждый экспортный слой и цвет по отдельности. Проверяет соответствующее
+' поле оформления: чтения значения по умолчанию или сравнения разных сочетаний
+' недостаточно для подтверждения работы настройки.
 Private Sub CheckSettingEffects(ByRef stats As TCadStats, ByVal system As Object, ByVal position As Long)
     Dim saved As Variant, result As Object, keys As Variant, materials As Variant
     Dim states As Variant, fields As Variant, i As Long, name As String
@@ -385,8 +385,8 @@ Private Sub CheckLayerContracts(ByRef stats As TCadStats, ByVal system As Object
     Next name
 End Sub
 
-' Не превращает ошибки Config в численные статусы: сохраняет рабочее описание.
-' Snapshot и presentation являются штатными consumers, а не тестовым parser-ом.
+' Проверяет фактический отказ обычного чтения результатов и оформления.
+' Ошибка Config должна сохранять свою причину, а не превращаться в численную несходимость.
 Private Function ConsumeError(ByRef stats As TCadStats, ByVal key As String) As String
     Dim result As Object, model As CSectionModel, importer As CAutoCADSectionModelImporter, text As String
     stats.Cases = stats.Cases + 1
@@ -440,8 +440,8 @@ Private Function Reader() As CSystemSettingsReader
     Set Reader = New CSystemSettingsReader: Reader.LoadFromWorkbook ThisWorkbook
 End Function
 
-' ДЛЯ ТЕСТОВ: в fixture нет дополнительных слоев контуров. Их заданные
-' имена не отменяют импорт Region сетки из собственных четырех слоев.
+' ДЛЯ ТЕСТОВ: в тестовом чертеже нет контурных слоёв. Их имена в Config
+' не должны препятствовать импорту Region сетки с четырёх заданных слоёв.
 Private Function EmptyContourLayers() As Collection
     Set EmptyContourLayers = New Collection
 End Function
@@ -692,9 +692,9 @@ Private Sub CheckNativeImport(ByRef stats As TCadStats, ByVal doc As Object, ByV
     Next i
 End Sub
 
-' Проверяет центральные A/I настоящего повернутого Region независимо от
-' выбора кандидатов importer-а. Перенос по X/Y не меняет центральный тензор;
-' оба знака угла и произведения координат выявляют ошибочную эвристику Ixy.
+' Проверяет центральные площадь и моменты инерции повёрнутого Region.
+' Перенос объекта не меняет центральные моменты инерции. Оба знака угла
+' и произведения координат выявляют неверное восстановление Ixy.
 Private Sub CheckNativeRegionInertia(ByRef stats As TCadStats, ByVal doc As Object)
     Dim angleSign As Long, position As Long, angle As Double, cx As Double, cy As Double
     Dim expectedIx As Double, expectedIy As Double, expectedIxy As Double
@@ -771,10 +771,10 @@ Private Function NativeNumber(ByVal value As Double) As String
     NativeNumber = Replace$(CStr(value), ",", ".")
 End Function
 
-' Проверяет весь рабочий snapshot/export путь для повернутого прямоугольника,
-' треугольника и Г-образного Region. Oracle интегрирует исходный polygon,
-' а не использует восстановленные стороны CSectionModel как собственный эталон.
-' Обе ориентации повторяются при OUTPUT мм/м; все DWG принадлежат этому тесту.
+' Проверяет сохранение и экспорт повёрнутого прямоугольника, треугольника
+' и Г-образного Region. Эталон независимо вычисляется по исходному многоугольнику,
+' а не по восстановленным размерам модели. Оба направления поворота проверяются
+' с выходными единицами мм и м в собственных тестовых чертежах.
 Private Sub CheckNativeShapeRoundTrip(ByRef stats As TCadStats, ByVal doc As Object, _
         ByVal system As Object, ByVal unitsRange As Object, ByVal drawingPath As String)
     Dim shape As Long, signValue As Long, unitMode As Long, i As Long, j As Long
@@ -1032,9 +1032,9 @@ Private Sub CheckNativeDirection(ByRef stats As TCadStats, ByVal prefix As Strin
     CheckNativeInertiaClose stats, prefix & ".sin", Sin(multiplier * actual), Sin(multiplier * expected)
 End Sub
 
-' Получает настоящее допустимое НДС маленькой осевой нагрузки и записывает
-' импортированную модель существующим writer-ом. Экспорт ниже читает только
-' сохраненный Results; этот setup не подменяет snapshot готовой тестовой строкой.
+' Рассчитывает допустимое НДС от малой осевой нагрузки и сохраняет импортированную
+' модель обычным классом записи Results. Экспорт читает эти сохранённые результаты;
+' готовые строки результатов в тесте не подставляются.
 Private Sub PrepareNativeImportedSnapshot(ByRef stats As TCadStats, ByVal system As Object, _
         ByVal model As CSectionModel, ByVal prefix As String)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
@@ -1152,10 +1152,9 @@ Private Sub CheckNativeRectangleEdges(ByRef stats As TCadStats, ByVal prefix As 
     Check stats, prefix & ".rectangle.fourEdges", count = 4
 End Sub
 
-' Проверяет одно и то же центральное сжатие круга при переносе координат модели.
-' Использует те же настоящие Config/profile/Batch, что native shape-тест;
-' точка нагрузки задается бетонным центром, как в пользовательском сценарии.
-' Журнал сохраняет target и фактический результат, включая причину отказа.
+' Сравнивает центральное сжатие одного круга после переноса координат модели.
+' Использует обычные Config, профили и расчёт сочетаний; точку нагрузки задаёт
+' в бетонном центре. Сохраняет заданную нагрузку и фактический результат с причиной отказа.
 Public Function RunAudit03CircleTranslationStateTests() As String
     Dim stats As TCadStats, system As Object, profiles As Object, saved As Variant, savedProfiles As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
@@ -1246,9 +1245,9 @@ Private Sub CheckNativeLabels(ByRef stats As TCadStats, ByVal doc As Object, ByV
     Check stats, "realAutoCAD.label.count." & mode, count = 8
 End Sub
 
-' Независимо сопоставляет цвет настоящего Region/текста с PhysicalState
-' сохраненного snapshot и текущими пятью ACI. Измененные знаки N/Mx/My
-' не должны перекрасить физическое растяжение в сжатие.
+' Сравнивает цвета настоящих Region и текстов с физическим состоянием из Results
+' и текущими пятью цветами ACI. Смена пользовательских знаков N, Mx и My
+' не должна превращать цвет физического растяжения в цвет сжатия.
 Private Sub CheckNativeColors(ByRef stats As TCadStats, ByVal doc As Object, ByVal system As Object)
     Dim states As Object, lines As Variant, parts As Variant, i As Long, entity As Object
     Dim elementID As String, physical As String, material As String, colorKey As String, center As Variant, index As Long

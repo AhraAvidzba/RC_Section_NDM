@@ -24,15 +24,15 @@ Option Explicit
 Implements ISectionRecipe
 
 Private Type TRoundedInput
-    B As Double
-    H As Double
-    SideTypes(1 To 2) As String
-    Widths(1 To 2) As Double
-    R1(1 To 2) As Double
-    R2(1 To 2) As Double
-    MainHeader As Long
-    ExtraHeader As Long
-    GeometrySource As String
+    B As Double ' Ширина наружного контура, мм.
+    H As Double ' Высота наружного контура, мм.
+    SideTypes(1 To 2) As String ' Вид левой и правой боковых сторон.
+    Widths(1 To 2) As Double ' Ширины левого и правого выступов, мм.
+    R1(1 To 2) As Double ' Радиусы первых скруглений левой и правой сторон, мм.
+    R2(1 To 2) As Double ' Радиусы вторых скруглений левой и правой сторон, мм.
+    MainHeader As Long ' Строка заголовка основной таблицы армирования во входных данных.
+    ExtraHeader As Long ' Строка заголовка дополнительных рядов арматуры во входных данных.
+    GeometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
 End Type
 
 ' Читает форму сечения со скруглёнными сторонами и параметры армирования. Формирует
@@ -141,7 +141,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         options.EndSetback = table.NonNegativeLength(row, endColumn, units) ' Отступ от конца линии, мм.
         options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
         options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+        options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.Comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд 1"
         ' Адреса полей для сообщения об ошибке размещения.
@@ -207,7 +207,7 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
     options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.Comment = "RoundedRectangle: " & caption & " грань, ряд " & CStr(rowNumber)
     Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function

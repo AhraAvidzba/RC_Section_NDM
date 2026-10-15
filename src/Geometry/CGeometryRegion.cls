@@ -10,21 +10,21 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Математическая форма по готовому точному контуру бетона
+' Бетонная область для построения сетки и проверки арматуры
 ' ==========================================================================
-' Единая подготовленная бетонная область для сетки и проверок арматуры.
-' Точные отрезки, дуги и отверстия обрабатывает CSectionGeometryQuery.
-' Параметрические формы и импорт передают сюда одинаковые данные.
+' Предоставляет общую область бетона по точным наружным контурам и отверстиям.
+' Геометрические операции с отрезками и дугами выполняет CSectionGeometryQuery.
+' Параметрические сечения и импорт передают сюда данные одинакового вида.
 
-Private mRegion As CConcreteRegion
-Private mQuery As CSectionGeometryQuery
-Private mEdges() As TRegionEdge
-Private mEdgeCount As Long
-Private mMinX As Double, mMaxX As Double, mMinY As Double, mMaxY As Double
-Private mCentroidX As Double, mCentroidY As Double
+Private mRegion As CConcreteRegion ' Отдельная копия бетонной области для построения сетки.
+Private mQuery As CSectionGeometryQuery ' Общие геометрические проверки и вычисления по точным границам.
+Private mEdges() As TRegionEdge ' Подготовленные отрезки и дуги для проверки точек сетки без повторного копирования.
+Private mEdgeCount As Long ' Количество отрезков и дуг в подготовленном массиве границ.
+Private mMinX As Double, mMaxX As Double, mMinY As Double, mMaxY As Double ' Крайние координаты области по X и Y, мм.
+Private mCentroidX As Double, mCentroidY As Double ' Координаты центра тяжести точной бетонной области, мм.
 
-' Снимок исключает изменение формы во время генерации; ребра копируются один
-' раз, а не на каждую точку регулярной сетки.
+' Копирует границы один раз перед построением сетки, чтобы дальнейшие изменения
+' исходной формы не влияли на расчёт. При проверке каждой точки сетки границы не копируются.
 Public Sub Initialize(ByVal region As CConcreteRegion)
     Set mRegion = Nothing: Set mQuery = Nothing: Erase mEdges: mEdgeCount = 0
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
@@ -64,14 +64,16 @@ Public Property Get Height() As Double
     Height = mMaxY - mMinY
 End Property
 
-' Как у параметрических форм, наружная граница входит в бетон,
-' а граница отверстия исключается. Бетонные части внутри проемов сохраняются.
+' Точка на наружном контуре считается принадлежащей бетону.
+' Точка на границе отверстия бетону не принадлежит. Если внутри отверстия
+' задан отдельный бетонный участок, он проверяется по своему контуру.
 Public Function ContainsPoint(ByVal X As Double, ByVal Y As Double) As Boolean
     If mRegion Is Nothing Then Exit Function
     ContainsPoint = mQuery.ContainsMeshPoint(mRegion, mEdges, mEdgeCount, X, Y)
 End Function
 
-' Возвращает пригодность подготовленной геометрической области для общего построения сетки.
+' Проверяет, создана ли область и превышают ли её ширина и высота геометрический допуск.
+' При ошибке возвращает False и понятную причину в message.
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
     If mRegion Is Nothing Then
@@ -101,7 +103,7 @@ Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
     mQuery.MeshExtremePoints mEdges, mEdgeCount, pointX, pointY
 End Sub
 
-' Передаёт подготовленные Outer/Opening в единый контейнер контуров модели.
+' Передаёт точные наружные контуры и отверстия в общий контейнер границ модели.
 Public Sub BuildContours(ByVal contours As CSectionContours)
     If contours Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Контейнер контуров не передан."
     Dim message As String

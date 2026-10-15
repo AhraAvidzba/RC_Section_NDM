@@ -1,7 +1,7 @@
 Attribute VB_Name = "modTestRecipeOperations"
 Option Explicit
 
-' ДЛЯ ТЕСТОВ: общие offsets/constraints и проверяемая диагностика раскладки.
+' ДЛЯ ТЕСТОВ: смещение и ограничение линий, а также понятные причины ошибок размещения арматуры.
 Private mPassed As Long, mFailed As Long, mReport As String
 
 Public Function RunRecipeOperationTests() As String
@@ -165,7 +165,7 @@ Public Function RunRecipeDiagnosticTests() As String
     Check "merge.counts", rules.RequestedPositions = 2 And rules.CreatedPositions = 1 And rules.MergedPositions = 1
     Check "merge.physical.owner", rules.PositionPhysicalOwner(1) = 1 And rules.PositionPhysicalOwner(2) = 1
     Check "merge.trace", InStr(rules.RuleTrace("Second"), "Created=0; Merged=1") > 0
-    ' Явный неподдерживаемый scope не получает молчаливое распределение.
+    ' Неподдерживаемый способ распределения вызывает ошибку без произвольной подстановки.
     Set facade = DiagnosticFacade: Set options = New CRebarRuleOptions: options.DistributionScope = 2
     On Error Resume Next
     facade.RebarByCount "Unsupported", "Row", 3, 10#, options
@@ -193,7 +193,8 @@ Private Function DiagnosticFacade() As CSectionDefinitionBuilder
     Set DiagnosticFacade = facade
 End Function
 
-' ДЛЯ ТЕСТОВ: поиск по координатам не меняет линии и сохраняет контракт Chain.
+' ДЛЯ ТЕСТОВ: поиск по координатам не изменяет линии; выделение участка через Chain сохраняет
+' свои правила.
 Public Function RunResolveAnchorTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -242,7 +243,8 @@ Finished:
     RunResolveAnchorTests = mReport & "TOTAL RESOLVE ANCHOR: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' Проверяет реальные сегменты, оба направления Chain, их длину, концы и исходные интервалы.
+' Проверяет сегменты, оба направления обхода Chain, длины, концы и соответствие участкам
+' исходных линий.
 Private Sub CheckResolvedPath(ByVal facade As CSectionDefinitionBuilder, ByVal path As CGeometryPath)
     Dim i As Long, edge As TRegionEdge, segment As String, parameter As Double, x As Double, y As Double
     Dim chain As CGeometryPath, station As Double, tx As Double, ty As Double, a As Double, b As Double
@@ -330,7 +332,8 @@ Private Sub ExpectAnchorError(ByVal path As CGeometryPath, ByVal x As Double, By
     End If
 End Sub
 
-' Контрпример: при KeepPublishedOwner порядок определяет диаметр общего физического стержня.
+' Контрпример: при совпадении стержней KeepPublishedOwner сохраняет диаметр того, который
+' добавлен первым.
 Private Sub TestPositionOrderOwner()
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions, path As CGeometryPath
     Dim definition As CSectionDefinition, rules As CRebarRuleExecutor, layout As CRebarLayout, mode As Long, owner As Long

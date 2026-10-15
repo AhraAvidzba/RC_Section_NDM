@@ -21,19 +21,19 @@ Private mX() As Double ' Координаты центров стержней X,
 Private mY() As Double ' Координаты центров стержней Y, мм.
 Private mDiameter() As Double ' Фактические диаметры стержней, мм.
 Private mArea() As Double ' Фактические площади стержней, мм2.
-Private mSteelClass() As String ' Принадлежность материала, используемая также при совпадении позиций.
+Private mSteelClass() As String ' Материал стержня; сравнивается при объединении совпавших позиций.
 Private mComment() As String ' Пояснение происхождения физического стержня.
-Private mBarAnnotationGroupName() As String ' Единственная группа владельца для количественной подписи.
-Private mReadOnly As Boolean ' Опубликованные стержни и группы доступны только для чтения.
+Private mBarAnnotationGroupName() As String ' Группа, в подписи которой учитываются количество и диаметр этого стержня.
+Private mReadOnly As Boolean ' После завершения сборки координаты стержней и состав групп изменять нельзя.
 Private mCount As Long ' Количество физических стержней после обработки совпадений.
-Private mCapacity As Long ' Зарезервированный размер массивов; растёт геометрически до публикации.
-Private mIDs As Object ' Индекс уникальных имён физических стержней.
-Private mPositionBuckets As Object ' Поиск близких координат; конечное совпадение проверяется по исходным числам.
-Private mMemberships As Object ' Дополнительные группы происхождения; не дублируют физический стержень или подпись.
+Private mCapacity As Long ' Число мест в массивах; при нехватке памяти для очередного стержня размер увеличивается вдвое.
+Private mIDs As Object ' Номера стержней по их уникальным именам для быстрого поиска.
+Private mPositionBuckets As Object ' Списки стержней с близкими координатами; окончательно сравниваются исходные координаты.
+Private mMemberships As Object ' Группы, с которыми связан стержень; эти связи не добавляют арматуру и не увеличивают её подпись.
 
 
-' Удаляет физические стержни, группы и индексы ещё не опубликованной раскладки.
-' Аннотации хранятся отдельно; их построение не меняет этот объект.
+' Очищает список стержней и связанные с ними группы перед новой расстановкой.
+' После завершения сборки очистка запрещена. Аннотации хранятся отдельно.
 Public Sub Clear()
     RequireMutable
     Erase mBarID
@@ -61,8 +61,8 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
 
     If Len(Trim$(barName)) = 0 Then Err.Raise vbObjectError + 3100, "CRebarLayout", "ID стержня не заполнен."
     If diameter <= 0# Then Err.Raise vbObjectError + 3101, "CRebarLayout", "Диаметр арматуры должен быть положительным."
-    ' Общая защита фактического количества, в том числе для проекций Opening
-    ' и импорта; builders дополнительно проверяют свой запрос до размещения.
+    ' Ограничиваем фактическое число стержней при любом способе создания, включая импорт
+    ' и проекцию на контур отверстия. Построители заранее проверяют и запрошенное количество.
     If CDbl(mCount) >= GEOM_MAX_REBAR_COUNT Then Err.Raise vbObjectError + 3108, "CRebarLayout", _
         "Количество стержней превышает диапазон счетчиков программы. Уменьшите активную раскладку в Config или число импортируемых элементов."
 
@@ -98,7 +98,7 @@ Public Sub AddBar(ByVal barName As String, ByVal xCoord As Double, ByVal yCoord 
     AddMembership mCount, annotationGroupName
 End Sub
 
-' Создаёт индексы координат и смысловых групп для поиска совпавших физических стержней.
+' Создаёт таблицы для быстрого поиска стержня по имени, близким координатам и связанным группам.
 Private Sub EnsureIndexes()
     If Not mIDs Is Nothing Then Exit Sub
     Set mIDs = CreateObject("Scripting.Dictionary")
@@ -107,7 +107,7 @@ Private Sub EnsureIndexes()
     Set mMemberships = CreateObject("Scripting.Dictionary")
 End Sub
 
-' Расширяет массивы арматуры блоками, сохраняя опубликованные стержни.
+' При нехватке места увеличивает массивы, сохраняя все уже добавленные стержни.
 Private Sub EnsureCapacity()
     If mCount < mCapacity Then Exit Sub
     mCapacity = CLng(GeomMin(GEOM_MAX_REBAR_COUNT, GeomMax(16#, CDbl(mCapacity) * 2#)))
@@ -121,8 +121,9 @@ Private Sub EnsureCapacity()
     ReDim Preserve mBarAnnotationGroupName(1 To mCapacity)
 End Sub
 
-' Квантование служит только индексом кандидатов. Решение о совпадении
-' всегда принимается по исходным координатам с прежним GEOM_TOLERANCE.
+' Вычисляет номер условной ячейки для координаты, чтобы быстрее искать близкие стержни.
+' Попадание в одну ячейку ещё не означает совпадение: исходные координаты затем
+' сравниваются с допуском GEOM_TOLERANCE без округления.
 Private Function PositionBin(ByVal coordinate As Double) As Double
     If Abs(coordinate) > 1E+290 Then
         PositionBin = coordinate
@@ -131,12 +132,12 @@ Private Function PositionBin(ByVal coordinate As Double) As Double
     End If
 End Function
 
-' Строит ключ пространственного индекса арматуры для поиска ближайших совпадений.
+' Соединяет номера ячеек по X и Y в текстовый ключ для быстрого поиска близких стержней.
 Private Function PositionKey(ByVal binX As Double, ByVal binY As Double) As String
     PositionKey = Format$(binX, "0") & "|" & Format$(binY, "0")
 End Function
 
-' Включает физический стержень в индекс координат без повторного добавления в раскладку.
+' Добавляет номер стержня в список своей координатной ячейки, не создавая новый стержень.
 Private Sub IndexPosition(ByVal index As Long)
     Dim key As String, bucket As Collection
     key = PositionKey(PositionBin(mX(index)), PositionBin(mY(index)))
@@ -149,8 +150,9 @@ Private Sub IndexPosition(ByVal index As Long)
     bucket.Add index
 End Sub
 
-' Поиск в соседних ячейках покрывает точки по обе стороны границы bucket.
-' При нескольких кандидатах владелец - первый опубликованный стержень.
+' Ищет стержень с заданными координатами в текущей и соседних ячейках поиска.
+' Проверка соседей учитывает близкие точки по разные стороны границы ячейки.
+' При нескольких совпадениях возвращает номер стержня, добавленного раньше остальных.
 Public Function FindBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Long
     If mCount = 0 Then Exit Function
     Dim bx As Double, by As Double, dx As Long, dy As Long, key As String
@@ -172,7 +174,8 @@ Public Function FindBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Lon
     Next dx
 End Function
 
-' Membership не создает второй физический стержень и не меняет его площадь.
+' Связывает существующий стержень с ещё одной группой.
+' Новый стержень не создаётся, его площадь и количество арматуры не меняются.
 Public Sub AddMembership(ByVal index As Long, ByVal groupName As String)
     RequireMutable
     CheckIndex index
@@ -191,8 +194,8 @@ Public Sub AddMembership(ByVal index As Long, ByVal groupName As String)
     If Not groups.Exists(groupName) Then groups.Add groupName, True
 End Sub
 
-' Все смысловые принадлежности физического стержня; они не создают дополнительные физические
-' стержни.
+' Возвращает названия всех групп, с которыми связан выбранный стержень.
+' Несколько связей означают один стержень, а не несколько копий арматуры.
 Public Property Get BarMemberships(ByVal index As Long) As Variant
     CheckIndex index
     EnsureIndexes
@@ -208,15 +211,14 @@ Public Property Get Count() As Long
     Count = mCount
 End Property
 
-' Общий поиск уже созданного стержня для сопряжений граней и проекций.
-' AddBar по-прежнему отклоняет дубли; решение пропустить позицию принимает builder.
+' Проверяет, есть ли стержень в заданной точке, например на стыке сторон или после проекции.
+' Сам AddBar отклоняет дубликат; пропуск повторной позиции определяет общий построитель.
 Public Function HasBarAt(ByVal xCoord As Double, ByVal yCoord As Double) As Boolean
     HasBarAt = (FindBarAt(xCoord, yCoord) > 0)
 End Function
 
-' Промежуточный список стержней до CSectionModel CRebarLayout хранит координаты, диаметры и
-' диагностические подписи стержней, сформированных раскладчиком. Затем CSectionModelBuilder
-' переносит эти данные в единую расчетную модель и присваивает расчетные имена R1/R2/....
+' Возвращает исходное имя выбранного стержня. Расчётное имя R1/R2/... назначается позднее в
+' CSectionModel.
 Public Property Get BarID(ByVal index As Long) As String
     CheckIndex index
     BarID = mBarID(index)
@@ -258,8 +260,7 @@ Public Property Get Comment(ByVal index As Long) As String
     Comment = mComment(index)
 End Property
 
-' Смысловая группа владельца физического стержня, используемая для подписи количества и
-' диаметра.
+' Возвращает группу, в подписи которой учитываются количество и диаметр выбранного стержня.
 Public Property Get BarAnnotationGroupName(ByVal index As Long) As String
     CheckIndex index
     BarAnnotationGroupName = mBarAnnotationGroupName(index)
@@ -270,17 +271,19 @@ Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, "CRebarLayout", "Индекс стержня вне допустимого диапазона."
 End Sub
 
-' Закрывает физическую раскладку успешно собранной модели, сохраняя те же массивы и индексы.
+' Завершает заполнение списка стержней и запрещает менять его.
+' Массивы сохраняются для чтения без повторного создания и копирования.
 Friend Sub Freeze()
     mReadOnly = True
 End Sub
 
-' Проверяемый режим раскладки; координаты и принадлежность после публикации не меняются.
+' Показывает, запрещено ли дальнейшее изменение координат стержней и состава групп.
 Public Property Get IsReadOnly() As Boolean
     IsReadOnly = mReadOnly
 End Property
 
-' Новая сборка получает новый layout; опубликованный нельзя очищать или дополнять.
+' Проверяет, можно ли ещё менять список стержней.
+' После завершения сборки изменение запрещено; для новой сборки нужен новый объект.
 Private Sub RequireMutable()
     If mReadOnly Then Err.Raise vbObjectError + 3110, "CRebarLayout", "Опубликованную арматурную раскладку нельзя изменять. Создайте новую раскладку."
 End Sub

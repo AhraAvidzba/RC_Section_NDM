@@ -25,14 +25,14 @@ Private mSegmentIntercept() As Double ' Свободный член sigma = E_t 
 Private mTransitionStrains() As Double, mTransitionCount As Long ' Только узлы с изменением наклона, включая переходы на крайнее плато.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
-Private mFrozen As Boolean ' Опубликованный provider-ом материал больше не допускает изменения общей ссылки.
+Private mFrozen As Boolean ' Признак завершённой общей диаграммы; её точки и пределы после передачи в расчёт изменять нельзя.
 Private mPhysicalCompressionStrain As Double ' Физический сжатый предел; extension-точки его не меняют.
 Private mPhysicalTensionStrain As Double ' Физический растянутый предел, если у диаграммы есть растянутая ветвь.
 Private mHasPhysicalTensionLimit As Boolean ' False для диаграмм, где растянутый бетон принят с нулевым сопротивлением без eps-лимита.
 Private mHasCompressionExtension As Boolean ' True, если слева от физического сжатого предела добавлена техническая область.
 Private mHasTensionExtension As Boolean ' True, если справа от физического растянутого предела добавлена техническая область.
-Private mCompressionExtensionStartStrain As Double ' Граница, после которой сжатая ветвь уже использует numerical extension.
-Private mTensionExtensionStartStrain As Double ' Граница, после которой растянутая ветвь уже использует numerical extension.
+Private mCompressionExtensionStartStrain As Double ' Деформация, за которой сжатая ветвь переходит на вспомогательное численное продолжение.
+Private mTensionExtensionStartStrain As Double ' Деформация, за которой растянутая ветвь переходит на вспомогательное численное продолжение.
 Private Const RANGE_TOLERANCE As Double = 0.000000000001 ' Малый допуск для сравнения деформаций с границами диаграммы.
 
 ' ------------------------------
@@ -107,16 +107,16 @@ Failed:
     Err.Raise errorNumber, errorSource, errorDescription
 End Sub
 
-' Закрепляет готовую диаграмму перед публикацией общей ссылки. Повторная
-' инициализация такого объекта запрещена; самостоятельные диаграммы до
-' публикации можно переинициализировать. Provider создает новую версию сам.
+' Завершает диаграмму и запрещает изменение её точек и пределов. До этого
+' самостоятельный объект можно заполнить заново; подготовка материалов
+' для нового набора параметров создаёт отдельный объект диаграммы.
 Friend Sub Freeze()
     EnsureInitialized
     mFrozen = True
 End Sub
 
-' Сообщает solver-у, что точная повторная оценка безопасна: опубликованная
-' диаграмма больше не допускает изменения точек или физических пределов.
+' Подтверждает, что точки и пределы этой диаграммы больше не меняются.
+' Решатель может безопасно использовать прежнюю оценку при точно тех же исходных данных.
 Friend Property Get IsFrozen() As Boolean
     IsFrozen = mFrozen
 End Property
@@ -212,10 +212,10 @@ Public Function IsInExtensionRange(ByVal strain As Double) As Boolean
 End Function
 
 ' ------------------------------
-' Расчетный контракт материала
+' Напряжения по деформациям
 ' ------------------------------
-' Возвращает напряжение по заданной деформации. За пределами последнего узла
-' напряжение удерживается на крайнем значении, что моделирует плато диаграммы.
+' Возвращает напряжение при заданной деформации. За последней заданной точкой
+' сохраняет крайнее напряжение, продолжая плато диаграммы.
 Public Function StressAtStrain(ByVal strain As Double) As Double
     EnsureInitialized
 
@@ -284,9 +284,9 @@ Private Sub BuildSegmentCache()
     ReDim mSegmentTangent(1 To mPointCount - 1)
     ReDim mSegmentIntercept(1 To mPointCount - 1)
 
-    ' В горячих циклах solver многократно спрашивает одну и ту же кусочно-линейную
-    ' диаграмму. Поэтому наклон и свободный член каждого участка считаются один раз
-    ' при инициализации, а не заново для каждого бетонного волокна и стержня.
+    ' Для каждого участка диаграммы заранее вычисляем наклон и свободный член.
+    ' При многократной проверке бетонных элементов и стержней
+    ' решатель использует эти значения без повторного вычисления.
     For i = 1 To mPointCount - 1
         mSegmentTangent(i) = (mStresses(i + 1) - mStresses(i)) / (mStrains(i + 1) - mStrains(i))
         mSegmentIntercept(i) = mStresses(i) - mSegmentTangent(i) * mStrains(i)
@@ -305,9 +305,9 @@ Private Sub BuildSegmentCache()
     Next i
 End Sub
 
-' Ближайшие два изменения активной ветви вдоль заданного приращения.
-' Наклоны уже подготовлены вместе с диаграммой; порядок узлов и арифметика
-' расстояний остаются такими же, как в поузловом переборе общего solver-а.
+' Находит два ближайших перехода между участками диаграммы при заданном
+' приращении деформации. Использует подготовленные наклоны, сохраняя
+' порядок узлов и правила вычисления расстояний до перехода.
 Friend Sub CollectStrainTransitions(ByVal strain As Double, ByVal delta As Double, _
         ByRef first As Double, ByRef second As Double)
     EnsureInitialized
@@ -383,13 +383,55 @@ Private Sub EnsureInitialized()
     If Not mInitialized Then Err.Raise vbObjectError + 3112, "CMaterialDiagram", "Диаграмма материала не инициализирована."
 End Sub
 
+' Количество активных точек диаграммы.
+Public Property Get PointCount() As Long
+    PointCount = mPointCount
+End Property
+
+' Копирует использованные точки и физические пределы для сохранённого НДС.
+' physicalOnly исключает только явно добавленные точки численного продолжения;
+' физические точки и напряжения не пересчитываются.
+Public Function Clone(Optional ByVal physicalOnly As Boolean = False) As CMaterialDiagram
+    EnsureInitialized
+    Dim strains() As Double, stresses() As Double, first As Long, last As Long, i As Long, count As Long
+    first = 1: last = mPointCount
+    If physicalOnly And mHasCompressionExtension Then first = first + 1
+    If physicalOnly And mHasTensionExtension Then last = last - 1
+    count = last - first + 1
+    ReDim strains(1 To count): ReDim stresses(1 To count)
+    For i = 1 To count
+        strains(i) = mStrains(first + i - 1): stresses(i) = mStresses(first + i - 1)
+    Next i
+    Dim result As CMaterialDiagram: Set result = New CMaterialDiagram
+    result.InitializeFromArrays strains, stresses, count, mPhysicalCompressionStrain, mPhysicalTensionStrain, _
+        mHasCompressionExtension And Not physicalOnly, mHasTensionExtension And Not physicalOnly, _
+        mCompressionExtensionStartStrain, mTensionExtensionStartStrain
+    result.Freeze
+    Set Clone = result
+End Function
+
+' Возвращает деформацию точки диаграммы по номеру для записи Results и построения моделей
+' материалов.
+Public Function PointStrain(ByVal index As Long) As Double
+    EnsureInitialized
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
+    PointStrain = mStrains(index)
+End Function
+
+' Возвращает напряжение точки диаграммы по номеру для записи Results и построения моделей
+' материалов.
+Public Function PointStress(ByVal index As Long) As Double
+    EnsureInitialized
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
+    PointStress = mStresses(index)
+End Function
+
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Методы ниже оставлены как тестовый API. Рабочий расчет получает диаграммы
-' через CMaterialModelProvider и основной InitializeFromArrays, а unit-тестам
-' эти shortcut-конструкторы позволяют проверять интерполяцию без Excel и Config.
 
+' ДЛЯ ТЕСТОВ: короткие способы задания диаграммы для проверок интерполяции без Excel и Config.
+' В рабочем расчёте CMaterialModelProvider создаёт диаграмму через InitializeFromArrays.
 Public Sub InitializeFromTwoCompressionPoints(ByVal eps1 As Double, ByVal stress1 As Double, _
         ByVal eps2 As Double, ByVal stress2 As Double)
     Dim strains(1 To 3) As Double
@@ -456,8 +498,8 @@ Public Sub InitializeFromThreeTensionPoints(ByVal eps1 As Double, ByVal stress1 
     InitializeFromArrays strains, stresses, 7
 End Sub
 
-' ДЛЯ ТЕСТОВ: короткий initializer сжатой или симметричной растянутой диаграммы.
-' Наличие stress2 выбирает сжатую ветвь; без него заданное stress1 образует плато растяжения.
+' ДЛЯ ТЕСТОВ: задаёт простую диаграмму сжатия или растяжения.
+' Если передано stress2, строится сжатая ветвь. Иначе stress1 задаёт плато растяжения.
 Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 As Double, _
         Optional ByVal stress2 As Variant)
     If IsMissing(stress2) Then
@@ -466,44 +508,3 @@ Public Sub Initialize(ByVal eps1 As Double, ByVal stress1 As Double, ByVal eps2 
         InitializeFromTwoCompressionPoints eps1, stress1, eps2, CDbl(stress2)
     End If
 End Sub
-
-' Количество активных точек диаграммы.
-Public Property Get PointCount() As Long
-    PointCount = mPointCount
-End Property
-
-' Копирует фактические точки и физические границы материала для named-state.
-' physicalOnly удаляет только явно добавленные крайние extension-точки:
-' исходные точки физической диаграммы и ее напряжения не пересчитываются.
-Public Function Clone(Optional ByVal physicalOnly As Boolean = False) As CMaterialDiagram
-    EnsureInitialized
-    Dim strains() As Double, stresses() As Double, first As Long, last As Long, i As Long, count As Long
-    first = 1: last = mPointCount
-    If physicalOnly And mHasCompressionExtension Then first = first + 1
-    If physicalOnly And mHasTensionExtension Then last = last - 1
-    count = last - first + 1
-    ReDim strains(1 To count): ReDim stresses(1 To count)
-    For i = 1 To count
-        strains(i) = mStrains(first + i - 1): stresses(i) = mStresses(first + i - 1)
-    Next i
-    Dim result As CMaterialDiagram: Set result = New CMaterialDiagram
-    result.InitializeFromArrays strains, stresses, count, mPhysicalCompressionStrain, mPhysicalTensionStrain, _
-        mHasCompressionExtension And Not physicalOnly, mHasTensionExtension And Not physicalOnly, _
-        mCompressionExtensionStartStrain, mTensionExtensionStartStrain
-    result.Freeze
-    Set Clone = result
-End Function
-
-' ДЛЯ ТЕСТОВ: возвращает деформацию контрольной точки диаграммы по индексу.
-Public Function PointStrain(ByVal index As Long) As Double
-    EnsureInitialized
-    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
-    PointStrain = mStrains(index)
-End Function
-
-' ДЛЯ ТЕСТОВ: возвращает напряжение контрольной точки диаграммы по индексу.
-Public Function PointStress(ByVal index As Long) As Double
-    EnsureInitialized
-    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
-    PointStress = mStresses(index)
-End Function

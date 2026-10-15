@@ -23,18 +23,18 @@ Private Const STATE_CRACK_LIMIT As String = "CrackFormationLimit" ' Достиг
 Private Const STATE_OTHER_LIMIT As String = "OtherPhysicalLimit" ' Другой физический предел достигнут до трещины.
 Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' НДС для пробной lambda не найдено.
 
-Private mCrack As CCrackFormationCalculator ' Доменный расчетчик трещинообразования и владелец crack-диагностики.
+Private mCrack As CCrackFormationCalculator ' Расчёт образования трещины, который оценивает критерий бетона и сохраняет диагностику.
 Private mLastAcceptable As CSectionSolver ' Подтвержденный НДС текущей поисковой сессии.
-Private mEquilibriumProbeFailed As Boolean
+Private mEquilibriumProbeFailed As Boolean ' Признак неудачи пробного решения равновесия при поиске образования трещины.
 
-' Готовит критерий и рабочие поля Formation для конкретного общего пути LC.
-' Offset/Base задаются тем же описателем, который использует Capacity.
+' Готовит критерий и рабочие данные образования трещины для выбранного пути.
+' Постоянная и масштабируемая части нагрузки задаются тем же способом, что для прочности.
 Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchRequest)
     mCrack.LimitSearchBeginCrackFormationAttempt request.SelectedLoadPath.Key, request.SelectedLoadPath
 End Sub
 
-' Передает владельцу Formation фактический путь и предыдущие причины.
-' Последующее создание engineering result использует те же комментарии.
+' Передаёт расчёту образования трещины выбранный путь и причины прежних попыток
+' для сохранения в окончательном результате.
 Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
         ByVal previousPathComments As String)
     mCrack.LimitSearchFinishLoadPath request.SelectedLoadPath.Key, previousPathComments
@@ -107,7 +107,7 @@ Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchReques
     ILimitSearchProblem_Prepare = True
 End Function
 
-' Материалы и инженерный критерий уже подготовлены владельцем Formation.
+' Материалы и критерий уже подготовлены расчётом образования трещины.
 Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector) As Boolean
     ILimitSearchProblem_PrepareUltimate = Not loadPath Is Nothing
@@ -122,13 +122,13 @@ Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimit
         request.MomentMyAtReference, request.ReferenceX, request.ReferenceY)
 End Function
 
-' Formation сохраняет точку непосредственно при принятии; отдельная
-' финализация инженерных чисел после общего цикла ему не требуется.
+' Расчёт образования трещины сохраняет точку при её подтверждении.
+' Отдельная повторная запись инженерных величин после общего цикла не нужна.
 Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
 End Sub
 
-' Передает критерии и численные настройки Formation общему Newton-циклу.
-' Ни шаг Newton, ни Якобиан, ни line search здесь не реализуются.
+' Передаёт критерий образования трещины и настройки общему методу Ньютона.
+' Вычисление Якобиана и подбор шага выполняет общий численный класс.
 Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -137,8 +137,8 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         loadPath, startSolver, eps0, kx, ky
 End Sub
 
-' Передает Formation вычисление невязок траектории и растягивающего критерия.
-' Solver этой плоскости возвращается общему Newton без отдельной search-реализации.
+' Получает невязки траектории нагрузки и критерия растяжения бетона
+' от расчёта образования трещины. Передаёт общему методу Ньютона то же НДС.
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -150,7 +150,7 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
 End Function
 
-' Проверяет достижение трех невязок с действующими допусками Formation.
+' Проверяет три невязки по действующим допускам расчёта образования трещины.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
@@ -170,8 +170,9 @@ Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As
     ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = True
 End Property
 
-' Передает кандидата Formation на окончательное подтверждение и сохранение
-' точки. Extended-кандидат не становится физическим PreCrackState автоматически.
+' Передаёт найденную точку на окончательную проверку и сохранение.
+' Решение на продолжении диаграмм не принимается автоматически
+' как физически допустимое состояние перед трещиной.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -186,23 +187,24 @@ Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal sec
     End If
 End Function
 
-' Сохраняет причину численной остановки UltimateStrain в Formation-задаче.
+' Сохраняет причину численной остановки UltimateStrain в проверке образования трещины.
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mCrack.LimitSearchSetUltimateNumericalFailure reason
 End Sub
 
-' Передает машинную причину общего алгоритма владельцу Formation-результата.
+' Передаёт фактический код причины общего поиска в результат образования трещины.
 Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     mCrack.LimitSearchSetFailure failureCode, reason
 End Sub
 
-' Однотипные настройки общего Newton из численной конфигурации Formation.
+' Возвращает численные настройки общего метода Ньютона для образования трещины.
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCrack.LimitSearchUltimateMaxIterations
 End Property
 
-' Возвращает выбранную общую траекторию LambdaMx/My/Mxy/N/NMxy; при отсутствии
-' подготовленного descriptor использует нормализованные данные Formation.
+' Возвращает выбранное изменение нагрузки LambdaMx/My/Mxy/N/NMxy.
+' Если отдельный объект траектории не подготовлен, использует проверенные
+' исходные данные расчёта образования трещины.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
     If request.HasLoadPathSelection Then
         Set ILimitSearchProblem_BuildLoadPath = request.SelectedLoadPath.Vector
@@ -213,8 +215,9 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
         request.ReferenceX, request.ReferenceY)
 End Function
 
-' Передает физическую трактовку начала пути владельцу Formation. Общий
-' одномерный поиск не знает правил постоянной трещины или fallback psi=1.
+' Передаёт начальную нагрузку на физическую проверку образования трещины.
+' Сам общий поиск не определяет наличие трещины в постоянной нагрузке
+' или возможность принять psi_s = 1.
 Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
         ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
@@ -222,8 +225,9 @@ Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitS
         request.TargetN, request.MomentMxAtReference, request.MomentMyAtReference, functionValue)
 End Function
 
-' Оценивает одну lambda-точку crack-formation и возвращает solver, если
-' равновесие найдено. Solver нужен для warm-start и сохранения PreCrackState.
+' Оценивает образование трещины при одном lambda и возвращает найденное НДС.
+' Оно используется как начальное приближение следующей пробы
+' и для сохранения состояния перед трещиной.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
@@ -240,9 +244,9 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     End If
 End Function
 
-' Однотипные предикаты различают допустимую пробу, критерий образования
-' трещины и численную неудачу. Ошибки входа передаются typed failure-контрактом,
-' поэтому отдельная строка invalid input в этом probe-протоколе не используется.
+' Различает допустимую пробу, достижение критерия трещины и численную неудачу.
+' Ошибка ввода передаётся отдельным кодом причины и не определяется
+' по произвольной строке результата пробы.
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsAcceptableState = (probeState = STATE_ACCEPTABLE)
 End Function
@@ -263,15 +267,16 @@ Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As Str
     ILimitSearchProblem_IsInvalidInputState = False
 End Function
 
-' Предлагает середину неотрицательной рабочей скобки для recovery. Общий Search
-' отдельно контролирует представимость и строгий прогресс следующей пробы.
+' После численной неудачи предлагает середину рабочего неотрицательного интервала lambda.
+' Общий поиск отдельно проверяет представимость числа
+' и реальное изменение следующей пробной нагрузки.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
     ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = lowLambda + (highLambda - lowLambda) / 2#
 End Function
 
-' Formation хранит допустимые probe-точки в локальной search-session; отдельный
-' инженерный снимок для каждой нижней точки здесь не создается.
+' Допустимые пробы сохраняются как рабочие данные текущего поиска.
+' Отдельное конечное НДС для каждой нижней нагрузки не создаётся.
 Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
 End Sub
 
@@ -290,9 +295,9 @@ Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
         ", но условие образования нормальной трещины не выполнено. Это не доказывает отсутствие трещины."
 End Sub
 
-' Объясняет, на какой lambda равновесие не подтверждено при построении скобки.
-' Такой отказ не создает фиктивные Pre/Post. Возможность расчета ширины
-' определяется отдельно по текущему НДС, а не по наличию точки Formation.
+' Сохраняет, при каком lambda не подтверждено равновесие при поиске границ интервала.
+' Состояния до и после трещины не подставляются. Возможность расчёта ширины
+' отдельно определяется пригодностью текущего НДС.
 Private Sub ILimitSearchProblem_HandleBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal failedLambda As Double, ByVal probeState As String)
     mCrack.LimitSearchSetCrackFormationStopReason _
@@ -309,20 +314,21 @@ Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long
         FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
 End Sub
 
-' Останавливает Formation при неизвестном probe-исходе, сохраняя его имя
-' для диагностики вместо догадки о физическом результате.
+' Останавливает проверку при неизвестном исходе пробы и сохраняет его имя
+' для диагностики без догадки о физическом состоянии сечения.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
     mCrack.LimitSearchSetFailure sfcInternalError, _
         "Поиск образования трещины остановлен из-за неизвестного результата контрольной пробы: " & probeState & "."
 End Sub
 
-' Передает входную ошибку общего поиска с явным typed-кодом InvalidInput.
-' Текст служит объяснением и не участвует в назначении статуса.
+' Передаёт ошибку ввода общего поиска кодом InvalidInput.
+' Текст поясняет причину, но не определяет статус.
 Private Sub ILimitSearchProblem_SetInvalidInput(ByVal message As String)
     mCrack.LimitSearchSetFailure sfcInvalidInput, message
 End Sub
 
-' Передает причину численной остановки Formation без назначения display-статуса.
+' Передаёт причину численной остановки в расчёт образования трещины.
+' Обозначение внешнего статуса формируется отдельно.
 Private Sub ILimitSearchProblem_SetNumericalFailure(ByVal message As String)
     mCrack.LimitSearchSetCrackFormationStopReason message
 End Sub
@@ -332,8 +338,8 @@ Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     mCrack.LimitSearchAppendDiagnostic message
 End Sub
 
-' Подтверждает конкретную lambda-точку Formation с ее solver и материалами.
-' Сохранение конечного физического состояния выполняет владелец Formation.
+' Подтверждает выбранную нагрузку lambda по её НДС и материалам.
+' Окончательное состояние сохраняет расчёт образования трещины.
 Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
@@ -347,8 +353,8 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
             concreteMaterial, steelMaterial, loadPath, lambdaValue, solver, iterations)
 End Function
 
-' Передает верхнюю сторону скобки как кандидата достижения растягивающего
-' критерия; финализация повторно проверяет физическую пригодность этой точки.
+' Передаёт верхнюю нагрузку уточнённого интервала для проверки критерия растяжения.
+' Перед сохранением физическая пригодность её НДС подтверждается повторно.
 Private Function ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -372,14 +378,14 @@ Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As C
         "Не удалось подтвердить первый физический предел из последней допустимой пробы."
 End Sub
 
-' Строит снимок из фактического Formation-исхода, сохраняя typed-причину
-' и доступность точки, а не только Boolean завершения общего алгоритма.
+' Сохраняет фактический результат образования трещины, его код причины
+' и доступность пороговой точки. Одного завершения общего алгоритма недостаточно.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
     Set ILimitSearchProblem_BuildResult = mCrack.BuildSearchSnapshot(request.SolutionStrategy)
 End Function
 
-' Сообщает coordinator о терминальном исходе текущей Formation-попытки.
+' Сообщает координатору об окончательном исходе текущей попытки образования трещины.
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = mCrack.LimitSearchStoppedTerminally()
 End Property
@@ -389,19 +395,18 @@ Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mCrack.StopReason
 End Property
 
-' Очищает рабочую причину перед следующей попыткой той же Formation-задачи.
+' Очищает рабочую причину перед следующей попыткой поиска образования трещины.
 Private Sub ILimitSearchProblem_ClearStopReason()
     mCrack.LimitSearchClearStopReason
 End Sub
 
-' Дополняет отсутствующую причину общим fallback-текстом, не затирая уже
-' записанное конкретное объяснение остановки.
+' Добавляет общее пояснение остановки, только если своей подробной причины ещё нет.
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     mCrack.LimitSearchSetStopReasonIfEmpty reason
 End Sub
 
-' Formation объединяет fallback-диагностику при выборе своих стартов и путей.
-' Этот callback общего coordinator не дублирует уже сохраненные сообщения.
+' Сведения о дополнительных стартах и путях уже объединяет сам расчёт образования трещины.
+' Этот вызов общего координатора не добавляет те же сообщения повторно.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String, _

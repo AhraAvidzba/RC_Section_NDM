@@ -30,7 +30,7 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     End If
 End Function
 
-' Запускает численную стратегию Capacity на одной уже выбранной траектории.
+' Запускает выбранный численный метод несущей способности на одной готовой траектории нагрузки.
 Private Function ExecuteCapacityCurrentPath(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Select Case NormalizeStrategy(request.SolutionStrategy)
         Case "Auto"
@@ -52,9 +52,9 @@ Private Function ExecuteCapacityCurrentPath(ByVal request As CLimitSearchRequest
     End Select
 End Function
 
-' Выполняет поиск образования нормальной трещины через тот же coordinator,
-' который выбирает метод для capacity. Отличия CrackFormation остаются в
-' CCrackFormationCalculator: критерий eps_bt,ult, путь нагрузки и material spec.
+' Запускает образование трещины через общий выбор численного метода.
+' Критерий eps_bt,ult, материалы и физический смысл нагрузки
+' задаёт CCrackFormationCalculator.
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4231, "CLimitSearchCoordinator", "Не передан запрос limit-search."
     If request.HasLoadPathSelection Then
@@ -97,9 +97,9 @@ Public Function LoadPathKeys(ByVal requestedPath As String, ByVal loadState As C
     End If
 End Function
 
-' Перебирает пути одной search-задачи. Успешно найденный физический предел
-' принимается независимо от того, проходит ли текущий LC инженерную проверку.
-' Ошибки ввода/конфигурации/контракта не маскируются попыткой другого пути.
+' Последовательно пробует разрешённые способы изменения нагрузки. Подтверждённый
+' физический предел принимается и при lambda < 1, когда текущее сочетание
+' не проходит проверку. Ошибки ввода, настроек и программы сменой пути не скрываются.
 Private Function ExecuteLoadPaths(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim paths As Variant
     paths = LoadPathKeys(request.RequestedLoadPath, request.LoadState)
@@ -135,9 +135,8 @@ Private Function ExecuteLoadPaths(ByVal request As CLimitSearchRequest) As CLimi
             attemptComment = "Путь " & request.SelectedLoadPath.DisplayName & ": " & Trim$(meta.ResultComment)
             If Len(history) > 0 Then history = history & " "
             history = history & attemptComment
-            ' Capacity очищает рабочий журнал при подготовке нового пути.
-            ' Formation уже накапливает его; общий snapshot сохраняет оба
-            ' варианта без повторного включения накопленного префикса.
+            ' Сохраняем журналы предыдущих путей независимо от того, очищает ли их
+            ' подготовка следующей задачи. Уже накопленный текст не добавляется повторно.
             attemptDiagnostics = result.DiagnosticLog
             If Len(attemptDiagnostics) > 0 Then
                 If Len(diagnosticHistory) = 0 Then
@@ -156,10 +155,10 @@ Private Function ExecuteLoadPaths(ByVal request As CLimitSearchRequest) As CLimi
     Set ExecuteLoadPaths = result
 End Function
 
-' Сохраняет принятую Auto-логику: чисто осевая траектория сразу идет в
-' LoadMultiplier, остальные траектории сначала пробуют UltimateStrain и только
-' затем fallback на LoadMultiplier. Обе ветки запускаются через общий
-' LimitSearch-слой, а CCapacitySolver остается только доменным callback-ом.
+' В режиме Auto для чисто осевого изменения нагрузки сразу выбирает LoadMultiplier.
+' Для остальных сначала пробует UltimateStrain, затем при неудаче LoadMultiplier.
+' Оба способа используют общие численные классы; CCapacitySolver задаёт критерий и оценку
+' нагрузки.
 Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request.PureAxialForMethod Then
         Dim axialMultiplier As CLoadMultiplierSearch
@@ -191,9 +190,9 @@ Private Function ExecuteAutoCapacity(ByVal request As CLimitSearchRequest) As CL
     Set ExecuteAutoCapacity = ExecuteAutoCapacityLoadMultiplierFallback(request, firstResult.SearchExecuted)
 End Function
 
-' Повторяет Auto-поиск capacity через LoadMultiplier после неудачного
-' UltimateStrain и возвращает обновленный snapshot результата. Диагностика
-' первой попытки сохраняется перед тем, как LoadMultiplier очистит поля solver-а.
+' После неудачи UltimateStrain повторяет поиск несущей способности через LoadMultiplier.
+' Перед очисткой рабочих данных сохраняет диагностику первой попытки
+' и возвращает обновлённый общий результат.
 Private Function ExecuteAutoCapacityLoadMultiplierFallback(ByVal request As CLimitSearchRequest, _
         ByVal firstSearchExecuted As Boolean) As CLimitSearchResult
     Dim firstStopReason As String
@@ -250,9 +249,9 @@ Private Function ExecuteCrackFormationCurrentPath(ByVal request As CLimitSearchR
     End Select
 End Function
 
-' Общая численная политика одного crack-пути: UltimateStrain, затем при
-' разрешенном резерве LoadMultiplier. Auto разрешает резерв для всех путей;
-' явный UltimateStrain - для масштабирования N без масштабирования моментов.
+' На одном пути образования трещины сначала пробует UltimateStrain,
+' затем разрешённый LoadMultiplier. В Auto переход разрешён для всех путей;
+' при явном UltimateStrain — когда масштабируется N без пользовательских моментов.
 Private Function ExecuteUltimateStrategyCrackFormation(ByVal request As CLimitSearchRequest, _
         ByVal allowMultiplierFallback As Boolean) As CLimitSearchResult
     Dim ultimate As CUltimateStrainSearch
@@ -286,7 +285,7 @@ Private Function ExecuteUltimateStrategyCrackFormation(ByVal request As CLimitSe
     Set ExecuteUltimateStrategyCrackFormation = secondResult
 End Function
 
-' Нормализует пользовательскую строку стратегии без зависимости от Config-reader.
+' Проверяет написание стратегии, заданное пользователем, независимо от чтения Config.
 Private Function NormalizeStrategy(ByVal value As String) As String
     Select Case UCase$(Trim$(value))
         Case "AUTO"

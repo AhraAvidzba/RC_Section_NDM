@@ -33,7 +33,7 @@ Finished:
     RunAdvancedGuideExamples = mReport & "TOTAL ADVANCED GUIDE EXAMPLES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: полный контекст коротких фрагментов, без нового production-типа.
+' ДЛЯ ТЕСТОВ: задаёт все данные для коротких примеров API без нового рабочего типа сечения.
 Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSectionDefinition
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim a As Double, b As Double, c As Double
@@ -42,7 +42,8 @@ Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSection
     facade.Outer "Outer", "Concrete"
     Set path = facade.CirclePath("Hole", 0#, -250#, 50#)
     facade.Opening "Opening", "Hole", "Outer"
-    ' Боковой путь: дуга + наклонная + дуга носа + наклонная + дуга.
+    ' Боковая линия состоит из дуги, наклонного отрезка, дуги вершины, наклонного отрезка и
+    ' дуги.
     a = 100# / Sqr(2#): b = 300# + 50# / Sqr(2#): c = 50# / Sqr(2#)
     Set path = New CGeometryPath: path.Initialize "Nose"
     path.AddArc "HeelLow", 0#, 0#, 100#, -GEOM_PI / 2#, GEOM_PI / 4#
@@ -53,7 +54,8 @@ Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSection
     path.Seal: facade.AddPath path
     Set path = facade.Chain("Side", "Nose", "HeelLow", 0#, "HeelHigh", 1#)
     facade.RebarAtStations "SideBars", "Side", Array(50#, 200#, 400#, 600#), 10#
-    ' Одна группа, два независимых пути: количество/шаг применяется PerPath.
+    ' Одна группа объединяет две независимые линии. Количество и шаг задаются для каждой линии
+    ' отдельно.
     Set path = facade.LinePath("RowA", -150#, 250#, 50#, 250#)
     Set path = facade.LinePath("RowB", 250#, 200#, 500#, 200#)
     facade.PathGroup "Independent", Array("RowA", "RowB")
@@ -66,7 +68,8 @@ Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSection
     Else
         facade.RebarByCount "Rows", "Independent", 4, 10#, options
     End If
-    ' Внутренний ряд — наружу от CCW-грани отверстия, без ручных координат баров.
+    ' Внутренний ряд смещается от границы отверстия в бетон без ручного задания координат
+    ' стержней.
     Set path = facade.Offset("HoleAxis", "Hole", -30#)
     Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
     options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
@@ -78,7 +81,8 @@ Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSection
     options.DirectionY = 1#: options.SkipMissingProjection = True
     options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     facade.RebarProjected "Projected", "HoleAxis", "Base", 6#, options
-    ' Связанные дополнительные позиции по локальной нормали, каждая вторая.
+    ' Дополнительные стержни связываются с каждой второй исходной позицией и смещаются по
+    ' нормали.
     Set options = New CRebarRuleOptions: options.NormalOffset = 10#: options.EverySecond = True
     options.SourceSuffix = "_Extra": facade.RebarDependent "Extra", "Base", 10#, options
     facade.VerticalExtent "Height", "Concrete", "H", 740#

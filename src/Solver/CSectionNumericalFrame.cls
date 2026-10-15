@@ -16,10 +16,10 @@ Option Explicit
 ' и задаёт масштаб длины для устойчивого решения уравнений.
 ' Исходная геометрия и координаты, доступные пользователю, сохраняются.
 
-Private mSection As CSectionModel
-Private mRevision As Long
-Private mOriginX As Double, mOriginY As Double, mLength As Double
-Private mSupportChecked As Boolean, mFullSupport As Boolean, mConcreteArea As Double
+Private mSection As CSectionModel ' Модель, для которой подготовлены численные координаты.
+Private mRevision As Long ' Версия геометрии при подготовке координат.
+Private mOriginX As Double, mOriginY As Double, mLength As Double ' Координаты численного начала и характерная длина для нормирования, мм.
+Private mSupportChecked As Boolean, mFullSupport As Boolean, mConcreteArea As Double ' Выполнена ли проверка, есть ли полная опора в трёх направлениях, и площадь бетона в мм2.
 
 ' Задаёт единичный численный масштаб и нулевое начало до подготовки геометрии.
 Private Sub Class_Initialize()

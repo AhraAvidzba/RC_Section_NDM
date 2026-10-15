@@ -17,10 +17,10 @@ Option Explicit
 ' Состав арматуры и перечень нужных размеров определены до этого этапа;
 ' данный класс отвечает за их размещение и оформление.
 
-Private Const ITEM_LINE As String = "LINE" ' Готовый layout-элемент линии для Chart.Shapes.
-Private Const ITEM_TEXT As String = "TEXT" ' Готовый layout-элемент текстовой подписи для Chart.Shapes.
+Private Const ITEM_LINE As String = "LINE" ' Обозначение графического элемента «линия» для последующего создания Chart.Shape.
+Private Const ITEM_TEXT As String = "TEXT" ' Обозначение графического элемента «текст» для последующего создания Chart.Shape.
 
-Private mMinX As Double ' Левая граница в единицах модели, переданных в Initialize; reader передает мм.
+Private mMinX As Double ' Левая граница области в переданных единицах модели; CSectionPlotDataReader использует мм.
 Private mMaxX As Double ' Правая граница в тех же единицах модели.
 Private mMinY As Double ' Нижняя граница в тех же единицах модели.
 Private mMaxY As Double ' Верхняя граница в тех же единицах модели.
@@ -60,8 +60,8 @@ Private mRebarColor As Long ' Цвет подписей арматуры и их
 Private mDimensionsEnabled As Boolean ' Активна ли группа размеров; выключенные параметры не читаются.
 Private mRebarLabelsEnabled As Boolean ' Активна ли группа подписей арматуры.
 
-Private mCount As Long ' Число готовых layout-элементов, которые затем создаст CSectionPlotter.
-Private mKind() As String ' Тип layout-элемента: линия или текст.
+Private mCount As Long ' Число подготовленных линий и текстов, которые затем создаст CSectionPlotter.
+Private mKind() As String ' Вид подготовленного графического элемента: линия или текст.
 Private mX1() As Double ' Для линии: X начала; для текста: left.
 Private mY1() As Double ' Для линии: Y начала; для текста: top.
 Private mX2() As Double ' Для линии: X конца; для текста: width.
@@ -77,9 +77,9 @@ Private mFontSize() As Double ' Размер шрифта конкретной �
 ' ------------------------------
 ' Настройки оформления
 ' ------------------------------
-' Задает базовое оформление для самостоятельного layout без Config.
-' При ConfigureFromSettings эти значения не подменяют обязательный ввод;
-' настоящий черный RGB=0 сохраняется и не служит признаком отсутствия цвета.
+' Задаёт начальное оформление для отдельного программного вызова без Config.
+' При ConfigureFromSettings эти значения не заменяют обязательный ввод.
+' Чёрный цвет RGB = 0 является полноценным цветом, а не отсутствующим значением.
 Private Sub Class_Initialize()
     mDimensionsEnabled = True: mRebarLabelsEnabled = True
     mDimensionTextHeightBase = 13#: mRebarTextHeightBase = 13#
@@ -180,10 +180,10 @@ Private Sub InitializeVisualMetrics(ByVal plotWidth As Double, ByVal plotHeight 
 End Sub
 
 ' ------------------------------
-' Размерная аннотация
+' Размещение размера
 ' ------------------------------
-' На вход приходят две точки размера и наружная нормаль в координатах модели.
-' Layout сам ставит выносные линии, основную линию со стрелками и текст.
+' По двум точкам размера и направлению выноски в координатах сечения
+' вычисляет положение выносных линий, размерной линии, стрелок и текста.
 Public Sub AddDimension(ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String)
     If Not mDimensionsEnabled Then Exit Sub
@@ -244,8 +244,8 @@ Public Sub AddRebarLabel(ByVal startX As Double, ByVal startY As Double, ByVal e
     Dim dirX As Double, dirY As Double
     dirX = endX - startX
     dirY = endY - startY
-    ' У одиночного стержня наклонную линию подписи задаёт нормаль;
-    ' прежний fallback для горизонтальных/вертикальных подписей сохраняется.
+    ' Для одиночного стержня направление линии подписи определяем
+    ' по заданной нормали. Обычный выбор горизонтальной или вертикальной подписи сохраняется.
     If Abs(dirX) + Abs(dirY) <= GEOM_TOLERANCE And Abs(normalX) > GEOM_TOLERANCE And Abs(normalY) > GEOM_TOLERANCE Then
         dirX = normalY: dirY = -normalX
     End If
@@ -351,8 +351,8 @@ Private Sub ApplyPlacement(ByRef normalPxX As Double, ByRef normalPxY As Double,
     End If
 End Sub
 
-' Нормализует модельный вектор. Если annotation пришла с нулевой нормалью или
-' нулевым направлением, используется fallback, чтобы layout не делил на ноль.
+' Приводит направление к единичной длине. Если вектор нулевой,
+' использует переданное запасное направление без деления на ноль.
 Private Sub NormalizeModelVector(ByRef x As Double, ByRef y As Double, ByVal fallbackX As Double, ByVal fallbackY As Double)
     Dim lengthValue As Double
     lengthValue = Sqr(x * x + y * y)
@@ -419,30 +419,31 @@ Private Function TextMetricToChartPoints(ByVal value As Double, ByVal unitName A
     End If
 End Function
 
-' Показывает, сколько мм содержится в одной output-единице длины Results.
-' Это нужно, если Results был записан не в мм, а например в метрах.
+' Возвращает число мм в одной выходной единице длины результата,
+' например 1000 для метров.
 Private Function LengthFactorToMm(ByVal unitName As String) As Double
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     LengthFactorToMm = units.OutputLengthToInternal(1#, unitName)
 End Function
 
-' Добавляет линию в список layout-элементов; фактический Shape создаст plotter.
+' Добавляет подготовленную линию в общий список; сам Shape создаётся при отрисовке.
 Private Sub AddLine(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal hasArrowheads As Boolean)
     AppendItem ITEM_LINE, x1, y1, x2, y2, vbNullString, 0#, colorValue, weight, False, hasArrowheads
 End Sub
 
-' Добавляет текстовую подпись в список layout-элементов; фактический Shape
-' создаст plotter внутри нужного Chart.
+' Добавляет подготовленный текст в общий список; сам Shape
+' создаётся при отрисовке внутри нужной диаграммы.
 Private Sub AddText(ByVal leftPos As Double, ByVal topPos As Double, ByVal widthValue As Double, _
         ByVal heightValue As Double, ByVal textValue As String, ByVal rotation As Double, _
         ByVal colorValue As Long, ByVal isBold As Boolean, ByVal fontSize As Double)
     AppendItem ITEM_TEXT, leftPos, topPos, widthValue, heightValue, textValue, rotation, colorValue, 0#, isBold, False, fontSize
 End Sub
 
-' Складывает готовый layout-элемент в параллельные массивы. Это простой VBA-
-' формат без классов на каждый Shape, чтобы обновление схемы оставалось легким.
+' Сохраняет вид, координаты и оформление элемента в общих массивах.
+' Отдельный объект на каждую линию или надпись не создаётся,
+' чтобы обновление схемы не замедлялось.
 Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal textValue As String, ByVal rotation As Double, ByVal colorValue As Long, ByVal weight As Double, _
         ByVal isBold As Boolean, ByVal hasArrowheads As Boolean, Optional ByVal fontSize As Double = 0#)
@@ -496,12 +497,12 @@ Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
 End Function
 
 ' ------------------------------
-' Готовые элементы для Plotter
+' Подготовленные линии и подписи
 ' ------------------------------
-' Ниже только чтение уже рассчитанного layout. Plotter проходит по этим
-' массивам и создает Chart.Shapes с нужными координатами, цветами и стрелками.
+' Возвращает рассчитанное размещение. CSectionPlotter создаёт по этим данным
+' Chart.Shapes с нужными координатами, цветами и стрелками.
 Public Property Get Count() As Long: Count = mCount: End Property
-' Тип layout-элемента: линия или текст.
+' Возвращает вид подготовленного графического элемента: линия или текст.
 Public Property Get ItemKind(ByVal index As Long) As String: ItemKind = mKind(index): End Property
 ' Для линии: X начала; для текста: left.
 Public Property Get X1(ByVal index As Long) As Double: X1 = mX1(index): End Property

@@ -2,13 +2,12 @@ Attribute VB_Name = "modTestLoadTableConfig"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: АДРЕСНОЕ ПОВЕДЕНИЕ ТАБЛИЦЫ СОЧЕТАНИЙ CONFIG
+' ДЛЯ ТЕСТОВ: строки таблицы сочетаний Config
 ' ==========================================================================
-' Проверяет все штатные строки rngLoadCombinations через настоящий reader,
-' batch, конечные State/results и writers. Табличные индексы, комментарии и
-' выбор профиля проверяются отдельно от физических усилий и lambda-пути.
-' Временные значения и формулы Config восстанавливаются при любом исходе;
-' модуль не добавляет расчетных классов и не меняет утвержденные формулы.
+' Проверяет все строки rngLoadCombinations через обычное чтение, расчёт
+' и запись Results. Профили, комментарии и расположение строк проверяет
+' отдельно от усилий и траекторий нагрузки. Временные значения и формулы
+' восстанавливает при любом исходе; расчётные формулы программы не меняет.
 
 Private Type TLoadTableStats
     Passed As Long
@@ -285,8 +284,8 @@ Public Function RunAudit03LoadTableTests(Optional ByRef passed As Long = 0, _
     batch.Execute
     CheckValidRows stats, loads, batch, units, "repeat", 0, False
 
-    ' Пустая компонента нагрузки означает ноль; optional comment и path
-    ' имеют собственные контракты, но не делают ненулевую строку свободной.
+    ' Пустая составляющая нагрузки означает ноль. Комментарий и траектория имеют
+    ' отдельные правила чтения; их отсутствие не делает ненулевую строку свободной.
     For Each path In Array(2, 3, 4, 6, 7)
         column = CLng(path): data = baseline
         LogLine stats, "RUN: loadTable.blank." & CStr(column)
@@ -303,8 +302,8 @@ Public Function RunAudit03LoadTableTests(Optional ByRef passed As Long = 0, _
     LogLine stats, "RUN: loadTable.sparseAndReverse"
     CheckSparseAndReverse stats, loads, baseline, section, provider, profiles, settings, units
 
-    ' В этом блоке пути действительно используются обоими Search consumers,
-    ' а не проверяются только через строковый accessor описателя траектории.
+    ' Траектории используются в настоящем поиске несущей способности и образования
+    ' трещины. Проверка не ограничивается чтением названия траектории.
     ConfigureProfiles profilesRange, True
     Set profiles = New CCalculationProfileCatalog
     profiles.LoadFromWorkbook ThisWorkbook
@@ -377,8 +376,8 @@ Private Sub BuildPhysicalFixture(ByRef section As CSectionModel, ByRef provider 
     provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=extensionEnabled
 End Sub
 
-' Читает именно именованный диапазон Config, исполняет штатный batch и
-' передает тому же writer готовые результаты без повторного решения НДС.
+' Читает именованный диапазон Config, выполняет обычный расчёт сочетаний
+' и записывает готовые результаты обычным классом без повторного решения НДС.
 Private Function ReadAndExecute(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal profiles As CCalculationProfileCatalog, ByVal settings As CSystemSettingsReader, _
         ByVal units As CUnitSystem) As CBatchSectionCalculator
@@ -582,8 +581,8 @@ Private Sub CheckActivePaths(ByRef stats As TLoadTableStats, ByVal source As Obj
     Next slot
 End Sub
 
-' Проверяет сохраненный target и равновесие без повторного solve.
-' Select Case задает независимый эталон пяти фиксированных траекторий.
+' Проверяет сохранённую целевую нагрузку и равновесие без нового решения.
+' Для пяти явно заданных траекторий усилия независимо вычисляются в Select Case.
 Private Sub CheckPathPoint(ByRef stats As TLoadTableStats, ByVal prefix As String, _
         ByVal point As CSectionStateResult, ByVal path As String, ByVal lambda As Double, _
         ByVal n As Double, ByVal mx As Double, ByVal my As Double)
@@ -625,8 +624,8 @@ Private Sub ConfigureProfiles(ByVal source As Object, ByVal withSearch As Boolea
     Next row
 End Sub
 
-' Находит настройку по фактическому ключу таблицы; отсутствующий ключ в fixture
-' является ошибкой тестовой постановки и не заменяется другим default.
+' Находит настройку по фактическому ключу таблицы. Отсутствующий ключ —
+' ошибка подготовки теста, а не повод подставить произвольное значение.
 Private Sub SetSetting(ByVal source As Object, ByVal key As String, ByVal value As String, _
         Optional ByVal column As Long = 2)
     Dim row As Long
@@ -639,7 +638,7 @@ Private Sub SetSetting(ByVal source As Object, ByVal key As String, ByVal value 
     Err.Raise vbObjectError + 4499, "SetSetting", "В fixture не найден ключ " & key
 End Sub
 
-' Сохраняет отдельный проверяемый Boolean-контракт и его стабильный test-ID.
+' Записывает отдельный логический результат проверки с постоянным тестовым номером.
 Private Sub Check(ByRef stats As TLoadTableStats, ByVal id As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
@@ -670,9 +669,8 @@ Private Sub LogLine(ByRef stats As TLoadTableStats, ByVal value As String)
     End If
 End Sub
 
-' Сохраняет числовые параметры и actual/expected через точку, включая малые
-' допуски в scientific notation; соседние private helpers других suites
-' намеренно не используются как несуществующее общее production API.
+' Записывает фактические и ожидаемые числа с десятичной точкой, включая малые
+' допуски в экспоненциальной записи. Приватные методы других тестовых модулей не вызываются.
 Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Trim$(Str$(value))
 End Function

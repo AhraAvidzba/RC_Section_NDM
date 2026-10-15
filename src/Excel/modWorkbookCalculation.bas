@@ -2,12 +2,11 @@ Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
-' Точки входа Excel-макросов
+' Макросы кнопок и выполнение расчёта в Excel
 ' ==========================================================================
-' Модуль связывает кнопки книги с архитектурными слоями: чтение Config,
-' построение CSectionModel, запуск batch-расчета, запись Results, обновление
-' схемы и экспорт в AutoCAD. Сложная математика остается в классах solver-ов,
-' а этот модуль держит пользовательский сценарий целиком.
+' Связывает чтение Config, построение сечения, расчёт сочетаний, запись Results,
+' обновление схемы и экспорт в AutoCAD. Геометрию и расчётные алгоритмы
+' выполняют соответствующие классы; модуль задаёт порядок действий в книге.
 
 Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых строк между крупными таблицами Results.
 
@@ -33,9 +32,9 @@ Failed:
     ShowWorkbookMessage "Расчет не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
-' Выполняет кнопку очистки Results без изменения Config и таблицы нагрузок.
-' Очистка делегируется workbook-entrypoint; необязательное сообщение зависит
-' от настройки, а ошибка очистки показывается всегда.
+' Очищает Results по кнопке, сохраняя Config и таблицу нагрузок.
+' Вызывает общую очистку указанной книги. Итоговое сообщение зависит
+' от настройки; причина ошибки показывается всегда.
 Public Sub ClearSectionResults()
     On Error GoTo Failed
     Dim informationEnabled As Boolean
@@ -50,8 +49,8 @@ Failed:
     ShowWorkbookMessage "Не удалось очистить результаты: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
-' Обновляет схему по сохраненному Results и сообщает об ошибке пользователю.
-' Не запускает НДС и не заменяет snapshot текущими исходными параметрами.
+' Обновляет схему по сохранённым Results и показывает причину ошибки.
+' Новый расчёт не запускается; текущие исходные данные не заменяют сохранённые.
 Public Sub UpdateSectionPlot()
     On Error GoTo Failed
     Dim informationEnabled As Boolean
@@ -66,8 +65,8 @@ Failed:
     ShowWorkbookMessage "Схема не обновлена: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
-' Запускает импорт Region из активного AutoCAD в сохраненную модель Results.
-' Показывает причину отказа; кнопка не выполняет расчет прочности или трещин.
+' Импортирует геометрию из активного чертежа AutoCAD и сохраняет её в Results.
+' Показывает причину отказа; расчёт прочности или трещин не выполняет.
 Public Sub ImportGeometryFromAutoCAD()
     On Error GoTo Failed
     Dim informationEnabled As Boolean
@@ -81,9 +80,9 @@ Failed:
     ShowWorkbookMessage "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
 End Sub
 
-' Читает выбранное состояние Results и перерисовывает схему указанной книги.
-' При отсутствии state допускает только предусмотренный geometry-only preview;
-' решатель не вызывается, сохраненные таблицы не изменяются.
+' Читает выбранное НДС из Results и перерисовывает схему указанной книги.
+' Если расчётных результатов ещё нет, может показать сохранённую импортированную
+' геометрию. НДС и таблицы Results при этом не меняются.
 Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
 
@@ -122,10 +121,9 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
     plotter.Draw workbook, reader, settings
 End Sub
 
-' Сначала пытаемся построить обычную схему по расчетным результатам.
-' Если расчета еще нет, но после AutoCAD-import уже сохранена геометрия,
-' возвращаем False: вызывающий код построит geometry-preview с текущими
-' настройками аннотаций, не запуская solver и не меняя Results.
+' Пытается прочитать данные обычной схемы с результатами расчёта.
+' Если сохранена только импортированная геометрия, возвращает False:
+' вызывающий код покажет её с текущими настройками аннотаций без расчёта НДС.
 Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
         ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         ByRef errorNumber As Long, ByRef errorDescription As String) As Boolean
@@ -174,8 +172,8 @@ Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText 
 Done:
 End Sub
 
-' Рисует geometry-only preview сохраненной импортированной модели без НДС.
-' Настройки оформления читаются из Config, координаты и характеристики - из Results.
+' Показывает сохранённую импортированную геометрию до расчёта НДС.
+' Оформление читает из Config, координаты и характеристики — из Results.
 Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
 
@@ -194,9 +192,9 @@ Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     plotter.Draw workbook, reader, settings
 End Sub
 
-' Импортирует AutoCAD Region в CSectionModel и сохраняет geometry-only snapshot.
-' Расчет при Geometry.Source = AutoCAD затем использует этот снимок, а не
-' обращается к AutoCAD повторно.
+' Импортирует геометрию AutoCAD в CSectionModel и сохраняет её в Results без НДС.
+' Последующий расчёт с Geometry.Source = AutoCAD читает эти данные
+' без нового обращения к чертежу.
 Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) As String
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "ImportGeometryFromAutoCADForWorkbook", "Книга Excel не передана."
 
@@ -218,9 +216,9 @@ Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) A
 
     Dim section As CSectionModel
     Set section = importer.ImportFromActiveDocument(settings, units)
-    ' Согласуем geometry-preview с расчетным путем: изотропные Region без
-    ' собственного угла получают среднюю ориентацию распознанной сетки до
-    ' записи snapshot, как это уже происходит при чтении Results для расчета.
+    ' Для элементов Region без собственного направления назначаем средний угол
+    ' распознанной сетки до сохранения геометрии. То же правило применяется
+    ' при чтении Results для расчёта.
     section.ApplyAverageRotationToEquivalentAreaFallbacks
 
     Dim writer As CNDMResultsWriter
@@ -247,9 +245,9 @@ Public Function NonCriticalMessagesEnabled(ByVal workbook As Object) As Boolean
     NonCriticalMessagesEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
 End Function
 
-' Выполняет весь Excel-сценарий на указанной книге: один раз читает Config,
-' строит модель/материалы, рассчитывает LC и записывает согласованный Results.
-' Возвращает сообщение запуска; настройками Excel управляет временный guard.
+' Выполняет расчёт в указанной книге: один раз читает Config, подготавливает
+' сечение и материалы, рассчитывает сочетания и записывает Results.
+' Возвращает итоговое сообщение; временные настройки Excel сохраняет CExcelAppStateGuard.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
     On Error GoTo Failed
     If workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
@@ -277,8 +275,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Тип геометрии", settings.GetRawString("Geometry.Type", "-")
     report.AddValue "Профили расчета", "rngCalculationProfiles"
 
-    ' Проверяем активный выбор схемы до построения модели и очистки Results.
-    ' При общем No автоматическое обновление не является потребителем Config.
+    ' Проверяем включённые настройки схемы до построения модели и очистки Results.
+    ' Если схема отключена целиком, параметры её автоматического обновления не нужны.
     Dim plotEnabled As Boolean, autoUpdatePlot As Boolean
     plotEnabled = settings.GetRequiredBoolean("Plot.Enabled")
     If plotEnabled Then autoUpdatePlot = settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation")
@@ -439,10 +437,9 @@ Failed:
     Err.Raise errorNumber, errorSource, errorDescription
 End Function
 
-' Проверяет, поместятся ли все блоки Results до запуска solver-а.
-' Учитываются шапки над якорями, фактические ширины writer-ов и нижние
-' snapshot-блоки, между которыми по принятому правилу должны оставаться
-' две пустые строки. Если раскладка тесная, расчет не запускается.
+' До расчёта проверяет, хватает ли места таблицам Results. Учитывает заголовки,
+' ширину таблиц, блоки сохранённой геометрии и состояний, а также две пустые
+' строки между крупными блоками. При нехватке места расчёт не запускается.
 Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal batch As CBatchSectionCalculator, ByVal profiles As CCalculationProfileCatalog)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4160, "ValidateResultsOutputLayout", "Книга Excel не передана."
@@ -575,8 +572,8 @@ MissingAnchor:
         MissingResultsAnchorMessage(workbook)
 End Sub
 
-' Формирует понятное сообщение о конкретных Results-якорях, без которых
-' невозможно заранее проверить раскладку блоков вывода.
+' Перечисляет отсутствующие именованные ячейки начала таблиц Results,
+' без которых нельзя заранее проверить размещение блоков вывода.
 Private Function MissingResultsAnchorMessage(ByVal workbook As Object) As String
     Dim requiredNames As Variant
     requiredNames = Array( _
@@ -623,7 +620,7 @@ MissingName:
     WorkbookNameHasRange = False
 End Function
 
-' Проверяет нижние соседние блоки Results по строкам листа и по ширине.
+' Проверяет расстояния между соседними нижними таблицами Results и их ширину.
 Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workbook As Object, _
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
@@ -700,7 +697,8 @@ Private Sub CheckFootprintWithinSheet(ByVal issues As Collection, ByVal ws As Ob
     End If
 End Sub
 
-' Оценивает максимальное число поэлементных named-state строк до расчета.
+' Оценивает максимальное число сохраняемых расчётных состояний для таблицы результатов
+' элементов.
 Private Function EstimatedNamedStateCountForOutput(ByVal batch As CBatchSectionCalculator, _
         ByVal profiles As CCalculationProfileCatalog) As Long
     If batch Is Nothing Then Exit Function
@@ -712,8 +710,9 @@ Private Function EstimatedNamedStateCountForOutput(ByVal batch As CBatchSectionC
     Next i
 End Function
 
-' Возвращает верхнюю оценку named-state для профиля: трещины дают CrackedState
-' и две возможные Mcrc-точки, даже если в конкретном LC они могут не понадобиться.
+' Оценивает максимальное число состояний для профиля. Расчёт трещин может дать
+' НДС с трещинами и две точки образования трещины, даже если конкретному сочетанию
+' не понадобятся все три состояния.
 Private Function EstimatedNamedStateCountForProfile(ByVal profileId As String, _
         ByVal profiles As CCalculationProfileCatalog) As Long
     On Error GoTo UnknownProfile
@@ -737,10 +736,9 @@ Private Sub AddLayoutIssue(ByVal issues As Collection, ByVal text As String)
     issues.Add text
 End Sub
 
-' Добавляет короткую практическую рекомендацию по вертикальному разрыву
-' между соседними anchor-блоками Results. rowsToInsert считается до первой
-' строки таблицы следующего блока, а insertBeforeRow указывает пользователю
-' строку синего заголовка, над которой реально надо вставлять строки.
+' Добавляет рекомендацию о числе строк между соседними таблицами Results.
+' rowsToInsert — недостающее число строк до начала следующей таблицы;
+' insertBeforeRow — строка синего заголовка, перед которой следует вставить строки.
 Private Sub AddRowsGapIssue(ByVal issues As Collection, ByVal rangeName As String, _
         ByVal previousBottomRow As Long, ByVal nextTopRow As Long, ByVal insertBeforeRow As Long)
     Dim rowsToInsert As Long
@@ -827,9 +825,9 @@ Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal s
     End If
 End Function
 
-' Отличает расчет обычной Generated-модели от расчета AutoCAD-snapshot.
-' Здесь не выполняется импорт: функция только выбирает человеческий текст
-' сообщения после того, как модель уже построена через BuildWorkbookSectionModel.
+' Определяет, построено ли сечение по параметрам или прочитано из сохранённого
+' импорта AutoCAD. Нужно только для итогового сообщения; геометрию
+' уже подготовил BuildWorkbookSectionModel.
 Private Function IsAutoCADSnapshotCalculation(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader) As Boolean
     If section Is Nothing Then Exit Function
     If settings Is Nothing Then Exit Function
@@ -838,9 +836,9 @@ Private Function IsAutoCADSnapshotCalculation(ByVal section As CSectionModel, By
     IsAutoCADSnapshotCalculation = (StrComp(section.SourceType, "AutoCADImport", vbTextCompare) = 0)
 End Function
 
-' Собирает компактный список всех сочетаний, которые reader реально добавил
-' в batch. В расчет batch получает внутренние усилия, но в человекочитаемый
-' отчет они возвращаются в пользовательские OUTPUT-единицы и знаки.
+' Формирует список всех сочетаний, принятых для расчёта.
+' В отчёте усилия показываются в пользовательских выходных единицах
+' и с пользовательскими знаками, как на листе Results.
 Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem) As String
     If batch Is Nothing Then Exit Function
 
@@ -860,9 +858,7 @@ Private Function CombinationListForReport(ByVal batch As CBatchSectionCalculator
     CombinationListForReport = JoinCollectionLines(lines)
 End Function
 
-' Форматирует длину для execution_report в той же выходной системе единиц,
-' что и лист Results. Отчет должен совпадать с пользовательским выводом, а не
-' показывать внутренние миллиметры без необходимости.
+' Форматирует длину для отчёта выполнения в тех же единицах, что и лист Results.
 Private Function ReportLengthText(ByVal value As Double, ByVal units As CUnitSystem) As String
     If units Is Nothing Then
         ReportLengthText = FormatReportNumber(value) & " мм"
@@ -947,10 +943,9 @@ InvalidConversion:
             "Уменьшите модуль числа и проверьте INPUT-единицу длины.")
 End Sub
 
-' Читает дополнительную таблицу нагрузок для устойчивости. Excel-слой сразу
-' приводит силы и моменты к внутренним единицам, чтобы расчетный batch не
-' обращался к листам и не знал пользовательских единиц. Читаются только ID
-' запрошенной устойчивости; ошибки строки сохраняются для ее отдельного result.
+' Читает дополнительную таблицу длительных нагрузок для расчёта устойчивости
+' и сразу преобразует усилия во внутренние единицы. Обрабатывает только нужные
+' сочетания; ошибку строки сохраняет для результата соответствующего сочетания.
 Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4113, _
@@ -1056,8 +1051,8 @@ InvalidNumber:
     reason = "число невозможно прочитать или перевести в выбранные единицы INPUT без переполнения."
 End Function
 
-' Возвращает физическую подпись компоненты фиксированного четырехколоночного
-' контракта. Это не адрес ячейки и не источник пользовательских единиц.
+' Возвращает название составляющей нагрузки в дополнительной таблице из четырёх столбцов.
+' Не определяет адрес ячейки или пользовательские единицы.
 Private Function DurationLoadComponentName(ByVal component As Long) As String
     Select Case component
         Case 2: DurationLoadComponentName = "N"
@@ -1138,9 +1133,8 @@ Public Sub CalculateTransformedSectionCentroid(ByVal section As CSectionModel, _
     referenceY = props.CentroidY
 End Sub
 
-' Очищает сводку, подробные расчетные блоки и сохраненные NDM-таблицы Results
-' через ответственные writer-ы. Исходные настройки не читаются и не меняются;
-' новый расчет и повторный импорт геометрии здесь не запускаются.
+' Очищает сводки, подробные результаты и сохранённые таблицы через классы записи.
+' Настройки и исходные данные не меняет; расчёт и импорт не запускает.
 Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4110, "ClearSectionResultsForWorkbook", "Книга Excel не передана."
     Dim summaryWriter As CBatchResultWriter
@@ -1151,8 +1145,8 @@ Public Sub ClearSectionResultsForWorkbook(ByVal workbook As Object)
     ndmWriter.ClearResults workbook
 End Sub
 
-' Читает только зарегистрированные таблицы выбранного рецепта и публикует
-' единое definition. После возврата ссылки на Excel в нем отсутствуют.
+' Читает зарегистрированные таблицы выбранного рецепта и создаёт единое описание сечения.
+' Готовое описание не содержит ссылок на объекты Excel.
 Public Function ReadWorkbookSectionDefinition(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing) As CSectionDefinition
     If workbook Is Nothing Or settings Is Nothing Then SectionRecipeError "ReadWorkbookSectionDefinition", "Книга и настройки Config не переданы."
     If units Is Nothing Then
@@ -1166,9 +1160,9 @@ Public Function ReadWorkbookSectionDefinition(ByVal workbook As Object, ByVal se
     Set ReadWorkbookSectionDefinition = registry.CreateDefinition(typeID, context)
 End Function
 
-' Получает единственную модель для расчета: строит Generated по Config либо
-' читает ранее импортированный AutoCAD snapshot из Results. Повторный импорт
-' не выполняется; отсутствие нужного сохраненного источника является ошибкой.
+' Подготавливает модель сечения для расчёта: строит её по Config либо читает
+' ранее импортированную геометрию AutoCAD из Results. Если нужные сохранённые данные
+' отсутствуют, выдаёт ошибку без повторного импорта.
 Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByRef generatedBuilder As CSectionBuilder = Nothing) As CSectionModel
     If workbook Is Nothing Then Err.Raise vbObjectError + 4130, "BuildWorkbookSectionModel", "Книга Excel не передана."
@@ -1225,10 +1219,10 @@ Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
     End If
 End Function
 
-' Считает непрерывную ось snapshot от фактического якоря ограниченными
-' блоками Value2. Правило конца прежнее: первая пустая после Trim/CStr.
-' Empty, формула "" и пробелы завершают ось, ошибка Excel не становится пустой.
-' Массив одного блока живет только здесь; соседние ячейки не включаются в таблицу.
+' Считает заполненные ячейки строки или столбца от заданного начала таблицы.
+' Читает небольшими блоками Value2 до первой пустой ячейки, пустого текста
+' или одних пробелов. Ошибка Excel вызывает ошибку чтения, а не завершает таблицу.
+' Соседние ячейки за концом таблицы не включаются в результат.
 Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As Boolean, _
         Optional ByVal maxCount As Long = 0) As Long
     Const BLOCK_SIZE As Long = 1024
@@ -1263,20 +1257,10 @@ Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As 
     Loop
 End Function
 
-' ==========================================================================
-' ДЛЯ ТЕСТОВ: ШТАТНЫЙ ПЕРЕНОС ПОЛЬЗОВАТЕЛЬСКОЙ ТОЧКИ НАГРУЗКИ
-' ==========================================================================
-' Открывает настоящий Excel-adapter для направленной проверки Config.
-' Не повторяет преобразование единиц, вычисление центра или формулу переноса.
-Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
-        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
-        ByVal batch As CBatchSectionCalculator)
-    ApplyLoadReferenceFromSettings section, settings, units, batch
-End Sub
-
-' Готовит инженерные данные до передачи пассивному writer. Свойства считает
-' их владелец, а размеры/подписи импортированной модели готовит общий
-' построитель аннотаций. Config, solve и saved Results в этом маршруте не читаются.
+' Подготавливает характеристики сечения и аннотации до записи результатов.
+' Геометрические характеристики вычисляет CSectionPropertiesCalculator,
+' а размеры и подписи импортированной модели — CSectionAnnotationBuilder.
+' Текущие Config и Results не читаются; решение НДС не выполняется.
 Public Function PrepareSectionSnapshot(ByVal section As CSectionModel, _
         Optional ByVal provider As CMaterialModelProvider = Nothing) As CSectionPropertiesCalculator
     Dim snapshot As CSectionPropertiesCalculator
@@ -1286,3 +1270,16 @@ Public Function PrepareSectionSnapshot(ByVal section As CSectionModel, _
     annotations.PrepareImportedSection section, snapshot.SnapshotBounds
     Set PrepareSectionSnapshot = snapshot
 End Function
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+
+' ДЛЯ ТЕСТОВ: перенос пользовательской точки нагрузки
+' Вызывает обычное чтение Config и перенос нагрузки. Проверяемые преобразования
+' единиц, центр сечения и формула переноса не повторяются в тесте.
+Public Sub Audit03ApplyLoadReferenceForTests(ByVal section As CSectionModel, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+        ByVal batch As CBatchSectionCalculator)
+    ApplyLoadReferenceFromSettings section, settings, units, batch
+End Sub

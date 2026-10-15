@@ -24,19 +24,20 @@ Private Type TVertex
     Source As String ' Адрес или текстовое происхождение данных без ссылки на объект Excel.
 End Type
 Private Type TDoubleValue
-    Value As Double
+    Value As Double ' Число Double для чтения его точного двоичного представления.
 End Type
 Private Type TDoubleWords
-    Low As Long
-    High As Long
+    Low As Long ' Младшие 32 бита числа Double.
+    High As Long ' Старшие 32 бита числа Double.
 End Type
 Private mVertices() As TVertex ' Единственный массив полных записей в исходном порядке.
 Private mCount As Long ' Число добавленных вершин; первую вершину повторно в конце не добавляют.
 Private mCapacity As Long ' Внутренняя ёмкость массива, не ограниченная конкретным типом сечения.
-Private mSealed As Boolean ' Завершение структурного ввода; сложную топологию проверяет геометрическое ядро.
+Private mSealed As Boolean ' Признак завершения ввода вершин; замкнутость, пересечения и вложенность проверяет общее геометрическое ядро.
 Private mIDs As Object ' Поиск повторных ID с прежним различением регистра.
 
-' Задаёт один источник вершины, радиуса и координат; геометрические операции здесь не выполняются.
+' Добавляет вершину с её именем, координатами, радиусом скругления и ссылкой на исходные данные.
+' Сам контур на этом этапе не строится.
 Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Double, _
         Optional ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "")
     If mSealed Then SpecError "Описание вершин уже завершено; создайте новое для других размеров.", sourceReference
@@ -60,8 +61,8 @@ Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Dou
     mCount = mCount + 1
 End Sub
 
-' Закрывает полный набор исходных вершин без сортировки или вычисления скруглений.
-' Повторный Seal безопасен; неуспешный Seal не закрывает неполное описание.
+' Завершает ввод исходных вершин без их сортировки и без построения скруглений.
+' Повторный вызов безопасен; ошибка не закрывает неполное описание от исправления.
 Public Sub Seal()
     If mSealed Then Exit Sub
     If mCount < 3 Then SpecError "Для многоугольника нужны не менее трёх исходных вершин."
@@ -71,10 +72,10 @@ End Sub
 
 ' Число исходных вершин, доступное также во время заполнения.
 Public Property Get Count() As Long: Count = mCount: End Property
-' Состояние описателя; операции фасада принимают только закрытый набор.
+' Показывает, завершён ли ввод вершин. Команды построения принимают только завершённое описание.
 Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
 
-' Смысловое имя исходной вершины по её порядковому номеру, 1..Count.
+' Возвращает имя исходной вершины по её порядковому номеру от 1 до Count.
 Public Function VertexID(ByVal index As Long) As String
     CheckIndex index: VertexID = mVertices(index).ID
 End Function
@@ -95,7 +96,8 @@ Public Function SourceReference(ByVal index As Long) As String
     CheckIndex index: SourceReference = mVertices(index).Source
 End Function
 
-' Единственный внутренний мост к прежнему численному представлению; массивы не являются API рецепта.
+' Копирует координаты и радиусы во внутренние массивы общего геометрического ядра.
+' Рецепт сечения задаёт вершины через объект и не работает с этими массивами.
 Friend Sub CopyKernelData(ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant)
     RequireSealed
     Dim points() As Variant, assigned() As Double, names() As String, i As Long
@@ -117,13 +119,14 @@ Private Sub RequireSealed()
     If Not mSealed Then SpecError "Перед использованием завершите описание вершин методом Seal."
 End Sub
 
-' Экспонента IEEE754 проверяет NaN/Infinity без арифметики и без дополнительного геометрического допуска.
+' Проверяет по битовому представлению IEEE754, что число конечно.
+' NaN и бесконечность отклоняются без арифметических операций и геометрических допусков.
 Private Function Finite(ByVal value As Double) As Boolean
     Dim number As TDoubleValue, words As TDoubleWords
     number.Value = value: LSet words = number
     Finite = ((words.High And &H7FF00000) <> &H7FF00000)
 End Function
-' Структурная ошибка сохраняет адрес именно добавляемого источника.
+' Сообщает об ошибке ввода вершины с адресом именно того параметра, который добавлялся.
 Private Sub SpecError(ByVal reason As String, Optional ByVal sourceReference As String = "")
     If Len(sourceReference) > 0 Then reason = reason & " Источник: " & sourceReference
     Err.Raise vbObjectError + 5470, "CPolygonSpec", reason

@@ -18,7 +18,7 @@ Option Explicit
 ' для выбора численного метода, включая осевую силовую траекторию.
 
 Private Const KEY_NONE As String = "None" ' Начальное состояние описателя до назначения нагрузки.
-Private Const KEY_AUTO As String = "Auto" ' Общий Search выбирает и перебирает конкретные пути.
+Private Const KEY_AUTO As String = "Auto" ' Общий поиск выбирает и последовательно пробует допустимые способы изменения нагрузки.
 Private Const KEY_MX As String = "LambdaMx" ' Масштабируется только пользовательский Mx.
 Private Const KEY_MY As String = "LambdaMy" ' Масштабируется только пользовательский My.
 Private Const KEY_MXY As String = "LambdaMxy" ' Масштабируется пользовательский вектор Mx/My.
@@ -36,7 +36,7 @@ Private mScalesN As Boolean ' Масштабируется ли продольн
 Private mScalesMx As Boolean ' Масштабируется ли пользовательский Mx.
 Private mScalesMy As Boolean ' Масштабируется ли пользовательский My.
 
-Private mPath As CLoadPathVector ' Общий вектор Offset + lambda*Base для передачи в solver.
+Private mPath As CLoadPathVector ' Постоянная и масштабируемая части усилий для зависимости Offset + lambda*Base.
 
 ' Задает безопасное начальное состояние: путь отсутствует, объект вектора уже создан.
 Private Sub Class_Initialize()
@@ -45,9 +45,9 @@ Private Sub Class_Initialize()
     Set mPath = New CLoadPathVector
 End Sub
 
-' Разбирает load-path через общий объект нагрузки. Так перенос от
-' Load.ReferenceOffset и фильтр малых моментов остаются в одном классе, а
-' LoadPath занимается только разложением Target = Offset + lambda*Base.
+' Разбирает выбранный способ изменения нагрузки через общий объект CSectionLoadState.
+' Тот учитывает эксцентриситет продольной силы и фильтр малых моментов,
+' а здесь нагрузка только разделяется на постоянную и масштабируемую части.
 Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As CSectionLoadState)
     If loadState Is Nothing Then _
         Err.Raise vbObjectError + 3821, "CLoadPathDescriptor", "Не передан CSectionLoadState."
@@ -105,11 +105,10 @@ Public Function NormalizeKey(ByVal rawPath As String) As String
     End Select
 End Function
 
-' Заполняет логические признаки выбранного пути после общей нормализации.
-' Дополнительный порог здесь не применяется: ненулевая компонента остается
-' масштабируемой, даже когда для достижения критерия требуется большая lambda.
-' Нулевые компоненты не создают отдельную ветку: они просто дают нулевой Base,
-' а CCapacitySolver дальше получает ту же универсальную формулу Target(lambda).
+' Определяет, какие компоненты нагрузки будут масштабироваться. Ненулевая
+' компонента сохраняется независимо от величины нужного lambda; дополнительный
+' порог здесь не применяется. Нулевые компоненты дают нулевую часть Base
+' в той же общей формуле нагрузки.
 Private Sub BuildFlags(ByVal nValue As Double, ByVal userMxValue As Double, ByVal userMyValue As Double)
     Select Case mKey
         Case KEY_MX
@@ -184,9 +183,8 @@ Private Sub Clear()
     Set mPath = New CLoadPathVector
 End Sub
 
-' Возвращает подпись load-path в том же виде, в каком пользователь видит ее
-' на листе Results. Метод полезен writer-ам и batch-слою, но не участвует в
-' расчетной математике.
+' Возвращает название способа изменения нагрузки в виде, принятом на Results.
+' Используется для вывода и не меняет расчётную зависимость усилий.
 Public Function DisplayNameForKey(ByVal loadPathKey As String) As String
     Select Case loadPathKey
         Case KEY_MX
@@ -291,8 +289,8 @@ Public Sub Target(ByVal lambdaValue As Double, ByRef nValue As Double, _
     mPath.Target lambdaValue, nValue, mxValue, myValue
 End Sub
 
-' Возвращает отдельный математический вектор выбранной траектории.
-' Search получает снимок, поэтому его пробные точки не меняют описатель LC.
+' Возвращает отдельный объект с постоянной и масштабируемой частями нагрузки.
+' Изменение пробных точек при поиске не затрагивает исходное описание сочетания.
 Public Function Vector() As CLoadPathVector
     Dim result As CLoadPathVector
     Set result = New CLoadPathVector

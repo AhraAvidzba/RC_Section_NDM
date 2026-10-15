@@ -25,34 +25,34 @@ Option Explicit
 Implements ISectionRecipe
 
 Private Type THollowInput
-    B As Double
-    H As Double
-    R As Double
-    Bo As Double
-    Ho As Double
-    Ro As Double
-    Xo As Double
-    Yo As Double
-    MainHeader As Long
-    ExtraHeader As Long
-    GeometrySource As String
+    B As Double ' Ширина наружного контура, мм.
+    H As Double ' Высота наружного контура, мм.
+    R As Double ' Радиус скругления наружного контура, мм.
+    Bo As Double ' Ширина отверстия, мм.
+    Ho As Double ' Высота отверстия, мм.
+    Ro As Double ' Радиус скругления отверстия, мм.
+    Xo As Double ' Смещение центра отверстия по X, мм.
+    Yo As Double ' Смещение центра отверстия по Y, мм.
+    MainHeader As Long ' Строка заголовка основной таблицы армирования во входных данных.
+    ExtraHeader As Long ' Строка заголовка дополнительных рядов арматуры во входных данных.
+    GeometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
 End Type
 
 Private Type THollowFace
-    ID As String
-    Caption As String
-    AxisDistance As Double
-    Diameter As Double
-    Count As Long
-    StartSetback As Double
-    EndSetback As Double
-    D2 As Double
-    D3 As Double
-    Location2 As String
-    Location3 As String
-    Binding2 As String
-    Binding3 As String
-    Source As String
+    ID As String ' Имя стороны для привязки линий арматуры и подписей.
+    Caption As String ' Понятное название стороны для сообщений об ошибках.
+    AxisDistance As Double ' Расстояние от бетонной границы до центров основного ряда арматуры, мм.
+    Diameter As Double ' Диаметр стержней основного ряда, мм.
+    Count As Long ' Число стержней основного ряда.
+    StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
+    EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
+    D2 As Double ' Диаметр второго ряда арматуры, мм.
+    D3 As Double ' Диаметр третьего ряда арматуры, мм.
+    Location2 As String ' Расположение второго ряда относительно основного.
+    Location3 As String ' Расположение третьего ряда относительно исходного ряда.
+    Binding2 As String ' Каким стержням основного ряда соответствует второй ряд.
+    Binding3 As String ' Каким стержням исходного ряда соответствует третий ряд.
+    Source As String ' Адрес исходных данных для пояснения ошибок.
 End Type
 
 ' Читает размеры сечения и отверстия, параметры арматуры вдоль их сторон. Формирует
@@ -190,7 +190,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
         options.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
         options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+        options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.SourceReference = faces(i).Source ' Адреса полей для сообщения об ошибке размещения.
         options.Comment = "HollowRectangle: " & faces(i).Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд 1"
@@ -294,7 +294,7 @@ Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, (binding = "EverySecondBar"), interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
     options.AnnotationGroup = face.ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.Comment = "HollowRectangle: " & face.Caption & IIf(Left$(face.ID, 8) = "Opening.", " грань Opening", " наружная грань") & ", ряд " & CStr(rowNumber)
     Set ExtraOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function

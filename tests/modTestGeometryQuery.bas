@@ -2,18 +2,18 @@ Attribute VB_Name = "modTestGeometryQuery"
 Option Explicit
 
 ' ==========================================================================
-' Адресные тесты общего geometry-query/topology движка
+' ДЛЯ ТЕСТОВ: общие геометрические операции с бетонными областями
 ' ==========================================================================
-' Проверяются аналитические площади/дуги, отверстия, notch, замкнутость,
-' T-соединения сетки, интервалы прямой/луча/отрезка и локальная стенка.
-' НДС не решается, нормативные коэффициенты не назначаются, AutoCAD не нужен.
-' Реальный AutoCAD import/export проверяется отдельным integration-сценарием.
+' Проверяет точные площади и дуги, отверстия и вырезы, замкнутость,
+' Т-образные соединения сетки и участки бетона вдоль заданной линии.
+' НДС и нормативные формулы не рассчитывает. Импорт и экспорт настоящего
+' AutoCAD проверяются отдельно.
 
 Private mPassed As Long
 Private mFailed As Long
 Private mReport As String
 
-' ДЛЯ ТЕСТОВ: сравнивает геометрический скаляр с независимым эталоном.
+' ДЛЯ ТЕСТОВ: сравнивает геометрическую величину с независимо вычисленным эталоном.
 Private Sub CheckNear(ByVal name As String, ByVal actual As Double, ByVal expected As Double, Optional ByVal tolerance As Double = 0.00001)
     Check name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= tolerance
 End Sub
@@ -189,8 +189,8 @@ Private Sub TestPreparedGeometry(ByVal query As CSectionGeometryQuery)
     CheckNear "prepared.quarter.cy", y, -17# + 400# / (3# * GEOM_PI), 0.0000001
 End Sub
 
-' ДЛЯ ТЕСТОВ: отверстие сохраняется inner loop либо становится вырезом при
-' пересечении границы clipping. Площадь одного и того же отверстия не удваивается.
+' ДЛЯ ТЕСТОВ: при обрезке отверстие остаётся замкнутым внутренним контуром
+' либо открывается в вырез. Площадь одного отверстия не должна вычитаться дважды.
 Private Sub TestOpenings(ByVal query As CSectionGeometryQuery)
     Dim region As CConcreteRegion, hole As CConcreteRegion, withHole As CConcreteRegion, clipped As CConcreteRegion
     Set region = query.PolygonRegion(Rectangle(0#, 0#, 100#, 100#))
@@ -315,7 +315,7 @@ Private Sub TestCenterCellAreaDifference(ByVal query As CSectionGeometryQuery)
     Next offset
 End Sub
 
-' ДЛЯ ТЕСТОВ: запускает адресные geometry-query проверки без решения НДС.
+' ДЛЯ ТЕСТОВ: запускает направленные геометрические проверки без решения НДС.
 Public Function RunGeometryQueryTests() As String
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = vbNullString
@@ -516,8 +516,8 @@ Private Sub AddContourRectangle(ByVal model As CSectionModel, ByVal id As String
     Next i
 End Sub
 
-' ДЛЯ ТЕСТОВ: поворачивает исходный контур с общим переносом. Это независимый
-' эталон координат; query не участвует в подготовке преобразования.
+' ДЛЯ ТЕСТОВ: независимо поворачивает и переносит исходный контур.
+' Проверяемые геометрические методы не участвуют в вычислении эталонных координат.
 Private Function RotatedRectangle(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, _
         ByVal y2 As Double, ByVal angle As Double, ByVal offsetX As Double, ByVal offsetY As Double) As Variant
     Dim source As Variant, points(1 To 4, 1 To 2) As Double, i As Long
@@ -584,9 +584,9 @@ Private Sub TestFirstMaterialWall(ByVal query As CSectionGeometryQuery)
     CheckClosed "wall.circular", wall
 End Sub
 
-' ДЛЯ ТЕСТОВ: известный outer задает полную область, без поиска пустот
-' по сетке. Проверяет явные отверстия и инвалидирование по геометрии,
-' но не по подписи расчетного результата.
+' ДЛЯ ТЕСТОВ: заданный наружный контур определяет полную область без поиска
+' пустот по сетке. Изменение геометрии требует новой подготовки области;
+' изменение только подписи расчётного результата её не меняет.
 Private Sub TestKnownAndUnknownContours(ByVal query As CSectionGeometryQuery)
     Dim model As CSectionModel, region As CConcreteRegion, i As Long, j As Long, revision As Long
     Set model = New CSectionModel
@@ -824,8 +824,8 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
     Next kind
 End Sub
 
-' ДЛЯ ТЕСТОВ: определение передает два и пять отверстий через общий API;
-' Results и query не знают ни типа fixture, ни ID пустот.
+' ДЛЯ ТЕСТОВ: описание сечения передаёт два и пять отверстий через общий API.
+' Results и геометрические операции не должны зависеть от имени тестового типа или отверстий.
 Private Sub TestNewGeometryWithMultipleOpenings()
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim geometry As CGeometryRegion, count As Variant, i As Long, expectedArea As Double

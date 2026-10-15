@@ -23,13 +23,13 @@ Option Explicit
 Implements ISectionRecipe
 
 Private Type TRectSetDimensions
-    Shape As String
-    Header As Long
-    B1 As Double
-    H1 As Double
-    B2 As Double
-    H2 As Double
-    Offset As Double
+    Shape As String ' Название формы, составленной из прямоугольников.
+    Header As Long ' Строка заголовка входной таблицы размеров.
+    B1 As Double ' Ширина первого прямоугольника, мм.
+    H1 As Double ' Высота первого прямоугольника, мм.
+    B2 As Double ' Ширина второго прямоугольника, мм.
+    H2 As Double ' Высота второго прямоугольника, мм.
+    Offset As Double ' Смещение присоединённого прямоугольника, мм.
 End Type
 
 ' Читает форму сечения и параметры армирования. Формирует описание наружной границы
@@ -145,7 +145,7 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         End Select
         options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
         options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-        options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+        options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.Comment = "RectSet: " & label & ", ряд 1"
         facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
         d2 = table.OptionalDiameter(extra, 2, units)
@@ -184,7 +184,7 @@ Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row 
     options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
     options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)
     Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function

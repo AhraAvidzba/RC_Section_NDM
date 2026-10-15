@@ -1,7 +1,7 @@
 Attribute VB_Name = "modTestPolygonSpec"
 Option Explicit
 
-' ДЛЯ ТЕСТОВ: структурный контракт общего описателя исходных вершин.
+' ДЛЯ ТЕСТОВ: структура общего описания вершин многоугольника.
 Private mPassed As Long, mFailed As Long, mReport As String
 Private Type TDoubleValue
     Value As Double

@@ -21,69 +21,69 @@ Option Explicit
 Private Const HEADER_ROWS As Long = 4 ' Строки шапки над первой строкой LC.
 Private Const TOTAL_COLUMNS As Long = 49 ' Полная ширина с двумя пустыми разделителями.
 
-Private Const COL_LEFT_FIRST As Long = 1
-Private Const COL_LEFT_LAST As Long = 9
-Private Const COL_SEPARATOR1 As Long = 10
-Private Const COL_STATE_FIRST As Long = 11
-Private Const COL_STATE_LAST As Long = 30
-Private Const COL_SEPARATOR2 As Long = 31
-Private Const COL_CAPACITY_FIRST As Long = 32
-Private Const COL_CAPACITY_LAST As Long = 49
+Private Const COL_LEFT_FIRST As Long = 1 ' Столбец таблицы: первый столбец общих сведений о сочетании.
+Private Const COL_LEFT_LAST As Long = 9 ' Столбец таблицы: последний столбец общих сведений о сочетании.
+Private Const COL_SEPARATOR1 As Long = 10 ' Столбец таблицы: пустой столбец перед текущим НДС.
+Private Const COL_STATE_FIRST As Long = 11 ' Столбец таблицы: первый столбец текущего НДС.
+Private Const COL_STATE_LAST As Long = 30 ' Столбец таблицы: последний столбец текущего НДС.
+Private Const COL_SEPARATOR2 As Long = 31 ' Столбец таблицы: пустой столбец перед несущей способностью.
+Private Const COL_CAPACITY_FIRST As Long = 32 ' Столбец таблицы: первый столбец несущей способности.
+Private Const COL_CAPACITY_LAST As Long = 49 ' Столбец таблицы: последний столбец несущей способности.
 
-Private Const COL_ID As Long = 1
-Private Const COL_RESULT_COMMENT As Long = 2
-Private Const COL_STATUS As Long = 3
-Private Const COL_REF_N As Long = 4
-Private Const COL_REF_MX As Long = 5
-Private Const COL_REF_MY As Long = 6
-Private Const COL_LOAD_N As Long = 7
-Private Const COL_LOAD_MX As Long = 8
-Private Const COL_LOAD_MY As Long = 9
+Private Const COL_ID As Long = 1 ' Столбец таблицы: номер сочетания.
+Private Const COL_RESULT_COMMENT As Long = 2 ' Столбец таблицы: пояснение результата сочетания.
+Private Const COL_STATUS As Long = 3 ' Столбец таблицы: общий статус сочетания.
+Private Const COL_REF_N As Long = 4 ' Столбец таблицы: исходная продольная сила.
+Private Const COL_REF_MX As Long = 5 ' Столбец таблицы: исходный момент Mx.
+Private Const COL_REF_MY As Long = 6 ' Столбец таблицы: исходный момент My.
+Private Const COL_LOAD_N As Long = 7 ' Столбец таблицы: расчётная продольная сила.
+Private Const COL_LOAD_MX As Long = 8 ' Столбец таблицы: расчётный момент Mx.
+Private Const COL_LOAD_MY As Long = 9 ' Столбец таблицы: расчётный момент My.
 
-Private Const COL_LIM_EBC As Long = 11
-Private Const COL_LIM_EBT As Long = 12
-Private Const COL_LIM_ESC As Long = 13
-Private Const COL_LIM_EST As Long = 14
-Private Const COL_STATE_EPS0 As Long = 15
-Private Const COL_STATE_KX As Long = 16
-Private Const COL_STATE_KY As Long = 17
-Private Const COL_STATE_EBC As Long = 18
-Private Const COL_STATE_EBT As Long = 19
-Private Const COL_STATE_ESC As Long = 20
-Private Const COL_STATE_EST As Long = 21
-Private Const COL_STATE_SBC As Long = 22
-Private Const COL_STATE_SBT As Long = 23
-Private Const COL_STATE_SSC As Long = 24
-Private Const COL_STATE_SST As Long = 25
-Private Const COL_STATE_H As Long = 26
-Private Const COL_STATE_X As Long = 27
-Private Const COL_STATE_DIAGEXT As Long = 28
-Private Const COL_STATE_RESERVE As Long = 29
-Private Const COL_STATE_STATUS As Long = 30
+Private Const COL_LIM_EBC As Long = 11 ' Столбец таблицы: предельная деформация сжатого бетона.
+Private Const COL_LIM_EBT As Long = 12 ' Столбец таблицы: предельная деформация растянутого бетона.
+Private Const COL_LIM_ESC As Long = 13 ' Столбец таблицы: предельная деформация сжатой арматуры.
+Private Const COL_LIM_EST As Long = 14 ' Столбец таблицы: предельная деформация растянутой арматуры.
+Private Const COL_STATE_EPS0 As Long = 15 ' Столбец таблицы: текущее НДС: деформация ε0.
+Private Const COL_STATE_KX As Long = 16 ' Столбец таблицы: текущее НДС: кривизна κx.
+Private Const COL_STATE_KY As Long = 17 ' Столбец таблицы: текущее НДС: кривизна κy.
+Private Const COL_STATE_EBC As Long = 18 ' Столбец таблицы: текущее НДС: наибольшая деформация сжатия бетона.
+Private Const COL_STATE_EBT As Long = 19 ' Столбец таблицы: текущее НДС: наибольшая деформация растяжения бетона.
+Private Const COL_STATE_ESC As Long = 20 ' Столбец таблицы: текущее НДС: наибольшая деформация сжатия арматуры.
+Private Const COL_STATE_EST As Long = 21 ' Столбец таблицы: текущее НДС: наибольшая деформация растяжения арматуры.
+Private Const COL_STATE_SBC As Long = 22 ' Столбец таблицы: текущее НДС: наибольшее напряжение сжатия бетона.
+Private Const COL_STATE_SBT As Long = 23 ' Столбец таблицы: текущее НДС: наибольшее напряжение растяжения бетона.
+Private Const COL_STATE_SSC As Long = 24 ' Столбец таблицы: текущее НДС: наибольшее напряжение сжатия арматуры.
+Private Const COL_STATE_SST As Long = 25 ' Столбец таблицы: текущее НДС: наибольшее напряжение растяжения арматуры.
+Private Const COL_STATE_H As Long = 26 ' Столбец таблицы: текущее НДС: высота сечения.
+Private Const COL_STATE_X As Long = 27 ' Столбец таблицы: текущее НДС: высота сжатой зоны.
+Private Const COL_STATE_DIAGEXT As Long = 28 ' Столбец таблицы: текущее НДС: использование продолжения диаграмм.
+Private Const COL_STATE_RESERVE As Long = 29 ' Столбец таблицы: текущее НДС: коэффициент запаса.
+Private Const COL_STATE_STATUS As Long = 30 ' Столбец таблицы: текущее НДС: статус расчёта.
 
-Private Const COL_CAP_EPS0 As Long = 32
-Private Const COL_CAP_KX As Long = 33
-Private Const COL_CAP_KY As Long = 34
-Private Const COL_CAP_LIMIT_STATE As Long = 35
-Private Const COL_CAP_LOAD_PATH As Long = 36
-Private Const COL_CAP_METHOD As Long = 37
-Private Const COL_CAP_LAMBDA As Long = 38
-Private Const COL_CAP_N As Long = 39
-Private Const COL_CAP_MX As Long = 40
-Private Const COL_CAP_MY As Long = 41
-Private Const COL_CAP_EBC As Long = 42
-Private Const COL_CAP_EBT As Long = 43
-Private Const COL_CAP_ESC As Long = 44
-Private Const COL_CAP_EST As Long = 45
-Private Const COL_CAP_H As Long = 46
-Private Const COL_CAP_X As Long = 47
-Private Const COL_CAP_RESERVE As Long = 48
-Private Const COL_CAP_STATUS As Long = 49
+Private Const COL_CAP_EPS0 As Long = 32 ' Столбец таблицы: предельное НДС: деформация ε0.
+Private Const COL_CAP_KX As Long = 33 ' Столбец таблицы: предельное НДС: кривизна κx.
+Private Const COL_CAP_KY As Long = 34 ' Столбец таблицы: предельное НДС: кривизна κy.
+Private Const COL_CAP_LIMIT_STATE As Long = 35 ' Столбец таблицы: предельное НДС: определяющий предел деформаций.
+Private Const COL_CAP_LOAD_PATH As Long = 36 ' Столбец таблицы: предельное НДС: траектория изменения нагрузки.
+Private Const COL_CAP_METHOD As Long = 37 ' Столбец таблицы: предельное НДС: способ поиска предела.
+Private Const COL_CAP_LAMBDA As Long = 38 ' Столбец таблицы: предельное НДС: множитель предельной нагрузки.
+Private Const COL_CAP_N As Long = 39 ' Столбец таблицы: предельное НДС: предельная сила N.
+Private Const COL_CAP_MX As Long = 40 ' Столбец таблицы: предельное НДС: предельный момент Mx.
+Private Const COL_CAP_MY As Long = 41 ' Столбец таблицы: предельное НДС: предельный момент My.
+Private Const COL_CAP_EBC As Long = 42 ' Столбец таблицы: предельное НДС: наибольшая деформация сжатия бетона.
+Private Const COL_CAP_EBT As Long = 43 ' Столбец таблицы: предельное НДС: наибольшая деформация растяжения бетона.
+Private Const COL_CAP_ESC As Long = 44 ' Столбец таблицы: предельное НДС: наибольшая деформация сжатия арматуры.
+Private Const COL_CAP_EST As Long = 45 ' Столбец таблицы: предельное НДС: наибольшая деформация растяжения арматуры.
+Private Const COL_CAP_H As Long = 46 ' Столбец таблицы: предельное НДС: высота сечения.
+Private Const COL_CAP_X As Long = 47 ' Столбец таблицы: предельное НДС: высота сжатой зоны.
+Private Const COL_CAP_RESERVE As Long = 48 ' Столбец таблицы: предельное НДС: коэффициент запаса.
+Private Const COL_CAP_STATUS As Long = 49 ' Столбец таблицы: предельное НДС: статус расчёта.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных подробных блоках.
-Private Const SMALL_VALUE As Double = 0.000000001 ' Численный порог только для пустых расчетных полей writer-а.
-Private Const HEADER_NOTES_ROW As Long = 3
-Private Const HEADER_LABEL_ROW As Long = 4
+Private Const SMALL_VALUE As Double = 0.000000001 ' Порог для определения отсутствующего численного поля при выводе таблицы.
+Private Const HEADER_NOTES_ROW As Long = 3 ' Строка пояснений в шапке таблицы.
+Private Const HEADER_LABEL_ROW As Long = 4 ' Строка обозначений и единиц в шапке таблицы.
 
 ' Возвращает число строк шапки над rngStrengthSummaryAnchor.
 Public Function HeaderRowsAboveAnchor() As Long
@@ -124,7 +124,7 @@ Public Function RequiredColumns() As Long
     RequiredColumns = TOTAL_COLUMNS
 End Function
 
-' Записывает подробную таблицу НДС/Capacity по модели прочности.
+' Записывает подробную таблицу НДС по прочности и предельной несущей способности.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
     On Error GoTo Failed
@@ -150,7 +150,7 @@ Public Sub ClearSummary(ByVal workbook As Object)
     PrepareTarget ClearTargetRange(workbook)
 End Sub
 
-' Возвращает текущий диапазон таблицы: шапка над якорем и строки LC.
+' Возвращает диапазон текущей таблицы вместе с шапкой и строками сочетаний.
 Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
@@ -159,7 +159,7 @@ Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows A
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
-' Возвращает область безопасной очистки до следующего detailed-блока Results.
+' Возвращает диапазон очистки этой таблицы до начала следующего подробного раздела Results.
 Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
@@ -423,8 +423,8 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
-' Записывает физические предельные деформации effective strength-модели LC.
-' Растянутый предел бетона выводится только при включенной растянутой ветви.
+' Записывает физические пределы деформаций фактически использованной модели прочности.
+' Растянутый предел бетона показывает только при включённой растянутой ветви.
 Private Sub PutStrengthLimits(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal units As CUnitSystem)
     data(rowIndex, COL_LIM_EBC) = batch.StrengthConcreteCompressionLimitForCombination(index)
@@ -476,9 +476,9 @@ Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
     End If
 End Function
 
-' Выводит путь, метод, статус несущей и найденное физическое CapacityState.
-' Если конечного НДС нет, writer не создает плоскость или усилия из последней
-' диагностической пробы; числовые поля заполняются только сохраненной точкой.
+' Записывает путь нагрузки, метод, статус и подтверждённое предельное НДС.
+' Если конечного состояния нет, последние пробные усилия или деформации
+' вместо него не подставляются.
 Private Sub PutCapacityState(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel, ByVal policy As CResultStatusPolicy)
@@ -515,8 +515,8 @@ Private Sub PutCapacityLoadPointComponents(ByRef data() As Variant, ByVal rowInd
     data(rowIndex, COL_CAP_MY) = OutputMy(batch.ResultAt(index).StrengthResult.Capacity.MyUltimate, units)
 End Sub
 
-' Пишет параметры плоскости деформаций saved-state: epsilon0 в начале
-' внутренней системы координат модели и две кривизны в OUTPUT-единицах.
+' Записывает сохранённое поле деформаций: epsilon0 в начале координат модели
+' и кривизны в выбранных выходных единицах.
 Private Sub PutStatePlane(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal colEps0 As Long, ByVal colKx As Long, ByVal colKy As Long)
@@ -541,7 +541,7 @@ Private Sub PutStateExtremes(ByRef data() As Variant, ByVal rowIndex As Long, _
     If colSst > 0 And stateResult.HasSteelTension Then data(rowIndex, colSst) = OutputStress(stateResult.MaxSteelStress, units)
 End Sub
 
-' Пишет h и x для плоскости деформаций named state.
+' Записывает высоту сечения h и высоту сжатой зоны x для сохранённого поля деформаций.
 Private Sub PutStateGeometry(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal units As CUnitSystem, _
         ByVal section As CSectionModel, ByVal colH As Long, ByVal colX As Long)
@@ -681,7 +681,8 @@ Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String)
     Loop
 End Sub
 
-' Возвращает внешний статус канонического прямого НДС через общую policy.
+' Возвращает внешний статус НДС при заданной нагрузке по сохранённому результату и общим
+' правилам.
 Private Function DirectStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
@@ -697,8 +698,7 @@ Private Function CapacityStatusText(ByVal batch As CBatchSectionCalculator, ByVa
     CapacityStatusText = policy.ExternalStatus(meta)
 End Function
 
-' Возвращает готовое пользовательское пояснение из ResultMeta блока.
-' Writer не анализирует технические StopReason и не собирает комментарий заново.
+' Возвращает готовое пояснение ResultMeta без повторного разбора причины остановки.
 Private Function MetaComment(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then Exit Function
     MetaComment = meta.ResultComment
@@ -744,13 +744,13 @@ Private Sub CalculateDepthsPerpendicularToNeutral(ByVal section As CSectionModel
     End If
 End Sub
 
-' Ниже собраны адаптеры единиц для strength-блока, чтобы все значения в таблице
-' выводились теми же единицами и знаками, что и остальная программа.
+' Ниже переводятся величины таблицы прочности во внутренне согласованные
+' выходные единицы и знаки, выбранные пользователем для Results.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function
 
-' Возвращает подпись выходной единицы длины для заголовков strength-таблицы.
+' Возвращает подпись выходной единицы длины для заголовков таблицы прочности.
 Private Function OutputLengthUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputLengthUnit = "mm" Else OutputLengthUnit = units.OutputLengthUnit
 End Function
@@ -776,7 +776,7 @@ Private Function OutputForce(ByVal value As Double, ByVal units As CUnitSystem) 
     If units Is Nothing Then OutputForce = value Else OutputForce = units.InternalForceToOutput(value)
 End Function
 
-' Возвращает подпись выходной единицы силы для заголовков strength-таблицы.
+' Возвращает подпись выходной единицы силы для заголовков таблицы прочности.
 Private Function OutputForceUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputForceUnit = "N" Else OutputForceUnit = units.OutputForceUnit
 End Function
@@ -791,7 +791,7 @@ Private Function OutputMy(ByVal value As Double, ByVal units As CUnitSystem) As 
     If units Is Nothing Then OutputMy = value Else OutputMy = units.InternalMomentMyToOutput(value)
 End Function
 
-' Возвращает подпись выходной единицы момента для заголовков strength-таблицы.
+' Возвращает подпись выходной единицы момента для заголовков таблицы прочности.
 Private Function OutputMomentUnit(ByVal units As CUnitSystem) As String
     If units Is Nothing Then OutputMomentUnit = "N*mm" Else OutputMomentUnit = units.OutputMomentUnit
 End Function
@@ -803,12 +803,12 @@ Private Function StatusPolicy() As CResultStatusPolicy
     Set StatusPolicy = policy
 End Function
 
-' Локальный максимум нужен для компактных геометрических расчетов внутри writer-а.
+' Возвращает максимум двух чисел для геометрических величин таблицы.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a >= b Then MaxDouble = a Else MaxDouble = b
 End Function
 
-' Локальный минимум нужен для компактных геометрических расчетов внутри writer-а.
+' Возвращает минимум двух чисел для геометрических величин таблицы.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a <= b Then MinDouble = a Else MinDouble = b
 End Function

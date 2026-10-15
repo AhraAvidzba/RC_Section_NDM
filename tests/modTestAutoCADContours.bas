@@ -2,19 +2,18 @@ Attribute VB_Name = "modTestAutoCADContours"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: достоверные контуры Region и Polyline
+' ДЛЯ ТЕСТОВ: точные контуры AutoCAD Region и Polyline
 ' ==========================================================================
-' Адресные проверки фактических ребер, отверстий, ориентации, строгих ошибок
-' и очистки временных COM-объектов. Проверяют production reader/importer и
-' общий geometry-query без solver. Настоящий AutoCAD выполняется отдельным
-' entrypoint-ом; fixture-прогон не объявляется живой CAD-интеграцией.
+' Проверяет чтение сегментов, отверстий, направления обхода, ошибки
+' и удаление временных объектов общими классами без решения НДС.
+' Работа с подставными объектами и с настоящим AutoCAD запускается раздельно.
 
 Private mPassed As Long
 Private mFailed As Long
 Private mReport As String
 Private mNativeProgress As Boolean ' ДЛЯ ТЕСТОВ: журнал собственного CAD-прогона до возврата из COM.
 
-' ДЛЯ ТЕСТОВ: метка старого DWG не должна влиять на production import.
+' ДЛЯ ТЕСТОВ: сохранённая метка старого чертежа не должна влиять на обычный импорт.
 Private Sub SetLegacyContourTag(ByVal entity As Object)
     Dim app As Object, codes(0 To 1) As Integer, values(0 To 1) As Variant
     On Error Resume Next
@@ -64,8 +63,8 @@ Finish:
     RunAutoCADContourTests = mReport
 End Function
 
-' ДЛЯ ТЕСТОВ: отдельная книга проверяет единственный формат контуров и
-' save/reopen без импорта, solve и изменений пользовательского Results.
+' ДЛЯ ТЕСТОВ: проверяет формат контуров после сохранения и открытия отдельной
+' копии книги без нового импорта, расчёта и изменения пользовательских Results.
 Public Function RunPostAudit03ContourSnapshotTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     Dim fixture As Object, sheet As Object, writer As CNDMResultsWriter, model As CSectionModel, restored As CSectionModel
@@ -279,9 +278,9 @@ Private Sub CheckOpeningWithoutOuter()
     Check "openingOnly.overlappingExactOpeningsRejected", number <> 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: точный outer без отверстий задает сплошную область даже
-' поверх сетки с пустотой. Проверяет пустой/отсутствующий слой и отсутствие
-' настройки отверстий, а также сохранение этого контракта через Results.
+' ДЛЯ ТЕСТОВ: заданный наружный контур без отверстий описывает сплошной бетон,
+' даже если в сетке есть пустота. Проверяет отсутствующий и пустой слой отверстий,
+' а затем сохранение того же смысла геометрии в Results.
 Private Sub CheckKnownOuterWithoutOpenings()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion
     Dim layer As CFakeAcadContour, outer As CFakeAcadContour, mode As Long, openingLayer As String
@@ -374,8 +373,8 @@ Private Sub CheckAdditiveContourExport()
     Set entity = space.CreatedEntities(5)
     Check "export.color.crack", entity.Color = 31 And entity.Closed And Not entity.Deleted
     Check "export.append.noExistingObjectRead", space.ForbiddenReads = 0
-    ' Boolean - метод AutoCAD, не объявляемый в VBA fixture; отверстия
-    ' Region проверяются настоящим CAD-прогоном, без подмены production.
+    ' Boolean — метод настоящего AutoCAD. Подставной объект его не реализует;
+    ' вычитание отверстий из Region проверяется отдельно в настоящем чертеже.
     section.Contours.AddContourCircle "CONTOUR_HOLE", 50#, 50#, 10#, "Круглое отверстие теста.", "HOLE", "Opening"
     writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
     Set space = New CFakeAcadContourExport
@@ -486,9 +485,9 @@ Private Function ContourRectanglePoints(ByVal x1 As Double, ByVal y1 As Double, 
     ContourRectanglePoints = points
 End Function
 
-' ДЛЯ ТЕСТОВ: точная окружность и повернутый наружный контур дают габариты
-' по аналитической границе, а не по меньшей сетке. Без outer сохраняется
-' прежний приблизительный размер. INPUT/OUTPUT не меняют исходные координаты.
+' ДЛЯ ТЕСТОВ: габариты окружности и повёрнутого наружного контура берутся
+' по точной границе, а не по меньшей сетке. Без наружного контура размер
+' остаётся приблизительным. Выбор единиц ввода и вывода не меняет координаты чертежа.
 Private Sub CheckImportedContourDimensions()
     Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
     Dim writer As CNDMResultsWriter, annotations As CSectionAnnotations, kind As Long, i As Long
@@ -901,9 +900,9 @@ Private Sub CheckEmptyContourLayers()
     Check "emptyLayers.failedImportKeepsPreviousModel", section.ConcreteCount = 1 And section.RebarCount = 1 And section.Contours.Count = 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: сохраняет несколько отверстий и аналитические дуги через
-' штатный preview writer, меняет текущие единицы и восстанавливает модель.
-' Проверяет также сценарий только opening и адрес поврежденного snapshot.
+' ДЛЯ ТЕСТОВ: сохраняет несколько отверстий и дуги обычной записью предварительного
+' просмотра, меняет текущие единицы и восстанавливает модель. Проверяет также
+' модель только с отверстиями и адрес ошибки повреждённых сохранённых данных.
 Private Sub CheckResultsRoundTrip()
     Dim unitRange As Object, savedUnits As Variant, settings As CSystemSettingsReader, units As CUnitSystem
     Dim section As CSectionModel, restored As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
@@ -940,7 +939,7 @@ Private Sub CheckResultsRoundTrip()
             Next row
         End If
         writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
-        ' Новые input/output настройки не меняют единицы сохраненного снимка.
+        ' Новые настройки единиц ввода и вывода не меняют единицы уже сохранённых Results.
         For row = 2 To unitRange.Rows.Count
             If CStr(unitRange.Cells(row, 1).Value2) = "Length" Then
                 unitRange.Cells(row, 2).Value2 = "cm"
@@ -1051,9 +1050,9 @@ Private Sub CheckMultipleOpenings()
     Next mode
 End Sub
 
-' ДЛЯ ТЕСТОВ: число отдельных opening не ограничено двумя. Пять проемов
-' разных поддержанных типов остаются независимыми замкнутыми контурами, вычитаются один
-' раз и сохраняются при записи/чтении Results в собственных единицах снимка.
+' ДЛЯ ТЕСТОВ: число отверстий не ограничено двумя. Пять отверстий разных
+' поддерживаемых видов остаются отдельными замкнутыми контурами и вычитаются
+' один раз. После записи и чтения Results сохраняются их координаты и единицы.
 Private Sub CheckFiveOpenings()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, restored As CSectionModel
@@ -1089,7 +1088,7 @@ Private Sub CheckFiveOpenings()
     Check "fiveOpenings.snapshotLoops", region.LoopCount = 6
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет площадь в мм2 без вызова другой production формулы.
+' ДЛЯ ТЕСТОВ: независимо проверяет площадь в мм2, не вызывая проверяемую формулу программы.
 Private Sub CheckArea(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     Check name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) < 0.00001
 End Sub
@@ -1123,7 +1122,8 @@ Private Function RectangleEdges(ByVal x As Double, ByVal y As Double, ByVal widt
     Set RectangleEdges = edges
 End Function
 
-' ДЛЯ ТЕСТОВ: оборачивает ребра в Region или Polyline с одним COM-контрактом.
+' ДЛЯ ТЕСТОВ: представляет заданные сегменты как Region или Polyline
+' с теми же доступными свойствами и методами, что у объектов AutoCAD.
 Private Function Contour(ByVal kind As String, ByVal edges As Collection, Optional ByVal layerName As String = "OUTER") As CFakeAcadContour
     Dim result As CFakeAcadContour
     Set result = New CFakeAcadContour
@@ -1211,8 +1211,9 @@ Private Sub CheckInvalidContours()
     Next mode
 End Sub
 
-' ДЛЯ ТЕСТОВ: реальный importer сохраняет Region с opening, не меняя A/I
-' дискретных элементов. Повторный geometry-query читает его semantic-снимок.
+' ДЛЯ ТЕСТОВ: обычный импорт сохраняет Region с отверстием без изменения площадей
+' и моментов инерции элементов сетки. Повторные геометрические запросы
+' используют сохранённые роли наружной границы и отверстия.
 Private Sub CheckImportedSnapshot()
     Dim space As Collection, layers As Collection, regionEntity As CFakeAcadRegion, contourEntity As CFakeAcadContour
     Dim edges As Collection, roundOpening As CFakeAcadContour, importer As CAutoCADSectionModelImporter
@@ -1474,9 +1475,9 @@ Private Sub CheckCloseFar(ByVal name As String, ByVal actual As Double, ByVal ex
     Check name & "; difference=" & CStr(Abs(actual - expected)), Abs(actual - expected) <= tolerance
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет настоящий Autodesk AutoCAD в собственном новом
-' документе. Существующие чертежи не изменяются; source-объекты сохраняют
-' handles, площадь и число сущностей после Copy/Explode production reader-а.
+' ДЛЯ ТЕСТОВ: проверяет настоящий AutoCAD в собственном новом документе.
+' Существующие чертежи не меняются. После копирования и разбиения обычным
+' классом чтения исходные объекты сохраняют номера, площади и количество.
 Public Function RunRealAutoCADContourTests(Optional ByVal ownedApplication As Object = Nothing, _
         Optional ByVal templatePath As String = "") As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
@@ -1888,9 +1889,9 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     Next targetLayer
 End Sub
 
-' ДЛЯ ТЕСТОВ: оба формата сохраняют несколько проемов, отдельную бетонную
-' часть внутри проема и ее собственное отверстие. Проверяется повторный
-' production import без исходных контуров и без solver.
+' ДЛЯ ТЕСТОВ: оба формата экспорта сохраняют несколько отверстий, отдельный
+' бетонный участок внутри отверстия и его собственное отверстие. Повторный
+' импорт выполняется обычным способом без исходных контуров и решения НДС.
 Private Sub CheckNativeContourFormatTopology(ByVal doc As Object)
     Dim section As CSectionModel, writer As CNDMResultsWriter, query As CSectionGeometryQuery
     Dim importer As CAutoCADSectionModelImporter, restored As CSectionModel, region As CConcreteRegion
@@ -1974,10 +1975,10 @@ Private Sub CheckNativeContourFormatTopology(ByVal doc As Object)
     Next mode
 End Sub
 
-' ДЛЯ ТЕСТОВ: проходит production import -> Results -> export -> import
-' для обоих смешанных источников и для однородных вариантов. Два отверстия
-' объединяются с наружной границей в Region; экспорт сохраняет
-' исходники. OUTPUT в метрах не меняет размеры DWG в миллиметрах.
+' ДЛЯ ТЕСТОВ: выполняет обычные импорт, запись Results, экспорт и повторный импорт
+' для смешанных и однородных источников контуров. Два отверстия вычитаются
+' из наружной области Region. Исходники сохраняются; выходные метры
+' не изменяют миллиметровые размеры объектов чертежа.
 Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
     Dim importer As CAutoCADSectionModelImporter, writer As CNDMResultsWriter, units As CUnitSystem, reader As CAutoCADContourReader
     Dim query As CSectionGeometryQuery, section As CSectionModel, region As CConcreteRegion
@@ -2108,7 +2109,7 @@ Private Sub CheckNativeSharedContours(ByVal doc As Object)
     Dim exported As Long, countBefore As Long, contourCount As Long, contourBefore As Long, entity As Object
     Dim name As Variant, layer As Object
     On Error GoTo Failed
-    ' Fixture не зависит от того, какие тесты запускались до него.
+    ' Тестовые исходные данные не зависят от ранее выполненных проверок.
     For Each name In Array("SP35_SAVED_CONTOURS", "SP35_OPENING")
         Set layer = Nothing
         On Error Resume Next
@@ -2167,8 +2168,8 @@ Restore:
     If number <> 0 Then Err.Raise number, "CheckNativeSharedContours", description
 End Sub
 
-' ДЛЯ ТЕСТОВ: export строит один Region с двумя круговыми отверстиями.
-' Площадь и роли повторно прочитанного CAD совпадают с query.
+' ДЛЯ ТЕСТОВ: экспорт создаёт один Region с двумя круглыми отверстиями.
+' Повторное чтение AutoCAD даёт те же площадь и роли контуров, что общий геометрический расчёт.
 Private Sub CheckNativeSavedContours(ByVal doc As Object, ByVal reader As CAutoCADContourReader)
     Dim section As CSectionModel, writer As CNDMResultsWriter, restored As CSectionModel
     Dim units As CUnitSystem, query As CSectionGeometryQuery, region As CConcreteRegion, entity As Object

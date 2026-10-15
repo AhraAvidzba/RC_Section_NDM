@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "baseRef": "7a9b53a26f95107b515112f8a5605c3aaaac03c4",
+  "reviewedComponents": 156,
+  "classes": 104,
+  "methods": 3530,
+  "fieldDeclarationLines": 1941,
+  "editedCommentBlocksOrLines": 2507,
+  "newInlineFieldComments": 515,
+  "changedSourceComponents": 143,
+  "missingFieldComments": 0,
+  "missingMethodComments": 0,
+  "methodBodyOrDeclarationChanges": [],
+  "wrongTestMethodOrder": [],
+  "testOnlyMethods": 49,
+  "testSections": 16,
+  "reorderedComponents": [
+    "src/Batch/CBatchSectionCalculator.cls",
+    "src/Excel/CAutoCADSectionModelImporter.cls",
+    "src/Excel/CSystemSettingsReader.cls",
+    "src/Geometry/CFiberMeshBuilder.cls",
+    "src/Materials/CMaterialDiagram.cls",
+    "src/Section/CSectionGeometryQuery.cls",
+    "src/Section/CSectionPropertiesCalculator.cls",
+    "src/Excel/modWorkbookCalculation.bas"
+  ]
+}

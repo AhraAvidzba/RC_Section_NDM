@@ -17,12 +17,12 @@ Option Explicit
 ' Геометрию проверяет CSectionGeometryQuery; фактическое размещение стержней
 ' проверяет CRebarRuleExecutor при сборке. Ссылки на Excel не сохраняются.
 
-Private mTypeID As String, mVersion As Long, mSealed As Boolean ' Тип, версия схемы и завершение деклараций.
+Private mTypeID As String, mVersion As Long, mSealed As Boolean ' Имя типа сечения, версия описания и признак завершения его заполнения.
 Private mPaths As Object, mGroups As Object, mAnchors As Object, mSources As Object ' Именованные линии, группы, точки и адреса ввода.
 Private mLoops() As TSectionLoop, mLoopCount As Long ' Роли Outer/Opening и явные связи отверстий с наружными границами.
-Private mRules() As TRebarRule, mRuleCount As Long ' Копии правил армирования; координаты стержней определяет executor.
-Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long ' Декларации размеров и подписей, отдельно от физической арматуры.
-Private mRegion As CConcreteRegion ' Каноническая бетонная область успешного Seal; потребители получают clone.
+Private mRules() As TRebarRule, mRuleCount As Long ' Копии правил армирования; координаты отдельных стержней рассчитывает CRebarRuleExecutor.
+Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long ' Заданные размеры и подписи; хранятся отдельно от самих стержней.
+Private mRegion As CConcreteRegion ' Бетонная область, проверенная при Seal; при чтении возвращается её независимая копия.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя адресная ошибка проверки определения.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
@@ -56,7 +56,8 @@ Public Sub AnchorCoordinates(ByVal anchorID As String, ByRef x As Double, ByRef 
     x = CDbl(mAnchors(anchorID)(0)): y = CDbl(mAnchors(anchorID)(1))
 End Sub
 
-' Сохраняет связь смыслового объекта с адресом его входного параметра для диагностики.
+' Связывает ID линии, правила или аннотации с адресом исходного параметра для сообщения об
+' ошибке.
 Friend Sub AddSource(ByVal entityID As String, ByVal reference As String)
     RequireMutable
     If Len(Trim$(entityID)) = 0 Or Len(Trim$(reference)) = 0 Then DefinitionError "ID и исходная ссылка обязательны."
@@ -68,13 +69,13 @@ Public Function SourceReference(ByVal entityID As String) As String
     If mSources.Exists(entityID) Then SourceReference = CStr(mSources(entityID))
 End Function
 
-' Смысловое имя типа опубликованного определения.
+' Возвращает имя типа сечения, указанное при создании описания.
 Public Property Get TypeID() As String: TypeID = mTypeID: End Property
-' Положительная версия схемы определения.
+' Возвращает положительный номер версии формата описания сечения.
 Public Property Get SchemaVersion() As Long: SchemaVersion = mVersion: End Property
 ' Показывает, завершено ли описание; после завершения его геометрия не изменяется.
 Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
-' Число зарегистрированных путей.
+' Возвращает количество линий, добавленных в описание сечения.
 Public Property Get PathCount() As Long: PathCount = mPaths.Count: End Property
 ' Возвращает число замкнутых границ бетона: наружных контуров и отверстий.
 Public Property Get LoopCount() As Long: LoopCount = mLoopCount: End Property
@@ -83,13 +84,14 @@ Public Property Get RuleCount() As Long: RuleCount = mRuleCount: End Property
 ' Возвращает число объявленных размеров, подписей и текстовых аннотаций.
 Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCount: End Property
 
-' Читает опубликованный неизменяемый путь по ID.
+' Возвращает завершённую линию по её ID; изменять полученную геометрию нельзя.
 Public Function Path(ByVal pathID As String) As CGeometryPath
     If Not mPaths.Exists(pathID) Then DefinitionError "Не найден путь '" & pathID & "'.", pathID, "MISSING_PATH"
     Set Path = mPaths(pathID)
 End Function
 
-' Группа - снимок имен независимых путей, не фиктивный составной путь.
+' Возвращает имена отдельных линий группы в сохранённом порядке.
+' Группа не создаёт соединяющую линию между раздельными участками.
 Public Function TargetPaths(ByVal targetID As String) As Variant
     If mPaths.Exists(targetID) Then
         TargetPaths = Array(targetID)
@@ -209,19 +211,19 @@ Friend Sub AddAnnotation(ByRef value As TSectionAnnotation)
     mAnnotations(mAnnotationCount) = value
 End Sub
 
-' Возвращает копию структуры правила, сохраняя неизменность опубликованного определения.
+' Возвращает отдельную копию правила; изменение этой копии не меняет готовое описание сечения.
 Friend Sub CopyRule(ByVal index As Long, ByRef value As TRebarRule)
     If index < 1 Or index > mRuleCount Then DefinitionError "Номер правила вне определения."
     value = mRules(index)
 End Sub
 
-' Возвращает копию декларативной аннотации для общего построителя.
+' Возвращает отдельную копию описания размера или подписи для общего построителя аннотаций.
 Friend Sub CopyAnnotation(ByVal index As Long, ByRef value As TSectionAnnotation)
     If index < 1 Or index > mAnnotationCount Then DefinitionError "Номер аннотации вне определения."
     value = mAnnotations(index)
 End Sub
 
-' Находит правило по уникальному смысловому ID; неизвестная зависимость является ошибкой.
+' Находит правило по его уникальному ID. Ссылка на неизвестное исходное правило вызывает ошибку.
 Friend Function RuleIndex(ByVal ruleID As String) As Long
     Dim i As Long
     For i = 1 To mRuleCount
@@ -263,15 +265,15 @@ Friend Sub Seal()
         For i = 1 To mRuleCount: ValidateRuleGraph i, visiting: Next i
     End If
     For i = 1 To mAnnotationCount: ValidateAnnotation mAnnotations(i): Next i
-    ' Тот же формат и тот же query, что у прежней сборки: механическая сетка
-    ' не заменяется аналитическими свойствами и не получает другой источник.
-' Итоговая канонизация необходима для прежних порядка границ и свойств; она не повторяется при Build.
+    ' Подготавливаем и упорядочиваем точные границы общими геометрическими операциями.
+    ' Характеристики бетонной сетки при этом не подменяются характеристиками точного контура.
+    ' Готовая область сохраняется и при Build повторно не строится.
     Set mRegion = query.RegionFromContours(MaterialContours())
     mSealed = True
 End Sub
 
-' Ошибочные привязки/измерения выявляются до сетки и НДС. Рецепт не может
-' опубликовать размер по исчезнувшей дуге либо несуществующему правилу.
+' Проверяет привязки и размеры до построения сетки и расчёта НДС.
+' Размер по исчезнувшей дуге или ссылка на несуществующий арматурный ряд вызывает ошибку.
 Private Sub ValidateAnnotation(ByRef value As TSectionAnnotation)
     Dim ids As Variant, path As CGeometryPath, edge As TRegionEdge, unused As Long
     Select Case value.Kind
@@ -375,7 +377,7 @@ Private Sub AppendLoop(ByVal result As CSectionContours, ByVal index As Long, By
     Next i
 End Sub
 
-' Запрещает изменение геометрического объекта после его запечатывания.
+' Запрещает изменение описания после его завершения и проверки методом Seal.
 Private Sub RequireMutable()
     If Len(mTypeID) = 0 Or mSealed Then DefinitionError "Определение не открыто для заполнения."
 End Sub

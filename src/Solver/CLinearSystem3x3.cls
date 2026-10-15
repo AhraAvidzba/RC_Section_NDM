@@ -18,13 +18,13 @@ Option Explicit
 ' матрицы отличается от непредставимой арифметики; диагностический масштаб
 ' правой части не должен мешать получению корректной поправки.
 
-Private mSolved As Boolean
-Private mX1 As Double
-Private mX2 As Double
-Private mX3 As Double
-Private mAbsoluteResidual As Double
-Private mRelativeResidual As Double
-Private mStopReason As String
+Private mSolved As Boolean ' Признак успешно найденного решения системы.
+Private mX1 As Double ' Первая неизвестная найденного решения.
+Private mX2 As Double ' Вторая неизвестная найденного решения.
+Private mX3 As Double ' Третья неизвестная найденного решения.
+Private mAbsoluteResidual As Double ' Сумма абсолютных невязок трёх уравнений.
+Private mRelativeResidual As Double ' Невязка решения относительно масштаба правой части.
+Private mStopReason As String ' Пояснение результата решения или причины отказа.
 Private mFailureCode As ESolverFailureCode ' Причина последнего отказа без анализа текста StopReason.
 
 ' Решает систему 3x3 методом Гаусса с выбором ведущей строки. Возвращает False
@@ -188,8 +188,9 @@ Public Property Get RelativeResidual() As Double
     RelativeResidual = mRelativeResidual
 End Property
 
-' Возвращает фактическую причину линейного отказа для solver/search.
-' Численное переполнение не подменяется вырождением матрицы по тексту.
+' Возвращает фактическую причину отказа решения линейной системы.
+' Арифметическое переполнение и вырождение матрицы различаются по коду,
+' а не по тексту сообщения.
 Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
 End Property
@@ -202,16 +203,12 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Абсолютная сумма невязок нужна unit-тестам линейного решателя. Рабочая
+
+' ДЛЯ ТЕСТОВ: абсолютная сумма невязок нужна unit-тестам линейного решателя. Рабочая
 ' численная логика обычно ориентируется на относительную невязку и StopReason,
 ' потому что абсолютный масштаб правой части может сильно отличаться.
-
 Public Property Get AbsoluteResidual() As Double
     AbsoluteResidual = mAbsoluteResidual
 End Property
-
-
-
-
 
 

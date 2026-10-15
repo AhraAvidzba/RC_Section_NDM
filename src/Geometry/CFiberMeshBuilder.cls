@@ -10,23 +10,20 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Генератор бетонной расчетной сетки
+' Построение бетонной расчётной сетки
 ' ==========================================================================
-' CFiberMeshBuilder разбивает бетонную геометрию на конечные волокна
-' заданного шага. На выходе получается набор центров и площадей бетонных
-' элементов, который затем переносится в CSectionModel.
-'
-' Класс не знает о нагрузках, материалах и solver-ах: он отвечает только за
-' геометрическую дискретизацию бетонной области.
+' Разбивает бетонную область на прямоугольные элементы заданного шага.
+' Подготавливает их центры, размеры и площади для переноса в CSectionModel.
+' Класс отвечает за геометрию сетки; нагрузки и материалы обрабатываются отдельно.
 
 Private mFibers() As TFiber ' Единственный массив готовых бетонных элементов: координаты, размеры, площади и материал.
 Private mReadOnly As Boolean ' Готовая сетка общей сборки только читается, без копирования массива.
 Private mFiberCount As Long ' Число заполненных элементов; не размер зарезервированного массива.
 Private mBuildSeconds As Double ' Время создания только сетки; не полное время расчёта сочетания.
 
-' Дискретизирует бетонную область регулярной сеткой. Ячейки полностью внутри
-' формы добавляются целиком; пограничные ячейки при необходимости дробятся на
-' подячейки через Mesh.BoundarySubdivisions.
+' Разбивает бетонную область регулярной сеткой. Полностью внутренние ячейки
+' добавляет целиком, а пограничные при необходимости делит на более мелкие
+' по настройке Mesh.BoundarySubdivisions.
 Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
         Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
 
@@ -88,9 +85,9 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     Dim openingBounds() As Double, openingCount As Long, openingIndex As Long
     Dim contours As CSectionContours, query As CSectionGeometryQuery
     Dim outerEdges() As TRegionEdge, outerEdgeCount As Long
-    ' Четыре бетонных угла не исключают проем внутри ячейки. Его габариты
-    ' читаем один раз для всех Opening через общий контракт формы;
-    ' пересекающиеся ячейки уточняет обычный ContainsPoint.
+    ' Даже если четыре угла лежат в бетоне, внутри ячейки может быть отверстие.
+    ' Один раз получаем габариты всех отверстий и уточняем такие ячейки
+    ' проверкой принадлежности точек бетону через ContainsPoint.
     If boundarySubdivisions > 1 Then
         Set contours = New CSectionContours: geometry.BuildContours contours
         Set query = New CSectionGeometryQuery
@@ -113,8 +110,9 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
                 GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
                 If allCornersInside Then
                     For openingIndex = 1 To openingCount
-                        ' Касание габарита не пересекает площадь: шум последних
-                        ' разрядов аналитической дуги не должен дробить всю ячейку.
+                        ' Касание габарита без пересечения площади не требует дробления ячейки.
+                        ' Так малая погрешность координат дуги не вызывает лишнее уточнение
+                        ' сетки.
                         If cellMinX < openingBounds(openingIndex, 2) - GEOM_TOLERANCE And cellMinX + stepX > openingBounds(openingIndex, 1) + GEOM_TOLERANCE And _
                                 cellMinY < openingBounds(openingIndex, 4) - GEOM_TOLERANCE And cellMinY + stepY > openingBounds(openingIndex, 3) + GEOM_TOLERANCE Then
                             allCornersInside = False
@@ -182,9 +180,9 @@ Private Sub GetCornerStatus(ByVal geometry As CGeometryRegion, ByVal cellMinX As
     anyInside = p1 Or p2 Or p3 Or p4
 End Sub
 
-' Добавляет один бетонный волоконный элемент в память builder-а.
-' Width/Height сохраняются как реальная прямоугольная оболочка generated-сетки
-' и потом используются для границ, h, a_s и визуализации.
+' Добавляет прямоугольный бетонный элемент в подготовленную сетку.
+' Его Width и Height сохраняются для определения границ, расстояний
+' до края бетона и отрисовки фактических размеров элемента.
 Private Sub AddFiber(ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByVal materialID As Long)
     If mFiberCount >= 2147483646 Then Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
         "Число бетонных элементов достигло предела представимости массива. Увеличьте шаг сетки."
@@ -254,33 +252,17 @@ Public Property Get FiberMaterialID(ByVal index As Long) As Long
     FiberMaterialID = mFibers(index).MaterialID
 End Property
 
-' Проверяет обращение к существующему волокну и выдает понятную ошибку,
-' если reader/builder вышел за границы построенной сетки.
+' Проверяет, что номер бетонного элемента находится в пределах построенной сетки.
+' При выходе за границы выдаёт понятную ошибку.
 Private Sub CheckFiberIndex(ByVal index As Long)
     If index < 1 Or index > mFiberCount Then
         Err.Raise vbObjectError + 2106, "CFiberMeshBuilder", "Индекс бетонного элемента вне допустимого диапазона."
     End If
 End Sub
 
-' ==========================================================================
-' ДЛЯ ТЕСТОВ
-' ==========================================================================
-' Performance-тесты читают время построения сетки, чтобы ловить грубые
-' регрессии скорости. Рабочий расчет использует уже построенные элементы и
-' не принимает решений по этому диагностическому значению.
 
-Public Property Get BuildSeconds() As Double
-    BuildSeconds = mBuildSeconds
-End Property
-
-
-
-
-
-
-
-
-' Закрывает готовую сетку перед выдачей из CSectionBuilder; массив не копируется.
+' Завершает построение сетки и запрещает её изменение перед выдачей из CSectionBuilder.
+' Готовый массив элементов остаётся тем же и не копируется.
 Friend Sub Freeze()
     If mFiberCount <= 0 Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Нет готовой сетки для публикации."
     mReadOnly = True
@@ -289,4 +271,14 @@ End Sub
 ' Показывает, защищена ли готовая сетка от дальнейших изменений.
 Public Property Get IsReadOnly() As Boolean
     IsReadOnly = mReadOnly
+End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+
+' ДЛЯ ТЕСТОВ: возвращает время построения сетки для проверки скорости.
+' Рабочий расчёт не использует это время при выборе результата.
+Public Property Get BuildSeconds() As Double
+    BuildSeconds = mBuildSeconds
 End Property

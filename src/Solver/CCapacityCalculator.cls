@@ -25,7 +25,7 @@ Private mLambdaTolerance As Double ' Допуск по lambda для одном�
 Private mStrainTolerance As Double ' Допуск попадания в предельную деформацию UltimateStrain.
 Private mMaxRetries As Long ' Число повторов lambda-точки при численной неудаче.
 Private mBaseLoadSteps As Long ' Базовое число load steps внутреннего CSectionSolver.
-Private mCapacitySolverMaxIterations As Long ' Лимит итераций search/внутренних solves для capacity.
+Private mCapacitySolverMaxIterations As Long ' Максимальное число итераций поиска предела и внутренних решений НДС.
 Private mSolverToleranceN As Double ' Допуск равновесия внутреннего CSectionSolver по N.
 Private mSolverToleranceMx As Double ' Допуск равновесия внутреннего CSectionSolver по Mx.
 Private mSolverToleranceMy As Double ' Допуск равновесия внутреннего CSectionSolver по My.
@@ -53,9 +53,8 @@ Private Sub Class_Initialize()
     mDiagnosticsEnabled = False
 End Sub
 
-' Принимает пользовательские настройки capacity-search, уже прочитанные из
-' Config. Класс не обращается к Excel, но именно здесь они превращаются в
-' настройки CCapacitySolver.
+' Принимает прочитанные настройки поиска несущей способности
+' и сохраняет их для CCapacitySolver без обращения к Excel.
 Public Sub ConfigureSearch(ByVal initialLambdaStep As Double, ByVal solutionStrategy As String, _
         ByVal searchMethod As String, ByVal maxLambda As Double, ByVal lambdaTolerance As Double, _
         ByVal strainTolerance As Double, ByVal maxRetries As Long, ByVal baseLoadSteps As Long, _
@@ -71,10 +70,9 @@ Public Sub ConfigureSearch(ByVal initialLambdaStep As Double, ByVal solutionStra
     mCapacitySolverMaxIterations = capacitySolverMaxIterations
 End Sub
 
-' Проверяет численные параметры Config до подготовки Search. Ограничения
-' принадлежат Capacity, а reader добавляет только актуальное место исправления.
-' Неактивный в текущей стратегии параметр остается корректной настройкой;
-' проверка не запускает НДС и не меняет физические критерии материалов.
+' Проверяет численные настройки несущей способности до подготовки поиска.
+' При чтении Config добавляет фактический адрес ошибки. Проверяет и параметры
+' других доступных стратегий, не запуская НДС и не меняя критерии материалов.
 Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = Nothing)
     If mCapacitySolverMaxIterations <= 0 Then RaiseInvalidSearchSetting "Capacity.SolverMaxIterations", _
         "Число итераций должно быть положительным.", "Введите целое число больше нуля.", settings
@@ -100,9 +98,9 @@ Public Sub ValidateSettings(Optional ByVal settings As CSystemSettingsReader = N
         "Уменьшите число повторов до " & CStr(maximumRetries) & " или уменьшите Capacity.BaseLoadSteps.", settings
 End Sub
 
-' Возвращает контролируемую ошибку настройки с ключом и действием. Адрес
-' берется из прочитанного Config, не из шаблона и не из текста solver-диагноза.
-' Автономный вызов без reader сохраняет причину и ключ без выдуманной ячейки.
+' Сообщает об ошибке настройки с её именем и способом исправления.
+' Адрес берётся из прочитанного Config; при отдельном программном вызове
+' сохраняются причина и ключ параметра без вымышленного адреса ячейки.
 Private Sub RaiseInvalidSearchSetting(ByVal key As String, ByVal reason As String, _
         ByVal correction As String, ByVal settings As CSystemSettingsReader)
     Dim message As String
@@ -114,9 +112,9 @@ Private Sub RaiseInvalidSearchSetting(ByVal key As String, ByVal reason As Strin
     Err.Raise vbObjectError + 4190, "CCapacityCalculator", message
 End Sub
 
-' Принимает настройки внутреннего CSectionSolver, который вызывается для
-' пробных lambda-точек Capacity. Это те же параметры равновесия, что применяет
-' batch для прямого НДС, но владение ими в capacity-сценарии остается здесь.
+' Принимает настройки CSectionSolver для пробных нагрузок при поиске предела.
+' Их смысл совпадает с настройками обычного НДС, но здесь они сохраняются
+' для самостоятельного расчёта несущей способности.
 Public Sub ConfigureEquilibriumSolver(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
         ByVal toleranceMy As Double, ByVal solverMethod As String, _
         ByVal secantMaxRestarts As Long, _
@@ -198,9 +196,9 @@ Public Function Calculate(ByVal section As CSectionModel, _
     Set Calculate = result
 End Function
 
-' Возвращает нормализованную стратегию Capacity.SolutionStrategy.
-' Для неизвестного значения возвращает пустую строку: search-слой отклоняет
-' такую настройку с InputErr, без молчаливой подстановки другой стратегии.
+' Возвращает проверенное написание Capacity.SolutionStrategy.
+' Неизвестное значение даёт пустую строку и затем InputErr;
+' другая стратегия вместо ошибочно заданной не подставляется.
 Public Property Get SolutionStrategy() As String
     Select Case LCase$(Trim$(mSolutionStrategy))
         Case "auto"
@@ -212,9 +210,9 @@ Public Property Get SolutionStrategy() As String
     End Select
 End Property
 
-' Создает capacity load-path из пользовательского текста и уже нормализованного
-' состояния нагрузки. Это часть инженерной подготовки Capacity, поэтому batch
-' не должен иметь собственную копию такой фабрики.
+' Готовит выбранное изменение нагрузки по тексту пользователя
+' и общему объекту усилий. Пакетный расчёт использует этот метод
+' без отдельной копии правил построения нагрузки.
 Public Function BuildLoadPath(ByVal rawPath As String, _
         ByVal loadState As CSectionLoadState) As CLoadPathDescriptor
     Dim loadPath As CLoadPathDescriptor
@@ -223,18 +221,16 @@ Public Function BuildLoadPath(ByVal rawPath As String, _
     Set BuildLoadPath = loadPath
 End Function
 
-' Возвращает пользовательскую подпись нормализованного capacity-path для
-' Results и execution report. Соответствие ключей и подписей остается рядом с
-' объектом траектории, а calculator дает batch-слою короткую точку входа.
+' Возвращает название принятого изменения нагрузки для Results и отчёта.
+' Общие соответствия ключей и названий хранит CLoadPathDescriptor.
 Public Function DisplayNameForKey(ByVal loadPathKey As String) As String
     Dim loadPath As CLoadPathDescriptor
     Set loadPath = New CLoadPathDescriptor
     DisplayNameForKey = loadPath.DisplayNameForKey(loadPathKey)
 End Function
 
-' Формирует русское пояснение для execution report перед запуском общего
-' search. Это не меняет расчет: текст только объясняет, какую стратегию и
-' почему выбрал capacity-calculator для текущей траектории.
+' Объясняет для отчёта выполнения, какой способ поиска выбран для текущей
+' траектории нагрузки и почему. Численные результаты этот текст не меняет.
 Public Function SearchPlanReport(ByVal loadPath As CLoadPathDescriptor, _
         ByVal pureAxialForMethod As Boolean) As String
     If loadPath Is Nothing Then
@@ -266,10 +262,9 @@ Public Function SearchPlanReport(ByVal loadPath As CLoadPathDescriptor, _
     End Select
 End Function
 
-' Определяет, остается ли силовая lambda-траектория чисто осевой после переноса
-' к расчетному центру приведенного сечения. Это влияет только на выбор численной
-' ветки Capacity: для действительно осевой траектории устойчивее сразу работать
-' через LoadMultiplier, а не через вырожденный UltimateStrain.
+' Проверяет, осталось ли изменение нагрузки чисто осевым после переноса
+' к центру приведённого сечения. Для такой траектории выбирается устойчивый
+' LoadMultiplier вместо вырожденной постановки UltimateStrain.
 Private Function IsPureAxialForMethod(ByVal loadPath As CLoadPathDescriptor, _
         ByVal loadState As CSectionLoadState, ByVal referenceX As Double, _
         ByVal referenceY As Double, ByVal momentFilter As CMomentZeroFilter, _
@@ -283,9 +278,9 @@ Private Function IsPureAxialForMethod(ByVal loadPath As CLoadPathDescriptor, _
         MomentIsZeroForMethod(loadState.MyAboutPoint(referenceX), momentFilter, concreteDepthForMy)
 End Function
 
-' Проверяет инженерно нулевой момент тем же фильтром, которым batch уже
-' нормализует нагрузки перед solver-ом. Без фильтра остается только маленький
-' численный guard, чтобы прямые unit-тесты не зависели от Nothing-объекта.
+' Проверяет малый момент тем же фильтром, что обычный пакетный расчёт.
+' Если фильтр не передан, учитывает лишь небольшую численную погрешность
+' для самостоятельного программного вызова.
 Private Function MomentIsZeroForMethod(ByVal momentValue As Double, _
         ByVal momentFilter As CMomentZeroFilter, ByVal concreteDepth As Double) As Boolean
     If momentFilter Is Nothing Then
@@ -295,10 +290,8 @@ Private Function MomentIsZeroForMethod(ByVal momentValue As Double, _
     End If
 End Function
 
-' Создает и настраивает CCapacitySolver для текущего material spec.
-' Материальные пределы берутся из уже построенных диаграмм; пользовательские
-' search-настройки и настройки внутреннего равновесия применяются из полей
-' CCapacityCalculator.
+' Создаёт CCapacitySolver с фактическими диаграммами и пределами материалов.
+' Применяет сохранённые настройки поиска и внутреннего решения равновесия.
 Private Function CreateConfiguredSolver(ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByVal strengthSpec As CMaterialModelSpec) As CCapacitySolver
     Dim cap As CCapacitySolver

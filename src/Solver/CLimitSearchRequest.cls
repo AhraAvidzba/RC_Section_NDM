@@ -17,11 +17,11 @@ Option Explicit
 ' Несущая способность и образование трещины используют один формат запроса
 ' и один механизм выбора UltimateStrain или LoadMultiplier.
 
-Private mProblem As ILimitSearchProblem ' Общий callback инженерной задачи для LimitSearch.
+Private mProblem As ILimitSearchProblem ' Объект инженерной задачи с операциями оценки пробной нагрузки и принятия результата.
 Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех lambda-проб.
 Private mConcreteMaterial As Object ' Диаграмма бетона для выбранной инженерной задачи.
 Private mSteelMaterial As Object ' Диаграмма арматуры для выбранной инженерной задачи.
-Private mMaterialSpec As CMaterialModelSpec ' Спецификация для снимка конечного named-state, не для выбора критерия.
+Private mMaterialSpec As CMaterialModelSpec ' Параметры материалов для сохранения конечного НДС; сам физический критерий задаётся отдельно.
 Private mSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier.
 Private mNOffset As Double ' Постоянная часть N в траектории N = N0 + lambda*Nbase.
 Private mNBase As Double ' Масштабируемая часть N в lambda-траектории.
@@ -29,9 +29,9 @@ Private mMxOffset As Double ' Постоянная часть Mx.
 Private mMxBase As Double ' Масштабируемая часть Mx.
 Private mMyOffset As Double ' Постоянная часть My.
 Private mMyBase As Double ' Масштабируемая часть My.
-Private mForceOnly As Boolean ' True, если выбранная capacity-траектория масштабирует только N.
+Private mForceOnly As Boolean ' Признак того, что выбранное изменение нагрузки масштабирует только продольную силу N.
 Private mPureAxialForMethod As Boolean ' True, если после переноса к расчетному центру траектория остается чисто осевой.
-Private mResultKind As EResultKind ' Инженерный смысл поиска: capacity, crack formation и т.п.
+Private mResultKind As EResultKind ' Назначение поиска: несущая способность, образование трещины или другая инженерная проверка.
 Private mCrackFormationPath As String ' Текущий общий путь LambdaMx/My/Mxy/N/NMxy; при низкоуровневом запросе допустим Auto.
 Private mTargetN As Double ' Полная N текущего сочетания для служебных стартов CrackFormation.
 Private mTargetMx As Double ' Полный Mx текущего сочетания во внутренней системе координат.
@@ -42,12 +42,12 @@ Private mReferenceX As Double ' X расчетной точки CrackFormation �
 Private mReferenceY As Double ' Y расчетной точки CrackFormation во внутренней системе координат.
 Private mLoadState As CSectionLoadState ' Нормализованное сочетание в единственной пользовательской точке приложения.
 Private mRequestedLoadPath As String ' Общий путь LC; Auto и пустой ввод нормализованы одинаково.
-Private mSelectedLoadPath As CLoadPathDescriptor ' Конкретная траектория текущей search-session, общая для обоих критериев.
-Private mPureAxialLoad As Boolean ' Признак осевого полного LC для численной политики Capacity, независимо от первого пути Auto.
+Private mSelectedLoadPath As CLoadPathDescriptor ' Выбранное изменение нагрузки для текущей попытки общего поиска.
+Private mPureAxialLoad As Boolean ' Признак осевой полной нагрузки сочетания для выбора численного метода; не зависит от первого пути Auto.
 
-' Заполняет request для поиска несущей способности.
-' Материалы и доменная задача передаются готовыми, чтобы общий search-слой
-' не зависел от Config, расчетного профиля и правил построения диаграмм.
+' Готовит запрос несущей способности с уже заданными сечением, материалами
+' и инженерной задачей. Общий поиск получает готовые данные
+' без чтения Config и самостоятельного выбора диаграмм.
 Public Sub InitializeCapacity(ByVal problem As ILimitSearchProblem, _
         ByVal section As CSectionModel, ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal solutionStrategy As String, _
@@ -112,11 +112,10 @@ Public Sub InitializeCrackFormation(ByVal problem As ILimitSearchProblem, _
     mResultKind = rkCrackFormation
 End Sub
 
-' Заполняет request уже готовой доменной задачей LimitSearch.
-' Этот вход используется контрактными тестами с callback-объектом,
-' созданным снаружи. Он не заменяет строгие доменные
-' входы Capacity/CrackFormation: они проверяют обязательные
-' материалы и расчетную модель.
+' Готовит запрос для уже созданной задачи ILimitSearchProblem.
+' Используется тестами с управляемым объектом оценки нагрузок.
+' Обычные запросы несущей способности и трещин отдельно проверяют
+' наличие обязательной модели и материалов.
 Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
         ByVal resultKind As EResultKind, ByVal solutionStrategy As String, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -152,7 +151,7 @@ Public Sub InitializeWithProblem(ByVal problem As ILimitSearchProblem, _
     mReferenceY = 0#
 End Sub
 
-' Общий callback инженерной задачи для LimitSearch.
+' Возвращает объект задачи, который оценивает пробные нагрузки и принимает результат.
 Public Property Get Problem() As ILimitSearchProblem
     Set Problem = mProblem
 End Property
@@ -213,7 +212,7 @@ Public Property Get MyBase() As Double
     MyBase = mMyBase
 End Property
 
-' True, если выбранная capacity-траектория масштабирует только N.
+' Показывает, масштабируется ли на выбранном пути только продольная сила N.
 Public Property Get ForceOnly() As Boolean
     ForceOnly = mForceOnly
 End Property
@@ -223,7 +222,7 @@ Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property
 
-' Инженерный смысл поиска: capacity, crack formation и т.п.
+' Возвращает назначение поиска: несущая способность, образование трещины или другую проверку.
 Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
 End Property
@@ -268,8 +267,9 @@ Public Property Get ReferenceY() As Double
     ReferenceY = mReferenceY
 End Property
 
-' Подключает единственный выбор пути LC к готовой инженерной search-задаче.
-' Нагрузки и точка приложения уже нормализованы; Config и Excel здесь не читаются.
+' Подключает выбор LoadPath сочетания к подготовленной инженерной задаче.
+' Нагрузки и точка приложения уже проверены и приведены к внутренним единицам;
+' Config и Excel здесь не читаются.
 Public Sub ConfigureLoadPathSelection(ByVal rawPath As String, ByVal loadState As CSectionLoadState, _
         Optional ByVal pureAxialLoad As Boolean = False)
     If loadState Is Nothing Then Err.Raise vbObjectError + 4209, "CLimitSearchRequest", "Не передана нагрузка для выбора LoadPath."
@@ -300,7 +300,7 @@ Public Sub SelectLoadPath(ByVal pathKey As String)
     mCrackFormationPath = mSelectedLoadPath.Key
 End Sub
 
-' Однотипные свойства общего выбора и активной траектории Search.
+' Ниже возвращаются сохранённый выбор LoadPath и фактически используемая траектория нагрузки.
 Public Property Get HasLoadPathSelection() As Boolean
     HasLoadPathSelection = Not mLoadState Is Nothing
 End Property
@@ -315,7 +315,7 @@ Public Property Get LoadState() As CSectionLoadState
     Set LoadState = mLoadState
 End Property
 
-' Конкретная траектория текущей search-session, общая для обоих критериев.
+' Возвращает выбранное изменение нагрузки для текущей попытки общего поиска.
 Public Property Get SelectedLoadPath() As CLoadPathDescriptor
     Set SelectedLoadPath = mSelectedLoadPath
 End Property

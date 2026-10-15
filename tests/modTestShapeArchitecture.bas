@@ -10,9 +10,8 @@ Private Type TSnapshotWords
     high As Long
 End Type
 
-' ДЛЯ ТЕСТОВ: независимый снимок сетки, всей арматуры и всех аннотаций.
-' Текущий build сравнивается с неизменяемыми baseline-данными архива.
-' Вход восстанавливается; расчетные Results не записываются.
+' ДЛЯ ТЕСТОВ: сравнивает сетку, всю арматуру и все аннотации с неизменяемыми
+' эталонами архива. Входные данные восстанавливает; расчётные Results не записывает.
 Public Function DumpShapeArchitectureSnapshot(Optional ByVal fixtureFilter As String = "") As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
     Dim calculation As Long, events As Boolean, updating As Boolean, found As Boolean
@@ -272,7 +271,7 @@ InactiveSide:
     ThisWorkbook.Worksheets("Config").Calculate
 End Sub
 
-' ДЛЯ ТЕСТОВ: неизменный старый pipeline в отдельной baseline-книге.
+' ДЛЯ ТЕСТОВ: выполняет прежнюю сборку сечения в отдельной эталонной книге.
 Public Function DumpRectSetGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
@@ -475,7 +474,8 @@ Finished:
     HollowGeometryMatrix = result
 End Function
 
-' ДЛЯ ТЕСТОВ: одинаковый AddBar benchmark без Excel/solver внутри замера.
+' ДЛЯ ТЕСТОВ: сравнивает время одинаковых вызовов AddBar; обращения к Excel и решение НДС в
+' замер не входят.
 Public Function DumpRebarLayoutPerformance() As String
     Dim count As Variant, repeat As Long, i As Long, layout As CRebarLayout, started As Double, elapsed As Double
     Dim result As String
@@ -498,9 +498,9 @@ Failed:
     DumpRebarLayoutPerformance = result & "FAIL: layout performance; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: расчетный эталон до/после рефакторинга без изменения Results.
-' Три назначения материалов и четыре направления нагрузки на каждую форму;
-' затем общий пакет несущей способности, трещинообразования и ширины СП 35.
+' ДЛЯ ТЕСТОВ: сравнивает расчёт до и после рефакторинга без изменения Results.
+' Для каждой формы использует три назначения материалов и четыре направления
+' нагрузки, затем — несущую способность, образование и ширину трещин СП 35.
 Public Function DumpShapeCalculationSnapshot(Optional ByVal crackCode As String = "SP35") As String
     DumpShapeCalculationSnapshot = SourceCalculations(Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
         "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset"), crackCode)
@@ -512,7 +512,7 @@ Public Function DumpRoundedSourceCalculations(Optional ByVal crackCode As String
     DumpRoundedSourceCalculations = SourceCalculations(Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, scenario)
 End Function
 
-' ДЛЯ ТЕСТОВ: отдельная baseline-книга с прежней production-сборкой Hollow.
+' ДЛЯ ТЕСТОВ: отдельная эталонная книга с прежней рабочей сборкой пустотелого прямоугольника.
 Public Function DumpHollowSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
     DumpHollowSourceCalculations = SourceCalculations(Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
 End Function
@@ -616,8 +616,9 @@ Public Function PreparedCalculationSnapshot(ByVal fixture As String, ByVal model
     PreparedCalculationSnapshot = CalculationSnapshot(fixture, model)
 End Function
 
-' ДЛЯ ТЕСТОВ: фактическая плоскость и выбранные материалы для каждого элемента.
-' StrainAt сохраняет численный frame solver-а, включая удаленные координаты.
+' ДЛЯ ТЕСТОВ: вычисляет значения по фактическому полю деформаций и выбранным
+' материалам каждого элемента. StrainAt использует численные координаты решателя,
+' в том числе для моделей, удалённых от начала координат.
 Private Function ElementStateSnapshot(ByVal fixture As String, ByVal stateID As String, ByVal model As CSectionModel, _
         ByVal solver As CSectionSolver, ByVal concrete As Object, ByVal steel As Object) As String
     Dim lines() As String, i As Long, strain As Double
@@ -633,9 +634,9 @@ Private Function ElementStateSnapshot(ByVal fixture As String, ByVal stateID As 
     ElementStateSnapshot = Join(lines, vbNullString)
 End Function
 
-' ДЛЯ ТЕСТОВ: реальные Chart/Shapes и PNG геометрических эталонов.
-' Results меняется только в закрываемой без сохранения fixture-книге runner-а.
-' ДЛЯ ТЕСТОВ: прежний Hollow preview для сопоставления длинных подписей.
+' ДЛЯ ТЕСТОВ: строит настоящую диаграмму, фигуры и PNG геометрических эталонов.
+' Results меняет только в отдельной тестовой копии, закрываемой без сохранения.
+' Прежний вид пустотелого прямоугольника нужен для сравнения длинных подписей.
 Public Function DumpHollowSourcePreview(ByVal outputDirectory As String, Optional ByVal scenario As Long = 0) As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
@@ -704,7 +705,8 @@ Private Function PreviewSnapshot(ByVal fixture As String, ByVal outputDirectory 
     stage = "chart metrics"
     Set container = ThisWorkbook.Worksheets("Расчет").ChartObjects("chtNDMSectionPlot")
     Set chart = container.Chart
-    ' Geometry-only reader использует подпись импорта; эти fixtures сгенерированы.
+    ' Чтение только геометрии предполагает источник AutoCAD; эти тестовые модели получены
+    ' генерацией.
     chart.Shapes("NDMPlot_Title").TextFrame2.TextRange.Text = "Сгенерированная геометрия: " & fixture
     result = Row(fixture, "PLOT", "container", Array(container.Left, container.Top, container.Width, container.Height, _
         chart.PlotArea.Left, chart.PlotArea.Top, chart.PlotArea.Width, chart.PlotArea.Height, _
@@ -736,7 +738,7 @@ Failed:
     Err.Raise Err.Number, "modTestShapeArchitecture.PreviewSnapshot", fixture & "; " & stage & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: Results -> reader -> plotter для переданной новой модели.
+' ДЛЯ ТЕСТОВ: записывает переданную новую модель в Results, читает её и строит обычную схему.
 Public Function PreparedPreviewSnapshot(ByVal fixture As String, ByVal model As CSectionModel, ByVal outputDirectory As String) As String
     If model Is Nothing Then Err.Raise vbObjectError + 5292, "modTestShapeArchitecture", "Модель схемы не передана."
     PreparedPreviewSnapshot = PreviewSnapshot(fixture, outputDirectory, model)

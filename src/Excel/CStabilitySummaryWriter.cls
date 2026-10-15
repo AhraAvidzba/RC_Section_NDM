@@ -16,32 +16,32 @@ Option Explicit
 ' плоскостям и выбранному нормативу СП 35 или СП 63. Переводит величины
 ' в пользовательские единицы и оформляет таблицу без повторного расчёта.
 
-Private Const HEADER_ROWS As Long = 5 ' Количество строк шапки над якорем.
+Private Const HEADER_ROWS As Long = 5 ' Число строк шапки над первой строкой данных.
 Private Const TOTAL_COLUMNS As Long = 84 ' Ширина таблицы с пустыми разделителями между блоками.
 
-Private Const COL_SUMMARY_FIRST As Long = 1
-Private Const COL_SUMMARY_LAST As Long = 14
-Private Const COL_COMMON_FIRST As Long = 16
-Private Const COL_COMMON_LAST As Long = 27
-Private Const COL_SP35_FIRST As Long = 29
-Private Const COL_SP35_LAST As Long = 59
-Private Const COL_SP63_FIRST As Long = 61
-Private Const COL_SP63_LAST As Long = 84
+Private Const COL_SUMMARY_FIRST As Long = 1 ' Первый столбец сводки устойчивости.
+Private Const COL_SUMMARY_LAST As Long = 14 ' Последний столбец сводки устойчивости.
+Private Const COL_COMMON_FIRST As Long = 16 ' Первый столбец общих параметров устойчивости.
+Private Const COL_COMMON_LAST As Long = 27 ' Последний столбец общих параметров устойчивости.
+Private Const COL_SP35_FIRST As Long = 29 ' Первый столбец расчёта устойчивости СП 35.
+Private Const COL_SP35_LAST As Long = 59 ' Последний столбец расчёта устойчивости СП 35.
+Private Const COL_SP63_FIRST As Long = 61 ' Первый столбец расчёта устойчивости СП 63.
+Private Const COL_SP63_LAST As Long = 84 ' Последний столбец расчёта устойчивости СП 63.
 
-Private Const SP35_PLANE1_FIRST As Long = 30
-Private Const SP35_PLANE2_FIRST As Long = 45
-Private Const SP63_PLANE1_FIRST As Long = 61
-Private Const SP63_PLANE2_FIRST As Long = 73
+Private Const SP35_PLANE1_FIRST As Long = 30 ' Первый столбец первой плоскости расчёта СП 35.
+Private Const SP35_PLANE2_FIRST As Long = 45 ' Первый столбец второй плоскости расчёта СП 35.
+Private Const SP63_PLANE1_FIRST As Long = 61 ' Первый столбец первой плоскости расчёта СП 63.
+Private Const SP63_PLANE2_FIRST As Long = 73 ' Первый столбец второй плоскости расчёта СП 63.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, как в остальных таблицах Results.
 Private Const SMALL_VALUE As Double = 0.000000001 ' Малый порог для деления и пустых расчетных полей.
 
-' Возвращает количество строк шапки, которые writer строит выше rngStabilitySummaryAnchor.
+' Возвращает число строк заголовка над началом таблицы rngStabilitySummaryAnchor.
 Public Function HeaderRowsAboveAnchor() As Long
     HeaderRowsAboveAnchor = HEADER_ROWS
 End Function
 
-' Возвращает полную высоту таблицы устойчивости с учетом шапки над якорем.
+' Возвращает полную высоту таблицы устойчивости вместе с шапкой.
 Public Function RequiredRows(ByVal combinationCount As Long) As Long
     If combinationCount < 1 Then combinationCount = 1
     RequiredRows = HEADER_ROWS + combinationCount
@@ -76,7 +76,7 @@ Public Function RequiredColumns() As Long
     RequiredColumns = TOTAL_COLUMNS
 End Function
 
-' Записывает детальную таблицу устойчивости от якоря rngStabilitySummaryAnchor.
+' Записывает подробную таблицу устойчивости от именованной ячейки rngStabilitySummaryAnchor.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     On Error GoTo Failed
@@ -102,7 +102,7 @@ Public Sub ClearSummary(ByVal workbook As Object)
     PrepareTarget ClearTargetRange(workbook)
 End Sub
 
-' Возвращает полный диапазон таблицы: пять строк шапки над якорем и фактические строки LC.
+' Возвращает диапазон таблицы с пятью строками шапки и фактическими строками сочетаний.
 Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
@@ -111,7 +111,7 @@ Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows A
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
-' Возвращает область очистки старой таблицы до следующего нижнего якоря Results.
+' Возвращает область очистки прежней таблицы до начала следующего нижнего блока Results.
 Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
@@ -135,7 +135,8 @@ UseDefaultHeight:
     Set ClearTargetRange = anchor.Worksheet.Cells(topRow, anchor.Column).Resize(rowsToClear, TOTAL_COLUMNS)
 End Function
 
-' Снимает старые объединения и чистит область, чтобы при переносе якоря не осталось старой верстки.
+' Снимает прежние объединения и очищает область, чтобы после переноса таблицы не осталось
+' старого оформления.
 Private Sub PrepareTarget(ByVal target As Object)
     ClearBlockTitleRow target
     target.UnMerge
@@ -162,8 +163,8 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     End With
 End Sub
 
-' Очищает название и заливку только в ширине блока устойчивости. Данные
-' справа от таблицы не принадлежат writer-у и не затрагиваются очисткой.
+' Очищает название и заливку в пределах ширины таблицы устойчивости.
+' Пользовательские ячейки справа не затрагиваются.
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
@@ -411,7 +412,8 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
-' Возвращает внешний статус канонической устойчивости через общую policy.
+' Возвращает внешнее обозначение статуса устойчивости по сохранённому результату и общим
+' правилам.
 Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal policy As CResultStatusPolicy) As String
     Dim meta As CResultMeta
@@ -419,8 +421,7 @@ Private Function StabilityStatusText(ByVal batch As CBatchSectionCalculator, ByV
     StabilityStatusText = policy.ExternalStatus(meta)
 End Function
 
-' Возвращает готовое пользовательское пояснение из ResultMeta блока.
-' Writer не анализирует технические StopReason и не собирает комментарий заново.
+' Возвращает готовое пояснение ResultMeta без повторного разбора причины остановки.
 Private Function MetaComment(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then Exit Function
     MetaComment = meta.ResultComment
@@ -567,7 +568,7 @@ Private Sub FormatHeaderNotes(ByVal target As Object)
     target.Worksheet.Rows.Item(target.Row + 3).RowHeight = 15
 End Sub
 
-' Оформляет один смысловой блок и не трогает пустой столбец-разделитель рядом.
+' Оформляет один раздел таблицы, сохраняя пустой столбец между разделами.
 Private Sub FormatBlock(ByVal target As Object, ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim block As Object
     Set block = target.Offset(0, firstColumn - 1).Resize(target.Rows.Count, lastColumn - firstColumn + 1)
@@ -609,7 +610,7 @@ Private Sub PutDefaultStatusCells(ByRef data() As Variant, ByVal rowIndex As Lon
     data(rowIndex, SP63_PLANE2_FIRST + 11) = statusText
 End Sub
 
-' Красит одну статусную ячейку detailed-блока устойчивости по единой палитре Results.
+' Задаёт цвет ячейки статуса устойчивости по общей палитре Results.
 Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
     Dim cell As Object
     Set cell = target.Cells(rowIndex, columnIndex)

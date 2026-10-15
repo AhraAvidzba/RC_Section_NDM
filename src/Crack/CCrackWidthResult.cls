@@ -17,11 +17,11 @@ Option Explicit
 ' или неприменимость проверки. Если нагрузка образования трещины не найдена,
 ' ширина может быть рассчитана по пригодному текущему НДС с psi_s = 1.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
 Private mMeta As CResultMeta ' Типизированный статус именно формульного этапа width.
 Private mCrackWidth As Double ' a_crc, мм.
 Private mAllowableCrackWidth As Double ' a_crc,ult, мм.
-Private mUtilization As Double ' a_crc / a_crc,ult.
+Private mUtilization As Double ' Отношение расчётной ширины трещины к допустимой: a_crc / a_crc,ult.
 Private mPhi1 As Double ' Коэффициент длительности нагрузки.
 Private mPhi2 As Double ' Коэффициент поверхности арматуры.
 Private mPhi3 As Double ' Коэффициент характера работы элемента.
@@ -45,8 +45,8 @@ Private mStopReason As String ' Пользовательская причина 
 Private mDiagnosticLog As String ' Техническая диагностика подготовки данных и формулы.
 Private mInteractionRegion As CConcreteRegion ' Аналитический снимок той же области, площадь которой вошла в Abt/Ar.
 Private mStandardCode As String ' Методика действительно выполненной формулы ширины.
-Private mSP35Data As CSP35CrackData ' Закрытые для изменения якорные данные с реальными стержнями всех рядов.
-Private mSP35CriticalCandidate As Long ' Индекс максимальной ширины в сохраненных якорных данных.
+Private mSP35Data As CSP35CrackData ' Готовые данные областей взаимодействия и реальных стержней всех рядов с запретом изменений.
+Private mSP35CriticalCandidate As Long ' Номер области взаимодействия с наибольшей шириной трещины.
 Private mSP35Radius As Double, mSP35PsiCm As Double ' Радиус армирования в мм и размерный psi в см.
 
 ' Создает нейтральный not-applicable результат до заполнения.
@@ -55,9 +55,8 @@ Private Sub Class_Initialize()
     mMeta.SetNotApplicable rkCrackWidth
 End Sub
 
-' Копирует все подготовленные crack-width величины из calculator-а.
-' Downstream-слой работает с отдельным result-объектом и ResultMeta, не
-' обращаясь к внутренним временным полям calculator-а.
+' Сохраняет подготовленные величины расчёта ширины вместе со статусом и пояснением.
+' При выводе используются эти данные, без обращения к временным полям расчётного класса.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal meta As CResultMeta, _
         Optional ByVal combinationID As String = vbNullString)
     AssertWritable
@@ -104,8 +103,8 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackWidthCalculator, ByVal 
     If Not mInteractionRegion Is Nothing Then mInteractionRegion.SetOwner combinationID, mStandardCode, anchorID
 End Sub
 
-' Возвращает копию meta формульного расчета ширины или его блокировки.
-' Чтение результата не пересчитывает ширину и не запускает поиск НДС.
+' Возвращает копию статуса и пояснения формулы ширины или причины её недоступности.
+' Чтение не пересчитывает ширину и не запускает поиск НДС.
 Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
@@ -231,8 +230,9 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Отдает самостоятельную копию конечных замкнутых контуров результата для сериализации.
-' Writer/экспортер не восстанавливают область из Abt и не выполняют clipping.
+' Возвращает независимую копию точных замкнутых контуров расчётной области.
+' Запись на лист и экспорт используют её напрямую, без восстановления по числу Abt
+' и без новой обрезки геометрии.
 Public Property Get InteractionRegion() As CConcreteRegion
     If Not mInteractionRegion Is Nothing Then Set InteractionRegion = mInteractionRegion.Clone
 End Property
@@ -242,11 +242,12 @@ End Property
 Public Property Get StandardCode() As String
     StandardCode = mStandardCode
 End Property
-' Закрытые для изменения якорные данные с реальными стержнями всех рядов.
+' Возвращает готовые данные областей взаимодействия и реальных стержней всех рядов.
+' Изменять эти данные после расчёта нельзя.
 Public Property Get SP35Data() As CSP35CrackData
     Set SP35Data = mSP35Data
 End Property
-' Индекс максимальной ширины в сохраненных якорных данных.
+' Возвращает номер области взаимодействия с наибольшей шириной трещины.
 Public Property Get SP35CriticalCandidate() As Long
     SP35CriticalCandidate = mSP35CriticalCandidate
 End Property
@@ -258,7 +259,7 @@ End Property
 Public Property Get SP35PsiCm() As Double
     SP35PsiCm = mSP35PsiCm
 End Property
-' Индекс максимальной ширины в сохраненных якорных данных.
+' Сохраняет номер области взаимодействия с наибольшей шириной трещины.
 Public Property Get CriticalAnchorGroupID() As String
     If mSP35CriticalCandidate > 0 Then CriticalAnchorGroupID = "G" & CStr(mSP35Data.CandidateAnchorGroup(mSP35CriticalCandidate))
 End Property
@@ -305,9 +306,8 @@ Private Sub ResetData()
     mSP35CriticalCandidate = 0: mSP35Radius = 0#: mSP35PsiCm = 0#
 End Sub
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Повторный вызов безопасен. Запрет распространяется на численные параметры
-' раскрытия и meta; State-объекты этот формульный результат не хранит.
+' Завершает заполнение результата ширины, запрещая изменение чисел, статуса и пояснения.
+' Повторный вызов безопасен. Сам этот результат НДС не хранит.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     mFrozen = True

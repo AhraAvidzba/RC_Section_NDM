@@ -17,18 +17,19 @@ Option Explicit
 ' а не аннотациями. Область трещин для конкретного сочетания рассчитывается
 ' отдельно средствами CSectionGeometryQuery.
 
-Private mKind() As String
-Private mContourID() As String
-Private mEdge() As TRegionEdge
-Private mRadius() As Double
-Private mLoopID() As String
-Private mRole() As String
-Private mSource() As String
-Private mComment() As String
-Private mCount As Long
+Private mKind() As String ' Вид сегмента границы: отрезок, дуга или окружность.
+Private mContourID() As String ' Имя контура, к которому относится сегмент.
+Private mEdge() As TRegionEdge ' Геометрия отрезков и дуг, составляющих границы.
+Private mRadius() As Double ' Радиус окружности или дуги, мм.
+Private mLoopID() As String ' Имя замкнутой части контура для объединения её сегментов.
+Private mRole() As String ' Роль контура: наружная граница бетона или отверстие.
+Private mSource() As String ' Источник геометрии контура.
+Private mComment() As String ' Пояснение контура для вывода и диагностики.
+Private mCount As Long ' Число сохранённых записей о сегментах контуров.
 Private mRevision As Long ' Версия границ для обновления подготовленных геометрических данных.
 
-' Удаляет исходные границы, сохраняя монотонную версию контейнера.
+' Удаляет сохранённые границы и увеличивает номер версии, чтобы ранее подготовленные данные не
+' использовались после очистки.
 Public Sub Clear()
     Erase mKind: Erase mContourID: Erase mEdge: Erase mRadius
     Erase mLoopID: Erase mRole: Erase mSource: Erase mComment
@@ -63,8 +64,9 @@ Public Sub AddContourArc(ByVal contourID As String, ByVal startX As Double, ByVa
     AddSegment "CONTOUR_ARC", contourID, startX, startY, endX, endY, centerX, centerY, radius, sweepAngle, loopID, loopRole, sourceID, commentValue
 End Sub
 
-' Переносит проверенные замкнутые контуры импортированной области без изменения примитивов.
-' Каждое отверстие имеет собственный ключ; внешняя Region отверстия меняет роль.
+' Переносит проверенные замкнутые контуры импортированной области без изменения
+' отрезков и дуг. Каждое отверстие сохраняет собственное имя; при переносе
+' области, обозначающей отверстие, её наружная граница получает роль Opening.
 Public Sub AddMaterialRegion(ByVal region As CConcreteRegion, ByVal sourceID As String, ByVal commentValue As String, _
         Optional ByVal asOpening As Boolean = False)
     If region Is Nothing Then Err.Raise vbObjectError + 5283, "CSectionContours", "Область материального контура не передана."
@@ -85,7 +87,8 @@ Public Sub AddMaterialRegion(ByVal region As CConcreteRegion, ByVal sourceID As 
     Next i
 End Sub
 
-' Записывает геометрическую запись и увеличивает версию только после проверки metadata.
+' Проверяет назначение и исходные сведения сегмента, затем добавляет его
+' и увеличивает номер версии границ.
 Private Sub AddSegment(ByVal kind As String, ByVal contourID As String, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double, ByVal cx As Double, ByVal cy As Double, ByVal radius As Double, _
         ByVal sweep As Double, ByVal loopID As String, ByVal role As String, ByVal source As String, ByVal comment As String)
@@ -115,14 +118,11 @@ End Property
 Public Property Get Revision() As Long
     Revision = mRevision
 End Property
-' Достоверные наружные границы и отверстия геометрии сечения Контейнер принадлежит CSectionModel
-' и хранит точные линии, дуги и окружности во внутренних мм. Роль и принадлежность замкнутому
-' контуру являются геометрическими данными, а не аннотацией результата. Контейнер не вычисляет
-' расчетную область трещин: она остается отдельным LC-зависимым результатом geometry-query.
+' Возвращает вид выбранного сегмента границы: отрезок, дуга или окружность.
 Public Property Get SegmentType(ByVal index As Long) As String
     CheckIndex index: SegmentType = mKind(index)
 End Property
-' Уникальный смысловой ID выбранного контурного сегмента.
+' Возвращает уникальное имя выбранного сегмента контура.
 Public Property Get ContourID(ByVal index As Long) As String
     CheckIndex index: ContourID = mContourID(index)
 End Property

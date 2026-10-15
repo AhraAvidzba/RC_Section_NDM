@@ -16,30 +16,30 @@ Option Explicit
 ' CSectionDefinitionBuilder копирует параметры при объявлении правила,
 ' поэтому последующее изменение этого объекта не меняет готовое описание сечения.
 
-Public StartSetback As Double ' Начальное отсечение вдоль каждого target-пути, мм>=0; у полного ClosedUniform 0.
-Public EndSetback As Double ' Конечное отсечение вдоль каждого target-пути, мм>=0; ProjectFrom фильтрует hit без перераспределения.
-Public EndMode As ERebarEndMode ' IncludeBoth/ExcludeBoth/IncludeStart/IncludeEnd/ClosedUniform; последние требуют соответствующей замкнутости.
+Public StartSetback As Double ' Отступ первого стержня от начала каждой линии, мм >= 0; для полной замкнутой расстановки ClosedUniform равен 0.
+Public EndSetback As Double ' Отступ последнего стержня от конца линии, мм >= 0; при проекции ограничивает допустимый участок без перераспределения стержней.
+Public EndMode As ERebarEndMode ' Какие концы ряда включать: оба, ни одного, только начало или конец; ClosedUniform задаёт равномерный замкнутый ряд.
 Public DistributionScope As ERebarDistributionScope ' Допустимо только PerPath: число стержней, расстояния между ними и отступы от концов применяются отдельно к каждой независимой линии группы.
-Public RemainderPlacement As ERemainderPlacement ' RemainderStart/End/Center: положение остатка для точного шага.
-Public TangentOffset As Double ' Локальное связанное смещение вдоль касательной, мм; signed, не независимый шаг ряда.
-Public NormalOffset As Double ' Локальное связанное смещение по левой нормали (-ty,tx), мм; signed.
+Public RemainderPlacement As ERemainderPlacement ' К какому концу или середине ряда отнести остаток длины при постоянном шаге.
+Public TangentOffset As Double ' Смещение зависимого стержня вдоль касательной к исходной линии, мм; знак задаёт направление.
+Public NormalOffset As Double ' Смещение зависимого стержня поперёк исходной линии, мм; положительный знак направлен влево по её обходу.
 Public EverySecond As Boolean ' Брать локальные исходные позиции 1, 3, ... отдельно на каждом пути; SuccessfulProjectionOrdinal задаёт отдельный отсчёт успешных проекций.
 Public IncomingTangentAtJoint As Boolean ' В точке соединения двух сегментов брать касательную предыдущего сегмента. По умолчанию берётся касательная следующего сегмента.
-Public DirectionX As Double ' Глобальная X направления ProjectFrom, используется при SourceNormalSign=0.
-Public DirectionY As Double ' Глобальная Y направления ProjectFrom; направление не нулевое.
-Public SourceNormalSign As Double ' -1/0/+1: локальная нормаль исходного ряда или глобальное DirectionX/Y при 0.
+Public DirectionX As Double ' Компонента X заданного направления проекции; используется, если SourceNormalSign = 0.
+Public DirectionY As Double ' Компонента Y заданного направления проекции; вектор DirectionX/DirectionY должен быть ненулевым.
+Public SourceNormalSign As Double ' Направление проекции: +1 по левой нормали исходной линии, -1 в обратную сторону, 0 по вектору DirectionX/DirectionY.
 Public SuccessfulProjectionOrdinal As Boolean ' True: заново нумеровать только стержни, для которых найдено пересечение с целевой линией, подряд по всей группе. False: сохранять исходные номера стержней с возможными пропусками отдельно на каждой линии.
-Public NewPublicationRoot As Boolean ' У ProjectFrom начинает новый корень публикации по успешным позициям.
-Public SkipMissingProjection As Boolean ' Разрешить пропуск без hit с PROJECTION_MISSING; False выдаёт ошибку.
-Public Publication As ERebarPublication ' PublishByRule или PublishPerSourcePosition; влияет на вывод, не геометрический шаг.
+Public NewPublicationRoot As Boolean ' Для проекции задаёт новую последовательность добавления по успешно найденным позициям вместо порядка исходных стержней.
+Public SkipMissingProjection As Boolean ' Разрешает пропуск проекции без пересечения с записью PROJECTION_MISSING; иначе отсутствие пересечения вызывает ошибку.
+Public Publication As ERebarPublication ' Порядок добавления: сначала весь ряд или каждый основной стержень вместе с зависимыми; расстояния между стержнями не меняются.
 Public PositionOrder As ERebarPositionOrder ' Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. При KeepPublishedOwner также определяет, чей диаметр и материал сохраняются в совпавшей позиции.
-Public Coincidence As ERebarCoincidence ' RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет явно выбранного опубликованного владельца.
-Public PlacementCheck As ERebarPlacementCheck ' CheckCenter или CheckFullDisk относительно Outer/Opening; ужесточение задаётся явно.
-Public OverlapPolicy As ERebarOverlapPolicy ' ReportOverlap или RejectOverlap. Контакт допустим; нормативный минимальный зазор не вводится.
-Public SourcePrefix As String ' Префикс SourcePositionId; пустой использует RuleId+'.' либо связь source+suffix.
-Public SourceSuffix As String ' Суффикс SourcePositionId, в том числе для связанных рядов.
-Public AnnotationGroup As String ' Смысловая принадлежность подписи физического стержня; не расчётная группа трещин СП35.
-Public Comment As String ' Инженерное пояснение правила; не selector или ResultCode.
+Public Coincidence As ERebarCoincidence ' Как обработать совпавшие центры: отклонить, объединить одинаковые стержни или сохранить ранее добавленный стержень.
+Public PlacementCheck As ERebarPlacementCheck ' Что проверять относительно бетона и отверстий: только центр стержня или всё его круглое поперечное сечение.
+Public OverlapPolicy As ERebarOverlapPolicy ' При пересечении стержней по площади: записать сообщение или отклонить расстановку. Касание допускается; нормативный зазор здесь не проверяется.
+Public SourcePrefix As String ' Начало имени исходной позиции; если не задано, имя строится из ID правила или имени исходного стержня.
+Public SourceSuffix As String ' Окончание имени исходной позиции, в том числе для различения зависимых рядов.
+Public AnnotationGroup As String ' Группа для общей подписи количества и диаметров арматуры на схеме; задаётся отдельно от расчётных групп трещин СП 35.
+Public Comment As String ' Пояснение правила для человека; не определяет способ расчёта или статус результата.
 Public SourceReference As String ' Реальные адреса исходных параметров правила или программная ссылка.
 
 ' Задаёт начальные параметры шага, смещений, проекции, совпадений и подписей арматуры.

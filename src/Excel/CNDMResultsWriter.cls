@@ -18,18 +18,18 @@ Option Explicit
 ' и другие. Подробную таблицу прочности оформляет CStrengthSummaryWriter.
 ' Текущие Inputs не перечитываются: сохраняется именно рассчитанное состояние.
 
-Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' LC-зависимые результаты named-state: RunID, LoadCase, ProfileId, StateType, ElementID, MaterialType, Strain, Stress, PhysicalState.
+Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Только расчетные бетонные элементы и арматура.
 Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
 Private Const ANNOTATION_COLUMNS As Long = 22 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
-Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Каталог уникальных точек диаграмм, переданных solver-ам.
+Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Список точек всех различных диаграмм, фактически использованных в расчётах.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 72 ' Строки общих свойств сечения до LC-зависимых блоков.
-Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Строки свойств одного LC без metadata named-state.
-Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Строки metadata одного сохраненного named-state.
-Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Общая синяя строка находится на две строки выше нижних snapshot-якорей.
+Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Число строк общих свойств одного сочетания без дополнительных данных отдельных НДС.
+Private Const STATE_SECTION_PROPERTY_ROWS As Long = 13 ' Число строк дополнительных данных одного сохранённого расчётного состояния.
+Private Const SNAPSHOT_TITLE_OFFSET As Long = 2 ' Строка общего синего заголовка расположена на две строки выше начал нижних таблиц результатов.
 
-' Возвращает фактическую ширину одного из блоков Results, которые пишет этот writer.
+' Возвращает фактическое число столбцов выбранной таблицы сохраняемых результатов.
 Public Function OutputColumnCount(ByVal rangeName As String) As Long
     Select Case LCase$(Trim$(rangeName))
         Case "rngndmelementresults"
@@ -50,14 +50,14 @@ Public Function OutputColumnCount(ByVal rangeName As String) As Long
     End Select
 End Function
 
-' Оценивает максимальную высоту rngNDMElementResults до запуска solver-а.
+' Оценивает наибольшее число строк таблицы элементов rngNDMElementResults до начала расчёта.
 Public Function EstimatedElementResultRows(ByVal elementCount As Long, ByVal namedStateCount As Long) As Long
     If elementCount < 0 Then elementCount = 0
     If namedStateCount < 0 Then namedStateCount = 0
     EstimatedElementResultRows = 1 + elementCount * namedStateCount
 End Function
 
-' Оценивает высоту rngNDMSectionProperties до расчета по максимальному числу named-state.
+' До расчёта оценивает размер rngNDMSectionProperties по наибольшему числу сохраняемых НДС.
 Public Function EstimatedSectionPropertyRows(ByVal combinationCount As Long, ByVal namedStateCount As Long) As Long
     If combinationCount < 0 Then combinationCount = 0
     If namedStateCount < 0 Then namedStateCount = 0
@@ -68,8 +68,8 @@ End Function
 ' ------------------------------
 ' Полная запись Results
 ' ------------------------------
-' Очищает текущий снимок и заново пишет согласованные блоки:
-' geometry, element results, section properties, material diagrams и annotations.
+' Очищает прежние расчётные данные и записывает согласованные таблицы:
+' геометрию, результаты элементов, свойства сечения, диаграммы материалов и аннотации.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
@@ -93,9 +93,9 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     WriteSectionAnnotations workbook, section, runID, units, batch
 End Sub
 
-' Записывает на Results только импортированную геометрию без расчетных LC.
-' Такой снимок нужен после кнопки AutoCAD import: пользователь сразу видит
-' элементы на схеме, а последующий расчет берет эту же геометрию из Results.
+' После импорта AutoCAD записывает геометрию без расчёта сочетаний.
+' По этим данным сразу строится схема, а следующий расчёт
+' использует ту же сохранённую геометрию Results.
 Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
@@ -117,7 +117,7 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     WriteSectionAnnotations workbook, section, runID, units
 End Sub
 
-' Очищает только расчетные блоки Results перед новым снимком.
+' Очищает только таблицы сохранённых расчётных данных перед новой записью.
 Public Sub ClearResults(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4455, "CNDMResultsWriter", "Книга Excel не передана."
 
@@ -132,10 +132,9 @@ Public Sub ClearResults(ByVal workbook As Object)
     WriteSectionContours workbook, emptyContours, Empty
 End Sub
 
-' Безопасно чистит только фактический прямоугольник одной snapshot-таблицы.
-' Ширина берется из схемы writer-а, а высота - по заполненному первому
-' столбцу старой таблицы. CurrentRegion здесь не используется: он может
-' захватить соседние Results-блоки из-за старого форматирования листа.
+' Очищает прямоугольник одной таблицы результатов. Ширину берёт из её структуры,
+' высоту — по заполненному первому столбцу. CurrentRegion не используется,
+' поскольку из-за форматирования может захватить соседние таблицы.
 Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingRange
     Dim anchor As Object
@@ -162,15 +161,15 @@ Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String
 MissingRange:
 End Sub
 
-' Определяет высоту уже записанной anchored-таблицы по первому столбцу.
-' Все нижние Results-таблицы имеют непустой первый столбец в строке шапки
-' и в каждой строке данных, поэтому первая пустая ячейка завершает блок.
+' Определяет высоту записанной таблицы по первому столбцу.
+' Он заполнен в заголовке и каждой строке данных, поэтому
+' первая пустая ячейка означает конец таблицы.
 Private Function ExistingAnchoredRowCount(ByVal anchor As Object) As Long
     ExistingAnchoredRowCount = SnapshotAnchoredExtent(anchor, False)
 End Function
 
-' Записывает общий заголовок в пределах нижних snapshot-таблиц Results;
-' соседние ячейки той же строки не относятся к расчетному снимку.
+' Записывает общий заголовок над нижними расчётными таблицами Results.
+' Соседние пользовательские ячейки той же строки не затрагиваются.
 Private Sub WriteSnapshotTitle(ByVal workbook As Object)
     On Error GoTo MissingRange
     Dim title As Object
@@ -191,8 +190,8 @@ Private Sub WriteSnapshotTitle(ByVal workbook As Object)
 MissingRange:
 End Sub
 
-' Очищает только общий заголовок snapshot-блоков перед новой записью,
-' сохраняя пользовательские данные и оформление справа от снимка.
+' Очищает общий заголовок расчётных таблиц, сохраняя пользовательские данные
+' и оформление справа от них.
 Private Sub ClearSnapshotTitle(ByVal workbook As Object)
     On Error GoTo MissingRange
     Dim title As Object
@@ -203,9 +202,8 @@ Private Sub ClearSnapshotTitle(ByVal workbook As Object)
 MissingRange:
 End Sub
 
-' Определяет границы общего заголовка по фактическим якорям и схемам пяти
-' snapshot-таблиц. При переносе блоков вправо граница следует за ними,
-' а не расширяется до всех 16384 столбцов листа.
+' Находит границы общего заголовка по именованным началам и размерам пяти таблиц.
+' При перемещении таблиц заголовок следует за ними и не расширяется на весь лист.
 Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim anchor As Object, block As Object, name As Variant
     Set anchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
@@ -238,8 +236,9 @@ Private Sub WriteElementResults(ByVal workbook As Object, ByVal section As CSect
 
     Dim stateCount As Long
     Dim i As Long
-    ' Считаем только конечные named states. Один LC может дать несколько
-    ' состояний: StrengthState, CapacityState, CrackedState, PreCrackState и PostCrackState.
+    ' Считаем только конечные расчётные состояния. Для одного сочетания
+    ' могут сохраняться НДС по прочности, предельное НДС, текущее НДС
+    ' с трещинами и состояния до и после образования трещины.
     For i = 1 To batch.Count
         stateCount = stateCount + batch.ResultAt(i).StateRepository.StateCount
     Next i
@@ -310,8 +309,8 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         rowIndex = rowIndex + 1
     Next i
 
-    ' Арматура хранится в той же таблице геометрии, что и бетонные волокна, но с диаметром
-    ' вместо width/height: downstream-слои различают тип элемента по MaterialType.
+    ' Бетон и арматуру записываем в одну таблицу геометрии. Для стержня указываем
+    ' диаметр вместо ширины и высоты; тип элемента определяется полем MaterialType.
     For i = 1 To section.RebarCount
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = section.RebarID(i)
@@ -373,13 +372,12 @@ End Sub
 
 
 ' ------------------------------
-' Свойства сечения и LC-состояния
+' Свойства сечения и расчётные состояния
 ' ------------------------------
-' Здесь лежат свойства уровня всей модели: Bounds, бетонные и приведенные
-' геометрические характеристики, сохраненные единицы вывода и плоскости
-' деформаций named-state каждого LC. Нагрузки пользователя задаются от
-' бетонного центра, а главные оси схемы и AutoCAD читаются из блока
-' Transformed.* расчетного snapshot.
+' Записывает габариты, бетонные и приведённые характеристики, единицы вывода
+' и поля деформаций каждого сохранённого НДС. Нагрузки пользователя заданы
+' от бетонного центра; главные оси схемы и AutoCAD определяются
+' по сохранённым приведённым характеристикам Transformed.*.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         ByVal runID As Variant, ByVal units As CUnitSystem)
@@ -402,8 +400,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     Dim bounds As Variant: bounds = snapshot.SnapshotBounds
     minX = bounds(1): maxX = bounds(2): minY = bounds(3): maxY = bounds(4)
 
-    ' Оба представления подготовлены владельцем до записи; writer переводит
-    ' готовые величины, не пересчитывая их по текущему provider/Config.
+    ' Бетонные и приведённые характеристики уже подготовлены.
+    ' Переводим готовые значения в единицы вывода без пересчёта по текущему Config.
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = snapshot
 
@@ -435,9 +433,9 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutTransformedSectionProperties data, rowIndex, runID, section, transformedProps, units
     PutGeneralSectionCheckProperties data, rowIndex, runID, section, concreteProps, transformedProps, batch
     Dim i As Long
-    ' LC-зависимые свойства уровня сечения хранятся отдельно от поэлементных
-    ' строк. Плоскости деформаций пишутся ниже только как State.<StateType>.*,
-    ' чтобы схема и AutoCAD выбирали плоскость конкретного named-state.
+    ' Общие свойства НДС хранятся отдельно от строк элементов.
+    ' Поля деформаций записываем как State.<StateType>.*, чтобы схема
+    ' и AutoCAD могли выбрать нужное состояние конкретного сочетания.
     For i = 1 To batch.Count
         If batch.ResultAt(i).StrengthResult.DirectState.StateAvailable Then
             PutProperty data, rowIndex, runID, batch.CombinationID(i), "Nint", OutputForce(batch.ResultAt(i).StrengthResult.DirectState.StateResult.Nint, units), OutputForceUnit(units), "Равнодействующая продольная сила внутреннего НДС для выбранного сочетания."
@@ -479,9 +477,8 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     FormatResultsBlock target, rowCount, SECTION_PROPERTY_COLUMNS, "Свойства всего сечения"
 End Sub
 
-' Возвращает английскую запись логического флага для Results snapshot.
-' Так файл не зависит от локали Excel, где Boolean может отображаться как
-' ИСТИНА/ЛОЖЬ, TRUE/FALSE или в другом переводе интерфейса.
+' Записывает логический признак одинаково в любой локали Excel:
+' TRUE или FALSE вместо зависящего от языка интерфейса представления.
 Private Function BooleanText(ByVal value As Boolean) As String
     If value Then
         BooleanText = "True"
@@ -491,12 +488,11 @@ Private Function BooleanText(ByVal value As Boolean) As String
 End Function
 
 ' ------------------------------
-' Диагностический вывод фактических диаграмм
+' Сохранение использованных диаграмм
 ' ------------------------------
-' Пишет уникальный каталог CMaterialDiagram, которые solver/provider
-' использовали для конечных named-state текущего snapshot. Диаграммы зависят
-' от профиля, StateType, MaterialModelSpec и режима extension, но не от номера
-' LC, поэтому одинаковые сочетания не дублируются.
+' Записывает точки различных CMaterialDiagram конечных расчётных состояний.
+' Учитывает профиль, вид НДС, параметры материалов и численное продолжение.
+' Разные сочетания с одинаковыми диаграммами не дублируют их точки.
 Private Sub WriteMaterialDiagrams(ByVal workbook As Object, _
         ByVal batch As CBatchSectionCalculator, ByVal runID As Variant, ByVal units As CUnitSystem)
     Dim target As Object
@@ -527,9 +523,8 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, _
     FormatResultsBlock target, rowCount, MATERIAL_DIAGRAM_COLUMNS, "Фактические диаграммы материалов"
 End Sub
 
-' Собирает материальные диаграммы одного сочетания по фактически сохраненным
-' named states, но пишет только новые DiagramId. Это важно для профилей: один
-' и тот же StateType у разных профилей может иметь разную MaterialModelSpec.
+' Добавляет диаграммы сохранённых состояний сочетания, если их DiagramId ещё не записан.
+' У разных профилей один вид НДС может использовать разные параметры материалов.
 Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem, _
@@ -553,9 +548,9 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
     Next stateIndex
 End Sub
 
-' Формирует стабильный идентификатор уникальной диаграммы текущего snapshot.
-' LoadCase намеренно не входит в ключ: если разные сочетания используют один
-' профиль и одно named-state, материал для solver-а у них одинаковый.
+' Строит ID диаграммы по её фактическим параметрам. Номер сочетания в ключ
+' не входит: одинаковые профиль и модель материалов могут использоваться
+' несколькими сочетаниями.
 Private Function MaterialDiagramId(ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
         ByVal materialKind As String, ByVal diagram As CMaterialDiagram) As String
     MaterialDiagramId = profileId & "|" & stateResult.StateTypeText & "|" & _
@@ -576,8 +571,8 @@ Private Function MaterialDiagramModeText(ByVal diagram As CMaterialDiagram) As S
     End If
 End Function
 
-' Добавляет все точки одной диаграммы. Напряжения пишутся в OUTPUT stress unit,
-' деформации остаются безразмерными, как их получает solver.
+' Записывает все точки диаграммы. Напряжения переводит в выходные единицы;
+' безразмерные деформации сохраняет как в расчётной модели.
 Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
         ByVal materialKind As String, ByVal diagram As CMaterialDiagram, _
@@ -766,10 +761,9 @@ Private Function SlendernessValue(ByVal geometricLength As Double, ByVal muValue
     End If
 End Function
 
-' Записывает компактную metadata по каждому конечному named-state LC.
-' Поэлементная таблица хранит Stress/Strain, а здесь лежит то, что не нужно
-' повторять для каждого волокна: плоскость деформаций и фактическая спецификация
-' материальной модели.
+' Записывает общие данные каждого сохранённого НДС: поле деформаций
+' и фактически использованные параметры материалов.
+' Повторять их в каждой строке бетонного элемента или стержня не требуется.
 Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
         ByVal units As CUnitSystem)
@@ -852,7 +846,7 @@ Private Function OutputLengthVariant(ByVal value As Variant, ByVal units As CUni
     End If
 End Function
 
-' Локальный atan2 нужен writer-у для справочного угла нейтральной линии.
+' Вычисляет atan2 для справочного угла нейтральной линии при записи на лист.
 Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     If Abs(x) <= 0.000000000000001 Then
         If y > 0# Then
@@ -874,9 +868,9 @@ Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-' Считает точную высоту rngNDMSectionProperties до выделения массива.
-' Это важно для полного snapshot-а: при динамическом числе LC и нескольких named-state
-' на LC фиксированного запаса может не хватить, и VBA падает с Subscript out of range.
+' Вычисляет точное число строк свойств сечения перед выделением массива.
+' Количество сочетаний и сохраняемых НДС меняется; фиксированного запаса
+' строк могло бы не хватить, что привело бы к выходу за границы массива.
 Private Function SectionPropertyRowCount(ByVal batch As CBatchSectionCalculator) As Long
     Dim rowCount As Long
     rowCount = 1 + COMMON_SECTION_PROPERTY_ROWS + batch.Count * LC_SECTION_PROPERTY_ROWS
@@ -889,9 +883,8 @@ Private Function SectionPropertyRowCount(ByVal batch As CBatchSectionCalculator)
     SectionPropertyRowCount = rowCount
 End Function
 
-' Считает точную высоту диагностической таблицы фактических диаграмм.
-' В расчетах с профилями одно сочетание может иметь несколько material spec,
-' поэтому размер зависит от фактических states и количества точек диаграмм.
+' Определяет точное число строк таблицы диаграмм по сохранённым состояниям
+' и числу точек каждой используемой модели материалов.
 Private Function MaterialDiagramRowCount(ByVal batch As CBatchSectionCalculator) As Long
     Dim rowCount As Long
     rowCount = 1
@@ -954,10 +947,10 @@ Private Sub WriteSectionPropertiesPreview(ByVal workbook As Object, ByVal sectio
 End Sub
 
 ' ------------------------------
-' Semantic-аннотации схемы
+' Размеры, подписи и расчётные области схемы
 ' ------------------------------
-' Записывает оформление сечения и готовые LC-зависимые области трещин.
-' Исходные outer/opening находятся только в геометрическом snapshot.
+' Записывает аннотации сечения и готовые области трещин по сочетаниям.
+' Исходные наружные контуры и отверстия сохраняются отдельно как геометрия.
 Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal runID As Variant, ByVal units As CUnitSystem, Optional ByVal batch As CBatchSectionCalculator = Nothing)
     Dim target As Object
@@ -1031,9 +1024,9 @@ Private Sub WriteEmptySectionAnnotations(ByVal workbook As Object, ByVal runID A
     FormatResultsBlock target, 1, ANNOTATION_COLUMNS, "Аннотации схемы"
 End Sub
 
-' Оформляет один Results-диапазон как самостоятельную таблицу.
-' Заголовок ставится прямо над якорем, а чтение Results ниже выполняется
-' reader-ом по именованному якорю и размерам блока, без зависимости от CurrentRegion.
+' Оформляет диапазон как отдельную таблицу с заголовком над именованным началом.
+' Дальнейшее чтение использует это имя и размеры таблицы,
+' а не область CurrentRegion соседних заполненных ячеек.
 Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
     Dim tableRange As Object
     Set tableRange = target.Resize(rowCount, columnCount)
@@ -1070,7 +1063,7 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     End If
 End Sub
 
-' Применяет точность к общим числовым столбцам Results, которые должны читаться одинаково во всех snapshot-таблицах.
+' Задаёт одинаковую точность отображения общих численных столбцов во всех таблицах результатов.
 Private Sub ApplyResultNumberFormats(ByVal tableRange As Object)
     Dim headers As Variant
     headers = tableRange.Rows.Item(1).Value2
@@ -1123,8 +1116,8 @@ Private Function ResultHeaderBase(ByVal headerText As String) As String
     End If
 End Function
 
-' Записывает готовые поэлементные величины сохраненного НДС. Их временный
-' массив подготовлен владельцем состояния; writer только переводит напряжения.
+' Записывает готовые величины элементов сохранённого НДС.
+' Данные уже подготовлены состоянием; здесь только переводятся напряжения.
 Private Sub PutCombinationElementResults(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, _
         ByVal stateResult As CSectionStateResult, ByVal runID As Variant, ByVal units As CUnitSystem)
@@ -1169,7 +1162,8 @@ Private Sub PutElementResultHeaders(ByRef data() As Variant, ByVal units As CUni
     data(1, 9) = "PhysicalState"
 End Sub
 
-' Формирует заголовки геометрического snapshot: реальные A/I и геометрическая оболочка идут рядом.
+' Готовит заголовки таблицы геометрии, где рядом показываются
+' фактические площадь и инерции и размеры графической границы элемента.
 Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSystem)
     data(1, 1) = "RunID"
     data(1, 2) = "ElementID"
@@ -1224,9 +1218,9 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 22) = "GeometrySource"
 End Sub
 
-' Сериализует готовый result-region без повторного построения или отбора
-' арматуры. Все замкнутые контуры, включая любое число opening, имеют отдельный LoopID;
-' тип CRACK_REGION_* никогда не используется как исходный material-contour.
+' Записывает готовую расчётную область без нового построения или отбора арматуры.
+' Каждый замкнутый контур, включая отверстия, получает свой LoopID.
+' Области CRACK_REGION_* не используются как исходные границы бетона.
 Private Sub PutCrackRegionRows(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal region As CConcreteRegion, ByVal units As CUnitSystem)
     Dim i As Long, loopID As Long, x1 As Double, y1 As Double, x2 As Double, y2 As Double
@@ -1295,7 +1289,8 @@ Private Sub PutProperty(ByRef data() As Variant, ByRef rowIndex As Long, ByVal r
     rowIndex = rowIndex + 1
 End Sub
 
-' Добавляет одну semantic-аннотацию в массив rngNDMSectionAnnotations с переводом координат в output units.
+' Добавляет одну аннотацию в массив rngNDMSectionAnnotations, переводя координаты в единицы
+' вывода.
 Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, ByVal runID As Variant, _
         ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, ByVal units As CUnitSystem)
     Dim annotationType As String
@@ -1340,10 +1335,9 @@ Private Function OutputAnnotationNormalY(ByVal annotations As CSectionAnnotation
     End If
 End Function
 
-' Готовит видимый текст аннотации: для размеров пересобирает подпись уже в пользовательских единицах.
-' На схему выводятся целые миллиметры, поэтому текст размера округляется, а
-' числовое поле Value ниже остается точным для проверок и диагностического
-' snapshot-а Results.
+' Готовит текст аннотации в пользовательских единицах. Размер на схеме
+' округляется до целых миллиметров, а численное поле Value
+' сохраняет исходную точность для проверки результата.
 Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long, _
         ByVal units As CUnitSystem) As String
     Dim annotationType As String
@@ -1382,7 +1376,8 @@ Private Function FormatRoundedAnnotationLength(ByVal internalMmValue As Double, 
     FormatRoundedAnnotationLength = FormatNumberInvariant(OutputLength(roundedMmValue, units))
 End Function
 
-' Переводит технические комментарии builders в понятные пользователю строки Results.
+' Преобразует служебные сообщения построителей геометрии
+' в понятные пользователю пояснения Results.
 Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotations, ByVal annotationIndex As Long) As String
     Dim commentValue As String
     commentValue = Trim$(annotations.Comment(annotationIndex))
@@ -1439,7 +1434,7 @@ Private Function OutputAnnotationUnit(ByVal annotations As CSectionAnnotations, 
     End If
 End Function
 
-' Ниже собраны адаптеры output units для полного снимка Results.
+' Ниже переводятся физические величины сохранённого результата в выбранные единицы вывода.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function
@@ -1535,12 +1530,12 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = textValue
 End Function
 
-' Локальный максимум нужен для компактного расчета границ и значений snapshot.
+' Возвращает максимум двух чисел для определения границ таблиц и значений результата.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
-' Локальный минимум нужен для компактного расчета границ и значений snapshot.
+' Возвращает минимум двух чисел для определения границ таблиц и значений результата.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function

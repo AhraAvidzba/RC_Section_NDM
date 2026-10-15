@@ -16,22 +16,22 @@ Option Explicit
 ' Поле деформаций, усилия, невязки и экстремумы берутся из сохранённого состояния.
 ' Внешний статус для пользователя формирует CResultStatusPolicy.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
 Private mMeta As CResultMeta ' Инженерный итог проверки прямого НДС.
-Private mState As CSectionStateResult ' Единственный численный снимок named state.
-Private mExtensionEnabled As Boolean ' Настройка глобального Extension при запуске.
+Private mState As CSectionStateResult ' Сохранённое напряжённо-деформированное состояние сечения.
+Private mExtensionEnabled As Boolean ' Разрешение численного продолжения диаграмм на момент запуска расчёта.
 Private mConcreteCompressionLimit As Double ' Физический предел сжатия использованной модели.
 Private mConcreteTensionLimit As Double ' Физический предел активной растянутой ветви.
-Private mConcreteTensionEnabled As Boolean ' Ignore не участвует в деформационном запасе.
+Private mConcreteTensionEnabled As Boolean ' При отключённой растянутой ветви Ignore растяжение бетона не ограничивает запас по деформациям.
 Private mSteelCompressionLimit As Double ' Предел арматуры для отрицательного знака.
 Private mSteelTensionLimit As Double ' Предел арматуры для положительного знака.
 
-' Создает нейтральный result без фиктивного физического состояния.
+' Создаёт пустой результат проверки, не подставляя несуществующее расчётное состояние.
 Private Sub Class_Initialize()
     Clear
 End Sub
 
-' Сбрасывает состояние и meta для безопасного повторного использования.
+' Очищает сохранённое НДС, статус и пояснение перед новым заполнением результата.
 Public Sub Clear()
     AssertWritable
     Set mState = Nothing
@@ -45,7 +45,7 @@ Public Sub Clear()
     mSteelTensionLimit = 0#
 End Sub
 
-' Устанавливает итоговую meta; пустая meta является нарушением контракта.
+' Сохраняет итоговый статус и пояснение; отсутствие переданного объекта статуса вызывает ошибку.
 Public Sub SetMeta(ByVal meta As CResultMeta)
     AssertWritable
     If meta Is Nothing Then
@@ -57,8 +57,8 @@ Public Sub SetMeta(ByVal meta As CResultMeta)
     End If
 End Sub
 
-' Привязывает result к сохраненному State без копии численных полей.
-' Ошибка получения State сохраняется в его meta, а не превращается в успех.
+' Связывает проверку с готовым сохранённым НДС без копирования чисел.
+' Если получить НДС не удалось, его ошибка сохраняется в статусе состояния.
 Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabledValue As Boolean, _
         Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
         Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
@@ -82,41 +82,41 @@ Public Sub StoreStateResult(ByVal stateResult As CSectionStateResult, ByVal exte
     End If
 End Sub
 
-' Возвращает сохраненное State. При незапрошенном расчете возвращает Nothing.
+' Возвращает сохранённое НДС. Если расчёт не запрошен, возвращает Nothing.
 Public Property Get StateResult() As CSectionStateResult
     Set StateResult = mState
 End Property
 
-' Meta возвращается копией: потребитель не может изменить итог проверки.
+' Возвращает копию статуса и пояснения, чтобы вызывающий код не мог изменить готовый результат.
 Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone
 End Property
 
-' Display и признаки доступности вычисляются из канонических объектов.
+' Возвращает обозначение статуса для пользователя по сохранённому результату проверки.
 Public Property Get Status() As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
     Status = policy.ExternalStatus(mMeta)
 End Property
 
-' Единственный численный снимок named state.
+' Показывает, сохранён ли объект напряжённо-деформированного состояния.
 Public Property Get StateAvailable() As Boolean
     StateAvailable = Not mState Is Nothing
 End Property
 
-' Подтверждает равновесие только при наличии сохраненного State.
-' False при Nothing не означает численную попытку или физический отказ.
+' Подтверждает равновесие только по сохранённому НДС.
+' Если НДС отсутствует, False означает отсутствие решения, а не доказанное разрушение.
 Public Property Get StateConverged() As Boolean
     If Not mState Is Nothing Then StateConverged = mState.Converged
 End Property
 
-' Возвращает использование extension именно конечным State, не промежуточной
-' итерацией. При отсутствии State признак не выставляется.
+' Показывает, использовано ли численное продолжение диаграмм в конечном НДС.
+' При отсутствии НДС возвращает False; промежуточные итерации не учитываются.
 Public Property Get ExtensionUsed() As Boolean
     If Not mState Is Nothing Then ExtensionUsed = mState.ExtensionUsed
 End Property
 
-' Настройка глобального Extension при запуске.
+' Разрешение численного продолжения диаграмм на момент запуска расчёта.
 Public Property Get ExtensionEnabled() As Boolean
     ExtensionEnabled = mExtensionEnabled
 End Property
@@ -140,8 +140,8 @@ Public Property Get StrainReserve() As Double
     If reserve < 1E+90 Then StrainReserve = reserve
 End Property
 
-' Добавляет применимый знак материала в минимум; нулевая деформация не дает
-' искусственного бесконечного запаса и отсутствующая зона не участвует.
+' Учитывает запас для заданного знака деформаций материала при выборе минимального запаса.
+' Отсутствующая зона и нулевая деформация не создают дополнительный запас.
 Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean, _
         ByVal limitValue As Double, ByVal actualValue As Double)
     If Not hasValue Then Exit Sub
@@ -152,9 +152,8 @@ Private Sub AddStrainReserve(ByRef reserve As Double, ByVal hasValue As Boolean,
     If candidate < reserve Then reserve = candidate
 End Sub
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Закрывает также вложенное НДС без копирования сетки. Повторный вызов
-' безопасен; сохраненная ссылка не позволяет перезаполнить direct result.
+' Завершает заполнение проверки и связанного НДС, запрещая дальнейшие изменения.
+' Сетка не копируется; повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mState Is Nothing Then mState.Freeze

@@ -54,7 +54,8 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: согласованность Stress/Tangent всех ветвей и инвалидация кэша.
+' ДЛЯ ТЕСТОВ: согласованность напряжений и касательных модулей всех ветвей;
+' повторная подготовка материалов после изменения параметров.
 Public Function RunPlateauSlopeTests() As String
     On Error GoTo Failed
     Dim stats As TMaterialTestStats
@@ -425,8 +426,8 @@ Private Sub TestSteelInterpolation(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.points.secondTangent", mat.GetTangentModulus(0.01), 0#, 0.000000000001
 End Sub
 
-' Проверяет, что provider выбирает нужные бетонные характеристики и режим
-' растянутого бетона для Strength/Mcrc/CrackedNDS.
+' Проверяет выбор бетонных характеристик и растянутой ветви для прочности,
+' образования трещины и НДС с трещинами.
 Private Sub TestProviderConcreteDiagrams(ByRef stats As TMaterialTestStats)
     Dim provider As CMaterialModelProvider
     Set provider = TestProvider()
@@ -482,9 +483,8 @@ Private Sub TestProviderSteelDiagrams(ByRef stats As TMaterialTestStats)
     AssertClose stats, "steel.provider.sls.resistance", provider.SteelMaterial(cpCrackedNDS).GetStress(0.01), 390#, 0.000000000001
 End Sub
 
-' Проверяет, что numerical extension появляется только у equilibrium-диаграмм.
-' Физические Strength/Mcrc/CrackedNDS-диаграммы остаются без технических
-' точек, поэтому физические пределы capacity и crack не расширяются.
+' Вспомогательное продолжение добавляется только к диаграммам для поиска равновесия.
+' Физические диаграммы прочности и трещин сохраняют прежние точки и пределы.
 Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats)
     Dim provider As CMaterialModelProvider
     Set provider = TestProvider()
@@ -566,8 +566,8 @@ SteelError:
     AssertTrue stats, "material.invalidSteel", True
 End Sub
 
-' Создает материалный provider с явно выбранными диаграммами ролей и Extension.
-' Это позволяет проверить передачу селекторов независимо от Config книги.
+' Создаёт CMaterialModelProvider с явно заданными видами диаграмм и продолжением.
+' Проверяет передачу этих параметров независимо от Config книги.
 Private Function TestProvider(Optional ByVal strengthConcreteDiagram As String = "TwoLine", _
         Optional ByVal strengthConcreteTension As String = "Ignore", _
         Optional ByVal strengthSteelDiagram As String = "TwoLine", _
@@ -805,8 +805,9 @@ Public Function RunAudit03DiagramArrayInputTests() As String
     RunAudit03DiagramArrayInputTests = stats.Report
 End Function
 
-' Проверяет выделенность, наличие индексов 1..pointCount, повторные strain
-' и цикл valid-invalid-valid. Это контракт API, не новая диаграмма/нормативный предел.
+' Проверяет выделение массива, индексы 1..pointCount, повторные деформации
+' и последовательность корректного, ошибочного и снова корректного ввода.
+' Новые нормативные диаграммы или пределы здесь не вводятся.
 Private Sub TestAudit03DiagramArrayInputs(ByRef stats As TMaterialTestStats)
     Dim scenario As Variant, strains() As Double, stresses() As Double, diagram As CMaterialDiagram
     Dim pointCount As Long, expectedCode As Long, actualCode As Long, description As String
@@ -1023,8 +1024,8 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Находит ввод по смысловой строке и стороне материала, а не по текущему адресу
-' Config. Отсутствующая строка является ошибкой fixture, не runtime-default.
+' Находит параметр по названию строки и стороне материала, независимо от адреса
+' Config. Отсутствующая строка — ошибка подготовки теста.
 Private Function Audit03MaterialConfigCell(ByVal concreteRange As Object, ByVal steelRange As Object, _
         ByVal rowKey As String, ByVal column As Long) As Object
     Dim source As Object, row As Long
@@ -1038,8 +1039,8 @@ Private Function Audit03MaterialConfigCell(ByVal concreteRange As Object, ByVal 
     Err.Raise vbObjectError + 9902, , "В fixture нет параметра " & rowKey & "."
 End Function
 
-' Выполняет обычный production-маршрут чтения всей книги и преобразования
-' единиц. InitializeFromParameters намеренно не используется в этой проверке.
+' Выполняет обычное чтение всей книги и преобразование единиц.
+' Упрощённый тестовый InitializeFromParameters здесь не вызывается.
 Private Function Audit03MaterialConfigProvider(Optional ByVal useCurrentPlateau As Boolean = False) As CMaterialModelProvider
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim cell As Object, original As Variant, number As Long, source As String, description As String
@@ -1296,10 +1297,9 @@ End Function
 
 ' ==================== ДЛЯ ТЕСТОВ: НЕИЗМЕННОСТЬ ВЫДАННЫХ ДИАГРАММ ====================
 
-' Проверяет публикацию физической и равновесной диаграмм через оба API
-' provider-а. Повторная загрузка общей ссылки не должна изменять материал
-' при прежней Revision; самостоятельная непубликованная диаграмма остается
-' пригодной для повторной инициализации.
+' Проверяет передачу физических и вспомогательных диаграмм обоими методами
+' поставщика материалов. Повторное чтение готового объекта не меняет его версию.
+' Отдельную ещё не завершённую диаграмму можно инициализировать заново.
 Public Function RunAudit03PublishedMaterialDiagramTests() As String
     Dim stats As TMaterialTestStats
     TestAudit03PublishedMaterialDiagrams stats
@@ -1320,7 +1320,7 @@ Private Sub TestAudit03PublishedMaterialDiagrams(ByRef stats As TMaterialTestSta
         For Each purpose In Array(cpStrength, cpMcrc, cpCrackedNDS)
             For profileApi = 0 To 1
                 For equilibrium = 0 To 1
-                    ' Formation использует только физическую диаграмму.
+                    ' Поиск образования трещины использует только физическую диаграмму.
                     If equilibrium = 0 Or CLng(purpose) <> cpMcrc Then
                         For steel = 0 To 1
                             Set provider = TestProvider(diagramExtensionEnabled:=CBool(extension))

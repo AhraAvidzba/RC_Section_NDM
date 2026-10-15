@@ -17,8 +17,8 @@ Option Explicit
 ' Статус результата передаётся через ResultMeta; его видимое обозначение
 ' формирует CResultStatusPolicy.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
-Private mMeta As CResultMeta ' Типизированный статус search-этапа образования трещины.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
+Private mMeta As CResultMeta ' Статус и код причины результата определения нагрузки образования трещины.
 Private mCrackFormed As Boolean ' True, если нормальная трещина образована при текущем LC.
 Private mFormationMethod As String ' Фактически принятый путь lambda-поиска.
 Private mLambdaCrc As Double ' Найденный множитель образования трещины.
@@ -29,12 +29,12 @@ Private mAred As Double ' Приведенная площадь для ветк�
 Private mRbtSer As Double ' Rbt,ser, использованный для Ncrc.
 Private mPreCrackState As CSectionStateResult ' Состояние до выключения растянутого бетона.
 Private mPostCrackState As CSectionStateResult ' Состояние после выключения растянутого бетона.
-Private mStopReason As String ' Короткая причина остановки formation-этапа.
-Private mDiagnosticLog As String ' Подробная диагностика search-этапа.
-Private mHasLimitPoint As Boolean ' Точка реально найдена, а не заменена warning-fallback.
+Private mStopReason As String ' Краткая причина остановки определения нагрузки образования трещины.
+Private mDiagnosticLog As String ' Подробный журнал поиска нагрузки образования трещины.
+Private mHasLimitPoint As Boolean ' Признак подтверждённой предельной точки; предупреждение без найденной точки этот признак не устанавливает.
 Private mFallbackPsi1 As Boolean ' Фиксированный путь допускает ширину с psi=1 без PostState.
 Private mCentralTensionBranch As Boolean ' Для ширины применима ветка полного растяжения.
-Private mSolverCallCount As Long ' Число solve-вызовов formation-сценария.
+Private mSolverCallCount As Long ' Число служебных решений НДС при проверке образования трещины.
 Private mSearchResult As CLimitSearchResult ' Независимый численный снимок найденной точки.
 
 ' Создает нейтральный not-applicable результат до фактического заполнения.
@@ -43,8 +43,8 @@ Private Sub Class_Initialize()
     mMeta.SetNotApplicable rkCrackFormation
 End Sub
 
-' Заполняет результат по calculator-у образования трещины. Calculator отвечает
-' за физику поиска, а этот объект фиксирует итоговые величины и typed status для batch.
+' Копирует готовый итог проверки образования трещины: нагрузки, доступные состояния,
+' статус и пояснение. Физическую допустимость точки определяет сам расчёт.
 Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, ByVal meta As CResultMeta)
     AssertWritable
     ResetResult
@@ -79,9 +79,9 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     mDiagnosticLog = crack.DiagnosticLog
 End Sub
 
-' Сохраняет отсутствие запуска поиска по готовой meta: выключенный расчет,
-' ошибочный вход или блокировка. Здесь не создаются calculator, lambda-точка
-' и физические State; предыдущий численный снимок полностью удаляется.
+' Сохраняет причину, по которой поиск не запускался: отключённая проверка,
+' ошибка ввода или отсутствие обязательных данных. Прежние численные данные
+' удаляются; вымышленные пробные нагрузки и НДС не создаются.
 Friend Sub InitializeUncalculated(ByVal meta As CResultMeta)
     AssertWritable
     ResetResult
@@ -114,8 +114,8 @@ Private Sub ResetResult()
     Set mSearchResult = Nothing
 End Sub
 
-' Отдает независимую meta результата поиска образования трещины.
-' Изменение полученной копии не изменяет опубликованный Formation result.
+' Возвращает независимую копию статуса и пояснения образования трещины.
+' Изменение копии не меняет сохранённый результат.
 Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
@@ -125,17 +125,17 @@ Public Property Get CrackFormed() As Boolean
     CrackFormed = mCrackFormed
 End Property
 
-' Факт образования трещины принадлежит Formation, а не формуле ширины.
-' Подтвержденная точка сохраняется при отказе Post; физический fallback
-' постоянной части пути также может подтверждать трещину без limit point.
+' Подтверждает факт образования трещины по результату её проверки.
+' Найденный порог сохраняется при неудаче НДС после трещины.
+' Трещина может быть подтверждена и в постоянной нагрузке без отдельной предельной точки.
 Public Property Get ConfirmedCracked() As Boolean
     ConfirmedCracked = mCrackFormed And (mHasLimitPoint Or mFallbackPsi1)
 End Property
 
-' Подтвержденное отсутствие нормальной трещины отличается от неудачного
-' поиска точки. Успешное недостижение критерия допустимо без Pre/Post; найденный
-' порог выше текущего LC требует реальной точки. Ошибки и граница поиска
-' таким подтверждением не являются и оставляют возможность psi=1 fallback.
+' Различает подтверждённое отсутствие трещины и неудачный поиск порога.
+' Найденный порог выше текущей нагрузки требует подтверждённой точки;
+' аналитическое недостижение критерия допустимо без состояний до и после трещины.
+' Ошибка или граница поиска отсутствия трещины не доказывают: остаётся расчёт с psi_s = 1.
 Public Property Get ConfirmedNotCracked() As Boolean
     If mCrackFormed Then Exit Property
     If mMeta.InternalStatus <> rsSuccess And mMeta.InternalStatus <> rsSuccessWithWarning Then Exit Property
@@ -192,17 +192,17 @@ Public Property Get PostCrackState() As CSectionStateResult
     Set PostCrackState = mPostCrackState
 End Property
 
-' Короткая причина остановки formation-этапа.
+' Возвращает краткую причину остановки определения нагрузки образования трещины.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
 
-' Подробная диагностика search-этапа.
+' Возвращает подробный журнал поиска нагрузки образования трещины.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Доступность точки и fallback хранятся отдельно от статуса процедуры.
+' Показывает доступность найденной точки независимо от успешного завершения процедуры.
 Public Property Get HasLimitPoint() As Boolean
     HasLimitPoint = mHasLimitPoint
 End Property
@@ -217,28 +217,26 @@ Public Property Get CentralTensionBranch() As Boolean
     CentralTensionBranch = mCentralTensionBranch
 End Property
 
-' Число solve-вызовов formation-сценария.
+' Возвращает число служебных решений НДС при проверке образования трещины.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
-' Возвращает отдельный небольшой контейнер исхода Formation. Он существует
-' и для аналитического Ncrc/раннего выхода: факт численного поиска задает
-' SearchExecuted. Nothing означает отсутствие заполненного результата.
-' Ссылки на конечные named-states не копируются по волокнам.
+' Возвращает отдельный объект результата поиска, в том числе при аналитической Ncrc
+' или раннем выходе. SearchExecuted показывает, был ли численный поиск.
+' Nothing означает отсутствие заполненного результата; конечные НДС не копируются по элементам.
 Public Property Get SearchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property
 
-' Возвращает успех процедуры по meta, не обещая найденную limit point.
-' Доступность точки и допустимость Pre/Post проверяются отдельными признаками.
+' Показывает успешность процедуры по её статусу. Это не подтверждает само по себе
+' наличие предельной точки или пригодность состояний до и после трещины.
 Public Property Get Converged() As Boolean
     Converged = (mMeta.InternalStatus = rsSuccess Or mMeta.InternalStatus = rsSuccessWithWarning)
 End Property
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Закрывает найденные PreCrackState/PostCrackState вместе с Formation.
-' Отсутствующие состояния не создаются; повторный вызов безопасен.
+' Завершает заполнение результата и найденных состояний до и после трещины.
+' После этого их нельзя менять. Отсутствующие НДС не создаются; повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mPreCrackState Is Nothing Then mPreCrackState.Freeze

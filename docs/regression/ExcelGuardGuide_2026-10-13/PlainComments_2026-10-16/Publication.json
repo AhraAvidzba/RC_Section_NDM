@@ -1,0 +1,13 @@
+{
+  "Status": "PLAIN_COMMENTS_READBACK_PASS",
+  "WorkbookSHA256": "A09C2835FEF004644AD6F5F34544FC954855FDECCEC828BE5ECCE43383CBF958",
+  "AllCodeSHA256": "D9EBA26502DDAFBC6EF53E5760ECDE1BB166774C11087FF2C41A871C45ED8261",
+  "AllCodeEqualsActualPublishedReadback": true,
+  "SourceComponents": 152,
+  "NativeComponents": 157,
+  "CandidateEqualsPublished": true,
+  "ActualReadbackPending": false,
+  "NonVBAPartsByteIdentical": true,
+  "ExecutionReportUnchanged": true,
+  "ExecutionReportSHA256": "158A1C3A4D047EAFEA07B78517EBF62420289999485CDF91231419A548DA746B"
+}

@@ -8,15 +8,15 @@ Option Explicit
 ' Позволяет вызвать заданный отказ чтения или записи свойства
 ' для проверки восстановления настроек классом CExcelAppStateGuard.
 
-Public FaultProperty As String
-Public FaultsRemaining As Long
-Public FaultNumber As Long
-Public GetterFault As String
-Private mCancel As Long
-Private mScreen As Boolean
-Private mEvents As Boolean
-Private mAlerts As Boolean
-Private mCalculation As Long
+Public FaultProperty As String ' Имя свойства, при записи которого нужно имитировать отказ.
+Public FaultsRemaining As Long ' Число оставшихся имитируемых отказов.
+Public FaultNumber As Long ' Номер имитируемой ошибки.
+Public GetterFault As String ' Имя свойства, при чтении которого нужно имитировать отказ.
+Private mCancel As Long ' Текущее подставное значение режима обработки прерывания.
+Private mScreen As Boolean ' Текущее подставное значение обновления экрана.
+Private mEvents As Boolean ' Текущее подставное значение обработки событий.
+Private mAlerts As Boolean ' Текущее подставное значение показа предупреждений.
+Private mCalculation As Long ' Текущий подставной режим пересчёта Excel.
 
 ' ДЛЯ ТЕСТОВ: задаёт исходный автоматический пересчёт и включённые настройки Excel.
 Private Sub Class_Initialize()

@@ -17,23 +17,23 @@ Option Explicit
 ' Возвращает готовую CRebarLayout и сохраняет фактические шаги, количество
 ' стержней и сведения о правилах, по которым они созданы.
 
-Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Счетчики полные; подробные образцы ограничены по памяти.
+Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Храним не более 128 подробных сообщений; общее число событий учитываем без сокращения.
 
-' Универсальное исполнение правил: аналитические станции, зависимости,
-' конечные проекции и отдельный порядок публикации физических стержней.
-Private mReadOnly As Boolean ' После успешной общей сборки позиции и диагностика закрыты для нового Build.
+' Рабочие данные расстановки: координаты стержней, зависимости рядов, проекции
+' и порядок добавления стержней в общий список.
+Private mReadOnly As Boolean ' После завершения сборки повторная расстановка этим объектом запрещена.
 Private mBuilt As Boolean ' Freeze разрешён только после полного успешного выполнения правил.
-Private mDefinition As CSectionDefinition ' Закрытое определение, к которому относятся позиции и диагностика.
+Private mDefinition As CSectionDefinition ' Готовое описание сечения, по которому выполнены расстановка и её проверки.
 Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long ' Правила, состояние зависимостей и диапазоны позиций.
-Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Заявленные позиции до разрешения совпадений.
+Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Запрошенные места установки стержней до объединения совпадающих координат.
 Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
 Private mMergedPositions As Long, mConflicts As Long ' Объединённые позиции и отклонённые конфликты.
-Private mCreatedPhysical As Long ' Число опубликованных физических стержней, каждый учитывается один раз.
+Private mCreatedPhysical As Long ' Количество действительно созданных стержней; совпавшие позиции не считаются повторно.
 Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Те же счётчики отдельно для каждого правила.
 Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection ' Последнее событие и ограниченный набор подробных записей.
-Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Пространственный индекс и счётчик пересечений дисков.
-Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило-владелец каждого физического стержня и ёмкость массива.
-Private mPhysicalOwner() As Long ' Связь заявленной позиции с физическим стержнем после объединений.
+Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Списки близких стержней для быстрого поиска и число пар стержней, пересекающихся по площади.
+Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило, создавшее каждый стержень, и размер массива этих связей.
+Private mPhysicalOwner() As Long ' Номер фактического стержня для каждой запрошенной позиции, включая объединённые совпадения.
 Private mDiagnosticRecordsOmitted As Long ' Число событий сверх лимита подробных записей; счётчики остаются полными.
 
 ' Все запрошенные позиции, включая пропущенные проекции; это не число физических стержней.
@@ -42,11 +42,12 @@ Public Property Get RequestedPositions() As Long: RequestedPositions = mPosition
 Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property
 ' Возвращает число позиций без пересечения с целевой линией, пропуск которых разрешён правилом.
 Public Property Get SkippedProjections() As Long: SkippedProjections = mSkippedProjections: End Property
-' Число заявленных позиций, объединённых с физическим владельцем.
+' Возвращает число запрошенных позиций, объединённых с уже добавленными стержнями.
 Public Property Get MergedPositions() As Long: MergedPositions = mMergedPositions: End Property
-' Число несовместимых/отклонённых совпадений или запрещённых пересечений по явной политике.
+' Возвращает число недопустимых совпадений и пересечений, отклонённых по настройкам правила.
 Public Property Get Conflicts() As Long: Conflicts = mConflicts: End Property
-' Полное число пар с отрицательным геометрическим зазором дисков; касание не включается.
+' Возвращает число пар стержней, чьи поперечные сечения пересекаются по площади.
+' Простое касание стержней в это число не входит.
 Public Property Get BarOverlaps() As Long: BarOverlaps = mBarOverlaps: End Property
 ' Число событий сверх 128 сохранённых подробных образцов; полные счётчики не сокращаются.
 Public Property Get DiagnosticRecordsOmitted() As Long: DiagnosticRecordsOmitted = mDiagnosticRecordsOmitted: End Property
@@ -57,13 +58,14 @@ Public Property Get DiagnosticCount() As Long
     If Not mDiagnostics Is Nothing Then DiagnosticCount = mDiagnostics.Count
 End Property
 
-' Читает immutable подробный образец 1..DiagnosticCount; максимум 128 образцов, счётчики полные.
+' Возвращает подробное сообщение по номеру от 1 до DiagnosticCount.
+' Хранятся первые 128 сообщений; итоговые счётчики учитывают все события.
 Public Function DiagnosticAt(ByVal index As Long) As CGeometryDiagnostic
     Set DiagnosticAt = mDiagnostics(index)
 End Function
 
-' Связь всех заявленных позиций с физическим владельцем остается явной,
-' в том числе при Merge/KeepPublishedOwner. Номер соответствует CRebarLayout.
+' Возвращает число подготовленных позиций. Каждая позиция связана с номером
+' реального стержня в CRebarLayout; совпадающие позиции могут ссылаться на один стержень.
 Public Property Get PositionCount() As Long: PositionCount = mPositionCount: End Property
 ' ID правила заявленной позиции, включая объединённые позиции.
 Public Function PositionRuleID(ByVal index As Long) As String
@@ -71,14 +73,14 @@ Public Function PositionRuleID(ByVal index As Long) As String
 End Function
 ' ID геометрического пути заявленной позиции.
 Public Function PositionPathID(ByVal index As Long) As String: PositionPathID = mPositions(index).PathID: End Function
-' Смысловой SourcePositionId, из которого публиковался физический стержень.
+' Возвращает имя исходной позиции, по которой был добавлен стержень.
 Public Function PositionSourceID(ByVal index As Long) As String: PositionSourceID = mPositions(index).SourcePositionID: End Function
-' Индекс физического владельца в итоговом CRebarLayout; объединённые позиции имеют одного
-' владельца.
+' Возвращает номер стержня в итоговом CRebarLayout для выбранной позиции.
+' У объединённых совпадающих позиций номер стержня одинаков.
 Public Function PositionPhysicalOwner(ByVal index As Long) As Long: PositionPhysicalOwner = mPhysicalOwner(index): End Function
 
-' Диагностика не подменяет физическое число requested-числом. StationStep
-' измеряется по аналитической длине пути, а не по хорде между центрами.
+' Составляет пояснение по правилу: запрошенные и созданные стержни, совпадения и пропуски.
+' StationStep означает расстояние вдоль линии расстановки, а не прямой отрезок между центрами.
 Public Function RuleTrace(ByVal ruleID As String) As String
     Dim index As Long, minStep As Double, maxStep As Double, stepCount As Long, minChord As Double, maxChord As Double
     If mDefinition Is Nothing Then RuleError 0, "Правила еще не выполнялись."
@@ -91,9 +93,10 @@ Public Function RuleTrace(ByVal ruleID As String) As String
         "; CenterStepMin=" & CStr(minChord) & "; CenterStepMax=" & CStr(maxChord)
 End Function
 
-' Все длины в мм. StationStep относится к пути (для DependentOffset -
-' исходному); CenterStep - хорда между заявленными центрами. Замыкание
-' учитывается отдельно, несвязанные пути группы никогда не соединяются.
+' Определяет наименьший и наибольший шаг стержней, мм. StationStep измеряется
+' вдоль линии расстановки, для зависимого ряда — вдоль исходной линии. CenterStep
+' равен прямому расстоянию между центрами. Замыкание учитывается отдельно;
+' разрывы между независимыми линиями группы в шаг не включаются.
 Public Sub RuleStepBounds(ByVal ruleID As String, ByRef stepCount As Long, ByRef minStep As Double, ByRef maxStep As Double, _
         ByRef minChord As Double, ByRef maxChord As Double)
     If mDefinition Is Nothing Then RuleError 0, "Правила еще не выполнялись."
@@ -122,8 +125,8 @@ Public Sub RuleStepBounds(ByVal ruleID As String, ByRef stepCount As Long, ByRef
     If stepCount = 0 Then minStep = 0#: minChord = 0#
 End Sub
 
-' Накапливает длину станции по пути и расстояние между центрами отдельно, чтобы дуга не
-' заменялась хордой.
+' Учитывает отдельно расстояние вдоль линии и прямое расстояние между центрами стержней,
+' чтобы для дуги не подменить длину участка длиной хорды.
 Private Sub AccumulateSpacing(ByVal first As Long, ByVal last As Long, ByVal step As Double, ByRef count As Long, _
         ByRef minStep As Double, ByRef maxStep As Double, ByRef minChord As Double, ByRef maxChord As Double)
     Dim chord As Double
@@ -132,8 +135,8 @@ Private Sub AccumulateSpacing(ByVal first As Long, ByVal last As Long, ByVal ste
     minChord = GeomMin(minChord, chord): maxChord = GeomMax(maxChord, chord)
 End Sub
 
-' Полный текстовый отчёт счётчиков и всех RuleTrace; численные длины в мм независимо от output
-' units.
+' Собирает текстовый отчёт по всем правилам и счётчикам.
+' Длины в отчёте указаны в мм независимо от выбранных единиц вывода.
 Public Function DiagnosticsText() As String
     Dim i As Long
     DiagnosticsText = "Requested=" & CStr(RequestedPositions) & "; Created=" & CStr(CreatedPositions) & _
@@ -145,8 +148,8 @@ Public Function DiagnosticsText() As String
     End If
 End Function
 
-' Исполняет опубликованные правила в готовой бетонной области и возвращает физическую раскладку;
-' mesh не строит.
+' Размещает стержни по готовому описанию в переданной бетонной области
+' и возвращает их список. Бетонная сетка строится отдельно.
 Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As CGeometryRegion) As CRebarLayout
     If mReadOnly Then SectionRecipeError "CRebarRuleExecutor", "Опубликованные правила нельзя выполнять заново в том же объекте. Создайте новый исполнитель."
     mBuilt = False
@@ -221,8 +224,9 @@ NextPosition:
     Set Build = result
 End Function
 
-' Пространственный индекс только выбирает кандидатов. Зазор вычисляется
-' по исходным Double и двум радиусам; касание связанных рядов допускается.
+' Сначала выбирает близкие стержни по координатным ячейкам, затем проверяет
+' зазор по исходным координатам центров и радиусам. Простое касание
+' стержней зависимых рядов допускается.
 Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition, ByVal result As CRebarLayout)
     Dim bx As Double, by As Double, dx As Long, dy As Long, key As String, bucket As Collection, candidate As Variant
     Dim gap As Double, other As Long
@@ -248,7 +252,8 @@ Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition
     Next dx
 End Sub
 
-' Индексирует опубликованный физический стержень для контроля совпадений и пересечений.
+' Запоминает координатную ячейку добавленного стержня для дальнейшей проверки
+' совпадающих центров и пересечений поперечных сечений.
 Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Long)
     Dim key As String, bucket As Collection, index As Long
     index = result.Count
@@ -274,8 +279,9 @@ Private Sub ValidatePlacement(ByVal index As Long, ByVal x As Double, ByVal y As
     End If
 End Sub
 
-' Счетчики всех независимых путей и зависимостей проверяются до массивов
-' позиций. Для проекций верхняя граница включает еще не отфильтрованные лучи.
+' До выделения массивов проверяет общее число запрошенных стержней с учётом
+' всех независимых линий и зависимых рядов. Для проекций учитывает и направления,
+' которые позднее могут быть пропущены из-за отсутствия пересечения.
 Private Sub Preflight()
     Dim state() As Long, counts() As Double, total As Double, i As Long
     ReDim state(1 To mDefinition.RuleCount)
@@ -301,8 +307,8 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
             EstimateRule source, state, counts
             counts(index) = counts(source)
             If mRules(index).EverySecond And mRules(source).Mode <= ExplicitPositions And counts(source) > 0# Then
-                ' PerPath отсчитывает 1,3,... заново на каждой траектории.
-                ' Округление общей суммы занижало нечётные независимые ряды.
+                ' В режиме PerPath выбираем позиции 1, 3, ... заново на каждой линии.
+                ' Так независимые ряды с нечётным числом стержней не теряют последний стержень.
                 counts(index) = 0#
                 ids = mDefinition.TargetPaths(mRules(source).Target)
                 For Each id In ids
@@ -323,8 +329,8 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
     state(index) = 2
 End Sub
 
-' Вычисляет число станций одного пути с учётом режима шага и включения концов, без размещения
-' стержней.
+' Определяет число мест установки стержней на одной линии с учётом шага
+' и включения концов ряда. Координаты на этом этапе ещё не создаются.
 Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPath) As Double
     Dim intervals As Double, length As Double
     length = path.Length - mRules(index).StartSetback - mRules(index).EndSetback
@@ -356,14 +362,14 @@ Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPa
     If PositionCountFor < 0# Or PositionCountFor > GEOM_MAX_REBAR_COUNT Then RuleError index, "Количество позиций превышает диапазон счетчиков."
 End Function
 
-' Topological preparation сохраняет исходный геометрический ordinal;
-' публикация и пропущенные проекции не меняют EverySecond.
+' Подготавливает правило после его зависимостей и сохраняет исходные номера позиций.
+' Порядок добавления стержней и пропуски проекций не меняют выбор каждого второго стержня.
 Private Sub PrepareRule(ByVal index As Long)
     If mState(index) = 2 Then Exit Sub
     If mState(index) = 1 Then RuleError index, "Циклическая зависимость рядов."
     mState(index) = 1
     If Not mRules(index).Enabled Then mState(index) = 2: Exit Sub
-    ' Preflight уже проверил все неизменяемые snapshots правил до подготовки позиций.
+    ' Общее число стержней и параметры всех правил уже проверены до расчёта координат.
     Dim source As Long
     If mRules(index).Mode = DependentOffset Or mRules(index).Mode = ProjectFrom Then
         source = mDefinition.RuleIndex(mRules(index).SourceRuleID)
@@ -384,8 +390,8 @@ Private Sub PrepareRule(ByVal index As Long)
     mState(index) = 2
 End Sub
 
-' Строит независимые станции: локальный номер начинается с 1 на каждом пути, а ID и порядок
-' публикации остаются сквозными.
+' Вычисляет координаты независимого ряда. Нумерация позиций начинается с 1
+' на каждой линии, а уникальные имена и порядок добавления продолжаются по всей группе.
 Private Sub PrepareIndependent(ByVal index As Long)
     Dim ids As Variant, id As Variant, path As CGeometryPath, stations As Variant, ordinal As Long, i As Long
     Dim position As TRebarPosition, first As Long
@@ -400,8 +406,8 @@ Private Sub PrepareIndependent(ByVal index As Long)
                 path.AtDistance CDbl(stations(i)), position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = CDbl(stations(i)): position.RuleIndex = index
                 position.RootRuleIndex = index: position.RootOrdinal = ordinal
-                ' ID и порядок публикации сквозные; отбор зависимого ряда
-                ' выполняется по локальной геометрической позиции пути.
+                ' Сохраняем общий порядок добавления стержней; выбор позиций для зависимого ряда
+                ' определяется отдельно по исходным номерам на каждой линии.
                 position.SourceOrdinal = i - LBound(stations) + 1
                 position.RootPublicationRank = ordinal
                 position.PathID = CStr(id)
@@ -413,8 +419,8 @@ Private Sub PrepareIndependent(ByVal index As Long)
     Next id
 End Sub
 
-' Устойчивый O(n log n) порядок по расстоянию до середины полного пути.
-' Геометрический ordinal остается прежним, в том числе при неравных setback.
+' Упорядочивает позиции по расстоянию от середины полной линии расстановки.
+' Исходные номера позиций сохраняются, в том числе при разных отступах от концов.
 Private Sub RankFromMiddle(ByVal first As Long, ByVal last As Long, ByVal length As Double)
     Dim order() As Long, scratch() As Long, i As Long, base As Long
     ReDim order(first To last): ReDim scratch(first To last)
@@ -445,7 +451,7 @@ Private Sub SortMiddle(ByRef order() As Long, ByRef scratch() As Long, ByVal fir
     For out = first To last: order(out) = scratch(out): Next out
 End Sub
 
-' Находит крайние станции правила для отдельной публикации концов ряда.
+' Возвращает координаты первой и последней подготовленных позиций указанного правила.
 Friend Function RuleEnds(ByVal ruleID As String, ByRef startX As Double, ByRef startY As Double, ByRef endX As Double, ByRef endY As Double) As Boolean
     Dim index As Long, last As Long
     index = mDefinition.RuleIndex(ruleID)
@@ -494,7 +500,8 @@ Friend Function RuleExtremeEnds(ByVal ruleID As String, ByVal nx As Double, ByVa
     Next i
 End Function
 
-' Размещает зависимый ряд от исходных позиций, сохраняя локальный отсчёт и корневую связь.
+' Получает координаты зависимого ряда смещением исходных стержней.
+' Сохраняет их исходные номера на каждой линии и связь с основным рядом.
 Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     Dim i As Long, ordinal As Long, position As TRebarPosition
     For i = mStart(source) To mStart(source) + mCount(source) - 1
@@ -510,8 +517,9 @@ Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     Next i
 End Sub
 
-' Выбор ближайшего положительного пересечения только на заявленных путях.
-' Setback фильтрует hit; полученные позиции не перераспределяются.
+' Для каждого исходного стержня ищет ближайшее пересечение по заданному направлению
+' с целевыми линиями. Учитывает отступы от концов; найденные координаты
+' не заменяются новой равномерной расстановкой.
 Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
     Dim ids As Variant, id As Variant, path As CGeometryPath, i As Long, ordinal As Long, targetIndex As Long
     Dim prepared As Collection
@@ -553,8 +561,9 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 Set path = mDefinition.Path(bestID)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = bestStation: position.PathID = bestID: position.RuleIndex = index
-                ' Обычная проекция сохраняет локальный SourceOrdinal источника,
-                ' включая пропуски. Hollow явно запрашивает успешный отсчёт ниже.
+                ' Обычная проекция сохраняет исходные номера позиций отдельно на каждой линии,
+                ' даже при пропусках. Для рядов у отверстия можно отдельно включить нумерацию
+                ' только успешно полученных проекций.
                 successful = successful + 1
                 If mRules(index).SuccessfulProjectionOrdinal Then position.SourceOrdinal = successful
                 If mRules(index).NewPublicationRoot Then
@@ -567,7 +576,8 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
     Next i
 End Sub
 
-' Возвращает аналитические станции выбранного режима раскладки на рабочем интервале пути.
+' Возвращает расстояния от начала линии до мест установки стержней
+' для выбранного способа расстановки и рабочих отступов.
 Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) As Variant
     ValidateWorkInterval index, path
     Dim length As Double, first As Double, last As Double, count As Double, intervals As Double
@@ -621,8 +631,8 @@ Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) A
     StationsFor = stations
 End Function
 
-' Строит станции с точным шагом и заданным режимом концов; несовместимый шаг не округляется
-' молча.
+' Вычисляет расстояния до стержней с постоянным шагом и заданным включением концов.
+' Если длина не позволяет выдержать этот шаг в выбранном режиме, сообщает об ошибке.
 Private Function FixedStations(ByVal index As Long, ByVal path As CGeometryPath, ByVal first As Double, ByVal length As Double) As Variant
     Dim count As Double, intervals As Double, start As Double, step As Double, stations() As Double, i As Long, kept As Long, station As Double
     step = mRules(index).Step: intervals = length / step
@@ -701,7 +711,8 @@ Private Function PositionID(ByVal index As Long, ByVal ordinal As Long, ByVal so
     End If
 End Function
 
-' Добавляет заявленную позицию в буфер, сохраняя правило, источник и порядок публикации.
+' Сохраняет подготовленную позицию стержня, её правило, исходную позицию
+' и порядок добавления в общий список.
 Private Sub AppendPosition(ByRef value As TRebarPosition)
     If mPositionCount >= GEOM_MAX_REBAR_COUNT Then RuleError value.RuleIndex, "Суммарное количество позиций превышает диапазон счетчиков."
     If mPositionCount = mCapacity Then
@@ -711,7 +722,8 @@ Private Sub AppendPosition(ByRef value As TRebarPosition)
     mPositionCount = mPositionCount + 1: mPositions(mPositionCount) = value
 End Sub
 
-' Устойчивый merge sort: порядок публикации не влияет на построение ряда.
+' Сортирует номера позиций по заданному порядку добавления стержней.
+' Координаты и исходная последовательность расстановки при этом не меняются.
 Private Sub SortOrder(ByRef order() As Long, ByRef scratch() As Long, ByVal first As Long, ByVal last As Long)
     If first >= last Then Exit Sub
     Dim middle As Long, a As Long, b As Long, out As Long
@@ -732,8 +744,9 @@ Private Sub SortOrder(ByRef order() As Long, ByRef scratch() As Long, ByVal firs
     For out = first To last: order(out) = scratch(out): Next out
 End Sub
 
-' Сравнивает приоритеты публикации двух позиций; совпадение координат не меняет владельца
-' произвольно.
+' Определяет, какая из двух позиций должна добавить стержень раньше.
+' При совпадении координат это позволяет сохранить стержень по заданному правилу,
+' а не выбирать его диаметр и материал случайно.
 Private Function BeforePosition(ByVal a As Long, ByVal b As Long) As Boolean
     Dim keyA As Long, keyB As Long, ordinalA As Long, ordinalB As Long
     keyA = mPositions(a).RuleIndex: keyB = mPositions(b).RuleIndex
@@ -771,7 +784,8 @@ Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVa
     SectionRecipeError "CRebarRuleExecutor", reason, reference
 End Sub
 
-' Закрывает исполненные позиции и диагностику общей сборки без копирования массивов.
+' Запрещает дальнейшую расстановку и изменение результатов после успешной сборки.
+' Координаты и диагностика остаются доступными для чтения без копирования массивов.
 Friend Sub Freeze()
     If Not mBuilt Then RuleError 0, "Нет успешно исполненных правил для публикации."
     mReadOnly = True

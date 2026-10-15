@@ -19,23 +19,23 @@ Option Explicit
 ' Mx = Mx0 + lambda*Mxbase, My = My0 + lambda*Mybase.
 ' Промежуточные пробы не выдаются как конечные расчётные состояния.
 
-Private Const STATE_ACCEPTABLE As String = "Acceptable"
-Private Const STATE_CONCRETE_LIMIT As String = "ConcreteStrainLimit"
-Private Const STATE_CONCRETE_TENSION_LIMIT As String = "ConcreteTensionStrainLimit"
-Private Const STATE_STEEL_LIMIT As String = "SteelStrainLimit"
-Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure"
-Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent"
-Private Const STATE_INVALID_INPUT As String = "InvalidInput"
-Private Const STATE_INTERNAL_ERROR As String = "InternalError" ' Нарушен программный контракт; повтор численного solve не помогает.
+Private Const STATE_ACCEPTABLE As String = "Acceptable" ' Код состояния, в котором предельные деформации не превышены.
+Private Const STATE_CONCRETE_LIMIT As String = "ConcreteStrainLimit" ' Код достижения предельной деформации сжатого бетона.
+Private Const STATE_CONCRETE_TENSION_LIMIT As String = "ConcreteTensionStrainLimit" ' Код достижения предельной деформации растянутого бетона.
+Private Const STATE_STEEL_LIMIT As String = "SteelStrainLimit" ' Код достижения предельной деформации арматуры.
+Private Const STATE_NUMERICAL_FAILURE As String = "NumericalFailure" ' Код численной неудачи поиска, не означающий разрушения сечения.
+Private Const STATE_SINGULAR_TANGENT As String = "SingularTangent" ' Код вырожденной касательной матрицы.
+Private Const STATE_INVALID_INPUT As String = "InvalidInput" ' Код ошибки исходных данных.
+Private Const STATE_INTERNAL_ERROR As String = "InternalError" ' Обязательные программные данные не переданы или несовместимы; повторное решение НДС причину не исправит.
 Private Const MOMENT_DIRECTION_TOLERANCE As Double = 0.001 ' Допустимое относительное отклонение от выбранной моментной траектории.
 Private Const PROBE_CACHE_SIZE As Long = 12 ' Небольшое кольцо последних lambda-точек LoadMultiplier.
 
-Private mConverged As Boolean ' True, если выбранный метод capacity нашел предельное состояние.
-Private mStopReason As String ' Причина остановки capacity solver для вывода в результаты и тесты.
+Private mConverged As Boolean ' Признак того, что выбранным методом найдено подтверждённое предельное состояние.
+Private mStopReason As String ' Причина остановки поиска несущей способности для вывода и тестов.
 Private mLimitState As String ' Физический или численный статус найденного предела.
 Private mFailureCode As ESolverFailureCode ' Точная техническая причина, независимая от текста комментария и LimitState.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
-Private mInitialLambdaRejected As Boolean ' True, если lambda=0 уже не является acceptable-точкой capacity path.
+Private mInitialLambdaRejected As Boolean ' Признак того, что постоянная нагрузка при lambda = 0 уже не удовлетворяет критерию несущей способности.
 Private mUltimateOriginX As Double, mUltimateOriginY As Double ' Центр для моментных невязок UltimateStrain.
 Private mSearchBoundReached As Boolean ' MaxLambda проверена, но физический предел не установлен.
 Private mLastProbeNumericalFailure As Boolean ' Отказ равновесия, не исчерпание допуска/бюджета одномерного поиска.
@@ -44,10 +44,10 @@ Private mNUltimate As Double ' Предельная продольная сил�
 Private mMomentUltimate As Double ' Результирующий предельный момент sqrt(MxUltimate^2 + MyUltimate^2).
 Private mMxUltimate As Double ' Предельный Mx, если Mx входит в масштабируемый путь.
 Private mMyUltimate As Double ' Предельный My, если My входит в масштабируемый путь.
-Private mSafetyFactor As Double ' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
+Private mSafetyFactor As Double ' Коэффициент запаса несущей способности; сейчас равен найденному lambdaUltimate.
 Private mUtilization As Double ' Использование несущей способности: 1 / lambdaUltimate.
 Private mIterations As Long ' Число внешних итераций поиска несущей способности.
-Private mSearchExecuted As Boolean ' Начата численная попытка текущего Search; ранняя валидация не считается попыткой.
+Private mSearchExecuted As Boolean ' Признак фактического запуска численного поиска; предварительная проверка ввода запуском не считается.
 Private mRetryCount As Long ' Число повторов после численных отказов внутреннего решателя.
 Private mLastSolver As CSectionSolver ' Последний внутренний расчет равновесия, успешный или диагностический.
 Private mLastAcceptableSolver As CSectionSolver ' Последнее состояние, которое еще не вышло за физический предел.
@@ -67,7 +67,7 @@ Private mMaxLambda As Double ' Верхняя граница расширени�
 Private mInitialLambdaStep As Double ' Первый шаг расширения lambda при поиске расчетной скобки.
 Private mMaxRetries As Long ' Допустимые повторы той же lambda-точки после NumericalFailure.
 Private mSolverBaseLoadSteps As Long ' Базовое число ступеней CSectionSolver для первой попытки lambda-точки.
-Private mSolverMaxIterations As Long ' Максимум внешних/внутренних итераций capacity-поиска.
+Private mSolverMaxIterations As Long ' Максимальное число внешних итераций поиска предела и внутренних итераций равновесия.
 Private mSolverToleranceN As Double ' Допуск внутреннего равновесия CSectionSolver по N.
 Private mSolverToleranceMx As Double ' Допуск внутреннего равновесия CSectionSolver по Mx.
 Private mSolverToleranceMy As Double ' Допуск внутреннего равновесия CSectionSolver по My.
@@ -75,10 +75,10 @@ Private mSolverMethod As String ' Метод внутреннего CSectionSolv
 Private mSolverSecantMaxRestarts As Long ' Настройка рестартов внутреннего secant-решателя.
 Private mMomentEquilibriumResidual As Double ' Невязка направления/момента в найденном предельном состоянии.
 Private mDiagnosticLog As String ' Текстовая трассировка lambda-точек и причин остановки.
-Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long
-Private mDiagnosticJoined As String, mDiagnosticDirty As Boolean
+Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long ' Строки журнала, число записанных строк и вместимость массива.
+Private mDiagnosticJoined As String, mDiagnosticDirty As Boolean ' Собранный текст журнала и признак появления новых строк после его сборки.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал в массовом пользовательском расчете без txt-отчета.
-Private mProbeRunner As CStateSolutionRunner ' Общий pipeline и локальная память точных retry-attempts только текущего поиска.
+Private mProbeRunner As CStateSolutionRunner ' Общее решение НДС и сохранённые итоги точно совпадающих повторных попыток в пределах текущего поиска.
 Private mCriticalStrain As Double ' Деформация критического волокна или стержня.
 Private mCriticalElement As String ' ID элемента, который первым определил предельное состояние.
 Private mCriticalLimitType As String ' Тип ограничения из общего деформационного критерия.
@@ -86,20 +86,20 @@ Private mCriticalStrainUtilization As Double ' Отношение фактиче
 Private mUltimateMomentOnlyPath As Boolean ' True для частной UltimateStrain-постановки N=const, M=lambda*Mbase.
 Private mMeritJacobianForAffinePath As Boolean ' Масштабы шага для моментной системы и траекторий с постоянной частью.
 Private mUltimateMomentNMeritWeight As Double ' Перевод осевой невязки из долей допуска в относительную силовую ошибку.
-Private mUltimatePathMath As CLoadPathMath
-Private mUltimatePathTolerance As Double
-Private mProbeCacheCount As Long ' Сколько ячеек cache реально заполнено.
-Private mProbeCacheNextSlot As Long ' Следующая ячейка кольцевого cache для записи.
+Private mUltimatePathMath As CLoadPathMath ' Общие уравнения траектории нагрузки для поиска по предельным деформациям.
+Private mUltimatePathTolerance As Double ' Допустимое отклонение от траектории в нормированных уравнениях поиска.
+Private mProbeCacheCount As Long ' Число сохранённых оценок пробных нагрузок.
+Private mProbeCacheNextSlot As Long ' Место следующей записи; при заполнении списка новая оценка заменяет самую старую.
 Private mProbeCacheLambda(1 To PROBE_CACHE_SIZE) As Double ' Lambda ранее посчитанной точки поиска.
 Private mProbeCacheN(1 To PROBE_CACHE_SIZE) As Double ' N этой lambda-точки; нужен, чтобы не спутать разные траектории.
 Private mProbeCacheMx(1 To PROBE_CACHE_SIZE) As Double ' Mx этой lambda-точки.
 Private mProbeCacheMy(1 To PROBE_CACHE_SIZE) As Double ' My этой lambda-точки.
 Private mProbeCacheState(1 To PROBE_CACHE_SIZE) As String ' Классификация lambda-точки: acceptable/limit/numerical.
 Private mProbeCacheCriticalStrain(1 To PROBE_CACHE_SIZE) As Double ' Критическая деформация, восстановленная без повторного solve.
-Private mProbeCacheCriticalElement(1 To PROBE_CACHE_SIZE) As String ' Критический элемент, соответствующий cache-записи.
-Private mProbeCacheCriticalType(1 To PROBE_CACHE_SIZE) As String
+Private mProbeCacheCriticalElement(1 To PROBE_CACHE_SIZE) As String ' Критический элемент для сохранённой оценки нагрузки.
+Private mProbeCacheCriticalType(1 To PROBE_CACHE_SIZE) As String ' Вид определяющего предела для каждой сохранённой пробной точки.
 Private mProbeCacheCriticalUtil(1 To PROBE_CACHE_SIZE) As Double ' Utilization критической деформации для целевой функции.
-Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' Solver-состояние lambda-точки для дальнейшего warm-start.
+Private mProbeCacheSolver(1 To PROBE_CACHE_SIZE) As CSectionSolver ' НДС пробной нагрузки для начального приближения следующего решения.
 
 ' ------------------------------
 ' Настройки по умолчанию
@@ -131,11 +131,11 @@ Private Sub Class_Initialize()
 End Sub
 
 ' ------------------------------
-' Чтение настроек capacity solver
+' Настройки поиска несущей способности
 ' ------------------------------
-' Настройки делятся на два уровня: внешний поиск несущей способности и
-' внутренний CSectionSolver, который каждый раз ищет равновесие для lambda-точки.
-' Явно пустые численные настройки не заменяются сохраненными defaults.
+' Принимает настройки внешнего поиска предела и внутреннего CSectionSolver,
+' который решает НДС каждой пробной нагрузки. Явно пустые обязательные
+' численные настройки не заменяются начальными значениями.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     mInitialLambdaStep = settings.GetDouble("Capacity.InitialLambda", mInitialLambdaStep, False)
@@ -181,10 +181,9 @@ Public Sub SolveByUltimateStrain(ByVal section As CSectionModel, _
         nSpecified, 0#, mxOffset, mxBase, myOffset, myBase
 End Sub
 
-' Ищет предельное состояние для произвольной lambda-траектории.
-' Этот метод ничего не знает о названии пользовательского режима: он работает
-' только с прямой формулой
+' Ищет предельное состояние для заданной зависимости нагрузки от lambda:
 ' Target = Offset + lambda*Base для N, Mx и My.
+' Название пользовательского режима на сам численный алгоритм не влияет.
 Public Sub SolveByUltimateLoadPath(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -282,7 +281,7 @@ End Sub
 Private Function IsPureAxialLoadPath(ByVal section As CSectionModel, ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double) As Boolean
-    ' Ошибочную геометрию далее отклоняет обычная typed-проверка Search.
+    ' Ошибочную геометрию далее отклоняет общая проверка входа поиска с отдельным кодом причины.
     On Error GoTo NotAxial
     If section.ConcreteCount <= 0 Then Exit Function
     Dim math As CLoadPathMath, centerX As Double, centerY As Double, area As Double
@@ -678,10 +677,9 @@ Public Sub SolveByLoadMultiplier(ByVal section As CSectionModel, _
         nSpecified, 0#, mxOffset, mxBase, myOffset, myBase
 End Sub
 
-' Ищет предельный lambda для любой траектории Target = Offset + lambda*Base.
-' Метод используется batch-слоем для новых вариантов lambda*Mx, lambda*My,
-' lambda*Mxy, lambda*N и lambda*NMxy. Внутренний алгоритм скобки и Bisection/Brent/Secant остается
-' тем же для всех вариантов LoadPath.
+' Ищет предельный множитель lambda для Target = Offset + lambda*Base.
+' Все способы LoadPath используют тот же поиск границ и уточнение
+' Bisection, Brent или Secant независимо от того, какие усилия масштабируются.
 Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -701,9 +699,8 @@ Public Sub SolveByLoadPathMultiplier(ByVal section As CSectionModel, _
     search.Execute request
 End Sub
 
-' Готовит solver к общей ветке LoadMultiplier. Метод оставляет в CCapacitySolver
-' только доменные проверки и хранение результата, а сам одномерный поиск lambda
-' выполняет CLoadMultiplierSearch.
+' Готовит физические проверки и рабочие данные для LoadMultiplier.
+' Одномерный численный поиск lambda выполняет общий CLoadMultiplierSearch.
 Public Function LimitSearchPrepareCapacityLoadMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nBase As Double, ByVal mxBase As Double, ByVal myBase As Double) As Boolean
@@ -715,10 +712,10 @@ Public Function LimitSearchPrepareCapacityLoadMultiplier(ByVal section As CSecti
     LimitSearchPrepareCapacityLoadMultiplier = True
 End Function
 
-' Возвращает значение целевой функции для общей LoadMultiplier-точки capacity.
-' Отрицательная функция означает запас до предельной деформации, ноль или плюс -
-' достижение физического предела. Классификация самой lambda-точки остается здесь,
-' потому что она зависит от предельных деформаций материалов strength-модели.
+' Оценивает критерий несущей способности одной пробной нагрузки lambda.
+' Отрицательное значение означает запас до предельной деформации, ноль
+' или положительное — достижение предела. Учитывает физические пределы
+' фактических диаграмм модели прочности.
 Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -763,9 +760,8 @@ Public Function LimitSearchEvaluateCapacityLoadMultiplier(ByVal section As CSect
     End If
 End Function
 
-' Обрабатывает ситуацию, когда нижняя точка lambda = 0 уже не является
-' приемлемой для capacity path. Здесь фиксируется только capacity-факт;
-' внешний BaseFail позже формируется через ResultCode, а не через текст.
+' Сохраняет превышение критерия уже в постоянной нагрузке при lambda = 0.
+' Внешний BaseFail затем определяется кодом причины, а не текстом комментария.
 Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     mLimitState = probeState
     If LimitSearchHasTerminalFailure Then
@@ -784,8 +780,8 @@ Public Sub LimitSearchHandleCapacityInitialFailure(ByVal probeState As String)
     End If
 End Sub
 
-' Переводит внутренний код capacity-пробы в короткую инженерную причину для
-' Results и batch summary. Машинный код остается в LimitState/ResultCode.
+' Преобразует код исхода пробной нагрузки в короткое инженерное пояснение
+' для Results и сводки. Сам код сохраняется в LimitState и ResultCode.
 Private Function CapacityStateDisplayName(ByVal probeState As String) As String
     Select Case probeState
         Case STATE_CONCRETE_LIMIT
@@ -831,16 +827,17 @@ Public Sub LimitSearchAcceptRetainedPhysicalCapacity(ByVal section As CSectionMo
     AcceptRetainedPhysicalCapacity section, concreteMaterial, steelMaterial, loadPath
 End Sub
 
-' Сохраняет последнюю допустимую точку общего LoadMultiplier-search.
-' Она нужна для финализации с нижней стороны физической скобки без повторного
-' solve, а при численном отказе остается диагностикой, не готовой capacity.
+' Сохраняет последнюю допустимую нагрузку и её НДС. При подтверждённой
+' верхней границе они нужны для приёма предела с безопасной стороны без нового решения.
+' При численной неудаче это только диагностика, а не найденная несущая способность.
 Public Sub LimitSearchRecordCapacityAcceptable(ByVal nValue As Double, _
         ByVal mxValue As Double, ByVal myValue As Double)
     RecordAcceptableState mLastSolver, nValue, mxValue, myValue
 End Sub
 
-' Сохраняет численный отказ внутри физической скобки и последнюю допустимую
-' lambda для диагностики. Такая точка сама по себе не становится capacity.
+' Сохраняет численную неудачу между допустимой и предельной нагрузками
+' и последнее допустимое lambda для диагностики. Отдельно эта точка
+' несущую способность не подтверждает.
 Public Sub LimitSearchHandleCapacityBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal probeState As String)
     mLimitState = probeState
@@ -872,25 +869,25 @@ Public Sub LimitSearchFinalizeCapacityFromRetainedAcceptable(ByVal lambdaValue A
         loadPath.MxOffset, loadPath.MyOffset, mUpperLimitState, methodName
 End Sub
 
-' Переводит capacity-result в численную ошибку общего поиска.
+' Сохраняет численную неудачу общего поиска в результате несущей способности.
 Public Sub LimitSearchSetCapacityNumericalFailure(ByVal reason As String)
     mLimitState = STATE_NUMERICAL_FAILURE
     mFailureCode = sfcNumericalFailure
     mStopReason = reason
 End Sub
 
-' Переводит capacity-result в ошибку исходных данных общего поиска.
+' Сохраняет ошибку исходных данных общего поиска в результате несущей способности.
 Public Sub LimitSearchSetCapacityInvalidInput(ByVal reason As String)
     SetInvalidInput reason
 End Sub
 
-' Добавляет строку в общий журнал capacity-search.
+' Добавляет строку в общий журнал поиска несущей способности.
 Public Sub LimitSearchAppendCapacityDiagnostic(ByVal message As String)
     AppendSearchDiagnostic message
 End Sub
 
-' Готовит capacity-контекст к общей ветке UltimateStrain. Сам Newton-цикл
-' выполняет CUltimateStrainSearch, а здесь остаются проверки и хранение результата.
+' Готовит физические проверки и рабочие данные для UltimateStrain.
+' Общий цикл Ньютона выполняет CUltimateStrainSearch.
 Public Function LimitSearchPrepareCapacityUltimate(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector) As Boolean
@@ -909,7 +906,7 @@ Public Function LimitSearchPrepareCapacityUltimate(ByVal section As CSectionMode
     LimitSearchPrepareCapacityUltimate = True
 End Function
 
-' Строит стартовую плоскость для общего UltimateStrain capacity-поиска.
+' Готовит начальное поле деформаций для общего поиска несущей способности по UltimateStrain.
 Public Sub LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -984,7 +981,7 @@ Public Function LimitSearchAlternativeUltimateStart(ByVal section As CSectionMod
     Set LimitSearchAlternativeUltimateStart = solver
 End Function
 
-' Возвращает три невязки общей UltimateStrain-задачи capacity.
+' Возвращает две невязки траектории нагрузки и невязку предельной деформации для UltimateStrain.
 Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -1024,10 +1021,10 @@ Friend Property Get LimitSearchJacobianMeritForPath() As Boolean
     LimitSearchJacobianMeritForPath = mMeritJacobianForAffinePath
 End Property
 
-' Возвращает норму невязок для line-search общего UltimateStrain-цикла.
-' В моментной постановке все составляющие нормы являются относительными
-' силовыми/деформационными ошибками. Малый допуск N не должен подавлять
-' исправление направления момента; окончательная приемка допуски не меняет.
+' Вычисляет общую меру невязок для подбора шага UltimateStrain.
+' В моментной постановке учитывает относительные ошибки усилий и деформаций,
+' чтобы малый допуск N не мешал исправлению направления момента.
+' При окончательном подтверждении используются исходные допуски.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     If mUltimateMomentOnlyPath Then
@@ -1080,7 +1077,7 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
     LimitSearchFinalizeUltimateResult = True
 End Function
 
-' Завершает capacity-ветку UltimateStrain после общего цикла.
+' Сохраняет инженерный итог несущей способности после общего поиска UltimateStrain.
 Public Sub LimitSearchCompleteCapacityUltimate(ByVal loadPath As CLoadPathVector)
     If Not mConverged Then
         If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
@@ -1107,8 +1104,8 @@ Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     LimitSearchSetFailure sfcNumericalFailure, reason
 End Sub
 
-' Сохраняет typed-причину из общего Search. Терминальная конфигурационная
-' ошибка не повторяется и не переинтерпретируется как физический отказ пути.
+' Сохраняет фактический код причины общего поиска. Ошибка настройки,
+' запрещающая продолжение, не повторяется и не считается физическим отказом траектории.
 Public Sub LimitSearchSetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     mConverged = False
     Select Case failureCode
@@ -1198,15 +1195,15 @@ Private Sub StoreLoadPathUltimateComponents(ByVal lambdaValue As Double, _
     mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
 End Sub
 
-' Определяет, входит ли продольная сила в масштабируемую часть capacity-path.
-' Для чисто моментной траектории N хранится как постоянный offset.
+' Проверяет, масштабируется ли N на выбранном пути нагрузки.
+' При изменении только моментов продольная сила остаётся постоянной частью Offset.
 Private Function CapacityScalesAxial(ByVal nBase As Double) As Boolean
     CapacityScalesAxial = (Abs(nBase) > 0.000000001)
 End Function
 
-' Проверяет программные зависимости до создания обязательного Search-request.
-' При нарушении контракта очищает старый результат и сохраняет typed internal
-' failure, чтобы публичный расчет не оставлял необработанную ошибку VBA.
+' До создания запроса поиска проверяет обязательные программные объекты.
+' При их отсутствии очищает старый результат и сохраняет внутреннюю ошибку
+' с кодом причины вместо необработанного исключения VBA.
 Private Function EnsureSearchDependencies(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
     If Not section Is Nothing Then
@@ -1300,9 +1297,9 @@ Private Function ValidateLoadMultiplierSettings() As Boolean
     End If
 End Function
 
-' Проверяет настройки ветки UltimateStrain. В отличие от LoadMultiplier,
-' здесь нет искусственного Capacity.MaxLambda: после найденной предельной
-' плоскости достаточно проверить численную корректность lambda.
+' Проверяет параметры UltimateStrain. В отличие от LoadMultiplier,
+' этот метод не ограничивается техническим Capacity.MaxLambda:
+' после нахождения предельного поля проверяется корректность самого множителя.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
         SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля."
@@ -1311,24 +1308,24 @@ Private Function ValidateUltimateStrainSettings() As Boolean
     End If
 End Function
 
-' Переводит расчет в InputErr без выбрасывания VBA-ошибки. Capacity solver
-' возвращает статус пользователю через batch summary и подробный writer.
+' Сохраняет InputErr без необработанного исключения VBA.
+' Причина затем выводится в общей сводке и подробной таблице.
 Private Sub SetInvalidInput(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
     mFailureCode = sfcInvalidInput
     mStopReason = reason
 End Sub
 
-' Ошибка численных настроек сохраняется отдельным typed-кодом и не запускает
-' retries/fallback. Короткий код LimitState не является внешним display-статусом.
+' Сохраняет ошибку численных настроек отдельным кодом без повторных попыток
+' и смены метода. Внутренний LimitState и внешнее обозначение статуса различаются.
 Private Sub SetInvalidConfiguration(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
     mFailureCode = sfcInvalidConfiguration
     mStopReason = reason
 End Sub
 
-' Отсутствующая программная зависимость или неожиданная ошибка относятся
-' к внутреннему контракту, а не к исходным данным пользователя.
+' Отсутствие обязательного программного объекта или неожиданная ошибка
+' считаются внутренней ошибкой программы, а не ошибкой пользовательских данных.
 Private Sub SetInternalError(ByVal reason As String)
     mLimitState = STATE_INTERNAL_ERROR
     mFailureCode = sfcInternalError
@@ -1380,8 +1377,8 @@ Private Function ProbeWithRetries(ByVal section As CSectionModel, _
     ProbeWithRetries = probeState
 End Function
 
-' Решает одну lambda-точку capacity-поиска и классифицирует ее как приемлемую,
-' физический предел, численную несходимость или ошибку входных данных.
+' Решает НДС пробной нагрузки lambda и различает допустимую точку,
+' физический предел, численную несходимость и ошибку ввода.
 Private Function ProbeOnce(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
@@ -1406,10 +1403,10 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
     Dim allowExtensionWarmStart As Boolean
     allowExtensionWarmStart = runner.MaterialsHaveExtension(concreteMaterial, steelMaterial)
 
-    ' Для обычной probe-точки используем общий state-solve pipeline. Если есть
-    ' предыдущая ненулевая acceptable lambda, продолжаем от ее равновесия.
-    ' Нулевая плоскость не задает активную растянутую/сжатую зону чистого изгиба:
-    ' только для первого ненулевого шага строим плоскость по целевой нагрузке.
+    ' Обычную пробную нагрузку решаем общим способом. Если есть ненулевое
+    ' равновесное НДС предыдущей нагрузки, используем его как старт.
+    ' Для первого ненулевого шага строим начальное поле по целевой нагрузке:
+    ' нулевое поле ещё не определяет работающие участки диаграмм чистого изгиба.
     Dim suppliedStart As Boolean
     If Not startSolver Is Nothing Then
         suppliedStart = startSolver.Converged And _
@@ -1472,9 +1469,9 @@ Failed:
     SetInternalError "Пробная точка несущей способности не рассчиталась: " & Err.Description
 End Function
 
-' Передает настройки внутреннего CSectionSolver в общий runner для одной
-' capacity-probe. Retry попытки меняют только численные параметры solve-а,
-' физическая lambda-точка остается прежней.
+' Передаёт настройки внутреннего равновесия общему запуску НДС одной пробы.
+' Повторные попытки меняют только численные параметры;
+' проверяемая физическая нагрузка lambda остаётся той же.
 Private Sub ConfigureCapacityProbeRunner(ByVal runner As CStateSolutionRunner, ByVal attempt As Long)
     runner.LoadSteps = mSolverBaseLoadSteps * (2 ^ attempt)
     runner.SolverMethod = mSolverMethod
@@ -1486,8 +1483,8 @@ Private Sub ConfigureCapacityProbeRunner(ByVal runner As CStateSolutionRunner, B
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
-' True для probe чистого изгиба: при отсутствии ненулевого равновесия
-' общий runner строит active-set плоскость по целевым моментам.
+' Показывает, нужна ли для пробы чистого изгиба начальная плоскость
+' по целевым моментам, если ненулевое прежнее равновесие ещё не найдено.
 Private Function IsPureBendingProbe(ByVal nSpecified As Double, _
         ByVal mx As Double, ByVal my As Double) As Boolean
     IsPureBendingProbe = (Abs(nSpecified) <= 0.000000001 And _
@@ -1502,9 +1499,9 @@ Private Function IsZeroLoadProbe(ByVal nSpecified As Double, _
         Abs(mx) <= 0.000000001 And Abs(my) <= 0.000000001)
 End Function
 
-' Проверяет точное равновесие нулевой плоскости и сохраняет физические поля
-' lambda=0. Ошибки модели/настроек сохраняют typed-причину, а не становятся
-' автоматически допустимым начальным состоянием.
+' Проверяет равновесие нулевого поля и сохраняет нагрузку при lambda = 0.
+' Ошибки модели и настроек сохраняются как ошибки; начальная точка
+' из-за них не считается автоматически допустимой.
 Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal lambdaValue As Double, ByVal attempt As Long) As String
@@ -1547,9 +1544,9 @@ Failed:
     SetInternalError "Нулевую lambda-точку несущей способности проверить нельзя: " & Err.Description
 End Function
 
-' Возвращает рассчитанную probe-точку этой search-session по точному ключу
-' lambda и усилий. Восстанавливает критерий и warm-start без повторного solve;
-' локальный probe-cache не публикуется в shared StateRepository.
+' Ищет уже оценённую пробу текущего поиска по точному совпадению lambda и усилий.
+' Возвращает её критерий и начальное НДС без нового решения равновесия.
+' Эти промежуточные пробы в общее хранилище конечных состояний не записываются.
 Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByRef probeState As String) As Boolean
     Dim slot As Long
@@ -1612,7 +1609,7 @@ Private Sub StoreProbeCache(ByVal nSpecified As Double, ByVal mx As Double, ByVa
     If mProbeCacheNextSlot > PROBE_CACHE_SIZE Then mProbeCacheNextSlot = 1
 End Sub
 
-' Полностью очищает cache между независимыми расчетами.
+' Очищает все сохранённые оценки пробных нагрузок перед независимым расчётом.
 Private Sub ClearProbeCache()
     Dim slot As Long
     For slot = 1 To PROBE_CACHE_SIZE
@@ -1642,7 +1639,7 @@ Private Sub UpdateCriticalState(ByVal section As CSectionModel, _
 End Sub
 
 ' Возвращает предел арматуры для знака проверяемой деформации.
-' При симметричном тестовом контракте оба направления имеют одинаковый предел.
+' В симметричной контрольной модели пределы сжатия и растяжения одинаковы.
 Private Function SteelLimitForStrain(ByVal strain As Double) As Double
     If strain < 0# Then
         SteelLimitForStrain = mSteelCompressionLimit
@@ -1678,9 +1675,9 @@ Private Function ClassifyNumericalFailure(ByVal failureCode As ESolverFailureCod
     End Select
 End Function
 
-' Запоминает найденную допустимую lambda-точку для warm-start и финализации
-' подтвержденной физической скобки. Если верхняя граница не найдена, эта точка
-' остается диагностикой или стартом, а не готовой несущей способностью.
+' Сохраняет допустимую нагрузку и её НДС для следующих стартов и приёма
+' уточнённого физического предела. Если верхний предел ещё не подтверждён,
+' эта точка остаётся начальным приближением и диагностикой.
 Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double)
     Set mLastAcceptableSolver = solver
     mLastAcceptableN = nValue
@@ -1688,9 +1685,9 @@ Private Sub RecordAcceptableState(ByVal solver As CSectionSolver, ByVal nValue A
     mLastAcceptableMy = myValue
 End Sub
 
-' Уменьшает верхнюю границу lambda после численной неудачи. Если интервал уже
-' слишком мал, сохраняет последнюю сходящуюся точку для диагностики, не объявляя
-' физический предел установленным. Общий Search сохраняет неуспешный исход.
+' Уменьшает верхнее lambda после численной неудачи. Если интервал слишком мал,
+' сохраняет последнее найденное равновесие для диагностики.
+' Физический предел не объявляется установленным; поиск остаётся неуспешным.
 Private Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, ByVal highLambda As Double, ByVal probeState As String) As Double
     Dim reduced As Double
     reduced = lowLambda + (highLambda - lowLambda) / 2#
@@ -1713,14 +1710,13 @@ Private Function IsPhysicalLimit(ByVal state As String) As Boolean
         state = STATE_STEEL_LIMIT)
 End Function
 
-' Проверяет, является ли состояние численной неудачей, которую можно пытаться
-' обходить retry, уменьшением lambda или fallback-стратегией.
+' Проверяет, допускает ли численная неудача повторное решение,
+' уменьшение lambda или переход к другому способу поиска.
 Private Function IsNumericalFailure(ByVal state As String) As Boolean
     IsNumericalFailure = (state = STATE_NUMERICAL_FAILURE Or state = STATE_SINGULAR_TANGENT)
 End Function
 
-' Нормализует метод одномерного поиска LoadMultiplier из пользовательской
-' настройки Capacity.SearchMethod.
+' Проверяет выбранный пользователем метод одномерного поиска Capacity.SearchMethod.
 Private Function NormalizedSearchMethod() As String
     Select Case LCase$(Trim$(mSearchMethod))
         Case "bisection"
@@ -1732,18 +1728,18 @@ Private Function NormalizedSearchMethod() As String
     End Select
 End Function
 
-' Проверяет техническую пригодность числа для дальнейшей арифметики Search.
-' Граница 1e100 ограничивает промежуточные произведения, а не физический
-' диапазон диаграммы и не означает доказанного предельного состояния.
+' Проверяет пригодность числа для дальнейшей арифметики поиска.
+' Граница 1e100 защищает промежуточные произведения от переполнения
+' и не является физическим пределом материала.
 Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     If value <> value Then Exit Function
     If Abs(value) > 1E+100 Then Exit Function
     IsFiniteNumber = True
 End Function
 
-' Записывает диагностическую строку одной lambda-точки LoadMultiplier.
-' Поле attempt - это номер попытки НДС для той же физической lambda-точки:
-' 0 означает первую попытку, 1 - первый retry с более мягкими настройками.
+' Записывает диагностику пробы LoadMultiplier. attempt показывает попытку
+' НДС той же нагрузки: 0 — первая, 1 — первый повтор
+' с изменёнными численными настройками.
 Private Sub AppendDiagnostic(ByVal solver As CSectionSolver, ByVal mx As Double, ByVal my As Double, _
         ByVal lambdaValue As Double, ByVal attempt As Long, ByVal probeState As String)
     If Not mDiagnosticsEnabled Then Exit Sub
@@ -1788,7 +1784,7 @@ Private Sub ReplaceDiagnosticLog(ByVal text As String)
     mDiagnosticCount = 0: mDiagnosticCapacity = 0
 End Sub
 
-' Возвращает собранный журнал поиска для публикации в результате.
+' Возвращает накопленный журнал поиска для сохранения в результате.
 Private Function DiagnosticText() As String
     If mDiagnosticDirty Then
         Dim lines() As String, i As Long
@@ -1802,7 +1798,7 @@ Private Function DiagnosticText() As String
     DiagnosticText = mDiagnosticJoined
 End Function
 
-' Очищает результаты предыдущего capacity-поиска, не меняя настройки solver-а
+' Очищает результаты предыдущего поиска, сохраняя численные настройки
 ' и предельные деформации материалов.
 Private Sub ClearResult()
     mConverged = False
@@ -1852,8 +1848,7 @@ Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
 
-' Проверяет, что состояние lambda-точки еще находится внутри физически
-' допустимой области capacity.
+' Проверяет, находится ли НДС пробной нагрузки внутри физических пределов материалов.
 Public Function LimitSearchCapacityStateIsAcceptable(ByVal state As String) As Boolean
     LimitSearchCapacityStateIsAcceptable = (state = STATE_ACCEPTABLE)
 End Function
@@ -1864,15 +1859,14 @@ Public Function LimitSearchCapacityStateIsPhysicalLimit(ByVal state As String) A
     LimitSearchCapacityStateIsPhysicalLimit = IsPhysicalLimit(state)
 End Function
 
-' Проверяет, что состояние lambda-точки является численной неудачей, которую
-' общий search может обработать уменьшением lambda или fallback-веткой.
+' Проверяет, можно ли после численной неудачи пробы уменьшить lambda
+' или перейти к дополнительному методу поиска.
 Public Function LimitSearchCapacityStateIsNumericalFailure(ByVal state As String) As Boolean
     LimitSearchCapacityStateIsNumericalFailure = IsNumericalFailure(state)
 End Function
 
-' Проверяет, что доменный callback остановился из-за ошибки исходных данных.
-' Общий coordinator использует это, чтобы не запускать fallback LoadMultiplier
-' после заведомо некорректной постановки задачи.
+' Проверяет, вызвана ли остановка ошибкой исходных данных.
+' При такой причине координатор не запускает дополнительный LoadMultiplier.
 Public Function LimitSearchCapacityStateIsInvalidInput(ByVal state As String) As Boolean
     LimitSearchCapacityStateIsInvalidInput = (state = STATE_INVALID_INPUT)
 End Function
@@ -1884,15 +1878,15 @@ Public Property Get LimitSearchHasTerminalFailure() As Boolean
         mFailureCode = sfcInvalidConfiguration Or mFailureCode = sfcInternalError)
 End Property
 
-' Передает адаптеру точную typed-причину для InternalStatus/ResultCode.
-' Значение не определяется по словам StopReason или пользовательскому display.
+' Передаёт точные InternalStatus и ResultCode по признакам результата.
+' Слова причины остановки и внешнего статуса на их выбор не влияют.
 Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
 End Property
 
-' Возвращает True, если capacity-path был остановлен уже на lambda=0.
-' Низкоуровневый search только сообщает о rejected lower point; смысл
-' "базовая часть пути уже не проходит" назначается capacity-result слоем.
+' Показывает, отклонена ли уже постоянная нагрузка при lambda = 0.
+' Общий численный поиск сообщает исход начальной точки;
+' инженерный смысл BaseFail определяет результат несущей способности.
 Public Property Get LimitSearchInitialLambdaRejected() As Boolean
     LimitSearchInitialLambdaRejected = mInitialLambdaRejected
 End Property
@@ -1908,9 +1902,9 @@ Public Property Get SearchExecuted() As Boolean
     SearchExecuted = mSearchExecuted
 End Property
 
-' Объединяет диагностику неудачной первой ветки с последующим fallback-расчетом
-' LoadMultiplier. Search-слой сам выбирает порядок попыток, но только
-' CCapacitySolver имеет право менять свой внутренний журнал и StopReason.
+' Объединяет диагностику первой неудачной попытки и последующего LoadMultiplier.
+' Порядок методов выбирает общий поиск; внутренний журнал и причину
+' остановки изменяет сам CCapacitySolver.
 Public Sub LimitSearchMergeCapacityFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
@@ -1959,12 +1953,12 @@ Public Property Get LimitSearchMaxIterations() As Long
     LimitSearchMaxIterations = mSolverMaxIterations
 End Property
 
-' True, если выбранный метод capacity нашел предельное состояние.
+' Показывает, найдено ли подтверждённое предельное состояние выбранным методом.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Причина остановки capacity solver для вывода в результаты и тесты.
+' Возвращает причину остановки поиска несущей способности для вывода и тестов.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -2004,7 +1998,7 @@ Public Property Get MyUltimate() As Double
     MyUltimate = mMyUltimate
 End Property
 
-' Коэффициент запаса по capacity; сейчас совпадает с lambdaUltimate.
+' Возвращает коэффициент запаса несущей способности, равный найденному lambdaUltimate.
 Public Property Get SafetyFactor() As Double
     SafetyFactor = mSafetyFactor
 End Property
@@ -2116,7 +2110,7 @@ Public Property Let SolverBaseLoadSteps(ByVal value As Long)
     mSolverBaseLoadSteps = value
 End Property
 
-' Максимум внешних/внутренних итераций capacity-поиска.
+' Возвращает максимальное число внешних и внутренних итераций поиска несущей способности.
 Public Property Let SolverMaxIterations(ByVal value As Long)
     mSolverMaxIterations = value
 End Property
@@ -2149,27 +2143,25 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Эти свойства раскрывают внутреннюю диагностику поиска несущей способности.
-' Они нужны regression-тестам, чтобы убедиться, что solver действительно
-' дошел до нужного предельного элемента, использовал retry-ветку и корректно
-' оценил utilization. Пользовательский вывод берет уже агрегированные поля
-' SafetyFactor, LimitState, MomentUltimate и статусы batch-расчета.
 
+' ДЛЯ ТЕСТОВ: возвращает подробности поиска для проверки критического элемента,
+' повторных решений и коэффициента использования. Пользовательский вывод
+' использует готовые SafetyFactor, LimitState, MomentUltimate и статусы сочетания.
 Public Property Get RetryCount() As Long
     RetryCount = mRetryCount
 End Property
 
-' Деформация критического волокна или стержня.
+' ДЛЯ ТЕСТОВ: деформация критического волокна или стержня.
 Public Property Get CriticalStrain() As Double
     CriticalStrain = mCriticalStrain
 End Property
 
-' ID элемента, который первым определил предельное состояние.
+' ДЛЯ ТЕСТОВ: iD элемента, который первым определил предельное состояние.
 Public Property Get CriticalElement() As String
     CriticalElement = mCriticalElement
 End Property
 
-' Отношение фактической деформации к своему пределу.
+' ДЛЯ ТЕСТОВ: отношение фактической деформации к своему пределу.
 Public Property Get CriticalStrainUtilization() As Double
     CriticalStrainUtilization = mCriticalStrainUtilization
 End Property

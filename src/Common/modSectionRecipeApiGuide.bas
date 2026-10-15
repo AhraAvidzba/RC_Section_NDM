@@ -154,7 +154,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем стержень, который добавлен первым.
 '           options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
 '           options.IncomingTangentAtJoint = True
 '           facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -190,12 +190,12 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем стержень, который добавлен первым.
 '           facade.RebarByCount "Main", "MainAxis", 5, 20#, options
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем стержень, который добавлен первым.
 '           options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
 '           facade.RebarDependent "Contact", "Main", 16#, options
 '           Set options = New CRebarRuleOptions
@@ -255,7 +255,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal typeID As String
-'           Смысловое имя зарегистрированного типа; непустой текст.
+'           Уникальное имя зарегистрированного типа; непустой текст.
 '
 '         Optional ByVal schemaVersion As Long = 1
 '           Положительная целая версия схемы определения.
@@ -285,7 +285,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal typeID As String
-'           Смысловое имя зарегистрированного типа; непустой текст.
+'           Уникальное имя зарегистрированного типа; непустой текст.
 '
 '         ByVal recipe As ISectionRecipe
 '           Один объект с реализацией ISectionRecipe.
@@ -306,7 +306,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionRecipeContext.Table
 '
-'       Возвращает снимок зарегистрированного блока по имени; отсутствие — ошибка, не fallback.
+'       Возвращает копию зарегистрированной таблицы по имени; если таблицы нет, выдаёт ошибку.
 '
 '       Объявление:
 '         Public Function Table(ByVal tableName As String) As CSectionInputTable
@@ -404,7 +404,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionInputTable.Text
 '
-'       Читает непустой текст либо явно переданный fallback, обрезая крайние пробелы.
+'       Читает непустой текст либо переданное значение по умолчанию, удаляя крайние пробелы.
 '
 '       Объявление:
 '         Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal defaultValue As
@@ -468,7 +468,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionInputTable.Choice
 '
-'       Проверяет вариант по allowed без учёта регистра и возвращает каноническое значение allowed.
+'       Проверяет вариант по allowed без учёта регистра и возвращает написание из allowed.
 '
 '       Объявление:
 '         Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As Variant,
@@ -482,7 +482,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Номер столбца снимка 1..ColumnCount.
 '
 '         ByVal allowed As Variant
-'           Массив разрешённых строк; Choice возвращает каноническую строку из этого массива.
+'           Массив разрешённых строк; Choice возвращает строку именно в написании из этого массива.
 '
 '         Optional ByVal defaultValue As String = vbNullString
 '           Значение для пустой ячейки. В Text и Number без этого параметра пустая ячейка считается
@@ -587,13 +587,13 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Строка заголовков, в пределах снимка.
 '
 '         ByVal caption As String
-'           Смысловой заголовок столбца; повторные заголовки — ошибка.
+'           Название столбца; повторные заголовки — ошибка.
 '
 '
 '     ----------------------------------------------------------------------------------------------
 '     CSectionInputTable.RowByKey
 '
-'       Находит уникальную строку смыслового ключа в указанном подблоке.
+'       Находит единственную строку с заданным ключом в указанной части таблицы.
 '
 '       Объявление:
 '         Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, Optional
@@ -601,10 +601,10 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal key As String
-'           Смысловой ключ строки, не Excel-адрес.
+'           Название параметра, по которому ищется строка.
 '
 '         Optional ByVal keyColumn As Long = 1
-'           Столбец смысловых ключей 1..ColumnCount.
+'           Номер столбца с названиями параметров: от 1 до ColumnCount.
 '
 '         Optional ByVal firstRow As Long = 1
 '           Начало диапазона поиска строки, включительно.
@@ -628,7 +628,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Массив допустимых альтернативных ключей; неоднозначное совпадение отклоняется.
 '
 '         Optional ByVal keyColumn As Long = 1
-'           Столбец смысловых ключей 1..ColumnCount.
+'           Номер столбца с названиями параметров: от 1 до ColumnCount.
 '
 '         Optional ByVal firstRow As Long = 1
 '           Начало диапазона поиска строки, включительно.
@@ -973,7 +973,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal path As CGeometryPath
-'           Существующий непрерывный опубликованный CGeometryPath.
+'           Уже добавленная непрерывная линия CGeometryPath.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -1225,7 +1225,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal groupID As String
-'           Смысловой ID группы; путь и арматурная annotation-group — разные контракты.
+'           Имя группы линий; оно задаётся отдельно от имени группы для подписи арматуры.
 '
 '         ByVal pathIDs As Variant
 '           Массив ID существующих независимых путей; без повторов.
@@ -1584,7 +1584,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.NewPublicationRoot
 '
-'       У ProjectFrom начинает новый корень публикации по успешным позициям.
+'       У ProjectFrom начинает новую последовательность исходных номеров для успешно спроецированных стержней.
 '
 '       Объявление:
 '         Public NewPublicationRoot As Boolean
@@ -1593,7 +1593,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.SkipMissingProjection
 '
-'       Разрешить пропуск без hit с PROJECTION_MISSING; False выдаёт ошибку.
+'       Разрешает пропуск стержня без пересечения с целевой линией с диагностикой PROJECTION_MISSING; False выдаёт ошибку.
 '
 '       Объявление:
 '         Public SkipMissingProjection As Boolean
@@ -1602,7 +1602,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.Publication
 '
-'       PublishByRule или PublishPerSourcePosition; влияет на вывод, не геометрический шаг.
+'       PublishByRule или PublishPerSourcePosition: порядок записи стержней по правилам либо по исходным позициям.
 '
 '       Объявление:
 '         Public Publication As ERebarPublication
@@ -1613,7 +1613,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места
 '       запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner
-'       порядок также определяет владельца совпавшей позиции: сохраняются его диаметр и материал.
+'       порядок также определяет, какой совпавший стержень сохраняется вместе с его диаметром и материалом.
 '       Поэтому менять порядок в таком случае может изменить физическую арматуру.
 '
 '       Объявление:
@@ -1623,8 +1623,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.Coincidence
 '
-'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет явно выбранного
-'       опубликованного владельца.
+'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет
+'       стержень, добавленный в эту позицию первым.
 '
 '       Объявление:
 '         Public Coincidence As ERebarCoincidence
@@ -1669,7 +1669,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.AnnotationGroup
 '
-'       Смысловая принадлежность подписи физического стержня; не расчётная группа трещин СП35.
+'       Имя группы, объединяющей стержни в общей подписи количества и диаметров на схеме.
 '
 '       Объявление:
 '         Public AnnotationGroup As String
@@ -1791,7 +1791,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarPublication
 '
-'       PublishByRule или PublishPerSourcePosition; влияет на вывод, не геометрический шаг.
+'       PublishByRule или PublishPerSourcePosition: порядок записи стержней по правилам либо по исходным позициям.
 '
 '       Объявление:
 '         Public Enum ERebarPublication
@@ -1805,7 +1805,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места
 '       запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner
-'       порядок также определяет владельца совпавшей позиции: сохраняются его диаметр и материал.
+'       порядок также определяет, какой совпавший стержень сохраняется вместе с его диаметром и материалом.
 '       Поэтому менять порядок в таком случае может изменить физическую арматуру.
 '
 '       Объявление:
@@ -1818,8 +1818,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarCoincidence
 '
-'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет явно выбранного
-'       опубликованного владельца.
+'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет
+'       стержень, добавленный в эту позицию первым.
 '
 '       Объявление:
 '         Public Enum ERebarCoincidence
@@ -2106,7 +2106,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Обозначение измерения или имя контейнера.
 '
 '         Optional ByVal measurement As String = "Aligned"
-'           Ровно Horizontal, Vertical или Aligned; значение чувствительно к указанному контракту.
+'           Ровно Horizontal, Vertical или Aligned; регистр букв должен совпадать с указанным.
 '
 '         Optional ByVal normalX As Double = 0#
 '           X-компонента направления от бетона к подписи или выносной линии. Вместе с normalY задаёт
@@ -2249,7 +2249,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal groupID As String
-'           Смысловой ID группы; путь и арматурная annotation-group — разные контракты.
+'           Имя группы линий; оно задаётся отдельно от имени группы для подписи арматуры.
 '
 '         ByVal target As String
 '           ID пути/PathGroup, разрешаемый в этом определении.
@@ -2276,7 +2276,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal groupID As String
-'           Смысловой ID группы; путь и арматурная annotation-group — разные контракты.
+'           Имя группы линий; оно задаётся отдельно от имени группы для подписи арматуры.
 '
 '         ByVal ruleID As String
 '           Непустой уникальный ID правила; при диагностике — ID ранее исполненного правила.
@@ -2304,7 +2304,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal groupID As String
-'           Смысловой ID группы; путь и арматурная annotation-group — разные контракты.
+'           Имя группы линий; оно задаётся отдельно от имени группы для подписи арматуры.
 '
 '         ByVal ruleID As String
 '           Непустой уникальный ID правила; при диагностике — ID ранее исполненного правила.
@@ -2336,7 +2336,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal groupID As String
-'           Смысловой ID группы; путь и арматурная annotation-group — разные контракты.
+'           Имя группы линий; оно задаётся отдельно от имени группы для подписи арматуры.
 '
 '         ByVal ruleID As String
 '           Непустой уникальный ID правила; при диагностике — ID ранее исполненного правила.
@@ -2455,7 +2455,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CGeometryPath.ID
 '
-'       Смысловой ID этого пути.
+'       Уникальное имя этой линии.
 '
 '       Объявление:
 '         Public Property Get ID() As String
@@ -2487,7 +2487,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CGeometryPath.SegmentID
 '
-'       Возвращает смысловой ID сегмента по индексу.
+'       Возвращает имя сегмента по его порядковому номеру.
 '
 '       Объявление:
 '         Public Property Get SegmentID(ByVal index As Long) As String
@@ -2500,7 +2500,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CGeometryPath.SegmentIndex
 '
-'       Разрешает существующий смысловой ID в текущий индекс; исчезнувшая дуга даёт MISSING_SEGMENT.
+'       Находит текущий номер сегмента по имени; если дуга исчезла при построении, выдаёт MISSING_SEGMENT.
 '
 '       Объявление:
 '         Public Function SegmentIndex(ByVal segmentID As String) As Long
@@ -2681,7 +2681,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CGeometryPath.WithID
 '
-'       Копирует опубликованный путь с новым ID, сохраняя сегментные ссылки и исходное происхождение.
+'       Копирует завершённую линию с новым именем, сохраняя соответствие сегментов исходным линиям.
 '
 '       Объявление:
 '         Public Function WithID(ByVal pathID As String) As CGeometryPath
@@ -2730,7 +2730,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.Source
 '
-'       Связывает смысловой ID со строкой источника/адреса без сохранения объекта Excel.
+'       Сохраняет для имени объекта текст его источника или адреса; ссылку на объект Excel не хранит.
 '
 '       Объявление:
 '         Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)
@@ -2777,7 +2777,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CGeometryDiagnostic.EntityID
 '
-'       Смысловой ID сущности отказа, если он известен этому сервису.
+'       Имя объекта, вызвавшего ошибку, если его удалось определить.
 '
 '       Объявление:
 '         Public Property Get EntityID() As String

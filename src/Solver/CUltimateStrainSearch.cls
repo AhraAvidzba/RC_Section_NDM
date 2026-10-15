@@ -18,13 +18,12 @@ Option Explicit
 ' общий CLoadMultiplierSearch.
 
 Private mFrame As CSectionNumericalFrame ' Тот же центр и масштаб, что у прямого НДС.
-Private mMeritWeight1 As Double, mMeritWeight2 As Double, mMeritWeight3 As Double
+Private mMeritWeight1 As Double, mMeritWeight2 As Double, mMeritWeight3 As Double ' Веса трёх уравнений при оценке качества пробной точки поиска.
 Private mMeritScalingReady As Boolean ' Веса текущего шага по реальным строкам Якобиана; не допуски приема точки.
 Private Const INITIAL_STEP_SCALE_FACTOR As Double = 2# ' Численный радиус стартовой пробы, не физический предел.
 
-' Выполняет ветку UltimateStrain для request-а несущей способности.
-' Чисто осевая траектория переводится в LoadMultiplier тем же правилом, что и
-' в основной capacity-логике.
+' Ищет несущую способность методом UltimateStrain. Чисто осевое изменение
+' нагрузки направляет в LoadMultiplier по общему правилу численной устойчивости.
 Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4210, "CUltimateStrainSearch", "Не передан запрос limit-search."
 
@@ -60,17 +59,16 @@ Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitS
     Set ExecuteCapacity = request.Problem.BuildResult(request, request.Problem.Converged)
 End Function
 
-' Запускает ветку LoadMultiplier для capacity через общий search-класс.
-' Используется для чисто осевых траекторий, где прямой UltimateStrain
-' численно вырожден, и для fallback после неудачной force-only попытки.
+' Запускает общий LoadMultiplier для чисто осевой траектории
+' или после неудачного прямого поиска по силовой нагрузке.
 Private Function ExecuteCapacityLoadMultiplier(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim multiplier As CLoadMultiplierSearch
     Set multiplier = New CLoadMultiplierSearch
     Set ExecuteCapacityLoadMultiplier = multiplier.Execute(request)
 End Function
 
-' Повторяет ту же capacity-траекторию через LoadMultiplier и возвращает новый
-' snapshot результата после объединения диагностики первой попытки и fallback.
+' Повторяет ту же задачу несущей способности через LoadMultiplier
+' и возвращает результат с сохранённой диагностикой первой попытки.
 Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimitSearchRequest, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
         ByVal successMessage As String) As CLimitSearchResult
@@ -91,9 +89,9 @@ Private Function ExecuteCapacityFallbackToLoadMultiplier(ByVal request As CLimit
     Set ExecuteCapacityFallbackToLoadMultiplier = request.Problem.BuildResult(request, request.Problem.Converged)
 End Function
 
-' Выполняет ветку UltimateStrain для поиска образования нормальной трещины.
-' Инженерный критерий eps_bt,ult, сохранение PreCrackState/PostCrackState и
-' диагностика принадлежат Formation; численный Newton-цикл общий с Capacity.
+' Ищет образование трещины методом UltimateStrain. Физический критерий eps_bt,ult
+' и сохранение НДС до и после трещины задаёт её расчёт;
+' численный цикл Ньютона общий с несущей способностью.
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4211, "CUltimateStrainSearch", "Не передан запрос limit-search."
 
@@ -112,8 +110,8 @@ Public Function RunCapacityUltimateNewton(ByVal request As CLimitSearchRequest, 
     request.Problem.CompleteUltimate loadPath
 End Function
 
-' Выполняет тот же общий Newton-поиск UltimateStrain для образования трещины.
-' Crack-калькулятор передает выбранную lambda-траекторию и сохраняет результат.
+' Запускает общий поиск UltimateStrain для образования трещины
+' по переданной зависимости нагрузки от lambda.
 Public Function RunCrackFormationNewton(ByVal problem As ILimitSearchProblem, _
         ByVal section As CSectionModel, ByVal concreteMaterial As CMaterialDiagram, _
         ByVal steelMaterial As CMaterialDiagram, ByVal loadPath As CLoadPathVector, _
@@ -123,9 +121,9 @@ Public Function RunCrackFormationNewton(ByVal problem As ILimitSearchProblem, _
         "Поиск точки образования трещины по предельной деформации не сошелся за заданное число итераций.")
 End Function
 
-' Общий цикл UltimateStrain: оценка невязок, численный Якобиан, Newton-шаг и
-' line-search. Разные инженерные задачи отличаются только типизированными
-' callback-ами; ни конкретный калькулятор, ни late-bound объект не требуются.
+' Выполняет общий цикл: вычисляет невязки, численный Якобиан, шаг Ньютона
+' и подбирает его величину. Разные инженерные задачи передают
+' оценку критериев через ILimitSearchProblem.
 Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -151,8 +149,8 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     RecordUltimateStrainStart
     context.LimitSearchInitializeUltimateGuess section, concreteMaterial, steelMaterial, _
         loadPath, startSolver, eps0, kx, ky
-    ' Newton меняет деформацию в центре, а не в удаленном начале чертежа.
-    ' В доменный callback передается та же физическая плоскость в исходных осях.
+    ' Изменяем деформацию в центре сечения, уменьшая влияние удалённого начала чертежа.
+    ' Задаче передаём то же физическое поле в исходных координатах модели.
     eps0 = mFrame.CenterStrain(eps0, kx, ky)
     If Not IsFiniteNumber(eps0) Or Not IsFiniteNumber(kx) Or Not IsFiniteNumber(ky) Then
         context.SetFailure sfcNumericalFailure, "Стартовая плоскость UltimateStrain содержит нечисловое или бесконечное значение."
@@ -240,8 +238,9 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
             End If
             Exit Function
         End If
-        ' Принятая проба уже имеет свои residual/solver/критерий. Пробы Якобиана
-        ' ее не подменяют; финальное подтверждение усилий и физики остается выше.
+        ' Принятая точка уже имеет свои невязки, НДС и критерий. Пробы Якобиана
+        ' её не подменяют; физическая пригодность и равновесие
+        ' подтверждаются отдельно при принятии результата.
         acceptedEvaluation = immutableMaterials
         If acceptedEvaluation Then
             acceptedRevision = section.Revision
@@ -397,9 +396,9 @@ Private Function ApplyUltimateNewtonStep(ByVal context As ILimitSearchProblem, B
         Exit Function
     End If
 
-    ' Локальная производная на плато не видит возврата на активную ветвь.
-    ' Двусторонние секущие последовательно расширяют пробу до масштаба
-    ' текущей плоскости; результат по-прежнему принимает только line-search.
+    ' Производная на плато не показывает, как вернуться на участок с ненулевым наклоном.
+    ' Последовательно расширяем пробы с обеих сторон до масштаба текущего поля.
+    ' Приём шага по фактическому уменьшению невязок остаётся обязательным.
     If mFrame.HasFullPlaneSupport Then
         Dim horizon As Double, sample As Long, sampleStep As Double
         horizon = 2# * MaxDouble(0.0000001, MaxDouble(Abs(eps0), _
@@ -477,8 +476,9 @@ Private Function TryUltimateProjectedStep(ByVal context As ILimitSearchProblem, 
         a(i, 1) = a(i, 1) / matrixMagnitude: a(i, 2) = a(i, 2) / matrixMagnitude
         b(i) = b(i) / matrixMagnitude
     Next i
-    ' Dogleg ограничивает шаг по качеству локальной модели. При отказе
-    ' сохраняются прежние Newton/least-squares направления и их line-search.
+    ' Метод Dogleg ограничивает длину шага по точности локального приближения системы.
+    ' При неудаче сохраняет обычные направления Ньютона и наименьших квадратов
+    ' с проверкой уменьшения фактической невязки.
     If TryProjectedTrustRegion(context, section, concreteMaterial, steelMaterial, loadPath, _
             eps0, kx, ky, rPath1, rPath2, rLimit, solver, lambdaValue, state, _
             q, v, a, b, matrixMagnitude, h, horizon) Then
@@ -867,9 +867,10 @@ Failed:
     ReportArithmeticOrContractFailure context, "Проверка поправки UltimateStrain", Err.Number, Err.Description
 End Function
 
-' Начальная проба соразмерна текущей плоскости и деформациям материалов.
-' Пропущенные деления пополам входят в прежний бюджет line-search. Приемка
-' остается по настоящим невязкам; для чужих или изменяемых материалов шаг прежний.
+' Выбирает начальную величину пробы по текущим деформациям и диаграммам материалов.
+' Пропущенные деления пополам учитываются в общем лимите подбора шага.
+' Приём проверяется по реальным невязкам; для других или изменяемых материалов
+' сохраняется обычный способ выбора шага.
 Private Function InitialUltimateDirectionAlpha(ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, _
         ByVal dEps As Double, ByVal dKx As Double, ByVal dKy As Double, ByRef skippedBacktracks As Long) As Double
@@ -963,9 +964,10 @@ Private Function EvaluateResidual(ByVal context As ILimitSearchProblem, ByVal se
         solver, rPath1, rPath2, rLimit, lambdaValue, state, True)
 End Function
 
-' Переполнение или деление на ноль в численном шаге не означают физический
-' предел. Другие VBA-ошибки относятся к программному контракту; исходные
-' номер/текст сохраняются в журнале, а пользователь получает русскую причину.
+' Переполнение и деление на ноль при вычислении шага — численная неудача,
+' а не физический предел. Другие исключения VBA сохраняются
+' как внутренние ошибки с исходным номером и текстом в журнале
+' и понятной русской причиной для пользователя.
 Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProblem, _
         ByVal stage As String, ByVal errorNumber As Long, ByVal description As String)
     If context.StoppedTerminally Then Exit Sub
@@ -980,9 +982,8 @@ Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProbl
         failureCode = sfcInternalError
         reason = stage & ": внутренняя ошибка вычислений. Подробности сохранены в диагностическом журнале."
     End If
-    ' Стандартное сообщение уже объяснено по-русски. Явно заданная причина
-    ' callback-а содержит его контекст и сохраняется без изменения; текст
-    ' используется только для представления, не для назначения статуса.
+    ' Стандартная ошибка уже пояснена по-русски. Подробную причину задачи
+    ' сохраняем без замены; её текст влияет только на вывод, а не на статус.
     Dim standardDescription As String
     ' При активном Err функция Error$(n) может вернуть custom Description.
     ' Номер и исходная причина уже сохранены аргументами и журналом.
@@ -1001,10 +1002,10 @@ Private Function IsFiniteNumber(ByVal value As Double) As Boolean
     IsFiniteNumber = True
 End Function
 
-' Для подбора шага невязки нормируются теми же строками, что и система Newton.
-' Общий множитель ограничивает веса единицей; внутри line-search они неизменны.
-' У вырожденного Якобиана сохраняется доменная норма. Прием точки отдельно
-' проверяет исходные допуски усилий и деформаций, без этих весов.
+' Для подбора шага нормируем невязки так же, как строки системы Ньютона.
+' Веса не меняются внутри подбора; при вырожденном Якобиане используется
+' мера невязок самой задачи. Окончательная проверка точки использует
+' исходные допуски усилий и деформаций без этих весов.
 Private Sub ConfigureStepResidualScales(ByVal scale1 As Double, ByVal scale2 As Double, ByVal scale3 As Double)
     mMeritScalingReady = (scale1 > 0# And scale2 > 0# And scale3 > 0#)
     If Not mMeritScalingReady Then Exit Sub

@@ -17,7 +17,7 @@ Option Explicit
 
 Private mStartPoint(0 To 2) As Double ' Начальная точка тестовой линии в единицах теста.
 Private mEndPoint(0 To 2) As Double ' Конечная точка тестовой линии в единицах теста.
-Private mLayer As String ' ДЛЯ ТЕСТОВ: слой линии в fixture очистки AutoCAD.
+Private mLayer As String ' ДЛЯ ТЕСТОВ: имя слоя линии в примере проверки очистки AutoCAD.
 Private mDeleted As Boolean ' ДЛЯ ТЕСТОВ: факт вызова Delete, без изменения чужих COM-объектов.
 
 ' Задает две точки тестовой линии.

@@ -12,15 +12,12 @@ Option Explicit
 ' ==========================================================================
 ' Параметры арматуры для построения диаграмм
 ' ==========================================================================
-' Класс хранит только исходные характеристики ненапрягаемой арматуры.
-' Он не выбирает расчетный режим, не строит диаграмму и не содержит настроек
-' трещин. Готовую CMaterialDiagram по этим параметрам строит
-' CMaterialModelProvider, а solver работает уже с универсальной диаграммой.
-'
-' Rsc,ser и Esc оставлены как программные пользовательские параметры для
-' симметрии сжатой и растянутой ветви и для исследовательских сценариев.
-' Отдельные нормативные обозначения Rsc,ser и Esc для обычной арматуры в
-' СП 63 не вводятся, поэтому типовые defaults: Rsc,ser = Rs,ser, Esc = Es.
+' Хранит исходные характеристики ненапрягаемой арматуры. Готовую диаграмму
+' CMaterialDiagram по ним строит CMaterialModelProvider. Коэффициенты расчёта
+' трещин и выбор расчётного режима задаются отдельно.
+' Rsc,ser и Esc доступны как программные пользовательские параметры для сжатой ветви.
+' СП 63 не вводит эти отдельные обозначения для обычной арматуры, поэтому
+' по умолчанию принимаются Rsc,ser = Rs,ser и Esc = Es.
 
 Private mRsULS As Double ' Расчетное сопротивление растяжению для I ГПС, МПа.
 Private mRscULS As Double ' Расчетное сопротивление сжатию для I ГПС, МПа.
@@ -76,8 +73,8 @@ Private Sub Validate(Optional ByVal settings As CSystemSettingsReader = Nothing)
     RequirePositive settings, "Steel.ThreeLine.Esc2", mThreeLineEsc2, 3210
 End Sub
 
-' Проверяет физически положительный параметр арматуры и сохраняет согласованный
-' машинный код. Адрес нужной сжатой/растянутой ячейки добавляется Excel-reader-ом.
+' Проверяет положительность характеристики арматуры и сохраняет код ошибки.
+' При чтении Config к причине добавляется адрес соответствующей ячейки.
 Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key As String, _
         ByVal value As Double, ByVal errorCode As Long)
     If value > 0# Then Exit Sub
@@ -152,8 +149,8 @@ Public Function Clone() As CSteelMaterialParameters
     Set Clone = result
 End Function
 
-' Заполняет нормализованные параметры внутренних snapshots и тестов.
-' Пользовательский ввод остается обязанностью LoadFromSettings.
+' Заполняет параметры готовыми значениями во внутренних единицах
+' для сохранённых данных и тестов. Пользовательский ввод читает LoadFromSettings.
 Public Sub Initialize(ByVal rscULS As Double, ByVal rsULS As Double, _
         ByVal rscSLS As Double, ByVal rsSLS As Double, ByVal esc As Double, _
         ByVal es As Double, Optional ByVal twoLineEsc2 As Double = 0.025, _

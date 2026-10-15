@@ -188,15 +188,15 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace$(Format$(value, "0.############"), ",", ".")
 End Function
 
-' Добавляет человекочитаемую диагностику, сохраняя сырой журнал в result.
-' Только presentation-слой сжимает повторяющиеся строки и переводит подписи.
+' Добавляет понятное представление диагностики в отчёт. Исходный подробный журнал
+' сохраняется в результате; сокращение повторов меняет только текст вывода.
 Public Sub AddDiagnosticBlock(ByVal title As String, ByVal body As String)
     If Not mEnabled Then Exit Sub
     AddBlock title, HumanReadableReportBlock(title, body)
 End Sub
 
-' Форматирует длину для execution_report в той же выходной единице, что и
-' табличный Results. Внутри batch все еще хранит миллиметры.
+' Форматирует длину для отчёта в той же выходной единице, что таблица Results.
+' Во внутренних расчётных данных длина остаётся в мм.
 Public Function FormatLength(ByVal value As Double) As String
     If mUnits Is Nothing Then
         FormatLength = FormatNumberInvariant(value) & " мм"
@@ -264,8 +264,8 @@ Public Function FormatMy(ByVal value As Double) As String
     End If
 End Function
 
-' Форматирует скалярный момент без смены знака: используется для M1/M2,
-' Mxy,crc и других величин, где в отчете нужен модуль, а не глобальный Mx/My.
+' Форматирует модуль момента без изменения знака по глобальным осям.
+' Используется для M1/M2, Mxy,crc и других ненаправленных величин отчёта.
 Public Function FormatMomentMagnitude(ByVal value As Double) As String
     If mUnits Is Nothing Then
         FormatMomentMagnitude = FormatNumberInvariant(value) & " Н*мм"
@@ -344,10 +344,9 @@ Public Function StabilityPassDisplayName(ByVal passed As Boolean) As String
     End If
 End Function
 
-' Преобразует низкоуровневую диагностику solver-ов в форму, пригодную для
-' пользовательского txt-отчета. Внутренние DiagnosticLog остаются подробными
-' и машинно-проверяемыми, но отчет не должен забиваться сотнями строк
-' initialGuess/lambda_crc_iter без пояснений.
+' Преобразует служебную диагностику решателей в понятный текст отчёта.
+' Подробные исходные DiagnosticLog сохраняются без изменений;
+' повторяющиеся строки вроде initialGuess поясняются и сокращаются только при выводе.
 Private Function HumanReadableReportBlock(ByVal title As String, ByVal body As String) As String
     Dim text As String
     text = body
@@ -368,9 +367,8 @@ Private Function HumanReadableReportBlock(ByVal title As String, ByVal body As S
     HumanReadableReportBlock = text
 End Function
 
-' Приводит подробный журнал трещин к читаемому виду: смысловые строки и
-' итерации lambda_crc оставляет по порядку, а повторяющиеся warm-start
-' сообщения заменяет короткой сводкой.
+' Оставляет события расчёта трещин и итерации lambda_crc в исходном порядке,
+' а одинаковые сообщения о начальных приближениях заменяет краткой сводкой.
 Private Function CompactCrackDiagnosticText(ByVal body As String) As String
     Dim lines() As String
     lines = Split(body, vbCrLf)
@@ -397,8 +395,8 @@ Private Function CompactCrackDiagnosticText(ByVal body As String) As String
     CompactCrackDiagnosticText = TranslateDiagnosticLine(JoinReportParts(parts, partCount))
 End Function
 
-' Сжимает diagnostic CStateSolutionRunner. Особенно важно убрать десятки
-' одинаковых warm-start строк: они полезны разработчику, но не пользователю.
+' Сокращает повторяющиеся сообщения CStateSolutionRunner о начальных приближениях.
+' Полная техническая диагностика остаётся в исходном результате.
 Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As String
     Dim lines() As String
     lines = Split(body, vbCrLf)
@@ -430,9 +428,8 @@ Private Function CompactStateSolutionDiagnosticText(ByVal body As String) As Str
     CompactStateSolutionDiagnosticText = TranslateDiagnosticLine(JoinReportParts(parts, partCount))
 End Function
 
-' Сжимает диагностический блок поиска несущей способности. Полный список
-' lambda-точек может быть большим, но для инженерной диагностики полезно
-' видеть каждую проверенную точку и возможный retry НДС.
+' Готовит журнал поиска несущей способности для отчёта. Сохраняет
+' каждую проверенную нагрузку lambda и сведения о повторных попытках НДС.
 Private Function CompactCapacityDiagnosticText(ByVal body As String) As String
     If Len(body) = 0 Then Exit Function
     Dim lines() As String
@@ -545,9 +542,9 @@ Private Sub ReplaceWholeDiagnosticLine(ByRef text As String, ByVal marker As Str
     Loop
 End Sub
 
-' Пишет в txt-отчет подробные данные фильтра устойчивости по двум главным
-' плоскостям. Таблица Results остается основным машинным выводом, а этот блок
-' нужен для быстрой трассировки того, какая ветвь СП сработала в сценарии LC.
+' Записывает подробности устойчивости по двум главным плоскостям,
+' чтобы было видно, какой способ расчёта СП применён к сочетанию.
+' Основная таблица результатов остаётся на Results.
 Public Sub ReportStabilityDetails(ByVal stability As CStabilityResult)
     If Not mEnabled Then Exit Sub
     If stability Is Nothing Then Exit Sub
@@ -614,9 +611,9 @@ Public Sub ReportCrackFormationSearchStart(ByVal formationPath As String)
     End If
 End Sub
 
-' Поясняет только готовый итог Formation, не назначая применимость Width или psi.
-' Подтвержденное отсутствие трещины отличает от неудачи поиска; сведения о реально
-' использованном коэффициенте и предупреждения принадлежат результату Width.
+' Объясняет готовый итог образования трещины, различая отсутствие трещины
+' и неудачу поиска. Применимость ширины, фактический psi_s
+' и предупреждения берутся из отдельного результата расчёта ширины.
 Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
     If Not mEnabled Then Exit Sub
     If crack Is Nothing Then Exit Sub
@@ -635,9 +632,8 @@ Public Sub ReportCrackFormationChoice(ByVal crack As CCrackFormationResult)
     End If
 End Sub
 
-' Записывает в txt-отчет результат проверки продольных трещин, уже полученный
-' отдельным CLongitudinalCrackCalculator. Здесь не запускается solver и не
-' пересчитываются напряжения: отчет только поясняет готовый result-объект.
+' Записывает готовый результат продольных трещин, полученный
+' CLongitudinalCrackCalculator. Равновесие и напряжения заново не рассчитываются.
 Public Sub ReportLongitudinalCrackResult(ByVal longitudinalResult As CLongitudinalCrackResult)
     If Not mEnabled Then Exit Sub
     If longitudinalResult Is Nothing Then

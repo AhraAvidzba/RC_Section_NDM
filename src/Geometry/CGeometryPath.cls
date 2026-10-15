@@ -18,13 +18,13 @@ Option Explicit
 ' находятся в modGeometryPrimitives.
 
 Private Const PATH_TOLERANCE As Double = 0.000001 ' Допуск стыков, мм.
-Private mID As String ' Устойчивое имя линии в определении сечения.
-Private mEdges() As TRegionEdge ' Упорядоченные аналитические отрезки и дуги; фиктивные соединения запрещены.
-Private mSegmentIDs() As String ' Устойчивые имена сегментов текущей линии.
-Private mSourcePathIDs() As String, mSourceSegmentIDs() As String
-Private mSourceStart() As Double, mSourceEnd() As Double
+Private mID As String ' Имя линии в описании сечения; используется для ссылок на неё из правил и аннотаций.
+Private mEdges() As TRegionEdge ' Отрезки и дуги в порядке обхода линии; соединения между раздельными участками не добавляются.
+Private mSegmentIDs() As String ' Имена отрезков и дуг этой линии для привязки правил и аннотаций.
+Private mSourcePathIDs() As String, mSourceSegmentIDs() As String ' Имена исходных линий и сегментов для каждого полученного сегмента.
+Private mSourceStart() As Double, mSourceEnd() As Double ' Начальный и конечный параметры исходного сегмента для переноса привязанных точек.
 Private mStations() As Double ' Накопленные длины сегментов; позволяют искать точку без повторного суммирования.
-Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long ' Имена исчезнувших участков и их положение; фиктивные рёбра не создаются.
+Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long ' Имена исчезнувших при построении участков и координаты их привязки; новые отрезки вместо них не создаются.
 Private mCount As Long, mCapacity As Long ' Число аналитических сегментов и ёмкость рабочего массива.
 Private mSealed As Boolean, mClosed As Boolean ' Завершение построения и фактическая замкнутость линии.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка построения или обращения к линии.
@@ -34,14 +34,14 @@ Public Property Get LastDiagnostic() As CGeometryDiagnostic
     Set LastDiagnostic = mDiagnostic
 End Property
 
-' Создаёт mutable путь с непустым ID один раз.
+' Начинает описание линии с непустым ID. Допускается только один вызов для объекта.
 Public Sub Initialize(ByVal pathID As String)
     If Len(mID) > 0 Then PathError "Путь уже инициализирован."
     If Len(Trim$(pathID)) = 0 Then PathError "Не задан ID пути."
     mID = pathID
 End Sub
 
-' Добавляет прямой сегмент с устойчивым ID; начало совпадает с предыдущим концом.
+' Добавляет отрезок с заданным ID; его начало должно совпадать с концом предыдущего сегмента.
 Public Sub AddLine(ByVal segmentID As String, ByVal x1 As Double, ByVal y1 As Double, _
         ByVal x2 As Double, ByVal y2 As Double)
     Dim edge As TRegionEdge
@@ -49,8 +49,8 @@ Public Sub AddLine(ByVal segmentID As String, ByVal x1 As Double, ByVal y1 As Do
     Append segmentID, edge
 End Sub
 
-' Каноническая дуга: центр/радиус/начальный угол/signed sweep, углы в радианах.
-' Полный оборот допустим; нулевая дуга и более одного оборота запрещены.
+' Добавляет дугу по центру, радиусу, начальному углу и углу обхода со знаком, в радианах.
+' Полный оборот допустим; нулевая дуга и дуга больше одного оборота вызывают ошибку.
 Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal radius As Double, ByVal startAngle As Double, ByVal sweep As Double)
     RequireMutable
@@ -64,8 +64,9 @@ Public Sub AddArc(ByVal segmentID As String, ByVal centerX As Double, ByVal cent
     Append segmentID, edge
 End Sub
 
-' Публикация закрывает возможность изменения; разрывы нельзя чинить
-' фиктивной линией, а Closed не соединяет физически разные концы.
+' Завершает и проверяет линию, после чего менять её нельзя.
+' Разрывы не соединяются дополнительными отрезками. Запрос Closed
+' не замыкает разные концы автоматически: они уже должны совпадать.
 Public Sub Seal(Optional ByVal closed As Boolean = False)
     RequireMutable
     If mCount = 0 Then PathError "Путь не содержит сегментов."
@@ -81,27 +82,27 @@ Public Sub Seal(Optional ByVal closed As Boolean = False)
     mCapacity = mCount: mClosed = closed: mSealed = True
 End Sub
 
-' Смысловой ID этого пути.
+' Возвращает имя линии, по которому на неё ссылаются правила и аннотации.
 Public Property Get ID() As String: ID = mID: End Property
-' Число аналитических line/arc сегментов.
+' Возвращает число отрезков и дуг линии.
 Public Property Get SegmentCount() As Long: SegmentCount = mCount: End Property
-' Опубликован ли объект; published геометрия не изменяется.
+' Показывает, завершено ли описание линии и запрещены ли дальнейшие изменения.
 Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
 ' Замкнут ли фактический путь, без фиктивного соединения.
 Public Property Get IsClosed() As Boolean: RequireSealed: IsClosed = mClosed: End Property
 ' Точная суммарная длина пути, мм.
 Public Property Get Length() As Double: RequireSealed: Length = mStations(mCount): End Property
-' Возвращает смысловой ID сегмента по индексу.
+' Возвращает имя отрезка или дуги по порядковому номеру в линии.
 Public Property Get SegmentID(ByVal index As Long) As String
     CheckIndex index: SegmentID = mSegmentIDs(index)
 End Property
 
-' ID исходного пути сегмента после slice/transform/offset.
+' Возвращает ID линии, из которой получен сегмент после обрезки, преобразования или смещения.
 Public Property Get SourcePathID(ByVal index As Long) As String
     CheckIndex index: SourcePathID = mSourcePathIDs(index)
 End Property
 
-' Смысловой исходный ID сегмента, сохраняемый при распаде/переименовании результата.
+' Возвращает исходное имя сегмента, сохранённое при его разделении или переименовании.
 Public Property Get SourceSegmentID(ByVal index As Long) As String
     CheckIndex index: SourceSegmentID = mSourceSegmentIDs(index)
 End Property
@@ -116,7 +117,8 @@ Public Property Get SourceEndParameter(ByVal index As Long) As Double
     CheckIndex index: SourceEndParameter = mSourceEnd(index)
 End Property
 
-' Разрешает существующий смысловой ID в текущий индекс; исчезнувшая дуга даёт MISSING_SEGMENT.
+' Находит номер сегмента по его ID. Если нужная дуга исчезла при построении,
+' сообщает об ошибке MISSING_SEGMENT.
 Public Function SegmentIndex(ByVal segmentID As String) As Long
     Dim i As Long
     For i = 1 To mCount
@@ -125,8 +127,9 @@ Public Function SegmentIndex(ByVal segmentID As String) As Long
     PathError "Не найден сегмент '" & segmentID & "'.", "MISSING_SEGMENT", segmentID
 End Function
 
-' Привязка задаётся именем сегмента и долей его длины. У исчезнувшего при построении
-' сегмента обе границы сохраняются в одном стыке; неизвестный ID остаётся ошибкой.
+' Находит привязку по имени сегмента и доле его длины. Если сегмент исчез
+' при построении, обе его границы соответствуют одному сохранённому стыку.
+' Неизвестное имя вызывает ошибку.
 Public Function AnchorStation(ByVal segmentID As String, Optional ByVal parameter As Double = 0#) As Double
     RequireSealed
     If parameter < 0# Or parameter > 1# Then PathError "Параметр привязки должен быть от 0 до 1."
@@ -159,7 +162,8 @@ Public Sub ResolveAnchor(ByVal x As Double, ByVal y As Double, _
     segmentID = mSegmentIDs(found): parameter = resolved
 End Sub
 
-' Копирует опубликованный путь с новым ID, сохраняя сегментные ссылки и исходное происхождение.
+' Создаёт копию завершённой линии с новым ID, сохраняя имена сегментов
+' и сведения о том, откуда они получены.
 Public Function WithID(ByVal pathID As String) As CGeometryPath
     RequireSealed
     Dim result As CGeometryPath, i As Long
@@ -199,8 +203,9 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
     Set BetweenAnchors = result
 End Function
 
-' Параметр - пройденная длина в мм. По умолчанию на стыке выбирается
-' исходящая касательная; incomingTangentAtJoint сохраняет входящее направление.
+' Находит точку по пройденному расстоянию от начала линии, мм, и направление
+' касательной в ней. На стыке по умолчанию берёт следующий сегмент;
+' incomingTangentAtJoint выбирает направление предыдущего.
 Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Double, _
         ByRef tangentX As Double, ByRef tangentY As Double, Optional ByVal incomingTangentAtJoint As Boolean = False)
     RequireSealed
@@ -223,7 +228,8 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
     tangentX = tangentX / norm: tangentY = tangentY / norm
 End Sub
 
-' Возвращает действительные min/max проекции по нормированному направлению, с экстремумами дуг.
+' Возвращает наименьшую и наибольшую проекции линии на заданное направление.
+' Учитывает крайние точки дуг, которые могут лежать между их концами.
 Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Double, _
         ByRef minimum As Double, ByRef maximum As Double)
     RequireSealed
@@ -237,8 +243,8 @@ Public Sub ProjectionBounds(ByVal directionX As Double, ByVal directionY As Doub
     Next i
 End Sub
 
-' Ограничивает весь составной путь по длине без сброса шага на стыках.
-' Полученные части сохраняют исходные смысловые ID и точные дуги.
+' Вырезает участок составной линии по расстояниям от её начала.
+' Отсчёт длины на стыках не начинается заново; точные дуги и имена сегментов сохраняются.
 Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double) As CGeometryPath
     RequireSealed
     startDistance = CheckedDistance(startDistance): endDistance = CheckedDistance(endDistance)
@@ -259,7 +265,8 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
     Set Slice = result
 End Function
 
-' Добавляет аналитические части сегментов между станциями пути, сохраняя линии и дуги.
+' Добавляет части линии между заданными расстояниями от её начала,
+' сохраняя отрезки и дуги без замены приближённой ломаной.
 Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double)
     If last <= first + PATH_TOLERANCE Then Exit Sub
     Dim part As CGeometryPath, i As Long, edge As TRegionEdge, name As String, suffix As Long, offset As Double
@@ -275,8 +282,9 @@ Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double,
     part.CopyCollapsedAnchors result, 0#, part.Length, offset
 End Sub
 
-' Сохраняет имя исчезнувшего элемента как привязку, без добавления геометрии.
-' Вызывает построитель, который достоверно знает место схлопнувшегося участка.
+' Сохраняет место исчезнувшего участка как именованную точку привязки.
+' Сам участок не добавляется. Вызывать можно, когда построитель знает точное место его
+' исчезновения.
 Friend Sub AddCollapsedSegment(ByVal segmentID As String, Optional ByVal station As Double = -1#)
     RequireMutable
     If Len(Trim$(segmentID)) = 0 Then PathError "Не задан ID исчезнувшего сегмента."
@@ -310,12 +318,13 @@ Friend Sub CopyCollapsedAnchors(ByVal result As CGeometryPath, ByVal first As Do
     Next i
 End Sub
 
-' Длина уже добавленных элементов нужна при сборке составного участка до Seal.
+' Возвращает длину уже добавленных сегментов, чтобы продолжить сборку линии до Seal.
 Friend Property Get AccumulatedLength() As Double
     If mCount > 0 Then AccumulatedLength = mStations(mCount)
 End Property
 
-' Отличает сохранённую привязку от физического сегмента и неизвестного имени.
+' Проверяет, сохранено ли имя как точка привязки исчезнувшего участка.
+' Такая привязка отличается от существующего сегмента и от неизвестного имени.
 Friend Function HasCollapsedSegmentID(ByVal segmentID As String) As Boolean
     Dim i As Long
     For i = 1 To mCollapsedCount
@@ -328,8 +337,8 @@ Private Function OriginParameter(ByVal index As Long, ByVal parameter As Double)
     OriginParameter = mSourceStart(index) + parameter * (mSourceEnd(index) - mSourceStart(index))
 End Function
 
-' Проверяет наличие смыслового сегмента; исчезнувшая при скруглении прямая не считается
-' существующей.
+' Проверяет, остался ли сегмент с указанным именем в линии.
+' Отрезок, исчезнувший при скруглении, существующим сегментом не считается.
 Friend Function HasSegmentID(ByVal segmentID As String) As Boolean
     Dim i As Long
     For i = 1 To mCount
@@ -337,8 +346,8 @@ Friend Function HasSegmentID(ByVal segmentID As String) As Boolean
     Next i
 End Function
 
-' Копирует путь с обратным порядком сегментов/обходом; signed sweep и source parameters
-' обращаются.
+' Создаёт копию линии с обратным направлением обхода и порядком сегментов.
+' Меняет знаки углов дуг и направление отсчёта параметров исходных сегментов.
 Public Function Reversed() As CGeometryPath
     RequireSealed
     Dim result As CGeometryPath, i As Long, edge As TRegionEdge
@@ -352,8 +361,9 @@ Public Function Reversed() As CGeometryPath
     Set Reversed = result
 End Function
 
-' Изометрия: сначала отражение относительно локальной оси X, затем поворот
-' вокруг (0,0) и перенос. Отражение меняет signed sweep, но не смысловые ID.
+' Создаёт преобразованную линию: отражает относительно локальной оси X,
+' поворачивает вокруг (0, 0), затем переносит. При отражении меняет знак
+' угла обхода дуг; имена сегментов сохраняет.
 Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, _
         Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False) As CGeometryPath
     RequireSealed
@@ -375,8 +385,9 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, _
     Set Transformed = result
 End Function
 
-' ProjectFrom получает ближайший положительный hit на фактическом target.
-' Отсутствие hit возвращает False, не переносит точку на бесконечную прямую.
+' Ищет ближайшее пересечение в положительном направлении проекции
+' с фактическими отрезками и дугами целевой линии. Без пересечения возвращает False;
+' продолжения линий до бесконечности не используются.
 Public Function RayHit(ByVal originX As Double, ByVal originY As Double, ByVal directionX As Double, _
         ByVal directionY As Double, ByRef pathDistance As Double, ByRef rayDistance As Double) As Boolean
     RequireSealed
@@ -436,7 +447,7 @@ Friend Sub Append(ByVal segmentID As String, ByRef edge As TRegionEdge, Optional
     mStations(mCount) = mStations(mCount - 1) + segmentLength
 End Sub
 
-' Применяет жёсткое преобразование к координатам точки, сохраняя внутренние мм.
+' Отражает, поворачивает и переносит точку; координаты остаются в мм.
 Private Sub TransformPoint(ByRef x As Double, ByRef y As Double, ByVal shiftX As Double, ByVal shiftY As Double, _
         ByVal cosine As Double, ByVal sine As Double, ByVal reflectX As Boolean)
     Dim newX As Double
@@ -450,13 +461,14 @@ Private Function PointsCoincide(ByVal x1 As Double, ByVal y1 As Double, ByVal x2
     PointsCoincide = (Sqr((x2 - x1) ^ 2 + (y2 - y1) ^ 2) <= PATH_TOLERANCE)
 End Function
 
-' Проверяет допустимость станции на пути и нормализует только пограничную погрешность.
+' Проверяет расстояние от начала линии до точки. Исправляет только малую
+' погрешность у концов; заведомо недопустимое расстояние вызывает ошибку.
 Private Function CheckedDistance(ByVal distance As Double) As Double
     If distance < -PATH_TOLERANCE Or distance > mStations(mCount) + PATH_TOLERANCE Then PathError "Позиция выходит за пределы длины пути."
     CheckedDistance = GeomMax(0#, GeomMin(mStations(mCount), distance))
 End Function
 
-' Запрещает изменение геометрического объекта после его запечатывания.
+' Запрещает изменение линии после её завершения методом Seal.
 Private Sub RequireMutable()
     If Len(mID) = 0 Then PathError "Путь не инициализирован."
     If mSealed Then PathError "Опубликованный путь нельзя изменять."

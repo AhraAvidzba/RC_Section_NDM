@@ -45,8 +45,8 @@ Private Function PipelineSpec() As CMaterialModelSpec
     Set PipelineSpec = spec
 End Function
 
-' ДЛЯ ТЕСТОВ: заданная плоскость лишь оценивается и подтверждается для своих
-' усилий. Здесь нет поиска или итераций; Width обязан принять готовый State.
+' ДЛЯ ТЕСТОВ: оценивает заданное поле деформаций и подтверждает его равновесие
+' для полученных усилий без поиска и итераций. Расчёт ширины принимает готовое НДС.
 Private Function ReadyPlane(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double) As CSectionStateResult
     Dim solver As CSectionSolver, result As CSectionStateResult, spec As CMaterialModelSpec
@@ -57,8 +57,8 @@ Private Function ReadyPlane(ByVal section As CSectionModel, ByVal provider As CM
     Set ReadyPlane = result
 End Function
 
-' ДЛЯ ТЕСТОВ: отсутствие Formation с машинной численной причиной должно
-' оставаться отдельным результатом; Width СП 35 не получает NumFail/psi_s.
+' ДЛЯ ТЕСТОВ: численная неудача образования трещины остаётся отдельным результатом.
+' Она не должна превращаться в NumFail ширины СП 35; коэффициент ψs здесь не применяется.
 Private Function MissingFormation() As CCrackFormationResult
     Dim owner As CCrackFormationCalculator, meta As CResultMeta, result As CCrackFormationResult
     Set owner = New CCrackFormationCalculator: owner.LimitSearchSetFailure sfcNumericalFailure, "Контрольная причина отсутствия точки образования."
@@ -153,8 +153,8 @@ Private Sub TestCentralAndCompressedPipeline()
     Check "SP35.compressed.noOldArea", width.InteractionRegion Is Nothing
 End Sub
 
-' ДЛЯ ТЕСТОВ: запускает Width штатным API, не численный поиск Formation.
-' Независимые эталоны проверяют критический выбор, несколько пустот и статусы.
+' ДЛЯ ТЕСТОВ: запускает обычную формулу ширины без поиска образования трещины.
+' Независимые эталоны проверяют определяющий результат, несколько отверстий и статусы.
 Public Function RunSP35PipelineTests() As String
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = vbNullString
@@ -310,8 +310,8 @@ Public Function RunSP35WorkbookTests(Optional ByVal ownedApplication As Object =
         If CStr(values(i, 2)) = "CRACK_PROBE" And CStr(values(i, 14)) = "SP35_C" Then probeRows = probeRows + 1
     Next i
     Check "SP35.annotation.fiveBoundaryProbes", probeRows = 5
-    ' Native runner передаёт собственный проверенный AutoCAD; тест создаёт
-    ' только свой документ. Без аргумента прежний ручной контракт сохранён.
+    ' Внешний сценарий передаёт собственный проверенный AutoCAD; тест создаёт
+    ' только свой документ. Ручной запуск без аргумента сохраняется.
     Set acad = ownedApplication
     If acad Is Nothing Then Set acad = ConnectToRunningAutoCAD()
     If acad.Documents.Count > 0 Then Set previousDoc = acad.ActiveDocument
@@ -881,8 +881,8 @@ Private Sub TestPreparationToleranceBoundaries()
     Check "SP35.invalidTolerance.noOldCandidates", data.CandidateCount = 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: только подготовка групп/областей по готовым числам, без batch,
-' Search и solver. Проверяет центральную/изгибную постановку и два проема.
+' ДЛЯ ТЕСТОВ: подготавливает группы и области по готовым числам без решения НДС
+' и предельного поиска. Проверяет центральное растяжение, изгиб и два отверстия.
 Public Function RunSP35PreparationTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
@@ -1182,8 +1182,8 @@ Finished:
     RunSP35SavedHollowTests = mReport
 End Function
 
-' ДЛЯ ТЕСТОВ: принадлежность всех стержней группы сравнивается с положением
-' ее исходного центра в конечной области. Проверяет неделимость всех кандидатов.
+' ДЛЯ ТЕСТОВ: включение всех стержней группы сравнивается с положением
+' её исходного центра в конечной области. Ни одна проверяемая группа не делится.
 Private Sub CheckCandidateMembership(ByVal prefix As String, ByVal data As CSP35CrackData, _
         ByVal section As CSectionModel, ByVal query As CSectionGeometryQuery)
     Dim candidate As Long, bar As Long, row As Long, rows As Variant, members As Variant, member As Variant

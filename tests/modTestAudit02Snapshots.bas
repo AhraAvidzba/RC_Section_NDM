@@ -1,7 +1,7 @@
 Attribute VB_Name = "modTestAudit02Snapshots"
 Option Explicit
 
-' ДЛЯ ТЕСТОВ: сопоставимые сборки и адресные расчёты всех семейств; без полного ON/OFF suite.
+' ДЛЯ ТЕСТОВ: сравнение построения и направленные расчёты всех групп сечений.
 #If VBA7 Then
 Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
 Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
@@ -17,7 +17,7 @@ Private Type TDoubleWords
     High As Long
 End Type
 
-' ДЛЯ ТЕСТОВ: один прогрев и пять измерений полного BuildWorkbookSectionModel каждого геометрического варианта.
+' ДЛЯ ТЕСТОВ: один прогрев и пять замеров полного построения модели каждого варианта геометрии.
 Public Function DumpAudit02BuildPerformance() As String
     Dim config As Object, saved As Variant, fixture As Variant, i As Long, result As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
@@ -47,8 +47,9 @@ Finished:
     DumpAudit02BuildPerformance = result
 End Function
 
-' ДЛЯ ТЕСТОВ: два сочетания четырёх семейств, со включёнными НДС/несущей/устойчивостью/трещинами.
-' Числа записываются как IEEE754, статусы и пояснения отдельно; состояние диаграмм не меняется.
+' ДЛЯ ТЕСТОВ: два сочетания четырёх групп сечений с НДС, несущей способностью,
+' устойчивостью и трещинами. Сохраняет все биты чисел Double, статусы
+' и пояснения отдельно. Настройку продолжения диаграмм не меняет.
 Public Function DumpAudit02Calculations(Optional ByVal crackCode As String = "SP35") As String
     Dim config As Object, saved As Variant, fixture As Variant, result As String
     Dim profiles As Object, row As Long, key As String, settings As CSystemSettingsReader, units As CUnitSystem

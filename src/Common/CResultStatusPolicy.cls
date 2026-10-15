@@ -19,9 +19,9 @@ Option Explicit
 Private Const STATUS_OK As String = "OK" ' Проверка выполнена и прошла.
 Private Const STATUS_FAIL As String = "FAIL" ' Результат получен, но инженерная проверка не проходит.
 Private Const STATUS_BASEFAIL As String = "BaseFail" ' Постоянная часть пути не проходит критерий либо фиксированный путь физически его не достигает.
-Private Const STATUS_NUMFAIL As String = "NumFail" ' Численная несходимость solver/search.
+Private Const STATUS_NUMFAIL As String = "NumFail" ' Равновесие или предельная точка не найдены численным методом.
 Private Const STATUS_INPUTERR As String = "InputErr" ' Ошибка пользовательских данных или Config.
-Private Const STATUS_CALCERR As String = "CalcErr" ' Внутренняя ошибка программы или несформированный result.
+Private Const STATUS_CALCERR As String = "CalcErr" ' Внутренняя ошибка программы или отсутствие обязательного результата.
 Private Const STATUS_NA As String = "N/A" ' Расчет не запрошен, неприменим или заблокирован зависимостью.
 
 ' Код успешной применимой проверки по общей политике статусов.
@@ -59,7 +59,7 @@ Public Property Get NotApplicable() As String
     NotApplicable = STATUS_NA
 End Property
 
-' Возвращает внешний статус по полной meta-структуре результата.
+' Возвращает обозначение статуса для пользователя по сохранённым коду и признакам результата.
 Public Function ExternalStatus(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then
         ExternalStatus = STATUS_CALCERR
@@ -93,9 +93,9 @@ Public Function ExternalStatus(ByVal meta As CResultMeta) As String
     End Select
 End Function
 
-' Нормализует уже внешний display-статус. Метод не создает CResultMeta и не
-' анализирует StopReason/ResultComment: смысл результата должен приходить
-' через InternalStatus + ResultCode, а неизвестная строка считается CalcErr.
+' Проверяет уже заданное внешнее обозначение статуса. Неизвестная строка
+' считается CalcErr. Причина результата должна быть передана отдельными
+' InternalStatus и ResultCode, а не определяться из текста комментария.
 Public Function ToUserStatus(ByVal statusText As String) As String
     Dim value As String
     value = Trim$(statusText)
@@ -119,9 +119,9 @@ Public Function ToUserStatus(ByVal statusText As String) As String
     End Select
 End Function
 
-' Выбирает худший готовый typed результат по единому приоритету Overall.
-' Сохраняет точный код/диагностику выбранной причины
-' и независимый snapshot; комментарий уже подготовлен владельцем поддерева.
+' Выбирает результат с наиболее серьёзным статусом по общему приоритету.
+' Сохраняет его точную причину, диагностику и готовое пояснение
+' в независимой копии для дальнейшего использования.
 Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
         ParamArray metas() As Variant) As CResultMeta
     Dim selected As CResultMeta, candidate As CResultMeta
@@ -164,9 +164,9 @@ Public Function IsFailedOverall(ByVal statusText As String) As Boolean
         statusText = STATUS_NUMFAIL Or statusText = STATUS_INPUTERR Or statusText = STATUS_CALCERR)
 End Function
 
-' Распознает только утвержденные внешние статусы численной несходимости.
-' Текстовые причины solver-а не анализируются, чтобы статус не зависел от
-' формулировки комментария или языка diagnostic-сообщения.
+' Распознаёт предусмотренные внешние обозначения численной несходимости.
+' Текст причины решателя не анализируется, поэтому формулировка
+' и язык пояснения на классификацию не влияют.
 Public Function IsNumerical(ByVal statusText As String) As Boolean
     IsNumerical = (ToUserStatus(statusText) = STATUS_NUMFAIL)
 End Function

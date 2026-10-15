@@ -24,7 +24,7 @@ Private mHasLimitPoint As Boolean ' Найдена точка, а не толь�
 Private mPointState As CSectionStateResult ' Единственный снимок НДС найденной точки.
 Private mSearchExecuted As Boolean ' Численный поиск действительно запускался.
 Private mLambdaUltimate As Double ' Множитель нагрузки в найденной точке.
-Private mNUltimate As Double ' Вектор для материала без named-state спецификации.
+Private mNUltimate As Double ' Численные усилия для задачи, в которой не создаётся отдельное именованное НДС.
 Private mMxUltimate As Double ' Mx низкоуровневой точки, Н*мм.
 Private mMyUltimate As Double ' My низкоуровневой точки, Н*мм.
 Private mLimitState As String ' Код управляющего критерия, без интерпретации.
@@ -38,10 +38,9 @@ Private Sub Class_Initialize()
         vbNullString, True, False
 End Sub
 
-' Принимает готовый исход задачи и численный снимок без живых калькуляторов.
-' Отсутствие найденной точки очищает ее числа и State при повторном заполнении.
-' Факт запуска передается явно владельцем: пропущенный аргумент не выдумывает
-' выполненный поиск, например для аналитического Ncrc или ранней валидации.
+' Сохраняет готовый исход поиска и найденные числа независимо от рабочих расчётных объектов.
+' Если точки нет, очищает её числа и НДС. Факт численного поиска передаётся
+' отдельно: аналитическая Ncrc или ранняя проверка ввода не означают запуск поиска.
 Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As String, _
         ByVal actualMethod As String, ByVal hasLimitPoint As Boolean, _
         ByVal lambdaValue As Double, ByVal nValue As Double, ByVal mxValue As Double, _
@@ -100,9 +99,9 @@ Public Sub InitializeInvalidConfiguration(ByVal requestedStrategy As String, ByV
         Nothing, vbNullString, vbNullString, vbNullString, False
 End Sub
 
-' Создает независимый контейнер Search: его повторная Initialize не меняет
-' опубликованный engineering result. Конечный named-state остается одним
-' неизменяемым снимком, не копируется по волокнам и не превращается в probe.
+' Создаёт независимую копию результата поиска для последующего хранения.
+' Её повторное заполнение не меняет уже выданный инженерный итог.
+' Конечное НДС остаётся тем же защищённым от изменений состоянием без копирования сетки.
 Public Function Clone() As CLimitSearchResult
     Dim result As CLimitSearchResult
     Set result = New CLimitSearchResult
@@ -112,11 +111,10 @@ Public Function Clone() As CLimitSearchResult
     Set Clone = result
 End Function
 
-' Сохраняет причины неудачных путей в итоговом Search-result, не меняя
-' фактическую причину отказа последней попытки. Успех после смены пути получает
-' warning; отсутствие точки и ошибки не объявляются успешными по тексту.
-' Журналы прежних попыток сохраняются, даже если следующий доменный callback
-' очистил рабочий журнал. Уже накопленный префикс второй раз не добавляется.
+' Сохраняет причины прежних неудачных путей и их журналы в общем результате.
+' При успехе после смены пути добавляет предупреждение. Фактическая причина
+' последней попытки сохраняется; текст не превращает отсутствие точки в успех.
+' Ранее накопленные сообщения не повторяются.
 Public Sub AddLoadPathHistory(ByVal history As String, ByVal pathDisplayName As String, _
         Optional ByVal diagnosticHistory As String = vbNullString)
     If Len(diagnosticHistory) > 0 Then
@@ -132,7 +130,8 @@ Public Sub AddLoadPathHistory(ByVal history As String, ByVal pathDisplayName As 
         mMeta.DiagnosticDetails, mMeta.Applies, mMeta.Calculated
 End Sub
 
-' Метаданные выдаются отдельной небольшой копией, а не mutable полем результата.
+' Возвращает отдельную копию статуса, причины и пояснения вместо изменяемого внутреннего
+' объекта.
 Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone
 End Property
@@ -182,8 +181,9 @@ Public Property Get LambdaUltimate() As Double
     LambdaUltimate = mLambdaUltimate
 End Property
 
-' Возвращают усилия конечного named-state, если оно сохранено, иначе - числа
-' итогового Search. Сам доступ не подтверждает успех поиска физического предела.
+' Возвращает продольную силу из конечного НДС, если оно есть, иначе
+' из численных усилий результата поиска. Само чтение не подтверждает наличие физического
+' предела.
 Public Property Get NUltimate() As Double
     If mPointState Is Nothing Then
         NUltimate = mNUltimate
@@ -192,8 +192,8 @@ Public Property Get NUltimate() As Double
     End If
 End Property
 
-' Возвращает Mx из сохраненного физического состояния, если оно присутствует,
-' иначе из скалярного вектора результата; наличие точки проверяется отдельно.
+' Возвращает Mx из сохранённого НДС, если оно есть, иначе
+' из численных усилий результата. Наличие предельной точки проверяется отдельно.
 Public Property Get MxUltimate() As Double
     If mPointState Is Nothing Then
         MxUltimate = mMxUltimate

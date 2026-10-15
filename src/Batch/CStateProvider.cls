@@ -17,24 +17,24 @@ Option Explicit
 ' Хранилище содержит конечные состояния, имеющие самостоятельный смысл
 ' в Results; промежуточные пробы поиска предела остаются внутри поиска.
 
-Private mSection As CSectionModel ' Расчетная модель сечения для solve.
-Private mMaterialProvider As CMaterialModelProvider ' Поставщик физических и extended-диаграмм.
-Private mRepository As CStateRepository ' Хранилище named-state текущего LC.
+Private mSection As CSectionModel ' Модель сечения для решения равновесия.
+Private mMaterialProvider As CMaterialModelProvider ' Подготовка физических диаграмм и разрешённых вспомогательных продолжений.
+Private mRepository As CStateRepository ' Хранилище расчётных состояний этого сочетания нагрузок.
 
 Private mSolverMethod As String ' Newton или Secant.
 Private mLoadSteps As Long ' Число ступеней приложения нагрузки.
-Private mMaxIterations As Long ' Максимум итераций solver-а.
+Private mMaxIterations As Long ' Максимальное число итераций решения равновесия.
 Private mToleranceN As Double ' Допуск по N.
 Private mToleranceMx As Double ' Допуск по Mx.
 Private mToleranceMy As Double ' Допуск по My.
-Private mSecantMaxRestarts As Long ' Перезапуски secant-матрицы.
+Private mSecantMaxRestarts As Long ' Допустимое число обновлений матрицы секущих модулей.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить диагностический журнал.
 
-Private mLastRunner As CStateSolutionRunner ' Runner последнего реального solve; Nothing при cache-hit.
-Private mLastStateWasReused As Boolean ' True, если state взят из repository.
+Private mLastRunner As CStateSolutionRunner ' Объект последнего выполненного решения; Nothing, если использовано ранее сохранённое НДС.
+Private mLastStateWasReused As Boolean ' Показывает, взято ли НДС из ранее сохранённых результатов.
 
-' Задает самостоятельные настройки solve для прямого использования provider-а.
-' Excel-сценарий затем заменяет их нормализованными значениями Config.
+' Задаёт начальные настройки решения равновесия для самостоятельного использования класса.
+' При запуске из Excel они заменяются прочитанными настройками Config.
 Private Sub Class_Initialize()
     mSolverMethod = "Newton"
     mLoadSteps = 8
@@ -46,8 +46,8 @@ Private Sub Class_Initialize()
     mDiagnosticsEnabled = True
 End Sub
 
-' Подключает расчетный контекст. Repository может быть Nothing; тогда provider
-' работает как простой solve-wrapper без переиспользования.
+' Подключает модель, материалы и хранилище состояний. Если хранилище не передано,
+' каждый запрос решается заново без использования прежних результатов.
 Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         Optional ByVal repository As CStateRepository = Nothing)
     If section Is Nothing Then Err.Raise vbObjectError + 3990, "CStateProvider", "Модель сечения не передана."
@@ -57,8 +57,8 @@ Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As 
     Set mRepository = repository
 End Sub
 
-' Возвращает эквивалентный state из repository или решает новый. initialSolver
-' является только warm-start и не входит в ключ reuse.
+' Возвращает ранее найденное НДС для точно такого же запроса или решает равновесие заново.
+' initialSolver задаёт только начальное приближение и не определяет совпадение запросов.
 Public Function GetOrSolve(ByVal request As CStateRequest, _
         Optional ByVal initialSolver As CSectionSolver = Nothing) As CSectionStateResult
     If request Is Nothing Then Err.Raise vbObjectError + 3992, "CStateProvider", "Запрос named-state не передан."
@@ -133,8 +133,8 @@ Public Function GetOrSolve(ByVal request As CStateRequest, _
     Set GetOrSolve = stateResult
 End Function
 
-' Задает контекст диагностической meta, не меняя причин solver-а и не
-' трактуя отсутствие программной зависимости как ошибку пользовательского LC.
+' Определяет, к какой проверке относится статус состояния, сохраняя причину решателя.
+' Отсутствие обязательного программного объекта не выдаётся за ошибку пользовательских нагрузок.
 Private Function ResultKindForRequest(ByVal request As CStateRequest) As EResultKind
     Select Case request.StateType
         Case sstCapacityState: ResultKindForRequest = rkCapacity
@@ -143,9 +143,9 @@ Private Function ResultKindForRequest(ByVal request As CStateRequest) As EResult
     End Select
 End Function
 
-' Привязывает cache к фактической геометрии, материалам и допускам. Retry,
-' warm-start, load steps и диагностика не меняют физическое состояние и
-' не дробят reuse. Глобальный On/Off учитывается даже при одинаковом request.
+' Разрешает повторное использование НДС только для той же геометрии, материалов,
+' допусков и режима продолжения диаграмм. Начальные приближения, число ступеней,
+' повторные попытки и диагностика не меняют физическую постановку запроса.
 Private Sub BindRepositoryContext()
     Dim acceptanceKey As String
     acceptanceKey = CStr(mMaterialProvider.DiagramExtensionEnabled) & "|" & _
@@ -153,9 +153,9 @@ Private Sub BindRepositoryContext()
     mRepository.BindContext mSection, mMaterialProvider, acceptanceKey
 End Sub
 
-' Возвращает вычисляемый снимок для потребителя cached named-state.
-' Живой LastRunner не требуется; восстановление и проверка плоскости общие
-' для всех потребителей, без нового решения равновесия и записи в repository.
+' Восстанавливает данные расчётного состояния для потребителя по сохранённому НДС.
+' Повторное решение равновесия не выполняется, новая запись в хранилище не создаётся;
+' объект последнего запуска LastRunner для этого не требуется.
 Public Function SolverSnapshot(ByVal stateResult As CSectionStateResult) As CSectionSolver
     If stateResult Is Nothing Then Exit Function
     If Not stateResult.Converged Then Exit Function
@@ -171,7 +171,7 @@ Public Function SolverSnapshot(ByVal stateResult As CSectionStateResult) As CSec
         SteelMaterialForRequest(request), stateResult)
 End Function
 
-' Передает сохраненные настройки в новый runner.
+' Передаёт сохранённые численные настройки новому объекту решения НДС.
 Private Sub ConfigureRunner(ByVal runner As CStateSolutionRunner)
     runner.LoadSteps = mLoadSteps
     runner.MaxIterations = mMaxIterations
@@ -183,7 +183,7 @@ Private Sub ConfigureRunner(ByVal runner As CStateSolutionRunner)
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
-' Выбирает бетонную диаграмму по физическому режиму request.
+' Выбирает диаграмму бетона по назначению и режиму материалов в запросе.
 Private Function ConcreteMaterialForRequest(ByVal request As CStateRequest) As CMaterialDiagram
     If request.UseDiagramExtension Then
         Set ConcreteMaterialForRequest = mMaterialProvider.ConcreteMaterialForEquilibriumFromSpec(request.MaterialSpec)
@@ -192,7 +192,7 @@ Private Function ConcreteMaterialForRequest(ByVal request As CStateRequest) As C
     End If
 End Function
 
-' Выбирает диаграмму арматуры по физическому режиму request.
+' Выбирает диаграмму арматуры по назначению и режиму материалов в запросе.
 Private Function SteelMaterialForRequest(ByVal request As CStateRequest) As CMaterialDiagram
     If request.UseDiagramExtension Then
         Set SteelMaterialForRequest = mMaterialProvider.SteelMaterialForEquilibriumFromSpec(request.MaterialSpec)
@@ -201,12 +201,12 @@ Private Function SteelMaterialForRequest(ByVal request As CStateRequest) As CMat
     End If
 End Function
 
-' Runner последнего реального solve; Nothing при cache-hit.
+' Возвращает объект последнего выполненного решения; Nothing, если взято ранее найденное НДС.
 Public Property Get LastRunner() As CStateSolutionRunner
     Set LastRunner = mLastRunner
 End Property
 
-' True, если state взят из repository.
+' Показывает, получено ли НДС из ранее сохранённых результатов.
 Public Property Get LastStateWasReused() As Boolean
     LastStateWasReused = mLastStateWasReused
 End Property
@@ -221,7 +221,7 @@ Public Property Let LoadSteps(ByVal value As Long)
     mLoadSteps = value
 End Property
 
-' Максимум итераций solver-а.
+' Возвращает максимальное число итераций решения равновесия.
 Public Property Let MaxIterations(ByVal value As Long)
     mMaxIterations = value
 End Property
@@ -241,7 +241,7 @@ Public Property Let ToleranceMy(ByVal value As Double)
     mToleranceMy = value
 End Property
 
-' Перезапуски secant-матрицы.
+' Возвращает допустимое число обновлений матрицы секущих модулей.
 Public Property Let SecantMaxRestarts(ByVal value As Long)
     mSecantMaxRestarts = value
 End Property

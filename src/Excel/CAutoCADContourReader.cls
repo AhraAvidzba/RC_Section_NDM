@@ -18,12 +18,12 @@ Option Explicit
 ' Explode выполняется над собственной копией объекта. Исходник сохраняется,
 ' а временные фрагменты удаляются и при успехе, и при ошибке импорта.
 
-Private Const PLANE_TOLERANCE As Double = 0.000001 ' Тот же линейный допуск, что у geometry-query, мм.
+Private Const PLANE_TOLERANCE As Double = 0.000001 ' Линейный допуск проверки контуров, общий с CSectionGeometryQuery, мм.
 Private Const NORMAL_TOLERANCE As Double = 0.0000000001 ' Проверка направления нормали относительно WCS XY.
 
-' Возвращает проверенную область фактического объекта с outer/opening loops.
-' Поддерживаются Region, физически замкнутые LWPolyline/2D Polyline и Circle; кривые
-' другого типа отклоняются явно, без полигональной или A/I-аппроксимации.
+' Читает и проверяет наружные контуры и отверстия фактического объекта.
+' Поддерживает Region, действительно замкнутую плоскую полилинию и Circle.
+' Другие кривые вызывают ошибку без замены многоугольником или эквивалентной формой по A/I.
 Public Function ReadRegion(ByVal entity As Object) As CConcreteRegion
     Dim temporary As Object, pieces As Variant, edges() As TRegionEdge, count As Long
     Dim kind As String, i As Long, query As CSectionGeometryQuery

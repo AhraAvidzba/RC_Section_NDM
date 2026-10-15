@@ -16,14 +16,14 @@ Option Explicit
 ' и проверку продольных трещин по сжатому бетону. Получает готовые результаты
 ' для последующей записи в Results.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
 Private mFormation As CCrackFormationResult ' Результат поиска Ncrc/Mxy,crc.
-Private mCurrentStateMeta As CResultMeta ' Meta обязательного CurrentCrackedState, если он уже решался.
+Private mCurrentStateMeta As CResultMeta ' Статус обязательного текущего НДС с трещинами, если оно рассчитывалось.
 Private mWidth As CCrackWidthResult ' Результат формульного расчета a_crc.
 Private mLongitudinal As CLongitudinalCrackResult ' Результат проверки продольных трещин.
-Private mPolicy As CResultStatusPolicy ' Общая политика typed/display приоритета.
+Private mPolicy As CResultStatusPolicy ' Общие правила выбора итогового статуса и его обозначения для пользователя.
 
-' Создает нейтральные ветви, не создавая физические State при отсутствии расчета.
+' Создаёт пустые результаты проверок трещин, не подставляя НДС отсутствующего расчёта.
 Private Sub Class_Initialize()
     Initialize Nothing, Nothing, Nothing, Nothing
 End Sub
@@ -48,8 +48,8 @@ Public Sub Initialize(ByVal formation As CCrackFormationResult, _
     If mLongitudinal Is Nothing Then Set mLongitudinal = New CLongitudinalCrackResult
 End Sub
 
-' Отмечает весь crack workflow как отключенный профилем. Численные State
-' и формулы не создаются; каждый leaf сохраняет именно NotRequested.
+' Отмечает все проверки трещин как отключённые профилем со статусом NotRequested.
+' НДС и формулы при этом не рассчитываются.
 Friend Sub SetNotRequested()
     AssertWritable
     Dim meta As CResultMeta
@@ -62,9 +62,9 @@ Friend Sub SetNotRequested()
     Set mLongitudinal = New CLongitudinalCrackResult: mLongitudinal.Initialize meta, 0#, 0#, 0#
 End Sub
 
-' Сохраняет ошибку общих исходных данных до запуска crack workflow.
-' Formation получает точную причину валидации, а Current/Width/Longitudinal
-' остаются заблокированными зависимыми этапами без фиктивной численной попытки.
+' Сохраняет общую ошибку ввода до начала проверок трещин. Проверка образования
+' получает точную причину, а текущее НДС, ширина и продольные трещины
+' отмечаются как недоступные без вымышленного численного запуска.
 Friend Sub SetInputFailure(ByVal reason As String)
     AssertWritable
     Dim meta As CResultMeta
@@ -90,8 +90,8 @@ Public Property Get Width() As CCrackWidthResult
     Set Width = mWidth
 End Property
 
-' Возвращает копию причины/статуса текущего НДС, независимо от Formation
-' и формульной Width. Потребитель не получает права изменить итог этого этапа.
+' Возвращает копию статуса текущего НДС независимо от образования трещины
+' и формулы ширины. Готовый результат этапа через эту копию изменить нельзя.
 Public Property Get CurrentStateMeta() As CResultMeta
     If Not mCurrentStateMeta Is Nothing Then Set CurrentStateMeta = mCurrentStateMeta.Clone
 End Property
@@ -101,10 +101,9 @@ Public Property Get Longitudinal() As CLongitudinalCrackResult
     Set Longitudinal = mLongitudinal
 End Property
 
-' Собирает итог нормальных трещин из готовых Formation/CurrentState/Width.
-' Поиск Formation и независимые формулы сохраняют собственные исходы.
-' Отсутствующая точка может сопровождаться рассчитанной шириной с psi_s = 1;
-' ни поиск, ни предупреждение не скрывают отказ текущего НДС или самой ширины.
+' Объединяет результаты образования трещины, текущего НДС и ширины.
+' Если порог не найден, ширина может быть рассчитана с psi_s = 1.
+' Предупреждение поиска не скрывает неудачу текущего НДС или расчёта ширины.
 Public Property Get NormalMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim formation As CResultMeta, width As CResultMeta, currentProblem As CResultMeta
@@ -127,9 +126,9 @@ Public Property Get NormalMeta() As CResultMeta
     NormalMeta.ResultComment = comment
 End Property
 
-' Возвращает итог всей подробной таблицы трещин, включая независимую проверку
-' продольных трещин. Комментарии собираются в порядке расчетных стадий, только
-' из этого subtree; writer не добавляет чужие причины и не склеивает строки.
+' Собирает общий итог проверок трещин, включая независимые продольные трещины.
+' Пояснения идут в порядке расчётных этапов; при записи на лист
+' чужие причины к этому итогу не добавляются.
 Public Property Get ResultMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim normal As CResultMeta, longitudinal As CResultMeta, comment As String
@@ -145,8 +144,8 @@ Public Property Get ResultMeta() As CResultMeta
     ResultMeta.ResultComment = comment
 End Property
 
-' Различает общую ошибку входа до запуска от самостоятельного отказа Search.
-' Зависимые этапы при этом не добавляют ту же причину второй раз в комментарий.
+' Различает общую ошибку ввода до расчёта и отдельную неудачу поиска предела.
+' Зависимые этапы не повторяют общую причину в комментарии второй раз.
 Private Function HasCommonInputFailure() As Boolean
     Select Case mFormation.ResultMeta.InternalStatus
         Case rsInvalidInput, rsInvalidConfiguration
@@ -157,9 +156,9 @@ Private Function HasCommonInputFailure() As Boolean
     End Select
 End Function
 
-' Сохраняет отдельное пояснение blocked-проверки, но не повторяет в aggregate
-' уже записанную полную причину CurrentCrackedState. Leaf/meta не изменяются.
-' Сравнение текста служит только представлению; статус задан typed-результатом.
+' Сохраняет отдельное пояснение недоступной проверки, не повторяя в общем
+' комментарии уже записанную причину текущего НДС. Статусы отдельных проверок
+' не меняются; сравнение текста нужно только для понятного вывода.
 Private Sub AppendDependentComment(ByVal meta As CResultMeta, ByRef comment As String)
     Dim prepared As CResultMeta
     Set prepared = meta.Clone
@@ -177,9 +176,9 @@ Private Sub AppendDependentComment(ByVal meta As CResultMeta, ByRef comment As S
     prepared.AppendCommentTo comment
 End Sub
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Закрывает Formation, Width и Longitudinal вместе с их агрегатом, не
-' пересчитывая проверки. Повторный вызов безопасен для общих ссылок workflow.
+' Завершает заполнение общего результата, образования трещины, ширины
+' и продольных трещин без повторных расчётов. После этого изменения запрещены;
+' повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mFormation Is Nothing Then mFormation.Freeze

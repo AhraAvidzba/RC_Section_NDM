@@ -2,15 +2,13 @@ Attribute VB_Name = "modTestProfileConfig"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: ПРОФИЛИ, АДРЕСНЫЙ ВВОД И НАГРУЗКИ УСТОЙЧИВОСТИ
+' ДЛЯ ТЕСТОВ: профили и длительные нагрузки устойчивости
 ' ==========================================================================
-' Проверяет реальные ячейки PR1-PR4, передачу material spec в State/Search
-' и выбор сохраненных результатов для схемы. Ожидаемая спецификация задается
-' независимо от прочитанного профиля; равновесие пересчитывается по элементам.
-' Дополнительные нагрузки проходят тот же workbook-reader, что кнопка расчета;
-' ошибка активной строки должна оставаться в собственном результате устойчивости.
-' Тесты не вводят новую физику, не меняют допуски production и восстанавливают
-' все затронутые входные таблицы даже после ошибки. Новых классов нет.
+' Проверяет ячейки PR1–PR4, выбор материалов и сохранённых результатов схемы.
+' Ожидаемые материалы задаёт независимо; равновесие проверяет по элементам.
+' Дополнительные нагрузки читает обычным способом. Ошибка строки должна
+' сохраняться в результате её устойчивости. Все затронутые таблицы
+' восстанавливаются также при ошибке; рабочие допуски не меняются.
 
 Private Type TProfileStats
     Passed As Long
@@ -258,8 +256,8 @@ Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal so
     Next face
 End Sub
 
-' ДЛЯ ТЕСТОВ: перенос геометрии проверяется через общий снимок таблицы.
-' Общий settings reader больше не разбирает поля конкретных рецептов.
+' ДЛЯ ТЕСТОВ: изменение геометрии проверяется через копию входной таблицы.
+' Общий класс системных настроек не разбирает поля отдельных рецептов.
 Private Function RelocatedRecipeTable(ByVal rangeName As String, ByVal units As CUnitSystem) As CSectionInputTable
     Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext
     Set reader = New CSectionInputSnapshotReader
@@ -298,8 +296,8 @@ Restore:
     On Error GoTo 0
 End Function
 
-' Задает ожидаемые ключи независимо от private-методов reader-а. Позиции
-' находятся по шапкам исходной таблицы, а абсолютные адреса не зашиты.
+' Задаёт ожидаемые ключи независимо от приватных методов чтения.
+' Положение полей определяется по заголовкам без фиксированных адресов.
 Private Function RelocatedFields(ByVal source As Object, ByVal rangeName As String) As Collection
     Dim fields As New Collection, row As Long, i As Long, column As Long
     Select Case rangeName
@@ -497,9 +495,9 @@ Private Sub TestProfileMetadata(ByRef stats As TProfileStats, ByVal source As Ob
     Next profile
 End Sub
 
-' Выбирает все пять named states и обе величины в реальном snapshot-reader-е.
-' Сверяет значения по плоскости/материалу, а точности 0..10 - по настоящему
-' тексту легенды Chart; схема не решает НДС и не округляет данные Results.
+' Выбирает пять видов НДС и обе отображаемые величины при обычном чтении Results.
+' Сверяет числа по полю деформаций и материалу, точность 0–10 — по тексту легенды.
+' Схема не должна пересчитывать НДС или округлять сохранённые значения.
 Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Object, ByVal system As Object, _
         ByVal loads As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
@@ -592,8 +590,8 @@ Private Sub TestInvalidProfileCells(ByRef stats As TProfileStats, ByVal source A
     Next profile
 End Sub
 
-' Сопоставляет фактический State с независимо выбранной моделью и равновесием.
-' Из арматурного вклада вычитается замещенный бетон, как в утвержденном ядре.
+' Сравнивает фактическое НДС с независимо выбранной моделью материалов
+' и проверяет равновесие. Из вклада арматуры вычитает замещённый бетон.
 Private Sub CheckState(ByRef stats As TProfileStats, ByVal prefix As String, ByVal state As CSectionStateResult, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, ByVal expected As CMaterialModelSpec)
     Check stats, prefix & ".exists", Not state Is Nothing
@@ -625,8 +623,8 @@ Private Sub CheckState(ByRef stats As TProfileStats, ByVal prefix As String, ByV
     CheckClose stats, prefix & ".expectedMaterialMy", my, state.TargetMy, 1#
 End Sub
 
-' Проверяет готовые subtree-комментарии в реальных detailed/batch writers.
-' Неуспех не может остаться без причины; writer не формирует новый текст.
+' Проверяет готовые пояснения всех этапов в подробных таблицах и сводке.
+' Неудача не может остаться без причины; класс записи не должен сочинять новый текст.
 Private Sub CheckComments(ByRef stats As TProfileStats, ByVal prefix As String, _
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CBatchResultWriter, result As CCombinationResult, meta As CResultMeta
@@ -665,8 +663,8 @@ Private Sub BuildFixture(ByRef section As CSectionModel, ByRef provider As CMate
     provider.InitializeFromParameters concrete, steel, diagramExtensionEnabled:=extensionEnabled
 End Sub
 
-' Пропускает реальную таблицу LC через reader и новый batch-контекст.
-' Профильные диаграммы выбирает production, не тестовый fake solver.
+' Читает настоящую таблицу сочетаний и рассчитывает её в новом объекте.
+' Диаграммы профилей выбирает обычный код без подставного решателя.
 Private Function ExecuteFixture(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         Optional ByVal readDurationLoads As Boolean = False, _
@@ -792,8 +790,8 @@ Private Sub BuildDurationFixture(ByRef section As CSectionModel, ByRef provider 
     Set section = BuildGeneratedSectionModel(mesh, rebars, "Audit03DurationConfig")
 End Sub
 
-' Перебирает все source slots и каждую компоненту отдельно. Остальные строки
-' имеют другие ID, чтобы тест выявлял неверное сопоставление по позиции.
+' Проверяет каждую исходную строку и составляющую отдельно. Другие строки имеют
+' иные номера, чтобы выявить ошибочное сопоставление по месту строки.
 Private Sub TestDurationCells(ByRef stats As TProfileStats, ByVal profiles As Object, ByVal loads As Object, _
         ByVal duration As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
@@ -1079,8 +1077,8 @@ Private Sub ConfigureDurationUnits(ByVal force As String, ByVal moment As String
     SetTableValue source, "+N", signN, 2: SetTableValue source, "+Mx", signMx, 2: SetTableValue source, "+My", signMy, 2
 End Sub
 
-' Сохраняет необработанный отказ reader-а для отрицательного evidence.
-' После исправления ошибки строки должны находиться в StabilityMeta, не Err.
+' Сохраняет первоначальную ошибку чтения для сравнения до исправления.
+' После исправления ошибка строки должна храниться в StabilityMeta, а не прерывать вызов.
 Private Function ExecuteDuration(ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByRef batch As CBatchSectionCalculator, ByRef reason As String, _
@@ -1123,8 +1121,9 @@ Private Function DurationExpectedPhi(ByVal sustainedMoment As Double, ByVal tota
     If DurationExpectedPhi > 2# Then DurationExpectedPhi = 2#
 End Function
 
-' Ввод длительной нагрузки не является численной несходимостью. Ошибка должна
-' быть адресной, необрезанной в subtree и не склеиваться заново writer-ом.
+' Ошибка ввода длительной нагрузки не является несходимостью.
+' Полная причина с адресом должна сохраняться в результате устойчивости
+' и передаваться в таблицу без повторного составления текста.
 Private Sub CheckDurationInputError(ByRef stats As TProfileStats, ByVal prefix As String, ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByVal location As String)
     Dim meta As CResultMeta, policy As CResultStatusPolicy
@@ -1474,8 +1473,8 @@ Private Sub TestAnnotationInputMatrix(ByRef stats As TProfileStats, ByVal source
     Next column
 End Sub
 
-' Проверяет собственно Excel Shape, а не только accessor layout: черный цвет
-' не подменяется; Enabled и LineEnabled действительно убирают нужные элементы.
+' Проверяет реальные фигуры Excel: чёрный цвет не подменяется,
+' а Enabled и LineEnabled убирают именно соответствующие элементы.
 Private Sub TestAnnotationChartValues(ByRef stats As TProfileStats, ByVal source As Object, ByVal reader As CSectionPlotDataReader)
     Dim shape As Object, chart As Object, code As Long, reason As String, count As Long, arrows As Long
     ConfigureAnnotationFixture source
@@ -1524,8 +1523,8 @@ Private Sub TestAnnotationRelocation(ByRef stats As TProfileStats, ByVal source 
     ThisWorkbook.Names.Item("rngPlotAnnotationSettings").RefersTo = oldRef
 End Sub
 
-' Запускает production-рисование по уже подготовленному snapshot. Код ошибки
-' сохраняется отдельно от текста: тест не выводит статус из комментария.
+' Строит обычную схему по готовым сохранённым данным.
+' Номер ошибки записывает отдельно от текста; статус из пояснения не выводится.
 Private Function PresentationDrawError(ByVal reader As CSectionPlotDataReader, ByRef reason As String) As Long
     Dim settings As CSystemSettingsReader, plotter As CSectionPlotter
     reason = vbNullString
@@ -1600,9 +1599,9 @@ Restore:
     code = PresentationReaderError(reader, reason): Check stats, "presentationConfig.snapshot.recovery", code = 0
 End Sub
 
-' Ограничивает test-mutation собственным блоком от именованного якоря.
-' CurrentRegion здесь непригоден: соседние Results-блоки могут соприкасаться
-' служебными строками. Число колонок задано независимо по проверяемой схеме.
+' Изменяет только собственный блок от именованной начальной ячейки.
+' CurrentRegion не используется из-за соседних служебных строк.
+' Число столбцов задано независимо по проверяемой структуре.
 Private Function PresentationSnapshotRange(ByVal name As String, ByVal columns As Long) As Object
     Dim anchor As Object, rows As Long
     Set anchor = ThisWorkbook.Names.Item(name).RefersToRange
@@ -1611,8 +1610,8 @@ Private Function PresentationSnapshotRange(ByVal name As String, ByVal columns A
     Set PresentationSnapshotRange = anchor.Resize(rows, columns)
 End Function
 
-' Находит колонку самостоятельного test-oracle по буквальному заголовку.
-' Это не production ResultColumn и не общий helper, скрывающий ошибку decoder-а.
+' Находит столбец эталонной таблицы по точному заголовку.
+' Проверяемый рабочий ResultColumn для подготовки эталона не вызывается.
 Private Function PresentationColumn(ByRef data As Variant, ByVal header As String) As Long
     Dim column As Long
     For column = 1 To UBound(data, 2)
@@ -1635,8 +1634,8 @@ Failed:
 End Function
 
 ' ДЛЯ ТЕСТОВ: независимо вычисляет выбранную величину каждого элемента
-' из сохраненной плоскости и фактической диаграммы named-state. Reader не
-' может незаметно подменить Stress на Strain или взять другое состояние.
+' по сохранённому полю деформаций и его диаграмме. Чтение Results не должно
+' подменять напряжение деформацией или брать другое НДС.
 Private Sub CheckVisualizationValues(ByRef stats As TProfileStats, ByVal prefix As String, _
         ByVal reader As CSectionPlotDataReader, ByVal state As CSectionStateResult, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, ByVal units As CUnitSystem)

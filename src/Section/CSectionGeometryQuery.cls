@@ -19,12 +19,12 @@ Option Explicit
 ' коэффициенты и группы арматуры определяются вызывающим расчётом.
 ' Прежний расчёт характеристик сетки для устойчивости сохраняется отдельно.
 
-Private Const QUERY_TOLERANCE As Double = GEOM_BOUNDARY_TOLERANCE ' Прежний допуск склейки бетонных интервалов, мм.
-Private Const PARAM_TOLERANCE As Double = GEOM_PARAMETER_TOLERANCE ' Только безразмерный параметр аналитического сегмента.
+Private Const QUERY_TOLERANCE As Double = GEOM_BOUNDARY_TOLERANCE ' Допуск соединения соседних участков бетона вдоль одной прямой, мм.
+Private Const PARAM_TOLERANCE As Double = GEOM_PARAMETER_TOLERANCE ' Допуск безразмерного положения точки внутри отрезка или дуги.
 Private mSection As CSectionModel ' Модель текущего запроса; операции над переданными областями не требуют модели.
-Private mRevision As Long ' Ревизия геометрии, для которой подготовлен кэш области.
-Private mDomain As CConcreteRegion ' Неизменная область одной модели/query-session; потребитель получает clone.
-Private mDomainBuildCount As Long ' Число успешных подготовок за жизнь query, включая смену контекста.
+Private mRevision As Long ' Версия геометрии, для которой подготовлена бетонная область.
+Private mDomain As CConcreteRegion ' Подготовленная область текущей модели; при выдаче создаётся независимая копия.
+Private mDomainBuildCount As Long ' Число успешных построений области этим объектом, включая смену модели и её версии.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка общей геометрической операции с её исходной привязкой.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
@@ -32,7 +32,7 @@ Public Property Get LastDiagnostic() As CGeometryDiagnostic
     Set LastDiagnostic = mDiagnostic
 End Property
 
-' Изометрия точек совпадает с преобразованием сегментов/привязок.
+' Отражает, поворачивает и переносит точку так же, как преобразуются сегменты и привязки линии.
 Public Sub TransformCoordinates(ByRef x As Double, ByRef y As Double, ByVal shiftX As Double, ByVal shiftY As Double, _
         Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False)
     Dim newX As Double, cosine As Double, sine As Double
@@ -42,9 +42,10 @@ Public Sub TransformCoordinates(ByRef x As Double, ByRef y As Double, ByVal shif
     y = sine * x + cosine * y + shiftY: x = newX
 End Sub
 
-' Положительный offset идет слева от направления пути. У гладких стыков
-' линии/дуги сохраняется касание, острые line/line стыки получают miter.
-' Негладкие сопряжения с дугой требуют явного RoundedPolygon; не склеиваются.
+' Строит линию на заданном расстоянии от исходной: положительное смещение
+' направлено влево по обходу. Гладкие стыки отрезков и дуг сохраняют касание,
+' соседние прямые соединяются пересечением продолжений. Для негладкого стыка
+' с дугой требуется явно заданный скруглённый многоугольник RoundedPolygon.
 Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath, ByVal distance As Double) As CGeometryPath
     If source Is Nothing Then GeometryError "Не передан исходный путь.", "MISSING_PATH", pathID
     Dim edges() As TRegionEdge, original As TRegionEdge, i As Long, following As Long, count As Long
@@ -82,8 +83,8 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         If edges(i).Sweep = 0# Then
             If (edges(i).X2 - edges(i).X1) * (original.X2 - original.X1) + (edges(i).Y2 - edges(i).Y1) * (original.Y2 - original.Y1) <= QUERY_TOLERANCE Then _
                 GeometryError "Offset изменил направление или уничтожил сегмент.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
-            ' Miter меняет продольные границы линии. Отображение возвращает
-            ' параметр исходной грани, а не прежние 0/1 после сокращения.
+            ' После соединения продолжений длина отрезка может измениться. Сохраняем
+            ' соответствие новых концов параметрам исходного отрезка для правильных привязок.
             tx = original.X2 - original.X1: ty = original.Y2 - original.Y1
             lengthSquared = tx * tx + ty * ty: span = sourceLast - sourceFirst
             sourceLast = sourceFirst + span * ((edges(i).X2 - original.X1) * tx + (edges(i).Y2 - original.Y1) * ty) / lengthSquared
@@ -92,7 +93,8 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         result.Append source.SegmentID(i), edges(i), source.SourcePathID(i), source.SourceSegmentID(i), sourceFirst, sourceLast
     Next i
     result.Seal source.IsClosed
-    ' Проверяется топология замкнутой границы, а не выбирается ее длинная часть.
+    ' Проверяем замкнутость и отсутствие недопустимых пересечений всего контура.
+    ' Выбирать только один длинный участок вместо исправления ошибки нельзя.
     Dim region As CConcreteRegion
     If result.IsClosed Then Set region = RegionFromPath(result)
     Set OffsetPath = result
@@ -113,8 +115,8 @@ Private Sub JoinOffsetEdges(ByVal pathID As String, ByVal segmentID As String, B
     second.X1 = first.X2: second.Y1 = first.Y2
 End Sub
 
-' Две поперечные плоскости ограничивают или продлевают одну осевую линию.
-' Отсчет задается геометрией, независимо от наличия стержней на ограничителе.
+' Обрезает или продлевает линию до двух поперечных ограничений.
+' Их положение определяется геометрией независимо от наличия стержней на концах.
 Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryPath, _
         ByVal startNX As Double, ByVal startNY As Double, ByVal startBound As Double, _
         ByVal endNX As Double, ByVal endNY As Double, ByVal endBound As Double) As CGeometryPath
@@ -147,8 +149,8 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryP
     result.Seal: Set ConstrainLine = result
 End Function
 
-' Привязывает query-session к модели. Достоверные Contours задают полную
-' область бетона; сетка используется только при отсутствии наружного контура.
+' Подключает модель для геометрических запросов. При наличии точных контуров
+' область бетона строится по ним; сетка используется, если наружного контура нет.
 Public Sub Initialize(ByVal section As CSectionModel)
     If section Is Nothing Then GeometryError "Модель сечения не передана."
     If section.ConcreteCount = 0 Then GeometryError "В модели нет бетонных элементов."
@@ -157,8 +159,8 @@ Public Sub Initialize(ByVal section As CSectionModel)
     Set mDomain = Nothing
 End Sub
 
-' Привязывает общий запрос к фактической модели, сохраняя только ее неизменную
-' подготовку. Новый объект/Revision сбрасывает область; LC-данных здесь нет.
+' Подключает модель и сохраняет уже подготовленную область, пока модель и версия
+' её геометрии не изменились. Нагрузки отдельных сочетаний эту подготовку не меняют.
 Friend Sub EnsureSection(ByVal section As CSectionModel)
     If section Is Nothing Then GeometryError "Модель сечения не передана."
     If Not section Is mSection Then
@@ -169,21 +171,16 @@ Friend Sub EnsureSection(ByVal section As CSectionModel)
     End If
 End Sub
 
-' ДЛЯ ТЕСТОВ: фактические подготовки, а не количество чтений clone.
-Friend Property Get DomainBuildCount() As Long
-    DomainBuildCount = mDomainBuildCount
-End Property
-
-' Возвращает независимую копию всей бетонной области, включая отверстия.
-' Кэш локален для session и перестраивается при изменении геометрии модели.
+' Возвращает независимую копию всей подготовленной бетонной области с отверстиями.
+' После изменения геометрии модели область предварительно строится заново.
 Public Function ConcreteDomain() As CConcreteRegion
     EnsureDomain
     Set ConcreteDomain = mDomain.Clone
 End Function
 
-' Возвращает точные крайние проекции готовой области, включая экстремумы дуг.
-' Используется геометрией и трещинами; сеточные проекции устойчивости
-' по-прежнему остаются в properties.
+' Возвращает наименьшую и наибольшую проекции точной бетонной области, учитывая дуги.
+' Используется при построении геометрии и расчёте трещин; проекции бетонной сетки
+' для устойчивости вычисляет отдельно CSectionPropertiesCalculator.
 Public Sub ProjectionBounds(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _
         ByRef minimum As Double, ByRef maximum As Double)
     RequireRegion region
@@ -227,8 +224,8 @@ Public Sub OpeningBounds(ByVal contours As CSectionContours, ByRef bounds() As D
     Next loopID
 End Sub
 
-' Строит область заданного замкнутого многоугольника без обращения к модели.
-' Координаты уже внутренние; orientation нормализуется общим topology API.
+' Создаёт бетонную область заданного замкнутого многоугольника. Координаты уже
+' переданы в мм; общее ядро проверяет границы и выбирает правильное направление обхода.
 Public Function PolygonRegion(ByVal coordinates As Variant) As CConcreteRegion
     Dim edges() As TRegionEdge, count As Long, i As Long, j As Long
     If Not IsArray(coordinates) Then GeometryError "Координаты контура должны быть массивом пар X/Y."
@@ -242,8 +239,8 @@ Public Function PolygonRegion(ByVal coordinates As Variant) As CConcreteRegion
     Set PolygonRegion = MakeRegion(edges, count, "ExplicitContour", 0)
 End Function
 
-' Строит точную окружность четырьмя дугами; промежуточная полигональная
-' аппроксимация не используется ни для площади, ни для последующего clipping.
+' Создаёт точную круглую область четырьмя дугами. Окружность не заменяется
+' многоугольником ни при расчёте площади, ни при дальнейшей обрезке области.
 Public Function CircleRegion(ByVal centerX As Double, ByVal centerY As Double, ByVal radius As Double) As CConcreteRegion
     If radius <= QUERY_TOLERANCE Then GeometryError "Радиус контура должен быть положительным."
     Dim edges() As TRegionEdge, count As Long
@@ -251,10 +248,10 @@ Public Function CircleRegion(ByVal centerX As Double, ByVal centerY As Double, B
     Set CircleRegion = MakeRegion(edges, count, "ExplicitContour", 0)
 End Function
 
-' Принимает неупорядоченные аналитические ребра достоверного контура.
-' Проверяет замкнутость, вырождение, пересечения и дубли; роль каждого контура
-' определяется вложенностью, а не направлением обхода исходного объекта.
-' Поэтому Region с отверстиями и полилинии используют один topology-контракт.
+' Собирает область по неупорядоченным отрезкам и дугам точного контура.
+' Проверяет замкнутость, пересечения и дубликаты. Наружные границы и отверстия
+' различает по вложенности, поэтому направление обхода исходного объекта
+' AutoCAD не определяет назначение контура.
 Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         Optional ByVal source As String = "ValidatedContour") As CConcreteRegion
     If count <= 0 Then GeometryError "Заданный контур не содержит граничных сегментов."
@@ -284,8 +281,9 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
                 For j = 1 To count
                     If ordered(j).LoopID = otherLoop Then AppendEdge oneLoop, oneCount, ordered(j)
                 Next j
-                ' Временный замкнутый контур должен иметь положительный winding для
-                ' геометрической проверки, независимо от исходного обхода.
+                ' Для внутренней проверки временно направляем обход контура против часовой
+                ' стрелки.
+                ' Исходное направление объекта на результат проверки не влияет.
                 If SignedLoopArea(ordered, count, otherLoop) < 0# Then
                     For j = 1 To oneCount: modGeometryPrimitives.ReverseEdge oneLoop(j): Next j
                 End If
@@ -301,9 +299,8 @@ Public Function BoundaryRegion(ByRef edges() As TRegionEdge, ByVal count As Long
     Set BoundaryRegion = MakeRegion(ordered, count, source, 0)
 End Function
 
-' Проверяет, что отдельные аналитические контуры простые и не касаются друг
-' друга. Такое касание не исправляется молча при импорте; пользователь
-' получает ошибку исходного контура до публикации новой модели.
+' Проверяет отсутствие самопересечений каждого контура и касаний между контурами.
+' При ошибке исходной геометрии останавливает импорт до создания новой модели.
 Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As Long)
     Dim i As Long, j As Long, k As Long, cuts() As Double, cutCount As Long
     Dim u As Double, x As Double, y As Double, adjacent As Boolean
@@ -337,8 +334,8 @@ Private Sub ValidateSimpleBoundary(ByRef edges() As TRegionEdge, ByVal count As 
     Next i
 End Sub
 
-' Возвращает семантическую роль готового ориентированного контура. Решение
-' принимает общий движок; importer/writer не угадывают роль по тексту ошибки.
+' Возвращает назначение проверенного контура: наружная граница или отверстие.
+' Классы импорта и записи получают готовое назначение без собственных догадок по тексту ошибки.
 Public Function LoopIsOpening(ByVal region As CConcreteRegion, ByVal loopID As Long) As Boolean
     RequireRegion region
     If loopID < 1 Or loopID > region.LoopCount Then GeometryError "Номер замкнутого контура вне допустимого диапазона."
@@ -382,9 +379,9 @@ Public Function ConnectedRegionAtPoint(ByVal region As CConcreteRegion, ByVal x 
     ConnectedRegionAtPoint.SetOwner region.OwnerID, region.Standard, region.AnchorID
 End Function
 
-' Находит ближайший охватывающий наружный контур по вложенности. Наименьшая
-' положительная площадь отличает отдельную бетонную часть внутри проема
-' от окружающего бетона и правильно назначает владельца ее отверстиям.
+' Находит ближайшую наружную границу, охватывающую выбранный контур.
+' Выбор наименьшей подходящей области позволяет различить отдельную бетонную часть
+' внутри отверстия и окружающий бетон и правильно отнести к ним отверстия.
 Private Function ContainingOuterLoop(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal loopCount As Long, ByVal x As Double, ByVal y As Double) As Long
     Dim loopID As Long, i As Long, area As Double, bestArea As Double
@@ -404,9 +401,9 @@ Private Function ContainingOuterLoop(ByRef edges() As TRegionEdge, ByVal count A
     Next loopID
 End Function
 
-' Объединяет независимые достоверные объекты материала, сохраняя отверстия
-' каждого Region. Пересечение/дубли объектов являются ошибкой импорта,
-' а не командой молча исправить чертеж через геометрический union.
+' Объединяет раздельные бетонные области, сохраняя отверстия каждой.
+' Наложение или полное совпадение исходных объектов считается ошибкой импорта;
+' геометрия чертежа автоматически не исправляется.
 Public Function MergeDisjointRegions(ByVal regions As Collection) As CConcreteRegion
     If regions Is Nothing Then GeometryError "Набор контуров не передан."
     If regions.Count = 0 Then GeometryError "На заданном слое не найдено замкнутых контуров."
@@ -425,9 +422,9 @@ Public Function MergeDisjointRegions(ByVal regions As Collection) As CConcreteRe
     Set MergeDisjointRegions = MakeRegion(raw, count, "ValidatedAutoCADContours", 0)
 End Function
 
-' Вычитает только геометрически допустимое отдельное opening. В отличие
-' от обычного clipping явно заданное отверстие за пределами материала или
-' поверх другой пустоты не обрезается молча и не скрывается fallback-ом.
+' Вычитает отдельное явно заданное отверстие после проверки его расположения.
+' Отверстие вне бетона или поверх существующей пустоты вызывает ошибку,
+' а не незаметно обрезается по границам допустимой области.
 Public Function SubtractContainedRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion) As CConcreteRegion
     ValidateContainedRegion outer, opening
     Set SubtractContainedRegion = SubtractRegion(outer, opening)
@@ -442,8 +439,9 @@ Friend Sub ValidateContainedRegion(ByVal outer As CConcreteRegion, ByVal opening
     If AnyBoundarySampleInside(outer, opening) Then GeometryError "Заданное отверстие накрывает уже существующую пустоту или отдельную компоненту бетона."
 End Sub
 
-' Область уже содержит упорядоченные замкнутые петли; проверка не повторяет StitchLoops и MakeRegion.
-' Проверяются длины, согласованность дуг и пересечения, как при прежней BoundaryRegion.
+' Проверяет уже собранные замкнутые контуры: длины отрезков, соответствие дуг
+' их центрам и отсутствие недопустимых пересечений. Повторно соединять сегменты
+' и строить ту же область для этой проверки не требуется.
 Friend Sub ValidatePreparedBoundary(ByVal region As CConcreteRegion)
     RequireRegion region
     Dim edges() As TRegionEdge, count As Long, i As Long
@@ -456,8 +454,8 @@ Friend Sub ValidatePreparedBoundary(ByVal region As CConcreteRegion)
     ValidateSimpleBoundary edges, count
 End Sub
 
-' Проверяет аналитические пересечения двух готовых границ, включая концы
-' и совпадающие сегменты. Единый владелец операции - geometry-query.
+' Проверяет пересечение точных границ двух областей, включая совпавшие концы
+' и наложенные сегменты. Все потребители используют эту общую проверку.
 Private Function BoundariesMeet(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean
     Dim a() As TRegionEdge, b() As TRegionEdge, na As Long, nb As Long, i As Long, j As Long
     Dim cuts() As Double, count As Long
@@ -471,9 +469,9 @@ Private Function BoundariesMeet(ByVal first As CConcreteRegion, ByVal second As 
     Next i
 End Function
 
-' Возвращает True, если хотя бы один материальный участок первой области
-' находится во второй. Проба слева от точного ребра учитывает также контуры
-' пустот, не используя центр тяжести, который может лежать вне материала.
+' Проверяет, есть ли часть бетона первой области внутри второй.
+' Берёт контрольные точки со стороны бетона у границ, включая отверстия;
+' центр тяжести для этого не подходит, поскольку может лежать в пустоте.
 Private Function MaterialSampleInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean
     Dim edges() As TRegionEdge, count As Long, i As Long, x As Double, y As Double, tx As Double, ty As Double, length As Double
     first.CopyEdges edges, count
@@ -485,9 +483,9 @@ Private Function MaterialSampleInside(ByVal first As CConcreteRegion, ByVal seco
     Next i
 End Function
 
-' После проверки отсутствия пересечений требует принадлежность всех замкнутых контуров
-' opening материалу. Проверка каждого сегмента также охватывает несколько
-' независимых компонент и не опирается на одну произвольную контрольную точку.
+' После проверки отсутствия пересечений подтверждает, что все контуры отверстия
+' лежат в бетоне. Проверяет каждый сегмент, чтобы учесть раздельные части области
+' и не полагаться на одну произвольно выбранную точку.
 Private Function AllMaterialSamplesInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean
     Dim edges() As TRegionEdge, count As Long, i As Long, x As Double, y As Double
     first.CopyEdges edges, count
@@ -499,8 +497,8 @@ Private Function AllMaterialSamplesInside(ByVal first As CConcreteRegion, ByVal 
     AllMaterialSamplesInside = True
 End Function
 
-' Проверяет, что вычитаемая область не накрывает существующую материальную
-' границу. Это отдельно выявляет дубли opening и отверстие поверх пустоты.
+' Проверяет, не накрывает ли новое отверстие уже существующую границу бетона.
+' Так выявляются повторное отверстие и отверстие, заданное поверх пустоты.
 Private Function AnyBoundarySampleInside(ByVal first As CConcreteRegion, ByVal second As CConcreteRegion) As Boolean
     Dim edges() As TRegionEdge, count As Long, i As Long, x As Double, y As Double
     first.CopyEdges edges, count
@@ -619,8 +617,9 @@ Public Function ClipHalfPlane(ByVal region As CConcreteRegion, ByVal nx As Doubl
     ClipHalfPlane.SetOwner region.OwnerID, region.Standard, region.AnchorID
 End Function
 
-' Применяет один общий набор линейных ограничений: nMin <= n <= nMax,
-' tMin <= t <= tMax. Нормативные значения и смысл границ задает потребитель.
+' Обрезает область четырьмя прямыми по границам nMin/nMax и tMin/tMax
+' в повёрнутой системе координат. Положение границ и его нормативный смысл
+' определяет вызывающий расчёт.
 Public Function ClipWindow(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _
         ByVal nMin As Double, ByVal nMax As Double, ByVal tMin As Double, ByVal tMax As Double) As CConcreteRegion
     Dim result As CConcreteRegion, norm As Double
@@ -633,11 +632,10 @@ Public Function ClipWindow(ByVal region As CConcreteRegion, ByVal nx As Double, 
     Set ClipWindow = ClipHalfPlane(result, ny, -nx, -tMax)
 End Function
 
-' Оставляет только интервалы материала, проходящие через опорную линию
-' n=seedPlane. Для каждой поперечной координаты t выбирается тот интервал,
-' который содержит эту линию: перейти через пустоту к дальней стенке нельзя.
-' Граница строится из точных исходных сегментов и линий смены интервала,
-' а не из ограниченного набора пробных нормалей или прямоугольной оболочки.
+' Выбирает бетон, непрерывно связанный с опорной линией n = seedPlane
+' вдоль заданного направления. За отверстием дальняя стенка в выбранную область
+' не включается. Граница строится из точных отрезков и дуг и не зависит
+' от количества контрольных прямых.
 Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVal nx As Double, _
         ByVal ny As Double, ByVal seedPlane As Double) As CConcreteRegion
     RequireRegion region
@@ -674,9 +672,9 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
     Dim piece As TRegionEdge, tangentX As Double, tangentY As Double, length As Double
     Dim leftInside As Boolean, rightInside As Boolean, seen As Object
     Set seen = CreateObject("Scripting.Dictionary")
-    ' Смена выбранного интервала возможна только на проекциях вершин,
-    ' экстремумов дуг и пересечений с опорной линией. Сами дуги не дробятся
-    ' на линейную аппроксимацию и сохраняют аналитический вклад в площадь.
+    ' Выбранный бетонный участок может измениться только у вершин, крайних точек дуг
+    ' и пересечений с опорной линией. Поэтому проверяем эти положения,
+    ' сохраняя сами дуги точными при вычислении границ и площади.
     For i = 1 To rawCount
         Erase cuts: cutCount = 0
         modGeometryPrimitives.AddScalar cuts, cutCount, 0#: modGeometryPrimitives.AddScalar cuts, cutCount, 1#
@@ -701,8 +699,8 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
             End If
         Next j
     Next i
-    ' Замыкаем границы тени пустот. Это настоящие линии перехода между
-    ' доступной стенкой и недоступным материалом, а не мосты сквозь полость.
+    ' Добавляем границы, за которыми отверстие прерывает связь с опорной линией.
+    ' Эти отрезки отделяют доступную стенку от дальнего бетона за пустотой.
     Dim intervals As Variant, nCuts() As Double, nCount As Long, n1 As Double, n2 As Double, t As Double
     For i = 1 To transverseCount
         t = transverseCuts(i)
@@ -712,9 +710,9 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
             For j = LBound(intervals, 1) To UBound(intervals, 1)
                 modGeometryPrimitives.AddScalar nCuts, nCount, intervals(j, 1): modGeometryPrimitives.AddScalar nCuts, nCount, intervals(j, 2)
             Next j
-            ' На совпавшей грани opening общий interval включает boundary.
-            ' Сохраняем также все реальные узлы пересечения: иначе можно
-            ' ошибочно продолжить замыкающий отрезок за край пустоты.
+            ' Если опорная линия совпала с гранью отверстия, сохраняем также реальные точки
+            ' их пересечения. Иначе замыкающий отрезок можно ошибочно продлить за край
+            ' отверстия.
             For k = 1 To rawCount
                 Erase cuts: cutCount = 0
                 modGeometryPrimitives.HalfPlaneCuts raw(k), -ny, nx, t, cuts, cutCount
@@ -748,15 +746,15 @@ Public Function MaterialRegionThroughPlane(ByVal region As CConcreteRegion, ByVa
         End If
     Next i
     Dim normalized() As TRegionEdge, normalizedCount As Long
-    ' Граница тени может частично совпасть с исходной вертикальной гранью.
-    ' Общая нормализация разбивает такие наложения и оставляет одно ребро.
+    ' Новая граница выбранной стенки может совпасть с частью исходной грани.
+    ' Разделяем наложенные участки и оставляем одну общую границу.
     NormalizeBoundary boundary, boundaryCount, normalized, normalizedCount
     Set MaterialRegionThroughPlane = MakeRegion(normalized, normalizedCount, region.Source, region.SectionRevision)
     MaterialRegionThroughPlane.SetOwner region.OwnerID, region.Standard, region.AnchorID
 End Function
 
-' Проверяет принадлежность именно интервалу опорной линии, а не просто
-' всей бетонной области. Запрос одинаков для прямых и криволинейных пустот.
+' Проверяет, принадлежит ли точка бетонному участку, связанному с опорной линией.
+' Одного попадания в бетон недостаточно: дальняя стенка за пустотой исключается.
 Private Function InMaterialIntervalThroughPlane(ByVal region As CConcreteRegion, ByVal nx As Double, _
         ByVal ny As Double, ByVal seedPlane As Double, ByVal x As Double, ByVal y As Double) As Boolean
     Dim t As Double, n As Double, intervals As Variant, i As Long
@@ -773,8 +771,8 @@ Private Function InMaterialIntervalThroughPlane(ByVal region As CConcreteRegion,
     Next i
 End Function
 
-' Сохраняет одно ориентированное граничное ребро. Совпадение исходного
-' ребра с новой границей не должно создавать двойной участок и площадь.
+' Добавляет один направленный отрезок или дугу границы.
+' Совпадение исходной и новой границ не должно добавлять второй участок и площадь.
 Private Sub AppendUniqueBoundary(ByRef edges() As TRegionEdge, ByRef count As Long, _
         ByRef edge As TRegionEdge, ByVal seen As Object)
     Dim key As String, i As Long, u1 As Double, u2 As Double
@@ -795,8 +793,9 @@ Private Sub AppendUniqueBoundary(ByRef edges() As TRegionEdge, ByRef count As Lo
     AppendEdge edges, count, edge
 End Sub
 
-' Проверяет принадлежность точной области. Boundary=True включает точки на
-' outer/opening границах; строгое попадание внутрь пустоты всегда исключается.
+' Проверяет, принадлежит ли точка бетонной области. При Boundary = True
+' точки на наружном контуре и контуре отверстия считаются принадлежащими области.
+' Точки внутри отверстия всегда отклоняются.
 Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double, ByVal y As Double, _
         Optional ByVal includeBoundary As Boolean = True) As Boolean
     RequireRegion region
@@ -861,17 +860,17 @@ Public Function BoundaryDistance(ByVal region As CConcreteRegion, ByVal x As Dou
     Next i
 End Function
 
-' Общий скруглённый многоугольник из завершённого CPolygonSpec; исходные записи не меняются.
-' Имена вершин задают идентичность грани, порядок сохраняется. Вогнутый угол получает
-' противоположный sweep; радиусы не уменьшаются. Численная реализация остаётся прежней.
+' Строит скруглённый многоугольник по завершённому CPolygonSpec.
+' Сохраняет исходные вершины и их порядок; у вогнутого угла меняет направление дуги.
+' Заданные радиусы самостоятельно не уменьшает.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     Dim vertices As Variant, radii As Variant, vertexIDs As Variant
     PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
     Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs)
 End Function
 
-' Внутренний численный формат; к нему нет публичного массивного маршрута рецепта.
-' Array(Array(x,y),...), радиусы и имена вершин имеют одинаковый размер и получены из CPolygonSpec.
+' Преобразует вершины CPolygonSpec во внутренние массивы координат, радиусов и имён.
+' Размеры массивов должны совпадать; рецепты сечения напрямую эти массивы не задают.
 Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
@@ -938,23 +937,25 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         End If
     Next i
     result.Seal True
-    ' Проверка конечной формы ловит и нелокальные пересечения скруглений.
+    ' Проверяем весь готовый контур, чтобы обнаружить пересечения скруглений
+    ' не только у соседних вершин.
     Dim prepared As CConcreteRegion
     Set prepared = RegionFromPath(result)
     Set RoundedPolygonKernel = result
 End Function
 
-' Согласованный offset всего скруглённого многоугольника из завершённого CPolygonSpec. Положительное
-' расстояние направлено внутрь его площади независимо от обхода; для пути
-' от отверстия в бетон потребитель задает отрицательное расстояние.
-' Исходные острые углы остаются острыми, уменьшившаяся до нуля дуга исчезает.
+' Строит смещённый скруглённый многоугольник по тому же CPolygonSpec.
+' Положительное расстояние направлено внутрь независимо от направления обхода,
+' отрицательное — наружу, например от отверстия в бетон. Острые углы остаются
+' острыми; дуга, радиус которой уменьшился до нуля, исчезает.
 Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
     Dim vertices As Variant, radii As Variant, vertexIDs As Variant
     PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
     Set OffsetRoundedPolygon = OffsetRoundedPolygonKernel(pathID, vertices, radii, vertexIDs, distance)
 End Function
 
-' Прежний offset исходного многоугольника; не является signed-left offset готового Path.
+' Смещаем исходный многоугольник до построения скруглений.
+' Знак здесь означает внутрь или наружу площади, а не влево по обходу готовой линии.
 Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
         ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
     Dim original As CGeometryPath
@@ -1008,11 +1009,12 @@ Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertic
             directions(i).Y * (shifted(following).Y - shifted(i).Y)
         If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани Edge." & names(i) & ".", "OFFSET_DISAPPEARED", pathID, "Edge." & names(i), distance, dot
     Next i
-    ' Существующий topology-контракт проверяет самопересечения и радиусы.
+    ' Проверяем радиусы и самопересечения общими средствами проверки контура.
     Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs)
 End Function
 
-' Единственная граница описателя и численного ядра; исходные данные не изменяются.
+' Копирует исходные вершины и радиусы из описания во внутренние массивы
+' геометрического ядра, не меняя само описание.
 Private Sub PolygonKernelData(ByVal pathID As String, ByVal polygon As CPolygonSpec, _
         ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant)
     If polygon Is Nothing Then GeometryError pathID & ": не передано описание исходных вершин."
@@ -1020,8 +1022,8 @@ Private Sub PolygonKernelData(ByVal pathID As String, ByVal polygon As CPolygonS
     polygon.CopyKernelData vertices, radii, vertexIDs
 End Sub
 
-' Путь хранит исходное направление и ID; область получает независимую
-' нормализацию ролей/ориентации существующим topology-движком.
+' Линия сохраняет исходное направление и имена сегментов. Для бетонной области
+' отдельно приводим обход наружных контуров и отверстий к принятому направлению.
 Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion
     If path Is Nothing Then GeometryError "Путь границы не передан."
     If Not path.IsClosed Then GeometryError "Бетонная граница должна быть замкнутой."
@@ -1031,9 +1033,9 @@ Public Function RegionFromPath(ByVal path As CGeometryPath) As CConcreteRegion
     Set RegionFromPath = BoundaryRegion(edges, path.SegmentCount)
 End Function
 
-' Точное объединение смежных неперекрывающихся прямоугольников.
-' Это не Boolean Union произвольных пересекающихся фигур: внутренние
-' пересечения запрещены, общий результат должен иметь одну внешнюю границу.
+' Строит общую границу смежных прямоугольников без наложения их площадей.
+' Фигуры с пересекающимися внутренними частями отклоняются; итог должен иметь
+' одну наружную границу.
 Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath
     If Not IsArray(rectangles) Then GeometryError "Прямоугольники должны быть массивом четверок x/y/B/H."
     Dim bounds() As Double, n As Long, i As Long, j As Long, rect As Variant, start As Long
@@ -1080,7 +1082,7 @@ Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As V
     Set AdjacentRectangles = result
 End Function
 
-' Изолированный разбор компактного программного ввода: никакого Excel.
+' Разбирает компактную запись координат, переданную программно, без чтения Excel.
 Private Sub ReadPolygonInput(ByVal pathID As String, ByVal vertices As Variant, ByVal radii As Variant, _
         ByVal vertexIDs As Variant, ByRef points() As TPoint2D, ByRef radius() As Double, ByRef names() As String, ByRef count As Long)
     On Error GoTo Invalid
@@ -1104,9 +1106,9 @@ Invalid:
     GeometryError pathID & ": задайте не менее трех вершин Array(Array(x,y),...), столько же неотрицательных радиусов и уникальных имен вершин."
 End Sub
 
-' Совпадение с прямым исходным ребром определяется по стороне материала,
-' а не соглашению winding на самой границе. Для дуг и обычных пересечений
-' середина между соседними точками находится внутри материала либо пустоты.
+' Для точки на исходном отрезке учитываем, с какой стороны находится бетон.
+' На остальных участках между пересечениями проверяем середину: она лежит
+' либо в бетоне, либо в пустоте, в том числе у дуг.
 Private Function CutLineHasMaterial(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal nx As Double, ByVal ny As Double, ByVal bound As Double, _
         ByVal x As Double, ByVal y As Double) As Boolean
@@ -1126,9 +1128,9 @@ Private Function CutLineHasMaterial(ByRef edges() As TRegionEdge, ByVal count As
     CutLineHasMaterial = ContainsRaw(edges, count, x, y, False)
 End Function
 
-' При дискретизации формы наружная граница входит в бетон, граница проема -
-' нет. Подготовленные ребра принадлежат неизменяемому снимку CGeometryRegion;
-' общий winding/arc алгоритм не дублируется и не копирует массив на точку.
+' При отборе точек сетки считает точку на наружном контуре принадлежащей бетону.
+' Точку на границе отверстия отклоняет. Для всех проверок использует
+' один подготовленный массив границ без повторного копирования.
 Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges() As TRegionEdge, _
         ByVal count As Long, ByVal x As Double, ByVal y As Double) As Boolean
     Dim i As Long, u As Double
@@ -1141,8 +1143,8 @@ Friend Function ContainsMeshPoint(ByVal region As CConcreteRegion, ByRef edges()
     ContainsMeshPoint = ContainsRaw(edges, count, x, y, False)
 End Function
 
-' Четыре угла внутри бетона не исключают узкий наружный вырез между ними.
-' Общий mesher получает точные ребра один раз, без знания типа сечения.
+' Проверяет, не проходит ли узкий вырез через ячейку с четырьмя углами внутри бетона.
+' Генератор сетки получает точные границы один раз и не зависит от типа сечения.
 Friend Sub CopyMeshOuterEdges(ByVal contours As CSectionContours, ByRef edges() As TRegionEdge, ByRef count As Long)
     Dim holes() As TRegionEdge, holeCount As Long
     Erase edges: count = 0
@@ -1262,10 +1264,11 @@ NextInterval:
     LineIntervals = final
 End Function
 
-' Запрашивает пары границ материала на равномерных прямых внутри заданной
-' полосы. Выбирается только интервал, содержащий опорную плоскость: переход
-' через opening к дальней стенке запрещен. Возвращает [найдено, Qx,Qy,Px,Py];
-' число проб задает потребитель. Эти точки не заменяют точные контуры области.
+' На нескольких равномерно расположенных прямых находит начало Q и конец P
+' бетонного участка, содержащего опорную точку. Дальняя стенка за отверстием
+' в этот участок не включается. Для каждой прямой сохраняет признак наличия участка
+' и координаты его концов. Эти данные нужны для проверки; площадь определяется
+' точными контурами, а не количеством контрольных прямых.
 Public Function SampleMaterialIntervals(ByVal region As CConcreteRegion, ByVal nx As Double, ByVal ny As Double, _
         ByVal seedPlane As Double, ByVal tMin As Double, ByVal tMax As Double, ByVal probeCount As Long) As Variant
     RequireRegion region
@@ -1295,9 +1298,9 @@ Public Function SampleMaterialIntervals(ByVal region As CConcreteRegion, ByVal n
     SampleMaterialIntervals = data
 End Function
 
-' Возвращает первый выход из локальной бетонной стенки по направлению луча.
-' Дальняя стенка за пустотой не увеличивает защитный слой; -1 означает, что
-' исходная точка не принадлежит бетону. Этот API заменяет прежний ray clipping.
+' Возвращает расстояние от точки до первого выхода из бетона вдоль заданного луча.
+' Дальняя стенка за пустотой не увеличивает защитный слой. Если исходная точка
+' не принадлежит бетону, возвращает -1.
 Public Function ConcreteCoverFromPointAlongDirection(ByVal pointX As Double, ByVal pointY As Double, _
         ByVal directionX As Double, ByVal directionY As Double) As Double
     EnsureDomain
@@ -1308,9 +1311,9 @@ Public Function ConcreteCoverFromPointAlongDirection(ByVal pointX As Double, ByV
     If intervals(1, 1) <= QUERY_TOLERANCE Then ConcreteCoverFromPointAlongDirection = intervals(1, 2)
 End Function
 
-' Подготавливает и валидирует локальный domain. Изменение сетки сбрасывает
-' снимок. При совместном использовании query ключ остается identity/Revision
-' модели, а не LC; при ошибке незавершенная область не публикуется в кэш.
+' Подготавливает и проверяет общую бетонную область модели. Если геометрия изменилась,
+' строит её заново. Номер сочетания нагрузок на подготовку не влияет.
+' При ошибке незавершённая область не сохраняется для последующих запросов.
 Private Sub EnsureDomain()
     If mSection Is Nothing Then GeometryError "Сначала привяжите геометрический запрос к модели сечения."
     If mSection.Revision <> mRevision Then Set mDomain = Nothing
@@ -1355,8 +1358,9 @@ Private Sub EnsureDomain()
     mDomainBuildCount = mDomainBuildCount + 1
 End Sub
 
-' Читает исходные материальные границы из геометрии модели. Расчетные области
-' трещин находятся в другом слое и не могут стать новым outer/opening.
+' Читает точные наружные границы и отверстия из модели сечения.
+' Области взаимодействия, полученные при расчёте трещин, не используются вместо исходных
+' контуров.
 Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer() As TRegionEdge, _
         ByRef outerCount As Long, ByRef holes() As TRegionEdge, ByRef holeCount As Long)
     Dim i As Long, edge As TRegionEdge, kind As String, isHole As Boolean
@@ -1389,9 +1393,9 @@ Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer
     Next i
 End Sub
 
-' Восстанавливает границу по реальным оболочкам элементов. Совпадающие
-' внутренние ребра удаляются сразу hash-индексом; частичные общие ребра и
-' T-соединения затем разбиваются и исключаются общим topology алгоритмом.
+' Восстанавливает границу по прямоугольным оболочкам бетонных элементов.
+' Сразу удаляет полностью совпавшие внутренние рёбра, затем разделяет
+' и удаляет частичные общие участки, включая Т-образные стыки.
 Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRegionEdge, ByRef count As Long)
     Dim dictionary As Object
     Set dictionary = CreateObject("Scripting.Dictionary")
@@ -1510,9 +1514,9 @@ Private Sub KeepOuterMeshContours(ByRef edges() As TRegionEdge, ByRef count As L
     count = boundaryCount
 End Sub
 
-' Разбивает пересекающиеся/совпадающие ребра и оставляет только границы
-' между материалом и пустотой. Внутренние ребра, дубли отверстий и пересечения
-' разных компонент не получают независимую площадь и не попадают в экспорт.
+' Разделяет пересекающиеся и совпавшие рёбра и оставляет границы между бетоном
+' и пустотой. Внутренние рёбра и повторные отверстия не добавляют площадь
+' и не попадают в экспорт.
 Private Sub NormalizeBoundary(ByRef raw() As TRegionEdge, ByVal rawCount As Long, _
         ByRef boundary() As TRegionEdge, ByRef boundaryCount As Long)
     Erase boundary: boundaryCount = 0
@@ -1550,8 +1554,8 @@ NextEdge:
     Next i
 End Sub
 
-' Упаковывает только замкнутую конечную границу. Площадь считается по формуле
-' Грина с аналитическим вкладом дуг и signed вкладом внутренних контуров отверстий.
+' Создаёт готовую область только из замкнутых границ. Вычисляет её площадь
+' по формуле Грина с точным вкладом дуг и вычитанием отверстий.
 Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal source As String, ByVal revision As Long) As CConcreteRegion
     Dim ordered() As TRegionEdge, loopCount As Long, area As Double, i As Long
@@ -1581,8 +1585,8 @@ Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
     Set MakeRegion = result
 End Function
 
-' Сшивает сегменты по их концам. Разрыв явно является ошибкой геометрии, а
-' касающиеся компоненты обходятся отдельно с сохранением материала слева.
+' Соединяет отрезки и дуги по их концам в замкнутые контуры. Разрыв вызывает ошибку.
+' Касающиеся раздельные области обходит отдельно, сохраняя бетон слева по обходу.
 Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef ordered() As TRegionEdge, _
         ByRef loopCount As Long, ByVal allowReverse As Boolean)
     Erase ordered: loopCount = 0
@@ -1625,8 +1629,8 @@ Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef
     Next i
 End Sub
 
-' Нормализует направление явно заданных outer/opening loops. В отличие от
-' mesh, семантическая роль известна и не выводится из пользовательских знаков.
+' Задаёт принятое направление обхода для известных наружных контуров и отверстий.
+' Их назначение уже задано; менять его по знаку площади исходного контура нельзя.
 Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal opening As Boolean)
     Dim ordered() As TRegionEdge, loops As Long, loopID As Long, i As Long, area As Double
     StitchLoops edges, count, ordered, loops, True
@@ -1642,7 +1646,8 @@ Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal
     CopyArray ordered, count, edges
 End Sub
 
-' Возвращает signed площадь одного замкнутого контура, не теряя аналитический вклад дуг.
+' Вычисляет площадь одного замкнутого контура со знаком его обхода,
+' учитывая точный вклад дуг.
 Private Function SignedLoopArea(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal loopID As Long) As Double
     Dim i As Long, originX As Double, originY As Double, found As Boolean
     For i = 1 To count
@@ -1676,8 +1681,8 @@ Private Function EdgeSignedArea(ByRef edge As TRegionEdge, Optional ByVal origin
     End If
 End Function
 
-' Проверяет аналитическую принадлежность по winding number. Полупустые
-' технические массивы допустимы при нормализации: внутренние ребра сокращаются.
+' Проверяет попадание точки по числу обходов границы вокруг неё.
+' Рабочий массив может содержать пропуски после удаления внутренних рёбер.
 Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, _
         ByVal x As Double, ByVal y As Double, ByVal includeBoundary As Boolean) As Boolean
     Dim i As Long, u As Double, winding As Long, crossX As Double, dy As Double, f1 As Double, f2 As Double
@@ -1688,9 +1693,9 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
             If modGeometryPrimitives.PointParameter(edges(i), x, y, u) Then ContainsRaw = True: Exit Function
         End If
         If Abs(edges(i).Sweep) <= PARAM_TOLERANCE Then
-            ' Стык с дугой должен считаться одной вершиной: координата конца
-            ' после sin/cos может отличаться от уровня луча на машинный шум.
-            ' Используем тот же линейный допуск, что аналитический arc query.
+            ' На стыке дуги с отрезком считаем общий конец одной вершиной.
+            ' Малую погрешность sin/cos учитываем тем же линейным допуском,
+            ' который применяется в остальных проверках дуг.
             f1 = edges(i).Y1 - y: f2 = edges(i).Y2 - y
             If Abs(f1) <= QUERY_TOLERANCE Then f1 = 0#
             If Abs(f2) <= QUERY_TOLERANCE Then f2 = 0#
@@ -1709,8 +1714,8 @@ Private Function ContainsRaw(ByRef edges() As TRegionEdge, ByVal count As Long, 
             For j = 1 To cutCount
                 u = cuts(j)
                 If u >= 0# And u <= 1# Then
-                    ' Близкий к общей вершине arc-параметр согласуется с
-                    ' прямым ребром по тому же линейному допуску, не по углу.
+                    ' Если точка близка к общей вершине дуги и отрезка, проверяем её
+                    ' по тому же линейному допуску, а не по отдельному угловому допуску.
                     If u * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 0#
                     If (1# - u) * modGeometryPrimitives.EdgeLength(edges(i)) <= QUERY_TOLERANCE Then u = 1#
                     If u = 0# Then
@@ -1739,15 +1744,15 @@ NextCrossing:
     ContainsRaw = (winding > 0)
 End Function
 
-' Возвращает угол поворота касательной при обходе узла topology.
+' Возвращает угол поворота касательной при переходе между сегментами в общей вершине.
 Private Function EdgeTurn(ByRef previous As TRegionEdge, ByRef following As TRegionEdge) As Double
     Dim ax As Double, ay As Double, bx As Double, by As Double
     modGeometryPrimitives.EdgeTangent previous, 1#, ax, ay: modGeometryPrimitives.EdgeTangent following, 0#, bx, by
     EdgeTurn = modGeometryPrimitives.AngleOf(ax * bx + ay * by, ax * by - ay * bx)
 End Function
 
-' Проверяет соответствие концов дуги центру и signed sweep; неверный явный
-' контур не подменяется fallback по сетке.
+' Проверяет, что концы дуги соответствуют её центру и углу обхода со знаком.
+' Недопустимый явно заданный контур вызывает ошибку, а не заменяется границами сетки.
 Private Sub ValidateArc(ByRef edge As TRegionEdge)
     Dim x As Double, y As Double
     If modGeometryPrimitives.EdgeLength(edge) <= QUERY_TOLERANCE Then GeometryError "Заданная дуга имеет нулевую длину."
@@ -1779,8 +1784,8 @@ Private Sub AddCircle(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal c
     Next i
 End Sub
 
-' Добавляет сегмент с геометрическим ростом capacity, чтобы горячий обход
-' сетки не выполнял ReDim Preserve на каждом бетонном ребре.
+' Добавляет сегмент в массив, при нехватке места увеличивая его размер вдвое.
+' Это исключает расширение массива на каждом ребре при обходе большой сетки.
 Private Sub AppendEdge(ByRef edges() As TRegionEdge, ByRef count As Long, ByRef edge As TRegionEdge)
     If count = 0 Then
         ReDim edges(1 To 16)
@@ -1802,7 +1807,8 @@ Private Sub CopyArray(ByRef source() As TRegionEdge, ByVal count As Long, ByRef 
     Next i
 End Sub
 
-' Упорядочивает небольшие наборы параметров intersections без объектов на точку.
+' Сортирует небольшой массив параметров точек пересечения без создания отдельного объекта на
+' точку.
 Private Sub SortScalars(ByRef values() As Double, ByVal count As Long)
     Dim i As Long, j As Long, value As Double
     For i = 2 To count
@@ -1815,19 +1821,21 @@ Private Sub SortScalars(ByRef values() As Double, ByVal count As Long)
     Next i
 End Sub
 
-' Hash-ключ только ускоряет удаление полностью совпадающих внутренних ребер.
-' Геометрическая принадлежность и частичные совпадения затем проверяются точно.
+' Строит ключ для быстрого поиска полностью совпавших внутренних рёбер.
+' Попадание в одну группу поиска не заменяет точную проверку границ
+' и их частичных совпадений.
 Private Function PointKey(ByVal x As Double, ByVal y As Double) As String
     PointKey = Format$(x / QUERY_TOLERANCE, "0") & ":" & Format$(y / QUERY_TOLERANCE, "0")
 End Function
 
-' Отсутствующий объект не равен корректной пустой области.
+' Проверяет, что объект области передан. Отсутствие объекта считается ошибкой,
+' а не пустой бетонной областью.
 Private Sub RequireRegion(ByVal region As CConcreteRegion)
     If region Is Nothing Then GeometryError "Готовая геометрическая область не передана."
 End Sub
 
-' Выдает ошибку геометрического контракта. Engineering-слой преобразует ее
-' через общую ResultMeta/status policy; geometry не назначает display-статусы.
+' Сообщает о недопустимых геометрических данных. Вызывающий инженерный расчёт
+' сохраняет причину в ResultMeta и определяет внешний статус общими правилами.
 Private Sub GeometryError(ByVal description As String, Optional ByVal code As String = "GEOMETRY_INVALID", _
         Optional ByVal entityID As String = "", Optional ByVal relatedEntityID As String = "", _
         Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
@@ -1835,3 +1843,12 @@ Private Sub GeometryError(ByVal description As String, Optional ByVal code As St
     mDiagnostic.Initialize code, entityID, relatedEntityID, description, detail1, detail2
     Err.Raise vbObjectError + 5401, "CSectionGeometryQuery", description
 End Sub
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+
+' ДЛЯ ТЕСТОВ: возвращает число фактических построений области, без учёта выдачи готовых копий.
+Friend Property Get DomainBuildCount() As Long
+    DomainBuildCount = mDomainBuildCount
+End Property

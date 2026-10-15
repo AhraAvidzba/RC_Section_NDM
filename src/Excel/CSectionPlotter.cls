@@ -18,43 +18,43 @@ Option Explicit
 ' их размеров. Для очень больших сеток применяет ряды диаграммы с группировкой
 ' по цвету, чтобы ограничить объём отрисовки.
 
-Private Const CHART_NAME As String = "chtNDMSectionPlot"
-Private Const SHAPE_PREFIX As String = "NDMPlot_"
-Private Const XL_XY_SCATTER As Long = -4169
-Private Const XL_XY_SCATTER_SMOOTH As Long = 72
-Private Const XL_XY_SCATTER_SMOOTH_NO_MARKERS As Long = 73
-Private Const XL_XY_SCATTER_LINES As Long = 74
-Private Const XL_XY_SCATTER_LINES_NO_MARKERS As Long = 75
-Private Const XL_CATEGORY As Long = 1
-Private Const XL_VALUE As Long = 2
-Private Const XL_PRIMARY As Long = 1
-Private Const XL_MARKER_SQUARE As Long = 1
-Private Const XL_MARKER_CIRCLE As Long = 8
-Private Const XL_NONE As Long = -4142
-Private Const XL_CENTER As Long = -4108
-Private Const XL_VCENTER As Long = -4108
-Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1
-Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2
-Private Const MSO_TEXT_ORIENTATION_DOWNWARD As Long = 3
-Private Const MSO_SEGMENT_LINE As Long = 0
-Private Const MSO_EDITING_AUTO As Long = 0
-Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2
-Private Const MSO_ARROWHEAD_STEALTH As Long = 3
-Private Const MSO_ARROWHEAD_DIAMOND As Long = 4
-Private Const MSO_ARROWHEAD_OVAL As Long = 5
-Private Const MSO_ARROWHEAD_OPEN As Long = 6
-Private Const MSO_ARROWHEAD_LENGTH_SHORT As Long = 1
-Private Const MSO_ARROWHEAD_LENGTH_MEDIUM As Long = 2
-Private Const MSO_ARROWHEAD_LENGTH_LONG As Long = 3
-Private Const MSO_ARROWHEAD_WIDTH_NARROW As Long = 1
-Private Const MSO_ARROWHEAD_WIDTH_MEDIUM As Long = 2
-Private Const MSO_ARROWHEAD_WIDTH_WIDE As Long = 3
-Private Const MSO_BRING_TO_FRONT As Long = 0
-Private Const MSO_SHAPE_RECTANGLE As Long = 1
-Private Const MSO_SHAPE_DIAMOND As Long = 4
-Private Const MSO_SHAPE_OVAL As Long = 9
-Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА"
-Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ"
+Private Const CHART_NAME As String = "chtNDMSectionPlot" ' Имя диаграммы схемы на листе Excel.
+Private Const SHAPE_PREFIX As String = "NDMPlot_" ' Начало имён фигур, созданных при отрисовке схемы.
+Private Const XL_XY_SCATTER As Long = -4169 ' Код Excel: точечная диаграмма.
+Private Const XL_XY_SCATTER_SMOOTH As Long = 72 ' Код Excel: сглаженная точечная диаграмма с маркерами.
+Private Const XL_XY_SCATTER_SMOOTH_NO_MARKERS As Long = 73 ' Код Excel: сглаженная точечная диаграмма без маркеров.
+Private Const XL_XY_SCATTER_LINES As Long = 74 ' Код Excel: точечная диаграмма с прямыми и маркерами.
+Private Const XL_XY_SCATTER_LINES_NO_MARKERS As Long = 75 ' Код Excel: точечная диаграмма с прямыми без маркеров.
+Private Const XL_CATEGORY As Long = 1 ' Код горизонтальной оси Excel.
+Private Const XL_VALUE As Long = 2 ' Код вертикальной оси Excel.
+Private Const XL_PRIMARY As Long = 1 ' Код основной группы осей Excel.
+Private Const XL_MARKER_SQUARE As Long = 1 ' Код квадратного маркера.
+Private Const XL_MARKER_CIRCLE As Long = 8 ' Код круглого маркера.
+Private Const XL_NONE As Long = -4142 ' Код отсутствующего элемента оформления.
+Private Const XL_CENTER As Long = -4108 ' Код горизонтального центрирования.
+Private Const XL_VCENTER As Long = -4108 ' Код вертикального центрирования.
+Private Const MSO_TEXT_ORIENTATION_HORIZONTAL As Long = 1 ' Код горизонтального текста.
+Private Const MSO_TEXT_ORIENTATION_UPWARD As Long = 2 ' Код текста с чтением снизу вверх.
+Private Const MSO_TEXT_ORIENTATION_DOWNWARD As Long = 3 ' Код текста с чтением сверху вниз.
+Private Const MSO_SEGMENT_LINE As Long = 0 ' Код прямолинейного участка фигуры.
+Private Const MSO_EDITING_AUTO As Long = 0 ' Код автоматического соединения узлов фигуры.
+Private Const MSO_ARROWHEAD_TRIANGLE As Long = 2 ' Код треугольной стрелки.
+Private Const MSO_ARROWHEAD_STEALTH As Long = 3 ' Код стрелки с выемкой.
+Private Const MSO_ARROWHEAD_DIAMOND As Long = 4 ' Код ромбовидной стрелки.
+Private Const MSO_ARROWHEAD_OVAL As Long = 5 ' Код овальной стрелки.
+Private Const MSO_ARROWHEAD_OPEN As Long = 6 ' Код открытой стрелки.
+Private Const MSO_ARROWHEAD_LENGTH_SHORT As Long = 1 ' Код короткой стрелки.
+Private Const MSO_ARROWHEAD_LENGTH_MEDIUM As Long = 2 ' Код средней длины стрелки.
+Private Const MSO_ARROWHEAD_LENGTH_LONG As Long = 3 ' Код длинной стрелки.
+Private Const MSO_ARROWHEAD_WIDTH_NARROW As Long = 1 ' Код узкой стрелки.
+Private Const MSO_ARROWHEAD_WIDTH_MEDIUM As Long = 2 ' Код средней ширины стрелки.
+Private Const MSO_ARROWHEAD_WIDTH_WIDE As Long = 3 ' Код широкой стрелки.
+Private Const MSO_BRING_TO_FRONT As Long = 0 ' Команда перемещения фигуры на передний план.
+Private Const MSO_SHAPE_RECTANGLE As Long = 1 ' Код прямоугольной фигуры.
+Private Const MSO_SHAPE_DIAMOND As Long = 4 ' Код ромбовидной фигуры.
+Private Const MSO_SHAPE_OVAL As Long = 9 ' Код овальной фигуры.
+Private Const EXTENSION_WARNING_TEXT As String = "ВНЕ ФИЗИЧЕСКОЙ ДИАГРАММЫ МАТЕРИАЛА" ' Текст предупреждения об использовании продолжения диаграммы.
+Private Const NUMERICAL_STATE_WARNING_TEXT As String = "ПРЯМОЕ НДС НЕ СОШЛОСЬ" ' Текст предупреждения о недостигнутом равновесии.
 Private Const RESULT_COLOR_BUCKET_COUNT As Long = 16 ' Число цветовых ступеней для расчетных маркеров Excel Chart.
 Private Const CONCRETE_MARKER_SIZE_BUCKET As Long = 3 ' Шаг группировки бетонных маркеров, чтобы Chart не превысил лимит series.
 Private Const ELEMENT_SHAPE_RENDER_MAX_COUNT As Long = 5000 ' До этого числа элементов геометрию рисуем поэлементно Shape-ами.
@@ -120,14 +120,15 @@ Private mNeutralLineEnabled As Boolean ' Нейтральная линия до�
 Private mLoadPointEnabled As Boolean ' Точка нагрузки для активного reference-слоя.
 Private mResultLabelsEnabled As Boolean ' Подписи готовых Stress/Strain, без повторного solve.
 Private mLegendEnabled As Boolean ' Цветовая легенда расчетного состояния.
-Private mResultLabelSpacing As Double ' Пространственный шаг подписей в фиксированных модельных мм.
+Private mResultLabelSpacing As Double ' Расстояние между ячейками выбора численных подписей в координатах сечения, мм.
 Private mPrincipalAxesMode As String ' Проверенный режим reference-осей текущего Draw.
 Private mAnnotationLayout As CPlotAnnotationLayout ' Проверенные настройки и размещение аннотаций одного прохода Draw.
 Private mAnnotationOffsetScale As Double ' Один коэффициент для обоих Offset: max(1; наибольший габарит / 1000 мм).
 Private mUnits As CUnitSystem ' Единицы переданной модели схемы, без повторного применения пользовательских знаков.
 
-' Создает единый адаптер визуальных длин/площадей. Физические значения уже
-' прочитаны из snapshot; таблицы коэффициентов единиц в plotter не дублируются.
+' Создаёт общий перевод единиц для графических длин и площадей.
+' Физические значения уже прочитаны из Results; отдельная таблица
+' коэффициентов в построителе схемы не нужна.
 Private Sub Class_Initialize()
     Set mUnits = New CUnitSystem
 End Sub
@@ -204,9 +205,8 @@ Public Sub Draw(ByVal workbook As Object, ByVal data As CSectionPlotDataReader, 
     DrawPlotTitleOverlay PlotTitleText(data)
 End Sub
 
-' Очищает существующую схему до нейтрального состояния без удаления ChartObject.
-' Положение и размер окна схемы сохраняются, но старые расчетные series,
-' аннотации и заголовок больше не могут выглядеть как актуальный snapshot.
+' Очищает прежние элементы, подписи и заголовок, сохраняя саму диаграмму,
+' её положение и размер. Устаревший расчёт не должен выглядеть текущим.
 Public Sub ClearExisting(ByVal workbook As Object, ByVal titleText As String)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4800, "CSectionPlotter", "Книга Excel не передана."
 
@@ -366,15 +366,15 @@ Private Function AnnotationMarginModel(ByVal settings As CSystemSettingsReader, 
     AnnotationMarginModel = marginModel
 End Function
 
-' Переводит геометрический offset из миллиметров сечения в output-единицы
-' сохраненного Results. Offset специально остается модельной величиной.
+' Переводит заданный в мм отступ в единицы координат схемы.
+' Отступ относится к геометрии сечения, а не к экранным пикселям.
 Private Function LengthMmToModel(ByVal valueMm As Double, ByVal lengthUnit As String) As Double
     LengthMmToModel = mUnits.InternalLengthToOutput(valueMm, lengthUnit)
 End Function
 
-' Оценивает TextHeight/TextGap в координатах модели только для расширения
-' области графика. В самом layout точное значение еще раз переводится в points
-' по фактической PlotArea; здесь нужна лишь разумная предварительная рамка.
+' Предварительно оценивает размеры текста и зазора в координатах модели
+' для расширения границ графика. Точные экранные размеры вычисляются
+' позже по фактической области построения PlotArea.
 Private Function AnnotationTextMetricModel(ByVal value As Double, ByVal unitName As String, _
         ByVal lengthUnit As String, ByVal rangeX As Double, ByVal rangeY As Double) As Double
     If StrComp(Trim$(unitName), "pt", vbTextCompare) <> 0 Then
@@ -486,9 +486,9 @@ Private Sub RegisterResultMagnitude(ByVal value As Double, ByRef maxAbs As Doubl
     End If
 End Sub
 
-' Добавляет расчетные элементы на схему. Основной путь - Shape-слой с точной
-' геометрией каждого элемента; bucket-series включаются только для очень
-' больших сеток, где тысячи отдельных Shapes заметно перегружают Excel.
+' Рисует элементы с их фактическими размерами отдельными фигурами.
+' Только для очень больших сеток использует группы маркеров диаграммы
+' одинакового оформления, чтобы не перегружать Excel тысячами фигур.
 Private Sub AddElementSeries(ByVal data As CSectionPlotDataReader)
     If mElementShapeLayerEnabled Then
         CapturePlotAreaMetrics
@@ -532,9 +532,8 @@ Private Function ShouldDrawElementShapeLayer(ByVal data As CSectionPlotDataReade
     ShouldDrawElementShapeLayer = (data.Count <= ELEMENT_SHAPE_RENDER_MAX_COUNT)
 End Function
 
-' Рисует бетонные волокна и стержни поэлементно как Shapes.
-' В этом режиме размеры не усредняются, а цвет берется из того же правила,
-' что и для grouped-series fallback-а.
+' Рисует каждый бетонный элемент и стержень отдельной фигурой без усреднения размеров.
+' Цвет выбирает по тем же правилам, что при групповой отрисовке больших сеток.
 Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
     Dim fallbackSquareRotation As Double
     fallbackSquareRotation = AverageKnownConcreteElementRotation(data)
@@ -549,10 +548,9 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
     Next itemIndex
 End Sub
 
-' Рисует бетонный конечный элемент с фактической шириной, высотой и
-' поворотом из Results. Если импортированный Region дошел до последнего
-' fallback-а по площади, он рисуется квадратом с углом средней ориентации
-' распознанной сетки.
+' Рисует бетонный элемент по сохранённым ширине, высоте и углу.
+' Если при импорте известна только площадь, использует эквивалентный квадрат
+' с сохранённой средней ориентацией сетки.
 Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
         ByVal fallbackSquareRotation As Double)
     Dim widthValue As Double
@@ -618,9 +616,8 @@ Private Function ElementMarkerSize(ByVal data As CSectionPlotDataReader, ByVal i
     End If
 End Function
 
-' Создает одну XY-series для группы одинаково оформленных элементов.
-' Координаты элементов остаются model/output-координатами, а Excel сам
-' размещает маркеры по настроенным осям.
+' Создаёт один ряд XY-диаграммы для одинаково оформленных элементов.
+' Координаты сохраняются в единицах схемы; Excel размещает маркеры по осям.
 Private Sub AddBucketSeriesByIndexes(ByVal data As CSectionPlotDataReader, ByVal bucketKey As String, ByVal indexes As Collection)
     If indexes Is Nothing Then Exit Sub
     If indexes.Count <= 0 Then Exit Sub
@@ -794,9 +791,8 @@ Private Sub DrawGeometryReferenceOverlay(ByVal data As CSectionPlotDataReader)
     If mLoadPointEnabled Then DrawPointMarker data.LoadReferenceX, data.LoadReferenceY, 10, RGB(255, 128, 0), MSO_SHAPE_DIAMOND, "LoadPoint"
 End Sub
 
-' Рисует Shape-слой схемы: контур, размеры, групповые подписи и легенды.
-' Shapes используются для оформления и служебного оверлея; расчетные значения
-' читаются только из snapshot Results.
+' Рисует контуры, размеры, подписи и легенды фигурами диаграммы.
+' Расчётные значения берёт только из сохранённых Results.
 Private Sub DrawShapeDecorations(ByVal data As CSectionPlotDataReader)
     If mContourEnabled Then DrawConcreteContour data
     DrawShapeAnnotations data, mAnnotationLayout.DimensionsEnabled, mAnnotationLayout.RebarLabelsEnabled
@@ -906,9 +902,8 @@ Private Sub DrawStateWarning(ByVal data As CSectionPlotDataReader)
     AddChartText leftPos, topPos, widthValue, 18, warningText, 0#, RGB(192, 0, 0), True, True, 10#
 End Sub
 
-' Рисует контур бетона из semantic-аннотаций Results.
-' Generated-геометрия обычно передает точный контур; AutoCAD import может не
-' иметь таких аннотаций, и тогда контур не угадывается насильно.
+' Рисует отрезки и дуги контура бетона, прочитанные из Results.
+' Если при импорте точный контур не был задан, отсутствующие границы не угадываются.
 Private Sub DrawConcreteContour(ByVal data As CSectionPlotDataReader)
     Dim i As Long
     For i = 1 To data.AnnotationCount
@@ -1137,8 +1132,8 @@ Private Sub AddArcLineIntersectionT(ByVal x0 As Double, ByVal y0 As Double, _
         sweepAngle, tCenter + halfChord, values, count
 End Sub
 
-' Проверяет одну кандидатную точку пересечения с окружностью и добавляет ее
-' только если точка лежит на нужном участке дуги.
+' Проверяет вычисленную точку пересечения с окружностью
+' и сохраняет её, только если она лежит на нужной части дуги.
 Private Sub AddArcIntersectionCandidate(ByVal x0 As Double, ByVal y0 As Double, _
         ByVal dirX As Double, ByVal dirY As Double, ByVal centerX As Double, _
         ByVal centerY As Double, ByVal arcStartX As Double, ByVal arcStartY As Double, _
@@ -1221,8 +1216,9 @@ Private Function PlotPrincipalAxesMode(ByVal settings As CSystemSettingsReader) 
     PlotPrincipalAxesMode = NormalizePrincipalAxesMode(rawValue, settings)
 End Function
 
-' Приводит режим осей к канонической записи; неизвестное значение сообщает
-' собственный текущий адрес Config и допустимые варианты, без default.
+' Проверяет выбранный режим осей и возвращает принятое написание.
+' Для неизвестного значения сообщает актуальный адрес Config
+' и допустимые варианты без подстановки другого режима.
 Private Function NormalizePrincipalAxesMode(ByVal rawValue As String, ByVal settings As CSystemSettingsReader) As String
     Select Case LCase$(Trim$(rawValue))
         Case "transformed", "приведенное", "приведенное сечение"
@@ -1242,9 +1238,9 @@ Private Function PrincipalAxesModeDraws(ByVal axesMode As String) As Boolean
     PrincipalAxesModeDraws = (StrComp(axesMode, "None", vbTextCompare) <> 0)
 End Function
 
-' Передает semantic-аннотации Results в CPlotAnnotationLayout.
-' Здесь нет логики конкретной формы: если аннотация есть, layout размещает ее;
-' если import не дал semantic-данных, Plotter ничего не угадывает.
+' Передаёт сохранённые размеры и подписи в CPlotAnnotationLayout.
+' Общий класс размещает имеющиеся аннотации независимо от формы сечения;
+' отсутствующие при импорте данные самостоятельно не добавляются.
 Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
         ByVal dimensionsEnabled As Boolean, ByVal rebarLabelsEnabled As Boolean)
     If Not dimensionsEnabled And Not rebarLabelsEnabled Then Exit Sub
@@ -1282,9 +1278,8 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
     RenderAnnotationLayout layout
 End Sub
 
-' Создает Chart.Shapes по готовому layout.
-' Dimension lines получают стрелки, тексты и выносные линии уже с рассчитанными
-' координатами внутри Chart.
+' Создаёт фигуры диаграммы по готовому размещению: размерные линии,
+' стрелки, выносные линии и текст с уже вычисленными координатами.
 Private Sub RenderAnnotationLayout(ByVal layout As CPlotAnnotationLayout)
     Dim i As Long
     For i = 1 To layout.Count
@@ -1338,9 +1333,9 @@ Private Function DimensionArrowWidth() As Long
     End Select
 End Function
 
-' Расставляет пространственные численные подписи Stress/Strain по бетонным элементам.
-' Подписи не ставятся на неработающий растянутый бетон и выбираются по сетке
-' spacing, а не по порядковому ElementID.
+' Размещает подписи напряжений или деформаций у выбранных бетонных элементов.
+' Неработающий растянутый бетон не подписывает. Частоту и расположение
+' определяет шаг ячеек, а не порядковый номер элемента.
 Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing As Double)
     Dim bestIndexByCell As Object
     Set bestIndexByCell = CreateObject("Scripting.Dictionary")
@@ -1354,8 +1349,8 @@ Private Sub DrawResultLabels(ByVal data As CSectionPlotDataReader, ByVal spacing
     For i = 1 To data.Count
         If StrComp(data.MaterialType(i), "Concrete", vbTextCompare) = 0 And _
                 StrComp(data.PhysicalState(i), "InactiveTensionConcrete", vbTextCompare) <> 0 Then
-            ' Целые номера пространственных ячеек не обязаны помещаться в
-            ' Long: мелкий положительный шаг допустим и не меняет Results.
+            ' Номера ячеек выбора подписей могут быть больше диапазона Long.
+            ' Мелкий положительный шаг оформления допустим и не меняет расчётные Results.
             Dim cellX As Double
             Dim cellY As Double
             cellX = Int((data.X(i) - mMinX) / spacing)
@@ -1781,8 +1776,8 @@ Private Function AddChartText(ByVal leftPos As Double, ByVal topPos As Double, B
     textShape.Fill.Visible = False
     If rotation <> 0# And orientation = MSO_TEXT_ORIENTATION_HORIZONTAL Then
         textShape.Rotation = rotation
-        ' После поворота Excel меняет видимую рамку текстового Shape. Возвращаем
-        ' ее центр в рассчитанную точку, не меняя сам TextGap из layout.
+        ' После поворота текста Excel меняет его внешнюю рамку.
+        ' Возвращаем центр надписи в вычисленную точку, сохраняя заданный TextGap.
         textShape.Left = centerX - textShape.Width / 2#
         textShape.Top = centerY - textShape.Height / 2#
     End If
@@ -1834,8 +1829,8 @@ Private Sub CapturePlotAreaMetrics()
         mPlotWidth = StablePlotFrameWidth()
         mPlotHeight = StablePlotFrameHeight()
     Else
-        ' В fallback-режиме элементы являются XY-series, поэтому Shapes должны
-        ' привязываться к реальной области построения этих series.
+        ' При групповой отрисовке маркерами XY-диаграммы привязываем
+        ' контуры и подписи к фактической области построения этих рядов.
         mPlotLeft = mChart.PlotArea.InsideLeft
         mPlotTop = mChart.PlotArea.InsideTop
         mPlotWidth = mChart.PlotArea.InsideWidth
@@ -1878,8 +1873,8 @@ Private Function StablePlotFrameHeight() As Double
     If StablePlotFrameHeight <= 0# Then StablePlotFrameHeight = mChartObject.Height * 0.72
 End Function
 
-' Выбирает ширину координатной области: стабильную рамку для Shape-схемы или
-' фактическую PlotArea для fallback-а на XY-series.
+' Выбирает ширину области координат: заданную рамку для отдельных фигур
+' или фактическую PlotArea при групповой отрисовке маркерами.
 Private Function PlotCoordinateWidth() As Double
     If mElementShapeLayerEnabled Then
         PlotCoordinateWidth = StablePlotFrameWidth()
@@ -1909,22 +1904,23 @@ Private Sub ClearGeneratedShapes()
 End Sub
 
 
-' Возвращает визуальную ширину бетонного элемента. Если snapshot не хранит
-' размеры оболочки, используется fallback по площади.
+' Возвращает ширину бетонного элемента для схемы. Если размеры не сохранены,
+' использует эквивалентный квадрат той же площади.
 Private Function ConcreteElementWidth(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     ConcreteElementWidth = data.Width(index)
     If ConcreteElementWidth <= 0# Then ConcreteElementWidth = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
 End Function
 
-' Возвращает визуальную высоту бетонного элемента с тем же fallback, что и ширина.
+' Возвращает высоту бетонного элемента для схемы. Если размеры не сохранены,
+' использует эквивалентный квадрат той же площади.
 Private Function ConcreteElementHeight(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     ConcreteElementHeight = data.Height(index)
     If ConcreteElementHeight <= 0# Then ConcreteElementHeight = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
 End Function
 
-' Возвращает визуальный угол бетонного элемента. Для реальных прямоугольников
-' используется их собственный Rotation, а последний fallback по площади
-' получает средний угол импортированной сетки.
+' Возвращает угол элемента для схемы. Для известного прямоугольника берёт
+' его собственный Rotation, для квадрата только по площади —
+' средний угол импортированной сетки.
 Private Function ConcreteElementVisualRotation(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
         ByVal fallbackSquareRotation As Double) As Double
     ConcreteElementVisualRotation = data.Rotation(index)
@@ -1956,9 +1952,9 @@ Private Function AverageKnownConcreteElementRotation(ByVal data As CSectionPlotD
     End If
 End Function
 
-' Определяет последний fallback бетонного Region по площади.
-' При чтении допускает оба написания статуса: Equivalent square и
-' EquivalentSquare. Положительные Width/Height исключают этот fallback.
+' Проверяет, представлен ли элемент эквивалентным квадратом только по площади.
+' Принимает записи Equivalent square и EquivalentSquare;
+' сохранённые положительные Width/Height означают, что размеры уже известны.
 Private Function IsEquivalentAreaFallbackElement(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Boolean
     Dim statusText As String
     statusText = Replace$(Trim$(data.ShapeType(index)), " ", vbNullString)
@@ -1988,7 +1984,7 @@ Private Function Atn2Local(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-' Возвращает характерный размер маркера для fallback-отрисовки через series.
+' Возвращает размер маркера для групповой отрисовки элементов рядами диаграммы.
 Private Function ConcreteMarkerLength(ByVal data As CSectionPlotDataReader, ByVal index As Long) As Double
     If data.Width(index) > 0# And data.Height(index) > 0# Then
         ConcreteMarkerLength = Sqr(data.Width(index) * data.Height(index))

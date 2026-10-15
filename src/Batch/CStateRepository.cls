@@ -17,24 +17,24 @@ Option Explicit
 ' Неудачную попытку можно записать для диагностики, но FindEquivalent её
 ' не возвращает: повторное решение с другим начальным приближением остаётся возможным.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
-Private mStates As Collection ' Все конечные named-state для вывода Results.
-Private mReusableByKey As Object ' Dictionary: equivalence key -> успешно полученный физический state.
-Private mContextSection As CSectionModel ' Identity геометрии, которой принадлежит reusable cache.
-Private mContextMaterials As CMaterialModelProvider ' Identity эффективного набора материалов.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
+Private mStates As Collection ' Конечные расчётные состояния для вывода на Results.
+Private mReusableByKey As Object ' Соответствие точного запроса ранее найденному равновесному НДС.
+Private mContextSection As CSectionModel ' Объект геометрии, для которого сохранены расчётные состояния.
+Private mContextMaterials As CMaterialModelProvider ' Фактически использованный набор материалов.
 Private mSectionRevision As Long ' Версия геометрии на момент привязки контекста.
 Private mMaterialRevision As Long ' Версия материалов на момент привязки контекста.
-Private mAcceptanceKey As String ' Effective Extension и допуски приемки равновесия.
-Private mContextBound As Boolean ' Контекст cache уже определен общим State pipeline.
+Private mAcceptanceKey As String ' Режим продолжения диаграмм и допуски равновесия.
+Private mContextBound As Boolean ' Признак того, что общие условия повторного использования состояний уже заданы.
 
-' Создает раздельные коллекции итоговых named-state и доказанного reuse.
-' До BindContext ни один вручную сохраненный state не получает ключ эквивалентности.
+' Создаёт отдельные списки состояний для вывода и повторного использования.
+' До BindContext нельзя подтвердить, что сохранённое вручную НДС относится к текущему запросу.
 Private Sub Class_Initialize()
     Set mStates = New Collection
     Set mReusableByKey = CreateObject("Scripting.Dictionary")
 End Sub
 
-' Очищает snapshot states и reusable-cache перед новым расчетом LC.
+' Очищает состояния для вывода и повторного использования перед новым сочетанием нагрузок.
 Public Sub Clear()
     AssertWritable
     Set mStates = New Collection
@@ -45,9 +45,9 @@ Public Sub Clear()
     mAcceptanceKey = vbNullString
 End Sub
 
-' Ограничивает reusable cache одним фактическим расчетным контекстом.
-' При его смене старые состояния инвалидируются. Первый bind не удаляет
-' unkeyed named states, уже принятые владельцем LC, например CapacityState.
+' Связывает сохранённые НДС с текущими моделью, материалами и настройками.
+' При изменении этих условий прежние состояния больше не используются. Первый вызов
+' не удаляет уже принятые результаты без ключа запроса, например найденное CapacityState.
 Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMaterialModelProvider, _
         ByVal acceptanceKey As String)
     AssertWritable
@@ -61,7 +61,8 @@ Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMater
             (mMaterialRevision <> materials.Revision) Or (mAcceptanceKey <> acceptanceKey)
         If changed Then Clear
     Else
-        ' Без контекста вручную сохраненные states не являются доказанным reuse.
+        ' Без заданных условий расчёта нельзя подтвердить пригодность вручную сохранённого НДС
+        ' для нового запроса.
         Set mReusableByKey = CreateObject("Scripting.Dictionary")
     End If
     Set mContextSection = section
@@ -72,8 +73,8 @@ Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMater
     mContextBound = True
 End Sub
 
-' Сохраняет state без ключа переиспользования. Такой путь нужен для уже
-' найденных capacity-точек и других физических states без CStateRequest.
+' Сохраняет готовое НДС без ключа запроса. Это нужно, например, для предельного
+' состояния, найденного поиском несущей способности без отдельного CStateRequest.
 Public Sub StoreState(ByVal stateResult As CSectionStateResult)
     AssertWritable
     If stateResult Is Nothing Then Exit Sub
@@ -87,9 +88,9 @@ Public Sub StoreState(ByVal stateResult As CSectionStateResult)
     mStates.Add stateResult
 End Sub
 
-' Сохраняет state, связанный с физическим request. В общий reusable cache
-' попадают только сошедшиеся состояния, то есть состояния с реально полученной
-' плоскостью деформаций. NumFail/InputErr/CalcErr не блокируют будущие попытки.
+' Сохраняет состояние вместе с запросом. Для повторного использования допускает
+' только найденное равновесие с полем деформаций. Ошибки NumFail/InputErr/CalcErr
+' не запрещают последующую попытку решить тот же запрос.
 Public Sub StoreForRequest(ByVal request As CStateRequest, ByVal stateResult As CSectionStateResult)
     AssertWritable
     If stateResult Is Nothing Then Exit Sub
@@ -106,8 +107,8 @@ Public Sub StoreForRequest(ByVal request As CStateRequest, ByVal stateResult As 
     End If
 End Sub
 
-' Ищет ранее полученное эквивалентное физическое состояние. Метод никогда не
-' возвращает неуспешные попытки solve.
+' Ищет ранее найденное равновесное НДС для того же физического запроса.
+' Неудачные попытки решения повторно используемым состоянием не считаются.
 Public Function FindEquivalent(ByVal request As CStateRequest) As CSectionStateResult
     If request Is Nothing Then Exit Function
     Dim key As String
@@ -116,24 +117,25 @@ Public Function FindEquivalent(ByVal request As CStateRequest) As CSectionStateR
     Dim cached As CSectionStateResult
     Set cached = mReusableByKey.Item(key)
     If Not IsReusablePhysicalState(cached) Then Exit Function
-    ' Строковое форматирование ключа не должно объединять разные Double-loads.
+    ' Дополнительно сравниваем исходные усилия: одинаковая текстовая запись ключа
+    ' не должна объединять разные значения Double.
     If cached.TargetN <> request.TargetN Or cached.TargetMx <> request.TargetMx Or _
             cached.TargetMy <> request.TargetMy Then Exit Function
     Set FindEquivalent = cached
 End Function
 
-' Возвращает количество states, которые должны попасть в Results snapshot.
+' Возвращает количество конечных расчётных состояний для записи в Results.
 Public Property Get StateCount() As Long
     StateCount = mStates.Count
 End Property
 
-' Возвращает state по порядку записи в snapshot.
+' Возвращает расчётное состояние по порядку его записи в Results.
 Public Property Get StateAt(ByVal index As Long) As CSectionStateResult
     If index < 1 Or index > mStates.Count Then Err.Raise vbObjectError + 3985, "CStateRepository", "Индекс именованного состояния вне диапазона."
     Set StateAt = mStates.Item(index)
 End Property
 
-' Ищет state по типу среди конечных states LC.
+' Ищет конечное расчётное состояние заданного типа для этого сочетания.
 Public Function FindState(ByVal stateType As ESectionStateType) As CSectionStateResult
     Dim i As Long
     For i = 1 To mStates.Count
@@ -146,8 +148,8 @@ Public Function FindState(ByVal stateType As ESectionStateType) As CSectionState
     Next i
 End Function
 
-' Возвращает позицию named-state в snapshot. В этой позиции хранится последний
-' запрос данного типа, включая новое усилие, повтор solve или cache-hit.
+' Возвращает номер записи состояния данного типа в Results. Здесь хранится последний
+' запрос этого типа, включая изменение усилий, повторное решение или получение прежнего НДС.
 Private Function StateIndex(ByVal stateType As ESectionStateType) As Long
     Dim i As Long
     For i = 1 To mStates.Count
@@ -160,15 +162,15 @@ Private Function StateIndex(ByVal stateType As ESectionStateType) As Long
     Next i
 End Function
 
-' Заменяет элемент Collection с сохранением его позиции в Results snapshot.
+' Заменяет состояние в коллекции, сохраняя его порядковый номер для вывода в Results.
 Private Sub ReplaceStateAt(ByVal index As Long, ByVal stateResult As CSectionStateResult)
     mStates.Add stateResult, , index
     mStates.Remove index + 1
 End Sub
 
-' Определяет, можно ли отдавать state через FindEquivalent. Физический FAIL из-за
-' выхода за пределы диаграммы остается reusable, потому что равновесие найдено;
-' численная неудача без найденного НДС reusable не является.
+' Проверяет, можно ли использовать НДС повторно. Состояние с физическим FAIL
+' можно использовать, если равновесие найдено; неудачная численная попытка
+' без найденного поля деформаций для этого непригодна.
 Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResult) As Boolean
     If stateResult Is Nothing Then Exit Function
     If Not stateResult.Converged Then Exit Function
@@ -178,9 +180,8 @@ Private Function IsReusablePhysicalState(ByVal stateResult As CSectionStateResul
     End Select
 End Function
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Закрывает каждый сохраненный named-state и состав repository без
-' копирования сетки. Повторный вызов безопасен; Store/reset затем запрещены.
+' Завершает заполнение хранилища и каждого сохранённого НДС, запрещая их изменение.
+' Сетка не копируется; повторный вызов безопасен, добавление и очистка после него запрещены.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     Dim state As CSectionStateResult

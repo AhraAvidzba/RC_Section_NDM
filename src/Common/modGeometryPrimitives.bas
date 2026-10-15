@@ -2,9 +2,9 @@ Attribute VB_Name = "modGeometryPrimitives"
 Option Explicit
 Option Private Module
 
-' Аналитическая математика прямых и дуг: длины, точки, касательные и пересечения.
-' Здесь нет модели сечения, рецептов, Excel, кэша и состояния конкретного запроса.
-' Формулы перенесены из CSectionGeometryQuery; query и path используют одну реализацию.
+' Вычисляет длины, точки, касательные и пересечения отрезков и дуг.
+' CSectionGeometryQuery и CGeometryPath используют одну общую реализацию
+' этих формул без обращения к Excel и конкретному сечению.
 Public Const GEOM_BOUNDARY_TOLERANCE As Double = 0.000001 ' Допуск границ и совпадения координат, мм.
 Public Const GEOM_PARAMETER_TOLERANCE As Double = 0.0000000001 ' Допуск безразмерного параметра сегмента.
 Private Const QUERY_TOLERANCE As Double = GEOM_BOUNDARY_TOLERANCE
@@ -232,8 +232,9 @@ Public Function EdgeLength(ByRef edge As TRegionEdge) As Double
     End If
 End Function
 
-' Добавляет скалярный параметр без дублей; размерный допуск выбирается
-' вызывающим пересечением, а здесь сравнивается относительная точность Double.
+' Добавляет численный параметр в список, если такого значения ещё нет.
+' Здесь учитывает относительную точность Double; размерный допуск
+' задаёт вызывающая операция пересечения.
 Public Sub AddScalar(ByRef values() As Double, ByRef count As Long, ByVal value As Double)
     Dim i As Long
     For i = 1 To count
@@ -250,8 +251,8 @@ Public Function SamePoint(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Do
 End Function
 
 
-' Отклоняет вырожденное направление прямого низкоуровневого запроса.
-' Верхние контракты path/query проверяют направление до вызова этой операции.
+' Отклоняет нулевое направление прямой. Команды линии и геометрические запросы
+' обычно проверяют его заранее, но прямой вызов этой операции также защищён.
 Private Sub GeometryError(ByVal reason As String)
     Err.Raise vbObjectError + 5401, "modGeometryPrimitives", reason
 End Sub

@@ -27,7 +27,7 @@ Private mConcreteSourceHandle() As String ' Необязательный AutoCAD
 Private mConcreteX() As Double ' X центра тяжести бетонного элемента во внутренней системе координат, мм.
 Private mConcreteY() As Double ' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
 Private mConcreteArea() As Double ' Площадь бетонного элемента, мм2.
-Private mConcreteMaterialID() As Long ' Идентификатор материала элемента; текущий solver получает единую диаграмму бетона.
+Private mConcreteMaterialID() As Long ' Номер материала бетонного элемента; в текущем НДС используется одна подготовленная диаграмма бетона.
 Private mConcreteShapeType() As String ' Исходная геометрическая подсказка источника: Rectangle для известных ячеек, Region для AutoCAD.
 Private mConcreteWidth() As Double ' Реальная ширина элемента, только если источник достоверно знает прямоугольную оболочку; иначе 0.
 Private mConcreteHeight() As Double ' Реальная высота элемента, только если источник достоверно знает прямоугольную оболочку; иначе 0.
@@ -38,7 +38,7 @@ Private mConcreteLocalIy() As Double ' Реальный собственный I
 Private mConcreteLocalIxy() As Double ' Реальный собственный центробежный момент элемента, мм4; не заменяется оболочкой.
 Private mConcreteComment() As String ' Короткая диагностическая заметка для Results.
 Private mConcreteCount As Long ' Фактическое число бетонных элементов в модели.
-Private mConcreteCapacity As Long ' Емкость закрытых массивов; getters и сериализация используют только Count.
+Private mConcreteCapacity As Long ' Вместимость внутренних массивов; чтение и сохранение используют только заполненные элементы.
 
 Private mBoundaryCacheValid() As Boolean ' True, если интерпретация оболочки элемента уже рассчитана и не требует повторения.
 Private mBoundaryCacheStatus() As String ' Кэшированный GeometryInterpretationStatus: Rectangle, Equivalent rectangle или Equivalent square.
@@ -54,20 +54,20 @@ Private mRebarY() As Double ' Y центра стержня, мм.
 Private mRebarArea() As Double ' Площадь стержня, мм2.
 Private mRebarDiameter() As Double ' Диаметр стержня, мм.
 Private mRebarSteelClass() As String ' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
-Private mRebarMaterialID() As Long ' Идентификатор материала стержня; текущий solver получает единую диаграмму арматуры.
+Private mRebarMaterialID() As Long ' Номер материала стержня; в текущем НДС используется одна подготовленная диаграмма арматуры.
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
 Private mRebarRecipeTrace() As String ' Происхождение всех позиций физического стержня; metadata, не геометрия.
-Private mGeometryDiagnostics As String
+Private mGeometryDiagnostics As String ' Пояснения и предупреждения, полученные при подготовке геометрии.
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
 
 Private mAnnotations As CSectionAnnotations ' Semantic-аннотации, сформированные генератором сечения.
 Private mContours As CSectionContours ' Достоверные outer/opening, принадлежащие исходной геометрии.
-Private mRevision As Long ' Версия расчетной геометрии для scoped-инвалидации reusable НДС.
+Private mRevision As Long ' Версия геометрии: после её изменения ранее найденное НДС для этой модели использовать нельзя.
 Private mObservedContourRevision As Long ' Последняя учтенная версия достоверного outer/opening.
-Private mConcreteCenterValid As Boolean, mConcreteCenterRevision As Long
-Private mConcreteCenterX As Double, mConcreteCenterY As Double, mConcreteCenterArea As Double
-Private mElementRadiusValid As Boolean, mElementRadiusRevision As Long, mElementRadius As Double
+Private mConcreteCenterValid As Boolean, mConcreteCenterRevision As Long ' Признак готовности и версия геометрии для сохранённого центра бетонной сетки.
+Private mConcreteCenterX As Double, mConcreteCenterY As Double, mConcreteCenterArea As Double ' Координаты центра бетонной сетки в мм и её суммарная площадь в мм2.
+Private mElementRadiusValid As Boolean, mElementRadiusRevision As Long, mElementRadius As Double ' Готовность, версия геометрии и сохранённый максимальный радиус размещения элементов, мм.
 
 Private Const LOCAL_INERTIA_SQUARE_REL_TOLERANCE As Double = 0.000001 ' Допуск, при котором главные локальные I считаются изотропными.
 Private Const LOCAL_INERTIA_RECTANGLE_AREA_REL_TOLERANCE As Double = 0.01 ' Допуск проверки, что реальные A/I совместимы с прямоугольником.
@@ -130,7 +130,7 @@ Public Property Get SourceType() As String
     SourceType = mSourceType
 End Property
 
-' Metadata геометрии сохраняется в Results; solver от нее не зависит.
+' Сведения об источнике сетки для Results; на решение равновесия они не влияют.
 Public Property Let ConcreteMeshSource(ByVal value As String)
     Select Case value
         Case vbNullString, "Generated", "AutoCADRegions", "AutoCADContours"
@@ -145,18 +145,19 @@ Public Property Get ConcreteMeshSource() As String
     ConcreteMeshSource = mConcreteMeshSource
 End Property
 
-' Сохранённая диагностика сборки геометрии для публикации в Results.
+' Сохраняет сообщения проверки геометрии для записи в Results.
 Public Property Let GeometryDiagnosticsText(ByVal value As String)
     mGeometryDiagnostics = value
 End Property
 
-' Сохранённая диагностика сборки геометрии для публикации в Results.
+' Возвращает сообщения проверки геометрии для записи в Results.
 Public Property Get GeometryDiagnosticsText() As String
     GeometryDiagnosticsText = mGeometryDiagnostics
 End Property
 
-' Metadata не меняет A/I и revision. Все заявленные принадлежности одного
-' физического стержня сохраняются; разделители в смысловых ID экранируются.
+' Добавляет связь стержня с правилом, линией и исходной позицией.
+' Все связи одного стержня сохраняются без изменения его площади, инерций
+' и версии геометрии. Разделители внутри имён кодируются, чтобы различать записи.
 Public Sub AppendRebarRecipeTrace(ByVal index As Long, ByVal ruleID As String, ByVal pathID As String, ByVal sourcePositionID As String)
     CheckRebarIndex index
     If Len(mRebarRecipeTrace(index)) > 0 Then mRebarRecipeTrace(index) = mRebarRecipeTrace(index) & ";"
@@ -215,9 +216,9 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     If Not IsPositiveDefiniteInertia(mConcreteLocalIx(mConcreteCount), _
             mConcreteLocalIy(mConcreteCount), mConcreteLocalIxy(mConcreteCount)) Then
         If HasExplicitRectangleGeometry(mConcreteCount) Then
-            ' Генератор сетки может передать реальные размеры прямоугольной ячейки.
-            ' В этом случае CSectionModel сам формирует расчетные локальные I.
-            ' AutoCAD importer такие размеры не угадывает и сюда их не передает.
+            ' Если генератор передал реальные размеры прямоугольной ячейки,
+            ' рассчитываем её собственные моменты инерции по этим размерам.
+            ' При импорте AutoCAD отсутствующие размеры здесь не угадываются.
             RectangleLocalInertiaComponents area, width, height, rotation, _
                 mConcreteLocalIx(mConcreteCount), _
                 mConcreteLocalIy(mConcreteCount), _
@@ -228,9 +229,9 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
     mRevision = mRevision + 1
 End Sub
 
-' Заранее выделяет известный размер без создания элементов и изменения
-' ревизии. Builder использует точный Count сетки; импорт может расти блоками.
-' Массивы закрыты, незаполненный хвост никогда не участвует в расчетах.
+' Заранее выделяет места для известного числа элементов, не создавая их
+' и не меняя версию геометрии. Генератор передаёт точный размер сетки;
+' при импорте массивы могут расширяться по мере чтения. Незанятые места не участвуют в расчёте.
 Friend Sub ReserveElements(ByVal concreteCount As Long, ByVal rebarCount As Long)
     If concreteCount < 0 Or rebarCount < 0 Then Err.Raise vbObjectError + 5202, "CSectionModel", "Размер резерва элементов не может быть отрицательным."
     EnsureConcreteCapacity concreteCount, True
@@ -314,9 +315,9 @@ Public Property Get Revision() As Long
     Revision = mRevision
 End Property
 
-' Общий центр бетонной сетки без арматуры. Кэш принадлежит модели и действителен
-' только для ее текущей ревизии; плечи от первого элемента исключают большой
-' перенос чертежа из суммирования. Исходные координаты элементов не меняются.
+' Находит центр бетонной сетки без арматуры и сохраняет его для текущей версии геометрии.
+' Суммирует координаты относительно первого элемента, чтобы уменьшить ошибку
+' при большом смещении чертежа. Исходные координаты элементов не меняются.
 Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double, ByRef totalArea As Double)
     CheckConcreteIndex 1
     Dim currentRevision As Long
@@ -337,8 +338,9 @@ Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double
     centerX = mConcreteCenterX: centerY = mConcreteCenterY: totalArea = mConcreteCenterArea
 End Sub
 
-' Наибольшее расстояние элемента от бетонного центра. Это свойство геометрии,
-' поэтому все численные плоскости используют один кэш точной ревизии модели.
+' Находит наибольшее расстояние элемента от центра бетонной сетки.
+' Результат сохраняется для текущей версии геометрии и используется
+' во всех пробных полях деформаций без повторного обхода элементов.
 Friend Function MaximumElementRadiusFromConcreteCenter() As Double
     Dim currentRevision As Long
     currentRevision = Revision
@@ -361,9 +363,9 @@ Friend Function MaximumElementRadiusFromConcreteCenter() As Double
     MaximumElementRadiusFromConcreteCenter = mElementRadius
 End Function
 
-' Назначает эквивалентным площадным оболочкам без направления от источника среднюю
-' ориентацию известных элементов. Инвалидирует затронутый boundary-cache;
-' реальные A/I элементов не меняются. Форму интерпретирует ConcreteBoundaryRectangle.
+' Назначает среднюю ориентацию эквивалентным ячейкам, для которых источник
+' не задал направления. Их границы затем подготавливаются заново,
+' а реальные площади и моменты инерции элементов сохраняются.
 Public Sub ApplyAverageRotationToEquivalentAreaFallbacks()
     Dim fallbackRotation As Double
     fallbackRotation = AverageKnownConcreteElementRotation()
@@ -425,9 +427,8 @@ Private Function ElementContributesToAverageRotation(ByVal index As Long, ByVal 
     End If
 End Function
 
-' Проверяет, что бетонный элемент является последним fallback-ом по площади.
-' Для новых данных это определяется через интерпретацию оболочки, а не через
-' исходную строковую подсказку importer-а.
+' Проверяет, используется ли для элемента эквивалентный квадрат только по площади.
+' Вид определяется общим расчётом его границ, а не исходной подсказкой импорта.
 Public Function IsConcreteEquivalentAreaFallback(ByVal index As Long) As Boolean
     CheckConcreteIndex index
     IsConcreteEquivalentAreaFallback = _
@@ -455,8 +456,8 @@ Public Function ConcreteBoundaryShapeType(ByVal index As Long) As String
     ConcreteBoundaryShapeType = statusText
 End Function
 
-' Возвращает половину проекции интерпретированной оболочки элемента на ось.
-' Метод нужен габаритам, a_s, ядровым расстояниям, схеме и AutoCAD export.
+' Возвращает половину проекции прямоугольной границы элемента на заданную ось.
+' Это расстояние используется для габаритов, защитного слоя, ядра сечения, схемы и экспорта.
 Public Function ConcreteBoundaryHalfProjection(ByVal index As Long, ByVal axisX As Double, _
         ByVal axisY As Double) As Double
     Dim widthValue As Double
@@ -467,8 +468,8 @@ Public Function ConcreteBoundaryHalfProjection(ByVal index As Long, ByVal axisX 
     End If
 End Function
 
-' Возвращает реальные локальные инерции элемента. Если источник вообще не дал
-' пригодные I, применяется последний расчетный fallback: квадрат той же площади.
+' Возвращает собственные моменты инерции элемента. Если источник не передал
+' пригодных значений, рассчитывает их для квадрата той же площади.
 Public Sub ConcreteLocalInertiaComponents(ByVal index As Long, ByRef localIx As Double, _
         ByRef localIy As Double, ByRef localIxy As Double)
     CheckConcreteIndex index
@@ -481,9 +482,9 @@ Public Sub ConcreteLocalInertiaComponents(ByVal index As Long, ByRef localIx As 
     EquivalentSquareLocalInertiaComponents mConcreteArea(index), localIx, localIy, localIxy
 End Sub
 
-' Проверяет, что локальная матрица инерций почти изотропна и не задает
-' однозначного направления главных осей. AutoCAD importer использует это,
-' чтобы обращаться к геометрии Region только за углом простой грани.
+' Проверяет, различаются ли собственные моменты инерции достаточно, чтобы определить
+' направление главных осей элемента. При почти равных инерциях импорт AutoCAD
+' может уточнить угол по фактической прямой грани Region.
 Public Function LocalInertiaIsNearlySquare(ByVal localIx As Double, ByVal localIy As Double, _
         ByVal localIxy As Double, Optional ByVal relativeTolerance As Double = LOCAL_INERTIA_SQUARE_REL_TOLERANCE) As Boolean
     If Not IsPositiveDefiniteInertia(localIx, localIy, localIxy) Then Exit Function
@@ -551,9 +552,8 @@ Private Sub CalculateConcreteBoundary(ByVal index As Long, ByRef statusText As S
     rotationValue = NormalizeAnglePi(mConcreteRotation(index))
 End Sub
 
-' Запоминает рассчитанную оболочку бетонного элемента. Кэш хранит только
-' геометрическое представление для границ/схемы/AutoCAD и не меняет реальные
-' A/I, используемые в механических расчетах.
+' Сохраняет рассчитанные размеры и угол границы элемента для геометрии, схемы
+' и AutoCAD. Реальные площадь и инерции для расчёта усилий не меняются.
 Private Sub StoreBoundaryCache(ByVal index As Long, ByVal statusText As String, _
         ByVal widthValue As Double, ByVal heightValue As Double, _
         ByVal rotationValue As Double)
@@ -583,9 +583,9 @@ Private Sub ClearBoundaryCache()
     Erase mBoundaryCacheRotation
 End Sub
 
-' Восстанавливает оболочку неизотропного Region. Если реальные A/I совпадают
-' с настоящим прямоугольником, статус Rectangle; иначе строится area-preserving
-' эквивалентный прямоугольник с тем же отношением главных инерций.
+' Восстанавливает прямоугольные границы элемента по его площади и главным инерциям.
+' Если они соответствуют настоящему прямоугольнику, ставит Rectangle; иначе
+' использует Equivalent rectangle с той же площадью и отношением главных инерций.
 Private Function TryInterpretAnisotropicBoundary(ByVal areaValue As Double, _
         ByVal localIx As Double, ByVal localIy As Double, ByVal localIxy As Double, _
         ByRef statusText As String, ByRef widthValue As Double, _
@@ -674,7 +674,8 @@ Private Sub RectangleLocalInertiaComponents(ByVal areaValue As Double, _
     localIxy = (iyLocal - ixLocal) * s * c
 End Sub
 
-' Собственные инерции последнего fallback-квадрата той же площади.
+' Вычисляет собственные инерции эквивалентного квадрата той же площади,
+' когда более точные характеристики элемента отсутствуют.
 Private Sub EquivalentSquareLocalInertiaComponents(ByVal areaValue As Double, _
         ByRef localIx As Double, ByRef localIy As Double, ByRef localIxy As Double)
     localIx = areaValue * areaValue / 12#
@@ -728,10 +729,9 @@ Private Function NormalizeAnglePi(ByVal angleValue As Double) As Double
     NormalizeAnglePi = angleValue
 End Function
 
-' Добавляет один стержень арматуры.
-' Если площадь не передана явно, она считается по диаметру. Это удобно для
-' встроенных раскладчиков, а AutoCAD import может передать площадь Region
-' напрямую, если она известна надежнее диаметра.
+' Добавляет стержень арматуры. Если площадь не задана, вычисляет её по диаметру.
+' Импорт AutoCAD может передать фактическую площадь Region,
+' если она известна точнее диаметра.
 Public Sub AddRebarElement(ByVal xCoord As Double, ByVal yCoord As Double, _
         ByVal diameter As Double, ByVal area As Double, ByVal steelClass As String, _
         Optional ByVal materialID As Long = 1, Optional ByVal sourceName As String = vbNullString, _
@@ -810,9 +810,9 @@ Public Property Get ConcreteArea(ByVal index As Long) As Double
     ConcreteArea = mConcreteArea(index)
 End Property
 
-' Отдает координаты и площадь бетонного элемента одним обращением. Этот метод
-' нужен горячим расчетным циклам solver-а, чтобы не делать три одинаковые
-' проверки индекса через отдельные свойства на каждом конечном элементе.
+' Возвращает координаты и площадь бетонного элемента одним обращением.
+' Внутренний цикл решения НДС проверяет номер элемента один раз
+' вместо отдельных проверок для каждой координаты и площади.
 Public Sub ConcreteElementForSolver(ByVal index As Long, ByRef xCoord As Double, _
         ByRef yCoord As Double, ByRef area As Double)
     CheckConcreteIndex index
@@ -821,7 +821,8 @@ Public Sub ConcreteElementForSolver(ByVal index As Long, ByRef xCoord As Double,
     area = mConcreteArea(index)
 End Sub
 
-' Идентификатор материала элемента; текущий solver получает единую диаграмму бетона.
+' Возвращает номер материала элемента; текущий расчёт использует одну подготовленную диаграмму
+' бетона.
 Public Property Get ConcreteMaterialID(ByVal index As Long) As Long
     CheckConcreteIndex index
     ConcreteMaterialID = mConcreteMaterialID(index)
@@ -947,7 +948,8 @@ Public Property Get RebarDiameter(ByVal index As Long) As Double
     RebarDiameter = mRebarDiameter(index)
 End Property
 
-' Идентификатор материала стержня; текущий solver получает единую диаграмму арматуры.
+' Возвращает номер материала стержня; текущий расчёт использует одну подготовленную диаграмму
+' арматуры.
 Public Property Get RebarMaterialID(ByVal index As Long) As Long
     CheckRebarIndex index
     RebarMaterialID = mRebarMaterialID(index)
@@ -959,8 +961,8 @@ Public Property Get RebarComment(ByVal index As Long) As String
     RebarComment = mRebarComment(index)
 End Property
 
-' Возвращает рабочую коллекцию semantic-аннотаций модели, создавая пустую
-' коллекцию при первом обращении. Получатель добавляет подписи в ту же модель.
+' Возвращает общий список размеров, подписей и расчётных областей модели.
+' Если списка ещё нет, создаёт пустой; добавленные аннотации относятся к этой же модели.
 Public Property Get Annotations() As CSectionAnnotations
     If mAnnotations Is Nothing Then Set mAnnotations = New CSectionAnnotations
     Set Annotations = mAnnotations
@@ -1018,17 +1020,16 @@ End Function
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Эти трассировочные свойства нужны regression-тестам AutoCAD/import и старых
-' сценариев, где проверяется перенос исходных имен и профиля арматуры внутрь
-' CSectionModel. Обычные расчеты берут рабочие свойства стержня через ID,
-' координаты, площадь, диаметр, материал и комментарий.
 
+' ДЛЯ ТЕСТОВ: возвращает исходные имена и группы стержней для проверки их переноса
+' в CSectionModel при генерации и импорте AutoCAD. Обычный расчёт использует
+' рабочие координаты, площадь, диаметр, материал и пояснение стержня.
 Public Property Get RebarSourceName(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSourceName = mRebarSourceName(index)
 End Property
 
-' Расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
+' ДЛЯ ТЕСТОВ: расчетная подпись арматуры; сейчас хранит профиль стержней для трассировки.
 Public Property Get RebarSteelClass(ByVal index As Long) As String
     CheckRebarIndex index
     RebarSteelClass = mRebarSteelClass(index)

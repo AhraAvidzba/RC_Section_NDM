@@ -1,14 +1,15 @@
 Attribute VB_Name = "modSectionRecipeTypes"
 Option Explicit
 
-' Общие декларативные данные. Только внутренние единицы и скалярные снимки;
-' никаких ссылок на Excel, решатель или специальные типы сечений.
+' Общие данные описания сечения во внутренних единицах.
+' Хранят числа, имена и параметры правил без ссылок на Excel, решатель
+' или классы конкретных форм сечения.
 Public Enum ESectionLoopRole
     LoopOuter = 1
     LoopOpening = 2
 End Enum
 
-' Публикация технических ID сохраняет общий номер сегмента, без отдельных счётчиков прямых/дуг.
+' Присваивает имена по общему номеру сегмента без отдельных счётчиков отрезков и дуг.
 Public Enum EContourNamingPolicy
     PreserveSegmentIDs = 0
     SequentialByKind = 1
@@ -84,7 +85,7 @@ Public Type TSectionLoop
     Comment As String
     ArcComment As String
     ContourIDs As Variant
-    NamingPolicy As EContourNamingPolicy ' Правило публикации имён участков этой границы.
+    NamingPolicy As EContourNamingPolicy ' Способ присвоения имён отрезкам и дугам этой границы.
     NamingPrefix As String ' Независимый префикс границы при SequentialByKind.
 End Type
 

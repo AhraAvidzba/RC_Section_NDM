@@ -16,11 +16,11 @@ Option Explicit
 ' сжатие бетона, активное растяжение бетона и оба знака деформаций арматуры.
 ' Сохраняет наибольшее использование предела и соответствующий элемент.
 
-Private mConcreteCompression As Double, mConcreteTension As Double
-Private mSteelCompression As Double, mSteelTension As Double
-Private mTensionEnabled As Boolean
-Private mUtilization As Double, mStrain As Double
-Private mElement As String, mState As String, mDescription As String
+Private mConcreteCompression As Double, mConcreteTension As Double ' Предельные деформации сжатия и растяжения бетона по модулю.
+Private mSteelCompression As Double, mSteelTension As Double ' Предельные деформации сжатия и растяжения арматуры по модулю.
+Private mTensionEnabled As Boolean ' Учитывается ли предел растяжения бетона.
+Private mUtilization As Double, mStrain As Double ' Наибольшее отношение деформации к пределу и определяющая деформация.
+Private mElement As String, mState As String, mDescription As String ' Имя определяющего элемента, вид достигнутого предела и пояснение результата.
 
 ' Сжатый предел бетона отрицателен; пределы арматуры передаются по модулю.
 ' Задача трещинообразования передает свой растянутый критерий вместо предела

@@ -2,10 +2,10 @@ Attribute VB_Name = "modTestContourMesh"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: общая сетка Generated/CAD-контуров и реальные решения НДС
+' ДЛЯ ТЕСТОВ: общая сетка параметрических и импортированных контуров
 ' ==========================================================================
-' Настройки и Results изменяются только в собственной fixture-книге.
-' Сравнения поэлементные; решения используют ядро и диаграммы текущей книги.
+' Проверяет построение сетки и решение НДС рабочим ядром и диаграммами книги.
+' Сравнивает каждый элемент. Config и Results изменяет только в отдельной тестовой копии.
 
 Private mPassed As Long, mFailed As Long, mReport As String
 Private mFixture As Object, mConfig As Object
@@ -36,8 +36,8 @@ Finish:
     RunContourMeshTests = mReport & "TOTAL_CONTOUR_MESH: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
 End Function
 
-' ДЛЯ ТЕСТОВ: приложение и новый документ принадлежат внешнему runner-у.
-' Контуры выводит production export, импорт читает настоящие CAD-сущности.
+' ДЛЯ ТЕСТОВ: приложение AutoCAD и новый документ создаёт внешний сценарий проверки.
+' Обычный экспорт строит контуры; обычный импорт читает созданные объекты чертежа.
 Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template As String) As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     Dim doc As Object, geometry As CGeometryRegion, settings As CSystemSettingsReader, units As CUnitSystem
@@ -129,9 +129,9 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
     concreteLayer = settings.GetRequiredString("AutoCAD.Common.ConcreteLayer")
     rebarLayer = settings.GetRequiredString("AutoCAD.Common.RebarLayer")
     solves = SectionEquilibriumSolveCount()
-    ' ДЛЯ ТЕСТОВ: CM_BEND остаётся нагруженным контрольным сочетанием.
-    ' При OFF его StrengthState отсутствует после численной несходимости;
-    ' экспорт обязан отказать, без новой попытки solve или рисования объектов.
+    ' ДЛЯ ТЕСТОВ: CM_BEND остаётся нагруженным контрольным сочетанием. В режиме
+    ' без продолжения диаграмм его НДС прочности отсутствует из-за несходимости.
+    ' Экспорт должен отказать без нового расчёта и создания объектов.
     objectsBefore = doc.ModelSpace.Count
     If Not settings.GetBoolean("General.DiagramExtension", False) Then
         On Error Resume Next
@@ -175,7 +175,7 @@ Finish:
     If Not IsEmpty(savedProfiles) Then profiles.Formula = savedProfiles
 End Sub
 
-' Единый native Region содержит сразу два отверстия; отдельный opening-слой пуст.
+' Один настоящий Region содержит два отверстия; отдельный слой отверстий пуст.
 Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
     Dim outer As Object, hole As Object, center(0 To 2) As Double, curves(0 To 0) As Object, regions As Variant, i As Long
     Dim source As Object, query As CSectionGeometryQuery, domain As CConcreteRegion, geometry As CGeometryRegion
@@ -366,8 +366,9 @@ Private Sub CompareGeneratedAndImported(ByVal geometry As CGeometryRegion, ByVal
     mReport = mReport & "SECTION " & label & ": concrete=" & CStr(imported.ConcreteCount) & "; rebar=" & CStr(imported.RebarCount) & vbCrLf
 End Sub
 
-' Полный расчет двух одинаковых Г-сечений: direct, capacity и трещины СП 35.
-' Настройки восстанавливаются даже при ошибке; исходная книга теста - копия.
+' Полный расчёт двух одинаковых Г-сечений: НДС при заданной нагрузке, несущая
+' способность и трещины СП 35. Исходная книга — тестовая копия; настройки
+' восстанавливаются также при ошибке.
 Private Sub CheckBatchPair(ByVal first As CSectionModel, ByVal second As CSectionModel)
     Dim profileTable As Object, systemTable As Object, savedProfiles As Variant, savedSystem As Variant
     Dim i As Long, key As String, settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider

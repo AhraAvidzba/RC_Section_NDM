@@ -120,8 +120,8 @@ Failed:
     RunRetiredGeometryArcOpeningTests = stats.Report & "FAIL: runtime=" & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: общий центр, инвалидация кэша и одинаковая точка у геометрии,
-' численной системы и пользовательских нагрузок, включая перенос на 1000 м.
+' ДЛЯ ТЕСТОВ: общий центр геометрии, численного решения и пользовательских нагрузок,
+' повторная подготовка после изменений и перенос координат на 1000 м.
 Public Function RunConcreteMeshCenterTests() As String
     On Error GoTo Failed
     Dim stats As TTestStats
@@ -359,9 +359,9 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.concrete.yDepth", maxProjection - minProjection, 3#, 0.000001
 End Sub
 
-' Проверяет, что импортированный повернутый прямоугольный элемент хранит
-' реальные Width/Height/Rotation, а расчетные габариты берутся по этой форме
-' без fallback-а по площади.
+' Проверяет сохранение настоящих ширины, высоты и угла повёрнутого
+' прямоугольного элемента. Габариты должны определяться по его форме,
+' а не по заменяющему квадрату той же площади.
 Private Sub TestAutoCADImporterRotatedRectangleBounds(ByRef stats As TTestStats)
     Dim widthValue As Double
     Dim heightValue As Double
@@ -649,8 +649,8 @@ Private Sub TestAutoCADImporterZeroEdgeAndCircleAverage(ByRef stats As TTestStat
     AssertClose stats, "autocad.import.zeroEdge.changed.circleIx", model.ConcreteLocalIx(3), GEOM_PI * 20# ^ 4 / 4#, 0.000001
 End Sub
 
-' Проверяет последний fallback для Region без локальных инерций: габарит
-' берется как квадрат той же площади, а не как круговой радиус.
+' Если у Region нет местных моментов инерции, его габариты задаёт квадрат
+' той же площади. Круг радиусом по площади здесь не используется.
 Private Sub TestAutoCADImporterAreaSquareFallback(ByRef stats As TTestStats)
     Dim concreteRegions(1 To 1, 1 To 7) As Variant
     concreteRegions(1, 1) = GEOM_PI * 25# * 25#
@@ -686,9 +686,8 @@ Private Sub TestAutoCADImporterAreaSquareFallback(ByRef stats As TTestStats)
         Sqr(model.ConcreteArea(1)) * Sqr(2#), 0.000001
 End Sub
 
-' Проверяет, что fallback-квадрат по площади получает средний угол
-' распознанной импортированной сетки и поэтому одинаково работает в
-' расчетных проекциях, Excel-схеме и AutoCAD export.
+' Квадрат той же площади получает средний угол распознанной сетки. Проверяет
+' согласованность расчётных проекций, схемы Excel и экспорта AutoCAD.
 Private Sub TestAutoCADImporterAreaSquareFallbackAverageRotation(ByRef stats As TTestStats)
     Dim widthValue As Double
     Dim heightValue As Double
@@ -763,9 +762,8 @@ Private Sub TestSectionModelEquivalentSquareEdgeRotationAverageSource(ByRef stat
         model.ConcreteRotation(2), edgeAngle, 0.000001
 End Sub
 
-' Проверяет, что некорректная матрица Ix/Iy/Ixy импортированного Region не
-' ломает габариты устойчивости: если A/I нельзя трактовать физически, общий
-' геометрический fallback переходит на квадрат той же площади.
+' Если матрица собственных инерций Region физически непригодна, габариты
+' устойчивости определяются по квадрату той же площади.
 Private Sub TestAutoCADImporterInvalidInertiaSquareFallback(ByRef stats As TTestStats)
     Dim concreteRegions(1 To 1, 1 To 7) As Variant
     concreteRegions(1, 1) = GEOM_PI * 25# * 25#
@@ -830,8 +828,8 @@ Private Sub TestSectionModelEquivalentRectangleFromRealInertia(ByRef stats As TT
     AssertClose stats, "model.boundary.equivalentRectangle.realIxy", model.ConcreteLocalIxy(1), localIxy, 0.000001
 End Sub
 
-' Проверяет главный контракт: оболочка элемента не подменяет реальные
-' локальные инерции, по которым считаются свойства бетонного сечения.
+' Изображение элемента не должно заменять реальные местные моменты инерции,
+' по которым вычисляются свойства бетонного сечения.
 Private Sub TestSectionModelBoundaryDoesNotReplaceRealInertia(ByRef stats As TTestStats)
     Dim area As Double
     Dim realIx As Double
@@ -868,8 +866,8 @@ Private Sub TestSectionModelBoundaryDoesNotReplaceRealInertia(ByRef stats As TTe
     AssertClose stats, "model.boundary.realIxy.independent", propsB.Ixyc, propsA.Ixyc, 0.000001
 End Sub
 
-' Проверяет последний расчетный fallback для элемента без сохраненных
-' инерций: CSectionModel возвращает квадрат по площади и валидные I.
+' У элемента без сохранённых инерций CSectionModel использует квадрат
+' той же площади и возвращает физически корректные моменты инерции.
 Private Sub TestSectionModelFallbackInertiaSquare(ByRef stats As TTestStats)
     Dim area As Double
     area = 3600#
@@ -1604,7 +1602,7 @@ Private Sub IncludeRectangleProjectionMinimum(ByVal centerX As Double, ByVal cen
         axisY * (centerY - uy * widthValue / 2# - vy * heightValue / 2#), initialized, minValue
 End Sub
 
-' Обновляет минимум линейной формы одним кандидатом.
+' Уточняет наименьшее значение линейной функции по очередной проверяемой точке.
 Private Sub IncludeProjectionMinimum(ByVal candidate As Double, ByRef initialized As Boolean, _
         ByRef minValue As Double)
     If Not initialized Or candidate < minValue Then minValue = candidate
@@ -2224,8 +2222,8 @@ Private Function FakeRegion(ByVal area As Double, ByVal xCoord As Double, ByVal 
     Set FakeRegion = region
 End Function
 
-' Строит сетку через общий geometry-контракт и вычисляет бетонные A/центр/I.
-' При ошибке дополняет причину шагами сетки и числом полученных волокон.
+' Строит сетку общими геометрическими классами и вычисляет площадь, центр
+' и моменты инерции бетона. В ошибке сохраняет шаги сетки и число элементов.
 Private Function MeshProps(ByVal geom As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double) As CSectionPropertiesCalculator
     On Error GoTo Failed
 
@@ -2949,7 +2947,8 @@ End Function
 
 
 
-' ДЛЯ ТЕСТОВ: публикация нового контракта заменяет изменяемый IsValid формы.
+' ДЛЯ ТЕСТОВ: готовое описание сечения проверяется общим способом вместо прежнего изменяемого
+' свойства формы IsValid.
 Private Function PublishedDefinition(ByVal definition As CSectionDefinition) As Boolean
     If Not definition Is Nothing Then PublishedDefinition = definition.IsSealed
 End Function

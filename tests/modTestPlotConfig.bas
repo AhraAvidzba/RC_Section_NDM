@@ -1,11 +1,10 @@
 Attribute VB_Name = "modTestPlotConfig"
 Option Explicit
 
-' Проверяет общие настройки Excel-схемы и компоновку semantic-аннотаций.
-' Использует собственные временные книги, готовые snapshots и независимые
-' координатные oracle. Не решает НДС и не меняет Config исходной книги.
-' Зона ответственности: активные/выключенные presentation-потребители,
-' понятные ошибки ввода, сохранность Chart/Results и recovery.
+' ДЛЯ ТЕСТОВ: настройки схемы Excel и расположение размеров и подписей.
+' Использует отдельные временные книги, сохранённые данные и независимо
+' вычисленные координаты. Проверяет включение элементов, ошибки ввода,
+' сохранность диаграммы и Results, повторную работу после ошибки. НДС не решает.
 
 Private Type TUiTestStats
     Passed As Long
@@ -15,9 +14,9 @@ End Type
 
 ' ==================== ДЛЯ ТЕСТОВ: ОБЩИЕ НАСТРОЙКИ EXCEL-СХЕМЫ ====================
 
-' Проверяет только presentation pipeline на готовом синтетическом снимке.
-' Реальные Chart.Shapes и layout читаются независимо от численного solver;
-' исходная книга и пользовательский Excel не используются как test fixture.
+' Проверяет обычное построение схемы по заранее заданным сохранённым данным.
+' Читает реальные фигуры диаграммы независимо от решателя; исходная книга
+' и пользовательский экземпляр Excel в тесте не используются.
 Public Function RunAudit03GeneralPlotTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TUiTestStats
@@ -1507,9 +1506,9 @@ Private Function Audit03PlotTextExists(ByVal chart As Object, ByVal expected As 
     Next shape
 End Function
 
-' Проверяет готовые координаты, шрифты, цвета и веса layout при mm/pt,
-' Inside/Outside и выключенной линии арматуры. Oracle задан в points по
-' независимому transform 3.2 по X и 2.15 по Y, без обращения к plotter.
+' Проверяет координаты, шрифты, цвета и толщины при мм и pt, внутри и снаружи
+' сечения, с отключённой линией арматуры. Эталон в пунктах вычисляется отдельно
+' при масштабах 3.2 по X и 2.15 по Y без вызова отрисовки.
 Private Sub TestAudit03AnnotationLayoutContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, sheet As Object, table As Object, settings As CSystemSettingsReader
     Dim layout As CPlotAnnotationLayout, baseline As Variant, key As Variant, bad As Variant, cell As Object
@@ -1660,9 +1659,9 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Проверяет два workbook-entrypoint-а без solver: общий No должен отключать
-' и обычное обновление, и import-preview, не читая поврежденные параметры
-' выключенной схемы. Ошибочный сам переключатель требует исправления Config.
+' Проверяет обычное обновление и предварительный просмотр импорта без решения НДС.
+' Общее отключение схемы не требует исправления неиспользуемых параметров оформления.
+' Ошибочное значение самого переключателя должно давать причину в Config.
 Private Sub TestAudit03PlotEnableContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, config As Object, sheet As Object, source As Object, table As Object, target As Object
     Dim name As Variant, addresses As Variant, index As Long, position As Long, mode As Long, bad As Variant
@@ -1736,8 +1735,8 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Создает замороженный геометрический fixture без builder/solver. Дробные
-' координаты и оболочка не должны зависеть от текущей INPUT/OUTPUT системы.
+' Создаёт готовую тестовую геометрию с запретом изменений без сборщика и решателя.
+' Дробные координаты и размеры изображений не зависят от текущих единиц ввода и вывода.
 Private Function Audit03GeometrySnapshotArray(ByVal unit As String, ByVal factor As Double) As Variant
     Dim data(1 To 3, 1 To 15) As Variant, headers As Variant, column As Long
     headers = Array("ElementID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
@@ -1755,8 +1754,8 @@ Private Function Audit03GeometrySnapshotArray(ByVal unit As String, ByVal factor
     Audit03GeometrySnapshotArray = data
 End Function
 
-' Перехватывает фактическую ошибку выбранного публичного reader-режима;
-' recovery повторяет чтение тем же объектом и не подменяет данные snapshot.
+' Сохраняет фактическую ошибку публичного чтения. Проверка восстановления
+' повторяет чтение на том же объекте без подмены сохранённых данных.
 Private Sub Audit03ReadLifecycleLoad(ByVal reader As CSectionPlotDataReader, ByVal workbook As Object, _
         ByVal settings As CSystemSettingsReader, ByVal mode As Long, ByRef code As Long, ByRef reason As String)
     code = 0: reason = vbNullString

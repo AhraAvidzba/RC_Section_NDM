@@ -10,22 +10,17 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Решение равновесия сечения N + Mx + My по нелинейным диаграммам материалов
+' Равновесие сечения при N + Mx + My
 ' ==========================================================================
+' Подбирает epsilon0, kappaX и kappaY линейного поля деформаций. По ним
+' получает напряжения бетона и арматуры и внутренние Nint, Mxint, Myint.
+' Решение подтверждается отдельными допусками равновесия всех трёх усилий.
+' Материалы, нагрузки и единицы заранее подготовлены вызывающим расчётом;
+' чтение Excel и поиск предельной нагрузки выполняются отдельно.
 
-Private Const STRAIN_EXTREMA_ROUNDING_MARGIN As Double = 1.77635683940025E-15            ' 8 epsilon Double; неоднозначное округление отношения требует обычного обхода.
+Private Const STRAIN_EXTREMA_ROUNDING_MARGIN As Double = 1.77635683940025E-15            ' Допуск в восемь машинных погрешностей Double для близких экстремумов деформаций; при неоднозначном сравнении используется полный обход.
 
-' ==========================================================================
-' Решатель равновесия N + Mx + My
-' ==========================================================================
-' Класс подбирает три параметра плоскости деформаций: epsilon0, kappaX и
-' kappaY. По этой плоскости считаются деформации бетонных волокон и арматуры,
-' затем материалы возвращают напряжения, а из них собираются внутренние
-' усилия Nint, Mxint и Myint.
-'
-' Здесь нет поиска предельного состояния и нет чтения Excel. Общий pipeline
-' НДС и adapters предельного поиска задают этому классу усилия или плоскость;
-' пользовательские единицы заранее переводятся в мм, Н, Н*мм, МПа и 1/мм.
+' Рабочие результаты и настройки решения равновесия.
 
 Private mConverged As Boolean ' True, если равновесие достигнуто в заданных допусках по N/Mx/My.
 Private mStopReason As String ' Русское пояснение итога; машинная причина хранится отдельно в mFailureCode.
@@ -60,8 +55,8 @@ Private mIterations As Long ' Суммарное число итераций н�
 Private mLoadStepsCompleted As Long ' Сколько ступеней нагрузки успешно доведено до равновесия.
 Private mK(1 To 3, 1 To 3) As Double ' Касательная матрица d(N,Mx,My)/d(epsilon0,kappaX,kappaY).
 Private mFrame As CSectionNumericalFrame ' Общий центр и масштаб без изменения публичных координат.
-Private mCenterEpsilon As Double, mCenterMx As Double, mCenterMy As Double
-Private mCenterResidualMx As Double, mCenterResidualMy As Double
+Private mCenterEpsilon As Double, mCenterMx As Double, mCenterMy As Double ' Деформация в численном центре и внутренние моменты относительно него, Н*мм.
+Private mCenterResidualMx As Double, mCenterResidualMy As Double ' Невязки моментов относительно численного центра, Н*мм.
 Private mCenterK(1 To 3, 1 To 3) As Double ' Собирается напрямую по малым плечам, без вычитания больших K.
 Private mMaxIterations As Long ' Максимум итераций на одну ступень нагрузки.
 Private mLoadSteps As Long ' На сколько ступеней дробится заданный вектор N/Mx/My.
@@ -72,13 +67,13 @@ Private mDiagnosticsEnabled As Boolean ' Управляет накопление
 Private mSolverMethod As String ' Выбранная численная ветка: Newton или Secant.
 Private mSecantMaxRestarts As Long ' Сколько раз Secant может пересобрать приближенную матрицу чувствительности.
 Private mDiagnosticLog As String ' Текстовый журнал ключевых итераций для тестов и диагностики.
-Private mLastAlpha As Double ' Последний принятый коэффициент line search.
+Private mLastAlpha As Double ' Коэффициент изменения последнего принятого шага при подборе его величины.
 Private mLastResidualNorm As Double ' Норма невязки после последней оценки состояния.
 Private mLastStepNorm As Double ' Норма последней поправки [deltaEps, deltaKx, deltaKy].
 Private mLastMatrixConditionEstimate As Double ' Грубая оценка вырожденности касательной матрицы.
 Private mMatrixRestartCount As Long ' Сколько раз Secant перезапускал матрицу чувствительности.
 Private mLineSearchUsed As Boolean ' True, если последний принятый шаг был меньше полного.
-Private mLineSearchIterations As Long ' Сколько пробных alpha понадобилось последнему line search.
+Private mLineSearchIterations As Long ' Число пробных коэффициентов alpha при последнем подборе шага.
 Private mInternalForceEvaluationCount As Long ' Сколько раз пересчитывались внутренние усилия.
 Private mInternalNewtonCallCount As Long ' Сколько раз запускалась ветка Newton на ступени нагрузки.
 Private mUseInitialState As Boolean ' Использовать заранее заданную стартовую плоскость деформаций.
@@ -93,15 +88,15 @@ Private mSnapshotSection As CSectionModel ' Модель последнего So
 Private mSnapshotConcrete As CMaterialDiagram ' Фактически переданная диаграмма, не повторный выбор по Config.
 Private mSnapshotSteel As CMaterialDiagram ' Фактически переданная диаграмма арматуры.
 Private mEvaluationReuseEnabled As Boolean ' Только внутри одного Solve с неизменными штатными диаграммами.
-Private mPhysicalEvaluationValid As Boolean, mPhysicalEvaluationHasK As Boolean
-Private mPhysicalEvaluationRevision As Long, mPhysicalEvaluationPlane(1 To 3) As Double
+Private mPhysicalEvaluationValid As Boolean, mPhysicalEvaluationHasK As Boolean ' Готовность последнего физического НДС и наличие его касательной матрицы.
+Private mPhysicalEvaluationRevision As Long, mPhysicalEvaluationPlane(1 To 3) As Double ' Версия геометрии и три параметра поля последнего физического НДС.
 Private mPhysicalEvaluationForces(1 To 3) As Double ' Экстремумы/K остаются в своих полях; forces-only пробы их не меняют.
-Private mForceEvaluationValid As Boolean, mForceEvaluationRevision As Long
-Private mForceEvaluationPlane(1 To 3) As Double, mForceEvaluationForces(1 To 3) As Double
+Private mForceEvaluationValid As Boolean, mForceEvaluationRevision As Long ' Готовность последнего расчёта усилий и соответствующая версия геометрии.
+Private mForceEvaluationPlane(1 To 3) As Double, mForceEvaluationForces(1 To 3) As Double ' Три параметра поля деформаций и усилия N, Mx, My последнего вычисления.
 Private mEvaluationReuseCount As Long, mTangentBuildCount As Long ' Технические счетчики фактической работы, не инженерные результаты.
-Private mConcreteMinStrainIndex As Long, mConcreteMaxStrainIndex As Long
-Private mSteelMinStrainIndex As Long, mSteelMaxStrainIndex As Long
-Private mStrainExtremaValid As Boolean, mStrainExtremaRevision As Long
+Private mConcreteMinStrainIndex As Long, mConcreteMaxStrainIndex As Long ' Номера бетонных элементов с наименьшей и наибольшей деформациями.
+Private mSteelMinStrainIndex As Long, mSteelMaxStrainIndex As Long ' Номера стержней с наименьшей и наибольшей деформациями.
+Private mStrainExtremaValid As Boolean, mStrainExtremaRevision As Long ' Готовность сохранённых крайних деформаций и соответствующая версия геометрии.
 Private mStrainExtremaAmbiguous As Boolean ' Почти равные разные деформации могут дать одинаковое отношение к пределу после округления.
 Private mStrainExtremaPlane(1 To 3) As Double ' Экстремумы принадлежат только этой центрированной плоскости и ревизии модели.
 
@@ -124,10 +119,10 @@ End Sub
 ' ------------------------------
 ' Чтение настроек решателя
 ' ------------------------------
-' Забирает численные параметры из CSystemSettingsReader. Если передан
-' CUnitSystem, пользовательские допуски переводятся во внутренние единицы,
-' чтобы дальше solver работал только в одной системе. Явно пустые численные
-' Solver-настройки являются ошибкой ввода, а не запросом на default.
+' Принимает численные параметры CSystemSettingsReader. При наличии
+' CUnitSystem переводит пользовательские допуски во внутренние единицы.
+' Явно пустые обязательные настройки Solver вызывают ошибку ввода
+' без подстановки начальных значений.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
     mMaxIterations = settings.GetLong("Solver.MaxIterations", mMaxIterations, False)
@@ -541,10 +536,10 @@ SecantIterationCompleted:
     SolveSecantLoadStep = False
 End Function
 
-' Псевдовременная регуляризация J + mu*I помогает выйти из материального плато.
-' Сдвиг относится только к поправке, не к напряжениям или физической жесткости.
-' Каждая проба обязана снизить настоящую невязку через обычный AcceptStep;
-' успех определяется прежними допусками, а не решением сдвинутой системы.
+' На плато пробует поправку по системе J + mu*I, чтобы получить рабочий шаг.
+' Добавка меняет только вычисление поправки, не напряжения или физическую
+' жёсткость материала. Шаг принимается обычным AcceptStep, только если
+' уменьшает фактическую невязку; исходные допуски равновесия сохраняются.
 ' Основа метода: PETSc, TS Pseudo-Timestepping for Steady-State Problems.
 Private Function TryRegularizedStep(ByVal section As CSectionModel, ByVal concreteMaterial As Object, _
         ByVal steelMaterial As Object, ByRef matrix() As Double, ByVal targetN As Double, _
@@ -594,9 +589,9 @@ Private Sub RefreshCurrentState(ByVal section As CSectionModel, _
     SetResiduals targetN, targetMx, targetMy
 End Sub
 
-' Служебно оценивает невязку Secant в произвольной плоскости деформаций.
-' Основное состояние solver-а после вызова остается синхронизированным через
-' SetResiduals, чтобы диагностика и последующий шаг видели актуальные R.
+' Оценивает невязки метода Secant для заданного поля деформаций.
+' Через SetResiduals сохраняет актуальные усилия и невязки
+' для диагностики и следующего шага.
 Private Sub EvaluateSecantResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -752,8 +747,8 @@ Private Sub SecantCoordinateScales(ByVal section As CSectionModel, _
     scaleKx = mFrame.LengthScale: scaleKy = mFrame.LengthScale
 End Sub
 
-' Пересобирает Secant-матрицу после застоя, плохого line search или неудачного
-' обновления Бройдена. Количество перезапусков ограничено настройкой solver-а.
+' Перестраивает матрицу Secant при застое, неудачном подборе шага
+' или обновлении Бройдена. Число таких перезапусков ограничено настройкой.
 Private Function RestartSecantMatrix(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -861,9 +856,9 @@ Private Function AcceptStep(ByVal section As CSectionModel, _
     AcceptStep = 0#
 End Function
 
-' Пересчитывает состояние и записывает внутренние усилия в поля solver-а.
-' buildTangent запрашивает K и физические данные. collectPhysical позволяет
-' сохранить те же экстремумы и fused stress API без неиспользуемой K.
+' Оценивает НДС и сохраняет внутренние усилия. buildTangent запрашивает
+' матрицу жёсткости K, а collectPhysical — напряжения и экстремумы;
+' их можно получить и без ненужной в данном вызове сборки K.
 Private Sub EvaluateState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
@@ -874,9 +869,9 @@ Private Sub EvaluateState(ByVal section As CSectionModel, _
     mMyint = mFrame.OriginalMy(mNint, mCenterMy)
 End Sub
 
-' Интегрирует напряжения по бетонным и арматурным элементам для заданной
-' плоскости деформаций. Это самая горячая операция solver-а; она работает
-' через CSectionModel и не обращается к Excel.
+' Вычисляет внутренние усилия интегрированием напряжений бетонных элементов
+' и стержней для заданного поля деформаций. Это основной повторяемый цикл
+' решения, работающий с CSectionModel без обращения к Excel.
 Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double, ByVal buildTangent As Boolean, _
@@ -1053,8 +1048,8 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         Next i
     End If
     If physical Then
-        ' У отсутствующего знака напряжения нет экстремума. Служебные
-        ' границы поиска не должны попадать в физический snapshot.
+        ' Если сжатой или растянутой зоны нет, её экстремум не сохраняем.
+        ' Служебные начальные границы поиска не должны выдаваться за физическое напряжение.
         If Not mHasConcreteCompression Then mMinConcreteStress = 0#
         If Not mHasConcreteTension Then mMaxConcreteStress = 0#
         If Not mHasSteelCompression Then mMinSteelStress = 0#
@@ -1136,8 +1131,7 @@ Private Sub SetResiduals(ByVal targetN As Double, ByVal targetMx As Double, ByVa
     mRelativeResidualMy = RelativeResidual(mResidualMy, targetMy)
 End Sub
 
-' Проверяет выполнение трех независимых условий равновесия по абсолютным
-' допускам solver-а.
+' Проверяет равновесие N, Mx и My отдельно по их абсолютным допускам.
 Private Function IsConverged(ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     IsConverged = Abs(mResidualN) <= mToleranceN And _
         Abs(mResidualMx) <= mToleranceMx And _
@@ -1157,7 +1151,7 @@ Private Function ResidualNorm(ByVal resN As Double, ByVal resMx As Double, ByVal
     If normScale > 0# Then ResidualNorm = normScale * Sqr((n / normScale) ^ 2 + (mx / normScale) ^ 2 + (my / normScale) ^ 2)
 End Function
 
-' Возвращает относительную невязку, а для нулевого target - абсолютную.
+' Возвращает относительную невязку, а при нулевой целевой нагрузке — абсолютную.
 Private Function RelativeResidual(ByVal residual As Double, ByVal target As Double) As Double
     If Abs(target) > 0.000000000001 Then
         RelativeResidual = Abs(residual / target)
@@ -1166,8 +1160,8 @@ Private Function RelativeResidual(ByVal residual As Double, ByVal target As Doub
     End If
 End Function
 
-' Записывает одну строку подробной диагностики итераций solver-а.
-' Диагностика включается только для отчета/тестов и не влияет на расчет.
+' Добавляет подробную строку итерации, если включена диагностика отчёта или тестов.
+' Сами численные результаты от ведения журнала не меняются.
 Private Sub AppendDiagnostics(ByVal stepIndex As Long, ByVal iter As Long, ByVal alpha As Double, _
         ByVal targetN As Double, ByVal targetMx As Double, _
         ByVal targetMy As Double, ByVal state As String)
@@ -1230,7 +1224,8 @@ Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMa
     End If
 End Function
 
-' Сохраняет терминальную причину проверки контракта без фиктивного solve.
+' Сохраняет окончательную причину ошибки обязательных программных данных
+' без признака несуществующего численного запуска.
 Private Sub SetValidationFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     mConverged = False
     mFailureCode = failureCode
@@ -1253,8 +1248,8 @@ Private Function ValidateSolverMethod() As Boolean
     End If
 End Function
 
-' Очищает результаты последнего solve, но не сбрасывает настройки solver-а и
-' заданное начальное приближение.
+' Очищает результат последней попытки, сохраняя численные настройки
+' и явно заданное начальное приближение.
 Public Sub ClearResult()
     mEvaluationReuseEnabled = False
     mPhysicalEvaluationValid = False: mForceEvaluationValid = False
@@ -1329,9 +1324,9 @@ Private Function StrainExtremaContextMatches(ByVal section As CSectionModel) As 
         mKappaX = mStrainExtremaPlane(2) And mKappaY = mStrainExtremaPlane(3))
 End Function
 
-' Запоминает контекст последней оценки без объектов на каждое волокно.
-' Протокол произвольного материала в solver сохраняется; серийный снимок
-' диаграмм доступен для штатного CMaterialDiagram, используемого provider-ом.
+' Запоминает исходные данные последней оценки НДС без отдельного объекта на элемент.
+' Сохраняет возможность работать с общим материалом; для CMaterialDiagram
+' также позволяет получить использованные диаграммы.
 Private Sub CaptureMaterialContext(ByVal section As CSectionModel, ByVal concrete As Object, ByVal steel As Object)
     Set mSnapshotSection = section
     If mFrame Is Nothing Then Set mFrame = New CSectionNumericalFrame
@@ -1340,9 +1335,9 @@ Private Sub CaptureMaterialContext(ByVal section As CSectionModel, ByVal concret
     If TypeOf steel Is CMaterialDiagram Then Set mSnapshotSteel = steel
 End Sub
 
-' Named-state получает независимые небольшие диаграммы, не живой solver.
-' Сохраняется вся фактическая диаграмма: продолжение бетона может участвовать
-' в вычитании бетона на месте стержня даже при физических бетонных волокнах.
+' Копирует использованные диаграммы для сохранённого НДС без ссылки на рабочий решатель.
+' Сохраняется вся диаграмма: продолжение бетона может участвовать
+' в вычитании вытесненного бетона на месте стержня.
 Friend Sub CopyMaterialContext(ByRef section As CSectionModel, ByRef concrete As CMaterialDiagram, _
         ByRef steel As CMaterialDiagram)
     Set section = mSnapshotSection
@@ -1350,8 +1345,8 @@ Friend Sub CopyMaterialContext(ByRef section As CSectionModel, ByRef concrete As
     If Not mSnapshotSteel Is Nothing Then Set steel = mSnapshotSteel.Clone
 End Sub
 
-' Задает стартовую плоскость деформаций для следующего solve. Используется
-' warm-start сценариями: трещины, несущая способность и continuation-поиски.
+' Задаёт начальное поле деформаций для следующего решения.
+' Расчёт трещин и несущей способности может передать близкое ранее найденное НДС.
 Public Sub SetInitialState(ByVal epsilon0 As Double, ByVal kappaX As Double, ByVal kappaY As Double)
     mUseInitialState = True
     mInitialEpsilon0 = epsilon0
@@ -1371,7 +1366,7 @@ Public Sub SetInitialLoadState(ByVal epsilon0 As Double, ByVal kappaX As Double,
     mInitialTargetMy = targetMy
 End Sub
 
-' Сбрасывает warm-start перед независимым расчетом нового состояния.
+' Удаляет заданное начальное приближение перед независимым решением нового состояния.
 Public Sub ClearInitialState()
     mUseInitialState = False
     mInitialEpsilon0 = 0#: mInitialKappaX = 0#: mInitialKappaY = 0#
@@ -1379,12 +1374,12 @@ Public Sub ClearInitialState()
     mInitialTargetN = 0#: mInitialTargetMx = 0#: mInitialTargetMy = 0#
 End Sub
 
-' Утилитарный минимум без WorksheetFunction в горячем коде solver-а.
+' Возвращает минимум двух чисел без обращения к функциям листа Excel в расчётном цикле.
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
 
-' Утилитарный максимум без WorksheetFunction в горячем коде solver-а.
+' Возвращает максимум двух чисел без обращения к функциям листа Excel в расчётном цикле.
 Private Function MaxDouble(ByVal a As Double, ByVal b As Double) As Double
     If a > b Then MaxDouble = a Else MaxDouble = b
 End Function
@@ -1442,9 +1437,9 @@ Friend Sub NumericalEfforts(ByRef n As Double, ByRef mx As Double, ByRef my As D
     n = mNint: mx = mCenterMx: my = mCenterMy
 End Sub
 
-' Неизменяемые скаляры последней плоскости для массовой проверки пределов.
-' Получатель вычисляет деформации в том же порядке, что StrainAt, без
-' многократного чтения свойств центра для каждого волокна.
+' Возвращает параметры сохранённого поля деформаций отдельными числами
+' для проверки пределов всех элементов. Вызывающий код использует тот же
+' порядок вычисления, что StrainAt, без повторного чтения центра на каждом элементе.
 Friend Sub NumericalStrainPlane(ByRef epsilon As Double, ByRef kx As Double, ByRef ky As Double, _
         ByRef originX As Double, ByRef originY As Double)
     epsilon = mCenterEpsilon: kx = mKappaX: ky = mKappaY
@@ -1645,16 +1640,16 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Эти свойства и настройки раскрывают внутренний ход Newton/Secant. Они нужны
+
+' ДЛЯ ТЕСТОВ: эти свойства и настройки раскрывают внутренний ход Newton/Secant. Они нужны
 ' unit- и regression-тестам, чтобы отличать ветки алгоритма, считать пробные
 ' пересчеты усилий и проверять рестарты матрицы. Пользовательский расчет
 ' использует сходимость, найденные деформации, внутренние усилия и DiagnosticLog.
-
 Public Property Get LoadStepsCompleted() As Long
     LoadStepsCompleted = mLoadStepsCompleted
 End Property
 
-' Сколько раз пересчитывались внутренние усилия.
+' ДЛЯ ТЕСТОВ: сколько раз пересчитывались внутренние усилия.
 Public Property Get InternalForceEvaluationCount() As Long
     InternalForceEvaluationCount = mInternalForceEvaluationCount
 End Property
@@ -1664,17 +1659,17 @@ Friend Property Get TangentBuildCount() As Long
     TangentBuildCount = mTangentBuildCount
 End Property
 
-' Технические счетчики фактической работы, не инженерные результаты.
+' ДЛЯ ТЕСТОВ: технические счетчики фактической работы, не инженерные результаты.
 Friend Property Get EvaluationReuseCount() As Long
     EvaluationReuseCount = mEvaluationReuseCount
 End Property
 
-' Сколько раз запускалась ветка Newton на ступени нагрузки.
+' ДЛЯ ТЕСТОВ: сколько раз запускалась ветка Newton на ступени нагрузки.
 Public Property Get InternalNewtonCallCount() As Long
     InternalNewtonCallCount = mInternalNewtonCallCount
 End Property
 
-' Сколько раз Secant перезапускал матрицу чувствительности.
+' ДЛЯ ТЕСТОВ: сколько раз Secant перезапускал матрицу чувствительности.
 Public Property Get MatrixRestartCount() As Long
     MatrixRestartCount = mMatrixRestartCount
 End Property

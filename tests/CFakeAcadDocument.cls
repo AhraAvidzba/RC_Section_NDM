@@ -16,10 +16,10 @@ Option Explicit
 ' запрещено и подсчитывается, чтобы отказ при локальной/непроверенной ПСК
 ' не мог незаметно прочитать геометрию. Не заменяет живые CAD-проверки.
 
-Private mWorldUCS As Variant
-Private mReadFails As Boolean
-Private mGeometryReads As Long
-Private mVariableReads As Long
+Private mWorldUCS As Variant ' Подставное значение признака мировой системы координат.
+Private mReadFails As Boolean ' Нужно ли имитировать ошибку чтения документа.
+Private mGeometryReads As Long ' Число чтений геометрии тестового документа.
+Private mVariableReads As Long ' Число обращений к переменным тестового документа.
 
 ' ДЛЯ ТЕСТОВ: задает ответ машинного признака и сбрасывает счетчики чтений.
 Public Sub Initialize(ByVal worldUCS As Variant, Optional ByVal readFails As Boolean = False)
@@ -27,7 +27,8 @@ Public Sub Initialize(ByVal worldUCS As Variant, Optional ByVal readFails As Boo
     mGeometryReads = 0: mVariableReads = 0
 End Sub
 
-' ДЛЯ ТЕСТОВ: иной системный параметр означает ошибочный контракт проверки.
+' ДЛЯ ТЕСТОВ: запрос другого системного параметра выявляет неверный вызов проверки мировой
+' системы координат.
 Public Function GetVariable(ByVal name As String) As Variant
     mVariableReads = mVariableReads + 1
     If name <> "WORLDUCS" Or mReadFails Then Err.Raise vbObjectError + 9105, "CFakeAcadDocument", "Variable unavailable."

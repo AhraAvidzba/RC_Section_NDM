@@ -18,21 +18,21 @@ Option Explicit
 
 Implements ILimitSearchProblem
 
-Private mCapacity As CCapacitySolver ' Доменный расчетчик несущей способности и владелец capacity-диагностики.
+Private mCapacity As CCapacitySolver ' Расчёт несущей способности, который оценивает нагрузки, принимает физический предел и хранит диагностику.
 
-' Начальное состояние каждой capacity search-session очищает ее численный
-' solver. Общий coordinator уже передал новый Offset/Base через request.
+' В начале нового пути очищает рабочие данные решателя.
+' Общий координатор уже передал постоянную и масштабируемую части нагрузки.
 Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchRequest)
 End Sub
 
-' Историю путей сохраняет CLimitSearchResult; Capacity трактует его готовую
-' машинную причину и не склеивает собственную параллельную сводку попыток.
+' Передаёт расчёту несущей способности итоговую причину и историю пробовавшихся путей.
+' История сохраняется в CLimitSearchResult без параллельного составления того же текста.
 Private Sub ILimitSearchProblem_FinishLoadPath(ByVal request As CLimitSearchRequest, _
         ByVal previousPathComments As String)
 End Sub
 
-' Подключает настроенный CCapacitySolver как источник проб и получатель
-' результата общего Search. Адаптер не меняет материалы или solver-options.
+' Подключает настроенный CCapacitySolver для оценки пробных нагрузок
+' и принятия результата общего поиска. Материалы и численные настройки не меняет.
 Public Sub Initialize(ByVal capacitySolver As CCapacitySolver)
     If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4240, "CCapacityLimitSearchProblem", _
         "Не передан расчетчик несущей способности."
@@ -97,7 +97,7 @@ Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchReques
         request.NBase, request.MxBase, request.MyBase)
 End Function
 
-' Собирает capacity-траекторию Offset + lambda*Base.
+' Готовит зависимость усилий Offset + lambda*Base для поиска несущей способности.
 Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearchRequest) As CLoadPathVector
     Dim loadPath As CLoadPathVector
     Set loadPath = New CLoadPathVector
@@ -106,8 +106,8 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
     Set ILimitSearchProblem_BuildLoadPath = loadPath
 End Function
 
-' Начало capacity-пути должно удовлетворять исходному физическому критерию.
-' Эта доменная оценка не зависит от алгоритма расширения численной скобки.
+' Проверяет физическую допустимость начальной нагрузки выбранного пути.
+' Эта проверка выполняется независимо от способа увеличения и уточнения lambda.
 Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal functionValue As Double, _
         ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
@@ -119,7 +119,7 @@ Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitS
     ILimitSearchProblem_AcceptInitialPoint = True
 End Function
 
-' Оценивает одну lambda-точку capacity через существующий CCapacitySolver.
+' Оценивает НДС и критерий несущей способности при одном пробном lambda через CCapacitySolver.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
@@ -129,9 +129,8 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
         request.Section, request.ConcreteMaterial, request.SteelMaterial, _
         loadPath, lambdaValue, functionValue, probeState, startSolver)
     If ILimitSearchProblem_EvaluatePoint Then
-        ' Возвращаем общий search-слой ровно тот solver-снимок, который capacity
-        ' использовал для оценки этой lambda-точки. Без этого финальный result
-        ' может получить устаревшее LastSolver-состояние из предыдущей probe.
+        ' Возвращаем общему поиску именно то НДС, по которому оценено текущее lambda.
+        ' Иначе конечный результат мог бы получить устаревшее состояние предыдущей пробы.
         Set solver = mCapacity.LastSolver
         ' На осевом плато повторные силовые пробы за максимумом не дают
         ' физической верхней точки. Уже найденная допустимая проба позволяет
@@ -148,9 +147,9 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     End If
 End Function
 
-' Однотипные предикаты передают классификацию probe владельцу Capacity.
-' Общий Search отличает допустимую пробу, предел и техническую неудачу,
-' но не назначает инженерный BaseFail по строкам внешних статусов.
+' Различает допустимую нагрузку, достигнутый предел и численную неудачу
+' по признакам расчёта несущей способности. Инженерный BaseFail
+' не выводится из текста внешнего статуса.
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsAcceptableState = mCapacity.LimitSearchCapacityStateIsAcceptable(probeState)
 End Function
@@ -171,8 +170,8 @@ Private Function ILimitSearchProblem_IsInvalidInputState(ByVal probeState As Str
     ILimitSearchProblem_IsInvalidInputState = mCapacity.LimitSearchCapacityStateIsInvalidInput(probeState)
 End Function
 
-' Запрашивает восстановительную lambda у Capacity после неуспешной пробы.
-' Численная неудача не становится физической верхней границей автоматически.
+' Запрашивает новое уменьшенное lambda после неудачного решения НДС.
+' Сама несходимость ещё не подтверждает физическую верхнюю границу нагрузки.
 Private Function ILimitSearchProblem_ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
     ILimitSearchProblem_ReduceLambdaAfterNumericalFailure = _
@@ -186,14 +185,14 @@ Private Sub ILimitSearchProblem_RecordAcceptable(ByVal loadPath As CLoadPathVect
         loadPath.TargetMx(lambdaValue), loadPath.TargetMy(lambdaValue)
 End Sub
 
-' Передает исход начальной пробы владельцу инженерной интерпретации Capacity.
-' Несходимость и подтвержденное превышение критерия имеют разные причины.
+' Передаёт исход первой пробы расчёту несущей способности.
+' Численная несходимость и подтверждённое превышение физического критерия различаются.
 Private Sub ILimitSearchProblem_HandleInitialFailure(ByVal probeState As String)
     mCapacity.LimitSearchHandleCapacityInitialFailure probeState
 End Sub
 
-' Завершает поиск без верхней физической точки, сохраняя последнюю допустимую
-' lambda. Достижение технической границы не объявляется найденной capacity.
+' Завершает поиск, если физическая верхняя точка не найдена, сохраняя последнее
+' допустимое lambda. Техническая граница поиска не считается несущей способностью.
 Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
     mCapacity.LimitSearchHandleCapacityBracketNotFound lowLambda
 End Sub
@@ -214,8 +213,8 @@ Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long
         FormatNumberInvariant(remainingWidth) & ", допуск " & FormatNumberInvariant(tolerance) & "."
 End Sub
 
-' Останавливает поиск при неподдержанном исходе probe и сохраняет его имя
-' для диагностики; такой исход не подтверждает физическое разрушение.
+' Останавливает поиск при неизвестном исходе пробы и записывает его имя.
+' Такой исход сам по себе не доказывает физическое разрушение.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
     mCapacity.LimitSearchSetCapacityNumericalFailure "Поиск Bisection остановлен: " & probeState & "."
 End Sub
@@ -225,12 +224,12 @@ Private Sub ILimitSearchProblem_SetInvalidInput(ByVal message As String)
     mCapacity.LimitSearchSetCapacityInvalidInput message
 End Sub
 
-' Передает численную причину общего поиска в результат Capacity.
+' Передаёт фактическую численную причину остановки в результат несущей способности.
 Private Sub ILimitSearchProblem_SetNumericalFailure(ByVal message As String)
     mCapacity.LimitSearchSetCapacityNumericalFailure message
 End Sub
 
-' Дополняет журнал текущей search-session, не меняя инженерный статус результата.
+' Добавляет сообщение текущей попытки в журнал, не меняя инженерный статус.
 Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     mCapacity.LimitSearchAppendCapacityDiagnostic message
 End Sub
@@ -259,8 +258,8 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = mCapacity.Converged
 End Function
 
-' Финализирует сохраненную допустимую сторону уточненной скобки; проверка
-' физического критерия остается у Capacity, включая неоднозначное осевое плато.
+' Передаёт допустимую сторону уточнённого интервала на окончательную проверку
+' несущей способности, включая неоднозначный случай осевого плато диаграмм.
 Private Function ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -288,17 +287,17 @@ Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As C
         request.ConcreteMaterial, request.SteelMaterial, ILimitSearchProblem_BuildLoadPath(request)
 End Sub
 
-' Собирает итог из фактических данных Capacity, а не только Boolean общего
-' алгоритма. Это сохраняет точную причину остановки и конечное named-state.
+' Собирает результат по фактическому исходу расчёта: причине остановки
+' и конечному НДС. Одного признака завершения общего алгоритма недостаточно.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
     Set ILimitSearchProblem_BuildResult = BuildSnapshot(request.SolutionStrategy, request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, request.MaterialSpec)
 End Function
 
-' Интерпретирует машинный исход capacity-задачи и фиксирует конечное НДС.
-' Общий Search-result не знает ни правил BaseFail, ни полей CCapacitySolver.
-' Lambda ниже единицы остается успехом поиска; проверку текущего LC делает CapacityResult.
+' Сохраняет конечное НДС и физическую причину исхода. Lambda ниже единицы
+' остаётся успешно найденным пределом; непрохождение заданной нагрузки
+' отдельно определяет CCapacityResult.
 Public Function BuildSnapshot(ByVal requestedStrategy As String, _
         Optional ByVal section As CSectionModel = Nothing, _
         Optional ByVal concreteMaterial As Object = Nothing, _
@@ -370,7 +369,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
     Set BuildSnapshot = result
 End Function
 
-' Передает общему Newton уже проверенную Capacity-постановку.
+' Передаёт общему методу Ньютона проверенные данные задачи несущей способности.
 Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector) As Boolean
     If Not mCapacity.LimitSearchPrepareCapacityUltimate( _
@@ -399,8 +398,8 @@ Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSear
     ILimitSearchProblem_PrepareUltimate = True
 End Function
 
-' Повторяет общий Newton с независимым стартом, подготовленным Capacity.
-' Нагрузки, критерий и численные настройки между попытками не меняются.
+' Повторяет общий метод Ньютона с новым начальным приближением.
+' Нагрузки, физический критерий и численные настройки между попытками сохраняются.
 Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimitSearchRequest) As Boolean
     Dim search As CUltimateStrainSearch
     Set search = New CUltimateStrainSearch
@@ -418,14 +417,14 @@ Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimit
         "UltimateStrain: повторный старт не дал подтвержденной предельной плоскости.")
 End Function
 
-' Завершает инженерные величины Capacity после принятого UltimateStrain-решения
-' на исходной траектории; численный цикл здесь не повторяется.
+' После принятого решения UltimateStrain сохраняет инженерные величины
+' на исходной траектории без повторного выполнения численного поиска.
 Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
     mCapacity.LimitSearchCompleteCapacityUltimate loadPath
 End Sub
 
-' Реализует численный callback-контракт критериями и настройками Capacity.
-' Адаптер не решает систему и не выбирает Newton/line-search шаг.
+' Передаёт критерии и настройки несущей способности общему методу Ньютона.
+' Систему уравнений и подбор шага этот класс самостоятельно не решает.
 Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -434,8 +433,8 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
         loadPath, startSolver, eps0, kx, ky
 End Sub
 
-' Вычисляет две невязки принадлежности траектории и невязку предельной
-' деформации через Capacity. Общий Newton получает тот же solver этой плоскости.
+' Получает от расчёта две невязки траектории нагрузки и одну невязку
+' предельной деформации. Передаёт общему методу Ньютона то же оценённое НДС.
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -447,7 +446,7 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
         rPath1, rPath2, rLimit, lambdaValue, state, centeredPlane)
 End Function
 
-' Передает проверку трех невязок с исходными допусками Capacity.
+' Проверяет три невязки по исходным допускам расчёта несущей способности.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
@@ -467,8 +466,8 @@ Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As
     ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = mCapacity.LimitSearchJacobianMeritForPath
 End Property
 
-' Передает найденную плоскость на окончательное подтверждение Capacity.
-' Вспомогательное равновесие на extension не считается физическим пределом.
+' Передаёт найденное поле деформаций на окончательную физическую проверку.
+' Вспомогательное равновесие на продолжении диаграмм не подтверждает предел материалов.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -483,23 +482,23 @@ Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal sec
     End If
 End Function
 
-' Сохраняет численную остановку UltimateStrain у владельца Capacity-результата.
+' Сохраняет причину численной остановки UltimateStrain в расчёте несущей способности.
 Private Sub ILimitSearchProblem_LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     mCapacity.LimitSearchSetUltimateNumericalFailure reason
 End Sub
 
-' Передает машинную причину общего алгоритма владельцу Capacity-результата.
+' Передаёт код причины общего алгоритма в результат несущей способности.
 Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     mCapacity.LimitSearchSetFailure failureCode, reason
 End Sub
 
-' Однотипные настройки общего Newton из численной конфигурации Capacity.
+' Возвращает численные настройки общего метода Ньютона для задачи несущей способности.
 Private Property Get ILimitSearchProblem_LimitSearchUltimateMaxIterations() As Long
     ILimitSearchProblem_LimitSearchUltimateMaxIterations = mCapacity.LimitSearchUltimateMaxIterations
 End Property
 
-' Сообщает общему coordinator, что получен окончательный успех или терминальная
-' ошибка Capacity. Отсутствующая задача не выдает ложный признак завершения.
+' Сообщает координатору об окончательном успехе или ошибке, запрещающей продолжение.
+' Отсутствие объекта задачи не выдаётся за успешное завершение.
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     If Not mCapacity Is Nothing Then _
         ILimitSearchProblem_StoppedTerminally = mCapacity.Converged Or mCapacity.LimitSearchHasTerminalFailure
@@ -510,18 +509,18 @@ Private Property Get ILimitSearchProblem_StopReason() As String
     If Not mCapacity Is Nothing Then ILimitSearchProblem_StopReason = mCapacity.StopReason
 End Property
 
-' Capacity очищает рабочий итог при подготовке своей попытки; отдельный сброс
-' coordinator не должен стирать сохраненную typed-причину.
+' При подготовке своей попытки расчёт уже очищает рабочий итог.
+' Дополнительный сброс координатора не должен стереть сохранённый код причины.
 Private Sub ILimitSearchProblem_ClearStopReason()
 End Sub
 
-' Общий fallback не подменяет причину Capacity общим текстом: результат
-' формируется из машинного исхода и инженерной интерпретации самой задачи.
+' Сохраняет собственную причину расчёта несущей способности
+' вместо замены общим текстом дополнительного способа поиска.
 Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 
-' Объединяет диагностику первой попытки и перехода к fallback у Capacity.
-' Комментарий конечного результата формируется владельцем, не writer-ом.
+' Объединяет диагностику первой попытки и перехода к дополнительному способу поиска.
+' Окончательное пояснение определяет расчёт несущей способности, а не запись на лист.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, ByVal firstStopReason As String, _
         ByVal firstDiagnostics As String, ByVal firstAttemptMessage As String, _
         ByVal transitionMessage As String, ByVal successMessage As String, _

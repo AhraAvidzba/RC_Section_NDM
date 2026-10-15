@@ -1,7 +1,7 @@
 Attribute VB_Name = "modTestDeclarativeGeometry"
 Option Explicit
 
-' ДЛЯ ТЕСТОВ: аналитические пути, без Excel, сетки и генераторов старых типов.
+' ДЛЯ ТЕСТОВ: точные линии и дуги общего геометрического слоя без Excel и сетки.
 Private mPassed As Long, mFailed As Long, mReport As String
 
 ' ДЛЯ ТЕСТОВ: единый короткий набор общего геометрического слоя.
@@ -15,7 +15,8 @@ Public Function RunCoreGeometryTests() As String
     RunCoreGeometryTests = result
 End Function
 
-' ДЛЯ ТЕСТОВ: именованные цепочки, обход через начало и source map.
+' ДЛЯ ТЕСТОВ: выделение именованных участков контура, переход через его начало
+' и сохранение соответствия сегментов исходным линиям.
 Public Function RunPathAnchorTests() As String
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     mPassed = 0: mFailed = 0: mReport = vbNullString
@@ -170,7 +171,7 @@ Finished:
     RunPathTests = mReport & "TOTAL ANALYTIC PATHS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: скругление общим query, включая вогнутые вершины и R=0.
+' ДЛЯ ТЕСТОВ: общий алгоритм скругления, включая вогнутые вершины и нулевой радиус.
 Public Function RunRoundedPolygonTests() As String
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     mPassed = 0: mFailed = 0: mReport = vbNullString

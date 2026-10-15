@@ -28,9 +28,9 @@ Private Const EXTENSION_TOLERANCE As Double = 0.000000000001 ' Допуск, ч�
 
 Private mConcreteParameters As CConcreteMaterialParameters ' Исходные параметры бетона из Config.
 Private mSteelParameters As CSteelMaterialParameters ' Исходные параметры арматуры из Config.
-Private mConcreteDiagram(1 To 3) As CMaterialDiagram ' Физические бетонные диаграммы без numerical extension.
-Private mSteelDiagram(1 To 3) As CMaterialDiagram ' Физические диаграммы арматуры без numerical extension.
-Private mPurposeName(1 To 3) As String ' Каноническое имя физической цели для Results/diagnostics.
+Private mConcreteDiagram(1 To 3) As CMaterialDiagram ' Диаграммы бетона в физических пределах, без вспомогательного численного продолжения.
+Private mSteelDiagram(1 To 3) As CMaterialDiagram ' Диаграммы арматуры в физических пределах, без вспомогательного численного продолжения.
+Private mPurposeName(1 To 3) As String ' Принятое имя назначения материалов для записи в Results и диагностику.
 Private mLimitStateGroup(1 To 3) As String ' I или II ГПС, фактически использованная provider-ом.
 Private mConcreteDiagramType(1 To 3) As String ' TwoLine или ThreeLine для бетона.
 Private mConcreteTensionBehavior(1 To 3) As String ' Ignore или UseDiagram для растянутого бетона.
@@ -46,7 +46,7 @@ Private mSteelCompressionResistance(1 To 3) As Double ' Rsc/Rsc,ser выбран
 Private mSteelTensionResistance(1 To 3) As Double ' Rs/Rs,ser выбранной ГПС, МПа.
 Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бетонной модели, МПа.
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
-Private mDiagramExtensionEnabled As Boolean ' Разрешает numerical extension для задач равновесия solver-а.
+Private mDiagramExtensionEnabled As Boolean ' Разрешение вспомогательного продолжения диаграмм при поиске равновесия.
 Private mPlateauSlopeFactor As Double ' Et = alpha * E; default Config 0.001 дает наклон плато 0.001 * E (0.1% E); ноль — горизонтальное плато.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
@@ -269,9 +269,9 @@ Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() A
     Set DiagramFromArrays = diagram
 End Function
 
-' Обход от начала координат сохраняет начало каждого плато и непрерывность.
-' Stress и Tangent затем интерполируют одни точки. Нулевая выключенная ветвь
-' не активируется; пределы деформаций и отдельное numerical extension не меняются.
+' Изменяем точки последовательно от начала координат, сохраняя начало плато
+' и непрерывность напряжений. Напряжение и касательный модуль используют те же точки.
+' Отключённая нулевая ветвь, физические пределы и отдельное продолжение диаграммы не меняются.
 Private Sub ApplyPlateauSlope(ByRef strains() As Double, ByRef stresses() As Double, ByVal count As Long, _
         ByVal compressionE As Double, ByVal tensionE As Double)
     Dim zero As Long, i As Long, previous As Double, original As Double, offset As Double
@@ -481,10 +481,9 @@ Public Function SteelMaterialForEquilibrium(ByVal basePurpose As ECalculationPur
     End If
 End Function
 
-' Возвращает физическую бетонную диаграмму по спецификации профиля.
-' Профиль определяет ValueSet,
-' TwoLine/ThreeLine и режим растянутого бетона, а solver получает готовую
-' CMaterialDiagram без знания этих настроек.
+' Возвращает физическую диаграмму бетона по параметрам профиля: набору
+' характеристик, TwoLine/ThreeLine и учёту растяжения.
+' Численный решатель получает уже готовую CMaterialDiagram.
 Public Function ConcreteMaterialFromSpec(ByVal spec As CMaterialModelSpec) As CMaterialDiagram
     EnsureInitialized
     ValidateSpec spec
@@ -591,11 +590,9 @@ Public Function ConcreteTensionLimitFromSpec(ByVal spec As CMaterialModelSpec) A
     ConcreteTensionLimitFromSpec = ConcreteMaterialFromSpec(spec).UltimateTensionStrain
 End Function
 
-' Возвращает eps_bt0 из исходных параметров бетона для нормативного критерия
-' образования трещины по СП 63 п. 8.1.30, формула (8.54). Значение берется
-' из той же профильной спецификации, что и CrackInitiation-диаграмма, чтобы
-' crack-калькулятор не читал Config напрямую и не создавал параллельный
-' источник материалов.
+' Возвращает eps_bt0 для критерия образования трещины по СП 63 п. 8.1.30, формула (8.54).
+' Использует те же параметры профиля, что диаграмма образования трещины,
+' чтобы расчёт получал согласованные материалы без отдельного чтения Config.
 Public Function ConcreteTensionEbt0FromSpec(ByVal spec As CMaterialModelSpec) As Double
     ValidateSpec spec
     ConcreteTensionEbt0FromSpec = mConcreteParameters.Ebt0
@@ -669,8 +666,8 @@ Public Function SteelElasticModulusFromSpec(ByVal spec As CMaterialModelSpec) As
     SteelElasticModulusFromSpec = SteelElasticModulusFromValueSet(spec.ValueSet)
 End Function
 
-' Модуль арматуры для выбранной базы характеристик. Сейчас Es общий, но
-' отдельный метод сохраняет явный контракт без передачи лишней диаграммы.
+' Возвращает модуль арматуры для выбранного набора характеристик.
+' Сейчас Es общий, но этот метод позволяет получить его без создания лишней диаграммы.
 Public Function SteelElasticModulusFromValueSet(ByVal valueSet As EMaterialValueSet) As Double
     EnsureInitialized
     SteelElasticModulusFromValueSet = mSteelParameters.Es
@@ -722,7 +719,7 @@ Private Function LimitStateGroupFromValueSet(ByVal valueSet As EMaterialValueSet
     End If
 End Function
 
-' Общая проверка контракта профильной спецификации.
+' Проверяет, заданы ли допустимые параметры модели материалов выбранного профиля.
 Private Sub ValidateSpec(ByVal spec As CMaterialModelSpec)
     If spec Is Nothing Then Err.Raise vbObjectError + 3250, "CMaterialModelProvider", "MaterialModelSpec не передан."
     If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, "CMaterialModelProvider", "MaterialModelSpec заполнен не полностью."
@@ -838,7 +835,7 @@ Public Function SteelElasticModulus(ByVal purpose As ECalculationPurpose) As Dou
     SteelElasticModulus = mSteelElasticModulus(PhysicalPurposeSlot(purpose))
 End Function
 
-' Разрешает numerical extension для задач равновесия solver-а.
+' Показывает, разрешено ли вспомогательное продолжение диаграмм при поиске равновесия.
 Public Property Get DiagramExtensionEnabled() As Boolean
     EnsureInitialized
     DiagramExtensionEnabled = mDiagramExtensionEnabled
@@ -850,15 +847,16 @@ Public Property Get PlateauSlopeFactor() As Double
     PlateauSlopeFactor = mPlateauSlopeFactor
 End Property
 
-' Возвращает версию неизменяемого набора материалов текущего запуска.
-' Repository использует ее вместе с identity provider-а, а не с именем профиля.
+' Возвращает версию подготовленного набора материалов. Вместе с самим объектом
+' подготовки она позволяет проверить пригодность ранее найденного НДС;
+' одинакового имени профиля для этого недостаточно.
 Public Property Get Revision() As Long
     EnsureInitialized
     Revision = mRevision
 End Property
 
-' Возвращает копии исходных параметров. Consumers не могут изменить внутренний
-' набор provider-а и оставить старые диаграммы в его material cache.
+' Возвращает отдельные копии исходных параметров. Их изменение не затрагивает
+' внутренние характеристики и уже подготовленные диаграммы этого объекта.
 Public Property Get ConcreteParameters() As CConcreteMaterialParameters
     EnsureInitialized
     Set ConcreteParameters = mConcreteParameters.Clone
@@ -878,10 +876,9 @@ End Sub
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Этот API нужен unit-тестам материальных диаграмм и расчетных сценариев без
-' чтения листа Config. В рабочем пользовательском сценарии provider должен
-' инициализироваться через Initialize(settings, units).
 
+' ДЛЯ ТЕСТОВ: позволяет задать материалы программно для проверок диаграмм и расчётных случаев
+' без чтения Config. Обычный запуск книги использует Initialize(settings, units).
 Public Sub InitializeFromParameters(ByVal concreteParameters As CConcreteMaterialParameters, _
         ByVal steelParameters As CSteelMaterialParameters, _
         Optional ByVal strengthConcreteDiagram As String = "TwoLine", _

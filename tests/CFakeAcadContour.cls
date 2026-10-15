@@ -17,23 +17,23 @@ Option Explicit
 ' для проверки сохранности исходника при успехе и ошибке импорта.
 ' Проверку интеграции с установленным AutoCAD выполняют отдельно.
 
-Private mKind As String
-Private mLayer As String
-Private mHandle As String
-Private mCurves As Collection
-Private mStart(0 To 2) As Double
-Private mEnd(0 To 2) As Double
-Private mCenter(0 To 2) As Double
-Private mNormal(0 To 2) As Double
-Private mRadius As Double
-Private mAngle As Double
-Private mClosed As Boolean
-Private mElevation As Double
-Private mDeleted As Boolean
-Private mLastCopy As CFakeAcadContour
-Private mExploded As Collection
+Private mKind As String ' Имя вида подставного объекта AutoCAD.
+Private mLayer As String ' Имя слоя тестового объекта.
+Private mHandle As String ' Уникальный номер тестового объекта.
+Private mCurves As Collection ' Отрезки и дуги, возвращаемые при разбиении тестового контура.
+Private mStart(0 To 2) As Double ' Три мировые координаты начала отрезка, мм.
+Private mEnd(0 To 2) As Double ' Три мировые координаты конца отрезка, мм.
+Private mCenter(0 To 2) As Double ' Три мировые координаты центра дуги или окружности, мм.
+Private mNormal(0 To 2) As Double ' Три компоненты нормали к плоскости объекта.
+Private mRadius As Double ' Радиус тестовой дуги или окружности, мм.
+Private mAngle As Double ' Угол тестовой дуги, рад.
+Private mClosed As Boolean ' Признак замкнутого тестового контура.
+Private mElevation As Double ' Высотная отметка объекта, мм.
+Private mDeleted As Boolean ' Был ли вызван Delete для тестового объекта.
+Private mLastCopy As CFakeAcadContour ' Последняя копия, созданная тестовым вызовом Copy.
+Private mExploded As Collection ' Объекты, полученные последним тестовым разбиением контура.
 Private mLegacyContourTag As Boolean ' ДЛЯ ТЕСТОВ: метаданные прежнего экспорта не влияют на импорт.
-Private mXDataReads As Long
+Private mXDataReads As Long ' Число чтений расширенных данных объекта для проверки импорта.
 
 ' ДЛЯ ТЕСТОВ: моделирует объект из старого DWG без поддержки старого поведения.
 Public Sub SetLegacyContourTag(ByVal value As Boolean)

@@ -19,7 +19,7 @@ Option Explicit
 
 Private Const STRESS_ZERO_TOLERANCE As Double = 0.000000001 ' МПа; ниже считаем, что сжатого бетона нет.
 
-' Выполняет проверку продольных трещин по сохраненному named-state CrackedState.
+' Проверяет продольные трещины по сохранённому текущему НДС с трещинами CrackedState.
 Public Function Calculate(ByVal currentState As CSectionStateResult, ByVal rbMc2 As Double) As CLongitudinalCrackResult
     If currentState Is Nothing Then
         Set Calculate = BlockedByDependency("CurrentCrackedState", _
@@ -43,9 +43,9 @@ Public Function Calculate(ByVal currentState As CSectionStateResult, ByVal rbMc2
     Set Calculate = CalculateFromStress(maxCompressionStress, rbMc2)
 End Function
 
-' Проверяет подготовленное максимальное сжатие без повторного НДС. Числа
-' заданы в МПа; инженерный итог и его причина принадлежат этому calculator-у,
-' а не общей display-policy. Метод также применим к независимой сверке напряжений.
+' Проверяет переданное максимальное сжатие бетона в МПа без повторного решения НДС.
+' Здесь определяются результат и причина проверки, а общие правила статусов
+' только задают обозначение при выводе.
 Public Function CalculateFromStress(ByVal maxCompressionStress As Double, ByVal rbMc2 As Double) As CLongitudinalCrackResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -78,7 +78,8 @@ Private Function FormatStress(ByVal value As Double) As String
     FormatStress = Replace$(Format$(value, "0.000"), ",", ".")
 End Function
 
-' Возвращает result продольных трещин для случая, когда обязательное НДС отсутствует.
+' Создаёт результат недоступной проверки продольных трещин, если обязательное текущее НДС не
+' получено.
 Public Function BlockedByDependency(ByVal dependencyName As String, ByVal reason As String, _
         Optional ByVal rbMc2 As Double = 0#) As CLongitudinalCrackResult
     Dim meta As CResultMeta

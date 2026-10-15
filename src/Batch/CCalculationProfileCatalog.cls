@@ -139,9 +139,9 @@ InvalidValue:
     RaiseProfileInputError errorNumber, description, activeKey, profileId, locations
 End Function
 
-' Собирает MaterialModelSpec теми же enum-парсерами, что использует ядро.
-' Каждая ошибка называет конкретное поле; полностью пустая неактивная модель
-' остается ненастроенной и не получает произвольную диаграмму по умолчанию.
+' Готовит параметры модели материалов по тем же правилам чтения вариантов,
+' что применяет ядро. Ошибка называет конкретное поле; полностью пустая
+' неактивная модель остаётся незаданной без подстановки произвольной диаграммы.
 Private Function SpecFromValues(ByVal values As Object, ByVal locations As Object, _
         ByVal profileId As String, ByVal prefix As String) As CMaterialModelSpec
     On Error GoTo InvalidValue
@@ -178,8 +178,8 @@ InvalidValue:
     RaiseProfileInputError Err.Number, Err.Description, activeKey, profileId, locations
 End Function
 
-' Различает строку, пустоту и ошибку Excel до преобразования в String.
-' Ошибка формулы не становится неизвестным selector-ом или значением default.
+' До преобразования в текст различает строку, пустую ячейку и ошибку формулы Excel.
+' Ошибка формулы не должна стать неверным вариантом настройки или значением по умолчанию.
 Private Function ProfileCellText(ByVal value As Variant, ByVal key As String, _
         ByVal profileId As String, ByVal locations As Object) As String
     Dim errorNumber As Long
@@ -190,15 +190,15 @@ Private Function ProfileCellText(ByVal value As Variant, ByVal key As String, _
     ProfileCellText = Trim$(CStr(value))
 End Function
 
-' Проверяет обязательность поля из Config. Optional-параметры программного
-' API профиля не разрешают молча заменить пустой пользовательский ввод.
+' Проверяет обязательное заполнение параметра Config. Возможность опустить
+' его при программном вызове не разрешает заменять пустой пользовательский ввод.
 Private Sub RequireProfileValue(ByVal values As Object, ByVal key As String)
     If Len(ProfileValue(values, key)) = 0 Then Err.Raise vbObjectError + 3989, _
         "CCalculationProfileCatalog", "Обязательное значение не задано; выберите или введите его в таблице профилей."
 End Sub
 
-' Добавляет адресную навигацию к исходной причине ввода, сохраняя машинный
-' номер ошибки enum/параметра. Статус результата по этому тексту не назначается.
+' Добавляет адрес исходной ячейки к причине ошибки ввода, сохраняя её код.
+' Сам текст сообщения не определяет статус результата.
 Private Sub RaiseProfileInputError(ByVal errorNumber As Long, ByVal description As String, _
         ByVal key As String, ByVal profileId As String, ByVal locations As Object)
     Dim location As String
@@ -230,7 +230,8 @@ Private Function FindProfileHeaderRow(ByRef data As Variant) As Long
     Next rowIndex
 End Function
 
-' Собирает все столбцы PR*, чтобы reader не был жестко привязан к PR1-PR4.
+' Собирает все столбцы с именами PR*, чтобы количество профилей
+' не ограничивалось заранее четырьмя столбцами.
 Private Sub CollectProfileColumns(ByRef data As Variant, ByVal headerRow As Long, _
         ByRef profileColumns() As Long, ByRef profileIds() As String, ByRef profileCount As Long)
     Dim colIndex As Long
@@ -253,9 +254,9 @@ Private Function IsProfileIdText(ByVal value As String) As Boolean
     IsProfileIdText = (Len(value) >= 3 And Left$(value, 2) = "PR" And IsNumeric(Mid$(value, 3)))
 End Function
 
-' Читает обязательный переключатель расчета профиля. Все утвержденные
-' Boolean aliases сохраняются; пустое/неизвестное значение является ошибкой
-' Config, а не неявным отключением запрошенного пользователем расчета.
+' Читает обязательный переключатель проверки и принимает все предусмотренные
+' варианты да/нет. Пустое или неизвестное значение вызывает ошибку Config,
+' а не отключает проверку незаметно для пользователя.
 Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profileId As String, _
         ByVal locations As Object) As Boolean
     value = UCase$(Trim$(value))
@@ -268,7 +269,7 @@ Private Function YesNo(ByVal value As String, ByVal key As String, ByVal profile
     End Select
 End Function
 
-' Очищает ранее прочитанный каталог перед новой загрузкой из workbook.
+' Очищает ранее прочитанные профили перед новой загрузкой из книги.
 Private Sub Clear()
     Erase mProfiles
     Erase mProfileIds
@@ -313,15 +314,15 @@ Public Property Get Count() As Long
     Count = mCount
 End Property
 
-' Возвращает стабильный ID профиля по позиции каталога. Неверный индекс
-' является нарушением контракта доступа, а не поводом выбрать другой профиль.
+' Возвращает ID профиля по его номеру в каталоге. Недопустимый номер
+' вызывает ошибку; другой профиль вместо указанного не выбирается.
 Public Property Get ProfileId(ByVal index As Long) As String
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3985, "CCalculationProfileCatalog", "Индекс профиля вне диапазона."
     ProfileId = mProfileIds(index)
 End Property
 
-' Возвращает профиль по проверенному индексу, сохраняя его идентичность.
-' Здесь не создается запасной профиль и не меняются настройки материала.
+' Возвращает сам профиль по проверенному номеру. Новый запасной профиль
+' не создаётся, настройки материалов не меняются.
 Public Property Get ProfileAt(ByVal index As Long) As CCalculationProfile
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона."
     Set ProfileAt = mProfiles(index)

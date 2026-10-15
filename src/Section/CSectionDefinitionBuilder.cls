@@ -18,9 +18,9 @@ Option Explicit
 ' Команда создания линии сразу сохраняет её в описании; возвращённый объект
 ' уже зарегистрирован. Другие команды связываются с этой линией по её ID.
 
-Private mDefinition As CSectionDefinition ' Единственное заполняемое определение; после Finish только читается.
-Private mQuery As CSectionGeometryQuery ' Общие операции над линиями и областями, без собственной математики фасада.
-Private mFinished As Boolean ' Повторный Finish и новые команды для опубликованного определения запрещены.
+Private mDefinition As CSectionDefinition ' Описание сечения, которое заполняется командами этого объекта; после Finish изменять его нельзя.
+Private mQuery As CSectionGeometryQuery ' Общие геометрические операции над линиями и областями для выполнения команд рецепта.
+Private mFinished As Boolean ' Признак завершения описания: после Finish повторное завершение и новые команды запрещены.
 
 ' Начинает описание сечения с именем TypeID и версией схемы; повторный вызов запрещён.
 Public Sub Initialize(ByVal typeID As String, Optional ByVal schemaVersion As Long = 1)
@@ -62,25 +62,28 @@ Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal c
     Set ArcPath = result
 End Function
 
-' Создаёт и регистрирует границу из завершённого CPolygonSpec с исходными координатами, радиусами и ID.
-' Edge.ID начинается у указанной вершины; Corner.ID существует только при R>0.
+' Создаёт и сохраняет скруглённый контур по вершинам и радиусам CPolygonSpec.
+' Отрезок Edge.ID начинается у соответствующей вершины; дуга Corner.ID
+' существует только при положительном радиусе этого угла.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     RequireOpen
     Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon)
     mDefinition.AddPath RoundedPolygon
 End Function
 
-' Смещает весь скруглённый многоугольник из того же CPolygonSpec, не меняя описатель. Положительное расстояние
-' внутрь площади; отрицательное наружу, из Opening в бетон.
+' Строит смещённый скруглённый контур по тому же описанию CPolygonSpec.
+' Положительное расстояние направлено внутрь многоугольника, отрицательное — наружу.
+' Для отступа от отверстия в сторону бетона задаётся отрицательное расстояние.
 Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
     RequireOpen
     Set OffsetRoundedPolygon = mQuery.OffsetRoundedPolygon(pathID, polygon, distance)
     mDefinition.AddPath OffsetRoundedPolygon
 End Function
 
-' Добавляет уже опубликованный непрерывный CGeometryPath в определение; не включает его
-' автоматически в бетон. Используется только для линий, созданных вручную или отдельным общим инструментом.
-' Результат CirclePath/LinePath/ArcPath/RectanglePath и других создающих команд повторно добавлять нельзя.
+' Добавляет в описание готовую непрерывную линию CGeometryPath, созданную отдельно.
+' Чтобы она стала границей бетона, требуется Outer или Opening. Линии, полученные
+' командами CirclePath, LinePath, ArcPath, RectanglePath и другими командами создания,
+' уже добавлены в описание: повторный AddPath для них не требуется.
 Public Sub AddPath(ByVal path As CGeometryPath)
     RequireOpen
     mDefinition.AddPath path
@@ -107,8 +110,8 @@ Public Sub Source(ByVal entityID As String, ByVal sourceReference As String)
     mDefinition.AddSource entityID, sourceReference
 End Sub
 
-' Создаёт новую привязку из существующей: отражение по локальной X, поворот вокруг (0,0),
-' перенос.
+' Создаёт новую точку привязки из существующей: отражает относительно локальной оси X,
+' поворачивает вокруг (0, 0), затем переносит на заданное смещение.
 Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As String, ByVal shiftX As Double, ByVal shiftY As Double, _
         Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False)
     RequireOpen
@@ -130,8 +133,8 @@ Failed:
     SectionRecipeGeometryError "CSectionDefinitionBuilder", mDefinition.SourceReference(pathID)
 End Function
 
-' Ограничивает или продлевает одну прямую двумя поперечными плоскостями nX*x+nY*y=bound;
-' направление исходного пути сохраняется.
+' Обрезает или продлевает одну прямую до двух поперечных линий nX*x + nY*y = bound.
+' Направление обхода исходного отрезка сохраняется.
 Public Function ConstrainLine(ByVal pathID As String, ByVal sourcePathID As String, _
         ByVal startNX As Double, ByVal startNY As Double, ByVal startBound As Double, _
         ByVal endNX As Double, ByVal endNY As Double, ByVal endBound As Double) As CGeometryPath
@@ -156,8 +159,9 @@ Public Property Get LastGeometryDiagnostic() As CGeometryDiagnostic
     Set LastGeometryDiagnostic = mapped
 End Property
 
-' Выбирает непрерывный участок между двумя именованными сегментными привязками. Направление
-' обхода явно; fullLoopIfSame задаёт полный оборот при совпавших концах.
+' Выбирает непрерывный участок линии между двумя привязками к её сегментам.
+' Направление обхода задаётся явно; fullLoopIfSame разрешает полный оборот
+' замкнутого контура, если обе привязки совпали.
 Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, _
         ByVal startSegmentID As String, ByVal startParameter As Double, ByVal endSegmentID As String, ByVal endParameter As Double, _
         Optional ByVal forward As Boolean = True, Optional ByVal fullLoopIfSame As Boolean = False) As CGeometryPath
@@ -186,8 +190,9 @@ Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y
     mDefinition.AddPath RectanglePath
 End Function
 
-' Создаёт одну границу смежных неперекрывающихся прямоугольников. Произвольное пересекающееся
-' CAD Union не выполняется.
+' Строит общую наружную границу смежных прямоугольников.
+' Прямоугольники должны соприкасаться без наложения площадей;
+' объединение произвольных пересекающихся фигур эта команда не выполняет.
 Public Function AdjacentRectangles(ByVal pathID As String, ByVal rectangles As Variant) As CGeometryPath
     RequireOpen
     Set AdjacentRectangles = mQuery.AdjacentRectangles(pathID, rectangles)
@@ -201,7 +206,7 @@ Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     mDefinition.AddGroup groupID, pathIDs
 End Sub
 
-' Назначает замкнутому пути роль наружной границы материала. Не требует наличия арматуры.
+' Назначает замкнутую линию наружной границей бетона. Арматуру можно задать отдельно позднее.
 Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", _
         Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
@@ -213,8 +218,8 @@ Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal 
     mDefinition.AddLoop value
 End Sub
 
-' Назначает замкнутому пути роль отверстия с конкретным parentOuterID. Действительное вложение
-' проверяется при Finish.
+' Назначает замкнутую линию отверстием внутри наружного контура parentOuterID.
+' Правильность расположения отверстия проверяется при Finish.
 Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _
         Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
@@ -447,8 +452,8 @@ Public Function Finish() As CSectionDefinition
     Set Finish = mDefinition
 End Function
 
-' Геометрическая сторона крайнего ряда и направление подписи независимы:
-' у отверстия подпись обращена в пустоту, а ряд выбирается со стороны бетона.
+' Отдельно задаёт, с какой стороны выбирать крайний ряд арматуры и куда выносить подпись.
+' Например, ряд у отверстия выбирается со стороны бетона, а его подпись выводится в отверстие.
 Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal directionX As Double, ByVal directionY As Double, _
         ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen

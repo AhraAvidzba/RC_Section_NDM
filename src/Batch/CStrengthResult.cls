@@ -17,18 +17,18 @@ Option Explicit
 ' Статусы и пояснения этого блока служат источником данных для таблицы Results;
 ' видимый пользователю статус определяет CResultStatusPolicy.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
 Private mDirectState As CDirectStateResult ' Прямое НДС от заданного сочетания.
 Private mCapacity As CCapacityResult ' Предельная несущая способность по выбранной lambda-траектории.
-Private mPolicy As CResultStatusPolicy ' Общий typed/display приоритет, без собственной копии словаря.
+Private mPolicy As CResultStatusPolicy ' Общие правила выбора и вывода статуса; отдельный словарь обозначений здесь не хранится.
 
-' Создает пустой direct-state, чтобы StrengthResult всегда имел нейтральную meta.
+' Создаёт пустой результат НДС с признаком отсутствия выполненной проверки.
 Private Sub Class_Initialize()
     Clear vbNullString
 End Sub
 
-' Очищает оба подрезультата. Незапрошенная capacity имеет нейтральную typed meta,
-' но не содержит фиктивной найденной точки или физического состояния.
+' Очищает результаты НДС и несущей способности. Если поиск предела не запрошен,
+' его результат отмечается как невыполненный без вымышленной предельной точки.
 Public Sub Clear(ByVal defaultCapacityPath As String)
     AssertWritable
     Set mDirectState = New CDirectStateResult
@@ -36,14 +36,14 @@ Public Sub Clear(ByVal defaultCapacityPath As String)
     mCapacity.InitializeNotRequested "Несущая способность не запрошена.", defaultCapacityPath
 End Sub
 
-' Сохраняет typed meta прямого НДС без изменения его численных данных.
+' Сохраняет статус и пояснение НДС, не меняя его численные данные.
 Public Sub SetDirectMeta(ByVal meta As CResultMeta)
     AssertWritable
     If mDirectState Is Nothing Then Set mDirectState = New CDirectStateResult
     mDirectState.SetMeta meta
 End Sub
 
-' Привязывает прямое НДС и исходные физические пределы к strength-результату.
+' Связывает рассчитанное НДС и исходные физические пределы материалов с проверкой прочности.
 Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, ByVal extensionEnabled As Boolean, _
         Optional ByVal physicalConcrete As CMaterialDiagram = Nothing, _
         Optional ByVal physicalSteel As CMaterialDiagram = Nothing)
@@ -52,23 +52,23 @@ Public Sub StoreDirectFromStateResult(ByVal stateResult As CSectionStateResult, 
     mDirectState.StoreStateResult stateResult, extensionEnabled, physicalConcrete, physicalSteel
 End Sub
 
-' Сохраняет полный capacity-result как вторую ветвь strength-subtree.
+' Сохраняет полный результат несущей способности в составе проверок прочности.
 Public Sub StoreCapacityResult(ByVal capacity As CCapacityResult)
     AssertWritable
     Set mCapacity = capacity
 End Sub
 
-' Возвращает direct-state branch с численными данными и typed ResultMeta.
+' Возвращает результат НДС при заданной нагрузке с его числами, статусом и пояснением.
 Public Property Get DirectState() As CDirectStateResult
     Set DirectState = mDirectState
 End Property
 
-' Возвращает capacity branch, если он был сформирован.
+' Возвращает результат несущей способности, если он был получен.
 Public Property Get Capacity() As CCapacityResult
     Set Capacity = mCapacity
 End Property
 
-' Возвращает meta прямого НДС из structured result.
+' Возвращает статус и пояснение расчёта НДС при заданной нагрузке.
 Public Property Get DirectMeta() As CResultMeta
     If mDirectState Is Nothing Then
         Dim meta As CResultMeta
@@ -80,7 +80,7 @@ Public Property Get DirectMeta() As CResultMeta
     End If
 End Property
 
-' Возвращает meta capacity или N/A, если capacity не запускалась.
+' Возвращает статус несущей способности или N/A, если её расчёт не запускался.
 Public Property Get CapacityMeta() As CResultMeta
     If mCapacity Is Nothing Then
         Dim meta As CResultMeta
@@ -92,8 +92,8 @@ Public Property Get CapacityMeta() As CResultMeta
     End If
 End Property
 
-' Собирает итог только собственного поддерева DirectState/Capacity. Writer
-' получает готовую причину, а Combination не повторяет strength-агрегацию.
+' Собирает общий итог НДС и несущей способности. Класс записи на лист получает
+' готовое пояснение; CCombinationResult не выполняет это объединение повторно.
 Public Property Get ResultMeta() As CResultMeta
     If mPolicy Is Nothing Then Set mPolicy = New CResultStatusPolicy
     Dim direct As CResultMeta, capacity As CResultMeta, comment As String
@@ -101,8 +101,8 @@ Public Property Get ResultMeta() As CResultMeta
     Set capacity = CapacityMeta
     If direct.InternalStatus = rsInvalidInput And capacity.InternalStatus = rsInvalidInput And _
             StrComp(direct.ResultComment, capacity.ResultComment, vbBinaryCompare) = 0 Then
-        ' Общая валидация не запускала ни DirectState, ни Capacity. Одно
-        ' пояснение относится ко всему блоку; leaf-статусы остаются независимыми.
+        ' При общей ошибке ввода ни НДС, ни несущая способность не рассчитывались.
+        ' Общее пояснение относится ко всему блоку, а статусы отдельных проверок сохраняются.
         comment = "Прочность: " & direct.ResultComment
     Else
         direct.AppendCommentTo comment
@@ -112,8 +112,8 @@ Public Property Get ResultMeta() As CResultMeta
     ResultMeta.ResultComment = comment
 End Property
 
-' Объединяет причины последовательных прямых State одного workflow, сохраняя
-' комментарий выбранной причины и не стирая его пустым аргументом агрегации.
+' Объединяет причины завершения последовательных решений НДС в одном запуске.
+' Сохраняет пояснение выбранной причины, не заменяя его пустым текстом.
 Public Sub MergeDirectMeta(ByVal meta As CResultMeta)
     AssertWritable
     If meta Is Nothing Then Exit Sub
@@ -121,9 +121,9 @@ Public Sub MergeDirectMeta(ByVal meta As CResultMeta)
     SetDirectMeta mPolicy.WorstResultMeta(rkDirectState, DirectMeta, meta)
 End Sub
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Закрывает direct-state и capacity поддеревья вместе с агрегатом прочности.
-' Повторный вызов безопасен; вычисленные данные остаются в своих владельцах.
+' Завершает заполнение общего результата прочности, НДС и несущей способности.
+' После этого они доступны только для чтения; повторный вызов безопасен,
+' численные данные остаются в соответствующих объектах результатов.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mDirectState Is Nothing Then mDirectState.Freeze

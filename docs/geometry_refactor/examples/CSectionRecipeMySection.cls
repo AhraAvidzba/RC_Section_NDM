@@ -16,7 +16,8 @@ Option Explicit
 ' через CSectionDefinitionBuilder без отдельной расстановки стержней.
 Implements ISectionRecipe
 
-' Постоянные размеры уже в мм; context обязателен интерфейсу, входных таблиц здесь нет.
+' Размеры заданы постоянными в мм. Контекст передаётся по интерфейсу рецепта; входные таблицы в
+' этом примере не используются.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
     Dim options As CRebarRuleOptions

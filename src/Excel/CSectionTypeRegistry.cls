@@ -15,7 +15,7 @@ Option Explicit
 ' Связывает имя типа с его классом-рецептом и именами входных таблиц.
 ' Чтение значений, построение сетки, арматуры и аннотаций выполняются другими классами.
 
-Private mRecipes As Object, mRecipeTables As Object
+Private mRecipes As Object, mRecipeTables As Object ' Рецепты по имени типа сечения и списки входных таблиц для каждого рецепта.
 
 ' Регистрирует штатные рецепты и независимые именованные таблицы их ввода.
 Private Sub Class_Initialize()
@@ -68,7 +68,8 @@ Public Function SelectedRecipeType(ByVal settings As CSystemSettingsReader) As S
     SelectedRecipeType = settings.GetRequiredChoice("Geometry.Type", RegisteredRecipeTypes)
 End Function
 
-' Один вызов выбранного рецепта; готовое definition не хранит ввод или reader.
+' Один раз вызывает выбранный рецепт. Готовое описание сечения не сохраняет входные таблицы или
+' объекты чтения Excel.
 Public Function CreateDefinition(ByVal typeID As String, ByVal context As CSectionRecipeContext) As CSectionDefinition
     If context Is Nothing Then SectionRecipeError "CSectionTypeRegistry", "Снимок входных таблиц не передан."
     Dim recipe As ISectionRecipe

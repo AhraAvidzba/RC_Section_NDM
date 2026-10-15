@@ -17,11 +17,11 @@ Option Explicit
 ' вызывающий расчёт передаёт rsBlockedByDependency, а CResultStatusPolicy
 ' формирует внешнее обозначение N/A.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
 Private mMeta As CResultMeta ' Типизированный статус проверки продольных трещин.
 Private mMaxCompressionStress As Double ' Максимальное сжатие бетона в текущем CrackedState.
 Private mRbMc2 As Double ' Допустимое Rb,mc2.
-Private mUtilization As Double ' sigma_c,max / Rb,mc2.
+Private mUtilization As Double ' Отношение наибольшего сжимающего напряжения бетона к сопротивлению Rb,mc2.
 
 ' Создает нейтральный not-applicable результат до фактического расчета.
 Private Sub Class_Initialize()
@@ -29,7 +29,7 @@ Private Sub Class_Initialize()
     mMeta.SetNotApplicable rkLongitudinalCrack
 End Sub
 
-' Заполняет результат уже выполненной проверки без запуска solver-а.
+' Сохраняет итог уже выполненной проверки без нового решения равновесия.
 Public Sub Initialize(ByVal meta As CResultMeta, ByVal maxCompressionStress As Double, _
         ByVal rbMc2 As Double, ByVal utilization As Double)
     AssertWritable
@@ -45,13 +45,14 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal maxCompressionStress As D
     mUtilization = utilization
 End Sub
 
-' Отдает независимую meta проверки продольных трещин с ее собственной
-' причиной. Полученная копия не меняет status/comment опубликованного результата.
+' Возвращает независимую копию статуса продольных трещин с их собственной причиной.
+' Готовый результат через полученную копию изменить нельзя.
 Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = mMeta.Clone
 End Property
 
-' Преобразует typed итог проверки в display, не храня вторую строку статуса.
+' Возвращает обозначение статуса для пользователя по общим правилам,
+' без отдельной изменяемой строки статуса.
 Public Property Get Status() As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -84,9 +85,8 @@ Public Property Get ReserveFactor() As Double
     ReserveFactor = 1# / mUtilization
 End Property
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Повторный вызов безопасен. Заполнение численных полей и meta после этого
-' запрещено; сам результат не хранит named-state и не меняет его жизненный цикл.
+' Завершает заполнение результата, запрещая изменение чисел, статуса и пояснения.
+' Повторный вызов безопасен; сохранённые НДС этот объект не изменяет.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     mFrozen = True

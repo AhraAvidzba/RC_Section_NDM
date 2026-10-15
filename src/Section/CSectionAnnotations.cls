@@ -16,23 +16,22 @@ Option Explicit
 ' и подписям арматуры добавляются области трещин выбранного сочетания.
 ' Исходные наружные границы и отверстия хранятся отдельно в CSectionContours.
 
-Private mType() As String
-Private mAnnotationID() As String
-Private mStartX() As Double
-Private mStartY() As Double
-Private mEndX() As Double
-Private mEndY() As Double
-Private mNormalX() As Double
-Private mNormalY() As Double
-Private mText() As String
-Private mValue() As Double
-Private mUnit() As String
-Private mComment() As String
-Private mCount As Long
+Private mType() As String ' Вид каждой аннотации: размер, подпись арматуры или другая поддерживаемая отметка.
+Private mAnnotationID() As String ' Уникальное имя каждой аннотации в описании сечения.
+Private mStartX() As Double ' Координата X начала аннотации, мм.
+Private mStartY() As Double ' Координата Y начала аннотации, мм.
+Private mEndX() As Double ' Координата X конца аннотации, мм.
+Private mEndY() As Double ' Координата Y конца аннотации, мм.
+Private mNormalX() As Double ' Компонента X направления выноса аннотации.
+Private mNormalY() As Double ' Компонента Y направления выноса аннотации.
+Private mText() As String ' Готовая подпись или обозначение размера.
+Private mValue() As Double ' Числовое значение размера в единицах mUnit.
+Private mUnit() As String ' Единицы числового значения аннотации.
+Private mComment() As String ' Дополнительное пояснение аннотации.
+Private mCount As Long ' Число сохранённых аннотаций.
 
-' Удаляет все координаты, размерные значения и подписи semantic-аннотаций.
-' Контейнер после очистки не содержит записей для вывода; геометрия модели
-' и уже сохраненные Excel-таблицы этим методом не изменяются.
+' Удаляет размеры, подписи и координаты всех аннотаций из этого объекта.
+' Геометрия модели и уже записанные таблицы Excel не изменяются.
 Public Sub Clear()
     Erase mType
     Erase mAnnotationID
@@ -49,7 +48,8 @@ Public Sub Clear()
     mCount = 0
 End Sub
 
-' Добавляет произвольную semantic-аннотацию в единый контейнер для последующей записи в Results.
+' Добавляет аннотацию с её видом, координатами, числовым значением и текстом
+' в общий список для последующей записи на Results.
 Public Sub AddAnnotation(ByVal annotationType As String, ByVal annotationID As String, _
         ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, _
         ByVal normalX As Double, ByVal normalY As Double, ByVal textValue As String, _
@@ -110,16 +110,13 @@ Public Property Get Count() As Long
     Count = mCount
 End Property
 
-' Контейнер semantic-аннотаций рассчитанного сечения Здесь хранятся размеры и групповые подписи
-' арматуры. Writer дополняет их LC-зависимыми расчетными областями трещин в
-' rngNDMSectionAnnotations. Исходные outer/opening принадлежат CSectionContours и
-' геометрическому снимку, поэтому не смешиваются с оформлением или результатами проверок.
+' Возвращает вид выбранной аннотации: размер, подпись арматуры или расчётная область.
 Public Property Get AnnotationType(ByVal index As Long) As String
     CheckIndex index
     AnnotationType = mType(index)
 End Property
 
-' Уникальный смысловой ID выбранной аннотации.
+' Возвращает уникальное имя выбранной аннотации.
 Public Property Get AnnotationID(ByVal index As Long) As String
     CheckIndex index
     AnnotationID = mAnnotationID(index)
@@ -185,7 +182,8 @@ Public Property Get Comment(ByVal index As Long) As String
     Comment = mComment(index)
 End Property
 
-' Проверяет индекс semantic-аннотации перед чтением массивов контейнера.
+' Проверяет, что номер аннотации находится в пределах сохранённого списка, прежде чем читать её
+' данные.
 Private Sub CheckIndex(ByVal index As Long)
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона."
 End Sub

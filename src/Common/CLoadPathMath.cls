@@ -17,21 +17,21 @@ Option Explicit
 ' на заданную траекторию. Нормирует их по допускам равновесия.
 ' Эта математика одинакова для несущей способности и образования трещины.
 
-Private Const DEFAULT_BASE_TOLERANCE As Double = 0# ' Ненулевая Base сохраняет путь; инженерный фильтр моментов применяется до Search.
-Private Const RELATIVE_COMPONENT_TOLERANCE As Double = 0.000000001 ' Минимальная относительная добавка к solver tolerance.
+Private Const DEFAULT_BASE_TOLERANCE As Double = 0# ' Любая ненулевая часть Base масштабируется; фильтр малых моментов применяется до поиска предела.
+Private Const RELATIVE_COMPONENT_TOLERANCE As Double = 0.000000001 ' Минимальная относительная добавка к допуску равновесия.
 
 Private mToleranceN As Double ' Допуск равновесия по N, Н.
 Private mToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mToleranceMy As Double ' Допуск равновесия по My, Н*мм.
-Private mBaseTolerance As Double ' Явный optional-порог API; production использует точное отличие Base от нуля.
-Private mNumericalFrame As CSectionNumericalFrame
-Private mNumericalPath As CLoadPathVector, mSourcePath As CLoadPathVector
-Private mPathSection As CSectionModel, mPathRevision As Long
-Private mSourceTolerances(1 To 3) As Double
-Private mCommonNumericalScale As Boolean, mNumericalReady As Boolean
-Private mForceScale As Double, mPathTolerance As Double
+Private mBaseTolerance As Double ' Необязательный порог для программного вызова; рабочий расчёт проверяет точное отличие Base от нуля.
+Private mNumericalFrame As CSectionNumericalFrame ' Начало координат и масштабы, используемые для устойчивого численного решения.
+Private mNumericalPath As CLoadPathVector, mSourcePath As CLoadPathVector ' Траектории нагрузки в численных и исходных координатах соответственно.
+Private mPathSection As CSectionModel, mPathRevision As Long ' Модель и её версия, для которых подготовлена траектория нагрузки.
+Private mSourceTolerances(1 To 3) As Double ' Исходные допуски равновесия по N, Mx и My: Н, Н*мм, Н*мм.
+Private mCommonNumericalScale As Boolean, mNumericalReady As Boolean ' Признак общего масштаба уравнений и признак готовности численного представления.
+Private mForceScale As Double, mPathTolerance As Double ' Масштаб усилий и допуск отклонения от траектории в численных координатах.
 
-' Инициализирует расчетные допуски равновесия значениями, совместимыми с default solver.
+' Задаёт начальные допуски равновесия, согласованные с начальными настройками решателя НДС.
 Private Sub Class_Initialize()
     mToleranceN = 5#
     mToleranceMx = 5000#
@@ -39,9 +39,9 @@ Private Sub Class_Initialize()
     mBaseTolerance = DEFAULT_BASE_TOLERANCE
 End Sub
 
-' Проверяет осевую lambda-траекторию относительно указанной расчетной точки.
-' Это характеристика нагрузки, не выбор метода поиска. Guard учитывает лишь
-' округление переноса Double, не вводит инженерный фильтр моментов.
+' Проверяет, является ли заданное изменение нагрузки осевым относительно выбранной точки.
+' Учитывает только погрешность переноса усилий Double; способ поиска
+' и инженерный порог малых моментов этим методом не задаются.
 Public Function IsPureAxialLoadPath(ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, ByVal myOffset As Double, ByVal myBase As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As Boolean
@@ -61,10 +61,9 @@ Private Function IsZeroMomentAboutPoint(ByVal n As Double, ByVal moment As Doubl
     IsZeroMomentAboutPoint = Abs(moment - transfer) <= roundoff
 End Function
 
-' Передает допуски того solver-а, для которого будут строиться безразмерные
-' невязки load-path. Разные расчетные ветки могут иметь разные настройки, но
-' формула нормировки остается общей. По умолчанию любая ненулевая Base
-' масштабируется: допуск равновесия не является фильтром заданной нагрузки.
+' Принимает допуски решателя для нормирования уравнений траектории нагрузки.
+' Разные проверки могут использовать разные допуски при одной формуле.
+' Допуск равновесия не обнуляет заданную ненулевую масштабируемую нагрузку.
 Public Sub Configure(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
         ByVal toleranceMy As Double, Optional ByVal baseTolerance As Double = DEFAULT_BASE_TOLERANCE)
     mNumericalReady = False
@@ -77,9 +76,9 @@ Public Sub Configure(ByVal toleranceN As Double, ByVal toleranceMx As Double, _
     If mToleranceMy <= 0# Then mToleranceMy = 5000#
 End Sub
 
-' Подготавливает одну и ту же траекторию в центре бетона для разных поисков.
-' Моменты делятся на геометрический масштаб, но конечные допуски solver-а
-' не меняются. Ключ содержит точные значения, а не ссылку на изменяемый path.
+' Подготавливает нагрузку относительно центра бетонной сетки для общих поисковых задач.
+' Нормирует моменты по размеру сечения, сохраняя исходные допуски равновесия.
+' Точное совпадение проверяется по значениям, а не по ссылке на изменяемый объект нагрузки.
 Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath As CLoadPathVector, _
         ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
         Optional ByVal commonForceScale As Boolean = False)
@@ -211,10 +210,9 @@ Public Function AnchorComponent(ByVal loadPath As CLoadPathVector) As Long
     End If
 End Function
 
-' Собирает две безразмерные невязки, которые удерживают внутренние усилия
-' solver-а на прямой Target = Offset + lambda*Base. Ненулевые компоненты
-' сверяются со своим target при том же lambda, нулевые Base-компоненты
-' контролируются как постоянная часть Offset.
+' Вычисляет две безразмерные невязки, проверяющие соответствие внутренних усилий
+' зависимости Target = Offset + lambda*Base. Масштабируемые компоненты
+' проверяются при одном lambda; постоянные — относительно своих значений Offset.
 Public Sub BuildResiduals(ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal loadPath As CLoadPathVector, _
         ByVal lambdaValue As Double, ByRef rPath1 As Double, ByRef rPath2 As Double, _
@@ -266,16 +264,16 @@ Private Function ResidualScale(ByVal componentIndex As Long, ByVal target As Dou
     End If
 End Function
 
-' Возвращает норму системы load-path + limit. Последний множитель сохраняет
-' принятую в capacity/crack практику: предельный критерий важнее мелкой
-' балансировки пути, но не должен скрывать грубую потерю направления нагрузки.
+' Вычисляет общую меру отклонения от траектории нагрузки и от предельного критерия.
+' Критерию придаётся принятый вес, но большое отклонение направления нагрузки
+' не должно скрываться малой невязкой деформаций.
 Public Function ResidualNorm(ByVal rPath1 As Double, ByVal rPath2 As Double, _
         ByVal rLimit As Double, Optional ByVal limitWeight As Double = 10#) As Double
     ResidualNorm = Abs(rPath1) + Abs(rPath2) + Abs(rLimit) * limitWeight
 End Function
 
-' Возвращает размерный допуск компоненты как максимум абсолютного допуска
-' solver-а и маленькой относительной доли от масштаба текущей компоненты.
+' Определяет размерный допуск компоненты усилий как максимум
+' абсолютного допуска равновесия и малой относительной доли её масштаба.
 Public Function ComponentTolerance(ByVal componentIndex As Long, _
         ByVal targetValue As Double, ByVal actualValue As Double) As Double
     Select Case componentIndex

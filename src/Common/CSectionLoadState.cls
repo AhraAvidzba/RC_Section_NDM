@@ -10,17 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 ' ==========================================================================
-' Нагрузка сечения относительно точки приложения
+' Нагрузка сечения и перенос моментов между точками
 ' ==========================================================================
-' CSectionLoadState хранит один расчетный вектор N + Mx + My и знает, где
-' приложена продольная сила. Класс не решает НДС и не выбирает расчетную
-' ветку; его единственная ответственность - централизованно переносить
-' моменты между точкой приложения нагрузки, произвольной расчетной точкой и
-' внутренним началом координат CSectionModel.
-'
-' Все моменты при выдаче проходят через CMomentZeroFilter, если он передан.
-' Поэтому одинаковая семантика "практически нулевого момента" используется
-' перед Stability, DirectState, Capacity и Crack.
+' Хранит N + Mx + My и точку приложения продольной силы. Переносит моменты
+' между пользовательской точкой, произвольным расчётным центром и началом
+' координат модели. Если передан CMomentZeroFilter, одинаково учитывает
+' практически нулевые моменты перед прочностью, несущей способностью,
+' устойчивостью и расчётом трещин.
 
 Private mN As Double ' Продольная сила во внутренних единицах, Н.
 Private mLoadPointMx As Double ' Mx относительно точки приложения нагрузки, Н*мм.
@@ -46,10 +42,9 @@ Public Sub Initialize(ByVal nValue As Double, ByVal loadPointMx As Double, _
     mLoadPointMy = NormalizeMy(loadPointMy)
 End Sub
 
-' Инициализирует нагрузку по моментам, известным относительно произвольной
-' расчетной точки. Это нужно, когда Stability вернул DesignMx/DesignMy
-' относительно центра приведенного сечения, а дальше требуется восстановить
-' моменты в пользовательской точке приложения нагрузки.
+' Задаёт нагрузку по моментам относительно известной расчётной точки.
+' Например, после устойчивости переводит моменты из центра приведённого сечения
+' обратно в пользовательскую точку приложения нагрузки.
 Public Sub InitializeFromPointMoments(ByVal nValue As Double, ByVal mxAboutPoint As Double, _
         ByVal myAboutPoint As Double, ByVal pointX As Double, ByVal pointY As Double, _
         ByVal loadReferenceX As Double, ByVal loadReferenceY As Double, _
@@ -84,9 +79,8 @@ Public Function AxialMyAboutPoint(ByVal pointX As Double) As Double
     AxialMyAboutPoint = NormalizeMy(mN * (mLoadReferenceX - pointX))
 End Function
 
-' Проверяет, является ли растягивающая сила центральной относительно заданной
-' точки. Допуски передает вызывающий расчетный слой, потому что у разных
-' solver-ов могут быть разные физические масштабы невязок.
+' Проверяет, является ли растягивающая сила центральной относительно заданной точки.
+' Использует допуски вызывающего расчёта с учётом масштаба проверяемых усилий.
 Public Function IsCentralTensionAbout(ByVal pointX As Double, ByVal pointY As Double, _
         ByVal forceTolerance As Double, ByVal momentToleranceMx As Double, _
         ByVal momentToleranceMy As Double) As Boolean

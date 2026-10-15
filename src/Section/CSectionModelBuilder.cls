@@ -16,10 +16,9 @@ Option Explicit
 ' в одну CSectionModel. Имена расчётных элементов назначает сама модель.
 ' Построение геометрии, аннотаций и решение равновесия выполняются отдельно.
 
-' Переносит сгенерированные волокна с коэффициентом заполнения и их местными
-' инерциями в единый расчетный model, затем добавляет готовую арматуру.
-' Новая модель получает собственные расчетные имена; builder не меняет сетку
-' или layout и не выполняет расчет НДС.
+' Переносит готовые бетонные элементы с коэффициентом заполнения и собственными
+' инерциями в CSectionModel, затем добавляет стержни. Модель сама назначает
+' расчётные имена. Исходная сетка и арматура не изменяются; НДС здесь не решается.
 Public Function BuildFromGenerated(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         Optional ByVal sourceType As String = "Generated") As CSectionModel
     If mesh Is Nothing Then Err.Raise vbObjectError + 5250, "CSectionModelBuilder", "Сетка бетонных элементов не передана."

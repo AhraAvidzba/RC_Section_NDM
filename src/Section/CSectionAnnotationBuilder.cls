@@ -16,10 +16,11 @@ Option Explicit
 ' и привязки подписей. Результат сохраняется в CSectionAnnotations
 ' в координатах модели; оформление диаграммы выполняется отдельно.
 
-Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Прежний зазор сводной подписи над бетонным габаритом.
+Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Расстояние сводной подписи арматуры над верхней границей бетонной сетки.
 
-' Общая интерпретация модельных измерений и привязок. Оформление и положение
-' в пикселях остаются в layout/plotter. Каждый вызов заново готовит привязки; rebars только читается.
+' По описанию сечения вычисляет размеры и привязки подписей в координатах модели.
+' Шрифт и положение на диаграмме задаются при отрисовке. Каждый вызов готовит
+' привязки заново; готовая арматура используется только для чтения.
 Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarLayout, ByVal annotations As CSectionAnnotations, _
         Optional ByVal rules As CRebarRuleExecutor = Nothing)
     If definition Is Nothing Or rebars Is Nothing Or annotations Is Nothing Then _
@@ -90,9 +91,10 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
     labels.AddRebarLabels annotations, rebars, anchors, anchorCount
 End Sub
 
-' Находит опорную линию подписи по точным проекциям выбранных отрезков и дуг.
-' Проекции берутся вдоль нормали и вдоль подписи, поэтому наклонный путь не
-' заменяется его X/Y-габаритом. Дальнейший перенос к бетону выполняет reader.
+' Находит линию, относительно которой размещается подпись, по точным отрезкам и дугам.
+' Учитывает проекции вдоль подписи и поперёк неё, поэтому наклонная грань
+' не подменяется горизонтальным или вертикальным габаритом. Перенос к краю
+' бетона выполняет CSectionPlotDataReader.
 Private Sub TargetLabelAnchor(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation)
     Dim nx As Double, ny As Double, tx As Double, ty As Double, ids As Variant, id As Variant
     Dim path As CGeometryPath, low As Double, high As Double, first As Double, last As Double, support As Double
@@ -127,8 +129,8 @@ Private Sub SetLabelAnchor(ByRef value As TSectionAnnotation, ByVal nx As Double
     value.EndX = last * tx + support * nx: value.EndY = last * ty + support * ny
 End Sub
 
-' Привязки принадлежат только этому проходу построения аннотаций.
-' Координаты и направления копируются; физическая раскладка не изменяется.
+' Сохраняет координаты и направления привязок для текущего построения аннотаций.
+' Готовые координаты стержней не меняются.
 Private Sub AppendLabelAnchor(ByRef anchors() As TSectionAnnotation, ByRef count As Long, ByRef value As TSectionAnnotation)
     If Len(Trim$(value.Name)) = 0 Then Exit Sub
     count = count + 1
@@ -136,8 +138,9 @@ Private Sub AppendLabelAnchor(ByRef anchors() As TSectionAnnotation, ByRef count
     anchors(count).Name = Trim$(value.Name)
 End Sub
 
-' Горизонтальная/вертикальная проекция и расстояние по соединяющей линии
-' имеют разные значения. Размещение проекции использует первую привязку.
+' Вычисляет горизонтальный, вертикальный размер или расстояние между двумя точками
+' в зависимости от заданного вида. Для проекционного размера положение
+' размерной линии определяется первой точкой.
 Private Sub AnchorDimension(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
     definition.AnchorCoordinates value.StartAnchorID, value.StartX, value.StartY
     definition.AnchorCoordinates value.EndAnchorID, value.EndX, value.EndY
@@ -158,7 +161,8 @@ Private Sub AnchorDimension(ByVal definition As CSectionDefinition, ByRef value 
         value.NormalX, value.NormalY, value.Name, value.Value, value.Comment
 End Sub
 
-' Измеряется выбранный аналитический сегмент, а не bbox или соседняя дуга.
+' Измеряет выбранную дугу или окружность по её точной геометрии,
+' а не по общему габариту сечения или соседнему участку.
 Private Sub ArcDimension(ByVal definition As CSectionDefinition, ByRef value As TSectionAnnotation, ByVal annotations As CSectionAnnotations)
     Dim path As CGeometryPath, edge As TRegionEdge, tx As Double, ty As Double, radiusValue As Double
     Set path = definition.Path(value.Target)
@@ -211,14 +215,11 @@ Private Sub TargetBounds(ByVal definition As CSectionDefinition, ByVal target As
     Next id
 End Sub
 
-' Для AutoCAD-сетки у программы нет смысловых граней, но есть согласованная
-' прямоугольная оболочка бетонных элементов. Ее строит CSectionModel:
-' фактический прямоугольник, эквивалентный прямоугольник по A/I или
-' последний эквивалентный квадрат по площади. Реальные A/I при этом остаются
-' расчетными характеристиками элемента. Здесь добавляются только общие
-' semantic-аннотации импорта: точные габариты при известном наружном контуре,
-' иначе приблизительные габариты бетонной сетки, а также
-' сводная подпись всей распознанной арматуры.
+' Добавляет общие аннотации импортированного сечения: горизонтальный и вертикальный
+' габариты и общую подпись арматуры. При наличии точного наружного контура размеры
+' точные, иначе вычисляются приблизительно по границам бетонных элементов.
+' Эти границы заранее готовит CSectionModel по фактическому прямоугольнику
+' или по эквивалентным размерам элемента; его расчётные площадь и инерции не меняются.
 Public Sub PrepareImportedSection(ByVal section As CSectionModel, ByVal bounds As Variant)
     If section Is Nothing Then Exit Sub
     If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) <> 0 Then Exit Sub
@@ -275,8 +276,8 @@ Public Sub PrepareImportedSection(ByVal section As CSectionModel, ByVal bounds A
     End If
 End Sub
 
-' Проверяет, есть ли semantic-аннотация с таким ID. Это защищает повторную
-' запись одного и того же CSectionModel от дублирования размеров и подписей.
+' Проверяет, есть ли аннотация с указанным ID. При повторной записи
+' той же модели это предотвращает дублирование размеров и подписей.
 Private Function AnnotationExists(ByVal annotations As CSectionAnnotations, ByVal annotationID As String) As Boolean
     If annotations Is Nothing Then Exit Function
 
@@ -289,9 +290,9 @@ Private Function AnnotationExists(ByVal annotations As CSectionAnnotations, ByVa
     Next i
 End Function
 
-' Собирает одну подпись для всей арматуры AutoCAD import. Диаметры группируются
-' по видимому инженерному значению, сортируются по убыванию и выводятся без
-' пробелов вокруг плюса; каждый диаметр сопровождается своим количеством.
+' Собирает общую подпись всей арматуры, импортированной из AutoCAD.
+' Объединяет одинаковые видимые диаметры, сортирует от большего к меньшему
+' и выводит количество стержней каждого диаметра через знак плюса без пробелов.
 Private Function AutoCADRebarSummaryText(ByVal section As CSectionModel) As String
     If section Is Nothing Then Exit Function
     If section.RebarCount <= 0 Then Exit Function

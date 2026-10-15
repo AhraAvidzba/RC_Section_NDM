@@ -2,15 +2,13 @@ Attribute VB_Name = "modTestConfiguration"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: поведение расчетных настроек через настоящий Config
+' ДЛЯ ТЕСТОВ: действие расчётных настроек Config
 ' ==========================================================================
-' Модуль меняет ячейки изолированной книги, читает их штатным reader-ом и
-' проверяет реальные результаты Capacity/Formation/Stability, а не только getters.
-' Отдельный входной набор проверяет структуру именованных таблиц Config,
-' диагностические адреса и ошибки ключей без запуска расчетного ядра.
-' Нагрузки и геометрия заданы во внутренних Н, Н*мм и мм; параметры материалов,
-' профили и solve-options проходят через Config. После набора все формулы
-' входных таблиц восстанавливаются, а результаты остаются для проверки writer.
+' Меняет ячейки отдельной копии, читает их обычными классами и проверяет
+' результаты несущей способности, образования трещины и устойчивости.
+' Проверяет также структуру таблиц, адреса и причины ошибок ввода.
+' Нагрузки и геометрия заданы в Н, Н*мм и мм; материалы и параметры решения
+' читаются из Config. После проверок исходные формулы восстанавливаются.
 
 Private Type TConfigTestStats
     Passed As Long
@@ -81,8 +79,8 @@ Restore:
     RunCurrentDiagramSettingTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет все стратегии, одномерные методы и пути Formation.
-' Возвращает отчет и счетчики для отдельного runner-а и полного batch-suite.
+' ДЛЯ ТЕСТОВ: проверяет стратегии, одномерные методы и траектории поиска образования трещины.
+' Возвращает отчёт и счётчики для отдельного запуска и полного набора проверок.
 Public Function RunAudit03SearchConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TConfigTestStats, systemRange As Object, unitRange As Object, profileRange As Object
@@ -361,9 +359,9 @@ Private Sub CheckCapacitySelectors(ByRef stats As TConfigTestStats, ByVal system
 NextMethod:
         Next method
     Next strategy
-    ' Отдельно сохраняем точный negative-контрпример Brent с менее строгим
-    ' lambda-допуском. Его физическая пригодность не подменяется близостью
-    ' критерия к единице или дополнительным уменьшением допуска в fixture.
+    ' Отдельно сохраняем отрицательный результат метода Брента с менее строгим
+    ' допуском по λ. Близость критерия к единице не заменяет проверку физической
+    ' пригодности; допуск не уменьшается ради успешного теста.
     SetValue systemRange, "Capacity.ToleranceLambda", 0.0001
     SetValue systemRange, "Capacity.SolutionStrategy", "LoadMultiplier"
     SetValue systemRange, "Capacity.SearchMethod", "Brent"
@@ -495,8 +493,8 @@ Private Sub CheckInvalidSelectors(ByRef stats As TConfigTestStats, ByVal systemR
     systemRange.Formula = saved
 End Sub
 
-' Создает новый batch на той же физической модели и читает текущие ячейки.
-' Reader failure сохраняется как ошибка ввода, не как численная несходимость.
+' Создаёт новый расчёт сочетаний для той же модели и читает текущие ячейки.
+' Ошибка чтения должна остаться ошибкой ввода, а не численной несходимостью.
 Private Function RunConfigBatch(ByRef stats As TConfigTestStats, ByVal prefix As String, ByVal profileId As String, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, ByVal profiles As CCalculationProfileCatalog, _
         ByVal units As CUnitSystem, Optional ByVal loadFactor As Double = 1#, _
@@ -811,8 +809,8 @@ Private Sub CheckUniversalPathMath(ByRef stats As TConfigTestStats)
         search.Meta.ResultComment = historyComment
 End Sub
 
-' Выбирает наибольшую независимую долю предельной деформации в тестовом oracle.
-' Не использует приватные helpers production-классов и не меняет их критерий.
+' Независимо выбирает наибольшее отношение деформации к пределу.
+' Приватные методы проверяемых классов для вычисления эталона не вызываются.
 Private Function LargerValue(ByVal first As Double, ByVal second As Double) As Double
     LargerValue = first
     If second > first Then LargerValue = second
@@ -956,8 +954,8 @@ Private Sub TestAudit03SettingsTableGuards(ByRef stats As TConfigTestStats)
         Next position
         fixture.Names.Item(CStr(names(index))).RefersTo = originalReference
     Next index
-    ' Reader не навязывает материал, пока он не нужен активному расчетному
-    ' потребителю. Пропавшая optional-таблица остается отсутствующим ключом.
+    ' Чтение Config не требует материал, пока он не нужен включённому расчёту.
+    ' Отсутствующая необязательная таблица не создаёт выдуманных настроек.
     For index = 2 To 3
         cases = cases + 1: originalReference = fixture.Names.Item(CStr(names(index))).RefersTo
         fixture.Names.Item(CStr(names(index))).Delete
@@ -1076,8 +1074,8 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Сохраняет исходную ошибку автономного reader-а, не применяя defaults и
-' не вызывая расчетные consumers; повторный вызов проверяет очистку reader-а.
+' Сохраняет исходную ошибку чтения без подстановки значений по умолчанию
+' и запуска расчётов. Повторное чтение проверяет очистку прежних данных.
 Private Sub Audit03ReadMultiAreaRange(ByVal settings As CSystemSettingsReader, ByVal table As Object, _
         ByRef code As Long, ByRef reason As String)
     On Error Resume Next
@@ -1196,9 +1194,9 @@ Cleanup:
     On Error GoTo 0
 End Sub
 
-' Вызывает настоящий потребитель без MsgBox и сохраняет исходную typed ошибку.
-' Для отчета проверяется повторный Initialize; для сообщения используется
-' тот же публичный selector, который вызывают пользовательские кнопки.
+' Вызывает обычный код без MsgBox и сохраняет номер и текст исходной ошибки.
+' Для отчёта проверяется повторная инициализация, для сообщения — тот же выбор
+' типа сообщения, который используют кнопки книги.
 Private Sub CaptureGeneralRunControl(ByVal fixture As Object, ByVal report As CExecutionReport, _
         ByVal reportMode As Boolean, ByRef code As Long, ByRef reason As String, ByRef value As Boolean)
     On Error GoTo Failed
@@ -1344,8 +1342,8 @@ Private Sub CheckCapacityNumericEffects(ByRef stats As TConfigTestStats, ByVal t
     Set changed = CapacityNumericRun(stats, prefix & ".Capacity.SolverMaxIterations.one", section, provider, profiles, units)
     Check stats, prefix & ".Capacity.SolverMaxIterations.typedFailure", changed.ResultMeta.InternalStatus = rsNumericalFailure
     Check stats, prefix & ".Capacity.SolverMaxIterations.noPoint", Not changed.SearchResult.HasLimitPoint
-    ' Пробы Якобиана и резервного line-search не являются новыми итерациями.
-    ' При бюджете 1 каждая стартовая попытка вправе сделать только первый шаг.
+    ' Пробные вычисления Якобиана и подбор длины шага не считаются новыми итерациями.
+    ' При бюджете 1 каждая попытка может выполнить только первую итерацию.
     Check stats, prefix & ".Capacity.SolverMaxIterations.budget", _
         CapacityNumericRecordCount(changed.DiagnosticLog, "ultimateNewton step=1") > 0 And _
         CapacityNumericRecordCount(changed.DiagnosticLog, "ultimateNewton step=") = _
@@ -1572,8 +1570,8 @@ NextInvalid:
     table.Formula = configured
 End Sub
 
-' Возвращает опубликованный результат реального batch и сохраняет счетчики
-' фактических Search-проб для анализа причин, не назначая статус по журналу.
+' Возвращает готовый результат обычного расчёта и счётчики проб поиска.
+' Счётчики нужны для разбора причин; статус не выводится из текста журнала.
 Private Function CapacityNumericRun(ByRef stats As TConfigTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
         ByVal profiles As CCalculationProfileCatalog, ByVal units As CUnitSystem) As CCapacityResult
@@ -1608,8 +1606,8 @@ Private Function CapacityNumericRecordCount(ByVal diagnostic As String, ByVal ma
     Next line
 End Function
 
-' Возвращает первый ненулевой lambda из подробной записи фактически решенной
-' Capacity-пробы. Val читает invariant-формат журнала независимо от locale.
+' Возвращает первый ненулевой λ из журнала фактически рассчитанной пробной точки.
+' Val читает число с десятичной точкой независимо от региональных настроек.
 Private Function CapacityNumericFirstLambda(ByVal diagnostic As String) As Double
     Dim line As Variant, at As Long, value As Double
     For Each line In Split(diagnostic, vbCrLf)
@@ -1722,8 +1720,8 @@ Private Sub ConfigureStabilityFixture(ByVal table As Object, ByVal profiles As O
     SetProfileValue profiles, "Calculation.Crack.Width", "No", "PR2"
 End Sub
 
-' Возвращает именно фактические поля Config в устойчивом порядке для эффектов,
-' input-контрактов и реестра; заголовки таблицы и computed-поля сюда не входят.
+' Перечисляет реальные пользовательские поля Config в постоянном порядке.
+' Заголовки таблиц и вычисляемые поля в список не входят.
 Private Function StabilityConfigKeys() As Variant
     StabilityConfigKeys = Array("Stability.Code", "Stability.ElementLength", "Stability.Mu1", "Stability.Mu2", _
         "Stability.SystemType", "Stability.ZeroMomentEccentricitySign1", "Stability.ZeroMomentEccentricitySign2", _
@@ -2135,8 +2133,8 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
     FormatNumberInvariant = Replace(CStr(value), ",", ".")
 End Function
 
-' Проверяет только корректно полученный физический State, не диагностического
-' кандидата; сохраняет независимый контроль равновесия по трем компонентам.
+' Проверяет равновесие по трём составляющим для принятого физического НДС.
+' Вспомогательная непринятая точка поиска не выдаётся за готовый результат.
 Private Sub CheckState(ByRef stats As TConfigTestStats, ByVal prefix As String, ByVal point As CSectionStateResult, _
         Optional ByVal forceTolerance As Double = FORCE_TOLERANCE, Optional ByVal momentTolerance As Double = MOMENT_TOLERANCE)
     Check stats, prefix & ".converged", point.Converged

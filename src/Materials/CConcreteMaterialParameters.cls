@@ -82,8 +82,8 @@ Private Sub Validate(Optional ByVal settings As CSystemSettingsReader = Nothing)
     RequirePositive settings, "Concrete.Ebt2", mEbt2, 3202
 End Sub
 
-' Сохраняет инженерное требование положительной характеристики; reader
-' добавляет только место исправления и не решает, допустим ли физический параметр.
+' Проверяет положительность характеристики бетона. При чтении из Excel
+' к причине добавляется адрес исправления; само требование проверяется здесь.
 Private Sub RequirePositive(ByVal settings As CSystemSettingsReader, ByVal key As String, _
         ByVal value As Double, ByVal errorCode As Long)
     If value > 0# Then Exit Sub
@@ -173,8 +173,8 @@ Public Function Clone() As CConcreteMaterialParameters
     Set Clone = result
 End Function
 
-' Заполняет параметры нормализованными числами для внутренних snapshots и
-' тестовых сценариев. Пользовательский ввод читается через LoadFromSettings.
+' Заполняет параметры готовыми значениями во внутренних единицах
+' для сохранённых данных и тестов. Пользовательский ввод читает LoadFromSettings.
 Public Sub Initialize(ByVal rbULS As Double, ByVal rbtULS As Double, _
         ByVal rbSLS As Double, ByVal rbtSLS As Double, ByVal eb As Double, _
         Optional ByVal ebt As Double = 0#, _

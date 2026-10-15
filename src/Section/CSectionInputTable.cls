@@ -16,9 +16,9 @@ Option Explicit
 ' Проверяет типы значений и предоставляет общий способ чтения параметров;
 ' назначение строк и столбцов определяет конкретный рецепт сечения.
 
-Private mName As String
-Private mValues As Variant, mAddresses As Variant
-Private mRows As Long, mColumns As Long
+Private mName As String ' Имя входной таблицы рецепта.
+Private mValues As Variant, mAddresses As Variant ' Копии значений ячеек и их адресов для пояснений об ошибках.
+Private mRows As Long, mColumns As Long ' Число строк и столбцов входной таблицы.
 
 ' Копирует двумерные значения и соответствующие адреса ячеек один раз.
 ' Объекты Excel в таблице не сохраняются.
@@ -65,7 +65,7 @@ Public Property Get RowCount() As Long: RowCount = mRows: End Property
 ' Возвращает число столбцов сохранённой входной таблицы.
 Public Property Get ColumnCount() As Long: ColumnCount = mColumns: End Property
 
-' Возвращает исходный адрес ячейки или программный tableName[row,col].
+' Возвращает адрес исходной ячейки; для программно заданной таблицы — запись tableName[row,col].
 Public Function SourceReference(ByVal row As Long, ByVal column As Long) As String
     CheckCell row, column: SourceReference = mAddresses(row, column)
 End Function
@@ -77,7 +77,7 @@ Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant
     CellValue = mValues(row, column)
 End Function
 
-' Проверяет пустое значение снимка; ошибка Excel не подменяется пустотой.
+' Проверяет, пусто ли сохранённое значение ячейки. Ошибка Excel не считается пустой ячейкой.
 Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean
     IsBlank = BlankValue(CellValue(row, column))
 End Function
@@ -140,7 +140,7 @@ Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As C
     Length = units.InputLengthToInternal(Number(row, column))
 End Function
 
-' Читает и переводит длину единственным Length, затем проверяет строго положительный размер.
+' Читает длину через общий перевод Length в мм, затем проверяет, что она больше нуля.
 Public Function PositiveLength(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
     PositiveLength = Length(row, column, units)
     If PositiveLength <= 0# Then InputError row, column, "Размер должен быть положительным. Введите значение больше нуля."
@@ -186,8 +186,8 @@ Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long =
     RowByKey = RowByAnyKey(Array(key), keyColumn, firstRow, lastRow)
 End Function
 
-' Подблок и допустимые подписи задает рецепт. Снимок знает лишь границы
-' поиска; совпадения в другом подблоке не делают локальный ключ неоднозначным.
+' Ищет подпись только в указанной части таблицы по вариантам, заданным рецептом.
+' Одноимённая строка в другом разделе на результат этого поиска не влияет.
 Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As Long = 1, _
         Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long
     Dim row As Long, value As Variant, key As Variant, caption As String
@@ -219,8 +219,8 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
     If RowByAnyKey = 0 Then InputError firstRow, keyColumn, "Не найден параметр '" & caption & "'. Восстановите строку параметра."
 End Function
 
-' Определяет пустое значение табличного снимка; ошибочный или произвольный текст не превращается
-' в число.
+' Проверяет, пусто ли сохранённое значение. Ошибочный или произвольный текст
+' не подменяется нулевым числом.
 Private Function BlankValue(ByVal value As Variant) As Boolean
     If IsEmpty(value) Or IsNull(value) Then
         BlankValue = True
@@ -241,7 +241,8 @@ Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
     location = mName
     If row >= 1 And row <= mRows And column >= 1 And column <= mColumns Then
         location = mAddresses(row, column) & " (" & mName & ")"
-        ' Человекочитаемая подпись строки берется из самого снимка, без знания формы.
+        ' Получает понятное название строки из сохранённой таблицы без привязки к конкретному
+        ' типу сечения.
         If column > 1 And VarType(mValues(row, 1)) = vbString Then
             If Len(Trim$(CStr(mValues(row, 1)))) > 0 Then location = location & "; " & CStr(mValues(row, 1))
         End If

@@ -13,8 +13,8 @@ Private Type TCapacityTestStats
     Report As String
 End Type
 
-' Выполняет регрессии физических пределов, знаков и общих поисковых методов.
-' Отчет различает проверенный limit point, численный отказ и неверный вход.
+' Проверяет физические пределы, знаки и общие методы поиска.
+' Отчёт различает подтверждённую предельную точку, численный отказ и ошибку ввода.
 Public Function RunCapacitySolverTests() As String
     On Error GoTo Failed
 
@@ -133,7 +133,7 @@ Failed:
         "; source=" & Err.Source & "; description=" & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: затронутые численные fixtures без полного поискового suite.
+' ДЛЯ ТЕСТОВ: направленные численные примеры без полного набора поисковых задач.
 Public Function RunRetiredGeometryCapacityTests() As String
     Dim stats As TCapacityTestStats
     On Error GoTo Failed
@@ -1278,8 +1278,8 @@ Private Sub TestMyPositiveAndNegative(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.my.negative", capNeg.LastSolver, -300000#, 0#, capNeg.MyUltimate
     AssertEquilibrium stats, "capacity.my.positive", capPos.LastSolver, -300000#, 0#, capPos.MyUltimate
 End Sub
-' Удваивает предварительно найденный предельный момент и ожидает lambda<1.
-' Успех Search при этом не должен маскировать инженерный FAIL заданного LC.
+' Удваивает найденный предельный момент и ожидает λ < 1.
+' Успешный поиск предела не должен скрывать непрохождение заданной нагрузки.
 Private Sub TestLambdaLessThanOne(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -1340,9 +1340,8 @@ Private Sub TestZeroAxialForce(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.zeroN", cap.LastSolver, 0#, cap.MxUltimate, 0#
 End Sub
 
-' Проверяет универсальную lambda-траекторию для чистой продольной силы. Здесь
-' масштабируется только N, поэтому нулевые Mx/My являются нормальным входом,
-' а не ошибкой контракта.
+' Проверяет траекторию изменения чистой продольной силы.
+' Меняется только N; нулевые Mx и My допустимы.
 Private Sub TestAxialLoadMultiplierFindsNult(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -1416,8 +1415,8 @@ Private Sub TestConcreteTensionLimitState(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.concreteTensionLimit.state", cap.LimitState, "ConcreteTensionStrainLimit"
 End Sub
 
-' Отключает растянутый бетон при таком же малом tensile-пределе;
-' неактивная ветвь не ограничивает несущую, в этом fixture управляет арматура.
+' При отключённом растянутом бетоне малый предел его растяжения
+' не ограничивает несущую способность. В этом примере предел задаёт арматура.
 Private Sub TestConcreteTensionLimitIgnored(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -1560,8 +1559,8 @@ Private Sub TestInvalidBaseMoment(ByRef stats As TCapacityTestStats)
     AssertEquals stats, "capacity.invalidBaseMoment.state", cap.LimitState, "InvalidInput"
 End Sub
 
-' Сопоставляет LoadMultiplier и UltimateStrain на прямоугольнике/круге,
-' включая управляющие деформации и отдельные контракты численного отказа.
+' Сравнивает LoadMultiplier и UltimateStrain на прямоугольнике и круге,
+' включая определяющие деформации и причины численной неудачи.
 Private Sub TestCapacitySolutionStrategyComparisons(ByRef stats As TCapacityTestStats)
     TestMethodPureCompression stats
     CompareCapacitySolutionStrategys stats, "method.n_plus_mx", -300000#, -10000000#, 0#, False
@@ -1910,8 +1909,8 @@ Failed:
         "; error=" & CStr(Err.Number) & "; description=" & Err.Description
 End Sub
 
-' Проверяет дефект T02: если bisection остановлен лимитом итераций до достижения
-' допуска, общий search не должен выдавать недоточненную границу как найденный предел.
+' Если бисекция исчерпала итерации до достижения допуска,
+' недостаточно уточнённая граница не должна выдаваться за найденный предел.
 Private Sub TestLimitSearchBisectionIterationLimitFails(ByRef stats As TCapacityTestStats)
     On Error GoTo Failed
     Dim stage As String
@@ -1949,8 +1948,8 @@ Failed:
         "; error=" & CStr(Err.Number) & "; description=" & Err.Description
 End Sub
 
-' ДЛЯ ТЕСТОВ: нулевая невязка неудачной пробы не является найденным корнем.
-' Проверяется реальный протокол callback: True + NumericalFailure + f=0.
+' ДЛЯ ТЕСТОВ: нулевая невязка неудачной пробы не означает найденный корень.
+' Проверяет сочетание возвращённых признаков: True, NumericalFailure и f = 0.
 Private Sub TestLimitSearchNumericalZeroIsNotRoot(ByRef stats As TCapacityTestStats)
     Dim method As Variant, problem As CTestLimitSearchProblem, request As CLimitSearchRequest
     Dim search As CLoadMultiplierSearch, result As CLimitSearchResult, prefix As String
@@ -2174,8 +2173,8 @@ Private Sub CheckRectSetCapacityPathMethods(ByRef stats As TCapacityTestStats, B
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
 End Sub
 
-' Выполняет один выбранный поиск на готовом RectSet и проверяет физический предел.
-' Усилия конечного State дополнительно проверяются на исходной lambda-траектории.
+' Выполняет выбранный поиск на готовом сечении RectSet и проверяет физический
+' предел. Усилия итогового НДС отдельно проверяются на заданной траектории нагрузки.
 Private Sub CheckRectSetCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal methodName As String, ByVal searchMethod As String, ByVal section As CSectionModel, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -2359,10 +2358,8 @@ Private Function RectSetCapacitySection() As CSectionModel
     Set builder = New CSectionBuilder: Set RectSetCapacitySection = builder.Build(facade.Finish, mesh)
 End Function
 
-' Проверяет диагностическое имя фактической ветки capacity.
-' Solver показывает пользователю именно публичный метод настройки:
-' UltimateStrain или LoadMultiplier. Внутреннее имя универсальной процедуры
-' SolveByLoadPathMultiplier наружу не выводится.
+' Выводится название выбранного метода UltimateStrain или LoadMultiplier.
+' Внутреннее имя общей процедуры поиска не подменяет пользовательскую настройку.
 Private Sub AssertCapacitySolutionMethod(ByRef stats As TCapacityTestStats, ByVal name As String, _
         ByVal cap As CCapacitySolver, ByVal methodName As String, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -2387,8 +2384,8 @@ Private Sub AssertCapacitySolutionMethod(ByRef stats As TCapacityTestStats, ByVa
     End If
 End Sub
 
-' Независимо восстанавливает N/Mx/My по Offset + lambda*Base и сверяет State.
-' Выводимый Nult пуст по контракту, если продольная сила пути не масштабируется.
+' Независимо вычисляет N, Mx и My по Offset + λ*Base и сравнивает с НДС.
+' Предельная сила Nult не выводится, если N на выбранном пути не меняется.
 Private Sub AssertLoadPathResult(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal cap As CCapacitySolver, _
         ByVal nOffset As Double, ByVal nBase As Double, _
@@ -2471,8 +2468,8 @@ Private Sub TestInitialLambdaFailureStatusMapping(ByRef stats As TCapacityTestSt
         policy.ExternalStatus(physicalResult.Meta), "BaseFail"
 End Sub
 
-' Сохраняет три повторных измерения каждого Search-метода на общем fixture.
-' Эти строки предназначены для сравнения, а не для утверждения ускорения по одному запуску.
+' Сохраняет три замера каждого поискового метода на одинаковых данных.
+' Единичный замер не служит доказательством ускорения.
 Private Sub TestSearchMethodPerformanceComparison(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder
     Dim rebars As CRebarLayout
@@ -2536,8 +2533,8 @@ Private Sub AppendComparison(ByRef stats As TCapacityTestStats, ByVal name As St
         "|elapsedSec=" & FormatNumberInvariant(elapsedSec)
 End Sub
 
-' Задает фиксированные пределы и поисковый бюджет контрольных задач Capacity.
-' Это fixture, а не нормативный default или скрытая настройка рабочего расчета.
+' Задаёт фиксированные пределы и бюджет контрольных задач несущей способности.
+' Это тестовые данные, а не нормативные значения по умолчанию рабочего расчёта.
 Private Sub ConfigureCapacity(ByVal cap As CCapacitySolver)
     cap.ConcreteCompressionLimit = -0.0015
     cap.SteelStrainLimit = 0.00175
@@ -2576,8 +2573,8 @@ Private Function ProvisionalConcreteWithTension() As CMaterialDiagram
     Set ProvisionalConcreteWithTension = provider.ConcreteMaterial(cpStrength)
 End Function
 
-' Задает оба расчетных набора бетона и сопротивление продольным трещинам.
-' Значения служат воспроизводимому fixture, не нормативной трассировке.
+' Задаёт два набора характеристик бетона и сопротивление продольным трещинам
+' для воспроизводимой проверки. Нормативное обоснование не заменяется этими числами.
 Private Function TestConcreteParameters() As CConcreteMaterialParameters
     Dim parameters As CConcreteMaterialParameters
     Set parameters = New CConcreteMaterialParameters
@@ -2978,9 +2975,9 @@ Private Sub TestAudit02InitialOffsetBoundary(ByRef stats As TCapacityTestStats)
     Next ratio
 End Sub
 
-' ДЛЯ ТЕСТОВ: общий Newton принимает только ILimitSearchProblem и не требует
-' живых Capacity/Crack-калькуляторов. Аналитический корень проверяется отдельно
-' от физических regression-моделей, их expected values не меняются.
+' ДЛЯ ТЕСТОВ: общий метод Ньютона работает через ILimitSearchProblem
+' без экземпляров расчёта несущей способности и трещин. Аналитический корень
+' проверяется отдельно; ожидаемые значения физических примеров не меняются.
 Private Sub TestAudit02GenericUltimateSearch(ByRef stats As TCapacityTestStats)
     Dim problem As CTestLimitSearchProblem
     Set problem = New CTestLimitSearchProblem
@@ -3062,8 +3059,8 @@ Private Sub CheckAudit02SearchVsCapacity(ByRef stats As TCapacityTestStats, _
     AssertEquals stats, "audit03.searchEngineering.capacityStatusPreserved", result.Status, "FAIL"
 End Sub
 
-' ДЛЯ ТЕСТОВ: собирает capacity-снимок через тот же доменный адаптер, что
-' production Search. Сам общий result не принимает инженерные калькуляторы.
+' ДЛЯ ТЕСТОВ: создаёт сохранённый результат несущей способности тем же способом,
+' что обычный поиск. Общему результату не передаются инженерные расчётчики.
 Private Function Audit02CapacitySnapshot(ByVal cap As CCapacitySolver, ByVal strategy As String, _
         Optional ByVal section As CSectionModel = Nothing, _
         Optional ByVal concrete As Object = Nothing, Optional ByVal steel As Object = Nothing, _
@@ -3074,9 +3071,9 @@ Private Function Audit02CapacitySnapshot(ByVal cap As CCapacitySolver, ByVal str
     Set Audit02CapacitySnapshot = problem.BuildSnapshot(strategy, section, concrete, steel, spec)
 End Function
 
-' ДЛЯ ТЕСТОВ: один generic bracket/recovery работает с обоими видами задачи
-' без железобетонных калькуляторов. Проверяются все одномерные методы,
-' край MaxLambda, отсутствие точки за границей и повторное заполнение result.
+' ДЛЯ ТЕСТОВ: общий подбор интервала и восстановление после неудачи работают
+' для обоих видов задач без железобетонных расчётчиков. Проверяются одномерные
+' методы, MaxLambda, отсутствие точки за границей и повторное заполнение результата.
 Private Sub TestAudit02GenericLoadMultiplierMatrix(ByRef stats As TCapacityTestStats)
     Dim kind As Variant, methodName As Variant, root As Variant
     For Each kind In Array(rkCapacity, rkCrackFormation)
@@ -3215,8 +3212,8 @@ Public Function RunAudit03SearchTests() As String
     RunAudit03SearchTests = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет настоящий Capacity с неограниченным числом делений
-' скобки и terminal typed-errors через production адаптер, не ручную meta.
+' ДЛЯ ТЕСТОВ: обычный поиск несущей способности без искусственного ограничения
+' делений интервала. Проверяет передачу окончательных кодов ошибок.
 Public Function RunAudit03CapacityContracts() As String
     Dim stats As TCapacityTestStats
     TestAudit03RealCapacityPrecision stats
@@ -3225,9 +3222,9 @@ Public Function RunAudit03CapacityContracts() As String
     RunAudit03CapacityContracts = stats.Report
 End Function
 
-' ДЛЯ ТЕСТОВ: линейные материалы исключают неудачу внутреннего равновесия.
-' При допуске меньше шага Double поиск обязан закончиться с честной причиной,
-' а локальный cache не должен объединять разные lambda и создавать ложный предел.
+' ДЛЯ ТЕСТОВ: линейные материалы исключают неудачу равновесия. Если допуск
+' меньше разрешения Double, поиск должен честно сообщить причину остановки.
+' Разные значения λ не должны объединяться в одну сохранённую пробу.
 Private Sub TestAudit03RealCapacityPrecision(ByRef stats As TCapacityTestStats)
     Dim mesh As CFiberMeshBuilder, rebars As CRebarLayout
     PrepareSymmetricSection 300#, 200#, 20#, 90#, 60#, mesh, rebars

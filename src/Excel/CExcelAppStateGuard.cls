@@ -10,10 +10,10 @@ Option Explicit
 ' Esc/Ctrl+Break передаются обработчику как ошибка 18; команда End, сброс
 ' проекта в VBE и завершение процесса обходят обычное восстановление VBA.
 
-Private mApplication As Object
-Private mValues(0 To 4) As Variant
-Private mPending(0 To 4) As Boolean
-Private mActive As Boolean
+Private mApplication As Object ' Экземпляр Excel, настройки которого временно изменены.
+Private mValues(0 To 4) As Variant ' Исходные EnableCancelKey, ScreenUpdating, EnableEvents, DisplayAlerts и Calculation.
+Private mPending(0 To 4) As Boolean ' Какие из пяти настроек ещё нужно восстановить после работы макроса.
+Private mActive As Boolean ' Признак сохранённых настроек, восстановление которых ещё не завершено.
 
 ' Сначала сохраняет полный снимок. При частичном отказе Enter возвращает уже
 ' изменённые свойства и сохраняет исходную ошибку, включая ошибку прерывания.
@@ -31,8 +31,9 @@ Public Sub Enter(ByVal excelApplication As Object)
     fastValues = Array(2, False, False, False, -4135)
     mActive = True
     For i = 0 To 4
-        ' Без открытых книг Excel возвращает CVErr для Calculation. Такой
-        ' снимок нельзя присвоить обратно; исходную ошибку setter-а не меняем.
+        ' Без открытых книг Excel может вернуть ошибку вместо режима пересчёта.
+        ' Такое значение нельзя восстановить присваиванием; сохраняем
+        ' фактическую причину ошибки записи свойства.
         mPending(i) = Not IsError(mValues(i))
         WriteProperty i, fastValues(i)
     Next i

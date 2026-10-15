@@ -17,18 +17,18 @@ Implements ISectionRecipe
 ' Рабочий пример нового типа: скругленная трапеция с круглым отверстием.
 ' Здесь только ввод и декларации. Сетка, стержни, измерения и НДС общие.
 Private Type TInputs
-    BottomWidth As Double
-    TopWidth As Double
-    Height As Double
-    CornerRadius As Double
-    OpeningRadius As Double
-    OuterAxisDistance As Double
-    InnerAxisDistance As Double
-    OuterCount As Long
-    InnerCount As Long
-    OuterDiameter As Double
-    InnerDiameter As Double
-    Source As String
+    BottomWidth As Double ' Нижняя ширина трапеции, мм.
+    TopWidth As Double ' Верхняя ширина трапеции, мм.
+    Height As Double ' Высота трапеции, мм.
+    CornerRadius As Double ' Радиус скругления вершин трапеции, мм.
+    OpeningRadius As Double ' Радиус круглого отверстия, мм.
+    OuterAxisDistance As Double ' Расстояние от наружной границы бетона до центров арматуры, мм.
+    InnerAxisDistance As Double ' Расстояние от границы отверстия до центров арматуры, мм.
+    OuterCount As Long ' Число стержней по наружной границе.
+    InnerCount As Long ' Число стержней вокруг отверстия.
+    OuterDiameter As Double ' Диаметр наружной арматуры, мм.
+    InnerDiameter As Double ' Диаметр арматуры вокруг отверстия, мм.
+    Source As String ' Адрес исходных данных для пояснения ошибок.
 End Type
 
 ' Описывает контуры, арматурные правила и размеры выбранного рецепта. Сетку и физические стержни
@@ -54,8 +54,8 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set ISectionRecipe_CreateDefinition = Describe(parameters, table)  ' parameters — размеры, радиусы, диаметры и число стержней; table — таблица адресов исходных ячеек; Nothing при программном вводе.
 End Function
 
-' Программный вариант того же рецепта: размеры/диаметры уже во внутренних мм.
-' Никакого скрытого чтения Config. Обязательное изменение создает новый snapshot.
+' Задаёт тот же рецепт программно: размеры и диаметры передаются в мм,
+' Config не читается. При изменении исходных параметров формируется новое описание сечения.
 Public Function ProgramDefinition(Optional ByVal bottomWidth As Double = 1200#, Optional ByVal topWidth As Double = 800#, _
         Optional ByVal height As Double = 800#, Optional ByVal cornerRadius As Double = 60#, Optional ByVal openingRadius As Double = 110#) As CSectionDefinition
     Dim parameters As TInputs

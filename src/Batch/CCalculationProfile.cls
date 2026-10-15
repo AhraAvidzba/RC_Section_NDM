@@ -38,18 +38,19 @@ Private mVisualizationStrainPrecision As Long ' Знаки после запят
 Private mHasVisualizationStressPrecision As Boolean ' True, если точность Stress задана в профиле.
 Private mHasVisualizationStrainPrecision As Boolean ' True, если точность Strain задана в профиле.
 
-Private Const DEFAULT_VISUALIZATION_STRESS_PRECISION As Long = 1
-Private Const DEFAULT_VISUALIZATION_STRAIN_PRECISION As Long = 6
+Private Const DEFAULT_VISUALIZATION_STRESS_PRECISION As Long = 1 ' Число знаков после запятой для напряжений, если точность не задана.
+Private Const DEFAULT_VISUALIZATION_STRAIN_PRECISION As Long = 6 ' Число знаков после запятой для деформаций, если точность не задана.
 
-' Создает пустые спецификации материалов для трех расчетных ролей профиля.
+' Создаёт пустые наборы параметров материалов для трёх назначений: прочности,
+' образования трещины и НДС с трещинами.
 Private Sub Class_Initialize()
     Set mStrengthSpec = New CMaterialModelSpec
     Set mCrackInitiationSpec = New CMaterialModelSpec
     Set mCrackedStateSpec = New CMaterialModelSpec
 End Sub
 
-' Заполняет простые поля профиля. MaterialModelSpec задаются отдельными
-' методами, потому что профиль хранит три независимые роли материальных моделей.
+' Заполняет основные параметры профиля. Модели материалов передаются отдельно,
+' поскольку для трёх видов расчёта у них могут быть разные настройки.
 Public Sub Initialize(ByVal profileId As String, ByVal displayName As String, ByVal description As String, _
         ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, _
         ByVal crackWidth As Boolean, Optional ByVal stabilityEnabled As Boolean = False)
@@ -88,9 +89,8 @@ Public Sub SetStabilityValueSet(ByVal valueSetText As String)
     mHasStabilityValueSet = True
 End Sub
 
-' Сохраняет настройки визуализации. Их несоответствие фактически полученным
-' состояниям не блокирует расчет: ошибка появится только при построении схемы
-' или AutoCAD export по отсутствующему StateType.
+' Сохраняет настройки схемы. Отсутствие выбранного состояния не блокирует расчёт:
+' ошибка возникает при попытке показать это состояние на схеме или экспортировать в AutoCAD.
 Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As String, _
         Optional ByVal stressPrecisionText As String = vbNullString, _
         Optional ByVal strainPrecisionText As String = vbNullString)
@@ -114,16 +114,15 @@ Public Sub SetVisualization(ByVal stateText As String, ByVal quantityText As Str
     End If
 End Sub
 
-' Профиль считается настроенным только если задано имя и есть хотя бы один
-' запрошенный расчет. Неназначенные профили не участвуют в batch, даже если
-' в таблице профилей заполнены все их параметры.
+' Проверяет наличие имени и хотя бы одной запрошенной проверки.
+' Профиль используется, только если назначен сочетанию нагрузок;
+' само заполнение столбца Config его не включает.
 Public Function IsConfigured() As Boolean
     IsConfigured = (Len(mDisplayName) > 0 And (mStrengthDirectState Or mStrengthCapacity Or mCrackWidth Or mStabilityEnabled))
 End Function
 
-' Валидирует профиль только для фактически назначенного LC. Visualization.State
-' здесь не проверяется на наличие будущего состояния: это ошибка визуализации,
-' а не причина блокировать batch-расчет.
+' Проверяет профиль, назначенный сочетанию. Наличие состояния для Visualization.State
+' проверяется при выводе схемы, поэтому его отсутствие не останавливает пакетный расчёт.
 Public Function ValidateForCalculation(ByRef errorText As String) As Boolean
     ValidateForCalculation = False
     If Len(mProfileId) = 0 Then
@@ -176,7 +175,7 @@ Public Property Get Description() As String
     Description = mDescription
 End Property
 
-' Запрошено StrengthState.
+' Показывает, запрошено ли НДС по модели прочности при заданной нагрузке.
 Public Property Get StrengthDirectStateEnabled() As Boolean
     StrengthDirectStateEnabled = mStrengthDirectState
 End Property
@@ -196,9 +195,9 @@ Public Property Get StabilityEnabled() As Boolean
     StabilityEnabled = mStabilityEnabled
 End Property
 
-' Возвращает заданный набор характеристик устойчивости. Для профиля, созданного
-' программно без этого поля, используется ULS; чтение обязательного поля Config
-' отдельно проверяется reader-ом и не подменяет невалидный ввод этим значением.
+' Возвращает выбранный набор характеристик материалов для устойчивости.
+' При программном создании профиля без явного выбора используется ULS.
+' Обязательный ввод Config проверяется отдельно и этим значением не заменяется.
 Public Property Get StabilityValueSet() As EMaterialValueSet
     If mHasStabilityValueSet Then
         StabilityValueSet = mStabilityValueSet
@@ -257,8 +256,9 @@ Public Property Get VisualizationQuantityText() As String
     VisualizationQuantityText = VisualizationQuantityToText(VisualizationQuantity)
 End Property
 
-' Возвращают точность подписей напряжений и деформаций, не меняя численные
-' результаты. Для незаданных полей программного API используются именованные defaults.
+' Возвращает число знаков после запятой для подписей напряжений.
+' Численные результаты не округляет; при программном создании без явного
+' выбора использует значение по умолчанию.
 Public Property Get VisualizationStressPrecision() As Long
     If mHasVisualizationStressPrecision Then
         VisualizationStressPrecision = mVisualizationStressPrecision
@@ -267,8 +267,9 @@ Public Property Get VisualizationStressPrecision() As Long
     End If
 End Property
 
-' Возвращает точность подписей деформаций из профиля либо программный default,
-' если это поле не задано через API; расчетное НДС не округляет.
+' Возвращает число знаков после запятой для подписей деформаций.
+' При программном создании без явного выбора использует значение по умолчанию;
+' расчётное НДС не округляется.
 Public Property Get VisualizationStrainPrecision() As Long
     If mHasVisualizationStrainPrecision Then
         VisualizationStrainPrecision = mVisualizationStrainPrecision

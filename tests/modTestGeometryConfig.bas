@@ -59,8 +59,8 @@ Finish:
     RunAudit03RebarCounterTests = stats.Report & "TOTAL_REBAR_COUNTER: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
-' Проверяет нечётность, выключение и переполнение на рабочем executor.
-' Большое число обязано завершиться в Preflight до выделения позиций.
+' Проверяет нечётное количество, отключённые ряды и переполнение обычным
+' исполнителем правил. Недопустимо большое количество отклоняется до выделения позиций.
 Private Sub CheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal count As Long, _
         ByVal diameter As Double, ByVal thirdEverySecond As Boolean, ByVal expected As Long, ByVal overflow As Boolean)
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
@@ -464,7 +464,7 @@ Private Sub CheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal k
     stats.Report = stats.Report & "CIRCLE_MISSING_INPUT: " & key & "; error=" & CStr(number) & "; " & description & vbCrLf
 End Sub
 
-' Проверяет бетонное domain единого definition без размещения стержней.
+' Проверяет бетонную область общего описания сечения без размещения стержней.
 Private Function ReadShape() As CGeometryRegion
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -473,8 +473,8 @@ Private Function ReadShape() As CGeometryRegion
     Set ReadShape = New CGeometryRegion: ReadShape.Initialize definition.ConcreteDomain
 End Function
 
-' Сохраняет расчетные площадь, центр и габариты. Отказ геометрии считается
-' ошибкой fixture; снимок не подменяет форму ее исходными getter-параметрами.
+' Сохраняет вычисленные площадь, центр и габариты. Непригодная геометрия — ошибка
+' подготовки теста; исходные размеры формы не подставляются вместо её характеристик.
 Private Function ShapeSnapshot(ByVal geom As CGeometryRegion) As Variant
     Dim message As String, available As Boolean, area As Double, X As Double, Y As Double
     If Not geom.IsValid(message) Then Err.Raise vbObjectError + 5962, "modTestGeometryConfig", message
@@ -678,8 +678,9 @@ Private Sub CheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target 
     Next rowIndex
 End Sub
 
-' Считает только стержни нужной смысловой грани, не включая ее проекции
-' на отверстие или соседние грани; общий ненулевой layout не доказывает эффект n.
+' Считает стержни только выбранной стороны, исключая проекции на отверстие
+' и соседние стороны. Наличие арматуры в других местах не доказывает действие настройки
+' количества.
 Private Function FaceBarCount(ByVal bars As CRebarLayout, ByVal face As String) As Long
     Dim index As Long
     For index = 1 To bars.Count
@@ -834,8 +835,8 @@ Private Sub ReadGeometry(ByRef geom As CGeometryRegion, ByRef bars As CRebarLayo
     Set executor = New CRebarRuleExecutor: Set bars = executor.Build(definition, geom)
 End Sub
 
-' Меняет реальную ячейку значения по ключу таблицы; отсутствие ключа является
-' ошибкой fixture, а не скрытым созданием новой настройки или default.
+' Меняет существующую ячейку по ключу таблицы. Отсутствующий ключ означает
+' ошибку подготовки теста; новая настройка вместо него не создаётся.
 Private Sub SetKey(ByVal target As Object, ByVal key As String, ByVal value As Variant)
     Dim rowIndex As Long
     For rowIndex = 2 To target.Rows.Count
@@ -859,8 +860,8 @@ Private Function SameFormula(ByVal actual As Variant, ByVal expected As Variant)
     SameFormula = True
 End Function
 
-' Фиксирует абсолютный геометрический допуск 1e-6 мм и оба значения oracle;
-' этот допуск не меняет настройки рабочего solver-а.
+' Записывает абсолютный допуск 1e-6 мм и оба сравниваемых значения.
+' Локальный допуск теста не изменяет настройки рабочего решателя.
 Private Sub Near(ByRef stats As TGeometryConfigStats, ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     Check stats, name, Abs(actual - expected) <= 0.000001
     stats.Report = stats.Report & "CIRCLE_CONFIG_NUMBER: " & name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected) & vbCrLf
@@ -881,10 +882,9 @@ End Sub
 ' ДЛЯ ТЕСТОВ: ОБЯЗАТЕЛЬНЫЙ ВВОД АКТИВНОЙ ГЕОМЕТРИИ
 ' ======================================================================
 
-' Проверяет бетонное domain и арматуру единого definition четырех форм.
-' Не заполняет пропущенные
-' значения вместо пользователя; все Formula-массивы восстанавливает после
-' серии, включая неудачу. Количество assertions доступно полному UI-suite.
+' Проверяет бетонную область и арматуру общего описания четырёх форм.
+' Пропущенные пользовательские значения не подставляются. После серии,
+' в том числе после ошибки, восстанавливаются все исходные формулы таблиц.
 Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
@@ -1025,8 +1025,8 @@ Private Function SameGeometryRouteSnapshot(ByVal first As Variant, ByVal second 
     SameGeometryRouteSnapshot = True
 End Function
 
-' Возвращает фактическую ячейку ключевой таблицы. Потеря строки fixture
-' является ошибкой теста, а не добавлением отсутствующего Config/default.
+' Находит фактическую ячейку параметра в таблице. Отсутствующая строка —
+' ошибка теста; значение по умолчанию не подставляется.
 Private Function RequiredGeometryKeyCell(ByVal target As Object, ByVal key As String) As Object
     Dim rowIndex As Long
     For rowIndex = 2 To target.Rows.Count
@@ -1129,9 +1129,9 @@ Private Sub CheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByV
     Next key
 End Sub
 
-' Выполняет один обычный production-маршрут без Resume Next между reader,
-' units и builder. Первая ошибка ввода сохраняется, следующие шаги при ней
-' не вызываются; внешний тест перехватывает единственный вызов целиком.
+' Выполняет обычное чтение, преобразование единиц и построение без подавления
+' ошибок между шагами. После первой ошибки последующие шаги не выполняются;
+' вызывающий тест сохраняет причину отказа всего вызова.
 Private Function RequiredGeometryModelFromWorkbook() As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -1528,9 +1528,9 @@ Private Function RebarFieldCell(ByVal target As Object, ByVal rowIndex As Long, 
     Set RebarFieldCell = cell
 End Function
 
-' Возвращает count, средний диаметр и средние X/Y конкретного ряда конкретной
-' смысловой грани. Техническое имя row_N используется только для группировки
-' generated layout, не для назначения статусов или разбора комментария ошибки.
+' Возвращает количество, средний диаметр и средние координаты стержней заданного
+' ряда выбранной стороны. Имя row_N нужно только для группировки арматуры,
+' а не для определения статусов или разбора ошибки.
 Private Function RebarFieldRowSummary(ByVal bars As CRebarLayout, ByVal group As String, ByVal rowNumber As Long) As Variant
     Dim count As Long, diameter As Double, X As Double, Y As Double, i As Long
     For i = 1 To bars.Count

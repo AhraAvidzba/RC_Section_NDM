@@ -29,16 +29,16 @@ Private mToleranceMy As Double ' Допуск равновесия по My, Н*�
 Private mSecantMaxRestarts As Long ' Лимит перезапуска матрицы в secant-ветке.
 Private mDiagnosticsEnabled As Boolean ' Нужно ли копить подробный журнал итераций.
 
-Private mSolver As CSectionSolver ' Последний solver прямого НДС, успешный или диагностический.
-Private mExtensionUsed As Boolean ' True, если найденное состояние попало в technical extension.
+Private mSolver As CSectionSolver ' Объект последней попытки решения НДС, в том числе неуспешной.
+Private mExtensionUsed As Boolean ' Признак использования вспомогательного продолжения диаграмм в найденном НДС.
 Private mWithinPhysicalRange As Boolean ' True, если все элементы остались в физических eps-пределах.
-Private mDiagnosticLog As String ' Короткие строки о retry-попытках прямого НДС.
+Private mDiagnosticLog As String ' Краткий журнал повторных попыток решения НДС.
 Private mInitialGuessApplied As Boolean ' True, если стартовая плоскость была задана не нулевой.
 Private mSolverCallCount As Long ' Сколько раз runner действительно запускал CSectionSolver.Solve.
-Private mRetryAttemptFailures As Collection ' Только scalar-диагностика эквивалентных неудачных retries одной search-session.
-Private mRetryContextSection As CSectionModel ' Удерживает identity контекста; это не repository физических состояний.
-Private mRetryContextConcrete As Object
-Private mRetryContextSteel As Object
+Private mRetryAttemptFailures As Collection ' Краткие итоги точно совпадающих неудачных повторных попыток в пределах одного поиска.
+Private mRetryContextSection As CSectionModel ' Модель и материалы текущего поиска для проверки применимости сохранённых попыток; конечные НДС здесь не хранятся.
+Private mRetryContextConcrete As Object ' Свойства диаграммы бетона для проверки точного совпадения повторной попытки.
+Private mRetryContextSteel As Object ' Свойства диаграммы арматуры для проверки точного совпадения повторной попытки.
 Private mRetrySectionRevision As Long ' Изменение модели запрещает использование прежних попыток.
 
 ' Задает безопасные настройки по умолчанию для unit-тестов и вызовов без Config.
@@ -54,9 +54,9 @@ Private Sub Class_Initialize()
     mWithinPhysicalRange = True
 End Sub
 
-' Открывает локальную память численных retries для одного поиска на неизменных
-' материалах и модели. Основной solve не кешируется, успешный/failed State не
-' публикуется; другая плоскость или options всегда дают отдельную попытку.
+' Начинает учёт повторных численных попыток одного поиска на той же модели
+' и материалах. Сохраняет лишь диагностику неудач, не конечные НДС.
+' Другое начальное поле или численные настройки дают отдельную попытку.
 Friend Sub BeginRetryAttemptSession(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
     If section Is Nothing Then Err.Raise vbObjectError + 3483, "CStateSolutionRunner", "Модель retry-сессии не передана."
@@ -69,9 +69,9 @@ Friend Sub BeginRetryAttemptSession(ByVal section As CSectionModel, _
     Set mRetryAttemptFailures = New Collection
 End Sub
 
-' Восстанавливает вычисляемый снимок найденного named-state без поиска
-' равновесия. Материалы и сечение должны принадлежать тому же контексту;
-' сохраненные целевые усилия проверяются повторно, число solve не увеличивается.
+' Восстанавливает данные ранее найденного НДС без нового решения равновесия.
+' Проверяет совпадение модели, материалов и целевых усилий;
+' счётчик запусков решателя не увеличивается.
 Public Function RestoreSnapshot(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal stateResult As CSectionStateResult) As CSectionSolver
@@ -100,11 +100,9 @@ Public Sub Solve(ByVal section As CSectionModel, _
         targetN, targetMx, targetMy, Nothing, allowExtensionWarmStart
 End Sub
 
-' Решает прямое равновесие от заданного LC, начиная не с нулевой плоскости,
-' а с уже найденного solver-а. Это общий путь для служебных состояний вроде
-' PostCrackState: они получают ту же централизованную настройку solver-а,
-' диагностику и fallback-логику, что и обычные Strength/CrackedState, но могут
-' стартовать от близкого физического состояния на том же уровне нагрузки.
+' Решает заданную нагрузку, начиная с близкого найденного НДС.
+' Так получаются, например, состояния после трещины с общими
+' настройками, повторными попытками и диагностикой обычного расчёта.
 Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -152,11 +150,10 @@ Public Sub SolveWithInitialSolver(ByVal section As CSectionModel, _
     End If
 End Sub
 
-' Решает прямое равновесие от заданного LC с явной стартовой нагрузкой.
-' Этот вход нужен search-probe-ам Capacity: предыдущая lambda-точка задает не
-' только eps0/kappa, но и уровень нагрузки, от которого solver должен перейти к
-' новой target-точке. Warm-start остается solve-option и не попадает в
-' repository/reuse-ключи.
+' Решает НДС с явно указанной стартовой нагрузкой и её полем деформаций.
+' При поиске несущей способности это позволяет перейти от соседнего lambda
+' к новой нагрузке. Выбор старта не меняет ключ физического запроса
+' для повторного использования конечных состояний.
 Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -206,11 +203,9 @@ Public Sub SolveWithInitialLoadState(ByVal section As CSectionModel, _
     End If
 End Sub
 
-' Решает direct-state из active-set плоскости, сразу привязанной к текущей
-' целевой нагрузке. Этот вход нужен capacity probe-ам чистого изгиба: такая
-' lambda-точка не должна идти ступенями от нулевой нагрузки через излом
-' диаграммы около нуля, но все остальные настройки solver-а и диагностика
-' остаются в общем CStateSolutionRunner.
+' Решает НДС из начального поля, подготовленного сразу для полной целевой нагрузки.
+' Нужно для первых проб чистого изгиба, чтобы не проходить от нуля
+' через излом диаграммы. Остальные настройки и диагностика остаются общими.
 Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -269,8 +264,8 @@ Public Sub SolveWithDirectTargetGuess(ByVal section As CSectionModel, _
     End If
 End Sub
 
-' Ошибки модели, настроек и программного контракта не исправляются сменой
-' начальной плоскости; повтор допустим только после численной неудачи.
+' Ошибку модели, настройки или программы другое начальное поле не исправляет.
+' Повтор разрешён только после численной неудачи.
 Private Function CanRetrySolver(ByVal solver As CSectionSolver) As Boolean
     If solver Is Nothing Then Exit Function
     If solver.Converged Then Exit Function
@@ -280,12 +275,10 @@ Private Function CanRetrySolver(ByVal solver As CSectionSolver) As Boolean
     End Select
 End Function
 
-' Повторяет прямой solve от active-set плоскости для общего случая N+M.
-' Сначала используется штатный старт; этот retry включается только после
-' несходимости. Старт на полной нагрузке отличается от применения такой же
-' плоскости при ступенчатом нагружении и не должен блокироваться его флагом. Так
-' чистый изгиб и внецентренное растяжение/сжатие используют один механизм
-' подготовки плоскости, а успешно сошедшиеся LC не запускают этот retry.
+' После несходимости повторяет НДС с начальным полем по полной нагрузке.
+' Это отличается от ступенчатого нагружения с той же формой деформаций.
+' Общий способ применяется к изгибу и внецентренному растяжению или сжатию;
+' для успешно сошедшихся сочетаний дополнительная попытка не запускается.
 Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -318,9 +311,8 @@ Private Function TrySolveWithDirectStateGuess(ByVal section As CSectionModel, _
 
 End Function
 
-' Выбирает старт для прямого solve-а. Если вызывающий слой передал близкое
-' состояние, используем его как warm start. Иначе включается обычный общий
-' подбор стартовой плоскости через CStateGuessBuilder.
+' Выбирает начальное поле: пригодное близкое НДС, переданное вызывающим расчётом,
+' или новую оценку общего CStateGuessBuilder.
 Private Sub ApplyInitialSolverOrGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -340,9 +332,8 @@ Private Sub ApplyInitialSolverOrGuess(ByVal section As CSectionModel, _
     ApplyInitialGuess section, concreteMaterial, steelMaterial, targetN, targetMx, targetMy, solver
 End Sub
 
-' Передает настройки в новый экземпляр CSectionSolver.
-' Runner не меняет алгоритм solver-а: он только гарантирует, что все попытки
-' прямого НДС используют один и тот же набор пользовательских допусков.
+' Передаёт настройки новому CSectionSolver. Каждая попытка решения НДС
+' использует тот же набор пользовательских допусков.
 Private Sub ConfigureSolver(ByVal solver As CSectionSolver)
     solver.LoadSteps = mLoadSteps
     solver.SolverMethod = mSolverMethod
@@ -386,9 +377,9 @@ Private Sub ApplyInitialGuess(ByVal section As CSectionModel, _
     End If
 End Sub
 
-' Перебирает стартовые плоскости, которые CStateGuessBuilder строит для
-' technical extension. Здесь находится управление retry: builder только дает
-' eps0/kx/ky, а runner запускает новый CSectionSolver и проверяет сходимость.
+' Перебирает поля для повторных попыток на численном продолжении диаграмм.
+' CStateGuessBuilder готовит epsilon0/kappaX/kappaY; этот класс
+' запускает решатель и проверяет полученное равновесие.
 Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -418,9 +409,9 @@ Private Function TrySolveWithExtensionWarmStart(ByVal section As CSectionModel, 
     Next attemptIndex
 End Function
 
-' Проверяет одну стартовую плоскость retry-сценария.
-' Сначала решаем на полной нагрузке. При неудаче идем ступенями от усилий,
-' которые уже создает стартовая плоскость; длину каждого шага выбирает solver.
+' Проверяет одно начальное поле: сначала при полной нагрузке, затем при неудаче
+' прикладывает нагрузку ступенями от усилий этого поля. Величину ступени
+' определяет CSectionSolver.
 Private Function TrySolveFromExtensionGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -446,10 +437,10 @@ Private Function TrySolveFromExtensionGuess(ByVal section As CSectionModel, _
         attemptName & " / stepped", service)
 End Function
 
-' Выполняет один повторный solve из подготовленной плоскости.
-' initialN/Mx/My задают уровень нагрузки, от которого CSectionSolver будет
-' прикладывать ступени до полного target. Это позволяет идти от близкого
-' extension-состояния, а не от нулевой нагрузки с чужой деформированной формой.
+' Повторяет решение из подготовленного поля и нагрузок initialN/Mx/My.
+' От этого уровня CSectionSolver прикладывает ступени до цели.
+' Это позволяет начать с близкого состояния на продолжении диаграммы
+' вместо нулевой нагрузки с несоответствующей ей формой деформаций.
 Private Function TryRunRetry(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -492,8 +483,8 @@ Private Function TryRunRetry(ByVal section As CSectionModel, _
                 "; residualMy=" & FormatNumberInvariant(retry.ResidualMy)
         End If
         If FailedRetryImprovesAllResiduals(retry, service) Then
-            ' Это только более близкая стартовая плоскость для следующих retries.
-            ' Converged остается False; repository не получает reusable state.
+            ' Сохраняем более близкое поле только для следующих стартов.
+            ' Converged остаётся False; подтверждённого НДС для общего хранилища нет.
             Set service = retry
             AppendDiagnostic retryKind & "=" & attemptName & "; сохранена более близкая несошедшаяся плоскость."
         End If
@@ -519,14 +510,14 @@ Private Function FailedRetryImprovesAllResiduals(ByVal candidate As CSectionSolv
         Abs(candidate.ResidualMx) < Abs(previous.ResidualMx) Or Abs(candidate.ResidualMy) < Abs(previous.ResidualMy)
 End Function
 
-' Не допускает непредставимую или чрезмерную невязку в выборе retry-старта.
-' Этот технический guard не определяет физический статус или сходимость.
+' Отклоняет непредставимую или чрезмерную невязку при выборе нового старта.
+' Эта численная защита не подтверждает сходимость или физический предел.
 Private Function RetryResidualIsComparable(ByVal value As Double) As Boolean
     RetryResidualIsComparable = (value = value And Abs(value) < 1E+100)
 End Function
 
-' Проверяет identity и версию модели перед чтением локальных retry-записей.
-' Несовпадение закрывает сессию; оно не блокирует обычное решение новой задачи.
+' Проверяет модель, её версию и материалы перед чтением прежних повторных попыток.
+' При несовпадении завершает их учёт, но разрешает обычное решение новой задачи.
 Private Function RetryAttemptContextMatches(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
     If mRetryAttemptFailures Is Nothing Then Exit Function
@@ -563,18 +554,19 @@ Private Function TryRestoreFailedRetryAttempt(ByVal attemptKey As Variant, ByRef
     Next record
 End Function
 
-' Сохраняет только короткую диагностику реальной численной неудачи, без solver-а
-' и массивов волокон. Память ограничена; terminal errors и физические states
-' не кешируются. После нового capacity-поиска прежний runner уничтожается.
+' Сохраняет краткую диагностику выполненной неудачной попытки без решателя
+' и массивов элементов. Число записей ограничено. Окончательные ошибки
+' и физические НДС здесь не сохраняются; следующий независимый поиск
+' получает новый объект запуска.
 Private Sub StoreFailedRetryAttempt(ByVal attemptKey As Variant, ByVal retry As CSectionSolver)
     If retry.FailureCode <> sfcNumericalFailure And retry.FailureCode <> sfcSingularTangent Then Exit Sub
     If mRetryAttemptFailures.Count >= 64 Then mRetryAttemptFailures.Remove 1
     mRetryAttemptFailures.Add Array(attemptKey, retry.FailureCode, retry.StopReason)
 End Sub
 
-' Проверяет, попала ли деформация хотя бы одного элемента в добавленную
-' provider-ом technical extension. Этот признак сохраняется в Results отдельно
-' от пользовательского статуса и нужен схеме, AutoCAD и расчету трещин.
+' Проверяет, использует ли хотя бы один элемент добавленное численное
+' продолжение диаграммы. Признак отдельно сохраняется в Results
+' для схемы, AutoCAD и расчёта трещин.
 Public Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver As CSectionSolver, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object) As Boolean
     If section Is Nothing Then Exit Function
@@ -662,10 +654,9 @@ Public Function MaterialsHaveExtension(ByVal concreteMaterial As Object, ByVal s
     End If
 End Function
 
-' Возвращает штатные диаграммы материалов, если они действительно переданы.
-' Тестовые линейные материалы решаются тем же CSectionSolver, но без
-' специализированных active-set и extension-подсказок, потому что у них нет
-' физических границ диаграммы.
+' Возвращает CMaterialDiagram, если переданы именно такие материалы.
+' Контрольные линейные материалы решаются тем же CSectionSolver,
+' но у них нет физических пределов для специальных стартов на продолжении диаграмм.
 Private Function TryGetMaterialDiagrams(ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByRef concreteDiagram As CMaterialDiagram, ByRef steelDiagram As CMaterialDiagram) As Boolean
     If concreteMaterial Is Nothing Or steelMaterial Is Nothing Then Exit Function
@@ -677,8 +668,8 @@ Private Function TryGetMaterialDiagrams(ByVal concreteMaterial As Object, ByVal 
     TryGetMaterialDiagrams = True
 End Function
 
-' Вычисляет деформацию произвольной точки по найденной solver-плоскости
-' epsilon0/kappaX/kappaY. Используется для проверки диаграмм после решения.
+' Вычисляет деформацию произвольной точки по найденным epsilon0/kappaX/kappaY
+' для проверки диаграмм после решения.
 Private Function ElementStrain(ByVal solver As CSectionSolver, ByVal x As Double, ByVal y As Double) As Double
     ElementStrain = solver.StrainAt(x, y)
 End Function
@@ -691,8 +682,7 @@ Private Sub AppendDiagnostic(ByVal lineText As String)
     mDiagnosticLog = mDiagnosticLog & lineText & vbCrLf
 End Sub
 
-' Сбрасывает результат одного запуска runner-а перед новым решением НДС.
-' Настройки solver-а при этом не меняются.
+' Очищает результат одной попытки перед новым НДС; численные настройки сохраняются.
 Private Sub ClearResult()
     Set mSolver = Nothing
     mExtensionUsed = False
@@ -733,7 +723,7 @@ Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
-' True, если найденное состояние попало в technical extension.
+' Показывает, использовано ли вспомогательное продолжение диаграмм в найденном НДС.
 Public Property Get ExtensionUsed() As Boolean
     ExtensionUsed = mExtensionUsed
 End Property
@@ -748,7 +738,7 @@ Public Property Get InitialGuessApplied() As Boolean
     InitialGuessApplied = mInitialGuessApplied
 End Property
 
-' Короткие строки о retry-попытках прямого НДС.
+' Возвращает краткий журнал повторных попыток решения НДС.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
@@ -796,8 +786,10 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Вызывает реальную внутреннюю retry-процедуру с явно заданными scalar inputs.
-' Нужен для проверки exact-attempt reuse; не создает named State или repository.
+
+' ДЛЯ ТЕСТОВ: вызывает настоящую процедуру повторного решения с явно заданными числами.
+' Проверяет учёт точно совпадающих попыток без создания конечного НДС
+' или записи в общее хранилище состояний.
 Friend Function TestRunRetryAttempt(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal targetN As Double, Optional ByVal epsilon0 As Double = 0#, _
@@ -808,7 +800,7 @@ Friend Function TestRunRetryAttempt(ByVal section As CSectionModel, _
         "проверка эквивалентности попыток", service, "testRetry")
 End Function
 
-' Возвращает размер ограниченной scalar-памяти для проверки ее жизненного цикла.
+' ДЛЯ ТЕСТОВ: возвращает число сохранённых кратких итогов попыток для проверки их очистки после поиска.
 Friend Property Get TestRetryAttemptCount() As Long
     If Not mRetryAttemptFailures Is Nothing Then TestRetryAttemptCount = mRetryAttemptFailures.Count
 End Property

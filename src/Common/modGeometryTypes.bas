@@ -65,8 +65,8 @@ Public Type TGeometryProperties
     PrincipalRadius2 As Double
 End Type
 
-' Скалярные helpers выбирают крайнее значение в геометрических расчетах.
-' Не зависят от Excel и не приводят значения к пользовательским единицам.
+' Возвращает большее из двух чисел в текущих внутренних единицах,
+' без обращения к Excel или перевода единиц.
 Public Function GeomMax(ByVal A As Double, ByVal B As Double) As Double
     If A >= B Then
         GeomMax = A
@@ -75,8 +75,8 @@ Public Function GeomMax(ByVal A As Double, ByVal B As Double) As Double
     End If
 End Function
 
-' Выбирает меньший геометрический скаляр в той же системе единиц;
-' преобразование пользовательских единиц остается обязанностью CUnitSystem.
+' Возвращает меньшее из двух чисел в текущих внутренних единицах.
+' Перевод пользовательских величин выполняет CUnitSystem.
 Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
     If A <= B Then
         GeomMin = A
@@ -85,11 +85,11 @@ Public Function GeomMin(ByVal A As Double, ByVal B As Double) As Double
     End If
 End Function
 
-' Читает signed sweep semantic-дуги целиком, без приема числового префикса.
-' Точка/запятая и десятичная E-нотация допустимы; локаль преобразования
-' берется у VBA, а не у Excel. Дуга меньше полного оборота: для окружности
-' существует CONTOUR_CIRCLE. Нулевой sweep сохраняет вырожденный отрезок.
-' Место ввода передает вызывающий reader; обращения к листам здесь нет.
+' Читает весь текст угла обхода дуги со знаком. Принимает точку, запятую
+' и запись с E, но не извлекает численный префикс из произвольного текста.
+' Угол меньше полного оборота; для окружности используется CONTOUR_CIRCLE.
+' Нулевой угол означает вырожденный отрезок. Место ввода передаёт
+' вызывающий класс; листы Excel здесь не читаются.
 Public Function ReadContourArcSweep(ByVal value As Variant, ByVal inputLocation As String) As Double
     On Error GoTo InvalidValue
     If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
@@ -113,9 +113,9 @@ InvalidValue:
         "Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка."
 End Function
 
-' Создает CSectionModel коротким путем для тестов и небольших расчетных примеров.
-' Рабочий Excel-pipeline собирает модель через CSectionModelBuilder напрямую,
-' чтобы каноническая точка сборки сечения была видна в production-коде.
+' Создаёт CSectionModel для коротких тестов и расчётных примеров.
+' Обычный запуск книги использует CSectionModelBuilder напрямую
+' как общее место сборки расчётной модели.
 Public Function BuildGeneratedSectionModel(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, Optional ByVal sourceType As String = "Generated") As CSectionModel
     Dim builder As CSectionModelBuilder
     Set builder = New CSectionModelBuilder

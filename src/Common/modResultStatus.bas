@@ -2,12 +2,12 @@ Attribute VB_Name = "modResultStatus"
 Option Explicit
 
 ' ==========================================================================
-' ТИПИЗИРОВАННЫЕ СТАТУСЫ И КОДЫ РЕЗУЛЬТАТОВ
+' Внутренние статусы и причины результатов
 ' ==========================================================================
-' Модуль задает общий внутренний язык результата расчета. Эти enum-ы не
-' являются пользовательским выводом: наружные строки формирует CResultStatusPolicy,
-' а цвета - modStatusFormatting. Инженерные классы должны передавать дальше
-' именно InternalStatus + ResultCode, чтобы writer-ы не парсили StopReason.
+' Задаёт коды InternalStatus и ResultCode, которые передают расчётные классы.
+' CResultStatusPolicy определяет по ним обозначение для пользователя,
+' а modStatusFormatting — цвет ячейки. Причина не определяется
+' разбором произвольного текста StopReason.
 
 Public Enum EResultInternalStatus
     rsUnset = 0                  ' Результат еще не сформирован; в завершенном расчете это архитектурная ошибка.
@@ -19,7 +19,7 @@ Public Enum EResultInternalStatus
     rsNumericalFailure = 6       ' Численная процедура не сошлась там, где действительно искалось равновесие или предел.
     rsInvalidInput = 7           ' Некорректные пользовательские исходные данные конкретного расчета.
     rsInvalidConfiguration = 8   ' Некорректная настройка Config или несовместимые параметры расчетного профиля.
-    rsSuccessWithWarning = 9     ' Корректный результат получен через fallback или с важным предупреждением.
+    rsSuccessWithWarning = 9     ' Результат получен дополнительным способом или с существенным предупреждением.
     rsInternalError = 10         ' Непредусмотренная внутренняя ошибка программы.
 End Enum
 
@@ -32,9 +32,9 @@ Public Enum EResultCode
     rcCheckFailed = 5                ' Инженерная проверка не пройдена без численной ошибки.
     rcPhysicalLimitExceeded = 6      ' НДС найдено, но вышло за физическую диаграмму материала.
     rcInitialStateBeyondLimit = 7    ' Постоянная часть траектории уже не проходит выбранный физический критерий.
-    rcCriterionNotReached = 8        ' Search корректно установил, что критерий не достигается на выбранной траектории.
+    rcCriterionNotReached = 8        ' Подтверждено, что критерий не достигается при выбранном изменении нагрузки.
     rcSearchBoundReached = 9         ' Достигнута техническая граница поиска без доказательства физического недостижения.
-    rcNumericalFailure = 10          ' Общая численная несходимость solver/search.
+    rcNumericalFailure = 10          ' Равновесие или предельная точка не найдены численным методом.
     rcSingularTangent = 11           ' Вырожденная матрица/касательная в численном решении.
     rcInvalidInput = 12              ' Ошибка пользовательских входных данных.
     rcInvalidConfiguration = 13      ' Ошибка настроек Config или профиля.
@@ -43,7 +43,7 @@ Public Enum EResultCode
     rcLongitudinalCrackExceeded = 16 ' Проверка продольных трещин не проходит.
     rcCrackNotFormed = 17            ' Нормальная трещина физически не образуется.
     rcStateOutsidePhysicalRange = 18 ' Равновесие найдено только за физическим диапазоном диаграммы.
-    rcSolverDidNotReturnState = 19   ' Оркестратор не получил объект solver-а для требуемого named-state.
+    rcSolverDidNotReturnState = 19   ' Для обязательного расчётного состояния не получен объект решателя НДС.
 End Enum
 
 Public Enum EResultKind
@@ -59,12 +59,12 @@ End Enum
 ' Машинная причина неуспешного вызова CSectionSolver. Этот enum нужен
 ' расчетным слоям, чтобы не выводить смысл ошибки из текста StopReason.
 Public Enum ESolverFailureCode
-    sfcNone = 0                 ' Ошибки solver-а нет или равновесие найдено.
+    sfcNone = 0                 ' Ошибки решателя нет или равновесие уже найдено.
     sfcNumericalFailure = 1     ' Обычная численная несходимость без более точной классификации.
     sfcSingularTangent = 2      ' Не решилась касательная/секущая матрица равновесия.
     sfcInvalidInput = 3         ' Некорректные исходные данные модели сечения.
-    sfcInvalidConfiguration = 4 ' Некорректный метод или параметры solver-а; повторный старт не поможет.
-    sfcInternalError = 5        ' Отсутствует обязательный программный объект либо нарушен внутренний контракт.
+    sfcInvalidConfiguration = 4 ' Некорректны численный метод или его настройки; другое начальное приближение не исправит причину.
+    sfcInternalError = 5        ' Отсутствует обязательный программный объект или переданы несовместимые внутренние данные.
 End Enum
 
 ' Исход приемки предельной точки: уточнение допуска отличается от отказа
@@ -75,7 +75,7 @@ Public Enum EUltimateFinalization
     ufRejectedPoint = 2
 End Enum
 
-' Возвращает каноническое имя внутреннего статуса для diagnostic/report.
+' Возвращает принятое текстовое имя внутреннего статуса для диагностики и отчёта.
 Public Function ResultInternalStatusToText(ByVal value As EResultInternalStatus) As String
     Select Case value
         Case rsUnset: ResultInternalStatusToText = "rsUnset"
@@ -93,7 +93,7 @@ Public Function ResultInternalStatusToText(ByVal value As EResultInternalStatus)
     End Select
 End Function
 
-' Возвращает каноническое имя машинного кода результата.
+' Возвращает принятое текстовое имя кода причины результата.
 Public Function ResultCodeToText(ByVal value As EResultCode) As String
     Select Case value
         Case rcNone: ResultCodeToText = "NONE"
@@ -120,7 +120,7 @@ Public Function ResultCodeToText(ByVal value As EResultCode) As String
     End Select
 End Function
 
-' Возвращает каноническое имя вида результата для отчета и отладки.
+' Возвращает принятое текстовое имя вида проверки для отчёта и отладки.
 Public Function ResultKindToText(ByVal value As EResultKind) As String
     Select Case value
         Case rkDirectState: ResultKindToText = "DirectState"

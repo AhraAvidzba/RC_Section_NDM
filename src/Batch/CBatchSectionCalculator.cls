@@ -19,35 +19,35 @@ Option Explicit
 ' во внутренних единицах; чтение ячеек Excel и построение геометрии выполняются отдельно.
 
 Private Const INITIAL_COMBINATION_CAPACITY As Long = 20 ' Начальный размер внутренних массивов; при расширении rngLoadCombinations хранилище растет.
-Private Const COMBINATION_CAPACITY_STEP As Long = 20 ' Шаг расширения, чтобы не делать ReDim Preserve на каждой новой строке LC.
-Private Const CAPACITY_PATH_NONE As String = "None" ' Capacity не запускался для LC.
+Private Const COMBINATION_CAPACITY_STEP As Long = 20 ' Число дополнительных мест при расширении массивов, чтобы не копировать их для каждой новой строки сочетаний.
+Private Const CAPACITY_PATH_NONE As String = "None" ' Обозначение отсутствия запущенного расчёта несущей способности для сочетания.
 Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m во внутренних Н*мм/мм.
 
-' Данные одной строки таблицы сочетаний. Batch хранит их отдельно от результатов,
-' чтобы было видно, где исходные нагрузки пользователя, а где то, что вернул расчет.
+' Исходные данные одной строки сочетаний хранятся отдельно от результатов.
+' Это позволяет сохранить нагрузки пользователя независимо от расчётных усилий.
 Private Type TCombinationInput
-    CombinationID As String
-    SourceDataOffset As Long
-    N As Double
-    Mx As Double
-    My As Double
-    ProfileId As String
-    LoadPath As String
-    Comment As String
-    InputValid As Boolean
-    InputError As String
+    CombinationID As String ' Номер сочетания из входной таблицы.
+    SourceDataOffset As Long ' Смещение строки сочетания от начала входной таблицы.
+    N As Double ' Продольная сила во внутренних единицах, Н.
+    Mx As Double ' Момент Mx во внутренних единицах, Н*мм.
+    My As Double ' Момент My во внутренних единицах, Н*мм.
+    ProfileId As String ' Имя профиля, задающего нужные проверки и материалы.
+    LoadPath As String ' Способ изменения составляющих нагрузки при поиске предела.
+    Comment As String ' Пользовательское пояснение сочетания.
+    InputValid As Boolean ' Признак корректных исходных данных сочетания.
+    InputError As String ' Причина ошибки исходных данных сочетания.
 End Type
 
-Private mSection As CSectionModel ' Расчетная модель сечения, общая для всех LC.
-Private mMaterialProvider As CMaterialModelProvider ' Единая точка выдачи диаграмм для Strength/CrackInitiation/CrackedNDS.
+Private mSection As CSectionModel ' Одна расчётная модель сечения для всех сочетаний нагрузок.
+Private mMaterialProvider As CMaterialModelProvider ' Подготовка диаграмм материалов для прочности, образования трещины и НДС с трещинами.
 Private mProfiles As CCalculationProfileCatalog ' Каталог расчетных профилей PR1/PR2/... из Config.
 Private mStatusPolicy As CResultStatusPolicy ' Единый словарь пользовательских статусов и правил их агрегирования.
 Private mCount As Long ' Сколько сочетаний реально добавлено в пакет.
 
 Private mInputs() As TCombinationInput ' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
 Private mWorkingLoads() As CSectionLoadState ' Рабочие усилия текущего запуска; исходная строка не изменяется.
-Private mWorkingPaths() As String ' Нормализованный путь запуска, отдельно от исходного текста LC.
-Private mResults() As CCombinationResult ' Расчетные результаты LC для Summary/Results; размер массива растет вместе с количеством LC.
+Private mWorkingPaths() As String ' Проверенный выбор изменения нагрузки для запуска расчёта; исходный текст пользователя хранится отдельно.
+Private mResults() As CCombinationResult ' Результаты каждого сочетания для записи сводки и Results; массив растёт с числом сочетаний.
 Private mLoadReferenceX As Double ' X точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceY As Double ' Y точки приложения нагрузки относительно расчетной модели, мм.
 Private mLoadReferenceOffsetX As Double ' Смещение точки нагрузки от центра тяжести бетонного сечения по X, мм.
@@ -56,31 +56,31 @@ Private mMomentZeroFilter As CMomentZeroFilter ' Общий инженерный
 Private mZeroMomentPerDepth As Double ' Порог момента на единицу бетонного габарита, Н*мм/мм.
 Private mConcreteDepthForMx As Double ' Бетонный габарит по Y для проверки Mx, мм.
 Private mConcreteDepthForMy As Double ' Бетонный габарит по X для проверки My, мм.
-Private mGoverningCombinationIndex As Long ' Индекс LC, который стал определяющим в batch summary.
-Private mCrackGoverningCombinationIndex As Long ' Индекс LC с минимальным запасом по раскрытию трещин.
-Private mWorstCombinationIndex As Long ' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
-Private mWorstCombinationCriterion As String ' StrengthStrain, StrengthCapacity, Cracks или Stability.
-Private mSolverCallCount As Long ' Сколько раз за batch запускался CSectionSolver.Solve для поиска равновесия НДС.
-Private mSolverIterationCount As Long ' Снимок всех фактически выполненных итераций НДС.
-Private mUltimateStrainStartCount As Long ' Снимок попыток предельного поиска с начальных плоскостей.
-Private mUltimateStrainIterationCount As Long ' Снимок итераций общего UltimateStrain для прочности и трещин.
+Private mGoverningCombinationIndex As Long ' Номер сочетания, определяющего результат проверки прочности.
+Private mCrackGoverningCombinationIndex As Long ' Номер сочетания с минимальным запасом по раскрытию трещин.
+Private mWorstCombinationIndex As Long ' Номер сочетания Worst по критерию, выбранному пользователем для общей сводки.
+Private mWorstCombinationCriterion As String ' Критерий выбора определяющего сочетания: деформации, несущая способность, трещины или устойчивость.
+Private mSolverCallCount As Long ' Число вызовов CSectionSolver.Solve во всём пакетном расчёте.
+Private mSolverIterationCount As Long ' Общее число фактически выполненных итераций решения НДС.
+Private mUltimateStrainStartCount As Long ' Число попыток поиска предела с разными начальными полями деформаций.
+Private mUltimateStrainIterationCount As Long ' Общее число итераций UltimateStrain для прочности и образования трещины.
 Private mElapsedSeconds As Double ' Полное время пакетного расчета, сек.
-Private mDiagnosticLog As String ' Короткий текстовый журнал по LC для диагностики batch-потока.
-Private mTransformedReferenceValid(1 To 2) As Boolean ' Кэш центров приведенного сечения для ULS/SLS внутри одного batch.
+Private mDiagnosticLog As String ' Краткий журнал выполнения отдельных сочетаний нагрузок.
+Private mTransformedReferenceValid(1 To 2) As Boolean ' Сохранённые центры приведённого сечения для I и II ГПС в пределах одного запуска.
 Private mTransformedReferenceX(1 To 2) As Double ' X центра приведенного сечения, мм.
 Private mTransformedReferenceY(1 To 2) As Double ' Y центра приведенного сечения, мм.
-Private mCrackGeometryQuery As CSectionGeometryQuery ' Ленивая неизменная область только текущего Execute; без StateRepo/НДС.
-Private mCrackDomainBuildCount As Long ' Последний счетчик подготовки; сам query освобождается до выхода Execute.
-Private mRunTransformedProperties(1 To 2) As CSectionPropertiesCalculator
-Private mRunConcreteProperties As CSectionPropertiesCalculator ' Ленивая механическая подготовка, отдельная от crack domain.
-Private mMechanicalPreparationBuildCount As Long
-Private mExecuting As Boolean ' Общая объектная подготовка живет только внутри Execute, не при чтении результатов.
+Private mCrackGeometryQuery As CSectionGeometryQuery ' Общая бетонная область текущего Execute; готовится при первом обращении отдельно от расчётных НДС.
+Private mCrackDomainBuildCount As Long ' Количество построений общей области; сам объект геометрических запросов освобождается до выхода из Execute.
+Private mRunTransformedProperties(1 To 2) As CSectionPropertiesCalculator ' Приведённые характеристики для двух наборов модулей материалов текущего запуска.
+Private mRunConcreteProperties As CSectionPropertiesCalculator ' Общие массивы геометрии для расчёта усилий; готовятся при первом обращении отдельно от области трещин.
+Private mMechanicalPreparationBuildCount As Long ' Число фактических подготовок геометрических характеристик за запуск.
+Private mExecuting As Boolean ' Временные общие данные подготовки, используемые только внутри Execute и освобождаемые перед выдачей результата.
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackStandardCode As String ' Общий выбор SP63/SP35, независимый от Stability.Code.
 Private mCrackSP35GroupGap As Double, mCrackSP35RowTolerance As Double ' Настройки длин после CUnitSystem, мм.
 Private mCrackSP35NeighborRatioLimit As Double ' Порог t/L для бокового ограничения ближайшим соседом.
-Private mCrackSP35DiameterMode As String, mCrackSP35RadiusMode As String, mCrackSP35RebarProfile As String
+Private mCrackSP35DiameterMode As String, mCrackSP35RadiusMode As String, mCrackSP35RebarProfile As String ' Выбор диаметра группы, радиуса взаимодействия и профиля арматуры для трещин СП 35.
 Private mCrackPsiMode As String ' User, Auto или AlwaysCalc: как определять psi_s для нормальных трещин.
 Private mCrackSigmaSCrcAveragingMode As String ' Как усреднять sigma_s,crc при уточнении psi_s по PostCrackState.
 Private mCrackPhi1 As Double ' Пользовательский коэффициент phi1 для формулы раскрытия.
@@ -93,23 +93,23 @@ Private mCrackCoverDistanceMode As String ' Как измерять a_s: до б
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска уровня трещинообразования.
 Private mSolverMethod As String ' Newton или Secant для прямого равновесия.
 Private mSolverLoadSteps As Long ' Число ступеней приложения нагрузки в CSectionSolver.
-Private mSolverMaxIterations As Long ' Лимит итераций прямого solver-а на одной ступени.
+Private mSolverMaxIterations As Long ' Максимальное число итераций решения НДС на одной ступени нагрузки.
 Private mSolverToleranceN As Double ' Допуск равновесия по N, Н.
 Private mSolverToleranceMx As Double ' Допуск равновесия по Mx, Н*мм.
 Private mSolverToleranceMy As Double ' Допуск равновесия по My, Н*мм.
 Private mSolverSecantMaxRestarts As Long ' Сколько раз Secant может перестроить приближенную матрицу.
-Private mCapacityInitialLambda As Double ' Начальный шаг/точка поиска lambda для LoadMultiplier.
-Private mCapacitySolutionStrategy As String ' Auto, LoadMultiplier или UltimateStrain.
-Private mCapacitySearchMethod As String ' Bisection, Brent или Secant для LoadMultiplier.
-Private mCapacityMaxLambda As Double ' Верхняя защитная граница lambda для расширения скобки LoadMultiplier.
+Private mCapacityInitialLambda As Double ' Начальная величина множителя нагрузки lambda для поиска LoadMultiplier.
+Private mCapacitySolutionStrategy As String ' Способ поиска предела: автоматически, изменением множителя нагрузки или по предельным деформациям.
+Private mCapacitySearchMethod As String ' Численный метод уточнения предельной нагрузки в LoadMultiplier: Bisection, Brent или Secant.
+Private mCapacityMaxLambda As Double ' Техническая верхняя граница lambda при поиске допустимой и предельной нагрузок.
 Private mCapacityToleranceLambda As Double ' Точность lambda в одномерном поиске LoadMultiplier.
 Private mCrackToleranceLambda As Double ' Точность lambda для поиска образования трещины.
 Private mCapacityToleranceStrain As Double ' Точность попадания в предельную деформацию UltimateStrain.
-Private mCapacityMaxRetries As Long ' Повторные попытки LoadMultiplier при несходимости той же lambda-точки.
-Private mCapacityBaseLoadSteps As Long ' Базовое число load steps для первой попытки lambda-точки capacity.
-Private mCapacitySolverMaxIterations As Long ' Лимит итераций внутреннего solver-а при capacity-поиске.
+Private mCapacityMaxRetries As Long ' Число повторных попыток решить НДС при том же lambda в случае несходимости.
+Private mCapacityBaseLoadSteps As Long ' Число ступеней приложения нагрузки в первой попытке НДС при поиске несущей способности.
+Private mCapacitySolverMaxIterations As Long ' Максимальное число итераций внутреннего решения НДС при поиске несущей способности.
 Private mReport As CExecutionReport ' Необязательный человекочитаемый отчет выполнения; расчетная логика от него не зависит.
-Private mReportUnits As CUnitSystem ' Единицы и знаки для человекочитаемых физических величин execution_report.
+Private mReportUnits As CUnitSystem ' Единицы и знаки для вывода физических величин в отчёт выполнения.
 Private mSettingsValid As Boolean ' False, если ApplySettings нашел ошибку Config и все LC должны получить InputErr.
 Private mSettingsError As String ' Человекочитаемая причина ошибки чтения настроек Config.
 
@@ -120,8 +120,8 @@ Private mStabilityMu2 As Double ' Коэффициент расчетной дл
 Private mStabilitySystemType As String ' Determinate или Indeterminate: правило сложения основного и случайного эксцентриситета.
 Private mStabilityZeroSign1 As Double ' Направление случайного эксцентриситета при M1=0: +1 или -1.
 Private mStabilityZeroSign2 As Double ' Направление случайного эксцентриситета при M2=0: +1 или -1.
-Private mStabilityPhiLMode As String ' Auto или PhiL2.
-Private mStabilityAccidentalEccentricityMode As String ' AutoWithL, AutoWithMuL или User для ea/ec,sl.
+Private mStabilityPhiLMode As String ' Режим определения коэффициента длительности phi_l: Auto или PhiL2.
+Private mStabilityAccidentalEccentricityMode As String ' Способ определения случайного эксцентриситета: по l, по mu*l или по заданному пользователем значению.
 Private mStabilityAccidentalEccentricityPlanes As String ' OnlyMomentPlane или BothPlanes: в каких плоскостях учитывать случайный эксцентриситет.
 Private mStabilityAccidentalEccentricityUser1 As Double ' Модуль пользовательского случайного эксцентриситета первой главной плоскости, мм.
 Private mStabilityAccidentalEccentricityUser2 As Double ' Модуль пользовательского случайного эксцентриситета второй главной плоскости, мм.
@@ -139,10 +139,10 @@ Private mStabilityLoadUserMx() As Double ' Пользовательский Mx �
 Private mStabilityLoadUserMy() As Double ' Пользовательский My длительной части в точке приложения нагрузки.
 Private mStabilityLoadInputError() As String ' Ошибка прочтения длительной части только этого LC; пусто для корректной строки.
 
-' Создает общую status-policy, report и фильтр моментов, резервирует массивы
-' LC и длительных нагрузок. Начальные параметры нужны прямому API класса;
-' workbook-сценарий затем передает прочитанный Config через ApplySettings.
-' Ошибочное явное значение Config не заменяется этими начальными параметрами.
+' Создаёт общие правила статусов, отчёт выполнения, фильтр малых моментов
+' и начальные массивы сочетаний и длительных нагрузок. Начальные настройки
+' нужны при программном использовании класса. При запуске из книги ApplySettings
+' принимает Config; ошибочный явный ввод этими начальными настройками не заменяется.
 Private Sub Class_Initialize()
     Set mStatusPolicy = New CResultStatusPolicy
     Set mReport = New CExecutionReport
@@ -206,9 +206,8 @@ Private Sub Class_Initialize()
     mStabilitySP35NOverNcrLimit = 0.7
 End Sub
 
-' Принимает готовую модель и материалы перед добавлением/расчетом LC.
-' После этого класс не обращается к геометрическим генераторам: все сочетания
-' считаются на одной и той же CSectionModel.
+' Принимает готовую модель и материалы до добавления и расчёта сочетаний.
+' Все сочетания используют одну CSectionModel без повторного построения геометрии.
 Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider)
     If section Is Nothing Then Err.Raise vbObjectError + 3900, "CBatchSectionCalculator", "Модель сечения не передана."
     If section.ConcreteCount <= 0 Then Err.Raise vbObjectError + 3901, "CBatchSectionCalculator", "В модели сечения нет бетонных элементов."
@@ -223,23 +222,22 @@ Public Sub Initialize(ByVal section As CSectionModel, ByVal materialProvider As 
     ConfigureConcreteMomentDepths
 End Sub
 
-' Подключает каталог профилей, прочитанный Excel-слоем из rngCalculationProfiles.
-' Batch дальше выбирает профиль только по ProfileId строки LC.
+' Подключает профили, прочитанные из rngCalculationProfiles.
+' Для каждой строки сочетаний выбирает профиль по её ProfileId.
 Public Property Set ProfileCatalog(ByVal profiles As CCalculationProfileCatalog)
     Set mProfiles = profiles
 End Property
 
-' Подключает внешний отчет выполнения. Batch только добавляет события, но не
-' открывает и не сохраняет файл: жизненным циклом отчета управляет Excel-макрос.
+' Подключает внешний отчёт выполнения и добавляет в него события расчёта.
+' Открытие и сохранение файла выполняет вызывающий Excel-макрос.
 Public Property Set ExecutionReport(ByVal report As CExecutionReport)
     Set mReport = report
     If mReport Is Nothing Then Set mReport = New CExecutionReport
     Set mReport.UnitSystem = mReportUnits
 End Property
 
-' Считывает численные настройки solver-ов и трещин из уже загруженного reader-а.
-' Если передан CUnitSystem, пользовательские допуски в силе/моменте/длине
-' сразу переводятся во внутренние единицы ядра.
+' Принимает численные настройки решения НДС и трещин из уже прочитанных данных Config.
+' Через CUnitSystem переводит допуски сил, моментов и длин во внутренние единицы.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     On Error GoTo InvalidSettings
     If settings Is Nothing Then Exit Sub
@@ -248,13 +246,13 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     Set mReportUnits = units
     Set mReport.UnitSystem = units
     Dim conversionKey As String ' Настройка текущего пересчета единиц для точной диагностики переполнения.
-    ' Значения таблицы трещин обязательны: очистка ячейки или потерянный key
-    ' не должны незаметно менять методику на начальные значения calculator-а.
+    ' Параметры трещин обязательны: пустая ячейка или отсутствующий ключ
+    ' должны дать ошибку, а не изменить методику подстановкой начального значения.
     mCrackStandardCode = settings.GetRequiredChoice("SLS.Crack.Code", Array("SP63", "SP35"))
     mCrackAllowable = settings.GetRequiredDouble("SLS.Crack.Allowable")
     mCrackFormationSolutionStrategy = settings.GetRequiredString("SLS.Crack.InitiationSolutionStrategy")
-    ' Formation владеет допустимыми путями и стратегиями; до любого solve
-    ' проверяем пользовательский выбор с адресной диагностикой reader-а.
+    ' До решения НДС проверяем выбранные путь нагрузки и стратегию образования трещины
+    ' средствами этого расчёта. При ошибке добавляем фактический адрес настройки.
     Dim formationOptions As CCrackFormationCalculator
     Set formationOptions = New CCrackFormationCalculator
     mCrackFormationSolutionStrategy = formationOptions.NormalizeCrackFormationSolutionStrategy(mCrackFormationSolutionStrategy, settings)
@@ -342,25 +340,26 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
         conversionKey = "Solver.ToleranceMy"
         mSolverToleranceMy = Sgn(mSolverToleranceMy) * Abs(units.InputMomentMyToInternal(mSolverToleranceMy))
         conversionKey = "Calculation.ZeroMomentPerDepth"
-        ' Adapter переводит модуль момента/длины; исходный отрицательный ввод
-        ' сохраняем для проверки владельцем фильтра, а не превращаем в плюс.
+        ' Переводим величину момента на единицу длины в нужные единицы.
+        ' Отрицательный ввод сохраняем для проверки, не превращая его в допустительный
+        ' положительный порог.
         mZeroMomentPerDepth = Sgn(mZeroMomentPerDepth) * units.InputMomentPerLengthToInternal(mZeroMomentPerDepth)
         conversionKey = vbNullString
     End If
-    ' Владелец Width проверяет ввод до раннего NotCracked и до любого solve.
-    ' Batch только передает настройки; диапазоны/режимы не дублируются здесь.
+    ' Расчёт ширины проверяет параметры до проверки отсутствия трещины и до решения НДС.
+    ' Здесь настройки только передаются, без повторной реализации их диапазонов.
     Dim widthOptions As CCrackWidthCalculator
     Set widthOptions = New CCrackWidthCalculator
     ConfigureCrackCalculator widthOptions
     widthOptions.ValidateSettings settings
-    ' Диапазоны численных Capacity-параметров проверяет их владелец.
-    ' Reader нужен только для актуального адреса ошибочной ячейки Config.
+    ' Диапазоны параметров несущей способности проверяет её расчётный класс.
+    ' CSystemSettingsReader добавляет к ошибке актуальный адрес ячейки Config.
     Dim capacityOptions As CCapacityCalculator
     Set capacityOptions = New CCapacityCalculator
     ConfigureCapacityCalculator capacityOptions
     capacityOptions.ValidateSettings settings
-    ' Устойчивость проверяет собственные диапазоны и selectors без запуска
-    ' фильтра. Config-адрес берется из reader после нормализации единиц.
+    ' Расчёт устойчивости проверяет собственные значения и варианты настроек до запуска.
+    ' Адрес ошибки берём из прочитанного Config после перевода единиц.
     Dim stabilityOptions As CStabilityCalculator
     Set stabilityOptions = New CStabilityCalculator
     stabilityOptions.ValidateSettings mStabilityCode, mStabilityElementLength, mStabilityMu1, mStabilityMu2, _
@@ -388,9 +387,9 @@ InvalidSettings:
     ReportStep "Настройки расчета содержат ошибку: " & mSettingsError
 End Sub
 
-' Проверяет обязательные селекторы несущей до запуска НДС. Ошибка указывает
-' реальную ячейку Config и допустимые варианты; пустой выбор не становится Auto.
-' Начальные значения автономных solver-ов здесь не заменяют пользовательский ввод.
+' Проверяет обязательный выбор способа расчёта несущей способности до решения НДС.
+' Ошибка содержит адрес Config и допустимые варианты. Пустое значение
+' не подменяется Auto или начальными настройками численного метода.
 Private Function CapacityTextSetting(ByVal settings As CSystemSettingsReader, ByVal key As String) As String
     Dim value As String, allowed As String
     value = settings.GetRequiredString(key)
@@ -413,9 +412,8 @@ Private Function CapacityTextSetting(ByVal settings As CSystemSettingsReader, By
         settings.InputErrorMessage(key, "Неизвестный вариант: """ & value & """.", "Выберите " & allowed & ".")
 End Function
 
-' Читает обязательную числовую настройку устойчивости без скрытой подстановки
-' default. Если строка Config не прочиталась, пуста или содержит не число,
-' расчет останавливается как ошибка исходных данных.
+' Читает обязательное число для устойчивости. Если настройка отсутствует,
+' пуста или содержит текст, сообщает об ошибке ввода без подстановки значения по умолчанию.
 Private Function StabilityNumericSetting(ByVal settings As CSystemSettingsReader, _
         ByVal key As String) As Double
     StabilityNumericSetting = settings.GetRequiredDouble(key)
@@ -428,9 +426,8 @@ Private Function StabilityTextSetting(ByVal settings As CSystemSettingsReader, _
     StabilityTextSetting = settings.GetRequiredString(key)
 End Function
 
-' Очищает список LC и накопленные результаты.
-' Используется перед чтением новой таблицы сочетаний, чтобы предыдущие статусы не
-' попали в новый batch summary.
+' Очищает сочетания и их результаты перед чтением новой таблицы нагрузок.
+' Статусы предыдущего запуска не должны попасть в новую сводку.
 Public Sub ClearCombinations()
     mCount = 0
     ClearStabilityDurationLoads
@@ -477,9 +474,9 @@ Public Sub AddStabilityDurationLoad(ByVal combinationID As String, ByVal nValue 
     mStabilityLoadInputError(mStabilityLoadCount) = vbNullString
 End Sub
 
-' Сохраняет ошибку дополнительной нагрузки без подмены ее нулевой нагрузкой.
-' Причина подготовлена Excel-reader-ом; она блокирует только устойчивость этого
-' LC, а остальные запрошенные проверки продолжаются с исходными усилиями.
+' Сохраняет ошибку чтения длительной нагрузки, не заменяя её нулём.
+' Ошибка блокирует только устойчивость данного сочетания; остальные
+' запрошенные проверки продолжаются с исходными усилиями.
 Public Sub AddInvalidStabilityDurationLoad(ByVal combinationID As String, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then Err.Raise vbObjectError + 4113, _
         "CBatchSectionCalculator", "Не передана причина ошибки дополнительной нагрузки устойчивости."
@@ -487,9 +484,9 @@ Public Sub AddInvalidStabilityDurationLoad(ByVal combinationID As String, ByVal 
     mStabilityLoadInputError(mStabilityLoadCount) = reason
 End Sub
 
-' Принимает таблицу 7.21 СП 35 из Config. Таблица нужна только при выборе
-' табличной ветви СП 35. Excel-слой может передать адресную причину ошибки;
-' классификацию и решение о применимости сохраняет calculator.
+' Принимает таблицу 7.21 СП 35 из Config и возможную ошибку с адресом ячейки.
+' Расчёт устойчивости определяет, нужна ли таблица в выбранном режиме
+' и можно ли использовать её данные.
 Public Sub SetSP35Table721(ByVal tableData As Variant, Optional ByVal inputError As String = vbNullString)
     mStabilitySP35Table721 = tableData
     mStabilitySP35TableInputError = inputError
@@ -503,8 +500,8 @@ Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double,
     AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, loadPathText, sourceDataOffset
 End Sub
 
-' Сохраняет строку LC с ошибкой ввода, чтобы пользователь увидел ее в отчете.
-' Такие сочетания не передаются в solver, но отображаются как InputErr.
+' Сохраняет сочетание с ошибкой ввода для вывода причины в отчёте.
+' НДС по нему не решается; в таблице ставится InputErr.
 Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId As String, _
         ByVal comment As String, ByVal reason As String, Optional ByVal loadPathText As String = vbNullString, _
         Optional ByVal sourceDataOffset As Long = 0)
@@ -611,9 +608,8 @@ Private Function StabilityLoadCapacity() As Long
 EmptyStorage:
 End Function
 
-' Переносит пользовательские моменты из точки приложения нагрузки к координатам элементов.
-' Пользователь задает Mx/My относительно выбранной точки нагрузки, а solver
-' должен получить моменты относительно внутренней системы координат CSectionModel.
+' Переносит моменты из пользовательской точки приложения нагрузки
+' к внутреннему началу координат CSectionModel для решения равновесия.
 Public Sub ApplyLoadReference(ByVal referenceX As Double, ByVal referenceY As Double, _
         Optional ByVal baseX As Double = 0#, Optional ByVal baseY As Double = 0#)
     mLoadReferenceX = referenceX
@@ -689,15 +685,15 @@ Private Sub NormalizeAllCombinationMoments()
     Next i
 End Sub
 
-' Последовательно считает все добавленные LC и выбирает определяющее сочетание.
-' Порядок один для всех геометрий: capacity при необходимости, прямое НДС,
-' затем трещины для сочетаний второй группы.
+' Последовательно рассчитывает все сочетания и выбирает определяющее.
+' Общий порядок для всех форм: несущая способность, если запрошена,
+' НДС при заданной нагрузке, затем проверки трещин для II ГПС.
 Public Sub Execute()
     On Error GoTo Failed
 
     ValidateReady
-    ' Модель/provider могут быть изменены между запусками тем же владельцем.
-    ' Кэш расчетного центра относится только к одному запуску.
+    ' Модель и материалы могли измениться между запусками.
+    ' Ранее сохранённый расчётный центр в новом запуске использовать нельзя.
     ClearTransformedReferenceCache
     ConfigureConcreteMomentDepths
     NormalizeAllCombinationMoments
@@ -721,8 +717,8 @@ Public Sub Execute()
     ReportStep "Начат пакетный расчет. Количество сочетаний: " & CStr(mCount) & "."
 
     Dim i As Long
-    ' Каждый LC изолирован: ошибка одного сочетания не должна стирать результаты
-    ' соседних строк, но попадает в итоговый статус и batch summary.
+    ' Ошибка одного сочетания попадает в его статус и общую сводку,
+    ' но не стирает результаты остальных строк.
     For i = 1 To mCount
         currentIndex = i
         stage = "ClearResultRow"
@@ -765,8 +761,9 @@ Failed:
         stage & " LC=" & CStr(currentIndex) & ": " & failureText
 End Sub
 
-' Освобождает общую временную геометрию на обоих выходах, не трогая готовые
-' результаты и отдельные repository LC. В Batch остается только счетчик.
+' Освобождает временную общую геометрию и при успехе, и при ошибке.
+' Готовые результаты и хранилища НДС сочетаний сохраняются;
+' для диагностики остаётся число выполненных подготовок.
 Private Sub ReleaseRunPreparation()
     mExecuting = False
     If Not mCrackGeometryQuery Is Nothing Then mCrackDomainBuildCount = mCrackGeometryQuery.DomainBuildCount
@@ -782,26 +779,9 @@ Private Sub ReleaseRunPreparation()
     Set mRunConcreteProperties = Nothing
 End Sub
 
-' ДЛЯ ТЕСТОВ: успешные построения общей области последнего Execute.
-Friend Property Get CrackDomainBuildCount() As Long
-    CrackDomainBuildCount = mCrackDomainBuildCount
-End Property
-
-' Число фактических подготовок механических массивов в текущем запуске batch, без повторных
-' solve.
-Friend Property Get MechanicalPreparationBuildCount() As Long
-    MechanicalPreparationBuildCount = mMechanicalPreparationBuildCount
-End Property
-
-' ДЛЯ ТЕСТОВ: после Execute нет живых ссылок на временные расчетные кэши.
-Friend Property Get RunPreparationReleased() As Boolean
-    RunPreparationReleased = mCrackGeometryQuery Is Nothing And mRunConcreteProperties Is Nothing And _
-        mRunTransformedProperties(1) Is Nothing And mRunTransformedProperties(2) Is Nothing
-End Property
-
-' Считает одно сочетание нагрузок и собирает итоговый статус.
-' Внутри сохраняется разделение: capacity отвечает за запас по несущей,
-' прямой solve дает фактическое НДС, crack запускается только для 2 группы.
+' Рассчитывает одно сочетание нагрузок и собирает его итоговый статус.
+' Несущая способность определяет запас, решение при заданной нагрузке — текущее НДС;
+' проверки трещин выполняются для II ГПС.
 Private Sub RunCombination(ByVal index As Long)
     On Error GoTo Failed
     ReportSection "Сочетание " & CStr(index) & ": " & mInputs(index).CombinationID
@@ -903,10 +883,9 @@ Failed:
     AppendDiagnostic index
 End Sub
 
-' Применяет расчет продольного изгиба как изолированный фильтр усилий.
-' CStabilityCalculator не знает о batch и профилях: он возвращает только
-' расчетные N/Mx/My и диагностические величины, а batch решает, что делать
-' дальше с пользовательскими статусами и последующими проверками НДМ.
+' Применяет продольный изгиб к нагрузкам сочетания. CStabilityCalculator
+' возвращает скорректированные N/Mx/My и поясняющие величины;
+' дальнейшие проверки и общие статусы определяет пакетный расчёт.
 Private Sub RunStabilityFilter(ByVal index As Long, ByVal valueSet As EMaterialValueSet)
     On Error GoTo Failed
 
@@ -1026,8 +1005,8 @@ Private Sub ApplyStabilityDesignLoads(ByVal index As Long, ByVal stability As CS
 
     Set mWorkingLoads(index) = loadState
 
-    ' Summary должен показывать те же моменты, которые после zero-filter ушли
-    ' дальше в DirectState/Capacity/Crack, а не промежуточный DesignLoad.
+    ' В сводку записываем усилия после фильтра малых моментов — те же,
+    ' с которыми выполняются НДС, несущая способность и расчёт трещин.
     Dim finalDesignMx As Double
     Dim finalDesignMy As Double
     finalDesignMx = loadState.MxAboutPoint(referenceY)
@@ -1061,8 +1040,8 @@ Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
         If mRunTransformedProperties(slot) Is Nothing Then Set mRunTransformedProperties(slot) = New CSectionPropertiesCalculator
         Set props = mRunTransformedProperties(slot)
     Else
-        ' Автономное справочное чтение сохраняет прежний scalar-кэш центра,
-        ' но не возвращает подготовленный объект в уже завершенный запуск.
+        ' При отдельном справочном чтении сохраняем вычисленные координаты центра.
+        ' Временный объект подготовки в завершённый запуск не возвращаем.
         Set props = New CSectionPropertiesCalculator
     End If
     props.EnsureTransformed mSection, _
@@ -1075,9 +1054,8 @@ Private Sub TransformedReferencePoint(ByVal valueSet As EMaterialValueSet, _
     mTransformedReferenceValid(slot) = True
 End Sub
 
-' Очищает кэш центров приведенного сечения, когда batch получает новую
-' геометрию или новый provider материалов. Сами значения зависят только от
-' CSectionModel и модулей Es/Eb выбранного набора характеристик.
+' Удаляет сохранённые центры приведённого сечения при смене модели или материалов.
+' Эти координаты зависят от геометрии CSectionModel и выбранных модулей Es/Eb.
 Private Sub ClearTransformedReferenceCache()
     Dim i As Long
     For i = 1 To 2
@@ -1186,9 +1164,9 @@ Private Sub RunCapacity(ByVal index As Long, ByVal strengthSpec As CMaterialMode
         ReportBlock "Итерации внутреннего CSectionSolver для последней capacity-точки", reportText
 End Sub
 
-' Выполняет один прямой StateSolution для заданного named-state профиля.
-' Материальная модель строится по спецификации профиля, а управление retry и
-' extension остается внутри CStateSolutionRunner.
+' Решает НДС указанного типа по модели материалов выбранного профиля.
+' Начальные приближения, повторные попытки и численное продолжение диаграмм
+' обрабатывает общий CStateSolutionRunner.
 Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectionStateType, _
         ByVal materialRole As ECalculationPurpose, ByVal spec As CMaterialModelSpec, _
         Optional ByVal useDiagramExtension As Boolean = True, _
@@ -1254,13 +1232,12 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     Set RunProfileState = runner
 End Function
 
-' Выполняет весь расчет раскрытия трещин как один запрошенный расчет профиля.
-' Сначала обязательно проверяется факт образования нормальной трещины и
-' сохраняется найденная пороговая точка, если она определима. Текущее
-' CrackedState полного LC считается всегда: по нему выполняется проверка
-' продольных трещин и записывается snapshot. Формула ширины раскрытия
-' запускается при образованной трещине либо при недоступной точке образования
-' с консервативным psi_s = 1. Только отказ текущего НДС блокирует обе проверки.
+' Выполняет запрошенный профилем расчёт трещин. Сначала проверяет образование
+' нормальной трещины и сохраняет пороговую нагрузку, если она найдена.
+' Текущее НДС с трещинами по полной нагрузке сочетания рассчитывает всегда:
+' оно нужно для продольных трещин и сохранения Results. Ширину определяет
+' при наличии трещины либо пригодного текущего НДС с psi_s = 1, если порог
+' не найден. Отсутствие текущего НДС делает обе проверки недоступными.
 Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProfile)
     Dim crack As CCrackWidthCalculator
     Set crack = New CCrackWidthCalculator
@@ -1363,9 +1340,9 @@ ReportCrackResult:
     ReportBlock "Диагностика расчета трещин", crack.DiagnosticLog
 End Sub
 
-' Упаковывает окончательный result-tree один раз после всех доступных стадий.
-' Промежуточная диагностика записывается непосредственно из результатов этапа;
-' ни числа, ни meta прошлой упаковки не используются как резервные данные.
+' После доступных этапов собирает один окончательный результат трещин.
+' Использует фактические результаты этапов; числа и статусы прежнего запуска
+' как запасные данные не подставляются.
 Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCrackWidthCalculator, _
         ByVal formationResult As CCrackFormationResult, _
         ByVal currentStateMeta As CResultMeta, ByVal widthMeta As CResultMeta, _
@@ -1384,9 +1361,9 @@ Private Sub StoreCrackAggregateSnapshot(ByVal index As Long, ByVal crack As CCra
     mResults(index).StoreCrackAggregateResult crackResult
 End Sub
 
-' Проверяет, можно ли использовать CurrentCrackedState как исходные данные для
-' ширины нормальных трещин и продольных трещин. Если нельзя, возвращает meta
-' фактической причины отказа именно state-этапа, а зависимые формулы блокируются отдельно.
+' Проверяет пригодность текущего НДС с трещинами для нормальных и продольных трещин.
+' Если НДС непригодно, возвращает фактическую причину этого этапа,
+' а зависимые формулы отдельно отмечаются как недоступные.
 Private Function CurrentCrackedStateReady(ByVal stateResult As CSectionStateResult, _
         ByVal runner As CStateSolutionRunner, ByRef currentStateMeta As CResultMeta, _
         ByRef blockReason As String) As Boolean
@@ -1397,9 +1374,9 @@ Private Function CurrentCrackedStateReady(ByVal stateResult As CSectionStateResu
     CurrentCrackedStateReady = True
 End Function
 
-' Возвращает meta состояния CrackedState даже тогда, когда CStateProvider не смог
-' создать готовый CSectionStateResult. Это позволяет сохранить причину отказа
-' в result-tree и не подменять ее статусом формульного расчета ширины трещины.
+' Возвращает статус текущего НДС с трещинами, даже если CStateProvider
+' не создал объект состояния. Так сохраняется исходная причина неудачи
+' без подмены её ошибкой формулы ширины трещины.
 Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResult, _
         ByVal runner As CStateSolutionRunner, ByRef blockReason As String) As CResultMeta
     If Not stateResult Is Nothing Then
@@ -1425,10 +1402,9 @@ Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResul
     Set CurrentCrackedStateMeta = MissingStateMeta(runner, blockReason)
 End Function
 
-' Формирует meta для случая, когда обязательное named-state не было создано.
-' Статус не выводится из текста blockReason: если typed-state не создан,
-' runner может дать только факт отсутствия физического НДС, а подробная строка
-' остается комментарием/diagnostic.
+' Создаёт статус для случая, когда обязательное НДС не получено.
+' Причина не угадывается по тексту blockReason: фиксируется отсутствие
+' состояния, а подробности сохраняются как пояснение и диагностика.
 Private Function MissingStateMeta(ByVal runner As CStateSolutionRunner, _
         ByVal blockReason As String) As CResultMeta
     Dim meta As CResultMeta
@@ -1450,9 +1426,9 @@ Private Function MissingStateMeta(ByVal runner As CStateSolutionRunner, _
     Set MissingStateMeta = meta
 End Function
 
-' Добавляет в компактный batch-журнал причину отказа подготовки или расчета
-' трещин. Подробный txt-отчет пишет DiagnosticLog отдельно; эта строка сохраняет
-' исходную причину этапа для диагностики и regression-тестов.
+' Записывает в краткий журнал причину неудачи подготовки или расчёта трещин.
+' Подробный отчёт содержит отдельный DiagnosticLog; исходная причина этапа
+' сохраняется для диагностики и повторяемой проверки результатов.
 Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidthCalculator)
     If crack Is Nothing Then Exit Sub
 
@@ -1463,14 +1439,15 @@ Private Sub AppendCrackDiagnostic(ByVal index As Long, ByVal crack As CCrackWidt
     End If
 End Sub
 
-' Объединяет meta нескольких прямых StateSolution одного LC.
-' N/A не ухудшает итог, а FAIL/NumFail/InputErr сохраняют общий смысл строки.
+' Объединяет статусы нескольких решений НДС одного сочетания.
+' N/A не ухудшает итог, а физический отказ, несходимость и ошибка ввода
+' сохраняют соответствующую причину.
 Private Sub MergeDirectStateMeta(ByVal index As Long, ByVal meta As CResultMeta)
     mResults(index).MergeDirectStateMeta meta
 End Sub
 
-' Заполняет capacity-поля нейтральным статусом, когда эта проверка не должна
-' выполняться для выбранной группы/режима.
+' Отмечает несущую способность как незапрошенную, если её проверка
+' не предусмотрена выбранной группой или режимом расчёта.
 Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     Dim capacityResult As CCapacityResult
     Set capacityResult = New CCapacityResult
@@ -1478,9 +1455,9 @@ Private Sub StoreNotCalculatedCapacity(ByVal index As Long)
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
-' Сохраняет ошибку входных данных в capacity-блок через общий CCapacityResult.
-' Даже когда общий LC отбрасывается до solver-а, capacity-часть Results должна
-' проходить тем же result/meta-контрактом, что и штатный поиск несущей.
+' Сохраняет ошибку ввода через общий объект результата несущей способности.
+' Даже если сочетание отклонено до решения НДС, этот раздел Results
+' получает статус и пояснение тем же способом, что обычный расчёт предела.
 Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     Dim capacityResult As CCapacityResult
     Set capacityResult = New CCapacityResult
@@ -1488,8 +1465,8 @@ Private Sub StoreInvalidCapacity(ByVal index As Long, ByVal reason As String)
     mResults(index).StoreCapacityResult capacityResult
 End Sub
 
-' Создает meta для проверки, отключенной профилем, а не неприменимой физики.
-' Ни запуск, ни обязательная зависимость у такой ветви не заявляются.
+' Создаёт статус проверки, отключённой профилем. Это не физическая
+' неприменимость и не неудачная попытка расчёта: проверка не запускалась.
 Private Function NotRequestedMeta(ByVal resultKind As EResultKind) As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -1497,7 +1474,7 @@ Private Function NotRequestedMeta(ByVal resultKind As EResultKind) As CResultMet
     Set NotRequestedMeta = meta
 End Function
 
-' Создает meta для ошибки пользовательских данных или настроек.
+' Создаёт статус и пояснение ошибки пользовательских данных или настроек.
 Private Function InvalidInputMeta(ByVal resultKind As EResultKind, _
         ByVal reason As String) As CResultMeta
     Dim meta As CResultMeta
@@ -1506,8 +1483,8 @@ Private Function InvalidInputMeta(ByVal resultKind As EResultKind, _
     Set InvalidInputMeta = meta
 End Function
 
-' Фиксирует InvalidInput по конкретному LC и не дает этому сочетанию пройти
-' в solver. Так пользователь видит причину в таблице, а остальные LC считаются.
+' Сохраняет InvalidInput для выбранного сочетания и не передаёт его в решатель.
+' Причина выводится в таблице, а остальные сочетания продолжают рассчитываться.
 Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     If Len(Trim$(reason)) = 0 Then reason = "Некорректное сочетание нагрузок."
     mResults(index).SetProfileId mInputs(index).ProfileId
@@ -1528,9 +1505,8 @@ Private Sub MarkInvalid(ByVal index As Long, ByVal reason As String)
     AppendDiagnostic index
 End Sub
 
-' Передает в CCapacityCalculator настройки поиска несущей и внутреннего
-' равновесия. Материальные пределы calculator берет из построенных диаграмм
-' для конкретного профиля; batch передает только общие параметры запуска.
+' Передаёт CCapacityCalculator общие настройки поиска предела и решения равновесия.
+' Физические пределы материалов тот получает из диаграмм выбранного профиля.
 Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
     calculator.ConfigureSearch mCapacityInitialLambda, mCapacitySolutionStrategy, _
         mCapacitySearchMethod, mCapacityMaxLambda, mCapacityToleranceLambda, _
@@ -1541,9 +1517,8 @@ Private Sub ConfigureCapacityCalculator(ByVal calculator As CCapacityCalculator)
         DetailedDiagnosticsEnabled()
 End Sub
 
-' Создает provider именованных НДС для одного LC и подключает к нему repository
-' этого сочетания. Сам provider не знает о профилях и статусной политике batch:
-' он только переиспользует либо решает физическое состояние.
+' Создаёт CStateProvider для одного сочетания и подключает хранилище его НДС.
+' По запросу он возвращает пригодное прежнее состояние или решает равновесие заново.
 Private Function CreateStateProvider(ByVal index As Long) As CStateProvider
     Dim provider As CStateProvider
     Set provider = New CStateProvider
@@ -1552,8 +1527,8 @@ Private Function CreateStateProvider(ByVal index As Long) As CStateProvider
     Set CreateStateProvider = provider
 End Function
 
-' Передает StateProvider прочитанные численные настройки прямого НДС.
-' Provider применяет их к общему runner во всех запрашиваемых named-states.
+' Передаёт CStateProvider прочитанные численные настройки НДС,
+' которые применяются общим CStateSolutionRunner ко всем запрашиваемым состояниям.
 Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
     provider.LoadSteps = mSolverLoadSteps
     provider.SolverMethod = mSolverMethod
@@ -1565,9 +1540,9 @@ Private Sub ConfigureStateProvider(ByVal provider As CStateProvider)
     provider.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
-' Передает только параметры подготовки и формулы ширины. Проверка введенных
-' режимов/коэффициентов остается у Width; ни solver-options, ни поиск НДС
-' через этот метод не передаются. Текущее состояние получает отдельный runner.
+' Передаёт параметры подготовки области и формулы ширины трещины.
+' Их допустимость проверяет сам расчёт ширины; текущее НДС и его численные
+' настройки подготавливаются отдельным объектом решения.
 Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.StandardCode = mCrackStandardCode
     crack.SP35GroupGapTolerance = mCrackSP35GroupGap
@@ -1589,8 +1564,9 @@ Private Sub ConfigureCrackCalculator(ByVal crack As CCrackWidthCalculator)
     crack.DiagnosticsEnabled = DetailedDiagnosticsEnabled()
 End Sub
 
-' Передает formation-настройки его владельцу. Width не хранит solver-options
-' и не участвует в поиске Pre/PostCrackState или выборе физического пути.
+' Передаёт численные настройки расчёту образования трещины.
+' Расчёт ширины не выбирает траекторию нагрузки и не ищет состояния
+' до и после образования трещины.
 Private Sub ConfigureCrackFormationCalculator(ByVal formation As CCrackFormationCalculator, ByVal index As Long)
     formation.CrackFormationPath = mWorkingPaths(index)
     formation.CrackFormationSolutionStrategy = mCrackFormationSolutionStrategy
@@ -1614,9 +1590,8 @@ Private Function DetailedDiagnosticsEnabled() As Boolean
     DetailedDiagnosticsEnabled = mReport.Enabled
 End Function
 
-' Проверяет, что batch готов к расчету.
-' Это последний защитный барьер перед запуском solver-ов: модель и хотя бы
-' одно сочетание должны быть уже загружены.
+' Проверяет готовность к запуску расчётов: модель сечения
+' и хотя бы одно сочетание нагрузок уже должны быть заданы.
 Private Sub ValidateReady()
     If mSection Is Nothing Then Err.Raise vbObjectError + 3920, "CBatchSectionCalculator", "Пакетный расчетчик не инициализирован моделью сечения."
     If mMaterialProvider Is Nothing Then Err.Raise vbObjectError + 3922, "CBatchSectionCalculator", "Пакетный расчетчик не инициализирован поставщиком материалов."
@@ -1627,8 +1602,8 @@ End Sub
 ' Сбрасывает все результаты одной строки перед повторным расчетом LC.
 ' Входные усилия и комментарий не трогаются.
 Private Sub ClearResultRow(ByVal index As Long)
-    ' Прежний результат мог быть выдан writer-у или другому потребителю.
-    ' Новый запуск не должен менять объект, на который у него осталась ссылка.
+    ' Прежний результат мог быть передан классу записи на лист или другому потребителю.
+    ' Новый запуск создаёт отдельный объект, не меняя уже выданный результат.
     Set mResults(index) = New CCombinationResult
     mResults(index).Clear CAPACITY_PATH_NONE
     mResults(index).SetDirectStateMeta NotRequestedMeta(rkDirectState)
@@ -1637,8 +1612,8 @@ Private Sub ClearResultRow(ByVal index As Long)
     mResults(index).SetProfileId mInputs(index).ProfileId
 End Sub
 
-' Добавляет одну строку в текстовую диагностику batch-расчета.
-' Это компактная диагностическая сводка, а не подробный журнал итераций solver-а.
+' Добавляет строку в краткий журнал пакетного расчёта.
+' Подробные итерации численного решения сохраняются отдельно.
 Private Sub AppendDiagnostic(ByVal index As Long)
     mDiagnosticLog = mDiagnosticLog & "combination=" & mInputs(index).CombinationID & _
         "; OverallStatus=" & mResults(index).Status & _
@@ -1653,9 +1628,8 @@ Private Sub AppendDiagnostic(ByVal index As Long)
         "; governingUtil=" & FormatNumberInvariant(mResults(index).GoverningUtil) & vbCrLf
 End Sub
 
-' Добавляет в подробный txt-отчет краткий итог по текущему LC.
-' Batch summary остается основным табличным выводом, а здесь пользователь
-' видит ход выполнения без открытия Results и без чтения внутренних массивов.
+' Добавляет краткий итог сочетания в подробный отчёт выполнения.
+' Основная сводка остаётся на Results; отчёт показывает ход расчёта.
 Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportValue "Итоговый статус", mResults(index).Status
     ReportValue "Статус прямого НДС", mResults(index).StrengthResult.DirectState.Status
@@ -1670,50 +1644,47 @@ Private Sub ReportCombinationSummary(ByVal index As Long)
     ReportMetaComment "Итоговый комментарий", mResults(index).OverallMeta
 End Sub
 
-' Добавляет смысловой заголовок в txt-отчет выполнения, если отчет включен
-' пользователем. Вызов безопасен при выключенном отчете.
+' Добавляет заголовок раздела в текстовый отчёт выполнения, если он включён.
 Private Sub ReportSection(ByVal title As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddSection title
 End Sub
 
-' Добавляет строку-этап в txt-отчет выполнения. Используется orchestration-ом,
-' чтобы показать пользователю, какая расчетная ветка запускается сейчас.
+' Добавляет название выполняемого этапа в отчёт, чтобы пользователь видел,
+' какая проверка запускается сейчас.
 Private Sub ReportStep(ByVal text As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddStep text
 End Sub
 
-' Добавляет пару "параметр - значение" в txt-отчет. Метод держит всю проверку
-' включенности отчета в одном месте, чтобы расчетный код не дублировал guard.
+' Добавляет параметр и его значение в отчёт, если отчёт включён.
+' Вызывающему расчёту отдельно проверять эту настройку не требуется.
 Private Sub ReportValue(ByVal label As String, ByVal valueText As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddValue label, valueText
 End Sub
 
-' Добавляет в txt-отчет комментарий из ResultMeta конкретного result-subtree.
-' Writer/report не склеивает причины сам, а только
-' показывает уже сформированный ResultComment ответственного расчетного слоя.
+' Добавляет готовое пояснение ResultMeta нужной проверки в отчёт выполнения.
+' Причины уже сформированы расчётом и при записи заново не собираются.
 Private Sub ReportMetaComment(ByVal label As String, ByVal meta As CResultMeta)
     If meta Is Nothing Then Exit Sub
     If Len(Trim$(meta.ResultComment)) = 0 Then Exit Sub
     ReportValue label, meta.ResultComment
 End Sub
 
-' Добавляет многострочный диагностический блок в txt-отчет и перед записью
-' переводит низкоуровневую диагностику solver-а в более читаемый вид.
+' Добавляет многострочную диагностику в отчёт, предварительно
+' преобразуя служебные записи решателя в понятный текст.
 Private Sub ReportBlock(ByVal title As String, ByVal body As String)
     If mReport Is Nothing Then Exit Sub
     If Not mReport.Enabled Then Exit Sub
     mReport.AddDiagnosticBlock title, body
 End Sub
 
-' Выбирает governing-сочетание прочностного раздела по минимальному
-' положительному запасу несущей. Общий пользовательский Worst определяется
-' отдельно, по General.WorstCombinationCriterion.
+' Выбирает определяющее сочетание прочности по минимальному положительному запасу.
+' Общий выбор Worst по General.WorstCombinationCriterion выполняется отдельно.
 Private Function IsBetterGoverningCandidate(ByVal candidateIndex As Long, ByVal currentIndex As Long) As Boolean
     Dim candidateSafety As Double
     Dim currentSafety As Double
@@ -1757,8 +1728,9 @@ Private Function CrackSafetyFactorForGoverning(ByVal index As Long) As Double
     CrackSafetyFactorForGoverning = mResults(index).CrackResult.Width.ReserveFactor
 End Function
 
-' Выбирает Worst-сочетание по пользовательскому критерию верхней сводки.
-' Этот же индекс затем читают Plot.LoadCase = Worst и AutoCAD.Export.CombinationID = Worst.
+' Выбирает сочетание Worst для верхней сводки по пользовательскому критерию.
+' Его же используют схема Plot.LoadCase = Worst и экспорт AutoCAD
+' с AutoCAD.Export.CombinationID = Worst.
 Private Sub SelectWorstCombination()
     Dim i As Long
     mWorstCombinationIndex = 0
@@ -1813,8 +1785,9 @@ Public Property Get CombinationID(ByVal index As Long) As String
     CombinationID = mInputs(index).CombinationID
 End Property
 
-' Возвращает 1-based позицию LC внутри data-строк rngLoadCombinations.
-' Это служебная величина только для writer-ов Results; расчетный индекс batch остается компактным.
+' Возвращает номер строки сочетания в данных rngLoadCombinations, начиная с 1.
+' Это номер для записи Results; внутренний номер рассчитанного сочетания
+' может отличаться из-за пропущенных пустых строк.
 Public Property Get SourceDataOffset(ByVal index As Long) As Long
     SourceDataOffset = mInputs(index).SourceDataOffset
 End Property
@@ -1824,8 +1797,8 @@ Public Property Get CombinationName(ByVal index As Long) As String
     CombinationName = mInputs(index).Comment
 End Property
 
-' Возвращает профиль исходного сочетания до выполнения расчета. Preflight
-' компоновки Results использует input, а не еще пустой расчетный result-tree.
+' Возвращает имя профиля из исходной строки до выполнения расчёта.
+' Подготовка таблиц Results использует этот ввод, а не ещё пустые результаты.
 Public Property Get InputProfileId(ByVal index As Long) As String
     InputProfileId = mInputs(index).ProfileId
 End Property
@@ -1890,8 +1863,8 @@ Public Property Get StabilityMu2() As Double
     StabilityMu2 = mStabilityMu2
 End Property
 
-' Возвращает каноническое дерево результата LC. Потребители читают его
-' непосредственно, без скалярных forwarding-копий в batch-калькуляторе.
+' Возвращает общий объект результатов сочетания для чтения.
+' Отдельные копии всех численных полей в пакетном расчёте не хранятся.
 Public Property Get ResultAt(ByVal index As Long) As CCombinationResult
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3943, _
         "CBatchSectionCalculator", "Номер результата сочетания вне диапазона пакета."
@@ -1909,9 +1882,8 @@ Public Property Get StabilityLoadPointMy(ByVal index As Long) As Double
     StabilityLoadPointMy = mWorkingLoads(index).LoadPointMy
 End Property
 
-' Возвращает пользовательский лимит N/Ncr для eta-ветви СП 35.
-' Writer-ы используют это значение в заголовках, чтобы формула запаса
-' в Results совпадала с фактически выбранной настройкой Config.
+' Возвращает пользовательский предел N/Ncr для СП 35. Он же указывается
+' в заголовках Results, чтобы формула запаса соответствовала настройке Config.
 Public Property Get StabilitySP35NOverNcrLimit() As Double
     StabilitySP35NOverNcrLimit = mStabilitySP35NOverNcrLimit
 End Property
@@ -1953,7 +1925,8 @@ Public Property Get CrackLoadPointMy(ByVal index As Long) As Double
     CrackLoadPointMy = LoadStateForCombination(index).LoadPointMy
 End Property
 
-' Единая точка выдачи диаграмм для Strength/CrackInitiation/CrackedNDS.
+' Возвращает подготовку диаграмм материалов для прочности, образования трещины и НДС с
+' трещинами.
 Public Property Get CrackSteelElasticModulus() As Double
     CrackSteelElasticModulus = mMaterialProvider.SteelElasticModulus(cpCrackedNDS)
 End Property
@@ -1972,7 +1945,7 @@ Public Function StrengthConcreteTensionLimitForCombination(ByVal index As Long) 
     If Not spec Is Nothing Then StrengthConcreteTensionLimitForCombination = mMaterialProvider.ConcreteTensionLimitFromSpec(spec)
 End Function
 
-' True, если strength-диаграмма учитывает растянутый бетон и предел нужно показывать.
+' Показывает, учитывает ли модель прочности растяжение бетона и нужно ли выводить его предел.
 Public Function StrengthConcreteTensionLimitEnabledForCombination(ByVal index As Long) As Boolean
     Dim spec As CMaterialModelSpec
     Set spec = StrengthMaterialSpecForCombination(index)
@@ -1993,10 +1966,9 @@ Public Function StrengthSteelTensionLimitForCombination(ByVal index As Long) As 
     If Not spec Is Nothing Then StrengthSteelTensionLimitForCombination = mMaterialProvider.SteelTensionLimitFromSpec(spec)
 End Function
 
-' Возвращает спецификацию материала strength-модели для подробного блока прочности.
-' Сначала используем сохраненный named state, потому что он фиксирует реально
-' примененную спецификацию, а при отсутствии состояния берем профиль как fallback
-' для лимитов в строках, где расчет не запускался или завершился ошибкой.
+' Возвращает фактические параметры материалов для подробной таблицы прочности.
+' Сначала берёт их из сохранённого НДС. Если состояния нет, использует профиль
+' для вывода пределов в строках, где расчёт не запускался или завершился ошибкой.
 Private Function StrengthMaterialSpecForCombination(ByVal index As Long) As CMaterialModelSpec
     Dim stateResult As CSectionStateResult
     Set stateResult = mResults(index).StateRepository.FindState(sstStrengthState)
@@ -2019,7 +1991,7 @@ Public Property Get GoverningCombinationIndex() As Long
     GoverningCombinationIndex = mGoverningCombinationIndex
 End Property
 
-' Индекс LC, который стал определяющим в batch summary.
+' Возвращает номер сочетания, определяющего результат проверки прочности.
 Public Property Get GoverningCombinationID() As String
     If mGoverningCombinationIndex > 0 Then GoverningCombinationID = mInputs(mGoverningCombinationIndex).CombinationID
 End Property
@@ -2051,37 +2023,38 @@ Public Property Get WorstCombinationIndex() As Long
     WorstCombinationIndex = mWorstCombinationIndex
 End Property
 
-' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
+' Возвращает номер сочетания Worst по выбранному критерию общей сводки.
 Public Property Get WorstCombinationID() As String
     If mWorstCombinationIndex > 0 Then WorstCombinationID = mInputs(mWorstCombinationIndex).CombinationID
 End Property
 
-' Индекс LC, выбранный как Worst по пользовательскому критерию Summary.
+' Возвращает имя сочетания Worst по выбранному критерию общей сводки.
 Public Property Get WorstCombinationName() As String
     If mWorstCombinationIndex > 0 Then WorstCombinationName = mInputs(mWorstCombinationIndex).Comment
 End Property
 
-' StrengthStrain, StrengthCapacity, Cracks или Stability.
+' Возвращает критерий выбора определяющего сочетания: деформации, несущая способность, трещины
+' или устойчивость.
 Public Property Get WorstCombinationCriterion() As String
     WorstCombinationCriterion = mWorstCombinationCriterion
 End Property
 
-' Сколько раз за batch запускался CSectionSolver.Solve для поиска равновесия НДС.
+' Возвращает число вызовов CSectionSolver.Solve во всём пакетном расчёте.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
 
-' Снимок всех фактически выполненных итераций НДС.
+' Возвращает общее число фактически выполненных итераций НДС.
 Public Property Get SolverIterationCount() As Long
     SolverIterationCount = mSolverIterationCount
 End Property
 
-' Снимок попыток предельного поиска с начальных плоскостей.
+' Возвращает число попыток поиска предела с разными начальными полями деформаций.
 Public Property Get UltimateStrainStartCount() As Long
     UltimateStrainStartCount = mUltimateStrainStartCount
 End Property
 
-' Снимок итераций общего UltimateStrain для прочности и трещин.
+' Возвращает общее число итераций UltimateStrain для прочности и образования трещины.
 Public Property Get UltimateStrainIterationCount() As Long
     UltimateStrainIterationCount = mUltimateStrainIterationCount
 End Property
@@ -2091,13 +2064,13 @@ Public Property Get ElapsedSeconds() As Double
     ElapsedSeconds = mElapsedSeconds
 End Property
 
-' Короткий текстовый журнал по LC для диагностики batch-потока.
+' Возвращает краткий журнал выполнения отдельных сочетаний нагрузок.
 Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Считает сочетания с итоговой ошибкой входных данных по общей status-policy.
-' Физические отказы и численная несходимость не входят в этот счетчик.
+' Считает сочетания, завершившиеся ошибкой ввода по общим правилам статусов.
+' Физический отказ и численная несходимость в это число не входят.
 Public Property Get InvalidInputCount() As Long
     Dim i As Long
     For i = 1 To mCount
@@ -2201,8 +2174,8 @@ Public Property Get StabilityRequested(ByVal index As Long) As Boolean
         StabilityRequested = mProfiles.ProfileById(mInputs(index).ProfileId).StabilityEnabled
 End Property
 
-' Считает сочетания, для которых repository содержит хотя бы одно named-state.
-' Наличие сохраненного state само по себе не означает успешную инженерную проверку.
+' Считает сочетания, для которых сохранено хотя бы одно НДС.
+' Наличие сохранённого состояния само по себе не означает успешной инженерной проверки.
 Public Property Get StateAvailableCount() As Long
     Dim i As Long
     For i = 1 To mCount
@@ -2213,12 +2186,29 @@ End Property
 ' ==========================================================================
 ' ДЛЯ ТЕСТОВ
 ' ==========================================================================
-' Повторный запуск crack workflow проверяет изоляцию сохраненного снимка
-' от последующего изменения рабочего calculator и повторного использования.
 
-' Повторяет production-маршрут до публикации всего LC и возвращает первый
-' неизменяемый crack-result для сравнения. Repository остается рабочим:
-' новые formation/width-калькуляторы получают найденные состояния без solve.
+' ДЛЯ ТЕСТОВ: возвращает число успешных построений общей области в последнем Execute.
+Friend Property Get CrackDomainBuildCount() As Long
+    CrackDomainBuildCount = mCrackDomainBuildCount
+End Property
+
+' ДЛЯ ТЕСТОВ: возвращает число фактических подготовок общих массивов геометрии
+' за текущий запуск, без повторного решения НДС.
+Friend Property Get MechanicalPreparationBuildCount() As Long
+    MechanicalPreparationBuildCount = mMechanicalPreparationBuildCount
+End Property
+
+' ДЛЯ ТЕСТОВ: проверяет, освобождены ли после Execute ссылки на временные расчётные данные.
+Friend Property Get RunPreparationReleased() As Boolean
+    RunPreparationReleased = mCrackGeometryQuery Is Nothing And mRunConcreteProperties Is Nothing And _
+        mRunTransformedProperties(1) Is Nothing And mRunTransformedProperties(2) Is Nothing
+End Property
+
+' ДЛЯ ТЕСТОВ: повторный расчёт трещин не должен изменять ранее сохранённый результат.
+
+' ДЛЯ ТЕСТОВ: возвращает первый готовый результат трещин и повторяет обычный
+' расчёт до завершения сочетания. Новые расчётчики используют уже найденные
+' НДС из общего хранилища без нового решения равновесия.
 Public Function TestRepeatCrackCalculation(ByVal index As Long) As CCrackResult
     If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4270, _
         "CBatchSectionCalculator", "Индекс тестового сочетания вне диапазона."

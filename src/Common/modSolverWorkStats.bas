@@ -10,7 +10,7 @@ Option Explicit
 Private mSectionEquilibriumSolveCount As Long ' Количество фактических запусков CSectionSolver.Solve после валидации входа.
 Private mSectionEquilibriumIterationCount As Long ' Итерации Newton/Secant на всех ступенях и стартах НДС.
 Private mUltimateStrainStartCount As Long ' Начальные плоскости общего UltimateStrain и реальные теплые перезапуски.
-Private mUltimateStrainIterationCount As Long ' Итерации общего предельного поиска, без проб Якобиана и line-search.
+Private mUltimateStrainIterationCount As Long ' Число итераций общего поиска предела без дополнительных оценок Якобиана и подбора шага.
 
 ' Сбрасывает счетчик перед новым пакетным расчетом.
 Public Sub ResetSectionEquilibriumSolveCount()

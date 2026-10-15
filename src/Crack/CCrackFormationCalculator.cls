@@ -17,14 +17,14 @@ Option Explicit
 ' CLimitSearchCoordinator; общий поиск и решение равновесия выполняют численные классы.
 ' Расчёт ширины раскрытия использует готовый CCrackFormationResult и выполняется отдельно.
 
-Private Const CRACK_EQUILIBRIUM_TOLERANCE As Double = 1# ' Допуск равновесия N в долях пользовательского solver tolerance.
+Private Const CRACK_EQUILIBRIUM_TOLERANCE As Double = 1# ' Допуск равновесия по N как доля допуска, заданного пользователем для решателя.
 Private Const CRACK_DIRECTION_TOLERANCE As Double = 0.001 ' Допуск сохранения направления моментного вектора в прямом поиске lambda_crc.
-Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000000001 ' Точность предельного критерия для приема State внутри физической границы диаграммы.
+Private Const CRACK_STRAIN_RATIO_TOLERANCE As Double = 0.000000001 ' Точность достижения предельной деформации для подтверждения НДС внутри физических границ диаграммы.
 Private Const CRACK_LAMBDA_BRACKET_LIMIT As Double = 1024# ' Верхняя граница служебного поиска lambda_crc, если прямой Newton не сошелся.
 Private Const CRACK_ZERO_PATH_LAMBDA As Double = 0.000001 ' Окрестность начала пути для проверки постоянной части; не точность поиска.
 Private Const NEAR_ZERO_STRAIN As Double = 0.000000000001 ' Численный ноль для деформаций и кривизн.
 Private Const NEAR_ZERO_FORCE As Double = 0.000001 ' Численный ноль для отличия центрального растяжения от нулевой нагрузки.
-Private Const CRACK_PATH_AUTO As String = "Auto" ' Общий Search выбирает порядок по активным компонентам сочетания.
+Private Const CRACK_PATH_AUTO As String = "Auto" ' Общий поиск выбирает порядок изменения ненулевых компонентов нагрузки.
 Private Const CRACK_PATH_N As String = "LambdaN" ' Масштабируются N и связанные с ней моменты от эксцентриситета; заданные моменты постоянны.
 Private Const CRACK_PATH_NMXY As String = "LambdaNMxy" ' При поиске трещинообразования масштабируется весь вектор N/Mx/My.
 Private Const STRATEGY_AUTO As String = "Auto" ' Сначала UltimateStrain, при численной неудаче LoadMultiplier.
@@ -32,13 +32,13 @@ Private Const STRATEGY_ULTIMATE_STRAIN As String = "UltimateStrain" ' Прямо
 Private Const STRATEGY_LOAD_MULTIPLIER As String = "LoadMultiplier" ' Одномерный поиск lambda через серию обычных solve.
 
 Private mConverged As Boolean ' True, если расчет трещины завершился без ошибки входных данных или несходимости.
-Private mStopReason As String ' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
+Private mStopReason As String ' Краткая причина завершения: трещина найдена, не образована или равновесие не получено.
 Private mDiagnosticLog As String ' Диагностика пути, критерия и состояний трещинообразования.
-Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long
+Private mDiagnosticLines() As String, mDiagnosticCount As Long, mDiagnosticCapacity As Long ' Строки журнала, число записанных строк и вместимость массива.
 Private mDiagnosticDirty As Boolean ' Журнал собирается при чтении, без копирования всего текста каждой пробы.
 Private mDiagnosticsEnabled As Boolean ' Отключает подробный журнал, когда txt-отчет выполнения не нужен.
 Private mSolverCallCount As Long ' Сколько внутренних CSectionSolver/CStateSolutionRunner-вызовов выполнил расчет трещин.
-Private mSearchExecuted As Boolean ' Хотя бы одна численная попытка поиска точки в текущем LC; аналитический Ncrc не является Search.
+Private mSearchExecuted As Boolean ' Признак фактического запуска численного поиска для текущего сочетания; аналитическая формула Ncrc в него не входит.
 Private mFormationInternalStatus As EResultInternalStatus ' Машинный статус этапа образования нормальной трещины.
 Private mFormationResultCode As EResultCode ' Машинный код причины результата образования нормальной трещины.
 Private mCrackFormed As Boolean ' True, если по выбранной ветке расчета трещина считается образованной.
@@ -54,10 +54,10 @@ Private mSteelEs As Double ' Es для приведенной площади ц�
 Private mCrackInitiationSpec As CMaterialModelSpec ' Спецификация модели образования трещины для обязательной предварительной проверки.
 Private mCrackedStateSpec As CMaterialModelSpec ' Спецификация модели раскрытой трещины текущего LC.
 Private mPreCrackState As CSectionStateResult ' Необязательное состояние до выключения растянутого бетона.
-Private mPreCrackSolver As CSectionSolver ' Solver состояния PreCrackState для warm start состояния сразу после трещины.
+Private mPreCrackSolver As CSectionSolver ' НДС до образования трещины, используемое как начальное приближение состояния сразу после неё.
 Private mPostCrackState As CSectionStateResult ' Необязательное состояние после выключения растянутого бетона для sigma_s,crc.
-Private mPostCrackSolver As CSectionSolver ' Solver состояния PostCrackState, чтобы не решать его повторно для sigma_s,crc.
-Private mStateProvider As CStateProvider ' Внешний provider конечных named-state; search-probes трещин через него не кэшируются.
+Private mPostCrackSolver As CSectionSolver ' НДС после образования трещины для получения sigma_s,crc без повторного решения.
+Private mStateProvider As CStateProvider ' Общее получение конечных расчётных состояний; промежуточные пробы поиска здесь не сохраняются.
 Private mFormationLoadDefined As Boolean ' True, если сохранены внутренние усилия именно на уровне образования трещины.
 Private mFormationLoadN As Double ' Продольная сила служебного состояния образования трещины, Н.
 Private mFormationLoadMx As Double ' Внутренний Mx служебного состояния образования трещины, Н*мм.
@@ -78,7 +78,7 @@ Private mMcrc As Double ' Модуль изгибающего момента н�
 Private mAred As Double ' Площадь приведенного сечения для Ncrc при центральном растяжении, мм2.
 Private mCentralTensionBranch As Boolean ' True, если сработала отдельная ветка центрального растяжения.
 Private mInputLoadState As CSectionLoadState ' Единый нормализованный LC с пользовательской точкой приложения.
-Private mActiveSearchLoadPath As CLoadPathDescriptor ' Общий описатель конкретной траектории текущей search-session.
+Private mActiveSearchLoadPath As CLoadPathDescriptor ' Выбранное изменение нагрузки для текущей попытки поиска предела.
 Private mRequestedLoadPath As String ' Исходный выбор LC; нужен для нулевого Auto-сочетания и восстановления настройки после поиска.
 Private mCurrentLoadBelowFormationCriterion As Boolean ' На этом пути lambda=1 имеет допустимое равновесие без достижения критерия трещины.
 Private mSearchReferenceX As Double ' Центр, относительно которого проверяется осевая составляющая выбранного пути, мм.
@@ -86,10 +86,11 @@ Private mSearchReferenceY As Double ' Центр, относительно ко�
 Private mNumericalPathMath As CLoadPathMath ' Общая подготовка пути и точный кэш численной системы.
 
 ' ------------------------------
-' Настройки по умолчанию
+' Начальные настройки
 ' ------------------------------
-' Задает default пути, стратегии и внутренних solver-options. Параметры
-' материалов перед расчетом берутся из фактического material provider/spec.
+' Задаёт начальные способ изменения нагрузки, стратегию поиска и численные
+' параметры решения. Характеристики материалов перед расчётом берутся
+' из фактически переданной модели материалов.
 Private Sub Class_Initialize()
     mCrackFormationPath = CRACK_PATH_AUTO
     mCrackFormationSolutionStrategy = STRATEGY_AUTO
@@ -110,11 +111,10 @@ End Sub
 ' ------------------------------
 ' Чтение настроек Config
 ' ------------------------------
-' Загружает только те настройки, которые нужны расчету трещин и внутренним
-' прямым solve. Все пользовательские единицы сразу переводятся во внутренние
-' мм, Н, Н*мм и МПа; дальше класс работает как часть расчетного ядра.
-' Стратегия Formation обязательна. Путь передается из строки сочетания,
-' а не из отдельной настройки Config. Пустой численный Solver-параметр ошибочен.
+' Читает настройки образования трещины и служебных решений НДС. Пользовательские
+' единицы переводятся во внутренние мм, Н, Н*мм и МПа. Стратегия поиска
+' обязательна, а LoadPath передаётся из строки сочетания. Пустая обязательная
+' численная настройка Solver вызывает ошибку ввода.
 Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
     If settings Is Nothing Then Exit Sub
 
@@ -178,9 +178,9 @@ Private Sub ClearResult()
     mSearchReferenceY = 0#
 End Sub
 
-' Выполняет самостоятельный formation-сценарий без Width-калькулятора.
-' Выбирает физическую постановку, получает Pre/Post через общий State pipeline
-' и возвращает неизменяемый результат для последующих формул и вывода.
+' Выполняет самостоятельную проверку образования трещины. Выбирает физическую
+' постановку, получает состояния до и после трещины общим способом решения НДС
+' и возвращает готовый результат для расчёта ширины и вывода.
 Public Function CheckFormation(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
         ByVal crackedStateSpec As CMaterialModelSpec, ByVal crackInitiationSpec As CMaterialModelSpec, _
@@ -198,7 +198,8 @@ Public Function CheckFormation(ByVal section As CSectionModel, _
     Set CheckFormation = result
 End Function
 
-' Возвращает фактический машинный исход formation, не выводя его из строк.
+' Возвращает фактический код завершения проверки образования трещины, не определяя его по
+' тексту.
 Public Property Get ResultMeta() As CResultMeta
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -213,9 +214,10 @@ Public Property Get ResultMeta() As CResultMeta
     Set ResultMeta = meta
 End Property
 
-' Подтверждает физическую точку, а не только сохраненную нагрузку кандидата.
-' Неуспешное PreCrackState остается диагностикой отказа и не дает limit point;
-' аналитический Ncrc без State допустим только при успешном исходе проверки.
+' Проверяет, подтверждена ли найденная нагрузка физически допустимым НДС.
+' Неудачное PreCrackState сохраняется для диагностики, но не подтверждает
+' предельную точку. Аналитическая Ncrc без НДС допустима только
+' при успешном результате соответствующей проверки.
 Public Property Get HasLimitPoint() As Boolean
     If Not mFormationLoadDefined Or mFormationPathFallbackPsi1 Then Exit Property
     If Not mPreCrackState Is Nothing Then
@@ -231,12 +233,13 @@ Public Sub PointLoads(ByRef nValue As Double, ByRef mxValue As Double, ByRef myV
     FormationLoads nValue, mxValue, myValue
 End Sub
 
-' Fallback сохраняет факт трещины, но не придумывает PostState для psi.
+' Сохраняет факт наличия трещины при невозможности выделить отдельную пороговую нагрузку.
+' Несуществующее состояние после трещины для уточнения psi_s не подставляется.
 Public Property Get FallbackPsi1() As Boolean
     FallbackPsi1 = mFormationPathFallbackPsi1
 End Property
 
-' Выполняет проверку и сохраняет рабочий контекст одной formation-задачи.
+' Выполняет проверку образования трещины и сохраняет её рабочие данные.
 Private Sub CheckFormationCore(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec, _
@@ -254,9 +257,9 @@ Private Sub CheckFormationCore(ByVal section As CSectionModel, _
     mSearchReferenceX = centralReferenceX
     mSearchReferenceY = centralReferenceY
 
-    ' Нулевой Auto-LC не задает физической траектории. Не запускаем Search
-    ' ради отсутствующего действия; явный пустой scaled path проверяется
-    ' общим механизмом отдельно как ошибка выбора пути.
+    ' Нулевая нагрузка в режиме Auto не задаёт изменения усилий, поэтому поиск
+    ' не запускается. Явно выбранный путь без масштабируемой компоненты
+    ' отдельно проверяется общими правилами и может дать ошибку ввода.
     If mRequestedLoadPath = CRACK_PATH_AUTO And loadStateForClassification.N = 0# And _
             loadStateForClassification.LoadPointMx = 0# And loadStateForClassification.LoadPointMy = 0# Then
         mConverged = True
@@ -304,11 +307,9 @@ Public Sub ValidateSearchSettings(Optional ByVal settings As CSystemSettingsRead
     Err.Raise vbObjectError + 3740, "CCrackFormationCalculator", message
 End Sub
 
-' Проверяет минимальный набор данных для предварительной проверки образования
-' нормальной трещины.
-' В отличие от основного Calculate здесь еще нет полного CrackedState solver-а,
-' поэтому проверяется только геометрия, поставщик материалов и модель
-' CrackInitiation.
+' Проверяет геометрию, подготовку материалов и модель образования трещины
+' перед предварительной проверкой. Полное текущее НДС с трещинами
+' на этом этапе ещё не требуется.
 Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal loadStateForClassification As CSectionLoadState, ByVal crackedStateSpec As CMaterialModelSpec, _
         ByVal crackInitiationSpec As CMaterialModelSpec)
@@ -327,9 +328,8 @@ Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materi
         Err.Raise vbObjectError + 3732, "CCrackFormationCalculator", "Для Calculation.Crack.Width нужна MaterialModel.CrackInitiation."
 End Sub
 
-' Проверяет центральное растяжение по Ncrc. Для единого snapshot-а состояния
-' до и после трещины сохраняются так же, как в общей ветке образования
-' трещины.
+' Проверяет центральное растяжение по Ncrc. Состояния до и после трещины
+' сохраняет в том же формате, что и при общем поиске нагрузки образования трещины.
 Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, ByVal targetN As Double, _
         ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -369,8 +369,9 @@ Private Sub CheckCentralTensionFormation(ByVal section As CSectionModel, _
     StoreFormationLoad targetN * mLambdaCrc, targetMx * mLambdaCrc, targetMy * mLambdaCrc
     mResolvedCrackFormationPath = activePath
     If Not BuildPreCrackState(section, materialProvider, targetN, targetMx, targetMy) Then Exit Sub
-    ' Принятая точка подтверждает факт трещины независимо от пригодности Post.
-    ' Его отказ нужен для диагностики/fallback, но не отменяет найденный порог.
+    ' Подтверждённая пороговая нагрузка означает образование трещины даже при неудаче
+    ' состояния после неё. Его отказ сохраняется для диагностики и выбора psi_s
+    ' и не отменяет уже найденный порог.
     mCrackFormed = HasLimitPoint
     If Not EnsurePostCrackState(section, materialProvider, Nothing, targetN, targetMx, targetMy) Then Exit Sub
 
@@ -420,10 +421,9 @@ Private Sub CheckGeneralFormation(ByVal section As CSectionModel, _
     SetFormationSuccess "Предварительная проверка Mcrc: трещина образуется при текущей нагрузке."
 End Sub
 
-' Передает поиск стадии образования нормальной трещины в общий LimitSearch.
-' CCrackFormationCalculator остается владельцем crack-критерия, диагностического
-' журнала и сохранения PreCrackState/PostCrackState. Физический путь выбирается
-' общим Search, численная стратегия выполняется тем же поисковым слоем.
+' Передаёт поиск нагрузки образования трещины общим алгоритмам LimitSearch.
+' Здесь сохраняются критерий бетона, диагностика и состояния до и после трещины;
+' порядок изменения нагрузки и численный поиск выполняются общими классами.
 Private Function FindGeneralFormationLambda(ByVal section As CSectionModel, _
         ByVal materialProvider As CMaterialModelProvider, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -472,8 +472,8 @@ Public Sub LimitSearchBeginCrackFormationAttempt(ByVal pathKey As String, _
     Set mActiveSearchLoadPath = loadPath
 End Sub
 
-' Сохраняет фактический общий путь и причины Auto-переходов у Formation.
-' Последующая проверка наличия трещины не теряет эту историю в ResultComment.
+' Сохраняет фактически выбранный путь и причины переходов Auto.
+' При последующей проверке наличия трещины эта история остаётся в ResultComment.
 Public Sub LimitSearchFinishLoadPath(ByVal pathKey As String, ByVal history As String)
     mResolvedCrackFormationPath = pathKey
     If Len(Trim$(history)) = 0 Then Exit Sub
@@ -497,26 +497,26 @@ Public Function LimitSearchCrackFormationPathDisplayNameForKey(ByVal pathKey As 
     LimitSearchCrackFormationPathDisplayNameForKey = CrackFormationPathDisplayNameForKey(pathKey)
 End Function
 
-' Добавляет строку в crack-диагностику из общего LimitSearch.
+' Добавляет сообщение общего поиска предела в диагностику образования трещины.
 Public Sub LimitSearchAppendDiagnostic(ByVal text As String)
     AppendDiagnostic text
 End Sub
 
-' Очищает текущую причину остановки перед fallback-веткой того же пути.
+' Очищает рабочую причину остановки перед попыткой другого численного метода на том же пути.
 Public Sub LimitSearchClearStopReason()
     mStopReason = vbNullString
     mFormationInternalStatus = rsUnset
     mFormationResultCode = rcNone
 End Sub
 
-' Возвращает предыдущую причину, если fallback-ветка не сформировала своей.
+' Возвращает прежнюю причину, если дополнительный способ решения не записал своей.
 Public Sub LimitSearchSetStopReasonIfEmpty(ByVal text As String)
     If Len(mStopReason) = 0 Then SetFormationNumericalFailure text
 End Sub
 
-' Запускает низкоуровневый UltimateStrain-критерий образования трещины.
-' Метод публичен только для общего LimitSearch; инженерная логика crack-расчета
-' вызывается через самостоятельный CheckFormation.
+' Запускает поиск образования трещины по предельной деформации UltimateStrain.
+' Этот метод используется общим поиском; самостоятельная инженерная проверка
+' вызывается через CheckFormation.
 Public Function LimitSearchRunCrackFormationUltimate(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -528,9 +528,8 @@ Public Function LimitSearchRunCrackFormationUltimate(ByVal section As CSectionMo
         momentMxAtReference, momentMyAtReference, referenceX, referenceY)
 End Function
 
-' Создает load-path для общей ветки LoadMultiplier трещинообразования.
-' Метод нужен общему CLoadMultiplierSearch, чтобы не восстанавливать в нем
-' crack-специфическую связь моментов относительно расчетной точки.
+' Создаёт общую зависимость усилий для LoadMultiplier с учётом расчётной точки.
+' Поисковый класс использует её без собственной формулы переноса моментов для трещин.
 Public Function LimitSearchCrackFormationLoadPath(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
@@ -561,9 +560,9 @@ Public Function LimitSearchAcceptFormationInitialPoint(ByVal targetN As Double, 
     LimitSearchAcceptFormationInitialPoint = True
 End Function
 
-' Проверяет, содержит ли выбранный crack-path ненулевую масштабируемую часть.
-' Если Base отсутствует, общий LoadMultiplier-search не запускает бессмысленную
-' скобку и оставляет физическое решение за crack-слоем.
+' Проверяет, есть ли ненулевая масштабируемая часть выбранной нагрузки.
+' Если её нет, численное построение интервала нагрузок не запускается;
+' физический итог определяет сама проверка образования трещины.
 Public Function LimitSearchCrackFormationHasScaledLoad(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double) As Boolean
     If Not mActiveSearchLoadPath Is Nothing Then
@@ -575,9 +574,9 @@ Public Function LimitSearchCrackFormationHasScaledLoad(ByVal targetN As Double, 
     LimitSearchCrackFormationHasScaledLoad = (path.NBase <> 0# Or path.MxBase <> 0# Or path.MyBase <> 0#)
 End Function
 
-' Выполняет одну lambda-точку LoadMultiplier для образования трещины.
-' Возвращаемая функция отрицательна до eps_bt,ult и неотрицательна после
-' достижения порога; это тот же контракт, который использует capacity-search.
+' Решает одну пробную нагрузку lambda для определения образования трещины.
+' Возвращаемая функция отрицательна до eps_bt,ult и неотрицательна
+' при достижении порога; такой же знак принят в общем поиске несущей способности.
 Public Function LimitSearchEvaluateCrackFormationLoadMultiplier(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -679,13 +678,13 @@ Public Function LimitSearchFinalizeCrackFormationLoadMultiplier(ByVal section As
     LimitSearchFinalizeCrackFormationLoadMultiplier = True
 End Function
 
-' Фиксирует физический fallback выбранного crack-path: трещина уже есть в
-' постоянной части траектории, поэтому отдельная sigma_s,crc-точка не определяется.
+' Отмечает наличие трещины уже в постоянной части нагрузки.
+' На этом пути отдельное состояние в момент образования для sigma_s,crc не определяется.
 Public Sub LimitSearchMarkFormationPathFallback(ByVal reason As String)
     MarkFormationPathFallback reason
 End Sub
 
-' Фиксирует результат "трещина не образована" для выбранного crack-path.
+' Сохраняет результат «трещина не образована» для выбранного изменения нагрузки.
 Public Sub LimitSearchFinishNoCrack(ByVal reason As String)
     FinishNoCrack reason
 End Sub
@@ -695,10 +694,10 @@ Public Sub LimitSearchSetCrackFormationStopReason(ByVal reason As String)
     SetFormationNumericalFailure reason
 End Sub
 
-' Фиксирует техническое достижение границы crack-search без доказанного физического результата.
-' Для Auto это сигнал попробовать следующую траекторию. Для фиксированного
-' пути остается SEARCH_BOUND_REACHED: он не доказывает отсутствие трещины
-' и сам по себе не является численной несходимостью.
+' Сохраняет достижение технической верхней границы поиска без доказанного предела.
+' Auto может попробовать следующий путь. При явном LoadPath остаётся
+' SEARCH_BOUND_REACHED: это не доказательство отсутствия трещины
+' и не самостоятельный признак численной несходимости.
 Public Sub LimitSearchSetCrackFormationSearchBoundReached(ByVal reason As String)
     mConverged = False
     mCrackFormed = False
@@ -757,11 +756,10 @@ Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         Abs(rLimit) <= CRACK_STRAIN_RATIO_TOLERANCE)
 End Function
 
-' Возвращает норму невязок для общего UltimateStrain line-search при поиске
-' трещинообразования. Невязки пути уже выражены в долях допуска равновесия,
-' а деформационный критерий приводится к своему допуску. Иначе шаг к точке
-' трещины отвергается из-за временной невязки усилий, несмотря на уменьшение
-' относительной ошибки критерия. Условия приема State здесь не меняются.
+' Вычисляет общую меру невязок для подбора шага при поиске образования трещины.
+' Невязки нагрузки и деформационного критерия делятся на соответствующие допуски,
+' чтобы уменьшение ошибки критерия не скрывалось временной невязкой усилий.
+' Условия окончательного подтверждения НДС не меняются.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
     If mNumericalPathMath Is Nothing Then Set mNumericalPathMath = New CLoadPathMath
@@ -830,8 +828,9 @@ Public Sub LimitSearchSetUltimateNumericalFailure(ByVal reason As String)
     SetFormationNumericalFailure reason
 End Sub
 
-' Переводит typed-причину общего Search в Formation meta единым механизмом.
-' Отсутствие объекта и ошибка настройки остаются терминальными, не NumFail.
+' Переносит код причины общего поиска в статус проверки образования трещины.
+' Отсутствие обязательного объекта и ошибка настройки останавливают расчёт
+' с собственной причиной, не подменяясь NumFail.
 Public Sub LimitSearchSetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -934,11 +933,10 @@ Private Function TryUltimateStrainFormation(ByVal section As CSectionModel, _
         concreteMaterial, steelMaterial, loadPath, startSolver)
 End Function
 
-' Возвращает True, когда результат текущей численной попытки окончательный:
-' подтверждено отсутствие трещины, получен физический отказ либо выявлена
-' терминальная ошибка данных, конфигурации или программы. UltimateStrain
-' не повторяется через LoadMultiplier; дальнейший Auto-перебор путей
-' остается ответственностью общего координатора Search.
+' Проверяет, нужно ли прекратить текущую попытку: подтверждено отсутствие трещины,
+' получен физический отказ или найдена ошибка входа, настройки либо программы.
+' UltimateStrain при этом не повторяется через LoadMultiplier; переход
+' Auto к другому изменению нагрузки определяет общий координатор.
 Private Function FormationSearchStoppedTerminally() As Boolean
     FormationSearchStoppedTerminally = (mConverged And Not mCrackFormed) Or _
         mFormationPathFallbackPsi1 Or _
@@ -948,9 +946,9 @@ Private Function FormationSearchStoppedTerminally() As Boolean
         (mFormationInternalStatus = rsInternalError)
 End Function
 
-' Старт для прямого поиска по общей lambda-траектории. Явно переданная плоскость
-' имеет приоритет: это warm-start соседней точки или точки найденной скобки.
-' Без нее используем общий CStateGuessBuilder, затем геометрическую оценку.
+' Готовит начальное поле деформаций для прямого поиска предела.
+' Сначала использует явно переданное НДС соседней нагрузки. Без него
+' пробует CStateGuessBuilder, затем геометрическую оценку.
 Private Sub InitializeCrcLoadPathGuess(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal startSolver As CSectionSolver, ByVal targetN As Double, _
@@ -966,9 +964,9 @@ Private Sub InitializeCrcLoadPathGuess(ByVal section As CSectionModel, _
     Set guessBuilder = New CStateGuessBuilder
     If guessBuilder.BuildForDirectState(section, concreteMaterial, steelMaterial, _
             targetN, targetMx, targetMy, eps0, kx, ky) Then
-        ' Полная перегрузка может дать старт далеко за всеми пределами.
-        ' Для поиска первой границы сохраняем форму этой плоскости, но
-        ' начинаем внутри физической области. Найденную точку проверяет Search.
+        ' При сильной перегрузке начальное поле может выйти за все физические пределы.
+        ' Уменьшаем его величину, сохраняя форму, чтобы начать поиск первого предела
+        ' изнутри допустимой области. Найденную точку проверяет общий поиск.
         Dim guessSolver As CSectionSolver, residual As Double, limitState As String
         Set guessSolver = New CSectionSolver
         guessSolver.EvaluatePhysicalStrainPlane section, concreteMaterial, steelMaterial, eps0, kx, ky
@@ -982,9 +980,9 @@ Private Sub InitializeCrcLoadPathGuess(ByVal section As CSectionModel, _
         mConcreteEbt2, eps0, kx, ky
 End Sub
 
-' Проверяет найденную точку около lambda=0 отдельным равновесием постоянной
-' части. Если она уже треснула, выбранный путь не дает отдельной sigma_s,crc:
-' фиксируется доменный fallback, а Auto может попробовать следующий путь.
+' Отдельно проверяет равновесие постоянной нагрузки при lambda около нуля.
+' Если трещина уже есть, отдельное состояние для sigma_s,crc на этом пути
+' не определяется; Auto может попробовать другой путь.
 Private Function TryMarkConstantPartFormationFallback(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double) As Boolean
@@ -1097,8 +1095,8 @@ Failed:
         "Не удалось оценить плоскость деформаций при поиске образования трещины: " & description
 End Function
 
-' Получает физическое состояние на найденном пороге через общий provider или
-' runner. Готовый cache-hit восстанавливается без нового поиска равновесия.
+' Получает НДС для найденного порога через CStateProvider или CStateSolutionRunner.
+' Если подходящее состояние уже сохранено, возвращает его без нового решения равновесия.
 Private Function BuildPreCrackState(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     If mPreCrackState Is Nothing Then
@@ -1148,9 +1146,9 @@ Private Function BuildPreCrackState(ByVal section As CSectionModel, ByVal materi
     BuildPreCrackState = True
 End Function
 
-' Возвращает PostCrackState для уже найденного lambda_crc. Предварительная
-' проверка создает это состояние заранее, а Width затем читает напряжения
-' из неизменяемого State без повторного решения.
+' Возвращает состояние после трещины для найденного lambda_crc.
+' Предварительная проверка готовит его один раз, а расчёт ширины
+' читает сохранённые напряжения без нового решения НДС.
 Private Function EnsurePostCrackState(ByVal section As CSectionModel, ByVal materialProvider As CMaterialModelProvider, _
         ByVal startSolver As CSectionSolver, ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double) As Boolean
     If Not mPostCrackState Is Nothing Then
@@ -1200,8 +1198,8 @@ Private Function EnsurePostCrackState(ByVal section As CSectionModel, ByVal mate
     EnsurePostCrackState = True
 End Function
 
-' Сохраняет фактическую причину неуспеха State; численная несходимость не
-' подменяет ошибку входа, конфигурации, внутреннюю ошибку или физический отказ.
+' Сохраняет фактическую причину неудачи состояния. Ошибка ввода, настройки,
+' программы или физический отказ не подменяются численной несходимостью.
 Private Function AcceptFormationState(ByVal state As CSectionStateResult, ByVal stageName As String) As Boolean
     If state Is Nothing Then
         mConverged = False
@@ -1231,7 +1229,7 @@ Private Sub StoreFormationLoad(ByVal nValue As Double, ByVal mxValue As Double, 
     mFormationLoadDefined = True
 End Sub
 
-' Сохраняет точку выбранной lambda-траектории как внутренние усилия solver-а.
+' Сохраняет внутренние усилия найденного НДС как точку выбранной зависимости нагрузки от lambda.
 Private Sub StoreFormationLoadFromPath(ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double)
     Dim nValue As Double
     Dim mxValue As Double
@@ -1250,9 +1248,9 @@ Private Sub FormationLoads(ByRef nValue As Double, ByRef mxValue As Double, ByRe
     myValue = mFormationLoadMy
 End Sub
 
-' Возвращает общую траекторию текущей search-session. Для низкоуровневого
-' запроса без LC восстанавливает нагрузку относительно переданной точки и
-' использует тот же описатель пути, не дублируя правила Offset/Base.
+' Возвращает зависимость усилий от lambda для текущего поиска. При программном
+' запросе без строки сочетания учитывает переданную расчётную точку
+' и использует те же правила постоянной и масштабируемой частей нагрузки.
 Private Function FormationLoadPath(ByVal targetN As Double, _
         ByVal targetMomentMx As Double, ByVal targetMomentMy As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double) As CLoadPathVector
@@ -1306,9 +1304,10 @@ Private Sub ApplyMaterialProviderProperties(ByVal materialProvider As CMaterialM
     mSteelEs = materialProvider.SteelElasticModulusFromSpec(mCrackedStateSpec)
 End Sub
 
-' Решает одну lambda-точку общего LoadMultiplier через единый state pipeline.
-' Подбирает полезный warm-start, при его неудаче пробует самостоятельный старт
-' и возвращает formation residual только после подтвержденного равновесия.
+' Решает НДС одной нагрузки lambda общим CStateSolutionRunner.
+' Использует пригодное прежнее НДС как старт; при неудаче пробует самостоятельное
+' начальное приближение. Возвращает невязку критерия трещины только после подтверждения
+' равновесия.
 Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
@@ -1319,10 +1318,9 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
     Dim probeMy As Double
     loadPath.Target lambdaValue, probeN, probeMx, probeMy
 
-    ' Нулевая нижняя точка lambda=0 не является полезной стартовой плоскостью:
-    ' если передать ее как warm-start, общий CStateSolutionRunner не построит
-    ' свое active-set приближение для сложного N+M. Ненулевые соседние точки
-    ' оставляем как обычный warm-start, потому что они ускоряют бисекцию.
+    ' Нулевое НДС при lambda = 0 не используем как заданный старт. Иначе
+    ' CStateSolutionRunner не построит своё начальное приближение для сложного N + M.
+    ' Ненулевые состояния соседних нагрузок сохраняем: они ускоряют уточнение предела.
     Dim effectiveStart As CSectionSolver
     Set effectiveStart = EffectiveLoadScalingWarmStart(startSolver)
     If effectiveStart Is Nothing Then
@@ -1346,8 +1344,9 @@ Private Function ProbeLoadScalingFormation(ByVal section As CSectionModel, _
         End If
     End If
 
-    ' Runner уже проверил общий active-set старт и разрешенные extension-старты.
-    ' Повторять ту же нагрузку с теми же стартами в Formation не требуется.
+    ' Общий запуск НДС уже проверил самостоятельное начальное приближение
+    ' и разрешённые старты с продолжением диаграмм. Повторять ту же нагрузку
+    ' с теми же начальными полями здесь не требуется.
     CaptureFormationSolverFailure solver
     AppendLoadScalingProbeDiagnostic lambdaValue, 0#, False
 End Function
@@ -1432,9 +1431,9 @@ Private Function FinishAtOtherPhysicalLimit(ByVal section As CSectionModel, _
     FinishAtOtherPhysicalLimit = True
 End Function
 
-' Записывает одну lambda-точку fallback-метода LoadMultiplier. В отличие от
-' строк UltimateStrain, здесь lambda проверяется обычным НДС CrackInitiation,
-' поэтому отдельная подпись метода важна для читаемой хронологии отчета.
+' Записывает одну проверку нагрузки методом LoadMultiplier, в том числе
+' после неудачи UltimateStrain. В отчёте указывает метод, поскольку
+' здесь критерий проверяется обычным НДС по модели образования трещины.
 Private Sub AppendLoadScalingProbeDiagnostic(ByVal lambdaValue As Double, _
         ByVal residual As Double, ByVal converged As Boolean)
     If converged Then
@@ -1447,9 +1446,8 @@ Private Sub AppendLoadScalingProbeDiagnostic(ByVal lambdaValue As Double, _
     End If
 End Sub
 
-' Возвращает warm-start для решения НДС только если в нем действительно есть
-' ненулевая плоскость деформаций. Это защищает lambda*NMxy от плохого старта
-' из полностью нулевого НДС при lambda=0.
+' Выбирает прежнее НДС как начальное приближение только при ненулевом поле деформаций.
+' Это исключает неудачный старт lambda*NMxy из полностью нулевого состояния при lambda = 0.
 Private Function EffectiveLoadScalingWarmStart(ByVal startSolver As CSectionSolver) As CSectionSolver
     If startSolver Is Nothing Then Exit Function
     If Not startSolver.Converged Then Exit Function
@@ -1515,10 +1513,9 @@ Private Function SolverFormationResidual(ByVal section As CSectionModel, _
     SolverFormationResidual = True
 End Function
 
-' Строит стартовое приближение для прямого состояния образования трещины.
-' Если текущий service-solver уже содержит растяжение бетона, его плоскость
-' просто масштабируется до eps_bt2 как устойчивой начальной оценки. Иначе используется грубая геометрическая
-' оценка по направлению заданного вектора Mx/My.
+' Строит начальное НДС для определения образования трещины. Если текущее состояние
+' содержит растяжение бетона, масштабирует его поле до eps_bt2.
+' Иначе использует геометрическую оценку по направлению моментов Mx/My.
 Private Sub InitializeCrcStrainGuess(ByVal section As CSectionModel, ByVal startSolver As CSectionSolver, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal epsBt2Guess As Double, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
@@ -1580,7 +1577,8 @@ Private Sub SetFormationSuccess(ByVal reason As String)
     End If
 End Sub
 
-' Помечает ошибку пользовательских данных или обязательных входов crack-этапа.
+' Сохраняет ошибку пользовательских данных или отсутствующих обязательных данных проверки
+' трещин.
 Private Sub SetFormationInvalidInput(ByVal reason As String)
     mConverged = False
     mCrackFormed = False
@@ -1712,9 +1710,9 @@ Private Function IsNonTensileForcePath(ByVal targetN As Double) As Boolean
     End If
 End Function
 
-' Запускает служебное НДС через общий CStateSolutionRunner. Так состояния
-' PreCrackState/PostCrackState получают тот же централизованный подбор стартовой
-' плоскости, настройки solver-а и диагностику, что и Strength/CrackedState.
+' Решает состояния до и после трещины общим CStateSolutionRunner
+' с теми же правилами начального приближения, настройками и диагностикой,
+' что применяются для прочности и текущего НДС с трещинами.
 Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMaterial As CMaterialDiagram, _
         ByVal steelMaterial As CMaterialDiagram, ByVal startSolver As CSectionSolver, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -1741,9 +1739,9 @@ Private Function SolveState(ByVal section As CSectionModel, ByVal concreteMateri
     End If
 End Function
 
-' Сохраняет машинную причину неуспешной state-пробы. Вызов после исчерпания
-' численных стартов сохраняет singular tangent отдельно; terminal ошибки
-' фиксируются сразу и не заменяются последующими generic сообщениями Search.
+' Сохраняет код причины неудачной пробы НДС. После исчерпания стартов
+' различает вырожденную касательную матрицу и другие причины. Ошибки,
+' при которых продолжение недопустимо, записывает сразу без замены общим сообщением поиска.
 Private Sub CaptureFormationSolverFailure(ByVal solver As CSectionSolver)
     mConverged = False
     mCrackFormed = False
@@ -1757,7 +1755,7 @@ Private Sub CaptureFormationSolverFailure(ByVal solver As CSectionSolver)
     SetFormationResult meta.InternalStatus, meta.ResultCode, meta.ResultComment
 End Sub
 
-' Передает crack-настройки в общий runner прямого НДС.
+' Передаёт настройки решения НДС для трещин общему CStateSolutionRunner.
 Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
     runner.LoadSteps = mSolverLoadSteps
     runner.MaxIterations = mSolverMaxIterations
@@ -1769,16 +1767,10 @@ Private Sub ConfigureStateRunner(ByVal runner As CStateSolutionRunner)
     runner.DiagnosticsEnabled = mDiagnosticsEnabled
 End Sub
 
-' Центральное растяжение для трещин определяется по моментному вектору
-' относительно центра тяжести приведенного сечения. Перенос от
-' Load.ReferenceOffset и обнуление практически нулевых моментов выполняет
-' CSectionLoadState; crack-калькулятор только спрашивает у него моменты
-' относительно нужного расчетного центра и не повторяет геометрию приложения
-' нагрузки.
-'
-' Классификация зависит от заданных усилий и расчетной точки отсчета,
-' а не от кривизн стартовой или найденной плоскости solver-а. Поэтому
-' изменение численного старта не переключает инженерную ветку расчета.
+' Проверяет центральное растяжение по моментам относительно центра приведённого сечения.
+' Эксцентриситет нагрузки и фильтр малых моментов учитывает CSectionLoadState.
+' Выбор этой проверки зависит от заданных усилий и расчётной точки,
+' а не от кривизн начального приближения или найденного НДС.
 Private Function IsCentralTensionState(ByVal loadStateForClassification As CSectionLoadState, _
         ByVal centralReferenceX As Double, ByVal centralReferenceY As Double) As Boolean
     IsCentralTensionState = loadStateForClassification.IsCentralTensionAbout( _
@@ -1885,15 +1877,15 @@ Private Function ConcreteTensionUltimateStrain(ByVal minStrain As Double, ByVal 
     ConcreteTensionUltimateStrain = mConcreteEbt2 - (mConcreteEbt2 - mConcreteEbt0) * ratio
 End Function
 
-' Определяет растягивающий характер продольной силы только через единый
-' объект нагрузки. Так central tension и phi3 используют ту же интерпретацию
-' Load.ReferenceOffset и фильтра малых моментов, что batch/stability/capacity.
+' Определяет знак продольной силы через общий объект нагрузки.
+' Центральное растяжение и phi3 используют те же правила точки приложения
+' и малых моментов, что прочность, несущая способность и устойчивость.
 Private Function IsTensionLoad(ByVal loadStateForClassification As CSectionLoadState) As Boolean
     IsTensionLoad = loadStateForClassification.IsTension(NEAR_ZERO_FORCE)
 End Function
 
-' Нормализует общий LoadPath из LC тем же описателем, что Capacity.
-' Пустое значение означает Auto; отдельной настройки пути трещин в Config нет.
+' Читает LoadPath сочетания теми же правилами, что несущая способность.
+' Пустое значение означает Auto; отдельного пути трещин в Config нет.
 Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
     Dim descriptor As CLoadPathDescriptor
     Set descriptor = New CLoadPathDescriptor
@@ -1902,10 +1894,9 @@ Private Function NormalizeCrackFormationPath(ByVal rawPath As String) As String
         "В таблице сочетаний исправьте LoadPath: выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
 End Function
 
-' Приводит численную стратегию поиска трещинообразования к той же логике,
-' что используется для capacity: Auto, UltimateStrain или LoadMultiplier.
-' Допустимые aliases проверяются здесь для всех consumers; reader при наличии
-' указывает адрес Config, не влияя на выбор метода или расчетную постановку.
+' Проверяет выбор стратегии образования трещины: Auto, UltimateStrain или LoadMultiplier.
+' Все вызовы принимают одни и те же допустимые написания; при чтении из Config
+' ошибка дополняется адресом, не меняя способ поиска.
 Public Function NormalizeCrackFormationSolutionStrategy(ByVal rawStrategy As String, _
         Optional ByVal settings As CSystemSettingsReader = Nothing) As String
     Select Case LCase$(Trim$(rawStrategy))
@@ -1980,10 +1971,10 @@ End Function
 ' --------------------------------------------------------------------------
 ' Свойства результатов
 ' --------------------------------------------------------------------------
-' Сохраняет машинный исход и подтвержденное НДС в общий численный результат.
-' Search-result не трактует отсутствие трещины при текущем LC и не читает
-' рабочий Formation-контекст после создания этого снимка. Факт Search хранится
-' отдельно: аналитический Ncrc может получить Pre/PostState без lambda-поиска.
+' Сохраняет причину завершения и подтверждённое НДС в общем результате поиска.
+' Факт численного поиска указывается отдельно: аналитическая Ncrc может
+' дать состояния до и после трещины без подбора lambda. После создания
+' результат не обращается к временным полям расчёта образования трещины.
 Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = ResultMeta
@@ -1997,14 +1988,15 @@ Public Function BuildSearchSnapshot(ByVal requestedStrategy As String) As CLimit
     Set BuildSearchSnapshot = result
 End Function
 
-' Writer-ы и тесты читают эти значения после Calculate. Свойства ничего не
-' пересчитывают и не обращаются к solver-у повторно.
+' Возвращает сохранённые после Calculate значения для записи и тестов
+' без повторного расчёта или обращения к решателю.
 
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
 
-' Короткое пояснение результата: расчет выполнен, трещина не образована или solver не сошелся.
+' Возвращает краткую причину завершения: трещина найдена, не образована или равновесие не
+' получено.
 Public Property Get StopReason() As String
     StopReason = mStopReason
 End Property
@@ -2038,9 +2030,8 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Возвращает число внутренних запусков/оценок solver-а, выполненных именно
-' этим расчетом трещин. Batch использует его для общей диагностической сводки,
-' чтобы не терять служебные solve при поиске Ncrc/Mcrc.
+' Возвращает число внутренних запусков и оценок НДС этой проверки трещин.
+' Используется в общей диагностике, включая служебные решения при поиске Ncrc/Mcrc.
 Public Property Get SolverCallCount() As Long
     SolverCallCount = mSolverCallCount
 End Property
@@ -2111,9 +2102,8 @@ Public Property Get PostCrackState() As CSectionStateResult
     Set PostCrackState = mPostCrackState
 End Property
 
-' Подключает общий provider конечных named-state. Если свойство не задано,
-' калькулятор остается пригодным для изолированных тестов и решает состояния
-' собственным локальным CStateSolutionRunner.
+' Подключает общий CStateProvider для конечных расчётных состояний.
+' Без него класс может работать самостоятельно через собственный CStateSolutionRunner.
 Public Property Set StateProvider(ByVal value As CStateProvider)
     Set mStateProvider = value
 End Property
@@ -2178,7 +2168,7 @@ Public Property Let DiagnosticsEnabled(ByVal value As Boolean)
     mDiagnosticsEnabled = value
 End Property
 
-' Передает единый выбор и перебор путей общему Search.
+' Передаёт выбор и последовательную проверку способов изменения нагрузки общему поиску.
 Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim coordinator As CLimitSearchCoordinator
     Set coordinator = New CLimitSearchCoordinator

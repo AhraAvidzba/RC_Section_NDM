@@ -17,18 +17,18 @@ Option Explicit
 ' Начальное приближение и настройки повторных попыток влияют на сходимость,
 ' но не изменяют физическую постановку запроса и потому не входят в этот ключ.
 
-Private mStateType As ESectionStateType ' Какое named-state нужно получить.
-Private mMaterialRole As ECalculationPurpose ' Роль материала: Strength, CrackInitiation, CrackedState.
-Private mMaterialSpec As CMaterialModelSpec ' Фактическая спецификация диаграмм для этого state.
+Private mStateType As ESectionStateType ' Тип расчётного состояния, которое требуется получить.
+Private mMaterialRole As ECalculationPurpose ' Назначение материалов: прочность, образование трещины или НДС с трещинами.
+Private mMaterialSpec As CMaterialModelSpec ' Фактически выбранные параметры диаграмм для данного НДС.
 Private mTargetN As Double ' Целевая продольная сила, Н.
 Private mTargetMx As Double ' Целевой момент Mx, Н*мм.
 Private mTargetMy As Double ' Целевой момент My, Н*мм.
-Private mUseDiagramExtension As Boolean ' True, если для равновесия state разрешена диаграмма с technical extension.
-Private mAllowRetryStarts As Boolean ' Solve-option: можно ли пробовать дополнительные стартовые плоскости.
+Private mUseDiagramExtension As Boolean ' Разрешено ли вспомогательное продолжение диаграмм для поиска равновесия.
+Private mAllowRetryStarts As Boolean ' Разрешены ли дополнительные начальные приближения при несходимости.
 
-' Заполняет запрос всеми физическими параметрами state и отдельным флагом
-' solve-options. MaterialSpec копируется, чтобы ключ не зависел от дальнейших
-' изменений профиля.
+' Сохраняет физические параметры запроса НДС и отдельное разрешение повторных стартов.
+' Параметры материалов копируются, чтобы последующее изменение профиля
+' не поменяло уже сформированный запрос.
 Public Sub Initialize(ByVal stateType As ESectionStateType, _
         ByVal materialRole As ECalculationPurpose, ByVal materialSpec As CMaterialModelSpec, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -45,8 +45,9 @@ Public Sub Initialize(ByVal stateType As ESectionStateType, _
     mAllowRetryStarts = allowRetryStarts
 End Sub
 
-' Возвращает ключ эквивалентности физического state. Диагностика, комментарии,
-' warm-start и retry-параметры сюда сознательно не входят.
+' Строит ключ для поиска того же физического запроса в сохранённых результатах.
+' Начальное приближение, диагностика, комментарии и параметры повторных попыток
+' в этот ключ не входят.
 Public Function EquivalenceKey() As String
     EquivalenceKey = CStr(CLng(mStateType)) & "|" & _
         CStr(CLng(mMaterialRole)) & "|" & _
@@ -63,23 +64,23 @@ Private Function NumberKey(ByVal value As Double) As String
     NumberKey = Replace$(Format$(value, "0.###############"), ",", ".")
 End Function
 
-' Коротко кодирует логический флаг для ключа repository.
+' Записывает логическое значение короткой строкой для ключа запроса в хранилище.
 Private Function BoolKey(ByVal value As Boolean) As String
     If value Then BoolKey = "1" Else BoolKey = "0"
 End Function
 
-' Какое named-state нужно получить.
+' Возвращает тип расчётного состояния, которое требуется получить.
 Public Property Get StateType() As ESectionStateType
     StateType = mStateType
 End Property
 
-' Роль материала: Strength, CrackInitiation, CrackedState.
+' Возвращает назначение материалов: прочность, образование трещины или НДС с трещинами.
 Public Property Get MaterialRole() As ECalculationPurpose
     MaterialRole = mMaterialRole
 End Property
 
-' Возвращает копию спецификации: изменение полученного объекта не должно
-' менять физический ключ запроса, уже переданного repository.
+' Возвращает отдельную копию параметров материалов. Её изменение не влияет
+' на ключ запроса, уже переданного хранилищу состояний.
 Public Property Get MaterialSpec() As CMaterialModelSpec
     If Not mMaterialSpec Is Nothing Then Set MaterialSpec = mMaterialSpec.Clone
 End Property
@@ -99,12 +100,12 @@ Public Property Get TargetMy() As Double
     TargetMy = mTargetMy
 End Property
 
-' True, если для равновесия state разрешена диаграмма с technical extension.
+' Показывает, разрешено ли вспомогательное продолжение диаграмм для поиска равновесия.
 Public Property Get UseDiagramExtension() As Boolean
     UseDiagramExtension = mUseDiagramExtension
 End Property
 
-' Solve-option: можно ли пробовать дополнительные стартовые плоскости.
+' Показывает, разрешены ли дополнительные начальные приближения при несходимости.
 Public Property Get AllowRetryStarts() As Boolean
     AllowRetryStarts = mAllowRetryStarts
 End Property

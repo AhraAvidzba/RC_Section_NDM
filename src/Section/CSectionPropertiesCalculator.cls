@@ -51,26 +51,26 @@ Private mSnapshotBounds(1 To 4) As Double ' MinX/MaxX/MinY/MaxY по прежн�
 Private mTransformedSnapshot As CSectionPropertiesCalculator ' Готовое приведенное представление того же снимка.
 Private mPreparedSection As CSectionModel ' Контекст механических свойств; не контурная область трещин.
 Private mPreparedRevision As Long, mPreparedKind As Long ' 1 - бетон; 2 - приведение по фактическим Eb/Es.
-Private mPreparedEb As Double, mPreparedEs As Double
-Private mPreparationBuildCount As Long
+Private mPreparedEb As Double, mPreparedEs As Double ' Модули бетона и арматуры подготовленного приведённого сечения, МПа.
+Private mPreparationBuildCount As Long ' Число фактических подготовок геометрических характеристик.
 Private Type TMechanicalQuery
-    Kind As Long
-    AxisX As Double
-    AxisY As Double
-    OriginX As Double
-    OriginY As Double
-    IncludeRebar As Boolean
-    Value1 As Double
-    Value2 As Double
+    Kind As Long ' Вид сохранённого вычисления геометрических характеристик.
+    AxisX As Double ' Компонента X направления расчётной оси.
+    AxisY As Double ' Компонента Y направления расчётной оси.
+    OriginX As Double ' Координата X точки отсчёта характеристики, мм.
+    OriginY As Double ' Координата Y точки отсчёта характеристики, мм.
+    IncludeRebar As Boolean ' Включается ли арматура в вычисление.
+    Value1 As Double ' Первое число результата; смысл задаётся видом вычисления Kind.
+    Value2 As Double ' Второе число результата; смысл задаётся видом вычисления Kind.
 End Type
 Private mMechanicalQueries(1 To 16) As TMechanicalQuery ' Малый ограниченный кэш точных осей/точек одного представления.
-Private mMechanicalQueryCount As Long
+Private mMechanicalQueryCount As Long ' Число сохранённых вычислений характеристик для заданных осей и точек.
 
 Private Const PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE As Double = 0.000001 ' Допуск для почти круговых/изотропных сечений.
 
-' Готовит оба представления и габариты до сериализации. Материальные модули
-' считываются один раз из фактического provider; позже writer их не выбирает.
-' Preview без provider получает только бетонные характеристики.
+' Заранее готовит бетонные и приведённые характеристики и габариты для записи Results.
+' Модули материалов получает один раз из фактической модели.
+' При предварительном просмотре без материалов готовит только бетонные характеристики.
 Public Sub PrepareSnapshot(ByVal section As CSectionModel, Optional ByVal provider As CMaterialModelProvider = Nothing)
     CalculateConcrete section
     CalculateProjection section, 1#, 0#, False, mSnapshotBounds(1), mSnapshotBounds(2)
@@ -192,15 +192,16 @@ Public Sub CalculateTransformedByModuli(ByVal section As CSectionModel, _
     StorePreparationContext section, 2, concreteModulus, steelModulus
 End Sub
 
-' Повторно использует только готовые механические свойства той же модели.
-' Самостоятельный caller сохраняет прежние Calculate-методы для явного расчета.
+' Использует готовые бетонные характеристики, если модель не изменилась.
+' Для самостоятельного явного пересчёта доступны обычные методы Calculate.
 Friend Sub EnsureConcrete(ByVal section As CSectionModel)
     If PreparationMatches(section, 1, 0#, 0#) Then Exit Sub
     CalculateConcrete section
 End Sub
 
-' Проверяет фактические Eb/Es без округления и без подмены material spec.
-' Новая модель, Revision или модуль требуют прежнего полного суммирования.
+' Использует готовые приведённые характеристики только при точно тех же модели,
+' версии геометрии и значениях Eb/Es без округления. При их изменении
+' заново суммирует площади и инерции.
 Friend Sub EnsureTransformed(ByVal section As CSectionModel, ByVal eb As Double, ByVal es As Double)
     If PreparationMatches(section, 2, eb, es) Then Exit Sub
     CalculateTransformedByModuli section, eb, es
@@ -220,11 +221,6 @@ Private Function PreparationMatches(ByVal section As CSectionModel, ByVal kind A
     PreparationMatches = section.Revision = mPreparedRevision And kind = mPreparedKind And eb = mPreparedEb And es = mPreparedEs
 End Function
 
-' ДЛЯ ТЕСТОВ: количество фактических расчетов механических характеристик.
-Friend Property Get PreparationBuildCount() As Long
-    PreparationBuildCount = mPreparationBuildCount
-End Property
-
 ' Добавляет элемент с весовой площадью и собственными инерциями вокруг центра.
 ' Для бетонного сечения weight равен площади. Для приведенного сечения арматура
 ' добавляется как (n-1)*As, поэтому ее собственная инерция также умножается на
@@ -240,9 +236,9 @@ Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y A
     mIxy = mIxy + localIxy + weight * x * y
 End Sub
 
-' Добавляет бетонный элемент в накопление A/I через CSectionModel.
-' Модель сама возвращает реальные локальные инерции или последний fallback,
-' поэтому калькулятор свойств не интерпретирует Width/Height как источник I.
+' Добавляет вклад бетонного элемента в площадь и инерции через CSectionModel.
+' Модель возвращает фактические собственные инерции или допустимую замену
+' при их отсутствии; размеры графической границы не подменяют расчётные I.
 Private Sub AddConcreteWeightedArea(ByVal section As CSectionModel, ByVal index As Long, _
         ByVal weightFactor As Double)
     Dim localIx As Double
@@ -388,9 +384,9 @@ Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal a
     StoreMechanicalQuery section, 2, axisX, axisY, originX, originY, False, ConcreteInertiaAboutAxis, 0#
 End Function
 
-' Читает exact-запрос только при неизменном контексте подготовленных A/I.
-' Ненормированные исходные направления сравниваются точно: иной вектор не
-' получает результат, вычисленный с другим порядком арифметики нормировки.
+' Возвращает сохранённый результат того же геометрического запроса, только если
+' модель и подготовленные характеристики неизменны. Направления сравнивает
+' до нормирования точно, чтобы другой вектор не получил результат с иным порядком вычислений.
 Private Function ReadMechanicalQuery(ByVal section As CSectionModel, ByVal kind As Long, _
         ByVal axisX As Double, ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double, _
         ByVal includeRebar As Boolean, ByRef value1 As Double, ByRef value2 As Double) As Boolean
@@ -408,8 +404,9 @@ Private Function ReadMechanicalQuery(ByVal section As CSectionModel, ByVal kind 
     Next i
 End Function
 
-' Сохраняет максимум 16 небольших запросов; лишние направления считаются
-' прежним способом. Не удерживает массивы нагрузок или LC-зависимые величины.
+' Хранит результаты не более 16 небольших геометрических запросов.
+' Остальные направления вычисляет обычным способом. Нагрузки
+' и данные отдельных сочетаний этим списком не удерживаются.
 Private Sub StoreMechanicalQuery(ByVal section As CSectionModel, ByVal kind As Long, _
         ByVal axisX As Double, ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double, _
         ByVal includeRebar As Boolean, ByVal value1 As Double, ByVal value2 As Double)
@@ -553,11 +550,10 @@ Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directio
     CoreDistanceAlong = -1# / (mArea * criticalShapeValue)
 End Function
 
-' Возвращает проекционную оболочку на линейный функционал axisX*x+axisY*y
-' без нормализации axis. Обычный CalculateProjection специально нормирует ось,
-' чтобы вернуть длины в миллиметрах. Для ядра нужен не геометрический габарит,
-' а именно масштабированный коэффициент деформации g(x,y), поэтому масштаб
-' вектора оси сохраняется.
+' Вычисляет крайние значения axisX*x + axisY*y, сохраняя величину вектора оси.
+' Обычный CalculateProjection нормирует направление и возвращает длину в мм.
+' Здесь для ядра сечения нужен коэффициент добавочной деформации,
+' поэтому изменение масштаба вектора изменило бы смысл результата.
 Private Sub CalculateLinearProjection(ByVal section As CSectionModel, ByVal axisX As Double, _
         ByVal axisY As Double, ByVal includeRebar As Boolean, _
         ByRef minProjection As Double, ByRef maxProjection As Double)
@@ -802,17 +798,18 @@ Private Function Atn2(ByVal y As Double, ByVal x As Double) As Double
     End If
 End Function
 
-' Время последнего расчета свойств для диагностики производительности.
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+
+' ДЛЯ ТЕСТОВ: количество фактических расчетов механических характеристик.
+Friend Property Get PreparationBuildCount() As Long
+    PreparationBuildCount = mPreparationBuildCount
+End Property
+
+' ДЛЯ ТЕСТОВ: время последнего расчета свойств для диагностики производительности.
 Public Property Get LastCalculationSeconds() As Double
     LastCalculationSeconds = mLastCalculationSeconds
 End Property
-
-
-
-
-
-
-
-
 
 

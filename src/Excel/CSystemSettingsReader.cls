@@ -59,9 +59,9 @@ MissingRange:
         "). Восстановите таблицу и ссылку на нее в диспетчере имен Excel или используйте исправный шаблон книги."
 End Sub
 
-' Проверяет обязательные пользовательские ключи полной книги после чтения
-' обеих таблиц. Поврежденная или отсутствующая строка Config не становится
-' optional default адаптера; автономный LoadFromRange остается неполным reader-ом.
+' После чтения таблиц проверяет обязательные настройки полной книги.
+' Отсутствующая или повреждённая строка Config вызывает ошибку без подстановки
+' значения по умолчанию. Отдельный LoadFromRange может читать лишь часть настроек.
 Private Sub ValidateWorkbookUnitAndSignKeys()
     Dim key As Variant
     For Each key In Array("Units.Length.Input", "Units.Length.Output", "Units.Area.Input", "Units.Area.Output", _
@@ -76,9 +76,9 @@ Private Sub ValidateWorkbookUnitAndSignKeys()
     Next key
 End Sub
 
-' Подключает необязательный для reader диапазон, если его имя есть в книге.
-' Отсутствующая таблица допустима до запроса материала потребителем, но
-' существующее поврежденное имя не должно скрываться как отсутствие ввода.
+' Подключает необязательную таблицу, если её имя есть в книге.
+' Таблица может отсутствовать до запроса её данных расчётом,
+' но существующее повреждённое имя не скрывается как отсутствие ввода.
 Private Sub AppendNamedSettingsRangeIfExists(ByVal workbook As Object, ByVal rangeName As String)
     On Error GoTo MissingName
     Dim nameObject As Object
@@ -124,8 +124,8 @@ Private Sub ValidateDiagramExtensionSetting(Optional ByVal requireWorkbookValue 
     End If
 End Sub
 
-' Возвращает каноническое Yes/No, сохраняя поддержанные логические формы.
-' Пустое или неизвестное явно введенное значение является ошибкой Config.
+' Читает поддерживаемые варианты да/нет и возвращает Yes или No.
+' Пустое или неизвестное значение вызывает ошибку Config.
 Private Function DiagramExtensionValue(ByVal rawValue As String, ByVal settingKey As String) As String
     Select Case UCase$(Trim$(rawValue))
         Case "YES", "TRUE", "1", "ДА": DiagramExtensionValue = "Yes"
@@ -185,8 +185,9 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
             Exit Sub
     End Select
 
-    ' Named-таблица сохраняет свой тип даже после утраты строки параметра.
-    ' Иначе отсутствие Placement превращало все поля в чужую scalar-таблицу.
+    ' Тип именованной таблицы сохраняется даже при удалении строки параметра.
+    ' Например, отсутствие Placement не должно превратить остальные поля
+    ' таблицы оформления в обычную таблицу пар ключ/значение.
     If StrComp(rangeName, "rngPlotAnnotationSettings", vbTextCompare) = 0 Then
         If columnCount < 5 Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
             "Таблица аннотаций схемы на листе " & mLoadingSheet & " имеет неполную структуру. Восстановите колонки параметров, арматуры, размеров, единиц и комментария."
@@ -241,9 +242,9 @@ Private Sub AppendSettingsRange(ByVal settingsRange As Object, Optional ByVal ra
     Next rowIndex
 End Sub
 
-' Проверяет только смысловые колонки известных именованных таблиц.
-' Обязательные заголовки задают формат чтения значений. Адрес вычисляется
-' от текущей ссылки Name, без привязки к координатам шаблона Config.
+' Проверяет столбцы данных в известных именованных таблицах.
+' Обязательные заголовки определяют способ чтения значений. Адрес ошибки
+' вычисляется по текущей привязке имени диапазона без фиксированных координат.
 Private Sub RequireSettingsHeaders(ByRef data As Variant, ByVal tableCaption As String, _
         ByVal headers As Variant, ByVal minimumColumns As Long)
     If UBound(data, 2) < minimumColumns Then Err.Raise vbObjectError + 4316, "CSystemSettingsReader", _
@@ -520,9 +521,9 @@ Private Sub AppendDeferredInputValue(ByRef data As Variant, ByVal key As String,
     AppendSetting key, value, value, source, rowIndex, columnIndex, valueError
 End Sub
 
-' Добавляет одну пару ключ-значение в reader.
-' Массивы параллельные: это проще и быстрее для VBA, чем словарь с Variant-объектами,
-' а поиск по ключу остается достаточно дешевым для числа настроек Config.
+' Добавляет имя настройки и значение в общие массивы. Для небольшого
+' числа настроек Config поиск по ним достаточно быстр и не требует
+' отдельных объектов на каждое значение.
 Private Sub AppendSetting(ByVal keyValue As String, ByVal settingValue As String, _
         ByVal defaultValue As String, ByVal sourceValue As String, _
         Optional ByVal valueRow As Long = 0, Optional ByVal valueColumn As Long = 0, _
@@ -703,9 +704,9 @@ Public Function GetRequiredString(ByVal key As String) As String
     GetRequiredString = textValue
 End Function
 
-' Читает обязательный селектор из явного набора значений. Возвращает запись
-' из набора с каноническим регистром; пустота/TODO и неизвестный вариант
-' дают ошибку ввода с адресом ячейки, а не выбор первого варианта по умолчанию.
+' Читает обязательный вариант из заданного списка и возвращает его принятое написание.
+' Пустота, TODO и неизвестное значение дают ошибку с адресом ячейки,
+' а не выбор первого элемента по умолчанию.
 Public Function GetRequiredChoice(ByVal key As String, ByVal choices As Variant) As String
     Dim value As String, choice As Variant
     value = GetRequiredString(key)
@@ -730,8 +731,9 @@ Private Function RequiredInputCorrection(ByVal key As String, ByVal numericValue
     End If
 End Function
 
-' Читает Long без округления дроби и переполнения. Контракт пустой ячейки
-' передается общему числовому reader-у; знак и инженерный диапазон проверяет consumer.
+' Читает целое Long без округления дробной части и переполнения.
+' Допустимость пустоты задаёт общий способ чтения числа;
+' знак и инженерный диапазон проверяет использующий параметр расчёт.
 Public Function GetLong(ByVal key As String, Optional ByVal defaultValue As Long = 0, _
         Optional ByVal allowBlankValue As Boolean = True) As Long
     GetLong = CheckedLong(key, GetDouble(key, CDbl(defaultValue), allowBlankValue))
@@ -819,15 +821,9 @@ Public Function HasKey(ByVal key As String) As Boolean
     HasKey = (FindKey(key) > 0)
 End Function
 
-' Количество ключей удобно для тестов структуры Config.
+' Возвращает число прочитанных ключей Config для отчёта и проверки структуры настроек.
 Public Function KeyCount() As Long
     KeyCount = mCount
-End Function
-
-' Возвращает имя ключа по порядковому номеру для проверок дубликатов и тестов.
-Public Function KeyAt(ByVal index As Long) As String
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Индекс настройки вне допустимого диапазона."
-    KeyAt = mKeys(index)
 End Function
 
 ' Считает повторяющиеся ключи Config.
@@ -867,7 +863,14 @@ Private Function ApplicationDecimalSeparator() As String
     ApplicationDecimalSeparator = Mid$(CStr(1.1), 2, 1)
 End Function
 
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
 
-
+' ДЛЯ ТЕСТОВ: возвращает имя ключа по порядковому номеру для проверок дубликатов и тестов.
+Public Function KeyAt(ByVal index As Long) As String
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Индекс настройки вне допустимого диапазона."
+    KeyAt = mKeys(index)
+End Function
 
 

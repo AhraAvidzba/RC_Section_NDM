@@ -23,7 +23,7 @@ Private Const STATE_NEAR_ZERO As Double = 0.000000000001 ' Допуск для �
 Private Const EXTENSION_START_FACTOR As Double = 1.02 ' Небольшой заход за физический eps_ult для старта повторного solve в extension.
 Private Const EXTENSION_GUESS_ATTEMPTS As Long = 3 ' Количество независимых стартовых оценок для повторного StateSolution.
 Private Const EXTENSION_ACTIVE_SET_ITERATIONS As Long = 8 ' Сколько раз уточнять кусочно-линейный набор участков диаграмм.
-Private Const ACTIVE_SET_EPSILON_TOLERANCE As Double = 0.0000000001 ' Допуск стабилизации epsilon0 в active-set уточнении.
+Private Const ACTIVE_SET_EPSILON_TOLERANCE As Double = 0.0000000001 ' Допуск изменения epsilon0, при котором уточнение работающих участков диаграмм можно завершить.
 Private Const LIMIT_GUESS_UTILIZATION As Double = 0.9 ' Старт немного внутри первого предела, вне вырожденного плато.
 
 ' Стартовые оценки используют ту же систему, что и основные итерации.
@@ -39,8 +39,8 @@ Public Function BuildForDirectState(ByVal section As CSectionModel, _
     If BuildForDirectState Then eps0 = mFrame.OriginalStrain(eps0, kx, ky)
 End Function
 
-' Масштабирует только стартовую плоскость поиска предела, не расчетные усилия.
-' Доменный критерий передает использование всех активных пределов материалов.
+' Уменьшает только начальное поле деформаций поиска предела. Расчётные усилия
+' не меняет; коэффициент использования всех физических пределов передаёт задача.
 Public Sub ScaleToPhysicalLimit(ByVal section As CSectionModel, ByVal utilization As Double, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double)
     If utilization <= 0# Then Exit Sub
@@ -52,7 +52,7 @@ Public Sub ScaleToPhysicalLimit(ByVal section As CSectionModel, ByVal utilizatio
     eps0 = mFrame.OriginalStrain(centerStrain * strainScale, kx, ky)
 End Sub
 
-' Повторные старты имеют такой же публичный координатный контракт.
+' Повторные начальные приближения задаются в тех же исходных координатах сечения.
 Public Function BuildAttemptForExtensionState(ByVal attemptIndex As Long, _
         ByVal section As CSectionModel, ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
@@ -72,14 +72,10 @@ Private Sub InitializeFrame(ByVal section As CSectionModel)
     mFrame.Initialize section
 End Sub
 
-' Строит стартовую плоскость для штатного прямого НДС.
-' Метод особенно полезен для чистого изгиба N=0: старт из нулевой плоскости
-' попадает ровно в излом диаграммы бетона, где сжатая производная ненулевая,
-' а растянутая ветвь при Ignore уже выключена. Здесь сначала строится грубая
-' линейно-упругая плоскость, затем несколько раз уточняется active-set
-' кусочно-линейной диаграммы. Полученная плоскость не является результатом:
-' она только помогает CSectionSolver начать итерации с правильной стороны
-' излома диаграммы.
+' Строит начальное поле для обычного НДС. Для чистого изгиба старт из нуля
+' попадает в излом диаграммы бетона. Сначала получает упругую оценку,
+' затем уточняет, какие участки диаграмм работают в элементах.
+' Это только начальное приближение; равновесие подтверждает CSectionSolver.
 Private Function BuildCenteredDirectState(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -100,8 +96,8 @@ Private Function BuildCenteredDirectState(ByVal section As CSectionModel, _
     BuildCenteredDirectState = TryBuildFromTrialPlane(section, concreteMaterial, steelMaterial, _
         targetN, targetMx, targetMy, trialEps0, trialKx, trialKy, eps0, kx, ky, False)
     If Not BuildCenteredDirectState Then
-        ' Вырождение active-set не отменяет уже полученную упругую оценку.
-        ' Она остается только стартом: равновесие проверит основной solver.
+        ' Если уточнение работающих участков дало вырожденную систему, сохраняем
+        ' ранее полученную упругую оценку как старт. Равновесие проверит основной решатель.
         eps0 = trialEps0
         kx = trialKx
         ky = trialKy
@@ -126,10 +122,9 @@ Public Function ExtensionAttemptName(ByVal attemptIndex As Long) As String
     End Select
 End Function
 
-' Строит конкретный вариант стартовой плоскости для повторного solve.
-' Варианты идут от наиболее расчетно осмысленного к более простым fallback:
-' если один старт плохо подошел для Newton/Secant, следующий может оказаться
-' устойчивее без изменения диаграмм и без подмены расчетной физики.
+' Готовит очередной вариант начального поля для повторного решения.
+' Пробует способы от более точных к более простым, не меняя
+' диаграмм материалов и физической постановки задачи.
 Private Function BuildCenteredExtensionAttempt(ByVal attemptIndex As Long, _
         ByVal section As CSectionModel, ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
@@ -149,10 +144,9 @@ Private Function BuildCenteredExtensionAttempt(ByVal attemptIndex As Long, _
     End Select
 End Function
 
-' Использует последнюю плоскость несошедшегося solver-а как подсказку.
-' Если первая попытка уже уперлась в физический предел, эта форма обычно
-' правильно отражает изгибную картину; нужно только пересобрать линейную оценку
-' по тем элементам, которые в этой форме попали бы в technical extension.
+' Использует последнее поле неудачной попытки как оценку формы изгиба.
+' Пересобирает линейную оценку по элементам, которые при этой форме
+' могут попасть на вспомогательное продолжение диаграмм.
 Private Function TryBuildFromFailedState(ByVal section As CSectionModel, _
         ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
@@ -196,11 +190,10 @@ Private Function TryBuildFromTrialPlane(ByVal section As CSectionModel, _
     currentKx = trialKx
     currentKy = trialKy
 
-    ' Уточняем старт не через частные условия по форме сечения, а через
-    ' active-set для кусочно-линейных диаграмм. После каждого линейного решения
-    ' смотрим, на каких участках диаграммы фактически оказались элементы, и
-    ' пересобираем систему. Если набор участков стабилизировался, полученная
-    ' плоскость уже является хорошим стартом для обычного CSectionSolver.
+    ' После линейного решения определяем работающие участки диаграмм и заново
+    ' собираем систему по ним. Если набор участков перестал меняться,
+    ' полученное поле можно передать как старт основному решателю.
+    ' Правила одинаковы для всех форм сечения.
     For iter = 1 To EXTENSION_ACTIVE_SET_ITERATIONS
         If Not TrySolveLinearizedTrialPlane(section, concreteMaterial, steelMaterial, _
                 targetN, targetMx, targetMy, currentEps0, currentKx, currentKy, _
@@ -260,11 +253,10 @@ Private Function TrySolveLinearizedTrialPlane(ByVal section As CSectionModel, _
             k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
     Next i
 
-    ' Арматуру также учитываем полностью: упругие стержни дают касательную
-    ' жесткость, плато дает постоянное усилие, extension - малую добавочную
-    ' жесткость за физическим пределом. Важно повторять контракт CSectionSolver:
-    ' стержень добавляется как "сталь минус вытесненный бетон", потому что
-    ' бетонная сетка уже содержит площадь в зоне расположения арматуры.
+    ' Учитываем все участки арматурной диаграммы: упругую жёсткость, постоянное
+    ' усилие плато и малую жёсткость численного продолжения. Вклад стержня
+    ' равен «сталь минус вытесненный бетон», поскольку бетонная сетка
+    ' уже включает площадь, занятую арматурой.
     For i = 1 To section.RebarCount
         strain = PlaneStrain(trialEps0, trialKx, trialKy, section.RebarX(i), section.RebarY(i))
         AccumulateRebarElement concreteMaterial, steelMaterial, strain, section.RebarArea(i), _
@@ -280,10 +272,9 @@ Private Function TrySolveLinearizedTrialPlane(ByVal section As CSectionModel, _
     TrySolveLinearizedTrialPlane = True
 End Function
 
-' Строит первую линейно-упругую оценку около нулевого состояния.
-' Сжатый малый sample нужен, чтобы бетонная ветвь с Ignore не стартовала из
-' полностью нулевой жесткости. Следующий active-set шаг уже сам выключит те
-' бетонные элементы, которые по найденной пробной плоскости ушли в растяжение.
+' Строит первую упругую оценку около нулевой деформации. Для бетона с отключённым
+' растяжением берёт небольшую сжатую пробу, чтобы не получить нулевую жёсткость.
+' Следующее уточнение исключает элементы, попавшие в растяжение.
 Private Function TryBuildNearZeroElasticPlane(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
@@ -373,10 +364,9 @@ Private Function TryBuildGlobalExtensionEquilibrium(ByVal section As CSectionMod
         targetN, targetMx, targetMy, seedEps0, seedKx, seedKy, eps0, kx, ky, True)
 End Function
 
-' Сдвигает уже найденную форму деформаций к ближайшей extension-области без
-' изменения кривизн. Это простой запасной вариант: если первая попытка хорошо
-' определила направление изгиба, но остановилась на плато, достаточно подвинуть
-' epsilon0, чтобы solver начал вторую попытку за eps_ult.
+' Смещает равномерную деформацию epsilon0 к ближайшему продолжению диаграммы,
+' сохраняя кривизны. Это даёт другой старт, если форма изгиба уже определена,
+' но первая попытка остановилась на плато.
 Private Function TryBuildUniformExtensionShift(ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal targetN As Double, ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
@@ -404,10 +394,9 @@ Private Function TryBuildUniformExtensionShift(ByVal failedService As CSectionSo
     TryBuildUniformExtensionShift = True
 End Function
 
-' Создает пробную плоскость из несошедшегося solver-а: либо берет уже найденное
-' состояние за физическим пределом, либо масштабирует его до небольшого выхода
-' за ближайший предел. Метод не решает равновесие, а только подготавливает
-' форму деформаций для выбора активных extension-элементов.
+' Готовит пробное поле из неудачного НДС: использует имеющийся выход
+' за физический предел или немного увеличивает поле до такого выхода.
+' Равновесие не решает; только выбирает элементы на продолжении диаграммы для нового старта.
 Private Function BuildExtensionTrialPlane(ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByRef eps0 As Double, ByRef kx As Double, ByRef ky As Double) As Boolean
@@ -530,9 +519,9 @@ Private Sub AccumulateRebarElement(ByVal concreteMaterial As CMaterialDiagram, B
         k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
 End Sub
 
-' Решает линейное равновесие, полученное из активных участков диаграмм.
-' Если активных элементов нет или матрица вырождена, builder просто отдает
-' управление следующему fallback-способу.
+' Решает линейную систему по выбранным работающим участкам диаграмм.
+' Если работающих элементов нет или матрица вырождена,
+' позволяет попробовать следующий способ начального приближения.
 Private Function SolveLinearizedSystem(ByVal activeCount As Long, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal k11 As Double, ByVal k12 As Double, ByVal k13 As Double, _
@@ -556,9 +545,9 @@ Private Function SolveLinearizedSystem(ByVal activeCount As Long, _
     SolveLinearizedSystem = (Abs(eps0) + mFrame.LengthScale * (Abs(kx) + Abs(ky)) > STATE_NEAR_ZERO)
 End Function
 
-' Подталкивает глобальную растянутую оценку так, чтобы хотя бы крайние стержни
-' не остались на физическом плато. Так solver сразу получает рабочий наклон
-' для осевого растяжения, но не заменяет последующий solve.
+' Немного увеличивает растянутую оценку, чтобы хотя бы крайние стержни
+' вышли с плато на участок с ненулевым наклоном. Это даёт рабочий старт
+' осевого растяжения, но не заменяет последующее решение равновесия.
 Private Sub PushRebarsIntoTensionExtension(ByVal section As CSectionModel, _
         ByVal steelMaterial As CMaterialDiagram, ByRef eps0 As Double, ByVal kx As Double, ByVal ky As Double)
     If section.RebarCount <= 0 Then Exit Sub
@@ -579,9 +568,9 @@ Private Sub PushRebarsIntoTensionExtension(ByVal section As CSectionModel, _
     End If
 End Sub
 
-' Проверяет, что стартовая плоскость действительно попала в technical extension
-' хотя бы одним элементом. Иначе повторный solve начнется в той же физической
-' области плато и не получит новой касательной жесткости.
+' Проверяет, попал ли хотя бы один элемент начального поля
+' на вспомогательное продолжение диаграммы. Иначе повторное решение
+' началось бы на том же плато без новой касательной жёсткости.
 Private Function CandidateUsesExtension(ByVal section As CSectionModel, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram, _
         ByVal eps0 As Double, ByVal kx As Double, ByVal ky As Double) As Boolean
@@ -625,7 +614,7 @@ Private Function TryCompressionExtensionSample(ByVal material As CMaterialDiagra
     TryCompressionExtensionSample = (material.GetTangentModulus(sampleStrain) > 0#)
 End Function
 
-' Возвращает True, если несошедшийся solver уже вышел за физический eps_ult.
+' Показывает, вышло ли НДС неудачной попытки за физический предел деформации eps_ult.
 Private Function FailedStateAlreadyInExtension(ByVal failedService As CSectionSolver, _
         ByVal concreteMaterial As CMaterialDiagram, ByVal steelMaterial As CMaterialDiagram) As Boolean
     If steelMaterial.HasTensionExtension And _
@@ -666,9 +655,9 @@ Private Function PlaneStrain(ByVal eps0 As Double, ByVal kx As Double, ByVal ky 
     PlaneStrain = eps0 + kx * (y - mFrame.OriginY) + ky * (x - mFrame.OriginX)
 End Function
 
-' Проверяет, изменилась ли плоскость после очередного active-set шага.
-' Если почти не изменилась, дальнейшие пересборки дадут тот же набор участков
-' диаграмм, поэтому старт можно отдавать обычному solver-у.
+' Проверяет изменение поля после уточнения работающих участков диаграмм.
+' Если оно почти не изменилось, дальнейшие пересборки дадут те же участки;
+' полученный старт можно передать обычному решателю.
 Private Function ExtensionPlaneClose(ByVal oldEps0 As Double, ByVal oldKx As Double, ByVal oldKy As Double, _
         ByVal newEps0 As Double, ByVal newKx As Double, ByVal newKy As Double) As Boolean
     ExtensionPlaneClose = Abs(newEps0 - oldEps0) <= ACTIVE_SET_EPSILON_TOLERANCE And _

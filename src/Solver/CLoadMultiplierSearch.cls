@@ -18,8 +18,9 @@ Option Explicit
 ' Несущая способность и образование трещины используют общий алгоритм;
 ' физический критерий и оценку одной нагрузки предоставляет сама задача.
 
-' Выполняет общий LoadMultiplier независимо от инженерного вида задачи.
-' Подготовка, начальный физический исход и приемка точки принадлежат callback-у.
+' Выполняет общий поиск предельной нагрузки методом LoadMultiplier.
+' Инженерная задача задаёт подготовку, физический смысл начальной точки
+' и окончательное подтверждение найденного предела.
 Public Function Execute(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     If request Is Nothing Then Err.Raise vbObjectError + 4220, "CLoadMultiplierSearch", "Не передан запрос limit-search."
     If request.Problem Is Nothing Then
@@ -49,8 +50,8 @@ SearchFailed:
     Set Execute = request.Problem.BuildResult(request, False)
 End Function
 
-' Отсутствие обязательного внутреннего объекта является ошибкой контракта,
-' а не ошибкой ввода пользователя и не численной несходимостью.
+' Отсутствие обязательного внутреннего объекта — ошибка программы,
+' а не ошибка пользовательского ввода и не численная несходимость.
 Private Function ContractFailure(ByVal request As CLimitSearchRequest, ByVal reason As String) As CLimitSearchResult
     Dim meta As CResultMeta
     Set meta = New CResultMeta
@@ -62,8 +63,8 @@ Private Function ContractFailure(ByVal request As CLimitSearchRequest, ByVal rea
     Set ContractFailure = result
 End Function
 
-' Решает начальную точку, находит скобку и запускает выбранный численный метод.
-' Здесь нет проверки вида Capacity/Crack, нагрузки текущего LC или psi.
+' Оценивает начальную нагрузку, находит допустимую и предельную стороны интервала
+' и уточняет lambda выбранным методом. Критерий задаёт инженерная задача.
 Private Sub RunSearch(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector)
     If Not ValidateSearchSettings(request) Then Exit Sub
     Dim lowLambda As Double, highLambda As Double
@@ -125,9 +126,10 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             If request.Problem.StoppedTerminally Then Exit Function
             If Not boundaryRefinementAttempted And Not lowSolver Is Nothing Then
                 If lowSolver.Converged Then
-                    ' На плато силовая проба может не иметь решения, хотя реальный
-                    ' первый предел уже доступен от сохраненного НДС. Общий
-                    ' callback подтверждает его по исходному пути и всем усилиям.
+                    ' На плато пробное силовое НДС может не сойтись, хотя по сохранённому
+                    ' состоянию
+                    ' уже можно найти первый предел. Передаём его инженерной задаче
+                    ' для подтверждения равновесия всех усилий на исходном пути нагрузки.
                     boundaryRefinementAttempted = True
                     request.Problem.TryFinalizeAfterSearchFailure request
                     If request.Problem.Converged Or request.Problem.StoppedTerminally Then Exit Function
@@ -160,8 +162,8 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             Set lowSolver = highSolver
             request.Problem.RecordAcceptable loadPath, lowLambda
             If highLambda >= request.Problem.MaxLambda Then Exit Do
-            ' Успешная проба дает более близкий warm-start. Несошедшаяся
-            ' нагрузка не является физической границей: повторяем расширение.
+            ' Найденное равновесие используем как более близкий старт. Несошедшаяся нагрузка
+            ' не подтверждает физический предел, поэтому продолжаем поиск границы.
             If highLambda >= request.Problem.MaxLambda / 2# Then
                 highLambda = request.Problem.MaxLambda
             Else
@@ -183,9 +185,9 @@ ArithmeticFailed:
         "Расширение интервала предельного множителя нагрузки", Err.Number, Err.Description
 End Function
 
-' Переполнение численного шага сохраняется как numerical failure. Ошибка
-' программного callback-а является внутренней, а уже установленная terminal
-' причина не заменяется вторичным исключением и не разрешает новый solve.
+' Переполнение при вычислении шага сохраняем как численную неудачу.
+' Ошибка операции инженерной задачи считается внутренней; ранее полученную
+' окончательную причину новым исключением не заменяем и расчёт не перезапускаем.
 Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProblem, _
         ByVal stage As String, ByVal errorNumber As Long, ByVal description As String)
     If context.StoppedTerminally Then Exit Sub
@@ -200,9 +202,9 @@ Private Sub ReportArithmeticOrContractFailure(ByVal context As ILimitSearchProbl
         failureCode = sfcInternalError
         reason = stage & ": внутренняя ошибка вычислений. Подробности сохранены в диагностическом журнале."
     End If
-    ' Стандартное сообщение VBA уже объяснено по-русски выше. Явную причину
-    ' callback-а сохраняем: она содержит контекст задачи, которого нет у Search.
-    ' Сравнение текста влияет только на представление, не на typed failure.
+    ' Стандартную причину VBA уже пояснили по-русски. Подробную причину самой задачи
+    ' сохраняем, поскольку она точнее общего сообщения. Сравнение текста
+    ' меняет только вывод, а не код ошибки.
     Dim standardDescription As String
     ' Error$(n) при активном Err может вернуть явно заданный Description.
     ' Код и исходный текст уже сохранены аргументами и в журнале.
@@ -239,9 +241,9 @@ Private Sub RunSearchInsideBracket(ByVal request As CLimitSearchRequest, _
     End Select
 End Sub
 
-' Точность интервала не заменяет подтверждение физического предела. После
-' численной неудачи уточнения сохраняем обе равновесные стороны и сужаем ту
-' же скобку; ошибки данных/контракта не повторяются, бюджет не обнуляется.
+' Малой ширины интервала недостаточно: нужно подтвердить физический предел.
+' После численной неудачи сохраняем обе равновесные стороны и уточняем
+' тот же интервал. Ошибки данных и программы не повторяем, лимит итераций не обнуляем.
 Private Function FinalizeBracketWithRecovery(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, _
         ByVal lowSolver As CSectionSolver, ByVal highLambda As Double, _
@@ -279,9 +281,9 @@ Private Function FinalizeBracketWithRecovery(ByVal request As CLimitSearchReques
     Loop
 End Function
 
-' Выполняет общий цикл bisection для уже найденной lambda-скобки.
-' Capacity и CrackFormation используют один порядок пробных lambda-точек; различаются только
-' callback оценки точки, смысл статуса предела и то, какая граница затем финализируется.
+' Уточняет найденный интервал lambda делением пополам. Несущая способность
+' и образование трещины используют общий порядок проб;
+' их физический критерий и принимаемая сторона интервала задаются самой проверкой.
 Private Function SearchByBisectionCore(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByRef lowLambda As Double, _
         ByRef lowSolver As CSectionSolver, ByRef highLambda As Double, _
@@ -411,9 +413,9 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
             If request.Problem.StoppedTerminally Then Exit Sub
         End If
         If Abs(c - b) <= tolerance Then
-            ' Brent выбирает ближайшую к нулю функцию, а не обязательно
-            ' допустимую сторону. Передаем обе сохраненные стороны доменному
-            ' callback: Capacity принимает нижнюю, Formation подтверждает верхнюю.
+            ' Метод Brent выбирает точку с ближайшим к нулю критерием, которая может быть
+            ' с любой стороны предела. Передаём обе стороны для окончательной проверки:
+            ' несущая способность принимает нижнюю, образование трещины подтверждает верхнюю.
             If IsAcceptableState(request, stateB) Then
                 pointAccepted = FinalizeBracketWithRecovery(request, loadPath, b, solverB, c, solverC, "Brent", iter, maxIterations)
             ElseIf IsAcceptableState(request, stateC) Then
@@ -611,16 +613,16 @@ Private Function TrySecantCandidate(ByVal x0 As Double, ByVal x1 As Double, _
 UnsafeInterpolation:
 End Function
 
-' Фиксирует исчерпание итераций bisection как численную неудачу, если скобка
-' все еще шире заданного допуска. Иначе search мог бы выдать недоточненную
-' нижнюю границу как успешную найденную точку.
+' Если после исчерпания делений пополам интервал всё ещё шире допуска,
+' сохраняет численную неудачу. Недостаточно уточнённая нижняя нагрузка
+' не должна выдаваться за найденный предел.
 Private Sub HandleBisectionIterationLimit(ByVal request As CLimitSearchRequest, _
         ByVal maxIterations As Long, ByVal remainingWidth As Double, ByVal tolerance As Double)
     request.Problem.HandleIterationLimit maxIterations, remainingWidth, tolerance
 End Sub
 
-' Повторно оценивает заданную lambda, если callback не передал solver-снимок,
-' и возвращает фактический ответ доменной финализации без изменения lambda.
+' Повторно оценивает то же lambda, если задача не передала соответствующее НДС.
+' Возвращает фактический итог физической проверки, не меняя множитель нагрузки.
 Private Function FinalizeAfterProbe(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal methodName As String) As Boolean
@@ -632,10 +634,9 @@ Private Function FinalizeAfterProbe(ByVal request As CLimitSearchRequest, _
     FinalizeAfterProbe = request.Problem.FinalizeAt(request, loadPath, lambdaValue, probeState, methodName, solver, 0)
 End Function
 
-' Финализирует уже рассчитанную probe-точку без повторного solve.
-' Снимок соответствует той же lambda; несошедшаяся проба не доказывает
-' физическую границу и не становится итоговым НДС. False означает отказ
-' доменного callback-а; без terminal причины общий цикл продолжает уточнение.
+' Передаёт уже рассчитанную пробную нагрузку на подтверждение без нового НДС.
+' Несошедшаяся проба физического предела не доказывает. При отказе без
+' окончательной причины остановки общий поиск продолжает уточнение интервала.
 Private Function FinalizeKnownProbe(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
@@ -647,9 +648,9 @@ Private Function FinalizeKnownProbe(ByVal request As CLimitSearchRequest, _
     End If
 End Function
 
-' Выбирает стартовое НДС для следующей bisection-пробы.
-' Предпочтителен сошедшийся снимок с допустимой стороны; если его нет,
-' используется подтвержденная верхняя точка. Принятие warm-start решает callback.
+' Выбирает НДС для начального приближения следующей пробы деления пополам.
+' Сначала использует равновесие допустимой стороны, затем подтверждённой верхней.
+' Пригодность старта проверяет сама инженерная задача.
 Private Function PreferredBisectionStartSolver(ByVal lowSolver As CSectionSolver, _
         ByVal highSolver As CSectionSolver) As CSectionSolver
     If lowSolver Is Nothing Then
@@ -659,9 +660,9 @@ Private Function PreferredBisectionStartSolver(ByVal lowSolver As CSectionSolver
     End If
 End Function
 
-' Оценивает одну lambda-точку для общего bisection-цикла.
-' Callback возвращает значение критерия и связанный с ним solver для
-' warm-start и подтверждения конечной точки без повторного solve.
+' Оценивает одну нагрузку lambda для деления интервала пополам.
+' Получает критерий и соответствующее НДС для следующих стартов
+' и окончательного подтверждения без повторного решения.
 Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
@@ -670,9 +671,9 @@ Private Function EvaluateBisectionPoint(ByVal request As CLimitSearchRequest, _
         startSolver, lambdaValue, functionValue, probeState, solver)
 End Function
 
-' Возвращает доменному объекту понятную причину отказа пробной lambda-точки.
-' Первичная окончательная причина callback-а должна сохраняться; численная
-' ошибка относится только к пробе без подтвержденного равновесия.
+' Передаёт инженерной задаче причину неудачной нагрузки lambda.
+' Уже записанная окончательная причина сохраняется; численная неудача
+' означает отсутствие подтверждённого равновесия этой пробы.
 Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchRequest, _
         ByVal lambdaValue As Double)
     If request.Problem.StoppedTerminally Then Exit Sub
@@ -681,22 +682,22 @@ Private Sub HandleBisectionEvaluationFailure(ByVal request As CLimitSearchReques
         FormatNumberInvariant(lambdaValue) & " в поиске предельной точки."
 End Sub
 
-' Обрабатывает статус NumericalFailure, если callback смог классифицировать точку без обычного False.
+' Обрабатывает численную неудачу, которую задача вернула отдельным статусом NumericalFailure.
 Private Sub HandleBisectionNumericalFailure(ByVal request As CLimitSearchRequest, _
         ByVal lowLambda As Double, ByVal failedLambda As Double, ByVal probeState As String)
     request.Problem.HandleBracketNumericalFailure lowLambda, failedLambda, probeState
 End Sub
 
-' Защищает общий bisection от неизвестного статуса пробной точки.
-' Такая ситуация означает не физический результат, а нарушение контракта callback-а.
+' Останавливает деление пополам при неизвестном статусе пробы.
+' Это неверный ответ программного объекта задачи, а не физический результат.
 Private Sub HandleBisectionUnexpectedState(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String)
     request.Problem.HandleUnexpectedState probeState
 End Sub
 
-' Оценивает lambda-точку и возвращает связанный с ней solver-снимок.
-' Brent/Secant хранят этот снимок вместе с границей скобки, чтобы финализация не
-' брала LastSolver от другой probe-точки.
+' Оценивает нагрузку и возвращает её НДС. Brent и Secant сохраняют
+' это НДС вместе с соответствующей стороной интервала,
+' чтобы не принять состояние от другой пробной нагрузки.
 Private Function EvaluateLimitPoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByRef functionValue As Double, ByRef probeState As String, _
@@ -728,18 +729,17 @@ Private Function IsNumericalFailureState(ByVal request As CLimitSearchRequest, B
     IsNumericalFailureState = request.Problem.IsNumericalFailureState(probeState)
 End Function
 
-' Проверяет, можно ли использовать Secant-probe как итоговое НДС.
-' Acceptable-точка уже находится с безопасной стороны. Limit-точка допустима
-' только если внутренний CSectionSolver действительно сошелся; несошедшаяся
-' проба не доказывает физическую границу и требует отдельного recovery.
+' Проверяет пригодность пробы Secant для итогового НДС. Допустимая точка
+' уже находится с безопасной стороны; для предельной точки требуется
+' подтверждённое равновесие. Несошедшаяся проба требует отдельного уточнения.
 Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
     If IsAcceptableState(request, probeState) Then
         CanFinalizeSecantProbe = True
     ElseIf IsLimitState(request, probeState) Then
         If solver Is Nothing Then
-            ' Чисто аналитическая задача может подтвердить критерий без State.
-            ' Реальное НДС и физическую допустимость проверяет ее FinalizeAt.
+            ' Аналитическая контрольная задача может подтвердить критерий без объекта НДС.
+            ' Для реального сечения равновесие и физические пределы проверяет её FinalizeAt.
             CanFinalizeSecantProbe = True
         Else
             CanFinalizeSecantProbe = solver.Converged
@@ -747,7 +747,8 @@ Private Function CanFinalizeSecantProbe(ByVal request As CLimitSearchRequest, _
     End If
 End Function
 
-' Удерживает Secant-кандидат внутри найденной физической скобки.
+' Ограничивает следующее lambda метода Secant найденным интервалом
+' между допустимой и предельной нагрузками.
 Private Function GuardSecantCandidate(ByVal request As CLimitSearchRequest, _
         ByVal rawCandidate As Double, ByVal currentLambda As Double, _
         ByVal bracketLow As Double, ByVal bracketHigh As Double) As Double

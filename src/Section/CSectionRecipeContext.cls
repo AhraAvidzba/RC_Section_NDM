@@ -16,11 +16,11 @@ Option Explicit
 ' Готовое описание сечения не хранит этот контекст или ссылки на Excel;
 ' в расчётное ядро поступают подготовленные геометрические данные.
 
-Private mTables As Object
-Private mUnits As CUnitSystem ' Независимая закрытая конфигурация; внешний units не влияет на снимок.
-Private mSealed As Boolean
+Private mTables As Object ' Копии входных таблиц рецепта, доступные по именам.
+Private mUnits As CUnitSystem ' Отдельная копия настроек единиц; последующее изменение переданного объекта units не влияет на вход рецепта.
+Private mSealed As Boolean ' После завершения подготовки добавлять таблицы и менять параметры запрещено.
 
-' Открывает контекст с подготовленной системой единиц один раз.
+' Один раз задаёт систему единиц для чтения входных таблиц рецепта.
 Public Sub Initialize(ByVal units As CUnitSystem)
     If Not mTables Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Контекст уже создан."
     If units Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Система единиц не передана."
@@ -39,20 +39,22 @@ Public Sub AddTable(ByVal table As CSectionInputTable)
     mTables.Add table.Name, table
 End Sub
 
-' Закрывает состав таблиц; после этого добавление невозможно.
+' Завершает состав входных таблиц; после этого добавлять таблицы нельзя.
 Public Sub Seal()
     If mTables Is Nothing Then SectionRecipeError "CSectionRecipeContext", "Контекст не инициализирован."
     mSealed = True
 End Sub
 
-' Возвращает снимок зарегистрированного блока по имени; отсутствие — ошибка, не fallback.
+' Возвращает зарегистрированную входную таблицу по имени.
+' Если таблица отсутствует, сообщает об ошибке без подстановки другого источника.
 Public Function Table(ByVal tableName As String) As CSectionInputTable
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     If Not mTables.Exists(tableName) Then SectionRecipeError "CSectionRecipeContext", "Не передана таблица '" & tableName & "'."
     Set Table = mTables(tableName)
 End Function
 
-' Закрытая копия единиц ввода; рецепт только переводит числа, не перенастраивая объект.
+' Возвращает защищённую от изменений копию единиц ввода.
+' Рецепт использует её для перевода размеров, не меняя настройки.
 Public Property Get Units() As CUnitSystem
     If Not mSealed Then SectionRecipeError "CSectionRecipeContext", "Контекст еще не опубликован."
     Set Units = mUnits

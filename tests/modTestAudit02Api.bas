@@ -1,7 +1,7 @@
 ﻿Attribute VB_Name = "modTestAudit02Api"
 Option Explicit
 
-' ДЛЯ ТЕСТОВ: новые контракты описателя, options, технических имён и прежних измерений.
+' ДЛЯ ТЕСТОВ: описание сечения, параметры арматуры, технические имена и совместимость размеров.
 Private mPassed As Long, mFailed As Long, mReport As String
 
 ' ДЛЯ ТЕСТОВ: повторное использование spec, атомарная регистрация и политика имён без зависимости от типа.
@@ -94,7 +94,7 @@ Public Function RunAudit02OptionsTests() As String
     options.SkipMissingProjection = True: options.NewPublicationRoot = True
     options.AnnotationGroup = "Group" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     Check "R08.publication.only", options.StartSetback = 100# And options.EndMode = ExcludeBoth And options.SourceNormalSign = -1#
     For Each axis In Array(RowNormal, RowTangent)
         For Each sign In Array(-1#, 1#)
@@ -272,7 +272,7 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
     options.IncomingTangentAtJoint = True
     facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -304,12 +304,12 @@ Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     facade.RebarByCount "Main", "MainAxis", 5, 20#, options
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
     facade.RebarDependent "Contact", "Main", 16#, options
     Set options = New CRebarRuleOptions
@@ -346,7 +346,8 @@ Public Function DumpAudit02DemoPreview(ByVal outputDirectory As String) As Strin
     DumpAudit02DemoPreview = first
 End Function
 
-' ДЛЯ ТЕСТОВ: нулевые диаметры запрещены внутри контактного helper, отказ не меняет options.
+' ДЛЯ ТЕСТОВ: настройка контактного ряда отвергает нулевые диаметры,
+' а при отказе не изменяет переданные параметры.
 Public Function RunAudit02CloseoutContactTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -355,7 +356,7 @@ Public Function RunAudit02CloseoutContactTests() As String
     options.SourceReference = "Program.Contact": options.StartSetback = 100#: options.EndSetback = 150#
     options.AnnotationGroup = "Group" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем первый опубликованный стержень.
+    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.NormalOffset = 12#: options.TangentOffset = 34#: options.EverySecond = True
     cases = Array(Array(0#, 16#, RowNormal, 1#, 0#), Array(-20#, 16#, RowNormal, 1#, 0#), _
         Array(20#, 0#, RowNormal, 1#, 0#), Array(20#, -16#, RowNormal, 1#, 0#), _
@@ -406,7 +407,8 @@ Public Function DumpAudit02CloseoutRectSetPreview(ByVal outputDirectory As Strin
     Next fixture
 End Function
 
-' Снимок ошибок содержит номер, source и полный текст с реальным адресом, без маскирования различий.
+' Записываем номер ошибки, её источник и полный текст с фактическим адресом ячейки.
+' Сравнение должно выявлять любое различие.
 Private Function CloseoutRectSetInputMatrix() As String
     Dim config As Object, saved As Variant, range As Object, block As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
@@ -475,7 +477,8 @@ Private Function CloseoutRectSetInputMatrix() As String
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "offset." & CStr(pair), code, source, reason, 0#)
                 Next pair
             End If
-            ' Контракт пары: числовое чтение второго поля предшествует проверке положительности первого.
+            ' Во взаимосвязанных полях сначала проверяется, что второе поле числовое,
+            ' и только затем — положительность первого.
             For Each pair In Array(1, 3)
                 If CLng(pair) <= maxColumn Then
                     range.Formula = block: range.Cells(row, CLng(pair)).Value2 = 0#
@@ -526,7 +529,8 @@ Finished:
     CloseoutRectSetInputMatrix = result
 End Function
 
-' Перехватывает только результат штатного чтения definition; ожидания ошибки остаются у вызывающего теста.
+' Вызывает обычное чтение описания сечения и возвращает полученную ошибку.
+' Ожидаемый номер и текст проверяет вызывающий тест.
 Private Function RectSetInputOutcome(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByRef code As Long, ByRef source As String, ByRef reason As String) As CSectionDefinition
     code = 0: source = "": reason = ""

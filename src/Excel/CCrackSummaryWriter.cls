@@ -17,90 +17,90 @@ Option Explicit
 ' Переводит величины в пользовательские единицы и оформляет таблицу.
 ' Пустой столбец между частями таблицы сохраняется без рамок и заливки.
 
-Private Const HEADER_ROWS As Long = 4 ' Сколько строк шапки строится над якорем первой строки LC.
-Private Const TOTAL_COLUMNS As Long = 72 ' Относительная ширина Formation/SP35/SP63/продольных с разделителями.
+Private Const HEADER_ROWS As Long = 4 ' Число строк шапки над первой строкой сочетаний.
+Private Const TOTAL_COLUMNS As Long = 72 ' Ширины разделов таблицы: образование трещины, СП 35, СП 63 и продольные трещины вместе с разделителями.
 
-Private Const COL_LEFT_FIRST As Long = 1
-Private Const COL_LEFT_LAST As Long = 9
-Private Const COL_SEPARATOR As Long = 10
-Private Const COL_MAIN_FIRST As Long = 11
-Private Const COL_MAIN_LAST As Long = TOTAL_COLUMNS
+Private Const COL_LEFT_FIRST As Long = 1 ' Столбец таблицы: первый столбец общих сведений о сочетании.
+Private Const COL_LEFT_LAST As Long = 9 ' Столбец таблицы: последний столбец общих сведений о сочетании.
+Private Const COL_SEPARATOR As Long = 10 ' Столбец таблицы: пустой столбец между сведениями о сочетании и расчётом трещин.
+Private Const COL_MAIN_FIRST As Long = 11 ' Столбец таблицы: первый столбец расчёта трещин.
+Private Const COL_MAIN_LAST As Long = TOTAL_COLUMNS ' Столбец таблицы: последний столбец расчёта трещин.
 
-Private Const COL_ID As Long = 1
-Private Const COL_RESULT_COMMENT As Long = 2
-Private Const COL_STATUS As Long = 3
-Private Const COL_REF_N As Long = 4
-Private Const COL_REF_MX As Long = 5
-Private Const COL_REF_MY As Long = 6
-Private Const COL_LOAD_N As Long = 7
-Private Const COL_LOAD_MX As Long = 8
-Private Const COL_LOAD_MY As Long = 9
+Private Const COL_ID As Long = 1 ' Столбец таблицы: номер сочетания.
+Private Const COL_RESULT_COMMENT As Long = 2 ' Столбец таблицы: пояснение результата сочетания.
+Private Const COL_STATUS As Long = 3 ' Столбец таблицы: общий статус сочетания.
+Private Const COL_REF_N As Long = 4 ' Столбец таблицы: исходная продольная сила.
+Private Const COL_REF_MX As Long = 5 ' Столбец таблицы: исходный момент Mx.
+Private Const COL_REF_MY As Long = 6 ' Столбец таблицы: исходный момент My.
+Private Const COL_LOAD_N As Long = 7 ' Столбец таблицы: расчётная продольная сила.
+Private Const COL_LOAD_MX As Long = 8 ' Столбец таблицы: расчётный момент Mx.
+Private Const COL_LOAD_MY As Long = 9 ' Столбец таблицы: расчётный момент My.
 
-Private Const COL_ARED As Long = 11
-Private Const COL_RBT_SER As Long = 12
-Private Const COL_NCRC As Long = 13
-Private Const COL_LAMBDA_NCRC As Long = 14
-Private Const COL_FORMATION_METHOD As Long = 15
-Private Const COL_FORMATION_NCRC As Long = 16
-Private Const COL_MCRC As Long = 17
-Private Const COL_LAMBDA_MCRC As Long = 18
-Private Const COL_PRE_EBC As Long = COL_LAMBDA_MCRC + 1
-Private Const COL_PRE_EBT As Long = COL_PRE_EBC + 1
-Private Const COL_PRE_CRACK_STATUS As Long = COL_PRE_EBT + 1
-Private Const COL_POST_EBC As Long = COL_PRE_CRACK_STATUS + 1
-Private Const COL_POST_EBT As Long = COL_POST_EBC + 1
-Private Const COL_POST_CRACK_STATUS As Long = COL_POST_EBT + 1
-Private Const COL_FORMATION_STATE As Long = COL_POST_CRACK_STATUS + 1
-Private Const COL_CURRENT_EBC As Long = COL_FORMATION_STATE + 1
-Private Const COL_CURRENT_EBT As Long = COL_CURRENT_EBC + 1
-Private Const COL_CRACK_STATE_DIAGEXT As Long = COL_CURRENT_EBT + 1
-Private Const COL_CRACK_STATE_STATUS As Long = COL_CRACK_STATE_DIAGEXT + 1
-Private Const COL_FORMATION_SEPARATOR As Long = COL_CRACK_STATE_STATUS + 1
-Private Const COL_SP35_AR As Long = COL_FORMATION_SEPARATOR + 1
-Private Const COL_SP35_BETA As Long = COL_SP35_AR + 1
-Private Const COL_SP35_N As Long = COL_SP35_BETA + 1
-Private Const COL_SP35_D As Long = COL_SP35_N + 1
-Private Const COL_SP35_RR As Long = COL_SP35_D + 1
-Private Const COL_SP35_PSI As Long = COL_SP35_RR + 1
-Private Const COL_SP35_REBARS As Long = COL_SP35_PSI + 1
-Private Const COL_SP35_NREBARS As Long = COL_SP35_REBARS + 1
-Private Const COL_SP35_SIGMA As Long = COL_SP35_NREBARS + 1
-Private Const COL_SP35_ES As Long = COL_SP35_SIGMA + 1
-Private Const COL_SP35_ACRC As Long = COL_SP35_ES + 1
-Private Const COL_SP35_ALLOWABLE As Long = COL_SP35_ACRC + 1
-Private Const COL_SP35_RATIO As Long = COL_SP35_ALLOWABLE + 1
-Private Const COL_SP35_STATUS As Long = COL_SP35_RATIO + 1
-Private Const COL_SP35_SEPARATOR As Long = COL_SP35_STATUS + 1
-Private Const COL_XT As Long = COL_SP35_SEPARATOR + 1
-Private Const COL_H As Long = COL_XT + 1
-Private Const COL_AS_COVER As Long = COL_H + 1
-Private Const COL_HBT As Long = COL_AS_COVER + 1
-Private Const COL_ABT As Long = COL_HBT + 1
-Private Const COL_AS As Long = COL_ABT + 1
-Private Const COL_DS_EQ As Long = COL_AS + 1
-Private Const COL_LS0 As Long = COL_DS_EQ + 1
-Private Const COL_LS As Long = COL_LS0 + 1
-Private Const COL_PHI1 As Long = COL_LS + 1
-Private Const COL_PHI2 As Long = COL_PHI1 + 1
-Private Const COL_PHI3 As Long = COL_PHI2 + 1
-Private Const COL_PSI_S As Long = COL_PHI3 + 1
-Private Const COL_REBARS As Long = COL_PSI_S + 1
-Private Const COL_NREBARS As Long = COL_REBARS + 1
-Private Const COL_SIGMA_S_CRC As Long = COL_NREBARS + 1
-Private Const COL_SIGMA_S As Long = COL_SIGMA_S_CRC + 1
-Private Const COL_ES As Long = COL_SIGMA_S + 1
-Private Const COL_ACRC As Long = COL_ES + 1
-Private Const COL_ACRC_ULT As Long = COL_ACRC + 1
-Private Const COL_ACRC_RATIO As Long = COL_ACRC_ULT + 1
-Private Const COL_ACRC_STATUS As Long = COL_ACRC_RATIO + 1
-Private Const COL_SP63_SEPARATOR As Long = COL_ACRC_STATUS + 1
-Private Const COL_SIGMA_B_MAX As Long = COL_SP63_SEPARATOR + 1
-Private Const COL_RB_MC2 As Long = COL_SIGMA_B_MAX + 1
-Private Const COL_LONG_RATIO As Long = COL_RB_MC2 + 1
-Private Const COL_LONG_STATUS As Long = COL_LONG_RATIO + 1
+Private Const COL_ARED As Long = 11 ' Столбец таблицы: площадь приведённого сечения.
+Private Const COL_RBT_SER As Long = 12 ' Столбец таблицы: сопротивление бетона растяжению для образования трещин.
+Private Const COL_NCRC As Long = 13 ' Столбец таблицы: продольная сила образования трещины.
+Private Const COL_LAMBDA_NCRC As Long = 14 ' Столбец таблицы: множитель нагрузки для осевого образования трещины.
+Private Const COL_FORMATION_METHOD As Long = 15 ' Столбец таблицы: способ поиска образования трещины.
+Private Const COL_FORMATION_NCRC As Long = 16 ' Столбец таблицы: сила N в найденной точке образования трещины.
+Private Const COL_MCRC As Long = 17 ' Столбец таблицы: момент образования трещины.
+Private Const COL_LAMBDA_MCRC As Long = 18 ' Столбец таблицы: множитель нагрузки в найденной точке образования трещины.
+Private Const COL_PRE_EBC As Long = COL_LAMBDA_MCRC + 1 ' Столбец таблицы: деформация сжатого бетона до образования трещины.
+Private Const COL_PRE_EBT As Long = COL_PRE_EBC + 1 ' Столбец таблицы: деформация растянутого бетона до образования трещины.
+Private Const COL_PRE_CRACK_STATUS As Long = COL_PRE_EBT + 1 ' Столбец таблицы: статус НДС до образования трещины.
+Private Const COL_POST_EBC As Long = COL_PRE_CRACK_STATUS + 1 ' Столбец таблицы: деформация сжатого бетона после образования трещины.
+Private Const COL_POST_EBT As Long = COL_POST_EBC + 1 ' Столбец таблицы: деформация растянутого бетона после образования трещины.
+Private Const COL_POST_CRACK_STATUS As Long = COL_POST_EBT + 1 ' Столбец таблицы: статус НДС после образования трещины.
+Private Const COL_FORMATION_STATE As Long = COL_POST_CRACK_STATUS + 1 ' Столбец таблицы: вид состояния, выбранного при образовании трещины.
+Private Const COL_CURRENT_EBC As Long = COL_FORMATION_STATE + 1 ' Столбец таблицы: деформация сжатого бетона при заданной нагрузке.
+Private Const COL_CURRENT_EBT As Long = COL_CURRENT_EBC + 1 ' Столбец таблицы: деформация растянутого бетона при заданной нагрузке.
+Private Const COL_CRACK_STATE_DIAGEXT As Long = COL_CURRENT_EBT + 1 ' Столбец таблицы: признак использования продолжения диаграмм в НДС с трещинами.
+Private Const COL_CRACK_STATE_STATUS As Long = COL_CRACK_STATE_DIAGEXT + 1 ' Столбец таблицы: статус НДС с трещинами.
+Private Const COL_FORMATION_SEPARATOR As Long = COL_CRACK_STATE_STATUS + 1 ' Столбец таблицы: пустой столбец после образования трещины.
+Private Const COL_SP35_AR As Long = COL_FORMATION_SEPARATOR + 1 ' Столбец таблицы: площадь взаимодействия бетона с арматурой по СП 35.
+Private Const COL_SP35_BETA As Long = COL_SP35_AR + 1 ' Столбец таблицы: коэффициент β профиля арматуры по СП 35.
+Private Const COL_SP35_N As Long = COL_SP35_BETA + 1 ' Столбец таблицы: число стержней в определяющей области СП 35.
+Private Const COL_SP35_D As Long = COL_SP35_N + 1 ' Столбец таблицы: расчётный диаметр арматуры по СП 35.
+Private Const COL_SP35_RR As Long = COL_SP35_D + 1 ' Столбец таблицы: радиус армирования по СП 35.
+Private Const COL_SP35_PSI As Long = COL_SP35_RR + 1 ' Столбец таблицы: коэффициент ψ по СП 35.
+Private Const COL_SP35_REBARS As Long = COL_SP35_PSI + 1 ' Столбец таблицы: имена стержней определяющей области СП 35.
+Private Const COL_SP35_NREBARS As Long = COL_SP35_REBARS + 1 ' Столбец таблицы: число стержней определяющей области СП 35.
+Private Const COL_SP35_SIGMA As Long = COL_SP35_NREBARS + 1 ' Столбец таблицы: расчётное напряжение арматуры по СП 35.
+Private Const COL_SP35_ES As Long = COL_SP35_SIGMA + 1 ' Столбец таблицы: модуль упругости арматуры по СП 35.
+Private Const COL_SP35_ACRC As Long = COL_SP35_ES + 1 ' Столбец таблицы: ширина трещины по СП 35.
+Private Const COL_SP35_ALLOWABLE As Long = COL_SP35_ACRC + 1 ' Столбец таблицы: допустимая ширина трещины по СП 35.
+Private Const COL_SP35_RATIO As Long = COL_SP35_ALLOWABLE + 1 ' Столбец таблицы: отношение ширины трещины к допустимой по СП 35.
+Private Const COL_SP35_STATUS As Long = COL_SP35_RATIO + 1 ' Столбец таблицы: статус проверки ширины трещины по СП 35.
+Private Const COL_SP35_SEPARATOR As Long = COL_SP35_STATUS + 1 ' Столбец таблицы: пустой столбец после расчёта СП 35.
+Private Const COL_XT As Long = COL_SP35_SEPARATOR + 1 ' Столбец таблицы: высота сжатой зоны.
+Private Const COL_H As Long = COL_XT + 1 ' Столбец таблицы: высота сечения в направлении расчёта.
+Private Const COL_AS_COVER As Long = COL_H + 1 ' Столбец таблицы: расстояние от растянутой границы до центра арматуры.
+Private Const COL_HBT As Long = COL_AS_COVER + 1 ' Столбец таблицы: высота растянутой области взаимодействия.
+Private Const COL_ABT As Long = COL_HBT + 1 ' Столбец таблицы: площадь растянутого бетона, взаимодействующего с арматурой.
+Private Const COL_AS As Long = COL_ABT + 1 ' Столбец таблицы: площадь растянутой арматуры.
+Private Const COL_DS_EQ As Long = COL_AS + 1 ' Столбец таблицы: эквивалентный диаметр арматуры.
+Private Const COL_LS0 As Long = COL_DS_EQ + 1 ' Столбец таблицы: исходное расстояние между трещинами.
+Private Const COL_LS As Long = COL_LS0 + 1 ' Столбец таблицы: принятое расстояние между трещинами.
+Private Const COL_PHI1 As Long = COL_LS + 1 ' Столбец таблицы: коэффициент φ1 формулы ширины трещины СП 63.
+Private Const COL_PHI2 As Long = COL_PHI1 + 1 ' Столбец таблицы: коэффициент φ2 формулы ширины трещины СП 63.
+Private Const COL_PHI3 As Long = COL_PHI2 + 1 ' Столбец таблицы: коэффициент φ3 формулы ширины трещины СП 63.
+Private Const COL_PSI_S As Long = COL_PHI3 + 1 ' Столбец таблицы: коэффициент ψs по СП 63.
+Private Const COL_REBARS As Long = COL_PSI_S + 1 ' Столбец таблицы: имена стержней определяющей области СП 63.
+Private Const COL_NREBARS As Long = COL_REBARS + 1 ' Столбец таблицы: число стержней определяющей области СП 63.
+Private Const COL_SIGMA_S_CRC As Long = COL_NREBARS + 1 ' Столбец таблицы: напряжение арматуры при образовании трещины.
+Private Const COL_SIGMA_S As Long = COL_SIGMA_S_CRC + 1 ' Столбец таблицы: напряжение арматуры при заданной нагрузке.
+Private Const COL_ES As Long = COL_SIGMA_S + 1 ' Столбец таблицы: модуль упругости арматуры.
+Private Const COL_ACRC As Long = COL_ES + 1 ' Столбец таблицы: расчётная ширина трещины по СП 63.
+Private Const COL_ACRC_ULT As Long = COL_ACRC + 1 ' Столбец таблицы: допустимая ширина трещины по СП 63.
+Private Const COL_ACRC_RATIO As Long = COL_ACRC_ULT + 1 ' Столбец таблицы: отношение ширины трещины к допустимой по СП 63.
+Private Const COL_ACRC_STATUS As Long = COL_ACRC_RATIO + 1 ' Столбец таблицы: статус проверки ширины трещины по СП 63.
+Private Const COL_SP63_SEPARATOR As Long = COL_ACRC_STATUS + 1 ' Столбец таблицы: пустой столбец после расчёта СП 63.
+Private Const COL_SIGMA_B_MAX As Long = COL_SP63_SEPARATOR + 1 ' Столбец таблицы: наибольшее напряжение сжатого бетона.
+Private Const COL_RB_MC2 As Long = COL_SIGMA_B_MAX + 1 ' Столбец таблицы: расчётное сопротивление бетона с принятой поправкой.
+Private Const COL_LONG_RATIO As Long = COL_RB_MC2 + 1 ' Столбец таблицы: коэффициент использования проверки продольных трещин.
+Private Const COL_LONG_STATUS As Long = COL_LONG_RATIO + 1 ' Столбец таблицы: статус проверки продольных трещин.
 
 Private Const HEADER_COLOR As Long = &HD9D9D9 ' Серый фон шапки, единый для таблиц Results.
-Private Const SMALL_VALUE As Double = 0.000000001 ' Порог только для пустых расчетных полей writer-а.
+Private Const SMALL_VALUE As Double = 0.000000001 ' Порог отнесения численного поля к отсутствующему при выводе таблицы.
 Private Const HEADER_NOTES_ROW As Long = 3 ' Строка коротких пояснений над нижними обозначениями.
 Private Const HEADER_LABEL_ROW As Long = 4 ' Строка итоговых обозначений с единицами.
 
@@ -169,7 +169,7 @@ Public Sub ClearSummary(ByVal workbook As Object)
     PrepareTarget ClearTargetRange(workbook)
 End Sub
 
-' Возвращает полный диапазон текущей таблицы: шапка над якорем и строки LC.
+' Возвращает диапазон текущей таблицы, включающий шапку и строки сочетаний.
 Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows As Long = 1) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
@@ -495,9 +495,9 @@ Private Function OutputDataOffset(ByVal batch As CBatchSectionCalculator, ByVal 
     If OutputDataOffset > dataRows Then OutputDataOffset = dataRows
 End Function
 
-' Выводит доступные результаты образования трещины и статусы Pre/Post НДС.
-' При отсутствии точки не создает нулевые Ncrc/Mcrc; общий исход берется из
-' Formation result, а не восстанавливается из чисел writer-ом.
+' Записывает найденную нагрузку образования трещины и статусы НДС до и после неё.
+' Если пороговая точка отсутствует, не подставляет нулевые Ncrc/Mcrc;
+' использует фактический итог проверки образования трещины.
 Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
@@ -545,8 +545,8 @@ Private Sub PutFormationData(ByRef data() As Variant, ByVal rowIndex As Long, _
     End If
 End Sub
 
-' Возвращает статус сохраненного named-state. Если состояние штатно не создавалось,
-' detailed-таблица показывает N/A, а не общий статус всей проверки трещин.
+' Возвращает статус сохранённого НДС. Если такое состояние не требовалось,
+' в его подробной строке показывает N/A, а не общий статус всех трещин.
 Private Function NamedStateStatus(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal stateType As ESectionStateType, ByVal policy As CResultStatusPolicy) As String
     Dim stateResult As CSectionStateResult
@@ -575,21 +575,17 @@ Private Sub PutNamedStateStrains(ByRef data() As Variant, ByVal rowIndex As Long
     If beforeCrack Or state.MaterialSpec.ConcreteTension = ctkUseDiagram Then data(rowIndex, tensionColumn) = state.MaxConcreteStrain
 End Sub
 
-' Читает доступность подтвержденной точки у владельца Formation.
-' Ненулевые пробные усилия при отказе Pre не выдаются за принятую точку.
+' Проверяет наличие подтверждённой пороговой точки в результате образования трещины.
+' Пробные ненулевые усилия без пригодного НДС до трещины подтверждением не считаются.
 Private Function HasCrackFormationData(ByVal batch As CBatchSectionCalculator, ByVal index As Long) As Boolean
     HasCrackFormationData = batch.ResultAt(index).CrackResult.Formation.HasLimitPoint
 End Function
 
-' Записывает контроль пригодности текущего CrackedState для дальнейшего
-' расчета трещин. Это не проверка факта образования нормальной трещины:
-' трещинообразование уже проверено отдельным блоком Mcrc/Ncrc. Здесь
-' фиксируется, удалось ли найти равновесное НДС полного заданного сочетания
-' по модели раскрытой трещины и осталось ли это состояние в физической части
-' диаграмм материалов. Если равновесие найдено только через продолжение
-' диаграммы или solver не сошелся, значения ls, sigma_s, a_crc и проверка
-' продольных трещин не рассчитываются, потому что опираться на такое НДС
-' как на физическое состояние сечения нельзя.
+' Записывает пригодность текущего НДС с трещинами для последующих проверок.
+' Факт образования уже показан отдельно через Ncrc/Mcrc. Здесь важно,
+' найдено ли равновесие полной нагрузки внутри физических пределов диаграмм.
+' Если оно получено только за этими пределами или не найдено, ширина,
+' её исходные величины и продольные трещины по такому НДС не рассчитываются.
 Private Sub PutCrackedStateData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, ByVal policy As CResultStatusPolicy)
     Dim stateResult As CSectionStateResult
@@ -620,9 +616,8 @@ Private Function ExtensionUsedText(ByVal batch As CBatchSectionCalculator, _
     End If
 End Function
 
-' Записывает уже рассчитанную ширину и подготовленные величины ее формулы.
-' Успех Formation не является условием вывода: допустимый fallback psi_s = 1
-' сохраняется в самостоятельном Width-result. Writer не повторяет проверку.
+' Записывает готовую ширину и параметры её формулы, в том числе допустимый
+' расчёт с psi_s = 1 при ненайденном пороге. Повторно образование трещины не проверяет.
 Private Sub PutCrackWidthData(ByRef data() As Variant, ByVal rowIndex As Long, _
         ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
         ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy)
@@ -796,8 +791,9 @@ Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectio
     Next i
 End Sub
 
-' Пишет снимок выполненной формулы СП 35. Критический якорь, beta/psi и область
-' уже сохранены calculator-ом; writer лишь переводит единицы и форматирует.
+' Записывает данные выполненной формулы СП 35: выбранную опорную группу,
+' коэффициенты beta/psi и область взаимодействия. Всё уже сохранено расчётом;
+' здесь только переводятся единицы и оформляются значения.
 Private Sub PutSP35WidthData(ByRef data() As Variant, ByVal rowIndex As Long, ByVal width As CCrackWidthResult, ByVal units As CUnitSystem)
     data(rowIndex, COL_SP35_AR) = OutputArea(width.Abt, units)
     data(rowIndex, COL_SP35_BETA) = SP35RowsText(width, "Beta", units)
@@ -977,8 +973,8 @@ Private Function LongitudinalStatusText(ByVal batch As CBatchSectionCalculator, 
     LongitudinalStatusText = policy.ExternalStatus(meta)
 End Function
 
-' Возвращает готовое пользовательское пояснение из ResultMeta блока.
-' Writer не анализирует технические StopReason и не собирает комментарий заново.
+' Возвращает готовое пояснение проверки из ResultMeta.
+' При записи причины остановки не разбираются и не собираются заново.
 Private Function MetaComment(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then Exit Function
     MetaComment = meta.ResultComment
@@ -1000,8 +996,8 @@ Private Sub MergeRange(ByVal target As Object, ByVal firstRow As Long, ByVal fir
     target.Worksheet.Range(target.Cells(firstRow, firstCol), target.Cells(lastRow, lastCol)).Merge
 End Sub
 
-' Ниже собраны маленькие адаптеры единиц для crack-блока: они оставляют внутренние единицы,
-' если CUnitSystem не передан, и применяют пользовательские выходные единицы в штатном расчете.
+' Ниже переводятся величины таблицы трещин в пользовательские выходные единицы.
+' Если CUnitSystem не передан, значения остаются во внутренних единицах.
 Private Function OutputLength(ByVal value As Double, ByVal units As CUnitSystem) As Double
     If units Is Nothing Then OutputLength = value Else OutputLength = units.InternalLengthToOutput(value)
 End Function

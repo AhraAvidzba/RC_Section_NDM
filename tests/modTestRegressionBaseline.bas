@@ -86,9 +86,9 @@ Private Sub RunBaselineCase(ByRef stats As TRegressionStats, ByVal caseName As S
     AppendBaseline stats, caseName, solver, lambdaText, elapsed, mesh.FiberCount, rebars.Count
 End Sub
 
-' Дважды решает один и тот же LC на одинаковой круговой модели отдельными
-' solver-ами. Проверяет равновесие и совпадение epsilon0/кривизн, защищая
-' повторный запуск от случайного сохраненного состояния предыдущей задачи.
+' Дважды решает одинаковое сочетание на круглом сечении разными экземплярами
+' решателя. Проверяет равновесие и совпадение ε0 и кривизн: предыдущий запуск
+' не должен влиять на следующий.
 Private Sub TestRepeatedRun(ByRef stats As TRegressionStats)
     Dim geom As CGeometryRegion
     Set geom = FixtureDisk(300#)
@@ -184,9 +184,9 @@ Private Sub TestOriginShift(ByRef stats As TRegressionStats)
     AppendBaseline stats, "origin_shift_shifted", shiftedSolver, "NA", 0#, 0, 0
 End Sub
 
-' Создает самостоятельную круговую модель с автоматическими стержнями и
-' возвращает решенное прямое НДС. Использует фиксированные baseline-настройки,
-' не меняя Config и не переиспользуя solver соседнего теста.
+' Создаёт отдельную круговую модель с автоматически размещённой арматурой
+' и рассчитывает НДС при заданной нагрузке. Использует фиксированные эталонные
+' настройки без изменения Config и повторного использования соседнего решателя.
 Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Double, ByVal centerY As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double, ByVal meshStep As Double, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
@@ -212,7 +212,7 @@ Private Function SolveCircleDirect(ByVal diameter As Double, ByVal centerX As Do
 End Function
 
 ' Выполняет отдельный поиск предельного множителя при ненулевом базовом моменте.
-' Возвращает число либо технический маркер baseline; это не display-статус книги.
+' Возвращает число или служебную отметку файла эталона; пользовательский статус не назначает.
 Private Function CalculateLambdaText(ByVal mesh As CFiberMeshBuilder, ByVal rebars As CRebarLayout, _
         ByVal nValue As Double, ByVal mxBase As Double, ByVal myBase As Double) As String
     If Sqr(mxBase * mxBase + myBase * myBase) <= 0.000000001 Then
@@ -240,7 +240,8 @@ Private Sub ConfigureBaselineSolver(ByVal solver As CSectionSolver)
     solver.ToleranceMy = 1000#
 End Sub
 
-' Применяет неизменные bounds/tolerances и физические пределы контрольной Capacity-задачи.
+' Задаёт фиксированные границы поиска, допуски и физические пределы контрольной задачи несущей
+' способности.
 Private Sub ConfigureBaselineCapacity(ByVal cap As CCapacitySolver)
     cap.InitialLambdaStep = 1#
     cap.MaxLambda = 64#
@@ -252,7 +253,8 @@ Private Sub ConfigureBaselineCapacity(ByVal cap As CCapacitySolver)
     cap.SteelStrainLimit = 0.025
 End Sub
 
-' Материалы этого baseline построены по фиксированным физическим точкам, без extension.
+' Материалы эталона построены по фиксированным физическим точкам без численного продолжения
+' диаграмм.
 Private Function ProvisionalConcrete() As CMaterialDiagram
     Dim concrete As CMaterialDiagram
     Set concrete = New CMaterialDiagram

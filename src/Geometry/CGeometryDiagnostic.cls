@@ -15,8 +15,8 @@ Option Explicit
 ' Хранит код причины, пояснение и связь с исходными данными.
 ' Этот объект описывает геометрическую ошибку независимо от Excel и статуса расчёта НДС.
 
-Private mCode As String, mEntity As String, mRelated As String, mReason As String, mSource As String
-Private mDetail1 As Double, mDetail2 As Double
+Private mCode As String, mEntity As String, mRelated As String, mReason As String, mSource As String ' Код, основной и связанный объект, причина и источник геометрической ошибки.
+Private mDetail1 As Double, mDetail2 As Double ' Два числовых уточнения ошибки; смысл зависит от её кода.
 
 ' Заполняет код, причину и связи диагностической записи с исходной геометрией или правилом.
 Friend Sub Initialize(ByVal code As String, ByVal entityID As String, ByVal relatedEntityID As String, _
@@ -29,9 +29,9 @@ End Sub
 
 ' Машинный код причины; назначается напрямую, не извлекается из русского текста.
 Public Property Get Code() As String: Code = mCode: End Property
-' Смысловой ID сущности отказа, если он известен этому сервису.
+' Возвращает ID геометрического объекта или правила, при обработке которого возникла ошибка.
 Public Property Get EntityID() As String: EntityID = mEntity: End Property
-' ID связанного сегмента/позиции/стержня для локализации причины.
+' Возвращает ID связанного сегмента, позиции или стержня, помогающий найти причину ошибки.
 Public Property Get RelatedEntityID() As String: RelatedEntityID = mRelated: End Property
 ' Возвращает пояснение причины для человека; код ошибки хранится отдельно в Code.
 Public Property Get Reason() As String: Reason = mReason: End Property
@@ -39,5 +39,5 @@ Public Property Get Reason() As String: Reason = mReason: End Property
 Public Property Get Detail1() As Double: Detail1 = mDetail1: End Property
 ' Возвращает второе численное уточнение причины; смысл и единицы зависят от Code.
 Public Property Get Detail2() As Double: Detail2 = mDetail2: End Property
-' Реальный адрес/программный источник, добавленный SourceMap или правилом.
+' Возвращает адрес исходного параметра или текстовую ссылку на место его задания.
 Public Property Get SourceReference() As String: SourceReference = mSource: End Property

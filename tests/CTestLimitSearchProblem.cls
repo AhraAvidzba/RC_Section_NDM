@@ -24,44 +24,44 @@ Private Const PROBE_LIMIT As String = "Limit" ' Точка достигла ил
 Private Const PROBE_NUMFAIL As String = "NumericalFailure" ' Искусственная численная ошибка.
 Private Const PROBE_INPUTERR As String = "InvalidInput" ' Искусственная ошибка входных данных.
 
-Private mSearchMethod As String ' Проверяемый одномерный метод search.
+Private mSearchMethod As String ' Численный метод одномерного поиска, который проверяется данным тестом.
 Private mRootLambda As Double ' Точный корень линейной тестовой функции.
-Private mTolerance As Double ' Допуск lambda-скобки, передаваемый общему search.
+Private mTolerance As Double ' Допустимая ширина интервала lambda, передаваемая общему поиску.
 Private mMaxIterations As Long ' Лимит итераций для проверки T02.
 Private mInitialStep As Double ' Начальный шаг расширения скобки.
 Private mMaxLambda As Double ' Техническая верхняя граница lambda.
-Private mKind As EResultKind ' Вид результата, через который запускается общий search.
-Private mConverged As Boolean ' True, если search финализировал точку.
-Private mFinalLambda As Double ' Lambda, фактически принятая общим search.
+Private mKind As EResultKind ' Вид инженерной задачи, с которым запускается общий поиск.
+Private mConverged As Boolean ' Признак того, что общий поиск принял конечную точку.
+Private mFinalLambda As Double ' Множитель lambda, фактически принятый общим поиском.
 Private mFinalMethod As String ' Метод, которым была принята итоговая точка.
 Private mFinalIterations As Long ' Число итераций, переданное при финализации.
 Private mLimitState As String ' Последний сохранённый статус тестовой задачи.
 Private mDiagnosticLog As String ' Накопленный диагностический текст.
-Private mIterationLimitHit As Boolean ' True, если search остановился по лимиту итераций.
+Private mIterationLimitHit As Boolean ' Признак остановки общего поиска по максимальному числу итераций.
 Private mProbeMaxLambda As Double ' Наибольшая реально проверенная точка.
 Private mProbeCalls As Long ' Счетчик проб общего алгоритма.
 Private mSearchExecuted As Boolean ' ДЛЯ ТЕСТОВ: факт начала пробы или подготовки старта, независимо от ее успеха.
 Private mFailureAbove As Double ' Искусственная численная неудача выше этой lambda; 0 отключает ее.
 Private mFailureAt As Double ' ДЛЯ ТЕСТОВ: неудачная проба возвращает True и нулевую невязку-заглушку.
 Private mStepCriterion As Boolean ' Разрывный критерий не имеет нулевой невязки на соседних Double.
-Private mRecoveryWithoutProgress As Boolean ' Намеренно неисправный callback recovery возвращает прежнюю границу.
+Private mRecoveryWithoutProgress As Boolean ' Намеренно неверная операция уменьшения lambda возвращает прежнюю границу для проверки защиты от застоя.
 Private mUltimateInitialEps As Double ' ДЛЯ ТЕСТОВ: ненулевой старт для машинной стагнации.
-Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: line search не может уменьшить норму.
-Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: направленный отказ callback-а.
+Private mUltimateConstantNorm As Boolean ' ДЛЯ ТЕСТОВ: запрещает уменьшение общей меры невязок при подборе шага.
+Private mUltimateScenario As Long ' ДЛЯ ТЕСТОВ: управляемая неудача оценки пробной точки.
 Private mUltimateCalls As Long ' ДЛЯ ТЕСТОВ: число оценок невязки Newton.
 Private mUltimateGuessCalls As Long ' ДЛЯ ТЕСТОВ: ограниченный возврат к общему старту.
-Private mUltimateUsesWarmGuess As Boolean
+Private mUltimateUsesWarmGuess As Boolean ' Использует ли тестовая задача предыдущее решение при поиске по деформациям.
 Private mFailureCode As ESolverFailureCode ' ДЛЯ ТЕСТОВ: точная причина остановки.
-Private mFailureReason As String ' ДЛЯ ТЕСТОВ: последняя причина callback-а отдельно от общего журнала.
-Private mMultiplierScenario As Long ' ДЛЯ ТЕСТОВ: управляемый отказ конкретного callback-а LoadMultiplier.
+Private mFailureReason As String ' ДЛЯ ТЕСТОВ: последняя причина операции задачи, сохранённая отдельно от общего журнала.
+Private mMultiplierScenario As Long ' ДЛЯ ТЕСТОВ: управляемая неудача выбранной операции задачи при LoadMultiplier.
 Private mFallbackCalls As Long ' ДЛЯ ТЕСТОВ: терминальная ошибка запрещает резервную финализацию.
 Private mAcceptableProbeCalls As Long ' ДЛЯ ТЕСТОВ: успешные пробы между численными отказами.
 Private mFinalizationMaxWidth As Double ' ДЛЯ ТЕСТОВ: приемке нужна более узкая скобка, чем пользовательский допуск.
-Private mBracketFinalizationCalls As Long
+Private mBracketFinalizationCalls As Long ' Число завершений поиска внутри найденного интервала.
 Private mDeferOverallCompletion As Boolean ' ДЛЯ ТЕСТОВ: последующий этап еще не выполнен, но точка поиска принята.
-Private mPointAccepted As Boolean
+Private mPointAccepted As Boolean ' Признак принятой тестовой точки поиска.
 
-' Настраивает линейную тестовую задачу перед запуском общего search.
+' Задаёт линейную контрольную задачу перед запуском общего поиска.
 Public Sub Configure(ByVal searchMethod As String, ByVal rootLambda As Double, _
         ByVal tolerance As Double, ByVal maxIterations As Long, _
         Optional ByVal initialStep As Double = 1#, Optional ByVal maxLambda As Double = 64#, _
@@ -138,7 +138,8 @@ Public Property Let StepCriterion(ByVal value As Boolean)
     mStepCriterion = value
 End Property
 
-' ДЛЯ ТЕСТОВ: общий Search обязан остановить recovery, не сужающий скобку.
+' ДЛЯ ТЕСТОВ: общий поиск должен остановить уточнение,
+' если предложенное lambda не уменьшает рабочий интервал.
 Public Property Let RecoveryWithoutProgress(ByVal value As Boolean)
     mRecoveryWithoutProgress = value
 End Property
@@ -153,7 +154,7 @@ Public Property Get ProbeCalls() As Long
     ProbeCalls = mProbeCalls
 End Property
 
-' Lambda, фактически принятая общим search.
+' Множитель lambda, фактически принятый общим поиском.
 Public Property Get FinalLambda() As Double
     FinalLambda = mFinalLambda
 End Property
@@ -168,12 +169,12 @@ Public Property Get FinalIterations() As Long
     FinalIterations = mFinalIterations
 End Property
 
-' True, если search остановился по лимиту итераций.
+' Признак остановки общего поиска по максимальному числу итераций.
 Public Property Get IterationLimitHit() As Boolean
     IterationLimitHit = mIterationLimitHit
 End Property
 
-' True, если search финализировал точку.
+' Признак того, что общий поиск принял конечную точку.
 Public Property Get Converged() As Boolean
     Converged = mConverged
 End Property
@@ -188,7 +189,7 @@ Public Property Get DiagnosticLog() As String
     DiagnosticLog = mDiagnosticLog
 End Property
 
-' Вид результата, через который запускается общий search.
+' Вид инженерной задачи, с которым запускается общий поиск.
 Private Property Get ILimitSearchProblem_ResultKind() As EResultKind
     ILimitSearchProblem_ResultKind = mKind
 End Property
@@ -203,7 +204,7 @@ Private Property Get ILimitSearchProblem_MaxLambda() As Double
     ILimitSearchProblem_MaxLambda = mMaxLambda
 End Property
 
-' Допуск lambda-скобки, передаваемый общему search.
+' Допустимая ширина интервала lambda, передаваемая общему поиску.
 Private Property Get ILimitSearchProblem_LambdaTolerance() As Double
     ILimitSearchProblem_LambdaTolerance = mTolerance
 End Property
@@ -218,12 +219,12 @@ Private Property Get ILimitSearchProblem_BisectionMaxIterations() As Long
     ILimitSearchProblem_BisectionMaxIterations = mMaxIterations
 End Property
 
-' Проверяемый одномерный метод search.
+' Численный метод одномерного поиска, который проверяется данным тестом.
 Private Property Get ILimitSearchProblem_SearchMethod() As String
     ILimitSearchProblem_SearchMethod = mSearchMethod
 End Property
 
-' True, если search финализировал точку.
+' Признак того, что общий поиск принял конечную точку.
 Private Property Get ILimitSearchProblem_Converged() As Boolean
     ILimitSearchProblem_Converged = mConverged
 End Property
@@ -238,8 +239,8 @@ Private Property Get ILimitSearchProblem_DiagnosticLog() As String
     ILimitSearchProblem_DiagnosticLog = mDiagnosticLog
 End Property
 
-' ДЛЯ ТЕСТОВ: общий сценарий выбирает путь, не добавляя доменную семантику
-' к управляемому probe callback-у численных контрактных тестов.
+' ДЛЯ ТЕСТОВ: принимает выбранный путь общего сценария,
+' сохраняя управляемую аналитическую оценку нагрузки без реальных материалов.
 Private Sub ILimitSearchProblem_BeginLoadPath(ByVal request As CLimitSearchRequest)
 End Sub
 
@@ -260,14 +261,14 @@ Private Function ILimitSearchProblem_AcceptInitialPoint(ByVal request As CLimitS
     ILimitSearchProblem_AcceptInitialPoint = True
 End Function
 
-' Fake-задача не требует доменной подготовки перед поиском.
+' Контрольная задача не требует отдельной подготовки материалов или геометрии перед поиском.
 Private Function ILimitSearchProblem_Prepare(ByVal request As CLimitSearchRequest) As Boolean
     If mMultiplierScenario = 13 Then Err.Raise 9, "CTestLimitSearchProblem", MultiplierFaultReason()
     ILimitSearchProblem_Prepare = True
 End Function
 
-' ДЛЯ ТЕСТОВ: аналитическая система из трех независимых невязок позволяет
-' проверить общий Newton без Capacity/Crack-калькуляторов и material API.
+' ДЛЯ ТЕСТОВ: задаёт три независимых аналитических невязки
+' для проверки общего метода Ньютона без расчётов железобетона.
 Private Function ILimitSearchProblem_PrepareUltimate(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector) As Boolean
     ILimitSearchProblem_PrepareUltimate = Not loadPath Is Nothing
@@ -282,8 +283,8 @@ Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimit
         ILimitSearchProblem_BuildLoadPath(request), Nothing, "Тестовый поиск не сошелся.")
 End Function
 
-' ДЛЯ ТЕСТОВ: финальная lambda уже сохранена callback-ом; дополнительной
-' инженерной обработки результата аналитической fixture нет.
+' ДЛЯ ТЕСТОВ: найденное lambda уже сохранено при приёме точки.
+' Дополнительная инженерная обработка аналитическому примеру не требуется.
 Private Sub ILimitSearchProblem_CompleteUltimate(ByVal loadPath As CLoadPathVector)
 End Sub
 
@@ -307,9 +308,9 @@ Private Sub ILimitSearchProblem_LimitSearchInitializeUltimateGuess(ByVal section
     End If
 End Sub
 
-' ДЛЯ ТЕСТОВ: вычисляет линейные невязки и считает реальные вызовы callback.
-' Некоторые сценарии намеренно дают typed failure либо VBA error на второй
-' пробе, чтобы проверить причину остановки на шаге построения Якобиана.
+' ДЛЯ ТЕСТОВ: вычисляет линейные невязки и считает обращения к задаче.
+' Отдельные случаи намеренно возвращают код ошибки или исключение VBA
+' на второй пробе для проверки остановки при вычислении Якобиана.
 Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal eps0 As Double, _
@@ -352,8 +353,9 @@ Private Function ILimitSearchProblem_LimitSearchEvaluateUltimateResidual(ByVal s
     ILimitSearchProblem_LimitSearchEvaluateUltimateResidual = True
 End Function
 
-' ДЛЯ ТЕСТОВ: проверяет три допуска аналитической системы. Режим constant norm
-' намеренно запрещает успех, создавая воспроизводимую стагнацию line search.
+' ДЛЯ ТЕСТОВ: проверяет три допуска аналитической системы.
+' Режим постоянной меры невязок намеренно запрещает успех
+' для воспроизводимой проверки застоя подбора шага.
 Private Function ILimitSearchProblem_LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
     ILimitSearchProblem_LimitSearchUltimateResidualReached = _
@@ -374,8 +376,8 @@ Private Property Get ILimitSearchProblem_LimitSearchUseJacobianMeritScaling() As
     ILimitSearchProblem_LimitSearchUseJacobianMeritScaling = False
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет найденную аналитическую lambda, метод и число итераций.
-' Физического state нет: приемка production-предела проверяется отдельными tests.
+' ДЛЯ ТЕСТОВ: сохраняет найденные lambda, метод и число итераций.
+' Физическое НДС не создаётся; предел настоящего сечения проверяется отдельно.
 Private Function ILimitSearchProblem_LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
@@ -426,9 +428,9 @@ Private Function ILimitSearchProblem_BuildLoadPath(ByVal request As CLimitSearch
     Set ILimitSearchProblem_BuildLoadPath = loadPath
 End Function
 
-' Оценивает одну lambda-точку линейной функции.
-' Точка с нулевой невязкой достигла критерия; доменная финализация принимает
-' аналитический корень без требования создать вымышленное материальное State.
+' Оценивает линейную функцию при заданном lambda. Нулевая невязка
+' означает достижение аналитического критерия; материальное НДС
+' для подтверждения корня этой тестовой функции не требуется.
 Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
@@ -491,8 +493,8 @@ Private Function ILimitSearchProblem_EvaluatePoint(ByVal request As CLimitSearch
     ILimitSearchProblem_EvaluatePoint = True
 End Function
 
-' ДЛЯ ТЕСТОВ: однотипные предикаты аналитического probe-протокола различают
-' допустимую точку, предел, намеренную несходимость и ошибку входа.
+' ДЛЯ ТЕСТОВ: различает допустимую точку, предел,
+' намеренную численную неудачу и ошибку входных данных.
 Private Function ILimitSearchProblem_IsAcceptableState(ByVal probeState As String) As Boolean
     ILimitSearchProblem_IsAcceptableState = (probeState = PROBE_ACCEPTABLE)
 End Function
@@ -535,7 +537,8 @@ Private Sub ILimitSearchProblem_HandleInitialFailure(ByVal probeState As String)
     AppendDiagnosticLine "initialFailure=" & probeState
 End Sub
 
-' ДЛЯ ТЕСТОВ: отличает техническую границу поиска от найденного корня fixture.
+' ДЛЯ ТЕСТОВ: различает достижение технической границы поиска
+' и подтверждённый корень аналитической функции.
 Private Sub ILimitSearchProblem_HandleBracketNotFound(ByVal lowLambda As Double)
     If mMultiplierScenario = 12 Then
         ILimitSearchProblem_SetFailure sfcInvalidConfiguration, MultiplierFaultReason()
@@ -563,7 +566,8 @@ Private Sub ILimitSearchProblem_HandleIterationLimit(ByVal maxIterations As Long
         "; tolerance=" & FormatNumberInvariant(tolerance)
 End Sub
 
-' ДЛЯ ТЕСТОВ: неизвестный probe-исход оставляет поиск неуспешным и диагностируемым.
+' ДЛЯ ТЕСТОВ: неизвестный исход пробы оставляет поиск неуспешным
+' и сохраняется для диагностики.
 Private Sub ILimitSearchProblem_HandleUnexpectedState(ByVal probeState As String)
     mLimitState = PROBE_NUMFAIL
     AppendDiagnosticLine "unexpectedState=" & probeState
@@ -581,12 +585,12 @@ Private Sub ILimitSearchProblem_SetNumericalFailure(ByVal message As String)
     AppendDiagnosticLine message
 End Sub
 
-' ДЛЯ ТЕСТОВ: callback журнала позволяет проверить реальный путь общего поиска.
+' ДЛЯ ТЕСТОВ: принимает сообщения, позволяющие проверить фактическую последовательность поиска.
 Private Sub ILimitSearchProblem_AppendDiagnostic(ByVal message As String)
     AppendDiagnosticLine message
 End Sub
 
-' Принимает итоговую lambda-точку, выбранную общим search-ядром.
+' Сохраняет конечную нагрузку lambda, выбранную общим численным поиском.
 Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lambdaValue As Double, _
         ByVal probeState As String, ByVal methodName As String, _
@@ -606,8 +610,9 @@ Private Function ILimitSearchProblem_FinalizeAt(ByVal request As CLimitSearchReq
     ILimitSearchProblem_FinalizeAt = True
 End Function
 
-' ДЛЯ ТЕСТОВ: сохраняет выбранную сторону скобки по kind задачи, чтобы проверить
-' generic финализацию Capacity/Formation без отдельного численного алгоритма.
+' ДЛЯ ТЕСТОВ: принимает сторону интервала по виду задачи, проверяя
+' общий порядок завершения несущей способности и образования трещины
+' без отдельных численных алгоритмов.
 Private Function ILimitSearchProblem_FinalizeBracket(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -643,7 +648,7 @@ Private Sub ILimitSearchProblem_TryFinalizeAfterSearchFailure(ByVal request As C
     AppendDiagnosticLine "retainedCapacity"
 End Sub
 
-' ДЛЯ ТЕСТОВ: фиксирует полноценный численный результат без solver/calculator.
+' ДЛЯ ТЕСТОВ: сохраняет полный численный итог без реального решателя НДС.
 Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
     Dim meta As CResultMeta
@@ -666,8 +671,8 @@ Private Function ILimitSearchProblem_BuildResult(ByVal request As CLimitSearchRe
     Set ILimitSearchProblem_BuildResult = result
 End Function
 
-' ДЛЯ ТЕСТОВ: конфигурационная, входная и внутренняя ошибки запрещают повтор
-' попытки; реальная численная неудача допускает предусмотренный fallback.
+' ДЛЯ ТЕСТОВ: ошибки настройки, ввода и программы запрещают повторную попытку.
+' Только численная неудача позволяет предусмотренную смену метода.
 Private Property Get ILimitSearchProblem_StoppedTerminally() As Boolean
     ILimitSearchProblem_StoppedTerminally = (mFailureCode = sfcInvalidConfiguration Or _
         mFailureCode = sfcInvalidInput Or mFailureCode = sfcInternalError)
@@ -678,7 +683,7 @@ Private Property Get ILimitSearchProblem_StopReason() As String
     ILimitSearchProblem_StopReason = mLimitState
 End Property
 
-' ДЛЯ ТЕСТОВ: сбрасывает рабочую причину между попытками той же fixture.
+' ДЛЯ ТЕСТОВ: очищает рабочую причину между попытками одной контрольной задачи.
 Private Sub ILimitSearchProblem_ClearStopReason()
     mLimitState = vbNullString
 End Sub
@@ -688,7 +693,7 @@ Private Sub ILimitSearchProblem_SetStopReasonIfEmpty(ByVal reason As String)
     If Len(mLimitState) = 0 Then mLimitState = reason
 End Sub
 
-' ДЛЯ ТЕСТОВ: сохраняет сообщения перехода fallback в наблюдаемом порядке.
+' ДЛЯ ТЕСТОВ: сохраняет порядок сообщений перехода к дополнительному методу.
 Private Sub ILimitSearchProblem_MergeFallback(ByVal firstLimitState As String, _
         ByVal firstStopReason As String, ByVal firstDiagnostics As String, _
         ByVal firstAttemptMessage As String, ByVal transitionMessage As String, _
@@ -711,7 +716,7 @@ Private Function FormatNumberInvariant(ByVal value As Double) As String
 End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
-' Сохраняет typed failure общего Newton независимо от display-строк и текста.
+' Сохраняет код ошибки общего метода Ньютона независимо от текста и внешнего статуса.
 Private Sub ILimitSearchProblem_SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
     mFailureCode = failureCode
     mFailureReason = reason
@@ -741,7 +746,7 @@ Public Sub ConfigureUltimateGuardCase(ByVal scenario As Long, Optional ByVal kin
     End Select
 End Sub
 
-' ДЛЯ ТЕСТОВ: счетчик и typed-причина для независимых assertions.
+' ДЛЯ ТЕСТОВ: возвращает счётчик и код причины для независимой проверки результата.
 Public Property Get UltimateCalls() As Long
     UltimateCalls = mUltimateCalls
 End Property
@@ -778,13 +783,13 @@ Public Sub ConfigureMultiplierFaultCase(ByVal scenario As Long, ByVal searchMeth
     Configure searchMethod, 1.25, 0.000001, 80, resultKind:=kind
     mMultiplierScenario = scenario
     If scenario = 12 Then mRootLambda = 100#: mMaxLambda = 4#
-    ' Резервный callback проверяется после положительной допустимой пробы.
-    ' Точная двоичная граница не зависит от ранней остановки по допуску lambda.
+    ' Дополнительный способ завершения проверяем после положительной допустимой пробы.
+    ' Точная двоичная граница позволяет исключить влияние ранней остановки по допуску lambda.
     If scenario = 15 Then mFailureAbove = 0.5
 End Sub
 
-' ДЛЯ ТЕСТОВ: наблюдает только резервный callback; основной поиск не должен
-' вызывать его после configuration/input/internal failure.
+' ДЛЯ ТЕСТОВ: учитывает только вызов дополнительного способа решения.
+' После ошибки настройки, ввода или программы основной поиск вызывать его не должен.
 Public Property Get FallbackCalls() As Long
     FallbackCalls = mFallbackCalls
 End Property

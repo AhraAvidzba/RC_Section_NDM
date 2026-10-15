@@ -51,7 +51,8 @@ Private Function LabelDefinition(ByVal normalY As Double) As CSectionDefinition
     Set LabelDefinition = facade.Finish
 End Function
 
-' ДЛЯ ТЕСТОВ: закрытая копия units не зависит от перенастройки внешнего объекта.
+' ДЛЯ ТЕСТОВ: завершённая копия единиц измерения не зависит от последующих изменений исходного
+' объекта.
 Public Function RunRecipeContextFreezeTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -103,7 +104,8 @@ Finished:
     RunRecipeContextFreezeTests = mReport & "TOTAL CONTEXT FREEZE: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: выдаваемые объекты — те же закрытые данные, а не копии массивов.
+' ДЛЯ ТЕСТОВ: выдаётся тот же готовый объект с запретом изменений; массивы повторно не
+' копируются.
 Public Function RunPublishedBuildTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -178,7 +180,8 @@ Finished:
     RunPublishedBuildTests = mReport & "TOTAL PUBLISHED BUILD: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: создание пути, его однократная регистрация и закрытие определения.
+' ДЛЯ ТЕСТОВ: создание линии, её однократное добавление в описание сечения и запрет изменений
+' готового описания.
 Public Function RunDefinitionLifecycleTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed

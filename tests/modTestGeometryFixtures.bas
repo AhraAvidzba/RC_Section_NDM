@@ -1,9 +1,9 @@
 Attribute VB_Name = "modTestGeometryFixtures"
 Option Explicit
 
-' ДЛЯ ТЕСТОВ: численные области во внутренних мм через актуальную общую геометрию.
-' Не участвует в добавлении производственных типов сечений; workbook snapshot
-' ниже читает только зарегистрированные таблицы через штатный reader.
+' ДЛЯ ТЕСТОВ: создаёт контрольные области общими геометрическими классами в мм.
+' Новые рабочие типы не регистрирует. Входные данные книги читает обычным
+' CSectionInputSnapshotReader только из зарегистрированных таблиц.
 Public Function FixtureGeometry(ByVal region As CConcreteRegion) As CGeometryRegion
     Set FixtureGeometry = New CGeometryRegion
     FixtureGeometry.Initialize region
@@ -202,7 +202,7 @@ Public Function FixtureRecipeDefinition(ByVal recipe As ISectionRecipe, ByVal ta
     Set FixtureRecipeDefinition = recipe.CreateDefinition(context)
 End Function
 
-' ДЛЯ ТЕСТОВ: выбранный тип проходит тот же registered snapshot, что и программа.
+' ДЛЯ ТЕСТОВ: читает входные данные выбранного рецепта тем же способом, что рабочая программа.
 Public Function FixtureWorkbookDefinition(ByVal typeID As String, ByVal workbook As Object, _
         ByVal units As CUnitSystem) As CSectionDefinition
     Dim registry As CSectionTypeRegistry, reader As CSectionInputSnapshotReader, context As CSectionRecipeContext

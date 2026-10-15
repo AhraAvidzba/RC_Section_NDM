@@ -2,10 +2,10 @@ Attribute VB_Name = "modTestBatchCalculation"
 Option Explicit
 
 ' ==========================================================================
-' Тесты пакетного расчета и интерфейсных статусов
+' ДЛЯ ТЕСТОВ: расчёт сочетаний и пользовательские статусы
 ' ==========================================================================
-' Модуль проверяет, что batch-слой правильно обрабатывает несколько LC,
-' выбирает худшее сочетание и не смешивает статусы capacity/crack/direct state.
+' Проверяет обработку нескольких сочетаний, выбор определяющего результата
+' и раздельное хранение НДС, несущей способности и проверок трещин.
 
 Private Type TBatchTestStats
     Passed As Long
@@ -72,8 +72,8 @@ Restore:
     RunBatchWorkStatsTests = stats.Report & "TOTAL_BATCH_WORK_STATS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
-' Выполняет пакетные регрессии профилей, путей, typed results, reuse и вывода.
-' Общий отчет сохраняет отдельные причины failure и количество assertions.
+' Проверяет профили, траектории нагрузки, результаты, повторное использование
+' НДС и запись таблиц. Отчёт сохраняет причины отказов и число отдельных проверок.
 Public Function RunBatchCalculationTests() As String
     On Error GoTo Failed
 
@@ -1590,8 +1590,8 @@ Private Function CellHasDisplayedResult(ByVal value As Variant) As Boolean
     CellHasDisplayedResult = Len(text) > 0 And StrComp(text, "N/A", vbTextCompare) <> 0
 End Function
 
-' ДЛЯ ТЕСТОВ: возвращает компактную строку typed-result для диагностики
-' регрессионных проверок, чтобы было видно, какой именно этап дал статус.
+' ДЛЯ ТЕСТОВ: кратко перечисляет статусы вложенных результатов,
+' чтобы при разборе ошибки был виден определяющий этап расчёта.
 Private Function MetaDebugText(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then
         MetaDebugText = "<nothing>"
@@ -2098,9 +2098,9 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет, что governing по прочности выбирается среди профилей, где capacity
-' действительно запрошен. PR2 в базовом шаблоне трещин не участвует в этой
-' выборке, потому что его CapacityStatus получает N/A.
+' Определяющее сочетание прочности выбирается только среди профилей,
+' которые запрашивают несущую способность. Обычный профиль трещин PR2
+' не участвует в этом выборе.
 Private Sub TestBatchGoverningUsesStrengthProfilesOnly(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -2115,8 +2115,7 @@ Private Sub TestBatchGoverningUsesStrengthProfilesOnly(ByRef stats As TBatchTest
     AssertTrue stats, "batch.governing.profiles.id", batch.GoverningCombinationID = "GOV"
 End Sub
 
-' Проверяет, что отключение capacity задается самим профилем, а не старой
-' глобальной настройкой области расчета.
+' Отключение поиска несущей способности задаётся выбранным профилем.
 Private Sub TestPR2SkipsCapacityByProfile(ByRef stats As TBatchTestStats)
     On Error GoTo RestoreAndFail
 
@@ -3190,9 +3189,8 @@ RestoreAndFail:
     Resume Restore
 End Sub
 
-' Проверяет, что критичные настройки устойчивости не получают скрытые fallback
-' значения. Если пользователь очистил или неверно задал параметр, включенная
-' устойчивость должна вернуть InputErr через общую status policy.
+' Обязательные настройки включённой устойчивости не заменяются скрытыми
+' значениями по умолчанию. Пустое или ошибочное значение должно давать ошибку ввода.
 Private Sub TestStabilityInvalidSettingsReportInputErr(ByRef stats As TBatchTestStats)
     Dim oldEnabled As String
     Dim oldValueSet As String
@@ -4427,8 +4425,8 @@ Private Sub AssertBatchSummaryReservesMatchDetailed(ByRef stats As TBatchTestSta
     End If
 End Sub
 
-' Ищет LC по его ID в компактной сводке, сохраняя пропуски исходных строк.
-' Возвращает ноль, если writer не вывел нужное сочетание в проверяемой области.
+' Находит сочетание по номеру в компактной сводке с учётом пропущенных входных
+' строк. Возвращает ноль, если сочетание не было записано в проверяемый диапазон.
 Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal combinationID As String) As Long
     Dim anchorRow As Long
     anchorRow = BatchSummaryStartRow()
@@ -4441,8 +4439,8 @@ Private Function SummaryRowByCombination(ByVal resultsSheet As Object, ByVal com
     Next rowIndex
 End Function
 
-' Ищет ID в выбранном подробном output-блоке независимо от номера строки LC.
-' Соседние блоки не используются как источник нужного результата.
+' Находит сочетание по номеру в выбранной подробной таблице независимо
+' от номера входной строки. Соседние таблицы не используются.
 Private Function DetailedRowByCombination(ByVal resultsSheet As Object, ByVal anchorName As String, _
         ByVal combinationID As String) As Long
     Dim anchor As Object
@@ -4701,8 +4699,8 @@ Private Function UserRectSetTensionRebars() As CRebarLayout
               Array("B2.as_2", 600#, 40#, 0#, 40#, 5, 32#, 80#, 80#)))
 End Function
 
-' Читает значение fixture по ключу, чтобы восстановить его после теста.
-' Отсутствующий ключ является ошибкой постановки, а не пустым default.
+' Читает значение тестового параметра по ключу для последующего восстановления.
+' Отсутствующий ключ означает ошибку подготовки теста.
 Private Function GetSystemSetting(ByVal key As String) As String
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
@@ -4716,8 +4714,8 @@ Private Function GetSystemSetting(ByVal key As String) As String
     Err.Raise vbObjectError + 3930, "modTestBatchCalculation", "System setting not found: " & key
 End Function
 
-' Меняет существующую настройку fixture; новый ключ не добавляется в таблицу.
-' Рабочие пользовательские данные защищены запуском suites на отдельной книге.
+' Меняет существующую настройку отдельной тестовой копии.
+' Новый ключ не добавляет; исходные пользовательские данные не меняет.
 Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
     Dim settings As Object
     Set settings = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
@@ -5006,8 +5004,8 @@ Private Sub TestResultMetaAggregateSkipsNotApplicable(ByRef stats As TBatchTestS
     AssertEquals stats, "resultMeta.aggregate.onlyNA", policy.ExternalStatus(aggregate), "N/A"
 End Sub
 
-' Проверяет финальный result-tree: display вычисляется из канонической meta,
-' а сводные комментарии собираются только из соответствующих typed ветвей.
+' Проверяет готовые вложенные результаты. Внешний статус должен следовать
+' из кода результата, а сводные пояснения — из соответствующего этапа расчёта.
 Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTestStats)
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -5167,8 +5165,8 @@ Private Sub TestFormulaChecksDoNotCreateNumFail(ByRef stats As TBatchTestStats)
         policy.ExternalStatus(longitudinal.CalculateFromStress(20#, 14.6).ResultMeta) <> "NumFail"
 End Sub
 
-' Проверяет Stage 2: named-state хранит не только плоскость деформаций, но и
-' целевые/внутренние усилия, невязки и diagnostic metadata solver-а.
+' Сохранённое НДС должно содержать не только поле деформаций,
+' но и заданные и внутренние усилия, невязки и диагностику решателя.
 Private Sub TestSectionStateResultStoresEquilibriumData(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -5195,8 +5193,8 @@ Private Sub TestSectionStateResultStoresEquilibriumData(ByRef stats As TBatchTes
     AssertTrue stats, "stateMeta.resultMeta", Not stateResult.ResultMeta Is Nothing
 End Sub
 
-' Проверяет Stage 3: технические solve-options не входят в ключ
-' эквивалентности named-state, если они не меняют физический результат.
+' Параметры численных попыток не входят в ключ совпадения сохранённого НДС,
+' если они не меняют физический результат.
 Private Sub TestStateRequestEquivalenceIgnoresSolveOptions(ByRef stats As TBatchTestStats)
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
@@ -5220,9 +5218,8 @@ Private Sub TestStateRequestEquivalenceIgnoresSolveOptions(ByRef stats As TBatch
         requestA.EquivalenceKey <> requestDifferent.EquivalenceKey
 End Sub
 
-' Проверяет Stage 3: repository может переиспользовать только реально найденное
-' физическое НДС. Неуспешная попытка хранится для вывода, но не блокирует
-' будущий solve того же физического запроса.
+' Повторно использовать можно только подтверждённое физическое НДС.
+' Неудача сохраняется для пояснения, но не запрещает последующие попытки решения.
 Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTestStats)
     Dim batch As CBatchSectionCalculator
     Set batch = BuildBatchCalculator()
@@ -5268,8 +5265,8 @@ Private Sub TestStateRepositoryReusesOnlyConvergedStates(ByRef stats As TBatchTe
         retryRepository.FindState(sstStrengthState) Is successfulState
 End Sub
 
-' Проверяет текущий контракт именования: принимаются только
-' канонические PreCrackState/PostCrackState без старых Before/AfterMcrc alias.
+' Принимаются имена PreCrackState и PostCrackState.
+' Устаревшие имена BeforeMcrc и AfterMcrc не должны незаметно подменяться.
 Private Sub TestPrePostCrackStateNames(ByRef stats As TBatchTestStats)
     AssertTrue stats, "stateName.preCanonical", _
         SectionStateTypeFromText("PreCrackState") = sstPreCrackState
@@ -5281,9 +5278,9 @@ End Sub
 
 ' ============================== ДЛЯ ТЕСТОВ AUDIT02 ==============================
 
-' Изолирует повторное чтение сводной meta от solver-а и Excel writer-ов.
-' Возвращает время и последний комментарий для диагностики расхода строк;
-' физические числа и штатный regression-набор здесь не изменяются.
+' Повторно читает сводные статус и пояснение без решателя и записи Excel.
+' Возвращает время и последнее пояснение для разбора расхода строк;
+' физические значения результата не меняет.
 Public Function RunAudit02ResultMetaStress() As String
     Dim result As CCombinationResult
     Set result = New CCombinationResult
@@ -5397,9 +5394,9 @@ RestoreFailed:
 End Function
 
 
-' ДЛЯ ТЕСТОВ: проверяет комментарии и четыре блока вывода готового batch.
-' Позволяет отдельному Config-набору использовать те же проверки subtree,
-' не запускать весь batch-набор повторно и не копировать его assertions.
+' ДЛЯ ТЕСТОВ: проверяет пояснения и четыре таблицы готового расчёта.
+' Позволяет проверкам Config использовать те же проверки вложенных результатов
+' без повторного тяжёлого расчёта.
 Public Function Audit03ValidateConfigBatchResults(ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByRef passed As Long, ByRef failed As Long) As String
     Dim stats As TBatchTestStats, writer As CBatchResultWriter, i As Long
@@ -6105,8 +6102,8 @@ End Function
 
 ' ============================== ДЛЯ ТЕСТОВ AUDIT02 CACHE ==============================
 
-' Запускает направленную приемку scoped repository отдельно от Excel writer-ов.
-' Проверяет реальные solve/cache-hit, смену контекста и повтор после неудачи.
+' Отдельно проверяет хранилище НДС без записи таблиц Excel: новые решения,
+' повторное использование готового состояния, смену исходных данных и повтор после неудачи.
 Public Function RunAudit02RepositoryContextTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
@@ -6118,8 +6115,8 @@ Failed:
     RunAudit02RepositoryContextTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
 
-' Подтверждает, что reuse зависит от физической модели и точности приемки,
-' а не от retry/warm-start. Уже выданный snapshot не меняется при новом solve.
+' Повторное использование зависит от физической модели и точности приёмки,
+' а не от числа повторов или начального приближения. Новое решение не меняет ранее выданное НДС.
 Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     Dim section As CSectionModel
     Set section = BuildCircleStabilitySection(300#, 8, 16#)
@@ -6490,8 +6487,8 @@ Failed:
     AssertTrue stats, "audit02.offsetPair.runtime." & reason, False
 End Sub
 
-' Сравнивает доступность и весь численный снимок named-state, исключая
-' итерации/время/журнал: эти показатели не являются условием одинаковой физики.
+' Сравнивает наличие и все инженерные величины сохранённых НДС.
+' Время, итерации и журнал исключены: они не определяют физическое совпадение.
 Private Sub Audit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima As Object, _
         ByVal prefix As String, ByVal offState As CSectionStateResult, ByVal onState As CSectionStateResult)
     If offState Is Nothing Then
@@ -6517,8 +6514,8 @@ Private Sub Audit02ComparePairState(ByRef stats As TBatchTestStats, ByVal maxima
     Next i
 End Sub
 
-' Подготавливает численные поля State с прежними допусками solver/strain-
-' тестов; технические отличия поисковой стратегии сюда не включаются.
+' Подготавливает числовые поля НДС с прежними допусками проверок решателя
+' и деформаций. Служебные различия стратегий поиска не учитываются.
 Private Function Audit02PairStateNumbers(ByVal state As CSectionStateResult) As Variant
     Audit02PairStateNumbers = Array( _
         Array("TargetN", state.TargetN, 5#), Array("TargetMx", state.TargetMx, 5000#), Array("TargetMy", state.TargetMy, 5000#), _
@@ -6531,8 +6528,8 @@ Private Function Audit02PairStateNumbers(ByVal state As CSectionStateResult) As 
         Array("ResidualN", state.ResidualN, 5#), Array("ResidualMx", state.ResidualMx, 5000#), Array("ResidualMy", state.ResidualMy, 5000#))
 End Function
 
-' Подготавливает метрики всех инженерных ветвей для парного сравнения.
-' Неприменимые ветви сравниваются также по доступности и typed status выше.
+' Подготавливает инженерные величины всех расчётных проверок для сравнения.
+' Наличие неприменимых проверок и их статусы сопоставляются отдельно.
 Private Function Audit02PairResultNumbers(ByVal result As CCombinationResult) As Variant
     Dim capacity As CCapacityResult
     Set capacity = result.StrengthResult.Capacity
@@ -6577,8 +6574,8 @@ End Sub
 ' ДЛЯ ТЕСТОВ: AUDIT03 - ЖИЗНЕННЫЙ ЦИКЛ МЕТАДАННЫХ
 ' ===========================================================================
 
-' Выполняет направленную проверку flags/clone/reset и ранних result-фабрик.
-' Это отдельный вход для воспроизводимого F04 без полного batch-прогона.
+' Проверяет признаки состояния, копирование, очистку и ранние результаты отказа.
+' Отдельный запуск воспроизводит F04 без полного набора расчёта сочетаний.
 Public Function RunAudit03LifecycleTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
@@ -6673,9 +6670,9 @@ End Sub
 ' ДЛЯ ТЕСТОВ: AUDIT03 - ВСЕ ПУТИ НАГРУЗКИ И КОММЕНТАРИИ RESULTS
 ' ===========================================================================
 
-' Выполняет реальные Capacity/Formation расчеты всех пользовательских путей.
-' Отдельный вход сохраняет параметры, typed причины и комментарии каждого
-' результата; подробные таблицы сверяются с опубликованными subtrees.
+' Выполняет обычные расчёты несущей способности и образования трещины
+' для всех пользовательских траекторий. Сохраняет параметры, коды причин
+' и полные пояснения каждого результата.
 Public Function RunAudit03LoadPathCommentTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
@@ -6824,8 +6821,8 @@ Private Sub Audit03CheckCapacityPath(ByRef stats As TBatchTestStats, ByVal capac
         Exit Sub
     End If
     If includeUnscaledPath Then
-        ' Явный путь с нулевой масштабируемой компонентой не определяет поиск
-        ' lambda. Проверяем существующий InputErr-контракт, а не фиктивный предел.
+        ' Явная траектория без изменяемой составляющей не определяет λ.
+        ' Такой ввод должен давать InputErr, а не фиктивную предельную точку.
         Dim hasScaledLoad As Boolean, nInput As Double, mxInput As Double, myInput As Double
         nInput = CDbl(load(0)): mxInput = CDbl(load(1)): myInput = CDbl(load(2))
         Select Case component
@@ -6913,8 +6910,8 @@ Private Sub Audit03CheckFormationPath(ByRef stats As TBatchTestStats, ByVal form
             AssertTrue stats, prefix & ".prePhysical", formation.PreCrackState.WithinPhysicalRange
             AssertTrue stats, prefix & ".preNotExtended", Not formation.PreCrackState.ExtensionUsed
         Else
-            ' Диагностический кандидат сохраняет точный отказ State, но не
-            ' выдается за физическую пороговую точку или успешный Search.
+            ' Непринятая точка поиска сохраняет точную причину отказа НДС.
+            ' Она не выдаётся за физическую точку образования трещины или успешный поиск.
             AssertTrue stats, prefix & ".preFailureTyped", Audit03RequiresComment(formation.PreCrackState.ResultMeta)
             AssertTrue stats, prefix & ".preFailureNoPoint", Not formation.SearchResult.HasLimitPoint
             AssertTrue stats, prefix & ".preFailureFormationCause", _
@@ -7060,8 +7057,9 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
     If dependencyAt > 0 Then
         ownExplanation = Trim$(Left$(meta.ResultComment, dependencyAt - 1))
         AssertTrue stats, prefix & ".ownSubtree", InStr(1, aggregate.ResultComment, ownExplanation, vbBinaryCompare) > 0
-        ' Formation и Current могут независимо иметь одинаковое пояснение.
-        ' Сохраняем оба этапа, но не добавляем повтор через blocked-потребителей.
+        ' Поиск образования трещины и текущее НДС могут независимо иметь одинаковую
+        ' причину. Оба этапа сохраняются; зависимые заблокированные проверки
+        ' не должны добавлять ту же причину повторно.
         AssertTrue stats, prefix & ".dependencyOncePerIndependentStage", _
             Audit03TextOccurrences(aggregate.ResultComment, sharedDependencyReason) = independentReasonOccurrences
     Else
@@ -7069,8 +7067,8 @@ Private Sub Audit03CheckMetaComment(ByRef stats As TBatchTestStats, ByVal prefix
     End If
 End Sub
 
-' Задает только ожидание обязательной причины; не подменяет production-policy
-' и не вычисляет инженерный или внешний статус из строки комментария.
+' Задаёт только требование наличия причины. Статусы программы
+' и инженерный вывод из текста пояснения тест не вычисляет.
 Private Function Audit03RequiresComment(ByVal meta As CResultMeta) As Boolean
     Select Case meta.InternalStatus
         Case rsCheckFailed, rsNumericalFailure, rsInvalidInput, rsInvalidConfiguration, _
@@ -7079,8 +7077,8 @@ Private Function Audit03RequiresComment(ByVal meta As CResultMeta) As Boolean
     End Select
 End Function
 
-' ДЛЯ ТЕСТОВ: запускает проверку неизменности реальных опубликованных LC.
-' Отдельный entrypoint нужен для того же контрпримера до и после исправления.
+' ДЛЯ ТЕСТОВ: проверяет неизменность готовых результатов сочетаний.
+' Отдельный запуск воспроизводит тот же пример до и после исправления.
 Public Function RunAudit03PublishedResultTests() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats
@@ -7268,7 +7266,7 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
         If path <> "Auto" Then path = ChrW$(&H3BB) & "*" & path
         settings.LoadFromWorkbook ThisWorkbook
         units.LoadFromSettings settings
-        ' Двадцать LC сохраняют штатную сетку Results без изменения Config.
+        ' Двадцать сочетаний сохраняют обычное размещение таблиц Results без изменения Config.
         For first = 1 To loads.Count Step 20
             Set batch = New CBatchSectionCalculator
             batch.Initialize section, provider
@@ -7283,9 +7281,9 @@ Public Function RunAudit03BroadLoadMatrixTests(ByVal shapeName As String, ByVal 
                     CDbl(item(1)), CDbl(item(2)), CDbl(item(3)), profileId, _
                     shapeName & ": " & CStr(item(0)), path
             Next index
-            ' API принимает абсолютную точку в координатах модели, а не
-            ' смещение от бетонного центра. Проверяем оба эксцентриситета
-            ' отдельно, чтобы ненулевой центр формы не искажал fixture.
+            ' Метод принимает абсолютную точку в координатах модели. Это не смещение
+            ' от бетонного центра. Оба эксцентриситета проверяются отдельно,
+            ' чтобы ненулевой центр не скрыл неверный перенос нагрузки.
             batch.ApplyLoadReference referenceX + 10#, referenceY - 7#, referenceX, referenceY
             AssertClose stats, "audit03.matrix.reference.offsetX", batch.LoadReferenceOffsetX, 10#, 0.000000001
             AssertClose stats, "audit03.matrix.reference.offsetY", batch.LoadReferenceOffsetY, -7#, 0.000000001

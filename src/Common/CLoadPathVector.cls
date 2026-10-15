@@ -35,9 +35,9 @@ Public Sub Initialize(ByVal nOffset As Double, ByVal nBase As Double, _
     mMyBase = myBase
 End Sub
 
-' Задает траекторию с постоянной продольной силой и масштабируемым моментом
-' относительно произвольной расчетной точки. Solver работает относительно
-' начала CSectionModel, поэтому момент от N до этой точки входит в Offset.
+' Задаёт постоянную продольную силу и масштабируемый момент относительно выбранной точки.
+' Решатель использует начало координат модели, поэтому момент от эксцентриситета N
+' включается в постоянную часть Offset.
 Public Sub InitializeFixedNAndMomentAboutPoint(ByVal nValue As Double, _
         ByVal momentMxAboutPoint As Double, ByVal momentMyAboutPoint As Double, _
         ByVal pointX As Double, ByVal pointY As Double)

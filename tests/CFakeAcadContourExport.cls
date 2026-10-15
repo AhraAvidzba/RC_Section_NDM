@@ -17,14 +17,14 @@ Option Explicit
 ' экспорт без поиска совпадений и очистки. Сохраняет свойства созданных объектов
 ' для проверок без запуска AutoCAD.
 
-Private mEntities As Collection
-Private mCoordinates As Variant
-Private mBulges As Object
-Private mLayer As String, mColor As Long, mClosed As Boolean, mDeleted As Boolean
-Private mCodes As Variant, mValues As Variant
-Private mForbiddenReads As Long
-Private mObjectName As String, mArea As Double
-Private mRegionCalls As Long, mFailRegionAt As Long
+Private mEntities As Collection ' Объекты, созданные тестовым экспортом.
+Private mCoordinates As Variant ' Координаты вершин созданной полилинии.
+Private mBulges As Object ' Коэффициенты дуг по номерам сегментов полилинии.
+Private mLayer As String, mColor As Long, mClosed As Boolean, mDeleted As Boolean ' Слой, цвет, замкнутость и признак удаления тестового объекта.
+Private mCodes As Variant, mValues As Variant ' Коды и значения расширенных данных тестового объекта.
+Private mForbiddenReads As Long ' Число запрещённых обращений к исходным объектам чертежа.
+Private mObjectName As String, mArea As Double ' Имя вида тестового объекта и его площадь в мм2.
+Private mRegionCalls As Long, mFailRegionAt As Long ' Число попыток создания Region и номер попытки, на которой нужно имитировать отказ.
 
 ' ДЛЯ ТЕСТОВ: создает пустой ModelSpace или отдельную полилинию.
 Private Sub Class_Initialize()
@@ -173,7 +173,8 @@ Public Property Get RegisteredApplications() As Object
     Set RegisteredApplications = apps
 End Property
 
-' ДЛЯ ТЕСТОВ: сохраняет и возвращает XData без подмены production маркировки.
+' ДЛЯ ТЕСТОВ: сохраняет и возвращает данные XData с теми же признаками объектов, что при обычном
+' экспорте.
 Public Sub SetXData(ByVal codes As Variant, ByVal values As Variant)
     mCodes = codes: mValues = values
 End Sub

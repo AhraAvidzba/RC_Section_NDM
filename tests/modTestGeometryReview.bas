@@ -352,8 +352,8 @@ Public Function RunGeometryReviewTests(Optional ByVal outputDirectory As String 
     RunGeometryReviewTests = mReport & "TOTAL_GEOMETRY_REVIEW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' Два независимых пути имеют одинаковый локальный отсчёт 1,3,...;
-' смена порядка путей меняет публикацию, но не физические позиции ряда.
+' Две независимые линии имеют собственную нумерацию позиций 1, 3, ...
+' Смена порядка линий меняет порядок записи стержней, а не их координаты.
 Private Sub TestPerPath(ByVal n As Long, ByVal reverse As Boolean)
     On Error GoTo Failed
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
@@ -503,8 +503,8 @@ Restore:
     If IsArray(saved) Then config.Formula = saved
 End Sub
 
-' Запускает штатный workbook-конвейер одного LC и проверяет запись НДС.
-' Это direct-state профиль; матрицы прочности/трещин здесь не запускаются.
+' Выполняет штатный расчёт одного сочетания и проверяет запись НДС при заданной
+' нагрузке. Профиль не включает поиск несущей способности и расчёт трещин.
 Private Sub CheckRoundedWorkbookRun(ByVal label As String, ByVal units As CUnitSystem, ByVal model As CSectionModel)
     Dim loads As Object, profiles As Object, settings As Object, row As Long, key As String, message As String
     Dim properties As CSectionPropertiesCalculator
@@ -532,7 +532,7 @@ Private Sub CheckRoundedWorkbookRun(ByVal label As String, ByVal units As CUnitS
     mReport = mReport & "WORKBOOK_RUN: " & label & "; " & message & vbCrLf
 End Sub
 
-' Находит строку настоящего заголовка fixture; перенос таблицы не меняет тест.
+' Находит строку заголовка тестовой таблицы; перенос таблицы не должен ломать проверку.
 Private Function HeaderRow(ByVal table As Object, ByVal text As String, ByVal column As Long) As Long
     Dim row As Long
     For row = 1 To table.Rows.Count

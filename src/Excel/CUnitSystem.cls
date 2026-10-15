@@ -17,11 +17,11 @@ Option Explicit
 ' Знаки OUTPUT применяются при записи Results; при отрисовке сохранённых
 ' результатов повторное изменение знаков не выполняется.
 
-Private Const TF_IN_N As Double = 9806.65
-Private Const KGF_CM2_IN_MPA As Double = 0.0980665
-Private Const TF_M2_IN_MPA As Double = 0.00980665
+Private Const TF_IN_N As Double = 9806.65 ' Сила в ньютонах, соответствующая 1 тс.
+Private Const KGF_CM2_IN_MPA As Double = 0.0980665 ' Напряжение в МПа, соответствующее 1 кгс/см2.
+Private Const TF_M2_IN_MPA As Double = 0.00980665 ' Напряжение в МПа, соответствующее 1 тс/м2.
 
-Private mReadOnly As Boolean ' Защита настроек единиц в опубликованном снимке ввода.
+Private mReadOnly As Boolean ' Запрет изменения настроек единиц, уже переданных вместе с входными данными.
 Private mInputLength As String ' Единица длин ввода; преобразование выполняется один раз при чтении размеров.
 Private mOutputLength As String ' Единица отображения длин; сохранённый Results может задавать собственную.
 Private mInputArea As String ' Единица площадей ввода.
@@ -52,9 +52,9 @@ Public Sub InitializeDefaults()
     mSignMy = "+X tension"
 End Sub
 
-' Читает единицы и знаки из Config. Явно пустой, TODO или неизвестный выбор
-' является ошибкой ввода, а не запросом default. Автономный неполный reader
-' может не содержать ключа: только для отсутствующего ключа остается default.
+' Читает единицы и знаки Config. Пустота, TODO или неизвестный выбор вызывают ошибку.
+' Значение по умолчанию возможно только при отсутствующем ключе
+' в отдельно прочитанном неполном наборе настроек.
 Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
     RequireMutable
     InitializeDefaults
@@ -78,8 +78,8 @@ Public Sub LoadFromSettings(ByVal settings As CSystemSettingsReader)
     mSignMy = ValidMySign(settings.GetRawString("Sign.My.User", mSignMy), "Sign.My.User", settings)
 End Sub
 
-' Возвращает независимую изменяемую копию всех единиц и соглашений о знаках.
-' Копируются только скалярные настройки; ссылка на reader или книгу не хранится.
+' Создаёт отдельную изменяемую копию настроек единиц и знаков.
+' Ссылки на Excel и объект чтения настроек в копии не сохраняются.
 Public Function Clone() As CUnitSystem
     Dim result As CUnitSystem
     Set result = New CUnitSystem
@@ -148,8 +148,8 @@ Public Function InternalLengthToOutput(ByVal value As Double, Optional ByVal sav
     InternalLengthToOutput = value / LengthFactorToMm(savedUnit)
 End Function
 
-' Переводит длину из OUTPUT обратно в мм. При заданном savedUnit используется
-' единица самого snapshot, а не текущая пользовательская настройка.
+' Переводит сохранённую выходную длину обратно в мм. При заданном savedUnit
+' использует единицу самого результата независимо от текущего Config.
 Public Function OutputLengthToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
     If Len(savedUnit) = 0 Then savedUnit = mOutputLength
     OutputLengthToInternal = value * LengthFactorToMm(savedUnit)
@@ -182,8 +182,8 @@ Public Function InternalFourthPowerLengthToOutput(ByVal value As Double) As Doub
     InternalFourthPowerLengthToOutput = value / (LengthFactorToMm(mOutputLength) ^ 4)
 End Function
 
-' Переводит величину L4 из OUTPUT-единиц обратно во внутренние мм4.
-' Явная единица длины относится к сохраненному snapshot, не текущему Config.
+' Переводит сохранённую величину размерности L4 обратно в мм4.
+' Явно переданная единица относится к результату, а не текущему Config.
 Public Function OutputFourthPowerLengthToInternal(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
     If Len(savedUnit) = 0 Then savedUnit = mOutputLength
     OutputFourthPowerLengthToInternal = value * LengthFactorToMm(savedUnit) ^ 4
@@ -260,8 +260,8 @@ Public Function InputCurvatureToInternal(ByVal value As Double) As Double
     InputCurvatureToInternal = value * CurvatureFactorToInvMm(mInputCurvature)
 End Function
 
-' Переводит внутреннюю кривизну в OUTPUT-единицы или в явную единицу snapshot.
-' Знак плоскости деформаций этим преобразованием не изменяется.
+' Переводит кривизну в выходные единицы или явно указанную единицу
+' сохранённого результата, не меняя знака поля деформаций.
 Public Function InternalCurvatureToOutput(ByVal value As Double, Optional ByVal savedUnit As String = vbNullString) As Double
     If Len(savedUnit) = 0 Then savedUnit = mOutputCurvature
     InternalCurvatureToOutput = value / CurvatureFactorToInvMm(savedUnit)
@@ -272,17 +272,17 @@ Public Function OutputCurvatureToInternal(ByVal value As Double) As Double
     OutputCurvatureToInternal = value * CurvatureFactorToInvMm(mOutputCurvature)
 End Function
 
-' Возвращает текущий output selector LengthUnit, без преобразования или округления данных.
+' Возвращает выбранную выходную единицу длины без пересчёта самих значений.
 Public Property Get OutputLengthUnit() As String
     OutputLengthUnit = mOutputLength
 End Property
 
-' Возвращает текущий output selector AreaUnit, без преобразования или округления данных.
+' Возвращает выбранную выходную единицу площади без пересчёта самих значений.
 Public Property Get OutputAreaUnit() As String
     OutputAreaUnit = mOutputArea
 End Property
 
-' Возвращает текущий output selector MomentUnit, без преобразования или округления данных.
+' Возвращает выбранную выходную единицу момента без пересчёта самих значений.
 Public Property Get OutputMomentUnit() As String
     OutputMomentUnit = mOutputMoment
 End Property
@@ -292,7 +292,7 @@ Public Property Get InputMomentPerLengthUnit() As String
     InputMomentPerLengthUnit = mInputMoment & "/" & mInputLength
 End Property
 
-' Возвращает текущий output selector ForceUnit, без преобразования или округления данных.
+' Возвращает выбранную выходную единицу силы без пересчёта самих значений.
 Public Property Get OutputForceUnit() As String
     OutputForceUnit = mOutputForce
 End Property
@@ -302,27 +302,27 @@ Public Property Get OutputForceLengthSquaredUnit() As String
     OutputForceLengthSquaredUnit = mOutputForce & "*" & mOutputLength & "2"
 End Property
 
-' Возвращает текущий output selector StressUnit, без преобразования или округления данных.
+' Возвращает выбранную выходную единицу напряжения без пересчёта самих значений.
 Public Property Get OutputStressUnit() As String
     OutputStressUnit = mOutputStress
 End Property
 
-' Возвращает текущий output selector CurvatureUnit, без преобразования или округления данных.
+' Возвращает выбранную выходную единицу кривизны без пересчёта самих значений.
 Public Property Get OutputCurvatureUnit() As String
     OutputCurvatureUnit = mOutputCurvature
 End Property
 
-' Возвращает текущий output selector SignN, без преобразования или округления данных.
+' Возвращает принятое правило знака выходной продольной силы N.
 Public Property Get OutputSignN() As String
     OutputSignN = mSignN
 End Property
 
-' Возвращает текущий output selector SignMx, без преобразования или округления данных.
+' Возвращает принятое правило знака выходного момента Mx.
 Public Property Get OutputSignMx() As String
     OutputSignMx = mSignMx
 End Property
 
-' Возвращает текущий output selector SignMy, без преобразования или округления данных.
+' Возвращает принятое правило знака выходного момента My.
 Public Property Get OutputSignMy() As String
     OutputSignMy = mSignMy
 End Property

@@ -2,13 +2,12 @@ Attribute VB_Name = "modTestGeneralGeometryConfig"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: ОБЩИЕ НАСТРОЙКИ, СЕТКА И ТОЧКА ПРИЛОЖЕНИЯ НАГРУЗКИ
+' ДЛЯ ТЕСТОВ: общие настройки геометрии, сетки и точки нагрузки
 ' ==========================================================================
-' Проверяет девять фактических настроек через их рабочие consumers: построение
-' CSectionModel, сохраненный импорт, batch и перенос нагрузок Excel-adapter-ом.
-' Ни геометрия, ни формулы solver-а не воспроизводятся в тестовом calculator-е.
-' Изменения делаются только в изолированной книге runner-а; исходные формулы
-' и привязка rngSystemSettings восстанавливаются даже после ошибки проверки.
+' Проверяет девять настроек через обычное построение модели, чтение сохранённого
+' импорта, расчёт сочетаний и перенос нагрузки. Не повторяет формулы программы.
+' Изменения выполняет в отдельной копии; восстанавливает исходные формулы
+' и привязку rngSystemSettings даже при ошибке.
 
 Private Type TGeneralConfigStats
     Passed As Long
@@ -199,9 +198,9 @@ Private Sub CheckGeneratedMeshUnits(ByRef stats As TGeneralConfigStats, ByVal sy
     SetValue system, "Mesh.StepX", 20#: SetValue system, "Mesh.StepY", 20#
 End Sub
 
-' Сохраненный импорт проходит настоящий importer/Results writer/readback.
-' Generated-настройки могут быть невалидны при AutoCAD: повторный импорт и
-' генерация не выполняются, координаты/площадь остаются внутренними мм/мм2.
+' Сохранённая геометрия проходит обычные импорт, запись и чтение Results.
+' При источнике AutoCAD параметры генерации не используются. Повторный импорт
+' и генерация не выполняются; внутренние координаты и площади остаются в мм и мм2.
 Private Sub CheckSavedImport(ByRef stats As TGeneralConfigStats, ByVal system As Object, ByVal unitRange As Object)
     Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter
     Dim regions As Collection, region As CFakeAcadRegion, imported As CSectionModel, restored As CSectionModel
@@ -232,9 +231,9 @@ Private Sub CheckSavedImport(ByRef stats As TGeneralConfigStats, ByVal system As
     system.Formula = saved
 End Sub
 
-' Порог проверяется ниже/ровно/выше границы через действующие target moments
-' batch и реальные НДС. Другой масштаб INPUT Moment/Length обязан сохранять
-' внутренний порог; нулевая настройка отключает именно инженерный фильтр.
+' Проверяет значения ниже порога, на нём и выше него по действующим моментам
+' и рассчитанному НДС. Смена входных единиц не меняет внутренний порог.
+' Нулевое значение отключает фильтр малых моментов.
 Private Sub CheckMomentFilter(ByRef stats As TGeneralConfigStats, ByVal system As Object, ByVal unitRange As Object)
     Dim section As CSectionModel, batch As CBatchSectionCalculator, point As CSectionStateResult
     Dim value As Variant, prefix As String, factor As Double
@@ -261,9 +260,9 @@ Private Sub CheckMomentFilter(ByRef stats As TGeneralConfigStats, ByVal system A
     SetValue system, "Calculation.ZeroMomentPerDepth", 0#
 End Sub
 
-' Сдвиги X/Y меняют моменты от N независимо и по утвержденному внутреннему
-' знаку. Противоположный сдвиг и эквивалентные INPUT м сохраняют равновесие;
-' ожидания получены из N*offset, а не из getters результата переноса.
+' Смещения по X и Y независимо меняют моменты от N по принятому правилу знаков.
+' Противоположные смещения и ввод тех же длин в метрах сохраняют равновесие.
+' Ожидаемые моменты получены отдельно из N*offset, а не чтением результата переноса.
 Private Sub CheckReferenceOffsets(ByRef stats As TGeneralConfigStats, ByVal system As Object, ByVal unitRange As Object)
     Dim section As CSectionModel, batch As CBatchSectionCalculator, point As CSectionStateResult
     Dim baseline As CSectionStateResult, baselineSolves As Long
@@ -314,9 +313,9 @@ Private Sub CheckReferenceOffsets(ByRef stats As TGeneralConfigStats, ByVal syst
     SetValue system, "Load.ReferenceOffsetX", 0#: SetValue system, "Load.ReferenceOffsetY", 0#
 End Sub
 
-' Глобальный Extension проверяется на текущем Strength/Cracked State и
-' отдельной физической Capacity. Перегрузка не должна превращаться в OK
-' прочности; техническая диаграмма помогает найти равновесие, не новый предел.
+' Проверяет продолжение диаграмм в текущем НДС прочности, НДС с трещинами
+' и отдельном поиске физической несущей способности. Продолжение может помочь
+' найти равновесие, но не должно превращать физическую перегрузку в успешную проверку.
 Private Sub CheckExtensionConsumer(ByRef stats As TGeneralConfigStats, ByVal system As Object, ByVal profiles As Object)
     Dim section As CSectionModel, batch As CBatchSectionCalculator, normal As CSectionStateResult
     Dim point As CSectionStateResult, profile As Variant, enabled As Variant, prefix As String
@@ -423,8 +422,8 @@ Private Sub CheckInvalidGeneralFields(ByRef stats As TGeneralConfigStats, ByVal 
     system.Formula = saved
 End Sub
 
-' Запускает нужный рабочий consumer без перехвата ошибки как NumFail.
-' Batch-проверка читает typed meta, поскольку ApplySettings хранит InputErr.
+' Запускает обычный код, использующий настройку. Ошибка ввода сохраняет свою причину
+' и не трактуется как несходимость. Для расчёта сочетаний читает готовый код ошибки результата.
 Private Function ConsumeError(ByRef stats As TGeneralConfigStats, ByVal key As String) As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
     Dim provider As CMaterialModelProvider, batch As CBatchSectionCalculator, profiles As CCalculationProfileCatalog
@@ -457,8 +456,8 @@ Rejected:
     ConsumeError = Err.Description
 End Function
 
-' Выполняет действительный batch с актуальными Config и профилями. Общий
-' helper проверяет result-subtree, comments и все подробные writers.
+' Выполняет обычный расчёт сочетаний по текущим Config и профилям. Общая проверка
+' сопоставляет результаты всех вложенных расчётов, пояснения и подробные таблицы.
 Private Function RunGeneralBatch(ByRef stats As TGeneralConfigStats, ByVal section As CSectionModel, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, ByVal profileId As String) As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
@@ -479,8 +478,8 @@ Private Function RunGeneralBatch(ByRef stats As TGeneralConfigStats, ByVal secti
     Set RunGeneralBatch = batch
 End Function
 
-' Получает конечное именованное НДС; failed attempt не берется из repository
-' как reusable state. Strength сохраняет собственную failure meta отдельно.
+' Получает завершённое сохранённое НДС. Неудачная попытка не должна возвращаться
+' как пригодное состояние; причина неудачи прочности хранится отдельно.
 Private Function CurrentPoint(ByVal batch As CBatchSectionCalculator, ByVal profileId As String) As CSectionStateResult
     If profileId = "PR1" Then
         Set CurrentPoint = batch.ResultAt(1).StrengthResult.DirectState.StateResult
@@ -489,7 +488,7 @@ Private Function CurrentPoint(ByVal batch As CBatchSectionCalculator, ByVal prof
     End If
 End Function
 
-' Строит модель актуальным Excel-entrypoint, не локальным geometry fixture.
+' Строит модель обычным макросом книги без подстановки готовой тестовой геометрии.
 Private Function BuildModel(ByRef stats As TGeneralConfigStats) As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem
     LoadReader settings, units
@@ -517,7 +516,7 @@ Private Function HasCellArea(ByVal model As CSectionModel, ByVal area As Double)
     Next i
 End Function
 
-' Находит параметр по ключу в реальной таблице; ошибка самого fixture явная.
+' Находит настройку по ключу в фактической таблице; явно сообщает об ошибке подготовки теста.
 Private Function CellForKey(ByVal table As Object, ByVal key As String, ByVal column As Long) As Object
     Dim row As Long
     For row = 2 To table.Rows.Count

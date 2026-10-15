@@ -3,7 +3,7 @@ Option Explicit
 
 Private mPassed As Long, mFailed As Long, mReport As String
 
-' ДЛЯ ТЕСТОВ: штатный вход читает только выбранный рецепт и сохраняет snapshot.
+' ДЛЯ ТЕСТОВ: обычное чтение входных данных использует только таблицы выбранного рецепта.
 Public Function RunWorkbookRecipeInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, fixture As Variant, rootName As String, names As Variant, name As Variant
@@ -169,7 +169,7 @@ Public Function RunRecipeRuleTests() As String
         Set facade = RuleFacade: Set options = New CRebarRuleOptions
         options.EndMode = mode: options.StartSetback = 10#: options.EndSetback = 20#
         facade.RebarByCount "Row.Main", "Row", 3, 10#, options
-        options.StartSetback = 999# ' Копия options в definition уже независима.
+        options.StartSetback = 999# ' Параметры арматуры уже скопированы в описание сечения и не зависят от исходного объекта.
         Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
         Select Case mode
             Case IncludeBoth: expected = Array(10#, 45#, 80#)
@@ -449,7 +449,7 @@ Private Sub TestAnnotationOwnership()
     Check "annotations.repeated.total", AnnotatedBarCount(annotations) = model.RebarCount
 End Sub
 
-' Независимый подсчет по готовому пользовательскому тексту, а не по layout.
+' Независимо подсчитывает стержни по готовому тексту подписи без чтения раскладки.
 Private Function AnnotatedBarCount(ByVal annotations As CSectionAnnotations) As Long
     Dim i As Long, part As Variant, position As Long
     For i = 1 To annotations.Count
@@ -483,8 +483,9 @@ Rejected:
     InvalidCoincidenceRejected = (Err.Number = vbObjectError + 5530)
 End Function
 
-' Независимый линейный oracle проверяет индекс на границах bucket,
-' отрицательных координатах, далеко от нуля и после Clear.
+' Независимый последовательный поиск проверяет ускоренный поиск совпавших
+' стержней: на границах условных ячеек, при отрицательных и удалённых координатах,
+' а также после очистки раскладки.
 Private Sub TestLayoutIndex()
     Dim layout As CRebarLayout, coordinates As Variant, value As Variant, x As Double, y As Double
     Dim i As Long, j As Long, expected As Long, queryX As Double, delta As Variant
@@ -565,8 +566,8 @@ Private Sub Near(ByVal name As String, ByVal actual As Double, ByVal expected As
     Check name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.0000001
 End Sub
 
-' ДЛЯ ТЕСТОВ: роли не зависят от ID; несколько Opening и независимость
-' опубликованной области от изменяемых копий, выдаваемых потребителю.
+' ДЛЯ ТЕСТОВ: роли контуров не зависят от их имён. Проверяет несколько отверстий
+' и независимость готовой области от изменяемых копий, выданных для чтения.
 Public Function RunRecipeDefinitionTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
@@ -814,7 +815,8 @@ Rejected:
     If Not HollowInputCase Then mReport = mReport & "HOLLOW INPUT DETAIL: " & CStr(scenario) & "; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: сквозная сборка рецепта без старой geometry/layout/annotation.
+' ДЛЯ ТЕСТОВ: полная сборка рецепта общими классами без старых способов геометрии и размещения
+' арматуры.
 Public Function DumpCircleRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, counts As Variant, number As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, factor As Double, fixture As String
@@ -891,7 +893,8 @@ Finished:
     DumpRectSetRecipeGeometry = result
 End Function
 
-' ДЛЯ ТЕСТОВ: тот же ввод расширенной матрицы, только новый pipeline.
+' ДЛЯ ТЕСТОВ: тот же ввод расширенного набора проверок обрабатывается новым общим способом
+' сборки.
 Public Function DumpRectSetRecipeMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
@@ -1161,7 +1164,7 @@ Finished:
     RunCircleBindingTests = mReport & "TOTAL CIRCLE BINDINGS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' Ищет исходный ID, не предполагая совпадения номера публикации и номера исходного стержня.
+' Ищет исходное имя стержня; порядковый номер записи может отличаться от исходного номера.
 Private Function CircleSourcePosition(ByVal executor As CRebarRuleExecutor, ByVal id As String) As Long
     Dim i As Long
     For i = 1 To executor.PositionCount
@@ -1259,8 +1262,8 @@ Public Function DumpRoundedRecipeArcCalculations(Optional ByVal crackCode As Str
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, 1)
 End Function
 
-' ДЛЯ ТЕСТОВ: независимое суммирование N/Mx/My вне solver для новых дуг.
-' Площадь стали замещает бетон; вычитается напряжение бетона в той же точке.
+' ДЛЯ ТЕСТОВ: независимо суммирует N, Mx и My для новой геометрии с дугами.
+' Из вклада стали вычитается вклад замещённого бетона в той же точке.
 Public Function RunRoundedRecipeEquilibriumTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, fixture As Variant, events As Boolean, updating As Boolean
@@ -1287,7 +1290,8 @@ Finished:
     RunRoundedRecipeEquilibriumTests = mReport & "TOTAL ROUNDED EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: независимые суммы для переданной граничной модели без смены fixture.
+' ДЛЯ ТЕСТОВ: независимо суммирует усилия для переданной модели с контурами без смены исходных
+' данных.
 Public Function ReviewModelEquilibrium(ByVal fixture As String, ByVal model As CSectionModel, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByRef passed As Long, ByRef failed As Long) As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -1332,9 +1336,9 @@ Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSecti
             Check prefix & ".sum.N", Abs(sn - solver.Nint) <= 0.0000001 + Abs(sn) * 0.000000000001
             Check prefix & ".sum.Mx", Abs(smx - solver.Mxint) <= 0.0001 + Abs(smx) * 0.000000000001
             Check prefix & ".sum.My", Abs(smy - solver.Myint) <= 0.0001 + Abs(smy) * 0.000000000001
-            ' Независимые суммы проверены выше в размерном допуске. Невязка
-            ' обязана соответствовать опубликованному усилию, а не иной сумме,
-            ' где вычитание больших близких чисел усиливает округление Double.
+            ' Независимые суммы уже проверены с допуском в единицах усилий. Невязка должна
+            ' соответствовать усилию, возвращённому решателем; другой порядок вычитания
+            ' близких больших чисел может усилить округление Double.
             Near prefix & ".residual.N", solver.Nint - n, solver.ResidualN
             Near prefix & ".residual.Mx", solver.Mxint - mx, solver.ResidualMx
             Near prefix & ".residual.My", solver.Myint - my, solver.ResidualMy
@@ -1348,7 +1352,7 @@ Public Function DumpHollowRecipeCalculations(Optional ByVal crackCode As String 
     DumpHollowRecipeCalculations = RecipeCalculations("HollowRectangle", Array("HollowCentered", "HollowOffset"), crackCode, 0, scenario)
 End Function
 
-' ДЛЯ ТЕСТОВ: суммирование сил отдельно от solver на всех четырех Hollow-сценариях.
+' ДЛЯ ТЕСТОВ: независимо суммирует усилия для четырёх вариантов пустотелого прямоугольника.
 Public Function RunHollowRecipeEquilibriumTests() As String
     RunHollowRecipeEquilibriumTests = HollowRecipeEquilibrium(0, 3)
 End Function

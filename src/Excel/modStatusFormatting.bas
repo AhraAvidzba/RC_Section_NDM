@@ -2,11 +2,11 @@ Attribute VB_Name = "modStatusFormatting"
 Option Explicit
 
 ' ==========================================================================
-' Цветовое оформление пользовательских статусов Results
+' Цвета ячеек статусов на Results
 ' ==========================================================================
-' Модуль хранит единую палитру статусов для Excel-вывода. Расчетные классы
-' формируют типизированную ResultMeta, общий CResultStatusPolicy назначает
-' внешний код, а writer-ы применяют цвет на последнем шаге оформления Results.
+' Хранит общую палитру для записи результатов в Excel. Расчёт передаёт
+' ResultMeta, CResultStatusPolicy определяет внешнее обозначение,
+' а класс записи применяет к нему цвет из этого модуля.
 
 ' Возвращает утвержденный цвет фона для пользовательского статуса.
 Public Function StatusFillColor(ByVal statusText As String) As Long
@@ -31,9 +31,9 @@ Public Function StatusFillColor(ByVal statusText As String) As Long
     End Select
 End Function
 
-' Наносит статусную заливку на одну ячейку или блок строки Results.
-' Шрифты, границы и числовые форматы не трогает: writer-ы вызывают эту
-' процедуру только как последний слой цветовой индикации статуса.
+' Задаёт заливку одной ячейке или части строки Results по статусу.
+' Шрифт, рамки и числовой формат сохраняет; вызывается
+' после основной записи и оформления результатов.
 Public Sub ApplyStatusFill(ByVal rangeObject As Object, ByVal statusText As String)
     If rangeObject Is Nothing Then Exit Sub
 

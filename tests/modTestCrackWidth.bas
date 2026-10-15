@@ -2,12 +2,11 @@ Attribute VB_Name = "modTestCrackWidth"
 Option Explicit
 
 ' ==========================================================================
-' Регрессионные тесты расчета нормальных трещин
+' ДЛЯ ТЕСТОВ: расчёт нормальных трещин
 ' ==========================================================================
-' Тесты проверяют SLS-расчет CCrackWidthCalculator: выбор расчетной
-' растянутой зоны, формулу СП 63 для a_crc, режимы psi_s, центральное
-' растяжение и writer основного результата. Проверки не меняют CSectionSolver:
-' расчет трещин использует его как готовый общий решатель равновесия.
+' Проверяет выбор растянутой области, ширину трещины по СП 63, способы задания
+' ψs, центральное растяжение и запись результата. Расчёт трещин использует
+' обычный CSectionSolver; отдельного решения равновесия в тесте нет.
 
 Private Type TCrackTestStats
     Passed As Long
@@ -15,8 +14,8 @@ Private Type TCrackTestStats
     Report As String
 End Type
 
-' Выполняет проверки материалов, Formation, подготовки crack data и формулы
-' Width. Возвращает отчет assertions; ошибка setup явно остается runtime error.
+' Проверяет материалы, образование трещины, подготовку областей и формулу ширины.
+' Возвращает отчёт отдельных проверок; ошибка подготовки теста сохраняется отдельно.
 Public Function RunCrackWidthTests() As String
     On Error GoTo Failed
 
@@ -87,8 +86,8 @@ Private Sub TestConcreteTensionBranches(ByRef stats As TCrackTestStats)
 End Sub
 
 
-' Проверяет формульный API Width: он получает только
-' готовые числа и не зависит от State-объектов, статусов и выбора арматуры.
+' Проверяет формулу ширины по готовым числам независимо от хранения НДС, статусов и выбора
+' арматуры.
 Private Sub TestCrackWidthFormulaCalculatorPure(ByRef stats As TCrackTestStats)
     Dim formula As CCrackWidthCalculator
     Set formula = New CCrackWidthCalculator
@@ -614,9 +613,8 @@ Private Sub TestCrackFormationCacheHitWithoutLastRunner(ByRef stats As TCrackTes
     AssertTrue stats, "crack.cache.second.postState", Not secondCrack.FormationResult.PostCrackState Is Nothing
 End Sub
 
-' Проверяет, что общий LimitSearch-result хранит собственный снимок diagnostics.
-' Если result будет читать живой Formation-калькулятор, последующие Auto-попытки
-' смогут задним числом менять уже сохраненный отчет.
+' Проверяет независимость сохранённой диагностики результата поиска.
+' Последующие попытки образования трещины не должны менять уже выданный отчёт.
 Private Sub TestLimitSearchResultKeepsCrackDiagnosticSnapshot(ByRef stats As TCrackTestStats)
     Dim crack As CCrackFormationCalculator
     Set crack = New CCrackFormationCalculator
@@ -643,8 +641,8 @@ Private Sub TestDangerousLoadsDoNotNumFail(ByRef stats As TCrackTestStats)
     CheckDangerousCrackLoad stats, "crack.danger.pureCompression", -100000#, 0#, 0#, False
 End Sub
 
-' Выполняет один вариант через общий runner и проверяет typed Formation-исход.
-' Текст комментария не используется как признак отсутствия численной ошибки.
+' Рассчитывает один вариант обычным способом и проверяет код исхода образования
+' трещины. Текст пояснения не используется для определения численной ошибки.
 Private Sub CheckDangerousCrackLoad(ByRef stats As TCrackTestStats, ByVal prefix As String, _
         ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double, _
         ByVal shouldForm As Boolean, Optional ByVal formationPath As String = "lambda*Mxy")
@@ -751,8 +749,9 @@ Private Sub TestNoTensionRebar(ByRef stats As TCrackTestStats)
     AssertClose stats, "crack.noTension.width", crack.CrackWidth, 0#, 0.000000000001
 End Sub
 
-' Создает прямоугольную SLS-fixture и решает текущее НДС с отключенным растянутым
-' бетоном. Неподтвержденное равновесие останавливает setup теста, не формулу Width.
+' Создаёт прямоугольное сечение для II ГПС и рассчитывает текущее НДС
+' без растянутого бетона. Если равновесие не подтверждено, останавливается
+' подготовка теста; формула ширины по непригодному НДС не проверяется.
 Private Function SolveServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
     Dim stage As String
     On Error GoTo Failed
@@ -789,8 +788,9 @@ Failed:
     Err.Raise Err.Number, "modTestCrackWidth.SolveServiceState." & stage, Err.Description
 End Function
 
-' Создает круг с четырьмя стержнями и решает его текущее SLS-НДС.
-' Возвращает согласованные section и solver; ошибка сходимости явна в setup.
+' Создаёт круг с четырьмя стержнями и рассчитывает текущее НДС для II ГПС.
+' Возвращает согласованные модель и решатель; несходимость явно отмечается как ошибка
+' подготовки.
 Private Function SolveCircleServiceState(ByRef section As CSectionModel, ByVal nValue As Double, ByVal mxValue As Double, ByVal myValue As Double) As CSectionSolver
     Dim geom As CGeometryRegion
     Set geom = FixtureDisk(300#)

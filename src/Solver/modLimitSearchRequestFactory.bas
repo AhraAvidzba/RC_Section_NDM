@@ -1,8 +1,9 @@
 Attribute VB_Name = "modLimitSearchRequestFactory"
 Option Explicit
 
-' Создает доменные адаптеры вне CLimitSearchRequest: интерфейс поиска не
-' должен через свой запрос зависеть от классов, реализующих этот интерфейс.
+' Создаёт объекты, связывающие инженерную задачу с общим поиском.
+' Так CLimitSearchRequest зависит только от интерфейса задачи,
+' а не от конкретных классов несущей способности и образования трещины.
 
 ' Подключает критерий несущей способности, сохраняя физическую постановку запроса.
 Public Sub InitializeCapacitySearchRequest(ByVal request As CLimitSearchRequest, _

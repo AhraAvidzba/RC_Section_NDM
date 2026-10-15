@@ -2,12 +2,11 @@ Attribute VB_Name = "modCalculationPurpose"
 Option Explicit
 
 ' ==========================================================================
-' ТИПИЗИРОВАННЫЕ РОЛИ МАТЕРИАЛЬНЫХ МОДЕЛЕЙ И NAMED STATES
+' Назначения моделей материалов и виды расчётных состояний
 ' ==========================================================================
-' Модуль держит общие enum-ы и преобразование текста из Config/Results в
-' типизированные значения. Здесь нет формул СП и построения диаграмм:
-' физическую модель строит CMaterialModelProvider, а solver получает уже
-' готовый CMaterialDiagram.
+' Задаёт общие перечисления и читает их значения из текста Config и Results.
+' Формулы СП и построение диаграмм выполняет CMaterialModelProvider;
+' численный решатель получает готовую диаграмму CMaterialDiagram.
 
 Public Enum ECalculationPurpose
     cpStrength = 1        ' I ГПС: расчет прочности и несущей способности.
@@ -38,7 +37,7 @@ End Enum
 
 Public Enum ESectionStateType
     sstStrengthState = 1          ' Прямое НДС по модели прочности.
-    sstCapacityState = 2          ' Предельное НДС, найденное capacity solver-ом.
+    sstCapacityState = 2          ' Предельное НДС, подтверждённое поиском несущей способности.
     sstPreCrackState = 3          ' НДС на пороге образования трещины до выключения растянутого бетона.
     sstPostCrackState = 4         ' НДС на пороге образования трещины после выключения растянутого бетона.
     sstCrackedState = 5           ' Текущее НДС с раскрытой трещиной.
@@ -49,7 +48,7 @@ Public Enum EVisualizationQuantity
     vqStrain = 2          ' Для схемы/AutoCAD показываются деформации.
 End Enum
 
-' Преобразует пользовательский или snapshot-текст в роль материальной модели.
+' Читает назначение модели материалов из пользовательского текста или сохранённых результатов.
 Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurpose
     Select Case LCase$(Trim$(purposeText))
         Case "strength", "group1", "uls", "i", "i(uls)", "uls(i)", "1"
@@ -66,7 +65,7 @@ Public Function PurposeFromText(ByVal purposeText As String) As ECalculationPurp
     End Select
 End Function
 
-' Возвращает канонический текст для Results, диагностики и справки.
+' Возвращает принятое текстовое название для Results, диагностики и справки.
 Public Function PurposeToText(ByVal purpose As ECalculationPurpose) As String
     Select Case purpose
         Case cpStrength
@@ -83,7 +82,7 @@ Public Function PurposeToText(ByVal purpose As ECalculationPurpose) As String
     End Select
 End Function
 
-' Возвращает смысловую метку material model role для профильной архитектуры.
+' Возвращает название назначения модели материалов для выбора диаграмм профиля.
 Public Function MaterialModelRoleToText(ByVal purpose As ECalculationPurpose) As String
     Select Case purpose
         Case cpStrength
@@ -113,8 +112,8 @@ Public Function MaterialValueSetFromText(ByVal valueText As String) As EMaterial
     End Select
 End Function
 
-' Возвращает каноническую подпись группы предельных состояний для профиля
-' и snapshot. Неизвестный enum отклоняется, а не подменяется ULS или SLS.
+' Возвращает название группы предельных состояний для профиля и результата.
+' Неизвестный код вызывает ошибку без подстановки ULS или SLS.
 Public Function MaterialValueSetToText(ByVal valueSet As EMaterialValueSet) As String
     Select Case valueSet
         Case mvsULS
@@ -141,8 +140,8 @@ Public Function ConcreteDiagramKindFromText(ByVal valueText As String) As EConcr
     End Select
 End Function
 
-' Сохраняет вид бетонной диаграммы каноническим именем в spec/snapshot.
-' Неизвестный enum не получает произвольный вариант по умолчанию.
+' Возвращает название бетонной диаграммы для параметров материалов и результата.
+' Для неизвестного кода произвольный вид диаграммы не выбирается.
 Public Function ConcreteDiagramKindToText(ByVal diagramKind As EConcreteDiagramKind) As String
     Select Case diagramKind
         Case cdkTwoLine
@@ -169,8 +168,8 @@ Public Function ConcreteTensionKindFromText(ByVal valueText As String) As EConcr
     End Select
 End Function
 
-' Возвращает каноническую подпись учета растянутого бетона для material spec.
-' Не вычисляет напряжение и не определяет наличие трещины.
+' Возвращает название режима учёта растяжения бетона в модели материалов.
+' Напряжения и факт образования трещины этот метод не определяет.
 Public Function ConcreteTensionKindToText(ByVal tensionKind As EConcreteTensionKind) As String
     Select Case tensionKind
         Case ctkIgnore
@@ -197,8 +196,8 @@ Public Function SteelDiagramKindFromText(ByVal valueText As String) As ESteelDia
     End Select
 End Function
 
-' Возвращает каноническое имя стальной диаграммы для spec и сохраненного вывода.
-' Неизвестный enum не меняет физическую модель молчаливым выбором TwoLine.
+' Возвращает название диаграммы арматуры для сохранения параметров и вывода.
+' Неизвестный код вызывает ошибку без подстановки TwoLine.
 Public Function SteelDiagramKindToText(ByVal diagramKind As ESteelDiagramKind) As String
     Select Case diagramKind
         Case sdkTwoLine
@@ -211,8 +210,8 @@ Public Function SteelDiagramKindToText(ByVal diagramKind As ESteelDiagramKind) A
     End Select
 End Function
 
-' Разбирает выбираемое именованное НДС для визуализации/экспорта.
-' Проверяет только имя state, не обещает его наличие у конкретного сочетания.
+' Читает вид НДС, выбранный для схемы или экспорта. Проверяет допустимое имя;
+' наличие такого состояния у конкретного сочетания определяется отдельно.
 Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionStateType
     Select Case LCase$(Trim$(valueText))
         Case "strengthstate", "strength", "прочность"
@@ -231,8 +230,8 @@ Public Function SectionStateTypeFromText(ByVal valueText As String) As ESectionS
     End Select
 End Function
 
-' Возвращает единое имя named-state для repository, Results и диагностики.
-' Пороговые Before/After состояния сохраняются как PreCrackState/PostCrackState.
+' Возвращает общее имя расчётного состояния для хранилища, Results и диагностики.
+' Состояния до и после трещины обозначаются PreCrackState и PostCrackState.
 Public Function SectionStateTypeToText(ByVal stateType As ESectionStateType) As String
     Select Case stateType
         Case sstStrengthState
@@ -250,9 +249,8 @@ Public Function SectionStateTypeToText(ByVal stateType As ESectionStateType) As 
     End Select
 End Function
 
-' Связывает named-state с физической ролью материала: Strength для прочности,
-' CrackInitiation перед трещиной, CrackedState после нее и для текущего НДС.
-' Разрешение numerical extension здесь не назначается.
+' Определяет назначение материалов по виду НДС: прочность, образование трещины
+' или НДС с трещинами. Разрешение численного продолжения диаграмм задаётся отдельно.
 Public Function MaterialRoleFromStateType(ByVal stateType As ESectionStateType) As ECalculationPurpose
     Select Case stateType
         Case sstStrengthState, sstCapacityState
@@ -281,8 +279,8 @@ Public Function VisualizationQuantityFromText(ByVal valueText As String) As EVis
     End Select
 End Function
 
-' Возвращает каноническое имя отображаемой величины в профильном snapshot.
-' Значение не меняет рассчитанные напряжения и деформации.
+' Возвращает принятое имя отображаемой величины для сохранения профиля.
+' Рассчитанные напряжения и деформации не меняются.
 Public Function VisualizationQuantityToText(ByVal quantity As EVisualizationQuantity) As String
     Select Case quantity
         Case vqStress
@@ -295,7 +293,8 @@ Public Function VisualizationQuantityToText(ByVal quantity As EVisualizationQuan
     End Select
 End Function
 
-' Проверяет, что цель является физической material model без numerical extension.
+' Проверяет, выбрана ли физическая модель материалов без вспомогательного численного
+' продолжения.
 Public Function IsPhysicalPurpose(ByVal purpose As ECalculationPurpose) As Boolean
     IsPhysicalPurpose = (purpose = cpStrength Or purpose = cpMcrc Or purpose = cpCrackedNDS)
 End Function

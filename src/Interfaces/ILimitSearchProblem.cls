@@ -16,7 +16,7 @@ Option Explicit
 ' критерия и приёма результата. Расчёты несущей способности и образования
 ' трещины предоставляют эти операции общим численным алгоритмам поиска.
 
-' Возвращает тип результата, для которого выполняется search.
+' Возвращает вид инженерной проверки, для которой ищется предел.
 Public Property Get ResultKind() As EResultKind
 End Property
 
@@ -32,7 +32,7 @@ End Property
 Public Property Get LambdaTolerance() As Double
 End Property
 
-' Возвращает предельное число итераций одномерного search.
+' Возвращает максимальное число итераций одномерного поиска нагрузки.
 Public Property Get MaxIterations() As Long
 End Property
 
@@ -57,18 +57,18 @@ End Property
 Public Property Get DiagnosticLog() As String
 End Property
 
-' Готовит инженерный контекст нового конкретного пути общего Auto-перебора.
-' Численные состояния предыдущей search-session не переиспользуются как
-' физические состояния нового пути; общая диагностика может сохраняться.
+' Готовит задачу для нового способа изменения нагрузки при переборе Auto.
+' Пробы предыдущего пути не принимаются за физические состояния нового;
+' общая история диагностики может сохраняться.
 Public Sub BeginLoadPath(ByVal request As CLimitSearchRequest)
 End Sub
 
-' Сохраняет фактический путь и причины предыдущих попыток у владельца результата.
-' Writer не склеивает эти комментарии и не определяет по ним машинный статус.
+' Сохраняет выбранный путь и причины прежних попыток в результате задачи.
+' При записи на лист пояснения не собираются заново и не определяют код статуса.
 Public Sub FinishLoadPath(ByVal request As CLimitSearchRequest, ByVal previousPathComments As String)
 End Sub
 
-' Выполняет доменную подготовку перед LoadMultiplier.
+' Готовит материалы, критерий и рабочие данные задачи перед LoadMultiplier.
 Public Function Prepare(ByVal request As CLimitSearchRequest) As Boolean
 End Function
 
@@ -83,33 +83,33 @@ Public Function AcceptInitialPoint(ByVal request As CLimitSearchRequest, _
         ByVal probeState As String, ByVal solver As CSectionSolver) As Boolean
 End Function
 
-' Оценивает одну lambda-точку и возвращает значение функции search, код probe
-' и, если нужно, solver найденного состояния.
+' Оценивает пробную нагрузку lambda и возвращает значение критерия,
+' код исхода и при необходимости найденное НДС.
 Public Function EvaluatePoint(ByVal request As CLimitSearchRequest, _
         ByVal loadPath As CLoadPathVector, ByVal startSolver As CSectionSolver, _
         ByVal lambdaValue As Double, ByRef functionValue As Double, _
         ByRef probeState As String, ByRef solver As CSectionSolver) As Boolean
 End Function
 
-' Проверяет, что probe еще находится на допустимой стороне предела.
+' Проверяет, находится ли пробная нагрузка с допустимой стороны предела.
 Public Function IsAcceptableState(ByVal probeState As String) As Boolean
 End Function
 
-' Проверяет, что probe достиг физического критерия предела.
+' Проверяет, достигнут ли физический предельный критерий в пробной нагрузке.
 Public Function IsLimitState(ByVal probeState As String) As Boolean
 End Function
 
-' Проверяет, что probe завершился численной неудачей.
+' Проверяет, не удалось ли численно получить НДС пробной нагрузки.
 Public Function IsNumericalFailureState(ByVal probeState As String) As Boolean
 End Function
 
-' Отличает отказ входа от численной неудачи, которую разрешено повторять.
-' Domain adapter классифицирует свой probe-код, общий Search не разбирает текст.
+' Различает ошибку ввода и численную неудачу, после которой допустим повтор.
+' Код исхода определяет сама инженерная задача; общий поиск текст причины не разбирает.
 Public Function IsInvalidInputState(ByVal probeState As String) As Boolean
 End Function
 
-' Предлагает промежуточную lambda после несошедшейся верхней пробы.
-' Общий Search отдельно проверяет границы и строгий прогресс recovery.
+' Предлагает уменьшенное lambda после неудачной верхней пробы.
+' Общий поиск проверяет границы и действительное изменение следующей нагрузки.
 Public Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, _
         ByVal highLambda As Double, ByVal probeState As String) As Double
 End Function
@@ -136,7 +136,7 @@ Public Sub HandleIterationLimit(ByVal maxIterations As Long, _
         ByVal remainingWidth As Double, ByVal tolerance As Double)
 End Sub
 
-' Обрабатывает неизвестный probe-код как нарушение контракта callback-а.
+' Сохраняет неизвестный код исхода пробы как ошибку программного ответа задачи.
 Public Sub HandleUnexpectedState(ByVal probeState As String)
 End Sub
 
@@ -144,16 +144,16 @@ End Sub
 Public Sub SetInvalidInput(ByVal message As String)
 End Sub
 
-' Фиксирует численную неудачу search.
+' Сохраняет численную неудачу общего поиска предельной нагрузки.
 Public Sub SetNumericalFailure(ByVal message As String)
 End Sub
 
-' Сохраняет точную техническую причину общего solve/search без разбора текста.
-' Ошибка настройки или внутреннего контракта не становится численной неудачей.
+' Сохраняет фактический код причины решения НДС или поиска предела.
+' Ошибка настройки и внутренняя ошибка программы не становятся численной несходимостью.
 Public Sub SetFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
 End Sub
 
-' Добавляет строку диагностики в доменный журнал.
+' Добавляет сообщение общего поиска в журнал инженерной задачи.
 Public Sub AppendDiagnostic(ByVal message As String)
 End Sub
 
@@ -164,9 +164,9 @@ Public Function FinalizeAt(ByVal request As CLimitSearchRequest, _
         ByVal solver As CSectionSolver, ByVal iterations As Long) As Boolean
 End Function
 
-' Принимает уточненную скобку по физическому критерию конкретной задачи.
-' Выбор допустимой стороны и дополнительное подтверждение не принадлежат Search.
-' True подтверждает точку поиска, а не завершение последующих расчетных этапов.
+' Подтверждает одну из сторон уточнённого интервала по физическому критерию задачи.
+' Задача выбирает сторону и дополнительные проверки; True означает
+' подтверждённую точку, а не завершение последующих расчётных этапов.
 Public Function FinalizeBracket(ByVal request As CLimitSearchRequest, ByVal loadPath As CLoadPathVector, _
         ByVal lowLambda As Double, ByVal lowSolver As CSectionSolver, _
         ByVal highLambda As Double, ByVal highSolver As CSectionSolver, _
@@ -178,7 +178,7 @@ End Function
 Public Sub TryFinalizeAfterSearchFailure(ByVal request As CLimitSearchRequest)
 End Sub
 
-' Собирает общий snapshot результата search.
+' Собирает готовый результат общего поиска предельной нагрузки.
 Public Function BuildResult(ByVal request As CLimitSearchRequest, _
         ByVal searchSucceeded As Boolean) As CLimitSearchResult
 End Function
@@ -215,18 +215,19 @@ Public Function LimitSearchEvaluateUltimateResidual(ByVal section As CSectionMod
         ByRef lambdaValue As Double, ByRef state As String, Optional ByVal centeredPlane As Boolean = False) As Boolean
 End Function
 
-' Проверяет допуски критерия и задает согласованную норму для line search.
+' Проверяет допуски критерия и определяет общую меру невязок для подбора шага.
 Public Function LimitSearchUltimateResidualReached(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Boolean
 End Function
 
-' Нормирует те же три невязки для сравнения line-search шагов.
-' Уменьшение нормы не заменяет отдельную проверку всех допусков и физического финала.
+' Нормирует три невязки для сравнения пробных шагов. Их уменьшение
+' не заменяет окончательную проверку всех допусков и физических пределов.
 Public Function LimitSearchUltimateResidualNorm(ByVal rPath1 As Double, _
         ByVal rPath2 As Double, ByVal rLimit As Double) As Double
 End Function
 
-' Domain выбирает масштаб merit-функции; допуски конечной приемки независимы.
+' Определяет масштаб общей меры невязок для подбора шага.
+' Допуски окончательного подтверждения точки задаются независимо от него.
 Public Property Get LimitSearchUseJacobianMeritScaling() As Boolean
 End Property
 
@@ -255,13 +256,13 @@ End Property
 Public Property Get StopReason() As String
 End Property
 
-' Снимает причину законченной попытки перед разрешенным резервным стартом.
-' Не должен отменять typed терминальную ошибку или принятый физический исход.
+' Очищает причину завершённой попытки перед разрешённым дополнительным стартом.
+' Окончательная ошибка или подтверждённый физический исход не отменяются.
 Public Sub ClearStopReason()
 End Sub
 
-' Добавляет контекст остановки только при отсутствии более точной причины.
-' Первичная диагностика solver/search сохраняет приоритет.
+' Добавляет общее пояснение остановки только при отсутствии более точной причины
+' решения НДС или поиска предела.
 Public Sub SetStopReasonIfEmpty(ByVal reason As String)
 End Sub
 

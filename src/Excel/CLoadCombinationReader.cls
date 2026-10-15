@@ -27,9 +27,8 @@ Public Sub LoadFromWorkbook(ByVal workbook As Object, ByVal batch As CBatchSecti
     LoadFromRange workbook.Names.Item("rngLoadCombinations").RefersToRange, batch, units
 End Sub
 
-' Загружает сочетания из уже переданного диапазона.
-' Это используется и рабочей книгой, и тестами, чтобы проверять reader без
-' ручного запуска Excel-интерфейса.
+' Читает сочетания из переданного диапазона. Общий способ используется
+' обычной книгой и тестами без ручного запуска её интерфейса.
 Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
     If source Is Nothing Then Err.Raise vbObjectError + 3952, "CLoadCombinationReader", "Диапазон сочетаний нагрузок не найден."
     If batch Is Nothing Then Err.Raise vbObjectError + 3953, "CLoadCombinationReader", "Пакетный расчетчик не передан."
@@ -89,8 +88,8 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     mxValue = ReadOptionalLoadDouble(data(rowIndex, 3), CellLocation(source, rowIndex, 3, "Mx"), errorText)
     myValue = ReadOptionalLoadDouble(data(rowIndex, 4), CellLocation(source, rowIndex, 4, "My"), errorText)
 
-    ' Пропускаем только достоверно нулевые нагрузки. Сила и момент имеют
-    ' разные размерности; reader не вводит инженерный порог их значимости.
+    ' Пропускаем только точно нулевые нагрузки. Силы и моменты имеют разные единицы;
+    ' порог практически нулевого момента применяется позже в расчётном классе.
     If Len(errorText) = 0 Then
         ConvertLoadsToInternal units, nValue, mxValue, myValue, errorText, source, rowIndex
         If Len(errorText) = 0 Then
@@ -175,9 +174,9 @@ ConversionFailed:
     AppendError errorText, fieldName & " не может быть переведено во внутренние единицы: числовой диапазон превышен"
 End Sub
 
-' Дополняет имя поля фактическим адресом исходной таблицы. Адрес формируется
-' только Excel-reader-ом и передается как готовая причина; batch/writer не
-' восстанавливают его по тексту и не читают исходные ячейки повторно.
+' Добавляет к названию параметра фактический адрес его ячейки.
+' Пакетный расчёт и запись результатов получают готовую причину,
+' без повторного чтения таблицы или поиска адреса в тексте.
 Private Function CellLocation(ByVal source As Object, ByVal rowIndex As Long, _
         ByVal columnIndex As Long, ByVal fieldName As String) As String
     CellLocation = fieldName & ", " & source.Worksheet.Name & "!" & _

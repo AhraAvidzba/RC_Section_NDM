@@ -2,10 +2,11 @@ Attribute VB_Name = "modMeshConfiguration"
 Option Explicit
 
 ' ==========================================================================
-' Общие настройки дискретизации бетона для Generated и точных CAD-контуров
+' Общие настройки построения бетонной сетки
 ' ==========================================================================
-' Excel-адаптер нормализует обязательные INPUT-параметры и передает их
-' обычному CFiberMeshBuilder. Математическая геометрия Config не читает.
+' Читает обязательные параметры сетки из Excel, переводит входные единицы
+' и передаёт их CFiberMeshBuilder. Одни настройки используются
+' для параметрических сечений и точных контуров AutoCAD.
 
 Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
         ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem) As CFiberMeshBuilder

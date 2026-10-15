@@ -2,11 +2,11 @@ Attribute VB_Name = "modTestPerformance"
 Option Explicit
 
 ' ==========================================================================
-' ДЛЯ ТЕСТОВ: ЭКВИВАЛЕНТНОСТЬ И ЗАМЕРЫ ЛОКАЛЬНЫХ ОПТИМИЗАЦИЙ
+' ДЛЯ ТЕСТОВ: неизменность результатов и время выполнения
 ' ==========================================================================
-' Стандартный модуль не добавляет production-классов. Проверяет реальные
-' контейнеры и Excel Range, сохраняет точные значения без новых допусков.
-' Замеры не включают assertions; тот же код импортируется в A и B книги.
+' Проверяет рабочие классы и диапазоны Excel без новых расчётных допусков.
+' Сохраняет точные значения. Сами проверки не входят в замер времени;
+' одинаковый измерительный код используется в обеих сравниваемых книгах.
 
 #Const PERFORMANCE_CURRENT = True
 
@@ -61,8 +61,8 @@ Public Function MeasurePerformanceModel(ByVal count As Long) As String
         "; last=" & model.ConcreteID(count)
 End Function
 
-' Сравнивает старое поячеечное правило и production-блочное чтение на одном
-' Range. Все данные и размер одинаковы; test sheet удаляется даже при ошибке.
+' Сравнивает прежнее поячеечное и обычное блочное чтение одного диапазона.
+' Данные и размер одинаковы; временный лист удаляется также при ошибке.
 Public Function MeasurePerformanceExtent(ByVal optimized As Boolean, ByVal count As Long) As String
     On Error GoTo Failed
     Dim ws As Object, values() As Variant, i As Long, t As Double, elapsed As Double, found As Long
@@ -125,7 +125,8 @@ Private Sub TestModelStorage()
     Check "model.rebuild", model.ConcreteID(1) = "C1" And model.ConcreteX(1) = 1# And model.RebarID(1) = "R1" And model.RebarArea(1) = 7#
 End Sub
 
-' ДЛЯ ТЕСТОВ: Excel scalar/array, Empty/formula/space/error и край листа.
+' ДЛЯ ТЕСТОВ: чтение одной ячейки и массива, пустых значений, формул, пробелов, ошибок и края
+' листа.
 Private Sub TestSnapshotExtent()
     On Error GoTo Failed
     Dim ws As Object, anchor As Object, values() As Variant, i As Long
@@ -211,8 +212,8 @@ Private Function DoubleBits(ByVal value As Double) As String
     For i = 1 To 8: DoubleBits = DoubleBits & Right$("0" & Hex$(bytes.value(i)), 2): Next i
 End Function
 
-' ДЛЯ ТЕСТОВ: инженерные поля solver-а, без изменяемых технических счетчиков.
-' Матрица включается только при проверке публичной полной оценки/обычного Solve.
+' ДЛЯ ТЕСТОВ: сохраняет инженерные величины решателя без служебных счётчиков.
+' Матрица учитывается только при проверке полного вычисления НДС или обычного Solve.
 Private Function SolverFingerprint(ByVal solver As CSectionSolver, Optional ByVal includeK As Boolean = True) As String
     Dim values As Variant, value As Variant, i As Long, j As Long
     values = Array(solver.Converged, CLng(solver.FailureCode), solver.StopReason, solver.Epsilon0, solver.KappaX, solver.KappaY, _
@@ -309,7 +310,8 @@ Private Function NumericSection(ByVal divisions As Long) As CSectionModel
     Set NumericSection = section
 End Function
 
-' ДЛЯ ТЕСТОВ: одинаковые mutable/frozen копии без provider/config-умолчаний.
+' ДЛЯ ТЕСТОВ: одинаковые изменяемые и защищённые от изменений копии
+' с явно заданными материалами без значений по умолчанию из Config.
 Private Sub NumericMaterials(ByRef concrete As CMaterialDiagram, ByRef steel As CMaterialDiagram)
     Dim eps(1 To 5) As Double, stress(1 To 5) As Double
     eps(1) = -0.0035: eps(2) = -0.002: eps(3) = 0#: eps(4) = 0.00015: eps(5) = 0.0003
@@ -374,8 +376,9 @@ Private Function RegionFingerprint(ByVal region As CConcreteRegion) As String
     Next i
 End Function
 
-' ДЛЯ ТЕСТОВ: общая область и механика не смешивают LC и не удерживаются в
-' frozen SP35 snapshot; смены модели, контура и модулей требуют новой подготовки.
+' ДЛЯ ТЕСТОВ: общие геометрические данные не смешиваются между сочетаниями
+' и не удерживаются готовым результатом СП 35. Изменение модели, контуров
+' или модулей материалов требует новой подготовки.
 Public Function RunPerformancePreparationTests() As String
     mPassed = 0: mFailed = 0: mReport = vbNullString
     On Error GoTo Failed
@@ -558,9 +561,9 @@ NextProfileColumn:
     If Left$(family, 9) = "IMPORTED_" Then PreparePerformanceImportedSnapshot units
 End Sub
 
-' ДЛЯ ТЕСТОВ: снимок по контракту AutoCADImport с точными дугами и двумя
-' отверстиями. Это проверка Results-pipeline, а не новый сеанс настоящего CAD.
-' В A и B сетка/контуры/стержни одинаковы; механическая сетка не заменяется контуром.
+' ДЛЯ ТЕСТОВ: сохранение и чтение импортированной геометрии с точными дугами
+' и двумя отверстиями без запуска AutoCAD. В книгах A и B одинаковы сетка,
+' контуры и стержни; точный контур не заменяет расчётную сетку.
 Private Sub PreparePerformanceImportedSnapshot(ByVal units As CUnitSystem)
     Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
     Dim props As CSectionPropertiesCalculator, writer As CNDMResultsWriter
@@ -740,7 +743,8 @@ Restore:
     RunPerformanceBatchIsolationTests = mReport & "TOTAL PERFORMANCE ISOLATION " & family & ": passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed)
 End Function
 
-' ДЛЯ ТЕСТОВ: штатные readers и владельцы без записи Results и нового warm start.
+' ДЛЯ ТЕСТОВ: обычное чтение и подготовка объектов без записи Results и нового начального
+' приближения.
 Private Function BuildPerformanceTestBatch(ByRef section As CSectionModel) As CBatchSectionCalculator
     Dim settings As CSystemSettingsReader, units As CUnitSystem, provider As CMaterialModelProvider
     Dim profiles As CCalculationProfileCatalog, batch As CBatchSectionCalculator, reader As CLoadCombinationReader
@@ -759,14 +763,14 @@ Private Function BuildPerformanceTestBatch(ByRef section As CSectionModel) As CB
     Set BuildPerformanceTestBatch = batch
 End Function
 
-' ДЛЯ ТЕСТОВ: рабочие нагрузки и все result-поддеревья одного ID, без таймеров.
+' ДЛЯ ТЕСТОВ: рабочие нагрузки и все вложенные результаты одного сочетания без замеров времени.
 Private Function CombinationFingerprint(ByVal batch As CBatchSectionCalculator, ByVal section As CSectionModel, ByVal index As Long) As String
     CombinationFingerprint = DoubleBits(batch.N(index)) & DoubleBits(batch.Mx(index)) & DoubleBits(batch.My(index)) & _
         DoubleBits(batch.UserMx(index)) & DoubleBits(batch.UserMy(index)) & ResultFingerprint(batch.ResultAt(index), section)
 End Function
 
-' ДЛЯ ТЕСТОВ: точные поля ширины, несущей, устойчивости и каждого named-state.
-' Технические времена/счетчики не инженерные expected; их проверяют замеры.
+' ДЛЯ ТЕСТОВ: точные значения ширины трещин, несущей способности, устойчивости
+' и каждого сохранённого НДС. Времена и счётчики проверяются отдельными замерами.
 Private Function ResultFingerprint(ByVal result As CCombinationResult, ByVal section As CSectionModel) As String
     Dim text As String, state As CSectionStateResult, i As Long
     text = MetaFingerprint(result.OverallMeta) & MetaFingerprint(result.DirectStateMeta) & MetaFingerprint(result.CapacityMeta) & _
@@ -810,7 +814,8 @@ NextIsolationCandidate:
     ResultFingerprint = text
 End Function
 
-' ДЛЯ ТЕСТОВ: только явно перечисленные скалярные getters; нет округления Double.
+' ДЛЯ ТЕСТОВ: читает только явно перечисленные числовые и текстовые свойства без округления
+' Double.
 Private Function ScalarFieldsFingerprint(ByVal value As Object, ByVal fields As String) As String
     If value Is Nothing Then ScalarFieldsFingerprint = "<Nothing>": Exit Function
     Dim name As Variant, item As Variant
@@ -908,8 +913,8 @@ Private Function CellFingerprint(ByVal value As Variant) As String
     End If
 End Function
 
-' ДЛЯ ТЕСТОВ: повторяет настоящий passive export-reader без запуска AutoCAD.
-' Геометрия/цикл выбора LC остаются включены; assertions вне замера.
+' ДЛЯ ТЕСТОВ: повторяет обычное чтение сохранённых данных экспорта без запуска
+' AutoCAD. Время включает геометрию и выбор сочетания; проверки выполняются вне замера.
 Public Function MeasurePerformanceExport(ByVal count As Long) As String
     Dim t As Double, i As Long, elapsed As Double, values() As String
     ReDim values(1 To count)

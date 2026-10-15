@@ -17,33 +17,33 @@ Option Explicit
 ' приложения и при наличии решения сохраняет CapacityState для Results.
 ' Способ поиска и чтение настроек остаются у вызывающего расчёта.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
-Private Const CAPACITY_PATH_NONE As String = "None" ' Единый маркер: capacity для LC не выполнялся.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
+Private Const CAPACITY_PATH_NONE As String = "None" ' Признак того, что несущая способность для сочетания не рассчитывалась.
 
 Private mSearchResult As CLimitSearchResult ' Типизированный результат общего LimitSearch.
-Private mStateResult As CSectionStateResult ' Итоговый reusable named-state CapacityState, если он найден.
+Private mStateResult As CSectionStateResult ' Сохранённое предельное НДС CapacityState, если оно найдено.
 Private mLimitState As String ' Физическая причина предела или текст ошибки.
 Private mSolutionMethod As String ' Фактически принятая ветка: UltimateStrain или LoadMultiplier.
-Private mPathResolved As String ' Нормализованный ключ capacity load path.
+Private mPathResolved As String ' Проверенный ключ выбранного изменения нагрузки при поиске предела.
 Private mLambdaCapacity As Double ' Найденный множитель lambda.
 Private mUtilCapacity As Double ' Использование несущей способности.
 Private mNUltimate As Double ' Предельная N в точке приложения нагрузки.
 Private mMxUltimate As Double ' Предельный Mx в точке приложения нагрузки.
 Private mMyUltimate As Double ' Предельный My в точке приложения нагрузки.
 Private mMomentUltimate As Double ' Модуль полного предельного момента в точке приложения нагрузки.
-Private mPureAxialForMethod As Boolean ' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
-Private mResultMeta As CResultMeta ' Типизированный статус CapacityResult для общего result/status слоя.
+Private mPureAxialForMethod As Boolean ' Признак выбора осевого численного расчёта после переноса нагрузки к центру приведённого сечения.
+Private mResultMeta As CResultMeta ' Статус, код причины и пояснение результата несущей способности.
 
-' Инициализирует meta как неприменимую ветку, чтобы даже ранний выход имел
-' безопасное машинное состояние.
+' Задаёт начальный статус неприменимой проверки, чтобы ранний выход
+' не оставил незаполненную или ложноположительную причину.
 Private Sub Class_Initialize()
     Set mResultMeta = New CResultMeta
     mResultMeta.SetNotApplicable rkCapacity
 End Sub
 
-' Формирует результат по успешному или неуспешному search-слою.
-' Даже при numerical/input failure объект остается заполненным: batch получает
-' единый контейнер и не разбирает поля CCapacitySolver вручную.
+' Сохраняет полный результат успешного или неуспешного поиска.
+' При численной ошибке или ошибке ввода результат также содержит статус
+' и пояснение; пакетный расчёт не разбирает внутренние поля решателя.
 Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
         ByVal loadPath As CLoadPathDescriptor, _
         ByVal pureAxialForMethod As Boolean, _
@@ -71,10 +71,9 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     End If
 
     Set mResultMeta = searchResult.Meta.Clone
-    ' Численный поиск мог успешно найти предел ниже заданной нагрузки.
-    ' Только инженерный слой трактует это как непрохождение текущего LC.
-    ' История Auto-путей остается пользовательским комментарием, а не
-    ' перемещается в техническую диагностику при смене успешного Search на FAIL.
+    ' Если поиск подтвердил предел ниже заданной нагрузки, сам поиск успешен,
+    ' но текущее сочетание не проходит проверку прочности. История переходов
+    ' Auto сохраняется в пользовательском пояснении при итоговом FAIL.
     If searchResult.Succeeded And searchResult.Converged Then
         If searchResult.LambdaUltimate > 0# And searchResult.LambdaUltimate < 1# Then
             mResultMeta.SetResult rsCheckFailed, rcPhysicalLimitExceeded, rkCapacity, _
@@ -95,7 +94,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     StoreCapacityStateIfAvailable
 End Sub
 
-' Заполняет результат ошибкой входных данных до запуска search.
+' Сохраняет ошибку входных данных, выявленную до запуска поиска.
 Public Sub InitializeInvalidInput(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
     AssertWritable
@@ -105,7 +104,7 @@ Public Sub InitializeInvalidInput(ByVal reason As String, _
     InitializeEarlyResult rsInvalidInput, rcInvalidInput, reason, pathKey
 End Sub
 
-' Заполняет результат внутренней ошибкой до запуска search.
+' Сохраняет внутреннюю ошибку программы, выявленную до запуска поиска.
 Public Sub InitializeCalcError(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
     AssertWritable
@@ -120,17 +119,16 @@ Public Sub InitializeNotRequested(ByVal reason As String, _
     InitializeEarlyResult rsNotRequested, rcNotRequested, reason, pathKey
 End Sub
 
-' Заполняет результат штатным пропуском capacity без запуска search.
-' Нулевая траектория не является ошибкой ввода: для нее просто нет направления,
-' по которому можно искать предельный множитель lambda.
+' Сохраняет незапущенный расчёт без ошибки, если нагрузка не задаёт
+' ненулевого направления для поиска предельного множителя lambda.
 Public Sub InitializeSkipped(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
     AssertWritable
     InitializeEarlyResult rsNotApplicable, rcNotApplicable, reason, pathKey
 End Sub
 
-' Заполняет результат, когда базовая точка lambda=0 уже нарушает критерий
-' несущей способности. Для Capacity такая связка отображается как BaseFail.
+' Сохраняет BaseFail, если постоянная часть нагрузки при lambda = 0
+' уже превышает критерий несущей способности.
 Public Sub InitializeBaseFail(ByVal reason As String, _
         Optional ByVal pathKey As String = CAPACITY_PATH_NONE)
     AssertWritable
@@ -149,7 +147,8 @@ Private Function NormalizeBaseFailReason(ByVal reason As String) As String
         NormalizeBaseFailReason = "Несущая способность не проходит уже для исходной части выбранного пути."
 End Function
 
-' Общая запись раннего capacity-result без обратного маппинга из display-строки.
+' Сохраняет ранний результат по внутреннему коду причины,
+' не восстанавливая его из текстового обозначения статуса.
 Private Sub InitializeEarlyResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal reason As String, _
         ByVal pathKey As String, Optional ByVal calculated As Boolean = False)
@@ -205,8 +204,8 @@ Private Sub StoreUltimateVector(ByVal loadPath As CLoadPathDescriptor, _
     mMomentUltimate = Sqr(mMxUltimate * mMxUltimate + mMyUltimate * mMyUltimate)
 End Sub
 
-' Определяет использование только по действительно найденному пределу.
-' Последняя диагностическая проба и техническая граница не являются capacity.
+' Определяет использование несущей способности только по подтверждённому пределу.
+' Последняя проба и техническая граница поиска пределом не считаются.
 Private Sub StoreUtilization()
     mUtilCapacity = 0#
     If mSearchResult Is Nothing Then Exit Sub
@@ -214,8 +213,8 @@ Private Sub StoreUtilization()
     If mSearchResult.LambdaUltimate > 0# Then mUtilCapacity = 1# / mSearchResult.LambdaUltimate
 End Sub
 
-' Готовит CapacityState только для физически найденной предельной точки.
-' Неуспешные probes и numerical failure не становятся reusable named-state.
+' Готовит CapacityState только для подтверждённой физической предельной точки.
+' Неудачные пробы без равновесия не становятся сохранённым НДС для повторного использования.
 Private Sub StoreCapacityStateIfAvailable()
     Set mStateResult = Nothing
     If mSearchResult Is Nothing Then Exit Sub
@@ -223,28 +222,28 @@ Private Sub StoreCapacityStateIfAvailable()
     Set mStateResult = mSearchResult.PointState
 End Sub
 
-' Возвращает отдельный контейнер итогов Search, чтобы потребитель не изменил
-' опубликованный результат. Конечные named-states сохраняют свою идентичность.
+' Возвращает отдельную копию результата поиска, чтобы вызывающий код
+' не изменил готовый итог. Ссылки на неизменяемые конечные НДС сохраняются.
 Public Property Get SearchResult() As CLimitSearchResult
     If Not mSearchResult Is Nothing Then Set SearchResult = mSearchResult.Clone
 End Property
 
-' Возвращает независимый снимок meta канонического capacity-результата.
-' Display-статус вычисляется из нее общей policy, отдельной строковой копии нет.
+' Возвращает независимую копию статуса и пояснения несущей способности.
+' Видимое обозначение определяется общими правилами без отдельной строковой копии.
 Public Property Get ResultMeta() As CResultMeta
     If mResultMeta Is Nothing Then InitializeCalcError "CapacityResult ResultMeta не сформирован.", mPathResolved
     Set ResultMeta = mResultMeta.Clone
 End Property
 
-' Возвращает подробный журнал поиска через общий search-result.
-' Batch-слой не должен обращаться к внутреннему DiagnosticLog solver-а напрямую.
+' Возвращает подробный журнал общего поиска предела.
+' Для вывода не требуется читать внутренние рабочие поля CCapacitySolver.
 Public Property Get DiagnosticLog() As String
     If Not mSearchResult Is Nothing Then DiagnosticLog = mSearchResult.DiagnosticLog
 End Property
 
-' Возвращает True, если для capacity действительно запускался LimitSearch.
-' Ранние исходы вроде N/A или InputErr остаются полноценным результатом,
-' но не содержат solver-фасад и не должны трактоваться batch-слоем как search.
+' Показывает, действительно ли запускался численный поиск LimitSearch.
+' Ранние N/A или InputErr являются заполненным результатом, но не означают
+' выполненного поиска равновесия или предела.
 Public Property Get SearchExecuted() As Boolean
     If Not mSearchResult Is Nothing Then SearchExecuted = mSearchResult.SearchExecuted
 End Property
@@ -256,8 +255,8 @@ Public Property Get LastSolverDiagnosticLog() As String
     LastSolverDiagnosticLog = mSearchResult.LastSolverDiagnosticLog
 End Property
 
-' Формирует русское пояснение ранней остановки до запуска LimitSearch.
-' Batch-слой только выводит эту строку в отчет и не повторяет domain-логику.
+' Объясняет раннюю остановку до LimitSearch для отчёта выполнения.
+' Пакетный расчёт выводит готовую причину без повторного её определения.
 Public Function EarlyStopReport(ByVal loadPath As CLoadPathDescriptor) As String
     If loadPath Is Nothing Then
         EarlyStopReport = "Поиск несущей способности остановлен: путь нагрузки не подготовлен."
@@ -272,9 +271,8 @@ Public Function EarlyStopReport(ByVal loadPath As CLoadPathDescriptor) As String
     End If
 End Function
 
-' Формирует пояснение, какая ветка поиска несущей была фактически принята.
-' Сам выбор уже сделан search-слоем; здесь остается только инженерная трактовка
-' для execution report.
+' Объясняет, какой способ поиска несущей способности фактически принят.
+' Сам выбор уже выполнен; здесь формируется только текст отчёта.
 Public Function MethodChoiceReport(ByVal solutionStrategy As String, _
         ByVal loadPath As CLoadPathDescriptor) As String
     If Len(Trim$(mSolutionMethod)) = 0 Then Exit Function
@@ -308,8 +306,8 @@ Public Property Get StateResult() As CSectionStateResult
     Set StateResult = mStateResult
 End Property
 
-' Получает внешний статус из канонической ResultMeta через общую policy.
-' Физический BaseFail интерпретирован калькулятором, а не текстом комментария.
+' Возвращает внешний статус по сохранённому ResultMeta и общим правилам.
+' Физическую причину BaseFail определяет расчёт, а не текст комментария.
 Public Property Get Status() As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -326,7 +324,7 @@ Public Property Get SolutionMethod() As String
     SolutionMethod = mSolutionMethod
 End Property
 
-' Нормализованный ключ capacity load path.
+' Возвращает проверенный ключ изменения нагрузки при поиске предела.
 Public Property Get PathResolved() As String
     PathResolved = mPathResolved
 End Property
@@ -356,8 +354,8 @@ Public Property Get MyUltimate() As Double
     MyUltimate = mMyUltimate
 End Property
 
-' Возвращают внутренние усилия сохраненного конечного состояния. Без state
-' числовые свойства равны нулю; наличие и допустимость проверяются отдельно.
+' Возвращает внутреннюю продольную силу сохранённого предельного НДС.
+' Без состояния возвращает 0; наличие и допустимость проверяются отдельно.
 Public Property Get CapacityStateN() As Double
     If Not mStateResult Is Nothing Then CapacityStateN = mStateResult.Nint
 End Property
@@ -384,8 +382,8 @@ Public Property Get CapacityStateAvailable() As Boolean
     CapacityStateAvailable = Not mStateResult Is Nothing
 End Property
 
-' Возвращают параметры сохраненной плоскости деформаций, не повторяя solve.
-' Нули при отсутствии state не следует трактовать как найденное равновесие.
+' Возвращает деформацию в начале координат сохранённого предельного НДС.
+' Без состояния возвращает 0; это не подтверждение найденного равновесия.
 Public Property Get CapacityEpsilon0() As Double
     If Not mStateResult Is Nothing Then CapacityEpsilon0 = mStateResult.Epsilon0
 End Property
@@ -402,7 +400,8 @@ Public Property Get CapacityKappaY() As Double
     If Not mStateResult Is Nothing Then CapacityKappaY = mStateResult.KappaY
 End Property
 
-' True, если capacity-calculator выбрал осевую численную ветку после переноса нагрузок к центру.
+' Показывает, выбран ли осевой численный расчёт после переноса нагрузки
+' к центру приведённого сечения.
 Public Property Get PureAxialForMethod() As Boolean
     PureAxialForMethod = mPureAxialForMethod
 End Property
@@ -417,9 +416,8 @@ Public Property Get ReserveFactor() As Double
     ReserveFactor = mLambdaCapacity
 End Property
 
-' Завершает заполнение и защищает результат от дальнейших изменений.
-' Закрывает сохраненное CapacityState вместе с предельными числами и meta.
-' Если точки нет, НДС не создается; повторный вызов безопасен.
+' Завершает заполнение результата и предельного CapacityState, запрещая их изменение.
+' Если точка не найдена, НДС не создаётся; повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     If Not mStateResult Is Nothing Then mStateResult.Freeze

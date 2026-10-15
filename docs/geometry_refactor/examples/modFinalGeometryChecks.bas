@@ -1,7 +1,7 @@
 Attribute VB_Name = "modFinalGeometryChecks"
 Option Explicit
-' ДЛЯ ТЕСТОВ: ограниченная итоговая матрица на изолированной копии книги.
-' Не подключается в production. Использует штатные builders, solver и writers.
+' ДЛЯ ТЕСТОВ: ограниченный итоговый набор проверок в отдельной копии книги.
+' В рабочую книгу не включается. Использует обычные построители, расчёты и запись результатов.
 Private mReport As String
 Private mPassed As Long
 Private mFailed As Long
@@ -37,8 +37,8 @@ Public Function RunFamilyComplement(Optional ByVal code As String = "SP35") As S
         Set props = New CSectionPropertiesCalculator: props.CalculateConcrete model
         props.CalculateProjection model, 1#, 0#, False, lo, hi: dx = hi - lo
         props.CalculateProjection model, 0#, 1#, False, lo, hi: dy = hi - lo
-        ' Моменты относительно origin: центральная часть N*xc/yc добавляется
-        ' явно. Эксцентриситеты и оба знака не зависят от симметрии формы.
+        ' Задаём моменты относительно начала координат с явной добавкой N*xc/yc.
+        ' Эксцентриситеты и оба знака нагрузки проверяются независимо от симметрии формы.
         For k = 0 To 7
             n = -2# * props.Area
             If k = 1 Then n = 0.1 * props.Area
@@ -87,8 +87,8 @@ Restore:
     RunFamilyComplement = FinishReport("FAMILY_COMPLEMENT_" & code)
 End Function
 
-' ДЛЯ ТЕСТОВ: один LC на семью; штатный запуск включает подготовку,
-' Results, execution report и автоматическую схему, а не только solver.
+' ДЛЯ ТЕСТОВ: одна нагрузка для каждой группы сечений. Замер штатного запуска
+' включает подготовку, Results, отчёт и автоматическую схему, а не только решение НДС.
 Public Function MeasureFamilyWorkflow(Optional ByVal outputDirectory As String = "") As String
     Dim fixture As Variant, result As String, label As String, before As Long
     Dim config As Object, saved As Variant, settings As CSystemSettingsReader
@@ -146,8 +146,8 @@ Public Function MeasureFamilyStages() As String
     MeasureFamilyStages = result
 End Function
 
-' ДЛЯ ТЕСТОВ: один реальный полный LC с capacity/crack/stability,
-' report и схемой. Это направленный замер, не полный on/off набор.
+' ДЛЯ ТЕСТОВ: одно полное сочетание с несущей способностью, трещинами, устойчивостью,
+' отчётом и схемой для направленного замера времени.
 Public Function MeasureMixedWorkflow() As String
     Dim diagramMode As String
     diagramMode = ReadDiagramMode()
@@ -184,7 +184,7 @@ Public Function RunSP35ProjectionFixture() As String
     RunSP35ProjectionFixture = "PROJECTION_DIAGRAM_MODE: " & ReadDiagramMode() & vbCrLf & modTestSP35CrackWidth.RunSP35CurrentProjectionTests()
 End Function
 
-' Сохраняет фактический режим runner-а до подготовки конкретной fixture.
+' Сохраняет фактический режим продолжения диаграмм до подготовки контрольного примера.
 Private Function ReadDiagramMode() As String
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -200,9 +200,9 @@ Private Function Fixtures() As Variant
     Fixtures = Array("Circle", "Rectangle", "LSection", "TwoRectangles", "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset")
 End Function
 
-' ДЛЯ ТЕСТОВ: специальное покрытие отображения без полного UI-прогона.
-' Два знака изгиба дают реальные смешанные поля; последующие операции
-' только читают Results, включая изменение Config, resize и отсутствие НДС.
+' ДЛЯ ТЕСТОВ: проверяет отображение без полного ручного прогона интерфейса.
+' Два знака изгиба дают смешанные поля; дальнейшие операции только читают Results
+' при изменении Config, размера схемы и отсутствии выбранного НДС.
 Public Function RunDirectedPlotModes(ByVal outputDirectory As String) As String
     Dim config As Object, saved As Variant, settings As CSystemSettingsReader, units As CUnitSystem
     Dim loads As Object, reader As CSectionPlotDataReader, plotter As CSectionPlotter
@@ -268,8 +268,8 @@ Public Function RunDirectedPlotModes(ByVal outputDirectory As String) As String
     plotter.Draw ThisWorkbook, reader, settings
     If Not container.Chart.Export(outputDirectory & Application.PathSeparator & "Resize_NoLabels.png", "PNG") Then Err.Raise 5, , "PNG export failed"
     Check "passive.noSolve", SectionEquilibriumSolveCount() = before
-    ' Второй штатный запуск без direct/capacity/crack действительно не имеет
-    ' выбранного StrengthState; схема показывает только сохраненную геометрию.
+    ' Повторяем штатный запуск без прочности, несущей способности и трещин.
+    ' Состояния StrengthState нет; схема должна показать только сохранённую геометрию.
     SetSetting "Geometry.Type", "HollowRectangle"
     SetProfile "Calculation.Strength.DirectState", "No": SetProfile "Calculation.Stability.Enabled", "Yes"
     mReport = mReport & modTestPerformance.MeasurePerformanceBatch("Full") & vbCrLf

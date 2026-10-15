@@ -18,18 +18,18 @@ Option Explicit
 
 Private mInternalStatus As EResultInternalStatus ' Внутренний статус, на котором работает расчетная логика.
 Private mResultCode As EResultCode ' Машинный код точной причины результата.
-Private mResultKind As EResultKind ' Контекст результата: direct state, capacity, cracks, stability.
+Private mResultKind As EResultKind ' Вид проверки: НДС при заданной нагрузке, несущая способность, трещины или устойчивость.
 Private mResultComment As String ' Короткое русское пояснение для пользователя и report.
-Private mDiagnosticDetails As String ' Технические подробности solver/search, если они нужны.
+Private mDiagnosticDetails As String ' Подробная диагностика решения равновесия или поиска предела, если она сохранена.
 Private mApplies As Boolean ' Ветка относится к LC; blocked сохраняет True, хотя нужных данных нет.
-Private mCalculated As Boolean ' Выполнялся собственный solve/search/формульный расчет, не только проверка применимости.
+Private mCalculated As Boolean ' Показывает, выполнялся ли сам расчёт, а не только проверка его применимости.
 
 ' Инициализирует объект нейтральным "не сформировано" состоянием.
 Private Sub Class_Initialize()
     Clear
 End Sub
 
-' Сбрасывает meta к безопасному начальному состоянию.
+' Очищает статус, пояснение и признаки выполнения перед новым заполнением.
 Public Sub Clear()
     mInternalStatus = rsUnset
     mResultCode = rcNone
@@ -40,10 +40,10 @@ Public Sub Clear()
     mCalculated = False
 End Sub
 
-' Заполняет поля результата. Не запрошенная, неприменимая, заблокированная
-' ветка и ошибка валидации не объявляют собственный расчет выполненным.
-' Для внутренней ошибки после запуска вызывающий слой передает фактический
-' calculated; для отсутствующего результата он обязан передать False.
+' Сохраняет статус, причину и признаки выполнения проверки. Незапрошенная,
+' неприменимая или заблокированная проверка не считается выполненной.
+' При внутренней ошибке вызывающий код передаёт фактический признак calculated;
+' для отсутствующего результата он должен быть False.
 Public Sub SetResult(ByVal internalStatus As EResultInternalStatus, _
         ByVal resultCode As EResultCode, ByVal resultKind As EResultKind, _
         Optional ByVal resultComment As String = vbNullString, _
@@ -65,12 +65,12 @@ Public Sub SetResult(ByVal internalStatus As EResultInternalStatus, _
     End Select
 End Sub
 
-' Заполняет meta как отключенный профилем расчет.
+' Отмечает проверку как отключённую выбранным профилем.
 Public Sub SetNotRequested(ByVal resultKind As EResultKind, Optional ByVal resultComment As String = vbNullString)
     SetResult rsNotRequested, rcNotRequested, resultKind, resultComment, vbNullString, False, False
 End Sub
 
-' Заполняет meta как неприменимую расчетную ветку.
+' Отмечает проверку как неприменимую к данному расчётному случаю.
 Public Sub SetNotApplicable(ByVal resultKind As EResultKind, Optional ByVal resultComment As String = vbNullString)
     SetResult rsNotApplicable, rcNotApplicable, resultKind, resultComment, vbNullString, False, False
 End Sub
@@ -85,9 +85,9 @@ Public Sub SetBlockedByDependency(ByVal resultKind As EResultKind, _
     SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment, vbNullString, True, False
 End Sub
 
-' Сохраняет машинную причину неуспешного solve без разбора текста сообщения.
-' Вызывающий слой передает факт численной попытки отдельно от причины отказа;
-' отсутствие обязательного solver-а является внутренней ошибкой контракта.
+' Сохраняет код причины неудачного решения без разбора текста сообщения.
+' Факт запуска численных итераций передаётся отдельно. Отсутствие обязательного
+' объекта решателя считается внутренней ошибкой программы.
 Public Sub SetSolverFailure(ByVal failureCode As ESolverFailureCode, _
         ByVal resultKind As EResultKind, ByVal reason As String, ByVal attempted As Boolean)
     Dim internalStatus As EResultInternalStatus
@@ -108,7 +108,7 @@ Public Sub SetSolverFailure(ByVal failureCode As ESolverFailureCode, _
     SetResult internalStatus, resultCode, resultKind, reason, vbNullString, True, attempted
 End Sub
 
-' Создает независимую копию meta для хранения внутри result-объекта.
+' Создаёт независимую копию статуса и пояснения для хранения в объекте результата.
 Public Function Clone() As CResultMeta
     Dim result As CResultMeta
     Set result = New CResultMeta
@@ -117,10 +117,10 @@ Public Function Clone() As CResultMeta
     Set Clone = result
 End Function
 
-' Добавляет собственную причину в комментарий родительского result без дублей.
-' Обычные успешные и неприменимые ветви не загромождают сводку; blocked и
-' warning сохраняются. Для уже собранного subtree передается prepared=True:
-' его текст не размечается повторно и не теряется при итоговом внешнем OK.
+' Добавляет пояснение проверки в общий комментарий без повторов. Успешные
+' и неприменимые проверки не загромождают сводку; предупреждения и причины
+' недоступности сохраняются. prepared = True означает, что текст уже собран
+' и его не нужно повторно размечать даже при общем статусе OK.
 Public Sub AppendCommentTo(ByRef targetText As String, Optional ByVal prepared As Boolean = False)
     If Not prepared Then
         Select Case mInternalStatus
@@ -139,8 +139,8 @@ Public Sub AppendCommentTo(ByRef targetText As String, Optional ByVal prepared A
     targetText = targetText & commentText
 End Sub
 
-' Дает короткую инженерную метку владельца причины при сборке result-subtree.
-' Это подпись готовых данных, а не правило выбора расчетной ветви или статуса.
+' Возвращает короткое название проверки, к которой относится пояснение.
+' Используется при сборке общего комментария и не выбирает вид расчёта или статус.
 Private Function ResultKindLabel() As String
     Select Case mResultKind
         Case rkDirectState: ResultKindLabel = "НДС"
@@ -163,7 +163,7 @@ Public Property Get ResultCode() As EResultCode
     ResultCode = mResultCode
 End Property
 
-' Контекст результата: direct state, capacity, cracks, stability.
+' Возвращает вид проверки: НДС, несущая способность, трещины или устойчивость.
 Public Property Get ResultKind() As EResultKind
     ResultKind = mResultKind
 End Property
@@ -178,12 +178,12 @@ Public Property Let ResultComment(ByVal value As String)
     mResultComment = value
 End Property
 
-' Технические подробности solver/search, если они нужны.
+' Возвращает сохранённые технические подробности решения равновесия или поиска предела.
 Public Property Get DiagnosticDetails() As String
     DiagnosticDetails = mDiagnosticDetails
 End Property
 
-' Технические подробности solver/search, если они нужны.
+' Сохраняет технические подробности решения равновесия или поиска предела.
 Public Property Let DiagnosticDetails(ByVal value As String)
     mDiagnosticDetails = value
 End Property
@@ -193,7 +193,7 @@ Public Property Get Applies() As Boolean
     Applies = mApplies
 End Property
 
-' Выполнялся собственный solve/search/формульный расчет, не только проверка применимости.
+' Показывает, выполнялся ли сам расчёт, а не только проверка его применимости.
 Public Property Get Calculated() As Boolean
     Calculated = mCalculated
 End Property

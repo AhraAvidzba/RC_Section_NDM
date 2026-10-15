@@ -16,8 +16,8 @@ Option Explicit
 ' CStabilityCalculator. Входит в CCombinationResult и служит источником
 ' данных для таблицы Results без повторного расчёта устойчивости.
 
-Private mFrozen As Boolean ' После публикации заполнение/reset запрещены; численные данные не копируются.
-Private mMeta As CResultMeta ' Единственная typed meta ветви устойчивости.
+Private mFrozen As Boolean ' После передачи готового результата его заполнение и очистка запрещены; сохранённые числа доступны для чтения.
+Private mMeta As CResultMeta ' Статус, код причины и пояснение проверки устойчивости.
 Private mCode As String ' Нормативная ветка SP35/SP63.
 Private mBranch As String ' Диагностическое имя расчетной ветви.
 Private mReferenceX As Double ' X точки, относительно которой выполнен перенос нагрузок.
@@ -26,68 +26,68 @@ Private mDesignN As Double ' Итоговая продольная сила дл
 Private mDesignMx As Double ' Итоговый Mx после учета устойчивости/фильтров.
 Private mDesignMy As Double ' Итоговый My после учета устойчивости/фильтров.
 Private mSustainedN As Double ' Длительная/постоянная часть N.
-Private mMoment1 As Double
-Private mMoment2 As Double
-Private mSustainedMoment1 As Double
-Private mSustainedMoment2 As Double
-Private mDesignMoment1 As Double
-Private mDesignMoment2 As Double
-Private mCriticalForce As Double
-Private mReserveFactor As Double
-Private mUtilization As Double
-Private mNcr1 As Double
-Private mNcr2 As Double
-Private mNultimate1 As Double
-Private mNultimate2 As Double
-Private mReserve1 As Double
-Private mReserve2 As Double
-Private mEta1 As Double
-Private mEta2 As Double
-Private mPhiL1 As Double
-Private mPhiL2 As Double
-Private mPhiLTable1 As String
-Private mPhiLTable2 As String
-Private mPhiM1 As Double
-Private mPhiM2 As Double
-Private mPhiValue1 As Double
-Private mPhiValue2 As Double
-Private mPhiP1 As Double
-Private mPhiP2 As Double
-Private mEccentricity1 As Double
-Private mEccentricity2 As Double
-Private mAccidentalEcc1 As Double
-Private mAccidentalEcc2 As Double
-Private mEffectiveLength1 As Double
-Private mEffectiveLength2 As Double
-Private mSlenderness1 As Double
-Private mSlenderness2 As Double
-Private mDepth1 As Double
-Private mDepth2 As Double
-Private mRadius1 As Double
-Private mRadius2 As Double
-Private mCoreDistance1 As Double
-Private mCoreDistance2 As Double
-Private mDelta1 As Double
-Private mDelta2 As Double
-Private mKb1 As Double
-Private mKb2 As Double
-Private mKs1 As Double
-Private mKs2 As Double
-Private mStiffnessD1 As Double
-Private mStiffnessD2 As Double
-Private mPlaneBranch1 As String
-Private mPlaneBranch2 As String
-Private mPlaneApplicable1 As Boolean
-Private mPlaneApplicable2 As Boolean
-Private mPlanePassed1 As Boolean
-Private mPlanePassed2 As Boolean
+Private mMoment1 As Double ' Исходный расчетный момент в первой главной плоскости до eta.
+Private mMoment2 As Double ' Исходный расчетный момент во второй главной плоскости до eta.
+Private mSustainedMoment1 As Double ' Постоянный/длительный момент в первой главной плоскости.
+Private mSustainedMoment2 As Double ' Постоянный/длительный момент во второй главной плоскости.
+Private mDesignMoment1 As Double ' Итоговый момент первой главной плоскости после учета eta.
+Private mDesignMoment2 As Double ' Итоговый момент второй главной плоскости после учета eta.
+Private mCriticalForce As Double ' Минимальная контрольная сила: Ncr для eta-ветвей или Nult,stab для табличной ветви.
+Private mReserveFactor As Double ' Минимальный запас по устойчивости.
+Private mUtilization As Double ' Наибольший коэффициент использования при проверке устойчивости.
+Private mNcr1 As Double ' Критическая сила Ncr первой главной плоскости; 0, если ветвь считает Nult вместо Ncr.
+Private mNcr2 As Double ' Критическая сила Ncr второй главной плоскости; 0, если ветвь считает Nult вместо Ncr.
+Private mNultimate1 As Double ' Предельная сжимающая сила Nult,stab первой главной плоскости для табличной ветви СП 35.
+Private mNultimate2 As Double ' Предельная сжимающая сила Nult,stab второй главной плоскости для табличной ветви СП 35.
+Private mReserve1 As Double ' Запас по первой главной плоскости.
+Private mReserve2 As Double ' Запас по второй главной плоскости.
+Private mEta1 As Double ' Коэффициент eta первой плоскости.
+Private mEta2 As Double ' Коэффициент eta второй плоскости.
+Private mPhiL1 As Double ' Коэффициент длительности первой плоскости.
+Private mPhiL2 As Double ' Коэффициент длительности второй плоскости.
+Private mPhiLTable1 As String ' Табличный phi_l СП 35 первой плоскости для ветви ec/r <= 1.
+Private mPhiLTable2 As String ' Табличный phi_l СП 35 второй плоскости для ветви ec/r <= 1.
+Private mPhiM1 As Double ' Табличный phi_m СП 35 первой плоскости.
+Private mPhiM2 As Double ' Табличный phi_m СП 35 второй плоскости.
+Private mPhiValue1 As Double ' Итоговый phi СП 35 первой плоскости в ветви ec <= r.
+Private mPhiValue2 As Double ' Итоговый phi СП 35 второй плоскости в ветви ec <= r.
+Private mPhiP1 As Double ' Коэффициент phi_p СП 35 первой плоскости в ветви ec > r.
+Private mPhiP2 As Double ' Коэффициент phi_p СП 35 второй плоскости в ветви ec > r.
+Private mEccentricity1 As Double ' Расчетный эксцентриситет первой плоскости, мм.
+Private mEccentricity2 As Double ' Расчетный эксцентриситет второй плоскости, мм.
+Private mAccidentalEcc1 As Double ' Случайный эксцентриситет в первой плоскости, мм.
+Private mAccidentalEcc2 As Double ' Случайный эксцентриситет во второй плоскости, мм.
+Private mEffectiveLength1 As Double ' l0 первой плоскости, мм.
+Private mEffectiveLength2 As Double ' l0 второй плоскости, мм.
+Private mSlenderness1 As Double ' Гибкость l0/i для плоскости 1: изгиб вокруг главной оси 1.
+Private mSlenderness2 As Double ' Гибкость l0/i для плоскости 2: изгиб вокруг главной оси 2.
+Private mDepth1 As Double ' Размер сечения h1 по нормали первой главной плоскости, мм.
+Private mDepth2 As Double ' Размер сечения h2 по нормали второй главной плоскости, мм.
+Private mRadius1 As Double ' Радиус инерции i1 приведенного сечения.
+Private mRadius2 As Double ' Радиус инерции i2 приведенного сечения.
+Private mCoreDistance1 As Double ' Ядровое расстояние r первой плоскости со стороны эксцентриситета.
+Private mCoreDistance2 As Double ' Ядровое расстояние r второй плоскости со стороны эксцентриситета.
+Private mDelta1 As Double ' delta или delta_e первой плоскости в выбранной расчетной ветви.
+Private mDelta2 As Double ' delta или delta_e второй плоскости в выбранной расчетной ветви.
+Private mKb1 As Double ' Коэффициент kb СП 63 первой плоскости.
+Private mKb2 As Double ' Коэффициент kb СП 63 второй плоскости.
+Private mKs1 As Double ' Коэффициент ks СП 63 первой плоскости.
+Private mKs2 As Double ' Коэффициент ks СП 63 второй плоскости.
+Private mStiffnessD1 As Double ' Условная жесткость D первой плоскости, Н*мм2.
+Private mStiffnessD2 As Double ' Условная жесткость D второй плоскости, Н*мм2.
+Private mPlaneBranch1 As String ' Фактическая ветвь расчета первой плоскости.
+Private mPlaneBranch2 As String ' Фактическая ветвь расчета второй плоскости.
+Private mPlaneApplicable1 As Boolean ' True, если первая плоскость участвовала в проверке.
+Private mPlaneApplicable2 As Boolean ' True, если вторая плоскость участвовала в проверке.
+Private mPlanePassed1 As Boolean ' True, если первая плоскость прошла свою проверку.
+Private mPlanePassed2 As Boolean ' True, если вторая плоскость прошла свою проверку.
 
-' Создает N/A-result для случаев, когда устойчивость не запрошена профилем.
+' Создаёт результат N/A для проверки устойчивости, не запрошенной профилем.
 Private Sub Class_Initialize()
     Clear
 End Sub
 
-' Полностью сбрасывает meta и численные поля перед повторным заполнением.
+' Очищает численные результаты, статус и пояснение перед новым заполнением.
 Public Sub Clear()
     AssertWritable
     Set mMeta = New CResultMeta
@@ -157,7 +157,7 @@ Public Sub Clear()
     mPlanePassed2 = False
 End Sub
 
-' Сохраняет инженерную meta без отдельного изменяемого display-статуса.
+' Сохраняет статус и пояснение устойчивости без отдельной независимо изменяемой строки статуса.
 Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As String = vbNullString)
     AssertWritable
     If meta Is Nothing Then
@@ -171,7 +171,7 @@ Public Sub SetMeta(ByVal meta As CResultMeta, Optional ByVal resultComment As St
     mBranch = StabilityBranchDisplayName(resultComment)
 End Sub
 
-' Копирует результат CStabilityCalculator и формирует typed meta для summary.
+' Копирует готовые величины CStabilityCalculator и формирует статус для общей сводки.
 Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability As CStabilityCalculator, _
         ByVal referenceXValue As Double, ByVal referenceYValue As Double)
     AssertWritable
@@ -192,8 +192,8 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     End If
 
     mCode = stability.Code
-    ' mBranch остается машинным ключом расчетной ветви. Причина отказа
-    ' принадлежит ResultComment, а не заменяет ключ для typed-потребителей.
+    ' Сохраняем Branch как код применённого метода. Причина отказа
+    ' записывается отдельно в ResultComment и не подменяет этот код.
     mBranch = stability.Branch
     mDesignN = stability.DesignN
     mDesignMx = stability.DesignMx
@@ -256,8 +256,8 @@ Public Sub InitializeFromCalculator(ByVal meta As CResultMeta, ByVal stability A
     mPlanePassed2 = stability.PlanePassed2
 End Sub
 
-' Переводит внутренние коды ветвей устойчивости в русский текст для Results.
-' Сами коды SP35-eta/SP35-table/SP35-mixed остаются во внутренних полях batch.
+' Возвращает русское название применённого метода для Results.
+' Расчётные коды SP35-eta/SP35-table/SP35-mixed сохраняются отдельно.
 Private Function StabilityBranchDisplayName(ByVal branchText As String) As String
     Select Case LCase$(Trim$(branchText))
         Case "nocompression"
@@ -286,7 +286,7 @@ Public Sub UpdateDesignLoads(ByVal designNValue As Double, ByVal designMxValue A
     mDesignMoment2 = -designMxValue * Sin(principalAngleRad) + designMyValue * Cos(principalAngleRad)
 End Sub
 
-' Возвращает копию meta, чтобы вызывающий код не менял status-subtree напрямую.
+' Возвращает копию статуса и пояснения, чтобы вызывающий код не мог изменить готовую проверку.
 Public Property Get Meta() As CResultMeta
     If mMeta Is Nothing Then
         Set mMeta = New CResultMeta
@@ -296,7 +296,7 @@ Public Property Get Meta() As CResultMeta
     Set Meta = mMeta.Clone
 End Property
 
-' Display-статус всегда получается из meta, без независимого mutable поля.
+' Возвращает видимое обозначение по сохранённому статусу; отдельного изменяемого значения нет.
 Public Property Get Status() As String
     Dim policy As CResultStatusPolicy
     Set policy = New CResultStatusPolicy
@@ -316,8 +316,8 @@ Public Property Get SummaryReserve() As Double
     If SummaryReserve <= 0# And mReserveFactor > 0# Then SummaryReserve = mReserveFactor
 End Property
 
-' Численные значения являются сохраненными данными calculator-а, а не
-' изменяемыми входами. Все getter-ы этой группы доступны только для чтения.
+' Ниже возвращаются готовые величины проверки устойчивости.
+' Они доступны только для чтения и не являются новыми входными данными расчёта.
 Public Property Get Code() As String
     Code = mCode
 End Property
@@ -688,9 +688,9 @@ Public Property Get PlanePassed2() As Boolean
 End Property
 
 
-' Завершает заполнение результата устойчивости перед публикацией.
-' Повторный вызов безопасен; сохраненные числа и meta защищаются от
-' последующих reset/update, без копирования данных и повторного расчета.
+' Завершает заполнение устойчивости и запрещает менять сохранённые числа,
+' статус и пояснение. Данные не копируются и не рассчитываются заново;
+' повторный вызов безопасен.
 Friend Sub Freeze()
     If mFrozen Then Exit Sub
     mFrozen = True

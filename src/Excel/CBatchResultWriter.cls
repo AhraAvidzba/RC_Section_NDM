@@ -29,7 +29,7 @@ Private Const FIRST_DATA_ROW As Long = 13 ' Первая строка сочет
 
 Private Const SUM_COL_ID As Long = 1 ' CombinationID в новой компактной сводке.
 Private Const SUM_COL_COMMENT As Long = 2 ' Пользовательский комментарий LC.
-Private Const SUM_COL_RESULT_COMMENT As Long = 3 ' Пояснение итогового результата LC из result-subtree.
+Private Const SUM_COL_RESULT_COMMENT As Long = 3 ' Готовое пояснение итогового результата сочетания нагрузок.
 Private Const SUM_COL_OVERALL_STATUS As Long = 4 ' Итоговый статус LC по всем включенным проверкам.
 Private Const SUM_COL_STATUS_STRAIN As Long = 6 ' Статус прямого НДС по модели прочности.
 Private Const SUM_COL_STATUS_CAPACITY As Long = 7 ' Статус проверки несущей способности.
@@ -41,7 +41,7 @@ Private Const SUM_COL_STATUS_SP35_P2_ETA As Long = 12 ' СП35, плоскост
 Private Const SUM_COL_STATUS_SP35_P2_TABLE As Long = 13 ' СП35, плоскость 2, ветвь ec <= r.
 Private Const SUM_COL_STATUS_SP63_P1 As Long = 14 ' СП63, плоскость 1.
 Private Const SUM_COL_STATUS_SP63_P2 As Long = 15 ' СП63, плоскость 2.
-Private Const SUM_COL_RESERVE_STRAIN As Long = 17 ' Запас по деформациям strength-модели.
+Private Const SUM_COL_RESERVE_STRAIN As Long = 17 ' Запас по деформациям при проверке прочности.
 Private Const SUM_COL_RESERVE_CAPACITY As Long = 18 ' Запас по предельным усилиям.
 Private Const SUM_COL_RESERVE_CRACK As Long = 19 ' Запас по нормальным трещинам.
 Private Const SUM_COL_RESERVE_LONG_CRACK As Long = 20 ' Запас по продольным трещинам.
@@ -97,7 +97,7 @@ Public Function RequiredSummaryColumns() As Long
     RequiredSummaryColumns = TARGET_COLUMNS
 End Function
 
-' Возвращает полную ширину, которую writer затрагивает на Results.
+' Возвращает число столбцов Results, занимаемых общей сводкой.
 Public Function RequiredSummaryOutputColumns() As Long
     RequiredSummaryOutputColumns = TARGET_COLUMNS + STATUS_LEGEND_GAP_COLUMNS + STATUS_LEGEND_COLUMNS
 End Function
@@ -107,15 +107,15 @@ Public Function RequiredSummaryOutputRows(ByVal combinationCount As Long) As Lon
     RequiredSummaryOutputRows = RequiredSummaryRows(combinationCount)
 End Function
 
-' Возвращает полную высоту summary для проверки раскладки Results в фактической книге.
+' Возвращает число строк сводки для проверки её размещения на листе Results.
 Public Function RequiredSummaryOutputRowsForWorkbook(ByVal workbook As Object, ByVal combinationCount As Long) As Long
     RequiredSummaryOutputRowsForWorkbook = RequiredSummaryRowsForWorkbook(workbook, combinationCount)
 End Function
 
-' Записывает rngBatchSummary одним массивом и оформляет блоки.
-' Подробные разделы передаются их writer-ам. Необязательный section нужен
-' CStrengthSummaryWriter для геометрических величин текущего и предельного
-' НДС; сама сводка не вычисляет геометрию и инженерные результаты.
+' Записывает rngBatchSummary одним массивом и оформляет сводку.
+' Подробные таблицы заполняют отдельные классы. Модель section передаётся
+' таблице прочности для геометрических величин текущего и предельного НДС;
+' сама сводка не выполняет инженерные расчёты.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
     On Error GoTo Failed
@@ -181,9 +181,9 @@ Public Sub ClearSummary(ByVal workbook As Object)
     ClearStabilitySummary workbook
 End Sub
 
-' Обновляет итоговое время уже после завершения записи Results и схемы.
-' Сводка формируется перед детальным Results, потому что Plot.LoadCase = Worst читает из
-' нее определяющее сочетание; поэтому общий elapsed time дозаписывается в конце.
+' После записи Results и построения схемы дописывает полное время запуска.
+' Сама сводка готовится раньше подробных таблиц, поскольку схема
+' Plot.LoadCase = Worst читает из неё определяющее сочетание.
 Public Sub UpdateElapsedSeconds(ByVal workbook As Object, ByVal elapsedSeconds As Double)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3974, "CBatchResultWriter", "Книга Excel не передана."
 
@@ -247,14 +247,14 @@ Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
     target.Resize(UBound(data, 1), TARGET_COLUMNS).Value2 = data
 End Sub
 
-' Обновляет отдельную детальную таблицу устойчивости рядом с расчетным snapshot.
+' Обновляет подробную таблицу устойчивости рядом с сохранёнными расчётными данными.
 Private Sub WriteStabilitySummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CStabilitySummaryWriter
     Set writer = New CStabilitySummaryWriter
     writer.WriteSummary workbook, batch, units
 End Sub
 
-' Обновляет отдельную детальную таблицу НДС и capacity по модели прочности.
+' Обновляет подробную таблицу НДС по прочности и несущей способности.
 Private Sub WriteStrengthSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim writer As CStrengthSummaryWriter
@@ -309,8 +309,8 @@ Private Sub PutMetaRows(ByRef data() As Variant, ByVal batch As CBatchSectionCal
     data(3, 8) = "Количество итераций UltimateStrain"
 End Sub
 
-' Заполняет верхний уровень шапки compact summary: статусы и коэффициенты
-' запаса как два независимых смысловых блока.
+' Заполняет верхнюю шапку компактной сводки: отдельные части для статусов
+' проверок и коэффициентов запаса.
 Private Sub PutGroupHeaders(ByRef data() As Variant)
     data(GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN) = "статус проверки"
     data(GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN) = "минимальные коэффициенты запаса"
@@ -594,13 +594,14 @@ Private Sub PutStatusCell(ByRef data() As Variant, ByVal rowIndex As Long, ByVal
     End If
 End Sub
 
-' Возвращает display только через общую policy. Отсутствие обязательной meta
-' является CalcErr, а не поводом угадывать статус по другому результату.
+' Возвращает обозначение статуса по общим правилам. Если обязательного
+' объекта статуса нет, сообщает CalcErr без догадок по соседним результатам.
 Private Function MetaStatus(ByVal policy As CResultStatusPolicy, ByVal meta As CResultMeta) As String
     MetaStatus = policy.ExternalStatus(meta)
 End Function
 
-' Возвращает пользовательское пояснение из typed-meta без анализа StopReason в writer-е.
+' Возвращает готовое пояснение результата. Причина остановки численного
+' метода при записи на лист повторно не разбирается.
 Private Function MetaComment(ByVal meta As CResultMeta) As String
     If meta Is Nothing Then Exit Function
     MetaComment = meta.ResultComment
@@ -716,9 +717,8 @@ Failed:
     Err.Raise Err.Number, "CBatchResultWriter.FormatSummary", stage & ": " & Err.Description
 End Sub
 
-' Пишет справа от rngBatchSummary небольшой словарь пользовательских статусов.
-' Положение считается от якоря summary, поэтому при переносе rngBatchSummary
-' поясняющий блок переезжает вместе с основной сводкой.
+' Пишет пояснения пользовательских статусов справа от rngBatchSummary.
+' Положение отсчитывается от начала сводки и меняется вместе с её переносом.
 Private Sub WriteStatusLegend(ByVal target As Object)
     Dim legend As Object
     Set legend = target.Offset(GROUP_HEADER_ROW - 1, TARGET_COLUMNS + STATUS_LEGEND_GAP_COLUMNS). _
@@ -832,7 +832,7 @@ Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowNumber As Long, ByV
     ApplyStatusFill cell, CStr(cell.Value2)
 End Sub
 
-' Возвращает общий объект политики статусов для writer-а.
+' Возвращает общие правила вывода статусов для записи результатов.
 Private Function StatusPolicy() As CResultStatusPolicy
     Static policy As CResultStatusPolicy
     If policy Is Nothing Then Set policy = New CResultStatusPolicy
