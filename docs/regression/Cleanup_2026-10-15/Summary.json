@@ -1,0 +1,35 @@
+{
+  "Passed": true,
+  "BeforeBytes": 22033301344.0,
+  "AfterBytes": 6961276079,
+  "FreedBytes": 15072025265.0,
+  "BeforeGiB": 20.52,
+  "AfterGiB": 6.483,
+  "FreedGiB": 14.037,
+  "RemainingFoldersGiB": {
+    ".git": 3.522,
+    "docs": 2.898,
+    "norms": 0.03,
+    "workbook": 0.018,
+    "reference": 0.008,
+    "tests": 0.003,
+    "src": 0.003,
+    "tools": 0.002,
+    "AGENTS.md": 0.0,
+    "README.md": 0.0,
+    ".gitignore": 0.0
+  },
+  "RemainingFiles": 5679,
+  "EmptyFoldersRemoved": 1095,
+  "TemporaryBooksRemoved": 987,
+  "HistoricalBooksRemoved": 225,
+  "SourceBookAllCodeAndForeignReportUnchanged": true,
+  "ProtectedHashes": {
+    "workbook/output/RC_Section_NDM.xlsm": "427ed4735a3c3a5f260fbe28346c10131277ad5f2cddfb2fd1be9a14f78f815f",
+    "workbook/output/VBA_All_Code.txt": "2268a0eec321eaaad6b09cc996a33d6365aa74580a7c292ad3e9b6ae9252767a",
+    "workbook/output/RC_Section_NDM_execution_report.txt": "821a544b460f08657c64701dff744a10141b27fd22e7f32334cb456b8f623d52"
+  },
+  "OnlyExpectedHistoricalBookDeletionsInGit": true,
+  "GitConnectivityCheckPassed": true,
+  "Errors": []
+}

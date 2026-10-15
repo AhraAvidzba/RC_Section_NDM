@@ -1,0 +1,13 @@
+{
+  "Passed": true,
+  "ArchivedFiles": 15268,
+  "UniqueContents": 9646,
+  "StoredPayloads": 7518,
+  "ArchiveBytes": 637196782,
+  "RemovedFiles": 15306,
+  "RemovedBytes": 8116522889,
+  "NetFreedBytes": 7479326107,
+  "SourceCodeBookAllCodeAndGitStatusUnchanged": true,
+  "Skipped": [],
+  "ArchiveSHA256": "998536e8cd42820a6e53a60dc9a490e2056af3d833ff11f9e98d709d12c835f5"
+}

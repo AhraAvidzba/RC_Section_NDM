@@ -1,0 +1,9 @@
+{
+  "Target": "docs/regression/PostAudit03/Axial1000_2026-10-09/ExternalSciPy/vendor",
+  "Files": 3862,
+  "Bytes": 190026564.0,
+  "TrackedFiles": 0,
+  "ReparsePoints": 0,
+  "RestoreFrom": "ExternalSciPy/requirements.txt",
+  "Deleted": true
+}

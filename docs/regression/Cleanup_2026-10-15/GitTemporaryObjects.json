@@ -1,0 +1,72 @@
+{
+  "Files": [
+    {
+      "Path": ".git\\objects\\0a\\tmp_obj_yMTj40",
+      "Bytes": 258048,
+      "Modified": "2026-10-04T17:52:44.9514657+03:00"
+    },
+    {
+      "Path": ".git\\objects\\14\\tmp_obj_4JfsMe",
+      "Bytes": 3112960,
+      "Modified": "2026-10-04T22:05:00.2446366+03:00"
+    },
+    {
+      "Path": ".git\\objects\\14\\tmp_obj_838lGD",
+      "Bytes": 4144047,
+      "Modified": "2026-10-05T08:21:39.2409660+03:00"
+    },
+    {
+      "Path": ".git\\objects\\79\\tmp_obj_40T5Q5",
+      "Bytes": 1249280,
+      "Modified": "2026-10-04T16:38:52.5063991+03:00"
+    },
+    {
+      "Path": ".git\\objects\\7c\\tmp_obj_bMKkjh",
+      "Bytes": 2121728,
+      "Modified": "2026-10-04T20:10:59.7390189+03:00"
+    },
+    {
+      "Path": ".git\\objects\\7c\\tmp_obj_NfexL3",
+      "Bytes": 1495040,
+      "Modified": "2026-10-04T15:41:29.5777513+03:00"
+    },
+    {
+      "Path": ".git\\objects\\84\\tmp_obj_SpIygk",
+      "Bytes": 2170880,
+      "Modified": "2026-10-04T18:09:16.5367116+03:00"
+    },
+    {
+      "Path": ".git\\objects\\a2\\tmp_obj_f7D9Bj",
+      "Bytes": 5198727,
+      "Modified": "2026-10-06T21:16:07.2924914+03:00"
+    },
+    {
+      "Path": ".git\\objects\\b2\\tmp_obj_aKwtSu",
+      "Bytes": 1064960,
+      "Modified": "2026-10-03T22:07:38.1995563+03:00"
+    },
+    {
+      "Path": ".git\\objects\\b3\\tmp_obj_BTkCxO",
+      "Bytes": 3675326,
+      "Modified": "2026-10-04T01:57:07.3632928+03:00"
+    },
+    {
+      "Path": ".git\\objects\\bc\\tmp_obj_tdVGU0",
+      "Bytes": 3858432,
+      "Modified": "2026-10-05T09:50:56.7133448+03:00"
+    },
+    {
+      "Path": ".git\\objects\\ce\\tmp_obj_rJZjN9",
+      "Bytes": 3289088,
+      "Modified": "2026-10-06T20:29:16.7871388+03:00"
+    },
+    {
+      "Path": ".git\\objects\\e3\\tmp_obj_2u8Tvq",
+      "Bytes": 3952640,
+      "Modified": "2026-10-06T19:36:28.7499059+03:00"
+    }
+  ],
+  "RemovedBytes": 35591156.0,
+  "Count": 13,
+  "OnlyStaleTemporaryNames": true
+}

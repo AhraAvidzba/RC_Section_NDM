@@ -1,0 +1,1621 @@
+{
+  "BaselineCommit": "44f3bb25d03ab7fd14a375a623e69160dcaa4a4b",
+  "Kept": [
+    {
+      "Path": "docs/regression/Audit02/RC_Section_NDM_clean_final.xlsm",
+      "Bytes": 3214171,
+      "ModifiedNs": 1790879176422255600,
+      "Tracked": true,
+      "Reasons": [
+        "tools/build_workbook/Test-Audit02FinalSourceContracts.ps1"
+      ]
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_baseline.xlsm",
+      "Bytes": 3216095,
+      "ModifiedNs": 1790885982640496900,
+      "Tracked": true,
+      "Reasons": [
+        "Named reference baseline"
+      ]
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_f06_fixed.xlsm",
+      "Bytes": 3315726,
+      "ModifiedNs": 1790911820889958000,
+      "Tracked": true,
+      "Reasons": [
+        "tools/build_workbook/New-Audit03PreviousSearchFixture.ps1"
+      ]
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_ultimate_negative.xlsm",
+      "Bytes": 3145326,
+      "ModifiedNs": 1790895613789575400,
+      "Tracked": true,
+      "Reasons": [
+        "tools/build_workbook/New-Audit03PreviousSearchFixture.ps1"
+      ]
+    }
+  ],
+  "Deleted": [
+    {
+      "Path": "docs/regression/Audit02/RC_Section_NDM_clean_acceptance.xlsm",
+      "Bytes": 3129027,
+      "ModifiedNs": 1790877861523446900,
+      "Tracked": true,
+      "GitBlob": "0f7d0db955543686d209db35ce916760adbe1905"
+    },
+    {
+      "Path": "docs/regression/Audit02/rebuilt/RC_Section_NDM.xlsm",
+      "Bytes": 3166674,
+      "ModifiedNs": 1790868994872361800,
+      "Tracked": true,
+      "GitBlob": "598c9d485fd78d533b9bb913766fc7c5863de611"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_annotation_bridge_v230.xlsm",
+      "Bytes": 4056304,
+      "ModifiedNs": 1791110709236071600,
+      "Tracked": true,
+      "GitBlob": "a6de261bd046edf40893e3310579c53059a60e56"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_autocad_final_v278.xlsm",
+      "Bytes": 4276720,
+      "ModifiedNs": 1791143081766373800,
+      "Tracked": true,
+      "GitBlob": "4ed91deb7f14d926ab70f642819ccba9c8ed2e73"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_autocad_help_v272.xlsm",
+      "Bytes": 4261858,
+      "ModifiedNs": 1791138582395705900,
+      "Tracked": true,
+      "GitBlob": "03458d879c398abd93ad8be00e06945a5ec4420f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_autocad_inertia_frozen_v275.xlsm",
+      "Bytes": 4273812,
+      "ModifiedNs": 1791142568082569600,
+      "Tracked": true,
+      "GitBlob": "cee7b9b9ea3bc03768c7a137af975c69b785c640"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_autocad_shapes_final_v284.xlsm",
+      "Bytes": 4305718,
+      "ModifiedNs": 1791145477814493000,
+      "Tracked": true,
+      "GitBlob": "ce845fcaad820c63b22d57b1e0e3c9fbc2df09f6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_autocad_shapes_frozen_v282.xlsm",
+      "Bytes": 4306232,
+      "ModifiedNs": 1791144950414396600,
+      "Tracked": true,
+      "GitBlob": "1d49bcbe26a12a3125c866159e0df4a54f46f8a8"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_auto_plot_negative_v217.xlsm",
+      "Bytes": 4021977,
+      "ModifiedNs": 1791104275592199900,
+      "Tracked": true,
+      "GitBlob": "3fa38832b3e776addf97a5983342b5ad30da8f4f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_auto_plot_negative_v217b.xlsm",
+      "Bytes": 4021864,
+      "ModifiedNs": 1791104469754128500,
+      "Tracked": true,
+      "GitBlob": "dd62393d04eafed1551389421c9722ce13b58bbc"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_auto_plot_negative_v217c.xlsm",
+      "Bytes": 4022253,
+      "ModifiedNs": 1791104631370566800,
+      "Tracked": true,
+      "GitBlob": "923a1c78fdf1f3aaea58fd2fd0c0c408594b8b64"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_auto_plot_negative_v217d.xlsm",
+      "Bytes": 4021837,
+      "ModifiedNs": 1791104707172444200,
+      "Tracked": true,
+      "GitBlob": "9025cbfb0b5ff93d280164237d7f3885d2851df4"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_auto_plot_positive_v218.xlsm",
+      "Bytes": 4021567,
+      "ModifiedNs": 1791104847079906500,
+      "Tracked": true,
+      "GitBlob": "4062a64690c5fa7634fa945ff24f431d83f185de"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_auto_plot_positive_v219.xlsm",
+      "Bytes": 4021490,
+      "ModifiedNs": 1791105087869951000,
+      "Tracked": true,
+      "GitBlob": "b7f61e3e245ccb7072a1c0bccf243e003febf361"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_capacity_numeric_final_v251.xlsm",
+      "Bytes": 4110125,
+      "ModifiedNs": 1791120151199988200,
+      "Tracked": true,
+      "GitBlob": "77bf59f9e422e56b647785357873ab571d21409c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_capacity_numeric_negative_v249.xlsm",
+      "Bytes": 4103957,
+      "ModifiedNs": 1791118969968445300,
+      "Tracked": true,
+      "GitBlob": "a3d7607482ccc2499b521011307ee2cd82265243"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_capacity_numeric_positive_v250.xlsm",
+      "Bytes": 4108303,
+      "ModifiedNs": 1791119356472220300,
+      "Tracked": true,
+      "GitBlob": "a5c704f437ba584fc6a64944dfbea524904eb83d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_capacity_numeric_v248.xlsm",
+      "Bytes": 4101411,
+      "ModifiedNs": 1791118627356296800,
+      "Tracked": true,
+      "GitBlob": "444a3cfbedb5dde85e319207e1da5f0c1c2fbf41"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_circle_rebar_negative_v188.xlsm",
+      "Bytes": 3889118,
+      "ModifiedNs": 1791069844120564300,
+      "Tracked": true,
+      "GitBlob": "6a87bc6ae7b97fd4884e2601871448d077fac763"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_circle_translation_v285.xlsm",
+      "Bytes": 4319161,
+      "ModifiedNs": 1791146080515286500,
+      "Tracked": true,
+      "GitBlob": "3445ef33077263cd0b2e74862b7604150d523ac7"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_circle_translation_v286.xlsm",
+      "Bytes": 4319988,
+      "ModifiedNs": 1791146491216636300,
+      "Tracked": true,
+      "GitBlob": "80a1a4469233d578ff6481193a625b1ce2f8fd11"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_clean_controls_v300.xlsm",
+      "Bytes": 4417029,
+      "ModifiedNs": 1791155679150842500,
+      "Tracked": true,
+      "GitBlob": "f1062ab74ea2fcad2258394c325a404ef29b6623"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_clean_not_cracked_input_v139.xlsm",
+      "Bytes": 3836686,
+      "ModifiedNs": 1791018497995702700,
+      "Tracked": true,
+      "GitBlob": "2a4c96627c5b5e15fbbf68f5e9771f10f48db75c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_clean_spacing_warning_v140.xlsm",
+      "Bytes": 3843813,
+      "ModifiedNs": 1791021163641471200,
+      "Tracked": true,
+      "GitBlob": "1dcbf89e403b45c245b60c6979501792570bdde7"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_clean_v42.xlsm",
+      "Bytes": 3393908,
+      "ModifiedNs": 1790912134815641700,
+      "Tracked": true,
+      "GitBlob": "1adf5f4b9075d648c6d5ef65acaf338393db3a65"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_clean_v45.xlsm",
+      "Bytes": 3316288,
+      "ModifiedNs": 1790914794918026900,
+      "Tracked": true,
+      "GitBlob": "f3ba61658b2b72ebb7d30d0244d23878f0cac6dc"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_clean_v73.xlsm",
+      "Bytes": 3583983,
+      "ModifiedNs": 1790946527028602600,
+      "Tracked": true,
+      "GitBlob": "1db835b640e1ac72093ece05625265153f5e9f53"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_contour_arc_negative_v220.xlsm",
+      "Bytes": 4027389,
+      "ModifiedNs": 1791106530589904700,
+      "Tracked": true,
+      "GitBlob": "bd78970590e01c2b1a0b8a20a0f0bc4685e21aab"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_contour_arc_positive_v221.xlsm",
+      "Bytes": 4030364,
+      "ModifiedNs": 1791106834075205900,
+      "Tracked": true,
+      "GitBlob": "9cc60e4ddf6710c9fba09fafb137363c9c7c4119"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_contour_arc_positive_v222.xlsm",
+      "Bytes": 4030802,
+      "ModifiedNs": 1791107125008659400,
+      "Tracked": true,
+      "GitBlob": "7628e963a1b7a72357b3021bd615de39657d1050"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_contour_arc_positive_v223.xlsm",
+      "Bytes": 4030672,
+      "ModifiedNs": 1791107309574728100,
+      "Tracked": true,
+      "GitBlob": "671cf59d344609b82ff6332d5f407ae210587a5a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_crack_config_negative_v84.xlsm",
+      "Bytes": 3565650,
+      "ModifiedNs": 1790958227717065700,
+      "Tracked": true,
+      "GitBlob": "54aacda363a30d36a9c0f3bfe70c1dfe6dfa38a8"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_crack_config_negative_v84b.xlsm",
+      "Bytes": 3565907,
+      "ModifiedNs": 1790958357940409800,
+      "Tracked": true,
+      "GitBlob": "03dc019307cb699b13a5047cfda2e84995084295"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_crack_config_v85.xlsm",
+      "Bytes": 3567181,
+      "ModifiedNs": 1790958709661643300,
+      "Tracked": true,
+      "GitBlob": "3075dbd3f916456937f12e238317205d2101b5cf"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_crack_config_v86.xlsm",
+      "Bytes": 3568079,
+      "ModifiedNs": 1790959150608163600,
+      "Tracked": true,
+      "GitBlob": "d68371b6dede9a9035fe3ad676ab46891aa398fc"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_crack_config_v87.xlsm",
+      "Bytes": 3569807,
+      "ModifiedNs": 1790960996652897500,
+      "Tracked": true,
+      "GitBlob": "c234684a6fa513c8e593130309831f4d1e38d1a0"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_curvature_binding_v78.xlsm",
+      "Bytes": 3523256,
+      "ModifiedNs": 1790951929181539300,
+      "Tracked": true,
+      "GitBlob": "a96620e5a74edfc6fe061f62d8e2140d5bd58832"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_duration_clean_v179.xlsm",
+      "Bytes": 3978529,
+      "ModifiedNs": 1791061183058571200,
+      "Tracked": true,
+      "GitBlob": "3e781b60486b7fe4d3b6b2ebf7f3b23c8a877036"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_duration_negative_v177b.xlsm",
+      "Bytes": 3837028,
+      "ModifiedNs": 1791055234754055500,
+      "Tracked": true,
+      "GitBlob": "807fa7d16c5acd20b2a8849c3a7acf8306291a8b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_duration_v178.xlsm",
+      "Bytes": 3896182,
+      "ModifiedNs": 1791055828476350400,
+      "Tracked": true,
+      "GitBlob": "422b1492a8eb90d7312725c740370301d7d8492f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_duration_v179.xlsm",
+      "Bytes": 3895792,
+      "ModifiedNs": 1791057136636123300,
+      "Tracked": true,
+      "GitBlob": "9bd32d502634a918aeaab5b41c47e47043130b6d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_excel_guard_negative_v224.xlsm",
+      "Bytes": 4039235,
+      "ModifiedNs": 1791108023283222600,
+      "Tracked": true,
+      "GitBlob": "3b2ef98b884491de25788592aa57996adf92b125"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_excel_guard_positive_v225.xlsm",
+      "Bytes": 4037022,
+      "ModifiedNs": 1791108336431340100,
+      "Tracked": true,
+      "GitBlob": "d076aeec3b0db7a47c83f30e3dca26aede479067"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_f01_f05_fixed.xlsm",
+      "Bytes": 3150019,
+      "ModifiedNs": 1790887844662186800,
+      "Tracked": true,
+      "GitBlob": "c25ee7dc79cfb7a72136b56c21c448d86cf5b602"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_f06_repro.xlsm",
+      "Bytes": 3139752,
+      "ModifiedNs": 1790888298364080700,
+      "Tracked": true,
+      "GitBlob": "a30703c81877255537023765d27b3bb200481c4d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_extreme_negative_v309.xlsm",
+      "Bytes": 4325573,
+      "ModifiedNs": 1791167287610455600,
+      "Tracked": true,
+      "GitBlob": "ae29f29641754732d6cb14f382ff5980ee8ca836"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_extreme_v308.xlsm",
+      "Bytes": 4459022,
+      "ModifiedNs": 1791167096956331400,
+      "Tracked": true,
+      "GitBlob": "3199c8dc4e4071926602e6d7ee895041e9386c7c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_extreme_v310.xlsm",
+      "Bytes": 4461931,
+      "ModifiedNs": 1791167440365515600,
+      "Tracked": true,
+      "GitBlob": "55795057da7c139cec87637f0217f5f3261008c2"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_guard_v312.xlsm",
+      "Bytes": 4464023,
+      "ModifiedNs": 1791167928781149900,
+      "Tracked": true,
+      "GitBlob": "467e3fb6d3c0bdbb0d0acb96994cb219fe916ec2"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_guard_v313.xlsm",
+      "Bytes": 4464261,
+      "ModifiedNs": 1791168136736890100,
+      "Tracked": true,
+      "GitBlob": "da84386fcd6ea3652c45b04b938519a90b0fd183"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_point_negative.xlsm",
+      "Bytes": 3235368,
+      "ModifiedNs": 1790908556112645700,
+      "Tracked": true,
+      "GitBlob": "ce4462573faf1d51804798af3f33566fff4bfc99"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_formation_residual_negative_v182.xlsm",
+      "Bytes": 3857976,
+      "ModifiedNs": 1791062641824591900,
+      "Tracked": true,
+      "GitBlob": "e556766dcce7a6769e989fd8deca6332d998524d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_f_repro.xlsm",
+      "Bytes": 3140111,
+      "ModifiedNs": 1790886686932926800,
+      "Tracked": true,
+      "GitBlob": "672a6d680a82487ea2bdb3492769131cd89495dd"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_geometry_final_v263.xlsm",
+      "Bytes": 4167175,
+      "ModifiedNs": 1791128499189281300,
+      "Tracked": true,
+      "GitBlob": "932f3e1a0abdd05b5a5c41ea8aa6226ec4fd2efb"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_geometry_final_v264.xlsm",
+      "Bytes": 4209843,
+      "ModifiedNs": 1791133295682667400,
+      "Tracked": true,
+      "GitBlob": "bf80e24db0218bb8980bbd3f773a939a58b06ff5"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_geometry_frozen_v262.xlsm",
+      "Bytes": 4167814,
+      "ModifiedNs": 1791128356425897200,
+      "Tracked": true,
+      "GitBlob": "cd06af2c80cebb623b99eb8d95b752707192d522"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_named_v234.xlsm",
+      "Bytes": 4073444,
+      "ModifiedNs": 1791113634464098200,
+      "Tracked": true,
+      "GitBlob": "52fb34a092c87ce054d66b26b260010242eff055"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_named_v235.xlsm",
+      "Bytes": 4073232,
+      "ModifiedNs": 1791113799477769000,
+      "Tracked": true,
+      "GitBlob": "5c368b3efc2cbeedf17c9fe19d8a71542e700803"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_negative_v207.xlsm",
+      "Bytes": 3981479,
+      "ModifiedNs": 1791099683543527200,
+      "Tracked": true,
+      "GitBlob": "e5230e2ce9b679df94cab0b2df226b1fb92d738e"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_negative_v207b.xlsm",
+      "Bytes": 3981332,
+      "ModifiedNs": 1791099795395548700,
+      "Tracked": true,
+      "GitBlob": "9c7decc215c5a0fab436904a7f926938f907a8cd"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_negative_v207c.xlsm",
+      "Bytes": 3980171,
+      "ModifiedNs": 1791100022595203600,
+      "Tracked": true,
+      "GitBlob": "aa327fd1ae7eb28432c214748ebb3a19a71996df"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_negative_v209.xlsm",
+      "Bytes": 3990041,
+      "ModifiedNs": 1791100457485146700,
+      "Tracked": true,
+      "GitBlob": "fff77c15c7d6e8cde47889c9805b0f6869236579"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_negative_v209b.xlsm",
+      "Bytes": 3989952,
+      "ModifiedNs": 1791100578081535200,
+      "Tracked": true,
+      "GitBlob": "820274219d2c690cf77ca6bae7769329d63e954d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_positive_v208.xlsm",
+      "Bytes": 3981344,
+      "ModifiedNs": 1791100238837289200,
+      "Tracked": true,
+      "GitBlob": "532993aa18392d3292ae10571981241b1cde78ff"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_positive_v210.xlsm",
+      "Bytes": 3991348,
+      "ModifiedNs": 1791100984222001600,
+      "Tracked": true,
+      "GitBlob": "eaef9518cc6f50d71a0ef665b7271564d470814c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_plot_positive_v211.xlsm",
+      "Bytes": 4000449,
+      "ModifiedNs": 1791101341933302300,
+      "Tracked": true,
+      "GitBlob": "623950233d2802d728ef20ce38c314344d57f30b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_run_negative_v236.xlsm",
+      "Bytes": 4081187,
+      "ModifiedNs": 1791114518438972500,
+      "Tracked": true,
+      "GitBlob": "5f6743e3db2155eb9dd3efdaf4d3318869a5e381"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_run_negative_v237.xlsm",
+      "Bytes": 4081062,
+      "ModifiedNs": 1791114583384997900,
+      "Tracked": true,
+      "GitBlob": "3f9e0a4a2749694001a918ff7938e21d8e09134c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_general_run_positive_v238.xlsm",
+      "Bytes": 4081047,
+      "ModifiedNs": 1791114883338405100,
+      "Tracked": true,
+      "GitBlob": "cb1f245be7dbf5f10aa2632149c267c0f83ffe32"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_config_v133.xlsm",
+      "Bytes": 3695982,
+      "ModifiedNs": 1791003018188993800,
+      "Tracked": true,
+      "GitBlob": "ed452d569d8311cd457c9094749f2d477ad2c6e1"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_snapshot_all_v204.xlsm",
+      "Bytes": 3946448,
+      "ModifiedNs": 1791087458366710000,
+      "Tracked": true,
+      "GitBlob": "393ef410da9451da079674f5dc7e92e038495e1a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_snapshot_negative_v200.xlsm",
+      "Bytes": 3944841,
+      "ModifiedNs": 1791086244385986200,
+      "Tracked": true,
+      "GitBlob": "58ad220d295d10456821af35c8eb168baa045350"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_snapshot_negative_v200b.xlsm",
+      "Bytes": 3944851,
+      "ModifiedNs": 1791086317674153100,
+      "Tracked": true,
+      "GitBlob": "0189bd1e2bd883ad34dd7c79af94b1e9cf931bc6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_snapshot_negative_v202.xlsm",
+      "Bytes": 3941871,
+      "ModifiedNs": 1791086814870362900,
+      "Tracked": true,
+      "GitBlob": "4dfe6a0b2b1792659b8244633667083d3c155461"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_snapshot_v201.xlsm",
+      "Bytes": 3979973,
+      "ModifiedNs": 1791086610627434000,
+      "Tracked": true,
+      "GitBlob": "0cac041f75c8264a3a740dd65def29759ecdb6d7"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_geometry_snapshot_v203.xlsm",
+      "Bytes": 3984872,
+      "ModifiedNs": 1791087052883516700,
+      "Tracked": true,
+      "GitBlob": "8a9bcff6eca081af00c15b032319a6c617d85959"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_help_updated_v41.xlsm",
+      "Bytes": 3312766,
+      "ModifiedNs": 1790911656691951400,
+      "Tracked": true,
+      "GitBlob": "9ffda0375cfacda188104654ad321d601a1aaaad"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_help_updated_v45.xlsm",
+      "Bytes": 3313154,
+      "ModifiedNs": 1790914750226673600,
+      "Tracked": true,
+      "GitBlob": "c218588583a2de8abc3fe3e4918e608d33da90ff"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_import_unit_workflow_v79.xlsm",
+      "Bytes": 3545485,
+      "ModifiedNs": 1790954129950178300,
+      "Tracked": true,
+      "GitBlob": "e5334ae1a62e004177023d516e35ad9808a379e6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_import_unit_workflow_v80.xlsm",
+      "Bytes": 3550034,
+      "ModifiedNs": 1790954277753824900,
+      "Tracked": true,
+      "GitBlob": "2d6a844132f136905ae05c72ba577b2bc74c1e0d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_import_unit_workflow_v81.xlsm",
+      "Bytes": 3551872,
+      "ModifiedNs": 1790954572780167600,
+      "Tracked": true,
+      "GitBlob": "436e3d5b353b0437e35a80ed30580e2127646fdc"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_import_unit_workflow_v83.xlsm",
+      "Bytes": 3554430,
+      "ModifiedNs": 1790955932744946600,
+      "Tracked": true,
+      "GitBlob": "874c1418a353a3e01f75a7ea2b961185d8993091"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_inactive_offsets_negative_v190.xlsm",
+      "Bytes": 3900780,
+      "ModifiedNs": 1791070159214037400,
+      "Tracked": true,
+      "GitBlob": "6d3a1cd50460748423702f112e860f18fcc47b90"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_negative_v94.xlsm",
+      "Bytes": 3609197,
+      "ModifiedNs": 1790965323434929800,
+      "Tracked": true,
+      "GitBlob": "2acb94e2078c57da90f90686f0e4bb7e3d2abb4f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v88.xlsm",
+      "Bytes": 3591045,
+      "ModifiedNs": 1790962686407472200,
+      "Tracked": true,
+      "GitBlob": "1703ca8d2f64af6708f6b068038c7f30ab6cf296"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v89.xlsm",
+      "Bytes": 3591061,
+      "ModifiedNs": 1790963133965233200,
+      "Tracked": true,
+      "GitBlob": "c3dbd20bb82509fa224cd684e27e54fc863880c2"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v90.xlsm",
+      "Bytes": 3592725,
+      "ModifiedNs": 1790963532824327800,
+      "Tracked": true,
+      "GitBlob": "9ce1e77513b46bf661a1bc62750e0bebe4783863"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v91.xlsm",
+      "Bytes": 3599263,
+      "ModifiedNs": 1790963952489162600,
+      "Tracked": true,
+      "GitBlob": "29edf37026e1e287652bd29e4a0e812a38c259de"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v92.xlsm",
+      "Bytes": 3597014,
+      "ModifiedNs": 1790964582372593800,
+      "Tracked": true,
+      "GitBlob": "20056cb23ee57bc8e9bffe01ef3f009be98de921"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v93.xlsm",
+      "Bytes": 3600496,
+      "ModifiedNs": 1790964889115867200,
+      "Tracked": true,
+      "GitBlob": "fad97c2f0a2b8d9b84486782ac88bf8f3deb9cc9"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_messages_v95.xlsm",
+      "Bytes": 3608289,
+      "ModifiedNs": 1790966688093485800,
+      "Tracked": true,
+      "GitBlob": "4766e569147585234fa0b90551f3c2527b6da569"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_message_v131.xlsm",
+      "Bytes": 3675231,
+      "ModifiedNs": 1791000391803531800,
+      "Tracked": true,
+      "GitBlob": "1fbf5d5bc4338805e0ec00f421e10a630ec507db"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_negative.xlsm",
+      "Bytes": 3198558,
+      "ModifiedNs": 1790904444560902500,
+      "Tracked": true,
+      "GitBlob": "9f8bab362b2de063608e26112d2631541bdff368"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_prefix_saved_v165.xlsm",
+      "Bytes": 4460139,
+      "ModifiedNs": 1791039238634649300,
+      "Tracked": true,
+      "GitBlob": "9672fdf3ed019ed9b765e5e272b67b3d7406a0a3"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_units_v74.xlsm",
+      "Bytes": 3467885,
+      "ModifiedNs": 1790947973696145400,
+      "Tracked": true,
+      "GitBlob": "2ce9ceaa14e4173efd9300d96aa89fcaead9de37"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_input_units_v75.xlsm",
+      "Bytes": 3470838,
+      "ModifiedNs": 1790948415470102800,
+      "Tracked": true,
+      "GitBlob": "a1b70c04e7b0395431cfc31700d9657c1e8a5ecd"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_linear_negative_v226.xlsm",
+      "Bytes": 4039739,
+      "ModifiedNs": 1791108928405761400,
+      "Tracked": true,
+      "GitBlob": "55379f6227f42ebef00f5b7d840f33c1741ec62b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_linear_negative_v227.xlsm",
+      "Bytes": 4040927,
+      "ModifiedNs": 1791109272251258100,
+      "Tracked": true,
+      "GitBlob": "18fe7b95cedc4b0522c9315a5578df9a029dafa4"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_linear_positive_v228.xlsm",
+      "Bytes": 4047224,
+      "ModifiedNs": 1791109572535294000,
+      "Tracked": true,
+      "GitBlob": "fc32cf70af014fb6cdedf5b95e97329eb87127c3"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_linear_positive_v229.xlsm",
+      "Bytes": 4046261,
+      "ModifiedNs": 1791109699661424000,
+      "Tracked": true,
+      "GitBlob": "63e264e9af8945e2b63ccee31a4e83932a4ffe63"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_result_negative_v184.xlsm",
+      "Bytes": 3860700,
+      "ModifiedNs": 1791063120824578800,
+      "Tracked": true,
+      "GitBlob": "c94ddd8508fefc952e7c4bfb2ba992622fa8ed81"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_result_negative_v184b.xlsm",
+      "Bytes": 3863956,
+      "ModifiedNs": 1791063258688499300,
+      "Tracked": true,
+      "GitBlob": "44b9ca30af9279f1194ddcbd1cff64a04011d328"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_result_v185.xlsm",
+      "Bytes": 3861664,
+      "ModifiedNs": 1791063657867522500,
+      "Tracked": true,
+      "GitBlob": "6a68cf3fa021d9fb9822419057a4490a7a1c336a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_solver_negative_v184.xlsm",
+      "Bytes": 3860576,
+      "ModifiedNs": 1791063085542861300,
+      "Tracked": true,
+      "GitBlob": "aeec1c77c19d248ca6716c690a0e190b355d655c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_solver_negative_v184b.xlsm",
+      "Bytes": 3863734,
+      "ModifiedNs": 1791063216314979600,
+      "Tracked": true,
+      "GitBlob": "c442c4eabf700f96fa2e9694cc7fee58c2926404"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_solver_v185.xlsm",
+      "Bytes": 3861352,
+      "ModifiedNs": 1791063606487020600,
+      "Tracked": true,
+      "GitBlob": "c818fb27160011c9eaae2bef3980f032b6a511ee"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_missing_state_testbase_v184.xlsm",
+      "Bytes": 3863920,
+      "ModifiedNs": 1791063060479977300,
+      "Tracked": true,
+      "GitBlob": "c0d27c26ed81a0cf075ffa3473a1d5f4f6dc7875"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_multiplier_typed_negative_v180.xlsm",
+      "Bytes": 3986294,
+      "ModifiedNs": 1791062065233622300,
+      "Tracked": true,
+      "GitBlob": "cd1adf8acc37180cfe67d5a39bb6bc313ddd176c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_multiplier_typed_negative_v180b.xlsm",
+      "Bytes": 3853829,
+      "ModifiedNs": 1791062181265039500,
+      "Tracked": true,
+      "GitBlob": "d247b2a441fe956e88c9c3168ecbcd0c060035c5"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_multiplier_typed_v181.xlsm",
+      "Bytes": 3987305,
+      "ModifiedNs": 1791062330835208800,
+      "Tracked": true,
+      "GitBlob": "87f1ab79d5a0dffbcfac0bb0041cfcd51fd82e14"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_multi_area_negative_v246.xlsm",
+      "Bytes": 4086478,
+      "ModifiedNs": 1791116690406182400,
+      "Tracked": true,
+      "GitBlob": "3372ee7a2b32646c155cc4076ef50f6d06079c57"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_multi_area_positive_v247.xlsm",
+      "Bytes": 4088465,
+      "ModifiedNs": 1791117000236266000,
+      "Tracked": true,
+      "GitBlob": "8e02f918f12db3c42a5b3c13bc86f0ba2a2819db"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_negative_v46.xlsm",
+      "Bytes": 3301635,
+      "ModifiedNs": 1790919978179312900,
+      "Tracked": true,
+      "GitBlob": "7fc98d81220ec489e7daf22f920f723b662c0f60"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_clean_v136.xlsm",
+      "Bytes": 3813889,
+      "ModifiedNs": 1791010636513680900,
+      "Tracked": true,
+      "GitBlob": "afbe4a439a0262544c1678d9658435e95f3c55c2"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_input_negative_v139.xlsm",
+      "Bytes": 3710578,
+      "ModifiedNs": 1791016206105009500,
+      "Tracked": true,
+      "GitBlob": "1669e524b5131cbd6985bfb83bc9685fad2a3415"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_input_negative_v139b.xlsm",
+      "Bytes": 3710734,
+      "ModifiedNs": 1791016561925502200,
+      "Tracked": true,
+      "GitBlob": "b917d3aadf81a09b9f7a3fd0fe7e238e993c6201"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_input_v139.xlsm",
+      "Bytes": 3746327,
+      "ModifiedNs": 1791017071050905400,
+      "Tracked": true,
+      "GitBlob": "c4ee54d630bdab0edcec843fc48642c1ee1d01f6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_negative_v136.xlsm",
+      "Bytes": 3677343,
+      "ModifiedNs": 1791008378251244800,
+      "Tracked": true,
+      "GitBlob": "b8aab88f1080ce91ee74e7ea61a2182ed5da13f9"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_psi_v138.xlsm",
+      "Bytes": 3758668,
+      "ModifiedNs": 1791011347462138100,
+      "Tracked": true,
+      "GitBlob": "e41e5671c1e3fdec801d2f5197fe96bd581d7630"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_not_cracked_v136.xlsm",
+      "Bytes": 3741610,
+      "ModifiedNs": 1791010620393093200,
+      "Tracked": true,
+      "GitBlob": "7c5c91214746ff723d9231f6b992e118f67c1fb0"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_numeric_input_fixed_v44.xlsm",
+      "Bytes": 3314924,
+      "ModifiedNs": 1790913860549414000,
+      "Tracked": true,
+      "GitBlob": "6cea9856186b3f055d9c895bb1983a47a94bec0f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_numeric_input_negative_v43.xlsm",
+      "Bytes": 3273623,
+      "ModifiedNs": 1790913970684367800,
+      "Tracked": true,
+      "GitBlob": "957ec85b0413a7d4ddc2068b003411fb4fe7baa2"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_all_v199.xlsm",
+      "Bytes": 3933553,
+      "ModifiedNs": 1791080564180998700,
+      "Tracked": true,
+      "GitBlob": "98578d2b931e032f65b6f3a18e40730f9a81cb0f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_negative_v193.xlsm",
+      "Bytes": 3914818,
+      "ModifiedNs": 1791077899866875000,
+      "Tracked": true,
+      "GitBlob": "df61de5de9a686c5aec648460537f3555bdd5a8e"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_profiles_v198.xlsm",
+      "Bytes": 3929003,
+      "ModifiedNs": 1791079984256704500,
+      "Tracked": true,
+      "GitBlob": "8513bcea91cb57b86faaaa33502962b54b292ab1"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_snapshot_negative_v195.xlsm",
+      "Bytes": 3919930,
+      "ModifiedNs": 1791078857841602100,
+      "Tracked": true,
+      "GitBlob": "05cad170764674df1f78b285b36cb1b1db98c658"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_snapshot_negative_v195b.xlsm",
+      "Bytes": 3920839,
+      "ModifiedNs": 1791079005705296500,
+      "Tracked": true,
+      "GitBlob": "079d0baec1983baaf2ba81237eb5e99367c0c090"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_v194.xlsm",
+      "Bytes": 3914064,
+      "ModifiedNs": 1791078590263133100,
+      "Tracked": true,
+      "GitBlob": "5e81bb70726fc7b2f8c778c3a2c6b440da74dbb1"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_v196.xlsm",
+      "Bytes": 3923502,
+      "ModifiedNs": 1791079262266054700,
+      "Tracked": true,
+      "GitBlob": "c02192d479f8c9f9188df715c0c765a04b05e421"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_presentation_v197.xlsm",
+      "Bytes": 3924310,
+      "ModifiedNs": 1791079705348923500,
+      "Tracked": true,
+      "GitBlob": "d3926a9950386c9831393c2cad8ddc5ea6e40080"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_pre_p02.xlsm",
+      "Bytes": 3180205,
+      "ModifiedNs": 1790901714919205000,
+      "Tracked": true,
+      "GitBlob": "1e456b5281301172903b807b3f68c6732dc89354"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_config_clean_v176.xlsm",
+      "Bytes": 3948152,
+      "ModifiedNs": 1791054222018909400,
+      "Tracked": true,
+      "GitBlob": "45e57a8951056c406c7b5012ec807280c7c2d8f6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_config_negative_v174.xlsm",
+      "Bytes": 3800968,
+      "ModifiedNs": 1791049969549831700,
+      "Tracked": true,
+      "GitBlob": "ae5220e85f850d5522e04d3255687fcfdc0dc6df"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_config_negative_v174b.xlsm",
+      "Bytes": 3801141,
+      "ModifiedNs": 1791050205331703000,
+      "Tracked": true,
+      "GitBlob": "8bed88c013c0bd069d92127d6f228542f183f515"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_config_v175.xlsm",
+      "Bytes": 3853506,
+      "ModifiedNs": 1791051702940865400,
+      "Tracked": true,
+      "GitBlob": "b5f91edf7c62010ad77e7c8085c3b643d8ec2a05"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_config_v176.xlsm",
+      "Bytes": 3862682,
+      "ModifiedNs": 1791051971538757200,
+      "Tracked": true,
+      "GitBlob": "a00419e6d464dafedce4a616341c76d2ec7bf2a3"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_input_negative.xlsm",
+      "Bytes": 3264102,
+      "ModifiedNs": 1790910193248813800,
+      "Tracked": true,
+      "GitBlob": "969f4ce5a5bbb8c13731f62abda8118a82a92f86"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_scope_diagnostic_v170.xlsm",
+      "Bytes": 3772879,
+      "ModifiedNs": 1791044225647916900,
+      "Tracked": true,
+      "GitBlob": "29fa68af2ff99f0bf23029839eb0011251bb660e"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_scope_final_v173.xlsm",
+      "Bytes": 3816329,
+      "ModifiedNs": 1791046633501174900,
+      "Tracked": true,
+      "GitBlob": "3a4a9fee40fdcae76325b129916e3ab4aac219a1"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_scope_negative_v166.xlsm",
+      "Bytes": 3760996,
+      "ModifiedNs": 1791041400452038100,
+      "Tracked": true,
+      "GitBlob": "d0d1cac3f5842a6d50e0151d8dd640737f82cd69"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_profile_scope_v167.xlsm",
+      "Bytes": 3815838,
+      "ModifiedNs": 1791042419863172300,
+      "Tracked": true,
+      "GitBlob": "0307a026ac1e3870170f9bdec96c6044884a97e1"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_publication_positive_v322.xlsm",
+      "Bytes": 4469450,
+      "ModifiedNs": 1791181985466809100,
+      "Tracked": true,
+      "GitBlob": "7de13bddab3a52f34849c9626560cffd9ffe0153"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_reader_fixed.xlsm",
+      "Bytes": 3142160,
+      "ModifiedNs": 1790887292775414800,
+      "Tracked": true,
+      "GitBlob": "6e7ccd9070690516471c2f7f9865c1ec791cf340"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_read_lifecycle_negative_v205.xlsm",
+      "Bytes": 3959386,
+      "ModifiedNs": 1791093374850259800,
+      "Tracked": true,
+      "GitBlob": "f9bf6d26a849fd3d02d7cd820ee31b6bdd4b3186"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_read_lifecycle_negative_v205b.xlsm",
+      "Bytes": 3956972,
+      "ModifiedNs": 1791093452386005400,
+      "Tracked": true,
+      "GitBlob": "cac3852f3df3e0132b6d5dd6f63c874070b60d01"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_read_lifecycle_negative_v205c.xlsm",
+      "Bytes": 3958114,
+      "ModifiedNs": 1791093674182325600,
+      "Tracked": true,
+      "GitBlob": "5da3c4b5b034b707871faef5ef2be3bdc48ce0f3"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_read_lifecycle_positive_v206.xlsm",
+      "Bytes": 3957807,
+      "ModifiedNs": 1791093816276486600,
+      "Tracked": true,
+      "GitBlob": "469fafe37415ffd63c47fc47c81a72abf61efbbf"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_all_clean_v192.xlsm",
+      "Bytes": 3902552,
+      "ModifiedNs": 1791071517321334800,
+      "Tracked": true,
+      "GitBlob": "9252f6ee30a3c2ea1e6424726e99017889b4b11b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_all_fields_v189.xlsm",
+      "Bytes": 3900076,
+      "ModifiedNs": 1791070067900509700,
+      "Tracked": true,
+      "GitBlob": "e1ede1df65c94ec83080c1acc570101326b74833"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_all_updated_v191.xlsm",
+      "Bytes": 3903402,
+      "ModifiedNs": 1791071491432557400,
+      "Tracked": true,
+      "GitBlob": "e6550ef5b3f36d583aca38aba44ebc08d3dd85a4"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_counter_negative_v135.xlsm",
+      "Bytes": 3668531,
+      "ModifiedNs": 1791006360186744800,
+      "Tracked": true,
+      "GitBlob": "044224e33d32d91beec6f67e4a8431b8f83940cf"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_counter_v135.xlsm",
+      "Bytes": 3728985,
+      "ModifiedNs": 1791008062498896900,
+      "Tracked": true,
+      "GitBlob": "75ce8b8a871960a9c95e8e575d03d235c28b7685"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_fields_negative_v186.xlsm",
+      "Bytes": 3881411,
+      "ModifiedNs": 1791068327006452600,
+      "Tracked": true,
+      "GitBlob": "835b8a2a33bbecfb5fa69bd5126314dfd4d1208a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_rebar_fields_v187.xlsm",
+      "Bytes": 3890645,
+      "ModifiedNs": 1791069110313605100,
+      "Tracked": true,
+      "GitBlob": "f6b59fd12f4c402898e3f7676866127b1f5768a6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_relocated_input_negative_v174c.xlsm",
+      "Bytes": 3809061,
+      "ModifiedNs": 1791050923764885400,
+      "Tracked": true,
+      "GitBlob": "e58e29f29ba5bfba3668381236a04231c2f0e2b9"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_relocated_shared_negative_v175b.xlsm",
+      "Bytes": 3816079,
+      "ModifiedNs": 1791051908776912200,
+      "Tracked": true,
+      "GitBlob": "5d182eddd5fd2a21106450299eae6a7d6e4d224c"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_report_semantic_v307.xlsm",
+      "Bytes": 4456747,
+      "ModifiedNs": 1791166877038259900,
+      "Tracked": true,
+      "GitBlob": "713cd346d2d2d4df483112a9fd60c8d80c03c5a8"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_required_geometry_clean_v137.xlsm",
+      "Bytes": 3829711,
+      "ModifiedNs": 1791015849342177400,
+      "Tracked": true,
+      "GitBlob": "e564bc49d9a1b767c48e9dacba2d3fe7c1eae095"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_required_geometry_negative_v137.xlsm",
+      "Bytes": 3696439,
+      "ModifiedNs": 1791012192295841900,
+      "Tracked": true,
+      "GitBlob": "3ae7312d12b7eee4d60221d00abdb653b88ad498"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_required_geometry_v137.xlsm",
+      "Bytes": 3766107,
+      "ModifiedNs": 1791015810773889400,
+      "Tracked": true,
+      "GitBlob": "0e5b94a96645b16e7da3aaa644b992f6710f04a7"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_address_negative_v102.xlsm",
+      "Bytes": 3567587,
+      "ModifiedNs": 1790970756174558200,
+      "Tracked": true,
+      "GitBlob": "39ff33fe26da199e67c515669f7545f4742720cf"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v100.xlsm",
+      "Bytes": 3565707,
+      "ModifiedNs": 1790969765064397400,
+      "Tracked": true,
+      "GitBlob": "f9bbb38b72557f478535355e41a6e1bb7de5a2c3"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v101.xlsm",
+      "Bytes": 3601661,
+      "ModifiedNs": 1790970185077309800,
+      "Tracked": true,
+      "GitBlob": "894fe95ba5b2833236e46d6266c2a0a1d468db25"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v102.xlsm",
+      "Bytes": 3610286,
+      "ModifiedNs": 1790970870663666100,
+      "Tracked": true,
+      "GitBlob": "af32f397e7ed44f34432055e6e01e52c1accf5bb"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v103.xlsm",
+      "Bytes": 3608015,
+      "ModifiedNs": 1790973310484062500,
+      "Tracked": true,
+      "GitBlob": "f46f7367dfa91556ea5f6edf7a7a5c358d7dd953"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v96.xlsm",
+      "Bytes": 3558903,
+      "ModifiedNs": 1790968481755190700,
+      "Tracked": true,
+      "GitBlob": "bf1dcce8215395bb6633d16a13ee36feffb77864"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v97.xlsm",
+      "Bytes": 3603240,
+      "ModifiedNs": 1790968864094784600,
+      "Tracked": true,
+      "GitBlob": "ac883bd82179b9a8d64d1915c60cee01c67bf409"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v98.xlsm",
+      "Bytes": 3606782,
+      "ModifiedNs": 1790969093316471900,
+      "Tracked": true,
+      "GitBlob": "01158cae50ddaa00d7058d087f86057f1d794202"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_config_v99.xlsm",
+      "Bytes": 3609306,
+      "ModifiedNs": 1790969322447401800,
+      "Tracked": true,
+      "GitBlob": "a421caeea0bfc015191688defbc7b47e2d37cd14"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_lifecycle_v130.xlsm",
+      "Bytes": 3664917,
+      "ModifiedNs": 1790998063097934500,
+      "Tracked": true,
+      "GitBlob": "efdfa170087983eba063369a9aa10399d9a36328"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_mutation_cap_method_v103.xlsm",
+      "Bytes": 3570019,
+      "ModifiedNs": 1790974300880126900,
+      "Tracked": true,
+      "GitBlob": "88cdb0a727589ce6b0ca6df8e7f50226d3dc2f56"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_mutation_cap_strategy_v103.xlsm",
+      "Bytes": 3570453,
+      "ModifiedNs": 1790974240503112900,
+      "Tracked": true,
+      "GitBlob": "70aa77e0e6767f07b8400a6915a6c25d21ccac04"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_mutation_formation_path_v103.xlsm",
+      "Bytes": 3570124,
+      "ModifiedNs": 1790974400695523100,
+      "Tracked": true,
+      "GitBlob": "d9cbaad72a24d1016eb71f2626109032eb2b9886"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_mutation_formation_strategy_v103.xlsm",
+      "Bytes": 3570220,
+      "ModifiedNs": 1790974477819062300,
+      "Tracked": true,
+      "GitBlob": "c33d28a95ecfac3eb6846929f38a29a6a569333e"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_reason_negative_v311.xlsm",
+      "Bytes": 4326982,
+      "ModifiedNs": 1791167814873356600,
+      "Tracked": true,
+      "GitBlob": "c98ff10796defb529e3cc6cff9b769a433f90586"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_state_typed_v185.xlsm",
+      "Bytes": 3995154,
+      "ModifiedNs": 1791063378911397200,
+      "Tracked": true,
+      "GitBlob": "d574690f504b16b6bc958579c099d9fe073ae04a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_state_updated_v185.xlsm",
+      "Bytes": 3864438,
+      "ModifiedNs": 1791065881145085900,
+      "Tracked": true,
+      "GitBlob": "06fec0f3f4202f1cbe2f3d86107eb6d620acf1d1"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_search_typed_v183.xlsm",
+      "Bytes": 3991516,
+      "ModifiedNs": 1791062791861794700,
+      "Tracked": true,
+      "GitBlob": "a6499d907f069fb637846cfe664f35626aab3471"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_semantic_v318.xlsm",
+      "Bytes": 4468784,
+      "ModifiedNs": 1791172558684966700,
+      "Tracked": true,
+      "GitBlob": "1899cb4344593f62b4a947adf7bdf1b48b0182a7"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_settings_table_negative_v231.xlsm",
+      "Bytes": 4062780,
+      "ModifiedNs": 1791111975498286300,
+      "Tracked": true,
+      "GitBlob": "9a0b6508509a947cc9beb0ab468bab010793c77e"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_settings_table_positive_v232.xlsm",
+      "Bytes": 4064281,
+      "ModifiedNs": 1791111838953380600,
+      "Tracked": true,
+      "GitBlob": "771a6541e007d9e3ecdd345f58b312a7ae18d421"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_settings_table_positive_v233.xlsm",
+      "Bytes": 4066651,
+      "ModifiedNs": 1791112092596064900,
+      "Tracked": true,
+      "GitBlob": "ed654bb282e1f4012afa0bc53a07769c8aefb6a9"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_shape_config_v134.xlsm",
+      "Bytes": 3715905,
+      "ModifiedNs": 1791005610160696700,
+      "Tracked": true,
+      "GitBlob": "5cae40cdc39dbb20a591958ccae9f69749a348e0"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_small_path_negative_v319.xlsm",
+      "Bytes": 4338819,
+      "ModifiedNs": 1791173088560413300,
+      "Tracked": true,
+      "GitBlob": "504051e32f4aaae04ff97a8797884b7f17de84c9"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_small_path_v320.xlsm",
+      "Bytes": 4473335,
+      "ModifiedNs": 1791173260588074200,
+      "Tracked": true,
+      "GitBlob": "3b47cf231477dec9bf27cf85b7513d6cbd1eb947"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_metadata_negative_v212.xlsm",
+      "Bytes": 4008043,
+      "ModifiedNs": 1791102586051023300,
+      "Tracked": true,
+      "GitBlob": "0daf0abea0152e44405c720287a1d24d5d85e0b9"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_metadata_positive_v213.xlsm",
+      "Bytes": 4011645,
+      "ModifiedNs": 1791102895301611800,
+      "Tracked": true,
+      "GitBlob": "c77a2bfa89b55d9b0a9b840b65fae43aedccd2d4"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_metadata_positive_v214.xlsm",
+      "Bytes": 4014178,
+      "ModifiedNs": 1791102969105780500,
+      "Tracked": true,
+      "GitBlob": "d9cbb4a5632d8ad8dad67b9883ba6011bbb03666"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_metadata_positive_v215.xlsm",
+      "Bytes": 4013228,
+      "ModifiedNs": 1791103144058438000,
+      "Tracked": true,
+      "GitBlob": "4568f7e843d8c78da1398bf13e3433293dc99592"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_metadata_positive_v216.xlsm",
+      "Bytes": 4013100,
+      "ModifiedNs": 1791103667275783800,
+      "Tracked": true,
+      "GitBlob": "432e0134e959a8dab7ec19ff551848f5a2794356"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_negative.xlsm",
+      "Bytes": 3157446,
+      "ModifiedNs": 1790897941682613400,
+      "Tracked": true,
+      "GitBlob": "6d364514f0c2a7ee2dfd6df0d78c581b062e3b0f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_snapshot_title_final_v165.xlsm",
+      "Bytes": 3796366,
+      "ModifiedNs": 1791039176261902900,
+      "Tracked": true,
+      "GitBlob": "adbaa1f28dfe8f209d2b1f744629aaaa38690c7a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_solver_method_mutation_v48.xlsm",
+      "Bytes": 3361692,
+      "ModifiedNs": 1790922677976020100,
+      "Tracked": true,
+      "GitBlob": "38553cb1d60a42e9064f6b6f957296937087c89f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v46.xlsm",
+      "Bytes": 3384572,
+      "ModifiedNs": 1790920163371708200,
+      "Tracked": true,
+      "GitBlob": "92f058f1513a5e93a04322018df32b15116b139b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v47.xlsm",
+      "Bytes": 3361739,
+      "ModifiedNs": 1790922273294804000,
+      "Tracked": true,
+      "GitBlob": "85d934e83c58428ae790fd889143fec3e40ffa96"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v48.xlsm",
+      "Bytes": 3363302,
+      "ModifiedNs": 1790922611234853800,
+      "Tracked": true,
+      "GitBlob": "5999632ccb4cfc64ab90ae16e117732bbe36d25f"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v66.xlsm",
+      "Bytes": 3443880,
+      "ModifiedNs": 1790935366126272500,
+      "Tracked": true,
+      "GitBlob": "ce2683cbe5b9af16b704400833c41aaa81d6331b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v68.xlsm",
+      "Bytes": 3459657,
+      "ModifiedNs": 1790936788032005900,
+      "Tracked": true,
+      "GitBlob": "014dd93504213b54c9ffda14cba6df12307f3f89"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v71.xlsm",
+      "Bytes": 3502958,
+      "ModifiedNs": 1790943911131424100,
+      "Tracked": true,
+      "GitBlob": "e1e5e66513e17bfd7fa1eba5a83ceb77ba409c83"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_source_v73.xlsm",
+      "Bytes": 3503127,
+      "ModifiedNs": 1790945509895940900,
+      "Tracked": true,
+      "GitBlob": "960920d64f1baf0c7812883b78e3b40305ac981a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_spacing_warning_negative_v140.xlsm",
+      "Bytes": 3715543,
+      "ModifiedNs": 1791019022970785200,
+      "Tracked": true,
+      "GitBlob": "3b5c30e3339245ac3ddc97cedb003b521d074bf2"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_spacing_warning_pre_format_saved_v140.xlsm",
+      "Bytes": 4195838,
+      "ModifiedNs": 1791019458151225700,
+      "Tracked": true,
+      "GitBlob": "2d6d2fa5c54336435e0828896a3865a001e39cf3"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_spacing_warning_v140.xlsm",
+      "Bytes": 3760518,
+      "ModifiedNs": 1791019871904517000,
+      "Tracked": true,
+      "GitBlob": "d3a33feafdb7da50c64191c23f733d301f4e8477"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_comments_negative_v76b.xlsm",
+      "Bytes": 3476523,
+      "ModifiedNs": 1790949349677840500,
+      "Tracked": true,
+      "GitBlob": "7fbac9436b0278323045422049461f7c5d8e7421"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_config_final_v256.xlsm",
+      "Bytes": 4138562,
+      "ModifiedNs": 1791123698140924800,
+      "Tracked": true,
+      "GitBlob": "420b9e2f8eb101cc6a971272024c985fecdbe96b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_config_final_v257.xlsm",
+      "Bytes": 4140295,
+      "ModifiedNs": 1791124510440373400,
+      "Tracked": true,
+      "GitBlob": "cb539a34927553ebd2c0cad58535c8c44566f6de"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_config_negative_v252.xlsm",
+      "Bytes": 4129218,
+      "ModifiedNs": 1791121866243766500,
+      "Tracked": true,
+      "GitBlob": "f92b6c078e48643e48c920b6e7f3f3026a935961"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_config_negative_v253.xlsm",
+      "Bytes": 4129421,
+      "ModifiedNs": 1791121982638293000,
+      "Tracked": true,
+      "GitBlob": "af768c3ec48cb875897421584409f2ff5b816957"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_config_negative_v254.xlsm",
+      "Bytes": 4131034,
+      "ModifiedNs": 1791122701730101200,
+      "Tracked": true,
+      "GitBlob": "0a47328260ce9c38ced6aa13b2bd9a656b6830c6"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_config_positive_v255.xlsm",
+      "Bytes": 4138187,
+      "ModifiedNs": 1791123187062759700,
+      "Tracked": true,
+      "GitBlob": "efa1c0d2d9a973de4121577e63cb046510a6dc6a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_length_negative_v316.xlsm",
+      "Bytes": 4334584,
+      "ModifiedNs": 1791171361479442400,
+      "Tracked": true,
+      "GitBlob": "c2c7dce976a5c0f05e7ed6f94dbebbaa087f9129"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_length_v317.xlsm",
+      "Bytes": 4467775,
+      "ModifiedNs": 1791171830070085900,
+      "Tracked": true,
+      "GitBlob": "4207c71bbf217dd5c8d1bb475606afa6ed445256"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_stability_range_negative_v327.xlsm",
+      "Bytes": 4340376,
+      "ModifiedNs": 1791190380555577000,
+      "Tracked": true,
+      "GitBlob": "fe75f20de47674b230af9c9f08b067334a0358f8"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_state_repro.xlsm",
+      "Bytes": 3135246,
+      "ModifiedNs": 1790887520815118400,
+      "Tracked": true,
+      "GitBlob": "b1cbe8d43a29ddef53a35a739eff018115149591"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_table_runner_v306.xlsm",
+      "Bytes": 4453679,
+      "ModifiedNs": 1791163392554237400,
+      "Tracked": true,
+      "GitBlob": "147d99f78976a6f64297984c2d31a476f34d91df"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_table_validation_v302.xlsm",
+      "Bytes": 4443619,
+      "ModifiedNs": 1791161172311926400,
+      "Tracked": true,
+      "GitBlob": "c45acc1129853ffc2870a10882f05ff4246b374d"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_ultimate_reason_negative_v314.xlsm",
+      "Bytes": 4330282,
+      "ModifiedNs": 1791170881720590200,
+      "Tracked": true,
+      "GitBlob": "011b07400e1ef5f95da696bacd0a71a9b1b69a4b"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_ultimate_reason_v315.xlsm",
+      "Bytes": 4466376,
+      "ModifiedNs": 1791171088066035300,
+      "Tracked": true,
+      "GitBlob": "a5c77b7d928f7c1e03703c223f5cef263b442a96"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_units_comments_help_v77.xlsm",
+      "Bytes": 3512996,
+      "ModifiedNs": 1790950073362963200,
+      "Tracked": true,
+      "GitBlob": "f55860459e5c3e2843a7d402460a4e2d1bc9505a"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_universal_path_v112.xlsm",
+      "Bytes": 3648937,
+      "ModifiedNs": 1790985017039634400,
+      "Tracked": true,
+      "GitBlob": "fea328af9f38b3e0559fa2fb21aa8ba12d2cda51"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_universal_path_v112_writer_negative.xlsm",
+      "Bytes": 3598404,
+      "ModifiedNs": 1790985247584548500,
+      "Tracked": true,
+      "GitBlob": "755ebb3cfbc99a76c842fdeca0495a9cf7c7ce43"
+    },
+    {
+      "Path": "docs/regression/Audit03/RC_Section_NDM_validator_alias_v139.xlsm",
+      "Bytes": 3830080,
+      "ModifiedNs": 1791016984531293500,
+      "Tracked": true,
+      "GitBlob": "1cb1128c38561e27b75fec9a446cce36a28d6f19"
+    },
+    {
+      "Path": "docs/regression/Audit03/release_clean_v325/RC_Section_NDM.xlsm",
+      "Bytes": 4473512,
+      "ModifiedNs": 1791188884860177600,
+      "Tracked": true,
+      "GitBlob": "539fbad3e87c95463d5569c2cb3fd2da0260406a"
+    },
+    {
+      "Path": "docs/regression/Audit03/release_clean_v328/RC_Section_NDM.xlsm",
+      "Bytes": 4475965,
+      "ModifiedNs": 1791190607281851800,
+      "Tracked": true,
+      "GitBlob": "47c6b06340268dd29472663c4e4b07a9b6043513"
+    },
+    {
+      "Path": "docs/regression/Audit03/release_v323/RC_Section_NDM.xlsm",
+      "Bytes": 5259352,
+      "ModifiedNs": 1791192119888411700,
+      "Tracked": true,
+      "GitBlob": "f855c722f0ed124abb2ee624873f9c3d82eca916"
+    }
+  ],
+  "Skipped": [],
+  "FreedBytes": 869151381,
+  "Passed": true
+}
