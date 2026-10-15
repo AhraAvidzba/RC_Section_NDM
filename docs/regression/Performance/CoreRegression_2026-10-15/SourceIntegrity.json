@@ -1,0 +1,34 @@
+{
+  "CheckedAt": "2026-10-15T20:01:33.244444+03:00",
+  "ProtectedFiles": [
+    {
+      "path": "workbook/output/RC_Section_NDM.xlsm",
+      "expected": "709DFF46F9E62CF89D51EC9796E86A8149B4EB090ACF1C194E304923498856D0",
+      "actual": "709DFF46F9E62CF89D51EC9796E86A8149B4EB090ACF1C194E304923498856D0",
+      "unchanged": true
+    },
+    {
+      "path": "workbook/output/VBA_All_Code.txt",
+      "expected": "7D24D343DFE1C796E07866363CD02C5E191DB9EBAA40FF79B5247FE1A4B6E630",
+      "actual": "7D24D343DFE1C796E07866363CD02C5E191DB9EBAA40FF79B5247FE1A4B6E630",
+      "unchanged": true
+    },
+    {
+      "path": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "expected": "158A1C3A4D047EAFEA07B78517EBF62420289999485CDF91231419A548DA746B",
+      "actual": "158A1C3A4D047EAFEA07B78517EBF62420289999485CDF91231419A548DA746B",
+      "unchanged": true
+    }
+  ],
+  "AllProtectedFilesUnchanged": true,
+  "RuntimeSourceChanges": [],
+  "PreviousNativeEqualityStillApplies": true,
+  "SourceComponents": 152,
+  "NativeComponents": 157,
+  "AllCodeIsActualNativeExport": true,
+  "WorkbookUpdatedDuringThisCheck": false,
+  "DataPartsBeforeAfterIdentical": true,
+  "ChangedPartsBeforeAfter": [
+    "xl/vbaProject.bin"
+  ]
+}

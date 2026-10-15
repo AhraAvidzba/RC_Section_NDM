@@ -120,6 +120,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
                 Array(item(1), item(2), item(3)), cx, cy, True
             Audit03CheckFormationPath stats, result.CrackResult.Formation, prefix, path, Array(item(1), item(2), item(3))
             FocusedCheckStates stats, result, settings, units, prefix
+            AppendLine stats, FocusedComparisonRecord(result, CStr(item(0)))
             For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                     result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
                 AssertTrue stats, prefix & ".noInputOrInternalError." & CStr(meta.ResultKind), _
@@ -157,6 +158,25 @@ Restore:
     Exit Function
 RestoreFailed:
     RunFocusedAcceptanceCases = stats.Report & "RESTORE ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: одинаковая запись чисел и typed-статусов для сравнения двух сборок.
+Private Function FocusedComparisonRecord(ByVal result As CCombinationResult, ByVal id As String) As String
+    Dim output As String, meta As Variant, numbers As Variant, i As Long
+    output = "FOCUSED_COMPARE|id=" & id & "|path=" & result.StrengthResult.Capacity.PathResolved
+    For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
+            result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
+        output = output & "|meta" & CStr(meta.ResultKind) & "=" & CStr(meta.InternalStatus) & ":" & CStr(meta.ResultCode)
+    Next meta
+    numbers = Array(result.StrengthResult.Capacity.LambdaCapacity, result.StrengthResult.Capacity.NUltimate, _
+        result.StrengthResult.Capacity.MxUltimate, result.StrengthResult.Capacity.MyUltimate, _
+        result.CrackResult.Formation.LambdaCrc, result.CrackResult.Formation.Ncrc, result.CrackResult.Formation.Mcrc, _
+        result.CrackResult.Width.CrackWidth, result.CrackResult.Width.Utilization, result.CrackResult.Width.CrackSpacing, _
+        result.CrackResult.Longitudinal.Utilization, result.GoverningUtil)
+    For i = LBound(numbers) To UBound(numbers)
+        output = output & "|number" & CStr(i) & "=" & Replace$(Trim$(Str$(CDbl(numbers(i)))), ",", ".")
+    Next i
+    FocusedComparisonRecord = output
 End Function
 
 ' ДЛЯ ТЕСТОВ: воспроизводит один замер с теми же данными и проверками.

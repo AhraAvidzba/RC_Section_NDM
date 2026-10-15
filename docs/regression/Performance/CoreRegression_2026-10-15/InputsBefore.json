@@ -1,0 +1,10 @@
+{
+  "PreviousWorkbook": "docs\\regression\\Performance\\Overload_2026-10-15\\Release\\Baseline.xlsm",
+  "CurrentWorkbook": "workbook\\output\\RC_Section_NDM.xlsm",
+  "PreviousSHA256": "e73e895c8c7c45ac5774ba554fd90aede638b9300edc11ca04cb59cc61627e60",
+  "CurrentSHA256": "709dff46f9e62cf89d51ec9796e86a8149b4eb090acf1c194e304923498856d0",
+  "DataPartsIdentical": true,
+  "ChangedParts": [
+    "xl/vbaProject.bin"
+  ]
+}

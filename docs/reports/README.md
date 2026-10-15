@@ -7,6 +7,7 @@
 - [Геометрия трещин, счетчики и направленная приемка](audits/OpenIssues_2026-10-11.md).
 - [Трещины СП 35](cracks/NDM_SP35_Implementation_Final_Report_2026-10-06.md); в `cracks/` - уточнения области и групп арматуры.
 - [Производительность](performance/NDM_Performance_Final_Report.md).
+- [Основной набор нагрузок и сравнение времени до/после исправления перегрузки](performance/CoreRegression_2026-10-15.md).
 - [Наклон плато диаграмм и замеры](performance/PlateauSlope_2026-10-11.md).
 - `autocad/` - импорт, экспорт, контуры, WCS и очистка; [Region/Polyline](autocad/NDM_AutoCAD_Contour_Format_2026-10-08.md).
 - `workbook/` - оформление, настройки и сообщения.

@@ -1,0 +1,793 @@
+{
+  "Complete": true,
+  "Reports": 12,
+  "ExpectedReports": 12,
+  "AllAssertionsPassed": true,
+  "AllOutputsExact": true,
+  "PersistentSlowdowns": [],
+  "PassedAssertionsBothVersions": 15966,
+  "FailedAssertionsBothVersions": 0,
+  "IncompleteCases": [],
+  "Records": [
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "axialSmall-1",
+      "beforeSeconds": [
+        4.0234375,
+        4.1171875,
+        4.234375
+      ],
+      "afterSeconds": [
+        4.1015625,
+        4.109375,
+        4.0625
+      ],
+      "beforeMedianSeconds": 4.1171875,
+      "afterMedianSeconds": 4.1015625,
+      "deltaMedianSeconds": -0.015625,
+      "medianRatio": 0.9962049335863378,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "Mx-1",
+      "beforeSeconds": [
+        1.1171875,
+        1.1328125,
+        1.1875
+      ],
+      "afterSeconds": [
+        1.140625,
+        1.2890625,
+        1.1484375
+      ],
+      "beforeMedianSeconds": 1.1328125,
+      "afterMedianSeconds": 1.1484375,
+      "deltaMedianSeconds": 0.015625,
+      "medianRatio": 1.013793103448276,
+      "medianPairedDeltaSeconds": 0.0234375,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "My-1",
+      "beforeSeconds": [
+        1.125,
+        1.1640625,
+        1.15625
+      ],
+      "afterSeconds": [
+        1.1328125,
+        1.2265625,
+        1.15625
+      ],
+      "beforeMedianSeconds": 1.15625,
+      "afterMedianSeconds": 1.15625,
+      "deltaMedianSeconds": 0.0,
+      "medianRatio": 1.0,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "mixedT-1_1",
+      "beforeSeconds": [
+        1.1328125,
+        1.1796875,
+        1.171875
+      ],
+      "afterSeconds": [
+        1.1796875,
+        1.21875,
+        1.1640625
+      ],
+      "beforeMedianSeconds": 1.171875,
+      "afterMedianSeconds": 1.1796875,
+      "deltaMedianSeconds": 0.0078125,
+      "medianRatio": 1.0066666666666666,
+      "medianPairedDeltaSeconds": 0.0390625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "axialSmall1",
+      "beforeSeconds": [
+        1.1484375,
+        1.1953125,
+        1.1953125
+      ],
+      "afterSeconds": [
+        1.1640625,
+        1.203125,
+        1.171875
+      ],
+      "beforeMedianSeconds": 1.1953125,
+      "afterMedianSeconds": 1.171875,
+      "deltaMedianSeconds": -0.0234375,
+      "medianRatio": 0.9803921568627451,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "Mx1",
+      "beforeSeconds": [
+        1.109375,
+        1.1875,
+        1.1875
+      ],
+      "afterSeconds": [
+        1.171875,
+        1.2265625,
+        1.1953125
+      ],
+      "beforeMedianSeconds": 1.1875,
+      "afterMedianSeconds": 1.1953125,
+      "deltaMedianSeconds": 0.0078125,
+      "medianRatio": 1.006578947368421,
+      "medianPairedDeltaSeconds": 0.0390625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "My1",
+      "beforeSeconds": [
+        1.109375,
+        1.203125,
+        1.2109375
+      ],
+      "afterSeconds": [
+        1.1328125,
+        1.203125,
+        1.125
+      ],
+      "beforeMedianSeconds": 1.203125,
+      "afterMedianSeconds": 1.1328125,
+      "deltaMedianSeconds": -0.0703125,
+      "medianRatio": 0.9415584415584416,
+      "medianPairedDeltaSeconds": 0.0,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "mixedC1_-1",
+      "beforeSeconds": [
+        1.109375,
+        1.203125,
+        1.1796875
+      ],
+      "afterSeconds": [
+        1.1796875,
+        1.2109375,
+        1.1796875
+      ],
+      "beforeMedianSeconds": 1.1796875,
+      "afterMedianSeconds": 1.1796875,
+      "deltaMedianSeconds": 0.0,
+      "medianRatio": 1.0,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "zero",
+      "beforeSeconds": [
+        2.515625,
+        2.4375,
+        2.4140625
+      ],
+      "afterSeconds": [
+        2.4921875,
+        2.4453125,
+        2.4609375
+      ],
+      "beforeMedianSeconds": 2.4375,
+      "afterMedianSeconds": 2.4609375,
+      "deltaMedianSeconds": 0.0234375,
+      "medianRatio": 1.0096153846153846,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "axialSmall-1",
+      "beforeSeconds": [
+        1.0,
+        0.9453125,
+        1.0078125
+      ],
+      "afterSeconds": [
+        1.2421875,
+        1.0078125,
+        0.9609375
+      ],
+      "beforeMedianSeconds": 1.0,
+      "afterMedianSeconds": 1.0078125,
+      "deltaMedianSeconds": 0.0078125,
+      "medianRatio": 1.0078125,
+      "medianPairedDeltaSeconds": 0.0625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "Mx-1",
+      "beforeSeconds": [
+        0.640625,
+        0.6171875,
+        0.6640625
+      ],
+      "afterSeconds": [
+        0.6328125,
+        0.6015625,
+        0.6328125
+      ],
+      "beforeMedianSeconds": 0.640625,
+      "afterMedianSeconds": 0.6328125,
+      "deltaMedianSeconds": -0.0078125,
+      "medianRatio": 0.9878048780487805,
+      "medianPairedDeltaSeconds": -0.015625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "My-1",
+      "beforeSeconds": [
+        0.6328125,
+        0.609375,
+        0.65625
+      ],
+      "afterSeconds": [
+        0.6484375,
+        0.6015625,
+        0.6328125
+      ],
+      "beforeMedianSeconds": 0.6328125,
+      "afterMedianSeconds": 0.6328125,
+      "deltaMedianSeconds": 0.0,
+      "medianRatio": 1.0,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "mixedT-1_1",
+      "beforeSeconds": [
+        0.7109375,
+        0.640625,
+        0.7265625
+      ],
+      "afterSeconds": [
+        0.7109375,
+        0.6796875,
+        0.6953125
+      ],
+      "beforeMedianSeconds": 0.7109375,
+      "afterMedianSeconds": 0.6953125,
+      "deltaMedianSeconds": -0.015625,
+      "medianRatio": 0.978021978021978,
+      "medianPairedDeltaSeconds": 0.0,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "tinyMx1",
+      "beforeSeconds": [
+        0.6171875,
+        0.6171875,
+        0.6484375
+      ],
+      "afterSeconds": [
+        0.6796875,
+        0.6171875,
+        0.6328125
+      ],
+      "beforeMedianSeconds": 0.6171875,
+      "afterMedianSeconds": 0.6328125,
+      "deltaMedianSeconds": 0.015625,
+      "medianRatio": 1.0253164556962024,
+      "medianPairedDeltaSeconds": 0.0,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "axialSmall1",
+      "beforeSeconds": [
+        0.625,
+        0.59375,
+        0.6484375
+      ],
+      "afterSeconds": [
+        0.703125,
+        0.6015625,
+        0.625
+      ],
+      "beforeMedianSeconds": 0.625,
+      "afterMedianSeconds": 0.625,
+      "deltaMedianSeconds": 0.0,
+      "medianRatio": 1.0,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "Mx1",
+      "beforeSeconds": [
+        0.609375,
+        0.6171875,
+        0.65625
+      ],
+      "afterSeconds": [
+        0.7109375,
+        0.609375,
+        0.6484375
+      ],
+      "beforeMedianSeconds": 0.6171875,
+      "afterMedianSeconds": 0.6484375,
+      "deltaMedianSeconds": 0.03125,
+      "medianRatio": 1.0506329113924051,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "My1",
+      "beforeSeconds": [
+        0.6171875,
+        0.6015625,
+        0.6484375
+      ],
+      "afterSeconds": [
+        0.6953125,
+        0.59375,
+        0.6171875
+      ],
+      "beforeMedianSeconds": 0.6171875,
+      "afterMedianSeconds": 0.6171875,
+      "deltaMedianSeconds": 0.0,
+      "medianRatio": 1.0,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "biaxial1_-1_10",
+      "beforeSeconds": [
+        0.6015625,
+        0.640625,
+        0.6328125
+      ],
+      "afterSeconds": [
+        0.7265625,
+        0.6015625,
+        0.6328125
+      ],
+      "beforeMedianSeconds": 0.6328125,
+      "afterMedianSeconds": 0.6328125,
+      "deltaMedianSeconds": 0.0,
+      "medianRatio": 1.0,
+      "medianPairedDeltaSeconds": 0.0,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "biaxial1_-1_1000000",
+      "beforeSeconds": [
+        0.6328125,
+        0.609375,
+        0.6328125
+      ],
+      "afterSeconds": [
+        0.6953125,
+        0.6171875,
+        0.640625
+      ],
+      "beforeMedianSeconds": 0.6328125,
+      "afterMedianSeconds": 0.640625,
+      "deltaMedianSeconds": 0.0078125,
+      "medianRatio": 1.0123456790123457,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "biaxial1_-1_0.000001",
+      "beforeSeconds": [
+        0.6484375,
+        0.640625,
+        0.6484375
+      ],
+      "afterSeconds": [
+        0.6875,
+        0.6015625,
+        0.640625
+      ],
+      "beforeMedianSeconds": 0.6484375,
+      "afterMedianSeconds": 0.640625,
+      "deltaMedianSeconds": -0.0078125,
+      "medianRatio": 0.9879518072289156,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "mixedC1_-1",
+      "beforeSeconds": [
+        0.6328125,
+        0.6171875,
+        0.6640625
+      ],
+      "afterSeconds": [
+        0.7109375,
+        0.6015625,
+        0.640625
+      ],
+      "beforeMedianSeconds": 0.6328125,
+      "afterMedianSeconds": 0.640625,
+      "deltaMedianSeconds": 0.0078125,
+      "medianRatio": 1.0123456790123457,
+      "medianPairedDeltaSeconds": -0.015625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "axialC0.95",
+      "beforeSeconds": [
+        0.6484375,
+        0.6328125,
+        0.640625
+      ],
+      "afterSeconds": [
+        0.8515625,
+        0.609375,
+        0.65625
+      ],
+      "beforeMedianSeconds": 0.640625,
+      "afterMedianSeconds": 0.65625,
+      "deltaMedianSeconds": 0.015625,
+      "medianRatio": 1.024390243902439,
+      "medianPairedDeltaSeconds": 0.015625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "axialC1",
+      "beforeSeconds": [
+        0.8671875,
+        0.8671875,
+        0.84375
+      ],
+      "afterSeconds": [
+        0.9296875,
+        0.859375,
+        0.8203125
+      ],
+      "beforeMedianSeconds": 0.8671875,
+      "afterMedianSeconds": 0.859375,
+      "deltaMedianSeconds": -0.0078125,
+      "medianRatio": 0.990990990990991,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "overloadMixed1",
+      "beforeSeconds": [
+        6.875,
+        6.4765625,
+        6.6875
+      ],
+      "afterSeconds": [
+        7.84375,
+        6.875,
+        6.8671875
+      ],
+      "beforeMedianSeconds": 6.6875,
+      "afterMedianSeconds": 6.875,
+      "deltaMedianSeconds": 0.1875,
+      "medianRatio": 1.02803738317757,
+      "medianPairedDeltaSeconds": 0.3984375,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "axialC1.05",
+      "beforeSeconds": [
+        1.03125,
+        0.90625,
+        0.9609375
+      ],
+      "afterSeconds": [
+        1.03125,
+        0.9375,
+        0.9296875
+      ],
+      "beforeMedianSeconds": 0.9609375,
+      "afterMedianSeconds": 0.9375,
+      "deltaMedianSeconds": -0.0234375,
+      "medianRatio": 0.975609756097561,
+      "medianPairedDeltaSeconds": 0.0,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "axialC2",
+      "beforeSeconds": [
+        0.6640625,
+        0.59375,
+        0.609375
+      ],
+      "afterSeconds": [
+        0.65625,
+        0.625,
+        0.6171875
+      ],
+      "beforeMedianSeconds": 0.609375,
+      "afterMedianSeconds": 0.625,
+      "deltaMedianSeconds": 0.015625,
+      "medianRatio": 1.0256410256410255,
+      "medianPairedDeltaSeconds": 0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "overloadMixed1000000",
+      "beforeSeconds": [
+        4.9453125,
+        4.625,
+        5.2578125
+      ],
+      "afterSeconds": [
+        5.5078125,
+        5.3125,
+        4.828125
+      ],
+      "beforeMedianSeconds": 4.9453125,
+      "afterMedianSeconds": 5.3125,
+      "deltaMedianSeconds": 0.3671875,
+      "medianRatio": 1.0742496050552923,
+      "medianPairedDeltaSeconds": 0.5625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "N500",
+      "beforeSeconds": [
+        0.671875,
+        0.6796875,
+        0.6953125
+      ],
+      "afterSeconds": [
+        0.7734375,
+        0.8359375,
+        0.6875
+      ],
+      "beforeMedianSeconds": 0.6796875,
+      "afterMedianSeconds": 0.7734375,
+      "deltaMedianSeconds": 0.09375,
+      "medianRatio": 1.1379310344827587,
+      "medianPairedDeltaSeconds": 0.1015625,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "N1000",
+      "beforeSeconds": [
+        0.609375,
+        0.6015625,
+        0.6328125
+      ],
+      "afterSeconds": [
+        0.65625,
+        0.6328125,
+        0.625
+      ],
+      "beforeMedianSeconds": 0.609375,
+      "afterMedianSeconds": 0.6328125,
+      "deltaMedianSeconds": 0.0234375,
+      "medianRatio": 1.0384615384615385,
+      "medianPairedDeltaSeconds": 0.03125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "N2098Plateau",
+      "beforeSeconds": [
+        0.78125,
+        0.734375,
+        0.8046875
+      ],
+      "afterSeconds": [
+        0.7734375,
+        0.7890625,
+        0.7734375
+      ],
+      "beforeMedianSeconds": 0.78125,
+      "afterMedianSeconds": 0.7734375,
+      "deltaMedianSeconds": -0.0078125,
+      "medianRatio": 0.99,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "N500TinyMoment",
+      "beforeSeconds": [
+        0.6640625,
+        0.625,
+        0.625
+      ],
+      "afterSeconds": [
+        0.65625,
+        0.8203125,
+        0.59375
+      ],
+      "beforeMedianSeconds": 0.625,
+      "afterMedianSeconds": 0.65625,
+      "deltaMedianSeconds": 0.03125,
+      "medianRatio": 1.05,
+      "medianPairedDeltaSeconds": -0.0078125,
+      "persistentSlowdown": false
+    }
+  ],
+  "ReportsChecked": [
+    {
+      "id": "Repeat1_Before_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 1
+    },
+    {
+      "id": "Repeat1_After_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 1
+    },
+    {
+      "id": "Repeat2_After_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 2
+    },
+    {
+      "id": "Repeat2_Before_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 2
+    },
+    {
+      "id": "Repeat3_Before_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 3
+    },
+    {
+      "id": "Repeat3_After_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 3
+    },
+    {
+      "id": "Repeat1_Before_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 1
+    },
+    {
+      "id": "Repeat1_After_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 1
+    },
+    {
+      "id": "Repeat2_After_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 2
+    },
+    {
+      "id": "Repeat2_Before_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 2
+    },
+    {
+      "id": "Repeat3_Before_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 3
+    },
+    {
+      "id": "Repeat3_After_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "valid": true,
+      "outputsExact": true,
+      "repeat": 3
+    }
+  ]
+}

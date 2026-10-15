@@ -1,0 +1,965 @@
+{
+  "ArchiveSHA256": "A4D85F261B051078CAB0B5FF9205EB316A82C899BFA3A61EC5EF883399F7927A",
+  "Files": 191,
+  "SourceBytes": 13216163,
+  "ArchiveBytes": 1109301,
+  "EveryEntryVerified": true,
+  "ExcludedTestWorkbooks": true,
+  "Entries": [
+    {
+      "path": "Acceptance.json",
+      "bytes": 1212,
+      "sha256": "dc507e64f459b63142ec6cae58d9df7fd85397be23449ccc2b152f6d106473f3"
+    },
+    {
+      "path": "After/Circle_Generated_Manifest.txt",
+      "bytes": 730,
+      "sha256": "08c7b9cb73d563c2c1e2441e4ce72971c185ed6c60b33f8fe31dc457cf0178b6"
+    },
+    {
+      "path": "After/HollowRectangle_Generated_Manifest.txt",
+      "bytes": 723,
+      "sha256": "1c4915aa4d5229b9f8843d9f191ede3dadf4fef0cb1921d4398e5c8cad6a0320"
+    },
+    {
+      "path": "After/InputManifest.json",
+      "bytes": 3510,
+      "sha256": "64fb3552332356be241a312c63249604a76c4992de02c8741c0185fddda755a3"
+    },
+    {
+      "path": "After/Preparation.json",
+      "bytes": 853,
+      "sha256": "cfe62ad624af3c79d584a08f9e980bdb088c63519192ec4481b8e444e49cd0d9"
+    },
+    {
+      "path": "After/RectSet_Generated_Manifest.txt",
+      "bytes": 733,
+      "sha256": "6546a08380422132cb260cc8b23e81d75c8a4dc7084028b94675dc5366ff3c53"
+    },
+    {
+      "path": "After/RoundedRectangle_Generated_Manifest.txt",
+      "bytes": 741,
+      "sha256": "95862bd7b3077eaf2dd2979fd445b20403386b7806c73c390623af74c58fab5d"
+    },
+    {
+      "path": "After/SavedWorkbook_Paths_Manifest.txt",
+      "bytes": 707,
+      "sha256": "0eadad9db94c2486155dc761ee4b8def2909e57f5989e674137d7f879ef03e70"
+    },
+    {
+      "path": "After/SavedWorkbook_Saved_Manifest.txt",
+      "bytes": 1867,
+      "sha256": "e6b23ecb4a8f505e2bc6aedfc863d35142537c7ec0d26ca461c50d0b157fee23"
+    },
+    {
+      "path": "After_Circle_Generated_No.txt",
+      "bytes": 74045,
+      "sha256": "e3a4c99ed451d963c5762ee982a1450fa2a0cf22634263a8fabb25fe9fe4dd1c"
+    },
+    {
+      "path": "After_Circle_Generated_No.txt.progress.txt",
+      "bytes": 136964,
+      "sha256": "1c706a25e5ed031f0bd0a197081ba1613c1d6c61c93584c59dc7359f384fe130"
+    },
+    {
+      "path": "After_Circle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_Circle_Generated_No.txt.stdout.log",
+      "bytes": 579,
+      "sha256": "19017853fdb7cbcf1130cd4306c63ca3d46b7eab8068f9f50f902febef3ffe7b"
+    },
+    {
+      "path": "After_Circle_Generated_Yes.txt",
+      "bytes": 72566,
+      "sha256": "8eb5d57e7393e6ccd68495c4a2dbe37a9ceaed83f0eddfe76619e03a05d91f84"
+    },
+    {
+      "path": "After_Circle_Generated_Yes.txt.progress.txt",
+      "bytes": 133998,
+      "sha256": "d299319e5b3877143b3c5d9c01666c184e268e66eb3ed121aaefb9b343bd1708"
+    },
+    {
+      "path": "After_Circle_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_Circle_Generated_Yes.txt.stdout.log",
+      "bytes": 584,
+      "sha256": "5549111e2929c7b58b1fd08107b915952a9c0223a6828b53ac6befe8b67c0851"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_No.txt",
+      "bytes": 78920,
+      "sha256": "9f5a3a50dd6a67e36c92e6a5c98c6909f4f9c1c6635fcce5b129e39546dd3594"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146698,
+      "sha256": "9c5aaa4d4abf0951428bc367f9a8e5569201db98da1963d63f92b1438048e92a"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 589,
+      "sha256": "088163f44127a5cc381e2846fab88f0b4f48f721c247592a9c0223997ead2e32"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_Yes.txt",
+      "bytes": 77149,
+      "sha256": "15ae75c8e09235f983b4d25433053332f739c31b67904e8579224f257da46c12"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_Yes.txt.progress.txt",
+      "bytes": 143154,
+      "sha256": "4b6970eebef7f04ec1f10f6c0671014db6268b01da56acf1ba6493c6531e47ea"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_HollowRectangle_Generated_Yes.txt.stdout.log",
+      "bytes": 588,
+      "sha256": "7443f35e5bdfed23fb6b7b97274d156625f634df3ad2f19c71d081ff9afff596"
+    },
+    {
+      "path": "After_RectSet_Generated_No.txt",
+      "bytes": 74862,
+      "sha256": "02bbdfe495a3527c19849a1eb7ea0a37585a536ab4ffa24598db18a393a9760b"
+    },
+    {
+      "path": "After_RectSet_Generated_No.txt.progress.txt",
+      "bytes": 138590,
+      "sha256": "1697be2e176d067427ffec4e7be754e910d9275a39e1e9274e1c9b97b4294410"
+    },
+    {
+      "path": "After_RectSet_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_RectSet_Generated_No.txt.stdout.log",
+      "bytes": 583,
+      "sha256": "a3fec8e2271621996fd0b4b9d2208a94f84d76bf70c878c15a93494054a8fe18"
+    },
+    {
+      "path": "After_RectSet_Generated_Yes.txt",
+      "bytes": 73369,
+      "sha256": "37ed45602601c4328ecc1cfcd42a1b1d2a5d7a1119fe1961a609d8876322ee2f"
+    },
+    {
+      "path": "After_RectSet_Generated_Yes.txt.progress.txt",
+      "bytes": 135602,
+      "sha256": "c4ebb6227f3a407c6477987266c490298e1e0776283c9240dd93845d1ee6770e"
+    },
+    {
+      "path": "After_RectSet_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_RectSet_Generated_Yes.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "6dbf24da0ca5298e3cd91a403ef5a6d10f9d69a3db0beeed688a462f4c33af61"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_No.txt",
+      "bytes": 79799,
+      "sha256": "afa85bdcba1a8322b986e414aa946d1611da878fb52ca6fb2f8068d286bab8d0"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_No.txt.progress.txt",
+      "bytes": 148452,
+      "sha256": "51e8fdb8eb9314408a2b6f897e5ed56ab7467c7c322eb102d4abd36bda527629"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_No.txt.stdout.log",
+      "bytes": 590,
+      "sha256": "d1a848f5bf9b8c00c1972991f84d08af4b669bfb53eae79f5f10b83d8a41f04c"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_Yes.txt",
+      "bytes": 78016,
+      "sha256": "6f475331967ccb3309bee2fd8dfb67284606b4e8bd2e8ded760b0c9c75e1dc6b"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_Yes.txt.progress.txt",
+      "bytes": 144878,
+      "sha256": "aca75920f3cc28bb6d6fd674d7db28e01d7546db426b367ca772ed931b7ac912"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_RoundedRectangle_Generated_Yes.txt.stdout.log",
+      "bytes": 594,
+      "sha256": "a12f38805efcc522ed56e5c42c55c8ce99a230b115fac4302c72736804d870cd"
+    },
+    {
+      "path": "After_SavedWorkbook_Batch15_No.txt",
+      "bytes": 113722,
+      "sha256": "2cdd9e47496d95ae6e0c81799f24eb5f42da6954cfdc91fb0a3300f63798300e"
+    },
+    {
+      "path": "After_SavedWorkbook_Batch15_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_SavedWorkbook_Batch15_No.txt.stdout.log",
+      "bytes": 533,
+      "sha256": "2a34684229f811647f5fff89384e29588c2f6f33239c8b81f5b18984bb2ecaf3"
+    },
+    {
+      "path": "After_SavedWorkbook_Batch15_Yes.txt",
+      "bytes": 111992,
+      "sha256": "d46036e63024b3b969bb10b307ff0d1aa6e3225864e7f0301dd343415c152d82"
+    },
+    {
+      "path": "After_SavedWorkbook_Batch15_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_SavedWorkbook_Batch15_Yes.txt.stdout.log",
+      "bytes": 533,
+      "sha256": "b6dc86ba96f752e45612194616589d15d49b8dd5ba1916d080a9b50b0b1f5e54"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_No.txt",
+      "bytes": 60599,
+      "sha256": "0dc5d447d7aca4ff19e37e656806bc883175fb6773ccccd34ddac7939ae67e85"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_No.txt.progress.txt",
+      "bytes": 111500,
+      "sha256": "4bdae0e09d8c9b8c2ec2f9982714bd997fa2668858602a550857f0c891a22c68"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_No.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "ccd1cb3ca32cc679db53f43ba586bf5a156d49e482608b598df42686b237f780"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_Yes.txt",
+      "bytes": 59348,
+      "sha256": "3345f0171463523d118d4316c164e9b02c31182d8e612f39a70b6b932b94feb5"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "bytes": 108998,
+      "sha256": "584068b67c12c2bcf41795e4423fc30afcc3b90485b3a2e482ea0e27a647478b"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "130ab82a812b7e8c1d9374ddfadea1e58ca4f146e555b760e58b2e24d5b0b779"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_No.txt",
+      "bytes": 253361,
+      "sha256": "9c1f277aec174bfe33d2d908535f8dac10728a308dc6c53fcdcf35df81d7afd3"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451580,
+      "sha256": "0ee66287009c35dc810546b23e0b0f7ea71eec9eeabed645eefed7f6924400bb"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 587,
+      "sha256": "5edb063300f43151c22353bb6d073f3cd6aa57ccb1226e703c174b7d1835ec15"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_Yes.txt",
+      "bytes": 249287,
+      "sha256": "52c4482967e8bd67520a60204190f3f8e22d95e9e94340ec490164cd5e0c0e63"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "bytes": 445692,
+      "sha256": "295fccbb0415bc612168b14b1c1ae2e94afbd55e1e002eb360ccf2ee466ab1b3"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "After_SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "bytes": 587,
+      "sha256": "681c5929db1beede464addb5a104ef6d442cd354ce1f2036419e8fa382f99e38"
+    },
+    {
+      "path": "Before/Circle_Generated_Manifest.txt",
+      "bytes": 730,
+      "sha256": "08c7b9cb73d563c2c1e2441e4ce72971c185ed6c60b33f8fe31dc457cf0178b6"
+    },
+    {
+      "path": "Before/HollowRectangle_Generated_Manifest.txt",
+      "bytes": 723,
+      "sha256": "1c4915aa4d5229b9f8843d9f191ede3dadf4fef0cb1921d4398e5c8cad6a0320"
+    },
+    {
+      "path": "Before/InputManifest.json",
+      "bytes": 3516,
+      "sha256": "fd5b77a652cc94d42a3e0bbf7b0974de9598719a716568bd523c420d79524e81"
+    },
+    {
+      "path": "Before/Preparation.json",
+      "bytes": 890,
+      "sha256": "cf7b24eba38fce08ce3a96296ab573714d27b036d8127bd61bbc15bb9090c56a"
+    },
+    {
+      "path": "Before/RectSet_Generated_Manifest.txt",
+      "bytes": 733,
+      "sha256": "6546a08380422132cb260cc8b23e81d75c8a4dc7084028b94675dc5366ff3c53"
+    },
+    {
+      "path": "Before/RoundedRectangle_Generated_Manifest.txt",
+      "bytes": 741,
+      "sha256": "95862bd7b3077eaf2dd2979fd445b20403386b7806c73c390623af74c58fab5d"
+    },
+    {
+      "path": "Before/SavedWorkbook_Paths_Manifest.txt",
+      "bytes": 707,
+      "sha256": "0eadad9db94c2486155dc761ee4b8def2909e57f5989e674137d7f879ef03e70"
+    },
+    {
+      "path": "Before/SavedWorkbook_Saved_Manifest.txt",
+      "bytes": 1867,
+      "sha256": "e6b23ecb4a8f505e2bc6aedfc863d35142537c7ec0d26ca461c50d0b157fee23"
+    },
+    {
+      "path": "Before_Circle_Generated_No.txt",
+      "bytes": 74051,
+      "sha256": "7a50cdb849204ffb3d1414c9bbbefdac96cbce8dad9033ea4d056fa4228c1e56"
+    },
+    {
+      "path": "Before_Circle_Generated_No.txt.progress.txt",
+      "bytes": 136968,
+      "sha256": "ae451c7155735b50739f764087ccdd888ab1ac9e7893008cfeaec86af2ff95e7"
+    },
+    {
+      "path": "Before_Circle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_Circle_Generated_No.txt.stdout.log",
+      "bytes": 583,
+      "sha256": "471ed62f0b26ed70d43358cc0e56f86c443a77e1ca850433eda35d7b35272538"
+    },
+    {
+      "path": "Before_Circle_Generated_Yes.txt",
+      "bytes": 72562,
+      "sha256": "58e4ca11ba6c19392b2ecfdf9bf8bb5a9e8a79b01eed05d8c307543eba6646cc"
+    },
+    {
+      "path": "Before_Circle_Generated_Yes.txt.progress.txt",
+      "bytes": 133992,
+      "sha256": "a6a79a69e61f79082c2d3acb84db05884bd2638dd16d22797faa977d17552658"
+    },
+    {
+      "path": "Before_Circle_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_Circle_Generated_Yes.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "d409baf108e37bcc63af0f712dfabfffa8041d127472dc85b990b45d1aec0b0b"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_No.txt",
+      "bytes": 78932,
+      "sha256": "e297963bb94f66e9fdb1c35febb98d46033f156b143f72b7396df4e9d4f79778"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146712,
+      "sha256": "309142f8b31b6bae861714a10a03d35fc9c80aea47f3a516f0ef3582a54bb1bd"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 592,
+      "sha256": "a2d6ab7b7cb798950bc91efd97c064c5b06e4718ce84e4ff9c09f8cb3e099e2a"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_Yes.txt",
+      "bytes": 77152,
+      "sha256": "31d48f62ea89d795ef1dcee5f5e9a472b7f022a0bdc1cd23a1ec328d6bf66708"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_Yes.txt.progress.txt",
+      "bytes": 143148,
+      "sha256": "e7c6b8f5b9beaf443bce4907b36740816b9b7a31df680ff182e6aff3b054de6e"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_HollowRectangle_Generated_Yes.txt.stdout.log",
+      "bytes": 594,
+      "sha256": "a2ceac36df169b2a5656ba4d6869a260351b9d40ade9b751e3583d68ba1c1e84"
+    },
+    {
+      "path": "Before_RectSet_Generated_No.txt",
+      "bytes": 74869,
+      "sha256": "75f5125bbfe8036248b62ca46e7c3c53018a582ddffb357d1b34bcc6aead690c"
+    },
+    {
+      "path": "Before_RectSet_Generated_No.txt.progress.txt",
+      "bytes": 138602,
+      "sha256": "96152ca6b7e04aeb22a5c4549cee2bfe968fb1a8600c82ca78fc63c46fda9ef2"
+    },
+    {
+      "path": "Before_RectSet_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_RectSet_Generated_No.txt.stdout.log",
+      "bytes": 584,
+      "sha256": "9303573097f256e57c677422548d068d6bf8e65a623f55292be39fb30e79dc3e"
+    },
+    {
+      "path": "Before_RectSet_Generated_Yes.txt",
+      "bytes": 73375,
+      "sha256": "dbaea386160005a16958f5847fa42e4f442dba40b7cb23529f9cec0e85a06d11"
+    },
+    {
+      "path": "Before_RectSet_Generated_Yes.txt.progress.txt",
+      "bytes": 135610,
+      "sha256": "fe8516926a8c0bba56ce98aede294b3125049241a3eb7ff2dfbb8139253c399d"
+    },
+    {
+      "path": "Before_RectSet_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_RectSet_Generated_Yes.txt.stdout.log",
+      "bytes": 586,
+      "sha256": "8de9a2a11a7af6315f61e1430607e5a6fecfb40addf9ab984a33d9cf3394fb3f"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_No.txt",
+      "bytes": 79810,
+      "sha256": "3fdc414f90dbc2fb0c2982fa3223409498705283a48d4a98c7fa34be617a4d8b"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_No.txt.progress.txt",
+      "bytes": 148468,
+      "sha256": "54189b577564f5b36b5773b8078c4214209af3665c3d9158a60d7e873ec76d8b"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_No.txt.stdout.log",
+      "bytes": 593,
+      "sha256": "fa4f6bc0c638a63501da791194b524aa116eeed1b5a468fe8e287247d8abd498"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_Yes.txt",
+      "bytes": 78009,
+      "sha256": "d77e7ba9ae7dc1f5eaca8f6f3e2dedcfc37b981d8e9ab15255894d7f4a80b3d0"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_Yes.txt.progress.txt",
+      "bytes": 144872,
+      "sha256": "f73cae76d5c7f1466b4c8d65d28d49a26012a8589a69164a5a4147d87aa098fd"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_RoundedRectangle_Generated_Yes.txt.stdout.log",
+      "bytes": 593,
+      "sha256": "91ff3138653d8e139c946f6a441fb7bc81c16892d93b4efd3ab780d040bda792"
+    },
+    {
+      "path": "Before_SavedWorkbook_Batch15_No.txt",
+      "bytes": 113721,
+      "sha256": "38cef245f7a5b9388c9232faa95725bc923f1a1c46aafe24372d80a985acf710"
+    },
+    {
+      "path": "Before_SavedWorkbook_Batch15_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_SavedWorkbook_Batch15_No.txt.stdout.log",
+      "bytes": 534,
+      "sha256": "29df46bb44ce801637bbe2c7c3b7557c9f353ce91d4b2ff711cde6f689096492"
+    },
+    {
+      "path": "Before_SavedWorkbook_Batch15_Yes.txt",
+      "bytes": 111995,
+      "sha256": "06d0854f95b93d99a3d0787e0fdb34db7fdd85013bd97bab635fc67aaece2348"
+    },
+    {
+      "path": "Before_SavedWorkbook_Batch15_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_SavedWorkbook_Batch15_Yes.txt.stdout.log",
+      "bytes": 535,
+      "sha256": "8d2f0a18e5686e70a1d43cc3c77117d2cc9529c1be9d70be52621c903558cc86"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_No.txt",
+      "bytes": 60599,
+      "sha256": "54f1a4b4038938f803b6f3b5827e47c62c4e47013f194a0e7747157144b9607c"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_No.txt.progress.txt",
+      "bytes": 111508,
+      "sha256": "304425ae09075015ff4e7b5fae4b88b9fc56379bf238847f33b1a42aea74b2aa"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_No.txt.stdout.log",
+      "bytes": 586,
+      "sha256": "551ee59848bd0a66402186b4582405bad588510b328d2aefd059dc894e225ae3"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_Yes.txt",
+      "bytes": 59358,
+      "sha256": "679662b255b8be83c0b04e8d2a0adc9c3ac2610d1a496c96ece3dedf36ecddb9"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "bytes": 109012,
+      "sha256": "4fb9609b35d586a7a6849736648d354b0af580b126a0a359be887438e43ca5aa"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "bytes": 588,
+      "sha256": "0fd0b32c902d22b9db6e0d54cfcb1cb3ce6330456e33f96d28ce4e0672bfedaa"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_No.txt",
+      "bytes": 253372,
+      "sha256": "295c11e4f37dc80cf3a16fc62bdd0d95210a68d44221b8cc41917b58a03b4815"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451598,
+      "sha256": "c06643c07f55076bf3d8549e160591b870a471a68917b281cd9e9d8ded4ef221"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 588,
+      "sha256": "75e62af839938b978c008fbe1095d405eca518c0df8eddba028e086af144d079"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_Yes.txt",
+      "bytes": 249281,
+      "sha256": "77213fcdca34432839dfee036a27234fa04b75e98307a021f7c13cd55630a55f"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "bytes": 445688,
+      "sha256": "7d01169ca5144395d84425ec50f04c85751b2e4c11b05d9d1115893eee294cbe"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Before_SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "bytes": 589,
+      "sha256": "16346b893469e6e0b2cb5b6a44bca8d80fbfa65269ab98ef7b9966d2f50d0b77"
+    },
+    {
+      "path": "Comparison.json",
+      "bytes": 45170,
+      "sha256": "8f468c103efa838f9ab029f916c1f001e82f43888eb02a55ff90660a8a2e10c3"
+    },
+    {
+      "path": "ForceBounds/AuditForceBounds.py",
+      "bytes": 12732,
+      "sha256": "9a5d45b44fb556206572403497d1c81d17c25a07be5c18ffd080ad7db832bc0c"
+    },
+    {
+      "path": "ForceBounds/Combined.bas",
+      "bytes": 4953,
+      "sha256": "7c74658b7e3be55cdbb3abaf268d13202365c894cc8088f5bfb8ea58dad2d088"
+    },
+    {
+      "path": "ForceBounds/Model.txt",
+      "bytes": 14092,
+      "sha256": "f151b8dfe78c7bec1ddd0f00b72b1fb8f434cef51b78296baa7253f1f90e6758"
+    },
+    {
+      "path": "ForceBounds/Model.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "ForceBounds/Model.txt.stdout.log",
+      "bytes": 478,
+      "sha256": "932e2c302aa0438214958bad8cd3d4a0053a1410516c893ed618d9a640a15f67"
+    },
+    {
+      "path": "ForceBounds/ModelManifest.json",
+      "bytes": 304,
+      "sha256": "b70886d48b062e538bd45db098e57ea75e896a98ba5e2b5a95a1283142e7f3f3"
+    },
+    {
+      "path": "ForceBounds/Preparation.json",
+      "bytes": 853,
+      "sha256": "fdc874a8943bf835b717bf2d8d420ce5291489c9fa10febade9be3e8145f2f4d"
+    },
+    {
+      "path": "InputsBefore.json",
+      "bytes": 429,
+      "sha256": "5f24573eaedc3cbf4dbbc882c50870b3de36d24b39659a4e74a86dd16becbd67"
+    },
+    {
+      "path": "NumericalFailureReview.json",
+      "bytes": 24085,
+      "sha256": "6b969d977809f411f6a0607a5c14c2ef9f979dc6572488a4e1eebb0d26b1b12c"
+    },
+    {
+      "path": "OutputDifferences.json",
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+    },
+    {
+      "path": "Progress.json",
+      "bytes": 13240,
+      "sha256": "e7e50bedf3d806a3a61716d6f0ae25e70eda878cafe2e9a3146898fceab043b7"
+    },
+    {
+      "path": "Repeat1_After_HollowRectangle_Generated_No.txt",
+      "bytes": 78925,
+      "sha256": "3ec1ff584b0c40638f50f0171e448e7014af9dc1810a12422fa6c54544c4ce0a"
+    },
+    {
+      "path": "Repeat1_After_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146714,
+      "sha256": "3d53e027bb25ba9f82b147e9e5972885a0f96e374724a2309815a43cdffe716b"
+    },
+    {
+      "path": "Repeat1_After_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat1_After_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 591,
+      "sha256": "f46e1ea12cf59561459bdb098c22c9b8e338bf7c394b1879ddc7d491d18c9c0c"
+    },
+    {
+      "path": "Repeat1_After_SavedWorkbook_Saved_No.txt",
+      "bytes": 253366,
+      "sha256": "a4dfe2d3d7c5f163a5ecf9370f5fd68a2327a2969e699d6a1d42cfc58b1dcecd"
+    },
+    {
+      "path": "Repeat1_After_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451592,
+      "sha256": "e97a3fae4c5f015491fbb86280fd0ea74b2ae06c5ddbaa2f0e4d9cf1edcc2b7e"
+    },
+    {
+      "path": "Repeat1_After_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat1_After_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "cc48a727f382670bb87ee799fa7a2c4309d8e3a64d8416def8a806791fffebae"
+    },
+    {
+      "path": "Repeat1_Before_HollowRectangle_Generated_No.txt",
+      "bytes": 78925,
+      "sha256": "873901815249fd4253e7c704453bfdd391e314937592d5a1ad7552cb5fbed7fb"
+    },
+    {
+      "path": "Repeat1_Before_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146704,
+      "sha256": "4bcd2778090aa3325102a0a9644969f0b0e51cbea069fae556177a372659da39"
+    },
+    {
+      "path": "Repeat1_Before_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat1_Before_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 592,
+      "sha256": "299715f2d590281f5dfcaacc0c33499453821516ec4b272b4e0759fa42c7ac6f"
+    },
+    {
+      "path": "Repeat1_Before_SavedWorkbook_Saved_No.txt",
+      "bytes": 253353,
+      "sha256": "94536191f05e7db18c50953c5eb577fe36310c7cff1b84b13e30f645bda0c3d6"
+    },
+    {
+      "path": "Repeat1_Before_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451572,
+      "sha256": "f5314d577b0380720e71d80d59de0bd574652a3872e7e92de1fe07f648ff01b5"
+    },
+    {
+      "path": "Repeat1_Before_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat1_Before_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 584,
+      "sha256": "8f47d8d54414fb98a56ff931a0045bf775ebf5b29f90498d79ed1cf96a1de24d"
+    },
+    {
+      "path": "Repeat2_After_HollowRectangle_Generated_No.txt",
+      "bytes": 78923,
+      "sha256": "c151eda6da53fce742a28c310f699f9fac26efd33bf7760e0c3ef7ef5d9809ae"
+    },
+    {
+      "path": "Repeat2_After_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146708,
+      "sha256": "91b055b1c4a51f7b36fdf7706a73f0b303ce08df1fb4f471449becda336f5361"
+    },
+    {
+      "path": "Repeat2_After_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat2_After_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 590,
+      "sha256": "a60da24a651c622efcb0a5e0b23529aec3a17db479b09d027f26b23519e37011"
+    },
+    {
+      "path": "Repeat2_After_SavedWorkbook_Saved_No.txt",
+      "bytes": 253357,
+      "sha256": "1bb39ec130b0eec1190f186d9802b0824cc59996779a9c4aaba9b1144caf8a07"
+    },
+    {
+      "path": "Repeat2_After_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451582,
+      "sha256": "67d4d648b4b56b98426ed50a644e188cd4ecdaa34d24440d1ff5d9d442bb84e5"
+    },
+    {
+      "path": "Repeat2_After_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat2_After_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 583,
+      "sha256": "ced1133ca4e348f2208ee887313924015b8dda6e4f7451ba27881f6661c50fb7"
+    },
+    {
+      "path": "Repeat2_Before_HollowRectangle_Generated_No.txt",
+      "bytes": 78929,
+      "sha256": "cf9237f17a9a92afd79807f276a57f36a711fe22432bfccf969817ea344ce363"
+    },
+    {
+      "path": "Repeat2_Before_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146708,
+      "sha256": "e7928af8bfd82e87f05cf4cb34d4ef8e8adf847e0c04a4dbd7de60472d61c3dc"
+    },
+    {
+      "path": "Repeat2_Before_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat2_Before_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 592,
+      "sha256": "fa4ef214857011c8af570d7dc8a2d7ca78f2132379a0fd724c64a8a0b48bc356"
+    },
+    {
+      "path": "Repeat2_Before_SavedWorkbook_Saved_No.txt",
+      "bytes": 253361,
+      "sha256": "113ba007016b50803eece794850fa54a93d6cf69b38269482716eaa29db6309c"
+    },
+    {
+      "path": "Repeat2_Before_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451574,
+      "sha256": "0a9f47e1b011ca104e06e18dbb40762e982bb36dd099828f8769c62da2d72551"
+    },
+    {
+      "path": "Repeat2_Before_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat2_Before_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 588,
+      "sha256": "1630eba3974983a88d26059b081d226f27f72a3d9f8914e637bfcb8bf06bb449"
+    },
+    {
+      "path": "Repeat3_After_HollowRectangle_Generated_No.txt",
+      "bytes": 78921,
+      "sha256": "454426f826a8e538134f716d7545830947cf4f8c9be8180ad0d5a8f157ed3b1d"
+    },
+    {
+      "path": "Repeat3_After_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146698,
+      "sha256": "99afd2392fa644df334cdc57f6dacbcb8354a5ed785862ccd23d21589f954988"
+    },
+    {
+      "path": "Repeat3_After_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat3_After_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 588,
+      "sha256": "2d1dd33da58e218f87ddedf2c413e8b2c8907d4ae76c4f918adfee193f38852d"
+    },
+    {
+      "path": "Repeat3_After_SavedWorkbook_Saved_No.txt",
+      "bytes": 253361,
+      "sha256": "93a9115de25604db9e299afa564c67aa8346c767b166cb2fb285009cea4d6b19"
+    },
+    {
+      "path": "Repeat3_After_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451582,
+      "sha256": "756e4110ce51f30ae4172d83fdfc14b34a1810fc0b662265b30106998dc8b163"
+    },
+    {
+      "path": "Repeat3_After_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat3_After_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 587,
+      "sha256": "8549db4c5bea091da0ed227138a1a5d3401b8918d4db12d0d400febceb4c0bb4"
+    },
+    {
+      "path": "Repeat3_Before_HollowRectangle_Generated_No.txt",
+      "bytes": 78924,
+      "sha256": "ae263570a30fb10fdb69d944798bc519a39675d5e3879bfeb11dc36084ac6fd3"
+    },
+    {
+      "path": "Repeat3_Before_HollowRectangle_Generated_No.txt.progress.txt",
+      "bytes": 146698,
+      "sha256": "9502a547793f3db111643d5365995e0661b9dc549555d9f5f1110777a35eaddf"
+    },
+    {
+      "path": "Repeat3_Before_HollowRectangle_Generated_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat3_Before_HollowRectangle_Generated_No.txt.stdout.log",
+      "bytes": 591,
+      "sha256": "fd905e71066ea217b56c1137361186d2337205ec4c3418b3f6f1cb8d7e55f236"
+    },
+    {
+      "path": "Repeat3_Before_SavedWorkbook_Saved_No.txt",
+      "bytes": 253362,
+      "sha256": "0f45bbd61113595efa15ac28b3a20654ef6b2c08378526fa88a999693e609a9b"
+    },
+    {
+      "path": "Repeat3_Before_SavedWorkbook_Saved_No.txt.progress.txt",
+      "bytes": 451590,
+      "sha256": "e9177506850254bc90822258cd0138f0d2f697be6415e338fc9b3ddc6596ea27"
+    },
+    {
+      "path": "Repeat3_Before_SavedWorkbook_Saved_No.txt.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Repeat3_Before_SavedWorkbook_Saved_No.txt.stdout.log",
+      "bytes": 585,
+      "sha256": "a4292b314519dc6e5fc6e676cc371b92f9d5280e6b4e4f07cd0c9959b90bee16"
+    },
+    {
+      "path": "Run.json",
+      "bytes": 18826,
+      "sha256": "cb6c2ae26761a5b1a8daab12f2445616a6b429020e99906757e8df5eb6120108"
+    },
+    {
+      "path": "SourceIntegrity.json",
+      "bytes": 1258,
+      "sha256": "1531b92465516ed56ced2a0e121cb7a0abb3d5dc9836803ec65e1ce601f11f8a"
+    },
+    {
+      "path": "TimingComparison.csv",
+      "bytes": 11277,
+      "sha256": "72c52b00db4ab68a37b2ac276bd969f28e639a3f2431370b51e21f3e2eb14e17"
+    },
+    {
+      "path": "TimingRepeatComparison.json",
+      "bytes": 19294,
+      "sha256": "40ba7070155e6a03baec43bc85f6c371d09c9a3350ab655517cf461ef5cc0c3b"
+    },
+    {
+      "path": "TimingRepeatsProgress.json",
+      "bytes": 6188,
+      "sha256": "0eb8911c784ad04f7f2726520d43fb947f1df787b99ba055f0616d2262836916"
+    },
+    {
+      "path": "TimingRepeatsRun.json",
+      "bytes": 8875,
+      "sha256": "f661de8f272a56ae3c9816d771d5c8c806c62e23f998b06b0f5129761915f114"
+    }
+  ]
+}

@@ -1,0 +1,824 @@
+{
+  "complete": true,
+  "reports": 28,
+  "expectedReports": 28,
+  "pairedIndividualCases": 122,
+  "expectedIndividualCases": 122,
+  "passedAssertionsBothVersions": 24526,
+  "failedAssertionsBothVersions": 0,
+  "allReportChecksPassed": true,
+  "allPairedOutputsExact": true,
+  "differentOutputGroups": 0,
+  "maxBeforeSeconds": 6.1953125,
+  "maxAfterSeconds": 7.2265625,
+  "medianTimeDeltaSeconds": 0.0,
+  "timingRepeatCandidates": [
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "id": "axialSmall1",
+      "beforeSeconds": 1.1171875,
+      "afterSeconds": 1.421875,
+      "deltaSeconds": 0.3046875,
+      "ratio": 1.2727272727272727,
+      "beforeSolverCalls": 2,
+      "afterSolverCalls": 2,
+      "repeatNeeded": true
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "id": "overloadMixed1",
+      "beforeSeconds": 6.1953125,
+      "afterSeconds": 7.2265625,
+      "deltaSeconds": 1.03125,
+      "ratio": 1.1664564943253468,
+      "beforeSolverCalls": 15,
+      "afterSolverCalls": 18,
+      "repeatNeeded": true
+    }
+  ],
+  "unresolved": [
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.952353, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.227018731665; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 20.601 МПа; допускаемое Rb,mc2 = 14.600 МПа."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.512106, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: При увеличении нагрузки другой физический предел бетона или арматуры достигнут до образования нормальной трещины и раньше заданной нагрузки, при lambda = 0.287277364704. Путь λ*N: Не удалось найти равновесие в начальной точке пути трещинообразования. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Достигнут лимит итераций на ступени нагрузки 1.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1.05|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1.05|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.907003, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.168589268494; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 21.631 МПа; допускаемое Rb,mc2 = 14.600 МПа."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.476176, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При увеличении нагрузки другой физический предел бетона или арматуры достигнут до образования нормальной трещины и раньше заданной нагрузки, при lambda = 0.613509323426.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=N2098Plateau|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=N2098Plateau|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.970379, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.250243583865; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 20.218 МПа; допускаемое Rb,mc2 = 14.600 МПа."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.952353, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.227018731665; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 20.601 МПа; допускаемое Rb,mc2 = 14.600 МПа."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: равновесие не сошлось численно. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.512106, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: При увеличении нагрузки другой физический предел бетона или арматуры достигнут до образования нормальной трещины и раньше заданной нагрузки, при lambda = 0.287277364704. Путь λ*N: Не удалось найти равновесие в начальной точке пути трещинообразования. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Достигнут лимит итераций на ступени нагрузки 1.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1.05|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC1.05|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.907003, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.168589268494; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 21.631 МПа; допускаемое Rb,mc2 = 14.600 МПа."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=axialC2|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.476176, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При увеличении нагрузки другой физический предел бетона или арматуры достигнут до образования нормальной трещины и раньше заданной нагрузки, при lambda = 0.613509323426.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=N2098Plateau|kind=1|reason=Достигнут лимит итераций на ступени нагрузки 1."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_No",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=N2098Plateau|kind=1|reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.970379, раньше заданной нагрузки (lambda = 1).; Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 1.250243583865; отдельная точка трещинообразования на этом пути не определяется.; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 20.218 МПа; допускаемое Rb,mc2 = 14.600 МПа."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_Yes",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_Yes",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "After_SavedWorkbook_Saved_Yes",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_Yes",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_Yes",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=Не удалось решить касательную систему: Матрица вырождена."
+    },
+    {
+      "report": "Before_SavedWorkbook_Saved_Yes",
+      "line": "FOCUSED_UNRESOLVED|shape=SavedWorkbook|id=overloadMixed1000000|kind=1|reason=НДС: Не удалось решить касательную систему: Матрица вырождена.; Несущая: Путь λ*Mxy: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Путь λ*N: Равновесие для исходной точки пути несущей не найдено численно: касательная матрица вырождена. Итоговый путь λ*NMxy: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.000001, раньше заданной нагрузки (lambda = 1).; Трещинообразование: Путь λ*Mxy: Не удалось решить касательную систему: Матрица вырождена. Путь λ*N: Не удалось решить касательную систему: Матрица вырождена. Итоговый путь λ*NMxy: Точка образования трещины найдена методом UltimateStrain. Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.; НДС: Не удалось решить касательную систему: Матрица вырождена.; Ширина трещин: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState.; Продольные трещины: Расчет не выполнен: нет допустимого обязательного результата CurrentCrackedState."
+    }
+  ],
+  "failures": [],
+  "reportsChecked": [
+    {
+      "id": "Before_RectSet_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_RectSet_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_RectSet_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_RectSet_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_Circle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_Circle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_Circle_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_Circle_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_RoundedRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_RoundedRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_RoundedRectangle_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_RoundedRectangle_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_HollowRectangle_Generated_No",
+      "passed": 714,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_HollowRectangle_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_HollowRectangle_Generated_Yes",
+      "passed": 683,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_SavedWorkbook_Saved_No",
+      "passed": 1947,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_SavedWorkbook_Saved_Yes",
+      "passed": 1914,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_SavedWorkbook_Saved_Yes",
+      "passed": 1914,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_SavedWorkbook_Paths_No",
+      "passed": 533,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_SavedWorkbook_Paths_No",
+      "passed": 533,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_SavedWorkbook_Paths_Yes",
+      "passed": 510,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_SavedWorkbook_Paths_Yes",
+      "passed": 510,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_SavedWorkbook_Batch15_No",
+      "passed": 910,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_SavedWorkbook_Batch15_No",
+      "passed": 910,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "After_SavedWorkbook_Batch15_Yes",
+      "passed": 861,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    },
+    {
+      "id": "Before_SavedWorkbook_Batch15_Yes",
+      "passed": 861,
+      "failed": 0,
+      "complete": true,
+      "resultsReopen": true,
+      "stylesReopen": true,
+      "sourceUnchanged": true,
+      "runnerPassed": true
+    }
+  ],
+  "comparison": [
+    {
+      "shape": "RectSet",
+      "group": "Generated",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "RectSet",
+      "group": "Generated",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "Circle",
+      "group": "Generated",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "Circle",
+      "group": "Generated",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "RoundedRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "RoundedRectangle",
+      "group": "Generated",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "HollowRectangle",
+      "group": "Generated",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 31,
+        "countAfter": 31,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 8,
+        "countAfter": 8,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      }
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 22,
+        "countAfter": 22,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 82,
+        "countAfter": 82,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 22,
+        "countAfter": 22,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 154,
+        "countAfter": 154,
+        "exact": true
+      }
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Saved",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 22,
+        "countAfter": 22,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 82,
+        "countAfter": 82,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 22,
+        "countAfter": 22,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 154,
+        "countAfter": 154,
+        "exact": true
+      }
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Paths",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 6,
+        "countAfter": 6,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 23,
+        "countAfter": 23,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 6,
+        "countAfter": 6,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 42,
+        "countAfter": 42,
+        "exact": true
+      }
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Paths",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 6,
+        "countAfter": 6,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 23,
+        "countAfter": 23,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 6,
+        "countAfter": 6,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 42,
+        "countAfter": 42,
+        "exact": true
+      }
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Batch15",
+      "mode": "No",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 15,
+        "countAfter": 15,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 0,
+        "countAfter": 0,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 105,
+        "countAfter": 105,
+        "exact": true
+      }
+    },
+    {
+      "shape": "SavedWorkbook",
+      "group": "Batch15",
+      "mode": "Yes",
+      "FOCUSED_COMPARE|": {
+        "countBefore": 15,
+        "countAfter": 15,
+        "exact": true
+      },
+      "FOCUSED_STATE|": {
+        "countBefore": 56,
+        "countAfter": 56,
+        "exact": true
+      },
+      "FOCUSED_RESULT|": {
+        "countBefore": 0,
+        "countAfter": 0,
+        "exact": true
+      },
+      "META:": {
+        "countBefore": 105,
+        "countAfter": 105,
+        "exact": true
+      }
+    }
+  ]
+}
