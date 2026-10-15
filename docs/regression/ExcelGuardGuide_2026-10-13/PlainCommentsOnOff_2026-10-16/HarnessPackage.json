@@ -1,0 +1,24 @@
+{
+  "Status": "TEST_HARNESS_PACKAGE_PASS",
+  "OriginalSourceSHA256": "A09C2835FEF004644AD6F5F34544FC954855FDECCEC828BE5ECCE43383CBF958",
+  "CandidateSHA256": "FDAD9F084F003E50C829B8E413D3C7FCD919C8CB20F6C1590900CCC5BD707BF6",
+  "WorkbookSHA256": "E8BAC2190FE9CFA1C3AF2C9AAA0B13FF5F34B96B996090BAE85C8B2EB996A4EC",
+  "ChangedNativeComponents": [
+    "modTestGeometry"
+  ],
+  "ChangedMethods": [
+    [
+      "sub",
+      "assertinvalid"
+    ]
+  ],
+  "DeclarationsUnchanged": true,
+  "WorkingSourceCodeUnchanged": true,
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "SourceEquality": true,
+  "GeometryOffPassed": 765,
+  "GeometryOnPassed": 765,
+  "OriginalPolygonPassed": 52
+}

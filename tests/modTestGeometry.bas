@@ -2273,13 +2273,14 @@ Private Function FirstSmallFiberWidth(ByVal mesh As CFiberMeshBuilder, ByVal bas
     FirstSmallFiberWidth = 0#
 End Function
 
-' Проверяет валидацию размеров/радиусов непосредственно на RoundedRectangle-геометрии.
+' Проверяет отказ при недопустимых размерах и радиусах. После первой ошибки
+' дальнейшее построение прекращается, чтобы не проверить другую фигуру без отвергнутой вершины.
 Private Sub AssertInvalid(ByRef stats As TTestStats, ByVal name As String, _
         ByVal width As Double, ByVal height As Double, ByVal rtl As Double, ByVal rtr As Double, _
         ByVal rbr As Double, ByVal rbl As Double)
     Dim filletPolygon As CPolygonSpec
     Dim geometry As CGeometryRegion, number As Long
-    On Error Resume Next
+    On Error GoTo Rejected
     If width <= 0# Or height <= 0# Then
         Set geometry = FixtureGeometry(FixtureRoundedDefinition(Array(width, height, "Simple", "Simple", _
             0#, 0#, rtl, rtr, 0#, 0#)).ConcreteDomain)
@@ -2292,7 +2293,12 @@ Private Sub AssertInvalid(ByRef stats As TTestStats, ByVal name As String, _
         filletPolygon.Seal
         Set geometry = FixtureFillets(filletPolygon)
     End If
-    number = Err.Number: Err.Clear
+    On Error GoTo 0
+    AssertTrue stats, name, False
+    Exit Sub
+Rejected:
+    number = Err.Number
+    Err.Clear
     On Error GoTo 0
     AssertTrue stats, name, number <> 0 And geometry Is Nothing
 End Sub

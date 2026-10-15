@@ -1,0 +1,13 @@
+{
+  "Status": "TEST_HELPER_READBACK_PASS",
+  "WorkbookSHA256": "E8BAC2190FE9CFA1C3AF2C9AAA0B13FF5F34B96B996090BAE85C8B2EB996A4EC",
+  "AllCodeSHA256": "6CF75BDC50BAA9C1012AC85B3B9C99D80AD996A54F79CB7E91EDC52119BDE6D2",
+  "AllCodeEqualsActualPublishedReadback": true,
+  "ActualReadbackPending": false,
+  "NativeComponents": 157,
+  "SourceComponents": 152,
+  "NonVBAPartsByteIdentical": true,
+  "WorkingCodeUnchanged": true,
+  "ExecutionReportUnchanged": true,
+  "ExecutionReportSHA256": "158A1C3A4D047EAFEA07B78517EBF62420289999485CDF91231419A548DA746B"
+}
