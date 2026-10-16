@@ -79,17 +79,21 @@ Public Function RunBatchCalculationTests() As String
 
     Dim stats As TBatchTestStats
     Dim originalPr1Stability As String
+    Dim originalPr1CrackWidth As String
     Dim originalCrackCode As String
     Dim hasOriginalPr1Stability As Boolean
     Dim t0 As Double
     t0 = Timer
 
-    ' Общий batch-набор проверяет прочность PR1 без фильтра устойчивости.
+    ' Общий набор проверяет PR1 без устойчивости и трещин, если конкретный
+    ' тест не включает их отдельно. Все пользовательские значения возвращаются.
     ' Пользовательский дефолт книги при этом не меняем: значение возвращается в конце.
     originalPr1Stability = GetProfileValue("Calculation.Stability.Enabled", "PR1")
+    originalPr1CrackWidth = GetProfileValue("Calculation.Crack.Width", "PR1")
     originalCrackCode = GetSystemSetting("SLS.Crack.Code")
     hasOriginalPr1Stability = True
     SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
     ' Формульные регрессии этого набора относятся к СП 63; СП 35 имеет
     ' собственные suites, а пользовательский default возвращается в конце.
     SetSystemSetting "SLS.Crack.Code", "SP63"
@@ -332,7 +336,7 @@ Public Function RunBatchCalculationTests() As String
 
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
-    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode
+    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
     RunBatchCalculationTests = stats.Report
     Exit Function
 
@@ -341,7 +345,7 @@ Failed:
     failureNumber = Err.Number
     failureSource = Err.Source
     failureDescription = Err.Description
-    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode
+    RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
     RunBatchCalculationTests = stats.Report & "RUNTIME ERROR: " & CStr(failureNumber) & _
         "; source=" & failureSource & "; description=" & failureDescription
 End Function
@@ -497,6 +501,98 @@ Finished:
     RunPlateauResultsDiagramTests = stats.Report & "TOTAL_PLATEAU_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
 End Function
 
+' ДЛЯ ТЕСТОВ: вывод общей диаграммы охватывает все найденные НДС, включая
+' деформации дальше прежних +/-100. Физические узлы и снимки не изменяются.
+Public Function RunUnboundedDiagramResultsTests() As String
+    Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object
+    Dim savedSystem As Variant, savedProfiles As Variant, fixture As Object, sheet As Object
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, materials As CMaterialModelProvider
+    Dim section As CSectionModel, batch As CBatchSectionCalculator, catalog As CCalculationProfileCatalog
+    Dim spec As CMaterialModelSpec, oracle As CSectionSolver, state As CSectionStateResult
+    Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, diagram As CMaterialDiagram
+    Dim writer As CNDMResultsWriter, props As CSectionPropertiesCalculator, names As Variant, columns As Variant
+    Dim value As Variant, i As Long, row As Long, point As Long, data As Variant, unique As Object, key As String
+    Dim cMin As Double, cMax As Double, sMin As Double, sMax As Double, expected As Double, solves As Long
+    On Error GoTo Failed
+    Set systemRange = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange
+    Set profileRange = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
+    savedSystem = systemRange.Formula: savedProfiles = profileRange.Formula
+    SetSystemSetting "General.DiagramExtension", "Yes"
+    SetProfileValue "Calculation.Stability.Enabled", "PR1", "No"
+    SetProfileValue "Calculation.Strength.DirectState", "PR1", "Yes"
+    SetProfileValue "Calculation.Strength.Capacity", "PR1", "No"
+    SetProfileValue "Calculation.Crack.Width", "PR1", "No"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set materials = New CMaterialModelProvider: materials.Initialize settings, units
+    Set batch = BuildBatchCalculator(True, section)
+    Set catalog = TestProfileCatalog(): Set spec = catalog.ProfileById("PR1").StrengthSpec
+    batch.Initialize section, materials: Set batch.ProfileCatalog = catalog: batch.ApplySettings settings, units
+    Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
+    Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
+    For Each value In Array(-500#, 25#, 250#)
+        Set oracle = New CSectionSolver
+        oracle.EvaluateStrainPlane section, concrete, steel, CDbl(value), 0#, 0#
+        batch.AddCombination "RANGE" & CStr(value), oracle.Nint, oracle.Mxint, oracle.Myint, "PR1", "", "Auto"
+    Next value
+    batch.Execute
+    For i = 1 To batch.Count
+        Set state = batch.ResultAt(i).StateRepository.StateAt(1)
+        AssertTrue stats, "unbounded.results.equilibrium." & CStr(i), state.Converged
+        AssertTrue stats, "unbounded.results.physicalFail." & CStr(i), state.InternalStatus = rsCheckFailed And state.ExtensionUsed
+        If i = 1 Then
+            cMin = state.MinConcreteStrain: cMax = state.MaxConcreteStrain
+            sMin = state.MinSteelStrain: sMax = state.MaxSteelStrain
+        Else
+            cMin = MinDouble(cMin, state.MinConcreteStrain): cMax = MaxDouble(cMax, state.MaxConcreteStrain)
+            sMin = MinDouble(sMin, state.MinSteelStrain): sMax = MaxDouble(sMax, state.MaxSteelStrain)
+        End If
+    Next i
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1): sheet.Name = "Results"
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionContours", _
+        "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    columns = Array(1, 12, 29, 48, 56, 69)
+    For i = 0 To UBound(names)
+        fixture.Names.Add CStr(names(i)), "=Results!" & sheet.Cells(20, CLng(columns(i))).Address
+    Next i
+    Set writer = New CNDMResultsWriter: Set props = PrepareSectionSnapshot(section, materials)
+    solves = SectionEquilibriumSolveCount()
+    writer.WriteResults fixture, section, props, batch, units
+    AssertTrue stats, "unbounded.results.noNewSolve", SectionEquilibriumSolveCount() = solves
+    data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
+    AssertTrue stats, "unbounded.results.noDuplicateDiagrams", UBound(data, 1) = 1 + concrete.PointCount + steel.PointCount
+    Set unique = CreateObject("Scripting.Dictionary")
+    For row = 2 To UBound(data, 1)
+        point = CLng(data(row, 9)): key = CStr(data(row, 2)) & "|" & CStr(point)
+        AssertTrue stats, "unbounded.results.unique." & CStr(row), Not unique.Exists(key)
+        unique.Add key, True
+        If CStr(data(row, 8)) = "Concrete" Then
+            Set diagram = concrete: expected = diagram.PointStrain(point)
+            If point = 1 And diagram.HasCompressionExtension Then expected = MinDouble(expected, cMin)
+            If point = diagram.PointCount And diagram.HasTensionExtension Then expected = MaxDouble(expected, cMax)
+        Else
+            Set diagram = steel: expected = diagram.PointStrain(point)
+            If point = 1 And diagram.HasCompressionExtension Then expected = MinDouble(expected, sMin)
+            If point = diagram.PointCount And diagram.HasTensionExtension Then expected = MaxDouble(expected, sMax)
+        End If
+        AssertClose stats, "unbounded.results.strain." & CStr(row), CDbl(data(row, 10)), expected, 0.000000000001
+        AssertClose stats, "unbounded.results.stress." & CStr(row), units.OutputStressToInternal(CDbl(data(row, 11))), diagram.GetStress(expected), 0.000001
+    Next row
+    AssertTrue stats, "unbounded.results.compressionBeyond100", cMin < -100# And sMin < -100#
+    AssertTrue stats, "unbounded.results.tensionBeyond100", sMax > 100#
+    AssertTrue stats, "unbounded.results.originalReferencesRetained", concrete.PointStrain(1) > -2# And steel.PointStrain(steel.PointCount) < 2#
+    GoTo Finished
+Failed:
+    AssertTrue stats, "unbounded.results.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If IsArray(savedSystem) Then systemRange.Formula = savedSystem
+    If IsArray(savedProfiles) Then profileRange.Formula = savedProfiles
+    If Not fixture Is Nothing Then fixture.Close False
+    On Error GoTo 0
+    RunUnboundedDiagramResultsTests = stats.Report & "TOTAL_UNBOUNDED_DIAGRAM_RESULTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
 ' ДЛЯ ТЕСТОВ: читает только непрерывную таблицу под одноячеечным якорем.
 Private Function PostAudit03ReadSnapshotTable(ByVal workbook As Object, ByVal rangeName As String) As Variant
     Dim anchor As Object, rows As Long, columns As Long
@@ -515,11 +611,13 @@ End Function
 ' Отдельные stability-тесты внутри набора сами включают устойчивость и восстанавливают
 ' ее к этому временному тестовому базису, поэтому здесь нужен только финальный возврат.
 Private Sub RestoreBatchSuiteProfileDefaults(ByVal originalPr1Stability As String, _
-                                             ByVal hasOriginalPr1Stability As Boolean, ByVal originalCrackCode As String)
+                                             ByVal hasOriginalPr1Stability As Boolean, ByVal originalCrackCode As String, _
+                                             ByVal originalPr1CrackWidth As String)
     If Not hasOriginalPr1Stability Then Exit Sub
 
     On Error Resume Next
     SetProfileValue "Calculation.Stability.Enabled", "PR1", originalPr1Stability
+    SetProfileValue "Calculation.Crack.Width", "PR1", originalPr1CrackWidth
     SetSystemSetting "SLS.Crack.Code", originalCrackCode
     On Error GoTo 0
 End Sub
@@ -4559,6 +4657,11 @@ Private Function MaxDouble(ByVal firstValue As Double, ByVal secondValue As Doub
     If firstValue > secondValue Then MaxDouble = firstValue Else MaxDouble = secondValue
 End Function
 
+' Возвращает меньшую границу диапазона деформаций нескольких тестовых НДС.
+Private Function MinDouble(ByVal firstValue As Double, ByVal secondValue As Double) As Double
+    If firstValue < secondValue Then MinDouble = firstValue Else MinDouble = secondValue
+End Function
+
 ' Собирает независимый армированный прямоугольник 300x200 и профильный batch.
 ' Effective Extension задается явно для теста; готовая модель при необходимости
 ' возвращается для дополнительных проверок состояний без повторной геометрии.
@@ -7869,9 +7972,9 @@ End Function
 
 ' ====================== ДЛЯ ТЕСТОВ: AUDIT03 EXTENDED OVERLOAD EQUILIBRIUM ======================
 
-' Проверяет перегрузки одной формы с известным равновесием внутри технических
-' ветвей. Нагрузки получаются интегрированием заданной плоскости, но solve
-' начинает с собственного cold-start без передачи этой плоскости/solver-а.
+' Проверяет перегрузки с известным равновесием, в том числе далеко за
+' прежними границами продолжения. Нагрузки получаются по заданной плоскости,
+' а решатель начинает поиск самостоятельно, без передачи этой плоскости.
 Public Function RunAudit03ExtendedOverloadEquilibriumTests(ByVal shapeName As String) As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, section As CSectionModel
@@ -7879,7 +7982,7 @@ Public Function RunAudit03ExtendedOverloadEquilibriumTests(ByVal shapeName As St
     Dim method As Variant, role As Variant, magnitude As Variant, mode As Long, cases As Long
     For Each method In Array("Newton", "Secant")
         For Each role In Array(cpStrength, cpCrackedNDS)
-            For Each magnitude In Array(0.05, 0.5, 5#, 9.5)
+            For Each magnitude In Array(0.05, 0.5, 5#, 9.5, 15#, 50#, 95#, 500#)
                 For mode = 1 To 3
                     Audit03KnownExtendedStateCase stats, section, shapeName, CStr(method), _
                         CLng(role), CDbl(magnitude), mode
@@ -7888,7 +7991,7 @@ Public Function RunAudit03ExtendedOverloadEquilibriumTests(ByVal shapeName As St
             Next magnitude
         Next role
     Next method
-    Audit03BeyondExtensionEndpointCases stats, section, shapeName
+    Audit03BeyondExtensionReferenceCases stats, section, shapeName
     AppendLine stats, "TOTAL_AUDIT03_EXTENDED_OVERLOAD: shape=" & shapeName & "; knownStates=" & CStr(cases) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExtendedOverloadEquilibriumTests = stats.Report
@@ -8013,8 +8116,8 @@ Private Sub Audit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal 
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram
     Set concrete = materials.ConcreteMaterialForEquilibriumFromSpec(spec)
     Set steel = materials.SteelMaterialForEquilibriumFromSpec(spec)
-    AssertClose stats, prefix & ".technicalCompressionEndpoint", concrete.PointStrain(1), -10#, 0#
-    AssertClose stats, prefix & ".technicalSteelEndpoint", steel.PointStrain(steel.PointCount), 10#, 0#
+    AssertTrue stats, prefix & ".compressionReference", concrete.PointStrain(1) < concrete.PhysicalCompressionStrain
+    AssertTrue stats, prefix & ".steelReference", steel.PointStrain(steel.PointCount) > steel.PhysicalTensionStrain
     Dim eps0 As Double, kx As Double, ky As Double
     Audit03OverloadPlane section, magnitude, mode, eps0, kx, ky
     Dim oracle As CSectionSolver
@@ -8043,8 +8146,9 @@ Private Sub Audit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal 
         AssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
         AssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
         AssertTrue stats, prefix & ".extensionUsed", state.ExtensionUsed
-        AssertTrue stats, prefix & ".insideTechnicalEndpoints", state.MinConcreteStrain >= -10# And _
-            state.MaxConcreteStrain <= 10# And state.MinSteelStrain >= -10# And state.MaxSteelStrain <= 10#
+        If magnitude >= 500# Then AssertTrue stats, prefix & ".beyondFormerLimits", _
+            state.MinConcreteStrain < -100# Or state.MaxConcreteStrain > 100# Or _
+            state.MinSteelStrain < -100# Or state.MaxSteelStrain > 100#
         AssertTrue stats, prefix & ".physicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
         AssertTrue stats, prefix & ".displayFail", policy.ExternalStatus(state.ResultMeta) = policy.Fail
     End If
@@ -8058,9 +8162,9 @@ Private Sub Audit03KnownExtendedStateCase(ByRef stats As TBatchTestStats, ByVal 
     End If
 End Sub
 
-' Нагрузка выше интегрального максимума технических диаграмм не имеет
-' равновесия даже при On. Это отдельная граница от физических eps_ult.
-Private Sub Audit03BeyondExtensionEndpointCases(ByRef stats As TBatchTestStats, _
+' Опорная точка не ограничивает усилие. Ещё большая осевая нагрузка должна
+' иметь численное равновесие с физическим FAIL, а не прежний отказ из-за обрезки.
+Private Sub Audit03BeyondExtensionReferenceCases(ByRef stats As TBatchTestStats, _
         ByVal section As CSectionModel, ByVal shapeName As String)
     Dim sign As Variant, materials As CMaterialModelProvider, spec As CMaterialModelSpec
     Set materials = TestMaterialProvider(True)
@@ -8069,22 +8173,26 @@ Private Sub Audit03BeyondExtensionEndpointCases(ByRef stats As TBatchTestStats, 
         Dim oracle As CSectionSolver
         Set oracle = New CSectionSolver
         oracle.EvaluateStrainPlane section, materials.ConcreteMaterialForEquilibriumFromSpec(spec), _
-            materials.SteelMaterialForEquilibriumFromSpec(spec), CDbl(sign) * 10#, 0#, 0#
+            materials.SteelMaterialForEquilibriumFromSpec(spec), CDbl(sign) * 1000#, 0#, 0#
         Dim request As CStateRequest, provider As CStateProvider, state As CSectionStateResult
         Set request = New CStateRequest
         request.Initialize sstStrengthState, cpStrength, spec, 1.05 * oracle.Nint, _
             1.05 * oracle.Mxint, 1.05 * oracle.Myint, True, True
         Set provider = Audit03OverloadStateProvider(section, materials, "Newton")
         Set state = provider.GetOrSolve(request)
-        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".noEquilibrium", Not state.Converged
-        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".numeric", state.InternalStatus = rsNumericalFailure
+        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".equilibrium", state.Converged
+        AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".physicalFail", _
+            state.InternalStatus = rsCheckFailed And Not state.WithinPhysicalRange And state.ExtensionUsed
+        AssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rN", state.ResidualN, 0#, 1#
+        AssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rMx", state.ResidualMx, 0#, 1000#
+        AssertClose stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".rMy", state.ResidualMy, 0#, 1000#
         AssertTrue stats, "audit03.extendedBeyond." & shapeName & "." & CStr(sign) & ".reason", Len(state.ResultComment) > 0
     Next sign
 End Sub
 
-' ДЛЯ ТЕСТОВ: проверяет реальные Stress нагрузки на расширенной диаграмме.
-' Для каждого численного отказа ищет независимый сертификат невозможности
-' равновесия по ограниченным напряжениям, а не сравнивает только осевую силу.
+' ДЛЯ ТЕСТОВ: проверяет большие нагрузки на армированных сечениях с линейным
+' продолжением. Конечные опорные точки не ограничивают воспринимаемые усилия;
+' каждый случай должен найти равновесие и отдельно проверить физические пределы.
 Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As String, _
         Optional ByVal solveVariant As String = "Newton") As String
     On Error GoTo Failed
@@ -8106,7 +8214,7 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
     Set materials = TestMaterialProvider(True)
     Dim loads As Collection, item As Variant, role As Variant, spec As CMaterialModelSpec
     Set loads = Audit03NormalizedLoads(section, "Stress")
-    Dim referenceX As Double, referenceY As Double, cases As Long, certifiedFailures As Long
+    Dim referenceX As Double, referenceY As Double, cases As Long
     CalculateConcreteSectionCentroid section, referenceX, referenceY
     For Each role In Array(cpStrength, cpCrackedNDS)
         Set spec = Audit03OverloadSpec(CLng(role))
@@ -8128,32 +8236,21 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
             provider.SecantMaxRestarts = maxRestarts
             Set state = provider.GetOrSolve(request)
             cases = cases + 1
-            Dim prefix As String, certified As Boolean, certificate As String
+            Dim prefix As String
             prefix = "audit03.extendedStress." & shapeName & "." & solveVariant & "." & CStr(role) & "." & CStr(item(0))
-            certificate = vbNullString
             AssertTrue stats, prefix & ".notInternalError", state.InternalStatus <> rsInternalError
+            AssertTrue stats, prefix & ".equilibrium", state.Converged
             If Not state.Converged Then
-                certified = Audit03ExtendedStressCertificate(section, concrete, steel, load, certificate, state)
-                AssertTrue stats, prefix & ".numericalCause", state.InternalStatus = rsNumericalFailure
-                AssertTrue stats, prefix & ".infeasibleCertificate", certified
-                If certified Then certifiedFailures = certifiedFailures + 1
-                If Not certified Then
-                    AppendLine stats, "EXTENDED_STRESS_UNEXPLAINED: " & prefix & vbCrLf & state.DiagnosticLog
-                    Audit03InspectStressFailure stats, section, concrete, steel, load, state, prefix
-                End If
+                AppendLine stats, "EXTENDED_STRESS_UNEXPLAINED: " & prefix & vbCrLf & state.DiagnosticLog
+                Audit03InspectStressFailure stats, section, concrete, steel, load, state, prefix
             Else
-                certified = False: certificate = vbNullString
                 AssertClose stats, prefix & ".rN", state.ResidualN, 0#, 1#
                 AssertClose stats, prefix & ".rMx", state.ResidualMx, 0#, 1000#
                 AssertClose stats, prefix & ".rMy", state.ResidualMy, 0#, 1000#
-                If state.MinConcreteStrain < -10# Or state.MaxConcreteStrain > 10# Or _
-                        state.MinSteelStrain < -10# Or state.MaxSteelStrain > 10# Then
-                    ' Крайняя точка ограничивает напряжение, но не является
-                    ' hard cap solver-а. Такое равновесие не бывает физическим OK.
-                    AssertTrue stats, prefix & ".beyondEndpointPhysicalFail", _
-                        Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
+                If state.ExtensionUsed Then
+                    AssertTrue stats, prefix & ".extendedPhysicalFail", Not state.WithinPhysicalRange And state.InternalStatus = rsCheckFailed
                 Else
-                    AssertTrue stats, prefix & ".insideTechnicalEndpoints", True
+                    AssertTrue stats, prefix & ".physicalState", state.WithinPhysicalRange And state.InternalStatus = rsSuccess
                 End If
             End If
             AppendLine stats, "EXTENDED_STRESS: " & prefix & "|N=" & FormatNumberInvariant(load.N) & _
@@ -8164,12 +8261,12 @@ Public Function RunAudit03ExtendedStressFeasibilityTests(ByVal shapeName As Stri
                 "|ky=" & FormatNumberInvariant(state.KappaY) & _
                 "|concreteMin=" & FormatNumberInvariant(state.MinConcreteStrain) & "|concreteMax=" & FormatNumberInvariant(state.MaxConcreteStrain) & _
                 "|steelMin=" & FormatNumberInvariant(state.MinSteelStrain) & "|steelMax=" & FormatNumberInvariant(state.MaxSteelStrain) & _
-                "|infeasibleCertified=" & CStr(certified) & "|certificate=" & certificate & "|reason=" & state.ResultComment
+                "|reason=" & state.ResultComment
         Next item
     Next role
-    AssertTrue stats, "audit03.extendedStress." & shapeName & ".actualInfeasibleCases", certifiedFailures > 0
+    AssertTrue stats, "audit03.extendedStress." & shapeName & ".allRequestedCases", cases = 2 * loads.Count
     AppendLine stats, "TOTAL_AUDIT03_EXTENDED_STRESS: shape=" & shapeName & "; variant=" & solveVariant & "; cases=" & CStr(cases) & _
-        "; certifiedFailures=" & CStr(certifiedFailures) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+        "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExtendedStressFeasibilityTests = stats.Report
     Exit Function
 Failed:
@@ -8235,154 +8332,8 @@ Private Sub Audit03InspectStressFailure(ByRef stats As TBatchTestStats, _
     Next diagnosticMethod
 End Sub
 
-' ДЛЯ ТЕСТОВ: сумма независимых предельных вкладов является верхней оценкой
-' a*N + by*Mx + bx*My. Нарушение хотя бы одной такой оценки доказывает
-' невозможность равновесия даже без ограничения совместности деформаций.
-' Обратное неверно: отсутствие сертификата само по себе не доказывает сходимость.
-Private Function Audit03ExtendedStressCertificate(ByVal section As CSectionModel, _
-        ByVal concrete As CMaterialDiagram, ByVal steel As CMaterialDiagram, _
-        ByVal load As CSectionLoadState, ByRef certificate As String, _
-        Optional ByVal failedState As CSectionStateResult = Nothing) As Boolean
-    Dim concreteLow As Double, concreteHigh As Double, steelLow As Double, steelHigh As Double
-    Audit03StressBounds concrete, concreteLow, concreteHigh
-    Audit03StressBounds steel, steelLow, steelHigh
-    Dim rebarLow As Double, rebarHigh As Double
-    Audit03NetRebarStressBounds concrete, steel, rebarLow, rebarHigh
-    Dim centerX As Double, centerY As Double, radius As Double, i As Long
-    CalculateConcreteSectionCentroid section, centerX, centerY
-    For i = 1 To section.ConcreteCount
-        radius = MaxDouble(radius, Abs(section.ConcreteX(i) - centerX) + Abs(section.ConcreteY(i) - centerY))
-    Next i
-    For i = 1 To section.RebarCount
-        radius = MaxDouble(radius, Abs(section.RebarX(i) - centerX) + Abs(section.RebarY(i) - centerY))
-    Next i
-    Dim elements() As Double, total As Long, x As Double, y As Double, area As Double
-    total = section.ConcreteCount + section.RebarCount
-    ReDim elements(1 To total, 1 To 5)
-    For i = 1 To total
-        If i <= section.ConcreteCount Then
-            section.ConcreteElementForSolver i, x, y, area
-            elements(i, 4) = concreteLow: elements(i, 5) = concreteHigh
-        Else
-            section.RebarElementForSolver i - section.ConcreteCount, x, y, area
-            ' Оба материала в точке стержня имеют одну деформацию. Границы
-            ' разности берутся по объединению узлов реальных диаграмм.
-            elements(i, 4) = rebarLow: elements(i, 5) = rebarHigh
-        End If
-        elements(i, 1) = x: elements(i, 2) = y: elements(i, 3) = area
-    Next i
-    Dim angleIndex As Long, a As Double, bx As Double, by As Double, alphaValues As Variant
-    Dim candidate As Long, candidateCount As Long, upper As Double, target As Double, q As Double
-    alphaValues = Array(-2#, -1#, -0.5, -0.25, 0#, 0.25, 0.5, 1#, 2#)
-    For angleIndex = -1 To 17
-        bx = 0#: by = 0#
-        If angleIndex >= 16 Then
-            If failedState Is Nothing Then Exit For
-            Dim planeScale As Double, directionSign As Double
-            planeScale = MaxDouble(Abs(failedState.KappaX), Abs(failedState.KappaY))
-            If planeScale <= 0# Then Exit For
-            directionSign = 1#
-            If angleIndex = 17 Then directionSign = -1#
-            bx = directionSign * failedState.KappaY / planeScale
-            by = directionSign * failedState.KappaX / planeScale
-        ElseIf angleIndex >= 0 Then
-            bx = Sin(2# * GEOM_PI * angleIndex / 16#)
-            by = Cos(2# * GEOM_PI * angleIndex / 16#)
-        End If
-        candidateCount = 9
-        If angleIndex >= 0 Then candidateCount = candidateCount + total
-        If angleIndex >= 16 Then candidateCount = candidateCount + 1
-        For candidate = 1 To candidateCount
-            If candidate <= 9 Then
-                a = CDbl(alphaValues(candidate - 1)) * radius - bx * centerX - by * centerY
-            ElseIf angleIndex >= 16 And candidate = candidateCount Then
-                ' Плоскость отказа дает только направление независимой оценки.
-                ' Невозможность доказывается не отказом solver-а, а нарушением
-                ' верхней границы усилий фактических диаграмм в этом направлении.
-                a = directionSign * failedState.Epsilon0 / planeScale
-            Else
-                ' При фиксированном направлении граница support-функции
-                ' меняется на q=0 у элемента. Проверяем эти узлы, не только
-                ' грубую сетку смещений; сама оценка остается независимой.
-                a = -bx * elements(candidate - 9, 1) - by * elements(candidate - 9, 2)
-            End If
-            upper = 0#
-            For i = 1 To total
-                q = a + by * elements(i, 2) + bx * elements(i, 1)
-                upper = upper + elements(i, 3) * MaxDouble(q * elements(i, 4), q * elements(i, 5))
-            Next i
-            target = a * load.N + by * load.InternalMx + bx * load.InternalMy
-            If target > upper + MaxDouble(1000#, 0.0000000001 * Abs(upper)) Then
-                certificate = "a=" & FormatNumberInvariant(a) & "; bx=" & FormatNumberInvariant(bx) & _
-                    "; by=" & FormatNumberInvariant(by) & "; target=" & FormatNumberInvariant(target) & _
-                    "; upper=" & FormatNumberInvariant(upper)
-                Audit03ExtendedStressCertificate = True
-                Exit Function
-            End If
-        Next candidate
-    Next angleIndex
-    ' Грани трехмерной суммы независимых отрезков усилий имеют нормали,
-    ' ортогональные двум различным плечам [1,y,x]. Перебор таких направлений
-    ' закрывает пробелы угловой сетки, не предполагая найденное равновесие.
-    Dim j As Long, pairScale As Double, pairSign As Variant
-    For i = 1 To total - 1
-        For j = i + 1 To total
-            bx = elements(j, 2) - elements(i, 2)
-            by = elements(i, 1) - elements(j, 1)
-            pairScale = MaxDouble(Abs(bx), Abs(by))
-            If pairScale > 0# Then
-                bx = bx / pairScale: by = by / pairScale
-                a = -bx * elements(i, 1) - by * elements(i, 2)
-                For Each pairSign In Array(-1#, 1#)
-                    upper = 0#
-                    Dim k As Long
-                    For k = 1 To total
-                        q = CDbl(pairSign) * (a + by * elements(k, 2) + bx * elements(k, 1))
-                        upper = upper + elements(k, 3) * MaxDouble(q * elements(k, 4), q * elements(k, 5))
-                    Next k
-                    target = CDbl(pairSign) * (a * load.N + by * load.InternalMx + bx * load.InternalMy)
-                    If target > upper + MaxDouble(1000#, 0.0000000001 * Abs(upper)) Then
-                        certificate = "pair a=" & FormatNumberInvariant(CDbl(pairSign) * a) & _
-                            "; bx=" & FormatNumberInvariant(CDbl(pairSign) * bx) & _
-                            "; by=" & FormatNumberInvariant(CDbl(pairSign) * by) & _
-                            "; target=" & FormatNumberInvariant(target) & "; upper=" & FormatNumberInvariant(upper)
-                        Audit03ExtendedStressCertificate = True
-                        Exit Function
-                    End If
-                Next pairSign
-            End If
-        Next j
-    Next i
-End Function
 
-' ДЛЯ ТЕСТОВ: ограничивает реальное усилие замещения steel-concrete.
-' Разность двух кусочно-линейных функций достигает экстремума в узле хотя бы
-' одной из них; за крайними узлами обе функции сохраняют последнее напряжение.
-Private Sub Audit03NetRebarStressBounds(ByVal concrete As CMaterialDiagram, _
-        ByVal steel As CMaterialDiagram, ByRef lower As Double, ByRef upper As Double)
-    Dim diagram As Variant, i As Long, strain As Double, stress As Double
-    lower = steel.GetStress(0#) - concrete.GetStress(0#): upper = lower
-    For Each diagram In Array(concrete, steel)
-        For i = 1 To diagram.PointCount
-            strain = diagram.PointStrain(i)
-            stress = steel.GetStress(strain) - concrete.GetStress(strain)
-            If stress < lower Then lower = stress
-            upper = MaxDouble(upper, stress)
-        Next i
-    Next diagram
-End Sub
 
-' ДЛЯ ТЕСТОВ: конечные точки всех линейных сегментов ограничивают напряжение
-' всей диаграммы, включая постоянное значение за технической крайней точкой.
-' Это оценка фактической дискретной модели, не нормативная несущая способность.
-Private Sub Audit03StressBounds(ByVal diagram As CMaterialDiagram, ByRef lower As Double, ByRef upper As Double)
-    lower = diagram.PointStress(1): upper = lower
-    Dim i As Long
-    For i = 2 To diagram.PointCount
-        If diagram.PointStress(i) < lower Then lower = diagram.PointStress(i)
-        upper = MaxDouble(upper, diagram.PointStress(i))
-    Next i
-End Sub
 
 ' ДЛЯ ТЕСТОВ: отдельный runtime gate чтения и действия критерия Worst.
 ' Использует реальные таблицы Config и writer; исходные настройки восстанавливает.

@@ -268,7 +268,7 @@ Private Sub AssertMaterialTransitions(ByRef stats As TMaterialTestStats, ByVal p
         ByVal diagram As CMaterialDiagram)
     Dim i As Long, j As Long, strain As Double, delta As Variant, seed As Variant, samples As Variant
     Dim first As Double, second As Double, expectedFirst As Double, expectedSecond As Double, name As String
-    samples = Array(-10#, -0.05, -0.0035, -0.001, 0#, 0.00015, 0.001, 0.025, 10#)
+    samples = Array(-1000#, -100#, -10#, -0.05, -0.0035, -0.001, 0#, 0.00015, 0.001, 0.025, 10#, 100#, 1000#)
     For i = 1 To diagram.PointCount + UBound(samples) + 1
         If i <= diagram.PointCount Then strain = diagram.PointStrain(i) Else strain = CDbl(samples(i - diagram.PointCount - 1))
         j = 0
@@ -299,6 +299,8 @@ Private Sub MaterialTransitionOracle(ByVal diagram As CMaterialDiagram, ByVal st
             (node - diagram.PointStrain(i - 1))
         If i < diagram.PointCount Then rightSlope = (diagram.PointStress(i + 1) - diagram.PointStress(i)) / _
             (diagram.PointStrain(i + 1) - node)
+        If i = 1 And diagram.HasCompressionExtension Then leftSlope = rightSlope
+        If i = diagram.PointCount And diagram.HasTensionExtension Then rightSlope = leftSlope
         If leftSlope <> rightSlope Then
             distance = (node - strain) / delta
             If distance > 0# And strain + distance * delta <> strain Then
@@ -510,9 +512,57 @@ Private Sub TestProviderStateSolutionExtension(ByRef stats As TMaterialTestStats
     AssertTrue stats, "state.extension.steel.plateauPhysical", Not stateSteel.IsInExtensionRange(0.01)
     AssertTrue stats, "state.extension.steel.beyondUltimate", stateSteel.IsInExtensionRange(0.03)
 
+    Dim strain As Variant, expected As Double, stress As Double, tangent As Double
+    AssertTrue stats, "state.extension.concrete.reference", stateConcrete.PointStrain(1) < physicalConcrete.PhysicalCompressionStrain
+    AssertTrue stats, "state.extension.steel.leftReference", stateSteel.PointStrain(1) < physicalSteel.PhysicalCompressionStrain
+    AssertTrue stats, "state.extension.steel.rightReference", stateSteel.PointStrain(stateSteel.PointCount) > physicalSteel.PhysicalTensionStrain
+    ' Прямая сохраняет наклон 0,01*E и за опорными точками, и за прежними +/-10 и +/-100.
+    For Each strain In Array(-1000000#, -1000#, -100#, -10.001, -10#, -9.999, 9.999, 10#, 10.001, 100#, 1000#, 1000000#)
+        If CDbl(strain) < 0# Then
+            expected = physicalSteel.GetStress(physicalSteel.PhysicalCompressionStrain) + _
+                (CDbl(strain) - physicalSteel.PhysicalCompressionStrain) * 2000#
+        Else
+            expected = physicalSteel.GetStress(physicalSteel.PhysicalTensionStrain) + _
+                (CDbl(strain) - physicalSteel.PhysicalTensionStrain) * 2000#
+        End If
+        stateSteel.EvaluateAtStrain CDbl(strain), stress, tangent
+        AssertClose stats, "state.extension.steel.extendedStress." & CStr(strain), stress, expected, Abs(expected) * 0.000000000001
+        AssertClose stats, "state.extension.steel.extendedTangent." & CStr(strain), tangent, 2000#, 0.000000001
+        AssertClose stats, "state.extension.steel.stressEvaluator." & CStr(strain), stateSteel.GetStress(CDbl(strain)), expected, Abs(expected) * 0.000000000001
+        AssertTrue stats, "state.extension.steel.physicalFail." & CStr(strain), Not stateSteel.IsInPhysicalRange(CDbl(strain))
+        AssertTrue stats, "state.extension.steel.extensionUsed." & CStr(strain), stateSteel.IsInExtensionRange(CDbl(strain))
+    Next strain
+    For Each strain In Array(-1000#, 1000#)
+        If CDbl(strain) < 0# Then
+            expected = physicalConcrete.GetStress(physicalConcrete.PhysicalCompressionStrain) + _
+                (CDbl(strain) - physicalConcrete.PhysicalCompressionStrain) * 325#
+        Else
+            expected = 0#
+        End If
+        stateConcrete.EvaluateAtStrain CDbl(strain), stress, tangent
+        AssertClose stats, "state.extension.concrete.stress." & CStr(strain), stress, expected, 0.000000001
+        AssertClose stats, "state.extension.concrete.tangent." & CStr(strain), tangent, IIf(CDbl(strain) < 0#, 325#, 0#), 0.000000001
+        AssertClose stats, "state.extension.concrete.stressEvaluator." & CStr(strain), stateConcrete.GetStress(CDbl(strain)), expected, 0.000000001
+        AssertClose stats, "state.extension.concrete.tangentEvaluator." & CStr(strain), stateConcrete.GetTangentModulus(CDbl(strain)), tangent, 0#
+    Next strain
+
+    Dim cloned As CMaterialDiagram
+    Set cloned = stateSteel.Clone
+    AssertClose stats, "state.extension.clone.unbounded", cloned.GetStress(1000#), stateSteel.GetStress(1000#), 0#
+    AssertClose stats, "state.extension.clone.tangent", cloned.GetTangentModulus(1000#), 2000#, 0.000000001
+    AssertMaterialTransitions stats, "state.extension.clone.transitions", cloned
+    Set cloned = stateSteel.Clone(True)
+    AssertTrue stats, "state.extension.clone.physicalOnly", Not cloned.HasCompressionExtension And Not cloned.HasTensionExtension
+    AssertClose stats, "state.extension.clone.physicalOnlyStress", cloned.GetStress(1000#), 350#, 0.000000001
+
     Dim disabledProvider As CMaterialModelProvider
     Set disabledProvider = TestProvider("TwoLine", "Ignore", "TwoLine", "TwoLine", "TwoLine", False)
     AssertTrue stats, "state.extension.disabled", Not disabledProvider.SteelMaterialForEquilibrium(cpStrength).HasTensionExtension
+    Set stateSteel = disabledProvider.SteelMaterialForEquilibrium(cpStrength)
+    For Each strain In Array(-1000#, 1000#)
+        AssertClose stats, "state.extension.off.stress." & CStr(strain), stateSteel.GetStress(CDbl(strain)), Sgn(CDbl(strain)) * 350#, 0.000000001
+        AssertClose stats, "state.extension.off.tangent." & CStr(strain), stateSteel.GetTangentModulus(CDbl(strain)), 0#, 0#
+    Next strain
 End Sub
 
 ' Проверяет требование ТЗ: пользовательские предельные деформации берутся из
@@ -706,6 +756,10 @@ Private Sub AssertPhysicalDiagramPair(ByRef stats As TMaterialTestStats, ByVal t
         physical.PhysicalCompressionStrain, 0.000000000001
     AssertClose stats, testKey & ".tensionLimit", extended.PhysicalTensionStrain, _
         physical.PhysicalTensionStrain, 0.000000000001
+    AssertTrue stats, testKey & ".compressionReference", extended.PointStrain(1) < physical.PhysicalCompressionStrain
+    If physical.HasPhysicalTensionLimit Then
+        AssertTrue stats, testKey & ".tensionReference", extended.PointStrain(extended.PointCount) > physical.PhysicalTensionStrain
+    End If
     Dim i As Long
     Dim strain As Double
     Dim stress As Double
@@ -754,12 +808,12 @@ Private Sub AssertPhysicalDiagramPair(ByRef stats As TMaterialTestStats, ByVal t
     Next side
 End Sub
 
-' Пользовательский физический предел за +/-10 не обрезается: технические
-' узлы лежат дальше него, физическое плато и пределы остаются исходными.
+' Проверяет большой пользовательский физический предел. Опорные точки
+' продолжения лежат дальше него, физическое плато и пределы не меняются.
 Private Sub TestAudit02ExtensionBeyondTechnicalDefault(ByRef stats As TMaterialTestStats)
     Dim steel As CSteelMaterialParameters
     Set steel = New CSteelMaterialParameters
-    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 12#, 14#, 12#, 14#
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 120#, 140#, 120#, 140#
     Dim provider As CMaterialModelProvider
     Set provider = New CMaterialModelProvider
     provider.InitializeFromParameters TestConcreteParameters(), steel
@@ -767,12 +821,19 @@ Private Sub TestAudit02ExtensionBeyondTechnicalDefault(ByRef stats As TMaterialT
     Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
     AssertTrue stats, "audit02.technical.compressionExtended", extended.HasCompressionExtension
     AssertTrue stats, "audit02.technical.tensionExtended", extended.HasTensionExtension
-    AssertClose stats, "audit02.technical.left", extended.PointStrain(1), -24#, 0.000000000001
-    AssertClose stats, "audit02.technical.right", extended.PointStrain(extended.PointCount), 28#, 0.000000000001
-    AssertClose stats, "audit02.technical.physicalCompression", extended.PhysicalCompressionStrain, -12#, 0.000000000001
-    AssertClose stats, "audit02.technical.physicalTension", extended.PhysicalTensionStrain, 14#, 0.000000000001
-    AssertClose stats, "audit02.technical.physicalStress", extended.GetStress(13#), 350#, 0.000000000001
-    AssertClose stats, "audit02.technical.extendedStress", extended.GetStress(15#), 2350#, 0.000000000001
+    AssertClose stats, "audit02.technical.left", extended.PointStrain(1), -240#, 0.000000000001
+    AssertClose stats, "audit02.technical.right", extended.PointStrain(extended.PointCount), 280#, 0.000000000001
+    AssertClose stats, "audit02.technical.physicalCompression", extended.PhysicalCompressionStrain, -120#, 0.000000000001
+    AssertClose stats, "audit02.technical.physicalTension", extended.PhysicalTensionStrain, 140#, 0.000000000001
+    AssertClose stats, "audit02.technical.physicalStress", extended.GetStress(130#), 350#, 0.000000000001
+    AssertClose stats, "audit02.technical.extendedStress", extended.GetStress(141#), 2350#, 0.000000000001
+    ' Большой физический предел не превращает опорную точку в конец прямой.
+    steel.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#, 100#, 100#, 100#, 100#
+    provider.InitializeFromParameters TestConcreteParameters(), steel
+    Set extended = provider.SteelMaterialForEquilibrium(cpStrength)
+    AssertClose stats, "audit02.technical.equal.left", extended.PointStrain(1), -200#, 0#
+    AssertClose stats, "audit02.technical.equal.right", extended.PointStrain(extended.PointCount), 200#, 0#
+    AssertClose stats, "audit02.technical.beyondReference", extended.GetStress(1000#), 1800350#, 0.00000001
 End Sub
 
 ' Переполнение при построении технической ветви возвращается как явная

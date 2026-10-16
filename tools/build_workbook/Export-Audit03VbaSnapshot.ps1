@@ -59,7 +59,13 @@ try {
     [void]$text.AppendLine('VBA PROJECT EXPORT')
     [void]$text.AppendLine('Workbook: ' + $book.Name)
     [void]$text.AppendLine('Date: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'))
-    foreach ($component in $book.VBProject.VBComponents) {
+    if(-not $book.HasVBProject){throw 'Verification workbook did not expose a VBA project.'}
+    $project=$book.VBProject
+    $excel.VBE.ActiveVBProject=$project
+    $expectedComponentCount=[int]$project.VBComponents.Count
+    if($expectedComponentCount -lt 1){throw 'VBA project component collection is empty; export is not accepted.'}
+    for($componentIndex=1;$componentIndex -le $expectedComponentCount;$componentIndex++) {
+        $component=$project.VBComponents.Item($componentIndex)
         $componentCount++
         [void]$text.AppendLine('=' * 100)
         [void]$text.AppendLine('COMPONENT: ' + $component.Name)
@@ -70,6 +76,7 @@ try {
         if ($lineCount -gt 0) { [void]$text.AppendLine($component.CodeModule.Lines(1, $lineCount)) }
         [void]$text.AppendLine()
     }
+    if($componentCount -ne $expectedComponentCount){throw 'VBA export component count changed during read.'}
     $book.Close($false)
     $book = $null
 } finally {

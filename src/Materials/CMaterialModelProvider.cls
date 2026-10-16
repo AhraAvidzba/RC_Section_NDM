@@ -23,7 +23,6 @@ Private Const SLOT_STRENGTH As Long = 1 ' Массивный слот физич
 Private Const SLOT_MCRC As Long = 2 ' Массивный слот физической диаграммы образования трещины.
 Private Const SLOT_CRACKED_NDS As Long = 3 ' Массивный слот физической диаграммы раскрытой трещины.
 Private Const STATE_EXTENSION_E_FACTOR As Double = 0.01 ' Жесткость extension: 1% от начального модуля E.
-Private Const STATE_EXTENSION_STRAIN_LIMIT As Double = 10# ' Техническая дальняя точка extension; не является eps_ult.
 Private Const EXTENSION_TOLERANCE As Double = 0.000000000001 ' Допуск, чтобы не добавлять почти совпадающую extension-точку.
 
 Private mConcreteParameters As CConcreteMaterialParameters ' Исходные параметры бетона из Config.
@@ -322,7 +321,7 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
     Dim targetIndex As Long
     targetIndex = 1
     If extraCompression Then
-        eps(targetIndex) = -ExtensionEndStrain(compressionStart)
+        eps(targetIndex) = -ExtensionReferenceStrain(compressionStart)
         sig(targetIndex) = baseDiagram.GetStress(compressionStart) + _
             (eps(targetIndex) - compressionStart) * STATE_EXTENSION_E_FACTOR * compressionE
         targetIndex = targetIndex + 1
@@ -335,7 +334,7 @@ Private Function DiagramWithExtension(ByVal baseDiagram As CMaterialDiagram, _
     Next i
 
     If extraTension Then
-        eps(targetIndex) = ExtensionEndStrain(tensionStart)
+        eps(targetIndex) = ExtensionReferenceStrain(tensionStart)
         sig(targetIndex) = baseDiagram.GetStress(tensionStart) + _
             (eps(targetIndex) - tensionStart) * STATE_EXTENSION_E_FACTOR * tensionE
         targetIndex = targetIndex + 1
@@ -358,14 +357,14 @@ InvalidExtension:
         "Численное продолжение диаграммы невозможно для заданных деформаций и модулей: " & Err.Description
 End Function
 
-' Сохраняет техническую границу +/-10 для обычных материалов. Если физический
-' предел уже дальше, продолжение заканчивается вдвое дальше него, а не обрезает
-' физическую диаграмму. Переполнение явно отклоняется вызывающим построителем.
-Private Function ExtensionEndStrain(ByVal physicalLimit As Double) As Double
-    ExtensionEndStrain = STATE_EXTENSION_STRAIN_LIMIT
-    If Abs(physicalLimit) >= STATE_EXTENSION_STRAIN_LIMIT Then
-        ExtensionEndStrain = 2# * Abs(physicalLimit)
-    End If
+' Выбирает опорную точку, задающую наклон продолжения. Она находится за
+' физическим пределом и не ограничивает деформацию: CMaterialDiagram
+' продолжает эту прямую дальше. Непредставимые числа отклоняются построителем.
+Private Function ExtensionReferenceStrain(ByVal physicalLimit As Double) As Double
+    Dim referenceSpan As Double
+    referenceSpan = Abs(physicalLimit)
+    If referenceSpan < 1# Then referenceSpan = 1#
+    ExtensionReferenceStrain = Abs(physicalLimit) + referenceSpan
 End Function
 
 ' Возвращает бетонные сопротивления нужной ГПС.

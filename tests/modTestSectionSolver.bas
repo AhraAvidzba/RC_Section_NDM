@@ -53,6 +53,7 @@ Public Function RunSectionSolverTests() As String
     TestAudit03ExtremeRunnerStates stats
     TestAudit03SolverSettingEffects stats
     TestAudit03InputCurvatureBinding stats
+    TestUnboundedExtensionArithmetic stats
 
     AppendLine stats, "TOTAL_SECTION_SOLVER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
@@ -1912,6 +1913,51 @@ Public Function RunAudit03LinearSystemBenchmark() As String
     Next repetition
     RunAudit03LinearSystemBenchmark = report & "TOTAL_AUDIT03_LINEAR_BENCHMARK: passed=5; failed=0"
 End Function
+
+' ДЛЯ ТЕСТОВ: переполнение при линейном продолжении возвращает NumFail,
+' сохраняет причину и не мешает следующему обычному расчёту тем же решателем.
+Public Function RunUnboundedExtensionArithmeticTests() As String
+    Dim stats As TSectionSolverTestStats
+    TestUnboundedExtensionArithmetic stats
+    RunUnboundedExtensionArithmeticTests = stats.Report & "TOTAL_UNBOUNDED_ARITHMETIC: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+End Function
+
+' Задаёт заведомо непредставимые напряжения в обоих направлениях продолжения.
+' Проверяет штатную обработку переполнения для Newton и Secant.
+Private Sub TestUnboundedExtensionArithmetic(ByRef stats As TSectionSolverTestStats)
+    Dim section As CSectionModel, concreteParameters As CConcreteMaterialParameters
+    Dim steelParameters As CSteelMaterialParameters, materials As CMaterialModelProvider
+    Dim solver As CSectionSolver, sign As Variant, method As Variant, prefix As String
+    On Error GoTo Failed
+    Set section = New CSectionModel
+    section.AddConcreteElement -50#, -30#, 1000#, 1
+    section.AddConcreteElement 50#, -30#, 1000#, 1
+    section.AddConcreteElement 0#, 30#, 1000#, 1
+    section.AddRebarElement 0#, 0#, 20#, 0#, "A400"
+    Set concreteParameters = New CConcreteMaterialParameters
+    concreteParameters.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, rbMc2:=14.6
+    Set steelParameters = New CSteelMaterialParameters
+    steelParameters.Initialize 350#, 350#, 390#, 390#, 200000#, 200000#
+    Set materials = New CMaterialModelProvider
+    materials.InitializeFromParameters concreteParameters, steelParameters, diagramExtensionEnabled:=True
+    For Each method In Array("Newton", "Secant")
+        For Each sign In Array(-1#, 1#)
+            prefix = "unbounded.arithmetic." & CStr(method) & "." & CStr(sign)
+            Set solver = New CSectionSolver: solver.SolverMethod = CStr(method)
+            solver.SetInitialState CDbl(sign) * 1E+308, 0#, 0#
+            solver.Solve section, materials.ConcreteMaterialForEquilibrium(cpStrength), materials.SteelMaterialForEquilibrium(cpStrength), 0#, 0#, 0#
+            AssertTrue stats, prefix & ".notConverged", Not solver.Converged
+            AssertTrue stats, prefix & ".numericalFailure", solver.FailureCode = sfcNumericalFailure
+            AssertTrue stats, prefix & ".overflowReason", InStr(1, solver.StopReason, "переполнение", vbTextCompare) > 0
+            solver.ClearInitialState
+            solver.Solve section, materials.ConcreteMaterialForEquilibrium(cpStrength), materials.SteelMaterialForEquilibrium(cpStrength), 0#, 0#, 0#
+            AssertTrue stats, prefix & ".recovers", solver.Converged
+        Next sign
+    Next method
+    Exit Sub
+Failed:
+    AssertTrue stats, "unbounded.arithmetic.runtime." & CStr(Err.Number) & "." & Err.Description, False
+End Sub
 
 ' ============================== ДЛЯ ТЕСТОВ: БОЛЬШИЕ МОМЕНТЫ RUNNER ==============================
 ' ДЛЯ ТЕСТОВ: проходит обычный pipeline прямого НДС при N=0, где начальная

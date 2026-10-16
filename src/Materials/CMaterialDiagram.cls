@@ -22,7 +22,7 @@ Private mStrains() As Double ' Узлы диаграммы по деформац
 Private mStresses() As Double ' Напряжения в узлах диаграммы, МПа во внутренней системе.
 Private mSegmentTangent() As Double ' Заранее рассчитанный наклон каждого линейного участка диаграммы, МПа.
 Private mSegmentIntercept() As Double ' Свободный член sigma = E_t * epsilon + b для быстрого расчета stress.
-Private mTransitionStrains() As Double, mTransitionCount As Long ' Деформации в узлах изменения наклона диаграммы и число таких узлов; учитываются переходы на крайнее плато.
+Private mTransitionStrains() As Double, mTransitionCount As Long ' Деформации изменения наклона и их число; опорные точки прямого продолжения не создают переломов.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
 Private mFrozen As Boolean ' Признак завершённой общей диаграммы; её точки и пределы после передачи в расчёт изменять нельзя.
@@ -67,7 +67,6 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
     SortPointsByStrain
     ValidatePointOrder
     mPointCount = pointCount
-    BuildSegmentCache
     If IsMissing(physicalCompressionStrain) Then
         mPhysicalCompressionStrain = mStrains(1)
     Else
@@ -91,6 +90,7 @@ Public Sub InitializeFromArrays(ByRef strains() As Double, ByRef stresses() As D
     Else
         mTensionExtensionStartStrain = CDbl(tensionExtensionStartStrain)
     End If
+    BuildSegmentCache
     mInitialized = True
     Exit Sub
 Failed:
@@ -214,15 +214,19 @@ End Function
 ' ------------------------------
 ' Напряжения по деформациям
 ' ------------------------------
-' Возвращает напряжение при заданной деформации. За последней заданной точкой
-' сохраняет крайнее напряжение, продолжая плато диаграммы.
+' Возвращает напряжение при заданной деформации. Разрешённое численное
+' продолжение сохраняет наклон крайнего участка при любой конечной деформации.
+' Без продолжения за крайними точками остаётся постоянное напряжение.
 Public Function StressAtStrain(ByVal strain As Double) As Double
     EnsureInitialized
 
     If strain <= mStrains(1) Then
         StressAtStrain = mStresses(1)
+        If mHasCompressionExtension Then StressAtStrain = mStresses(1) + (strain - mStrains(1)) * mSegmentTangent(1)
     ElseIf strain >= mStrains(mPointCount) Then
         StressAtStrain = mStresses(mPointCount)
+        If mHasTensionExtension Then StressAtStrain = mStresses(mPointCount) + _
+            (strain - mStrains(mPointCount)) * mSegmentTangent(mPointCount - 1)
     Else
         Dim segmentIndex As Long
         segmentIndex = FindSegmentIndex(strain)
@@ -235,11 +239,17 @@ Public Function GetStress(ByVal strain As Double) As Double
     GetStress = StressAtStrain(strain)
 End Function
 
-' Возвращает касательный модуль текущего отрезка диаграммы. За пределами
-' заданной области модуль равен нулю, потому что напряжение уже на плато.
+' Возвращает наклон текущего участка. За опорной точкой численное продолжение
+' сохраняет свой наклон; у диаграммы без продолжения там нулевой модуль.
 Public Function GetTangentModulus(ByVal strain As Double) As Double
     EnsureInitialized
-    If strain < mStrains(1) Or strain > mStrains(mPointCount) Then Exit Function
+    If strain < mStrains(1) Then
+        If mHasCompressionExtension Then GetTangentModulus = mSegmentTangent(1)
+        Exit Function
+    ElseIf strain > mStrains(mPointCount) Then
+        If mHasTensionExtension Then GetTangentModulus = mSegmentTangent(mPointCount - 1)
+        Exit Function
+    End If
     Dim segmentIndex As Long
     segmentIndex = FindSegmentIndex(strain)
     If segmentIndex > 0 Then GetTangentModulus = mSegmentTangent(segmentIndex)
@@ -254,9 +264,17 @@ Public Sub EvaluateAtStrain(ByVal strain As Double, ByRef stress As Double, ByRe
     If strain < mStrains(1) Then
         stress = mStresses(1)
         tangent = 0#
+        If mHasCompressionExtension Then
+            tangent = mSegmentTangent(1)
+            stress = mStresses(1) + (strain - mStrains(1)) * tangent
+        End If
     ElseIf strain > mStrains(mPointCount) Then
         stress = mStresses(mPointCount)
         tangent = 0#
+        If mHasTensionExtension Then
+            tangent = mSegmentTangent(mPointCount - 1)
+            stress = mStresses(mPointCount) + (strain - mStrains(mPointCount)) * tangent
+        End If
     Else
         Dim segmentIndex As Long
         segmentIndex = FindSegmentIndex(strain)
@@ -298,6 +316,8 @@ Private Sub BuildSegmentCache()
         leftSlope = 0#: rightSlope = 0#
         If i > 1 Then leftSlope = mSegmentTangent(i - 1)
         If i < mPointCount Then rightSlope = mSegmentTangent(i)
+        If i = 1 And mHasCompressionExtension Then leftSlope = rightSlope
+        If i = mPointCount And mHasTensionExtension Then rightSlope = leftSlope
         If leftSlope <> rightSlope Then
             mTransitionCount = mTransitionCount + 1
             mTransitionStrains(mTransitionCount) = mStrains(i)

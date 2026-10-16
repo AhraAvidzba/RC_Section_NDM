@@ -509,10 +509,12 @@ Private Sub WriteMaterialDiagrams(ByVal workbook As Object, _
     rowIndex = 2
     Dim written As Object
     Set written = CreateObject("Scripting.Dictionary")
+    Dim strainRanges As Object
+    Set strainRanges = MaterialDiagramStrainRanges(batch)
 
     Dim i As Long
     For i = 1 To batch.Count
-        PutCombinationMaterialDiagrams data, rowIndex, runID, batch, i, units, written
+        PutCombinationMaterialDiagrams data, rowIndex, runID, batch, i, units, written, strainRanges
     Next i
 
     Dim rowCount As Long
@@ -528,7 +530,7 @@ End Sub
 Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, _
         ByVal batch As CBatchSectionCalculator, ByVal combinationIndex As Long, ByVal units As CUnitSystem, _
-        ByVal written As Object)
+        ByVal written As Object, ByVal strainRanges As Object)
     Dim stateIndex As Long
     For stateIndex = 1 To batch.ResultAt(combinationIndex).StateRepository.StateCount
         Dim stateResult As CSectionStateResult
@@ -538,11 +540,11 @@ Private Sub PutCombinationMaterialDiagrams(ByRef data() As Variant, ByRef rowInd
                 AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
                     stateResult, "Concrete", _
                     stateResult.ConcreteDiagramSnapshot, _
-                    units, written
+                    units, written, strainRanges
                 AppendMaterialDiagramPoints data, rowIndex, runID, batch.ResultAt(combinationIndex).ProfileId, _
                     stateResult, "Rebar", _
                     stateResult.SteelDiagramSnapshot, _
-                    units, written
+                    units, written, strainRanges
             End If
         End If
     Next stateIndex
@@ -571,12 +573,13 @@ Private Function MaterialDiagramModeText(ByVal diagram As CMaterialDiagram) As S
     End If
 End Function
 
-' Записывает все точки диаграммы. Напряжения переводит в выходные единицы;
-' безразмерные деформации сохраняет как в расчётной модели.
+' Записывает физические узлы и опорные точки продолжения. Если найденные НДС
+' выходят дальше опорных точек, продлевает вывод до общего диапазона этих НДС.
+' Это границы рисунка и таблицы, а не ограничение расчётной диаграммы.
 Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex As Long, _
         ByVal runID As Variant, ByVal profileId As String, ByVal stateResult As CSectionStateResult, _
         ByVal materialKind As String, ByVal diagram As CMaterialDiagram, _
-        ByVal units As CUnitSystem, ByVal written As Object)
+        ByVal units As CUnitSystem, ByVal written As Object, ByVal strainRanges As Object)
     If diagram Is Nothing Then Exit Sub
 
     Dim diagramId As String
@@ -584,8 +587,16 @@ Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex 
     If written.Exists(diagramId) Then Exit Sub
     written.Add diagramId, True
 
-    Dim pointIndex As Long
+    Dim pointIndex As Long, strain As Double, stress As Double, bounds As Variant
     For pointIndex = 1 To diagram.PointCount
+        strain = diagram.PointStrain(pointIndex)
+        stress = diagram.PointStress(pointIndex)
+        If strainRanges.Exists(diagramId) Then
+            bounds = strainRanges(diagramId)
+            If pointIndex = 1 And diagram.HasCompressionExtension Then strain = MinDouble(strain, CDbl(bounds(0)))
+            If pointIndex = diagram.PointCount And diagram.HasTensionExtension Then strain = MaxDouble(strain, CDbl(bounds(1)))
+            If strain <> diagram.PointStrain(pointIndex) Then stress = diagram.GetStress(strain)
+        End If
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = diagramId
         data(rowIndex, 3) = profileId
@@ -595,10 +606,45 @@ Private Sub AppendMaterialDiagramPoints(ByRef data() As Variant, ByRef rowIndex 
         data(rowIndex, 7) = MaterialDiagramModeText(diagram)
         data(rowIndex, 8) = materialKind
         data(rowIndex, 9) = pointIndex
-        data(rowIndex, 10) = diagram.PointStrain(pointIndex)
-        data(rowIndex, 11) = OutputStress(diagram.PointStress(pointIndex), units)
+        data(rowIndex, 10) = strain
+        data(rowIndex, 11) = OutputStress(stress, units)
         rowIndex = rowIndex + 1
     Next pointIndex
+End Sub
+
+' Собирает диапазоны деформаций всех найденных НДС с одинаковой диаграммой.
+' Неудачные итерации не определяют границы вывода: их НДС не подтверждено.
+Private Function MaterialDiagramStrainRanges(ByVal batch As CBatchSectionCalculator) As Object
+    Dim result As Object, combinationIndex As Long, stateIndex As Long, state As CSectionStateResult
+    Set result = CreateObject("Scripting.Dictionary")
+    For combinationIndex = 1 To batch.Count
+        For stateIndex = 1 To batch.ResultAt(combinationIndex).StateRepository.StateCount
+            Set state = batch.ResultAt(combinationIndex).StateRepository.StateAt(stateIndex)
+            If Not state Is Nothing Then
+                If state.Converged And state.HasMaterialSnapshot Then
+                    IncludeMaterialDiagramRange result, MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, _
+                        state, "Concrete", state.ConcreteDiagramSnapshot), state.MinConcreteStrain, state.MaxConcreteStrain
+                    IncludeMaterialDiagramRange result, MaterialDiagramId(batch.ResultAt(combinationIndex).ProfileId, _
+                        state, "Rebar", state.SteelDiagramSnapshot), state.MinSteelStrain, state.MaxSteelStrain
+                End If
+            End If
+        Next stateIndex
+    Next combinationIndex
+    Set MaterialDiagramStrainRanges = result
+End Function
+
+' Объединяет крайние деформации нескольких сочетаний без повторения диаграммы.
+Private Sub IncludeMaterialDiagramRange(ByVal ranges As Object, ByVal diagramId As String, _
+        ByVal minimumStrain As Double, ByVal maximumStrain As Double)
+    Dim bounds As Variant
+    If ranges.Exists(diagramId) Then
+        bounds = ranges(diagramId)
+        bounds(0) = MinDouble(CDbl(bounds(0)), minimumStrain)
+        bounds(1) = MaxDouble(CDbl(bounds(1)), maximumStrain)
+        ranges(diagramId) = bounds
+    Else
+        ranges.Add diagramId, Array(minimumStrain, maximumStrain)
+    End If
 End Sub
 
 ' Шапка диагностической таблицы диаграмм материалов.

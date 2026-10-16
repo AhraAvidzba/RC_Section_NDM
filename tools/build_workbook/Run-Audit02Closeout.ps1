@@ -4,6 +4,7 @@ param(
     [Parameter(Mandatory=$true)][string]$Stage,
     [Parameter(Mandatory=$true)][string[]]$Macros,
     [string]$Argument1='',
+    [string]$Argument2='',
     [switch]$Snapshots,
     [string]$EvidenceDirectory='docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14'
 )
@@ -47,7 +48,10 @@ try {
         $watch=[Diagnostics.Stopwatch]::StartNew()
         $qualified="'$($book.Name)'!$macro"
         $excel.DisplayAlerts=$false
-        if($Argument1){$result=[string]$excel.Run($qualified,$Argument1)}else{$result=[string]$excel.Run($qualified)}
+        if($Argument2){
+            if(-not $Argument1){throw 'Second macro argument requires the first argument.'}
+            $result=[string]$excel.Run($qualified,$Argument1,$Argument2)
+        } elseif($Argument1){$result=[string]$excel.Run($qualified,$Argument1)}else{$result=[string]$excel.Run($qualified)}
         $watch.Stop()
         $result.TrimEnd([char[]]"`r`n") | Set-Content -LiteralPath (Join-Path $directory ($macro+'.txt')) -Encoding UTF8
         $passed=$result -notmatch '(?m)^FAIL[: ]|failed=[1-9]|RUNTIME ERROR:|^ERROR:'
