@@ -27,7 +27,9 @@ Private Type TCircleRebar
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
-    ExtraOptions(2 To 3) As CRebarRuleOptions ' Готовые независимые настройки включённых дополнительных рядов.
+    Locations(2 To 3) As String ' Прочитанное расположение каждого дополнительного ряда относительно основного.
+    Bindings(2 To 3) As String ' Прочитанный способ привязки дополнительных рядов к основному.
+    ExtraSources(2 To 3) As String ' Адреса исходных полей дополнительных рядов для сообщения об ошибке.
     Source As String ' Адреса числа стержней и отступа основного ряда для сообщения об ошибке.
 End Type
 
@@ -50,8 +52,6 @@ End Function
 ' Читает число и диаметры стержней, а для включённых рядов — отступ и привязки.
 ' Если основного ряда нет, его отступ и параметры дополнительных рядов не требуются.
 Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal diameter As Double, ByRef rebar As TCircleRebar)
-    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions, rowOptions As CRebarRuleOptions
-    Dim locations(2 To 3) As String, bindings(2 To 3) As String, sources(2 To 3) As String
     Dim countRow As Long, axisRow As Long, diameterRows(2 To 3) As Long, rowNumber As Long, bindingRow As Long
     countRow = table.RowByKey("Rebar.Count")
     rebar.Count = table.Count(countRow, 2)
@@ -68,28 +68,13 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
         rebar.Diameters(rowNumber) = table.OptionalDiameter(diameterRows(rowNumber), 2, units)
     Next rowNumber
     For rowNumber = 2 To 3
-        If rebar.Diameters(rowNumber) > 0# Then locations(rowNumber) = table.Choice(table.RowByKey("Rebar.Loc" & CStr(rowNumber) & "row"), 2, Array("Stacked", "SideBySide"))
+        If rebar.Diameters(rowNumber) > 0# Then rebar.Locations(rowNumber) = table.Choice(table.RowByKey("Rebar.Loc" & CStr(rowNumber) & "row"), 2, Array("Stacked", "SideBySide"))
     Next rowNumber
     For rowNumber = 2 To 3
         If rebar.Diameters(rowNumber) > 0# Then
             bindingRow = table.RowByKey("Rebar.Bind" & CStr(rowNumber) & "row")
-            bindings(rowNumber) = table.Choice(bindingRow, 2, Array("EachBar", "EverySecondBar"))
-            sources(rowNumber) = table.SourceReference(diameterRows(rowNumber), 2) & "; " & table.SourceReference(bindingRow, 2)
-        End If
-    Next rowNumber
-    Set defaults = New CRebarRuleOptions ' Общие настройки только дополнительных рядов.
-    defaults.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
-    defaults.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-    defaults.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
-    defaults.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
-    Set contact = New CRebarContactBuilder
-    contact.Initialize rebar.Diameter, 1#, -1#, defaults ' Stacked направлен внутрь круга, SideBySide — против обхода линии.
-    For rowNumber = 2 To 3
-        If rebar.Diameters(rowNumber) > 0# Then
-            Set rowOptions = contact.AppendRow(rebar.Diameters(rowNumber), locations(rowNumber), bindings(rowNumber), sources(rowNumber))
-            rowOptions.SourceSuffix = "_R" & CStr(rowNumber) ' Добавляем к имени основного стержня суффикс ряда.
-            rowOptions.Comment = "Круг: дополнительный ряд арматуры"
-            Set rebar.ExtraOptions(rowNumber) = rowOptions
+            rebar.Bindings(rowNumber) = table.Choice(bindingRow, 2, Array("EachBar", "EverySecondBar"))
+            rebar.ExtraSources(rowNumber) = table.SourceReference(diameterRows(rowNumber), 2) & "; " & table.SourceReference(bindingRow, 2)
         End If
     Next rowNumber
 End Sub
@@ -103,6 +88,7 @@ End Sub
 
 ' Создаёт окружность центров основного ряда и правила размещения всех включённых рядов.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal diameter As Double, ByRef rebar As TCircleRebar)
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions
     Dim path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
     If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
     Set path = facade.CirclePath("Circle.Axis", 0#, 0#, diameter / 2# - rebar.AxisDistance) ' Линия центров основного ряда: радиус D/2 - as, мм.
@@ -114,9 +100,19 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
     options.Comment = "Круг: основной ряд арматуры"
     options.SourceReference = rebar.Source ' Адреса полей для сообщения об ошибке размещения.
     facade.RebarByCount "Circle.Main", path.ID, rebar.Count, rebar.Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+    Set defaults = New CRebarRuleOptions ' Общие настройки только дополнительных рядов.
+    defaults.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
+    defaults.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+    defaults.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
+    defaults.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
+    Set contact = New CRebarContactBuilder
+    contact.Initialize rebar.Diameter, 1#, -1#, defaults ' Stacked направлен внутрь круга, SideBySide — против обхода линии.
     For rowNumber = 2 To 3
         If rebar.Diameters(rowNumber) > 0# Then
-            facade.RebarDependent "Circle.Row" & CStr(rowNumber), "Circle.Main", rebar.Diameters(rowNumber), rebar.ExtraOptions(rowNumber) ' Оба дополнительных ряда связаны с основным.
+            Set options = contact.AppendRow(rebar.Diameters(rowNumber), rebar.Locations(rowNumber), rebar.Bindings(rowNumber), rebar.ExtraSources(rowNumber))
+            options.SourceSuffix = "_R" & CStr(rowNumber) ' Добавляем к имени основного стержня суффикс ряда.
+            options.Comment = "Круг: дополнительный ряд арматуры"
+            facade.RebarDependent "Circle.Row" & CStr(rowNumber), "Circle.Main", rebar.Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
         End If
     Next rowNumber
 End Sub

@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "89c328c156aada9bafe901e0bcd9f4fbce16bcee216a217a9e87ac692aef1b68",
+  "bodySHA256": "09c152edbee889234015eea4131ce87f3570934eca67c568320de0f0829c8106",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "5961e7c9c52e0284ad89a4342ef66699c1aac8a4f10c73f2337e4367e40af9a6",
-    "src/Common/modSectionRecipeApiGuide.bas": "829a9b803ce81821e6cec03bb5426efbce62030f6a664f4d7f004c854b9aa87a"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "88fc30eb0195c47535ad676508ea137541c7a92a249eccfeb4d47503ec96a98f",
+    "src/Common/modSectionRecipeApiGuide.bas": "4ddf461bce9462414c4e5699ed01a045a394181bab8cbf6c21b1bc2c23464824"
   },
   "rows": [
     {
@@ -140,7 +140,7 @@
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура на as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительные ряды можно связать с основным. В CRebarRuleOptions AnnotationGroup объединяет стержни в подпись, Publication задаёт порядок вывода, Coincidence — обработку совпадений. Контактные ряды подготавливает CRebarContactBuilder: один экземпляр на основной ряд, отдельные общие настройки в Initialize и один AppendRow на активный ряд по порядку. Он сам учитывает промежуточные диаметры; отключённые ряды пропускают. Произвольные смещения задаются NormalOffset/TangentOffset. Пример — в modSectionRecipeApiGuide.",
+      "text": "4. Опишите получение линий центров арматуры, например смещением контура на as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительные ряды можно связать с основным. В CRebarRuleOptions AnnotationGroup объединяет стержни в подпись, Publication задаёт порядок вывода, Coincidence — обработку совпадений. Параметры читает ReadRebarInputs. В AddReinforcement создают CRebarContactBuilder: один на основной ряд, отдельные настройки в Initialize и один AppendRow на активный ряд. Он сам учитывает промежуточные диаметры; отключённые ряды пропускают. Произвольные смещения задаются NormalOffset/TangentOffset. Пример — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
