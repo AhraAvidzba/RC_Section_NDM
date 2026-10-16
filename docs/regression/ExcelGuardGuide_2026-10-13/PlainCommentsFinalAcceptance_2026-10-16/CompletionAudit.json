@@ -1,0 +1,85 @@
+{
+  "status": "TECHNICAL_ACCEPTANCE_PASS",
+  "requirements": [
+    {
+      "requirement": "Понятные шапки, методы и поля всех классов; полный исходный набор",
+      "status": "PASS",
+      "evidence": [
+        "CurrentCommentAudit.json",
+        "GroupedFieldsReviewCompleted.json"
+      ],
+      "scope": {
+        "sourceComponents": 156,
+        "classes": 104,
+        "methods": 3530,
+        "fieldDeclarationLines": 1941,
+        "groupedDeclarationsReviewed": 77
+      }
+    },
+    {
+      "requirement": "Тестовые методы завершают рабочие компоненты",
+      "status": "PASS",
+      "evidence": "CurrentCommentAudit.json:wrongTestMethodOrder=[]"
+    },
+    {
+      "requirement": "Рабочие алгоритмы и физические допуски сохранены",
+      "status": "PASS",
+      "evidence": [
+        "CurrentSourceCodeProof.json",
+        "FinalExecutionEquivalence.json"
+      ],
+      "scope": "Все 110 рабочих компонентов; все 157 встроенных компонентов по сравнению с полной расчётной версией"
+    },
+    {
+      "requirement": "Итоговая книга, исходники и ALL CODE согласованы",
+      "status": "PASS",
+      "evidence": [
+        "FinalSourceEquality.json",
+        "FinalReadback.json"
+      ],
+      "scope": "152 исходных и 157 встроенных компонентов"
+    },
+    {
+      "requirement": "Пользовательские данные и защищённые каталоги сохранены",
+      "status": "PASS",
+      "evidence": [
+        "FinalExecutionEquivalence.json",
+        "FinalReadback.json"
+      ],
+      "scope": "Все ZIP-части кроме VBA, execution_report, norms/reference/control_examples"
+    },
+    {
+      "requirement": "Полные on/off до 10:00 мск 16.10.2026",
+      "status": "PASS",
+      "evidence": [
+        "Run.json",
+        "Summary.json"
+      ],
+      "scope": "80/80; 0 ошибок; окончание 04:02:37 мск"
+    },
+    {
+      "requirement": "Первичные неуспешные прогоны не объявлены успешными",
+      "status": "PASS",
+      "evidence": "../PlainCommentsAcceptance_2026-10-16/FailureClassification.json"
+    },
+    {
+      "requirement": "Итоговый отчёт, PROGRESS, команды проверки и локальные логические этапы подготовлены",
+      "status": "PASS",
+      "evidence": [
+        "docs/reports/PlainComments_2026-10-16.md",
+        "docs/geometry_refactor/PROGRESS.md",
+        "docs/ValidationPlan.md",
+        "git history through d19cee9"
+      ]
+    },
+    {
+      "requirement": "Неиспользуемые собственные тестовые копии удалены с проверкой путей и процессов",
+      "status": "PASS",
+      "evidence": [
+        "OwnObsoleteCopyCleanup.json",
+        "CompletedFixtureCleanup.json"
+      ]
+    }
+  ],
+  "deliveryVerification": "Итоговый коммит и push проверяются отдельно после этой технической приёмки."
+}

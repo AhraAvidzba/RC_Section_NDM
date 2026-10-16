@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "actualNativeComponents": 157,
+  "sourceComponents": 152,
+  "allCodeMatchesActualPublishedNative": true,
+  "broadFailureScan": {
+    "reports": 6,
+    "matches": 0
+  },
+  "workbookSHA256": "b0b38e6a24ed9b76492b29b063b958a4cf809753a9ac2f9cbbe61c1e89eb8ae6",
+  "allCodeSHA256": "ca37329ddf9e881a963ad0484db54476cf457a2da5a971d688aa91f043d39607",
+  "userExecutionReportSHA256": "158a1c3a4d047eafea07b78517ebf62420289999485cdf91231419a548da746b"
+}

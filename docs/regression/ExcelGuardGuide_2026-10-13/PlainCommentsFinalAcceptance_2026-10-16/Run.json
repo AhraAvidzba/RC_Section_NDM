@@ -1,0 +1,201 @@
+﻿{
+    "Status":  "COMPLETED_PENDING_LOG_REVIEW",
+    "StartedUTC":  "2026-10-15T23:19:23.0442831+00:00",
+    "Deadline":  "2026-10-16T10:00:00.0000000+03:00",
+    "ForecastHours":  3,
+    "SourceCommit":  "cf2f5190e2cc1044dcc14f34ef29383a156cfa78",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "F8D5970AD0A168A0E884AE56B08E3C2AC9EA88DFB12D726C0AD6CA53D3C03D97",
+    "FrozenWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\PlainCommentsFinalAcceptance_2026-10-16\\Source\\RC_Section_NDM.xlsm",
+    "RunnerSHA256":  "CC9F64178952E52D20DE8226E2DE11B328CB54A3BD6248C5015EB30DF8791E53",
+    "ModeRunnerSHA256":  "423A1F99044A8D263A706CB4534E20922AF8B3825F6393E87B39D2EB6A6F3158",
+    "GeometryTypeInTestCopies":  "RectSet",
+    "Jobs":  [
+                 {
+                     "Label":  "Off",
+                     "Macro":  [
+
+                               ],
+                     "MaximumSeconds":  12600,
+                     "ExpectedSuites":  8,
+                     "Mode":  "No",
+                     "Group":  "Full"
+                 },
+                 {
+                     "Label":  "Off",
+                     "Macro":  [
+                                   "modTestDeclarativeGeometry.RunCoreGeometryTests",
+                                   "modTestPolygonSpec.RunPolygonSpecTests",
+                                   "modTestSectionRecipes.RunRecipeDefinitionTests",
+                                   "modTestSectionRecipes.RunRecipeRuleTests",
+                                   "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+                                   "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                                   "modTestGeometryPublication.RunAnnotationIsolationTests",
+                                   "modTestGeometryPublication.RunRecipeContextFreezeTests",
+                                   "modTestGeometryPublication.RunPublishedBuildTests",
+                                   "modTestGeometryPublication.RunDefinitionLifecycleTests",
+                                   "modTestRecipeOperations.RunRecipeOperationTests",
+                                   "modTestRecipeOperations.RunRecipeDiagnosticTests",
+                                   "modTestRecipeOperations.RunResolveAnchorTests",
+                                   "modTestGeometryQuery.RunGeometryQueryTests",
+                                   "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+                                   "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+                                   "modTestAutoCADContours.RunImportedDimensionTests",
+                                   "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+                                   "modTestContourMesh.RunContourMeshTests",
+                                   "modTestAudit02Api.RunAudit02PolygonApiTests",
+                                   "modTestAudit02Api.RunAudit02OptionsTests",
+                                   "modTestAudit02Api.RunAudit02InputTests",
+                                   "modTestAudit02Api.RunAudit02AnnotationTests",
+                                   "modTestAudit02Api.RunAudit02GuideExamplesTests",
+                                   "modTestAudit02Api.RunAudit02CloseoutContactTests",
+                                   "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests"
+                               ],
+                     "MaximumSeconds":  3600,
+                     "ExpectedSuites":  26,
+                     "Mode":  "No",
+                     "Group":  "Geometry"
+                 },
+                 {
+                     "Label":  "Off",
+                     "Macro":  [
+                                   "modTestSP35CrackWidth.RunSP35FormulaTests",
+                                   "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+                                   "modTestSP35CrackWidth.RunSP35PreparationTests",
+                                   "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+                                   "modTestSP35CrackWidth.RunSP35PipelineTests",
+                                   "modTestSP35CrackWidth.RunSP35EndToEndTests"
+                               ],
+                     "MaximumSeconds":  3600,
+                     "ExpectedSuites":  6,
+                     "Mode":  "No",
+                     "Group":  "SP35"
+                 },
+                 {
+                     "Label":  "On",
+                     "Macro":  [
+
+                               ],
+                     "MaximumSeconds":  12600,
+                     "ExpectedSuites":  8,
+                     "Mode":  "Yes",
+                     "Group":  "Full"
+                 },
+                 {
+                     "Label":  "On",
+                     "Macro":  [
+                                   "modTestDeclarativeGeometry.RunCoreGeometryTests",
+                                   "modTestPolygonSpec.RunPolygonSpecTests",
+                                   "modTestSectionRecipes.RunRecipeDefinitionTests",
+                                   "modTestSectionRecipes.RunRecipeRuleTests",
+                                   "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+                                   "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                                   "modTestGeometryPublication.RunAnnotationIsolationTests",
+                                   "modTestGeometryPublication.RunRecipeContextFreezeTests",
+                                   "modTestGeometryPublication.RunPublishedBuildTests",
+                                   "modTestGeometryPublication.RunDefinitionLifecycleTests",
+                                   "modTestRecipeOperations.RunRecipeOperationTests",
+                                   "modTestRecipeOperations.RunRecipeDiagnosticTests",
+                                   "modTestRecipeOperations.RunResolveAnchorTests",
+                                   "modTestGeometryQuery.RunGeometryQueryTests",
+                                   "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+                                   "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+                                   "modTestAutoCADContours.RunImportedDimensionTests",
+                                   "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+                                   "modTestContourMesh.RunContourMeshTests",
+                                   "modTestAudit02Api.RunAudit02PolygonApiTests",
+                                   "modTestAudit02Api.RunAudit02OptionsTests",
+                                   "modTestAudit02Api.RunAudit02InputTests",
+                                   "modTestAudit02Api.RunAudit02AnnotationTests",
+                                   "modTestAudit02Api.RunAudit02GuideExamplesTests",
+                                   "modTestAudit02Api.RunAudit02CloseoutContactTests",
+                                   "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests"
+                               ],
+                     "MaximumSeconds":  3600,
+                     "ExpectedSuites":  26,
+                     "Mode":  "Yes",
+                     "Group":  "Geometry"
+                 },
+                 {
+                     "Label":  "On",
+                     "Macro":  [
+                                   "modTestSP35CrackWidth.RunSP35FormulaTests",
+                                   "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+                                   "modTestSP35CrackWidth.RunSP35PreparationTests",
+                                   "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+                                   "modTestSP35CrackWidth.RunSP35PipelineTests",
+                                   "modTestSP35CrackWidth.RunSP35EndToEndTests"
+                               ],
+                     "MaximumSeconds":  3600,
+                     "ExpectedSuites":  6,
+                     "Mode":  "Yes",
+                     "Group":  "SP35"
+                 }
+             ],
+    "CompletedJobs":  [
+                          {
+                              "ExitCode":  0,
+                              "ExpectedSuites":  8,
+                              "Group":  "Full",
+                              "FinishedUTC":  "2026-10-16T00:14:05.0671935+00:00",
+                              "Label":  "Off",
+                              "Mode":  "No",
+                              "Report":  "docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16/Full_Off.txt",
+                              "StartedUTC":  "2026-10-15T23:19:23.1348050+00:00"
+                          },
+                          {
+                              "ExitCode":  0,
+                              "ExpectedSuites":  26,
+                              "Group":  "Geometry",
+                              "FinishedUTC":  "2026-10-16T00:15:19.9238895+00:00",
+                              "Label":  "Off",
+                              "Mode":  "No",
+                              "Report":  "docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16/Geometry_Off.txt",
+                              "StartedUTC":  "2026-10-16T00:14:05.0731779+00:00"
+                          },
+                          {
+                              "ExitCode":  0,
+                              "ExpectedSuites":  6,
+                              "Group":  "SP35",
+                              "FinishedUTC":  "2026-10-16T00:15:40.8525045+00:00",
+                              "Label":  "Off",
+                              "Mode":  "No",
+                              "Report":  "docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16/SP35_Off.txt",
+                              "StartedUTC":  "2026-10-16T00:15:19.9268826+00:00"
+                          },
+                          {
+                              "ExitCode":  0,
+                              "ExpectedSuites":  8,
+                              "Group":  "Full",
+                              "FinishedUTC":  "2026-10-16T01:01:02.1096822+00:00",
+                              "Label":  "On",
+                              "Mode":  "Yes",
+                              "Report":  "docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16/Full_On.txt",
+                              "StartedUTC":  "2026-10-16T00:15:40.8564651+00:00"
+                          },
+                          {
+                              "ExitCode":  0,
+                              "ExpectedSuites":  26,
+                              "Group":  "Geometry",
+                              "FinishedUTC":  "2026-10-16T01:02:16.6843132+00:00",
+                              "Label":  "On",
+                              "Mode":  "Yes",
+                              "Report":  "docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16/Geometry_On.txt",
+                              "StartedUTC":  "2026-10-16T01:01:02.1126758+00:00"
+                          },
+                          {
+                              "ExitCode":  0,
+                              "ExpectedSuites":  6,
+                              "Group":  "SP35",
+                              "FinishedUTC":  "2026-10-16T01:02:37.7616749+00:00",
+                              "Label":  "On",
+                              "Mode":  "Yes",
+                              "Report":  "docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16/SP35_On.txt",
+                              "StartedUTC":  "2026-10-16T01:02:16.7012692+00:00"
+                          }
+                      ],
+    "SourceChanged":  false,
+    "CurrentJob":  "SP35_On",
+    "RunnerChanged":  false,
+    "FinishedUTC":  "2026-10-16T01:02:37.8095144+00:00"
+}

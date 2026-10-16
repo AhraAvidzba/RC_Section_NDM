@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "inputRecoveredFromCommit": "cf2f5190e2cc1044dcc14f34ef29383a156cfa78",
+  "inputSHA256": "f8d5970ad0a168a0e884ae56b08e3c2ac9ea88dfb12d726c0ad6ca53d3c03d97",
+  "publishedSHA256": "b0b38e6a24ed9b76492b29b063b958a4cf809753a9ac2f9cbbe61c1e89eb8ae6",
+  "changedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "allOtherPartsByteEqual": true
+}

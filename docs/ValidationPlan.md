@@ -21,6 +21,20 @@
 
 Скрипты находятся в `tools/build_workbook/` и запускаются из корня проекта.
 
+Полные on/off после отдельного согласия пользователя выполняет
+`Run-FullOnOffAcceptance.ps1`: по 8 основных, 26 геометрических и 6 наборов
+СП 35 в каждом режиме. Параметры: `SourceWorkbook` — проверяемая книга,
+`EvidenceDirectory` — новый каталог внутри docs/regression, `Deadline` —
+крайнее время с часовым поясом, `ForecastHours` — прогноз длительности.
+Сценарий сохраняет неизменный вход и копии выполняемых сценариев.
+Завершение всех 80 наборов, ошибки, режимы, контрольные суммы и срок проверяет
+`Summarize-FullOnOffAcceptance.py --directory <каталог> --check`.
+Приёмка 16.10.2026:
+
+```powershell
+python tools/build_workbook/Summarize-FullOnOffAcceptance.py --directory docs/regression/ExcelGuardGuide_2026-10-13/PlainCommentsFinalAcceptance_2026-10-16 --check
+```
+
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/build_workbook/Validate-Workbook.ps1
 ```

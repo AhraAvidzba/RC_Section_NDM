@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "files": 42,
+  "archiveSHA256": "b42d8b38a94142076c4eb60cc86ad5d44e35858e678f49762aff7d5fea13a5ab",
+  "archiveBytes": 4852421,
+  "CRCVerified": true,
+  "manifestHashesVerified": true,
+  "fullAcceptance": "80/80; failed=0"
+}
