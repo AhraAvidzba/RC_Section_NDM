@@ -1,0 +1,16 @@
+{
+  "Stage": "Native",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestSectionRecipes.DumpFaceDiameterProbe",
+      "Seconds": 11.163935,
+      "Characters": 1209791,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "AC644420F5930C4266792F39F7476CC9DB3E8CDB21E9AFFA91B07673CCCBEBB2",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T15:42:04.2516792+03:00"
+}

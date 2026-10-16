@@ -1,0 +1,26 @@
+{
+  "ArchiveSHA256": "F9317980AC2CC4534DD323EBE5F4A1C4055C60CD8D8A34A1AF0A7EEDF16823AE",
+  "ArchiveBytes": 163071,
+  "Logs": {
+    "Native/modTestSectionRecipes.DumpFaceDiameterProbe.txt": "5E79EE6FD8C7204E31B86119C34B4C04C7CDB09C900CA78CB38972B9B3E2576E",
+    "Directed/modTestSectionRecipes.DumpFaceDiameterProbe.txt": "EBAECA58967241EC722634BFD3165BB85F6D107B8ED2CC62FEC75EF7BE8C3AC6"
+  },
+  "RemovedPrivateCopies": [
+    {
+      "path": "Candidate/FaceDiameters.xlsm",
+      "bytes": 8395822,
+      "SHA256": "AC644420F5930C4266792F39F7476CC9DB3E8CDB21E9AFFA91B07673CCCBEBB2"
+    },
+    {
+      "path": "Native/GeometrySolidProbe.xlsm",
+      "bytes": 8395822,
+      "SHA256": "AC644420F5930C4266792F39F7476CC9DB3E8CDB21E9AFFA91B07673CCCBEBB2"
+    },
+    {
+      "path": "Directed/GeometrySolidProbe.xlsm",
+      "bytes": 8393013,
+      "SHA256": "1673DD5EB34B5C75CB6F480A2F346A3FC2AFB87776A99084809C589263778E72"
+    }
+  ],
+  "RemovedWorkbookBytes": 25184657
+}
