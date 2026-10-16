@@ -3763,6 +3763,18 @@
       "anchor": "api-crebarruleoptions-configuredependentcontact"
     },
     {
+      "owner": "CRebarRuleOptions",
+      "name": "Clone",
+      "kind": "Function",
+      "signature": "Public Function Clone() As CRebarRuleOptions",
+      "parameters": [],
+      "resultType": "CRebarRuleOptions",
+      "line": 76,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.Clone",
+      "anchor": "api-crebarruleoptions-clone"
+    },
+    {
       "owner": "CGeometryDiagnostic",
       "name": "Code",
       "kind": "Property Get",
@@ -7937,18 +7949,63 @@
       "anchor": "api-modgeometrytypes-buildgeneratedsectionmodel"
     },
     {
-      "owner": "modSectionRecipeRows",
-      "name": "RecipeContactOptions",
-      "kind": "Function",
-      "signature": "Public Function RecipeContactOptions(ByVal sourceReference As String, ByVal location As String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, Optional ByVal tangentSign As Double = 1#, Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions",
+      "owner": "CRebarContactBuilder",
+      "name": "Initialize",
+      "kind": "Sub",
+      "signature": "Public Sub Initialize(ByVal baseDiameter As Double, ByVal normalSign As Double, ByVal tangentSign As Double, ByVal defaults As CRebarRuleOptions)",
       "parameters": [
         {
-          "name": "sourceReference",
-          "type": "String",
+          "name": "baseDiameter",
+          "type": "Double",
           "passing": "ByVal",
           "optional": false,
           "default": null,
-          "signature": "ByVal sourceReference As String"
+          "signature": "ByVal baseDiameter As Double"
+        },
+        {
+          "name": "normalSign",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalSign As Double"
+        },
+        {
+          "name": "tangentSign",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal tangentSign As Double"
+        },
+        {
+          "name": "defaults",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal defaults As CRebarRuleOptions"
+        }
+      ],
+      "resultType": null,
+      "line": 30,
+      "source": "src/Section/CRebarContactBuilder.cls",
+      "id": "CRebarContactBuilder.Initialize",
+      "anchor": "api-crebarcontactbuilder-initialize"
+    },
+    {
+      "owner": "CRebarContactBuilder",
+      "name": "AppendRow",
+      "kind": "Function",
+      "signature": "Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String) As CRebarRuleOptions",
+      "parameters": [
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
         },
         {
           "name": "location",
@@ -7967,51 +8024,19 @@
           "signature": "ByVal binding As String"
         },
         {
-          "name": "baseDiameter",
-          "type": "Double",
+          "name": "sourceReference",
+          "type": "String",
           "passing": "ByVal",
           "optional": false,
           "default": null,
-          "signature": "ByVal baseDiameter As Double"
-        },
-        {
-          "name": "diameter",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal diameter As Double"
-        },
-        {
-          "name": "normalSign",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal normalSign As Double"
-        },
-        {
-          "name": "tangentSign",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": true,
-          "default": "1#",
-          "signature": "Optional ByVal tangentSign As Double = 1#"
-        },
-        {
-          "name": "interveningDiameterSum",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": true,
-          "default": "0#",
-          "signature": "Optional ByVal interveningDiameterSum As Double = 0#"
+          "signature": "ByVal sourceReference As String"
         }
       ],
       "resultType": "CRebarRuleOptions",
-      "line": 12,
-      "source": "src/Geometry/modSectionRecipeRows.bas",
-      "id": "modSectionRecipeRows.RecipeContactOptions",
-      "anchor": "api-modsectionreciperows-recipecontactoptions"
+      "line": 47,
+      "source": "src/Section/CRebarContactBuilder.cls",
+      "id": "CRebarContactBuilder.AppendRow",
+      "anchor": "api-crebarcontactbuilder-appendrow"
     }
   ],
   "scope": "Все Public члены фасада, его options/результатов и общего ввода/единиц; общие query/region и build diagnostics для проверок. Private/Friend не API рецепта.",
@@ -8021,7 +8046,7 @@
     "src/Geometry/CGeometryPath.cls": "3828263e1c36b97edbdb37f9426a574d147ca16e81c28bf2d91ffe26d9070334",
     "src/Geometry/CPolygonSpec.cls": "d1ef9849436baaa80f95e38f60a554e060c1682dc1a1f8dce6ddbcfe7a4c3162",
     "src/Section/CSectionDefinition.cls": "06d7de6ef75b69ec30215689fec79eb397e03c3c3b046a6c3a9f14e2afe0c90d",
-    "src/Section/CRebarRuleOptions.cls": "3e1297e2af28c65931157f1f5714d5c1cffc4c5092f33db3f866bad0e79082da",
+    "src/Section/CRebarRuleOptions.cls": "57bd0840975bcad9e7f4355375eb93a328a9fa8bab275cd8dd2b650f8a905e1a",
     "src/Geometry/CGeometryDiagnostic.cls": "8946153d9883bc493bb4015304782921f4e281d52c51c58fdd5a90c60ecfd49b",
     "src/Section/CSectionInputTable.cls": "f54a54da039152125544684ab4e432d68900e2f1023bd9f08a54baa26fd2da4c",
     "src/Section/CSectionRecipeContext.cls": "35ea5f91e3371515cba391766702d7b418513fd1cae1c8e4d61e0e3537f6cf5d",
@@ -8034,6 +8059,6 @@
     "src/Section/CSectionGeometryQuery.cls": "0c277348cbb49bc7533689441c36026645763ee43ecfeeb86786e4da7cbd21a5",
     "src/Common/modSectionRecipeTypes.bas": "0157218974ac09c24abcc731144c3b777e510a769117c9de05b173911c087548",
     "src/Common/modGeometryTypes.bas": "eea750eed738386e6e424dcffe25132d23871e0dec25e36609510ef04b251c75",
-    "src/Geometry/modSectionRecipeRows.bas": "8b3bf644f73b59f887d7c807cef2ea8aa8b5f33a7573a26f5946642c53c3a0a2"
+    "src/Section/CRebarContactBuilder.cls": "5c16d2ceac9ab3d3dab8c3481c7b5a9f7ac46be7396ea673ecbc9adb39a635a9"
   }
 }

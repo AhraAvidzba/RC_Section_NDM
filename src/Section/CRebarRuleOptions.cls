@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -71,6 +71,38 @@ Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diamete
     If axis = RowNormal Then NormalOffset = directionSign * distance Else TangentOffset = directionSign * distance
     Me.EverySecond = everySecond
 End Sub
+
+' Возвращает независимую копию всех настроек; изменение одной копии не влияет на другую.
+Public Function Clone() As CRebarRuleOptions
+    Dim result As CRebarRuleOptions
+    Set result = New CRebarRuleOptions
+    result.StartSetback = StartSetback
+    result.EndSetback = EndSetback
+    result.EndMode = EndMode
+    result.DistributionScope = DistributionScope
+    result.RemainderPlacement = RemainderPlacement
+    result.TangentOffset = TangentOffset
+    result.NormalOffset = NormalOffset
+    result.EverySecond = EverySecond
+    result.IncomingTangentAtJoint = IncomingTangentAtJoint
+    result.DirectionX = DirectionX
+    result.DirectionY = DirectionY
+    result.SourceNormalSign = SourceNormalSign
+    result.SuccessfulProjectionOrdinal = SuccessfulProjectionOrdinal
+    result.NewPublicationRoot = NewPublicationRoot
+    result.SkipMissingProjection = SkipMissingProjection
+    result.Publication = Publication
+    result.PositionOrder = PositionOrder
+    result.Coincidence = Coincidence
+    result.PlacementCheck = PlacementCheck
+    result.OverlapPolicy = OverlapPolicy
+    result.SourcePrefix = SourcePrefix
+    result.SourceSuffix = SourceSuffix
+    result.AnnotationGroup = AnnotationGroup
+    result.Comment = Comment
+    result.SourceReference = SourceReference
+    Set Clone = result
+End Function
 
 ' Копирует параметры в правило расстановки, чтобы дальнейшие изменения объекта
 ' не изменяли уже объявленное армирование.

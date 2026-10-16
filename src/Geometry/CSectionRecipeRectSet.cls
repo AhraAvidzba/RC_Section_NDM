@@ -42,15 +42,11 @@ Private Type TRectangleFace
     Y2 As Double ' Конечная координата Y линии центров арматуры, мм.
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
-    TangentSign As Double ' Направление сдвига связанных стержней вдоль линии.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
     EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
-    Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
-    Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
-    SkippedDiameters(2 To 3) As Double ' Диаметр второго ряда, учитываемый при смещении третьего, мм.
+    ExtraOptions(2 To 3) As CRebarRuleOptions ' Готовые независимые настройки включённых дополнительных рядов.
     Source As String ' Адреса отступов основного ряда для сообщения об ошибке размещения.
-    ExtraSources(2 To 3) As String ' Адреса диаметров дополнительных рядов для сообщения об ошибке.
 End Type
 
 ' Читает форму сечения и параметры армирования. Формирует описание наружной границы
@@ -113,7 +109,9 @@ End Sub
 ' Отступы считаются от полной грани; направления линий и связанных рядов сохраняются.
 Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal header As Long, _
         ByVal base As Long, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByRef faces() As TRectangleFace)
-    Dim side As Long, row As Long, extra As Long, axisDistance As Double, rowNumber As Long, column As Long, ids As Variant
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions, rowOptions As CRebarRuleOptions
+    Dim locations(2 To 3) As String, bindings(2 To 3) As String, sources(2 To 3) As String
+    Dim tangentSign As Double, side As Long, row As Long, extra As Long, axisDistance As Double, rowNumber As Long, column As Long, ids As Variant
     ' Строки каждого прямоугольника в Config: левая, правая, верхняя и нижняя стороны.
     If base = 0 Then ids = Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2") Else ids = Array("H2.as_1", "H2.as_2", "B2.as_1", "B2.as_2")
     For side = 1 To 4
@@ -133,28 +131,40 @@ Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As
             Select Case side
                 Case 1 ' Линия арматуры у левой грани: отступ as, снизу вверх.
                     .X1 = x + axisDistance: .Y1 = y: .X2 = x + axisDistance: .Y2 = y + height
-                    .LabelX = -1#: .TangentSign = -1#
+                    .LabelX = -1#: tangentSign = -1#
                 Case 2 ' Линия арматуры у правой грани: отступ as, сверху вниз.
                     .X1 = x + width - axisDistance: .Y1 = y + height: .X2 = x + width - axisDistance: .Y2 = y
-                    .LabelX = 1#: .TangentSign = 1#
+                    .LabelX = 1#: tangentSign = 1#
                 Case 3 ' Линия арматуры у верхней грани: отступ as, слева направо.
                     .X1 = x: .Y1 = y + height - axisDistance: .X2 = x + width: .Y2 = y + height - axisDistance
-                    .LabelY = 1#: .TangentSign = 1#
+                    .LabelY = 1#: tangentSign = 1#
                 Case 4 ' Линия арматуры у нижней грани: отступ as, справа налево.
                     .X1 = x + width: .Y1 = y + axisDistance: .X2 = x: .Y2 = y + axisDistance
-                    .LabelY = -1#: .TangentSign = -1#
+                    .LabelY = -1#: tangentSign = -1#
             End Select
             .Diameters(2) = table.OptionalDiameter(extra, 2, units)
             .Diameters(3) = table.OptionalDiameter(extra, 5, units)
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
                     column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
-                    .Locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
-                    .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                    .ExtraSources(rowNumber) = table.SourceReference(extra, column)
+                    locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                    bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                    sources(rowNumber) = table.SourceReference(extra, column)
                 End If
             Next rowNumber
-            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Учитываем второй ряд при одинаковом способе смещения.
+            Set defaults = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
+            defaults.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+            defaults.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+            defaults.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+            Set contact = New CRebarContactBuilder
+            contact.Initialize .Diameter, -1#, tangentSign, defaults
+            For rowNumber = 2 To 3
+                If .Diameters(rowNumber) > 0# Then
+                    Set rowOptions = contact.AppendRow(.Diameters(rowNumber), locations(rowNumber), bindings(rowNumber), sources(rowNumber))
+                    rowOptions.Comment = "RectSet: " & .Caption & ", ряд " & CStr(rowNumber)
+                    Set .ExtraOptions(rowNumber) = rowOptions
+                End If
+            Next rowNumber
         End With
 NextSide:
     Next side
@@ -193,13 +203,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
-                    Set options = RecipeContactOptions(.ExtraSources(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), _
-                        .Diameter, .Diameters(rowNumber), -1#, .TangentSign, .SkippedDiameters(rowNumber))
-                    options.AnnotationGroup = .ID ' Одна подпись для всех рядов этой стороны.
-                    options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-                    options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
-                    options.Comment = "RectSet: " & .Caption & ", ряд " & CStr(rowNumber)
-                    facade.RebarDependent .ID & ".Row" & CStr(rowNumber), .ID & ".Main", .Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+                    facade.RebarDependent .ID & ".Row" & CStr(rowNumber), .ID & ".Main", .Diameters(rowNumber), .ExtraOptions(rowNumber) ' Оба дополнительных ряда связаны с основным.
                 End If
             Next rowNumber
         End With

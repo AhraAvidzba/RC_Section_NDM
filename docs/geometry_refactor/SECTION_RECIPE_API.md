@@ -2341,7 +2341,7 @@ Source: src/Geometry/CPolygonSpec.cls:89
     For i = 1 To polygon.Count
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:587.
+Полный контекст: tests/modTestAudit02Api.bas:560.
 
 Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
@@ -2524,7 +2524,7 @@ Source: src/Geometry/CPolygonSpec.cls:110
             "|" & CStr(polygon.FilletRadius(i)) & "|" & polygon.SourceReference(i) & vbCrLf
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:588.
+Полный контекст: tests/modTestAudit02Api.bas:561.
 
 Native entrypoint: modTestAudit02Api.RunAudit02PolygonApiTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02PolygonApiTests.txt.
 
@@ -3040,15 +3040,15 @@ Default после New: 0#. Поле изменяется до объявлен�
 
 Source: src/Section/CRebarRuleOptions.cls:19
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.RunRecipeRuleTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.StartSetback = 70#
+    options.StartSetback = 10#: options.EndSetback = 20#
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:559.
+Полный контекст: tests/modTestSectionRecipes.bas:184.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-crebarruleoptions-endsetback"></a>
 ### CRebarRuleOptions.EndSetback
@@ -3243,15 +3243,15 @@ Default после New: False. Поле изменяется до объявле
 
 Source: src/Section/CRebarRuleOptions.cls:26
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "contactRecipe.binding", options.EverySecond
+    Check "contactBuilder.example.binding", row.EverySecond
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:557.
+Полный контекст: tests/modTestAudit02Api.bas:596.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 <a id="api-crebarruleoptions-incomingtangentatjoint"></a>
 ### CRebarRuleOptions.IncomingTangentAtJoint
@@ -3301,15 +3301,15 @@ Default после New: 0#. Поле изменяется до объявлен�
 
 Source: src/Section/CRebarRuleOptions.cls:28
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "defaults.projectionDirection", options.DirectionX = 0# And options.DirectionY = 0#
+    Check "contactBuilder.clone.DirectionX", copy.DirectionX = defaults.DirectionX
 ```
 
-Полный контекст: tests/modTestRecipeApiCatalogue.bas:111.
+Полный контекст: tests/modTestAudit02Api.bas:632.
 
-Native entrypoint: modTestRecipeApiCatalogue.RunApiGeometryReadExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 <a id="api-crebarruleoptions-directiony"></a>
 ### CRebarRuleOptions.DirectionY
@@ -3475,15 +3475,15 @@ Default после New: PublishByRule. Поле изменяется до объ
 
 Source: src/Section/CRebarRuleOptions.cls:34
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.Publication = PublishPerSourcePosition
+        options.Publication = PublishPerSourcePosition
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:561.
+Полный контекст: tests/modTestSectionRecipes.bas:302.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-crebarruleoptions-positionorder"></a>
 ### CRebarRuleOptions.PositionOrder
@@ -3533,15 +3533,15 @@ Default после New: RejectCoincidence. Поле изменяется до о
 
 Source: src/Section/CRebarRuleOptions.cls:36
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.Coincidence = KeepPublishedOwner
+    options.AnnotationGroup = "Second": options.Coincidence = MergeIdentical
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:562.
+Полный контекст: tests/modTestSectionRecipes.bas:394.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-crebarruleoptions-placementcheck"></a>
 ### CRebarRuleOptions.PlacementCheck
@@ -3562,15 +3562,15 @@ Default после New: CheckCenter. Поле изменяется до объя
 
 Source: src/Section/CRebarRuleOptions.cls:37
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter
 ```
 
-Полный контекст: tests/modTestRecipeApiCatalogue.bas:65.
+Полный контекст: tests/modTestAudit02Api.bas:663.
 
-Native entrypoint: modTestRecipeApiCatalogue.RunAdvancedGuideExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 <a id="api-crebarruleoptions-overlappolicy"></a>
 ### CRebarRuleOptions.OverlapPolicy
@@ -3678,15 +3678,15 @@ Default после New: vbNullString. Поле изменяется до объ�
 
 Source: src/Section/CRebarRuleOptions.cls:41
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.AnnotationGroup = "Previous"
+    options.AnnotationGroup = "RowsLabel"
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:560.
+Полный контекст: tests/modTestRecipeApiCatalogue.bas:64.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestRecipeApiCatalogue.RunAdvancedGuideExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt.
 
 <a id="api-crebarruleoptions-comment"></a>
 ### CRebarRuleOptions.Comment
@@ -3707,15 +3707,15 @@ Default после New: vbNullString. Поле изменяется до объ�
 
 Source: src/Section/CRebarRuleOptions.cls:42
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.StartSetback = 20#: options.EndSetback = 30#: options.Comment = "Guide": options.SourceReference = "ProgramInputs.Row"
+    Check "contactBuilder.clone.Comment", copy.Comment = defaults.Comment
 ```
 
-Полный контекст: tests/modTestRecipeApiCatalogue.bas:113.
+Полный контекст: tests/modTestAudit02Api.bas:646.
 
-Native entrypoint: modTestRecipeApiCatalogue.RunApiGeometryReadExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 <a id="api-crebarruleoptions-sourcereference"></a>
 ### CRebarRuleOptions.SourceReference
@@ -3736,15 +3736,15 @@ Default после New: vbNullString. Поле изменяется до объ�
 
 Source: src/Section/CRebarRuleOptions.cls:43
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "contactRecipe.source", options.SourceReference = "recipe-test"
+    defaults.SourceReference = "ChangedDefaults"
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:558.
+Полный контекст: tests/modTestAudit02Api.bas:654.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 <a id="api-crebarruleoptions-configuredependentcontact"></a>
 ### CRebarRuleOptions.ConfigureDependentContact
@@ -3779,6 +3779,33 @@ Source: src/Section/CRebarRuleOptions.cls:61
 Полный контекст: tests/modTestAudit02Api.bas:116.
 
 Native entrypoint: modTestAudit02Api.RunAudit02OptionsTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02OptionsTests.txt.
+
+<a id="api-crebarruleoptions-clone"></a>
+### CRebarRuleOptions.Clone
+
+Возвращает новую независимую копию всех настроек. Изменения исходного объекта и копии не влияют друг на друга.
+
+```vb
+Public Function Clone() As CRebarRuleOptions
+```
+
+Тип результата: CRebarRuleOptions. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: New задаёт defaults; автор меняет поля до объявления правила. Фасад копирует options в definition; последующее изменение options не меняет правило.
+
+Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
+
+Source: src/Section/CRebarRuleOptions.cls:76
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.
+
+```vb
+    Set copy = defaults.Clone
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:622.
+
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 ## CGeometryDiagnostic
 
@@ -4944,6 +4971,8 @@ Native entrypoint: modTestSectionRecipes.RunRoundedRecipeEquilibriumTests; жу�
 Native entrypoint: modTestSectionRecipes.RunHollowRecipeEquilibriumTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/EquilibriumTests.txt.
 
 Native entrypoint: modTestSectionRecipes.RunHollowRecipeEdgeEquilibriumTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/EdgeEquilibriumYes.txt.
+
+Native entrypoint: modTestSectionRecipes.RunRecipeCaptionTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunRecipeCaptionTests.txt.
 
 ## CSectionBuilder
 
@@ -8477,15 +8506,15 @@ PublishPerSourcePosition = 2
 
 Source: src/Common/modSectionRecipeTypes.bas:52
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestProjectionNormalsAndOrdinals с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.Publication = PublishPerSourcePosition
+        options.Publication = PublishPerSourcePosition
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:561.
+Полный контекст: tests/modTestSectionRecipes.bas:302.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-modsectionrecipetypes-erebarpositionorder"></a>
 ### modSectionRecipeTypes.ERebarPositionOrder
@@ -8542,15 +8571,15 @@ KeepPublishedOwner = 3
 
 Source: src/Common/modSectionRecipeTypes.bas:62
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.TestPublicationAndCoincidence с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.Coincidence = KeepPublishedOwner
+    options.AnnotationGroup = "Second": options.Coincidence = MergeIdentical
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:562.
+Полный контекст: tests/modTestSectionRecipes.bas:394.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestSectionRecipes.RunRecipeRuleTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
 <a id="api-modsectionrecipetypes-erebarplacementcheck"></a>
 ### modSectionRecipeTypes.ERebarPlacementCheck
@@ -8574,15 +8603,15 @@ CheckFullDisk = 2
 
 Source: src/Common/modSectionRecipeTypes.bas:68
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.AdvancedGuideDefinition с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.
 
 ```vb
-    options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
+    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter
 ```
 
-Полный контекст: tests/modTestRecipeApiCatalogue.bas:65.
+Полный контекст: tests/modTestAudit02Api.bas:663.
 
-Native entrypoint: modTestRecipeApiCatalogue.RunAdvancedGuideExamples; журнал: docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/AdvancedExamples.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 
 <a id="api-modsectionrecipetypes-erebaroverlappolicy"></a>
 ### modSectionRecipeTypes.ERebarOverlapPolicy
@@ -9283,45 +9312,73 @@ Source: src/Common/modGeometryTypes.bas:119
 
 Native entrypoint: modTestGeometry.RunGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
 
-## modSectionRecipeRows
+## CRebarContactBuilder
 
-Небольшой общий помощник штатных рецептов. Получает проверенные значения в миллиметрах и возвращает новые CRebarRuleOptions; таблицы, форму сечения и политики публикации не выбирает.
+Один экземпляр на основной ряд. Initialize сохраняет независимые общие настройки дополнительных рядов; AppendRow вызывают один раз на активный ряд в порядке описания. Таблицы, геометрию, размещение, правила и аннотации класс не обрабатывает.
 
-<a id="api-modsectionreciperows-recipecontactoptions"></a>
-### modSectionRecipeRows.RecipeContactOptions
+<a id="api-crebarcontactbuilder-initialize"></a>
+### CRebarContactBuilder.Initialize
 
-Создаёт независимые настройки контактного дополнительного ряда по уже проверенным значениям рецепта. Stacked выбирает нормаль, SideBySide — касательную; контактное расстояние задаёт ConfigureDependentContact. Не читает таблицы и не объявляет ряд. AnnotationGroup, Publication, Coincidence, имена и комментарий задаются отдельно в рецепте; остальные поля имеют обычные значения New CRebarRuleOptions.
+Сохраняет положительный основной диаметр, два знака смещений и независимый снимок общих настроек именно дополнительных рядов. Вызывается один раз на экземпляр; настройки основного ряда автоматически не наследуются.
 
 ```vb
-Public Function RecipeContactOptions(ByVal sourceReference As String, ByVal location As String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, Optional ByVal tangentSign As Double = 1#, Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
+Public Sub Initialize(ByVal baseDiameter As Double, ByVal normalSign As Double, ByVal tangentSign As Double, ByVal defaults As CRebarRuleOptions)
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| sourceReference | String; ByVal; обязательный | Строка исходного адреса/программного параметра; без объекта Excel. |
-| location | String; ByVal; обязательный | Проверенное значение Stacked (поперёк линии) или SideBySide (вдоль линии). Ввод проверяется методом Choice до вызова. |
-| binding | String; ByVal; обязательный | Проверенное значение EachBar (все исходные позиции) или EverySecondBar (первая, третья и следующие нечётные позиции). |
-| baseDiameter | Double; ByVal; обязательный | Строго положительный диаметр основного стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника. |
-| diameter | Double; ByVal; обязательный | Строго положительный диаметр добавляемого стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника. |
-| normalSign | Double; ByVal; обязательный | Знак смещения Stacked относительно левой нормали исходной линии: +1 или -1; определяется направлением её обхода. |
-| tangentSign | Double; ByVal; Optional; default=1# | Знак смещения SideBySide вдоль исходной линии: +1 по её направлению, -1 против. По умолчанию +1. |
-| interveningDiameterSum | Double; ByVal; Optional; default=0# | Неотрицательная сумма диаметров номинально промежуточных стержней, мм. Для третьего ряда обычно d2 при том же направлении, иначе 0; пропуск EverySecond сам по себе её не уменьшает. |
+| baseDiameter | Double; ByVal; обязательный | Положительный диаметр стержней основного ряда, мм (>0). |
+| normalSign | Double; ByVal; обязательный | Знак смещения Stacked относительно левой нормали линии: +1 или -1. |
+| tangentSign | Double; ByVal; обязательный | Знак смещения SideBySide вдоль линии: +1 по её направлению, -1 против. |
+| defaults | CRebarRuleOptions; ByVal; обязательный | Отдельные общие CRebarRuleOptions дополнительных рядов. Объект обязателен; сохраняется независимая копия. EndMode, отступы и имена основного ряда автоматически не наследуются. |
 
-Тип результата: CRebarRuleOptions. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
-
-Жизненный цикл: Небольшой общий помощник штатных рецептов. Получает проверенные значения в миллиметрах и возвращает новые CRebarRuleOptions; таблицы, форму сечения и политики публикации не выбирает.
+Жизненный цикл: Один экземпляр на основной ряд. Initialize сохраняет независимые общие настройки дополнительных рядов; AppendRow вызывают один раз на активный ряд в порядке описания. Таблицы, геометрию, размещение, правила и аннотации класс не обрабатывает.
 
 Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
 
-Source: src/Geometry/modSectionRecipeRows.bas:12
+Source: src/Section/CRebarContactBuilder.cls:30
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.
 
 ```vb
-    Set options = RecipeContactOptions("recipe-test", "Stacked", "EverySecondBar", 20#, 12#, -1#, 1#, 16#)
+    contact.Initialize 32#, 1#, 1#, defaults
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:555.
+Полный контекст: tests/modTestAudit02Api.bas:593.
 
-Native entrypoint: modTestAudit02Api.RunRecipeContactOptionsContract; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
+
+<a id="api-crebarcontactbuilder-appendrow"></a>
+### CRebarContactBuilder.AppendRow
+
+Создаёт независимые CRebarRuleOptions для одного активного контактного ряда. Stacked использует нормаль, SideBySide — касательную. Номинальные диаметры успешно подготовленных рядов накапливаются отдельно для обоих направлений; EverySecondBar не уменьшает накопление. Расстояние вычисляет ConfigureDependentContact. Ошибка не меняет состояние; индивидуальные поля результата можно изменить до передачи фасаду.
+
+```vb
+Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String) As CRebarRuleOptions
+```
+
+| Параметр | Тип / передача / default | Смысл и единицы |
+|---|---|---|
+| diameter | Double; ByVal; обязательный | Положительный диаметр добавляемого ряда, мм (>0). Отключённый ряд пропускают до вызова, не увеличивая накопленные диаметры. |
+| location | String; ByVal; обязательный | Только Stacked (поперёк линии) или SideBySide (вдоль линии); неизвестное значение вызывает адресную ошибку. |
+| binding | String; ByVal; обязательный | Только EachBar (все исходные позиции) или EverySecondBar (позиции 1, 3 и следующие нечётные). Накопление номинальных диаметров одинаково для обоих вариантов. |
+| sourceReference | String; ByVal; обязательный | Адреса активных исходных полей этого ряда или программная ссылка. Сохраняются в результате и в сообщении об ошибке. |
+
+Тип результата: CRebarRuleOptions. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
+
+Жизненный цикл: Один экземпляр на основной ряд. Initialize сохраняет независимые общие настройки дополнительных рядов; AppendRow вызывают один раз на активный ряд в порядке описания. Таблицы, геометрию, размещение, правила и аннотации класс не обрабатывает.
+
+Ошибки/исправление: Нарушенный контракт вызывающей операции даёт адресную ошибку; данные и selectors проверяются общим источником/фасадом.
+
+Source: src/Section/CRebarContactBuilder.cls:47
+
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.
+
+```vb
+    Set row = contact.AppendRow(16#, "Stacked", "EachBar", "ContactTest[2,2]")
+```
+
+Полный контекст: tests/modTestAudit02Api.bas:598.
+
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt.
 

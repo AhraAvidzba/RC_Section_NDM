@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "022a059d0cec05d1836fe3be8feca901badf1503136ea62d65c32975e8f8fc4e",
+  "bodySHA256": "89c328c156aada9bafe901e0bcd9f4fbce16bcee216a217a9e87ac692aef1b68",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "87383cc430a0288fb15cbc17a8ae36f137aed6629e0549e09ed2eafd6ba77fc0",
-    "src/Common/modSectionRecipeApiGuide.bas": "4fb370986f8ccf6e1d8363753bc4618cb33d63302972fe674d093b4c7dc89bfb"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "5961e7c9c52e0284ad89a4342ef66699c1aac8a4f10c73f2337e4367e40af9a6",
+    "src/Common/modSectionRecipeApiGuide.bas": "829a9b803ce81821e6cec03bb5426efbce62030f6a664f4d7f004c854b9aa87a"
   },
   "rows": [
     {
@@ -140,7 +140,7 @@
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. В CRebarRuleOptions поле AnnotationGroup объединяет стержни в одну подпись, Publication задаёт порядок их вывода, Coincidence — обработку совпавших позиций. ConfigureDependentContact задаёт контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset. Штатные рецепты используют общий RecipeContactOptions из modSectionRecipeRows для подготовки контактных рядов; направления, привязки и политики каждого ряда остаются в рецепте.",
+      "text": "4. Опишите получение линий центров арматуры, например смещением контура на as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительные ряды можно связать с основным. В CRebarRuleOptions AnnotationGroup объединяет стержни в подпись, Publication задаёт порядок вывода, Coincidence — обработку совпадений. Контактные ряды подготавливает CRebarContactBuilder: один экземпляр на основной ряд, отдельные общие настройки в Initialize и один AppendRow на активный ряд по порядку. Он сам учитывает промежуточные диаметры; отключённые ряды пропускают. Произвольные смещения задаются NormalOffset/TangentOffset. Пример — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
@@ -375,5 +375,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 140
+  "members": 142
 }

@@ -132,6 +132,28 @@ def build():
     comment('CreateDefinition связывает этапы: подготовку данных, AddGeometry, AddReinforcement и AddAnnotations. AddGeometry задаёт границы бетона и отверстий. AddReinforcement создаёт линии центров арматуры и регистрирует правила размещения стержней. AddAnnotations задаёт размеры и подписи. Эти методы получают готовые параметры и не читают входные таблицы.', 4)
     comment('Неактивные поля не становятся обязательными: параметры отключённого ряда пропускаются. В HollowRectangle внутренние as нужны и без стержней на соответствующей стороне: они ограничивают линии арматуры у отверстия. В таблицах используются утверждённые названия Config без альтернативных ключей.', 4)
     comment()
+    comment('ПОДГОТОВКА КОНТАКТНЫХ РЯДОВ', 2)
+    comment('CRebarContactBuilder создают отдельно для каждого основного ряда или стороны. В Read/Prepare сначала читают активные параметры, затем один раз вызывают AppendRow на каждый включённый ряд по порядку. При чтении уже готовых настроек и при отрисовке AppendRow повторно не вызывают. Отключённые ряды пропускают до чтения их необязательных полей.', 4)
+    comment('Initialize получает новые общие options именно дополнительных рядов и сохраняет их копию. Каждый AppendRow возвращает отдельный объект. Можно изменить SourceSuffix, Comment и другие индивидуальные поля перед передачей фасаду. Расстояние вычисляет ConfigureDependentContact, а диаметр каждого успешно подготовленного ряда учитывается для следующих рядов того же направления. EverySecondBar не уменьшает этот диаметр.', 4)
+    comment('Фрагмент для уже объявленного основного ряда Top.Main диаметром 32 мм. Stacked направлен внутрь от верхней линии; SideBySide — вдоль неё. Смещения составят -26 и -44 мм по нормали, затем +22 мм вдоль линии. Все дополнительные ряды остаются связанными с Top.Main.', 4)
+    for line in [
+        'Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions',
+        'Dim row2 As CRebarRuleOptions, row3 As CRebarRuleOptions, row4 As CRebarRuleOptions',
+        'Set defaults = New CRebarRuleOptions',
+        'defaults.AnnotationGroup = "Top"  \' Общая подпись основного и дополнительных рядов этой группы.',
+        'Set contact = New CRebarContactBuilder',
+        'contact.Initialize 32#, -1#, 1#, defaults  \' Основной диаметр, знаки нормали и касательной, общие настройки.',
+        'Set row2 = contact.AppendRow(20#, "Stacked", "EverySecondBar", "Program.Row2")',
+        'row2.SourceSuffix = "_R2"  \' Индивидуальное окончание имени позиции второго ряда.',
+        'Set row3 = contact.AppendRow(16#, "Stacked", "EachBar", "Program.Row3")',
+        'Set row4 = contact.AppendRow(12#, "SideBySide", "EachBar", "Program.Row4")',
+        "' На этапе AddReinforcement используем готовые настройки; ID и связь с Main заданы явно.",
+        'facade.RebarDependent "Top.Row2", "Top.Main", 20#, row2',
+        'facade.RebarDependent "Top.Row3", "Top.Main", 16#, row3',
+        'facade.RebarDependent "Top.Row4", "Top.Main", 12#, row4',
+    ]:
+        lines.append("'       " + line)
+    comment()
     comment('ОПИСАТЕЛЬ И ПРИВЯЗКИ', 2)
     comment('CPolygonSpec объединяет исходные ID, X, Y, FilletRadius и SourceReference каждой вершины. New → AddVertex → Seal. Состояние читают Count/IsSealed, значения — VertexID/X/Y/FilletRadius/SourceReference по индексу от 1. После Seal изменение запрещено; повторный Seal безопасен. Первую вершину в конце не повторяют.', 4)
     comment('В конце AddVertex можно задать outgoingEdgeID — имя прямого участка к следующей вершине между касаниями, и cornerID — имя скругления этой вершины. Например: polygon.AddVertex "TR", 400#, 600#, 40#, outgoingEdgeID:="Right.UpperSlope", cornerID:="Round.TopRight". VertexID при этом остаётся "TR". Пустые аргументы дают прежние Edge.TR и Corner.TR. OutgoingEdgeID/CornerID возвращают эффективные имена. Все имена сегментов одного многоугольника уникальны, включая исчезнувшие участки; при R=0 фиктивная дуга не создаётся.', 4)

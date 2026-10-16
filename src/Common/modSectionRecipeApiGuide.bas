@@ -121,6 +121,34 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     линии арматуры у отверстия. В таблицах используются утверждённые названия Config без
 '     альтернативных ключей.
 '
+'   ПОДГОТОВКА КОНТАКТНЫХ РЯДОВ
+'     CRebarContactBuilder создают отдельно для каждого основного ряда или стороны. В Read/Prepare
+'     сначала читают активные параметры, затем один раз вызывают AppendRow на каждый включённый ряд по
+'     порядку. При чтении уже готовых настроек и при отрисовке AppendRow повторно не вызывают.
+'     Отключённые ряды пропускают до чтения их необязательных полей.
+'     Initialize получает новые общие options именно дополнительных рядов и сохраняет их копию. Каждый
+'     AppendRow возвращает отдельный объект. Можно изменить SourceSuffix, Comment и другие
+'     индивидуальные поля перед передачей фасаду. Расстояние вычисляет ConfigureDependentContact, а
+'     диаметр каждого успешно подготовленного ряда учитывается для следующих рядов того же направления.
+'     EverySecondBar не уменьшает этот диаметр.
+'     Фрагмент для уже объявленного основного ряда Top.Main диаметром 32 мм. Stacked направлен внутрь от
+'     верхней линии; SideBySide — вдоль неё. Смещения составят -26 и -44 мм по нормали, затем +22 мм
+'     вдоль линии. Все дополнительные ряды остаются связанными с Top.Main.
+'       Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions
+'       Dim row2 As CRebarRuleOptions, row3 As CRebarRuleOptions, row4 As CRebarRuleOptions
+'       Set defaults = New CRebarRuleOptions
+'       defaults.AnnotationGroup = "Top"  ' Общая подпись основного и дополнительных рядов этой группы.
+'       Set contact = New CRebarContactBuilder
+'       contact.Initialize 32#, -1#, 1#, defaults  ' Основной диаметр, знаки нормали и касательной, общие настройки.
+'       Set row2 = contact.AppendRow(20#, "Stacked", "EverySecondBar", "Program.Row2")
+'       row2.SourceSuffix = "_R2"  ' Индивидуальное окончание имени позиции второго ряда.
+'       Set row3 = contact.AppendRow(16#, "Stacked", "EachBar", "Program.Row3")
+'       Set row4 = contact.AppendRow(12#, "SideBySide", "EachBar", "Program.Row4")
+'       ' На этапе AddReinforcement используем готовые настройки; ID и связь с Main заданы явно.
+'       facade.RebarDependent "Top.Row2", "Top.Main", 20#, row2
+'       facade.RebarDependent "Top.Row3", "Top.Main", 16#, row3
+'       facade.RebarDependent "Top.Row4", "Top.Main", 12#, row4
+'
 '   ОПИСАТЕЛЬ И ПРИВЯЗКИ
 '     CPolygonSpec объединяет исходные ID, X, Y, FilletRadius и SourceReference каждой вершины. New  ->
 '     AddVertex  ->  Seal. Состояние читают Count/IsSealed, значения —
@@ -1851,55 +1879,73 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           обычно d2 при том же направлении, иначе 0; пропуск EverySecond сам по себе её не уменьшает.
 '
 '
-'
-'   Класс / модуль: modSectionRecipeRows
-'
 '     ----------------------------------------------------------------------------------------------
-'     modSectionRecipeRows.RecipeContactOptions
+'     CRebarRuleOptions.Clone
 '
-'       Создаёт независимые настройки контактного дополнительного ряда по уже проверенным значениям
-'       рецепта. Stacked выбирает нормаль, SideBySide — касательную; контактное расстояние задаёт
-'       ConfigureDependentContact. Не читает таблицы и не объявляет ряд. AnnotationGroup, Publication,
-'       Coincidence, имена и комментарий задаются отдельно в рецепте; остальные поля имеют обычные
-'       значения New CRebarRuleOptions.
+'       Возвращает новую независимую копию всех настроек. Изменения исходного объекта и копии не влияют
+'       друг на друга.
 '
 '       Объявление:
-'         Public Function RecipeContactOptions(ByVal sourceReference As String, ByVal location As
-'         String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal
-'         normalSign As Double, Optional ByVal tangentSign As Double = 1#, Optional ByVal
-'         interveningDiameterSum As Double = 0#) As CRebarRuleOptions
+'         Public Function Clone() As CRebarRuleOptions
+'
+'
+'   Класс / модуль: CRebarContactBuilder
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarContactBuilder.Initialize
+'
+'       Сохраняет положительный основной диаметр, два знака смещений и независимый снимок общих настроек
+'       именно дополнительных рядов. Вызывается один раз на экземпляр; настройки основного ряда
+'       автоматически не наследуются.
+'
+'       Объявление:
+'         Public Sub Initialize(ByVal baseDiameter As Double, ByVal normalSign As Double, ByVal
+'         tangentSign As Double, ByVal defaults As CRebarRuleOptions)
 '
 '       Параметры:
-'         ByVal sourceReference As String
-'           Строка исходного адреса/программного параметра; без объекта Excel.
-'
-'         ByVal location As String
-'           Проверенное значение Stacked (поперёк линии) или SideBySide (вдоль линии). Ввод проверяется
-'           методом Choice до вызова.
-'
-'         ByVal binding As String
-'           Проверенное значение EachBar (все исходные позиции) или EverySecondBar (первая, третья и
-'           следующие нечётные позиции).
-'
 '         ByVal baseDiameter As Double
-'           Строго положительный диаметр основного стержня, мм (>0). Ноль и отрицательное значение
-'           вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.
-'
-'         ByVal diameter As Double
-'           Строго положительный диаметр добавляемого стержня, мм (>0). Ноль и отрицательное значение
-'           вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.
+'           Положительный диаметр стержней основного ряда, мм (>0).
 '
 '         ByVal normalSign As Double
-'           Знак смещения Stacked относительно левой нормали исходной линии: +1 или -1; определяется
-'           направлением её обхода.
+'           Знак смещения Stacked относительно левой нормали линии: +1 или -1.
 '
-'         Optional ByVal tangentSign As Double = 1#
-'           Знак смещения SideBySide вдоль исходной линии: +1 по её направлению, -1 против. По умолчанию
-'           +1.
+'         ByVal tangentSign As Double
+'           Знак смещения SideBySide вдоль линии: +1 по её направлению, -1 против.
 '
-'         Optional ByVal interveningDiameterSum As Double = 0#
-'           Неотрицательная сумма диаметров номинально промежуточных стержней, мм. Для третьего ряда
-'           обычно d2 при том же направлении, иначе 0; пропуск EverySecond сам по себе её не уменьшает.
+'         ByVal defaults As CRebarRuleOptions
+'           Отдельные общие CRebarRuleOptions дополнительных рядов. Объект обязателен; сохраняется
+'           независимая копия. EndMode, отступы и имена основного ряда автоматически не наследуются.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CRebarContactBuilder.AppendRow
+'
+'       Создаёт независимые CRebarRuleOptions для одного активного контактного ряда. Stacked использует
+'       нормаль, SideBySide — касательную. Номинальные диаметры успешно подготовленных рядов
+'       накапливаются отдельно для обоих направлений; EverySecondBar не уменьшает накопление. Расстояние
+'       вычисляет ConfigureDependentContact. Ошибка не меняет состояние; индивидуальные поля результата
+'       можно изменить до передачи фасаду.
+'
+'       Объявление:
+'         Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As
+'         String, ByVal sourceReference As String) As CRebarRuleOptions
+'
+'       Параметры:
+'         ByVal diameter As Double
+'           Положительный диаметр добавляемого ряда, мм (>0). Отключённый ряд пропускают до вызова, не
+'           увеличивая накопленные диаметры.
+'
+'         ByVal location As String
+'           Только Stacked (поперёк линии) или SideBySide (вдоль линии); неизвестное значение вызывает
+'           адресную ошибку.
+'
+'         ByVal binding As String
+'           Только EachBar (все исходные позиции) или EverySecondBar (позиции 1, 3 и следующие
+'           нечётные). Накопление номинальных диаметров одинаково для обоих вариантов.
+'
+'         ByVal sourceReference As String
+'           Адреса активных исходных полей этого ряда или программная ссылка. Сохраняются в результате и
+'           в сообщении об ошибке.
 '
 '
 '

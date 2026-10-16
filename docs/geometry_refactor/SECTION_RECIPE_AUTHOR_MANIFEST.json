@@ -119,7 +119,9 @@
         "CRebarRuleOptions.Comment",
         "CRebarRuleOptions.SourceReference",
         "CRebarRuleOptions.ConfigureDependentContact",
-        "modSectionRecipeRows.RecipeContactOptions",
+        "CRebarRuleOptions.Clone",
+        "CRebarContactBuilder.Initialize",
+        "CRebarContactBuilder.AppendRow",
         "modSectionRecipeTypes.ERebarOffsetAxis",
         "modSectionRecipeTypes.ERebarEndMode",
         "modSectionRecipeTypes.ERebarDistributionScope",
@@ -2665,18 +2667,75 @@
       "anchor": "api-crebarruleoptions-configuredependentcontact"
     },
     {
-      "owner": "modSectionRecipeRows",
-      "name": "RecipeContactOptions",
+      "owner": "CRebarRuleOptions",
+      "name": "Clone",
       "kind": "Function",
-      "signature": "Public Function RecipeContactOptions(ByVal sourceReference As String, ByVal location As String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, Optional ByVal tangentSign As Double = 1#, Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions",
+      "signature": "Public Function Clone() As CRebarRuleOptions",
+      "parameters": [],
+      "resultType": "CRebarRuleOptions",
+      "line": 76,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.Clone",
+      "anchor": "api-crebarruleoptions-clone"
+    },
+    {
+      "owner": "CRebarContactBuilder",
+      "name": "Initialize",
+      "kind": "Sub",
+      "signature": "Public Sub Initialize(ByVal baseDiameter As Double, ByVal normalSign As Double, ByVal tangentSign As Double, ByVal defaults As CRebarRuleOptions)",
       "parameters": [
         {
-          "name": "sourceReference",
-          "type": "String",
+          "name": "baseDiameter",
+          "type": "Double",
           "passing": "ByVal",
           "optional": false,
           "default": null,
-          "signature": "ByVal sourceReference As String"
+          "signature": "ByVal baseDiameter As Double"
+        },
+        {
+          "name": "normalSign",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal normalSign As Double"
+        },
+        {
+          "name": "tangentSign",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal tangentSign As Double"
+        },
+        {
+          "name": "defaults",
+          "type": "CRebarRuleOptions",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal defaults As CRebarRuleOptions"
+        }
+      ],
+      "resultType": null,
+      "line": 30,
+      "source": "src/Section/CRebarContactBuilder.cls",
+      "id": "CRebarContactBuilder.Initialize",
+      "anchor": "api-crebarcontactbuilder-initialize"
+    },
+    {
+      "owner": "CRebarContactBuilder",
+      "name": "AppendRow",
+      "kind": "Function",
+      "signature": "Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String) As CRebarRuleOptions",
+      "parameters": [
+        {
+          "name": "diameter",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal diameter As Double"
         },
         {
           "name": "location",
@@ -2695,51 +2754,19 @@
           "signature": "ByVal binding As String"
         },
         {
-          "name": "baseDiameter",
-          "type": "Double",
+          "name": "sourceReference",
+          "type": "String",
           "passing": "ByVal",
           "optional": false,
           "default": null,
-          "signature": "ByVal baseDiameter As Double"
-        },
-        {
-          "name": "diameter",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal diameter As Double"
-        },
-        {
-          "name": "normalSign",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": false,
-          "default": null,
-          "signature": "ByVal normalSign As Double"
-        },
-        {
-          "name": "tangentSign",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": true,
-          "default": "1#",
-          "signature": "Optional ByVal tangentSign As Double = 1#"
-        },
-        {
-          "name": "interveningDiameterSum",
-          "type": "Double",
-          "passing": "ByVal",
-          "optional": true,
-          "default": "0#",
-          "signature": "Optional ByVal interveningDiameterSum As Double = 0#"
+          "signature": "ByVal sourceReference As String"
         }
       ],
       "resultType": "CRebarRuleOptions",
-      "line": 12,
-      "source": "src/Geometry/modSectionRecipeRows.bas",
-      "id": "modSectionRecipeRows.RecipeContactOptions",
-      "anchor": "api-modsectionreciperows-recipecontactoptions"
+      "line": 47,
+      "source": "src/Section/CRebarContactBuilder.cls",
+      "id": "CRebarContactBuilder.AppendRow",
+      "anchor": "api-crebarcontactbuilder-appendrow"
     },
     {
       "owner": "modSectionRecipeTypes",

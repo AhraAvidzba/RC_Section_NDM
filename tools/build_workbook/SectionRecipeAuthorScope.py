@@ -26,7 +26,7 @@ SECTIONS = [
     ]),
     ('06', 'Условия размещения стержней', [
         ('CRebarRuleOptions', '*'),
-        ('modSectionRecipeRows', 'RecipeContactOptions'),
+        ('CRebarContactBuilder', 'Initialize AppendRow'),
         ('modSectionRecipeTypes', 'ERebarOffsetAxis ERebarEndMode ERebarDistributionScope ERemainderPlacement ERebarPublication ERebarPositionOrder ERebarCoincidence ERebarPlacementCheck ERebarOverlapPolicy'),
     ]),
     ('07', 'Размеры, пояснения и подписи арматуры', [

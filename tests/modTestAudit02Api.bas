@@ -546,33 +546,6 @@ Private Function InputContractRow(ByVal unit As String, ByVal fixture As String,
 End Function
 
 ' Исходный квадрат в прежнем CCW-порядке; имена не являются автоматическими anchors.
-' ДЛЯ ТЕСТОВ: проверяет общий помощник рецептов и независимость настроек разных рядов.
-' Контактное смещение не должно переносить отступы и политики предыдущего ряда.
-Public Function RunRecipeContactOptionsContract() As String
-    mPassed = 0: mFailed = 0: mReport = ""
-    On Error GoTo Failed
-    Dim options As CRebarRuleOptions, nextOptions As CRebarRuleOptions
-    Set options = RecipeContactOptions("recipe-test", "Stacked", "EverySecondBar", 20#, 12#, -1#, 1#, 16#)
-    Check "contactRecipe.nominal.intermediate", options.NormalOffset = -32# And options.TangentOffset = 0#
-    Check "contactRecipe.binding", options.EverySecond
-    Check "contactRecipe.source", options.SourceReference = "recipe-test"
-    options.StartSetback = 70#
-    options.AnnotationGroup = "Previous"
-    options.Publication = PublishPerSourcePosition
-    options.Coincidence = KeepPublishedOwner
-    Set nextOptions = RecipeContactOptions("next-recipe-test", "SideBySide", "EachBar", 20#, 12#, 1#, -1#)
-    Check "contactRecipe.tangent", nextOptions.NormalOffset = 0# And nextOptions.TangentOffset = -16#
-    Check "contactRecipe.independent.binding", Not nextOptions.EverySecond
-    Check "contactRecipe.independent.setbacks", nextOptions.StartSetback = 0# And nextOptions.EndSetback = 0#
-    Check "contactRecipe.independent.group", Len(nextOptions.AnnotationGroup) = 0
-    Check "contactRecipe.independent.publication", nextOptions.Publication = PublishByRule
-    Check "contactRecipe.independent.coincidence", nextOptions.Coincidence = RejectCoincidence
-    GoTo Finished
-Failed:
-    Check "contactRecipe.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
-Finished:
-    RunRecipeContactOptionsContract = mReport & "TOTAL RECIPE CONTACT OPTIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
-End Function
 
 Private Function RectangleSpec(ByVal radius As Double) As CPolygonSpec
     Dim polygon As CPolygonSpec: Set polygon = New CPolygonSpec
@@ -596,3 +569,192 @@ Private Sub Check(ByVal name As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
     End If
 End Sub
+
+' ДЛЯ ТЕСТОВ: контактные последовательности, независимые настройки и сохранение состояния после ошибки.
+Public Function RunRebarContactBuilderTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    TestContactSequence
+    TestContactDefaults
+    TestContactSigns
+    TestContactFailures
+    GoTo Finished
+Failed:
+    Check "contactBuilder.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunRebarContactBuilderTests = mReport & "TOTAL REBAR CONTACT BUILDER: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: пример 32 + 20 + 16 по нормали и 12 вдоль линии; все ряды относятся к одному Main.
+Private Sub TestContactSequence()
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions, row As CRebarRuleOptions
+    Set defaults = New CRebarRuleOptions
+    Set contact = New CRebarContactBuilder
+    contact.Initialize 32#, 1#, 1#, defaults
+    Set row = contact.AppendRow(20#, "Stacked", "EverySecondBar", "ContactTest[1,2]")
+    Check "contactBuilder.example.first", row.NormalOffset = 26# And row.TangentOffset = 0#
+    Check "contactBuilder.example.binding", row.EverySecond
+    Check "contactBuilder.example.source", row.SourceReference = "ContactTest[1,2]"
+    Set row = contact.AppendRow(16#, "Stacked", "EachBar", "ContactTest[2,2]")
+    Check "contactBuilder.example.second", row.NormalOffset = 44# And row.TangentOffset = 0#
+    Check "contactBuilder.example.nominal", Not row.EverySecond
+    Set row = contact.AppendRow(12#, "SideBySide", "EachBar", "ContactTest[3,2]")
+    Check "contactBuilder.example.third", row.TangentOffset = 22# And row.NormalOffset = 0#
+    Set row = contact.AppendRow(10#, "Stacked", "EverySecondBar", "ContactTest[4,2]")
+    Check "contactBuilder.example.fourth", row.NormalOffset = 57# And row.TangentOffset = 0#
+    Set row = contact.AppendRow(8#, "SideBySide", "EachBar", "ContactTest[5,2]")
+    Check "contactBuilder.example.fifth", row.TangentOffset = 32# And row.NormalOffset = 0#
+End Sub
+
+' ДЛЯ ТЕСТОВ: defaults, его снимок и каждый результат независимы; индивидуальные поля можно менять.
+Private Sub TestContactDefaults()
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions, first As CRebarRuleOptions, second As CRebarRuleOptions, copy As CRebarRuleOptions
+    Set defaults = New CRebarRuleOptions
+    defaults.StartSetback = 7#: defaults.EndSetback = 9#: defaults.EndMode = ExcludeBoth
+    defaults.SourcePrefix = "Extra.": defaults.SourceSuffix = ".Default": defaults.Comment = "Общие настройки"
+    defaults.AnnotationGroup = "ExtraGroup": defaults.Publication = PublishPerSourcePosition: defaults.Coincidence = KeepPublishedOwner
+    defaults.NormalOffset = 90#: defaults.TangentOffset = -90#: defaults.EverySecond = True
+    defaults.PlacementCheck = CheckFullDisk: defaults.IncomingTangentAtJoint = True
+    defaults.DirectionX = 2#: defaults.DirectionY = -3#: defaults.SourceNormalSign = -1#
+    defaults.SuccessfulProjectionOrdinal = True: defaults.NewPublicationRoot = True: defaults.SkipMissingProjection = True
+    defaults.PositionOrder = FromPathMiddle: defaults.OverlapPolicy = RejectOverlap
+    defaults.SourceReference = "DefaultsTest[1,2]"
+    Set copy = defaults.Clone
+    Check "contactBuilder.clone.StartSetback", copy.StartSetback = defaults.StartSetback
+    Check "contactBuilder.clone.EndSetback", copy.EndSetback = defaults.EndSetback
+    Check "contactBuilder.clone.EndMode", copy.EndMode = defaults.EndMode
+    Check "contactBuilder.clone.DistributionScope", copy.DistributionScope = defaults.DistributionScope
+    Check "contactBuilder.clone.RemainderPlacement", copy.RemainderPlacement = defaults.RemainderPlacement
+    Check "contactBuilder.clone.TangentOffset", copy.TangentOffset = defaults.TangentOffset
+    Check "contactBuilder.clone.NormalOffset", copy.NormalOffset = defaults.NormalOffset
+    Check "contactBuilder.clone.EverySecond", copy.EverySecond = defaults.EverySecond
+    Check "contactBuilder.clone.IncomingTangentAtJoint", copy.IncomingTangentAtJoint = defaults.IncomingTangentAtJoint
+    Check "contactBuilder.clone.DirectionX", copy.DirectionX = defaults.DirectionX
+    Check "contactBuilder.clone.DirectionY", copy.DirectionY = defaults.DirectionY
+    Check "contactBuilder.clone.SourceNormalSign", copy.SourceNormalSign = defaults.SourceNormalSign
+    Check "contactBuilder.clone.SuccessfulProjectionOrdinal", copy.SuccessfulProjectionOrdinal = defaults.SuccessfulProjectionOrdinal
+    Check "contactBuilder.clone.NewPublicationRoot", copy.NewPublicationRoot = defaults.NewPublicationRoot
+    Check "contactBuilder.clone.SkipMissingProjection", copy.SkipMissingProjection = defaults.SkipMissingProjection
+    Check "contactBuilder.clone.Publication", copy.Publication = defaults.Publication
+    Check "contactBuilder.clone.PositionOrder", copy.PositionOrder = defaults.PositionOrder
+    Check "contactBuilder.clone.Coincidence", copy.Coincidence = defaults.Coincidence
+    Check "contactBuilder.clone.PlacementCheck", copy.PlacementCheck = defaults.PlacementCheck
+    Check "contactBuilder.clone.OverlapPolicy", copy.OverlapPolicy = defaults.OverlapPolicy
+    Check "contactBuilder.clone.SourcePrefix", copy.SourcePrefix = defaults.SourcePrefix
+    Check "contactBuilder.clone.SourceSuffix", copy.SourceSuffix = defaults.SourceSuffix
+    Check "contactBuilder.clone.AnnotationGroup", copy.AnnotationGroup = defaults.AnnotationGroup
+    Check "contactBuilder.clone.Comment", copy.Comment = defaults.Comment
+    Check "contactBuilder.clone.SourceReference", copy.SourceReference = defaults.SourceReference
+    copy.StartSetback = 111#: copy.AnnotationGroup = "CopyOnly"
+    Check "contactBuilder.clone.independent", defaults.StartSetback = 7# And defaults.AnnotationGroup = "ExtraGroup"
+    Set contact = New CRebarContactBuilder
+    contact.Initialize 32#, 1#, -1#, defaults
+    defaults.StartSetback = 999#: defaults.EndMode = ClosedUniform: defaults.SourcePrefix = "Changed."
+    defaults.AnnotationGroup = "Changed": defaults.PlacementCheck = CheckCenter
+    defaults.SourceReference = "ChangedDefaults"
+    Set first = contact.AppendRow(20#, "Stacked", "EachBar", "FirstTest[1,2]")
+    Check "contactBuilder.snapshot.setbacks", first.StartSetback = 7# And first.EndSetback = 9#
+    Check "contactBuilder.snapshot.endMode", first.EndMode = ExcludeBoth
+    Check "contactBuilder.snapshot.names", first.SourcePrefix = "Extra." And first.SourceSuffix = ".Default"
+    Check "contactBuilder.snapshot.policies", first.AnnotationGroup = "ExtraGroup" And first.PlacementCheck = CheckFullDisk
+    Check "contactBuilder.snapshot.source", first.SourceReference = "FirstTest[1,2]"
+    Check "contactBuilder.snapshot.overrides", first.NormalOffset = 26# And first.TangentOffset = 0# And Not first.EverySecond
+    first.StartSetback = 123#: first.AnnotationGroup = "FirstOnly": first.SourceSuffix = "_R2": first.Comment = "Индивидуальный ряд"
+    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter
+    Set second = contact.AppendRow(16#, "Stacked", "EverySecondBar", "SecondTest[1,2]")
+    Check "contactBuilder.rows.independent", second.StartSetback = 7# And second.AnnotationGroup = "ExtraGroup"
+    Check "contactBuilder.rows.names", second.SourceSuffix = ".Default" And second.Comment = "Общие настройки"
+    Check "contactBuilder.rows.nominal", second.NormalOffset = 44# And second.TangentOffset = 0# And second.EverySecond
+    Check "contactBuilder.rows.placement", second.PlacementCheck = CheckFullDisk
+    Check "contactBuilder.rows.firstRetained", first.SourceSuffix = "_R2" And first.Comment = "Индивидуальный ряд" And first.NormalOffset = -1000#
+End Sub
+
+' ДЛЯ ТЕСТОВ: все сочетания знаков, перемежающиеся направления и EverySecondBar.
+Private Sub TestContactSigns()
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions, row As CRebarRuleOptions, normal As Variant, tangent As Variant
+    Set defaults = New CRebarRuleOptions
+    For Each normal In Array(-1#, 1#)
+        For Each tangent In Array(-1#, 1#)
+            Set contact = New CRebarContactBuilder
+            contact.Initialize 32#, CDbl(normal), CDbl(tangent), defaults
+            Set row = contact.AppendRow(20#, "Stacked", "EachBar", "Signs[1,2]")
+            Check "contactBuilder.sign.normal.first", row.NormalOffset = CDbl(normal) * 26# And row.TangentOffset = 0#
+            Set row = contact.AppendRow(12#, "SideBySide", "EverySecondBar", "Signs[2,2]")
+            Check "contactBuilder.sign.tangent.first", row.TangentOffset = CDbl(tangent) * 22# And row.NormalOffset = 0#
+            Set row = contact.AppendRow(16#, "Stacked", "EverySecondBar", "Signs[3,2]")
+            Check "contactBuilder.sign.normal.next", row.NormalOffset = CDbl(normal) * 44# And row.EverySecond
+            Set row = contact.AppendRow(8#, "SideBySide", "EachBar", "Signs[4,2]")
+            Check "contactBuilder.sign.tangent.next", row.TangentOffset = CDbl(tangent) * 32# And Not row.EverySecond
+        Next tangent
+    Next normal
+End Sub
+
+' ДЛЯ ТЕСТОВ: ошибки не расходуют диаметр и не меняют независимый накопитель второго направления.
+Private Sub TestContactFailures()
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions, row As CRebarRuleOptions, scenario As Long
+    Set defaults = New CRebarRuleOptions: defaults.SourceReference = "InitializeTest[1,2]"
+    Set contact = New CRebarContactBuilder
+    Check "contactBuilder.uninitialized", ContactAppendRejected(contact, 20#, "Stacked", "EachBar")
+    For scenario = 0 To 4
+        Set contact = New CRebarContactBuilder
+        Check "contactBuilder.initialize.reject." & CStr(scenario), ContactInitializeRejected(contact, defaults, scenario)
+        contact.Initialize 32#, 1#, -1#, defaults
+        Set row = contact.AppendRow(20#, "Stacked", "EachBar", "AfterInitializeTest[1,2]")
+        Check "contactBuilder.initialize.recover." & CStr(scenario), row.NormalOffset = 26#
+    Next scenario
+    For scenario = 0 To 6
+        Set contact = New CRebarContactBuilder
+        contact.Initialize 32#, 1#, -1#, defaults
+        Set row = contact.AppendRow(20#, "Stacked", "EachBar", "BeforeFailure[1,2]")
+        Select Case scenario
+            Case 0: Check "contactBuilder.reject.location", ContactAppendRejected(contact, 100#, "Unknown", "EachBar")
+            Case 1: Check "contactBuilder.reject.emptyLocation", ContactAppendRejected(contact, 100#, "", "EachBar")
+            Case 2: Check "contactBuilder.reject.binding", ContactAppendRejected(contact, 100#, "Stacked", "Unknown")
+            Case 3: Check "contactBuilder.reject.emptyBinding", ContactAppendRejected(contact, 100#, "SideBySide", "")
+            Case 4: Check "contactBuilder.reject.zero", ContactAppendRejected(contact, 0#, "Stacked", "EachBar")
+            Case 5: Check "contactBuilder.reject.negative", ContactAppendRejected(contact, -10#, "SideBySide", "EachBar")
+            Case 6: Check "contactBuilder.reject.reinitialize", ContactInitializeRejected(contact, defaults, 5)
+        End Select
+        Set row = contact.AppendRow(16#, "Stacked", "EverySecondBar", "AfterFailure[1,2]")
+        Check "contactBuilder.failure.normal." & CStr(scenario), row.NormalOffset = 44#
+        Set row = contact.AppendRow(12#, "SideBySide", "EachBar", "AfterFailure[2,2]")
+        Check "contactBuilder.failure.tangent." & CStr(scenario), row.TangentOffset = -22#
+    Next scenario
+    For scenario = 0 To 1
+        Set contact = New CRebarContactBuilder
+        contact.Initialize 1#, 1#, -1#, defaults
+        Dim huge As Double
+        huge = 1E+308: If scenario = 1 Then huge = 1.4E+308
+        Set row = contact.AppendRow(huge, "Stacked", "EachBar", "HugeTest[1,2]")
+        Check "contactBuilder.overflow.reject." & CStr(scenario), ContactAppendRejected(contact, huge, "Stacked", "EachBar")
+        Set row = contact.AppendRow(1#, "Stacked", "EachBar", "HugeRecovery[1,2]")
+        Check "contactBuilder.overflow.recover." & CStr(scenario), row.NormalOffset = huge
+    Next scenario
+End Sub
+
+' ДЛЯ ТЕСТОВ: ожидает адресную ошибку AppendRow без регистрации правила и без размещения стержней.
+Private Function ContactAppendRejected(ByVal contact As CRebarContactBuilder, ByVal diameter As Double, ByVal location As String, ByVal binding As String) As Boolean
+    Dim row As CRebarRuleOptions
+    On Error GoTo Rejected
+    Set row = contact.AppendRow(diameter, location, binding, "FailureTest[1,2]")
+    Exit Function
+Rejected:
+    ContactAppendRejected = Err.Number <> 0 And InStr(1, Err.Description, "FailureTest[1,2]", vbBinaryCompare) > 0
+End Function
+
+' ДЛЯ ТЕСТОВ: неверная и повторная инициализация не должны частично менять основной ряд.
+Private Function ContactInitializeRejected(ByVal contact As CRebarContactBuilder, ByVal defaults As CRebarRuleOptions, ByVal scenario As Long) As Boolean
+    On Error GoTo Rejected
+    Select Case scenario
+        Case 0: contact.Initialize 0#, 1#, 1#, defaults
+        Case 1: contact.Initialize -10#, 1#, 1#, defaults
+        Case 2: contact.Initialize 32#, 0#, 1#, defaults
+        Case 3: contact.Initialize 32#, 1#, 2#, defaults
+        Case 4: contact.Initialize 32#, 1#, 1#, Nothing
+        Case 5: contact.Initialize 64#, -1#, 1#, defaults
+    End Select
+    Exit Function
+Rejected:
+    ContactInitializeRejected = Err.Number <> 0
+    If scenario <> 4 Then ContactInitializeRejected = ContactInitializeRejected And InStr(1, Err.Description, defaults.SourceReference, vbBinaryCompare) > 0
+End Function
