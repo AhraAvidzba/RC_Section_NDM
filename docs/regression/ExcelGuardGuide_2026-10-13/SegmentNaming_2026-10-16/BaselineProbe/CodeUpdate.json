@@ -1,0 +1,13 @@
+{
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\SegmentNaming_2026-10-16\\BaselineProbe\\SegmentBaseline.xlsm",
+  "WorkbookSHA256": "9A578450503B8CACE0AB0BBA3B9D1D17F8B403BAE08742715B2A3D27FE46E211",
+  "ProductionSHA256": "769EB93DEFBA8F7A914B542387373DD963013DDF2E60172ACE941CA8E3CEE3B3",
+  "Compiled": true,
+  "Modules": [
+    "modTestAudit02Snapshots"
+  ],
+  "RetiredModules": [],
+  "EntryPointNames": [],
+  "TraceGeometry": false,
+  "ProductionChanged": false
+}

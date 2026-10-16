@@ -1,0 +1,37 @@
+PASS: rounded.count
+PASS: rounded.closed
+PASS: rounded.length; actual=342.831853071796000; expected=342.831853071796000
+PASS: rounded.area; actual=7914.159265358980000; expected=7914.159265358980000
+PASS: rounded.radius.1; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.1; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.3; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.3; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.5; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.5; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.radius.7; actual=10.000000000000000; expected=10.000000000000000
+PASS: rounded.sweep.7; actual=1.570796326794900; expected=1.570796326794900
+PASS: rounded.named.edge
+PASS: rounded.zero.radius.count
+PASS: rounded.zero.radius.edge
+PASS: rounded.individual.area; actual=7887.334035783660000; expected=7887.334035783660000
+PASS: rounded.sharp.length; actual=360.000000000000000; expected=360.000000000000000
+PASS: rounded.sharp.area; actual=8000.000000000000000; expected=8000.000000000000000
+PASS: rounded.concave.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: rounded.concave.cx; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.cy; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.start.x; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.start.y; actual=100.000000000000000; expected=100.000000000000000
+PASS: rounded.concave.end.x; actual=100.000000000000000; expected=100.000000000000000
+PASS: rounded.concave.end.y; actual=110.000000000000000; expected=110.000000000000000
+PASS: rounded.concave.area; actual=29914.159265359000000; expected=29914.159265359000000
+PASS: rounded.clockwise.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: rounded.clockwise.area; actual=7914.159265358980000; expected=7914.159265358980000
+PASS: rounded.touching.count
+PASS: rounded.touching.area; actual=7853.981633974480000; expected=7853.981633974480000
+PASS: rounded.invalid.0
+PASS: rounded.invalid.1
+PASS: rounded.invalid.2
+PASS: rounded.invalid.3
+PASS: rounded.invalid.4
+PASS: rounded.invalid.5
+TOTAL ROUNDED POLYGONS: passed=36; failed=0

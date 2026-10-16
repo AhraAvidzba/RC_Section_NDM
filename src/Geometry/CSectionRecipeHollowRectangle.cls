@@ -166,10 +166,10 @@ End Sub
 Private Function DescribePolygon(ByVal B As Double, ByVal H As Double, ByVal x As Double, ByVal y As Double, ByVal radius As Double, ByVal sourceReference As String) As CPolygonSpec
     Dim polygon As CPolygonSpec
     Set polygon = New CPolygonSpec
-    polygon.AddVertex "TL", x - B / 2#, y + H / 2#, radius, sourceReference ' Верхний левый угол до скругления; координаты и радиус в мм.
-    polygon.AddVertex "TR", x + B / 2#, y + H / 2#, radius, sourceReference ' Верхний правый угол до скругления; координаты и радиус в мм.
-    polygon.AddVertex "BR", x + B / 2#, y - H / 2#, radius, sourceReference ' Нижний правый угол до скругления; координаты и радиус в мм.
-    polygon.AddVertex "BL", x - B / 2#, y - H / 2#, radius, sourceReference ' Нижний левый угол до скругления; координаты и радиус в мм.
+    polygon.AddVertex "TL", x - B / 2#, y + H / 2#, radius, sourceReference, cornerID:="Corner.TL" ' Верхний левый угол и имя его скругления; размеры в мм.
+    polygon.AddVertex "TR", x + B / 2#, y + H / 2#, radius, sourceReference, "Edge.TR", "Corner.TR" ' Правая грань и верхнее правое скругление; размеры в мм.
+    polygon.AddVertex "BR", x + B / 2#, y - H / 2#, radius, sourceReference, cornerID:="Corner.BR" ' Нижний правый угол и имя его скругления; размеры в мм.
+    polygon.AddVertex "BL", x - B / 2#, y - H / 2#, radius, sourceReference, "Edge.BL", "Corner.BL" ' Левая грань и нижнее левое скругление; размеры в мм.
     polygon.Seal ' Проверяем вершины и завершаем их описание.
     Set DescribePolygon = polygon ' Возвращаем подготовленный многоугольник.
 End Function

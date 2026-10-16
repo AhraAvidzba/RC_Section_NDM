@@ -112,6 +112,36 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     AddVertex  ->  Seal. Состояние читают Count/IsSealed, значения —
 '     VertexID/X/Y/FilletRadius/SourceReference по индексу от 1. После Seal изменение запрещено;
 '     повторный Seal безопасен. Первую вершину в конце не повторяют.
+'     В конце AddVertex можно задать outgoingEdgeID — имя прямого участка к следующей вершине между
+'     касаниями, и cornerID — имя скругления этой вершины. Например: polygon.AddVertex "TR", 400#, 600#,
+'     40#, outgoingEdgeID:="Right.UpperSlope", cornerID:="Round.TopRight". VertexID при этом остаётся
+'     "TR". Пустые аргументы дают прежние Edge.TR и Corner.TR. OutgoingEdgeID/CornerID возвращают
+'     эффективные имена. Все имена сегментов одного многоугольника уникальны, включая исчезнувшие
+'     участки; при R=0 фиктивная дуга не создаётся.
+'     PathID — имя всей линии; SegmentID — локальное имя её отрезка или дуги. В разных линиях
+'     допускаются одинаковые локальные имена. LoopID задаётся в Outer/Opening и обозначает границу
+'     бетона или отверстия. ContourID — имя сегмента при сохранении контура: PreserveSegmentIDs берёт
+'     реальные имена выбранной линии, SequentialByKind использует прежние префиксы _LINE_/_ARC_ с единым
+'     счётчиком и порядком. Явный массив contourIDs меняет только публикацию. Ни роль границы, ни
+'     публикация не переименовывают исходную линию.
+'     Chain получает имя исходной линии, локальные имена начального и конечного сегментов, параметры от
+'     0 до 1 и направление обхода. При полном обороте от середины сегмента его вторая часть получает
+'     свободное имя .Part2, .Part3 и далее. SourcePathID/SourceSegmentID и
+'     SourceStartParameter/SourceEndParameter сохраняют исходную линию, сегмент и параметры отдельно;
+'     обращаться к частям по угаданному суффиксу не требуется.
+'   ЯВНЫЕ ИМЕНА СТОРОН ПРЯМОУГОЛЬНИКА
+'     Низ идёт слева направо, правая сторона снизу вверх, верх справа налево, левая сверху вниз. После
+'     Transform имена относятся к исходным сторонам и не назначаются заново по глобальным X/Y. Пример
+'     выбирает часть контура от середины верха до середины низа по прямому обходу через левую сторону.
+'     AdjacentRectangles сохраняет прежние имена: у сложной границы может быть несколько верхних
+'     участков.
+'       Dim facade As CSectionDefinitionBuilder, outline As CGeometryPath, side As CGeometryPath
+'       Set facade = New CSectionDefinitionBuilder: facade.Initialize "NamedRectangle"
+'       Set outline = facade.RectanglePath("Boundary", 0#, 0#, 400#, 600#, _
+'           bottomEdgeID:="Bottom", topEdgeID:="Top")
+'       Set side = facade.Chain("LeftSide", outline.ID, "Top", 0.5, "Bottom", 0.5)
+'       facade.Outer "OUTER", outline.ID
+'
 '     Исходная вершина до скругления может не лежать на контуре. PathAnchor задаёт точку готового
 '     сегмента, Anchor — заданную координату. Вершины не превращаются в anchors автоматически.
 '     OffsetRoundedPolygon: плюс внутрь исходного многоугольника; Offset: плюс влево от направления
@@ -144,11 +174,11 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
 '           b = 600#: h = 1000#: w = 200#
 '           Set polygon = New CPolygonSpec
-'           polygon.AddVertex "TL", -b / 2#, h / 2#, 80#
-'           polygon.AddVertex "TR", b / 2#, h / 2#, 120#
+'           polygon.AddVertex "TL", -b / 2#, h / 2#, 80#, outgoingEdgeID:="Edge.TL" ' Верхняя грань для привязки бокового ряда, мм.
+'           polygon.AddVertex "TR", b / 2#, h / 2#, 120#, outgoingEdgeID:="Edge.TR" ' Наклонная грань для размерной аннотации, мм.
 '           polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
-'           polygon.AddVertex "BR", b / 2#, -h / 2#, 120#
-'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#
+'           polygon.AddVertex "BR", b / 2#, -h / 2#, 120#, outgoingEdgeID:="Edge.BR" ' Нижняя грань для конца бокового ряда, мм.
+'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, outgoingEdgeID:="Edge.BL" ' Левая грань для начала полного обхода, мм.
 '           polygon.Seal
 '           Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
 '           Set shapePath = facade.RoundedPolygon("Shape", polygon)
@@ -687,12 +717,15 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CPolygonSpec.AddVertex
 '
-'       Добавляет запись исходной вершины: X/Y, радиус, ID и текстовый источник. Проверяет структуру и
-'       числа без геометрических вычислений.
+'       Добавляет исходную вершину, её координаты, радиус, источник и необязательные имена прямого
+'       участка и скругления. Имя вершины независимо от имён сегментов. Пустые имена дают
+'       Edge.<vertexID>/Corner.<vertexID>. Повторы эффективных имён отклоняются сразу, включая
+'       исчезающие участки.
 '
 '       Объявление:
 '         Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Double, Optional
-'         ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "")
+'         ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "", Optional
+'         ByVal outgoingEdgeID As String = "", Optional ByVal cornerID As String = "")
 '
 '       Параметры:
 '         ByVal vertexID As String
@@ -711,6 +744,16 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '         Optional ByVal sourceReference As String = ""
 '           Строка исходного адреса/программного параметра; без объекта Excel.
+'
+'         Optional ByVal outgoingEdgeID As String = ""
+'           Локальное имя прямого участка от данной вершины к следующей между касаниями скруглений.
+'           Пустое даёт Edge.<vertexID>. Имя не должно повторять имя другого участка или скругления
+'           этого многоугольника, даже исчезнувшего.
+'
+'         Optional ByVal cornerID As String = ""
+'           Локальное имя скругления данной вершины. Пустое даёт Corner.<vertexID>; при нулевом радиусе
+'           имя обозначает только привязку. Имена сегментов чувствительны к регистру и уникальны в
+'           пределах линии.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -798,6 +841,34 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Function SourceReference(ByVal index As Long) As String
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.OutgoingEdgeID
+'
+'       Эффективное имя прямого участка от этой вершины к следующей, по номеру 1..Count; доступно после
+'       Seal и при исчезновении участка.
+'
+'       Объявление:
+'         Public Function OutgoingEdgeID(ByVal index As Long) As String
+'
+'       Параметры:
+'         ByVal index As Long
+'           1-based индекс в пределах соответствующего готового контейнера.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CPolygonSpec.CornerID
+'
+'       Эффективное имя скругления этой вершины, по номеру 1..Count; доступно после Seal также при
+'       нулевом радиусе.
+'
+'       Объявление:
+'         Public Function CornerID(ByVal index As Long) As String
 '
 '       Параметры:
 '         ByVal index As Long
@@ -905,11 +976,17 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.RectanglePath
 '
-'       Создаёт замкнутую наружную границу одного прямоугольника от (x,y) с положительными width/height.
+'       Создаёт замкнутый прямоугольник от (x,y) с положительными width/height. Необязательные имена
+'       относятся к исходным сторонам: низ слева направо, правая снизу вверх, верх справа налево, левая
+'       сверху вниз. Имена сопоставляются фактическим сторонам без перестановки сегментов. Пустые
+'       аргументы сохраняют прежние pathID.i; после поворота или отражения имена сохраняют исходный
+'       смысл.
 '
 '       Объявление:
 '         Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double,
-'         ByVal width As Double, ByVal height As Double) As CGeometryPath
+'         ByVal width As Double, ByVal height As Double, Optional ByVal bottomEdgeID As String = "",
+'         Optional ByVal rightEdgeID As String = "", Optional ByVal topEdgeID As String = "", Optional
+'         ByVal leftEdgeID As String = "") As CGeometryPath
 '
 '       Параметры:
 '         ByVal pathID As String
@@ -927,12 +1004,30 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         ByVal height As Double
 '           Координата/размер height, мм; размеры width/height положительны.
 '
+'         Optional ByVal bottomEdgeID As String = ""
+'           Имя нижней стороны исходного прямоугольника, направленной слева направо; пустое сохраняет
+'           прежнее pathID.i.
+'
+'         Optional ByVal rightEdgeID As String = ""
+'           Имя правой стороны исходного прямоугольника, направленной снизу вверх; пустое сохраняет
+'           прежнее pathID.i.
+'
+'         Optional ByVal topEdgeID As String = ""
+'           Имя верхней стороны исходного прямоугольника, направленной справа налево; пустое сохраняет
+'           прежнее pathID.i.
+'
+'         Optional ByVal leftEdgeID As String = ""
+'           Имя левой стороны исходного прямоугольника, направленной сверху вниз; пустое сохраняет
+'           прежнее pathID.i.
+'
 '
 '     ----------------------------------------------------------------------------------------------
 '     CSectionDefinitionBuilder.RoundedPolygon
 '
-'       Создаёт и регистрирует согласованную границу по одному завершённому CPolygonSpec. Edge.ID
-'       начинается у исходной вершины; Corner.ID существует при R>0. Исходный описатель не меняется.
+'       Создаёт и регистрирует точный контур по завершённому CPolygonSpec с именами из AddVertex. Прямой
+'       участок идёт от касания у данной вершины к касанию у следующей; скругление относится к самой
+'       вершине. Исчезнувший участок сохраняет только именованную привязку. Исходное описание не
+'       меняется.
 '
 '       Объявление:
 '         Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As

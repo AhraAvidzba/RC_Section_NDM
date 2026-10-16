@@ -1,0 +1,93 @@
+{
+  "Stage": "DirectedFinal",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "RunPolygonSpecTests",
+      "Seconds": 0.1057062,
+      "Characters": 1156,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunNamedSegmentTests",
+      "Seconds": 0.0764952,
+      "Characters": 10205,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunPathTests",
+      "Seconds": 0.0150841,
+      "Characters": 19523,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunPathAnchorTests",
+      "Seconds": 0.0191917,
+      "Characters": 3776,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunRoundedPolygonTests",
+      "Seconds": 0.0283578,
+      "Characters": 2371,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunRoundedOffsetTests",
+      "Seconds": 0.0509086,
+      "Characters": 1991,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunAudit02PolygonApiTests",
+      "Seconds": 0.0393179,
+      "Characters": 487,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunAudit02GuideExamplesTests",
+      "Seconds": 0.1618504,
+      "Characters": 357,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunDefinitionLifecycleTests",
+      "Seconds": 0.0371215,
+      "Characters": 402,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunPublishedBuildTests",
+      "Seconds": 0.0440139,
+      "Characters": 695,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunAnnotationIsolationTests",
+      "Seconds": 0.0344514,
+      "Characters": 340,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunRecipeContextFreezeTests",
+      "Seconds": 0.0288191,
+      "Characters": 368,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "85095F12BD3E880BDCCAE7E9D60AC68E98DCDDC26F3A9F192E23A6F13BE30154",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T13:49:13.6788473+03:00"
+}

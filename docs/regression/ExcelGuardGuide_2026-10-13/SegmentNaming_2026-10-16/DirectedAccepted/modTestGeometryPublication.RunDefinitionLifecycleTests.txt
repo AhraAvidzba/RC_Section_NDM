@@ -1,0 +1,11 @@
+PASS: path.creator.sealed
+PASS: path.creator.already.registered
+PASS: definition.finish.sealed
+PASS: definition.paths.once
+PASS: definition.reject.second.finish
+PASS: definition.reject.add.after.finish
+PASS: definition.reject.reinitialize
+PASS: build.reject.invalid.step
+PASS: build.failure.no.published.mesh
+PASS: build.recover.after.failure
+TOTAL DEFINITION LIFECYCLE: passed=10; failed=0

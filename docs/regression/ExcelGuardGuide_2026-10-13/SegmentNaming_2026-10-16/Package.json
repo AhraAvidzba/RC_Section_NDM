@@ -1,0 +1,37 @@
+{
+  "Status": "SEGMENT_NAMING_PACKAGE_PASS",
+  "BaselineSHA256": "16fadd8dde08450e4dcd73f0e0daa5f1967294ed90eb1aa94b46b4b362af55f9",
+  "RegressionBaselineSHA256": "769eb93defba8f7a914b542387373dd963013ddf2e60172ace941ca8e3cee3b3",
+  "CompiledSHA256": "5b6ce959284198b0f20bb4691368682c0d94f397d26c3db106461fbc52cc1bd5",
+  "AcceptedSHA256": "d6ef90c165a93a59ce4378b51137cca4a4aed10dd1d10185175f28837bc03048",
+  "NativeComponents": 158,
+  "AddedComponents": [],
+  "ChangedComponents": [
+    "CGeometryPath",
+    "CPolygonSpec",
+    "CSectionDefinitionBuilder",
+    "CSectionGeometryQuery",
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRoundedRectangle",
+    "modSectionRecipeApiGuide",
+    "modTestAudit02Api",
+    "modTestAudit02Snapshots",
+    "modTestPolygonSpec"
+  ],
+  "TestedNativeMatchesCandidate": true,
+  "BaselineProbeOnlyTestModuleChanged": true,
+  "UserLiveVBAUnchanged": true,
+  "ChangedZIPParts": [
+    "xl/worksheets/sheet2.xml",
+    "xl/vbaProject.bin"
+  ],
+  "HelpCells": {
+    "A586": "Для отверстия создайте другую замкнутую линию и передайте в Opening её имя и имя наружной границы, внутри которой находится отверстие. Если нужны ссылки на отдельные стороны, задайте имена в RectanglePath через bottomEdgeID/rightEdgeID/topEdgeID/leftEdgeID, а для многоугольника — в CPolygonSpec.AddVertex через outgoingEdgeID и cornerID. Например, Top и Bottom затем можно передать в Chain вместе с именем исходной линии и параметрами концов от 0 до 1. Имена сохраняют исходный смысл после поворота и отражения. Примеры и правила публикации контуров приведены в modSectionRecipeApiGuide этой книги."
+  },
+  "HelpRowHeights": {
+    "586": {
+      "Before": "18",
+      "After": "44.1"
+    }
+  }
+}

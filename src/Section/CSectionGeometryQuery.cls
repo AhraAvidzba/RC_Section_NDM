@@ -75,7 +75,8 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         End If
         JoinOffsetEdges pathID, source.SegmentID(i), edges(i), edges(following)
     Next i
-    Dim sourceFirst As Double, sourceLast As Double, lengthSquared As Double, span As Double
+    Dim sourceFirst As Double, sourceLast As Double, lengthSquared As Double, span As Double, stations As Variant
+    ReDim stations(0 To count)
     Set result = New CGeometryPath: result.Initialize pathID
     For i = 1 To count
         source.CopySegment i, original
@@ -91,7 +92,9 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
             sourceFirst = sourceFirst + span * ((edges(i).X1 - original.X1) * tx + (edges(i).Y1 - original.Y1) * ty) / lengthSquared
         End If
         result.Append source.SegmentID(i), edges(i), source.SourcePathID(i), source.SourceSegmentID(i), sourceFirst, sourceLast
+        stations(i) = result.AccumulatedLength
     Next i
+    source.CopyCollapsedAnchors result, 0#, source.Length, 0#, segmentStations:=stations
     result.Seal source.IsClosed
     ' Проверяем замкнутость и отсутствие недопустимых пересечений всего контура.
     ' Выбирать только один длинный участок вместо исправления ошибки нельзя.
@@ -864,15 +867,15 @@ End Function
 ' Сохраняет исходные вершины и их порядок; у вогнутого угла меняет направление дуги.
 ' Заданные радиусы самостоятельно не уменьшает.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
-    Dim vertices As Variant, radii As Variant, vertexIDs As Variant
-    PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
-    Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs)
+    Dim vertices As Variant, radii As Variant, vertexIDs As Variant, edgeIDs As Variant, cornerIDs As Variant
+    PolygonKernelData pathID, polygon, vertices, radii, vertexIDs, edgeIDs, cornerIDs
+    Set RoundedPolygon = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs, edgeIDs, cornerIDs)
 End Function
 
 ' Преобразует вершины CPolygonSpec во внутренние массивы координат, радиусов и имён.
 ' Размеры массивов должны совпадать; рецепты сечения напрямую эти массивы не задают.
 Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
-        ByVal radii As Variant, ByVal vertexIDs As Variant) As CGeometryPath
+        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal edgeIDs As Variant, ByVal cornerIDs As Variant) As CGeometryPath
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
     ReadPolygonInput pathID, vertices, radii, vertexIDs, points, radius, names, count
     Dim raw() As TRegionEdge, i As Long, previous As Long, following As Long
@@ -886,7 +889,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         raw(i).X1 = points(i).X: raw(i).Y1 = points(i).Y
         raw(i).X2 = points(following).X: raw(i).Y2 = points(following).Y
         lengths(i) = modGeometryPrimitives.EdgeLength(raw(i))
-        If lengths(i) <= QUERY_TOLERANCE Then GeometryError pathID & ": нулевая грань Edge." & names(i) & "."
+        If lengths(i) <= QUERY_TOLERANCE Then GeometryError pathID & ": нулевая грань '" & edgeIDs(i - 1) & "'."
         directions(i).X = (raw(i).X2 - raw(i).X1) / lengths(i)
         directions(i).Y = (raw(i).Y2 - raw(i).Y1) / lengths(i)
     Next i
@@ -914,7 +917,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
     For i = 1 To count
         following = i Mod count + 1
         If distances(i) + distances(following) > lengths(i) + GEOM_TOLERANCE Then _
-            GeometryError pathID & ": скругления пересекаются на грани Edge." & names(i) & "; уменьшите назначенные радиусы.", "FILLET_OVERLAP", pathID, "Edge." & names(i), radius(i), radius(following)
+            GeometryError pathID & ": скругления пересекаются на грани '" & edgeIDs(i - 1) & "'; уменьшите назначенные радиусы.", "FILLET_OVERLAP", pathID, CStr(edgeIDs(i - 1)), radius(i), radius(following)
     Next i
     Dim result As CGeometryPath, edge As TRegionEdge
     Set result = New CGeometryPath: result.Initialize pathID
@@ -924,16 +927,16 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
             edge.X1 = first(i).X: edge.Y1 = first(i).Y: edge.X2 = last(i).X: edge.Y2 = last(i).Y
             edge.CenterX = centers(i).X: edge.CenterY = centers(i).Y: edge.Sweep = turns(i)
             ValidateArc edge
-            result.Append "Corner." & names(i), edge
+            result.Append CStr(cornerIDs(i - 1)), edge
         Else
-            result.AddCollapsedSegment "Corner." & names(i)
+            result.AddCollapsedSegment CStr(cornerIDs(i - 1))
         End If
         edge.X1 = last(i).X: edge.Y1 = last(i).Y: edge.X2 = first(following).X: edge.Y2 = first(following).Y
         edge.CenterX = 0#: edge.CenterY = 0#: edge.Sweep = 0#
         If modGeometryPrimitives.EdgeLength(edge) > QUERY_TOLERANCE Then
-            result.Append "Edge." & names(i), edge
+            result.Append CStr(edgeIDs(i - 1)), edge
         Else
-            result.AddCollapsedSegment "Edge." & names(i)
+            result.AddCollapsedSegment CStr(edgeIDs(i - 1))
         End If
     Next i
     result.Seal True
@@ -949,17 +952,17 @@ End Function
 ' отрицательное — наружу, например от отверстия в бетон. Острые углы остаются
 ' острыми; дуга, радиус которой уменьшился до нуля, исчезает.
 Public Function OffsetRoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal distance As Double) As CGeometryPath
-    Dim vertices As Variant, radii As Variant, vertexIDs As Variant
-    PolygonKernelData pathID, polygon, vertices, radii, vertexIDs
-    Set OffsetRoundedPolygon = OffsetRoundedPolygonKernel(pathID, vertices, radii, vertexIDs, distance)
+    Dim vertices As Variant, radii As Variant, vertexIDs As Variant, edgeIDs As Variant, cornerIDs As Variant
+    PolygonKernelData pathID, polygon, vertices, radii, vertexIDs, edgeIDs, cornerIDs
+    Set OffsetRoundedPolygon = OffsetRoundedPolygonKernel(pathID, vertices, radii, vertexIDs, edgeIDs, cornerIDs, distance)
 End Function
 
 ' Смещаем исходный многоугольник до построения скруглений.
 ' Знак здесь означает внутрь или наружу площади, а не влево по обходу готовой линии.
 Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertices As Variant, _
-        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal distance As Double) As CGeometryPath
+        ByVal radii As Variant, ByVal vertexIDs As Variant, ByVal edgeIDs As Variant, ByVal cornerIDs As Variant, ByVal distance As Double) As CGeometryPath
     Dim original As CGeometryPath
-    Set original = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs)
+    Set original = RoundedPolygonKernel(pathID, vertices, radii, vertexIDs, edgeIDs, cornerIDs)
     If distance = 0# Then Set OffsetRoundedPolygonKernel = original: Exit Function
 
     Dim points() As TPoint2D, radius() As Double, names() As String, count As Long
@@ -1007,19 +1010,19 @@ Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertic
         following = i Mod count + 1
         dot = directions(i).X * (shifted(following).X - shifted(i).X) + _
             directions(i).Y * (shifted(following).Y - shifted(i).Y)
-        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани Edge." & names(i) & ".", "OFFSET_DISAPPEARED", pathID, "Edge." & names(i), distance, dot
+        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани '" & edgeIDs(i - 1) & "'.", "OFFSET_DISAPPEARED", pathID, CStr(edgeIDs(i - 1)), distance, dot
     Next i
     ' Проверяем радиусы и самопересечения общими средствами проверки контура.
-    Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs)
+    Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs, edgeIDs, cornerIDs)
 End Function
 
 ' Копирует исходные вершины и радиусы из описания во внутренние массивы
 ' геометрического ядра, не меняя само описание.
 Private Sub PolygonKernelData(ByVal pathID As String, ByVal polygon As CPolygonSpec, _
-        ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant)
+        ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant, ByRef edgeIDs As Variant, ByRef cornerIDs As Variant)
     If polygon Is Nothing Then GeometryError pathID & ": не передано описание исходных вершин."
     If Not polygon.IsSealed Then GeometryError pathID & ": завершите описание исходных вершин методом Seal."
-    polygon.CopyKernelData vertices, radii, vertexIDs
+    polygon.CopyKernelData vertices, radii, vertexIDs, edgeIDs, cornerIDs
 End Sub
 
 ' Линия сохраняет исходное направление и имена сегментов. Для бетонной области

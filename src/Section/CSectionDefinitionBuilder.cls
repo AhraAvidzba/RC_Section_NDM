@@ -63,8 +63,8 @@ Public Function ArcPath(ByVal pathID As String, ByVal centerX As Double, ByVal c
 End Function
 
 ' Создаёт и сохраняет скруглённый контур по вершинам и радиусам CPolygonSpec.
-' Отрезок Edge.ID начинается у соответствующей вершины; дуга Corner.ID
-' существует только при положительном радиусе этого угла.
+' Имена прямых участков и скруглений задаются в AddVertex; пустые имена дают Edge.ID и Corner.ID.
+' Дуга существует только при положительном радиусе; исчезнувший участок сохраняет имя привязки.
 Public Function RoundedPolygon(ByVal pathID As String, ByVal polygon As CPolygonSpec) As CGeometryPath
     RequireOpen
     Set RoundedPolygon = mQuery.RoundedPolygon(pathID, polygon)
@@ -184,9 +184,32 @@ End Function
 
 ' Создаёт и сохраняет замкнутый прямоугольник от точки (x, y).
 ' Ширина width и высота height задаются положительными, мм.
-Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double) As CGeometryPath
+' Обход: низ слева направо, правая сторона снизу вверх, верх справа налево, левая сверху вниз.
+' Имена относятся к исходным сторонам и сохраняются после поворота или отражения.
+Public Function RectanglePath(ByVal pathID As String, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, _
+        Optional ByVal bottomEdgeID As String = "", Optional ByVal rightEdgeID As String = "", _
+        Optional ByVal topEdgeID As String = "", Optional ByVal leftEdgeID As String = "") As CGeometryPath
     RequireOpen
-    Set RectanglePath = mQuery.AdjacentRectangles(pathID, Array(Array(x, y, width, height)))
+    Dim original As CGeometryPath, result As CGeometryPath, edge As TRegionEdge, i As Long, name As String, assigned As String
+    Set original = mQuery.AdjacentRectangles(pathID, Array(Array(x, y, width, height)))
+    Set result = original
+    If Len(Trim$(bottomEdgeID & rightEdgeID & topEdgeID & leftEdgeID)) > 0 Then
+        Set result = New CGeometryPath: result.Initialize pathID
+        For i = 1 To original.SegmentCount
+            original.CopySegment i, edge
+            ' Сопоставляем имя с координатами стороны, а не с номером после нормализации.
+            assigned = ""
+            If edge.Y1 = y And edge.Y2 = y Then assigned = bottomEdgeID
+            If edge.X1 = x + width And edge.X2 = x + width Then assigned = rightEdgeID
+            If edge.Y1 = y + height And edge.Y2 = y + height Then assigned = topEdgeID
+            If edge.X1 = x And edge.X2 = x Then assigned = leftEdgeID
+            name = original.SegmentID(i)
+            If Len(Trim$(assigned)) > 0 Then name = assigned
+            result.Append name, edge
+        Next i
+        result.Seal True
+    End If
+    Set RectanglePath = result
     mDefinition.AddPath RectanglePath
 End Function
 
@@ -207,6 +230,7 @@ Public Sub PathGroup(ByVal groupID As String, ByVal pathIDs As Variant)
 End Sub
 
 ' Назначает замкнутую линию наружной границей бетона. Арматуру можно задать отдельно позднее.
+' loopID именует границу, pathID — её линию; политика публикации не меняет локальные SegmentID.
 Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", _
         Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
@@ -220,6 +244,7 @@ End Sub
 
 ' Назначает замкнутую линию отверстием внутри наружного контура parentOuterID.
 ' Правильность расположения отверстия проверяется при Finish.
+' parentOuterID относится к LoopID наружной границы, а не к имени её линии или сегмента.
 Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _
         Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")

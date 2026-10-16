@@ -1,0 +1,10 @@
+{
+  "HEAD": "8f3bd8785af981acf2db396fdd78a5b162a92380",
+  "CreatedAt": "2026-10-16T13:37:39.3598392+03:00",
+  "Hashes": {
+    "workbook/output/VBA_All_Code.txt": "C72580F38D44B4DBE3E24A3B9C169A4DFA24A55C93390738370F3F335C847732",
+    "workbook/output/RC_Section_NDM.xlsm": "769EB93DEFBA8F7A914B542387373DD963013DDF2E60172ACE941CA8E3CEE3B3",
+    "workbook/output/RC_Section_NDM_execution_report.txt": "995BCB3B0B20069DAF535B3135FA8D11E8B08490D6440DB89230F682671BAA71"
+  },
+  "Dirty": " M workbook/output/RC_Section_NDM_execution_report.txt"
+}

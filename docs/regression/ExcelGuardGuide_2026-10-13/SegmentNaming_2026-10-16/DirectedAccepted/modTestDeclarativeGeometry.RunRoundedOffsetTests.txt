@@ -1,0 +1,28 @@
+PASS: offset.closed
+PASS: offset.rectangle.length; actual=311.415926535898000; expected=311.415926535898000
+PASS: offset.rectangle.area; actual=6278.539816339740000; expected=6278.539816339740000
+PASS: offset.rectangle.radius; actual=5.000000000000000; expected=5.000000000000000
+PASS: offset.rectangle.center.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: offset.rectangle.center.y; actual=10.000000000000000; expected=10.000000000000000
+PASS: offset.original.unchanged; actual=342.831853071796000; expected=342.831853071796000
+PASS: offset.outward.area; actual=9706.858347057700000; expected=9706.858347057700000
+PASS: offset.vanished.arc.count
+PASS: offset.vanished.arc.named.edge
+PASS: offset.vanished.arc.area; actual=3500.000000000000000; expected=3500.000000000000000
+PASS: offset.sharp.preserved
+PASS: offset.sharp.area; actual=9900.000000000000000; expected=9900.000000000000000
+PASS: offset.clockwise.area; actual=6278.539816339740000; expected=6278.539816339740000
+PASS: offset.clockwise.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: offset.concave.radius; actual=7.000000000000000; expected=7.000000000000000
+PASS: offset.concave.center.x; actual=45.000000000000000; expected=45.000000000000000
+PASS: offset.concave.center.y; actual=45.000000000000000; expected=45.000000000000000
+PASS: offset.concave.sweep; actual=-1.570796326794900; expected=-1.570796326794900
+PASS: offset.concave.area; actual=5616.858407346410000; expected=5616.858407346410000
+PASS: offset.boundary.distance; actual=2.000000000000000; expected=2.000000000000000
+PASS: offset.far.area; actual=6278.539816339740000; expected=6278.539816339740000
+PASS: offset.far.center.x; actual=1000010.000000000000000; expected=1000010.000000000000000
+PASS: offset.far.center.y; actual=-999990.000000000000000; expected=-999990.000000000000000
+PASS: offset.invalid.0
+PASS: offset.invalid.1
+PASS: offset.invalid.2
+TOTAL ROUNDED OFFSET: passed=27; failed=0

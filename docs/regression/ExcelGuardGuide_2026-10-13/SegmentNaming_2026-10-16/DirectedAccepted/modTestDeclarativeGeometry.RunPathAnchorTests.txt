@@ -1,0 +1,62 @@
+PASS: anchor.named.station; actual=139.269908169872000; expected=139.269908169872000
+PASS: anchor.chain.id
+PASS: anchor.chain.count
+PASS: anchor.chain.length; actual=114.269908169872000; expected=114.269908169872000
+PASS: anchor.chain.source.path
+PASS: anchor.chain.source.segment
+PASS: anchor.chain.source.first; actual=0.250000000000000; expected=0.250000000000000
+PASS: anchor.chain.source.last; actual=0.500000000000000; expected=0.500000000000000
+PASS: anchor.reverse.source.first; actual=0.800000000000000; expected=0.800000000000000
+PASS: anchor.reverse.source.last; actual=0.200000000000000; expected=0.200000000000000
+PASS: anchor.nested.source.first; actual=0.700000000000000; expected=0.700000000000000
+PASS: anchor.nested.source.last; actual=0.300000000000000; expected=0.300000000000000
+PASS: anchor.transform.id
+PASS: anchor.transform.source
+PASS: anchor.transform.source.first; actual=0.700000000000000; expected=0.700000000000000
+PASS: anchor.transform.source.last; actual=0.300000000000000; expected=0.300000000000000
+PASS: anchor.transform.x; actual=1000.000000000000000; expected=1000.000000000000000
+PASS: anchor.transform.y; actual=-1930.000000000000000; expected=-1930.000000000000000
+PASS: anchor.source.unchanged; actual=228.539816339745000; expected=228.539816339745000
+PASS: anchor.wrap.count
+PASS: anchor.wrap.unique.ids
+PASS: anchor.wrap.source
+PASS: anchor.wrap.length; actual=31.415926535897900; expected=31.415926535897900
+PASS: anchor.wrap.first.start; actual=0.750000000000000; expected=0.750000000000000
+PASS: anchor.wrap.first.end; actual=1.000000000000000; expected=1.000000000000000
+PASS: anchor.wrap.second.start; actual=0.000000000000000; expected=0.000000000000000
+PASS: anchor.wrap.second.end; actual=0.250000000000000; expected=0.250000000000000
+PASS: anchor.wrap.no.chord.x; actual=10.000000000000000; expected=10.000000000000000
+PASS: anchor.wrap.no.chord.y; actual=0.000000000000003; expected=0.000000000000000
+PASS: anchor.reverse.count
+PASS: anchor.reverse.length; actual=31.415926535897900; expected=31.415926535897900
+PASS: anchor.reverse.first; actual=0.750000000000000; expected=0.750000000000000
+PASS: anchor.reverse.last; actual=0.250000000000000; expected=0.250000000000000
+PASS: anchor.reverse.other.side.x; actual=-10.000000000000000; expected=-10.000000000000000
+PASS: anchor.reverse.other.side.y; actual=-0.000000000000006; expected=0.000000000000000
+PASS: anchor.reverse.sweep; actual=-3.141592653589790; expected=-3.141592653589790
+PASS: anchor.full.loop.closed
+PASS: anchor.full.loop.length; actual=62.831853071795900; expected=62.831853071795900
+PASS: anchor.seam.loop.closed
+PASS: anchor.seam.loop.length; actual=62.831853071795900; expected=62.831853071795900
+PASS: anchor.seam.reverse.closed
+PASS: anchor.seam.reverse.source.first; actual=1.000000000000000; expected=1.000000000000000
+PASS: anchor.zero.radius.named.edge
+PASS: anchor.zero.radius.length; actual=80.000000000000000; expected=80.000000000000000
+PASS: anchor.zero.radius.no.phantom
+PASS: anchor.zero.radius.junction.start; actual=0.000000000000000; expected=0.000000000000000
+PASS: anchor.zero.radius.junction.end; actual=0.000000000000000; expected=0.000000000000000
+PASS: anchor.facade.registered
+PASS: anchor.facade.source
+PASS: anchor.facade.moved.x; actual=1000100.000000000000000; expected=1000100.000000000000000
+PASS: anchor.facade.moved.y; actual=-1000000.000000000000000; expected=-1000000.000000000000000
+PASS: anchor.invalid.0
+PASS: anchor.invalid.1
+PASS: anchor.invalid.2
+PASS: anchor.invalid.3
+PASS: anchor.invalid.4
+PASS: anchor.invalid.5
+PASS: anchor.invalid.6
+PASS: anchor.invalid.7
+PASS: anchor.invalid.8
+PASS: anchor.invalid.9
+TOTAL PATH ANCHORS: passed=61; failed=0

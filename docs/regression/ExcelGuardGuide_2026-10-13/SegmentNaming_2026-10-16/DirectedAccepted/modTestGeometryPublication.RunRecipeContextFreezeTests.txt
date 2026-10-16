@@ -1,0 +1,12 @@
+PASS: units.independent.object
+PASS: units.readOnly
+PASS: units.original.conversion
+PASS: units.external.reset
+PASS: units.reject.reset
+PASS: units.reject.reload
+PASS: units.rejected.calls.preserve.state
+PASS: table.original.value
+PASS: table.original.units
+PASS: units.clone.mutable
+PASS: units.clone.independent
+TOTAL CONTEXT FREEZE: passed=11; failed=0

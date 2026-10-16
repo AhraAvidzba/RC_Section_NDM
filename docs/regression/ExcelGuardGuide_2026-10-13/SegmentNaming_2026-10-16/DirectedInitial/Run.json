@@ -1,0 +1,51 @@
+{
+  "Stage": "DirectedInitial",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "RunPolygonSpecTests",
+      "Seconds": 0.1172419,
+      "Characters": 1156,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunNamedSegmentTests",
+      "Seconds": 0.0867448,
+      "Characters": 8548,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunPathTests",
+      "Seconds": 0.0175336,
+      "Characters": 19523,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunRoundedPolygonTests",
+      "Seconds": 0.0286953,
+      "Characters": 2371,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunRoundedOffsetTests",
+      "Seconds": 0.0411728,
+      "Characters": 1991,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "RunAudit02PolygonApiTests",
+      "Seconds": 0.0405358,
+      "Characters": 487,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "6A20786AB336237E2688499F9CE916A8D3709F35FB0199434978777EA9B75181",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T13:44:50.6448462+03:00"
+}

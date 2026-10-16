@@ -1,0 +1,16 @@
+{
+  "Stage": "BaselinePaths",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "DumpRecipePathContracts",
+      "Seconds": 17.776005,
+      "Characters": 557613,
+      "Passed": true,
+      "Snapshot": true
+    }
+  ],
+  "SourceSHA256": "9A578450503B8CACE0AB0BBA3B9D1D17F8B403BAE08742715B2A3D27FE46E211",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T13:49:46.7178318+03:00"
+}

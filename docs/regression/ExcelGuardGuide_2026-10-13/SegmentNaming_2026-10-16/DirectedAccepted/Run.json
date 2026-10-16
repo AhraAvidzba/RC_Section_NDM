@@ -1,0 +1,93 @@
+{
+  "Stage": "DirectedAccepted",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestPolygonSpec.RunPolygonSpecTests",
+      "Seconds": 0.2727954,
+      "Characters": 1156,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestPolygonSpec.RunNamedSegmentTests",
+      "Seconds": 0.0734139,
+      "Characters": 10268,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestDeclarativeGeometry.RunPathTests",
+      "Seconds": 0.0142879,
+      "Characters": 19523,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestDeclarativeGeometry.RunPathAnchorTests",
+      "Seconds": 0.019883,
+      "Characters": 3776,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestDeclarativeGeometry.RunRoundedPolygonTests",
+      "Seconds": 0.0262698,
+      "Characters": 2371,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestDeclarativeGeometry.RunRoundedOffsetTests",
+      "Seconds": 0.0336803,
+      "Characters": 1991,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02PolygonApiTests",
+      "Seconds": 0.0471294,
+      "Characters": 487,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02GuideExamplesTests",
+      "Seconds": 0.1473942,
+      "Characters": 357,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunDefinitionLifecycleTests",
+      "Seconds": 0.038687,
+      "Characters": 402,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunPublishedBuildTests",
+      "Seconds": 0.04632,
+      "Characters": 695,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunAnnotationIsolationTests",
+      "Seconds": 0.0336912,
+      "Characters": 340,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunRecipeContextFreezeTests",
+      "Seconds": 0.0308019,
+      "Characters": 368,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "5B6CE959284198B0F20BB4691368682C0D94F397D26C3DB106461FBC52CC1BD5",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T13:57:04.4674669+03:00"
+}

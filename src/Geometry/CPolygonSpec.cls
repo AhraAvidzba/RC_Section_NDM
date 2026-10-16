@@ -22,6 +22,8 @@ Private Type TVertex
     Y As Double ' Исходная координата Y до скругления, мм.
     Radius As Double ' Радиус сопряжения данной вершины, мм; ноль оставляет острый угол.
     Source As String ' Адрес или текстовое происхождение данных без ссылки на объект Excel.
+    OutgoingEdgeID As String ' Имя прямого участка от этой вершины к следующей между касаниями скруглений.
+    CornerID As String ' Имя скругления этой вершины; сохраняется как привязка и при нулевом радиусе.
 End Type
 Private Type TDoubleValue
     Value As Double ' Число Double для чтения его точного двоичного представления.
@@ -38,8 +40,10 @@ Private mIDs As Object ' Поиск повторных ID с прежним ра
 
 ' Добавляет вершину с её именем, координатами, радиусом скругления и ссылкой на исходные данные.
 ' Сам контур на этом этапе не строится.
+' Пустые имена участков дают Edge.<vertexID> и Corner.<vertexID>; имя вершины остаётся самостоятельным.
 Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Double, _
-        Optional ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "")
+        Optional ByVal filletRadius As Double = 0#, Optional ByVal sourceReference As String = "", _
+        Optional ByVal outgoingEdgeID As String = "", Optional ByVal cornerID As String = "")
     If mSealed Then SpecError "Описание вершин уже завершено; создайте новое для других размеров.", sourceReference
     If Len(Trim$(vertexID)) = 0 Then SpecError "Не задано имя исходной вершины.", sourceReference
     If mIDs Is Nothing Then
@@ -49,6 +53,16 @@ Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Dou
     If Not Finite(x) Or Not Finite(y) Or Not Finite(filletRadius) Then _
         SpecError "Координаты и радиус вершины '" & vertexID & "' должны быть конечными числами.", sourceReference
     If filletRadius < 0# Then SpecError "Радиус вершины '" & vertexID & "' не может быть отрицательным.", sourceReference
+    If Len(Trim$(outgoingEdgeID)) = 0 Then outgoingEdgeID = "Edge." & vertexID
+    If Len(Trim$(cornerID)) = 0 Then cornerID = "Corner." & vertexID
+    If outgoingEdgeID = cornerID Then SpecError "Прямой участок и скругление не могут иметь общее имя '" & cornerID & "'.", sourceReference
+    Dim i As Long
+    For i = 1 To mCount
+        If outgoingEdgeID = mVertices(i).OutgoingEdgeID Or outgoingEdgeID = mVertices(i).CornerID Then _
+            SpecError "Повторное имя участка '" & outgoingEdgeID & "'.", sourceReference
+        If cornerID = mVertices(i).OutgoingEdgeID Or cornerID = mVertices(i).CornerID Then _
+            SpecError "Повторное имя участка '" & cornerID & "'.", sourceReference
+    Next i
     If mCount = mCapacity Then
         If mCapacity > 1073741823 Then SpecError "Слишком много исходных вершин.", sourceReference
         If mCapacity = 0 Then mCapacity = 4 Else mCapacity = mCapacity * 2
@@ -56,6 +70,7 @@ Public Sub AddVertex(ByVal vertexID As String, ByVal x As Double, ByVal y As Dou
     End If
     With mVertices(mCount + 1)
         .ID = vertexID: .X = x: .Y = y: .Radius = filletRadius: .Source = sourceReference
+        .OutgoingEdgeID = outgoingEdgeID: .CornerID = cornerID
     End With
     mIDs.Add vertexID, mCount + 1
     mCount = mCount + 1
@@ -96,17 +111,32 @@ Public Function SourceReference(ByVal index As Long) As String
     CheckIndex index: SourceReference = mVertices(index).Source
 End Function
 
+' Имя прямого участка к следующей вершине; действует также для привязки исчезнувшего участка.
+Public Function OutgoingEdgeID(ByVal index As Long) As String
+    CheckIndex index: OutgoingEdgeID = mVertices(index).OutgoingEdgeID
+End Function
+' Имя скругления вершины; при нулевом радиусе обозначает только место его привязки.
+Public Function CornerID(ByVal index As Long) As String
+    CheckIndex index: CornerID = mVertices(index).CornerID
+End Function
+
 ' Копирует координаты и радиусы во внутренние массивы общего геометрического ядра.
 ' Рецепт сечения задаёт вершины через объект и не работает с этими массивами.
-Friend Sub CopyKernelData(ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant)
+Friend Sub CopyKernelData(ByRef vertices As Variant, ByRef radii As Variant, ByRef vertexIDs As Variant, _
+        Optional ByRef outgoingEdgeIDs As Variant, Optional ByRef cornerIDs As Variant)
     RequireSealed
     Dim points() As Variant, assigned() As Double, names() As String, i As Long
+    Dim edges() As String, corners() As String
     ReDim points(0 To mCount - 1): ReDim assigned(0 To mCount - 1): ReDim names(0 To mCount - 1)
+    ReDim edges(0 To mCount - 1): ReDim corners(0 To mCount - 1)
     For i = 1 To mCount
         points(i - 1) = Array(mVertices(i).X, mVertices(i).Y)
         assigned(i - 1) = mVertices(i).Radius: names(i - 1) = mVertices(i).ID
+        edges(i - 1) = mVertices(i).OutgoingEdgeID: corners(i - 1) = mVertices(i).CornerID
     Next i
     vertices = points: radii = assigned: vertexIDs = names
+    If Not IsMissing(outgoingEdgeIDs) Then outgoingEdgeIDs = edges
+    If Not IsMissing(cornerIDs) Then cornerIDs = corners
 End Sub
 
 ' Проверяет индекс исходного описания; чтение геометрических данных возможно после Seal.

@@ -1,0 +1,36 @@
+{
+  "Passed": true,
+  "SourceComponents": 111,
+  "NewComponents": 0,
+  "ChangedRuntimeProcedures": {
+    "CGeometryPath": [
+      "AppendInterval",
+      "CopyCollapsedAnchors"
+    ],
+    "CPolygonSpec": [
+      "AddVertex",
+      "CopyKernelData",
+      "CornerID",
+      "OutgoingEdgeID"
+    ],
+    "CSectionRecipeHollowRectangle": [
+      "DescribePolygon"
+    ],
+    "CSectionRecipeRoundedRectangle": [
+      "DescribePolygon"
+    ],
+    "CSectionDefinitionBuilder": [
+      "RectanglePath"
+    ],
+    "CSectionGeometryQuery": [
+      "OffsetPath",
+      "OffsetRoundedPolygon",
+      "OffsetRoundedPolygonKernel",
+      "PolygonKernelData",
+      "RoundedPolygon",
+      "RoundedPolygonKernel"
+    ]
+  },
+  "UnchangedOtherSourceCode": true,
+  "Errors": []
+}

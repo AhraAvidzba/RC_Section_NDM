@@ -1,0 +1,21 @@
+PASS: published.mesh.same.object
+PASS: published.rebars.same.object
+PASS: published.rules.same.object
+PASS: published.readOnly
+PASS: published.counts
+PASS: published.bar.1
+PASS: published.bar.2
+PASS: published.bar.3
+PASS: published.bar.4
+PASS: published.bar.5
+PASS: published.mesh.reject.rebuild
+PASS: published.rebars.reject.add
+PASS: published.rebars.reject.group
+PASS: published.rebars.reject.clear
+PASS: published.rules.reject.rebuild
+PASS: published.reject.changed.model.mesh
+PASS: published.reject.changed.model.rebars
+PASS: published.reject.changed.model.rules
+PASS: published.new.build
+PASS: published.old.reference.stable
+TOTAL PUBLISHED BUILD: passed=20; failed=0

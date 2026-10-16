@@ -1,0 +1,14 @@
+{
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\SegmentNaming_2026-10-16\\Candidate\\SegmentNaming.xlsm",
+  "WorkbookSHA256": "5B6CE959284198B0F20BB4691368682C0D94F397D26C3DB106461FBC52CC1BD5",
+  "ProductionSHA256": "769EB93DEFBA8F7A914B542387373DD963013DDF2E60172ACE941CA8E3CEE3B3",
+  "Compiled": true,
+  "Modules": [
+    "CGeometryPath",
+    "modTestPolygonSpec"
+  ],
+  "RetiredModules": [],
+  "EntryPointNames": [],
+  "TraceGeometry": false,
+  "ProductionChanged": false
+}

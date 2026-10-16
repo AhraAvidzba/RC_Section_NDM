@@ -274,7 +274,8 @@ Private Sub AppendInterval(ByVal result As CGeometryPath, ByVal first As Double,
     Set part = Slice(first, last)
     For i = 1 To part.SegmentCount
         part.CopySegment i, edge: name = part.SegmentID(i): suffix = 1
-        Do While result.HasSegmentID(name)
+        ' Суффикс не должен занять имя исчезнувшего участка, даже если его привязка копируется позже.
+        Do While result.HasSegmentID(name) Or result.HasCollapsedSegmentID(name) Or HasCollapsedSegmentID(name)
             suffix = suffix + 1: name = part.SegmentID(i) & ".Part" & CStr(suffix)
         Loop
         result.Append name, edge, part.SourcePathID(i), part.SourceSegmentID(i), part.SourceStartParameter(i), part.SourceEndParameter(i)
@@ -304,13 +305,23 @@ End Sub
 
 ' Переносит только привязки внутри выбранного интервала. При обратном обходе
 ' отсчёт меняется вместе с геометрией; на замыкающем стыке достаточно одного имени.
+' Для Offset передаются новые длины до концов сегментов: привязка остаётся на том же стыке.
 Friend Sub CopyCollapsedAnchors(ByVal result As CGeometryPath, ByVal first As Double, ByVal last As Double, _
-        ByVal offset As Double, Optional ByVal reverse As Boolean = False)
-    Dim i As Long, station As Double
+        ByVal offset As Double, Optional ByVal reverse As Boolean = False, Optional ByRef segmentStations As Variant)
+    Dim i As Long, j As Long, station As Double, parameter As Double
     For i = 1 To mCollapsedCount
         station = mCollapsedStations(i)
         If station >= first And station <= last Then
             If Not result.HasCollapsedSegmentID(mCollapsedIDs(i)) Then
+                If Not IsMissing(segmentStations) Then
+                    For j = 1 To mCount
+                        If station <= mStations(j) Then
+                            parameter = (station - mStations(j - 1)) / (mStations(j) - mStations(j - 1))
+                            station = segmentStations(j - 1) + parameter * (segmentStations(j) - segmentStations(j - 1))
+                            Exit For
+                        End If
+                    Next j
+                End If
                 If reverse Then station = last - station Else station = station - first
                 result.AddCollapsedSegment mCollapsedIDs(i), offset + station
             End If

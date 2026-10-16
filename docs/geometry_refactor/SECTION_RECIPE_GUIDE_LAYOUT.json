@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "db4ad7c715015397bb18e07689b3dfbb380c8a47bd1296004463f5f889714568",
+  "bodySHA256": "c1537dcbe14a364ef8e6e77ca2994e6fcc2b96eabe669009ef6f6316e27055df",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "e131fae638c3e3e70aa8dd86a16ffd799c516abec6b6c0f6179222812136252c",
-    "src/Common/modSectionRecipeApiGuide.bas": "86483d935002fcd6ac92337887deee92a7c92e5a15e0d334a009b29f92e1963a"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "1e22df597e02e0b9ac9eda68ea1abe2e97937c7608dcfa0f8e2097727f46801a",
+    "src/Common/modSectionRecipeApiGuide.bas": "d23c7bb1a6c60fa21f15b200c905b5db40e37012201c505b31df09c73ca0b3eb"
   },
   "rows": [
     {
@@ -212,7 +212,7 @@
       "line": 36
     },
     {
-      "text": "Для отверстия создайте другую замкнутую линию и передайте в Opening её имя и имя наружной границы, внутри которой находится отверстие.",
+      "text": "Для отверстия создайте другую замкнутую линию и передайте в Opening её имя и имя наружной границы, внутри которой находится отверстие. Если нужны ссылки на отдельные стороны, задайте имена в RectanglePath через bottomEdgeID/rightEdgeID/topEdgeID/leftEdgeID, а для многоугольника — в CPolygonSpec.AddVertex через outgoingEdgeID и cornerID. Например, Top и Bottom затем можно передать в Chain вместе с именем исходной линии и параметрами концов от 0 до 1. Имена сохраняют исходный смысл после поворота и отражения. Примеры и правила публикации контуров приведены в modSectionRecipeApiGuide этой книги.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 37
@@ -375,5 +375,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 138
+  "members": 140
 }

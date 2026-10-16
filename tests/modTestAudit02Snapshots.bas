@@ -129,7 +129,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: сохраняет каждое поле правил всех семейств до и после упрощения рецептов.
 ' Повторно выполняет рецепт с тем же снимком ввода: ID, порядок, адреса, политики
 ' и контактные смещения должны совпадать, включая отключённые дополнительные ряды.
-Public Function DumpRecipeRuleContracts() As String
+Public Function DumpRecipeRuleContracts(Optional ByVal includePaths As Boolean = False) As String
     Dim config As Object, saved As Variant, fixture As Variant, scenario As Long, result As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
     Dim registry As CSectionTypeRegistry, context As CSectionRecipeContext, definition As CSectionDefinition
@@ -166,9 +166,9 @@ Public Function DumpRecipeRuleContracts() As String
             Set reader = New CSectionInputSnapshotReader
             Set context = reader.Capture(ThisWorkbook, registry.RecipeTableNames(typeID), units)
             Set definition = registry.CreateDefinition(typeID, context)
-            first = RecipeRuleFields(definition)
+            If includePaths Then first = RecipePathFields(definition) Else first = RecipeRuleFields(definition)
             Set definition = registry.CreateDefinition(typeID, context)
-            second = RecipeRuleFields(definition)
+            If includePaths Then second = RecipePathFields(definition) Else second = RecipeRuleFields(definition)
             If first <> second Then Err.Raise vbObjectError + 5492, , "Повторное описание изменило правила: " & CStr(fixture)
             result = result & "CASE|" & CStr(fixture) & "|" & CStr(scenario) & vbCrLf & first
         Next scenario
@@ -179,6 +179,59 @@ Failed:
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
     DumpRecipeRuleContracts = result
+End Function
+
+' ДЛЯ ТЕСТОВ: все используемые линии штатных рецептов, их точная геометрия, имена и исходные параметры.
+Public Function DumpRecipePathContracts() As String
+    DumpRecipePathContracts = DumpRecipeRuleContracts(True)
+End Function
+
+' ДЛЯ ТЕСТОВ: обходим линии правил и аннотаций, затем их исходные линии без изменения определения.
+Private Function RecipePathFields(ByVal definition As CSectionDefinition) As String
+    Dim names As Object, queue As Collection, rule As TRebarRule, annotation As TSectionAnnotation
+    Dim i As Long, j As Long, id As Variant, ids As Variant, path As CGeometryPath, edge As TRegionEdge, value As Variant, result As String
+    Set names = CreateObject("Scripting.Dictionary"): names.CompareMode = vbBinaryCompare
+    Set queue = New Collection
+    For i = 1 To definition.RuleCount
+        definition.CopyRule i, rule
+        If rule.Enabled And rule.Mode <> DependentOffset Then
+            ids = definition.TargetPaths(rule.Target)
+            For Each id In ids
+                If Not names.Exists(CStr(id)) Then names.Add CStr(id), True: queue.Add CStr(id)
+            Next id
+        End If
+    Next i
+    For i = 1 To definition.AnnotationCount
+        definition.CopyAnnotation i, annotation
+        Select Case annotation.Kind
+            Case "VerticalExtent", "HorizontalExtent", "RebarLabel", "PathLength"
+                ids = definition.TargetPaths(annotation.Target)
+            Case "Radius", "Diameter"
+                ids = Array(annotation.Target)
+            Case Else
+                ids = Array()
+        End Select
+        For Each id In ids
+            If Not names.Exists(CStr(id)) Then names.Add CStr(id), True: queue.Add CStr(id)
+        Next id
+    Next i
+    i = 1
+    Do While i <= queue.Count
+        Set path = definition.Path(CStr(queue(i)))
+        result = result & "PATH|" & path.ID & "|" & CStr(path.IsClosed) & "|" & CStr(path.SegmentCount) & "|" & Bits(path.Length) & vbCrLf
+        For j = 1 To path.SegmentCount
+            result = result & "SEGMENT|" & CStr(j) & "|" & path.SegmentID(j) & "|" & path.SourcePathID(j) & "|" & path.SourceSegmentID(j)
+            path.CopySegment j, edge
+            For Each value In Array(path.SourceStartParameter(j), path.SourceEndParameter(j), edge.X1, edge.Y1, edge.X2, edge.Y2, edge.CenterX, edge.CenterY, edge.Sweep)
+                result = result & "|" & Bits(CDbl(value))
+            Next value
+            result = result & vbCrLf
+            id = path.SourcePathID(j)
+            If Not names.Exists(CStr(id)) Then names.Add CStr(id), True: queue.Add CStr(id)
+        Next j
+        i = i + 1
+    Loop
+    RecipePathFields = result
 End Function
 
 ' Готовит варианты круговых рядов: отдельно второй и третий, оба направления,

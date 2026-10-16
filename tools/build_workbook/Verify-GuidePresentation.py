@@ -41,11 +41,12 @@ def main():
     parser.add_argument('--dump', type=Path)
     parser.add_argument('--report', type=Path)
     parser.add_argument('--reference-native', type=Path, help='Compare VBA exactly with a separately compiled reference; default retains the historical unchanged-code check')
+    parser.add_argument('--baseline-book', type=Path, help='Preserve the latest separately saved user state instead of the initial disk copy')
     args = parser.parse_args()
     directory = args.directory
     book = args.book or directory/'Candidate.xlsm'
     dump = args.dump or directory/'FinalNativeVBA.txt'
-    old, new = reader.read(directory/'Baseline.xlsm'), reader.read(book)
+    old, new = reader.read(args.baseline_book or directory/'Baseline.xlsm'), reader.read(book)
     layout = json.loads((ROOT/'docs/geometry_refactor/SECTION_RECIPE_GUIDE_LAYOUT.json').read_text(encoding='utf-8'))
     first, last = map(int, re.fullmatch(r"'?Справка'?!\$A\$(\d+):\$F\$(\d+)", old['names']['rngSectionRecipeGuide']).groups())
     expected_text = {'A'+str(first+i): row['text'] for i, row in enumerate(layout['rows'])}

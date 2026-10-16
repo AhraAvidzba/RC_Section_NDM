@@ -1,0 +1,91 @@
+{
+  "Status": "SEGMENT_NAMING_PASS",
+  "Suites": 12,
+  "Passed": 853,
+  "Failed": 0,
+  "PathCases": 60,
+  "Paths": 643,
+  "Segments": 2705,
+  "IdenticalPNGs": 10,
+  "Comparisons": [
+    {
+      "Before": "BaselineMatrices/DumpCircleRecipeMatrix.txt",
+      "After": "CandidateMatrices/DumpCircleRecipeMatrix.txt",
+      "Characters": 8727247,
+      "Rows": 59288,
+      "ContentSHA256": "b9f03636b93687d2205fcc601291b8be29032e2e03787e4f9ea64e4bf6e3d6b7"
+    },
+    {
+      "Before": "BaselineMatrices/DumpRectSetRecipeMatrix.txt",
+      "After": "CandidateMatrices/DumpRectSetRecipeMatrix.txt",
+      "Characters": 4992794,
+      "Rows": 34593,
+      "ContentSHA256": "900e7929554906678c410e97d602e74e6c441ea6eacf6f2da14816fc40890592"
+    },
+    {
+      "Before": "BaselineMatrices/DumpRoundedRecipeMatrix.txt",
+      "After": "CandidateMatrices/DumpRoundedRecipeMatrix.txt",
+      "Characters": 7660825,
+      "Rows": 48952,
+      "ContentSHA256": "c80d4d9a62610f495235605c4219de2e93b731325b1c1e3e9ce1b10229839a6a"
+    },
+    {
+      "Before": "BaselineMatrices/DumpHollowRecipeMatrix.txt",
+      "After": "CandidateMatrices/DumpHollowRecipeMatrix.txt",
+      "Characters": 10610166,
+      "Rows": 57476,
+      "ContentSHA256": "dc51a2fee7f1dc154e7261d4ab126c47a90396d746d3347cbca0d701c9d59018"
+    },
+    {
+      "Before": "BaselineMatrices/DumpHollowRecipeEdgeMatrix.txt",
+      "After": "CandidateMatrices/DumpHollowRecipeEdgeMatrix.txt",
+      "Characters": 3451520,
+      "Rows": 19194,
+      "ContentSHA256": "b4e2c2f72fc6f9839befe9a17d4dff3b5ba09d0c473d328d65c30ba6db6fb4c2"
+    },
+    {
+      "Before": "BaselineMatrices/DumpRecipeRuleContracts.txt",
+      "After": "CandidateMatrices/DumpRecipeRuleContracts.txt",
+      "Characters": 262139,
+      "Rows": 833,
+      "ContentSHA256": "4e18bfd89895bfccb78e06898710758239d3c2ca48ccb79dabfe4b5332fac577"
+    },
+    {
+      "Before": "BaselinePaths/DumpRecipePathContracts.txt",
+      "After": "CandidatePaths/DumpRecipePathContracts.txt",
+      "Characters": 554205,
+      "Rows": 3408,
+      "ContentSHA256": "f936447e76f62d997697f0499680b7ae8ebcb860453f3657a44235af534564d6"
+    },
+    {
+      "Before": "BaselinePlots/DumpCircleRecipePreview.txt",
+      "After": "CandidatePlots/DumpCircleRecipePreview.txt",
+      "Characters": 59375,
+      "Rows": 405,
+      "ContentSHA256": "b08bc0742df6eb3b53d2ad7f217ddceab47b9f4a72026080ceae54e2f82b1ddd"
+    },
+    {
+      "Before": "BaselinePlots/DumpRectSetRecipePreview.txt",
+      "After": "CandidatePlots/DumpRectSetRecipePreview.txt",
+      "Characters": 123357,
+      "Rows": 820,
+      "ContentSHA256": "3ad8e3943955ba30437068872c0dc72671e16bef2d07d26f1f854a8f5526239c"
+    },
+    {
+      "Before": "BaselinePlots/DumpRoundedRecipePreview.txt",
+      "After": "CandidatePlots/DumpRoundedRecipePreview.txt",
+      "Characters": 211070,
+      "Rows": 1369,
+      "ContentSHA256": "dee52fff609afa648589514893fa5ac8ec51c02f96e560a00d684d8a918812e0"
+    },
+    {
+      "Before": "BaselinePlots/DumpHollowRecipePreview.txt",
+      "After": "CandidatePlots/DumpHollowRecipePreview.txt",
+      "Characters": 320052,
+      "Rows": 2082,
+      "ContentSHA256": "a864b4859127f958257c147315898e53f3feecc808b10be22cca2cb9a9650a3a"
+    }
+  ],
+  "FullOnOffRun": false,
+  "PublishedVerified": false
+}

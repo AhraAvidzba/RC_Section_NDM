@@ -1,0 +1,51 @@
+{
+  "Stage": "CandidateMatrices",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "DumpCircleRecipeMatrix",
+      "Seconds": 12.9340826,
+      "Characters": 8786535,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpRectSetRecipeMatrix",
+      "Seconds": 8.2734673,
+      "Characters": 5027387,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpRoundedRecipeMatrix",
+      "Seconds": 9.3071693,
+      "Characters": 7709777,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpHollowRecipeMatrix",
+      "Seconds": 10.5749851,
+      "Characters": 10667642,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpHollowRecipeEdgeMatrix",
+      "Seconds": 4.3296539,
+      "Characters": 3470714,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpRecipeRuleContracts",
+      "Seconds": 15.4624858,
+      "Characters": 262972,
+      "Passed": true,
+      "Snapshot": true
+    }
+  ],
+  "SourceSHA256": "6A20786AB336237E2688499F9CE916A8D3709F35FB0199434978777EA9B75181",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T13:46:26.4797642+03:00"
+}

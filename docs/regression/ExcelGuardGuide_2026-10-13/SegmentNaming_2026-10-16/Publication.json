@@ -1,0 +1,10 @@
+{
+  "Status": "PUBLISHED_VERIFIED",
+  "WorkbookSHA256": "d6ef90c165a93a59ce4378b51137cca4a4aed10dd1d10185175f28837bc03048",
+  "AllCodeSHA256": "86ce242ab5cb002db6e44d4ea224069ddd6a356de3fccfd5be0798baabfeb374",
+  "NativeComponents": 158,
+  "UserDataBaselineSHA256": "16fadd8dde08450e4dcd73f0e0daa5f1967294ed90eb1aa94b46b4b362af55f9",
+  "UserExecutionReportUnchanged": true,
+  "PublishedAt": "2026-10-16T14:03:16.3179064+03:00",
+  "AllCodeMatchesPublishedNative": true
+}

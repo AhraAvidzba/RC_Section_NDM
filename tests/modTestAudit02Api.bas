@@ -257,11 +257,11 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
     Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
     b = 600#: h = 1000#: w = 200#
     Set polygon = New CPolygonSpec
-    polygon.AddVertex "TL", -b / 2#, h / 2#, 80#
-    polygon.AddVertex "TR", b / 2#, h / 2#, 120#
+    polygon.AddVertex "TL", -b / 2#, h / 2#, 80#, outgoingEdgeID:="Edge.TL" ' Верхняя грань для привязки бокового ряда, мм.
+    polygon.AddVertex "TR", b / 2#, h / 2#, 120#, outgoingEdgeID:="Edge.TR" ' Наклонная грань для размерной аннотации, мм.
     polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
-    polygon.AddVertex "BR", b / 2#, -h / 2#, 120#
-    polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#
+    polygon.AddVertex "BR", b / 2#, -h / 2#, 120#, outgoingEdgeID:="Edge.BR" ' Нижняя грань для конца бокового ряда, мм.
+    polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, outgoingEdgeID:="Edge.BL" ' Левая грань для начала полного обхода, мм.
     polygon.Seal
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
     Set shapePath = facade.RoundedPolygon("Shape", polygon)

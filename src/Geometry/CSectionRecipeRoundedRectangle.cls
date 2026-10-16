@@ -95,14 +95,14 @@ End Function
 Private Function DescribePolygon(ByRef sizes As TRoundedInput) As CPolygonSpec
     Dim polygon As CPolygonSpec
     Set polygon = New CPolygonSpec
-    polygon.AddVertex "TL", -sizes.B / 2#, sizes.H / 2#, sizes.R1(1), sizes.GeometrySource ' Верхний левый угол до скругления; координаты и радиус в мм.
+    polygon.AddVertex "TL", -sizes.B / 2#, sizes.H / 2#, sizes.R1(1), sizes.GeometrySource, outgoingEdgeID:="Edge.TL" ' Верхний левый угол; Edge.TL — верхняя грань, размеры в мм.
     polygon.AddVertex "TR", sizes.B / 2#, sizes.H / 2#, sizes.R1(2), sizes.GeometrySource ' Верхний правый угол до скругления; координаты и радиус в мм.
     ' Вершина правого выступа до скругления; координаты и радиус в мм.
     If sizes.SideTypes(2) = "Tapered" Then polygon.AddVertex "RightNose", sizes.B / 2# + sizes.Widths(2), 0#, sizes.R2(2), sizes.GeometrySource
-    polygon.AddVertex "BR", sizes.B / 2#, -sizes.H / 2#, sizes.R1(2), sizes.GeometrySource ' Нижний правый угол до скругления; координаты и радиус в мм.
-    polygon.AddVertex "BL", -sizes.B / 2#, -sizes.H / 2#, sizes.R1(1), sizes.GeometrySource ' Нижний левый угол до скругления; координаты и радиус в мм.
+    polygon.AddVertex "BR", sizes.B / 2#, -sizes.H / 2#, sizes.R1(2), sizes.GeometrySource, outgoingEdgeID:="Edge.BR" ' Нижний правый угол; Edge.BR — нижняя грань, размеры в мм.
+    polygon.AddVertex "BL", -sizes.B / 2#, -sizes.H / 2#, sizes.R1(1), sizes.GeometrySource, outgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — начало полного обхода, размеры в мм.
     ' Вершина левого выступа до скругления; координаты и радиус в мм.
-    If sizes.SideTypes(1) = "Tapered" Then polygon.AddVertex "LeftNose", -sizes.B / 2# - sizes.Widths(1), 0#, sizes.R2(1), sizes.GeometrySource
+    If sizes.SideTypes(1) = "Tapered" Then polygon.AddVertex "LeftNose", -sizes.B / 2# - sizes.Widths(1), 0#, sizes.R2(1), sizes.GeometrySource, outgoingEdgeID:="Edge.LeftNose"
     polygon.Seal ' Проверяем вершины и завершаем их описание.
     Set DescribePolygon = polygon ' Возвращаем подготовленный многоугольник.
 End Function

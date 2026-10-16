@@ -21,7 +21,14 @@ $source=(Resolve-Path -LiteralPath (Join-Path $root $SourceWorkbook)).Path
 if(-not $source.StartsWith($evidence+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Only the recorded evidence source is permitted.'}
 $protected=@('workbook/output/RC_Section_NDM.xlsm','workbook/output/VBA_All_Code.txt','workbook/output/RC_Section_NDM_execution_report.txt')
 $before=@{}
-foreach($path in $protected){$before[$path]=(Get-FileHash -LiteralPath (Join-Path $root $path)).Hash}
+# Разрешаем чтение открытой пользователем книги; это не даёт права её сохранять или закрывать.
+function Read-SharedHash([string]$path) {
+    $stream=[IO.File]::Open($path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+    $digest=[Security.Cryptography.SHA256]::Create()
+    try {[BitConverter]::ToString($digest.ComputeHash($stream)).Replace('-','')}
+    finally {$stream.Dispose();$digest.Dispose()}
+}
+foreach($path in $protected){$before[$path]=Read-SharedHash (Join-Path $root $path)}
 Copy-Item -LiteralPath $source -Destination $copy
 $excel=$null;$book=$null;$ownedPid=0;$ownedTicks=0;$runs=@();$success=$false
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class SolidExcelIdentity{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'
@@ -62,6 +69,6 @@ try {
             catch {if(Get-Process -Id $ownedPid -ErrorAction SilentlyContinue){throw}}
         }
     }
-    foreach($path in $before.Keys){if((Get-FileHash -LiteralPath (Join-Path $root $path)).Hash -cne $before[$path]){throw ('Protected production file changed: '+$path)}}
+    foreach($path in $before.Keys){if((Read-SharedHash (Join-Path $root $path)) -cne $before[$path]){throw ('Protected production file changed: '+$path)}}
     [ordered]@{Stage=$Stage;Passed=$success;Runs=$runs;SourceSHA256=(Get-FileHash -LiteralPath $source).Hash;ProductionUnchanged=$true;FinishedAt=(Get-Date).ToString('o')} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $directory 'Run.json') -Encoding UTF8
 }

@@ -1,0 +1,35 @@
+{
+  "Status": "SEGMENT_NAMING_PACKAGE_PASS",
+  "BaselineSHA256": "769eb93defba8f7a914b542387373dd963013ddf2e60172ace941ca8e3cee3b3",
+  "CompiledSHA256": "d68eb3f40bf0f0c5809b766f43d6d72a4e93cb627e882886933b0785f5f70737",
+  "AcceptedSHA256": "5b90bca2327f30a7ee669c93a0cac9c9c7308265184bddd109b43c89bddc9dc6",
+  "NativeComponents": 158,
+  "AddedComponents": [],
+  "ChangedComponents": [
+    "CGeometryPath",
+    "CPolygonSpec",
+    "CSectionDefinitionBuilder",
+    "CSectionGeometryQuery",
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRoundedRectangle",
+    "modSectionRecipeApiGuide",
+    "modTestAudit02Api",
+    "modTestAudit02Snapshots",
+    "modTestPolygonSpec"
+  ],
+  "TestedNativeMatchesCandidate": true,
+  "BaselineProbeOnlyTestModuleChanged": true,
+  "ChangedZIPParts": [
+    "xl/worksheets/sheet2.xml",
+    "xl/vbaProject.bin"
+  ],
+  "HelpCells": {
+    "A586": "Для отверстия создайте другую замкнутую линию и передайте в Opening её имя и имя наружной границы, внутри которой находится отверстие. Если нужны ссылки на отдельные стороны, задайте имена в RectanglePath через bottomEdgeID/rightEdgeID/topEdgeID/leftEdgeID, а для многоугольника — в CPolygonSpec.AddVertex через outgoingEdgeID и cornerID. Например, Top и Bottom затем можно передать в Chain вместе с именем исходной линии и параметрами концов от 0 до 1. Имена сохраняют исходный смысл после поворота и отражения. Примеры и правила публикации контуров приведены в modSectionRecipeApiGuide этой книги."
+  },
+  "HelpRowHeights": {
+    "586": {
+      "Before": "18",
+      "After": "44.1"
+    }
+  }
+}

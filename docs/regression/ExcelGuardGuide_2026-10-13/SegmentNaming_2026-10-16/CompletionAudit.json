@@ -1,0 +1,62 @@
+{
+  "Status": "COMPLETION_AUDIT_PASS",
+  "Requirements": [
+    {
+      "Item": 1,
+      "Requirement": "AddVertex optional names, independent vertex ID, effective-name uniqueness, Seal",
+      "Evidence": [
+        "src/Geometry/CPolygonSpec.cls",
+        "DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
+      ]
+    },
+    {
+      "Item": 2,
+      "Requirement": "Exact rounded geometry, collapsed anchors, derivations, origin and repeated parts",
+      "Evidence": [
+        "SourceScope.json",
+        "Acceptance.json",
+        "CandidatePaths/Run.json",
+        "Package.json"
+      ]
+    },
+    {
+      "Item": 3,
+      "Requirement": "Rectangle side names without order changes; AdjacentRectangles unchanged",
+      "Evidence": [
+        "src/Section/CSectionDefinitionBuilder.cls",
+        "SourceScope.json",
+        "DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
+      ]
+    },
+    {
+      "Item": 4,
+      "Requirement": "Local IDs, roles and publication; existing recipes explicitly declare referenced names",
+      "Evidence": [
+        "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+        "src/Geometry/CSectionRecipeHollowRectangle.cls",
+        "Acceptance.json"
+      ]
+    },
+    {
+      "Item": 5,
+      "Requirement": "No new VBA components or aliases, unchanged other mathematics and Config; comment-only guide and Help",
+      "Evidence": [
+        "SourceScope.json",
+        "PublishedSourceEquality.json",
+        "PublishedGuidePresentation.json",
+        "HelpNamedSegments.png"
+      ]
+    },
+    {
+      "Item": 6,
+      "Requirement": "Compile, directed comparisons and plots, no full ON/OFF, published workbook and actual ALL CODE",
+      "Evidence": [
+        "Candidate/CodeUpdate.json",
+        "Acceptance.json",
+        "Publication.json"
+      ]
+    }
+  ],
+  "UserReportPreserved": true,
+  "DeliveryPending": "Git commit and push"
+}
