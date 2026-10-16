@@ -1,0 +1,37 @@
+{
+  "Stage": "BaselinePlots",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "DumpCircleRecipePreview",
+      "Seconds": 1.681251,
+      "Characters": 59780,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpRectSetRecipePreview",
+      "Seconds": 2.2752839,
+      "Characters": 124177,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpRoundedRecipePreview",
+      "Seconds": 3.1445911,
+      "Characters": 212439,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "DumpHollowRecipePreview",
+      "Seconds": 3.4829152,
+      "Characters": 322134,
+      "Passed": true,
+      "Snapshot": true
+    }
+  ],
+  "SourceSHA256": "D6EF90C165A93A59CE4378B51137CCA4A4AED10DD1D10185175F28837BC03048",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T14:32:44.7225098+03:00"
+}

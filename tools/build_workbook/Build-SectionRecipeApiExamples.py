@@ -45,7 +45,7 @@ def evidence():
                     result[match[1]].append(path.relative_to(ROOT).as_posix())
     # Новые адресные прогоны: отдельный текст каждого entrypoint и завершённый Run.json.
     folders = [ROOT / "docs/regression/ExcelGuardGuide_2026-10-13" / name for name in
-               ("SolidFinal_2026-10-14", "Audit02_2026-10-14", "Audit02Closeout_2026-10-14", "ResolveAnchor_2026-10-15", "NoMigrations_2026-10-15", "RecipeSimplification_2026-10-16", "SegmentNaming_2026-10-16")]
+               ("SolidFinal_2026-10-14", "Audit02_2026-10-14", "Audit02Closeout_2026-10-14", "ResolveAnchor_2026-10-15", "NoMigrations_2026-10-15", "RecipeSimplification_2026-10-16", "SegmentNaming_2026-10-16", "RecipeBoundaries_2026-10-16")]
     for receipt in (path for folder in folders for path in folder.glob("*/Run.json")):
         run = json.loads(receipt.read_text(encoding="utf-8-sig"))
         if not run.get("Passed") or not run.get("ProductionUnchanged"):

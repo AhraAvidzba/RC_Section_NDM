@@ -133,6 +133,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -226,7 +227,7 @@
     },
     "CSectionDefinitionBuilder.TransformAnchor": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 324,
+      "line": 323,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.TransformAnchor \"MovedA\", \"A\", 0#, 700#",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -234,6 +235,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -432,6 +434,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -775,7 +778,7 @@
     },
     "CSectionDefinitionBuilder.Radius": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 329,
+      "line": 328,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Radius \"Radius\", \"Arc\", \"Arc\", 0.5, \"R\"",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -783,6 +786,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -793,7 +797,7 @@
     },
     "CSectionDefinitionBuilder.Diameter": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 330,
+      "line": 329,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Diameter \"Diameter\", \"Hole\", \"Hole\", 0.5, \"D\"",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -801,6 +805,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -811,7 +816,7 @@
     },
     "CSectionDefinitionBuilder.Text": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 331,
+      "line": 330,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    facade.Text \"Note\", \"MovedA\", \"Учебный пример\"",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -819,6 +824,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -883,7 +889,7 @@
     },
     "CSectionDefinitionBuilder.RebarRowExtentLabel": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 279,
+      "line": 278,
       "routine": "BuildAudit02DemoDefinition",
       "code": "    facade.RebarRowExtentLabel \"H.Right\", \"H.Right.Main\", 1#, 0#, True",
       "context": "В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.",
@@ -891,6 +897,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -1111,6 +1118,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1126,6 +1134,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1210,6 +1219,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1260,6 +1270,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1345,6 +1356,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1406,6 +1418,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1613,6 +1626,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1620,7 +1634,7 @@
     },
     "CPolygonSpec.Count": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 588,
+      "line": 587,
       "routine": "SpecSnapshot",
       "code": "    For i = 1 To polygon.Count",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1664,6 +1678,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1722,7 +1737,7 @@
     },
     "CPolygonSpec.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 589,
+      "line": 588,
       "routine": "SpecSnapshot",
       "code": "        SpecSnapshot = SpecSnapshot & polygon.VertexID(i) & \"|\" & CStr(polygon.X(i)) & \"|\" & CStr(polygon.Y(i)) & _\n            \"|\" & CStr(polygon.FilletRadius(i)) & \"|\" & polygon.SourceReference(i) & vbCrLf",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1747,6 +1762,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1762,6 +1778,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -1868,6 +1885,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
@@ -1909,6 +1927,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
@@ -2025,6 +2044,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunRecipeDefinitionTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
@@ -2061,7 +2081,7 @@
     },
     "CRebarRuleOptions.StartSetback": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 560,
+      "line": 559,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    options.StartSetback = 70#",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -2203,7 +2223,7 @@
     },
     "CRebarRuleOptions.NormalOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 316,
+      "line": 315,
       "routine": "BuildAudit02OperationsDefinition",
       "code": "    options.NormalOffset = 40#: options.TangentOffset = 10#",
       "context": "В теле modTestAudit02Api.BuildAudit02OperationsDefinition с его подготовленными локальными объектами/входом.",
@@ -2211,6 +2231,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -2221,7 +2242,7 @@
     },
     "CRebarRuleOptions.EverySecond": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 558,
+      "line": 557,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    Check \"contactRecipe.binding\", options.EverySecond",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -2236,7 +2257,7 @@
     },
     "CRebarRuleOptions.IncomingTangentAtJoint": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 277,
+      "line": 276,
       "routine": "BuildAudit02DemoDefinition",
       "code": "    options.IncomingTangentAtJoint = True",
       "context": "В теле modTestAudit02Api.BuildAudit02DemoDefinition с его подготовленными локальными объектами/входом.",
@@ -2244,6 +2265,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -2397,7 +2419,7 @@
     },
     "CRebarRuleOptions.Publication": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 562,
+      "line": 561,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    options.Publication = PublishPerSourcePosition",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -2429,7 +2451,7 @@
     },
     "CRebarRuleOptions.Coincidence": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 563,
+      "line": 562,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    options.Coincidence = KeepPublishedOwner",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -2557,7 +2579,7 @@
     },
     "CRebarRuleOptions.AnnotationGroup": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 561,
+      "line": 560,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    options.AnnotationGroup = \"Previous\"",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -2590,7 +2612,7 @@
     },
     "CRebarRuleOptions.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 559,
+      "line": 558,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    Check \"contactRecipe.source\", options.SourceReference = \"recipe-test\"",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -2851,7 +2873,7 @@
     },
     "CSectionInputTable.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 442,
+      "line": 441,
       "routine": "CloseoutRectSetInputMatrix",
       "code": "                expectedAddress = table.SourceReference(row, column)",
       "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
@@ -2876,6 +2898,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
@@ -3327,6 +3350,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
@@ -3344,6 +3368,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
@@ -3378,6 +3403,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
@@ -3413,6 +3439,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
@@ -3430,6 +3457,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
@@ -3484,6 +3512,7 @@
         {
           "entryPoint": "modTestAudit02Api.RunAudit02GuideExamplesTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/GuideExamples/modTestAudit02Api.RunAudit02GuideExamplesTests.txt",
@@ -5659,7 +5688,7 @@
     },
     "modSectionRecipeTypes.ERebarPublication": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 562,
+      "line": 561,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    options.Publication = PublishPerSourcePosition",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -5690,7 +5719,7 @@
     },
     "modSectionRecipeTypes.ERebarCoincidence": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 563,
+      "line": 562,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    options.Coincidence = KeepPublishedOwner",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -5979,6 +6008,7 @@
         {
           "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
           "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
           ]
         }
@@ -6117,7 +6147,7 @@
     },
     "modSectionRecipeRows.RecipeContactOptions": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 556,
+      "line": 555,
       "routine": "RunRecipeContactOptionsContract",
       "code": "    Set options = RecipeContactOptions(\"recipe-test\", \"Stacked\", \"EverySecondBar\", 20#, 12#, -1#, 1#, 16#)",
       "context": "В теле modTestAudit02Api.RunRecipeContactOptionsContract с его подготовленными локальными объектами/входом.",
@@ -6135,7 +6165,7 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "f6a35be1e38936529b2882b9fdad6b7b1b086f44de31dc9313809ddcb6415fd8",
-    "tests/modTestAudit02Api.bas": "6c27d212ce1f53502c51ed23d4681a777d8957709423da008b736a640980f630",
+    "tests/modTestAudit02Api.bas": "213482fbcc8330cade4f88d41ba1e42ae76bc2f3498fa3f54be1b43e53a4bd8c",
     "tests/modTestAutoCADContours.bas": "5edfd1631f415a361b235512f71db4d3bc528a35a68ea043793cc1bc56ec5aae",
     "tests/modTestContourMesh.bas": "3729da3521911350d2b755e304ae3284e053b236630ee4413f7386ac8d1b8133",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
@@ -6190,6 +6220,11 @@
     "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests.txt": "98b7209be5835b60f909ec25bcaefab34e709ce9334a9681f1e8f27c447a3e9a",
     "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b",
     "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b",
+    "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestAudit02Api.RunAudit02GuideExamplesTests.txt": "5c1f56b2d9215b33c77e2482ea3c027d567251a57e029490dd79f33c5394740e",
+    "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt": "c9411d5015cabcab2fbc4a804c609409d300c630e513c3cd38816ed186f88a78",
+    "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt": "a0d3e03ad8f65c98a86fd467d7ac7e9b5a1c960e770d863399cf26f3db0e1c08",
+    "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt": "e41406128dd458e3e2ec29fddd1d37595c9dfc2e67187c797b2c812d5202d038",
+    "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt": "af41df968cfd50c760eea980c2179a08867fcab1302612242bfe02c68ec09253",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt": "5bee9dfc554572ed421c23d6760cec5b12076939fcbf6def5180bd008a90171a",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunRecipeContactOptionsContract.txt": "657576feeb7ed63f9e01ca172f1bdbbbfbe7c94abc2a7d74f15bfe42a45c1fd2",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeApiCatalogue.RunAdvancedGuideExamples.txt": "50933e8e48122c1eabac0d9fc7d10ece1804490b0f77e44e9d2a91325324a394",

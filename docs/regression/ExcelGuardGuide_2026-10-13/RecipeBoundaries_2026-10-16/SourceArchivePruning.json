@@ -1,0 +1,14 @@
+{
+  "OriginalSourceArchiveBytes": 336885209,
+  "OriginalSourceArchiveSHA256": "d398f5f067faa5190bd66aa9717727c4fab7729a2d123f7a33cb1e20ddceb501",
+  "KeptPrefixes": [
+    "src/",
+    "tests/",
+    "tools/"
+  ],
+  "KeptEntries": 408,
+  "AllKeptEntryHashesUnchanged": true,
+  "BaselineCommit": "99f90bd75ad687eef95abcda7dd87eb816343c5e",
+  "SourceArchiveBytes": 2271818,
+  "SourceArchiveSHA256": "c0ad031de04e3f84a9ea258f34cf5c7d2247836786341e05a3693e473c389603"
+}

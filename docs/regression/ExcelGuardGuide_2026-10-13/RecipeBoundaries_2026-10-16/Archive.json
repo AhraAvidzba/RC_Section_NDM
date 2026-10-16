@@ -1,0 +1,10 @@
+{
+  "ArchiveBytes": 14362744,
+  "ArchiveSHA256": "8976330a66a411c2b99b037ec680e3903bea078140099d2e267e11efa576df0e",
+  "Entries": 93,
+  "AllEntriesVerified": true,
+  "RemovedBytes": 210556005,
+  "RemovedFiles": 42,
+  "BaselineRecovery": "git 99f90bd75ad687eef95abcda7dd87eb816343c5e:workbook/output/RC_Section_NDM.xlsm",
+  "AdditionalDuplicateBytesRemoved": 669315431
+}

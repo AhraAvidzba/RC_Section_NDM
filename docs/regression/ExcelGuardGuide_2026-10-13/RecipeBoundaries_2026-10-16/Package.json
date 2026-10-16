@@ -1,0 +1,16 @@
+{
+  "Status": "RECIPE_BOUNDARIES_PACKAGE_PASS",
+  "NativeComponents": 158,
+  "AddedComponents": [],
+  "ChangedComponents": [
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRoundedRectangle",
+    "modSectionRecipeApiGuide",
+    "modTestAudit02Api"
+  ],
+  "ChangedZIPParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AcceptedSHA256": "85a54ee007171fc29a9e51099099ebd7f5cbb0dddd20bc385fa546c46c3db625",
+  "AllNonVBAPartsByteIdentical": true
+}

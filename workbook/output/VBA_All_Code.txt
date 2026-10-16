@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-16 14:03:18
+Date: 2026-10-16 14:44:12
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -12621,7 +12621,7 @@ Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal mode
     If outerEntities.count = 0 And model.ConcreteCount = 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
         "Слой бетона пуст. Для генерации сетки нужен наружный контур на AutoCAD.Common.SectionContourLayer; одних отверстий на AutoCAD.Common.OpeningContourLayer недостаточно."
     Dim query As CSectionGeometryQuery, reader As CAutoCADContourReader
-    Dim domain As CConcreteRegion, Opening As CConcreteRegion, i As Long, j As Long, commentText As String, openings As Collection
+    Dim domain As CConcreteRegion, opening As CConcreteRegion, i As Long, j As Long, commentText As String, openings As Collection
     Dim validatedOpenings As CConcreteRegion
     Set query = New CSectionGeometryQuery: Set reader = New CAutoCADContourReader
     Set openings = New Collection
@@ -12629,15 +12629,15 @@ Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal mode
         Set domain = ReadMaterialContours(outerEntities, openingEntities, reader, query)
     Else
         For Each entity In openingEntities
-            Set Opening = reader.ReadRegion(entity)
-            For j = 1 To Opening.loopCount
-                If query.LoopIsOpening(Opening, j) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
+            Set opening = reader.ReadRegion(entity)
+            For j = 1 To opening.loopCount
+                If query.LoopIsOpening(opening, j) Then Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", _
                     "Внутри Region отверстия есть отдельная бетонная часть, но наружный контур не задан. На AutoCAD.Common.SectionContourLayer разместите наружный Region с вырезанным отверстием и отдельный Region этой бетонной части."
             Next j
             ' Проверяем совместимость заданных отверстий. Общая геометрия затем
             ' восстанавливает наружную границу по сетке и учитывает именно эти отверстия,
             ' не добавляя неизвестные внутренние пустоты сетки.
-            openings.Add Opening
+            openings.Add opening
             Set validatedOpenings = query.MergeDisjointRegions(openings)
         Next entity
     End If
@@ -25064,7 +25064,7 @@ Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
         If CStr(data(1, i + 1)) <> CStr(headers(i)) Then GoTo InvalidHeader
     Next i
     Dim restored As CSectionContours: Set restored = New CSectionContours
-    Dim kind As String, id As String, loopID As String, role As String, source As String, comment As String, unitText As String
+    Dim kind As String, ID As String, loopID As String, role As String, source As String, comment As String, unitText As String
     Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, radius As Double, sweep As Double, angle As Double
     Dim ids As Object: Set ids = CreateObject("Scripting.Dictionary")
     Dim snapshotRun As Variant, geometryAnchor As Object
@@ -25078,13 +25078,13 @@ Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
         Else
             snapshotRun = data(row, 1)
         End If
-        id = ReadSavedAnnotationText(data, Anchor, row, 3)
+        ID = ReadSavedAnnotationText(data, Anchor, row, 3)
         loopID = ReadSavedAnnotationText(data, Anchor, row, 2): role = ReadSavedAnnotationText(data, Anchor, row, 5)
         kind = ReadSavedAnnotationText(data, Anchor, row, 6): source = ReadSavedAnnotationText(data, Anchor, row, 15)
         comment = ReadSavedAnnotationText(data, Anchor, row, 16): unitText = ReadSavedAnnotationText(data, Anchor, row, 17)
-        If Len(Trim$(id)) = 0 Or Len(Trim$(loopID)) = 0 Or Len(Trim$(unitText)) = 0 Then GoTo invalidRow
-        If ids.Exists(id) Then GoTo invalidRow
-        ids.Add id, True
+        If Len(Trim$(ID)) = 0 Or Len(Trim$(loopID)) = 0 Or Len(Trim$(unitText)) = 0 Then GoTo invalidRow
+        If ids.Exists(ID) Then GoTo invalidRow
+        ids.Add ID, True
         If ReadGeometryNumber(data, Anchor, row, 4) <> row - 1 Then GoTo invalidRow
         If StrComp(role, "Outer", vbTextCompare) <> 0 And StrComp(role, "Opening", vbTextCompare) <> 0 Then GoTo invalidRow
         x1 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, Anchor, row, 7), unitText)
@@ -25093,10 +25093,10 @@ Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
             Case "CONTOUR_LINE"
                 x2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, Anchor, row, 9), unitText)
                 y2 = OutputLengthToInternalByUnit(ReadGeometryNumber(data, Anchor, row, 10), unitText)
-                restored.AddContourLine id, x1, y1, x2, y2, comment, loopID, role, source
+                restored.AddContourLine ID, x1, y1, x2, y2, comment, loopID, role, source
             Case "CONTOUR_CIRCLE"
                 radius = OutputLengthToInternalByUnit(ReadGeometryNumber(data, Anchor, row, 13), unitText)
-                restored.AddContourCircle id, x1, y1, radius, comment, loopID, role, source
+                restored.AddContourCircle ID, x1, y1, radius, comment, loopID, role, source
             Case "CONTOUR_ARC"
                 cx = OutputLengthToInternalByUnit(ReadGeometryNumber(data, Anchor, row, 11), unitText)
                 cy = OutputLengthToInternalByUnit(ReadGeometryNumber(data, Anchor, row, 12), unitText)
@@ -25105,7 +25105,7 @@ Public Function ReadSavedSectionContours(ByVal Workbook As Object, _
                 ' Поворот вектора начала однозначно восстанавливает конец, включая большие и отрицательные дуги.
                 x2 = cx + (x1 - cx) * Cos(sweep) - (y1 - cy) * Sin(sweep)
                 y2 = cy + (x1 - cx) * Sin(sweep) + (y1 - cy) * Cos(sweep)
-                restored.AddContourArc id, x1, y1, x2, y2, cx, cy, radius, sweep, comment, loopID, role, source
+                restored.AddContourArc ID, x1, y1, x2, y2, cx, cy, radius, sweep, comment, loopID, role, source
             Case Else
                 GoTo invalidRow
         End Select
@@ -26057,7 +26057,7 @@ End Function
 Private Sub PrepareMaterialContourRegions(ByVal contours As CSectionContours, ByVal loops As Object, _
         ByVal shapes As Object, ByVal parents As Object, ByVal expected As Object)
     Dim query As CSectionGeometryQuery, key As Variant, otherKey As Variant, indices As Collection
-    Dim region As CConcreteRegion, Outer As CConcreteRegion, first As Long, selected As String, bestArea As Double, outerCount As Long
+    Dim region As CConcreteRegion, outer As CConcreteRegion, first As Long, selected As String, bestArea As Double, outerCount As Long
     Dim x1 As Double, y1 As Double, x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double, loopNumber As Long
     Set query = New CSectionGeometryQuery
     For Each key In loops.keys
@@ -26081,16 +26081,16 @@ Private Sub PrepareMaterialContourRegions(ByVal contours As CSectionContours, By
             For Each otherKey In loops.keys
                 Set indices = loops.item(otherKey): first = CLng(indices(1))
                 If StrComp(contours.loopRole(first), "Outer", vbTextCompare) = 0 Then
-                    Set Outer = shapes.item(otherKey)
-                    If Outer.area < bestArea And query.ContainsPoint(Outer, x1, y1, False) Then
-                        selected = CStr(otherKey): bestArea = Outer.area
+                    Set outer = shapes.item(otherKey)
+                    If outer.area < bestArea And query.ContainsPoint(outer, x1, y1, False) Then
+                        selected = CStr(otherKey): bestArea = outer.area
                     End If
                 End If
             Next otherKey
             If Len(selected) = 0 Then Err.Raise vbObjectError + 4371, "PrepareMaterialContourRegions", _
                 "В Results отверстие находится вне всех наружных контуров. Повторите импорт или расчет."
-            Set Outer = expected.item(selected)
-            Set expected.item(selected) = query.SubtractContainedRegion(Outer, region)
+            Set outer = expected.item(selected)
+            Set expected.item(selected) = query.SubtractContainedRegion(outer, region)
             parents.Add CStr(key), selected
         End If
     Next key
@@ -28423,8 +28423,8 @@ End Function
 ' поврежденном диапазоне не должен выдаваться за корректную нулевую нагрузку.
 Private Sub RecordDurationTableError(ByVal batch As CBatchSectionCalculator, ByVal activeIDs As Object, ByVal reason As String)
     batch.ClearStabilityDurationLoads
-    Dim id As Variant
-    For Each id In activeIDs.keys: batch.AddInvalidStabilityDurationLoad CStr(id), reason: Next id
+    Dim ID As Variant
+    For Each ID In activeIDs.keys: batch.AddInvalidStabilityDurationLoad CStr(ID), reason: Next ID
 End Sub
 
 ' Возвращает таблицу 7.21 СП 35 как массив и причину неверного ввода.
@@ -32390,17 +32390,17 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryP
         ByVal endNX As Double, ByVal endNY As Double, ByVal endBound As Double) As CGeometryPath
     If source Is Nothing Then GeometryError "Не передана ограничиваемая линия.", "MISSING_PATH", pathID
     Dim edge As TRegionEdge, tx As Double, ty As Double, Length As Double, first As Double, last As Double, denom As Double
-    If source.SegmentCount <> 1 Then GeometryError "Ограничение плоскостями требует одну прямую линию.", "CONSTRAINT_TARGET", pathID, source.id
+    If source.SegmentCount <> 1 Then GeometryError "Ограничение плоскостями требует одну прямую линию.", "CONSTRAINT_TARGET", pathID, source.ID
     source.CopySegment 1, edge
-    If edge.sweep <> 0# Then GeometryError "Ограничение плоскостями требует прямую линию.", "CONSTRAINT_TARGET", pathID, source.id
+    If edge.sweep <> 0# Then GeometryError "Ограничение плоскостями требует прямую линию.", "CONSTRAINT_TARGET", pathID, source.ID
     Length = modGeometryPrimitives.EdgeLength(edge): tx = (edge.x2 - edge.x1) / Length: ty = (edge.y2 - edge.y1) / Length
     denom = startNX * tx + startNY * ty
-    If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Начальный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.id
+    If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Начальный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.ID
     first = (startBound - startNX * edge.x1 - startNY * edge.y1) / denom
     denom = endNX * tx + endNY * ty
-    If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Конечный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.id
+    If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Конечный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.ID
     last = (endBound - endNX * edge.x1 - endNY * edge.y1) / denom
-    If last <= first + QUERY_TOLERANCE Then GeometryError "Ограничители уничтожили или развернули линию.", "CONSTRAINT_DISAPPEARED", pathID, source.id, first, last
+    If last <= first + QUERY_TOLERANCE Then GeometryError "Ограничители уничтожили или развернули линию.", "CONSTRAINT_DISAPPEARED", pathID, source.ID, first, last
     Dim result As CGeometryPath, startParameter As Double, endParameter As Double
     startParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * first / Length
     endParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * last / Length
@@ -32471,8 +32471,8 @@ End Sub
 Public Sub OpeningBounds(ByVal contours As CSectionContours, ByRef bounds() As Double, ByRef openingCount As Long)
     Erase bounds: openingCount = 0
     If contours Is Nothing Then GeometryError "Контуры геометрии для определения отверстий не переданы."
-    Dim Outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
-    ReadMaterialContours contours, Outer, outerCount, holes, holeCount
+    Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
+    ReadMaterialContours contours, outer, outerCount, holes, holeCount
     If holeCount = 0 Then Exit Sub
     OrientLoops holes, holeCount, False
     Dim allOpenings As CConcreteRegion, oneOpening As CConcreteRegion
@@ -32693,18 +32693,18 @@ End Function
 ' Вычитает отдельное явно заданное отверстие после проверки его расположения.
 ' Отверстие вне бетона или поверх существующей пустоты вызывает ошибку,
 ' а не незаметно обрезается по границам допустимой области.
-Public Function SubtractContainedRegion(ByVal Outer As CConcreteRegion, ByVal Opening As CConcreteRegion) As CConcreteRegion
-    ValidateContainedRegion Outer, Opening
-    Set SubtractContainedRegion = SubtractRegion(Outer, Opening)
+Public Function SubtractContainedRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion) As CConcreteRegion
+    ValidateContainedRegion outer, opening
+    Set SubtractContainedRegion = SubtractRegion(outer, opening)
 End Function
 
 ' Проверяет принадлежность отверстия, не создавая ненужную вычтенную копию родительской области.
 ' Те же проверки использует SubtractContainedRegion; отдельной геометрической трактовки нет.
-Friend Sub ValidateContainedRegion(ByVal Outer As CConcreteRegion, ByVal Opening As CConcreteRegion)
-    RequireRegion Outer: RequireRegion Opening
-    If BoundariesMeet(Outer, Opening) Then GeometryError "Контур отверстия пересекает или касается границы материала либо другой пустоты."
-    If Not AllMaterialSamplesInside(Opening, Outer) Then GeometryError "Заданное отверстие находится вне бетонной области."
-    If AnyBoundarySampleInside(Outer, Opening) Then GeometryError "Заданное отверстие накрывает уже существующую пустоту или отдельную компоненту бетона."
+Friend Sub ValidateContainedRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion)
+    RequireRegion outer: RequireRegion opening
+    If BoundariesMeet(outer, opening) Then GeometryError "Контур отверстия пересекает или касается границы материала либо другой пустоты."
+    If Not AllMaterialSamplesInside(opening, outer) Then GeometryError "Заданное отверстие находится вне бетонной области."
+    If AnyBoundarySampleInside(outer, opening) Then GeometryError "Заданное отверстие накрывает уже существующую пустоту или отдельную компоненту бетона."
 End Sub
 
 ' Проверяет уже собранные замкнутые контуры: длины отрезков, соответствие дуг
@@ -32778,20 +32778,20 @@ End Function
 
 ' Вычитает отверстия из переданной области. Пересекающиеся отверстия не
 ' вычитаются дважды: итоговая граница определяется принадлежностью материалу.
-Public Function SubtractRegion(ByVal Outer As CConcreteRegion, ByVal Opening As CConcreteRegion) As CConcreteRegion
-    RequireRegion Outer
-    RequireRegion Opening
+Public Function SubtractRegion(ByVal outer As CConcreteRegion, ByVal opening As CConcreteRegion) As CConcreteRegion
+    RequireRegion outer
+    RequireRegion opening
     Dim raw() As TRegionEdge, holes() As TRegionEdge, count As Long, holeCount As Long, i As Long
-    Outer.CopyEdges raw, count
-    Opening.CopyEdges holes, holeCount
+    outer.CopyEdges raw, count
+    opening.CopyEdges holes, holeCount
     For i = 1 To holeCount
         modGeometryPrimitives.ReverseEdge holes(i)
         AppendEdge raw, count, holes(i)
     Next i
     Dim boundary() As TRegionEdge, boundaryCount As Long
     NormalizeBoundary raw, count, boundary, boundaryCount
-    Set SubtractRegion = MakeRegion(boundary, boundaryCount, Outer.source, Outer.SectionRevision)
-    SubtractRegion.SetOwner Outer.OwnerID, Outer.standard, Outer.anchorID
+    Set SubtractRegion = MakeRegion(boundary, boundaryCount, outer.source, outer.SectionRevision)
+    SubtractRegion.SetOwner outer.OwnerID, outer.standard, outer.anchorID
 End Function
 
 ' Сравнивает готовые области по обеим геометрическим разностям, а не только
@@ -33587,8 +33587,8 @@ Private Sub EnsureDomain()
     If mSection.revision <> mRevision Then Set mDomain = Nothing
     If Not mDomain Is Nothing Then Exit Sub
     mRevision = mSection.revision
-    Dim Outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
-    ReadMaterialContours mSection.contours, Outer, outerCount, holes, holeCount
+    Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
+    ReadMaterialContours mSection.contours, outer, outerCount, holes, holeCount
     Dim mesh() As TRegionEdge, meshCount As Long
     If outerCount = 0 Then
         MeshBoundary mSection, mesh, meshCount
@@ -33598,9 +33598,9 @@ Private Sub EnsureDomain()
     If outerCount > 0 Then
         ' Известный наружный контур задает всю область. Учитываем только
         ' заданные отверстия; неизвестные пустоты по сетке не добавляются.
-        OrientLoops Outer, outerCount, False
+        OrientLoops outer, outerCount, False
         For i = 1 To outerCount
-            AppendEdge raw, count, Outer(i)
+            AppendEdge raw, count, outer(i)
         Next i
     Else
         For i = 1 To meshCount
@@ -33629,7 +33629,7 @@ End Sub
 ' Читает точные наружные границы и отверстия из модели сечения.
 ' Области взаимодействия, полученные при расчёте трещин, не используются вместо исходных
 ' контуров.
-Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef Outer() As TRegionEdge, _
+Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef outer() As TRegionEdge, _
         ByRef outerCount As Long, ByRef holes() As TRegionEdge, ByRef holeCount As Long)
     Dim i As Long, edge As TRegionEdge, kind As String, isHole As Boolean
     For i = 1 To contours.count
@@ -33640,7 +33640,7 @@ Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef Outer
                 If isHole Then
                     AddCircle holes, holeCount, contours.startX(i), contours.startY(i), contours.radius(i), True
                 Else
-                    AddCircle Outer, outerCount, contours.startX(i), contours.startY(i), contours.radius(i), False
+                    AddCircle outer, outerCount, contours.startX(i), contours.startY(i), contours.radius(i), False
                 End If
             ElseIf kind = "CONTOUR_LINE" Or kind = "CONTOUR_ARC" Then
                 edge.x1 = contours.startX(i): edge.y1 = contours.startY(i)
@@ -33654,7 +33654,7 @@ Private Sub ReadMaterialContours(ByVal contours As CSectionContours, ByRef Outer
                 If isHole Then
                     AppendEdge holes, holeCount, edge
                 Else
-                    AppendEdge Outer, outerCount, edge
+                    AppendEdge outer, outerCount, edge
                 End If
             End If
         End If
@@ -33711,12 +33711,12 @@ End Sub
 ' без искусственной сетки и привязки запроса к расчетной модели.
 Public Function RegionFromContours(ByVal contours As CSectionContours) As CConcreteRegion
     If contours Is Nothing Then GeometryError "Контуры бетонной формы не переданы."
-    Dim Outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
-    ReadMaterialContours contours, Outer, outerCount, holes, holeCount
+    Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
+    ReadMaterialContours contours, outer, outerCount, holes, holeCount
     If outerCount = 0 Then GeometryError "У формы отсутствует наружный контур бетона."
-    OrientLoops Outer, outerCount, False
+    OrientLoops outer, outerCount, False
     Dim raw() As TRegionEdge, count As Long, i As Long
-    CopyArray Outer, outerCount, raw: count = outerCount
+    CopyArray outer, outerCount, raw: count = outerCount
     If holeCount > 0 Then
         OrientLoops holes, holeCount, True
         For i = 1 To holeCount: AppendEdge raw, count, holes(i): Next i
@@ -33768,16 +33768,16 @@ End Sub
 ' отдельные наружные части и вогнутые участки границы сохраняются.
 Private Sub KeepOuterMeshContours(ByRef edges() As TRegionEdge, ByRef count As Long)
     If count = 0 Then Exit Sub
-    Dim loopAreas() As Double, Outer() As TRegionEdge, outerCount As Long, i As Long
+    Dim loopAreas() As Double, outer() As TRegionEdge, outerCount As Long, i As Long
     ReDim loopAreas(1 To count)
     For i = 1 To count
         loopAreas(edges(i).loopID) = loopAreas(edges(i).loopID) + EdgeSignedArea(edges(i))
     Next i
     For i = 1 To count
-        If loopAreas(edges(i).loopID) > QUERY_TOLERANCE Then AppendEdge Outer, outerCount, edges(i)
+        If loopAreas(edges(i).loopID) > QUERY_TOLERANCE Then AppendEdge outer, outerCount, edges(i)
     Next i
     Dim boundary() As TRegionEdge, boundaryCount As Long
-    NormalizeBoundary Outer, outerCount, boundary, boundaryCount
+    NormalizeBoundary outer, outerCount, boundary, boundaryCount
     CopyArray boundary, boundaryCount, edges
     count = boundaryCount
 End Sub
@@ -33899,13 +33899,13 @@ End Sub
 
 ' Задаёт принятое направление обхода для известных наружных контуров и отверстий.
 ' Их назначение уже задано; менять его по знаку площади исходного контура нельзя.
-Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal Opening As Boolean)
+Private Sub OrientLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal opening As Boolean)
     Dim ordered() As TRegionEdge, loops As Long, loopID As Long, i As Long, area As Double
     StitchLoops edges, count, ordered, loops, True
     For loopID = 1 To loops
         area = SignedLoopArea(ordered, count, loopID)
         If Abs(area) <= QUERY_TOLERANCE Then GeometryError "Заданный контур имеет нулевую площадь."
-        If (area > 0# And Opening) Or (area < 0# And Not Opening) Then
+        If (area > 0# And opening) Or (area < 0# And Not opening) Then
             For i = 1 To count
                 If ordered(i).loopID = loopID Then modGeometryPrimitives.ReverseEdge ordered(i)
             Next i
@@ -34038,10 +34038,10 @@ End Sub
 
 ' Добавляет четыре точных четверти окружности с заданной ролью замкнутого контура.
 Private Sub AddCircle(ByRef edges() As TRegionEdge, ByRef count As Long, ByVal cx As Double, _
-        ByVal cy As Double, ByVal radius As Double, ByVal Opening As Boolean)
+        ByVal cy As Double, ByVal radius As Double, ByVal opening As Boolean)
     If radius <= QUERY_TOLERANCE Then GeometryError "Радиус окружности контура должен быть положительным."
     Dim i As Long, edge As TRegionEdge, sign As Double
-    sign = 1#: If Opening Then sign = -1#
+    sign = 1#: If opening Then sign = -1#
     For i = 0 To 3
         edge.centerX = cx: edge.centerY = cy: edge.sweep = sign * GEOM_PI / 2#
         edge.x1 = cx + radius * Cos(sign * i * GEOM_PI / 2#)
@@ -51725,7 +51725,7 @@ End Sub
 ' сеточной границе. Точные наружные контуры здесь намеренно отсутствуют.
 Private Sub CheckOpeningWithoutOuter()
     Dim space As Collection, layers As Collection, importer As CAutoCADSectionModelImporter
-    Dim cell As CFakeAcadRegion, layer As CFakeAcadContour, Opening As CFakeAcadContour
+    Dim cell As CFakeAcadRegion, layer As CFakeAcadContour, opening As CFakeAcadContour
     Dim section As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
     Dim mode As Long, i As Long, expected As Double, writer As CNDMResultsWriter, restored As CSectionModel
     Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
@@ -51743,18 +51743,18 @@ Private Sub CheckOpeningWithoutOuter()
         cell.Initialize GEOM_PI * 4#, 10#, 10#, 10#, 10#, 0#, "REBAR", "BAR": space.Add cell
         Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
         If mode = 0 Or mode = 3 Then
-            Set Opening = Contour("AcDbPolyline", RectangleEdges(20#, 20#, 60#, 60#), "OPENING"): expected = 6400#
+            Set opening = Contour("AcDbPolyline", RectangleEdges(20#, 20#, 60#, 60#), "OPENING"): expected = 6400#
         ElseIf mode = 1 Then
-            Set Opening = Contour("AcDbRegion", RectangleEdges(15#, 15#, 70#, 70#), "OPENING"): expected = 5100#
+            Set opening = Contour("AcDbRegion", RectangleEdges(15#, 15#, 70#, 70#), "OPENING"): expected = 5100#
         Else
-            Set Opening = Contour("AcDbPolyline", RectangleEdges(25#, 25#, 50#, 50#), "OPENING"): expected = 7500#
+            Set opening = Contour("AcDbPolyline", RectangleEdges(25#, 25#, 50#, 50#), "OPENING"): expected = 7500#
             Set cell = New CFakeAcadRegion
             cell.Initialize GEOM_PI * 4#, 22#, 50#, 10#, 10#, 0#, "REBAR", "BAR_IN_MESH_VOID": space.Add cell
         End If
-        space.Add Opening
+        space.Add opening
         If mode = 3 Then
-            Set Opening = Contour("AcDbPolyline", RectangleEdges(85#, 40#, 10#, 10#), "OPENING")
-            space.Add Opening: expected = expected - 100#
+            Set opening = Contour("AcDbPolyline", RectangleEdges(85#, 40#, 10#, 10#), "OPENING")
+            space.Add opening: expected = expected - 100#
         End If
         Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
         query.Initialize section: Set region = query.ConcreteDomain
@@ -51774,14 +51774,14 @@ Private Sub CheckOpeningWithoutOuter()
             Check "openingOnly.exactIntersections", UBound(intervals, 1) = 2 And _
                 Abs(intervals(1, 2) - 25#) < 0.00001 And Abs(intervals(2, 1) - 75#) < 0.00001
         End If
-        Check "openingOnly.sourceKept." & CStr(mode), Not Opening.deleted And section.ConcreteCount = 4
+        Check "openingOnly.sourceKept." & CStr(mode), Not opening.deleted And section.ConcreteCount = 4
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         query.Initialize restored
         CheckArea "openingOnly.savedRoundTrip." & CStr(mode), query.ConcreteDomain.area, expected
         CheckPostAudit03ContoursEqual "openingOnly.exactSaved." & CStr(mode), section.contours, restored.contours
     Next mode
-    Set Opening = Contour("AcDbPolyline", RectangleEdges(87#, 42#, 5#, 5#), "OPENING"): space.Add Opening
+    Set opening = Contour("AcDbPolyline", RectangleEdges(87#, 42#, 5#, 5#), "OPENING"): space.Add opening
     Dim number As Long
     On Error Resume Next
     Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
@@ -51795,7 +51795,7 @@ End Sub
 ' а затем сохранение того же смысла геометрии в Results.
 Private Sub CheckKnownOuterWithoutOpenings()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion
-    Dim layer As CFakeAcadContour, Outer As CFakeAcadContour, mode As Long, openingLayer As String
+    Dim layer As CFakeAcadContour, outer As CFakeAcadContour, mode As Long, openingLayer As String
     Dim section As CSectionModel, restored As CSectionModel, query As CSectionGeometryQuery
     Dim domain As CConcreteRegion, importer As CAutoCADSectionModelImporter, writer As CNDMResultsWriter
     Set importer = New CAutoCADSectionModelImporter: Set query = New CSectionGeometryQuery
@@ -51820,12 +51820,12 @@ Private Sub CheckKnownOuterWithoutOpenings()
             openingLayer = vbNullString
         End If
         If mode = 1 Then
-            Set Outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#), "OUTER")
+            Set outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#), "OUTER")
         Else
-            Set Outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#), "OUTER")
+            Set outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#), "OUTER")
         End If
-        If mode = 2 Then Outer.SetLegacyContourTag True
-        space.Add Outer
+        If mode = 2 Then outer.SetLegacyContourTag True
+        space.Add outer
         Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", openingLayer, layers)
         query.Initialize section: Set domain = query.ConcreteDomain
         CheckArea "knownOuterOnly." & CStr(mode) & ".area", domain.area, 10000#
@@ -51837,7 +51837,7 @@ Private Sub CheckKnownOuterWithoutOpenings()
         Check "knownOuterOnly." & CStr(mode) & ".comment", InStr(importer.ImportComment, "отверстия по сетке не добавляются") > 0
         Check "knownOuterOnly." & CStr(mode) & ".shortMessage", InStr(importer.ResultMessage(section), "Наружных контуров: 1; отверстий: 0.") > 0 And _
             InStr(importer.ResultMessage(section), "Предупреждения:") = 0 And InStr(importer.ResultMessage(section), "Координаты") = 0
-        Check "knownOuterOnly." & CStr(mode) & ".sourceKept", Not Outer.deleted
+        Check "knownOuterOnly." & CStr(mode) & ".sourceKept", Not outer.deleted
         writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
         query.Initialize restored: Set domain = query.ConcreteDomain
@@ -52043,7 +52043,7 @@ End Sub
 ' ДЛЯ ТЕСТОВ: два габарита после настоящего конвейера импорта, записи Results и отрисовки Excel.
 Public Function RunImportedDimensionTests(Optional ByVal imageDirectory As String = "") As String
     Dim section As CSectionModel, space As Collection, layers As Collection, cell As CFakeAcadRegion
-    Dim importer As CAutoCADSectionModelImporter, Outer As CFakeAcadContour, writer As CNDMResultsWriter
+    Dim importer As CAutoCADSectionModelImporter, outer As CFakeAcadContour, writer As CNDMResultsWriter
     Dim settings As CSystemSettingsReader, reader As CSectionPlotDataReader, plotter As CSectionPlotter
     Dim annotations As CSectionAnnotations, chart As Object, shape As Object, system As Object, plotSettings As Object
     Dim savedSystem As Variant, savedPlot As Variant, kind As Long, row As Long, i As Long, mode As Long
@@ -52065,12 +52065,12 @@ Public Function RunImportedDimensionTests(Optional ByVal imageDirectory As Strin
     For kind = 0 To 1
         Set space = New Collection: Set layers = New Collection
         For Each layerName In Array("CONCRETE", "REBAR", "OUTER", "OPENING")
-            Set Outer = New CFakeAcadContour: layers.Add Outer, CStr(layerName)
+            Set outer = New CFakeAcadContour: layers.Add outer, CStr(layerName)
         Next layerName
         Set cell = New CFakeAcadRegion: cell.Initialize 19200#, 0#, 0#, 1#, 1#, 0#, "CONCRETE", "Mesh": space.Add cell
         Set cell = New CFakeAcadRegion: cell.Initialize GEOM_PI * 100#, 0#, 0#, 1#, 1#, 0#, "REBAR", "Bar": space.Add cell
         If kind = 1 Then
-            Set Outer = Contour("AcDbPolyline", RectangleEdges(-100#, -150#, 200#, 300#), "OUTER"): space.Add Outer
+            Set outer = Contour("AcDbPolyline", RectangleEdges(-100#, -150#, 200#, 300#), "OUTER"): space.Add outer
         End If
         Set importer = New CAutoCADSectionModelImporter
         Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
@@ -52185,7 +52185,7 @@ End Function
 ' Чистый набор сохраняется в Results; наложенные копии не пропускаются.
 Private Sub CheckMixedContourSources()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
-    Dim Outer As CFakeAcadContour, Opening As CFakeAcadContour, duplicate As CFakeAcadContour
+    Dim outer As CFakeAcadContour, opening As CFakeAcadContour, duplicate As CFakeAcadContour
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, restored As CSectionModel
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, writer As CNDMResultsWriter
     Dim mode As Long, i As Long, countBefore As Long, prefix As String, outerCount As Long, openingCount As Long
@@ -52199,11 +52199,11 @@ Private Sub CheckMixedContourSources()
         space.Add cell
         Set cell = New CFakeAcadRegion
         cell.Initialize GEOM_PI * 25#, 10#, 10#, 100#, 100#, 0#, "REBAR", "BAR": space.Add cell
-        Set Outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#))
-        Outer.SetLegacyContourTag (mode = 1 Or mode = 3): space.Add Outer
+        Set outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#))
+        outer.SetLegacyContourTag (mode = 1 Or mode = 3): space.Add outer
         For i = 0 To 1
-            Set Opening = Contour("AcDbPolyline", RectangleEdges(25# + 35# * i, 30# + 30# * i, 10# + 10# * i, 10#), "OPENING")
-            Opening.SetLegacyContourTag (mode = 0 Or mode = 3): space.Add Opening
+            Set opening = Contour("AcDbPolyline", RectangleEdges(25# + 35# * i, 30# + 30# * i, 10# + 10# * i, 10#), "OPENING")
+            opening.SetLegacyContourTag (mode = 0 Or mode = 3): space.Add opening
         Next i
         Set layer = New CFakeAcadContour: layers.Add layer, "OUTER"
         Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
@@ -52214,8 +52214,8 @@ Private Sub CheckMixedContourSources()
         Check prefix & ".authoritativeOuter", InStr(region.source, "AuthoritativeContour") > 0
         Check prefix & ".threeLoops", region.loopCount = 3
         Check prefix & ".bothOpeningsExcluded", Not query.ContainsPoint(region, 30#, 35#) And Not query.ContainsPoint(region, 70#, 65#)
-        Check prefix & ".sourcesPreserved", space.count = countBefore And Not Outer.deleted And Not Opening.deleted
-        Check prefix & ".noOwnershipRead", Outer.XDataReads = 0 And Opening.XDataReads = 0
+        Check prefix & ".sourcesPreserved", space.count = countBefore And Not outer.deleted And Not opening.deleted
+        Check prefix & ".noOwnershipRead", outer.XDataReads = 0 And opening.XDataReads = 0
         CheckArea prefix & ".mechanicalArea", section.concreteArea(1), 10000#
         writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook, "AutoCADImport")
@@ -52256,7 +52256,7 @@ End Sub
 ' универсально. Дубли и отверстия вне материала остаются ошибками.
 Private Sub CheckMixedContourTopology()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
-    Dim Outer As CFakeAcadContour, part As CFakeAcadContour, hole As CFakeAcadContour, edges As Collection, edge As Variant
+    Dim outer As CFakeAcadContour, part As CFakeAcadContour, hole As CFakeAcadContour, edges As Collection, edge As Variant
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
     Dim region As CConcreteRegion, number As Long, description As String
     Set space = New Collection: Set layers = New Collection
@@ -52268,7 +52268,7 @@ Private Sub CheckMixedContourTopology()
     Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
     Set edges = RectangleEdges(0#, 0#, 100#, 100#)
     For Each edge In RectangleEdges(25#, 30#, 10#, 10#): edges.Add edge: Next edge
-    Set Outer = Contour("AcDbRegion", edges): space.Add Outer
+    Set outer = Contour("AcDbRegion", edges): space.Add outer
     Set hole = Contour("AcDbPolyline", RectangleEdges(25#, 30#, 10#, 10#), "OPENING")
     hole.SetLegacyContourTag True: space.Add hole
     Set hole = Contour("AcDbPolyline", RectangleEdges(60#, 60#, 20#, 10#), "OPENING")
@@ -52286,7 +52286,7 @@ Private Sub CheckMixedContourTopology()
     Check "mixedTopology.embeddedOpening.threeLoops", region.loopCount = 3
     Check "mixedTopology.embeddedOpening.bothExcluded", Not query.ContainsPoint(region, 30#, 35#) And Not query.ContainsPoint(region, 70#, 65#)
     space.Remove 4: space.Remove 3
-    Set Outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#)): Outer.SetLegacyContourTag True: space.Add Outer
+    Set outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#)): outer.SetLegacyContourTag True: space.Add outer
     Set part = Contour("AcDbPolyline", RectangleEdges(40#, 40#, 20#, 20#)): part.SetLegacyContourTag True: space.Add part
     Set hole = Contour("AcDbRegion", RectangleEdges(20#, 20#, 60#, 60#), "OPENING"): space.Add hole
     Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
@@ -52309,7 +52309,7 @@ End Sub
 Private Sub CheckOptionalLayersAndSeparateConcrete()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, dummy As CFakeAcadContour
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
-    Dim region As CConcreteRegion, Outer As CFakeAcadContour, holeEdges As Collection, edge As Variant
+    Dim region As CConcreteRegion, outer As CFakeAcadContour, holeEdges As Collection, edge As Variant
     Dim part As CFakeAcadContour, duplicate As CFakeAcadContour, countBefore As Long, number As Long
     Set space = New Collection: Set layers = New Collection
     Set cell = New CFakeAcadRegion
@@ -52323,7 +52323,7 @@ Private Sub CheckOptionalLayersAndSeparateConcrete()
     Check "optional.absentLayers.comment", InStr(importer.ImportComment, "OUTER") > 0 And InStr(importer.ImportComment, "OPENING") > 0
     Set holeEdges = RectangleEdges(0#, 0#, 100#, 100#)
     For Each edge In RectangleEdges(20#, 20#, 60#, 60#): holeEdges.Add edge: Next edge
-    Set Outer = Contour("AcDbRegion", holeEdges): space.Add Outer
+    Set outer = Contour("AcDbRegion", holeEdges): space.Add outer
     Set part = Contour("AcDbRegion", RectangleEdges(40#, 40#, 20#, 20#)): space.Add part
     Set dummy = New CFakeAcadContour: layers.Add dummy, "OUTER"
     Set duplicate = Contour("AcDbPolyline", holeEdges): duplicate.SetLegacyContourTag True: space.Add duplicate
@@ -52340,12 +52340,12 @@ Private Sub CheckOptionalLayersAndSeparateConcrete()
     Check "separateConcrete.threeContours", region.loopCount = 3
     Check "separateConcrete.material", query.ContainsPoint(region, 50#, 50#) And query.ContainsPoint(region, 10#, 10#)
     Check "separateConcrete.void", Not query.ContainsPoint(region, 30#, 30#)
-    Check "separateConcrete.sourcesKept", space.count = countBefore And Not Outer.deleted And Not part.deleted And Not duplicate.deleted
+    Check "separateConcrete.sourcesKept", space.count = countBefore And Not outer.deleted And Not part.deleted And Not duplicate.deleted
     Check "separateConcrete.openingAbsent", InStr(importer.ImportComment, "OPENING") > 0
     ' Новый чертеж содержит только экспорт: наружная граница, отверстие
     ' и отдельная бетонная часть должны восстановить те же три контура.
     space.Remove 4: space.Remove 3
-    Set Outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#)): Outer.SetLegacyContourTag True: space.Add Outer
+    Set outer = Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#)): outer.SetLegacyContourTag True: space.Add outer
     Set part = Contour("AcDbPolyline", RectangleEdges(40#, 40#, 20#, 20#)): part.SetLegacyContourTag True: space.Add part
     Set duplicate = Contour("AcDbPolyline", RectangleEdges(20#, 20#, 60#, 60#), "OPENING")
     duplicate.SetLegacyContourTag True: space.Add duplicate
@@ -52362,7 +52362,7 @@ End Sub
 ' и сохранение строгой ошибки для реально заданной незамкнутой полилинии.
 Private Sub CheckEmptyContourLayers()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, bar As CFakeAcadRegion
-    Dim layer As CFakeAcadContour, Opening As CFakeAcadContour, Invalid As CFakeAcadContour
+    Dim layer As CFakeAcadContour, opening As CFakeAcadContour, Invalid As CFakeAcadContour
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
     Dim domain As CConcreteRegion, clipped As CConcreteRegion, mode As Long, expectedArea As Double
     Dim contourLayer As String, openingLayer As String, prefix As String, number As Long, description As String
@@ -52380,8 +52380,8 @@ Private Sub CheckEmptyContourLayers()
             Set layer = New CFakeAcadContour: layers.Add layer, "OPENING"
         End If
         If mode = 2 Then
-            Set Opening = Contour("AcDbPolyline", RectangleEdges(60#, 60#, 20#, 20#), "OPENING")
-            space.Add Opening: expectedArea = 9600#
+            Set opening = Contour("AcDbPolyline", RectangleEdges(60#, 60#, 20#, 20#), "OPENING")
+            space.Add opening: expectedArea = 9600#
         ElseIf mode = 3 Then
             contourLayer = vbNullString: openingLayer = vbNullString
         End If
@@ -52396,7 +52396,7 @@ Private Sub CheckEmptyContourLayers()
         CheckArea prefix & ".area", domain.area, expectedArea
         Set clipped = query.ClipHalfPlane(domain, 1#, 0#, 50#)
         CheckArea prefix & ".meshIntersection", clipped.area, expectedArea - 5000#
-        If mode = 2 Then Check prefix & ".openingKept", Not query.ContainsPoint(domain, 70#, 70#) And Not Opening.deleted
+        If mode = 2 Then Check prefix & ".openingKept", Not query.ContainsPoint(domain, 70#, 70#) And Not opening.deleted
     Next mode
     Set Invalid = New CFakeAcadContour
     Dim openEdges As Collection
@@ -52521,7 +52521,7 @@ End Sub
 ' ошибочный импорт не меняет уже полученную пригодную модель.
 Private Sub CheckMultipleOpenings()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
-    Dim firstOpening As CFakeAcadContour, secondOpening As CFakeAcadContour, Outer As CFakeAcadContour
+    Dim firstOpening As CFakeAcadContour, secondOpening As CFakeAcadContour, outer As CFakeAcadContour
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
     Dim region As CConcreteRegion, mode As Long, outerLayer As String, number As Long, description As String, AnnotationCount As Long
     For mode = 0 To 1
@@ -52533,8 +52533,8 @@ Private Sub CheckMultipleOpenings()
         cell.Initialize GEOM_PI * 25#, 10#, 10#, 100#, 100#, 0#, "REBAR", "BAR": space.Add cell
         outerLayer = vbNullString
         If mode = 1 Then
-            Set Outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#))
-            space.Add Outer: outerLayer = "OUTER"
+            Set outer = Contour("AcDbRegion", RectangleEdges(0#, 0#, 100#, 100#))
+            space.Add outer: outerLayer = "OUTER"
         End If
         Set firstOpening = Contour("AcDbRegion", RectangleEdges(25#, 30#, 10#, 10#), "OPENING")
         Set secondOpening = Contour("AcDbPolyline", RectangleEdges(60#, 60#, 20#, 10#), "OPENING")
@@ -52569,7 +52569,7 @@ Private Sub CheckFiveOpenings()
     Dim space As Collection, layers As Collection, cell As CFakeAcadRegion, layer As CFakeAcadContour
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, restored As CSectionModel
     Dim query As CSectionGeometryQuery, region As CConcreteRegion, writer As CNDMResultsWriter
-    Dim i As Long, kind As String, Opening As CFakeAcadContour
+    Dim i As Long, kind As String, opening As CFakeAcadContour
     Set space = New Collection: Set layers = New Collection
     Set cell = New CFakeAcadRegion
     cell.Initialize 10000#, 50#, 50#, 8333333.33333333, 8333333.33333333, 0#, "CONCRETE", "CELL", 0#, True
@@ -52582,8 +52582,8 @@ Private Sub CheckFiveOpenings()
     For i = 1 To 5
         kind = "AcDbRegion"
         If i Mod 2 = 0 Then kind = "AcDbPolyline"
-        Set Opening = Contour(kind, RectangleEdges(10# + 15# * (i - 1), 40#, 5#, 10#), "OPENING")
-        space.Add Opening
+        Set opening = Contour(kind, RectangleEdges(10# + 15# * (i - 1), 40#, 5#, 10#), "OPENING")
+        space.Add opening
     Next i
     Set importer = New CAutoCADSectionModelImporter
     Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
@@ -53265,7 +53265,7 @@ End Sub
 ' правильную полилинию. Ненулевой отрезок остается адресной ошибкой ввода.
 Private Sub CheckEmptyStandaloneContourSegments()
     Dim space As Collection, layers As Collection, importer As CAutoCADSectionModelImporter, section As CSectionModel
-    Dim zero As CFakeAcadContour, Opening As CFakeAcadContour, layer As CFakeAcadContour, cell As CFakeAcadRegion
+    Dim zero As CFakeAcadContour, opening As CFakeAcadContour, layer As CFakeAcadContour, cell As CFakeAcadRegion
     Dim query As CSectionGeometryQuery, number As Long, description As String, layerName As Variant, prefix As String
     Set space = New Collection: Set layers = New Collection
     Set cell = New CFakeAcadRegion: cell.Initialize 10000#, 50#, 50#, 1000000#, 1200000#, 0#, "CONCRETE", "C1": space.Add cell
@@ -53273,7 +53273,7 @@ Private Sub CheckEmptyStandaloneContourSegments()
     space.Add Contour("AcDbPolyline", RectangleEdges(0#, 0#, 100#, 100#))
     Set zero = New CFakeAcadContour: zero.InitializeLoop "AcDbLine", "OPENING", "ZERO_LINE", Nothing
     zero.InitializeLine 40#, 40#, 40#, 40#: space.Add zero
-    Set Opening = Contour("AcDbPolyline", RectangleEdges(40#, 40#, 20#, 20#), "OPENING"): space.Add Opening
+    Set opening = Contour("AcDbPolyline", RectangleEdges(40#, 40#, 20#, 20#), "OPENING"): space.Add opening
     Set layer = New CFakeAcadContour: layers.Add layer, "OUTER": layers.Add layer, "OPENING"
     Set importer = New CAutoCADSectionModelImporter
     For Each layerName In Array("OUTER", "OPENING")
@@ -53283,7 +53283,7 @@ Private Sub CheckEmptyStandaloneContourSegments()
     Set section = importer.ImportFromModelSpace(space, "CONCRETE", "REBAR", "Rebar", 0#, Nothing, "OUTER", "OPENING", layers)
     Set query = New CSectionGeometryQuery: query.Initialize section
     CheckArea prefix & ".area", query.ConcreteDomain.area, 9600#
-    Check prefix & ".sourceKept", Not zero.deleted And Not Opening.deleted
+    Check prefix & ".sourceKept", Not zero.deleted And Not opening.deleted
     Check prefix & ".warning", InStr(importer.ImportComment, "нулевой длины") > 0 And InStr(importer.ImportComment, "ZERO_LINE") > 0
     Check prefix & ".shortMessage", InStr(importer.ResultMessage(section), "Наружных контуров: 1; отверстий: 1.") > 0 And _
         InStr(importer.ResultMessage(section), vbCrLf & vbCrLf & "Предупреждения:") > 0 And _
@@ -53365,7 +53365,7 @@ End Sub
 ' пустой AcDbLine на каждом контурном слое. Полный importer сохраняет роли и область.
 Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
-    Dim entity As Object, Outer As Object, zero As Object, curve As Object, regions As Variant, curves(0 To 0) As Object
+    Dim entity As Object, outer As Object, zero As Object, curve As Object, regions As Variant, curves(0 To 0) As Object
     Dim point(0 To 2) As Double, endPoint(0 To 2) As Double, values(0 To 9) As Double
     Dim layer As Variant, targetLayer As Variant, countBefore As Long, number As Long, description As String, prefix As String
     For Each layer In Array("NP_CONCRETE", "NP_REBAR", "NP_OUTER", "NP_OPENING"): doc.layers.Add CStr(layer): Next layer
@@ -53374,7 +53374,7 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     point(0) = 10#: point(1) = 10#: Set curve = doc.modelSpace.AddCircle(point, 2#)
     Set curves(0) = curve: regions = doc.modelSpace.AddRegion(curves): Set entity = regions(LBound(regions)): entity.layer = "NP_REBAR"
     values(2) = 100#: values(4) = 100#: values(5) = 100#: values(7) = 100#
-    Set Outer = doc.modelSpace.AddLightWeightPolyline(values): Outer.layer = "NP_OUTER": Outer.closed = False
+    Set outer = doc.modelSpace.AddLightWeightPolyline(values): outer.layer = "NP_OUTER": outer.closed = False
     values(0) = 40#: values(1) = 40#: values(2) = 60#: values(3) = 40#: values(4) = 60#: values(5) = 60#
     values(6) = 40#: values(7) = 60#: values(8) = 40#: values(9) = 40#
     Set entity = doc.modelSpace.AddLightWeightPolyline(values): entity.layer = "NP_OPENING": entity.closed = False
@@ -53388,7 +53388,7 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     CheckArea prefix & ".area", query.ConcreteDomain.area, 9600#
     Check prefix & ".roles", query.ConcreteDomain.loopCount = 2
     Check prefix & ".warning", InStr(importer.ImportComment, CStr(zero.handle)) > 0 And InStr(importer.ImportComment, "нулевой длины") > 0
-    Check prefix & ".noMutation", doc.modelSpace.count = countBefore And Not CBool(entity.closed) And Not CBool(Outer.closed)
+    Check prefix & ".noMutation", doc.modelSpace.count = countBefore And Not CBool(entity.closed) And Not CBool(outer.closed)
     zero.Delete: endPoint(0) = 41#: Set zero = doc.modelSpace.AddLine(point, endPoint): zero.layer = CStr(targetLayer)
     countBefore = doc.modelSpace.count
     On Error Resume Next
@@ -53494,7 +53494,7 @@ End Sub
 Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
     Dim importer As CAutoCADSectionModelImporter, writer As CNDMResultsWriter, units As CUnitSystem, reader As CAutoCADContourReader
     Dim query As CSectionGeometryQuery, section As CSectionModel, region As CConcreteRegion
-    Dim Outer As Object, mesh As Object, bar As Object, hole As Object, curve As Object, entity As Object
+    Dim outer As Object, mesh As Object, bar As Object, hole As Object, curve As Object, entity As Object
     Dim curves(0 To 0) As Object, regions As Variant, center(0 To 2) As Double
     Dim mode As Long, i As Long, countBefore As Long, exported As Long, expectedExported As Long, outerCount As Long, openingCount As Long
     Dim prefix As String, outerLayer As String, openingLayer As String, meshLayer As String, rebarLayer As String, outerHandle As String
@@ -53513,10 +53513,10 @@ Private Sub CheckNativeMixedContourRoundTrip(ByVal doc As Object)
         outerLayer = "NDM_MIX_OUTER_" & CStr(mode): openingLayer = "NDM_MIX_OPENING_" & CStr(mode)
         meshLayer = "NDM_MIX_MESH_" & CStr(mode): rebarLayer = "NDM_MIX_REBAR_" & CStr(mode)
         doc.layers.Add outerLayer: doc.layers.Add openingLayer: doc.layers.Add meshLayer: doc.layers.Add rebarLayer
-        Set Outer = NativeRectangle(doc, 100#, 100#, 0#, 1100# + 150# * mode, 100#): Outer.layer = outerLayer
-        Set curves(0) = Outer: regions = doc.modelSpace.AddRegion(curves): Set mesh = regions(LBound(regions)): mesh.layer = meshLayer
-        If mode = 1 Or mode = 3 Then SetLegacyContourTag Outer
-        outerHandle = CStr(Outer.handle)
+        Set outer = NativeRectangle(doc, 100#, 100#, 0#, 1100# + 150# * mode, 100#): outer.layer = outerLayer
+        Set curves(0) = outer: regions = doc.modelSpace.AddRegion(curves): Set mesh = regions(LBound(regions)): mesh.layer = meshLayer
+        If mode = 1 Or mode = 3 Then SetLegacyContourTag outer
+        outerHandle = CStr(outer.handle)
         For i = 0 To 1
             Set hole = NativeRectangle(doc, 10# + 10# * i, 10#, 0#, 1080# + 150# * mode + 35# * i, 85# + 30# * i)
             hole.layer = openingLayer
@@ -53614,7 +53614,7 @@ End Sub
 ' экспорт добавляет объекты без меток и без удаления прежних копий.
 Private Sub CheckNativeSharedContours(ByVal doc As Object)
     Dim system As Object, saved As Variant, settings As CSystemSettingsReader, i As Long
-    Dim original As Object, copy As Object, Opening As Object, openingCopy As Object
+    Dim original As Object, copy As Object, opening As Object, openingCopy As Object
     Dim number As Long, description As String, handle As String, copyHandle As String
     Dim openingHandle As String, openingCopyHandle As String
     Dim writer As CNDMResultsWriter, section As CSectionModel, reader As CAutoCADContourReader, region As CConcreteRegion
@@ -53637,9 +53637,9 @@ Private Sub CheckNativeSharedContours(ByVal doc As Object)
     Set original = NativeRectangle(doc, 100#, 100#, 0#, 50#, 50#)
     original.layer = "SP35_SAVED_CONTOURS": handle = CStr(original.handle)
     Set copy = original.copy: SetLegacyContourTag copy: copyHandle = CStr(copy.handle)
-    Set Opening = NativeRectangle(doc, 20#, 20#, 0#, 20#, 20#)
-    Opening.layer = "SP35_OPENING": openingHandle = CStr(Opening.handle)
-    Set openingCopy = Opening.copy: SetLegacyContourTag openingCopy: openingCopyHandle = CStr(openingCopy.handle)
+    Set opening = NativeRectangle(doc, 20#, 20#, 0#, 20#, 20#)
+    opening.layer = "SP35_OPENING": openingHandle = CStr(opening.handle)
+    Set openingCopy = opening.copy: SetLegacyContourTag openingCopy: openingCopyHandle = CStr(openingCopy.handle)
     Check "native.sharedContours.originalUnmarked", Not HasLegacyContourTag(original)
     Check "native.sharedContours.legacyCopyMarked", HasLegacyContourTag(copy)
     For Each entity In doc.modelSpace
@@ -53720,15 +53720,15 @@ End Sub
 ' вместе. Бетонный Region сетки продолжает использовать прежнюю эквивалентную
 ' оболочку; достоверный контур не меняет его фактическую площадь и инерции.
 Private Sub CheckNativeSeparateOpenings(ByVal doc As Object, ByVal reader As CAutoCADContourReader, ByVal query As CSectionGeometryQuery)
-    Dim Outer As Object, mesh As Object, bar As Object, hole As Object, holeCopy As Object, polyline As Object
+    Dim outer As Object, mesh As Object, bar As Object, hole As Object, holeCopy As Object, polyline As Object
     Dim curves(0 To 0) As Object, regions As Variant, center(0 To 2) As Double
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, region As CConcreteRegion
     Dim i As Long, width As Double, height As Double, angle As Double, Ix As Double, Iy As Double, Ixy As Double
     Dim raw As Variant, expectedIx As Double, expectedIy As Double, countBefore As Long
     doc.layers.Add "SP35_OUTER": doc.layers.Add "SP35_OPENING"
     doc.layers.Add "SP35_MESH": doc.layers.Add "SP35_REBAR"
-    Set Outer = NativeRectangle(doc, 100#, 100#, 0#, 500#, 100#): Outer.layer = "SP35_OUTER"
-    Set curves(0) = Outer: regions = doc.modelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
+    Set outer = NativeRectangle(doc, 100#, 100#, 0#, 500#, 100#): outer.layer = "SP35_OUTER"
+    Set curves(0) = outer: regions = doc.modelSpace.AddRegion(curves): Set mesh = regions(LBound(regions))
     mesh.layer = "SP35_MESH"
     For i = 0 To 1
         center(0) = 475# + 45# * i: center(1) = 85# + 25# * i
@@ -58728,13 +58728,13 @@ Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double,
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim radius As Double, layout As CRebarLayout
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "CircleRowFixture"
-    Set path = facade.CirclePath("Boundary", centerX, centerY, diameter / 2#): facade.Outer "OUTER", path.id
+    Set path = facade.CirclePath("Boundary", centerX, centerY, diameter / 2#): facade.outer "OUTER", path.ID
     radius = diameter / 2# - axisDistance
     Set path = facade.CirclePath("Axis", centerX, centerY, radius)
     Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
     options.SourcePrefix = "B": options.Publication = PublishPerSourcePosition
     options.AnnotationGroup = "Circle": options.comment = "Круг: основной ряд арматуры"
-    facade.RebarByCount "CircleRow", path.id, barCount, BarDiameter, options, "A400"
+    facade.RebarByCount "CircleRow", path.ID, barCount, BarDiameter, options, "A400"
     Set layout = FixtureLayout(facade.Finish)
     Set CircleRebars = layout
 End Function
@@ -61230,7 +61230,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                 polygonSpec.Seal
                 Set path = facade.RoundedPolygon("Boundary", polygonSpec)
             End If
-            facade.Outer "OUTER", path.id
+            facade.outer "OUTER", path.ID
             If shapeName = "HollowThin" Then
                 Set path = facade.RectanglePath("VoidPath", -120#, -220#, 240#, 440#)
             Else
@@ -61243,7 +61243,7 @@ Private Function Audit03LoadMatrixSection(ByVal shapeName As String, _
                 polygonSpec.Seal
                 Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
             End If
-            facade.Opening "VOID", path.id, "OUTER": Set definition = facade.Finish
+            facade.opening "VOID", path.ID, "OUTER": Set definition = facade.Finish
             Set geometry = FixtureGeometry(definition.ConcreteDomain)
         Case "ImportedFixture"
             Set section = New CSectionModel
@@ -66661,7 +66661,7 @@ Private Function RectSetCapacitySection() As CSectionModel
     Dim row As Variant, rows As Variant, mesh As TSectionMeshOptions, builder As CSectionBuilder
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RectSetCapacityTest"
     Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)))
-    facade.Outer "OUTER", path.id
+    facade.outer "OUTER", path.ID
     rows = Array(Array("H1.Left", 40#, 250#, 40#, 800#, 5), Array("H1.Right", 210#, 800#, 210#, 250#, 5), _
         Array("B1.Top", 0#, 760#, 250#, 760#, 2), Array("B1.Bottom", 250#, 290#, 0#, 290#, 2), _
         Array("H2.Left", 40#, 0#, 40#, 250#, 2), Array("H2.Right", 560#, 250#, 560#, 0#, 2), _
@@ -66672,7 +66672,7 @@ Private Function RectSetCapacitySection() As CSectionModel
         options.StartSetback = 80#: options.EndSetback = 80#
         options.PositionOrder = FromPathMiddle: options.Publication = PublishPerSourcePosition
         options.Coincidence = KeepPublishedOwner: options.AnnotationGroup = CStr(row(0))
-        facade.RebarByCount CStr(row(0)) & ".Main", path.id, CLng(row(5)), 32#, options, "A400"
+        facade.RebarByCount CStr(row(0)) & ".Main", path.ID, CLng(row(5)), 32#, options, "A400"
     Next row
     mesh.stepX = 50#: mesh.stepY = 50#: mesh.boundarySubdivisions = 1: mesh.materialID = 1
     Set builder = New CSectionBuilder: Set RectSetCapacitySection = builder.Build(facade.Finish, mesh)
@@ -71105,7 +71105,7 @@ End Sub
 
 ' Один настоящий Region содержит два отверстия; отдельный слой отверстий пуст.
 Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem)
-    Dim Outer As Object, hole As Object, center(0 To 2) As Double, curves(0 To 0) As Object, regions As Variant, i As Long
+    Dim outer As Object, hole As Object, center(0 To 2) As Double, curves(0 To 0) As Object, regions As Variant, i As Long
     Dim source As Object, query As CSectionGeometryQuery, domain As CConcreteRegion, geometry As CGeometryRegion
     Dim importer As CAutoCADSectionModelImporter, model As CSectionModel, mesh As CFiberMeshBuilder, bars As CRebarLayout
     Dim generated As CSectionModel, x As Double, contourReader As CAutoCADContourReader
@@ -71113,14 +71113,14 @@ Private Sub CheckNativeTwoHoles(ByVal doc As Object, ByVal settings As CSystemSe
     Audit03EnsureAutoCADLayerForTests doc, "CM_TWO_BAR", 1
     Audit03EnsureAutoCADLayerForTests doc, "CM_TWO_EMPTY", 8
     Set source = doc.modelSpace.AddCircle(center, 120#): Set curves(0) = source
-    regions = doc.modelSpace.AddRegion(curves): Set Outer = regions(LBound(regions)): source.Delete: Outer.layer = "CM_TWO_OUT"
+    regions = doc.modelSpace.AddRegion(curves): Set outer = regions(LBound(regions)): source.Delete: outer.layer = "CM_TWO_OUT"
     For i = 1 To 2
         center(0) = IIf(i = 1, -45#, 45#)
         Set source = doc.modelSpace.AddCircle(center, IIf(i = 1, 23#, 31#)): Set curves(0) = source
         regions = doc.modelSpace.AddRegion(curves): Set hole = regions(LBound(regions)): source.Delete
-        Outer.Boolean 2, hole
+        outer.Boolean 2, hole
     Next i
-    Set contourReader = New CAutoCADContourReader: Set domain = contourReader.ReadRegion(Outer)
+    Set contourReader = New CAutoCADContourReader: Set domain = contourReader.ReadRegion(outer)
     Set geometry = New CGeometryRegion: geometry.Initialize domain
     Set mesh = BuildConfiguredConcreteMesh(geometry, settings, units): Set bars = New CRebarLayout
     For i = 1 To 3
@@ -71168,7 +71168,7 @@ Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
             polygonSpec.Seal
             Set path = facade.RoundedPolygon("Boundary", polygonSpec)
     End Select
-    facade.Outer "OUTER", "Boundary"
+    facade.outer "OUTER", "Boundary"
     If shape = 6 Then
         Set polygonSpec = New CPolygonSpec
         polygonSpec.AddVertex "BL", -83#, -163#, 25#
@@ -71177,7 +71177,7 @@ Private Function ControlGeometry(ByVal shape As Long) As CGeometryRegion
         polygonSpec.AddVertex "TL", -83#, 117#, 25#
         polygonSpec.Seal
         Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
-        facade.Opening "VOID", "VoidPath", "OUTER"
+        facade.opening "VOID", "VoidPath", "OUTER"
     End If
     Set definition = facade.Finish
     Set ControlGeometry = FixtureGeometry(definition.ConcreteDomain)
@@ -76038,8 +76038,8 @@ Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim geom As CGeometryRegion, facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowGeometryFixture"
-    Set path = facade.RectanglePath("Boundary", -250#, -400#, 500#, 800#): facade.Outer "OUTER", path.id
-    Set path = facade.RectanglePath("Void", -100#, -250#, 200#, 500#): facade.Opening "VOID", path.id, "OUTER"
+    Set path = facade.RectanglePath("Boundary", -250#, -400#, 500#, 800#): facade.outer "OUTER", path.ID
+    Set path = facade.RectanglePath("Void", -100#, -250#, 200#, 500#): facade.opening "VOID", path.ID, "OUTER"
     Set definition = facade.Finish: Set geom = FixtureGeometry(definition.ConcreteDomain)
 
     Dim message As String
@@ -76070,7 +76070,7 @@ Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
     polygonSpec.AddVertex "TL", -250#, 400#, 30#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("Boundary", polygonSpec)
-    facade.Outer "OUTER", path.id
+    facade.outer "OUTER", path.ID
     Set polygonSpec = New CPolygonSpec
     polygonSpec.AddVertex "BL", -60#, -180#, 20#
     polygonSpec.AddVertex "BR", 140#, -180#, 20#
@@ -76078,7 +76078,7 @@ Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
     polygonSpec.AddVertex "TL", -60#, 120#, 20#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("Void", polygonSpec)
-    facade.Opening "VOID", path.id, "OUTER"
+    facade.opening "VOID", path.ID, "OUTER"
     Set definition = facade.Finish: Set offsetGeom = FixtureGeometry(definition.ConcreteDomain)
     areaValue = offsetGeom.analyticalArea(available)
     offsetGeom.AnalyticalCentroid available, cx, cy
@@ -76994,9 +76994,9 @@ Private Sub TestAudit03HollowContainedOpeningMesh(ByRef stats As TTestStats)
             offsetX = 0#: offsetY = 0#
         End If
         Set facade = New CSectionDefinitionBuilder: facade.Initialize "ContainedVoidFixture"
-        Set path = facade.RectanglePath("Boundary", -200#, -200#, 400#, 400#): facade.Outer "OUTER", path.id
+        Set path = facade.RectanglePath("Boundary", -200#, -200#, 400#, 400#): facade.outer "OUTER", path.ID
         Set path = facade.RectanglePath("Void", offsetX - openingWidth / 2#, offsetY - openingHeight / 2#, openingWidth, openingHeight)
-        facade.Opening "VOID", path.id, "OUTER"
+        facade.opening "VOID", path.ID, "OUTER"
         Set definition = facade.Finish: Set hollow = FixtureGeometry(definition.ConcreteDomain)
         mesh.BuildMesh hollow, 100#, 100#, 2, 10
         area = 0#: invalidCenters = 0#: sx = 0#: sy = 0#: Ix = 0#: Iy = 0#: Ixy = 0#
@@ -77160,10 +77160,10 @@ Private Sub CheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal c
     Dim definition As CSectionDefinition, geometry As CGeometryRegion, executor As CRebarRuleExecutor
     Dim bars As CRebarLayout, number As Long, reason As String, label As String
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "CounterBinding"
-    Set path = facade.CirclePath("Outer", 0#, 0#, 10000#): facade.Outer "OUTER", path.id
+    Set path = facade.CirclePath("Outer", 0#, 0#, 10000#): facade.outer "OUTER", path.ID
     Set path = facade.LinePath("Axis", -100#, 0#, 100#, 0#)
     Set options = New CRebarRuleOptions: options.sourceReference = "CounterBinding.Main"
-    facade.RebarByCount "Main", path.id, count, diameter, options
+    facade.RebarByCount "Main", path.ID, count, diameter, options
     Set options = New CRebarRuleOptions: options.everySecond = True: options.NormalOffset = 30#
     facade.RebarDependent "Second", "Main", 12#, options
     Set options = New CRebarRuleOptions: options.everySecond = thirdEverySecond: options.NormalOffset = 60#
@@ -79144,7 +79144,7 @@ Private Sub TestHollowArcJunctions(ByVal query As CSectionGeometryQuery)
     polygonSpec.AddVertex "TL", -250#, 400#, 180#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("Boundary", polygonSpec)
-    facade.Outer "OUTER", "Boundary"
+    facade.outer "OUTER", "Boundary"
     Set polygonSpec = New CPolygonSpec
     polygonSpec.AddVertex "BL", -100#, -250#, 30#
     polygonSpec.AddVertex "BR", 100#, -250#, 30#
@@ -79152,7 +79152,7 @@ Private Sub TestHollowArcJunctions(ByVal query As CSectionGeometryQuery)
     polygonSpec.AddVertex "TL", -100#, 250#, 30#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
-    facade.Opening "VOID", "VoidPath", "OUTER": Set definition = facade.Finish
+    facade.opening "VOID", "VoidPath", "OUTER": Set definition = facade.Finish
     Set section = New CSectionModel
     section.AddConcreteElement 0#, -300#, 10000#, 1, , , "Rectangle", 100#, 100#
     definition.WriteContours section.contours
@@ -79195,15 +79195,15 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: сохраняет достоверный прямоугольный контур независимо от сетки.
 ' Роль opening задается машинным ID, а не знаком пользовательских координат.
-Private Sub AddContourRectangle(ByVal model As CSectionModel, ByVal id As String, _
+Private Sub AddContourRectangle(ByVal model As CSectionModel, ByVal ID As String, _
         ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double)
     Dim points As Variant, i As Long, j As Long
     points = rectangle(x1, y1, x2, y2)
     For i = 1 To 4
         j = i + 1: If j > 4 Then j = 1
-        model.contours.AddContourLine id & "_" & CStr(i), _
-            points(i, 1), points(i, 2), points(j, 1), points(j, 2), vbNullString, id, _
-            IIf(InStr(id, "OPENING") > 0, "Opening", "Outer")
+        model.contours.AddContourLine ID & "_" & CStr(i), _
+            points(i, 1), points(i, 2), points(j, 1), points(j, 2), vbNullString, ID, _
+            IIf(InStr(ID, "OPENING") > 0, "Opening", "Outer")
     Next i
 End Sub
 
@@ -79224,21 +79224,21 @@ End Function
 ' Проверяются прямолинейная и круговая пустоты одним и тем же публичным API.
 Private Sub TestRotatedMaterialWall(ByVal query As CSectionGeometryQuery)
     Dim angle As Variant, nx As Double, ny As Double, seedPlane As Double
-    Dim region As CConcreteRegion, Opening As CConcreteRegion, wall As CConcreteRegion, prefix As String
+    Dim region As CConcreteRegion, opening As CConcreteRegion, wall As CConcreteRegion, prefix As String
     For Each angle In Array(0.13, 0.47, 1.22)
         nx = -Sin(CDbl(angle)): ny = Cos(CDbl(angle))
         seedPlane = 85# + nx * 500# + ny * -800#
         prefix = "wall.rotated." & CStr(angle)
         Set region = query.PolygonRegion(RotatedRectangle(0#, 0#, 100#, 100#, CDbl(angle), 500#, -800#))
-        Set Opening = query.PolygonRegion(RotatedRectangle(20#, 30#, 60#, 70#, CDbl(angle), 500#, -800#))
-        Set region = query.SubtractRegion(region, Opening)
+        Set opening = query.PolygonRegion(RotatedRectangle(20#, 30#, 60#, 70#, CDbl(angle), 500#, -800#))
+        Set region = query.SubtractRegion(region, opening)
         Set wall = query.MaterialRegionThroughPlane(region, nx, ny, seedPlane)
         CheckNear prefix & ".rectangle.area", wall.area, 7200#
         CheckClosed prefix & ".rectangle", wall
         Set region = query.PolygonRegion(RotatedRectangle(0#, 0#, 100#, 100#, CDbl(angle), 500#, -800#))
-        Set Opening = query.CircleRegion(500# + 50# * Cos(CDbl(angle)) - 50# * Sin(CDbl(angle)), _
+        Set opening = query.CircleRegion(500# + 50# * Cos(CDbl(angle)) - 50# * Sin(CDbl(angle)), _
             -800# + 50# * Sin(CDbl(angle)) + 50# * Cos(CDbl(angle)), 10#)
-        Set region = query.SubtractRegion(region, Opening)
+        Set region = query.SubtractRegion(region, opening)
         Set wall = query.MaterialRegionThroughPlane(region, nx, ny, seedPlane)
         CheckNear prefix & ".circle.area", wall.area, 9000# - 50# * GEOM_PI
         CheckClosed prefix & ".circle", wall
@@ -79249,10 +79249,10 @@ End Sub
 ' радиус будущего нормативного окна пересекает дальнюю стенку. Площадь
 ' криволинейной тени сравнивается с аналитическим полукругом.
 Private Sub TestFirstMaterialWall(ByVal query As CSectionGeometryQuery)
-    Dim region As CConcreteRegion, Opening As CConcreteRegion, wall As CConcreteRegion
+    Dim region As CConcreteRegion, opening As CConcreteRegion, wall As CConcreteRegion
     Set region = query.PolygonRegion(rectangle(0#, 0#, 100#, 100#))
-    Set Opening = query.PolygonRegion(rectangle(20#, 30#, 60#, 70#))
-    Set region = query.SubtractRegion(region, Opening)
+    Set opening = query.PolygonRegion(rectangle(20#, 30#, 60#, 70#))
+    Set region = query.SubtractRegion(region, opening)
     Set wall = query.MaterialRegionThroughPlane(region, 0#, 1#, 85#)
     CheckNear "wall.rectangular.area", wall.area, 7200#
     Check "wall.rectangular.nearIncluded", query.ContainsPoint(wall, 40#, 85#)
@@ -79266,8 +79266,8 @@ Private Sub TestFirstMaterialWall(ByVal query As CSectionGeometryQuery)
     CheckNear "wall.missingSeed.empty", wall.area, 0#
 
     Set region = query.PolygonRegion(rectangle(0#, 0#, 100#, 100#))
-    Set Opening = query.CircleRegion(50#, 50#, 10#)
-    Set region = query.SubtractRegion(region, Opening)
+    Set opening = query.CircleRegion(50#, 50#, 10#)
+    Set region = query.SubtractRegion(region, opening)
     Set wall = query.MaterialRegionThroughPlane(region, 0#, 1#, 85#)
     CheckNear "wall.circular.area", wall.area, 9000# - 50# * GEOM_PI
     Check "wall.circular.farExcluded", Not query.ContainsPoint(wall, 50#, 15#)
@@ -79474,7 +79474,7 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
                     expectedArea = 10000# - (4# - GEOM_PI) * 100#
                 End If
         End Select
-        facade.Outer "OUTER", "Boundary"
+        facade.outer "OUTER", "Boundary"
         If CStr(kind) = "HollowRectangle" Then
             Set polygonSpec = New CPolygonSpec
             polygonSpec.AddVertex "BL", -20#, -30#, 5#
@@ -79483,7 +79483,7 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
             polygonSpec.AddVertex "TL", -20#, 30#, 5#
             polygonSpec.Seal
             Set path = facade.RoundedPolygon("VoidPath", polygonSpec)
-            facade.Opening "VOID", "VoidPath", "OUTER"
+            facade.opening "VOID", "VoidPath", "OUTER"
         End If
         facade.HorizontalExtent "DIM_B", "Boundary", "B", 0#
         facade.VerticalExtent "DIM_H", "Boundary", "H", 0#
@@ -79527,10 +79527,10 @@ Private Sub TestNewGeometryWithMultipleOpenings()
     For Each count In Array(2, 5)
         Set facade = New CSectionDefinitionBuilder: facade.Initialize "MultipleOpeningFixture"
         Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#)
-        facade.Outer "OUTER", "Boundary"
+        facade.outer "OUTER", "Boundary"
         For i = 1 To CLng(count)
             Set path = facade.CirclePath("VOID_SEGMENT_" & CStr(i), 100# * i / (CLng(count) + 1), 50#, 3#)
-            facade.Opening "VOID_" & CStr(i), path.id, "OUTER"
+            facade.opening "VOID_" & CStr(i), path.ID, "OUTER"
         Next i
         Set definition = facade.Finish: Set geometry = FixtureGeometry(definition.ConcreteDomain)
         expectedArea = 10000# - CLng(count) * GEOM_PI * 9#
@@ -80257,21 +80257,21 @@ Private Sub SetSetting(ByVal source As Object, ByVal key As String, ByVal Value 
 End Sub
 
 ' Записывает отдельный логический результат проверки с постоянным тестовым номером.
-Private Sub Check(ByRef stats As TLoadTableStats, ByVal id As String, ByVal condition As Boolean)
+Private Sub Check(ByRef stats As TLoadTableStats, ByVal ID As String, ByVal condition As Boolean)
     If condition Then
         stats.Passed = stats.Passed + 1
-        LogLine stats, "OK: " & id
+        LogLine stats, "OK: " & ID
     Else
         stats.Failed = stats.Failed + 1
-        LogLine stats, "FAIL: " & id
+        LogLine stats, "FAIL: " & ID
     End If
 End Sub
 
 ' Сравнивает физические числа с независимым ожидаемым значением; в логе
 ' сохраняет actual/expected, чтобы последующие срезы не могли скрыть дрейф.
-Private Sub CheckClose(ByRef stats As TLoadTableStats, ByVal id As String, _
+Private Sub CheckClose(ByRef stats As TLoadTableStats, ByVal ID As String, _
         ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
-    Check stats, id & "|actual=" & FormatNumberInvariant(actual) & "|expected=" & FormatNumberInvariant(expected), Abs(actual - expected) <= tolerance
+    Check stats, ID & "|actual=" & FormatNumberInvariant(actual) & "|expected=" & FormatNumberInvariant(expected), Abs(actual - expected) <= tolerance
 End Sub
 
 ' Добавляет строку отчета; крупные этапы также сохраняются рядом с тестовой
@@ -86090,13 +86090,13 @@ Private Function TablesEqual(ByRef before As Variant, ByRef after As Variant) As
 End Function
 
 ' Сохраняет стабильный assertion ID и отдельный счетчик ошибок.
-Private Sub Check(ByRef stats As TProfileStats, ByVal id As String, ByVal condition As Boolean)
-    If condition Then stats.Passed = stats.Passed + 1: LogLine stats, "OK: " & id Else stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: " & id
+Private Sub Check(ByRef stats As TProfileStats, ByVal ID As String, ByVal condition As Boolean)
+    If condition Then stats.Passed = stats.Passed + 1: LogLine stats, "OK: " & ID Else stats.Failed = stats.Failed + 1: LogLine stats, "FAIL: " & ID
 End Sub
 
 ' Сравнивает с прежним компонентным допуском; precision не округляет actual.
-Private Sub CheckClose(ByRef stats As TProfileStats, ByVal id As String, ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
-    Check stats, id & "; actual=" & Trim$(Str$(actual)) & "; expected=" & Trim$(Str$(expected)), Abs(actual - expected) <= tolerance
+Private Sub CheckClose(ByRef stats As TProfileStats, ByVal ID As String, ByVal actual As Double, ByVal expected As Double, ByVal tolerance As Double)
+    Check stats, ID & "; actual=" & Trim$(Str$(actual)) & "; expected=" & Trim$(Str$(expected)), Abs(actual - expected) <= tolerance
 End Sub
 
 ' Записывает диагностический checkpoint для внешнего watchdog без принятия PASS.
@@ -89686,9 +89686,9 @@ Public Function PreparedPreviewSnapshot(ByVal fixture As String, ByVal model As 
     PreparedPreviewSnapshot = PreviewSnapshot(fixture, outputDirectory, model)
 End Function
 
-Private Function row(ByVal fixture As String, ByVal kind As String, ByVal id As String, ByVal values As Variant) As String
+Private Function row(ByVal fixture As String, ByVal kind As String, ByVal ID As String, ByVal values As Variant) As String
     Dim item As Variant
-    row = EscapeField(fixture) & vbTab & EscapeField(kind) & vbTab & EscapeField(id)
+    row = EscapeField(fixture) & vbTab & EscapeField(kind) & vbTab & EscapeField(ID)
     For Each item In values: row = row & vbTab & SnapshotValue(item): Next item
     row = row & vbCrLf
 End Function
@@ -99313,7 +99313,7 @@ Public Sub Seal(Optional ByVal closed As Boolean = False)
 End Sub
 
 ' Возвращает имя линии, по которому на неё ссылаются правила и аннотации.
-Public Property Get id() As String: id = mID: End Property
+Public Property Get ID() As String: ID = mID: End Property
 ' Возвращает число отрезков и дуг линии.
 Public Property Get SegmentCount() As Long: SegmentCount = mCount: End Property
 ' Показывает, завершено ли описание линии и запрещены ли дальнейшие изменения.
@@ -99768,7 +99768,7 @@ Public Function RunPathAnchorTests() As String
     Set path = CompoundPath
     Near "anchor.named.station", path.AnchorStation("Corner", 0.5), 100# + 12.5 * GEOM_PI
     Set part = path.BetweenAnchors("Chain", "Bottom", 0.25, "Corner", 0.5)
-    Check "anchor.chain.id", part.id = "Chain" And Not part.IsClosed
+    Check "anchor.chain.id", part.ID = "Chain" And Not part.IsClosed
     Check "anchor.chain.count", part.SegmentCount = 2
     Near "anchor.chain.length", part.Length, 75# + 12.5 * GEOM_PI
     Check "anchor.chain.source.path", part.sourcePathID(1) = "Outer.Mixed" And part.sourcePathID(2) = "Outer.Mixed"
@@ -99782,7 +99782,7 @@ Public Function RunPathAnchorTests() As String
     Near "anchor.nested.source.first", part.SourceStartParameter(1), 0.7
     Near "anchor.nested.source.last", part.SourceEndParameter(1), 0.3
     Set changed = part.Transformed(1000#, -2000#, GEOM_PI / 2#, True): Set part = changed.WithID("Moved")
-    Check "anchor.transform.id", part.id = "Moved" And part.segmentID(1) = "Bottom"
+    Check "anchor.transform.id", part.ID = "Moved" And part.segmentID(1) = "Bottom"
     Check "anchor.transform.source", part.sourcePathID(1) = "Outer.Mixed" And part.sourceSegmentID(1) = "Bottom"
     Near "anchor.transform.source.first", part.SourceStartParameter(1), 0.7
     Near "anchor.transform.source.last", part.SourceEndParameter(1), 0.3
@@ -99841,7 +99841,7 @@ Public Function RunPathAnchorTests() As String
     polygonSpec.AddVertex "TL", 0#, 80#, 0#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("Outer", polygonSpec)
-    facade.Outer "Concrete", path.id
+    facade.outer "Concrete", path.ID
     Set part = facade.Chain("Side", "Outer", "Edge.BR", 0#, "Edge.TR", 0#)
     Set changed = facade.Transform("MovedSide", "Side", 1000000#, -1000000#)
     Set definition = facade.Finish
@@ -101123,7 +101123,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
 
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Circle" ' Создаём сборщик описания сечения.
     Set path = facade.CirclePath("CONTOUR_CIRCLE", 0#, 0#, diameter / 2#) ' Круг бетона с центром (0, 0) и радиусом D/2, мм.
-    facade.Outer "OUTER", path.id, "Круговой контур сечения." ' Назначаем эту замкнутую линию наружной границей бетона.
+    facade.outer "OUTER", path.ID, "Круговой контур сечения." ' Назначаем эту замкнутую линию наружной границей бетона.
     If count > 0 And d > 0# Then
         Require table, countRow, count >= 2, "Для круговой раскладки требуется не меньше двух стержней первого ряда."
         axisRow = table.RowByKey("Rebar.AxisDistance")
@@ -101147,7 +101147,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
         options.comment = "Круг: основной ряд арматуры"
         ' Адреса полей для сообщения об ошибке размещения.
         options.sourceReference = table.sourceReference(countRow, 2) & "; " & table.sourceReference(axisRow, 2)
-        facade.RebarByCount "Circle.Main", path.id, count, d, options ' Задаём основной ряд по числу стержней и диаметру.
+        facade.RebarByCount "Circle.Main", path.ID, count, d, options ' Задаём основной ряд по числу стержней и диаметру.
         For rowNumber = 2 To 3
             If diameters(rowNumber) > 0# Then
                 skipped = 0#
@@ -101165,7 +101165,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
                 facade.RebarDependent "Circle.Row" & CStr(rowNumber), "Circle.Main", diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
             End If
         Next rowNumber
-        facade.RebarLabel "Circle", path.id, 0#, 1# ' Общая подпись всех круговых рядов над сечением.
+        facade.RebarLabel "Circle", path.ID, 0#, 1# ' Общая подпись всех круговых рядов над сечением.
     End If
 
     facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
@@ -101277,28 +101277,28 @@ End Function
 Public Sub RuleStepBounds(ByVal ruleID As String, ByRef stepCount As Long, ByRef minStep As Double, ByRef maxStep As Double, _
         ByRef minChord As Double, ByRef maxChord As Double)
     If mDefinition Is Nothing Then RuleError 0, "Правила еще не выполнялись."
-    Dim index As Long, i As Long, previous As Object, first As Object, id As Variant, path As CGeometryPath, step As Double
+    Dim index As Long, i As Long, previous As Object, first As Object, ID As Variant, path As CGeometryPath, step As Double
     index = mDefinition.RuleIndex(ruleID)
     Set previous = CreateObject("Scripting.Dictionary"): previous.CompareMode = vbBinaryCompare
     Set first = CreateObject("Scripting.Dictionary"): first.CompareMode = vbBinaryCompare
     stepCount = 0: minStep = 1E+100: maxStep = 0#: minChord = 1E+100: maxChord = 0#
     For i = mStart(index) To mStart(index) + mCount(index) - 1
-        id = mPositions(i).pathID
-        If previous.Exists(id) Then
-            step = Abs(mPositions(i).station - mPositions(CLng(previous(id))).station)
-            AccumulateSpacing i, CLng(previous(id)), step, stepCount, minStep, maxStep, minChord, maxChord
+        ID = mPositions(i).pathID
+        If previous.Exists(ID) Then
+            step = Abs(mPositions(i).station - mPositions(CLng(previous(ID))).station)
+            AccumulateSpacing i, CLng(previous(ID)), step, stepCount, minStep, maxStep, minChord, maxChord
         Else
-            first.Add id, i
+            first.Add ID, i
         End If
-        previous(id) = i
+        previous(ID) = i
     Next i
-    For Each id In first.keys
-        Set path = mDefinition.path(CStr(id))
+    For Each ID In first.keys
+        Set path = mDefinition.path(CStr(ID))
         If path.IsClosed Then
-            step = path.Length - Abs(mPositions(CLng(previous(id))).station - mPositions(CLng(first(id))).station)
-            AccumulateSpacing CLng(first(id)), CLng(previous(id)), GeomMax(0#, step), stepCount, minStep, maxStep, minChord, maxChord
+            step = path.Length - Abs(mPositions(CLng(previous(ID))).station - mPositions(CLng(first(ID))).station)
+            AccumulateSpacing CLng(first(ID)), CLng(previous(ID)), GeomMax(0#, step), stepCount, minStep, maxStep, minChord, maxChord
         End If
-    Next id
+    Next ID
     If stepCount = 0 Then minStep = 0#: minChord = 0#
 End Sub
 
@@ -101478,7 +101478,7 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
     state(index) = 1
     If mRules(index).Enabled Then
         ValidateOptions index
-        Dim source As Long, ids As Variant, id As Variant, path As CGeometryPath
+        Dim source As Long, ids As Variant, ID As Variant, path As CGeometryPath
         If mRules(index).mode = ProjectFrom Or mRules(index).mode = DependentOffset Then
             source = mDefinition.RuleIndex(mRules(index).sourceRuleID)
             EstimateRule source, state, counts
@@ -101488,18 +101488,18 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
                 ' Так независимые ряды с нечётным числом стержней не теряют последний стержень.
                 counts(index) = 0#
                 ids = mDefinition.TargetPaths(mRules(source).target)
-                For Each id In ids
-                    Set path = mDefinition.path(CStr(id))
+                For Each ID In ids
+                    Set path = mDefinition.path(CStr(ID))
                     counts(index) = counts(index) - Int(-PositionCountFor(source, path) / 2#)
-                Next id
+                Next ID
             End If
         Else
             ids = mDefinition.TargetPaths(mRules(index).target)
-            For Each id In ids
-                Set path = mDefinition.path(CStr(id))
+            For Each ID In ids
+                Set path = mDefinition.path(CStr(ID))
                 ValidateWorkInterval index, path
                 counts(index) = counts(index) + PositionCountFor(index, path)
-            Next id
+            Next ID
         End If
         If counts(index) > GEOM_MAX_REBAR_COUNT Then RuleError index, "Количество позиций превышает диапазон счетчиков."
     End If
@@ -101570,11 +101570,11 @@ End Sub
 ' Вычисляет координаты независимого ряда. Нумерация позиций начинается с 1
 ' на каждой линии, а уникальные имена и порядок добавления продолжаются по всей группе.
 Private Sub PrepareIndependent(ByVal index As Long)
-    Dim ids As Variant, id As Variant, path As CGeometryPath, stations As Variant, ordinal As Long, i As Long
+    Dim ids As Variant, ID As Variant, path As CGeometryPath, stations As Variant, ordinal As Long, i As Long
     Dim position As TRebarPosition, first As Long
     ids = mDefinition.TargetPaths(mRules(index).target)
-    For Each id In ids
-        Set path = mDefinition.path(CStr(id))
+    For Each ID In ids
+        Set path = mDefinition.path(CStr(ID))
         stations = StationsFor(index, path)
         If Not IsEmpty(stations) Then
             first = mPositionCount + 1
@@ -101587,13 +101587,13 @@ Private Sub PrepareIndependent(ByVal index As Long)
                 ' определяется отдельно по исходным номерам на каждой линии.
                 position.SourceOrdinal = i - LBound(stations) + 1
                 position.RootPublicationRank = ordinal
-                position.pathID = CStr(id)
+                position.pathID = CStr(ID)
                 position.sourcePositionID = PositionID(index, ordinal, "")
                 AppendPosition position
             Next i
             If mRules(index).PositionOrder = FromPathMiddle Then RankFromMiddle first, mPositionCount, path.Length
         End If
-    Next id
+    Next ID
 End Sub
 
 ' Упорядочивает позиции по расстоянию от середины полной линии расстановки.
@@ -101698,19 +101698,19 @@ End Sub
 ' с целевыми линиями. Учитывает отступы от концов; найденные координаты
 ' не заменяются новой равномерной расстановкой.
 Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
-    Dim ids As Variant, id As Variant, path As CGeometryPath, i As Long, ordinal As Long, targetIndex As Long
+    Dim ids As Variant, ID As Variant, path As CGeometryPath, i As Long, ordinal As Long, targetIndex As Long
     Dim prepared As Collection
     Dim position As TRebarPosition, station As Double, ray As Double, bestRay As Double, bestStation As Double, bestID As String
     Dim directionX As Double, directionY As Double, successful As Long
     ids = mDefinition.TargetPaths(mRules(index).target)
     Set prepared = New Collection
-    For Each id In ids
-        Set path = mDefinition.path(CStr(id))
+    For Each ID In ids
+        Set path = mDefinition.path(CStr(ID))
         ValidateWorkInterval index, path
         If mRules(index).StartSetback <> 0# Or mRules(index).EndSetback <> 0# Then _
             Set path = path.Slice(mRules(index).StartSetback, path.Length - mRules(index).EndSetback)
         prepared.Add path
-    Next id
+    Next ID
     For i = mStart(source) To mStart(source) + mCount(source) - 1
         ordinal = ordinal + 1
         position = mPositions(i)
@@ -101725,7 +101725,7 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 Set path = prepared(targetIndex)
                 If path.RayHit(position.x, position.y, directionX, directionY, station, ray) Then
                     If ray < bestRay Then
-                        bestRay = ray: bestStation = station + mRules(index).StartSetback: bestID = path.id
+                        bestRay = ray: bestStation = station + mRules(index).StartSetback: bestID = path.ID
                     End If
                 End If
             Next targetIndex
@@ -102162,18 +102162,18 @@ End Sub
 ' не подменяется горизонтальным или вертикальным габаритом. Перенос к краю
 ' бетона выполняет CSectionPlotDataReader.
 Private Sub TargetLabelAnchor(ByVal definition As CSectionDefinition, ByRef Value As TSectionAnnotation)
-    Dim nx As Double, ny As Double, tx As Double, ty As Double, ids As Variant, id As Variant
+    Dim nx As Double, ny As Double, tx As Double, ty As Double, ids As Variant, ID As Variant
     Dim path As CGeometryPath, Low As Double, High As Double, first As Double, last As Double, support As Double
     LabelDirections Value.normalX, Value.normalY, nx, ny, tx, ty
     ids = definition.TargetPaths(Value.target)
     first = 1E+100: last = -1E+100: support = -1E+100
-    For Each id In ids
-        Set path = definition.path(CStr(id))
+    For Each ID In ids
+        Set path = definition.path(CStr(ID))
         path.ProjectionBounds tx, ty, Low, High
         first = GeomMin(first, Low): last = GeomMax(last, High)
         path.ProjectionBounds nx, ny, Low, High
         support = GeomMax(support, High)
-    Next id
+    Next ID
     SetLabelAnchor Value, nx, ny, tx, ty, first, last, support
 End Sub
 
@@ -102251,11 +102251,11 @@ Private Sub PointLabel(ByVal definition As CSectionDefinition, ByRef Value As TS
         annotations.AddAnnotation "TEXT_ANNOTATION", Value.annotationID, Value.startX, Value.startY, Value.startX, Value.startY, _
             0#, 0#, Value.name, 0#, vbNullString, Value.comment
     Else
-        Dim ids As Variant, id As Variant, path As CGeometryPath
+        Dim ids As Variant, ID As Variant, path As CGeometryPath
         ids = definition.TargetPaths(Value.target): Value.Value = 0#
-        For Each id In ids
-            Set path = definition.path(CStr(id)): Value.Value = Value.Value + path.Length
-        Next id
+        For Each ID In ids
+            Set path = definition.path(CStr(ID)): Value.Value = Value.Value + path.Length
+        Next ID
         annotations.AddAnnotation "MEASUREMENT_LABEL", Value.annotationID, Value.startX, Value.startY, Value.startX, Value.startY, _
             0#, 0#, Value.name, Value.Value, "Length", Value.comment
     End If
@@ -102271,14 +102271,14 @@ End Function
 ' Определяет проекционные границы именованного пути или группы для размещения размеров.
 Private Sub TargetBounds(ByVal definition As CSectionDefinition, ByVal target As String, _
         ByRef minX As Double, ByRef maxX As Double, ByRef minY As Double, ByRef maxY As Double)
-    Dim ids As Variant, id As Variant, path As CGeometryPath, Low As Double, High As Double
+    Dim ids As Variant, ID As Variant, path As CGeometryPath, Low As Double, High As Double
     ids = definition.TargetPaths(target)
     minX = 1E+100: maxX = -1E+100: minY = 1E+100: maxY = -1E+100
-    For Each id In ids
-        Set path = definition.path(CStr(id))
+    For Each ID In ids
+        Set path = definition.path(CStr(ID))
         path.ProjectionBounds 1#, 0#, Low, High: minX = GeomMin(minX, Low): maxX = GeomMax(maxX, High)
         path.ProjectionBounds 0#, 1#, Low, High: minY = GeomMin(minY, Low): maxY = GeomMax(maxY, High)
-    Next id
+    Next ID
 End Sub
 
 ' Добавляет общие аннотации импортированного сечения: горизонтальный и вертикальный
@@ -102667,9 +102667,9 @@ End Function
 Friend Sub AddPath(ByVal path As CGeometryPath)
     RequireMutable
     If path Is Nothing Then DefinitionError "Путь не передан."
-    If Not path.IsSealed Then DefinitionError "Путь '" & path.id & "' еще не подготовлен."
-    If mPaths.Exists(path.id) Or mGroups.Exists(path.id) Then DefinitionError "Повторный ID пути '" & path.id & "'."
-    mPaths.Add path.id, path
+    If Not path.IsSealed Then DefinitionError "Путь '" & path.ID & "' еще не подготовлен."
+    If mPaths.Exists(path.ID) Or mGroups.Exists(path.ID) Then DefinitionError "Повторный ID пути '" & path.ID & "'."
+    mPaths.Add path.ID, path
 End Sub
 
 ' Добавляет именованную группу существующих путей, сохраняя их порядок.
@@ -103185,7 +103185,7 @@ End Sub
 
 ' Назначает замкнутую линию наружной границей бетона. Арматуру можно задать отдельно позднее.
 ' loopID именует границу, pathID — её линию; политика публикации не меняет локальные SegmentID.
-Public Sub Outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", _
+Public Sub outer(ByVal loopID As String, ByVal pathID As String, Optional ByVal comment As String = "", _
         Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
     RequireOpen
@@ -103199,7 +103199,7 @@ End Sub
 ' Назначает замкнутую линию отверстием внутри наружного контура parentOuterID.
 ' Правильность расположения отверстия проверяется при Finish.
 ' parentOuterID относится к LoopID наружной границы, а не к имени её линии или сегмента.
-Public Sub Opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _
+Public Sub opening(ByVal loopID As String, ByVal pathID As String, ByVal parentOuterID As String, _
         Optional ByVal comment As String = "", Optional ByVal contourIDs As Variant, Optional ByVal arcComment As String = "", _
         Optional ByVal namingPolicy As EContourNamingPolicy = PreserveSegmentIDs, Optional ByVal namingPrefix As String = "")
     RequireOpen
@@ -103663,8 +103663,8 @@ Public Function RunRecipeMeshBoundaryTests() As String
     Dim delta As Variant, i As Long, found As Boolean
     For Each delta In Array(0#, 0.000000000001, -0.000000000001)
         Set facade = New CSectionDefinitionBuilder: facade.Initialize "MeshTouch"
-        Set path = facade.RectanglePath("Outer", 0#, 0#, 160#, 120#): facade.Outer "OUTER", path.id
-        Set path = facade.RectanglePath("Hole", 50#, 30#, 20#, 10# + CDbl(delta)): facade.Opening "HOLE", path.id, "OUTER"
+        Set path = facade.RectanglePath("Outer", 0#, 0#, 160#, 120#): facade.outer "OUTER", path.ID
+        Set path = facade.RectanglePath("Hole", 50#, 30#, 20#, 10# + CDbl(delta)): facade.opening "HOLE", path.ID, "OUTER"
         Set definition = facade.Finish
         Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
         Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 40#, 20#, 1, 2
@@ -103815,10 +103815,10 @@ Private Sub TestProjectionNormalsAndOrdinals()
     Set facade = RuleFacade
     Set path = facade.ArcPath("SourceCurve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars"
-    facade.RebarByCount "CurveMain", path.id, 3, 10#, options
+    facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
     Set path = facade.ArcPath("TargetCurve", 0#, 0#, 200#, 0#, GEOM_PI / 2#)
     Set options = New CRebarRuleOptions: options.SourceNormalSign = -1#: options.NewPublicationRoot = True
-    facade.RebarProjected "Radial", path.id, "CurveMain", 10#, options
+    facade.RebarProjected "Radial", path.ID, "CurveMain", 10#, options
     options.SourceNormalSign = 1#
     facade.RebarRowExtremeLabel "CurveBars", "CurveMain", 0#, 1#, 0#, 1#
     Set builder = New CSectionBuilder: Set model = BuildFixture(facade, builder)
@@ -103837,7 +103837,7 @@ Private Sub TestProjectionNormalsAndOrdinals()
         Set options = New CRebarRuleOptions: options.directionY = 1#: options.SkipMissingProjection = True
         options.SuccessfulProjectionOrdinal = (mode = 1): options.NewPublicationRoot = True
         options.Publication = PublishPerSourcePosition
-        facade.RebarProjected "Projected", path.id, "Base", 10#, options
+        facade.RebarProjected "Projected", path.ID, "Base", 10#, options
         options.SuccessfulProjectionOrdinal = Not options.SuccessfulProjectionOrdinal
         Set options = New CRebarRuleOptions: options.everySecond = True: options.NormalOffset = 10#
         options.Publication = PublishPerSourcePosition
@@ -103865,7 +103865,7 @@ Private Sub TestRuleJointTangents()
         path.AddLine "Outgoing", 100#, 0#, 100#, 100#
         path.Seal: facade.AddPath path
         Set options = New CRebarRuleOptions: options.incomingTangentAtJoint = (incoming = 1)
-        facade.RebarAtStations "JointMain", path.id, Array(100#), 10#, options
+        facade.RebarAtStations "JointMain", path.ID, Array(100#), 10#, options
         options.incomingTangentAtJoint = Not options.incomingTangentAtJoint
         Set options = New CRebarRuleOptions: options.NormalOffset = 10#
         facade.RebarDependent "JointExtra", "JointMain", 10#, options
@@ -103885,7 +103885,7 @@ Private Sub TestAnnotationMeasurements()
     Set facade = RuleFacade
     Set path = facade.ArcPath("Curve", 0#, 0#, 100#, 0#, GEOM_PI / 2#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "CurveBars": options.EndMode = ExcludeBoth
-    facade.RebarByCount "CurveMain", path.id, 3, 10#, options
+    facade.RebarByCount "CurveMain", path.ID, 3, 10#, options
     facade.RebarRowExtentLabel "CurveBars", "CurveMain", -1#, 0#, True
     facade.HorizontalDistance "REF", "Reference", 0#, 123.6, 200#, 1#, "", 1#
     facade.HorizontalDistance "NEG", "Negative", 0#, -123.6, 200#, 1#, "", 1#
@@ -103961,11 +103961,11 @@ Private Sub TestAnnotationOwnership()
     options.AnnotationGroup = "First": facade.RebarByCount "First", "Row", 2, 10#, options
     Set path = facade.LinePath("SecondPath", 100#, 0#, 200#, 0#)
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
-    options.AnnotationGroup = "Second": facade.RebarByCount "Second", path.id, 3, 20#, options
+    options.AnnotationGroup = "Second": facade.RebarByCount "Second", path.ID, 3, 20#, options
     Set path = facade.LinePath("ThirdPath", 100#, 0#, 150#, 0#)
-    options.AnnotationGroup = "Third": facade.RebarByCount "Third", path.id, 2, 30#, options
+    options.AnnotationGroup = "Third": facade.RebarByCount "Third", path.ID, 2, 30#, options
     Set path = facade.LinePath("OtherDiameter", 300#, 0#, 400#, 0#)
-    options.AnnotationGroup = "First": facade.RebarByCount "Extra", path.id, 1, 12#, options
+    options.AnnotationGroup = "First": facade.RebarByCount "Extra", path.ID, 1, 12#, options
     facade.RebarRowLabel "First", "First", 0#, -1#
     facade.RebarRowLabel "Second", "Second", 0#, 1#
     facade.RebarRowLabel "Third", "Third", 0#, 1#
@@ -104054,7 +104054,7 @@ End Sub
 Private Function RuleFacade() As CSectionDefinitionBuilder
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RuleFixture"
-    Set path = facade.CirclePath("Outer", 0#, 0#, 1000#): facade.Outer "OUTER", path.id
+    Set path = facade.CirclePath("Outer", 0#, 0#, 1000#): facade.outer "OUTER", path.ID
     Set path = facade.LinePath("Row", 0#, 0#, 100#, 0#)
     Set RuleFacade = facade
 End Function
@@ -104111,8 +104111,8 @@ Public Function RunRecipeDefinitionTests() As String
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, definition As CSectionDefinition
     Dim region As CConcreteRegion, copy As CConcreteRegion, query As CSectionGeometryQuery, contours As CSectionContours
     Set facade = RuleFacade
-    Set path = facade.CirclePath("VoidA", -100#, 0#, 20#): facade.Opening "A", path.id, "OUTER"
-    Set path = facade.CirclePath("VoidB", 100#, 0#, 20#): facade.Opening "B", path.id, "OUTER"
+    Set path = facade.CirclePath("VoidA", -100#, 0#, 20#): facade.opening "A", path.ID, "OUTER"
+    Set path = facade.CirclePath("VoidB", 100#, 0#, 20#): facade.opening "B", path.ID, "OUTER"
     Set definition = facade.Finish: Set region = definition.ConcreteDomain
     Set query = New CSectionGeometryQuery
     Check "definition.sealed", definition.IsSealed
@@ -104143,10 +104143,10 @@ Private Function InvalidDefinitionRejected(ByVal scenario As Long) As Boolean
     Set facade = RuleFacade
     Select Case scenario
         Case 0: Set path = facade.LinePath("Row", 0#, 0#, 10#, 0#)
-        Case 1: facade.Outer "Other", "Row"
+        Case 1: facade.outer "Other", "Row"
         Case 2
             Set path = facade.CirclePath("Void", 0#, 0#, 20#)
-            facade.Opening "VoidLoop", path.id, "Missing"
+            facade.opening "VoidLoop", path.ID, "Missing"
         Case 3
             Set definition = facade.Finish
             Set path = facade.LinePath("AfterSeal", 0#, 0#, 10#, 0#)
@@ -104648,7 +104648,7 @@ Public Function RunCircleBindingTests() As String
     Dim definition As CSectionDefinition, reference As CRebarLayout, actual As CRebarLayout
     Dim before As CRebarRuleExecutor, after As CRebarRuleExecutor, annotations As CSectionAnnotations
     Dim ordinal As Long, row As Long, position As Long, original As Long, owner As Long, oldOwner As Long, previous As Long
-    Dim expected As Long, selected As Boolean, id As String, prefix As String, binding As String
+    Dim expected As Long, selected As Boolean, ID As String, prefix As String, binding As String
     On Error GoTo Failed
     For Each number In Array(2, 3, 8, 9)
         For Each loc2 In Array("Stacked", "SideBySide")
@@ -104666,19 +104666,19 @@ Public Function RunCircleBindingTests() As String
                         previous = 0
                         For ordinal = 1 To CLng(number)
                             For row = 1 To 3
-                                id = "B" & CStr(ordinal): binding = "EachBar"
-                                If row = 2 Then id = id & "_R2": binding = CStr(bind2)
-                                If row = 3 Then id = id & "_R3": binding = CStr(bind3)
+                                ID = "B" & CStr(ordinal): binding = "EachBar"
+                                If row = 2 Then ID = ID & "_R2": binding = CStr(bind2)
+                                If row = 3 Then ID = ID & "_R3": binding = CStr(bind3)
                                 selected = (binding = "EachBar" Or ordinal Mod 2 = 1)
-                                position = CircleSourcePosition(after, id)
-                                Check prefix & ".selected." & id, (position > 0) = selected
+                                position = CircleSourcePosition(after, ID)
+                                Check prefix & ".selected." & ID, (position > 0) = selected
                                 If selected And position > 0 Then
-                                    original = CircleSourcePosition(before, id)
+                                    original = CircleSourcePosition(before, ID)
                                     owner = after.PositionPhysicalOwner(position): oldOwner = before.PositionPhysicalOwner(original)
-                                    Near prefix & ".x." & id, actual.x(owner), reference.x(oldOwner)
-                                    Near prefix & ".y." & id, actual.y(owner), reference.y(oldOwner)
-                                    Near prefix & ".d." & id, actual.diameter(owner), reference.diameter(oldOwner)
-                                    Check prefix & ".order." & id, owner > previous
+                                    Near prefix & ".x." & ID, actual.x(owner), reference.x(oldOwner)
+                                    Near prefix & ".y." & ID, actual.y(owner), reference.y(oldOwner)
+                                    Near prefix & ".d." & ID, actual.diameter(owner), reference.diameter(oldOwner)
+                                    Check prefix & ".order." & ID, owner > previous
                                     previous = owner
                                 End If
                             Next row
@@ -104702,10 +104702,10 @@ Finished:
 End Function
 
 ' Ищет исходное имя стержня; порядковый номер записи может отличаться от исходного номера.
-Private Function CircleSourcePosition(ByVal executor As CRebarRuleExecutor, ByVal id As String) As Long
+Private Function CircleSourcePosition(ByVal executor As CRebarRuleExecutor, ByVal ID As String) As Long
     Dim i As Long
     For i = 1 To executor.PositionCount
-        If executor.PositionSourceID(i) = id Then CircleSourcePosition = i: Exit Function
+        If executor.PositionSourceID(i) = ID Then CircleSourcePosition = i: Exit Function
     Next i
 End Function
 
@@ -105071,16 +105071,16 @@ End Type
 ' суммарное количество стержней каждого диаметра по каждой стороне) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
-    Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, Outer As CGeometryPath
+    Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
     Set table = context.table("rngRectSetGeometry") ' Берём копию входной таблицы и единицы измерения.
     Set units = context.units
     ReadDimensions table, units, sizes ' Читаем и проверяем размеры сечения.
     Set facade = New CSectionDefinitionBuilder ' Создаём сборщик описания сечения.
     facade.Initialize "RectSet" ' Начинаем описание выбранного типа.
-    AddGeometry facade, sizes, upper, lower, Outer ' Добавляем подготовленные границы бетона.
+    AddGeometry facade, sizes, upper, lower, outer ' Добавляем подготовленные границы бетона.
     AddRectangleRows facade, table, units, sizes.header, 0, sizes.offset, sizes.H2, sizes.B1, sizes.H1 ' Армирование четырёх граней верхнего прямоугольника.
     If sizes.shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.header, 4, 0#, 0#, sizes.B2, sizes.H2 ' Армирование нижней части, если она есть.
-    AddDimensions facade, sizes, upper, lower, Outer ' Добавляем габариты и размеры сечения.
+    AddDimensions facade, sizes, upper, lower, outer ' Добавляем габариты и размеры сечения.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
 End Function
 
@@ -105114,26 +105114,26 @@ End Sub
 
 ' Добавляет контуры верхнего и, если он нужен, нижнего прямоугольника. Через upper,
 ' lower и outer отдаёт их линии и общую наружную границу; для одного прямоугольника lower пуст.
-Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByRef upper As CGeometryPath, ByRef lower As CGeometryPath, ByRef Outer As CGeometryPath)
+Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByRef upper As CGeometryPath, ByRef lower As CGeometryPath, ByRef outer As CGeometryPath)
     Set upper = facade.RectanglePath("Upper", sizes.offset, sizes.H2, sizes.B1, sizes.H1) ' Верхняя часть: левый нижний угол, ширина и высота, мм.
     If sizes.shape = "Rectangle" Then
-        Set Outer = upper ' У одиночного прямоугольника его контур и есть наружная граница.
+        Set outer = upper ' У одиночного прямоугольника его контур и есть наружная граница.
     Else
         Set lower = facade.RectanglePath("Lower", 0#, 0#, sizes.B2, sizes.H2) ' Нижняя часть начинается в (0, 0); B2 и H2 — её габариты, мм.
         ' Получаем общую границу двух смежных прямоугольников.
-        Set Outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.offset, sizes.H2, sizes.B1, sizes.H1)))
+        Set outer = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, sizes.B2, sizes.H2), Array(sizes.offset, sizes.H2, sizes.B1, sizes.H1)))
     End If
-    facade.Outer "OUTER", Outer.id, "Сегмент контура сечения.", namingPolicy:=SequentialByKind ' Назначаем эту замкнутую линию наружной границей бетона.
+    facade.outer "OUTER", outer.ID, "Сегмент контура сечения.", namingPolicy:=SequentialByKind ' Назначаем эту замкнутую линию наружной границей бетона.
 
 End Sub
 
 ' Добавляет на схему общие габариты, размеры отдельных частей и ненулевое смещение верхней части.
-Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByVal upper As CGeometryPath, ByVal lower As CGeometryPath, ByVal Outer As CGeometryPath)
-    facade.HorizontalExtent "DIM_B", Outer.id, "B", 0#, -1#, "Общая ширина RectSet-сечения." ' Общая ширина сечения B.
-    facade.VerticalExtent "DIM_H", Outer.id, "H", GeomMin(0#, sizes.offset), -1#, "Общая высота RectSet-сечения." ' Полная высота сечения H; размер вынесен влево.
-    facade.HorizontalExtent "DIM_TOP_WIDTH", upper.id, "B1", sizes.H1 + sizes.H2, 1#, "Ширина верхнего прямоугольника RectSet-сечения." ' Ширина верхнего прямоугольника; размер над сечением.
+Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByVal upper As CGeometryPath, ByVal lower As CGeometryPath, ByVal outer As CGeometryPath)
+    facade.HorizontalExtent "DIM_B", outer.ID, "B", 0#, -1#, "Общая ширина RectSet-сечения." ' Общая ширина сечения B.
+    facade.VerticalExtent "DIM_H", outer.ID, "H", GeomMin(0#, sizes.offset), -1#, "Общая высота RectSet-сечения." ' Полная высота сечения H; размер вынесен влево.
+    facade.HorizontalExtent "DIM_TOP_WIDTH", upper.ID, "B1", sizes.H1 + sizes.H2, 1#, "Ширина верхнего прямоугольника RectSet-сечения." ' Ширина верхнего прямоугольника; размер над сечением.
     If sizes.shape <> "Rectangle" Then
-        facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.id, "H2", sizes.B2, 1#, "Высота нижнего прямоугольника RectSet-сечения." ' Высота нижнего прямоугольника; размер справа.
+        facade.VerticalExtent "DIM_RIGHT_HEIGHT", lower.ID, "H2", sizes.B2, 1#, "Высота нижнего прямоугольника RectSet-сечения." ' Высота нижнего прямоугольника; размер справа.
         ' Размер идёт слева направо: его величина равна Abs(sizes.Offset), а выноски остаются у смещённых граней.
         If Abs(sizes.offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), GeomMin(0#, sizes.offset), GeomMax(0#, sizes.offset), sizes.H2, 1#, "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
     End If
@@ -105181,7 +105181,7 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
         options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.comment = "RectSet: " & label & ", ряд 1"
-        facade.RebarByCount groupID & ".Main", path.id, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+        facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
         diameters(2) = table.OptionalDiameter(extra, 2, units)
         diameters(3) = table.OptionalDiameter(extra, 5, units)
         For rowNumber = 2 To 3
@@ -105215,7 +105215,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionRecipeRoundedRectangle
 TYPE: 2
-LINES: 209
+LINES: 207
 ====================================================================================================
 Option Explicit
 
@@ -105250,14 +105250,14 @@ End Type
 ' а также аннотаций схемы (размеры сечения, количество и диаметры стержней).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
-    Dim sizes As TRoundedInput, Outer As CGeometryPath, polygon As CPolygonSpec
+    Dim sizes As TRoundedInput, outer As CGeometryPath, polygon As CPolygonSpec
     Set table = context.table("rngRoundedRectangleGeometry"): Set units = context.units ' Берём копию входной таблицы и единицы измерения.
     ReadDimensions table, units, sizes ' Читаем и проверяем размеры сечения.
     Set polygon = DescribePolygon(sizes) ' Общее описание вершин для бетона и всех смещённых линий.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle" ' Создаём сборщик описания сечения.
-    Set Outer = AddGeometry(facade, sizes, polygon) ' Получаем наружный контур по подготовленному многоугольнику.
+    Set outer = AddGeometry(facade, sizes, polygon) ' Получаем наружный контур по подготовленному многоугольнику.
     AddReinforcement facade, table, units, sizes, polygon ' Задаём ряды и их общие подписи по параметрам таблицы.
-    AddDimensions facade, sizes, Outer ' Добавляем габариты и размеры сечения.
+    AddDimensions facade, sizes, outer ' Добавляем габариты и размеры сечения.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
 End Function
 
@@ -105284,17 +105284,15 @@ Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUn
     sizes.MainHeader = table.RowByKey("as", 2): sizes.ExtraHeader = table.RowByKey("d2", 2)
 End Sub
 
-' Создаёт наружный контур по заданным вершинам и радиусам, задаёт порядок его обхода
-' и возвращает зарегистрированную границу бетона. Ошибку связывает с исходными размерами.
+' Создаёт наружный контур по заданным вершинам и радиусам и сразу назначает его границей бетона.
+' Ошибку связывает с исходными размерами.
 Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec) As CGeometryPath
     On Error GoTo InvalidGeometry
-    Dim original As CGeometryPath, Outer As CGeometryPath, first As String
-    Set original = facade.RoundedPolygon("Shape", polygon) ' Создаём контур по исходным вершинам и радиусам.
-    If sizes.SideTypes(1) = "Tapered" Then first = "Edge.LeftNose" Else first = "Edge.BL"
-    Set Outer = facade.Chain("Boundary", original.id, first, 0#, first, 0#, True, True) ' Полный обход контура от выбранного начального участка.
+    Dim outer As CGeometryPath
+    Set outer = facade.RoundedPolygon("Boundary", polygon) ' Создаём готовый замкнутый контур по исходным вершинам и радиусам.
     ' Назначаем эту замкнутую линию наружной границей бетона.
-    facade.Outer "OUTER", Outer.id, "Прямой участок контура скругленного прямоугольника.", arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
-    Set AddGeometry = Outer
+    facade.outer "OUTER", outer.ID, "Прямой участок контура скругленного прямоугольника.", arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
+    Set AddGeometry = outer
     Exit Function
 InvalidGeometry:
     SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sizes.GeometrySource
@@ -105310,7 +105308,7 @@ Private Function DescribePolygon(ByRef sizes As TRoundedInput) As CPolygonSpec
     ' Вершина правого выступа до скругления; координаты и радиус в мм.
     If sizes.SideTypes(2) = "Tapered" Then polygon.AddVertex "RightNose", sizes.b / 2# + sizes.Widths(2), 0#, sizes.R2(2), sizes.GeometrySource
     polygon.AddVertex "BR", sizes.b / 2#, -sizes.h / 2#, sizes.R1(2), sizes.GeometrySource, OutgoingEdgeID:="Edge.BR" ' Нижний правый угол; Edge.BR — нижняя грань, размеры в мм.
-    polygon.AddVertex "BL", -sizes.b / 2#, -sizes.h / 2#, sizes.R1(1), sizes.GeometrySource, OutgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — начало полного обхода, размеры в мм.
+    polygon.AddVertex "BL", -sizes.b / 2#, -sizes.h / 2#, sizes.R1(1), sizes.GeometrySource, OutgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — участок к следующей вершине, размеры в мм.
     ' Вершина левого выступа до скругления; координаты и радиус в мм.
     If sizes.SideTypes(1) = "Tapered" Then polygon.AddVertex "LeftNose", -sizes.b / 2# - sizes.Widths(1), 0#, sizes.R2(1), sizes.GeometrySource, OutgoingEdgeID:="Edge.LeftNose"
     polygon.Seal ' Проверяем вершины и завершаем их описание.
@@ -105357,7 +105355,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         options.comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд 1"
         ' Адреса полей для сообщения об ошибке размещения.
         options.sourceReference = table.sourceReference(row, 2) & "; " & table.sourceReference(row, startColumn) & "; " & table.sourceReference(row, endColumn)
-        facade.RebarByCount groupID & ".Main", path.id, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+        facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
         extra = table.RowByAnyKey(keys, 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 4)
         diameters(2) = table.OptionalDiameter(extra, 2, units)
         diameters(3) = table.OptionalDiameter(extra, 5, units)
@@ -105380,7 +105378,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         If index >= 2 Then
             facade.RebarRowExtentLabel groupID, groupID & ".Main", nx, ny, True ' Привязываем подпись к крайним стержням основного ряда.
         Else
-            facade.RebarLabel groupID, path.id, nx, ny ' Общую подпись рядов привязываем к границе их линии.
+            facade.RebarLabel groupID, path.ID, nx, ny ' Общую подпись рядов привязываем к границе их линии.
         End If
 NextFace:
     Next index
@@ -105395,12 +105393,12 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polyg
     Dim offset As CGeometryPath
     Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, polygon, axisDistance) ' Смещаем тот же многоугольник внутрь бетона на as, мм.
     Select Case groupID
-        Case "B.Top": Set AxisPath = facade.Chain(groupID, offset.id, "Edge.TL", 0#, "Edge.TL", 1#) ' Верхняя прямая грань слева направо.
-        Case "B.Bottom": Set AxisPath = facade.Chain(groupID, offset.id, "Edge.BR", 1#, "Edge.BR", 0#, False) ' Нижняя прямая грань справа налево.
+        Case "B.Top": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.TL", 1#) ' Верхняя прямая грань слева направо.
+        Case "B.Bottom": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.BR", 1#, "Edge.BR", 0#, False) ' Нижняя прямая грань справа налево.
         Case "H.Left"
-            Set AxisPath = facade.Chain(groupID, offset.id, "Edge.TL", 0#, "Edge.BR", 1#, False) ' Боковая сторона со скруглениями, сверху вниз.
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.BR", 1#, False) ' Боковая сторона со скруглениями, сверху вниз.
         Case "H.Right"
-            Set AxisPath = facade.Chain(groupID, offset.id, "Edge.TL", 1#, "Edge.BR", 0#) ' Боковая сторона со скруглениями, сверху вниз.
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 1#, "Edge.BR", 0#) ' Боковая сторона со скруглениями, сверху вниз.
     End Select
     Exit Function
 InvalidPath:
@@ -105408,12 +105406,12 @@ InvalidPath:
 End Function
 
 ' Добавляет ширину прямой базы B, полную высоту H и фактические размеры включённых боковых выступов.
-Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal Outer As CGeometryPath)
+Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal outer As CGeometryPath)
     Dim minX As Double, maxX As Double
-    Outer.ProjectionBounds 1#, 0#, minX, maxX
+    outer.ProjectionBounds 1#, 0#, minX, maxX
     ' Ширина прямой базы B; размер сверху.
     facade.HorizontalDistance "DIM_B", "B", -sizes.b / 2#, sizes.b / 2#, sizes.h / 2#, 1#, "Размер горизонтальной базы RoundedRectangle между левым и правым торцом."
-    facade.VerticalExtent "DIM_H", Outer.id, "H", minX, -1#, "Полная высота RoundedRectangle." ' Полная высота сечения H; размер вынесен влево.
+    facade.VerticalExtent "DIM_H", outer.ID, "H", minX, -1#, "Полная высота RoundedRectangle." ' Полная высота сечения H; размер вынесен влево.
     ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
     If sizes.SideTypes(1) = "Tapered" And -sizes.b / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.b / 2#, sizes.h / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1#
     ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
@@ -105430,7 +105428,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CSectionRecipeHollowRectangle
 TYPE: 2
-LINES: 291
+LINES: 289
 ====================================================================================================
 Option Explicit
 
@@ -105464,7 +105462,7 @@ Private Type THollowInput
 End Type
 
 Private Type THollowFace
-    id As String ' Имя стороны для привязки линий арматуры и подписей.
+    ID As String ' Имя стороны для привязки линий арматуры и подписей.
     Caption As String ' Понятное название стороны для сообщений об ошибках.
     axisDistance As Double ' Расстояние от бетонной границы до центров основного ряда арматуры, мм.
     diameter As Double ' Диаметр стержней основного ряда, мм.
@@ -105528,8 +105526,8 @@ Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSys
     aliases = Array("B-top", "B-bottom", "H-left", "H-right", "bo-top", "bo-bottom", "ho-left", "ho-right")
     For i = 1 To 8
         With faces(i)
-            .id = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
-            keys = Array(.Caption, .id, aliases(i - 1))
+            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
+            keys = Array(.Caption, .ID, aliases(i - 1))
             row = table.RowByAnyKey(keys, 1, sizes.MainHeader + 1, sizes.MainHeader + 8)
             .source = table.sourceReference(row, 2)
             If i <= 4 Then .count = table.count(row, 4)
@@ -105565,23 +105563,21 @@ End Sub
 
 ' Добавляет в описание сечения наружную границу и отверстие по двум подготовленным многоугольникам.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
-    AddBoundary facade, "OUTER", "Shape", outerPolygon, False
-    AddBoundary facade, "OPENING", "Opening.Shape", openingPolygon, True
+    AddBoundary facade, "OUTER", "OUTER.Boundary", outerPolygon, False
+    AddBoundary facade, "OPENING", "OPENING.Boundary", openingPolygon, True
 End Sub
 
-' Создаёт замкнутую линию по вершинам и радиусам, задаёт порядок обхода и имена её участков.
+' Создаёт готовый замкнутый контур по вершинам и радиусам без повторного обхода.
 ' Назначает её наружной границей или отверстием внутри OUTER, в зависимости от opening.
-Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal shapeID As String, ByVal polygon As CPolygonSpec, ByVal Opening As Boolean)
-    Dim shape As CGeometryPath, boundary As CGeometryPath, part As String, first As String
-    Set shape = facade.RoundedPolygon(shapeID, polygon) ' Создаём контур по подготовленным вершинам и радиусам.
-    first = "Edge.BL": If Not shape.HasSegmentID(first) Then first = "Corner.TL"
-    Set boundary = facade.Chain(loopID & ".Boundary", shape.id, first, 0#, first, 0#, True, True) ' Полный обход контура от выбранного начального участка.
-    If Opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
-    If Opening Then
-        facade.Opening loopID, boundary.id, "OUTER", "Прямой участок " & part & " HollowRectangle.", _
+Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
+    Dim boundary As CGeometryPath, part As String
+    Set boundary = facade.RoundedPolygon(pathID, polygon) ' Создаём контур, который сразу используется как наружная граница или отверстие.
+    If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
+    If opening Then
+        facade.opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID ' Назначаем отверстие внутри наружной границы OUTER.
     Else
-        facade.Outer loopID, boundary.id, "Прямой участок " & part & " HollowRectangle.", _
+        facade.outer loopID, boundary.ID, "Прямой участок " & part & " HollowRectangle.", _
             arcComment:="Дуга " & part & " HollowRectangle.", namingPolicy:=SequentialByKind, namingPrefix:="CONTOUR_" & loopID ' Назначаем эту замкнутую линию наружной границей бетона.
     End If
 End Sub
@@ -105611,7 +105607,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         Set path = AxisPath(facade, sizes, faces, i, outerPolygon, openingPolygon) ' Получаем линию центров стержней выбранной стороны с отступом as.
         Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
         options.StartSetback = faces(i).StartSetback: options.EndSetback = faces(i).EndSetback ' Отступ от начала и, если задан, от конца линии, мм.
-        options.AnnotationGroup = faces(i).id ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+        options.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
         options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
         options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.incomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
@@ -105621,11 +105617,11 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1#
         If i <= 4 Then
             If base <= 2 Then options.EndMode = ExcludeBoth ' Исключаем стержни на обоих концах линии.
-            facade.RebarByCount faces(i).id & ".Main", path.id, faces(i).count, faces(i).diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+            facade.RebarByCount faces(i).ID & ".Main", path.ID, faces(i).count, faces(i).diameter, options ' Задаём основной ряд по числу стержней и диаметру.
         Else
             options.SourceNormalSign = normalSign: options.SkipMissingProjection = True ' Проекция идёт к отверстию; пропускаем лучи без пересечения.
             options.SuccessfulProjectionOrdinal = True: options.NewPublicationRoot = True ' Нумеруем только найденные проекции как самостоятельный ряд.
-            facade.RebarProjected faces(i).id & ".Main", path.id, faces(base).id & ".Main", faces(i).diameter, options ' Проецируем стержни наружного ряда на линию у отверстия.
+            facade.RebarProjected faces(i).ID & ".Main", path.ID, faces(base).ID & ".Main", faces(i).diameter, options ' Проецируем стержни наружного ряда на линию у отверстия.
             normalSign = -normalSign
         End If
         For rowNumber = 2 To 3
@@ -105634,11 +105630,11 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
                 If rowNumber = 3 And faces(i).locations(2) = faces(i).locations(3) Then distance = faces(i).diameters(2) ' Обходим номинальный второй ряд в том же направлении.
                 Set options = RecipeContactOptions(faces(i).source, faces(i).locations(rowNumber), faces(i).Bindings(rowNumber), _
                     faces(i).diameter, faces(i).diameters(rowNumber), normalSign, interveningDiameterSum:=distance)
-                options.AnnotationGroup = faces(i).id ' Одна подпись для всех рядов этой стороны.
+                options.AnnotationGroup = faces(i).ID ' Одна подпись для всех рядов этой стороны.
                 options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
                 options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
                 options.comment = rowComment & CStr(rowNumber)
-                facade.RebarDependent faces(i).id & ".Row" & CStr(rowNumber), faces(i).id & ".Main", faces(i).diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+                facade.RebarDependent faces(i).ID & ".Row" & CStr(rowNumber), faces(i).ID & ".Main", faces(i).diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
             End If
         Next rowNumber
         nx = 0#: ny = 0#: annotationSign = 1#: If i > 4 Then annotationSign = -1#
@@ -105649,9 +105645,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
             Case 4: nx = annotationSign
         End Select
         If base <= 2 Then
-            facade.RebarRowExtremeLabel faces(i).id, faces(i).id & ".Main", 0#, IIf(base = 1, 1#, -1#), nx, ny ' Для горизонтальной стороны подпись берём от крайней линии стержней.
+            facade.RebarRowExtremeLabel faces(i).ID, faces(i).ID & ".Main", 0#, IIf(base = 1, 1#, -1#), nx, ny ' Для горизонтальной стороны подпись берём от крайней линии стержней.
         Else
-            facade.RebarLabel faces(i).id, path.id, nx, ny ' Общую подпись рядов привязываем к границе их линии.
+            facade.RebarLabel faces(i).ID, path.ID, nx, ny ' Общую подпись рядов привязываем к границе их линии.
         End If
 NextFace:
     Next i
@@ -105673,22 +105669,22 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
         Set polygon = openingPolygon
         b = sizes.Bo: h = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset
         If radius <= GEOM_TOLERANCE Then
-            facade.source faces(index).id, faces(index).source ' Связываем ошибки этой линии с её исходными полями.
+            facade.source faces(index).ID, faces(index).source ' Связываем ошибки этой линии с её исходными полями.
             If base <= 2 Then
                 y = y + IIf(base = 1, 1#, -1#) * (h / 2# - offset)
-                Set shape = facade.LinePath("Unlimited." & faces(index).id, x - b / 2#, y, x + b / 2#, y) ' Прямая у отверстия до ограничения соседними отступами.
+                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x - b / 2#, y, x + b / 2#, y) ' Прямая у отверстия до ограничения соседними отступами.
                 ' Ограничиваем линию отступами двух соседних внутренних сторон.
-                Set AxisPath = facade.ConstrainLine(faces(index).id, shape.id, 1#, 0#, x - b / 2# - faces(7).axisDistance, 1#, 0#, x + b / 2# + faces(8).axisDistance)
+                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - b / 2# - faces(7).axisDistance, 1#, 0#, x + b / 2# + faces(8).axisDistance)
             Else
                 x = x + IIf(base = 3, -1#, 1#) * (b / 2# - offset)
-                Set shape = facade.LinePath("Unlimited." & faces(index).id, x, y - h / 2#, x, y + h / 2#) ' Прямая у отверстия до ограничения соседними отступами.
+                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x, y - h / 2#, x, y + h / 2#) ' Прямая у отверстия до ограничения соседними отступами.
                 ' Ограничиваем линию отступами двух соседних внутренних сторон.
-                Set AxisPath = facade.ConstrainLine(faces(index).id, shape.id, 0#, 1#, y - h / 2# - faces(6).axisDistance, 0#, 1#, y + h / 2# + faces(5).axisDistance)
+                Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - h / 2# - faces(6).axisDistance, 0#, 1#, y + h / 2# + faces(5).axisDistance)
             End If
             Exit Function
         End If
     End If
-    Set shape = facade.OffsetRoundedPolygon("Offset." & faces(index).id, polygon, offset) ' Смещаем наружный контур внутрь, а контур отверстия — в бетон.
+    Set shape = facade.OffsetRoundedPolygon("Offset." & faces(index).ID, polygon, offset) ' Смещаем наружный контур внутрь, а контур отверстия — в бетон.
     Select Case base
         Case 1, 2
             first = "Edge.BL": last = "Edge.TR"
@@ -105699,9 +105695,9 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
             If Not shape.HasSegmentID(last) Then
                 If base = 1 Then last = "Corner.TR": lastParameter = 1# Else last = "Corner.BR": lastParameter = 0#
             End If
-            Set AxisPath = facade.Chain(faces(index).id, shape.id, first, firstParameter, last, lastParameter, base = 1) ' Горизонтальная сторона вместе с прилегающими скруглениями.
-        Case 3: Set AxisPath = facade.Chain(faces(index).id, shape.id, "Edge.BL", 0#, "Edge.BL", 1#) ' Левая вертикальная грань.
-        Case 4: Set AxisPath = facade.Chain(faces(index).id, shape.id, "Edge.TR", 1#, "Edge.TR", 0#, False) ' Правая вертикальная грань с обратным обходом.
+            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, first, firstParameter, last, lastParameter, base = 1) ' Горизонтальная сторона вместе с прилегающими скруглениями.
+        Case 3: Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.BL", 0#, "Edge.BL", 1#) ' Левая вертикальная грань.
+        Case 4: Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.TR", 1#, "Edge.TR", 0#, False) ' Правая вертикальная грань с обратным обходом.
     End Select
     Exit Function
 InvalidPath:
@@ -105953,11 +105949,11 @@ Public Function FixtureClosedCountRow(ByVal boundary As CGeometryPath, ByVal axi
         Optional ByVal group As String = "FixtureRow", Optional ByVal comment As String = "") As CRebarLayout
     Dim facade As CSectionDefinitionBuilder, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "ClosedRowFixture"
-    facade.AddPath boundary: facade.AddPath axis: facade.Outer "OUTER", boundary.id
+    facade.AddPath boundary: facade.AddPath axis: facade.outer "OUTER", boundary.ID
     Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
     options.SourcePrefix = "B": options.Publication = PublishPerSourcePosition
     options.AnnotationGroup = group: options.comment = comment
-    facade.RebarByCount "ClosedRow", axis.id, count, diameter, options, steelClass
+    facade.RebarByCount "ClosedRow", axis.ID, count, diameter, options, steelClass
     Set FixtureClosedCountRow = FixtureLayout(facade.Finish)
 End Function
 
@@ -105967,14 +105963,14 @@ Public Function FixtureStraightRows(ByVal rectangles As Variant, ByVal rows As V
         Optional ByVal steelClass As String = "A400") As CRebarLayout
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, row As Variant, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "StraightRowFixture"
-    Set path = facade.AdjacentRectangles("Boundary", rectangles): facade.Outer "OUTER", path.id
+    Set path = facade.AdjacentRectangles("Boundary", rectangles): facade.outer "OUTER", path.ID
     For Each row In rows
         Set path = facade.LinePath(CStr(row(0)), CDbl(row(1)), CDbl(row(2)), CDbl(row(3)), CDbl(row(4)))
         Set options = New CRebarRuleOptions
         options.StartSetback = CDbl(row(7)): options.EndSetback = CDbl(row(8))
-        options.PositionOrder = FromPathMiddle: options.AnnotationGroup = path.id
+        options.PositionOrder = FromPathMiddle: options.AnnotationGroup = path.ID
         options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
-        facade.RebarByCount path.id & ".rule", path.id, CLng(row(5)), CDbl(row(6)), options, steelClass
+        facade.RebarByCount path.ID & ".rule", path.ID, CLng(row(5)), CDbl(row(6)), options, steelClass
     Next row
     Set FixtureStraightRows = FixtureLayout(facade.Finish)
 End Function
@@ -106394,32 +106390,32 @@ Public Function RunArbitraryAnnotationGeometryTests() As String
             If shape = "HollowRectangle" Then
                 Set polygon = AngleRoundedPolygon(500#, 600#, 160#)
                 Set path = facade.RoundedPolygon("OuterBase", polygon)
-                Set path = facade.Transform("Outer", path.id, 0#, 0#, angle)
+                Set path = facade.Transform("Outer", path.ID, 0#, 0#, angle)
             Else
                 Set path = facade.CirclePath("Outer", 0#, 0#, 800#)
             End If
-            facade.Outer "OUTER", path.id
+            facade.outer "OUTER", path.ID
             Set options = New CRebarRuleOptions: options.AnnotationGroup = "G"
             If shape = "Circle" Then
                 Set path = facade.CirclePath("Axis", 0#, 0#, 150#)
                 options.EndMode = ClosedUniform: support = 150#
-                facade.RebarByCount "Bars", path.id, 8, 10#, options
+                facade.RebarByCount "Bars", path.ID, 8, 10#, options
             ElseIf shape = "Rounded" Then
                 Set polygon = AngleRoundedPolygon(200#, 300#, 40#)
                 Set path = facade.RoundedPolygon("Axis", polygon)
                 options.EndMode = ClosedUniform
                 support = 160# * Abs(nx) + 260# * Abs(ny) + 40#
-                facade.RebarByCount "Bars", path.id, 12, 10#, options
+                facade.RebarByCount "Bars", path.ID, 12, 10#, options
             Else
                 Set polygon = AngleRoundedPolygon(200#, 300#, 80#)
                 Set path = facade.RoundedPolygon("HoleBase", polygon)
-                Set path = facade.Transform("Hole", path.id, 40#, 20#, angle)
-                facade.Opening "OPENING", path.id, "OUTER"
+                Set path = facade.Transform("Hole", path.ID, 40#, 20#, angle)
+                facade.opening "OPENING", path.ID, "OUTER"
                 Set path = facade.LinePath("AxisBase", -240#, -100#, -240#, 100#)
-                Set path = facade.Transform("Axis", path.id, 40#, 20#, angle)
-                facade.RebarByCount "Bars", path.id, 2, 10#, options
+                Set path = facade.Transform("Axis", path.ID, 40#, 20#, angle)
+                facade.RebarByCount "Bars", path.ID, 2, 10#, options
             End If
-            facade.RebarLabel "G", path.id, 2# * nx, 2# * ny
+            facade.RebarLabel "G", path.ID, 2# * nx, 2# * ny
             Set definition = facade.Finish: Set builder = New CSectionBuilder: Set model = BuildDefinition(definition, builder)
             Check prefix & ".one.group", model.annotations.count = 1
             mx = 0.5 * (model.annotations.startX(1) + model.annotations.endX(1))
@@ -106602,10 +106598,10 @@ End Function
 Private Function AnnotationFacade(Optional ByVal previewPlacement As Boolean = False) As CSectionDefinitionBuilder
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "AnnotationFixture"
-    Set path = facade.CirclePath("Boundary", 0#, 0#, 200#): facade.Outer "Concrete", path.id
+    Set path = facade.CirclePath("Boundary", 0#, 0#, 200#): facade.outer "Concrete", path.ID
     Set path = facade.LinePath("Row", -50#, 100#, 50#, 100#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "Top"
-    facade.RebarByCount "TopBars", path.id, 2, 10#, options
+    facade.RebarByCount "TopBars", path.ID, 2, 10#, options
     If previewPlacement Then
         facade.Anchor "A", -100#, -75#: facade.Anchor "B", -70#, -35#
         facade.Anchor "LengthNote", -60#, -150#: facade.Anchor "TextNote", 50#, -50#
@@ -106725,7 +106721,7 @@ Public Function RunRecipeOperationTests() As String
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, source As CGeometryPath, definition As CSectionDefinition
     Dim edge As TRegionEdge, x As Double, y As Double, tx As Double, ty As Double, i As Long, query As CSectionGeometryQuery
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Operations"
-    Set path = facade.RectanglePath("Concrete", -200#, -200#, 400#, 400#): facade.Outer "Outer", path.id
+    Set path = facade.RectanglePath("Concrete", -200#, -200#, 400#, 400#): facade.outer "Outer", path.ID
     Set path = facade.LinePath("FullFace", 0#, 0#, 100#, 0#)
     Set path = facade.offset("Axis", "FullFace", 20#)
     path.AtDistance 0#, x, y, tx, ty: Near "offset.full.start.x", x, 0#: Near "offset.normal.y", y, 20#
@@ -106749,10 +106745,10 @@ Public Function RunRecipeOperationTests() As String
     Set source = New CGeometryPath: source.Initialize "Smooth"
     source.AddLine "Straight", 0#, 0#, 100#, 0#
     source.AddArc "Fillet", 100#, 50#, 50#, -GEOM_PI / 2#, GEOM_PI / 2#: source.Seal
-    facade.AddPath source: Set path = facade.offset("SmoothOffset", source.id, 10#)
+    facade.AddPath source: Set path = facade.offset("SmoothOffset", source.ID, 10#)
     Near "offset.analytic.length", path.Length, 100# + 20# * GEOM_PI
     path.CopySegment 2, edge: Near "offset.arc.radius", Sqr((edge.x1 - edge.centerX) ^ 2 + (edge.y1 - edge.centerY) ^ 2), 40#
-    Set path = facade.CirclePath("Circle", 0#, 0#, 100#): Set path = facade.offset("CircleInner", path.id, 20#)
+    Set path = facade.CirclePath("Circle", 0#, 0#, 100#): Set path = facade.offset("CircleInner", path.ID, 20#)
     Near "offset.circle.length", path.Length, 160# * GEOM_PI: Check "offset.circle.closed", path.IsClosed
     Set source = facade.Transform("MovedFace", "FullFace", 500#, -200#, GEOM_PI / 2#, True)
     facade.Anchor "CornerAnchor", 100#, 0#: facade.TransformAnchor "MovedAnchor", "CornerAnchor", 500#, -200#, GEOM_PI / 2#, True
@@ -106856,7 +106852,7 @@ Public Function RunRecipeDiagnosticTests() As String
     Check "projection.source", rules.DiagnosticAt(1).sourceReference = "ProgramInputs.Target"
     Set facade = DiagnosticFacade: Set path = facade.CirclePath("Ring", 0#, 0#, 40#)
     Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform
-    facade.RebarAtStations "RingBars", path.id, Array(0#, 10#, 20#), 4#, options
+    facade.RebarAtStations "RingBars", path.ID, Array(0#, 10#, 20#), 4#, options
     Set definition = facade.Finish: Set rules = New CRebarRuleExecutor: Set layout = FixtureAnnotatedLayout(definition, rules)
     Dim stepCount As Long, minStep As Double, maxStep As Double, minChord As Double, maxChord As Double
     rules.RuleStepBounds "RingBars", stepCount, minStep, maxStep, minChord, maxChord
@@ -106903,7 +106899,7 @@ End Function
 Private Function DiagnosticFacade() As CSectionDefinitionBuilder
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Diagnostics"
-    Set path = facade.RectanglePath("Concrete", -100#, -100#, 300#, 300#): facade.Outer "Outer", path.id
+    Set path = facade.RectanglePath("Concrete", -100#, -100#, 300#, 300#): facade.outer "Outer", path.ID
     Set path = facade.LinePath("Row", 0#, 0#, 100#, 0#)
     Set DiagnosticFacade = facade
 End Function
@@ -106919,7 +106915,7 @@ Public Function RunResolveAnchorTests() As String
     Set path = facade.RectanglePath("Rect", 0#, 0#, 400#, 600#)
     path.ResolveAnchor 400#, 300#, rightID, t
     Near "rectangle.right.parameter", t, 0.5
-    Set right = facade.Chain("Right", path.id, rightID, 1#, rightID, 0#, False)
+    Set right = facade.Chain("Right", path.ID, rightID, 1#, rightID, 0#, False)
     Near "rectangle.right.length", right.Length, 600#
     right.AtDistance 0#, x, y, tx, ty: Near "rectangle.right.start.x", x, 400#: Near "rectangle.right.start.y", y, 600#
     right.AtDistance right.Length, x, y, tx, ty: Near "rectangle.right.end.y", y, 0#: Check "rectangle.right.direction", ty < 0#
@@ -106966,13 +106962,13 @@ Private Sub CheckResolvedPath(ByVal facade As CSectionDefinitionBuilder, ByVal p
     Dim expectedX As Double, expectedY As Double, label As String, reverse As Long
     station = 0#
     For i = 1 To path.SegmentCount
-        label = path.id & "." & CStr(i): path.CopySegment i, edge
+        label = path.ID & "." & CStr(i): path.CopySegment i, edge
         modGeometryPrimitives.EdgePoint edge, 0.25, x, y
         path.ResolveAnchor x, y, segment, parameter
         Check label & ".id", segment = path.segmentID(i): Near label & ".parameter", parameter, 0.25
         For reverse = 0 To 1
             a = 0.25: b = 0.75: If reverse = 1 Then a = 0.75: b = 0.25
-            Set Chain = facade.Chain(label & ".Chain" & CStr(reverse), path.id, segment, a, segment, b, reverse = 0)
+            Set Chain = facade.Chain(label & ".Chain" & CStr(reverse), path.ID, segment, a, segment, b, reverse = 0)
             Check label & ".chain.id", Chain.SegmentCount = 1 And Chain.segmentID(1) = segment
             Check label & ".source.id", Chain.sourcePathID(1) = path.sourcePathID(i) And Chain.sourceSegmentID(1) = path.sourceSegmentID(i)
             Near label & ".source.start", Chain.SourceStartParameter(1), path.SourceStartParameter(i) + a * (path.SourceEndParameter(i) - path.SourceStartParameter(i))
@@ -106996,33 +106992,33 @@ Private Sub CheckResolvedPath(ByVal facade As CSectionDefinitionBuilder, ByVal p
         End If
         station = station + modGeometryPrimitives.EdgeLength(edge)
     Next i
-    Near path.id & ".unchanged.length", path.Length, station
+    Near path.ID & ".unchanged.length", path.Length, station
     ExpectAnchorError path, 100000#, -100000#, "ANCHOR_NOT_ON_PATH"
     If path.SegmentCount > 1 Then
         Dim first As TRegionEdge, last As TRegionEdge, startID As String, endID As String, startT As Double, endT As Double
         path.CopySegment 1, first: path.CopySegment 2, last
         modGeometryPrimitives.EdgePoint first, 0.75, x, y: path.ResolveAnchor x, y, startID, startT
         modGeometryPrimitives.EdgePoint last, 0.25, x, y: path.ResolveAnchor x, y, endID, endT
-        Set Chain = facade.Chain(path.id & ".JointChain", path.id, startID, startT, endID, endT)
-        Check path.id & ".joint.chain.ids", Chain.SegmentCount = 2 And Chain.segmentID(1) = startID And Chain.segmentID(2) = endID
-        Near path.id & ".joint.chain.length", Chain.Length, (modGeometryPrimitives.EdgeLength(first) + modGeometryPrimitives.EdgeLength(last)) / 4#
-        Check path.id & ".joint.chain.origin", Chain.sourceSegmentID(1) = path.sourceSegmentID(1) And Chain.sourceSegmentID(2) = path.sourceSegmentID(2)
+        Set Chain = facade.Chain(path.ID & ".JointChain", path.ID, startID, startT, endID, endT)
+        Check path.ID & ".joint.chain.ids", Chain.SegmentCount = 2 And Chain.segmentID(1) = startID And Chain.segmentID(2) = endID
+        Near path.ID & ".joint.chain.length", Chain.Length, (modGeometryPrimitives.EdgeLength(first) + modGeometryPrimitives.EdgeLength(last)) / 4#
+        Check path.ID & ".joint.chain.origin", Chain.sourceSegmentID(1) = path.sourceSegmentID(1) And Chain.sourceSegmentID(2) = path.sourceSegmentID(2)
         modGeometryPrimitives.EdgePoint first, 0.75, expectedX, expectedY: Chain.AtDistance 0#, x, y, tx, ty
-        Near path.id & ".joint.start.x", x, expectedX: Near path.id & ".joint.start.y", y, expectedY
+        Near path.ID & ".joint.start.x", x, expectedX: Near path.ID & ".joint.start.y", y, expectedY
         modGeometryPrimitives.EdgePoint last, 0.25, expectedX, expectedY: Chain.AtDistance Chain.Length, x, y, tx, ty
-        Near path.id & ".joint.end.x", x, expectedX: Near path.id & ".joint.end.y", y, expectedY
+        Near path.ID & ".joint.end.x", x, expectedX: Near path.ID & ".joint.end.y", y, expectedY
         If path.IsClosed Then
             path.CopySegment path.SegmentCount, last
             modGeometryPrimitives.EdgePoint last, 0.75, x, y: path.ResolveAnchor x, y, startID, startT
             modGeometryPrimitives.EdgePoint first, 0.25, x, y: path.ResolveAnchor x, y, endID, endT
-            Set Chain = facade.Chain(path.id & ".WrapChain", path.id, startID, startT, endID, endT)
-            Check path.id & ".wrap.ids", Chain.SegmentCount = 2 And Chain.segmentID(1) = startID And Chain.segmentID(2) = endID
-            Near path.id & ".wrap.length", Chain.Length, (modGeometryPrimitives.EdgeLength(first) + modGeometryPrimitives.EdgeLength(last)) / 4#
-            Check path.id & ".wrap.origin", Chain.sourceSegmentID(1) = path.sourceSegmentID(path.SegmentCount) And Chain.sourceSegmentID(2) = path.sourceSegmentID(1)
+            Set Chain = facade.Chain(path.ID & ".WrapChain", path.ID, startID, startT, endID, endT)
+            Check path.ID & ".wrap.ids", Chain.SegmentCount = 2 And Chain.segmentID(1) = startID And Chain.segmentID(2) = endID
+            Near path.ID & ".wrap.length", Chain.Length, (modGeometryPrimitives.EdgeLength(first) + modGeometryPrimitives.EdgeLength(last)) / 4#
+            Check path.ID & ".wrap.origin", Chain.sourceSegmentID(1) = path.sourceSegmentID(path.SegmentCount) And Chain.sourceSegmentID(2) = path.sourceSegmentID(1)
             modGeometryPrimitives.EdgePoint last, 0.75, expectedX, expectedY: Chain.AtDistance 0#, x, y, tx, ty
-            Near path.id & ".wrap.start.x", x, expectedX: Near path.id & ".wrap.start.y", y, expectedY
+            Near path.ID & ".wrap.start.x", x, expectedX: Near path.ID & ".wrap.start.y", y, expectedY
             modGeometryPrimitives.EdgePoint first, 0.25, expectedX, expectedY: Chain.AtDistance Chain.Length, x, y, tx, ty
-            Near path.id & ".wrap.end.x", x, expectedX: Near path.id & ".wrap.end.y", y, expectedY
+            Near path.ID & ".wrap.end.x", x, expectedX: Near path.ID & ".wrap.end.y", y, expectedY
         End If
     End If
 End Sub
@@ -107035,15 +107031,15 @@ Private Sub ExpectAnchorError(ByVal path As CGeometryPath, ByVal x As Double, By
     path.ResolveAnchor x, y, segment, parameter: number = Err.number: reason = Err.description: Err.Clear
     On Error GoTo 0
     Set diagnostic = path.LastDiagnostic
-    Check path.id & ".error.number", number = vbObjectError + 5520 And InStr(reason, path.id) > 0
-    Check path.id & ".error.outputs", segment = "unchanged" And parameter = -1#
-    Check path.id & ".error.diagnostic", Not diagnostic Is Nothing
+    Check path.ID & ".error.number", number = vbObjectError + 5520 And InStr(reason, path.ID) > 0
+    Check path.ID & ".error.outputs", segment = "unchanged" And parameter = -1#
+    Check path.ID & ".error.diagnostic", Not diagnostic Is Nothing
     If Not diagnostic Is Nothing Then
-        Check path.id & ".error.code", diagnostic.code = code And diagnostic.entityID = path.id
+        Check path.ID & ".error.code", diagnostic.code = code And diagnostic.entityID = path.ID
         If code <> "PATH_INVALID" Then
-            Near path.id & ".error.x", diagnostic.detail1, x: Near path.id & ".error.y", diagnostic.detail2, y
+            Near path.ID & ".error.x", diagnostic.detail1, x: Near path.ID & ".error.y", diagnostic.detail2, y
         End If
-        If code = "ANCHOR_AMBIGUOUS" Then Check path.id & ".error.segments", InStr(diagnostic.relatedEntityID, ", ") > 0
+        If code = "ANCHOR_AMBIGUOUS" Then Check path.ID & ".error.segments", InStr(diagnostic.relatedEntityID, ", ") > 0
     End If
 End Sub
 
@@ -107054,11 +107050,11 @@ Private Sub TestPositionOrderOwner()
     Dim definition As CSectionDefinition, rules As CRebarRuleExecutor, layout As CRebarLayout, mode As Long, owner As Long
     For mode = AlongPath To FromPathMiddle
         Set facade = New CSectionDefinitionBuilder: facade.Initialize "PublicationOwner"
-        Set path = facade.RectanglePath("Concrete", -50#, -50#, 150#, 100#): facade.Outer "Outer", path.id
+        Set path = facade.RectanglePath("Concrete", -50#, -50#, 150#, 100#): facade.outer "Outer", path.ID
         Set path = facade.LinePath("Row", 0#, 0#, 30#, 0#)
         Set options = New CRebarRuleOptions
         options.PositionOrder = mode: options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner
-        facade.RebarByCount "Main", path.id, 3, 10#, options
+        facade.RebarByCount "Main", path.ID, 3, 10#, options
         Set options = New CRebarRuleOptions
         options.Publication = PublishPerSourcePosition: options.Coincidence = KeepPublishedOwner: options.TangentOffset = 15#
         facade.RebarDependent "Extra", "Main", 20#, options
@@ -107124,9 +107120,9 @@ Public Function AdvancedGuideDefinition(ByVal useMaxStep As Boolean) As CSection
     Dim a As Double, b As Double, c As Double
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "GuideFragments"
     Set path = facade.RectanglePath("Concrete", -300#, -400#, 1000#, 800#)
-    facade.Outer "Outer", "Concrete"
+    facade.outer "Outer", "Concrete"
     Set path = facade.CirclePath("Hole", 0#, -250#, 50#)
-    facade.Opening "Opening", "Hole", "Outer"
+    facade.opening "Opening", "Hole", "Outer"
     ' Боковая линия состоит из дуги, наклонного отрезка, дуги вершины, наклонного отрезка и
     ' дуги.
     a = 100# / Sqr(2#): b = 300# + 50# / Sqr(2#): c = 50# / Sqr(2#)
@@ -107180,13 +107176,13 @@ Public Function RunApiGeometryReadExamples() As String
     On Error GoTo Failed
     Dim facade As CSectionDefinitionBuilder, definition As CSectionDefinition, builder As CSectionBuilder
     Dim path As CGeometryPath, diagnostic As CGeometryDiagnostic, query As CSectionGeometryQuery
-    Dim region As CConcreteRegion, Opening As CConcreteRegion, frame As CConcreteRegion
+    Dim region As CConcreteRegion, opening As CConcreteRegion, frame As CConcreteRegion
     Dim options As CRebarRuleOptions, rules As CRebarRuleExecutor, model As CSectionModel, mesh As CFiberMeshBuilder
     Dim meshOptions As TSectionMeshOptions, ids As Variant, probes As Variant, x As Double, y As Double
     Dim x2 As Double, y2 As Double, cx As Double, cy As Double, sweep As Double, loopID As Long, edge As TRegionEdge
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "ApiRead", 2
     Set path = facade.AdjacentRectangles("Concrete", Array(Array(-200#, -200#, 400#, 400#)))
-    facade.Outer "Outer", "Concrete"
+    facade.outer "Outer", "Concrete"
     Set path = facade.LinePath("Row", -150#, 100#, 150#, 100#)
     Set path = facade.LinePath("Row2", -150#, -100#, 150#, -100#)
     facade.PathGroup "Rows", Array("Row", "Row2")
@@ -107211,7 +107207,7 @@ Public Function RunApiGeometryReadExamples() As String
     Check "rules.positionCount", rules.PositionCount = 3
     Check "rules.diagnosticsText", InStr(rules.DiagnosticsText, "Created=3") > 0
     Set query = New CSectionGeometryQuery: Set region = definition.ConcreteDomain
-    Set Opening = query.CircleRegion(0#, 0#, 20#): Set frame = query.SubtractContainedRegion(region, Opening)
+    Set opening = query.CircleRegion(0#, 0#, 20#): Set frame = query.SubtractContainedRegion(region, opening)
     Check "query.loopRole.outer", Not query.LoopIsOpening(frame, 1)
     Check "query.loopRole.opening", query.LoopIsOpening(frame, 2)
     Near "query.subtractedArea", frame.area, 160000# - 400# * GEOM_PI
@@ -107436,7 +107432,7 @@ Public Function RoundedFrameDefinition() As CSectionDefinition
     polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("Outer", polygonSpec)
-    facade.Outer "Concrete", path.id
+    facade.outer "Concrete", path.ID
     Set polygonSpec = New CPolygonSpec
     polygonPoint = openingVertices(LBound(openingVertices) + 0)
     polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
@@ -107448,7 +107444,7 @@ Public Function RoundedFrameDefinition() As CSectionDefinition
     polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 3)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
     polygonSpec.Seal
     Set path = facade.RoundedPolygon("Opening", polygonSpec)
-    facade.Opening "Void", path.id, "Concrete"
+    facade.opening "Void", path.ID, "Concrete"
     Set polygonSpec = New CPolygonSpec
     polygonPoint = outerVertices(LBound(outerVertices) + 0)
     polygonSpec.AddVertex CStr(outerCorners(LBound(outerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 80#
@@ -107463,7 +107459,7 @@ Public Function RoundedFrameDefinition() As CSectionDefinition
     Set options = New CRebarRuleOptions
     options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     options.AnnotationGroup = "OuterBars": options.SourcePrefix = "Outer."
-    facade.RebarByCount "OuterBars", path.id, 24, 20#, options
+    facade.RebarByCount "OuterBars", path.ID, 24, 20#, options
     Set polygonSpec = New CPolygonSpec
     polygonPoint = openingVertices(LBound(openingVertices) + 0)
     polygonSpec.AddVertex CStr(innerCorners(LBound(innerCorners) + 0)), CDbl(polygonPoint(LBound(polygonPoint))), CDbl(polygonPoint(LBound(polygonPoint) + 1)), 40#
@@ -107478,7 +107474,7 @@ Public Function RoundedFrameDefinition() As CSectionDefinition
     Set options = New CRebarRuleOptions
     options.EndMode = ClosedUniform: options.PlacementCheck = CheckFullDisk: options.OverlapPolicy = RejectOverlap
     options.AnnotationGroup = "InnerBars": options.SourcePrefix = "Inner."
-    facade.RebarByCount "InnerBars", path.id, 16, 16#, options
+    facade.RebarByCount "InnerBars", path.ID, 16, 16#, options
     facade.VerticalExtent "Height", "Outer", "H", -600#, -1#
     facade.HorizontalExtent "Width", "Outer", "B", -400#, -1#
     facade.VerticalExtent "OpeningHeight", "Opening", "Ho", 350#, 1#
@@ -107521,7 +107517,7 @@ End Function
 ' Эталон задаётся аналитически, включая отверстие и точку вне бетона.
 Private Sub TestLabelBoundaryGeometry()
     On Error GoTo Failed
-    Dim query As CSectionGeometryQuery, region As CConcreteRegion, Opening As CConcreteRegion
+    Dim query As CSectionGeometryQuery, region As CConcreteRegion, opening As CConcreteRegion
     Dim distance As Double, found As Boolean, errorNumber As Long, coordinates(1 To 4, 1 To 2) As Double
     Set query = New CSectionGeometryQuery
     coordinates(1, 1) = -300#: coordinates(1, 2) = -600#: coordinates(2, 1) = 300#: coordinates(2, 2) = -600#
@@ -107541,8 +107537,8 @@ Private Sub TestLabelBoundaryGeometry()
     Check "label.onBoundary", found And Abs(distance) < 0.000001
     coordinates(1, 1) = -100#: coordinates(1, 2) = -400#: coordinates(2, 1) = 100#: coordinates(2, 2) = -400#
     coordinates(3, 1) = 100#: coordinates(3, 2) = 400#: coordinates(4, 1) = -100#: coordinates(4, 2) = 400#
-    Set Opening = query.PolygonRegion(coordinates)
-    Set region = query.SubtractContainedRegion(region, Opening)
+    Set opening = query.PolygonRegion(coordinates)
+    Set region = query.SubtractContainedRegion(region, opening)
     found = query.LabelBoundaryDistance(region, 150#, 0#, -1#, 0#, distance)
     Check "label.opening.face", found And Abs(distance - 50#) < 0.000001
     found = query.LabelBoundaryDistance(region, 150#, 0#, 1#, 0#, distance)
@@ -107616,12 +107612,12 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.formula
     prefix = "rows." & CStr(rows) & ".mixed" & CStr(mixedDiameter)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize prefix
-    Set path = facade.RectanglePath("Outer", -300#, -600#, 600#, 1200#): facade.Outer "OUTER", path.id
+    Set path = facade.RectanglePath("Outer", -300#, -600#, 600#, 1200#): facade.outer "OUTER", path.ID
     For i = 1 To rows
         Set path = facade.LinePath("Row" & CStr(i), -200#, 600# - 50# * i, 200#, 600# - 50# * i)
         Set options = New CRebarRuleOptions: options.AnnotationGroup = "Top"
         diameter = 20#: If mixedDiameter And i = rows Then diameter = 16#
-        facade.RebarByCount "Rule" & CStr(i), path.id, i + 2, diameter, options
+        facade.RebarByCount "Rule" & CStr(i), path.ID, i + 2, diameter, options
         count = count + i + 2
     Next i
     facade.RebarRowLabel "Top", "Rule1", 0#, 1#
@@ -107861,10 +107857,10 @@ Private Sub TestPerPath(ByVal n As Long, ByVal reverse As Boolean)
     On Error GoTo Failed
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
-    Dim i As Long, first As Long, second As Long, id As String, ids As Object, label As String
+    Dim i As Long, first As Long, second As Long, ID As String, ids As Object, label As String
     label = "F01.n" & CStr(n) & ".reverse" & CStr(reverse)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "ReviewPerPath"
-    Set path = facade.CirclePath("Outer", 0#, 0#, 1000#): facade.Outer "OUTER", path.id
+    Set path = facade.CirclePath("Outer", 0#, 0#, 1000#): facade.outer "OUTER", path.ID
     Set path = facade.LinePath("P1", 0#, 0#, 100#, 0#)
     Set path = facade.LinePath("P2", 0#, 200#, 100#, 200#)
     If reverse Then facade.PathGroup "Sides", Array("P2", "P1") Else facade.PathGroup "Sides", Array("P1", "P2")
@@ -107876,9 +107872,9 @@ Private Sub TestPerPath(ByVal n As Long, ByVal reverse As Boolean)
     Set builder = New CSectionBuilder: Set model = builder.Build(facade.Finish, mesh)
     Set ids = CreateObject("Scripting.Dictionary")
     For i = 1 To builder.rules.PositionCount
-        id = builder.rules.PositionSourceID(i)
-        Check label & ".unique." & CStr(i), Not ids.Exists(id)
-        ids.Add id, True
+        ID = builder.rules.PositionSourceID(i)
+        Check label & ".unique." & CStr(i), Not ids.Exists(ID)
+        ids.Add ID, True
         If builder.rules.PositionRuleID(i) = "Extra" Then
             If builder.rules.PositionPathID(i) = "P1" Then first = first + 1 Else second = second + 1
         End If
@@ -108053,7 +108049,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modSectionRecipeApiGuide
 TYPE: 1
-LINES: 2980
+LINES: 2979
 ====================================================================================================
 '
 '
@@ -108226,7 +108222,7 @@ LINES: 2980
 '
 '       Private Function BuildAudit02DemoDefinition() As CSectionDefinition
 '           Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec
-'           Dim shapePath As CGeometryPath, boundary As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
+'           Dim shapePath As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
 '           Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
 '           b = 600#: h = 1000#: w = 200#
 '           Set polygon = New CPolygonSpec
@@ -108234,12 +108230,11 @@ LINES: 2980
 '           polygon.AddVertex "TR", b / 2#, h / 2#, 120#, outgoingEdgeID:="Edge.TR" ' Наклонная грань для размерной аннотации, мм.
 '           polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
 '           polygon.AddVertex "BR", b / 2#, -h / 2#, 120#, outgoingEdgeID:="Edge.BR" ' Нижняя грань для конца бокового ряда, мм.
-'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, outgoingEdgeID:="Edge.BL" ' Левая грань для начала полного обхода, мм.
+'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, outgoingEdgeID:="Edge.BL" ' Левая грань от нижнего угла к верхнему, мм.
 '           polygon.Seal
 '           Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
-'           Set shapePath = facade.RoundedPolygon("Shape", polygon)
-'           Set boundary = facade.Chain("Boundary", shapePath.ID, "Edge.BL", 0#, "Edge.BL", 0#, True, True)
-'           facade.Outer "OUTER", boundary.ID
+'           Set shapePath = facade.RoundedPolygon("Boundary", polygon)
+'           facade.Outer "OUTER", shapePath.ID
 '           Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
 '           Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
 '           Set options = New CRebarRuleOptions
@@ -108254,7 +108249,7 @@ LINES: 2980
 '           facade.PathAnchor "Slope.B", shapePath.ID, "Edge.TR", 1#
 '           facade.Dimension "DIM_SLOPE", "Slope.A", "Slope.B", "L", "Aligned"
 '           facade.HorizontalDistance "DIM_B", "B", -b / 2#, b / 2#, h / 2#, 1#
-'           facade.VerticalExtent "DIM_H", boundary.ID, "H", -b / 2#, -1#
+'           facade.VerticalExtent "DIM_H", shapePath.ID, "H", -b / 2#, -1#
 '           Set BuildAudit02DemoDefinition = facade.Finish
 '       End Function
 '
@@ -111454,10 +111449,10 @@ Private Function LabelDefinition(ByVal normalY As Double) As CSectionDefinition
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "LabelIsolation"
     Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#)
-    facade.Outer "Concrete", path.id
+    facade.outer "Concrete", path.ID
     Set path = facade.LinePath("Axis", 50#, 950#, 550#, 950#)
     Set options = New CRebarRuleOptions: options.AnnotationGroup = "Top"
-    facade.RebarByCount "Row", path.id, 5, 20#, options
+    facade.RebarByCount "Row", path.ID, 5, 20#, options
     facade.RebarRowLabel "Top", "Row", 0#, normalY
     Set LabelDefinition = facade.Finish
 End Function
@@ -111608,12 +111603,12 @@ Public Function RunDefinitionLifecycleTests() As String
     errorCode = Err.number: Err.Clear
     On Error GoTo Failed
     Check "path.creator.already.registered", errorCode <> 0
-    facade.Outer "Outer", path.id
+    facade.outer "Outer", path.ID
     Set external = New CGeometryPath: external.Initialize "External"
     external.AddLine "External.Segment", 50#, 950#, 550#, 950#: external.Seal
     facade.AddPath external
     Set options = New CRebarRuleOptions
-    facade.RebarByCount "Row", external.id, 5, 20#, options
+    facade.RebarByCount "Row", external.ID, 5, 20#, options
     Set definition = facade.Finish
     Check "definition.finish.sealed", definition.IsSealed
     Check "definition.paths.once", definition.PathCount = 2
@@ -111633,9 +111628,9 @@ Public Function RunDefinitionLifecycleTests() As String
     On Error GoTo Failed
     Check "definition.reject.reinitialize", errorCode <> 0
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "InvalidStep"
-    Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#): facade.Outer "Outer", path.id
+    Set path = facade.RectanglePath("Boundary", 0#, 0#, 600#, 1000#): facade.outer "Outer", path.ID
     Set path = facade.LinePath("Axis", 50#, 950#, 550#, 950#)
-    facade.RebarByMaxStep "InvalidRow", path.id, 0#, 20#, options
+    facade.RebarByMaxStep "InvalidRow", path.ID, 0#, 20#, options
     Set definition = facade.Finish
     Set builder = New CSectionBuilder
     meshOptions.stepX = 100#: meshOptions.stepY = 100#: meshOptions.materialID = 1: meshOptions.boundarySubdivisions = 1
@@ -111826,7 +111821,7 @@ Option Explicit
 ' После Seal исходное описание доступно только для чтения.
 
 Private Type TVertex
-    id As String ' Имя исходной вершины с различением регистра.
+    ID As String ' Имя исходной вершины с различением регистра.
     x As Double ' Исходная координата X до скругления, мм.
     y As Double ' Исходная координата Y до скругления, мм.
     radius As Double ' Радиус сопряжения данной вершины, мм; ноль оставляет острый угол.
@@ -111878,7 +111873,7 @@ Public Sub AddVertex(ByVal VertexID As String, ByVal x As Double, ByVal y As Dou
         ReDim Preserve mVertices(1 To mCapacity)
     End If
     With mVertices(mCount + 1)
-        .id = VertexID: .x = x: .y = y: .radius = FilletRadius: .source = sourceReference
+        .ID = VertexID: .x = x: .y = y: .radius = FilletRadius: .source = sourceReference
         .OutgoingEdgeID = OutgoingEdgeID: .CornerID = CornerID
     End With
     mIDs.Add VertexID, mCount + 1
@@ -111901,7 +111896,7 @@ Public Property Get IsSealed() As Boolean: IsSealed = mSealed: End Property
 
 ' Возвращает имя исходной вершины по её порядковому номеру от 1 до Count.
 Public Function VertexID(ByVal index As Long) As String
-    CheckIndex index: VertexID = mVertices(index).id
+    CheckIndex index: VertexID = mVertices(index).ID
 End Function
 ' Координата исходной вершины X, мм; она может не лежать на готовом скруглённом контуре.
 Public Function x(ByVal index As Long) As Double
@@ -111940,7 +111935,7 @@ Friend Sub CopyKernelData(ByRef vertices As Variant, ByRef radii As Variant, ByR
     ReDim edges(0 To mCount - 1): ReDim corners(0 To mCount - 1)
     For i = 1 To mCount
         points(i - 1) = Array(mVertices(i).x, mVertices(i).y)
-        assigned(i - 1) = mVertices(i).radius: names(i - 1) = mVertices(i).id
+        assigned(i - 1) = mVertices(i).radius: names(i - 1) = mVertices(i).ID
         edges(i - 1) = mVertices(i).OutgoingEdgeID: corners(i - 1) = mVertices(i).CornerID
     Next i
     vertices = points: radii = assigned: vertexIDs = names
@@ -112123,16 +112118,16 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: создаём одинаковую геометрию с автоматическими либо явно объявленными именами.
 Private Function NamedBoxPolygon(ByVal radius As Double, Optional ByVal named As Boolean = True) As CPolygonSpec
-    Dim p As CPolygonSpec, points As Variant, point As Variant, i As Long, id As String, edgeNames As Variant
+    Dim p As CPolygonSpec, points As Variant, point As Variant, i As Long, ID As String, edgeNames As Variant
     Set p = New CPolygonSpec
     points = Array(Array(0#, 0#), Array(100#, 0#), Array(100#, 80#), Array(0#, 80#))
     edgeNames = Array("Bottom", "Right", "Top", "Left")
     For i = 0 To 3
-        point = points(i): id = Chr$(65 + i)
+        point = points(i): ID = Chr$(65 + i)
         If named Then
-            p.AddVertex id, CDbl(point(0)), CDbl(point(1)), radius, "Config!" & id, CStr(edgeNames(i)), "Round." & id
+            p.AddVertex ID, CDbl(point(0)), CDbl(point(1)), radius, "Config!" & ID, CStr(edgeNames(i)), "Round." & ID
         Else
-            p.AddVertex id, CDbl(point(0)), CDbl(point(1)), radius, "Config!" & id
+            p.AddVertex ID, CDbl(point(0)), CDbl(point(1)), radius, "Config!" & ID
         End If
     Next i
     p.Seal: Set NamedBoxPolygon = p
@@ -112243,9 +112238,9 @@ Private Sub TestNamedRectangles()
         If named.segmentID(i) <> "Top" Then Check "rectangle.partial.defaults", partial.segmentID(i) = "Partial." & CStr(i)
         Check "rectangle.legacy.defaults", old.segmentID(i) = "Legacy." & CStr(i)
     Next i
-    Set part = facade.Chain("Across", named.id, "Top", 0.5, "Bottom", 0.5)
+    Set part = facade.Chain("Across", named.ID, "Top", 0.5, "Bottom", 0.5)
     Check "rectangle.chain.top.bottom", part.sourceSegmentID(1) = "Top" And part.sourceSegmentID(part.SegmentCount) = "Bottom"
-    Set part = facade.Transform("Turned", named.id, 0#, 0#, GEOM_PI / 2#, True)
+    Set part = facade.Transform("Turned", named.ID, 0#, 0#, GEOM_PI / 2#, True)
     Check "rectangle.transformed.original.meaning", part.HasSegmentID("Top") And part.sourcePathID(part.SegmentIndex("Top")) = "Named"
     On Error Resume Next
     Set part = facade.RectanglePath("Duplicate", 0#, 0#, 10#, 10#, "Side", "Side")
@@ -112258,7 +112253,7 @@ Private Sub TestNamedRectangles()
     On Error GoTo 0
     Check "rectangle.explicit.default.duplicate", code <> 0
     Set part = facade.RectanglePath("Repeat", 0#, 0#, 100#, 80#, "Side", "Side.Part2", "Top", "Left")
-    Set part = facade.Chain("RepeatLap", part.id, "Side", 0.5, "Side", 0.5, True, True)
+    Set part = facade.Chain("RepeatLap", part.ID, "Side", 0.5, "Side", 0.5, True, True)
     Check "parts.skip.reserved.suffix", part.segmentID(part.SegmentCount) = "Side.Part3" And part.sourceSegmentID(part.SegmentCount) = "Side"
     Dim polygon As CPolygonSpec
     Set polygon = New CPolygonSpec
@@ -112268,7 +112263,7 @@ Private Sub TestNamedRectangles()
     polygon.AddVertex "D", 0#, 80#, OutgoingEdgeID:="Left"
     polygon.Seal
     Set part = facade.RoundedPolygon("ReservedCorner", polygon)
-    Set part = facade.Chain("ReservedLap", part.id, "Bottom", 0.5, "Bottom", 0.5, True, True)
+    Set part = facade.Chain("ReservedLap", part.ID, "Bottom", 0.5, "Bottom", 0.5, True, True)
     Check "parts.skip.collapsed.name", part.segmentID(part.SegmentCount) = "Bottom.Part3" And part.HasCollapsedSegmentID("Bottom.Part2")
     Check "parts.collapsed.origin", part.sourceSegmentID(part.SegmentCount) = "Bottom" And part.sourcePathID(part.SegmentCount) = "ReservedCorner"
 End Sub
@@ -112281,11 +112276,11 @@ Private Sub TestNamedPublication()
     Set a = facade.RectanglePath("A", 0#, 0#, 100#, 100#, "Bottom", "Right", "Top", "Left")
     Set b = facade.RectanglePath("B", 200#, 0#, 100#, 100#, "Bottom", "Right", "Top", "Left")
     Set hole = facade.RectanglePath("Hole", 20#, 20#, 20#, 20#, "Bottom", "Right", "Top", "Left")
-    facade.Outer "OuterA", a.id
-    facade.Outer "OuterB", b.id, namingPolicy:=SequentialByKind, namingPrefix:="B"
-    facade.Opening "OpeningA", hole.id, "OuterA", namingPolicy:=SequentialByKind, namingPrefix:="H"
+    facade.outer "OuterA", a.ID
+    facade.outer "OuterB", b.ID, namingPolicy:=SequentialByKind, namingPrefix:="B"
+    facade.opening "OpeningA", hole.ID, "OuterA", namingPolicy:=SequentialByKind, namingPrefix:="H"
     Set hole = facade.RectanglePath("Hole2", 250#, 20#, 20#, 20#, "Bottom", "Right", "Top", "Left")
-    facade.Opening "OpeningB", hole.id, "OuterB", contourIDs:=Array("H2.1", "H2.2", "H2.3", "H2.4")
+    facade.opening "OpeningB", hole.ID, "OuterB", contourIDs:=Array("H2.1", "H2.2", "H2.3", "H2.4")
     Set definition = facade.Finish: Set contours = definition.MaterialContours()
     Check "publication.four.loops", contours.count = 16
     For i = 1 To a.SegmentCount
@@ -112298,7 +112293,7 @@ Private Sub TestNamedPublication()
     Next i
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "MixedPublication"
     Set a = facade.RoundedPolygon("Mixed", NamedBoxPolygon(40#))
-    facade.Outer "Outer", a.id, namingPolicy:=SequentialByKind, namingPrefix:="Mixed"
+    facade.outer "Outer", a.ID, namingPolicy:=SequentialByKind, namingPrefix:="Mixed"
     Set definition = facade.Finish: Set contours = definition.MaterialContours()
     Dim edge As TRegionEdge, kind As String
     For i = 1 To a.SegmentCount
@@ -112515,16 +112510,16 @@ End Function
 ' ДЛЯ ТЕСТОВ: обходим линии правил и аннотаций, затем их исходные линии без изменения определения.
 Private Function RecipePathFields(ByVal definition As CSectionDefinition) As String
     Dim names As Object, queue As Collection, rule As TRebarRule, annotation As TSectionAnnotation
-    Dim i As Long, j As Long, id As Variant, ids As Variant, path As CGeometryPath, edge As TRegionEdge, Value As Variant, result As String
+    Dim i As Long, j As Long, ID As Variant, ids As Variant, path As CGeometryPath, edge As TRegionEdge, Value As Variant, result As String
     Set names = CreateObject("Scripting.Dictionary"): names.CompareMode = vbBinaryCompare
     Set queue = New Collection
     For i = 1 To definition.RuleCount
         definition.CopyRule i, rule
         If rule.Enabled And rule.mode <> DependentOffset Then
             ids = definition.TargetPaths(rule.target)
-            For Each id In ids
-                If Not names.Exists(CStr(id)) Then names.Add CStr(id), True: queue.Add CStr(id)
-            Next id
+            For Each ID In ids
+                If Not names.Exists(CStr(ID)) Then names.Add CStr(ID), True: queue.Add CStr(ID)
+            Next ID
         End If
     Next i
     For i = 1 To definition.AnnotationCount
@@ -112537,14 +112532,14 @@ Private Function RecipePathFields(ByVal definition As CSectionDefinition) As Str
             Case Else
                 ids = Array()
         End Select
-        For Each id In ids
-            If Not names.Exists(CStr(id)) Then names.Add CStr(id), True: queue.Add CStr(id)
-        Next id
+        For Each ID In ids
+            If Not names.Exists(CStr(ID)) Then names.Add CStr(ID), True: queue.Add CStr(ID)
+        Next ID
     Next i
     i = 1
     Do While i <= queue.count
         Set path = definition.path(CStr(queue(i)))
-        result = result & "PATH|" & path.id & "|" & CStr(path.IsClosed) & "|" & CStr(path.SegmentCount) & "|" & Bits(path.Length) & vbCrLf
+        result = result & "PATH|" & path.ID & "|" & CStr(path.IsClosed) & "|" & CStr(path.SegmentCount) & "|" & Bits(path.Length) & vbCrLf
         For j = 1 To path.SegmentCount
             result = result & "SEGMENT|" & CStr(j) & "|" & path.segmentID(j) & "|" & path.sourcePathID(j) & "|" & path.sourceSegmentID(j)
             path.CopySegment j, edge
@@ -112552,8 +112547,8 @@ Private Function RecipePathFields(ByVal definition As CSectionDefinition) As Str
                 result = result & "|" & Bits(CDbl(Value))
             Next Value
             result = result & vbCrLf
-            id = path.sourcePathID(j)
-            If Not names.Exists(CStr(id)) Then names.Add CStr(id), True: queue.Add CStr(id)
+            ID = path.sourcePathID(j)
+            If Not names.Exists(CStr(ID)) Then names.Add CStr(ID), True: queue.Add CStr(ID)
         Next j
         i = i + 1
     Loop
@@ -112618,7 +112613,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestAudit02Api
 TYPE: 1
-LINES: 600
+LINES: 599
 ====================================================================================================
 Option Explicit
 
@@ -112667,9 +112662,9 @@ Public Function RunAudit02PolygonApiTests() As String
     errorCode = Err.number: Err.Clear
     On Error GoTo Failed
     Check "P07.creator.registers.once", errorCode <> 0
-    facade.Outer "Outer", path.id, namingPolicy:=SequentialByKind, namingPrefix:="OUT_A"
+    facade.outer "Outer", path.ID, namingPolicy:=SequentialByKind, namingPrefix:="OUT_A"
     Set path = facade.RectanglePath("Other", 200#, 0#, 100#, 100#)
-    facade.Outer "OtherOuter", path.id, namingPolicy:=SequentialByKind, namingPrefix:="OUT_B"
+    facade.outer "OtherOuter", path.ID, namingPolicy:=SequentialByKind, namingPrefix:="OUT_B"
     Set path = New CGeometryPath: path.Initialize "External"
     path.AddLine "External.Edge", 1#, 1#, 20#, 20#: path.Seal: facade.AddPath path
     Set definition = facade.Finish: Set contours = definition.MaterialContours
@@ -112685,14 +112680,14 @@ Public Function RunAudit02PolygonApiTests() As String
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "NamingConflict"
     Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#)
     On Error Resume Next
-    facade.Outer "Outer", path.id, contourIDs:=Array("A", "B", "C", "D"), namingPolicy:=SequentialByKind
+    facade.outer "Outer", path.ID, contourIDs:=Array("A", "B", "C", "D"), namingPolicy:=SequentialByKind
     errorCode = Err.number: Err.Clear
     On Error GoTo Failed
     Check "G10.explicit.policy.conflict", errorCode <> 0
-    facade.Outer "Outer", path.id, namingPolicy:=SequentialByKind
+    facade.outer "Outer", path.ID, namingPolicy:=SequentialByKind
     Set path = facade.RectanglePath("Other", 200#, 0#, 100#, 100#)
     On Error Resume Next
-    facade.Outer "Other", path.id, namingPolicy:=SequentialByKind
+    facade.outer "Other", path.ID, namingPolicy:=SequentialByKind
     errorCode = Err.number: Err.Clear
     On Error GoTo Failed
     Check "G10.duplicate.prefix.rejected", errorCode <> 0
@@ -112779,16 +112774,16 @@ Public Function RunAudit02AnnotationTests() As String
     Dim builder As CSectionAnnotationBuilder, annotations As CSectionAnnotations, rebars As CRebarLayout, edge As TRegionEdge
     Dim x As Double, y As Double, errorCode As Long
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Dimensions"
-    Set path = facade.RectanglePath("Boundary", -100#, -100#, 1000#, 1000#): facade.Outer "Outer", path.id
+    Set path = facade.RectanglePath("Boundary", -100#, -100#, 1000#, 1000#): facade.outer "Outer", path.ID
     facade.Anchor "A", 0#, 0#: facade.Anchor "B", 300#, 400#
     facade.Dimension "H", "A", "B", "X", "Horizontal"
     facade.Dimension "V", "A", "B", "Y", "Vertical"
     facade.Dimension "L", "A", "B", "L", "Aligned"
     Set polygon = RectangleSpec(20#): Set path = facade.RoundedPolygon("Filleted", polygon)
-    facade.PathAnchor "Touch", path.id, "Edge.A", 0#
+    facade.PathAnchor "Touch", path.ID, "Edge.A", 0#
     Set path = New CGeometryPath: path.Initialize "Mixed"
     path.AddLine "Line", 0#, 0#, 100#, 0#: path.AddArc "Arc", 100#, 50#, 50#, -GEOM_PI / 2#, GEOM_PI / 2#: path.Seal
-    facade.AddPath path: facade.PathLength "PL", path.id, "A", "PL"
+    facade.AddPath path: facade.PathLength "PL", path.ID, "A", "PL"
     Set definition = facade.Finish
     Set builder = New CSectionAnnotationBuilder: Set annotations = New CSectionAnnotations: Set rebars = New CRebarLayout
     builder.Build definition, rebars, annotations
@@ -112822,7 +112817,7 @@ Public Function RunAudit02GuideExamplesTests() As String
     Set definition = BuildAudit02DemoDefinition()
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
     Check "D01.demo.bars", model.RebarCount = 15
-    Set path = definition.path("Shape"): path.CopySegment path.SegmentIndex("Edge.TR"), edge
+    Set path = definition.path("Boundary"): path.CopySegment path.SegmentIndex("Edge.TR"), edge
     For i = 1 To model.annotations.count
         If model.annotations.annotationID(i) = "DIM_SLOPE" Then
             Check "A02.slope.start", model.annotations.startX(i) = edge.x1 And model.annotations.startY(i) = edge.y1
@@ -112839,7 +112834,7 @@ Public Function RunAudit02GuideExamplesTests() As String
     annotationBuilder.Build definition, builder.rebars, annotations, builder.rules
     Check "A05.annotations.repeat", annotations.count = model.annotations.count And builder.rebars.count = model.RebarCount
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Zero"
-    Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#): facade.Outer "Outer", path.id
+    Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#): facade.outer "Outer", path.ID
     facade.Anchor "A", 20#, 20#: facade.Anchor "B", 20#, 20#
     facade.source "ZERO", "Config!TestZero": facade.Dimension "ZERO", "A", "B", "L", "Aligned"
     Set definition = facade.Finish: Set rebars = New CRebarLayout
@@ -112853,9 +112848,9 @@ Public Function RunAudit02GuideExamplesTests() As String
     polygon.AddVertex "TL", -300#, 500#, 300#: polygon.AddVertex "TR", 300#, 500#, 300#
     polygon.AddVertex "BR", 300#, -500#, 300#: polygon.AddVertex "BL", -300#, -500#, 300#: polygon.Seal
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "CollapsedDimension"
-    Set path = facade.RoundedPolygon("OuterPath", polygon): facade.Outer "Outer", path.id
+    Set path = facade.RoundedPolygon("OuterPath", polygon): facade.outer "Outer", path.ID
     Set path = facade.OffsetRoundedPolygon("OffsetPath", polygon, 50#)
-    facade.PathAnchor "A", path.id, "Edge.TL", 0#: facade.PathAnchor "B", path.id, "Edge.TL", 1#
+    facade.PathAnchor "A", path.ID, "Edge.TL", 0#: facade.PathAnchor "B", path.ID, "Edge.TL", 1#
     facade.source "COLLAPSED", "Config!TestCollapsed": facade.Dimension "COLLAPSED", "A", "B", "L", "Aligned"
     Set definition = facade.Finish
     On Error Resume Next
@@ -112874,7 +112869,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: пример из Audit02, без подбора достаточного армирования.
 Private Function BuildAudit02DemoDefinition() As CSectionDefinition
     Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec
-    Dim shapePath As CGeometryPath, boundary As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
+    Dim shapePath As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
     Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
     b = 600#: h = 1000#: w = 200#
     Set polygon = New CPolygonSpec
@@ -112882,27 +112877,26 @@ Private Function BuildAudit02DemoDefinition() As CSectionDefinition
     polygon.AddVertex "TR", b / 2#, h / 2#, 120#, OutgoingEdgeID:="Edge.TR" ' Наклонная грань для размерной аннотации, мм.
     polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
     polygon.AddVertex "BR", b / 2#, -h / 2#, 120#, OutgoingEdgeID:="Edge.BR" ' Нижняя грань для конца бокового ряда, мм.
-    polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, OutgoingEdgeID:="Edge.BL" ' Левая грань для начала полного обхода, мм.
+    polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, OutgoingEdgeID:="Edge.BL" ' Левая грань от нижнего угла к верхнему, мм.
     polygon.Seal
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
-    Set shapePath = facade.RoundedPolygon("Shape", polygon)
-    Set boundary = facade.Chain("Boundary", shapePath.id, "Edge.BL", 0#, "Edge.BL", 0#, True, True)
-    facade.Outer "OUTER", boundary.id
+    Set shapePath = facade.RoundedPolygon("Boundary", polygon)
+    facade.outer "OUTER", shapePath.ID
     Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
-    Set rightAxis = facade.Chain("H.Right", offsetPath.id, "Edge.TL", 1#, "Edge.BR", 0#)
+    Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
     Set options = New CRebarRuleOptions
     options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
     options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
     options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
     options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
     options.incomingTangentAtJoint = True
-    facade.RebarByCount "H.Right.Main", rightAxis.id, 15, 20#, options
+    facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
     facade.RebarRowExtentLabel "H.Right", "H.Right.Main", 1#, 0#, True
-    facade.PathAnchor "Slope.A", shapePath.id, "Edge.TR", 0#
-    facade.PathAnchor "Slope.B", shapePath.id, "Edge.TR", 1#
+    facade.PathAnchor "Slope.A", shapePath.ID, "Edge.TR", 0#
+    facade.PathAnchor "Slope.B", shapePath.ID, "Edge.TR", 1#
     facade.Dimension "DIM_SLOPE", "Slope.A", "Slope.B", "L", "Aligned"
     facade.HorizontalDistance "DIM_B", "B", -b / 2#, b / 2#, h / 2#, 1#
-    facade.VerticalExtent "DIM_H", boundary.id, "H", -b / 2#, -1#
+    facade.VerticalExtent "DIM_H", shapePath.ID, "H", -b / 2#, -1#
     Set BuildAudit02DemoDefinition = facade.Finish
 End Function
 
@@ -112911,8 +112905,8 @@ Private Function BuildAudit02OperationsDefinition() As CSectionDefinition
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "OperationsExample"
     Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 1000#, 1000#), Array(1000#, 0#, 200#, 600#)))
-    facade.Outer "Outer", path.id
-    Set path = facade.CirclePath("Hole", 900#, 800#, 50#): facade.Opening "Opening", path.id, "Outer"
+    facade.outer "Outer", path.ID
+    Set path = facade.CirclePath("Hole", 900#, 800#, 50#): facade.opening "Opening", path.ID, "Outer"
     Set path = facade.LinePath("MainAxis", 100#, 100#, 700#, 100#)
     Set path = facade.ArcPath("Arc", 500#, 600#, 100#, 0#, GEOM_PI / 2#)
     Set path = facade.offset("ProjectedAxis", "MainAxis", 100#)

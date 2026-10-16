@@ -1,0 +1,65 @@
+{
+  "Stage": "Directed",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+      "Seconds": 2.2668444,
+      "Characters": 21325,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+      "Seconds": 0.0577122,
+      "Characters": 7751,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Seconds": 0.0451303,
+      "Characters": 443,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+      "Seconds": 2.5506239,
+      "Characters": 368,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunHollowRecipeInputTests",
+      "Seconds": 4.2365069,
+      "Characters": 491,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "Seconds": 25.3809975,
+      "Characters": 4055,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02GuideExamplesTests",
+      "Seconds": 0.1904401,
+      "Characters": 357,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestPolygonSpec.RunNamedSegmentTests",
+      "Seconds": 0.0867869,
+      "Characters": 10268,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "443B69653889FD35904A6A69FA1EEECB7DBF6689D93EDDF773A46A5A0AB571F8",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T14:32:56.3399271+03:00"
+}

@@ -170,7 +170,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Private Function BuildAudit02DemoDefinition() As CSectionDefinition
 '           Dim facade As CSectionDefinitionBuilder, polygon As CPolygonSpec
-'           Dim shapePath As CGeometryPath, boundary As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
+'           Dim shapePath As CGeometryPath, offsetPath As CGeometryPath, rightAxis As CGeometryPath
 '           Dim options As CRebarRuleOptions, b As Double, h As Double, w As Double
 '           b = 600#: h = 1000#: w = 200#
 '           Set polygon = New CPolygonSpec
@@ -178,12 +178,11 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           polygon.AddVertex "TR", b / 2#, h / 2#, 120#, outgoingEdgeID:="Edge.TR" ' Наклонная грань для размерной аннотации, мм.
 '           polygon.AddVertex "RightNose", b / 2# + w, 0#, 80#
 '           polygon.AddVertex "BR", b / 2#, -h / 2#, 120#, outgoingEdgeID:="Edge.BR" ' Нижняя грань для конца бокового ряда, мм.
-'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, outgoingEdgeID:="Edge.BL" ' Левая грань для начала полного обхода, мм.
+'           polygon.AddVertex "BL", -b / 2#, -h / 2#, 80#, outgoingEdgeID:="Edge.BL" ' Левая грань от нижнего угла к верхнему, мм.
 '           polygon.Seal
 '           Set facade = New CSectionDefinitionBuilder: facade.Initialize "Audit02Demo"
-'           Set shapePath = facade.RoundedPolygon("Shape", polygon)
-'           Set boundary = facade.Chain("Boundary", shapePath.ID, "Edge.BL", 0#, "Edge.BL", 0#, True, True)
-'           facade.Outer "OUTER", boundary.ID
+'           Set shapePath = facade.RoundedPolygon("Boundary", polygon)
+'           facade.Outer "OUTER", shapePath.ID
 '           Set offsetPath = facade.OffsetRoundedPolygon("Offset.H.Right", polygon, 50#)
 '           Set rightAxis = facade.Chain("H.Right", offsetPath.ID, "Edge.TL", 1#, "Edge.BR", 0#)
 '           Set options = New CRebarRuleOptions
@@ -198,7 +197,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           facade.PathAnchor "Slope.B", shapePath.ID, "Edge.TR", 1#
 '           facade.Dimension "DIM_SLOPE", "Slope.A", "Slope.B", "L", "Aligned"
 '           facade.HorizontalDistance "DIM_B", "B", -b / 2#, b / 2#, h / 2#, 1#
-'           facade.VerticalExtent "DIM_H", boundary.ID, "H", -b / 2#, -1#
+'           facade.VerticalExtent "DIM_H", shapePath.ID, "H", -b / 2#, -1#
 '           Set BuildAudit02DemoDefinition = facade.Finish
 '       End Function
 '

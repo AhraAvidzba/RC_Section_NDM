@@ -140,17 +140,15 @@ End Sub
 
 ' Добавляет в описание сечения наружную границу и отверстие по двум подготовленным многоугольникам.
 Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
-    AddBoundary facade, "OUTER", "Shape", outerPolygon, False
-    AddBoundary facade, "OPENING", "Opening.Shape", openingPolygon, True
+    AddBoundary facade, "OUTER", "OUTER.Boundary", outerPolygon, False
+    AddBoundary facade, "OPENING", "OPENING.Boundary", openingPolygon, True
 End Sub
 
-' Создаёт замкнутую линию по вершинам и радиусам, задаёт порядок обхода и имена её участков.
+' Создаёт готовый замкнутый контур по вершинам и радиусам без повторного обхода.
 ' Назначает её наружной границей или отверстием внутри OUTER, в зависимости от opening.
-Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal shapeID As String, ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
-    Dim shape As CGeometryPath, boundary As CGeometryPath, part As String, first As String
-    Set shape = facade.RoundedPolygon(shapeID, polygon) ' Создаём контур по подготовленным вершинам и радиусам.
-    first = "Edge.BL": If Not shape.HasSegmentID(first) Then first = "Corner.TL"
-    Set boundary = facade.Chain(loopID & ".Boundary", shape.ID, first, 0#, first, 0#, True, True) ' Полный обход контура от выбранного начального участка.
+Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
+    Dim boundary As CGeometryPath, part As String
+    Set boundary = facade.RoundedPolygon(pathID, polygon) ' Создаём контур, который сразу используется как наружная граница или отверстие.
     If opening Then part = "внутреннего контура Opening" Else part = "наружного контура"
     If opening Then
         facade.Opening loopID, boundary.ID, "OUTER", "Прямой участок " & part & " HollowRectangle.", _

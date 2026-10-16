@@ -1,0 +1,145 @@
+{
+  "Status": "RECIPE_BOUNDARIES_PASS",
+  "Suites": 8,
+  "Passed": 917,
+  "Failed": 0,
+  "SourceScope": {
+    "ChangedRuntimeClasses": [
+      "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "src/Geometry/CSectionRecipeRoundedRectangle.cls"
+    ],
+    "KernelSolverAndPlacementCodeUnchanged": true,
+    "SourceComponentsUnchanged": true
+  },
+  "Matrices": [
+    {
+      "Matrix": "DumpCircleRecipeMatrix",
+      "Rows": 59288,
+      "Exact": true,
+      "MaxCoordinateDifferenceMM": 0.0,
+      "MaxScaledPropertyDifference": 0.0,
+      "EquivalentAxisHalfTurns": 0,
+      "RenumberedContourSegments": 0
+    },
+    {
+      "Matrix": "DumpRectSetRecipeMatrix",
+      "Rows": 34593,
+      "Exact": true,
+      "MaxCoordinateDifferenceMM": 0.0,
+      "MaxScaledPropertyDifference": 0.0,
+      "EquivalentAxisHalfTurns": 0,
+      "RenumberedContourSegments": 0
+    },
+    {
+      "Matrix": "DumpRoundedRecipeMatrix",
+      "Rows": 48952,
+      "Exact": false,
+      "MaxCoordinateDifferenceMM": 5.684341886080802e-14,
+      "MaxScaledPropertyDifference": 1.0487866831255388e-16,
+      "EquivalentAxisHalfTurns": 0,
+      "RenumberedContourSegments": 220
+    },
+    {
+      "Matrix": "DumpHollowRecipeMatrix",
+      "Rows": 57476,
+      "Exact": false,
+      "MaxCoordinateDifferenceMM": 5.684341886080802e-14,
+      "MaxScaledPropertyDifference": 0.0,
+      "EquivalentAxisHalfTurns": 0,
+      "RenumberedContourSegments": 240
+    },
+    {
+      "Matrix": "DumpHollowRecipeEdgeMatrix",
+      "Rows": 19194,
+      "Exact": false,
+      "MaxCoordinateDifferenceMM": 8.745857770636745e-14,
+      "MaxScaledPropertyDifference": 5.684341886080802e-17,
+      "EquivalentAxisHalfTurns": 2,
+      "RenumberedContourSegments": 16
+    }
+  ],
+  "Paths": {
+    "Cases": 60,
+    "PathsBefore": 643,
+    "PathsAfter": 595,
+    "ExactSourceGeometryAndParameters": true
+  },
+  "Calculations": [
+    {
+      "Code": "SP35",
+      "Combinations": 8,
+      "StatusesAndCommentsExact": true,
+      "MaxScaledValueDifference": 1.5961842232348858e-13
+    },
+    {
+      "Code": "SP63",
+      "Combinations": 8,
+      "StatusesAndCommentsExact": true,
+      "MaxScaledValueDifference": 1.5961842232348858e-13
+    }
+  ],
+  "Plots": [
+    {
+      "Name": "Circle",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "Rectangle",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "LSection",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "TwoRectangles",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "RoundedSimple",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "RoundedTapered",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "RoundedMixed",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "RoundedMixedLeft",
+      "ExactPNG": false,
+      "ChangedPixels": 3,
+      "MaxChannelDifference": 1
+    },
+    {
+      "Name": "HollowCentered",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    },
+    {
+      "Name": "HollowOffset",
+      "ExactPNG": true,
+      "ChangedPixels": 0,
+      "MaxChannelDifference": 0
+    }
+  ],
+  "FullOnOffRun": false,
+  "PublishedVerified": true
+}

@@ -1,0 +1,147 @@
+{
+  "DumpRoundedRecipeMatrix": {
+    "beforeRows": 48952,
+    "afterRows": 48952,
+    "differences": {
+      "PROPS": {
+        "rows": 8,
+        "maxAbsolute": 3.814697265625e-06,
+        "maxScaled": 6.389771677623301e-14,
+        "strings": [],
+        "examples": [
+          [
+            "RoundedMatrix.RoundedMixedLeft.case0",
+            "PROPS",
+            "concrete",
+            10,
+            -5494853.78107644,
+            -5494853.781076089
+          ]
+        ]
+      },
+      "BOUNDS": {
+        "rows": 8,
+        "maxAbsolute": 5.684341886080802e-14,
+        "maxScaled": 1.87998713665772e-16,
+        "strings": [],
+        "examples": [
+          [
+            "RoundedMatrix.RoundedMixedLeft.case0",
+            "BOUNDS",
+            "concrete",
+            4,
+            302.36067977499795,
+            302.3606797749979
+          ]
+        ]
+      },
+      "CONCRETE": {
+        "rows": 2440,
+        "maxAbsolute": 5.684341886080802e-14,
+        "maxScaled": 7.440900130717104e-15,
+        "strings": [],
+        "examples": [
+          [
+            "RoundedMatrix.RoundedTapered.case0",
+            "CONCRETE",
+            "C306",
+            3,
+            -7.639320225002052,
+            -7.639320225002109
+          ]
+        ]
+      },
+      "FIBER": {
+        "rows": 2440,
+        "maxAbsolute": 5.684341886080802e-14,
+        "maxScaled": 7.440900130717104e-15,
+        "strings": [],
+        "examples": [
+          [
+            "RoundedMatrix.RoundedTapered.case0",
+            "FIBER",
+            "306",
+            3,
+            -7.639320225002052,
+            -7.639320225002109
+          ]
+        ]
+      }
+    }
+  },
+  "DumpHollowRecipeMatrix": {
+    "beforeRows": 57476,
+    "afterRows": 57476,
+    "differences": {}
+  },
+  "DumpHollowRecipeEdgeMatrix": {
+    "beforeRows": 19194,
+    "afterRows": 19194,
+    "differences": {
+      "PROPS": {
+        "rows": 4,
+        "maxAbsolute": 3.141592653589793,
+        "maxScaled": 2.0,
+        "strings": [],
+        "examples": [
+          [
+            "HollowMatrix.HollowCentered.case8",
+            "PROPS",
+            "concrete",
+            16,
+            -1.5707963267948966,
+            1.5707963267948966
+          ]
+        ]
+      },
+      "BOUNDS": {
+        "rows": 4,
+        "maxAbsolute": 5.684341886080802e-14,
+        "maxScaled": 1.8947806286936006e-16,
+        "strings": [],
+        "examples": [
+          [
+            "HollowMatrix.HollowCentered.case8",
+            "BOUNDS",
+            "concrete",
+            6,
+            299.99999999999994,
+            300.0
+          ]
+        ]
+      },
+      "CONCRETE": {
+        "rows": 2942,
+        "maxAbsolute": 5.684341886080802e-14,
+        "maxScaled": 5.684341886080802e-14,
+        "strings": [],
+        "examples": [
+          [
+            "HollowMatrix.HollowCentered.case8",
+            "CONCRETE",
+            "C16",
+            3,
+            -5.684341886080802e-14,
+            0.0
+          ]
+        ]
+      },
+      "FIBER": {
+        "rows": 2942,
+        "maxAbsolute": 5.684341886080802e-14,
+        "maxScaled": 5.684341886080802e-14,
+        "strings": [],
+        "examples": [
+          [
+            "HollowMatrix.HollowCentered.case8",
+            "FIBER",
+            "16",
+            3,
+            -5.684341886080802e-14,
+            0.0
+          ]
+        ]
+      }
+    }
+  }
+}

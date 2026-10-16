@@ -1,0 +1,13 @@
+{
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\RecipeBoundaries_2026-10-16\\Candidate\\RecipeBoundaries.xlsm",
+  "WorkbookSHA256": "E9B96BD2B064C585A97535AB4F56032C289AF7842FD946453F4A0614F3A4C275",
+  "ProductionSHA256": "D6EF90C165A93A59CE4378B51137CCA4A4AED10DD1D10185175F28837BC03048",
+  "Compiled": true,
+  "Modules": [
+    "modSectionRecipeApiGuide"
+  ],
+  "RetiredModules": [],
+  "EntryPointNames": [],
+  "TraceGeometry": false,
+  "ProductionChanged": false
+}

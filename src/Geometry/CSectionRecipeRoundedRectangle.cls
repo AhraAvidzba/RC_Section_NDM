@@ -74,14 +74,12 @@ Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUn
     sizes.MainHeader = table.RowByKey("as", 2): sizes.ExtraHeader = table.RowByKey("d2", 2)
 End Sub
 
-' Создаёт наружный контур по заданным вершинам и радиусам, задаёт порядок его обхода
-' и возвращает зарегистрированную границу бетона. Ошибку связывает с исходными размерами.
+' Создаёт наружный контур по заданным вершинам и радиусам и сразу назначает его границей бетона.
+' Ошибку связывает с исходными размерами.
 Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec) As CGeometryPath
     On Error GoTo InvalidGeometry
-    Dim original As CGeometryPath, outer As CGeometryPath, first As String
-    Set original = facade.RoundedPolygon("Shape", polygon) ' Создаём контур по исходным вершинам и радиусам.
-    If sizes.SideTypes(1) = "Tapered" Then first = "Edge.LeftNose" Else first = "Edge.BL"
-    Set outer = facade.Chain("Boundary", original.ID, first, 0#, first, 0#, True, True) ' Полный обход контура от выбранного начального участка.
+    Dim outer As CGeometryPath
+    Set outer = facade.RoundedPolygon("Boundary", polygon) ' Создаём готовый замкнутый контур по исходным вершинам и радиусам.
     ' Назначаем эту замкнутую линию наружной границей бетона.
     facade.Outer "OUTER", outer.ID, "Прямой участок контура скругленного прямоугольника.", arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
     Set AddGeometry = outer
@@ -100,7 +98,7 @@ Private Function DescribePolygon(ByRef sizes As TRoundedInput) As CPolygonSpec
     ' Вершина правого выступа до скругления; координаты и радиус в мм.
     If sizes.SideTypes(2) = "Tapered" Then polygon.AddVertex "RightNose", sizes.B / 2# + sizes.Widths(2), 0#, sizes.R2(2), sizes.GeometrySource
     polygon.AddVertex "BR", sizes.B / 2#, -sizes.H / 2#, sizes.R1(2), sizes.GeometrySource, outgoingEdgeID:="Edge.BR" ' Нижний правый угол; Edge.BR — нижняя грань, размеры в мм.
-    polygon.AddVertex "BL", -sizes.B / 2#, -sizes.H / 2#, sizes.R1(1), sizes.GeometrySource, outgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — начало полного обхода, размеры в мм.
+    polygon.AddVertex "BL", -sizes.B / 2#, -sizes.H / 2#, sizes.R1(1), sizes.GeometrySource, outgoingEdgeID:="Edge.BL" ' Нижний левый угол; Edge.BL — участок к следующей вершине, размеры в мм.
     ' Вершина левого выступа до скругления; координаты и радиус в мм.
     If sizes.SideTypes(1) = "Tapered" Then polygon.AddVertex "LeftNose", -sizes.B / 2# - sizes.Widths(1), 0#, sizes.R2(1), sizes.GeometrySource, outgoingEdgeID:="Edge.LeftNose"
     polygon.Seal ' Проверяем вершины и завершаем их описание.
