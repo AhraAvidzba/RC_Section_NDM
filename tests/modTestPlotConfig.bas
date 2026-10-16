@@ -677,7 +677,7 @@ End Function
 ' очистки Results. Общий Plot.Enabled=No не потребляет AutoUpdate и сохраняет
 ' прежний Chart, в том числе если после запуска нет ни одного named-state.
 Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
-    Dim fixture As Object, config As Object, table As Object, cell As Object, profiles As Object, loads As Object
+    Dim fixture As Object, config As Object, table As Object, cell As Object, profiles As Object, loads As Object, durationLoads As Object
     Dim chart As Object, marker As Object, baseline As Variant, bad As Variant, key As Variant
     Dim path As String, row As Long, column As Long, profileColumn As Long, position As Long, cases As Long, mode As Long
     Dim code As Long, reason As String, prefix As String, result As String
@@ -754,6 +754,11 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
     loads.Cells(2, 1).Value2 = "NO_STATE": loads.Cells(2, 2).Value2 = 1#: loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#
     loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = "Auto"
+    ' Устойчивость требует строку с тем же номером сочетания; нули задают отсутствие дополнительной нагрузки.
+    Set durationLoads = fixture.Names.Item("rngStabilityDurationLoads").RefersToRange
+    durationLoads.Offset(1, 0).Resize(durationLoads.Rows.Count - 1, durationLoads.Columns.Count).ClearContents
+    durationLoads.Cells(2, 1).Value2 = loads.Cells(2, 1).Value2
+    durationLoads.Cells(2, 2).Resize(1, 3).Value2 = 0#
     ' Задаем сжатие явно: исходная система знаков книги не должна превращать
     ' stability-only fixture в неприменимую проверку растянутого элемента.
     Audit03SetPlotSetting fixture.Names.Item("rngSignConventionSettings").RefersToRange, "+N", "Compression"
