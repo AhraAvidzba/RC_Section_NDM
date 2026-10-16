@@ -24,7 +24,7 @@ Private mSegmentIDs() As String ' Имена отрезков и дуг этой
 Private mSourcePathIDs() As String, mSourceSegmentIDs() As String ' Имена исходных линий и сегментов для каждого полученного сегмента.
 Private mSourceStart() As Double, mSourceEnd() As Double ' Начальный и конечный параметры исходного сегмента для переноса привязанных точек.
 Private mStations() As Double ' Накопленные длины сегментов; позволяют искать точку без повторного суммирования.
-Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long ' Имена исчезнувших при построении участков и координаты их привязки; новые отрезки вместо них не создаются.
+Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long ' Имена и координаты привязки исчезнувших участков, число таких участков; новые отрезки вместо них не создаются.
 Private mCount As Long, mCapacity As Long ' Число аналитических сегментов и ёмкость рабочего массива.
 Private mSealed As Boolean, mClosed As Boolean ' Завершение построения и фактическая замкнутость линии.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка построения или обращения к линии.

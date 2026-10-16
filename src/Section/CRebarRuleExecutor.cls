@@ -24,14 +24,14 @@ Private Const DIAGNOSTIC_RECORD_LIMIT As Long = 128 ' Храним не боле
 Private mReadOnly As Boolean ' После завершения сборки повторная расстановка этим объектом запрещена.
 Private mBuilt As Boolean ' Freeze разрешён только после полного успешного выполнения правил.
 Private mDefinition As CSectionDefinition ' Готовое описание сечения, по которому выполнены расстановка и её проверки.
-Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long ' Правила, состояние зависимостей и диапазоны позиций.
-Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Запрошенные места установки стержней до объединения совпадающих координат.
+Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long ' Правила, стадия их выполнения, первый индекс и число позиций каждого правила.
+Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Места установки стержней до объединения дублей, их количество и вместимость массива.
 Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
 Private mMergedPositions As Long, mConflicts As Long ' Объединённые позиции и отклонённые конфликты.
 Private mCreatedPhysical As Long ' Количество действительно созданных стержней; совпавшие позиции не считаются повторно.
-Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Те же счётчики отдельно для каждого правила.
+Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Число пропущенных проекций, объединённых позиций и созданных стержней по каждому правилу.
 Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection ' Последнее событие и ограниченный набор подробных записей.
-Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Списки близких стержней для быстрого поиска и число пар стержней, пересекающихся по площади.
+Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Списки близких стержней, размер ячейки поиска в мм и число пар пересекающихся стержней.
 Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило, создавшее каждый стержень, и размер массива этих связей.
 Private mPhysicalOwner() As Long ' Номер фактического стержня для каждой запрошенной позиции, включая объединённые совпадения.
 Private mDiagnosticRecordsOmitted As Long ' Число событий сверх лимита подробных записей; счётчики остаются полными.

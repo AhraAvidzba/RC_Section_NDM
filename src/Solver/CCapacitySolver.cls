@@ -36,7 +36,7 @@ Private mLimitState As String ' Физический или численный �
 Private mFailureCode As ESolverFailureCode ' Точная техническая причина, независимая от текста комментария и LimitState.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
 Private mInitialLambdaRejected As Boolean ' Признак того, что постоянная нагрузка при lambda = 0 уже не удовлетворяет критерию несущей способности.
-Private mUltimateOriginX As Double, mUltimateOriginY As Double ' Центр для моментных невязок UltimateStrain.
+Private mUltimateOriginX As Double, mUltimateOriginY As Double ' Координаты начала отсчёта моментов при поиске предела по деформациям, мм.
 Private mSearchBoundReached As Boolean ' MaxLambda проверена, но физический предел не установлен.
 Private mLastProbeNumericalFailure As Boolean ' Отказ равновесия, не исчерпание допуска/бюджета одномерного поиска.
 Private mLambdaUltimate As Double ' Предельный множитель к выбранной lambda-траектории нагрузки.

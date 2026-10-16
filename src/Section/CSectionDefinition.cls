@@ -19,9 +19,9 @@ Option Explicit
 
 Private mTypeID As String, mVersion As Long, mSealed As Boolean ' Имя типа сечения, версия описания и признак завершения его заполнения.
 Private mPaths As Object, mGroups As Object, mAnchors As Object, mSources As Object ' Именованные линии, группы, точки и адреса ввода.
-Private mLoops() As TSectionLoop, mLoopCount As Long ' Роли Outer/Opening и явные связи отверстий с наружными границами.
-Private mRules() As TRebarRule, mRuleCount As Long ' Копии правил армирования; координаты отдельных стержней рассчитывает CRebarRuleExecutor.
-Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long ' Заданные размеры и подписи; хранятся отдельно от самих стержней.
+Private mLoops() As TSectionLoop, mLoopCount As Long ' Описание наружных границ и отверстий, их принадлежность и число записей.
+Private mRules() As TRebarRule, mRuleCount As Long ' Копии правил армирования и их количество; координаты стержней рассчитывает CRebarRuleExecutor.
+Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long ' Описания размеров и подписей, их количество; сами стержни хранятся отдельно.
 Private mRegion As CConcreteRegion ' Бетонная область, проверенная при Seal; при чтении возвращается её независимая копия.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя адресная ошибка проверки определения.
 

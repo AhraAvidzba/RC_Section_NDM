@@ -47,7 +47,7 @@ Private mInteractionRegion As CConcreteRegion ' Аналитический сн�
 Private mStandardCode As String ' Методика действительно выполненной формулы ширины.
 Private mSP35Data As CSP35CrackData ' Готовые данные областей взаимодействия и реальных стержней всех рядов с запретом изменений.
 Private mSP35CriticalCandidate As Long ' Номер области взаимодействия с наибольшей шириной трещины.
-Private mSP35Radius As Double, mSP35PsiCm As Double ' Радиус армирования в мм и размерный psi в см.
+Private mSP35Radius As Double, mSP35PsiCm As Double ' Радиус армирования Rr, мм, и размерный параметр psi СП 35, см.
 
 ' Создает нейтральный not-applicable результат до заполнения.
 Private Sub Class_Initialize()

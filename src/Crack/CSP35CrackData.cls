@@ -29,8 +29,8 @@ Private mBarGroup() As Long ' 0 - стержень не растянут; ина
 Private mBarStress() As Double ' Фактические напряжения заданного НДС, МПа.
 Private mBarStrain() As Double, mBarDiameter() As Double, mBarArea() As Double ' Деформация, диаметр в мм и площадь в мм2 каждого стержня.
 Private mBarID() As String ' Собственные копии для результата, не чтение измененной модели позже.
-Private mGroupX() As Double, mGroupY() As Double ' Центр по реальным площадям As.
-Private mGroupN() As Double, mGroupT() As Double ' Проекции по нормали к Н.О. и вдоль нее.
+Private mGroupX() As Double, mGroupY() As Double ' Координаты центра арматурной группы X, Y, мм; усредняются по площадям стержней.
+Private mGroupN() As Double, mGroupT() As Double ' Координаты центра группы по нормали к нейтральной линии и вдоль неё, мм.
 Private mGroupArea() As Double, mGroupBars() As Long ' Суммарная площадь арматуры в мм2 и число стержней в каждой группе.
 Private mGroupBeta() As Double ' Сохраненный коэффициент группы для формулы и пассивного вывода.
 Private mGroupRow() As Long ' Номер ряда исходной группы арматуры; боковые границы рассчитываются отдельно.
@@ -41,16 +41,16 @@ Private mAnchorGroup() As Long, mStressBar() As Long ' Группа, задаю�
 Private mBetaDiameterSum() As Double ' Сумма β*d по стержням, включённым в проверяемую область, мм.
 Private mSideDiameter() As Double, mRowDiameter() As Double ' Диаметры для определения боковых границ и радиуса ряда, мм.
 Private mSideRadius() As Double, mNormalRadius() As Double ' Радиусы взаимодействия вдоль нейтральной линии и по нормали к ней, мм.
-Private mLeftDistance() As Double, mRightDistance() As Double ' Заданные боковые границы до пересечения с бетоном, мм.
+Private mLeftDistance() As Double, mRightDistance() As Double ' Расстояния от центра определяющей группы до левой и правой границ области, мм, до отсечения по бетону.
 Private mReferenceRow() As Long, mRowCount() As Long ' Номер определяющего ряда и число рядов арматуры в каждой области.
-Private mNx As Double, mNy As Double, mNeutralN As Double ' Компоненты единичной нормали к нейтральной линии и координата линии по нормали, мм.
+Private mNx As Double, mNy As Double, mNeutralN As Double ' Единичная нормаль Nx, Ny без размерности и координата нейтральной линии вдоль неё, мм.
 Private mGapTolerance As Double, mRowTolerance As Double ' Допуск объединения стержней в группу и допуск разделения рядов, мм.
 Private mNeighborRatioLimit As Double ' Порог проекции t / полного расстояния L ближайшего соседа.
 Private mDiameterMode As String, mRadiusMode As String ' Способы выбора диаметра группы и радиуса взаимодействия.
 Private mCentralTension As Boolean ' Признак центрального растяжения, при котором нет нейтральной линии.
 Private mFrozen As Boolean ' После выдачи готового результата повторная подготовка или изменение данных запрещены.
 Private mSectionRevision As Long ' Версия исходной геометрии, зафиксированная при подготовке.
-Private mCandidateRadius() As Double, mCandidatePsi() As Double, mCandidateWidth() As Double ' Расчётный радиус в мм, коэффициент ψ и ширина трещины в мм для каждой области.
+Private mCandidateRadius() As Double, mCandidatePsi() As Double, mCandidateWidth() As Double ' Радиус армирования Rr в мм, параметр psi в см и ширина трещины в мм для каждой области.
 
 ' Формирует полный неизменяемый снимок подготовки одного сочетания. Плоскость
 ' и диаграмма уже получены владельцем НДС; метод не ищет равновесие. При чистом

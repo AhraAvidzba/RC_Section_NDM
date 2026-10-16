@@ -90,7 +90,7 @@ Private mSP35InteractionRadiusMode As String ' 3d/5d/6d: нормативный 
 Private mSP35RebarProfile As String ' Periodic/Smooth выбирает формулу psi СП 35.
 Private mSP35Data As CSP35CrackData ' Готовые данные всех проверяемых областей взаимодействия СП 35 с запретом изменений.
 Private mSP35CriticalCandidate As Long ' Номер проверяемой области с наибольшей шириной трещины; наибольшая площадь не является критерием выбора.
-Private mSP35Radius As Double, mSP35PsiCm As Double ' Rr в мм; размерный psi в см, не psi_s СП 63.
+Private mSP35Radius As Double, mSP35PsiCm As Double ' Радиус армирования Rr, мм, и размерный параметр psi СП 35, см.
 
 
 ' ------------------------------

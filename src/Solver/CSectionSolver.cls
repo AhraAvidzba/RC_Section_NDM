@@ -55,7 +55,7 @@ Private mIterations As Long ' Суммарное число итераций н�
 Private mLoadStepsCompleted As Long ' Сколько ступеней нагрузки успешно доведено до равновесия.
 Private mK(1 To 3, 1 To 3) As Double ' Касательная матрица d(N,Mx,My)/d(epsilon0,kappaX,kappaY).
 Private mFrame As CSectionNumericalFrame ' Общий центр и масштаб без изменения публичных координат.
-Private mCenterEpsilon As Double, mCenterMx As Double, mCenterMy As Double ' Деформация в численном центре и внутренние моменты относительно него, Н*мм.
+Private mCenterEpsilon As Double, mCenterMx As Double, mCenterMy As Double ' Деформация в численном центре без размерности и моменты Mx, My относительно него в Н*мм.
 Private mCenterResidualMx As Double, mCenterResidualMy As Double ' Невязки моментов относительно численного центра, Н*мм.
 Private mCenterK(1 To 3, 1 To 3) As Double ' Собирается напрямую по малым плечам, без вычитания больших K.
 Private mMaxIterations As Long ' Максимум итераций на одну ступень нагрузки.
@@ -93,7 +93,7 @@ Private mPhysicalEvaluationRevision As Long, mPhysicalEvaluationPlane(1 To 3) As
 Private mPhysicalEvaluationForces(1 To 3) As Double ' Экстремумы/K остаются в своих полях; forces-only пробы их не меняют.
 Private mForceEvaluationValid As Boolean, mForceEvaluationRevision As Long ' Готовность последнего расчёта усилий и соответствующая версия геометрии.
 Private mForceEvaluationPlane(1 To 3) As Double, mForceEvaluationForces(1 To 3) As Double ' Три параметра поля деформаций и усилия N, Mx, My последнего вычисления.
-Private mEvaluationReuseCount As Long, mTangentBuildCount As Long ' Технические счетчики фактической работы, не инженерные результаты.
+Private mEvaluationReuseCount As Long, mTangentBuildCount As Long ' Число повторных использований готовых расчётов и число построений касательной матрицы.
 Private mConcreteMinStrainIndex As Long, mConcreteMaxStrainIndex As Long ' Номера бетонных элементов с наименьшей и наибольшей деформациями.
 Private mSteelMinStrainIndex As Long, mSteelMaxStrainIndex As Long ' Номера стержней с наименьшей и наибольшей деформациями.
 Private mStrainExtremaValid As Boolean, mStrainExtremaRevision As Long ' Готовность сохранённых крайних деформаций и соответствующая версия геометрии.

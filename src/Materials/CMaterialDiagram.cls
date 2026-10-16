@@ -22,7 +22,7 @@ Private mStrains() As Double ' Узлы диаграммы по деформац
 Private mStresses() As Double ' Напряжения в узлах диаграммы, МПа во внутренней системе.
 Private mSegmentTangent() As Double ' Заранее рассчитанный наклон каждого линейного участка диаграммы, МПа.
 Private mSegmentIntercept() As Double ' Свободный член sigma = E_t * epsilon + b для быстрого расчета stress.
-Private mTransitionStrains() As Double, mTransitionCount As Long ' Только узлы с изменением наклона, включая переходы на крайнее плато.
+Private mTransitionStrains() As Double, mTransitionCount As Long ' Деформации в узлах изменения наклона диаграммы и число таких узлов; учитываются переходы на крайнее плато.
 Private mPointCount As Long ' Количество активных точек диаграммы.
 Private mInitialized As Boolean ' Защита от вызова расчетных методов до загрузки точек.
 Private mFrozen As Boolean ' Признак завершённой общей диаграммы; её точки и пределы после передачи в расчёт изменять нельзя.

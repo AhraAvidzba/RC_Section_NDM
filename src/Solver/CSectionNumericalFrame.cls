@@ -19,7 +19,7 @@ Option Explicit
 Private mSection As CSectionModel ' Модель, для которой подготовлены численные координаты.
 Private mRevision As Long ' Версия геометрии при подготовке координат.
 Private mOriginX As Double, mOriginY As Double, mLength As Double ' Координаты численного начала и характерная длина для нормирования, мм.
-Private mSupportChecked As Boolean, mFullSupport As Boolean, mConcreteArea As Double ' Выполнена ли проверка, есть ли полная опора в трёх направлениях, и площадь бетона в мм2.
+Private mSupportChecked As Boolean, mFullSupport As Boolean, mConcreteArea As Double ' Проверена ли геометрия, независимы ли epsilon0/kappaX/kappaY, и площадь бетона в мм2.
 
 ' Задаёт единичный численный масштаб и нулевое начало до подготовки геометрии.
 Private Sub Class_Initialize()

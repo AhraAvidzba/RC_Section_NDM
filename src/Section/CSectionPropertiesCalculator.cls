@@ -50,7 +50,7 @@ Private mSnapshotRevision As Long ' Ревизия подготовленной 
 Private mSnapshotBounds(1 To 4) As Double ' MinX/MaxX/MinY/MaxY по прежним оболочкам элементов.
 Private mTransformedSnapshot As CSectionPropertiesCalculator ' Готовое приведенное представление того же снимка.
 Private mPreparedSection As CSectionModel ' Контекст механических свойств; не контурная область трещин.
-Private mPreparedRevision As Long, mPreparedKind As Long ' 1 - бетон; 2 - приведение по фактическим Eb/Es.
+Private mPreparedRevision As Long, mPreparedKind As Long ' Версия геометрии и вид подготовки: 1 — бетон, 2 — приведение по фактическим модулям Eb и Es.
 Private mPreparedEb As Double, mPreparedEs As Double ' Модули бетона и арматуры подготовленного приведённого сечения, МПа.
 Private mPreparationBuildCount As Long ' Число фактических подготовок геометрических характеристик.
 Private Type TMechanicalQuery

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "components": 157,
+  "executableLinesAndOrderEqual": true,
+  "baseWorkbookSHA256": "f8d5970ad0a168a0e884ae56b08e3c2ac9ea88dfb12d726c0ad6ca53d3c03d97",
+  "publishedWorkbookSHA256": "b0b38e6a24ed9b76492b29b063b958a4cf809753a9ac2f9cbbe61c1e89eb8ae6",
+  "baseCommit": "cf2f5190e2cc1044dcc14f34ef29383a156cfa78",
+  "executionFingerprintSHA256": "35c693194b97716482c632d2959e7e0ef2b40242b27c78a7be2602723ba3a190",
+  "normalization": "VBA identifiers case-insensitive; comments excluded; strings, statement order and declarations preserved",
+  "userDataZIPPartsEqual": true,
+  "actualPublishedNativeReadbackMatched": true
+}

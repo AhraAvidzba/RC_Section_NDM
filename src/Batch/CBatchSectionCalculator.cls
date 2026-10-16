@@ -78,7 +78,7 @@ Private mExecuting As Boolean ' Временные общие данные по�
 
 Private mCrackAllowable As Double ' Допустимая ширина раскрытия трещины a_crc,ult, мм.
 Private mCrackStandardCode As String ' Общий выбор SP63/SP35, независимый от Stability.Code.
-Private mCrackSP35GroupGap As Double, mCrackSP35RowTolerance As Double ' Настройки длин после CUnitSystem, мм.
+Private mCrackSP35GroupGap As Double, mCrackSP35RowTolerance As Double ' Допуск объединения стержней в группу и допуск разделения рядов, мм.
 Private mCrackSP35NeighborRatioLimit As Double ' Порог t/L для бокового ограничения ближайшим соседом.
 Private mCrackSP35DiameterMode As String, mCrackSP35RadiusMode As String, mCrackSP35RebarProfile As String ' Выбор диаметра группы, радиуса взаимодействия и профиля арматуры для трещин СП 35.
 Private mCrackPsiMode As String ' User, Auto или AlwaysCalc: как определять psi_s для нормальных трещин.
