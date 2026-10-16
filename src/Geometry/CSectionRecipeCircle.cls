@@ -22,72 +22,105 @@ Option Explicit
 
 Implements ISectionRecipe
 
+Private Type TCircleRebar
+    Count As Long ' Число стержней основного ряда.
+    Diameter As Double ' Диаметр стержней основного ряда, мм.
+    AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
+    Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
+    Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
+    Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
+    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    Source As String ' Адреса числа стержней и отступа основного ряда для сообщения об ошибке.
+    ExtraSources(2 To 3) As String ' Адреса диаметра и привязки каждого дополнительного ряда.
+End Type
+
 ' Читает диаметр сечения и параметры включённых рядов арматуры. Формирует описание
 ' круга бетона, расположения стержней и аннотаций схемы (размер диаметра сечения,
 ' суммарное количество стержней каждого диаметра) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
-    Dim diameter As Double, axisDistance As Double, count As Long, d As Double, skipped As Double
-    Dim diameters(2 To 3) As Double, locations(2 To 3) As String, diameterRows(2 To 3) As Long
-    Dim countRow As Long, axisRow As Long, rowNumber As Long, bindingRow As Long, binding As String
-    Dim options As CRebarRuleOptions, path As CGeometryPath
-
+    Dim diameter As Double, rebar As TCircleRebar
     Set table = context.Table("rngCircleGeometry"): Set units = context.Units ' Берём копию входной таблицы и единицы измерения.
     diameter = table.PositiveLength(table.RowByKey("Circle.Diameter"), 2, units)
-    countRow = table.RowByKey("Rebar.Count")
-    count = table.Count(countRow, 2)
-    d = table.OptionalDiameter(table.RowByKey("Rebar.Diameter"), 2, units)
-
+    ReadRebarInputs table, units, diameter, rebar ' Читаем только параметры включённых рядов.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Circle" ' Создаём сборщик описания сечения.
-    Set path = facade.CirclePath("CONTOUR_CIRCLE", 0#, 0#, diameter / 2#) ' Круг бетона с центром (0, 0) и радиусом D/2, мм.
-    facade.Outer "OUTER", path.ID, "Круговой контур сечения." ' Назначаем эту замкнутую линию наружной границей бетона.
-    If count > 0 And d > 0# Then
-        Require table, countRow, count >= 2, "Для круговой раскладки требуется не меньше двух стержней первого ряда."
-        axisRow = table.RowByKey("Rebar.AxisDistance")
-        axisDistance = table.Length(axisRow, 2, units)
-        Require table, axisRow, axisDistance > d / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-        Require table, axisRow, axisDistance < diameter / 2#, "Расстояние до оси должно быть меньше радиуса бетонного круга."
-        For rowNumber = 2 To 3
-            diameterRows(rowNumber) = table.RowByKey("Rebar.Diameter" & CStr(rowNumber))
-            diameters(rowNumber) = table.OptionalDiameter(diameterRows(rowNumber), 2, units)
-        Next rowNumber
-        For rowNumber = 2 To 3
-            If diameters(rowNumber) > 0# Then locations(rowNumber) = table.Choice(table.RowByKey("Rebar.Loc" & CStr(rowNumber) & "row"), 2, Array("Stacked", "SideBySide"))
-        Next rowNumber
-        Set path = facade.CirclePath("Circle.Axis", 0#, 0#, diameter / 2# - axisDistance) ' Линия центров основного ряда: радиус D/2 - as, мм.
-
-        Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-        options.EndMode = ClosedUniform: options.SourcePrefix = "B" ' Равномерно по кругу без повторного конца; имена начинаются с B.
-        options.AnnotationGroup = "Circle" ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой окружности.
-        options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-        options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
-        options.Comment = "Круг: основной ряд арматуры"
-        ' Адреса полей для сообщения об ошибке размещения.
-        options.SourceReference = table.SourceReference(countRow, 2) & "; " & table.SourceReference(axisRow, 2)
-        facade.RebarByCount "Circle.Main", path.ID, count, d, options ' Задаём основной ряд по числу стержней и диаметру.
-        For rowNumber = 2 To 3
-            If diameters(rowNumber) > 0# Then
-                skipped = 0#
-                If rowNumber = 3 And locations(2) = locations(3) Then skipped = diameters(2) ' Обходим номинальный второй ряд в том же направлении.
-                bindingRow = table.RowByKey("Rebar.Bind" & CStr(rowNumber) & "row")
-                binding = table.Choice(bindingRow, 2, Array("EachBar", "EverySecondBar"))
-                Set options = RecipeContactOptions(table.SourceReference(diameterRows(rowNumber), 2) & "; " & table.SourceReference(bindingRow, 2), _
-                    locations(rowNumber), binding, d, diameters(rowNumber), 1#, -1#, skipped)
-                options.SourceSuffix = "_R" & CStr(rowNumber) ' Добавляем к имени основного стержня суффикс ряда.
-                options.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
-                options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-                options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
-                options.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
-                options.Comment = "Круг: дополнительный ряд арматуры"
-                facade.RebarDependent "Circle.Row" & CStr(rowNumber), "Circle.Main", diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
-            End If
-        Next rowNumber
-        facade.RebarLabel "Circle", path.ID, 0#, 1# ' Общая подпись всех круговых рядов над сечением.
-    End If
-
-    facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
+    AddGeometry facade, diameter ' Добавляем круговую границу бетона.
+    AddReinforcement facade, diameter, rebar ' Создаём линии арматуры и задаём правила размещения стержней.
+    AddAnnotations facade, diameter, rebar ' Добавляем размер диаметра и общую подпись арматуры.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
 End Function
+
+' Читает число и диаметры стержней, а для включённых рядов — отступ и привязки.
+' Если основного ряда нет, его отступ и параметры дополнительных рядов не требуются.
+Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal diameter As Double, ByRef rebar As TCircleRebar)
+    Dim countRow As Long, axisRow As Long, diameterRows(2 To 3) As Long, rowNumber As Long, bindingRow As Long
+    countRow = table.RowByKey("Rebar.Count")
+    rebar.Count = table.Count(countRow, 2)
+    rebar.Diameter = table.OptionalDiameter(table.RowByKey("Rebar.Diameter"), 2, units)
+    If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
+    Require table, countRow, rebar.Count >= 2, "Для круговой раскладки требуется не меньше двух стержней первого ряда."
+    axisRow = table.RowByKey("Rebar.AxisDistance")
+    rebar.AxisDistance = table.Length(axisRow, 2, units)
+    Require table, axisRow, rebar.AxisDistance > rebar.Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
+    Require table, axisRow, rebar.AxisDistance < diameter / 2#, "Расстояние до оси должно быть меньше радиуса бетонного круга."
+    rebar.Source = table.SourceReference(countRow, 2) & "; " & table.SourceReference(axisRow, 2)
+    For rowNumber = 2 To 3
+        diameterRows(rowNumber) = table.RowByKey("Rebar.Diameter" & CStr(rowNumber))
+        rebar.Diameters(rowNumber) = table.OptionalDiameter(diameterRows(rowNumber), 2, units)
+    Next rowNumber
+    For rowNumber = 2 To 3
+        If rebar.Diameters(rowNumber) > 0# Then rebar.Locations(rowNumber) = table.Choice(table.RowByKey("Rebar.Loc" & CStr(rowNumber) & "row"), 2, Array("Stacked", "SideBySide"))
+    Next rowNumber
+    For rowNumber = 2 To 3
+        If rebar.Diameters(rowNumber) > 0# Then
+            bindingRow = table.RowByKey("Rebar.Bind" & CStr(rowNumber) & "row")
+            rebar.Bindings(rowNumber) = table.Choice(bindingRow, 2, Array("EachBar", "EverySecondBar"))
+            rebar.ExtraSources(rowNumber) = table.SourceReference(diameterRows(rowNumber), 2) & "; " & table.SourceReference(bindingRow, 2)
+        End If
+    Next rowNumber
+    If rebar.Locations(2) = rebar.Locations(3) Then rebar.SkippedDiameters(3) = rebar.Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+End Sub
+
+' Создаёт окружность бетона и назначает её наружной границей.
+Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal diameter As Double)
+    Dim path As CGeometryPath
+    Set path = facade.CirclePath("CONTOUR_CIRCLE", 0#, 0#, diameter / 2#) ' Круг бетона с центром (0, 0) и радиусом D/2, мм.
+    facade.Outer "OUTER", path.ID, "Круговой контур сечения." ' Назначаем эту замкнутую линию наружной границей бетона.
+End Sub
+
+' Создаёт окружность центров основного ряда и правила размещения всех включённых рядов.
+Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal diameter As Double, ByRef rebar As TCircleRebar)
+    Dim path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
+    If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
+    Set path = facade.CirclePath("Circle.Axis", 0#, 0#, diameter / 2# - rebar.AxisDistance) ' Линия центров основного ряда: радиус D/2 - as, мм.
+    Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
+    options.EndMode = ClosedUniform: options.SourcePrefix = "B" ' Равномерно по кругу без повторного конца; имена начинаются с B.
+    options.AnnotationGroup = "Circle" ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой окружности.
+    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
+    options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
+    options.Comment = "Круг: основной ряд арматуры"
+    options.SourceReference = rebar.Source ' Адреса полей для сообщения об ошибке размещения.
+    facade.RebarByCount "Circle.Main", path.ID, rebar.Count, rebar.Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+    For rowNumber = 2 To 3
+        If rebar.Diameters(rowNumber) > 0# Then
+            Set options = RecipeContactOptions(rebar.ExtraSources(rowNumber), rebar.Locations(rowNumber), rebar.Bindings(rowNumber), _
+                rebar.Diameter, rebar.Diameters(rowNumber), 1#, -1#, rebar.SkippedDiameters(rowNumber))
+            options.SourceSuffix = "_R" & CStr(rowNumber) ' Добавляем к имени основного стержня суффикс ряда.
+            options.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
+            options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+            options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
+            options.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
+            options.Comment = "Круг: дополнительный ряд арматуры"
+            facade.RebarDependent "Circle.Row" & CStr(rowNumber), "Circle.Main", rebar.Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+        End If
+    Next rowNumber
+End Sub
+
+' Добавляет размер диаметра бетона и, при наличии арматуры, общую подпись всех круговых рядов.
+Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByVal diameter As Double, ByRef rebar As TCircleRebar)
+    If rebar.Count > 0 And rebar.Diameter > 0# Then facade.RebarLabel "Circle", "Circle.Axis", 0#, 1# ' Общая подпись всех круговых рядов над сечением.
+    facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
+End Sub
 
 ' Проверяет условие для указанного параметра. При нарушении сообщает причину и адрес его ячейки.
 Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal condition As Boolean, ByVal reason As String)

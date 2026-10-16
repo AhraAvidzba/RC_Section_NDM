@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "c1537dcbe14a364ef8e6e77ca2994e6fcc2b96eabe669009ef6f6316e27055df",
+  "bodySHA256": "022a059d0cec05d1836fe3be8feca901badf1503136ea62d65c32975e8f8fc4e",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "1e22df597e02e0b9ac9eda68ea1abe2e97937c7608dcfa0f8e2097727f46801a",
-    "src/Common/modSectionRecipeApiGuide.bas": "04f848c02c145344ee494ea521140208696aff7fe0a185fb346aead162e67e26"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "87383cc430a0288fb15cbc17a8ae36f137aed6629e0549e09ed2eafd6ba77fc0",
+    "src/Common/modSectionRecipeApiGuide.bas": "708463af749f8276d97fcba512fcb3c2aa4a979aa7f5b8eed222e764e020d607"
   },
   "rows": [
     {
@@ -362,7 +362,7 @@
       "line": 65
     },
     {
-      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectSet (прямоугольные сечения), CSectionRecipeRoundedRectangle (скруглённые стороны) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. Код общих методов смотрите в соответствующих классах этого же проекта.",
+      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectSet (прямоугольные сечения), CSectionRecipeRoundedRectangle (скруглённые стороны) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. В рецептах чтение и проверка данных отделены от создания границ бетона, армирования и аннотаций. Подробности — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 66

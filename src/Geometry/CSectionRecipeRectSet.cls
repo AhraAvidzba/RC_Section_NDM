@@ -24,7 +24,6 @@ Implements ISectionRecipe
 
 Private Type TRectSetDimensions
     Shape As String ' Название формы, составленной из прямоугольников.
-    Header As Long ' Строка заголовка входной таблицы размеров.
     B1 As Double ' Ширина первого прямоугольника, мм.
     H1 As Double ' Высота первого прямоугольника, мм.
     B2 As Double ' Ширина второго прямоугольника, мм.
@@ -32,21 +31,43 @@ Private Type TRectSetDimensions
     Offset As Double ' Смещение присоединённого прямоугольника, мм.
 End Type
 
+Private Type TRectangleFace
+    ID As String ' Имя стороны для привязки линий арматуры и подписей.
+    Caption As String ' Название стороны из утверждённой таблицы Config.
+    Count As Long ' Число стержней основного ряда.
+    Diameter As Double ' Диаметр стержней основного ряда, мм.
+    X1 As Double ' Начальная координата X линии центров арматуры, мм.
+    Y1 As Double ' Начальная координата Y линии центров арматуры, мм.
+    X2 As Double ' Конечная координата X линии центров арматуры, мм.
+    Y2 As Double ' Конечная координата Y линии центров арматуры, мм.
+    LabelX As Double ' Компонента X направления выноса подписи.
+    LabelY As Double ' Компонента Y направления выноса подписи.
+    TangentSign As Double ' Направление сдвига связанных стержней вдоль линии.
+    StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
+    EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
+    Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
+    Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
+    Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
+    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    Source As String ' Адреса отступов основного ряда для сообщения об ошибке размещения.
+    ExtraSources(2 To 3) As String ' Адреса диаметров дополнительных рядов для сообщения об ошибке.
+End Type
+
 ' Читает форму сечения и параметры армирования. Формирует описание наружной границы
 ' бетона, размещения стержней вдоль сторон и аннотаций схемы (размеры сечения,
 ' суммарное количество стержней каждого диаметра по каждой стороне) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
-    Dim sizes As TRectSetDimensions, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
+    Dim sizes As TRectSetDimensions, faces() As TRectangleFace, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
     Set table = context.Table("rngRectSetGeometry") ' Берём копию входной таблицы и единицы измерения.
     Set units = context.Units
-    ReadDimensions table, units, sizes ' Читаем и проверяем размеры сечения.
+    ReadGeometryInputs table, units, sizes ' Читаем и проверяем размеры сечения.
+    ReadRebarInputs table, units, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
     Set facade = New CSectionDefinitionBuilder ' Создаём сборщик описания сечения.
     facade.Initialize "RectSet" ' Начинаем описание выбранного типа.
     AddGeometry facade, sizes, upper, lower, outer ' Добавляем подготовленные границы бетона.
-    AddRectangleRows facade, table, units, sizes.Header, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1 ' Армирование четырёх граней верхнего прямоугольника.
-    If sizes.Shape <> "Rectangle" Then AddRectangleRows facade, table, units, sizes.Header, 4, 0#, 0#, sizes.B2, sizes.H2 ' Армирование нижней части, если она есть.
-    AddDimensions facade, sizes, upper, lower, outer ' Добавляем габариты и размеры сечения.
+    AddReinforcement facade, faces ' Создаём линии арматуры и задаём правила размещения стержней.
+    AddAnnotations facade, sizes, faces, upper, lower, outer ' Добавляем подписи арматуры, габариты и размеры сечения.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
 End Function
 
@@ -54,28 +75,89 @@ End Function
 ' Для одного прямоугольника не читает размеры нижней части; смещение нужно только двум прямоугольникам.
 ' В каждой паре сначала читаются H и B, затем проверяются их знаки. Так текст в B не
 ' теряется за ошибкой знака H, а сообщение сохраняет прежний адрес исходной ячейки.
-Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)
+Private Sub ReadGeometryInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)
+    Dim header As Long, row As Long
     sizes.Shape = table.Choice(table.RowByKey("RectSet.SectionType"), 2, Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
     If sizes.Shape = "RectSet" Then sizes.Shape = "LSection"
     If sizes.Shape <> "Rectangle" And sizes.Shape <> "LSection" Then sizes.Shape = "TwoRectangles"
-    sizes.Header = table.RowByKey("H1")
-    sizes.H1 = table.Length(sizes.Header + 1, 1, units)
-    sizes.B1 = table.Length(sizes.Header + 1, 2, units)
-    Require table, sizes.Header + 1, 1, sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
-    Require table, sizes.Header + 1, 2, sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
+    header = table.RowByKey("H1")
+    sizes.H1 = table.Length(header + 1, 1, units)
+    sizes.B1 = table.Length(header + 1, 2, units)
+    Require table, header + 1, 1, sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
+    Require table, header + 1, 2, sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
     If sizes.Shape <> "Rectangle" Then
-        sizes.H2 = table.Length(sizes.Header + 1, 3, units)
-        sizes.B2 = table.Length(sizes.Header + 1, 4, units)
-        Require table, sizes.Header + 1, 3, sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
-        Require table, sizes.Header + 1, 4, sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
-        If sizes.Shape = "LSection" Then Require table, sizes.Header + 1, 2, sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
+        sizes.H2 = table.Length(header + 1, 3, units)
+        sizes.B2 = table.Length(header + 1, 4, units)
+        Require table, header + 1, 3, sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
+        Require table, header + 1, 4, sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
+        If sizes.Shape = "LSection" Then Require table, header + 1, 2, sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
     End If
     If sizes.Shape = "TwoRectangles" Then
-        Dim row As Long
         row = table.RowByKey("RectSet.UpperOffsetX")
         sizes.Offset = table.Length(row, 2, units)
         Require table, row, 2, sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
     End If
+End Sub
+
+' Читает параметры четырёх сторон каждого включённого прямоугольника.
+' У одиночного прямоугольника строки нижней части не читаются; выключенные ряды не требуют отступов и привязок.
+Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions, ByRef faces() As TRectangleFace)
+    Dim header As Long
+    header = table.RowByKey("H1")
+    If sizes.Shape = "Rectangle" Then ReDim faces(1 To 4) Else ReDim faces(1 To 8)
+    ReadRectangleFaces table, units, header, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1, faces
+    If sizes.Shape <> "Rectangle" Then ReadRectangleFaces table, units, header, 4, 0#, 0#, sizes.B2, sizes.H2, faces
+End Sub
+
+' Сопоставляет строки Config со сторонами одного прямоугольника и готовит их параметры в мм.
+' Отступы считаются от полной грани; направления линий и связанных рядов сохраняются.
+Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal header As Long, _
+        ByVal base As Long, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByRef faces() As TRectangleFace)
+    Dim side As Long, row As Long, extra As Long, axisDistance As Double, rowNumber As Long, column As Long, ids As Variant
+    ' Строки каждого прямоугольника в Config: левая, правая, верхняя и нижняя стороны.
+    If base = 0 Then ids = Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2") Else ids = Array("H2.as_1", "H2.as_2", "B2.as_1", "B2.as_2")
+    For side = 1 To 4
+        row = header + 3 + base + side
+        extra = header + 13 + base + side
+        With faces(base + side)
+            .ID = CStr(ids(side - 1))
+            .Count = table.Count(row, 4)
+            .Diameter = table.OptionalDiameter(row, 3, units)
+            If .Count = 0 Or .Diameter = 0# Then GoTo NextSide
+            axisDistance = table.Length(row, 2, units)
+            Require table, row, 2, axisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
+            .StartSetback = table.Length(row, 5, units)
+            .EndSetback = table.Length(row, 6, units)
+            .Source = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 5) & "; " & table.SourceReference(row, 6)
+            .Caption = table.Text(row, 1) & " грань"
+            Select Case side
+                Case 1 ' Левая грань на расстоянии as от бетона, снизу вверх.
+                    .X1 = x + axisDistance: .Y1 = y: .X2 = x + axisDistance: .Y2 = y + height
+                    .LabelX = -1#: .TangentSign = -1#
+                Case 2 ' Правая грань на расстоянии as от бетона, сверху вниз.
+                    .X1 = x + width - axisDistance: .Y1 = y + height: .X2 = x + width - axisDistance: .Y2 = y
+                    .LabelX = 1#: .TangentSign = 1#
+                Case 3 ' Верхняя грань на расстоянии as от бетона, слева направо.
+                    .X1 = x: .Y1 = y + height - axisDistance: .X2 = x + width: .Y2 = y + height - axisDistance
+                    .LabelY = 1#: .TangentSign = 1#
+                Case 4 ' Нижняя грань на расстоянии as от бетона, справа налево.
+                    .X1 = x + width: .Y1 = y + axisDistance: .X2 = x: .Y2 = y + axisDistance
+                    .LabelY = -1#: .TangentSign = -1#
+            End Select
+            .Diameters(2) = table.OptionalDiameter(extra, 2, units)
+            .Diameters(3) = table.OptionalDiameter(extra, 5, units)
+            For rowNumber = 2 To 3
+                If .Diameters(rowNumber) > 0# Then
+                    column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
+                    .Locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                    .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                    .ExtraSources(rowNumber) = table.SourceReference(extra, column)
+                End If
+            Next rowNumber
+            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+        End With
+NextSide:
+    Next side
 End Sub
 
 ' Добавляет контуры верхнего и, если он нужен, нижнего прямоугольника. Через upper,
@@ -93,8 +175,44 @@ Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes A
 
 End Sub
 
-' Добавляет на схему общие габариты, размеры отдельных частей и ненулевое смещение верхней части.
-Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByVal upper As CGeometryPath, ByVal lower As CGeometryPath, ByVal outer As CGeometryPath)
+' Создаёт линии центров арматуры и задаёт основной и дополнительные ряды по подготовленным сторонам.
+Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef faces() As TRectangleFace)
+    Dim i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
+    For i = 1 To UBound(faces)
+        With faces(i)
+            If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
+            Set path = facade.LinePath(.ID, .X1, .Y1, .X2, .Y2) ' Линия центров стержней с подготовленными координатами, мм.
+            Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
+            options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
+            options.PositionOrder = FromPathMiddle ' Нумеруем стержни от середины линии.
+            options.SourceReference = .Source ' Адреса полей для сообщения об ошибке размещения.
+            options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+            options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
+            options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+            options.Comment = "RectSet: " & .Caption & ", ряд 1"
+            facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+            For rowNumber = 2 To 3
+                If .Diameters(rowNumber) > 0# Then
+                    Set options = RecipeContactOptions(.ExtraSources(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), _
+                        .Diameter, .Diameters(rowNumber), -1#, .TangentSign, .SkippedDiameters(rowNumber))
+                    options.AnnotationGroup = .ID ' Одна подпись для всех рядов этой стороны.
+                    options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+                    options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+                    options.Comment = "RectSet: " & .Caption & ", ряд " & CStr(rowNumber)
+                    facade.RebarDependent .ID & ".Row" & CStr(rowNumber), .ID & ".Main", .Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+                End If
+            Next rowNumber
+        End With
+NextFace:
+    Next i
+End Sub
+
+' Добавляет подписи арматуры, общие габариты, размеры отдельных частей и ненулевое смещение верхней части.
+Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRectSetDimensions, ByRef faces() As TRectangleFace, ByVal upper As CGeometryPath, ByVal lower As CGeometryPath, ByVal outer As CGeometryPath)
+    Dim i As Long
+    For i = 1 To UBound(faces)
+        If faces(i).Count > 0 And faces(i).Diameter > 0# Then facade.RebarRowLabel faces(i).ID, faces(i).ID & ".Main", faces(i).LabelX, faces(i).LabelY ' Подпись учитывает все ряды стороны и крайние стержни основного.
+    Next i
     facade.HorizontalExtent "DIM_B", outer.ID, "B", 0#, -1#, "Общая ширина RectSet-сечения." ' Общая ширина сечения B.
     facade.VerticalExtent "DIM_H", outer.ID, "H", GeomMin(0#, sizes.Offset), -1#, "Общая высота RectSet-сечения." ' Полная высота сечения H; размер вынесен влево.
     facade.HorizontalExtent "DIM_TOP_WIDTH", upper.ID, "B1", sizes.H1 + sizes.H2, 1#, "Ширина верхнего прямоугольника RectSet-сечения." ' Ширина верхнего прямоугольника; размер над сечением.
@@ -103,72 +221,6 @@ Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
         ' Размер идёт слева направо: его величина равна Abs(sizes.Offset), а выноски остаются у смещённых граней.
         If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), GeomMin(0#, sizes.Offset), GeomMax(0#, sizes.Offset), sizes.H2, 1#, "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
     End If
-End Sub
-
-' Задаёт основной и дополнительные ряды арматуры вдоль четырёх сторон одного прямоугольника.
-' Отступы считаются от полной грани; подпись каждой стороны объединяет все её ряды.
-Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal table As CSectionInputTable, _
-        ByVal units As CUnitSystem, ByVal header As Long, ByVal base As Long, _
-        ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double)
-    Dim side As Long, row As Long, extra As Long, axisDistance As Double, diameter As Double, count As Long
-    Dim path As CGeometryPath, groupID As String, label As String, options As CRebarRuleOptions
-    Dim nx As Double, ny As Double, sideSign As Double, diameters(2 To 3) As Double, locations(2 To 3) As String
-    Dim prefix As String, rowNumber As Long, column As Long, binding As String, distance As Double
-    If base = 0 Then prefix = "1" Else prefix = "2"
-    For side = 1 To 4
-        row = header + 3 + base + side
-        extra = header + 13 + base + side
-        count = table.Count(row, 4)
-        diameter = table.OptionalDiameter(row, 3, units)
-        If count = 0 Or diameter = 0# Then GoTo NextSide
-        axisDistance = table.Length(row, 2, units)
-        Require table, row, 2, axisDistance > diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-        Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-        options.StartSetback = table.Length(row, 5, units) ' Отступ от начала линии, мм.
-        options.EndSetback = table.Length(row, 6, units) ' Отступ от конца линии, мм.
-        options.PositionOrder = FromPathMiddle ' Нумеруем стержни от середины линии.
-        options.SourceReference = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 5) & "; " & table.SourceReference(row, 6) ' Адреса полей для сообщения об ошибке размещения.
-        label = table.Text(row, 1) & " грань"
-        Select Case side
-            Case 1
-                groupID = "H" & prefix & ".as_1": nx = -1#: ny = 0#: sideSign = -1#
-                Set path = facade.LinePath(groupID, x + axisDistance, y, x + axisDistance, y + height) ' Левая грань на расстоянии as от бетона, снизу вверх.
-            Case 2
-                groupID = "H" & prefix & ".as_2": nx = 1#: ny = 0#: sideSign = 1#
-                Set path = facade.LinePath(groupID, x + width - axisDistance, y + height, x + width - axisDistance, y) ' Правая грань на расстоянии as от бетона, сверху вниз.
-            Case 3
-                groupID = "B" & prefix & ".as_1": nx = 0#: ny = 1#: sideSign = 1#
-                Set path = facade.LinePath(groupID, x, y + height - axisDistance, x + width, y + height - axisDistance) ' Верхняя грань на расстоянии as от бетона, слева направо.
-            Case 4
-                groupID = "B" & prefix & ".as_2": nx = 0#: ny = -1#: sideSign = -1#
-                Set path = facade.LinePath(groupID, x + width, y + axisDistance, x, y + axisDistance) ' Нижняя грань на расстоянии as от бетона, справа налево.
-        End Select
-        options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-        options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-        options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
-        options.Comment = "RectSet: " & label & ", ряд 1"
-        facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-        diameters(2) = table.OptionalDiameter(extra, 2, units)
-        diameters(3) = table.OptionalDiameter(extra, 5, units)
-        For rowNumber = 2 To 3
-            If diameters(rowNumber) > 0# Then
-                column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
-                locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
-                distance = 0#
-                If rowNumber = 3 And locations(2) = locations(3) Then distance = diameters(2) ' Обходим номинальный второй ряд в том же направлении.
-                binding = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                Set options = RecipeContactOptions(table.SourceReference(extra, column), locations(rowNumber), binding, _
-                    diameter, diameters(rowNumber), -1#, sideSign, distance)
-                options.AnnotationGroup = groupID ' Одна подпись для всех рядов этой стороны.
-                options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-                options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
-                options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)
-                facade.RebarDependent groupID & ".Row" & CStr(rowNumber), groupID & ".Main", diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
-            End If
-        Next rowNumber
-        facade.RebarRowLabel groupID, groupID & ".Main", nx, ny ' Подпись учитывает все ряды стороны и крайние стержни основного.
-NextSide:
-    Next side
 End Sub
 
 ' Проверяет условие для указанной ячейки. При нарушении сообщает причину и её фактический адрес.

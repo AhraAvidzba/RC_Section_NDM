@@ -2822,7 +2822,7 @@
     },
     "CSectionInputTable.RowCount": {
       "source": "tests/modTestSectionSolver.bas",
-      "line": 477,
+      "line": 478,
       "routine": "TestRecipeInputCatalog",
       "code": "            For row = 1 To table.RowCount",
       "context": "В теле modTestSectionSolver.TestRecipeInputCatalog с его подготовленными локальными объектами/входом.",
@@ -4001,7 +4001,7 @@
     },
     "CUnitSystem.LoadFromSettings": {
       "source": "tests/modTestMaterialDiagrams.bas",
-      "line": 1054,
+      "line": 1115,
       "routine": "Audit03MaterialConfigProvider",
       "code": "    units.LoadFromSettings settings",
       "context": "В теле modTestMaterialDiagrams.Audit03MaterialConfigProvider с его подготовленными локальными объектами/входом.",
@@ -6175,14 +6175,14 @@
     "tests/modTestGeometryPublication.bas": "48b16c90e96c9e4c3ee5168b4857f99109ce2cd9e04ce1349f6e13137cfc7ce6",
     "tests/modTestGeometryQuery.bas": "461ea2b13a582da6d256925a730bdfb0a3027ebddf18b2f95bebe14e6a7f4b01",
     "tests/modTestGeometryReview.bas": "82cc69d3bd4b5c0b587334b29a0e6bda44e298ed344f2090d0e5c3f016a30dd3",
-    "tests/modTestMaterialDiagrams.bas": "17a796359de94c23472cb19dec8a7a707c3441677d4316496c5f34d773ab597e",
+    "tests/modTestMaterialDiagrams.bas": "087f88c86f4b8ebd8d2f0395a903a4f4bf3d6276ef5383e057713d1227b56b4b",
     "tests/modTestPolygonSpec.bas": "ed5a5ef469aeab55de91c42540adb7d44f44695704b316e8d88efd7d2681dc1e",
     "tests/modTestRecipeAnnotations.bas": "3847af00d93a63a520806dbadff9870160da53ed7a714dd14b1d149bfa569845",
     "tests/modTestRecipeApiCatalogue.bas": "c124966801f6f0efdeea86843a580618df7d4b46f57452428eef5105e177c863",
     "tests/modTestRecipeOperations.bas": "a200b0fdc4c41673f1469949e5e1324ee7813d7266a9a70a77e439ef6f9244f9",
     "tests/modTestRecipeSetbacks.bas": "808b7d49677fa8aab21dc88bd1ca689e925ffdbbde441bf958b6a4e7bb71ddc0",
-    "tests/modTestSectionRecipes.bas": "b1c453961ae63b2a9be51fe41378d65dd16771aae1051ba362f9fe661f317d7b",
-    "tests/modTestSectionSolver.bas": "2cafc2d2de4c39165a87b51923a70647e32f895ac1ede6366ac6b6bcf566adb6"
+    "tests/modTestSectionRecipes.bas": "b661ad0a453efe1c386a0351fb1f26b6900380462e924c5a42687f91c3d73044",
+    "tests/modTestSectionSolver.bas": "8a6320e735c1ab212ddf30e744d90b0de5822c89f9b49605b6c2cf6b33bc54c7"
   },
   "reportHashes": {
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt": "d447d1c999d3410bd5e5af4792dc86af62f286b418260814793feee58f464947",

@@ -1496,3 +1496,71 @@ Private Sub SetSystemInput(ByVal key As String, ByVal value As Variant)
     Next i
     Err.Raise vbObjectError + 5531, "modTestSectionRecipes", "Не найден системный ключ '" & key & "'."
 End Sub
+
+' ДЛЯ ТЕСТОВ: рецепты используют названия сторон из Config, а не внутренние имена и прежние варианты.
+Public Function RunRecipeCaptionTests() As String
+    Dim config As Object, saved As Variant, fixture As Variant, table As Object, mainHeader As Long, extraHeader As Long
+    Dim ids As Variant, aliases As Variant, i As Long, block As Long, firstRow As Long, caption As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel, typeID As String
+    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, inputTable As CSectionInputTable, tableName As String
+    Dim events As Boolean, updating As Boolean
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    For Each fixture In Array("RoundedSimple", "HollowCentered")
+        config.Formula = saved
+        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        If CStr(fixture) = "RoundedSimple" Then
+            modTestShapeArchitecture.ConfigureRoundedScenario 1
+            typeID = "RoundedRectangle"
+            tableName = "rngRoundedRectangleGeometry"
+            ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
+            aliases = Array("B-Top", "B-Bottom", "H-Left", "H-Right")
+        Else
+            modTestShapeArchitecture.ConfigureHollowScenario 1
+            typeID = "HollowRectangle"
+            tableName = "rngHollowRectangleGeometry"
+            ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
+            aliases = Array("B-top", "B-bottom", "H-left", "H-right", "bo-top", "bo-bottom", "ho-left", "ho-right")
+        End If
+        Set table = ThisWorkbook.Names(tableName).RefersToRange
+        Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array(tableName), units)
+        Set inputTable = context.Table(tableName)
+        mainHeader = inputTable.RowByKey("as", 2): extraHeader = inputTable.RowByKey("d2", 2)
+        Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+        Check CStr(fixture) & ".approvedCaptions", model.RebarCount > 0
+        For block = 0 To 1
+            If block = 0 Then firstRow = mainHeader + 1 Else firstRow = extraHeader + 1
+            For i = 0 To UBound(ids)
+                caption = CStr(table.Cells(firstRow + i, 1).Value2)
+                table.Cells(firstRow + i, 1).Value2 = ids(i)
+                Check CStr(fixture) & ".internalCaption." & CStr(block) & "." & CStr(i), RecipeCaptionRejected(typeID, settings, units, caption)
+                table.Cells(firstRow + i, 1).Value2 = aliases(i)
+                Check CStr(fixture) & ".legacyCaption." & CStr(block) & "." & CStr(i), RecipeCaptionRejected(typeID, settings, units, caption)
+                table.Cells(firstRow + i, 1).Value2 = caption
+            Next i
+        Next block
+    Next fixture
+    GoTo Finished
+Failed:
+    Check "recipe.captions.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.EnableEvents = events: Application.ScreenUpdating = updating
+    RunRecipeCaptionTests = mReport & "TOTAL RECIPE CAPTIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: отсутствие утверждённой подписи должно дать понятную ошибку с её названием.
+Private Function RecipeCaptionRejected(ByVal typeID As String, ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByVal caption As String) As Boolean
+    Dim builder As CSectionBuilder, model As CSectionModel
+    On Error GoTo Rejected
+    Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+    Exit Function
+Rejected:
+    RecipeCaptionRejected = InStr(1, Err.Description, caption, vbBinaryCompare) > 0
+End Function

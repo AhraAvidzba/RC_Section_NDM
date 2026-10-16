@@ -30,9 +30,27 @@ Private Type TRoundedInput
     Widths(1 To 2) As Double ' Ширины левого и правого выступов, мм.
     R1(1 To 2) As Double ' Радиусы первых скруглений левой и правой сторон, мм.
     R2(1 To 2) As Double ' Радиусы вторых скруглений левой и правой сторон, мм.
-    MainHeader As Long ' Строка заголовка основной таблицы армирования во входных данных.
-    ExtraHeader As Long ' Строка заголовка дополнительных рядов арматуры во входных данных.
     GeometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
+End Type
+
+Private Type TRoundedFace
+    ID As String ' Имя стороны для привязки линий арматуры и подписей.
+    Caption As String ' Единственное название стороны в утверждённой таблице Config.
+    Count As Long ' Число стержней основного ряда.
+    Diameter As Double ' Диаметр стержней основного ряда, мм.
+    AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
+    StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
+    EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
+    LabelX As Double ' Компонента X направления выноса подписи.
+    LabelY As Double ' Компонента Y направления выноса подписи.
+    NormalSign As Double ' Направление смещения дополнительного ряда по нормали.
+    Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
+    Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
+    Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
+    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    Source As String ' Адреса отступов основного ряда для сообщения об ошибке размещения.
+    AxisSource As String ' Адрес расстояния до оси для пояснения ошибки построения линии.
+    ExtraSources(2 To 3) As String ' Адреса диаметров дополнительных рядов для сообщения об ошибке.
 End Type
 
 ' Читает форму сечения со скруглёнными сторонами и параметры армирования. Формирует
@@ -40,20 +58,21 @@ End Type
 ' а также аннотаций схемы (размеры сечения, количество и диаметры стержней).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
-    Dim sizes As TRoundedInput, outer As CGeometryPath, polygon As CPolygonSpec
+    Dim sizes As TRoundedInput, faces(1 To 4) As TRoundedFace, outer As CGeometryPath, polygon As CPolygonSpec
     Set table = context.Table("rngRoundedRectangleGeometry"): Set units = context.Units ' Берём копию входной таблицы и единицы измерения.
-    ReadDimensions table, units, sizes ' Читаем и проверяем размеры сечения.
+    ReadGeometryInputs table, units, sizes ' Читаем и проверяем размеры сечения.
+    ReadRebarInputs table, units, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
     Set polygon = DescribePolygon(sizes) ' Общее описание вершин для бетона и всех смещённых линий.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle" ' Создаём сборщик описания сечения.
     Set outer = AddGeometry(facade, sizes, polygon) ' Получаем наружный контур по подготовленному многоугольнику.
-    AddReinforcement facade, table, units, sizes, polygon ' Задаём ряды и их общие подписи по параметрам таблицы.
-    AddDimensions facade, sizes, outer ' Добавляем габариты и размеры сечения.
+    AddReinforcement facade, faces, polygon ' Создаём линии арматуры и задаём правила размещения стержней.
+    AddAnnotations facade, sizes, faces, outer ' Добавляем подписи арматуры, габариты и размеры сечения.
     Set ISectionRecipe_CreateDefinition = facade.Finish ' Завершаем и возвращаем проверенное описание сечения.
 End Function
 
 ' Заполняет sizes размерами в миллиметрах и проверяет параметры обеих сторон.
 ' Для обычной стороны не читает ширину выступа и его радиус; сохраняет адреса активных полей.
-Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRoundedInput)
+Private Sub ReadGeometryInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRoundedInput)
     Dim row As Long, sides As Long, side As Long, column As Long
     row = table.RowByKey("B", 2) + 1
     sizes.B = table.PositiveLength(row, 2, units): sizes.H = table.PositiveLength(row, 3, units)
@@ -71,22 +90,54 @@ Private Sub ReadDimensions(ByVal table As CSectionInputTable, ByVal units As CUn
             Require table, sides + 2, column, sizes.Widths(side) > GEOM_TOLERANCE, "Для Tapered размер W должен быть положительным."
         End If
     Next side
-    sizes.MainHeader = table.RowByKey("as", 2): sizes.ExtraHeader = table.RowByKey("d2", 2)
 End Sub
 
-' Создаёт наружный контур по заданным вершинам и радиусам и сразу назначает его границей бетона.
-' Ошибку связывает с исходными размерами.
-Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec) As CGeometryPath
-    On Error GoTo InvalidGeometry
-    Dim outer As CGeometryPath
-    Set outer = facade.RoundedPolygon("Boundary", polygon) ' Создаём готовый замкнутый контур по исходным вершинам и радиусам.
-    ' Назначаем эту замкнутую линию наружной границей бетона.
-    facade.Outer "OUTER", outer.ID, "Прямой участок контура скругленного прямоугольника.", arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
-    Set AddGeometry = outer
-    Exit Function
-InvalidGeometry:
-    SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sizes.GeometrySource
-End Function
+' Читает четыре стороны по утверждённым названиям Config и готовит параметры армирования.
+' Выключенная сторона не требует as, отступов и дополнительных рядов.
+Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef faces() As TRoundedFace)
+    Dim ids As Variant, captions As Variant, i As Long, row As Long, extra As Long, mainHeader As Long, extraHeader As Long
+    Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long
+    ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
+    captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая")
+    mainHeader = table.RowByKey("as", 2): extraHeader = table.RowByKey("d2", 2)
+    For i = 1 To 4
+        With faces(i)
+            .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
+            row = table.RowByKey(.Caption, 1, mainHeader + 1, mainHeader + 4)
+            .Count = table.Count(row, 4): .Diameter = table.OptionalDiameter(row, 3, units)
+            If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
+            .AxisDistance = table.Length(row, 2, units)
+            Require table, row, 2, .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
+            .AxisSource = table.SourceReference(row, 2)
+            Select Case .ID
+                Case "B.Top": .LabelY = 1#: .NormalSign = -1#
+                Case "B.Bottom": .LabelY = -1#: .NormalSign = 1#
+                Case "H.Left": .LabelX = -1#: .NormalSign = 1#
+                Case "H.Right": .LabelX = 1#: .NormalSign = -1#
+            End Select
+            If startColumn = 0 Then
+                startColumn = table.ColumnByCaption(mainHeader, "StartSetback")
+                endColumn = table.ColumnByCaption(mainHeader, "EndSetback")
+            End If
+            .StartSetback = table.NonNegativeLength(row, startColumn, units)
+            .EndSetback = table.NonNegativeLength(row, endColumn, units)
+            .Source = .AxisSource & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
+            extra = table.RowByKey(.Caption, 1, extraHeader + 1, extraHeader + 4)
+            .Diameters(2) = table.OptionalDiameter(extra, 2, units)
+            .Diameters(3) = table.OptionalDiameter(extra, 5, units)
+            For rowNumber = 2 To 3
+                If .Diameters(rowNumber) > 0# Then
+                    column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
+                    .Locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                    .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                    .ExtraSources(rowNumber) = table.SourceReference(extra, column)
+                End If
+            Next rowNumber
+            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+        End With
+NextFace:
+    Next i
+End Sub
 
 ' Возвращает завершённое описание вершин и радиусов: четыре основных угла и вершины
 ' включённых выступов. Этот же объект используется для контура бетона и линий арматуры.
@@ -105,73 +156,52 @@ Private Function DescribePolygon(ByRef sizes As TRoundedInput) As CPolygonSpec
     Set DescribePolygon = polygon ' Возвращаем подготовленный многоугольник.
 End Function
 
-' Задаёт ряды арматуры вдоль четырёх сторон и объединяет их в общую подпись по каждой стороне.
+' Создаёт наружный контур по заданным вершинам и радиусам и сразу назначает его границей бетона.
+' Ошибку связывает с исходными размерами.
+Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec) As CGeometryPath
+    On Error GoTo InvalidGeometry
+    Dim outer As CGeometryPath
+    Set outer = facade.RoundedPolygon("Boundary", polygon) ' Создаём готовый замкнутый контур по исходным вершинам и радиусам.
+    ' Назначаем эту замкнутую линию наружной границей бетона.
+    facade.Outer "OUTER", outer.ID, "Прямой участок контура скругленного прямоугольника.", arcComment:="Дуга контура скругленного прямоугольника.", namingPolicy:=SequentialByKind
+    Set AddGeometry = outer
+    Exit Function
+InvalidGeometry:
+    SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sizes.GeometrySource
+End Function
+
+' Создаёт линии арматуры и задаёт ряды вдоль четырёх сторон по подготовленным параметрам.
 ' Порядок сторон сохраняет принадлежность общего углового стержня первому из заданных рядов.
-Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec)
-    Dim faces As Variant, captions As Variant, index As Long, row As Long, extra As Long, count As Long
-    Dim groupID As String, diameter As Double, axisDistance As Double, options As CRebarRuleOptions, path As CGeometryPath
-    Dim nx As Double, ny As Double, normalSign As Double, diameters(2 To 3) As Double, locations(2 To 3) As String, distance As Double
-    Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long, binding As String, keys As Variant
-    faces = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
-    captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая")
-    For index = 0 To 3
-        groupID = CStr(faces(index))
-        keys = Array(captions(index), Replace$(groupID, ".", "-"), groupID)
-        row = table.RowByAnyKey(keys, 1, sizes.MainHeader + 1, sizes.MainHeader + 4)
-        count = table.Count(row, 4): diameter = table.OptionalDiameter(row, 3, units)
-        If count = 0 Or diameter = 0# Then GoTo NextFace
-        axisDistance = table.Length(row, 2, units)
-        Require table, row, 2, axisDistance > diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-        Set path = AxisPath(facade, polygon, groupID, axisDistance, table.SourceReference(row, 2)) ' Получаем линию центров стержней выбранной стороны с отступом as.
-        nx = 0#: ny = 0#
-        Select Case groupID
-            Case "B.Top": ny = 1#: normalSign = -1#
-            Case "B.Bottom": ny = -1#: normalSign = 1#
-            Case "H.Left": nx = -1#: normalSign = 1#
-            Case "H.Right": nx = 1#: normalSign = -1#
-        End Select
-        Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-        If index >= 2 Then options.EndMode = ExcludeBoth ' Исключаем стержни на обоих концах линии.
-        If startColumn = 0 Then
-            startColumn = table.ColumnByCaption(sizes.MainHeader, "StartSetback")
-            endColumn = table.ColumnByCaption(sizes.MainHeader, "EndSetback")
-        End If
-        options.StartSetback = table.NonNegativeLength(row, startColumn, units) ' Отступ от начала линии, мм.
-        options.EndSetback = table.NonNegativeLength(row, endColumn, units) ' Отступ от конца линии, мм.
-        options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-        options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-        options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
-        options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
-        options.Comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд 1"
-        ' Адреса полей для сообщения об ошибке размещения.
-        options.SourceReference = table.SourceReference(row, 2) & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
-        facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-        extra = table.RowByAnyKey(keys, 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 4)
-        diameters(2) = table.OptionalDiameter(extra, 2, units)
-        diameters(3) = table.OptionalDiameter(extra, 5, units)
-        For rowNumber = 2 To 3
-            If diameters(rowNumber) > 0# Then
-                column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
-                locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
-                distance = 0#
-                If rowNumber = 3 And locations(2) = locations(3) Then distance = diameters(2) ' Обходим номинальный второй ряд в том же направлении.
-                binding = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                Set options = RecipeContactOptions(table.SourceReference(extra, column), locations(rowNumber), binding, _
-                    diameter, diameters(rowNumber), normalSign, interveningDiameterSum:=distance)
-                options.AnnotationGroup = groupID ' Одна подпись для всех рядов этой стороны.
-                options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-                options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
-                options.Comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд " & CStr(rowNumber)
-                facade.RebarDependent groupID & ".Row" & CStr(rowNumber), groupID & ".Main", diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
-            End If
-        Next rowNumber
-        If index >= 2 Then
-            facade.RebarRowExtentLabel groupID, groupID & ".Main", nx, ny, True ' Привязываем подпись к крайним стержням основного ряда.
-        Else
-            facade.RebarLabel groupID, path.ID, nx, ny ' Общую подпись рядов привязываем к границе их линии.
-        End If
+Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef faces() As TRoundedFace, ByVal polygon As CPolygonSpec)
+    Dim i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
+    For i = 1 To 4
+        With faces(i)
+            If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
+            Set path = AxisPath(facade, polygon, .ID, .AxisDistance, .AxisSource) ' Получаем линию центров стержней выбранной стороны с отступом as.
+            Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
+            If i >= 3 Then options.EndMode = ExcludeBoth ' Исключаем стержни на обоих концах линии.
+            options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
+            options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+            options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
+            options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
+            options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
+            options.Comment = "RoundedRectangle: " & .Caption & " грань, ряд 1"
+            options.SourceReference = .Source ' Адреса полей для сообщения об ошибке размещения.
+            facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+            For rowNumber = 2 To 3
+                If .Diameters(rowNumber) > 0# Then
+                    Set options = RecipeContactOptions(.ExtraSources(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), _
+                        .Diameter, .Diameters(rowNumber), .NormalSign, interveningDiameterSum:=.SkippedDiameters(rowNumber))
+                    options.AnnotationGroup = .ID ' Одна подпись для всех рядов этой стороны.
+                    options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+                    options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+                    options.Comment = "RoundedRectangle: " & .Caption & " грань, ряд " & CStr(rowNumber)
+                    facade.RebarDependent .ID & ".Row" & CStr(rowNumber), .ID & ".Main", .Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+                End If
+            Next rowNumber
+        End With
 NextFace:
-    Next index
+    Next i
 End Sub
 
 ' Возвращает линию центров стержней выбранной стороны после смещения контура на as.
@@ -195,9 +225,20 @@ InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sourceReference
 End Function
 
-' Добавляет ширину прямой базы B, полную высоту H и фактические размеры включённых боковых выступов.
-Private Sub AddDimensions(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByVal outer As CGeometryPath)
-    Dim minX As Double, maxX As Double
+' Добавляет подписи арматуры, ширину прямой базы B, полную высоту H и размеры включённых боковых выступов.
+Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByRef faces() As TRoundedFace, ByVal outer As CGeometryPath)
+    Dim minX As Double, maxX As Double, i As Long
+    For i = 1 To 4
+        With faces(i)
+            If .Count > 0 And .Diameter > 0# Then
+                If i >= 3 Then
+                    facade.RebarRowExtentLabel .ID, .ID & ".Main", .LabelX, .LabelY, True ' Привязываем подпись к крайним стержням основного ряда.
+                Else
+                    facade.RebarLabel .ID, .ID, .LabelX, .LabelY ' Общую подпись рядов привязываем к границе их линии.
+                End If
+            End If
+        End With
+    Next i
     outer.ProjectionBounds 1#, 0#, minX, maxX
     ' Ширина прямой базы B; размер сверху.
     facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Размер горизонтальной базы RoundedRectangle между левым и правым торцом."

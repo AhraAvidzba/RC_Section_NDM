@@ -4060,7 +4060,7 @@ Source: src/Section/CSectionInputTable.cls:64
             For row = 1 To table.RowCount
 ```
 
-Полный контекст: tests/modTestSectionSolver.bas:477.
+Полный контекст: tests/modTestSectionSolver.bas:478.
 
 Native entrypoint: modTestSectionSolver.RunSectionSolverTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt.
 
@@ -5696,7 +5696,7 @@ Source: src/Excel/CUnitSystem.cls:58
     units.LoadFromSettings settings
 ```
 
-Полный контекст: tests/modTestMaterialDiagrams.bas:1054.
+Полный контекст: tests/modTestMaterialDiagrams.bas:1115.
 
 Native entrypoint: modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Compatibility/modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests.txt.
 

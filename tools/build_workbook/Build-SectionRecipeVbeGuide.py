@@ -127,6 +127,11 @@ def build():
 
     comment('Ввод из Config передаётся в context общим CSectionInputSnapshotReader: table = context.Table("имя таблицы"), units = context.Units. table.PositiveLength/NonNegativeLength возвращают мм и проверяют знак; SourceReference возвращает адрес. Полный пример такого ввода — CSectionRecipeRoundedRectangle.', 4)
     comment()
+    comment('УСТРОЙСТВО ШТАТНЫХ РЕЦЕПТОВ', 2)
+    comment('В Circle, RectSet, RoundedRectangle и HollowRectangle сначала читаются и проверяются размеры и параметры включённых рядов. Подготовленные значения, адреса исходных ячеек и соответствие названий Config внутренним именам сторон сохраняются в Private Type самого рецепта. Для одного размера отдельный метод чтения не нужен.', 4)
+    comment('CreateDefinition связывает этапы: подготовку данных, AddGeometry, AddReinforcement и AddAnnotations. AddGeometry задаёт границы бетона и отверстий. AddReinforcement создаёт линии центров арматуры и регистрирует правила размещения стержней. AddAnnotations задаёт размеры и подписи. Эти методы получают готовые параметры и не читают входные таблицы.', 4)
+    comment('Неактивные поля не становятся обязательными: параметры отключённого ряда пропускаются. В HollowRectangle внутренние as нужны и без стержней на соответствующей стороне: они ограничивают линии арматуры у отверстия. В таблицах используются утверждённые названия Config без альтернативных ключей.', 4)
+    comment()
     comment('ОПИСАТЕЛЬ И ПРИВЯЗКИ', 2)
     comment('CPolygonSpec объединяет исходные ID, X, Y, FilletRadius и SourceReference каждой вершины. New → AddVertex → Seal. Состояние читают Count/IsSealed, значения — VertexID/X/Y/FilletRadius/SourceReference по индексу от 1. После Seal изменение запрещено; повторный Seal безопасен. Первую вершину в конце не повторяют.', 4)
     comment('В конце AddVertex можно задать outgoingEdgeID — имя прямого участка к следующей вершине между касаниями, и cornerID — имя скругления этой вершины. Например: polygon.AddVertex "TR", 400#, 600#, 40#, outgoingEdgeID:="Right.UpperSlope", cornerID:="Round.TopRight". VertexID при этом остаётся "TR". Пустые аргументы дают прежние Edge.TR и Corner.TR. OutgoingEdgeID/CornerID возвращают эффективные имена. Все имена сегментов одного многоугольника уникальны, включая исчезнувшие участки; при R=0 фиктивная дуга не создаётся.', 4)
