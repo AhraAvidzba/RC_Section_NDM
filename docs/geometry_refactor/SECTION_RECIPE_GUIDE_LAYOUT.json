@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "e0ca1aab42b0836d634d8a08937665aac197411cc45157a007849d06f5a5d1b7",
+  "bodySHA256": "db4ad7c715015397bb18e07689b3dfbb380c8a47bd1296004463f5f889714568",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "733062f4d4be3e51f4fff941a156286c875ee1f5242115c31491f3aefebeb70c",
-    "src/Common/modSectionRecipeApiGuide.bas": "405fecb89b80814ab601a82b13b88ffa82553bd7fab1cedf20512c8161f56942"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "e131fae638c3e3e70aa8dd86a16ffd799c516abec6b6c0f6179222812136252c",
+    "src/Common/modSectionRecipeApiGuide.bas": "86483d935002fcd6ac92337887deee92a7c92e5a15e0d334a009b29f92e1963a"
   },
   "rows": [
     {
@@ -140,7 +140,7 @@
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. В CRebarRuleOptions поле AnnotationGroup объединяет стержни в одну подпись, Publication задаёт порядок их вывода, Coincidence — обработку совпавших позиций. ConfigureDependentContact задаёт контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset.",
+      "text": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. В CRebarRuleOptions поле AnnotationGroup объединяет стержни в одну подпись, Publication задаёт порядок их вывода, Coincidence — обработку совпавших позиций. ConfigureDependentContact задаёт контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset. Штатные рецепты используют общий RecipeContactOptions из modSectionRecipeRows для подготовки контактных рядов; направления, привязки и политики каждого ряда остаются в рецепте.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
@@ -375,5 +375,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 137
+  "members": 138
 }

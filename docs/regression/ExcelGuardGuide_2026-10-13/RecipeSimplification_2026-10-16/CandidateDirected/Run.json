@@ -1,0 +1,128 @@
+{
+  "Stage": "CandidateDirected",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+      "Seconds": 2.5704247,
+      "Characters": 21325,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Seconds": 0.0944724,
+      "Characters": 443,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleRecipeInputTests",
+      "Seconds": 0.4449414,
+      "Characters": 150,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+      "Seconds": 3.0332342,
+      "Characters": 368,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunHollowRecipeInputTests",
+      "Seconds": 4.8245462,
+      "Characters": 491,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingTests",
+      "Seconds": 3.2285732,
+      "Characters": 445540,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+      "Seconds": 0.0854664,
+      "Characters": 803,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "Seconds": 26.7703089,
+      "Characters": 4055,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeRuleTests",
+      "Seconds": 0.4146824,
+      "Characters": 7474,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "Seconds": 0.1484102,
+      "Characters": 4638,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Seconds": 0.2919072,
+      "Characters": 881,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunRecipeOperationTests",
+      "Seconds": 0.0262778,
+      "Characters": 46,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+      "Seconds": 0.2927172,
+      "Characters": 47,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+      "Seconds": 4.3881786,
+      "Characters": 10727,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutContactTests",
+      "Seconds": 0.0308489,
+      "Characters": 808,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunRecipeContactOptionsContract",
+      "Seconds": 0.0062595,
+      "Characters": 390,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+      "Seconds": 0.1380749,
+      "Characters": 626,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T10:18:59.5414157+03:00"
+}

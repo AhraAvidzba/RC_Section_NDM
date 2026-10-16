@@ -1,0 +1,47 @@
+{
+  "ArchiveSHA256": "f4653f66c3bb92080c97e48422a74aa6d0109ae44d4908e77ec184bfd8ed0f97",
+  "Removed": [
+    {
+      "Path": "GuideReadability\\Accepted.xlsm",
+      "Bytes": 7817493,
+      "SHA256": "769EB93DEFBA8F7A914B542387373DD963013DDF2E60172ACE941CA8E3CEE3B3"
+    },
+    {
+      "Path": "GuideReadability\\AcceptedNativeVBA.txt",
+      "Bytes": 7174182,
+      "SHA256": "2617E124EE63E52AB334B832FA9B393FB504A65512A9A663BF32E4EFDC3302DA"
+    },
+    {
+      "Path": "GuideReadability\\Baseline.xlsm",
+      "Bytes": 7814695,
+      "SHA256": "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E"
+    },
+    {
+      "Path": "GuideReadability\\BaselineAllCode.txt",
+      "Bytes": 7173384,
+      "SHA256": "1158823AC6177470255AE8A9D2F4DF57A53300FD82A33347E1EDDC7D9A7B1DC0"
+    },
+    {
+      "Path": "GuideReadability\\BaselineNativeVBA.txt",
+      "Bytes": 7173384,
+      "SHA256": "1158823AC6177470255AE8A9D2F4DF57A53300FD82A33347E1EDDC7D9A7B1DC0"
+    },
+    {
+      "Path": "GuideReadability\\Candidate.xlsm",
+      "Bytes": 8362713,
+      "SHA256": "09B57EE133E0AC9AB5BC4CA3F6996F8727BEB1C325BF5A6A5EF98F05D78F7966"
+    },
+    {
+      "Path": "GuideReadability\\CandidateNativeVBA.txt",
+      "Bytes": 7174183,
+      "SHA256": "FBC2E921C2DF4A19F22398EF4BCCEE5597A7BC39C60B2ED688C5DF4310C97C3A"
+    },
+    {
+      "Path": "GuideReadability\\PublishedNativeVBA.txt",
+      "Bytes": 7174188,
+      "SHA256": "C72580F38D44B4DBE3E24A3B9C169A4DFA24A55C93390738370F3F335C847732"
+    }
+  ],
+  "RemovedBytes": 59864222,
+  "ProductionFilesUntouched": true
+}

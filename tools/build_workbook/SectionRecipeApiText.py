@@ -307,6 +307,7 @@ PROPERTIES = {
 }
 
 LIFECYCLE = {
+    "modSectionRecipeRows": "Небольшой общий помощник штатных рецептов. Получает проверенные значения в миллиметрах и возвращает новые CRebarRuleOptions; таблицы, форму сечения и политики публикации не выбирает.",
     "CPolygonSpec": "New→AddVertex в нужном порядке→Seal→чтение и повторное использование для исходного/смещённых путей. Минимум три вершины. После Seal изменение запрещено, повторный Seal безопасен. Топологию и касания проверяет прежнее геометрическое ядро; автоматических anchors нет.",
     "CSectionDefinitionBuilder": "New→Initialize один раз→декларации→Finish. Создающие методы уже регистрируют путь; AddPath нужен только для отдельного подготовленного пути. Ссылки требуют ранее объявленных путей/привязок; зависимости разрешаются при Finish. После Finish новые декларации запрещены.",
     "CGeometryPath": "New→Initialize→AddLine/AddArc→Seal. Методы чтения/slice/transform требуют Seal. Они возвращают отдельные опубликованные пути; исходный не меняется.",
@@ -398,6 +399,8 @@ ERRORS = {
 
 def purpose(member):
     owner, name, kind = member["owner"], member["name"], member["kind"]
+    if owner == "modSectionRecipeRows":
+        return "Создаёт независимые настройки контактного дополнительного ряда по уже проверенным значениям рецепта. Stacked выбирает нормаль, SideBySide — касательную; контактное расстояние задаёт ConfigureDependentContact. Не читает таблицы и не объявляет ряд. AnnotationGroup, Publication, Coincidence, имена и комментарий задаются отдельно в рецепте; остальные поля имеют обычные значения New CRebarRuleOptions."
     if owner == "CPolygonSpec":
         return {"AddVertex": "Добавляет запись исходной вершины: X/Y, радиус, ID и текстовый источник. Проверяет структуру и числа без геометрических вычислений.",
                 "Seal": "Завершает набор из минимум трёх вершин в исходном порядке. Повторный Seal безопасен; неудачный оставляет описание открытым.",
@@ -435,11 +438,18 @@ def purpose(member):
 def parameter_meaning(member, parameter):
     import re
     name, passing = parameter["name"], parameter["passing"]
-    if member["name"] == "ResolveAnchor" and name == "segmentID":
+    if member['owner'] == 'modSectionRecipeRows' and name in ('location', 'binding', 'normalSign', 'tangentSign'):
+        meaning = {
+            'location': 'Проверенное значение Stacked (поперёк линии) или SideBySide (вдоль линии). Ввод проверяется методом Choice до вызова.',
+            'binding': 'Проверенное значение EachBar (все исходные позиции) или EverySecondBar (первая, третья и следующие нечётные позиции).',
+            'normalSign': 'Знак смещения Stacked относительно левой нормали исходной линии: +1 или -1; определяется направлением её обхода.',
+            'tangentSign': 'Знак смещения SideBySide вдоль исходной линии: +1 по её направлению, -1 против. По умолчанию +1.',
+        }[name]
+    elif member["name"] == "ResolveAnchor" and name == "segmentID":
         meaning = "Возвращаемое существующее имя сегмента этой линии; не новое имя и не обязательно имя исходного контура."
     elif member["name"] == "ResolveAnchor" and name == "parameter":
         meaning = "Возвращаемая доля длины найденного сегмента [0;1]: 0 — начало, 1 — конец по направлению его обхода."
-    elif member['owner'] == 'CRebarRuleOptions' and member['name'] == 'ConfigureDependentContact' and name in ('baseDiameter', 'diameter'):
+    elif member['owner'] in ('CRebarRuleOptions', 'modSectionRecipeRows') and member['name'] in ('ConfigureDependentContact', 'RecipeContactOptions') and name in ('baseDiameter', 'diameter'):
         role = 'основного' if name == 'baseDiameter' else 'добавляемого'
         meaning = 'Строго положительный диаметр '+role+' стержня, мм (>0). Ноль и отрицательное значение вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.'
     elif name == "savedUnit" and member["name"] == "OutputFourthPowerLengthToInternal":

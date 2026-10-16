@@ -1,0 +1,58 @@
+﻿{
+    "Stage":  "CandidateMatrices",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpCircleRecipeMatrix",
+                     "Seconds":  11.677377,
+                     "Characters":  8786535,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpRectSetRecipeMatrix",
+                     "Seconds":  8.5685413,
+                     "Characters":  5027387,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpRoundedRecipeMatrix",
+                     "Seconds":  10.5433653,
+                     "Characters":  7709777,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpHollowRecipeMatrix",
+                     "Seconds":  12.5935287,
+                     "Characters":  10667642,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpHollowRecipeEdgeMatrix",
+                     "Seconds":  4.1615541,
+                     "Characters":  3470714,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.DumpAudit02CloseoutInputContract",
+                     "Seconds":  4.3250199999999994,
+                     "Characters":  23811,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Snapshots.DumpRecipeRuleContracts",
+                     "Seconds":  15.6882881,
+                     "Characters":  262972,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "556ABED3E5882610AF095CC0E4A4A5DFB59B4913E7807DF34CDA482E38CCC7C7",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-16T10:14:53.4462999+03:00"
+}

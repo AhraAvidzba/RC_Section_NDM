@@ -547,6 +547,34 @@ Private Function InputContractRow(ByVal unit As String, ByVal fixture As String,
 End Function
 
 ' Исходный квадрат в прежнем CCW-порядке; имена не являются автоматическими anchors.
+' ДЛЯ ТЕСТОВ: проверяет общий помощник рецептов и независимость настроек разных рядов.
+' Контактное смещение не должно переносить отступы и политики предыдущего ряда.
+Public Function RunRecipeContactOptionsContract() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim options As CRebarRuleOptions, nextOptions As CRebarRuleOptions
+    Set options = RecipeContactOptions("recipe-test", "Stacked", "EverySecondBar", 20#, 12#, -1#, 1#, 16#)
+    Check "contactRecipe.nominal.intermediate", options.NormalOffset = -32# And options.TangentOffset = 0#
+    Check "contactRecipe.binding", options.EverySecond
+    Check "contactRecipe.source", options.SourceReference = "recipe-test"
+    options.StartSetback = 70#
+    options.AnnotationGroup = "Previous"
+    options.Publication = PublishPerSourcePosition
+    options.Coincidence = KeepPublishedOwner
+    Set nextOptions = RecipeContactOptions("next-recipe-test", "SideBySide", "EachBar", 20#, 12#, 1#, -1#)
+    Check "contactRecipe.tangent", nextOptions.NormalOffset = 0# And nextOptions.TangentOffset = -16#
+    Check "contactRecipe.independent.binding", Not nextOptions.EverySecond
+    Check "contactRecipe.independent.setbacks", nextOptions.StartSetback = 0# And nextOptions.EndSetback = 0#
+    Check "contactRecipe.independent.group", Len(nextOptions.AnnotationGroup) = 0
+    Check "contactRecipe.independent.publication", nextOptions.Publication = PublishByRule
+    Check "contactRecipe.independent.coincidence", nextOptions.Coincidence = RejectCoincidence
+    GoTo Finished
+Failed:
+    Check "contactRecipe.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunRecipeContactOptionsContract = mReport & "TOTAL RECIPE CONTACT OPTIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 Private Function RectangleSpec(ByVal radius As Double) As CPolygonSpec
     Dim polygon As CPolygonSpec: Set polygon = New CPolygonSpec
     polygon.AddVertex "A", 0#, 0#, radius, "Input.A"

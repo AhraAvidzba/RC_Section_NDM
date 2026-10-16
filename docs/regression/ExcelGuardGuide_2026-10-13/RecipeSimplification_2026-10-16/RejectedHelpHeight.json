@@ -1,0 +1,33 @@
+{
+  "Status": "RECIPE_PACKAGE_PASS",
+  "BaselineSHA256": "b0b38e6a24ed9b76492b29b063b958a4cf809753a9ac2f9cbbe61c1e89eb8ae6",
+  "AcceptedSHA256": "70fbfb672aed7215a0c6dd119b402149ee393fb9b1f898113540e5ca18180f5e",
+  "CandidateSHA256": "52d05cf1a16eb66cc46235fed83729b77b83c726d7a43381654b8a6c4c5acdd0",
+  "NativeSHA256": "b3141f10198a7aec9d0ab2442ab6a3d5abeec8a688f8319d236fa9ecbe2e8390",
+  "NativeComponents": 158,
+  "ChangedComponents": [
+    "CSectionRecipeCircle",
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRectSet",
+    "CSectionRecipeRoundedRectangle",
+    "modSectionRecipeApiGuide",
+    "modTestAudit02Api",
+    "modTestAudit02Snapshots"
+  ],
+  "AddedComponents": [
+    "modSectionRecipeRows"
+  ],
+  "BaselineProbeChanges": [
+    "modTestAudit02Snapshots"
+  ],
+  "ChangedZIPParts": [
+    "xl/worksheets/sheet2.xml",
+    "xl/vbaProject.bin"
+  ],
+  "ChangedHelpCells": {
+    "A574": "4. Опишите получение линий центров арматуры, например смещением контура с учётом as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительный ряд можно связать с уже заданным рядом. В CRebarRuleOptions поле AnnotationGroup объединяет стержни в одну подпись, Publication задаёт порядок их вывода, Coincidence — обработку совпавших позиций. ConfigureDependentContact задаёт контактное расстояние дополнительного ряда при строго положительных диаметрах. Отключённый ряд рецепт пропускает до вызова этого помощника; ноль в нём вызывает ошибку. Произвольное смещение задаётся полями NormalOffset/TangentOffset. Штатные рецепты используют общий RecipeContactOptions из modSectionRecipeRows для подготовки контактных рядов; направления, привязки и политики каждого ряда остаются в рецепте."
+  },
+  "CellsChecked": 107474,
+  "RowHeightsUnchanged": true,
+  "ConfigAndAllOtherUserDataPreserved": true
+}

@@ -112,8 +112,8 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double)
     Dim side As Long, row As Long, extra As Long, axisDistance As Double, diameter As Double, count As Long
     Dim path As CGeometryPath, groupID As String, label As String, options As CRebarRuleOptions
-    Dim nx As Double, ny As Double, sideSign As Double, d2 As Double, d3 As Double, loc2 As String, loc3 As String
-    Dim prefix As String
+    Dim nx As Double, ny As Double, sideSign As Double, diameters(2 To 3) As Double, locations(2 To 3) As String
+    Dim prefix As String, rowNumber As Long, column As Long, binding As String, distance As Double
     If base = 0 Then prefix = "1" Else prefix = "2"
     For side = 1 To 4
         row = header + 3 + base + side
@@ -148,46 +148,28 @@ Private Sub AddRectangleRows(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.Comment = "RectSet: " & label & ", ряд 1"
         facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-        d2 = table.OptionalDiameter(extra, 2, units)
-        d3 = table.OptionalDiameter(extra, 5, units)
-        If d2 > 0# Then
-            loc2 = table.Choice(extra, 3, Array("Stacked", "SideBySide"))
-            Set options = AdditionalOptions(table, extra, 2, groupID, label, 2, loc2, diameter, d2, sideSign) ' Настраиваем смещение и привязку добавляемого ряда.
-            facade.RebarDependent groupID & ".Row2", groupID & ".Main", d2, options ' Второй ряд привязан к позициям основного; задаём его диаметр.
-        End If
-        If d3 > 0# Then
-            loc3 = table.Choice(extra, 6, Array("Stacked", "SideBySide"))
-            Dim distance As Double
-            distance = 0#
-            If d2 > 0# And loc2 = loc3 Then distance = d2 ' Третий ряд в том же направлении должен обойти стержень второго.
-            Set options = AdditionalOptions(table, extra, 5, groupID, label, 3, loc3, diameter, d3, sideSign, distance) ' Настраиваем смещение и привязку добавляемого ряда.
-            facade.RebarDependent groupID & ".Row3", groupID & ".Main", d3, options ' Третий ряд привязан к позициям основного; задаём его диаметр.
-        End If
+        diameters(2) = table.OptionalDiameter(extra, 2, units)
+        diameters(3) = table.OptionalDiameter(extra, 5, units)
+        For rowNumber = 2 To 3
+            If diameters(rowNumber) > 0# Then
+                column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
+                locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                distance = 0#
+                If rowNumber = 3 And locations(2) = locations(3) Then distance = diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+                binding = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                Set options = RecipeContactOptions(table.SourceReference(extra, column), locations(rowNumber), binding, _
+                    diameter, diameters(rowNumber), -1#, sideSign, distance)
+                options.AnnotationGroup = groupID ' Одна подпись для всех рядов этой стороны.
+                options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+                options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+                options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)
+                facade.RebarDependent groupID & ".Row" & CStr(rowNumber), groupID & ".Main", diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+            End If
+        Next rowNumber
         facade.RebarRowLabel groupID, groupID & ".Main", nx, ny ' Подпись учитывает все ряды стороны и крайние стержни основного.
 NextSide:
     Next side
 End Sub
-
-' Возвращает настройки дополнительного ряда арматуры: контактное расстояние, направление
-' и размещение у каждого основного стержня или через один. Все ряды стороны имеют общую подпись.
-Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _
-        ByVal groupID As String, ByVal label As String, ByVal rowNumber As Long, ByVal location As String, _
-        ByVal baseDiameter As Double, ByVal diameter As Double, ByVal sideSign As Double, _
-        Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
-    Dim options As CRebarRuleOptions
-    Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-    Dim axis As ERebarOffsetAxis, directionSign As Double, everySecond As Boolean
-    axis = RowNormal: directionSign = -1# ' По умолчанию смещаем ряд по нормали к исходной линии.
-    If location = "SideBySide" Then axis = RowTangent: directionSign = sideSign ' Располагаем дополнительный стержень вдоль исходного ряда.
-    everySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar") ' Выбираем все позиции или через одну, начиная с первой.
-    options.SourceReference = table.SourceReference(row, column) ' Адреса полей для сообщения об ошибке размещения.
-    options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
-    options.Comment = "RectSet: " & label & ", ряд " & CStr(rowNumber)
-    Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.
-End Function
 
 ' Проверяет условие для указанной ячейки. При нарушении сообщает причину и её фактический адрес.
 Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)

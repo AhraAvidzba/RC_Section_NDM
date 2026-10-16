@@ -1,0 +1,78 @@
+{
+  "Status": "TECHNICAL_ACCEPTANCE_PASS",
+  "ObjectiveSHA256": "31E16AA74CE561DE609E012A023DBC153B3030DC9A2FB6437CFA0BACD9E66A0F",
+  "WorkbookSHA256": "769EB93DEFBA8F7A914B542387373DD963013DDF2E60172ACE941CA8E3CEE3B3",
+  "AllCodeSHA256": "C72580F38D44B4DBE3E24A3B9C169A4DFA24A55C93390738370F3F335C847732",
+  "ArchiveSHA256": "f4653f66c3bb92080c97e48422a74aa6d0109ae44d4908e77ec184bfd8ed0f97",
+  "Requirements": [
+    {
+      "Evidence": [
+        "Before.json",
+        "Objective.md",
+        "BaselineSource.zip inside Evidence.zip",
+        "Publication.json",
+        "git 2e397426"
+      ],
+      "ID": "1",
+      "Requirement": "Actual initial state preserved; user changes untouched",
+      "Passed": true
+    },
+    {
+      "Evidence": [
+        "SourceMetrics.json",
+        "Acceptance.json",
+        "src/Geometry/modSectionRecipeRows.bas"
+      ],
+      "ID": "2",
+      "Requirement": "Four recipe families simplified with one small common module and no new classes or input readers",
+      "Passed": true
+    },
+    {
+      "Evidence": [
+        "Acceptance.json: 35 fields / 60 definitions",
+        "5 exact geometry matrices",
+        "5874 directed checks",
+        "ExistingPublicAPIUnchanged",
+        "ExistingRuntimeSourcesCompared=110"
+      ],
+      "ID": "3",
+      "Requirement": "Geometry, all prior public API, independent options, IDs, physical order, nominal row spacing, units, inactive fields and diagnostics preserved",
+      "Passed": true
+    },
+    {
+      "Evidence": [
+        "GuideReadability/PublishedSourceEquality.json",
+        "GuideReadability/PublishedGuidePresentation.json",
+        "GuideReadability/Package.json",
+        "SECTION_RECIPE_GUIDE_LAYOUT.json"
+      ],
+      "ID": "4",
+      "Requirement": "Comments kept clear; comment-only VBA guide and workbook Help synchronized",
+      "Passed": true
+    },
+    {
+      "Evidence": [
+        "CandidateDirected/Run.json",
+        "Acceptance.json: 240 converged NDS / 40 batch / 10 identical plots",
+        "ExistingTestsUnchanged=true",
+        "FullOnOffRun=false"
+      ],
+      "ID": "5",
+      "Requirement": "Compilation, directed regressions, NDM and real plots compared; no full on-off or weaker test tolerances",
+      "Passed": true
+    },
+    {
+      "Evidence": [
+        "Publication.json",
+        "Package.json: 107474 cells / 29 names",
+        "SourceMetrics.json",
+        "docs/reports/RecipeSimplification_2026-10-16.md"
+      ],
+      "ID": "6",
+      "Requirement": "Workbook and ALL CODE synchronized, user data preserved, report and equal-method source metrics delivered",
+      "Passed": true
+    }
+  ],
+  "DeliveryPending": "Local commit and authorized push",
+  "AuditedAt": "2026-10-16T11:03:34.5041171+03:00"
+}

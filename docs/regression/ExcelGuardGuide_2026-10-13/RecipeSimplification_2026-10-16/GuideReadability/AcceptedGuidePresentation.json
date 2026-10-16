@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "CellsChecked": 107474,
+  "NamedRanges": 29,
+  "HelpCellsChanged": [],
+  "HelpRowHeights": [],
+  "NativeComponents": 158,
+  "NativeCodeUnchanged": false,
+  "NativeCodeMatchesReference": true,
+  "NoEmbeddedMarkers": true,
+  "CandidateSHA256": "769eb93defba8f7a914b542387373dd963013ddf2e60172ace941ca8e3cee3b3",
+  "NativeSHA256": "2617e124ee63e52ab334b832fa9b393fb504a65512a9a663bf32e4efdc3302da",
+  "Errors": []
+}

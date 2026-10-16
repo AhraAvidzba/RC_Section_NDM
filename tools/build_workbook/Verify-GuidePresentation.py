@@ -40,6 +40,7 @@ def main():
     parser.add_argument('--book', type=Path)
     parser.add_argument('--dump', type=Path)
     parser.add_argument('--report', type=Path)
+    parser.add_argument('--reference-native', type=Path, help='Compare VBA exactly with a separately compiled reference; default retains the historical unchanged-code check')
     args = parser.parse_args()
     directory = args.directory
     book = args.book or directory/'Candidate.xlsm'
@@ -95,13 +96,19 @@ def main():
                 require(reader.canonical(a) == reader.canonical(b), 'Sheet structure changed: '+sheet+':'+tag)
     baseline_native, final_native = components(directory/'BaselineNativeVBA.txt'), components(dump)
     native_unchanged = baseline_native == final_native and len(final_native) == 157
-    require(native_unchanged, 'Native VBA code or component inventory changed')
+    reference_native = components(args.reference_native) if args.reference_native else baseline_native
+    native_matches_reference = reference_native == final_native
+    if args.reference_native:
+        require(native_matches_reference, 'Native VBA differs from the compiled reference')
+    else:
+        require(native_unchanged, 'Native VBA code or component inventory changed')
     markers = embedded_markers(book, dump)
     require(not markers, 'Embedded technical markers: '+repr(markers))
     sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
     result = {'Passed': not errors, 'CellsChecked': checked, 'NamedRanges': len(old['names']),
               'HelpCellsChanged': sorted(changed_cells), 'HelpRowHeights': heights,
               'NativeComponents': len(final_native), 'NativeCodeUnchanged': native_unchanged,
+              'NativeCodeMatchesReference': native_matches_reference,
               'NoEmbeddedMarkers': not markers, 'CandidateSHA256': sha(book), 'NativeSHA256': sha(dump), 'Errors': errors}
     (args.report or directory/'Preservation.json').write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({k: v for k, v in result.items() if k != 'HelpRowHeights'}, ensure_ascii=False))

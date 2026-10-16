@@ -1,0 +1,10 @@
+﻿{
+    "Stage":  "BaselineRules",
+    "Passed":  false,
+    "Runs":  [
+
+             ],
+    "SourceSHA256":  "E5BD0458BF9666AFAA6918AAA60F05D984D0BE06DD8B7E7DC489611D317F6CD6",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-16T10:13:08.9320464+03:00"
+}

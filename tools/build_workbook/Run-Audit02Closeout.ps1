@@ -4,11 +4,14 @@ param(
     [Parameter(Mandatory=$true)][string]$Stage,
     [Parameter(Mandatory=$true)][string[]]$Macros,
     [string]$Argument1='',
-    [switch]$Snapshots
+    [switch]$Snapshots,
+    [string]$EvidenceDirectory='docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14'
 )
 $ErrorActionPreference='Stop'
 $root=(Get-Location).Path
-$evidence=Join-Path $root 'docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14'
+$evidence=(Resolve-Path -LiteralPath (Join-Path $root $EvidenceDirectory)).Path
+$allowedEvidence=(Resolve-Path -LiteralPath (Join-Path $root 'docs/regression')).Path+[IO.Path]::DirectorySeparatorChar
+if(-not $evidence.StartsWith($allowedEvidence,[StringComparison]::OrdinalIgnoreCase)){throw 'Evidence must stay inside docs/regression.'}
 if($Stage -notmatch '^[A-Za-z][A-Za-z0-9_-]*$'){throw 'Stage must be a local directory name.'}
 $directory=Join-Path $evidence $Stage
 New-Item -ItemType Directory -Path $directory -Force | Out-Null
@@ -30,11 +33,13 @@ try {
     [ordered]@{PID=$ownedPid;StartTimeTicks=$ownedTicks} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'OwnedExcel.json') -Encoding UTF8
     Write-Output ('OWNED_EXCEL: '+$ownedPid)
     $book=$excel.Workbooks.Open($copy,0,$false)
+    $excel.DisplayAlerts=$false
     $excel.Calculation=-4135
     foreach($macro in @($Macros | ForEach-Object {$_ -split ','})) {
         Write-Output ('RUN '+$macro)
         $watch=[Diagnostics.Stopwatch]::StartNew()
         $qualified="'$($book.Name)'!$macro"
+        $excel.DisplayAlerts=$false
         if($Argument1){$result=[string]$excel.Run($qualified,$Argument1)}else{$result=[string]$excel.Run($qualified)}
         $watch.Stop()
         $result.TrimEnd([char[]]"`r`n") | Set-Content -LiteralPath (Join-Path $directory ($macro+'.txt')) -Encoding UTF8
@@ -50,7 +55,13 @@ try {
     if($book){try{$book.Close($false)}finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($book)}}
     if($excel){try{$excel.Quit()}finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}}
     [GC]::Collect();[GC]::WaitForPendingFinalizers()
-    if($ownedPid){$owned=Get-Process -Id $ownedPid -ErrorAction SilentlyContinue;if($owned -and $owned.ProcessName -eq 'EXCEL' -and $owned.StartTime.ToUniversalTime().Ticks -eq $ownedTicks){Stop-Process -Id $ownedPid -Force}}
+    if($ownedPid){
+        $owned=Get-Process -Id $ownedPid -ErrorAction SilentlyContinue
+        if($owned -and $owned.ProcessName -eq 'EXCEL' -and $owned.StartTime.ToUniversalTime().Ticks -eq $ownedTicks){
+            try {Stop-Process -Id $ownedPid -Force -ErrorAction Stop}
+            catch {if(Get-Process -Id $ownedPid -ErrorAction SilentlyContinue){throw}}
+        }
+    }
     foreach($path in $before.Keys){if((Get-FileHash -LiteralPath (Join-Path $root $path)).Hash -cne $before[$path]){throw ('Protected production file changed: '+$path)}}
     [ordered]@{Stage=$Stage;Passed=$success;Runs=$runs;SourceSHA256=(Get-FileHash -LiteralPath $source).Hash;ProductionUnchanged=$true;FinishedAt=(Get-Date).ToString('o')} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $directory 'Run.json') -Encoding UTF8
 }

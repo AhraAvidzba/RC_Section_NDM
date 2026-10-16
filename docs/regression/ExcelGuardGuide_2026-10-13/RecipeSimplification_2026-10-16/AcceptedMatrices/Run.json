@@ -1,0 +1,58 @@
+﻿{
+    "Stage":  "AcceptedMatrices",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpCircleRecipeMatrix",
+                     "Seconds":  11.0203498,
+                     "Characters":  8786535,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpRectSetRecipeMatrix",
+                     "Seconds":  7.4639973,
+                     "Characters":  5027387,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpRoundedRecipeMatrix",
+                     "Seconds":  9.0661883,
+                     "Characters":  7709777,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpHollowRecipeMatrix",
+                     "Seconds":  12.1325188,
+                     "Characters":  10667642,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpHollowRecipeEdgeMatrix",
+                     "Seconds":  4.3940570999999995,
+                     "Characters":  3470714,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.DumpAudit02CloseoutInputContract",
+                     "Seconds":  5.5040572999999995,
+                     "Characters":  23811,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Snapshots.DumpRecipeRuleContracts",
+                     "Seconds":  16.656566599999998,
+                     "Characters":  262972,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-16T10:33:48.9241829+03:00"
+}

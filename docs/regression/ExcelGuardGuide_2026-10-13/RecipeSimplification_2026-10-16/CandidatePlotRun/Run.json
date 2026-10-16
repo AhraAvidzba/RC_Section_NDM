@@ -1,0 +1,37 @@
+{
+  "Stage": "CandidatePlotRun",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestSectionRecipes.DumpCircleRecipePreview",
+      "Seconds": 1.4607721,
+      "Characters": 59780,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpRectSetRecipePreview",
+      "Seconds": 2.2272982,
+      "Characters": 124177,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpRoundedRecipePreview",
+      "Seconds": 3.2018559,
+      "Characters": 212439,
+      "Passed": true,
+      "Snapshot": true
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpHollowRecipePreview",
+      "Seconds": 3.2809028,
+      "Characters": 322134,
+      "Passed": true,
+      "Snapshot": true
+    }
+  ],
+  "SourceSHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T10:18:59.6637483+03:00"
+}

@@ -65,10 +65,15 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Option Explicit
 '
-'       ' Учебный минимальный рецепт: прямоугольник и пять верхних стержней.
+'       ' ==========================================================================
+'       ' Учебный рецепт прямоугольного сечения с пятью верхними стержнями
+'       ' ==========================================================================
+'       ' Показывает описание бетонной границы, армирования и аннотаций
+'       ' через CSectionDefinitionBuilder без отдельной расстановки стержней.
 '       Implements ISectionRecipe
 '
-'       ' Постоянные размеры уже в мм; context обязателен интерфейсу, входных таблиц здесь нет.
+'       ' Размеры заданы постоянными в мм. Контекст передаётся по интерфейсу рецепта; входные таблицы в
+'       ' этом примере не используются.
 '       Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
 '           Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
 '           Dim options As CRebarRuleOptions
@@ -154,7 +159,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "H.Right" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем стержень, который добавлен первым.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
 '           options.EndMode = ExcludeBoth: options.StartSetback = 100#: options.EndSetback = 150#
 '           options.IncomingTangentAtJoint = True
 '           facade.RebarByCount "H.Right.Main", rightAxis.ID, 15, 20#, options
@@ -190,12 +195,12 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем стержень, который добавлен первым.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
 '           facade.RebarByCount "Main", "MainAxis", 5, 20#, options
 '           Set options = New CRebarRuleOptions
 '           options.AnnotationGroup = "Bottom" ' В одной подписи группы суммируем стержни каждого диаметра, включая все её ряды.
 '           options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-'           options.Coincidence = KeepPublishedOwner ' При совпадении сохраняем стержень, который добавлен первым.
+'           options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
 '           options.ConfigureDependentContact 20#, 16#, RowNormal, 1#, False
 '           facade.RebarDependent "Contact", "Main", 16#, options
 '           Set options = New CRebarRuleOptions
@@ -1584,7 +1589,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.NewPublicationRoot
 '
-'       У ProjectFrom начинает новую последовательность исходных номеров для успешно спроецированных стержней.
+'       У ProjectFrom начинает новую последовательность исходных номеров для успешно спроецированных
+'       стержней.
 '
 '       Объявление:
 '         Public NewPublicationRoot As Boolean
@@ -1593,7 +1599,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.SkipMissingProjection
 '
-'       Разрешает пропуск стержня без пересечения с целевой линией с диагностикой PROJECTION_MISSING; False выдаёт ошибку.
+'       Разрешает пропуск стержня без пересечения с целевой линией с диагностикой PROJECTION_MISSING;
+'       False выдаёт ошибку.
 '
 '       Объявление:
 '         Public SkipMissingProjection As Boolean
@@ -1602,7 +1609,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.Publication
 '
-'       PublishByRule или PublishPerSourcePosition: порядок записи стержней по правилам либо по исходным позициям.
+'       PublishByRule или PublishPerSourcePosition: порядок записи стержней по правилам либо по исходным
+'       позициям.
 '
 '       Объявление:
 '         Public Publication As ERebarPublication
@@ -1613,8 +1621,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места
 '       запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner
-'       порядок также определяет, какой совпавший стержень сохраняется вместе с его диаметром и материалом.
-'       Поэтому менять порядок в таком случае может изменить физическую арматуру.
+'       порядок также определяет, какой совпавший стержень сохраняется вместе с его диаметром и
+'       материалом. Поэтому менять порядок в таком случае может изменить физическую арматуру.
 '
 '       Объявление:
 '         Public PositionOrder As ERebarPositionOrder
@@ -1623,8 +1631,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CRebarRuleOptions.Coincidence
 '
-'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет
-'       стержень, добавленный в эту позицию первым.
+'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет стержень, добавленный в
+'       эту позицию первым.
 '
 '       Объявление:
 '         Public Coincidence As ERebarCoincidence
@@ -1732,6 +1740,57 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '
 '
+'   Класс / модуль: modSectionRecipeRows
+'
+'     ----------------------------------------------------------------------------------------------
+'     modSectionRecipeRows.RecipeContactOptions
+'
+'       Создаёт независимые настройки контактного дополнительного ряда по уже проверенным значениям
+'       рецепта. Stacked выбирает нормаль, SideBySide — касательную; контактное расстояние задаёт
+'       ConfigureDependentContact. Не читает таблицы и не объявляет ряд. AnnotationGroup, Publication,
+'       Coincidence, имена и комментарий задаются отдельно в рецепте; остальные поля имеют обычные
+'       значения New CRebarRuleOptions.
+'
+'       Объявление:
+'         Public Function RecipeContactOptions(ByVal sourceReference As String, ByVal location As
+'         String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal
+'         normalSign As Double, Optional ByVal tangentSign As Double = 1#, Optional ByVal
+'         interveningDiameterSum As Double = 0#) As CRebarRuleOptions
+'
+'       Параметры:
+'         ByVal sourceReference As String
+'           Строка исходного адреса/программного параметра; без объекта Excel.
+'
+'         ByVal location As String
+'           Проверенное значение Stacked (поперёк линии) или SideBySide (вдоль линии). Ввод проверяется
+'           методом Choice до вызова.
+'
+'         ByVal binding As String
+'           Проверенное значение EachBar (все исходные позиции) или EverySecondBar (первая, третья и
+'           следующие нечётные позиции).
+'
+'         ByVal baseDiameter As Double
+'           Строго положительный диаметр основного стержня, мм (>0). Ноль и отрицательное значение
+'           вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.
+'
+'         ByVal diameter As Double
+'           Строго положительный диаметр добавляемого стержня, мм (>0). Ноль и отрицательное значение
+'           вызывают ошибку; отключение ряда выполняет рецепт до вызова помощника.
+'
+'         ByVal normalSign As Double
+'           Знак смещения Stacked относительно левой нормали исходной линии: +1 или -1; определяется
+'           направлением её обхода.
+'
+'         Optional ByVal tangentSign As Double = 1#
+'           Знак смещения SideBySide вдоль исходной линии: +1 по её направлению, -1 против. По умолчанию
+'           +1.
+'
+'         Optional ByVal interveningDiameterSum As Double = 0#
+'           Неотрицательная сумма диаметров номинально промежуточных стержней, мм. Для третьего ряда
+'           обычно d2 при том же направлении, иначе 0; пропуск EverySecond сам по себе её не уменьшает.
+'
+'
+'
 '   Класс / модуль: modSectionRecipeTypes
 '
 '     ----------------------------------------------------------------------------------------------
@@ -1791,7 +1850,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarPublication
 '
-'       PublishByRule или PublishPerSourcePosition: порядок записи стержней по правилам либо по исходным позициям.
+'       PublishByRule или PublishPerSourcePosition: порядок записи стержней по правилам либо по исходным
+'       позициям.
 '
 '       Объявление:
 '         Public Enum ERebarPublication
@@ -1805,8 +1865,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Порядок вывода стержней: AlongPath — от начала линии, FromPathMiddle — от её середины. Места
 '       запрошенных стержней и их исходные номера сохраняются. При Coincidence = KeepPublishedOwner
-'       порядок также определяет, какой совпавший стержень сохраняется вместе с его диаметром и материалом.
-'       Поэтому менять порядок в таком случае может изменить физическую арматуру.
+'       порядок также определяет, какой совпавший стержень сохраняется вместе с его диаметром и
+'       материалом. Поэтому менять порядок в таком случае может изменить физическую арматуру.
 '
 '       Объявление:
 '         Public Enum ERebarPositionOrder
@@ -1818,8 +1878,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     modSectionRecipeTypes.ERebarCoincidence
 '
-'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет
-'       стержень, добавленный в эту позицию первым.
+'       RejectCoincidence/MergeIdentical/KeepPublishedOwner; последнее сохраняет стержень, добавленный в
+'       эту позицию первым.
 '
 '       Объявление:
 '         Public Enum ERebarCoincidence
@@ -2500,7 +2560,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     ----------------------------------------------------------------------------------------------
 '     CGeometryPath.SegmentIndex
 '
-'       Находит текущий номер сегмента по имени; если дуга исчезла при построении, выдаёт MISSING_SEGMENT.
+'       Находит текущий номер сегмента по имени; если дуга исчезла при построении, выдаёт
+'       MISSING_SEGMENT.
 '
 '       Объявление:
 '         Public Function SegmentIndex(ByVal segmentID As String) As Long

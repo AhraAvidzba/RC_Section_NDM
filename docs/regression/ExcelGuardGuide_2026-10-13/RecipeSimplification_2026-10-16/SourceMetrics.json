@@ -1,0 +1,121 @@
+{
+  "Baseline": "2e397426",
+  "Method": "Full files including headers/comments; executable statements from Measure-Audit02Source.measure, with colon statements counted separately",
+  "RecipesBefore": {
+    "Lines": 842,
+    "CommentLines": 117,
+    "Instructions": 519,
+    "Branches": 73,
+    "Methods": 30
+  },
+  "RecipesAfter": {
+    "Lines": 786,
+    "CommentLines": 109,
+    "Instructions": 483,
+    "Branches": 63,
+    "Methods": 26
+  },
+  "AddedCommon": {
+    "Lines": 28,
+    "CommentLines": 7,
+    "Instructions": 9,
+    "Branches": 1,
+    "Methods": 1
+  },
+  "TotalBefore": {
+    "Lines": 842,
+    "CommentLines": 117,
+    "Instructions": 519,
+    "Branches": 73,
+    "Methods": 30
+  },
+  "TotalAfter": {
+    "Lines": 814,
+    "CommentLines": 116,
+    "Instructions": 492,
+    "Branches": 64,
+    "Methods": 27
+  },
+  "Sources": {
+    "src/Geometry/CSectionRecipeCircle.cls": {
+      "Before": {
+        "Lines": 102,
+        "CommentLines": 17,
+        "Instructions": 59,
+        "Branches": 8,
+        "Methods": 3
+      },
+      "After": {
+        "Lines": 95,
+        "CommentLines": 15,
+        "Instructions": 52,
+        "Branches": 5,
+        "Methods": 2
+      }
+    },
+    "src/Geometry/CSectionRecipeRectSet.cls": {
+      "Before": {
+        "Lines": 195,
+        "CommentLines": 27,
+        "Instructions": 119,
+        "Branches": 17,
+        "Methods": 7
+      },
+      "After": {
+        "Lines": 177,
+        "CommentLines": 25,
+        "Instructions": 108,
+        "Branches": 15,
+        "Methods": 6
+      }
+    },
+    "src/Geometry/CSectionRecipeRoundedRectangle.cls": {
+      "Before": {
+        "Lines": 231,
+        "CommentLines": 36,
+        "Instructions": 136,
+        "Branches": 17,
+        "Methods": 9
+      },
+      "After": {
+        "Lines": 216,
+        "CommentLines": 34,
+        "Instructions": 127,
+        "Branches": 15,
+        "Methods": 8
+      }
+    },
+    "src/Geometry/CSectionRecipeHollowRectangle.cls": {
+      "Before": {
+        "Lines": 314,
+        "CommentLines": 37,
+        "Instructions": 205,
+        "Branches": 31,
+        "Methods": 11
+      },
+      "After": {
+        "Lines": 298,
+        "CommentLines": 35,
+        "Instructions": 196,
+        "Branches": 28,
+        "Methods": 10
+      }
+    },
+    "src/Geometry/modSectionRecipeRows.bas": {
+      "Before": {
+        "Lines": 0,
+        "CommentLines": 0,
+        "Instructions": 0,
+        "Branches": 0,
+        "Methods": 0
+      },
+      "After": {
+        "Lines": 28,
+        "CommentLines": 7,
+        "Instructions": 9,
+        "Branches": 1,
+        "Methods": 1
+      }
+    }
+  }
+}

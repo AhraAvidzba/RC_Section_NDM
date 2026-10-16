@@ -20,6 +20,7 @@ SOURCES = [
     "src/Excel/CUnitSystem.cls", "src/Section/CConcreteRegion.cls",
     "src/Section/CSectionGeometryQuery.cls", "src/Common/modSectionRecipeTypes.bas",
     "src/Common/modGeometryTypes.bas",
+    "src/Geometry/modSectionRecipeRows.bas",
 ]
 
 

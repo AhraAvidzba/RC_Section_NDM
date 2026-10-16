@@ -1,0 +1,9 @@
+{
+  "Status": "ARCHIVE_VERIFIED",
+  "Entries": 165,
+  "CRCVerified": true,
+  "EverySHA256Verified": true,
+  "ArchiveSHA256": "f4653f66c3bb92080c97e48422a74aa6d0109ae44d4908e77ec184bfd8ed0f97",
+  "Bytes": 29973705,
+  "MergedPreviousSHA256": "cfee991947efe7c80f2c907548c6787952c459e1fa2123934e81f0c7dd9adfbb"
+}

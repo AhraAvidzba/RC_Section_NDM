@@ -1,0 +1,22 @@
+PASS: circle.bind.lists.independent
+PASS: circle.bind.list.name.0
+PASS: circle.bind.list.size.0
+PASS: circle.bind.list.hidden.0
+PASS: circle.bind.list.values.0
+PASS: circle.bind.list.center.0
+PASS: circle.bind.list.accept.0.EachBar
+PASS: circle.bind.list.accept.0.EverySecondBar
+PASS: circle.bind.list.reject.0
+PASS: circle.bind.list.name.1
+PASS: circle.bind.list.size.1
+PASS: circle.bind.list.hidden.1
+PASS: circle.bind.list.values.1
+PASS: circle.bind.list.center.1
+PASS: circle.bind.list.accept.1.EachBar
+PASS: circle.bind.list.accept.1.EverySecondBar
+PASS: circle.bind.list.reject.1
+PASS: circle.bind.update.preserves2
+PASS: circle.bind.update.preserves3
+PASS: circle.bind.workbook.address2
+PASS: circle.bind.workbook.address3
+TOTAL CIRCLE BINDING WORKBOOK: passed=21; failed=0

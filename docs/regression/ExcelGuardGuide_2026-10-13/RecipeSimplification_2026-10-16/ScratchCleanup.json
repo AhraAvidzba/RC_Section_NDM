@@ -1,0 +1,436 @@
+{
+  "Scope": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\RecipeSimplification_2026-10-16",
+  "ArchiveVerified": true,
+  "BaselineWorkbookRecoverableFromGit": "2e397426",
+  "BeforeBytes": 399483934.0,
+  "AfterBytes": 25202887.0,
+  "RemovedBytes": 374281047.0,
+  "Removed": [
+    {
+      "Path": "Accepted.xlsm",
+      "Bytes": 7814695,
+      "SHA256": "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E"
+    },
+    {
+      "Path": "AcceptedNativeVBA.txt",
+      "Bytes": 7173378,
+      "SHA256": "5B686897351E0900A1501CE6725C2AB755B8AFAF87FFFEC1C6A4BAC82B245150"
+    },
+    {
+      "Path": "Baseline.xlsm",
+      "Bytes": 7818440,
+      "SHA256": "B0B38E6A24ED9B76492B29B063B958A4CF809753A9AC2F9CBBE61C1E89EB8AE6"
+    },
+    {
+      "Path": "BaselineAllCode.txt",
+      "Bytes": 7167311,
+      "SHA256": "CA37329DDF9E881A963AD0484DB54476CF457A2DA5A971D688AA91F043D39607"
+    },
+    {
+      "Path": "BaselineNativeVBA.txt",
+      "Bytes": 7167305,
+      "SHA256": "647DC8A85F1125F8BD9DD4EF982A545C60EBB30F25FDCCD21A83D992819ACF76"
+    },
+    {
+      "Path": "BaselineProbeNativeVBA.txt",
+      "Bytes": 7174524,
+      "SHA256": "CC32DFD86FC5E3D1D7F96832F269C1C3C4CAAC87427FD4E0D855FBB3F79ABEC2"
+    },
+    {
+      "Path": "BaselineSource.zip",
+      "Bytes": 2258803,
+      "SHA256": "13DBFB1D5181C119AE7DD6D175947862FB079E8181E3A1789622EB3259DA869A"
+    },
+    {
+      "Path": "CandidateNativeVBA.txt",
+      "Bytes": 7173386,
+      "SHA256": "B3141F10198A7AEC9D0AB2442AB6A3D5ABEEC8A688F8319D236FA9ECBE2E8390"
+    },
+    {
+      "Path": "CommentAudit.json",
+      "Bytes": 2233504,
+      "SHA256": "B1DD4EFDFD5C8A0F96F953FC5A377D946E2FF60DBE23975DE9869A376CDF3852"
+    },
+    {
+      "Path": "PublishedNativeVBA.txt",
+      "Bytes": 7173384,
+      "SHA256": "1158823AC6177470255AE8A9D2F4DF57A53300FD82A33347E1EDDC7D9A7B1DC0"
+    },
+    {
+      "Path": "RejectedHelpHeight.xlsm",
+      "Bytes": 7814696,
+      "SHA256": "70FBFB672AED7215A0C6DD119B402149EE393FB9B1F898113540E5CA18180F5E"
+    },
+    {
+      "Path": "AcceptedMatrices\\GeometrySolidProbe.xlsm",
+      "Bytes": 7814695,
+      "SHA256": "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestAudit02Api.DumpAudit02CloseoutInputContract.txt",
+      "Bytes": 32424,
+      "SHA256": "27C3CBB22C5C72A7BF8E127BE19EBB92A0E52A294A6BDCA08343BF77807F77F7"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestAudit02Snapshots.DumpRecipeRuleContracts.txt",
+      "Bytes": 274919,
+      "SHA256": "812B0A76F01A51C175F19A1370429119C9F320678EA9C010C3DBFC1CC2064289"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestSectionRecipes.DumpCircleRecipeMatrix.txt",
+      "Bytes": 10182334,
+      "SHA256": "0EEE77AEEEF685812C793F27D5B019D0EBA9B58A585C7016FA5AD4542DB993B3"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestSectionRecipes.DumpHollowRecipeEdgeMatrix.txt",
+      "Bytes": 3890299,
+      "SHA256": "063E62291F3E24F17BE865A0116A6BA93FFFA2C35FA0D7ADB0B3D1AFE10A8A70"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestSectionRecipes.DumpHollowRecipeMatrix.txt",
+      "Bytes": 11909113,
+      "SHA256": "682A497EB2B36FC9E54E82F2FE4D42C4013339971C9CCCB1980EA2BAE7686FF4"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestSectionRecipes.DumpRectSetRecipeMatrix.txt",
+      "Bytes": 5841979,
+      "SHA256": "96821A4DE9C447D63C252C0DF4D0B21D19BDA77CCDA4CE27DF5EA57297EEF63A"
+    },
+    {
+      "Path": "AcceptedMatrices\\modTestSectionRecipes.DumpRoundedRecipeMatrix.txt",
+      "Bytes": 8857716,
+      "SHA256": "79D5BEB5274CAE47573A4703A7A904705BAAB6BA2DBA7E0CEE850C92B0ECEE7D"
+    },
+    {
+      "Path": "AcceptedSmoke\\GeometrySolidProbe.xlsm",
+      "Bytes": 7814695,
+      "SHA256": "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E"
+    },
+    {
+      "Path": "AcceptedSmoke\\modTestAudit02Api.RunRecipeContactOptionsContract.txt",
+      "Bytes": 390,
+      "SHA256": "657576FEEB7ED63F9E01CA172F1BDBBBFBE7C94ABC2A7D74F15BFE42A45C1FD2"
+    },
+    {
+      "Path": "AcceptedSmoke\\modTestSectionRecipes.RunCircleBindingWorkbookTests.txt",
+      "Bytes": 803,
+      "SHA256": "6B4C36846E896D8FF1DEC401418EDDCA2EDA76C3A87CA1CD132EE66171FE23AD"
+    },
+    {
+      "Path": "AcceptedSmoke\\modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
+      "Bytes": 21325,
+      "SHA256": "AF41DF968CFD50C760EEA980C2179A08867FCAB1302612242BFE02C68EC09253"
+    },
+    {
+      "Path": "BaselineContracts\\GeometrySolidProbe.xlsm",
+      "Bytes": 8357801,
+      "SHA256": "E5BD0458BF9666AFAA6918AAA60F05D984D0BE06DD8B7E7DC489611D317F6CD6"
+    },
+    {
+      "Path": "BaselineContracts\\modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Bytes": 3420,
+      "SHA256": "C24054CA88EE3BC4054257C4C47C64A5EDA82A3AE179200269EB2D0354EB194D"
+    },
+    {
+      "Path": "BaselineContracts\\modTestAudit02Snapshots.DumpRecipeRuleContracts.txt",
+      "Bytes": 274919,
+      "SHA256": "812B0A76F01A51C175F19A1370429119C9F320678EA9C010C3DBFC1CC2064289"
+    },
+    {
+      "Path": "BaselineContractsVerified\\GeometrySolidProbe.xlsm",
+      "Bytes": 8357801,
+      "SHA256": "E5BD0458BF9666AFAA6918AAA60F05D984D0BE06DD8B7E7DC489611D317F6CD6"
+    },
+    {
+      "Path": "BaselineContractsVerified\\modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Bytes": 3420,
+      "SHA256": "C24054CA88EE3BC4054257C4C47C64A5EDA82A3AE179200269EB2D0354EB194D"
+    },
+    {
+      "Path": "BaselineContractsVerified\\modTestAudit02Snapshots.DumpRecipeRuleContracts.txt",
+      "Bytes": 274919,
+      "SHA256": "812B0A76F01A51C175F19A1370429119C9F320678EA9C010C3DBFC1CC2064289"
+    },
+    {
+      "Path": "BaselineMatrices\\GeometrySolidProbe.xlsm",
+      "Bytes": 7818440,
+      "SHA256": "B0B38E6A24ED9B76492B29B063B958A4CF809753A9AC2F9CBBE61C1E89EB8AE6"
+    },
+    {
+      "Path": "BaselineMatricesNative\\GeometrySolidProbe.xlsm",
+      "Bytes": 7818440,
+      "SHA256": "B0B38E6A24ED9B76492B29B063B958A4CF809753A9AC2F9CBBE61C1E89EB8AE6"
+    },
+    {
+      "Path": "BaselineMatricesNative\\modTestAudit02Api.DumpAudit02CloseoutInputContract.txt",
+      "Bytes": 32424,
+      "SHA256": "27C3CBB22C5C72A7BF8E127BE19EBB92A0E52A294A6BDCA08343BF77807F77F7"
+    },
+    {
+      "Path": "BaselineMatricesNative\\modTestSectionRecipes.DumpCircleRecipeMatrix.txt",
+      "Bytes": 10182334,
+      "SHA256": "0EEE77AEEEF685812C793F27D5B019D0EBA9B58A585C7016FA5AD4542DB993B3"
+    },
+    {
+      "Path": "BaselineMatricesNative\\modTestSectionRecipes.DumpHollowRecipeEdgeMatrix.txt",
+      "Bytes": 3890299,
+      "SHA256": "063E62291F3E24F17BE865A0116A6BA93FFFA2C35FA0D7ADB0B3D1AFE10A8A70"
+    },
+    {
+      "Path": "BaselineMatricesNative\\modTestSectionRecipes.DumpHollowRecipeMatrix.txt",
+      "Bytes": 11909113,
+      "SHA256": "682A497EB2B36FC9E54E82F2FE4D42C4013339971C9CCCB1980EA2BAE7686FF4"
+    },
+    {
+      "Path": "BaselineMatricesNative\\modTestSectionRecipes.DumpRectSetRecipeMatrix.txt",
+      "Bytes": 5841979,
+      "SHA256": "96821A4DE9C447D63C252C0DF4D0B21D19BDA77CCDA4CE27DF5EA57297EEF63A"
+    },
+    {
+      "Path": "BaselineMatricesNative\\modTestSectionRecipes.DumpRoundedRecipeMatrix.txt",
+      "Bytes": 8857716,
+      "SHA256": "79D5BEB5274CAE47573A4703A7A904705BAAB6BA2DBA7E0CEE850C92B0ECEE7D"
+    },
+    {
+      "Path": "BaselinePlotRun\\GeometrySolidProbe.xlsm",
+      "Bytes": 7818440,
+      "SHA256": "B0B38E6A24ED9B76492B29B063B958A4CF809753A9AC2F9CBBE61C1E89EB8AE6"
+    },
+    {
+      "Path": "BaselinePlotRun\\modTestSectionRecipes.DumpCircleRecipePreview.txt",
+      "Bytes": 59813,
+      "SHA256": "7933F778233D9DFFB4DBE4AEA64CC42E0E0CD190381FDD18351C147A64AA6E66"
+    },
+    {
+      "Path": "BaselinePlotRun\\modTestSectionRecipes.DumpHollowRecipePreview.txt",
+      "Bytes": 322210,
+      "SHA256": "9C58A73BF113D28BBA917816DA479FCF2771BF398BF901F524E3D27A14690C08"
+    },
+    {
+      "Path": "BaselinePlotRun\\modTestSectionRecipes.DumpRectSetRecipePreview.txt",
+      "Bytes": 124288,
+      "SHA256": "BA53F3EC91973D8368BD1C0E3079EEBBD6479DACEBC7C3BDDDFB1D107F3E87E0"
+    },
+    {
+      "Path": "BaselinePlotRun\\modTestSectionRecipes.DumpRoundedRecipePreview.txt",
+      "Bytes": 212575,
+      "SHA256": "4A5FB5BEB257F8BF840DB5F524B835A07157FD374B7562EDA1E9DEF0FCE6D943"
+    },
+    {
+      "Path": "BaselineProbe\\RecipeComparison.xlsm",
+      "Bytes": 8357801,
+      "SHA256": "E5BD0458BF9666AFAA6918AAA60F05D984D0BE06DD8B7E7DC489611D317F6CD6"
+    },
+    {
+      "Path": "BaselineRules\\GeometrySolidProbe.xlsm",
+      "Bytes": 8357801,
+      "SHA256": "E5BD0458BF9666AFAA6918AAA60F05D984D0BE06DD8B7E7DC489611D317F6CD6"
+    },
+    {
+      "Path": "BaselineSP63\\GeometrySolidProbe.xlsm",
+      "Bytes": 8357801,
+      "SHA256": "E5BD0458BF9666AFAA6918AAA60F05D984D0BE06DD8B7E7DC489611D317F6CD6"
+    },
+    {
+      "Path": "BaselineSP63\\modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Bytes": 3486,
+      "SHA256": "9778FA9A749765693F9FCC17D02B8442C2EF12E0971868F662B9339072B12AD7"
+    },
+    {
+      "Path": "BaselineStates35\\GeometrySolidProbe.xlsm",
+      "Bytes": 7818440,
+      "SHA256": "B0B38E6A24ED9B76492B29B063B958A4CF809753A9AC2F9CBBE61C1E89EB8AE6"
+    },
+    {
+      "Path": "BaselineStates35\\modTestSectionRecipes.DumpCircleRecipeCalculations.txt",
+      "Bytes": 319764,
+      "SHA256": "3B579EB08F4424C2D33467A7474DD35E0EB7B23FF883944785711B8082537AF1"
+    },
+    {
+      "Path": "BaselineStates35\\modTestSectionRecipes.DumpHollowRecipeCalculations.txt",
+      "Bytes": 1762284,
+      "SHA256": "682C5D033B9F5A9081CC5094A64D78C0627D5D88A261FC050D0556592CE8988A"
+    },
+    {
+      "Path": "BaselineStates35\\modTestSectionRecipes.DumpRectSetRecipeCalculations.txt",
+      "Bytes": 610584,
+      "SHA256": "F7D1FF7271DFAF51F754A034F1C306492ABBB49326DC7CDCACDF5EC6EB9D2BD6"
+    },
+    {
+      "Path": "BaselineStates35\\modTestSectionRecipes.DumpRoundedRecipeCalculations.txt",
+      "Bytes": 1120922,
+      "SHA256": "FF4CF6DD3140A6F8347A53D33C3A00C88680395392215248AC82BFDF84A6A374"
+    },
+    {
+      "Path": "BaselineStates63\\GeometrySolidProbe.xlsm",
+      "Bytes": 7818440,
+      "SHA256": "B0B38E6A24ED9B76492B29B063B958A4CF809753A9AC2F9CBBE61C1E89EB8AE6"
+    },
+    {
+      "Path": "BaselineStates63\\modTestSectionRecipes.DumpCircleRecipeCalculations.txt",
+      "Bytes": 319764,
+      "SHA256": "5532EF9F286B18DB65D610877983A0E5F0AD9DBE0897C9E41A6FF3FB0BBC067A"
+    },
+    {
+      "Path": "BaselineStates63\\modTestSectionRecipes.DumpHollowRecipeCalculations.txt",
+      "Bytes": 1762284,
+      "SHA256": "B223E9A43BDE61F7C8947ECD6E059512901EB69B40C0A3AD1AB6E01380AB8932"
+    },
+    {
+      "Path": "BaselineStates63\\modTestSectionRecipes.DumpRectSetRecipeCalculations.txt",
+      "Bytes": 610584,
+      "SHA256": "532A7439EF16BBA377DBB8ADA2252FADBD0C2D344F056A61F5877BC1528F3745"
+    },
+    {
+      "Path": "BaselineStates63\\modTestSectionRecipes.DumpRoundedRecipeCalculations.txt",
+      "Bytes": 1120922,
+      "SHA256": "446745ED285FCF3E1070F456A0EEAB1C7ED1F5FC364244054D6739207247D13C"
+    },
+    {
+      "Path": "Candidate\\RecipeComparison.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidateDirected\\GeometrySolidProbe.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidateMatrices\\GeometrySolidProbe.xlsm",
+      "Bytes": 8314562,
+      "SHA256": "556ABED3E5882610AF095CC0E4A4A5DFB59B4913E7807DF34CDA482E38CCC7C7"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestAudit02Api.DumpAudit02CloseoutInputContract.txt",
+      "Bytes": 32424,
+      "SHA256": "27C3CBB22C5C72A7BF8E127BE19EBB92A0E52A294A6BDCA08343BF77807F77F7"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestAudit02Snapshots.DumpRecipeRuleContracts.txt",
+      "Bytes": 274919,
+      "SHA256": "812B0A76F01A51C175F19A1370429119C9F320678EA9C010C3DBFC1CC2064289"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestSectionRecipes.DumpCircleRecipeMatrix.txt",
+      "Bytes": 10182334,
+      "SHA256": "0EEE77AEEEF685812C793F27D5B019D0EBA9B58A585C7016FA5AD4542DB993B3"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestSectionRecipes.DumpHollowRecipeEdgeMatrix.txt",
+      "Bytes": 3890299,
+      "SHA256": "063E62291F3E24F17BE865A0116A6BA93FFFA2C35FA0D7ADB0B3D1AFE10A8A70"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestSectionRecipes.DumpHollowRecipeMatrix.txt",
+      "Bytes": 11909113,
+      "SHA256": "682A497EB2B36FC9E54E82F2FE4D42C4013339971C9CCCB1980EA2BAE7686FF4"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestSectionRecipes.DumpRectSetRecipeMatrix.txt",
+      "Bytes": 5841979,
+      "SHA256": "96821A4DE9C447D63C252C0DF4D0B21D19BDA77CCDA4CE27DF5EA57297EEF63A"
+    },
+    {
+      "Path": "CandidateMatrices\\modTestSectionRecipes.DumpRoundedRecipeMatrix.txt",
+      "Bytes": 8857716,
+      "SHA256": "79D5BEB5274CAE47573A4703A7A904705BAAB6BA2DBA7E0CEE850C92B0ECEE7D"
+    },
+    {
+      "Path": "CandidatePlotRun\\GeometrySolidProbe.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidatePlotRun\\modTestSectionRecipes.DumpCircleRecipePreview.txt",
+      "Bytes": 59813,
+      "SHA256": "7933F778233D9DFFB4DBE4AEA64CC42E0E0CD190381FDD18351C147A64AA6E66"
+    },
+    {
+      "Path": "CandidatePlotRun\\modTestSectionRecipes.DumpHollowRecipePreview.txt",
+      "Bytes": 322210,
+      "SHA256": "9C58A73BF113D28BBA917816DA479FCF2771BF398BF901F524E3D27A14690C08"
+    },
+    {
+      "Path": "CandidatePlotRun\\modTestSectionRecipes.DumpRectSetRecipePreview.txt",
+      "Bytes": 124288,
+      "SHA256": "BA53F3EC91973D8368BD1C0E3079EEBBD6479DACEBC7C3BDDDFB1D107F3E87E0"
+    },
+    {
+      "Path": "CandidatePlotRun\\modTestSectionRecipes.DumpRoundedRecipePreview.txt",
+      "Bytes": 212575,
+      "SHA256": "4A5FB5BEB257F8BF840DB5F524B835A07157FD374B7562EDA1E9DEF0FCE6D943"
+    },
+    {
+      "Path": "CandidateSP35\\GeometrySolidProbe.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidateSP35\\modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Bytes": 3420,
+      "SHA256": "C24054CA88EE3BC4054257C4C47C64A5EDA82A3AE179200269EB2D0354EB194D"
+    },
+    {
+      "Path": "CandidateSP63\\GeometrySolidProbe.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidateSP63\\modTestAudit02Snapshots.DumpAudit02Calculations.txt",
+      "Bytes": 3486,
+      "SHA256": "9778FA9A749765693F9FCC17D02B8442C2EF12E0971868F662B9339072B12AD7"
+    },
+    {
+      "Path": "CandidateStates35\\GeometrySolidProbe.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidateStates35\\modTestSectionRecipes.DumpCircleRecipeCalculations.txt",
+      "Bytes": 319764,
+      "SHA256": "3B579EB08F4424C2D33467A7474DD35E0EB7B23FF883944785711B8082537AF1"
+    },
+    {
+      "Path": "CandidateStates35\\modTestSectionRecipes.DumpHollowRecipeCalculations.txt",
+      "Bytes": 1762284,
+      "SHA256": "682C5D033B9F5A9081CC5094A64D78C0627D5D88A261FC050D0556592CE8988A"
+    },
+    {
+      "Path": "CandidateStates35\\modTestSectionRecipes.DumpRectSetRecipeCalculations.txt",
+      "Bytes": 610584,
+      "SHA256": "F7D1FF7271DFAF51F754A034F1C306492ABBB49326DC7CDCACDF5EC6EB9D2BD6"
+    },
+    {
+      "Path": "CandidateStates35\\modTestSectionRecipes.DumpRoundedRecipeCalculations.txt",
+      "Bytes": 1120922,
+      "SHA256": "FF4CF6DD3140A6F8347A53D33C3A00C88680395392215248AC82BFDF84A6A374"
+    },
+    {
+      "Path": "CandidateStates63\\GeometrySolidProbe.xlsm",
+      "Bytes": 8359065,
+      "SHA256": "52D05CF1A16EB66CC46235FED83729B77B83C726D7A43381654B8A6C4C5ACDD0"
+    },
+    {
+      "Path": "CandidateStates63\\modTestSectionRecipes.DumpCircleRecipeCalculations.txt",
+      "Bytes": 319764,
+      "SHA256": "5532EF9F286B18DB65D610877983A0E5F0AD9DBE0897C9E41A6FF3FB0BBC067A"
+    },
+    {
+      "Path": "CandidateStates63\\modTestSectionRecipes.DumpHollowRecipeCalculations.txt",
+      "Bytes": 1762284,
+      "SHA256": "B223E9A43BDE61F7C8947ECD6E059512901EB69B40C0A3AD1AB6E01380AB8932"
+    },
+    {
+      "Path": "CandidateStates63\\modTestSectionRecipes.DumpRectSetRecipeCalculations.txt",
+      "Bytes": 610584,
+      "SHA256": "532A7439EF16BBA377DBB8ADA2252FADBD0C2D344F056A61F5877BC1528F3745"
+    },
+    {
+      "Path": "CandidateStates63\\modTestSectionRecipes.DumpRoundedRecipeCalculations.txt",
+      "Bytes": 1120922,
+      "SHA256": "446745ED285FCF3E1070F456A0EEAB1C7ED1F5FC364244054D6739207247D13C"
+    }
+  ],
+  "ProductionFilesUntouched": true
+}

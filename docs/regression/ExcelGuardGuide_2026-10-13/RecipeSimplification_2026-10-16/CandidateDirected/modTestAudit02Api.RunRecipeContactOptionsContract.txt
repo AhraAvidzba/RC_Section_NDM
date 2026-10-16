@@ -1,0 +1,10 @@
+PASS: contactRecipe.nominal.intermediate
+PASS: contactRecipe.binding
+PASS: contactRecipe.source
+PASS: contactRecipe.tangent
+PASS: contactRecipe.independent.binding
+PASS: contactRecipe.independent.setbacks
+PASS: contactRecipe.independent.group
+PASS: contactRecipe.independent.publication
+PASS: contactRecipe.independent.coincidence
+TOTAL RECIPE CONTACT OPTIONS: passed=9; failed=0

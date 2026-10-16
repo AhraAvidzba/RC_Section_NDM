@@ -112,13 +112,14 @@ End Function
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRoundedInput, ByVal polygon As CPolygonSpec)
     Dim faces As Variant, captions As Variant, index As Long, row As Long, extra As Long, count As Long
     Dim groupID As String, diameter As Double, axisDistance As Double, options As CRebarRuleOptions, path As CGeometryPath
-    Dim nx As Double, ny As Double, normalSign As Double, d2 As Double, d3 As Double, loc2 As String, loc3 As String, distance As Double
-    Dim startColumn As Long, endColumn As Long
+    Dim nx As Double, ny As Double, normalSign As Double, diameters(2 To 3) As Double, locations(2 To 3) As String, distance As Double
+    Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long, binding As String, keys As Variant
     faces = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая")
     For index = 0 To 3
         groupID = CStr(faces(index))
-        row = table.RowByAnyKey(Array(captions(index), Replace$(groupID, ".", "-"), groupID), 1, sizes.MainHeader + 1, sizes.MainHeader + 4)
+        keys = Array(captions(index), Replace$(groupID, ".", "-"), groupID)
+        row = table.RowByAnyKey(keys, 1, sizes.MainHeader + 1, sizes.MainHeader + 4)
         count = table.Count(row, 4): diameter = table.OptionalDiameter(row, 3, units)
         If count = 0 Or diameter = 0# Then GoTo NextFace
         axisDistance = table.Length(row, 2, units)
@@ -147,20 +148,25 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal ta
         ' Адреса полей для сообщения об ошибке размещения.
         options.SourceReference = table.SourceReference(row, 2) & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
         facade.RebarByCount groupID & ".Main", path.ID, count, diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-        extra = table.RowByAnyKey(Array(captions(index), Replace$(groupID, ".", "-"), groupID), 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 4)
-        d2 = table.OptionalDiameter(extra, 2, units): d3 = table.OptionalDiameter(extra, 5, units)
-        If d2 > 0# Then
-            loc2 = table.Choice(extra, 3, Array("Stacked", "SideBySide"))
-            Set options = AdditionalOptions(table, extra, 2, groupID, CStr(captions(index)), 2, loc2, diameter, d2, normalSign) ' Настраиваем смещение и привязку добавляемого ряда.
-            facade.RebarDependent groupID & ".Row2", groupID & ".Main", d2, options ' Второй ряд привязан к позициям основного; задаём его диаметр.
-        End If
-        If d3 > 0# Then
-            loc3 = table.Choice(extra, 6, Array("Stacked", "SideBySide"))
-            distance = 0#
-            If d2 > 0# And loc2 = loc3 Then distance = d2 ' Третий ряд в том же направлении должен обойти стержень второго.
-            Set options = AdditionalOptions(table, extra, 5, groupID, CStr(captions(index)), 3, loc3, diameter, d3, normalSign, distance) ' Настраиваем смещение и привязку добавляемого ряда.
-            facade.RebarDependent groupID & ".Row3", groupID & ".Main", d3, options ' Третий ряд привязан к позициям основного; задаём его диаметр.
-        End If
+        extra = table.RowByAnyKey(keys, 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 4)
+        diameters(2) = table.OptionalDiameter(extra, 2, units)
+        diameters(3) = table.OptionalDiameter(extra, 5, units)
+        For rowNumber = 2 To 3
+            If diameters(rowNumber) > 0# Then
+                column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
+                locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                distance = 0#
+                If rowNumber = 3 And locations(2) = locations(3) Then distance = diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+                binding = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                Set options = RecipeContactOptions(table.SourceReference(extra, column), locations(rowNumber), binding, _
+                    diameter, diameters(rowNumber), normalSign, interveningDiameterSum:=distance)
+                options.AnnotationGroup = groupID ' Одна подпись для всех рядов этой стороны.
+                options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+                options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+                options.Comment = "RoundedRectangle: " & CStr(captions(index)) & " грань, ряд " & CStr(rowNumber)
+                facade.RebarDependent groupID & ".Row" & CStr(rowNumber), groupID & ".Main", diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+            End If
+        Next rowNumber
         If index >= 2 Then
             facade.RebarRowExtentLabel groupID, groupID & ".Main", nx, ny, True ' Привязываем подпись к крайним стержням основного ряда.
         Else
@@ -189,27 +195,6 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polyg
     Exit Function
 InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sourceReference
-End Function
-
-' Возвращает настройки дополнительного ряда арматуры: расстояние между центрами с учётом
-' диаметров, направление смещения и выбор основных стержней, у которых он появляется.
-Private Function AdditionalOptions(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, _
-        ByVal groupID As String, ByVal caption As String, ByVal rowNumber As Long, ByVal location As String, _
-        ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, _
-        Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
-    Dim options As CRebarRuleOptions
-    Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-    Dim axis As ERebarOffsetAxis, directionSign As Double, everySecond As Boolean
-    axis = RowNormal: directionSign = normalSign ' По умолчанию смещаем ряд по нормали к исходной линии.
-    If location = "SideBySide" Then axis = RowTangent: directionSign = 1# ' Располагаем дополнительный стержень вдоль исходного ряда.
-    everySecond = (table.Choice(row, column + 2, Array("EachBar", "EverySecondBar")) = "EverySecondBar") ' Выбираем все позиции или через одну, начиная с первой.
-    options.SourceReference = table.SourceReference(row, column) ' Адреса полей для сообщения об ошибке размещения.
-    options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, everySecond, interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.AnnotationGroup = groupID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
-    options.Comment = "RoundedRectangle: " & caption & " грань, ряд " & CStr(rowNumber)
-    Set AdditionalOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function
 
 ' Добавляет ширину прямой базы B, полную высоту H и фактические размеры включённых боковых выступов.

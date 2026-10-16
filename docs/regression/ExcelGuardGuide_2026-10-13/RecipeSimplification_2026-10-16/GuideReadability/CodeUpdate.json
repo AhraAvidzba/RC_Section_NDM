@@ -1,0 +1,13 @@
+{
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\RecipeSimplification_2026-10-16\\GuideReadability\\Candidate.xlsm",
+  "WorkbookSHA256": "09B57EE133E0AC9AB5BC4CA3F6996F8727BEB1C325BF5A6A5EF98F05D78F7966",
+  "ProductionSHA256": "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E",
+  "Compiled": true,
+  "Modules": [
+    "modSectionRecipeApiGuide"
+  ],
+  "RetiredModules": [],
+  "EntryPointNames": [],
+  "TraceGeometry": false,
+  "ProductionChanged": false
+}

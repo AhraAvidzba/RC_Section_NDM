@@ -1,0 +1,6 @@
+PASS: circle.input.0
+PASS: circle.input.1
+PASS: circle.input.2
+PASS: circle.input.3
+PASS: circle.input.4
+TOTAL CIRCLE INPUT: passed=5; failed=0

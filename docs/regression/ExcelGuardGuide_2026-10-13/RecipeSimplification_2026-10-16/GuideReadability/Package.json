@@ -1,0 +1,12 @@
+{
+  "Status": "RECIPE_PACKAGE_PASS",
+  "AcceptedSHA256": "769eb93defba8f7a914b542387373dd963013ddf2e60172ace941ca8e3cee3b3",
+  "BeforeWorkbookSHA256": "9d3cdcdbe853818632fbdf0f63278019a70cfb28f4831b376c6a73b8be7ba52e",
+  "NativeComponents": 158,
+  "AllExecutableVBAUnchanged": true,
+  "AllNonVBAPartsByteIdentical": true,
+  "ChangedCommentComponents": [
+    "modSectionRecipeApiGuide"
+  ],
+  "OnlyZIPPartChanged": "xl/vbaProject.bin"
+}

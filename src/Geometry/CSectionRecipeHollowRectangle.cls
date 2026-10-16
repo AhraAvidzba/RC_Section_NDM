@@ -46,12 +46,9 @@ Private Type THollowFace
     Count As Long ' Число стержней основного ряда.
     StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
     EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
-    D2 As Double ' Диаметр второго ряда арматуры, мм.
-    D3 As Double ' Диаметр третьего ряда арматуры, мм.
-    Location2 As String ' Расположение второго ряда относительно основного.
-    Location3 As String ' Расположение третьего ряда относительно исходного ряда.
-    Binding2 As String ' Каким стержням основного ряда соответствует второй ряд.
-    Binding3 As String ' Каким стержням исходного ряда соответствует третий ряд.
+    Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
+    Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
+    Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
     Source As String ' Адрес исходных данных для пояснения ошибок.
 End Type
 
@@ -100,14 +97,15 @@ End Sub
 ' они ограничивают линии у отверстия даже при отсутствии арматуры на соседней стороне.
 Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput, ByRef faces() As THollowFace)
     Dim ids As Variant, captions As Variant, aliases As Variant, i As Long, row As Long, extra As Long, active As Boolean
-    Dim startColumn As Long, endColumn As Long
+    Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long, keys As Variant
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая", "B_o - верхняя", "B_o - нижняя", "H_o - левая", "H_o - правая")
     aliases = Array("B-top", "B-bottom", "H-left", "H-right", "bo-top", "bo-bottom", "ho-left", "ho-right")
     For i = 1 To 8
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
-            row = table.RowByAnyKey(Array(.Caption, .ID, aliases(i - 1)), 1, sizes.MainHeader + 1, sizes.MainHeader + 8)
+            keys = Array(.Caption, .ID, aliases(i - 1))
+            row = table.RowByAnyKey(keys, 1, sizes.MainHeader + 1, sizes.MainHeader + 8)
             .Source = table.SourceReference(row, 2)
             If i <= 4 Then .Count = table.Count(row, 4)
             .Diameter = table.OptionalDiameter(row, 3, units)
@@ -125,16 +123,16 @@ Private Sub ReadFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSys
                 .StartSetback = table.NonNegativeLength(row, startColumn, units)
                 .EndSetback = table.NonNegativeLength(row, endColumn, units)
                 .Source = .Source & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
-                extra = table.RowByAnyKey(Array(.Caption, .ID, aliases(i - 1)), 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 8)
-                .D2 = table.OptionalDiameter(extra, 2, units): .D3 = table.OptionalDiameter(extra, 5, units)
-                If .D2 > 0# Then
-                    .Location2 = table.Choice(extra, 3, Array("Stacked", "SideBySide"))
-                    .Binding2 = table.Choice(extra, 4, Array("EachBar", "EverySecondBar"))
-                End If
-                If .D3 > 0# Then
-                    .Location3 = table.Choice(extra, 6, Array("Stacked", "SideBySide"))
-                    .Binding3 = table.Choice(extra, 7, Array("EachBar", "EverySecondBar"))
-                End If
+                extra = table.RowByAnyKey(keys, 1, sizes.ExtraHeader + 1, sizes.ExtraHeader + 8)
+                .Diameters(2) = table.OptionalDiameter(extra, 2, units)
+                .Diameters(3) = table.OptionalDiameter(extra, 5, units)
+                For rowNumber = 2 To 3
+                    If .Diameters(rowNumber) > 0# Then
+                        column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
+                        .Locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                        .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                    End If
+                Next rowNumber
             End If
         End With
     Next i
@@ -180,7 +178,7 @@ End Function
 ' Добавляет связанные ряды и общую подпись каждой стороны по фактически созданной арматуре.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
         ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
-    Dim i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions
+    Dim i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long, rowComment As String
     Dim normalSign As Double, nx As Double, ny As Double, distance As Double, annotationSign As Double
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1
@@ -193,7 +191,8 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
         options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
         options.SourceReference = faces(i).Source ' Адреса полей для сообщения об ошибке размещения.
-        options.Comment = "HollowRectangle: " & faces(i).Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд 1"
+        rowComment = "HollowRectangle: " & faces(i).Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд "
+        options.Comment = rowComment & "1"
         normalSign = 1#: If base = 1 Or base = 3 Then normalSign = -1#
         If i <= 4 Then
             If base <= 2 Then options.EndMode = ExcludeBoth ' Исключаем стержни на обоих концах линии.
@@ -204,16 +203,19 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
             facade.RebarProjected faces(i).ID & ".Main", path.ID, faces(base).ID & ".Main", faces(i).Diameter, options ' Проецируем стержни наружного ряда на линию у отверстия.
             normalSign = -normalSign
         End If
-        If faces(i).D2 > 0# Then
-            Set options = ExtraOptions(faces(i), 2, faces(i).Location2, faces(i).Binding2, faces(i).Diameter, faces(i).D2, normalSign) ' Настраиваем смещение и привязку добавляемого ряда.
-            facade.RebarDependent faces(i).ID & ".Row2", faces(i).ID & ".Main", faces(i).D2, options ' Второй ряд привязан к позициям основного; задаём его диаметр.
-        End If
-        If faces(i).D3 > 0# Then
-            distance = 0#
-            If faces(i).D2 > 0# And faces(i).Location2 = faces(i).Location3 Then distance = faces(i).D2 ' Третий ряд в том же направлении должен обойти стержень второго.
-            Set options = ExtraOptions(faces(i), 3, faces(i).Location3, faces(i).Binding3, faces(i).Diameter, faces(i).D3, normalSign, distance) ' Настраиваем смещение и привязку добавляемого ряда.
-            facade.RebarDependent faces(i).ID & ".Row3", faces(i).ID & ".Main", faces(i).D3, options ' Третий ряд привязан к позициям основного; задаём его диаметр.
-        End If
+        For rowNumber = 2 To 3
+            If faces(i).Diameters(rowNumber) > 0# Then
+                distance = 0#
+                If rowNumber = 3 And faces(i).Locations(2) = faces(i).Locations(3) Then distance = faces(i).Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+                Set options = RecipeContactOptions(faces(i).Source, faces(i).Locations(rowNumber), faces(i).Bindings(rowNumber), _
+                    faces(i).Diameter, faces(i).Diameters(rowNumber), normalSign, interveningDiameterSum:=distance)
+                options.AnnotationGroup = faces(i).ID ' Одна подпись для всех рядов этой стороны.
+                options.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+                options.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+                options.Comment = rowComment & CStr(rowNumber)
+                facade.RebarDependent faces(i).ID & ".Row" & CStr(rowNumber), faces(i).ID & ".Main", faces(i).Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
+            End If
+        Next rowNumber
         nx = 0#: ny = 0#: annotationSign = 1#: If i > 4 Then annotationSign = -1#
         Select Case base
             Case 1: ny = annotationSign
@@ -279,24 +281,6 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     Exit Function
 InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeHollowRectangle", faces(index).Source
-End Function
-
-' Возвращает настройки дополнительного ряда арматуры: контактное расстояние, направление
-' и размещение у каждого основного стержня или через один, начиная с первого.
-Private Function ExtraOptions(ByRef face As THollowFace, ByVal rowNumber As Long, ByVal location As String, ByVal binding As String, ByVal baseDiameter As Double, ByVal diameter As Double, ByVal normalSign As Double, _
-        Optional ByVal interveningDiameterSum As Double = 0#) As CRebarRuleOptions
-    Dim options As CRebarRuleOptions
-    Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-    Dim axis As ERebarOffsetAxis, directionSign As Double
-    axis = RowNormal: directionSign = normalSign ' По умолчанию смещаем ряд по нормали к исходной линии.
-    If location = "SideBySide" Then axis = RowTangent: directionSign = 1# ' Располагаем дополнительный стержень вдоль исходного ряда.
-    options.SourceReference = face.Source ' Адреса полей для сообщения об ошибке размещения.
-    options.ConfigureDependentContact baseDiameter, diameter, axis, directionSign, (binding = "EverySecondBar"), interveningDiameterSum ' Учитываем диаметры обоих рядов и промежуточные стержни.
-    options.AnnotationGroup = face.ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
-    options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
-    options.Comment = "HollowRectangle: " & face.Caption & IIf(Left$(face.ID, 8) = "Opening.", " грань Opening", " наружная грань") & ", ряд " & CStr(rowNumber)
-    Set ExtraOptions = options ' Возвращаем настройки дополнительного ряда.
 End Function
 
 ' Добавляет наружные ширину и высоту сечения, а также ширину и высоту внутреннего отверстия.

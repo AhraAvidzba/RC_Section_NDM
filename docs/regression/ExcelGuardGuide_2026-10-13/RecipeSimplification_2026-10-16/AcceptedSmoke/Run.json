@@ -1,0 +1,30 @@
+{
+  "Stage": "AcceptedSmoke",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+      "Seconds": 2.4264564,
+      "Characters": 21325,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+      "Seconds": 0.1503624,
+      "Characters": 803,
+      "Passed": true,
+      "Snapshot": false
+    },
+    {
+      "Macro": "modTestAudit02Api.RunRecipeContactOptionsContract",
+      "Seconds": 0.1015991,
+      "Characters": 390,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "9D3CDCDBE853818632FBDF0F63278019A70CFB28F4831B376C6A73B8BE7BA52E",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T10:26:56.4175328+03:00"
+}

@@ -1,0 +1,21 @@
+PASS: hollow.input.0
+PASS: hollow.input.1
+PASS: hollow.input.2
+PASS: hollow.input.3
+PASS: hollow.input.4
+PASS: hollow.input.5
+PASS: hollow.input.6
+PASS: hollow.input.7
+PASS: hollow.input.8
+PASS: hollow.input.9
+PASS: hollow.input.10
+PASS: hollow.input.11
+PASS: hollow.input.12
+PASS: hollow.input.13
+PASS: hollow.input.14
+PASS: hollow.input.15
+PASS: hollow.input.16
+PASS: hollow.input.17
+PASS: hollow.input.18
+PASS: hollow.input.19
+TOTAL HOLLOW INPUT: passed=20; failed=0

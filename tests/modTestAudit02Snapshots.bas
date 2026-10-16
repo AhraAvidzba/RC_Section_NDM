@@ -125,3 +125,111 @@ Private Function Bits(ByVal value As Double) As String
     number.Value = value: LSet words = number
     Bits = Right$("00000000" & Hex$(words.High), 8) & Right$("00000000" & Hex$(words.Low), 8)
 End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет каждое поле правил всех семейств до и после упрощения рецептов.
+' Повторно выполняет рецепт с тем же снимком ввода: ID, порядок, адреса, политики
+' и контактные смещения должны совпадать, включая отключённые дополнительные ряды.
+Public Function DumpRecipeRuleContracts() As String
+    Dim config As Object, saved As Variant, fixture As Variant, scenario As Long, result As String
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
+    Dim registry As CSectionTypeRegistry, context As CSectionRecipeContext, definition As CSectionDefinition
+    Dim typeID As String, first As String, second As String
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange
+    saved = config.Formula
+    For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", "RoundedSimple", _
+            "RoundedTapered", "RoundedMixed", "RoundedMixedLeft", "HollowCentered", "HollowOffset")
+        For scenario = 0 To 5
+            config.Formula = saved
+            modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+            modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+            Select Case CStr(fixture)
+                Case "Circle"
+                    ConfigureCircleRuleContract scenario
+                    typeID = "Circle"
+                Case "Rectangle", "LSection", "TwoRectangles"
+                    modTestShapeArchitecture.ConfigureRectSetScenario CStr(fixture), scenario
+                    typeID = "RectSet"
+                Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
+                    modTestShapeArchitecture.ConfigureRoundedScenario scenario
+                    typeID = "RoundedRectangle"
+                Case "HollowCentered", "HollowOffset"
+                    modTestShapeArchitecture.ConfigureHollowScenario scenario
+                    typeID = "HollowRectangle"
+            End Select
+            ThisWorkbook.Worksheets("Config").Calculate
+            Set settings = New CSystemSettingsReader
+            settings.LoadFromWorkbook ThisWorkbook
+            Set units = New CUnitSystem
+            units.LoadFromSettings settings
+            Set registry = New CSectionTypeRegistry
+            Set reader = New CSectionInputSnapshotReader
+            Set context = reader.Capture(ThisWorkbook, registry.RecipeTableNames(typeID), units)
+            Set definition = registry.CreateDefinition(typeID, context)
+            first = RecipeRuleFields(definition)
+            Set definition = registry.CreateDefinition(typeID, context)
+            second = RecipeRuleFields(definition)
+            If first <> second Then Err.Raise vbObjectError + 5492, , "Повторное описание изменило правила: " & CStr(fixture)
+            result = result & "CASE|" & CStr(fixture) & "|" & CStr(scenario) & vbCrLf & first
+        Next scenario
+    Next fixture
+    GoTo Finished
+Failed:
+    result = result & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    DumpRecipeRuleContracts = result
+End Function
+
+' Готовит варианты круговых рядов: отдельно второй и третий, оба направления,
+' нечётные позиции и недопустимый текст в полях отключённого ряда.
+Private Sub ConfigureCircleRuleContract(ByVal scenario As Long)
+    Dim table As Object, settings As CSystemSettingsReader, units As CUnitSystem, factor As Double
+    Dim row As Long, key As String
+    Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem
+    units.LoadFromSettings settings
+    factor = units.InputLengthToInternal(1#)
+    Set table = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
+    For row = 2 To table.Rows.Count
+        key = CStr(table.Cells(row, 1).Value2)
+        Select Case key
+            Case "Rebar.Diameter2": table.Cells(row, 2).Value2 = IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
+            Case "Rebar.Diameter3": table.Cells(row, 2).Value2 = IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
+            Case "Rebar.Loc2row": table.Cells(row, 2).Value2 = IIf(scenario >= 4, "SideBySide", "Stacked")
+            Case "Rebar.Loc3row": table.Cells(row, 2).Value2 = IIf(scenario = 4, "SideBySide", "Stacked")
+            Case "Rebar.Bind2row": table.Cells(row, 2).Value2 = IIf(scenario Mod 2 = 0, "EverySecondBar", "EachBar")
+            Case "Rebar.Bind3row": table.Cells(row, 2).Value2 = IIf(scenario Mod 2 = 0, "EachBar", "EverySecondBar")
+        End Select
+        If scenario = 0 And (key = "Rebar.Loc2row" Or key = "Rebar.Loc3row" Or _
+                key = "Rebar.Bind2row" Or key = "Rebar.Bind3row") Then table.Cells(row, 2).Value2 = "inactive value"
+    Next row
+End Sub
+
+' Сериализует все поля TRebarRule без округления Double и без отбора «важных» настроек.
+' Сравнение с исходной книгой проверяет также значения по умолчанию независимых options.
+Private Function RecipeRuleFields(ByVal definition As CSectionDefinition) As String
+    Dim rule As TRebarRule, index As Long, field As Variant, value As Variant, result As String
+    For index = 1 To definition.RuleCount
+        definition.CopyRule index, rule
+        For Each field In Array(rule.RuleID, rule.Target, rule.Mode, rule.DistributionScope, rule.Enabled, _
+                rule.Diameter, rule.SteelClass, rule.Count, rule.Step, rule.StartSetback, rule.EndSetback, _
+                rule.EndMode, rule.RemainderPlacement, rule.SourceRuleID, rule.TangentOffset, rule.NormalOffset, _
+                rule.EverySecond, rule.IncomingTangentAtJoint, rule.DirectionX, rule.DirectionY, rule.SourceNormalSign, _
+                rule.SuccessfulProjectionOrdinal, rule.NewPublicationRoot, rule.SkipMissingProjection, _
+                rule.Publication, rule.PositionOrder, rule.Coincidence, rule.PlacementCheck, rule.OverlapPolicy, _
+                rule.SourcePrefix, rule.SourceSuffix, rule.AnnotationGroup, rule.Comment, rule.SourceReference)
+            If VarType(field) = vbDouble Then value = Bits(CDbl(field)) Else value = CStr(field)
+            result = result & "|" & Replace$(Replace$(CStr(value), vbCr, "%0D"), vbLf, "%0A")
+        Next field
+        result = result & "|stations.type=" & CStr(VarType(rule.ExplicitStations))
+        If IsArray(rule.ExplicitStations) Then
+            For Each field In rule.ExplicitStations
+                result = result & "|" & Bits(CDbl(field))
+            Next field
+        End If
+        result = result & vbCrLf
+    Next index
+    RecipeRuleFields = result
+End Function

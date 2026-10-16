@@ -1,0 +1,15 @@
+PASS: rounded.input.0
+PASS: rounded.input.1
+PASS: rounded.input.2
+PASS: rounded.input.3
+PASS: rounded.input.4
+PASS: rounded.input.5
+PASS: rounded.input.6
+PASS: rounded.input.7
+PASS: rounded.input.8
+PASS: rounded.input.9
+PASS: rounded.input.10
+PASS: rounded.input.11
+PASS: rounded.input.12
+PASS: rounded.input.13
+TOTAL ROUNDED INPUT: passed=14; failed=0
