@@ -29,7 +29,7 @@ Private Type TCircleRebar
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
     Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
     Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
-    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    SkippedDiameters(2 To 3) As Double ' Диаметр второго ряда, учитываемый при смещении третьего, мм.
     Source As String ' Адреса числа стержней и отступа основного ряда для сообщения об ошибке.
     ExtraSources(2 To 3) As String ' Адреса диаметра и привязки каждого дополнительного ряда.
 End Type
@@ -78,7 +78,7 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
             rebar.ExtraSources(rowNumber) = table.SourceReference(diameterRows(rowNumber), 2) & "; " & table.SourceReference(bindingRow, 2)
         End If
     Next rowNumber
-    If rebar.Locations(2) = rebar.Locations(3) Then rebar.SkippedDiameters(3) = rebar.Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+    If rebar.Locations(2) = rebar.Locations(3) Then rebar.SkippedDiameters(3) = rebar.Diameters(2) ' Учитываем второй ряд при одинаковом способе смещения.
 End Sub
 
 ' Создаёт окружность бетона и назначает её наружной границей.

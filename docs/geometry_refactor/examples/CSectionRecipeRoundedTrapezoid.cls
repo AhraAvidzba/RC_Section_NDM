@@ -17,8 +17,8 @@ Implements ISectionRecipe
 ' Рабочий пример нового типа: скругленная трапеция с круглым отверстием.
 ' Здесь только ввод и декларации. Сетка, стержни, измерения и НДС общие.
 Private Type TInputs
-    BottomWidth As Double ' Нижняя ширина трапеции, мм.
-    TopWidth As Double ' Верхняя ширина трапеции, мм.
+    BottomWidth As Double ' Расстояние между нижними вершинами до скругления, мм.
+    TopWidth As Double ' Расстояние между верхними вершинами до скругления, мм.
     Height As Double ' Высота трапеции, мм.
     CornerRadius As Double ' Радиус скругления вершин трапеции, мм.
     OpeningRadius As Double ' Радиус круглого отверстия, мм.
@@ -31,8 +31,8 @@ Private Type TInputs
     Source As String ' Адрес исходных данных для пояснения ошибок.
 End Type
 
-' Описывает контуры, арматурные правила и размеры выбранного рецепта. Сетку и физические стержни
-' строит общий CSectionBuilder.
+' Описывает границы бетона и отверстия, армирование и аннотации (размеры, подписи арматуры и текст).
+' Сетку и отдельные стержни создаёт общий CSectionBuilder.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     Dim table As CSectionInputTable, units As CUnitSystem, parameters As TInputs
     Set table = context.Table("rngRoundedTrapezoidGeometry"): Set units = context.Units
@@ -54,7 +54,7 @@ Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipe
     Set ISectionRecipe_CreateDefinition = Describe(parameters, table)  ' parameters — размеры, радиусы, диаметры и число стержней; table — таблица адресов исходных ячеек; Nothing при программном вводе.
 End Function
 
-' Задаёт тот же рецепт программно: размеры и диаметры передаются в мм,
+' Задаёт рецепт программно: размеры и радиусы передаются в мм, параметры арматуры заданы внутри метода.
 ' Config не читается. При изменении исходных параметров формируется новое описание сечения.
 Public Function ProgramDefinition(Optional ByVal bottomWidth As Double = 1200#, Optional ByVal topWidth As Double = 800#, _
         Optional ByVal height As Double = 800#, Optional ByVal cornerRadius As Double = 60#, Optional ByVal openingRadius As Double = 110#) As CSectionDefinition
@@ -64,25 +64,25 @@ Public Function ProgramDefinition(Optional ByVal bottomWidth As Double = 1200#, 
     parameters.OuterAxisDistance = 50#: parameters.InnerAxisDistance = 45#
     parameters.OuterCount = 24: parameters.InnerCount = 16: parameters.OuterDiameter = 20#: parameters.InnerDiameter = 16#
     parameters.Source = "ProgramInputs.BottomWidth/TopWidth/Height/CornerRadius/OpeningRadius"
-    Set ProgramDefinition = Describe(parameters, Nothing)  ' parameters — размеры, радиусы, диаметры и число стержней; Nothing — таблица адресов исходных ячеек; Nothing при программном вводе.
+    Set ProgramDefinition = Describe(parameters, Nothing)  ' parameters — размеры, радиусы, диаметры и число стержней; Nothing — программный ввод без таблицы адресов.
 End Function
 
-' Читает размер из снимка таблицы и переводит во внутренние мм через CUnitSystem.
+' Читает положительный размер из снимка таблицы и переводит его в мм через CUnitSystem.
 Private Function ReadLength(ByVal table As CSectionInputTable, ByVal key As String, ByVal units As CUnitSystem) As Double
     ReadLength = table.Length(table.RowByKey(key), 2, units)
     If ReadLength <= 0# Then SectionRecipeError "CSectionRecipeRoundedTrapezoid", "Размер должен быть положительным. Исправьте указанный параметр.", table.SourceReference(table.RowByKey(key), 2)
 End Function
 
-' Геометрическая сторона бетона задается явно: внутрь Outer, наружу Opening.
-' Один замкнутый путь охватывает все линии и реальные дуги скруглений.
+' Создаёт контур трапеции с прямыми участками и скруглениями, а отверстие задаёт отдельной окружностью.
+' Наружная арматура расположена внутри трапеции, внутренняя — снаружи отверстия, в бетоне.
 Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionInputTable) As CSectionDefinition
     On Error GoTo InvalidGeometry
     If parameters.BottomWidth <= 0# Or parameters.TopWidth <= 0# Or parameters.Height <= 0# Or parameters.CornerRadius <= 0# Or parameters.OpeningRadius <= 0# Then _
         SectionRecipeError "CSectionRecipeRoundedTrapezoid", "Размеры и радиусы должны быть положительными.", parameters.Source
-    Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, openingPath As CGeometryPath, axis As CGeometryPath  ' Объявляем сборщик описания сечения.
-    Dim polygon As CPolygonSpec, options As CRebarRuleOptions  ' Объявляем условия размещения арматуры.
+    Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, openingPath As CGeometryPath, axis As CGeometryPath  ' Объявляем сборщик и линии границы бетона, отверстия и центров арматуры.
+    Dim polygon As CPolygonSpec, options As CRebarRuleOptions  ' Объявляем описание вершин и условия размещения арматуры.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedTrapezoid"  ' "RoundedTrapezoid" — имя типа сечения.
-    ' Один исходный набор для контура и осевого смещения; порядок вершин прежний.
+    ' Один набор вершин и радиусов используется для границы бетона и линии наружной арматуры.
     Set polygon = New CPolygonSpec
     polygon.AddVertex "BottomLeft", -parameters.BottomWidth / 2#, -parameters.Height / 2#, parameters.CornerRadius, parameters.Source
     polygon.AddVertex "BottomRight", parameters.BottomWidth / 2#, -parameters.Height / 2#, parameters.CornerRadius, parameters.Source
@@ -112,7 +112,7 @@ Private Function Describe(ByRef parameters As TInputs, ByVal table As CSectionIn
     ' заданное число стержней; parameters.OuterDiameter — диаметр стержня, мм; options — отступы,
     ' нумерация и условия размещения.
     facade.RebarByCount "OuterBars", axis.ID, parameters.OuterCount, parameters.OuterDiameter, options
-    ' CirclePath имеет обход CCW: отрицательный left-offset выходит из пустоты.
+    ' Окружность отверстия идёт против часовой стрелки; отрицательное смещение направлено из отверстия в бетон.
     ' "Inner.Axis" — имя новой линии; openingPath.ID — исходная линия; -parameters.InnerAxisDistance —
     ' смещение влево от обхода, мм; минус означает вправо.
     Set axis = facade.Offset("Inner.Axis", openingPath.ID, -parameters.InnerAxisDistance)

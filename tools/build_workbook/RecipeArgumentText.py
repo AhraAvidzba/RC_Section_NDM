@@ -35,8 +35,8 @@ MEANINGS['Outer'].update(namingPolicy='способ публикации имё�
 MEANINGS['Opening'].update(namingPolicy='способ публикации имён участков', namingPrefix='независимый префикс отверстия')
 
 PROPERTIES = {
- 'StartSetback':'отступ начала ряда от начала грани, мм',
- 'EndSetback':'отступ конца ряда от конца грани, мм',
+ 'StartSetback':'отступ начала участка размещения от начала линии, мм',
+ 'EndSetback':'отступ конца участка размещения от конца линии, мм',
  'EndMode':'учёт концов: ClosedUniform замкнутый ряд; ExcludeBoth без крайних точек',
  'SourcePrefix':'начало имён стержней', 'SourceSuffix':'суффикс имён дополнительного ряда',
  'AnnotationGroup':'имя общей подписи для всех рядов этой группы',
@@ -148,6 +148,8 @@ def argument_comment(code, owner, builder_signatures, helper_signatures, fallbac
                 a['meaning']='полный замкнутый контур при совпавших концах'
             if a['parameter']=='reverseDirection' and v=='True':
                 a['meaning']='меняем местами концы опорной линии подписи'
+            if label=='Describe' and a['parameter']=='table' and v=='Nothing':
+                a['meaning']='программный ввод без таблицы адресов'
         if not args: return fallback, args
         text = '; '.join((a['parameter'] if a['parameter'] in ('comment','arcComment') or len(a['value'])>55 else a['value'].replace('#',''))+' — '+a['meaning'] for a in args)+'.'
         return text,args
@@ -156,6 +158,6 @@ def argument_comment(code, owner, builder_signatures, helper_signatures, fallbac
         args = [{'parameter':p,'value':v.strip(),'meaning':PROPERTIES[p]} for p,v in assignments]
         for a in args:
             if a['parameter'] == 'EndMode':
-                a['meaning'] = 'ClosedUniform распределяет стержни по замкнутой линии без повторного конца' if a['value']=='ClosedUniform' else 'ExcludeBoth исключает точки обоих концов линии'
+                a['meaning'] = 'ClosedUniform распределяет стержни по замкнутой линии без повторного конца' if a['value']=='ClosedUniform' else 'ExcludeBoth не ставит стержни на концах участка после концевых отступов'
         return '; '.join(a['parameter']+' — '+a['meaning'] for a in args)+'.',args
     return fallback,[]

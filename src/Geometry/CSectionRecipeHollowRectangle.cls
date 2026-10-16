@@ -37,18 +37,18 @@ Private Type THollowInput
 End Type
 
 Private Type THollowFace
-    Active As Boolean ' Нужно создать основной и дополнительные ряды этой стороны.
+    Active As Boolean ' Нужно создать основной и включённые дополнительные ряды этой стороны.
     ID As String ' Имя стороны для привязки линий арматуры и подписей.
     Caption As String ' Понятное название стороны для сообщений об ошибках.
     AxisDistance As Double ' Расстояние от бетонной границы до центров основного ряда арматуры, мм.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
-    Count As Long ' Число стержней основного ряда.
-    StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
-    EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
+    Count As Long ' Заданное число наружных стержней; у отверстия число определяет проекция.
+    StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
+    EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
     Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
     Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
-    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    SkippedDiameters(2 To 3) As Double ' Диаметр второго ряда, учитываемый при смещении третьего, мм.
     NormalSign As Double ' Направление смещения связанных рядов относительно линии центров.
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
@@ -144,7 +144,7 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
                         .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
                     End If
                 Next rowNumber
-                If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+                If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Учитываем второй ряд при одинаковом способе смещения.
             End If
         End With
     Next i
@@ -170,7 +170,7 @@ Private Sub AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByVal outerPo
 End Sub
 
 ' Создаёт готовый замкнутый контур по вершинам и радиусам без повторного обхода.
-' Назначает её наружной границей или отверстием внутри OUTER, в зависимости от opening.
+' Назначает контур наружной границей или отверстием внутри OUTER, в зависимости от opening.
 Private Sub AddBoundary(ByVal facade As CSectionDefinitionBuilder, ByVal loopID As String, ByVal pathID As String, ByVal polygon As CPolygonSpec, ByVal opening As Boolean)
     Dim boundary As CGeometryPath, part As String
     Set boundary = facade.RoundedPolygon(pathID, polygon) ' Создаём контур, который сразу используется как наружная граница или отверстие.
@@ -203,7 +203,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         rowComment = "HollowRectangle: " & faces(i).Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд "
         options.Comment = rowComment & "1"
         If i <= 4 Then
-            If base <= 2 Then options.EndMode = ExcludeBoth ' Исключаем стержни на обоих концах линии.
+            If base <= 2 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             facade.RebarByCount faces(i).ID & ".Main", path.ID, faces(i).Count, faces(i).Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
         Else
             options.SourceNormalSign = -faces(i).NormalSign: options.SkipMissingProjection = True ' Проекция идёт к отверстию; пропускаем лучи без пересечения.
@@ -226,8 +226,8 @@ NextFace:
 End Sub
 
 ' Возвращает линию центров стержней у выбранной наружной стороны или стороны отверстия.
-' Горизонтальные линии включают скругления, вертикальные используют прямую грань.
-' При нескруглённом отверстии концы ограничиваются отступами соседних внутренних сторон.
+' Горизонтальные линии идут слева направо и включают скругления, если они есть; вертикальные — снизу вверх.
+' При нескруглённом отверстии концы задаются отступами соседних внутренних сторон.
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
         ByVal index As Long, ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec) As CGeometryPath
     On Error GoTo InvalidPath
@@ -244,13 +244,13 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
             facade.Source faces(index).ID, faces(index).Source ' Связываем ошибки этой линии с её исходными полями.
             If base <= 2 Then
                 y = y + IIf(base = 1, 1#, -1#) * (H / 2# - offset)
-                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x - B / 2#, y, x + B / 2#, y) ' Прямая у отверстия до ограничения соседними отступами.
-                ' Ограничиваем линию отступами двух соседних внутренних сторон.
+                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x - B / 2#, y, x + B / 2#, y) ' Исходная прямая вдоль стороны отверстия.
+                ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
                 Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 1#, 0#, x - B / 2# - faces(7).AxisDistance, 1#, 0#, x + B / 2# + faces(8).AxisDistance)
             Else
                 x = x + IIf(base = 3, -1#, 1#) * (B / 2# - offset)
-                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x, y - H / 2#, x, y + H / 2#) ' Прямая у отверстия до ограничения соседними отступами.
-                ' Ограничиваем линию отступами двух соседних внутренних сторон.
+                Set shape = facade.LinePath("Unlimited." & faces(index).ID, x, y - H / 2#, x, y + H / 2#) ' Исходная прямая вдоль стороны отверстия.
+                ' Задаём концы линии по отступам соседних внутренних сторон; при необходимости продлеваем её.
                 Set AxisPath = facade.ConstrainLine(faces(index).ID, shape.ID, 0#, 1#, y - H / 2# - faces(6).AxisDistance, 0#, 1#, y + H / 2# + faces(5).AxisDistance)
             End If
             Exit Function
@@ -267,9 +267,11 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
             If Not shape.HasSegmentID(last) Then
                 If base = 1 Then last = "Corner.TR": lastParameter = 1# Else last = "Corner.BR": lastParameter = 0#
             End If
-            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, first, firstParameter, last, lastParameter, base = 1) ' Горизонтальная сторона вместе с прилегающими скруглениями.
-        Case 3: Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.BL", 0#, "Edge.BL", 1#) ' Левая вертикальная грань.
-        Case 4: Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.TR", 1#, "Edge.TR", 0#, False) ' Правая вертикальная грань с обратным обходом.
+            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, first, firstParameter, last, lastParameter, base = 1) ' Линия центров вдоль горизонтальной стороны со скруглениями, слева направо.
+        Case 3
+            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.BL", 0#, "Edge.BL", 1#) ' Линия центров у левой грани, снизу вверх.
+        Case 4
+            Set AxisPath = facade.Chain(faces(index).ID, shape.ID, "Edge.TR", 1#, "Edge.TR", 0#, False) ' Линия центров у правой грани, снизу вверх; обход контура обратный.
     End Select
     Exit Function
 InvalidPath:

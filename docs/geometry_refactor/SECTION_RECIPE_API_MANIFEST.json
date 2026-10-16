@@ -8021,7 +8021,7 @@
     "src/Geometry/CGeometryPath.cls": "3828263e1c36b97edbdb37f9426a574d147ca16e81c28bf2d91ffe26d9070334",
     "src/Geometry/CPolygonSpec.cls": "d1ef9849436baaa80f95e38f60a554e060c1682dc1a1f8dce6ddbcfe7a4c3162",
     "src/Section/CSectionDefinition.cls": "06d7de6ef75b69ec30215689fec79eb397e03c3c3b046a6c3a9f14e2afe0c90d",
-    "src/Section/CRebarRuleOptions.cls": "ee00a97c4a8e50a3a4d067a0287b30ca1fa31c02cd15e108131d66e491c74a22",
+    "src/Section/CRebarRuleOptions.cls": "3e1297e2af28c65931157f1f5714d5c1cffc4c5092f33db3f866bad0e79082da",
     "src/Geometry/CGeometryDiagnostic.cls": "8946153d9883bc493bb4015304782921f4e281d52c51c58fdd5a90c60ecfd49b",
     "src/Section/CSectionInputTable.cls": "f54a54da039152125544684ab4e432d68900e2f1023bd9f08a54baa26fd2da4c",
     "src/Section/CSectionRecipeContext.cls": "35ea5f91e3371515cba391766702d7b418513fd1cae1c8e4d61e0e3537f6cf5d",

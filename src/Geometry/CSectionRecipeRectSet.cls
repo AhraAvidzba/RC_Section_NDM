@@ -28,7 +28,7 @@ Private Type TRectSetDimensions
     H1 As Double ' Высота первого прямоугольника, мм.
     B2 As Double ' Ширина второго прямоугольника, мм.
     H2 As Double ' Высота второго прямоугольника, мм.
-    Offset As Double ' Смещение присоединённого прямоугольника, мм.
+    Offset As Double ' Смещение верхнего прямоугольника по X относительно нижнего, мм.
 End Type
 
 Private Type TRectangleFace
@@ -43,12 +43,12 @@ Private Type TRectangleFace
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
     TangentSign As Double ' Направление сдвига связанных стержней вдоль линии.
-    StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
-    EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
+    StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
+    EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
     Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
     Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
-    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    SkippedDiameters(2 To 3) As Double ' Диаметр второго ряда, учитываемый при смещении третьего, мм.
     Source As String ' Адреса отступов основного ряда для сообщения об ошибке размещения.
     ExtraSources(2 To 3) As String ' Адреса диаметров дополнительных рядов для сообщения об ошибке.
 End Type
@@ -131,16 +131,16 @@ Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As
             .Source = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 5) & "; " & table.SourceReference(row, 6)
             .Caption = table.Text(row, 1) & " грань"
             Select Case side
-                Case 1 ' Левая грань на расстоянии as от бетона, снизу вверх.
+                Case 1 ' Линия арматуры у левой грани: отступ as, снизу вверх.
                     .X1 = x + axisDistance: .Y1 = y: .X2 = x + axisDistance: .Y2 = y + height
                     .LabelX = -1#: .TangentSign = -1#
-                Case 2 ' Правая грань на расстоянии as от бетона, сверху вниз.
+                Case 2 ' Линия арматуры у правой грани: отступ as, сверху вниз.
                     .X1 = x + width - axisDistance: .Y1 = y + height: .X2 = x + width - axisDistance: .Y2 = y
                     .LabelX = 1#: .TangentSign = 1#
-                Case 3 ' Верхняя грань на расстоянии as от бетона, слева направо.
+                Case 3 ' Линия арматуры у верхней грани: отступ as, слева направо.
                     .X1 = x: .Y1 = y + height - axisDistance: .X2 = x + width: .Y2 = y + height - axisDistance
                     .LabelY = 1#: .TangentSign = 1#
-                Case 4 ' Нижняя грань на расстоянии as от бетона, справа налево.
+                Case 4 ' Линия арматуры у нижней грани: отступ as, справа налево.
                     .X1 = x + width: .Y1 = y + axisDistance: .X2 = x: .Y2 = y + axisDistance
                     .LabelY = -1#: .TangentSign = -1#
             End Select
@@ -154,7 +154,7 @@ Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As
                     .ExtraSources(rowNumber) = table.SourceReference(extra, column)
                 End If
             Next rowNumber
-            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Учитываем второй ряд при одинаковом способе смещения.
         End With
 NextSide:
     Next side

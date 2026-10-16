@@ -24,12 +24,12 @@ Option Explicit
 Implements ISectionRecipe
 
 Private Type TRoundedInput
-    B As Double ' Ширина наружного контура, мм.
+    B As Double ' Ширина прямоугольной основы без боковых выступов, мм.
     H As Double ' Высота наружного контура, мм.
     SideTypes(1 To 2) As String ' Вид левой и правой боковых сторон.
-    Widths(1 To 2) As Double ' Ширины левого и правого выступов, мм.
-    R1(1 To 2) As Double ' Радиусы первых скруглений левой и правой сторон, мм.
-    R2(1 To 2) As Double ' Радиусы вторых скруглений левой и правой сторон, мм.
+    Widths(1 To 2) As Double ' Выносы вершин левого и правого выступов до скругления, мм.
+    R1(1 To 2) As Double ' Радиусы верхнего и нижнего углов каждой боковой стороны, мм.
+    R2(1 To 2) As Double ' Радиусы скругления вершин левого и правого выступов, мм.
     GeometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
 End Type
 
@@ -39,15 +39,15 @@ Private Type TRoundedFace
     Count As Long ' Число стержней основного ряда.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
-    StartSetback As Double ' Отступ первого стержня от начала стороны, мм.
-    EndSetback As Double ' Отступ последнего стержня от конца стороны, мм.
+    StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
+    EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
     NormalSign As Double ' Направление смещения дополнительного ряда по нормали.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
     Locations(2 To 3) As String ' Расположение каждого дополнительного ряда относительно основного.
     Bindings(2 To 3) As String ' Выбор основных стержней для второго и третьего рядов.
-    SkippedDiameters(2 To 3) As Double ' Полный диаметр промежуточного ряда в том же направлении, мм.
+    SkippedDiameters(2 To 3) As Double ' Диаметр второго ряда, учитываемый при смещении третьего, мм.
     Source As String ' Адреса отступов основного ряда для сообщения об ошибке размещения.
     AxisSource As String ' Адрес расстояния до оси для пояснения ошибки построения линии.
     ExtraSources(2 To 3) As String ' Адреса диаметров дополнительных рядов для сообщения об ошибке.
@@ -133,7 +133,7 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
                     .ExtraSources(rowNumber) = table.SourceReference(extra, column)
                 End If
             Next rowNumber
-            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Обходим номинальный второй ряд в том же направлении.
+            If .Locations(2) = .Locations(3) Then .SkippedDiameters(3) = .Diameters(2) ' Учитываем второй ряд при одинаковом способе смещения.
         End With
 NextFace:
     Next i
@@ -179,7 +179,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
             Set path = AxisPath(facade, polygon, .ID, .AxisDistance, .AxisSource) ' Получаем линию центров стержней выбранной стороны с отступом as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
-            If i >= 3 Then options.EndMode = ExcludeBoth ' Исключаем стержни на обоих концах линии.
+            If i >= 3 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
             options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
@@ -205,27 +205,29 @@ NextFace:
 End Sub
 
 ' Возвращает линию центров стержней выбранной стороны после смещения контура на as.
-' Для верхней и нижней сторон берёт прямой участок, для боковых — также скругления;
-' обе боковые линии направлены сверху вниз.
+' Горизонтальные линии направлены слева направо; боковые включают скругления и идут сверху вниз.
+' Параметры 0 и 1 задают концы сегмента, а forward выбирает обход исходного контура между ними.
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polygon As CPolygonSpec, _
         ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String) As CGeometryPath
     On Error GoTo InvalidPath
     Dim offset As CGeometryPath
     Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, polygon, axisDistance) ' Смещаем тот же многоугольник внутрь бетона на as, мм.
     Select Case groupID
-        Case "B.Top": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.TL", 1#) ' Верхняя прямая грань слева направо.
-        Case "B.Bottom": Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.BR", 1#, "Edge.BR", 0#, False) ' Нижняя прямая грань справа налево.
+        Case "B.Top"
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.TL", 1#) ' Линия центров верхнего ряда, слева направо.
+        Case "B.Bottom"
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.BR", 1#, "Edge.BR", 0#, False) ' Линия центров нижнего ряда, слева направо.
         Case "H.Left"
-            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.BR", 1#, False) ' Боковая сторона со скруглениями, сверху вниз.
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 0#, "Edge.BR", 1#, False) ' Линия центров вдоль боковой стороны со скруглениями, сверху вниз.
         Case "H.Right"
-            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 1#, "Edge.BR", 0#) ' Боковая сторона со скруглениями, сверху вниз.
+            Set AxisPath = facade.Chain(groupID, offset.ID, "Edge.TL", 1#, "Edge.BR", 0#) ' Линия центров вдоль боковой стороны со скруглениями, сверху вниз.
     End Select
     Exit Function
 InvalidPath:
     SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sourceReference
 End Function
 
-' Добавляет подписи арматуры, ширину прямой базы B, полную высоту H и размеры включённых боковых выступов.
+' Добавляет подписи арматуры, ширину основы B, полную высоту H и размеры включённых боковых выступов.
 Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As TRoundedInput, ByRef faces() As TRoundedFace, ByVal outer As CGeometryPath)
     Dim minX As Double, maxX As Double, i As Long
     For i = 1 To 4
@@ -240,7 +242,7 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
         End With
     Next i
     outer.ProjectionBounds 1#, 0#, minX, maxX
-    ' Ширина прямой базы B; размер сверху.
+    ' Ширина основы B до скругления углов; размер сверху.
     facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Размер горизонтальной базы RoundedRectangle между левым и правым торцом."
     facade.VerticalExtent "DIM_H", outer.ID, "H", minX, -1#, "Полная высота RoundedRectangle." ' Полная высота сечения H; размер вынесен влево.
     ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
