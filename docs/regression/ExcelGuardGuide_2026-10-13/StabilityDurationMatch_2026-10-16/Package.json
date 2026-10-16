@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "ChangedNativeComponents": [
+    "CBatchSectionCalculator",
+    "modTestProfileConfig",
+    "modWorkbookCalculation"
+  ],
+  "NativeComponents": 158,
+  "HelpCell": "B675",
+  "OldHelp": "Пустое число или отсутствие строки сочетания означает нулевую дополнительную нагрузку. Текст и ошибка формулы нулем не заменяются. Если ID повторяется, используется первая подходящая строка; лучше удалите повтор.",
+  "NewHelp": "При включённой устойчивости отсутствие нужного CombinationID даёт InputErr. В найденной строке пустые N, Mx и My означают 0; текст и ошибки формул недопустимы. При повторе ID берётся первая строка.",
+  "ChangedZIPParts": [
+    "xl/sharedStrings.xml",
+    "xl/vbaProject.bin"
+  ],
+  "AcceptedSHA256": "316D8AEBF8DCEAAADD10E7B3CF8F75290F6BCBDAF839B60B62CFEE3EEED4341C",
+  "UserBaselineSHA256": "85A54EE007171FC29A9E51099099EBD7F5CBB0DDDD20BC385FA546C46C3DB625"
+}

@@ -1,0 +1,32 @@
+{
+  "Passed": true,
+  "Runs": [
+    {
+      "Stage": "Matching",
+      "Passed": 324,
+      "Failed": 0,
+      "Cases": 24,
+      "Seconds": 17.6651927,
+      "WorkbookSHA256": "D9E806D008FF4FC1A47A778D3D6F2A7C896A68CED599D863C3DAA0DE28265698"
+    },
+    {
+      "Stage": "DurationRegression",
+      "Passed": 10828,
+      "Failed": 0,
+      "Cases": 637,
+      "Seconds": 811.8060942,
+      "WorkbookSHA256": "D9E806D008FF4FC1A47A778D3D6F2A7C896A68CED599D863C3DAA0DE28265698"
+    }
+  ],
+  "ChangedNativeComponents": [
+    "CBatchSectionCalculator",
+    "modTestProfileConfig",
+    "modWorkbookCalculation"
+  ],
+  "Preserved": {
+    "Cells": 106516,
+    "NamedRanges": 29,
+    "OnlyHelpCellChanged": "B675"
+  },
+  "PublishedVerified": true
+}

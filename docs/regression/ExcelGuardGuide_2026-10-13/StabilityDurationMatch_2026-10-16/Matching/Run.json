@@ -1,0 +1,16 @@
+{
+  "Stage": "Matching",
+  "Passed": true,
+  "Runs": [
+    {
+      "Macro": "modTestProfileConfig.RunStabilityDurationMatchingTests",
+      "Seconds": 17.6651927,
+      "Characters": 21081,
+      "Passed": true,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "D9E806D008FF4FC1A47A778D3D6F2A7C896A68CED599D863C3DAA0DE28265698",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T17:26:25.9151257+03:00"
+}

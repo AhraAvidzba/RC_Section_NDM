@@ -1,0 +1,16 @@
+{
+  "Stage": "BeforeFix",
+  "Passed": false,
+  "Runs": [
+    {
+      "Macro": "modTestProfileConfig.RunStabilityDurationMatchingTests",
+      "Seconds": 15.1519616,
+      "Characters": 17840,
+      "Passed": false,
+      "Snapshot": false
+    }
+  ],
+  "SourceSHA256": "EC0E7DF3FDB2C1A7AE28E5BC0697513A46D02156B334AD9D41154247BBD3F4CA",
+  "ProductionUnchanged": true,
+  "FinishedAt": "2026-10-16T17:25:28.3421304+03:00"
+}

@@ -1,0 +1,15 @@
+{
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ExcelGuardGuide_2026-10-13\\StabilityDurationMatch_2026-10-16\\Candidate\\Matching.xlsm",
+  "WorkbookSHA256": "D9E806D008FF4FC1A47A778D3D6F2A7C896A68CED599D863C3DAA0DE28265698",
+  "ProductionSHA256": "85A54EE007171FC29A9E51099099EBD7F5CBB0DDDD20BC385FA546C46C3DB625",
+  "Compiled": true,
+  "Modules": [
+    "CBatchSectionCalculator",
+    "modWorkbookCalculation",
+    "modTestProfileConfig"
+  ],
+  "RetiredModules": [],
+  "EntryPointNames": [],
+  "TraceGeometry": false,
+  "ProductionChanged": false
+}

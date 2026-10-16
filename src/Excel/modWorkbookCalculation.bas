@@ -958,7 +958,7 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
     Set activeIDs = CreateObject("Scripting.Dictionary")
     activeIDs.CompareMode = vbTextCompare
     For index = 1 To batch.Count
-        If batch.StabilityRequested(index) Then activeIDs(batch.CombinationID(index)) = True
+        If batch.StabilityRequested(index) Then activeIDs(batch.CombinationID(index)) = False
     Next index
     If activeIDs.Count = 0 Then Exit Sub
     If units Is Nothing Then Err.Raise vbObjectError + 4113, _
@@ -991,6 +991,7 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
         Dim combinationID As String
         combinationID = Trim$(CStr(values(rowIndex, 1)))
         If activeIDs.Exists(combinationID) Then
+            activeIDs(combinationID) = True
             Dim component As Long, loads(2 To 4) As Double, rowError As String, componentError As String
             rowError = vbNullString
             For component = 2 To 4
@@ -1011,6 +1012,16 @@ Public Sub LoadStabilityDurationLoadsFromWorkbook(ByVal workbook As Object, _
             End If
         End If
     Next rowIndex
+    ' Пустые усилия допустимы только в существующей строке нужного сочетания.
+    Dim id As Variant
+    For Each id In activeIDs.Keys
+        If Not activeIDs(id) Then
+            batch.AddInvalidStabilityDurationLoad CStr(id), _
+                "Для сочетания " & CStr(id) & " в таблице «Нагрузки для устойчивости» (rngStabilityDurationLoads, " & _
+                range.Worksheet.Name & "!" & range.Address(False, False) & ") не найдена строка с этим номером. " & _
+                "Добавьте строку или исправьте номер сочетания. Если дополнительной нагрузки нет, оставьте N, Mx и My пустыми либо укажите 0."
+        End If
+    Next id
     Exit Sub
 
 MissingRange:

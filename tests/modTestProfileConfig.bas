@@ -710,7 +710,7 @@ End Sub
 ' Отдельно проверяет ошибочный ввод, изоляцию LC, единицы/знаки, перенос точки
 ' приложения и адреса после перемещения имени. Формулы/Names восстанавливаются.
 Public Function RunAudit03DurationConfigTests(Optional ByRef passed As Long = 0, _
-        Optional ByRef failed As Long = 0) As String
+        Optional ByRef failed As Long = 0, Optional ByVal matchingOnly As Boolean = False) As String
     Dim stats As TProfileStats, names As Variant, saved(0 To 5) As Variant, i As Long
     Dim profiles As Object, system As Object, loads As Object, duration As Object
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
@@ -746,6 +746,8 @@ Public Function RunAudit03DurationConfigTests(Optional ByRef passed As Long = 0,
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     BuildDurationFixture section, provider, settings.GetBoolean("General.DiagramExtension", False)
+    TestDurationMatching stats, profiles, system, loads, duration, section, provider, settings, units, sheet
+    If matchingOnly Then GoTo Restore
     TestDurationCells stats, profiles, loads, duration, section, provider, settings, units
     TestDurationUnits stats, loads, duration, section, provider, settings, units
     ConfigureDurationUnits "N", "N*mm", "Tension", "+Y tension", "+X tension"
@@ -891,7 +893,7 @@ Private Sub TestDurationInvalidRows(ByRef stats As TProfileStats, ByVal profiles
                 PrepareDurationLoads loads, duration, slot
                 If errorCase = 1 Then testValue = "BAD_DURATION" Else testValue = CVErr(2015)
                 data = duration.Value2: data(slot + 1, column) = testValue: duration.Value2 = data
-                AddDurationRecoveryLoad loads
+                AddDurationRecoveryLoad loads, duration, slot
                 Set cell = duration.Cells(slot + 1, column)
                 prefix = "durationConfig.Slot" & CStr(slot) & "." & DurationColumnKey(column) & ".error" & CStr(errorCase)
                 LogLine stats, "RUN: " & prefix
@@ -1022,7 +1024,7 @@ Private Sub TestDurationRangeContract(ByRef stats As TProfileStats, ByVal loads 
     If code = 0 Then CheckDurationInputError stats, "durationConfig.columns", batch, units, "rngStabilityDurationLoads"
     stats.Cases = stats.Cases + 1
     ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersTo = originalRef
-    Set sheet = ThisWorkbook.Worksheets.Add: sheet.Name = "__AuditDurationInputs"
+    If sheet Is Nothing Then Set sheet = ThisWorkbook.Worksheets.Add: sheet.Name = "__AuditDurationInputs"
     For position = 1 To 2
         If position = 1 Then Set target = sheet.Cells(10, 5) Else Set target = sheet.Cells(800, 60)
         Set target = target.Resize(duration.Rows.Count, duration.Columns.Count)
@@ -1056,13 +1058,18 @@ Private Sub PrepareDurationLoads(ByVal loads As Object, ByVal duration As Object
 End Sub
 
 ' Добавляет следующую корректную строку, не совпадающую с поврежденным ID.
-' Длительная часть для нее отсутствует, что по действующему контракту допустимо.
-Private Sub AddDurationRecoveryLoad(ByVal loads As Object)
+' Для неё явно задана строка с нулевой длительной частью.
+Private Sub AddDurationRecoveryLoad(ByVal loads As Object, ByVal duration As Object, ByVal invalidSlot As Long)
     Dim data As Variant
     data = loads.Value2
     data(3, 1) = "DURATION_RECOVERY": data(3, 2) = -50000#
     data(3, 3) = 1000000#: data(3, 4) = 2000000#: data(3, 5) = "PR1": data(3, 6) = "Auto"
     loads.Value2 = data
+    data = duration.Value2
+    Dim row As Long
+    row = IIf(invalidSlot = 1, 3, 2)
+    data(row, 1) = "DURATION_RECOVERY": data(row, 2) = 0#: data(row, 3) = 0#: data(row, 4) = 0#
+    duration.Value2 = data
 End Sub
 
 ' Меняет только таблицы единиц/знаков; все физические величины теста остаются
@@ -1692,4 +1699,101 @@ Private Sub CheckVisualizationLegend(ByRef stats As TProfileStats, ByVal prefix 
         End If
     Next shape
     Check stats, prefix & ".actualLegendPresent", foundText
+End Sub
+
+' ДЛЯ ТЕСТОВ: короткая проверка обязательного сопоставления номеров сочетаний.
+Public Function RunStabilityDurationMatchingTests() As String
+    RunStabilityDurationMatchingTests = RunAudit03DurationConfigTests(matchingOnly:=True)
+End Function
+
+' Проверяет отсутствие строки отдельно от допустимых пустых и нулевых усилий.
+' Для СП 35/63 проверяет статус, изоляцию сочетаний, отключённую устойчивость
+' и фактический адрес таблицы после её переноса на другой лист.
+Private Sub TestDurationMatching(ByRef stats As TProfileStats, ByVal profiles As Object, ByVal system As Object, _
+        ByVal loads As Object, ByVal duration As Object, ByVal section As CSectionModel, ByVal provider As CMaterialModelProvider, _
+        ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, ByRef sheet As Object)
+    Dim standard As Variant, mode As Long, data As Variant, loadValues As Variant, column As Long
+    Dim batch As CBatchSectionCalculator, code As Long, reason As String, prefix As String, originalRef As String
+    Dim location As String, target As Object, missing As Boolean, inactive As Boolean
+    originalRef = ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersTo
+    For Each standard In Array("SP63", "SP35")
+        SetTableValue system, "Stability.Code", CStr(standard), 2
+        settings.LoadFromWorkbook ThisWorkbook
+        For mode = 1 To 12
+            PrepareDurationLoads loads, duration, 1
+            EnableChecks profiles, 1, "Yes", "No", "No", "Yes"
+            EnableChecks profiles, 2, "Yes", "No", "No", "No"
+            data = duration.Value2: missing = False: inactive = False
+            Select Case mode
+                Case 1, 6, 11, 12
+                    data(2, 1) = "OTHER_NUMBER": missing = True
+                Case 2
+                    For column = 2 To 4: data(2, column) = vbNullString: Next column
+                Case 3
+                    For column = 2 To 4: data(2, column) = 0#: Next column
+                Case 4
+                    data(2, 1) = vbNullString: missing = True
+                    For column = 2 To 4: data(2, column) = CVErr(2015): Next column
+                Case 5, 10
+                    data(2, 1) = "OTHER_NUMBER": inactive = True
+                    For column = 2 To 4: data(2, column) = CVErr(2015): Next column
+                    If mode = 5 Then EnableChecks profiles, 1, "Yes", "No", "No", "No"
+                Case 7
+                    For column = 2 To 4: data(2, column) = "=" & Chr$(34) & Chr$(34): Next column
+                Case 8
+                    data(2, 2) = vbNullString: data(2, 3) = 0#: data(2, 4) = vbNullString
+                Case 9
+                    data(2, 1) = " duration_1 "
+                    For column = 2 To 4: data(2, column) = 0#: Next column
+            End Select
+            duration.Value2 = data
+            If mode = 7 Then duration.Calculate
+            If mode = 6 Or mode = 10 Then AddDurationRecoveryLoad loads, duration, 1
+            If mode = 10 Then
+                loadValues = loads.Value2: loadValues(2, 5) = "PR2": loads.Value2 = loadValues
+            End If
+            location = duration.Worksheet.Name & "!" & duration.Address(False, False)
+            If mode >= 11 Then
+                If sheet Is Nothing Then Set sheet = ThisWorkbook.Worksheets.Add: sheet.Name = "__AuditDurationInputs"
+                If mode = 11 Then Set target = sheet.Cells(10, 5) Else Set target = sheet.Cells(800, 60)
+                Set target = target.Resize(duration.Rows.Count, duration.Columns.Count)
+                target.Value2 = duration.Value2
+                ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersTo = "='" & sheet.Name & "'!" & target.Address
+                location = sheet.Name & "!" & target.Address(False, False)
+            End If
+            prefix = "durationMatching." & CStr(standard) & ".case" & CStr(mode)
+            LogLine stats, "RUN: " & prefix
+            code = ExecuteDuration(section, provider, settings, units, batch, reason)
+            Check stats, prefix & ".readerNoAbort", code = 0
+            If code = 0 Then
+                If missing Then
+                    CheckDurationInputError stats, prefix, batch, units, location
+                    Check stats, prefix & ".combinationInReason", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "DURATION_1", vbBinaryCompare) > 0
+                    Check stats, prefix & ".missingReason", InStr(1, batch.ResultAt(1).StabilityMeta.ResultComment, "не найдена строка", vbBinaryCompare) > 0
+                    Check stats, prefix & ".overallInputErr", batch.ResultAt(1).Status = "InputErr"
+                ElseIf inactive Then
+                    Check stats, prefix & ".notRequested", batch.ResultAt(1).StabilityMeta.InternalStatus = rsNotRequested
+                    Check stats, prefix & ".noInputErr", batch.ResultAt(1).Status <> "InputErr"
+                    CheckComments stats, prefix, batch, units
+                Else
+                    Check stats, prefix & ".stabilitySuccess", batch.ResultAt(1).StabilityMeta.InternalStatus = rsSuccess
+                    Check stats, prefix & ".calculated", batch.ResultAt(1).StabilityMeta.Calculated
+                    CheckClose stats, prefix & ".sustainedNZero", batch.ResultAt(1).StabilityResult.SustainedN, 0#, 0.00000001
+                    CheckClose stats, prefix & ".sustainedMxZero", batch.ResultAt(1).StabilityResult.SustainedMoment1, 0#, 0.00000001
+                    CheckClose stats, prefix & ".sustainedMyZero", batch.ResultAt(1).StabilityResult.SustainedMoment2, 0#, 0.00000001
+                    CheckComments stats, prefix, batch, units
+                End If
+                Check stats, prefix & ".directContinues", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
+                If mode = 6 Or mode = 10 Then
+                    Check stats, prefix & ".recoverySuccess", batch.Count = 2 And batch.ResultAt(2).StabilityMeta.InternalStatus = rsSuccess
+                    Check stats, prefix & ".recoveryNoInputErr", batch.ResultAt(2).Status <> "InputErr"
+                End If
+            End If
+            ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersTo = originalRef
+            stats.Cases = stats.Cases + 1
+        Next mode
+    Next standard
+    EnableChecks profiles, 1, "No", "No", "No", "Yes"
+    SetTableValue system, "Stability.Code", "SP63", 2
+    settings.LoadFromWorkbook ThisWorkbook
 End Sub

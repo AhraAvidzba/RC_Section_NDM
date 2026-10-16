@@ -971,8 +971,8 @@ Private Function StabilityDurationInputError(ByVal combinationID As String) As S
     Next i
 End Function
 
-' Берет длительную часть нагрузки для LC. Если пользователь не заполнил строку,
-' принимаются нули: это допустимый ввод и не блокирует основной расчет.
+' Берёт постоянную/длительную часть первой строки с нужным номером сочетания.
+' Читатель таблицы заранее регистрирует ошибку, если соответствующей строки нет.
 Private Sub StabilityDurationLoadForCombination(ByVal combinationID As String, _
         ByVal referenceX As Double, ByVal referenceY As Double, _
         ByRef nValue As Double, ByRef mxValue As Double, ByRef myValue As Double)
