@@ -1,0 +1,21 @@
+{
+  "Passed": true,
+  "Checks": 5590,
+  "NDSCases": 48,
+  "NoNumFail": true,
+  "AllOtherSectionRowsExactEqual": 104069,
+  "ProductionLinesBefore": 143,
+  "ProductionLinesAfter": 143,
+  "OnlyOneProductionClassChanged": true,
+  "BookAndAllCodeUpdated": true,
+  "PublishedCodeMatches153SourceComponents": true,
+  "UserReportUnchanged": true,
+  "FullOnOffRun": false,
+  "Publication": {
+    "Passed": true,
+    "Readback": true,
+    "WorkbookSHA256": "333F831012C63DFB0B90D1B5564931A2F99D6AF44A54A124246EAAFF2B0ECA64",
+    "AllCodeSHA256": "27C06A83707A288A804BA9FED3B3263CE648C1160C98478C7B1C284B27C2A35F",
+    "UserReportUnchanged": true
+  }
+}

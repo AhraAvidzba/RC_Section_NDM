@@ -1,0 +1,15 @@
+{
+  "schema": 3,
+  "status": "PASS",
+  "classes": 105,
+  "methods": 3548,
+  "sourceComponents": 157,
+  "missingHeaderCount": 0,
+  "missingMethodCount": 0,
+  "missingFieldCount": 0,
+  "fields": 1999,
+  "nonstandardHeaders": [],
+  "wrongTestMethodOrder": [],
+  "executableCodeChanges": [],
+  "FullDetails": "Evidence.zip: CircleClockwise/CommentAudit.Full.json"
+}

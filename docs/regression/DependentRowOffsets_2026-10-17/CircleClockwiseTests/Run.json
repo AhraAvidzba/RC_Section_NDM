@@ -1,0 +1,37 @@
+﻿{
+    "Stage":  "CircleClockwiseTests",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunCircleSetbackTests",
+                     "Seconds":  1.5115391999999999,
+                     "Characters":  5636,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunCircleBindingTests",
+                     "Seconds":  3.1411034,
+                     "Characters":  449296,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+                     "Seconds":  4.8959586,
+                     "Characters":  7163,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03CircleRebarInputTests",
+                     "Seconds":  16.4712599,
+                     "Characters":  49469,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "74A4D800A9784EA94FE05367F098F246C1C2F76FB34A385256B8C555399234BE",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:50:47.2610940+03:00"
+}

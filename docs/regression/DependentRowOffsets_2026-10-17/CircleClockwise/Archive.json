@@ -1,0 +1,15 @@
+{
+  "Passed": true,
+  "ArchiveSHA256": "87AE927797AC4F6F2702A0E7D0FC09426C84D1139D6578B5E458739C4096F8EE",
+  "Entries": [
+    "CircleClockwiseExamples/modTestAudit02Api.DumpIndependentRowOffsetExamples.txt",
+    "CircleClockwise/AcceptedNativeVBA.txt",
+    "CircleClockwise/CommentAudit.Full.json",
+    "CircleClockwiseTests/Audit03_Search_Progress.txt"
+  ],
+  "RemovedOwnDuplicates": [
+    "CircleClockwiseTests/GeometrySolidProbe.xlsm",
+    "CircleClockwiseExamples/GeometrySolidProbe.xlsm",
+    "CircleClockwise/Baseline.xlsm (duplicate of previous Accepted.xlsm)"
+  ]
+}

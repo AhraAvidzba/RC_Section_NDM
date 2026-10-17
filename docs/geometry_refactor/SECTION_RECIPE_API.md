@@ -105,9 +105,9 @@ Source: src/Section/CSectionDefinitionBuilder.cls:34
     Set path = facade.CirclePath("Full", 0#, 0#, 100#)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1279.
+Полный контекст: tests/modTestAudit02Api.bas:1280.
 
-Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt.
 
 <a id="api-csectiondefinitionbuilder-linepath"></a>
 ### CSectionDefinitionBuilder.LinePath
@@ -571,9 +571,9 @@ Source: src/Section/CSectionDefinitionBuilder.cls:177
     Set path = facade.Slice("Half", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1280.
+Полный контекст: tests/modTestAudit02Api.bas:1283.
 
-Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt.
 
 <a id="api-csectiondefinitionbuilder-transform"></a>
 ### CSectionDefinitionBuilder.Transform
@@ -2109,17 +2109,15 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
 
 Source: src/Geometry/CGeometryPath.cls:209
 
-Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    part.AtDistance 0#, x, y, tx, ty
+    path.AtDistance 0#, x, y, tx, ty
 ```
 
-Полный контекст: tests/modTestDeclarativeGeometry.bas:48.
+Полный контекст: tests/modTestAudit02Api.bas:1281.
 
-Native entrypoint: modTestDeclarativeGeometry.RunCoreGeometryTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt.
-
-Native entrypoint: modTestDeclarativeGeometry.RunPathAnchorTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestDeclarativeGeometry.RunPathAnchorTests.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt.
 
 <a id="api-cgeometrypath-validatenormaltransfer"></a>
 ### CGeometryPath.ValidateNormalTransfer
@@ -4618,7 +4616,7 @@ Source: src/Section/CSectionInputTable.cls:168
 
 Полный контекст: tests/modTestAudit02Api.bas:1007.
 
-Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt.
+Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt.
 
 <a id="api-csectioninputtable-columnbycaption"></a>
 ### CSectionInputTable.ColumnByCaption
@@ -4679,7 +4677,7 @@ Source: src/Section/CSectionInputTable.cls:196
 
 Полный контекст: tests/modTestAudit02Api.bas:1007.
 
-Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt.
+Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt.
 
 <a id="api-csectioninputtable-rowbykey"></a>
 ### CSectionInputTable.RowByKey
@@ -5664,15 +5662,15 @@ Public Function PositionPhysicalOwner(ByVal index As Long) As Long
 
 Source: src/Section/CRebarRuleExecutor.cls:82
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "merge.physical.owner", rules.PositionPhysicalOwner(1) = 1 And rules.PositionPhysicalOwner(2) = 1
+                    owner = executor.PositionPhysicalOwner(i)
 ```
 
-Полный контекст: tests/modTestRecipeOperations.bas:166.
+Полный контекст: tests/modTestAudit02Api.bas:1347.
 
-Native entrypoint: modTestRecipeOperations.RunRecipeDiagnosticTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt.
 
 <a id="api-crebarruleexecutor-ruletrace"></a>
 ### CRebarRuleExecutor.RuleTrace

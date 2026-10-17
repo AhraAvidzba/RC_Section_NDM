@@ -1,0 +1,57 @@
+{
+  "Passed": true,
+  "UnchangedOtherSections": [
+    {
+      "Fixture": "Rectangle_ThreeRows_100_200",
+      "Rows": 19709,
+      "ExactEqual": true
+    },
+    {
+      "Fixture": "Rounded_Sloped_60_100",
+      "Rows": 9254,
+      "ExactEqual": true
+    },
+    {
+      "Fixture": "Hollow_Opening_100_100_SideBySide",
+      "Rows": 69985,
+      "ExactEqual": true
+    },
+    {
+      "Fixture": "Rectangle_100_100_EverySecond",
+      "Rows": 5121,
+      "ExactEqual": true
+    }
+  ],
+  "NDSCases": 48,
+  "AllConverged": true,
+  "BatchCases": 8,
+  "OverallBatchStatusesUnchanged": true,
+  "NoNumFail": true,
+  "PhysicalNormalCrackStatusChanges": [
+    {
+      "Section": "Circle_Arc_ThreeRows_100_200",
+      "Load": "2",
+      "Before": "s:OK",
+      "After": "s:FAIL",
+      "WidthBeforeMm": 0.2517387593043196,
+      "WidthAfterMm": 0.3385178151401649,
+      "Reason": "Reinforcement gap moves from right to top relative to unchanged moments; physical crack check changes."
+    }
+  ],
+  "PreservedValueFormulaComparisons": 12110,
+  "NamesUnchanged": true,
+  "ChangedTextCells": [
+    {
+      "Sheet": "Config",
+      "Address": "$O$93",
+      "Before": "Арматура равномерно по окружности; as — до осей стержней. Концевые отступы измеряются вдоль дуги от правой точки против часовой стрелки; 0 и 0 дают полный круг.",
+      "After": "Арматура равномерно по окружности; as — до осей стержней. Концевые отступы измеряются вдоль дуги от верхней точки по часовой стрелке; 0 и 0 дают полный круг."
+    },
+    {
+      "Sheet": "Справка",
+      "Address": "$B$746",
+      "Before": "StartSetback и EndSetback измеряются в единицах длины ввода вдоль окружности центров стержней. Начало и конец полного оборота — справа от центра; обход против часовой стрелки. При 0 и 0 стержни равномерно распределяются по полному кругу без повторного конца. При ненулевых отступах — по оставшейся дуге, включая оба её конца. Сумма отступов должна быть меньше длины окружности. n — целое не меньше 2; нулевое n или пустой/нулевой d выключает всё семейство.",
+      "After": "StartSetback и EndSetback измеряются в единицах длины ввода вдоль окружности центров стержней. Начало и конец полного оборота — над центром, на «12 часах»; обход по часовой стрелке. При 0 и 0 стержни равномерно распределяются по полному кругу без повторного конца. При ненулевых отступах — по оставшейся дуге, включая оба её конца. Сумма отступов должна быть меньше длины окружности. n — целое не меньше 2; нулевое n или пустой/нулевой d выключает всё семейство."
+    }
+  ]
+}

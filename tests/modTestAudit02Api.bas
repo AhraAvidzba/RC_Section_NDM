@@ -1272,14 +1272,17 @@ Public Function RunCircleSetbackTests() As String
     Dim config As Object, saved As Variant, unitName As Variant, factor As Double, table As Object
     Dim bars As CRebarLayout, original As Variant, point As Variant, expected As Variant, i As Long, column As Variant
     Dim definition As CSectionDefinition, bad As Variant, number As Long, reason As String
-    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
+    Dim executor As CRebarRuleExecutor, location As Variant, binding As Variant, secondCount As Long, thirdCount As Long, owner As Long
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "SliceTest"
     Set path = facade.CirclePath("Full", 0#, 0#, 100#)
+    path.AtDistance 0#, x, y, tx, ty
+    Check "circle.setback.generic.start.unchanged", Abs(x - 100#) < 0.0000001 And Abs(y) < 0.0000001 And ty > 0#
     Set path = facade.Slice("Half", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)
     Check "circle.setback.shared.slice", Not path.IsClosed And Abs(path.Length - 100# * GEOM_PI) < 0.0000001
-    expected = Array(Array(0#, 100#), Array(-86.6025403784439, 50#), Array(-86.6025403784439, -50#), Array(0#, -100#))
+    expected = Array(Array(100#, 0#), Array(50#, -86.6025403784439), Array(-50#, -86.6025403784439), Array(-100#, 0#))
     For Each unitName In Array("mm", "cm", "m")
         ConfigureOffsetWorkbook "Circle", CStr(unitName), 0#, 0#
         factor = 1#: If CStr(unitName) = "cm" Then factor = 10#
@@ -1295,7 +1298,9 @@ Public Function RunCircleSetbackTests() As String
         Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         original = OffsetBarsSnapshot(bars)
         Check "circle.setback.full.closed", definition.Path("Circle.Axis").IsClosed And bars.Count = 4
-        Check "circle.setback.full.first", Abs(bars.X(1) - 100#) < 0.0000001 And Abs(bars.Y(1)) < 0.0000001
+        Check "circle.setback.full.first.top", Abs(bars.X(1)) < 0.0000001 And Abs(bars.Y(1) - 100#) < 0.0000001
+        Check "circle.setback.full.clockwise", Abs(bars.X(2) - 100#) < 0.0000001 And Abs(bars.Y(2)) < 0.0000001
+        Check "circle.setback.full.bottom.left", Abs(bars.X(3)) < 0.0000001 And Abs(bars.Y(3) + 100#) < 0.0000001 And Abs(bars.X(4) + 100#) < 0.0000001 And Abs(bars.Y(4)) < 0.0000001
         For Each column In Array("Rebar.StartSetback", "Rebar.EndSetback")
             FixtureCircleFieldCell(ThisWorkbook, CStr(column)).Value2 = 50# * GEOM_PI / factor
         Next column
@@ -1305,6 +1310,13 @@ Public Function RunCircleSetbackTests() As String
             point = expected(i - 1)
             Check "circle.setback.arc.point." & CStr(unitName) & "." & CStr(i), Abs(bars.X(i) - CDbl(point(0))) < 0.0000001 And Abs(bars.Y(i) - CDbl(point(1))) < 0.0000001 And bars.Diameter(i) = 16#
         Next i
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 0#
+        Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+        Check "circle.setback.start.only", Abs(bars.X(1) - 100#) < 0.0000001 And Abs(bars.Y(1)) < 0.0000001 And Abs(bars.Y(4) - 100#) < 0.0000001
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.StartSetback").Value2 = 0#
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 50# * GEOM_PI / factor
+        Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+        Check "circle.setback.end.only", Abs(bars.X(1)) < 0.0000001 And Abs(bars.Y(1) - 100#) < 0.0000001 And Abs(bars.X(4) + 100#) < 0.0000001
         FixtureCircleFieldCell(ThisWorkbook, "Rebar.StartSetback").Value2 = 0#
         FixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 0#
         Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
@@ -1320,6 +1332,34 @@ Public Function RunCircleSetbackTests() As String
             Next bad
             table.Value2 = 0#
         Next column
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter2").Value2 = 12# / factor
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter3").Value2 = 10# / factor
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2").Value2 = 20# / factor
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset3").Value2 = 20# / factor
+        For Each location In Array("Stacked", "SideBySide")
+            FixtureCircleFieldCell(ThisWorkbook, "Rebar.Loc3row").Value2 = location
+            For Each binding In Array("EachBar", "EverySecondBar")
+                FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind3row").Value2 = binding
+                Set definition = ReadOffsetWorkbookDefinition(): Set executor = New CRebarRuleExecutor
+                Set bars = executor.Build(definition, FixtureGeometry(definition.ConcreteDomain))
+                secondCount = 0: thirdCount = 0
+                For i = 1 To executor.PositionCount
+                    owner = executor.PositionPhysicalOwner(i)
+                    If executor.PositionRuleID(i) = "Circle.Row2" Then
+                        secondCount = secondCount + 1
+                        Check "circle.clockwise.row2.inward", Abs(Sqr(bars.X(owner) ^ 2 + bars.Y(owner) ^ 2) - 80#) < 0.0000001
+                    ElseIf executor.PositionRuleID(i) = "Circle.Row3" Then
+                        thirdCount = thirdCount + 1
+                        If thirdCount = 1 Then
+                            Check "circle.clockwise.row3.top", Abs(bars.X(owner) - IIf(location = "Stacked", 0#, 13.5)) < 0.0000001 And Abs(bars.Y(owner) - IIf(location = "Stacked", 66.5, 80#)) < 0.0000001
+                        ElseIf thirdCount = 2 And binding = "EverySecondBar" Then
+                            Check "circle.clockwise.everySecond.bottom", Abs(bars.X(owner) + IIf(location = "Stacked", 0#, 13.5)) < 0.0000001 And Abs(bars.Y(owner) + IIf(location = "Stacked", 66.5, 80#)) < 0.0000001
+                        End If
+                    End If
+                Next i
+                Check "circle.clockwise.row.counts", secondCount = 4 And thirdCount = IIf(binding = "EachBar", 4, 2)
+            Next binding
+        Next location
     Next unitName
     GoTo Finished
 Failed:

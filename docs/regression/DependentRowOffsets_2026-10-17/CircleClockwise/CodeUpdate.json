@@ -1,0 +1,18 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\DependentRowOffsets_2026-10-17\\CircleClockwise\\Accepted.xlsm",
+    "WorkbookSHA256":  "74A4D800A9784EA94FE05367F098F246C1C2F76FB34A385256B8C555399234BE",
+    "ProductionSHA256":  "AF395D26C0D1BB0EE5F0E6DD5C6B8E841969E51E20244AC50B62B6CB1A0F7B3C",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionRecipeCircle",
+                    "modTestAudit02Api"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

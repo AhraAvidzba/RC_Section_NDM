@@ -37,7 +37,7 @@
     },
     "CSectionDefinitionBuilder.CirclePath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1279,
+      "line": 1280,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.CirclePath(\"Full\", 0#, 0#, 100#)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -46,7 +46,8 @@
           "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
           ]
         }
       ]
@@ -340,7 +341,7 @@
     },
     "CSectionDefinitionBuilder.Slice": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1280,
+      "line": 1283,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.Slice(\"Half\", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -349,7 +350,8 @@
           "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
           ]
         }
       ]
@@ -1463,36 +1465,18 @@
       ]
     },
     "CGeometryPath.AtDistance": {
-      "source": "tests/modTestDeclarativeGeometry.bas",
-      "line": 48,
-      "routine": "RunPathAnchorTests",
-      "code": "    part.AtDistance 0#, x, y, tx, ty",
-      "context": "В теле modTestDeclarativeGeometry.RunPathAnchorTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestAudit02Api.bas",
+      "line": 1281,
+      "routine": "RunCircleSetbackTests",
+      "code": "    path.AtDistance 0#, x, y, tx, ty",
+      "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestDeclarativeGeometry.RunCoreGeometryTests",
+          "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreFinal.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/CoreGeometry.txt",
-            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/CoreTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
-          ]
-        },
-        {
-          "entryPoint": "modTestDeclarativeGeometry.RunPathAnchorTests",
-          "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestDeclarativeGeometry.RunPathAnchorTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
           ]
         }
       ]
@@ -3382,7 +3366,8 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/OffsetWorkbook02/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
           ]
         }
       ]
@@ -3434,7 +3419,8 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/OffsetWorkbook02/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
           ]
         }
       ]
@@ -4063,6 +4049,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunCircleBindingTests",
           "reports": [
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestSectionRecipes.RunCircleBindingTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunCircleBindingTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunCircleBindingTests.txt"
           ]
@@ -4119,6 +4106,7 @@
         {
           "entryPoint": "modTestSectionRecipes.RunCircleBindingTests",
           "reports": [
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestSectionRecipes.RunCircleBindingTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunCircleBindingTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunCircleBindingTests.txt"
           ]
@@ -4126,24 +4114,18 @@
       ]
     },
     "CRebarRuleExecutor.PositionPhysicalOwner": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 166,
-      "routine": "RunRecipeDiagnosticTests",
-      "code": "    Check \"merge.physical.owner\", rules.PositionPhysicalOwner(1) = 1 And rules.PositionPhysicalOwner(2) = 1",
-      "context": "В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestAudit02Api.bas",
+      "line": 1347,
+      "routine": "RunCircleSetbackTests",
+      "code": "                    owner = executor.PositionPhysicalOwner(i)",
+      "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
           ]
         }
       ]
@@ -6498,7 +6480,7 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "f6a35be1e38936529b2882b9fdad6b7b1b086f44de31dc9313809ddcb6415fd8",
-    "tests/modTestAudit02Api.bas": "fdf69fb857bb54484c71996b929475fb54348a0e2e00cad517658f25daf6fb3e",
+    "tests/modTestAudit02Api.bas": "4208c9c440a6f5689746c707ed9b4958c52010526705d77832bf845a802e77d2",
     "tests/modTestAutoCADContours.bas": "5edfd1631f415a361b235512f71db4d3bc528a35a68ea043793cc1bc56ec5aae",
     "tests/modTestContourMesh.bas": "3729da3521911350d2b755e304ae3284e053b236630ee4413f7386ac8d1b8133",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
@@ -6518,6 +6500,9 @@
     "tests/modTestSectionSolver.bas": "8a6320e735c1ab212ddf30e744d90b0de5822c89f9b49605b6c2cf6b33bc54c7"
   },
   "reportHashes": {
+    "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt": "cd4b2010d9f5ecd137cc293e021f3aac77228406dd938c730ce9663e5ef68f04",
+    "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt": "f96b6d07409812357b9aa71e06220794092c7d08ee8433f70e71527c96e81ab8",
+    "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestSectionRecipes.RunCircleBindingTests.txt": "22f4fe3267aefbedc9821fd9843ac17bb868300e58a71be6f5605dc1f6c181a8",
     "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunAudit02InputTests.txt": "aace1b8a4d546479534b5dea48afab5154e4f003d38776242e1101c0a6ed3291",
     "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt": "9b9fad47f1d363a7a8bd92c141ad5dbd2824973c3b3b292230ca3f20eb04f1a0",
     "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt": "ab593a2ac6df55738503ffc88728f5e4c3c5b4d920169f531a4ef5730f4dd36c",

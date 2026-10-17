@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "ProductionChangedFiles": [
+    "src/Geometry/CSectionRecipeCircle.cls"
+  ],
+  "ReplacedExecutableLines": 3,
+  "ProductionLinesBefore": 143,
+  "ProductionLinesAfter": 143,
+  "ProceduresBefore": 6,
+  "ProceduresAfter": 6,
+  "BranchStructureUnchanged": true,
+  "NewClasses": 0,
+  "NewSharedMethods": 0
+}

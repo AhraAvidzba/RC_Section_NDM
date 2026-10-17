@@ -26,7 +26,7 @@ Private Type TCircleRebar
     Count As Long ' Число стержней основного ряда.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
     AxisDistance As Double ' Расстояние от края бетона до осей основного ряда, мм.
-    StartSetback As Double ' Отступ от правой точки окружности против часовой стрелки вдоль линии центров, мм.
+    StartSetback As Double ' Отступ от верхней точки окружности по часовой стрелке вдоль линии центров, мм.
     EndSetback As Double ' Отступ назад от конца полного оборота вдоль линии центров, мм.
     BaseOffsets(2 To 3) As Double ' Базовые отступы второго и третьего рядов от основного, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
@@ -100,9 +100,9 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
     Dim path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
     If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
     If rebar.StartSetback = 0# And rebar.EndSetback = 0# Then
-        Set path = facade.CirclePath("Circle.Axis", 0#, 0#, diameter / 2# - rebar.AxisDistance) ' Полный круг центров: радиус D/2 - as, мм.
+        Set path = facade.ArcPath("Circle.Axis", 0#, 0#, diameter / 2# - rebar.AxisDistance, GEOM_PI / 2#, -2# * GEOM_PI) ' Полный круг центров от верхней точки по часовой стрелке.
     Else
-        Set path = facade.CirclePath("Circle.FullAxis", 0#, 0#, diameter / 2# - rebar.AxisDistance)
+        Set path = facade.ArcPath("Circle.FullAxis", 0#, 0#, diameter / 2# - rebar.AxisDistance, GEOM_PI / 2#, -2# * GEOM_PI)
         Set path = facade.Slice("Circle.Axis", path.ID, rebar.StartSetback, path.Length - rebar.EndSetback) ' Открытая дуга после отсечения двух концевых отступов.
     End If
     Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
@@ -120,7 +120,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
     defaults.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
     defaults.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
     Set contact = New CRebarContactBuilder
-    contact.Initialize rebar.Diameter, 1#, -1#, defaults ' Stacked направлен внутрь круга, SideBySide — против обхода линии.
+    contact.Initialize rebar.Diameter, -1#, 1#, defaults ' Stacked направлен внутрь круга, SideBySide — по часовой касательной.
     For rowNumber = 2 To 3
         If rebar.Diameters(rowNumber) > 0# Then
             Set options = contact.AppendRow(rebar.Diameters(rowNumber), rebar.Locations(rowNumber), rebar.Bindings(rowNumber), rebar.ExtraSources(rowNumber), rebar.BaseOffsets(rowNumber))
