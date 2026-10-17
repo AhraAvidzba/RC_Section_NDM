@@ -1,0 +1,532 @@
+11:44:57 far: start
+11:44:57 far.actualAutoCAD
+11:44:57 far.WCS
+11:44:57 far: import position=0
+11:44:57 far: imported fibers=80
+11:44:57 far.0.sourcePreserved
+11:44:57 far.0.imported
+11:44:57 far.0.contours
+11:44:57 far.0.load1.Auto: capacity start
+11:44:57 far.0.load1.Auto.converged
+11:44:57 far.0.load1.Auto.N; difference=1.86264514923096E-09
+11:44:57 far.0.load1.Auto.Mx; difference=6.28642737865448E-09
+11:44:57 far.0.load1.Auto.My; difference=4.15457179769874E-09
+11:44:57 far.0.load1.Auto.physicalLimit; difference=0
+11:44:57 far.0.load1.Auto.axialStrategy
+11:44:57 far.0.load1.LoadMultiplier: capacity start
+11:44:57 far.0.load1.LoadMultiplier.converged
+11:44:57 far.0.load1.LoadMultiplier.N; difference=1.86264514923096E-09
+11:44:57 far.0.load1.LoadMultiplier.Mx; difference=6.28642737865448E-09
+11:44:57 far.0.load1.LoadMultiplier.My; difference=4.15457179769874E-09
+11:44:57 far.0.load1.LoadMultiplier.physicalLimit; difference=0
+11:44:57 far.0.load1.LoadMultiplier.axialStrategy
+11:44:57 far.0.load2.Auto: capacity start
+11:44:57 far.0.load2.Auto.converged
+11:44:57 far.0.load2.Auto.N; difference=1.86264514923096E-09
+11:44:57 far.0.load2.Auto.Mx; difference=6.28642737865448E-09
+11:44:57 far.0.load2.Auto.My; difference=4.15457179769874E-09
+11:44:57 far.0.load2.Auto.physicalLimit; difference=0
+11:44:57 far.0.load2.Auto.axialStrategy
+11:44:57 far.0.load2.LoadMultiplier: capacity start
+11:44:57 far.0.load2.LoadMultiplier.converged
+11:44:57 far.0.load2.LoadMultiplier.N; difference=1.86264514923096E-09
+11:44:57 far.0.load2.LoadMultiplier.Mx; difference=6.28642737865448E-09
+11:44:57 far.0.load2.LoadMultiplier.My; difference=4.15457179769874E-09
+11:44:57 far.0.load2.LoadMultiplier.physicalLimit; difference=0
+11:44:57 far.0.load2.LoadMultiplier.axialStrategy
+11:44:57 far.0.load3.Auto: capacity start
+11:44:57 far.0.load3.Auto.converged
+11:44:57 far.0.load3.Auto.N; difference=0
+11:44:57 far.0.load3.Auto.Mx; difference=0.128614544868469
+11:44:57 far.0.load3.Auto.My; difference=8.6979866027832E-03
+11:44:57 far.0.load3.Auto.physicalLimit; difference=3.84021703325743E-11
+11:44:57 far.0.load3.LoadMultiplier: capacity start
+11:44:58 far.0.load3.LoadMultiplier.converged
+11:44:58 far.0.load3.LoadMultiplier.N; difference=0
+11:44:58 far.0.load3.LoadMultiplier.Mx; difference=6.32339715957642E-02
+11:44:58 far.0.load3.LoadMultiplier.My; difference=1.07218027114868E-02
+11:44:58 far.0.load3.LoadMultiplier.physicalLimit; difference=2.69428923616033E-12
+11:44:58 far.0.load4.Auto: capacity start
+11:44:58 far.0.load4.Auto.converged
+11:44:58 far.0.load4.Auto.N; difference=0
+11:44:58 far.0.load4.Auto.Mx; difference=1.61242485046387E-03
+11:44:58 far.0.load4.Auto.My; difference=4.45961952209473E-04
+11:44:58 far.0.load4.Auto.physicalLimit; difference=3.68149954965702E-13
+11:44:58 far.0.load4.LoadMultiplier: capacity start
+11:44:58 far.0.load4.LoadMultiplier.converged
+11:44:58 far.0.load4.LoadMultiplier.N; difference=0
+11:44:58 far.0.load4.LoadMultiplier.Mx; difference=1.50191783905029E-03
+11:44:58 far.0.load4.LoadMultiplier.My; difference=1.47044658660889E-03
+11:44:58 far.0.load4.LoadMultiplier.physicalLimit; difference=3.55604434787438E-13
+11:44:58 far.0.load5.Auto: capacity start
+11:44:58 far.0.load5.Auto.converged
+11:44:58 far.0.load5.Auto.N; difference=0
+11:44:58 far.0.load5.Auto.Mx; difference=1.79167985916138E-02
+11:44:58 far.0.load5.Auto.My; difference=2.26306915283203E-03
+11:44:58 far.0.load5.Auto.physicalLimit; difference=4.85833595575969E-13
+11:44:58 far.0.load5.LoadMultiplier: capacity start
+11:44:58 far.0.load5.LoadMultiplier.converged
+11:44:58 far.0.load5.LoadMultiplier.N; difference=0
+11:44:58 far.0.load5.LoadMultiplier.Mx; difference=2.76446342468262E-03
+11:44:58 far.0.load5.LoadMultiplier.My; difference=1.78813934326172E-04
+11:44:58 far.0.load5.LoadMultiplier.physicalLimit; difference=1.09046105478683E-12
+11:44:58 far.0.load6.Auto: capacity start
+11:45:05 far.0.load6.Auto.converged
+11:45:05 far.0.load6.Auto.N; difference=0
+11:45:05 far.0.load6.Auto.Mx; difference=0.335166782140732
+11:45:05 far.0.load6.Auto.My; difference=0.226676858961582
+11:45:05 far.0.load6.Auto.physicalLimit; difference=1.81634085549831E-09
+11:45:05 far.0.load6.LoadMultiplier: capacity start
+11:45:06 far.0.load6.LoadMultiplier.converged
+11:45:06 far.0.load6.LoadMultiplier.N; difference=0
+11:45:06 far.0.load6.LoadMultiplier.Mx; difference=5.96046447753906E-08
+11:45:06 far.0.load6.LoadMultiplier.My; difference=7.45058059692383E-09
+11:45:06 far.0.load6.LoadMultiplier.physicalLimit; difference=2.22044604925031E-16
+11:45:06 far.0.load6.LoadMultiplier.savedContours.count
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.1
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.1
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.1
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.1
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.2
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.2
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.2
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.2
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.3
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.3
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.3
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.3
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.4
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.4
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.4
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.4
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.5
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.5
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.5
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.5
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.6
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.6
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.6
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.6
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.7
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.7
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.7
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.7
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.8
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.8
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.8
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.8
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.9
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.9
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.9
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.9
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.10
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.10
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.10
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.10
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.11
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.11
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.11
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.11
+11:45:06 far.0.load6.LoadMultiplier.savedContours.id.12
+11:45:06 far.0.load6.LoadMultiplier.savedContours.context.12
+11:45:06 far.0.load6.LoadMultiplier.savedContours.type.12
+11:45:06 far.0.load6.LoadMultiplier.savedContours.geometry.12
+11:45:06 far.0.load6.LoadMultiplier.savedOriginalX; difference=0
+11:45:06 far.0.load6.LoadMultiplier.savedOriginalY; difference=0
+11:45:06 far: import position=1
+11:45:06 far: imported fibers=80
+11:45:06 far.1.sourcePreserved
+11:45:06 far.1.imported
+11:45:06 far.1.contours
+11:45:06 far.1.meshCount
+11:45:06 far.1.fiberX.1; difference=0
+11:45:06 far.1.fiberY.1; difference=0
+11:45:06 far.1.fiberArea.1; difference=0
+11:45:06 far.1.fiberX.2; difference=0
+11:45:06 far.1.fiberY.2; difference=0
+11:45:06 far.1.fiberArea.2; difference=0
+11:45:06 far.1.fiberX.3; difference=0
+11:45:06 far.1.fiberY.3; difference=0
+11:45:06 far.1.fiberArea.3; difference=0
+11:45:06 far.1.fiberX.4; difference=0
+11:45:06 far.1.fiberY.4; difference=0
+11:45:06 far.1.fiberArea.4; difference=0
+11:45:06 far.1.fiberX.5; difference=0
+11:45:06 far.1.fiberY.5; difference=0
+11:45:06 far.1.fiberArea.5; difference=0
+11:45:06 far.1.fiberX.6; difference=0
+11:45:06 far.1.fiberY.6; difference=0
+11:45:06 far.1.fiberArea.6; difference=0
+11:45:06 far.1.fiberX.7; difference=0
+11:45:06 far.1.fiberY.7; difference=0
+11:45:06 far.1.fiberArea.7; difference=0
+11:45:06 far.1.fiberX.8; difference=0
+11:45:06 far.1.fiberY.8; difference=0
+11:45:06 far.1.fiberArea.8; difference=0
+11:45:06 far.1.fiberX.9; difference=0
+11:45:06 far.1.fiberY.9; difference=0
+11:45:06 far.1.fiberArea.9; difference=0
+11:45:06 far.1.fiberX.10; difference=0
+11:45:06 far.1.fiberY.10; difference=0
+11:45:06 far.1.fiberArea.10; difference=0
+11:45:06 far.1.fiberX.11; difference=0
+11:45:06 far.1.fiberY.11; difference=0
+11:45:06 far.1.fiberArea.11; difference=0
+11:45:06 far.1.fiberX.12; difference=0
+11:45:06 far.1.fiberY.12; difference=0
+11:45:06 far.1.fiberArea.12; difference=0
+11:45:06 far.1.fiberX.13; difference=0
+11:45:06 far.1.fiberY.13; difference=0
+11:45:06 far.1.fiberArea.13; difference=0
+11:45:06 far.1.fiberX.14; difference=0
+11:45:06 far.1.fiberY.14; difference=0
+11:45:06 far.1.fiberArea.14; difference=0
+11:45:06 far.1.fiberX.15; difference=0
+11:45:06 far.1.fiberY.15; difference=0
+11:45:06 far.1.fiberArea.15; difference=0
+11:45:06 far.1.fiberX.16; difference=0
+11:45:06 far.1.fiberY.16; difference=0
+11:45:06 far.1.fiberArea.16; difference=0
+11:45:06 far.1.fiberX.17; difference=0
+11:45:06 far.1.fiberY.17; difference=0
+11:45:06 far.1.fiberArea.17; difference=0
+11:45:06 far.1.fiberX.18; difference=0
+11:45:06 far.1.fiberY.18; difference=0
+11:45:06 far.1.fiberArea.18; difference=0
+11:45:06 far.1.fiberX.19; difference=0
+11:45:06 far.1.fiberY.19; difference=0
+11:45:06 far.1.fiberArea.19; difference=0
+11:45:06 far.1.fiberX.20; difference=0
+11:45:06 far.1.fiberY.20; difference=0
+11:45:06 far.1.fiberArea.20; difference=0
+11:45:06 far.1.fiberX.21; difference=0
+11:45:06 far.1.fiberY.21; difference=0
+11:45:06 far.1.fiberArea.21; difference=0
+11:45:06 far.1.fiberX.22; difference=0
+11:45:06 far.1.fiberY.22; difference=0
+11:45:06 far.1.fiberArea.22; difference=0
+11:45:06 far.1.fiberX.23; difference=0
+11:45:06 far.1.fiberY.23; difference=0
+11:45:06 far.1.fiberArea.23; difference=0
+11:45:06 far.1.fiberX.24; difference=0
+11:45:06 far.1.fiberY.24; difference=0
+11:45:06 far.1.fiberArea.24; difference=0
+11:45:06 far.1.fiberX.25; difference=0
+11:45:06 far.1.fiberY.25; difference=0
+11:45:06 far.1.fiberArea.25; difference=0
+11:45:06 far.1.fiberX.26; difference=0
+11:45:06 far.1.fiberY.26; difference=0
+11:45:06 far.1.fiberArea.26; difference=0
+11:45:06 far.1.fiberX.27; difference=0
+11:45:06 far.1.fiberY.27; difference=0
+11:45:06 far.1.fiberArea.27; difference=0
+11:45:06 far.1.fiberX.28; difference=0
+11:45:06 far.1.fiberY.28; difference=0
+11:45:06 far.1.fiberArea.28; difference=0
+11:45:06 far.1.fiberX.29; difference=0
+11:45:06 far.1.fiberY.29; difference=0
+11:45:06 far.1.fiberArea.29; difference=0
+11:45:06 far.1.fiberX.30; difference=0
+11:45:06 far.1.fiberY.30; difference=0
+11:45:06 far.1.fiberArea.30; difference=0
+11:45:06 far.1.fiberX.31; difference=0
+11:45:06 far.1.fiberY.31; difference=0
+11:45:06 far.1.fiberArea.31; difference=0
+11:45:06 far.1.fiberX.32; difference=0
+11:45:06 far.1.fiberY.32; difference=0
+11:45:06 far.1.fiberArea.32; difference=0
+11:45:06 far.1.fiberX.33; difference=0
+11:45:06 far.1.fiberY.33; difference=0
+11:45:06 far.1.fiberArea.33; difference=0
+11:45:06 far.1.fiberX.34; difference=0
+11:45:06 far.1.fiberY.34; difference=0
+11:45:06 far.1.fiberArea.34; difference=0
+11:45:06 far.1.fiberX.35; difference=0
+11:45:06 far.1.fiberY.35; difference=0
+11:45:06 far.1.fiberArea.35; difference=0
+11:45:06 far.1.fiberX.36; difference=0
+11:45:06 far.1.fiberY.36; difference=0
+11:45:06 far.1.fiberArea.36; difference=0
+11:45:06 far.1.fiberX.37; difference=0
+11:45:06 far.1.fiberY.37; difference=0
+11:45:06 far.1.fiberArea.37; difference=0
+11:45:06 far.1.fiberX.38; difference=0
+11:45:06 far.1.fiberY.38; difference=0
+11:45:06 far.1.fiberArea.38; difference=0
+11:45:06 far.1.fiberX.39; difference=0
+11:45:06 far.1.fiberY.39; difference=0
+11:45:06 far.1.fiberArea.39; difference=0
+11:45:06 far.1.fiberX.40; difference=0
+11:45:06 far.1.fiberY.40; difference=0
+11:45:06 far.1.fiberArea.40; difference=0
+11:45:06 far.1.fiberX.41; difference=0
+11:45:06 far.1.fiberY.41; difference=0
+11:45:06 far.1.fiberArea.41; difference=0
+11:45:06 far.1.fiberX.42; difference=0
+11:45:06 far.1.fiberY.42; difference=0
+11:45:06 far.1.fiberArea.42; difference=0
+11:45:06 far.1.fiberX.43; difference=0
+11:45:06 far.1.fiberY.43; difference=0
+11:45:06 far.1.fiberArea.43; difference=0
+11:45:06 far.1.fiberX.44; difference=0
+11:45:06 far.1.fiberY.44; difference=0
+11:45:06 far.1.fiberArea.44; difference=0
+11:45:06 far.1.fiberX.45; difference=0
+11:45:06 far.1.fiberY.45; difference=0
+11:45:06 far.1.fiberArea.45; difference=0
+11:45:06 far.1.fiberX.46; difference=0
+11:45:06 far.1.fiberY.46; difference=0
+11:45:06 far.1.fiberArea.46; difference=0
+11:45:06 far.1.fiberX.47; difference=0
+11:45:06 far.1.fiberY.47; difference=0
+11:45:06 far.1.fiberArea.47; difference=0
+11:45:06 far.1.fiberX.48; difference=0
+11:45:06 far.1.fiberY.48; difference=0
+11:45:06 far.1.fiberArea.48; difference=0
+11:45:06 far.1.fiberX.49; difference=0
+11:45:06 far.1.fiberY.49; difference=0
+11:45:06 far.1.fiberArea.49; difference=0
+11:45:06 far.1.fiberX.50; difference=0
+11:45:06 far.1.fiberY.50; difference=0
+11:45:06 far.1.fiberArea.50; difference=0
+11:45:06 far.1.fiberX.51; difference=0
+11:45:06 far.1.fiberY.51; difference=0
+11:45:06 far.1.fiberArea.51; difference=0
+11:45:06 far.1.fiberX.52; difference=0
+11:45:06 far.1.fiberY.52; difference=0
+11:45:06 far.1.fiberArea.52; difference=0
+11:45:06 far.1.fiberX.53; difference=0
+11:45:06 far.1.fiberY.53; difference=0
+11:45:06 far.1.fiberArea.53; difference=0
+11:45:06 far.1.fiberX.54; difference=0
+11:45:06 far.1.fiberY.54; difference=0
+11:45:06 far.1.fiberArea.54; difference=0
+11:45:06 far.1.fiberX.55; difference=0
+11:45:06 far.1.fiberY.55; difference=0
+11:45:06 far.1.fiberArea.55; difference=0
+11:45:06 far.1.fiberX.56; difference=0
+11:45:06 far.1.fiberY.56; difference=0
+11:45:06 far.1.fiberArea.56; difference=0
+11:45:06 far.1.fiberX.57; difference=0
+11:45:06 far.1.fiberY.57; difference=0
+11:45:06 far.1.fiberArea.57; difference=0
+11:45:06 far.1.fiberX.58; difference=0
+11:45:06 far.1.fiberY.58; difference=0
+11:45:06 far.1.fiberArea.58; difference=0
+11:45:06 far.1.fiberX.59; difference=0
+11:45:06 far.1.fiberY.59; difference=0
+11:45:06 far.1.fiberArea.59; difference=0
+11:45:06 far.1.fiberX.60; difference=0
+11:45:06 far.1.fiberY.60; difference=0
+11:45:06 far.1.fiberArea.60; difference=0
+11:45:06 far.1.fiberX.61; difference=0
+11:45:06 far.1.fiberY.61; difference=0
+11:45:06 far.1.fiberArea.61; difference=0
+11:45:06 far.1.fiberX.62; difference=0
+11:45:06 far.1.fiberY.62; difference=0
+11:45:06 far.1.fiberArea.62; difference=0
+11:45:06 far.1.fiberX.63; difference=0
+11:45:06 far.1.fiberY.63; difference=0
+11:45:06 far.1.fiberArea.63; difference=0
+11:45:06 far.1.fiberX.64; difference=0
+11:45:06 far.1.fiberY.64; difference=0
+11:45:06 far.1.fiberArea.64; difference=0
+11:45:06 far.1.fiberX.65; difference=0
+11:45:06 far.1.fiberY.65; difference=0
+11:45:06 far.1.fiberArea.65; difference=0
+11:45:06 far.1.fiberX.66; difference=0
+11:45:06 far.1.fiberY.66; difference=0
+11:45:06 far.1.fiberArea.66; difference=0
+11:45:06 far.1.fiberX.67; difference=0
+11:45:06 far.1.fiberY.67; difference=0
+11:45:06 far.1.fiberArea.67; difference=0
+11:45:06 far.1.fiberX.68; difference=0
+11:45:06 far.1.fiberY.68; difference=0
+11:45:06 far.1.fiberArea.68; difference=0
+11:45:06 far.1.fiberX.69; difference=0
+11:45:06 far.1.fiberY.69; difference=0
+11:45:06 far.1.fiberArea.69; difference=0
+11:45:06 far.1.fiberX.70; difference=0
+11:45:06 far.1.fiberY.70; difference=0
+11:45:06 far.1.fiberArea.70; difference=0
+11:45:06 far.1.fiberX.71; difference=0
+11:45:06 far.1.fiberY.71; difference=0
+11:45:06 far.1.fiberArea.71; difference=0
+11:45:06 far.1.fiberX.72; difference=0
+11:45:06 far.1.fiberY.72; difference=0
+11:45:06 far.1.fiberArea.72; difference=0
+11:45:06 far.1.fiberX.73; difference=0
+11:45:06 far.1.fiberY.73; difference=0
+11:45:06 far.1.fiberArea.73; difference=0
+11:45:06 far.1.fiberX.74; difference=0
+11:45:06 far.1.fiberY.74; difference=0
+11:45:06 far.1.fiberArea.74; difference=0
+11:45:06 far.1.fiberX.75; difference=0
+11:45:06 far.1.fiberY.75; difference=0
+11:45:06 far.1.fiberArea.75; difference=0
+11:45:06 far.1.fiberX.76; difference=0
+11:45:06 far.1.fiberY.76; difference=0
+11:45:06 far.1.fiberArea.76; difference=0
+11:45:06 far.1.fiberX.77; difference=0
+11:45:06 far.1.fiberY.77; difference=0
+11:45:06 far.1.fiberArea.77; difference=0
+11:45:06 far.1.fiberX.78; difference=0
+11:45:06 far.1.fiberY.78; difference=0
+11:45:06 far.1.fiberArea.78; difference=0
+11:45:06 far.1.fiberX.79; difference=0
+11:45:06 far.1.fiberY.79; difference=0
+11:45:06 far.1.fiberArea.79; difference=0
+11:45:06 far.1.fiberX.80; difference=0
+11:45:06 far.1.fiberY.80; difference=0
+11:45:06 far.1.fiberArea.80; difference=0
+11:45:06 far.1.load1.Auto: capacity start
+11:45:06 far.1.load1.Auto.converged
+11:45:06 far.1.load1.Auto.N; difference=1.86264514923096E-09
+11:45:06 far.1.load1.Auto.Mx; difference=4.35829162597656E-04
+11:45:06 far.1.load1.Auto.My; difference=4.35829162597656E-04
+11:45:06 far.1.load1.Auto.physicalLimit; difference=2.22044604925031E-16
+11:45:06 far.1.load1.Auto.axialStrategy
+11:45:06 far.1.load1.Auto.sameCapacity; difference=0
+11:45:06 far.1.load1.Auto.sameCriterion
+11:45:06 far.1.load1.LoadMultiplier: capacity start
+11:45:06 far.1.load1.LoadMultiplier.converged
+11:45:06 far.1.load1.LoadMultiplier.N; difference=1.86264514923096E-09
+11:45:06 far.1.load1.LoadMultiplier.Mx; difference=4.35829162597656E-04
+11:45:06 far.1.load1.LoadMultiplier.My; difference=4.35829162597656E-04
+11:45:06 far.1.load1.LoadMultiplier.physicalLimit; difference=2.22044604925031E-16
+11:45:06 far.1.load1.LoadMultiplier.axialStrategy
+11:45:06 far.1.load1.LoadMultiplier.sameCapacity; difference=0
+11:45:06 far.1.load1.LoadMultiplier.sameCriterion
+11:45:06 far.1.load2.Auto: capacity start
+11:45:06 far.1.load2.Auto.converged
+11:45:06 far.1.load2.Auto.N; difference=1.86264514923096E-09
+11:45:06 far.1.load2.Auto.Mx; difference=4.35829162597656E-04
+11:45:06 far.1.load2.Auto.My; difference=4.35829162597656E-04
+11:45:06 far.1.load2.Auto.physicalLimit; difference=2.22044604925031E-16
+11:45:06 far.1.load2.Auto.axialStrategy
+11:45:06 far.1.load2.Auto.sameCapacity; difference=0
+11:45:06 far.1.load2.Auto.sameCriterion
+11:45:06 far.1.load2.LoadMultiplier: capacity start
+11:45:06 far.1.load2.LoadMultiplier.converged
+11:45:06 far.1.load2.LoadMultiplier.N; difference=1.86264514923096E-09
+11:45:06 far.1.load2.LoadMultiplier.Mx; difference=4.35829162597656E-04
+11:45:06 far.1.load2.LoadMultiplier.My; difference=4.35829162597656E-04
+11:45:06 far.1.load2.LoadMultiplier.physicalLimit; difference=2.22044604925031E-16
+11:45:06 far.1.load2.LoadMultiplier.axialStrategy
+11:45:06 far.1.load2.LoadMultiplier.sameCapacity; difference=0
+11:45:06 far.1.load2.LoadMultiplier.sameCriterion
+11:45:06 far.1.load3.Auto: capacity start
+11:45:06 far.1.load3.Auto.converged
+11:45:06 far.1.load3.Auto.N; difference=0
+11:45:06 far.1.load3.Auto.Mx; difference=1.71278715133667E-02
+11:45:06 far.1.load3.Auto.My; difference=1.13357603549957E-02
+11:45:06 far.1.load3.Auto.physicalLimit; difference=1.55044865834952E-11
+11:45:06 far.1.load3.Auto.sameCapacity; difference=1.37671207767198E-09
+11:45:06 far.1.load3.Auto.sameCriterion
+11:45:06 far.1.load3.LoadMultiplier: capacity start
+11:45:06 far.1.load3.LoadMultiplier.converged
+11:45:06 far.1.load3.LoadMultiplier.N; difference=0
+11:45:06 far.1.load3.LoadMultiplier.Mx; difference=5.48058748245239E-02
+11:45:06 far.1.load3.LoadMultiplier.My; difference=1.12006068229675E-03
+11:45:06 far.1.load3.LoadMultiplier.physicalLimit; difference=2.45581333047085E-12
+11:45:06 far.1.load3.LoadMultiplier.sameCapacity; difference=3.30118155034143E-11
+11:45:06 far.1.load3.LoadMultiplier.sameCriterion
+11:45:06 far.1.load4.Auto: capacity start
+11:45:06 far.1.load4.Auto.converged
+11:45:06 far.1.load4.Auto.N; difference=0
+11:45:06 far.1.load4.Auto.Mx; difference=8.15391540527344E-05
+11:45:06 far.1.load4.Auto.My; difference=7.10964202880859E-04
+11:45:06 far.1.load4.Auto.physicalLimit; difference=9.2148511043888E-14
+11:45:06 far.1.load4.Auto.sameCapacity; difference=4.08562073062058E-12
+11:45:06 far.1.load4.Auto.sameCriterion
+11:45:06 far.1.load4.LoadMultiplier: capacity start
+11:45:07 far.1.load4.LoadMultiplier.converged
+11:45:07 far.1.load4.LoadMultiplier.N; difference=0
+11:45:07 far.1.load4.LoadMultiplier.Mx; difference=2.88993120193481E-04
+11:45:07 far.1.load4.LoadMultiplier.My; difference=1.02722644805908E-03
+11:45:07 far.1.load4.LoadMultiplier.physicalLimit; difference=7.8159700933611E-14
+11:45:07 far.1.load4.LoadMultiplier.sameCapacity; difference=1.79696257873729E-11
+11:45:07 far.1.load4.LoadMultiplier.sameCriterion
+11:45:07 far.1.load5.Auto: capacity start
+11:45:07 far.1.load5.Auto.converged
+11:45:07 far.1.load5.Auto.N; difference=0
+11:45:07 far.1.load5.Auto.Mx; difference=2.08529233932495E-02
+11:45:07 far.1.load5.Auto.My; difference=2.04411745071411E-02
+11:45:07 far.1.load5.Auto.physicalLimit; difference=6.13853412545495E-12
+11:45:07 far.1.load5.Auto.sameCapacity; difference=1.68654423760017E-10
+11:45:07 far.1.load5.Auto.sameCriterion
+11:45:07 far.1.load5.LoadMultiplier: capacity start
+11:45:07 far.1.load5.LoadMultiplier.converged
+11:45:07 far.1.load5.LoadMultiplier.N; difference=0
+11:45:07 far.1.load5.LoadMultiplier.Mx; difference=4.79817390441895E-04
+11:45:07 far.1.load5.LoadMultiplier.My; difference=5.47528266906738E-04
+11:45:07 far.1.load5.LoadMultiplier.physicalLimit; difference=3.39617223232835E-13
+11:45:07 far.1.load5.LoadMultiplier.sameCapacity; difference=1.48077106132405E-11
+11:45:07 far.1.load5.LoadMultiplier.sameCriterion
+11:45:07 far.1.load6.Auto: capacity start
+11:45:14 far.1.load6.Auto.converged
+11:45:14 far.1.load6.Auto.N; difference=0
+11:45:14 far.1.load6.Auto.Mx; difference=3.70442867279053E-05
+11:45:14 far.1.load6.Auto.My; difference=2.48625874519348E-05
+11:45:14 far.1.load6.Auto.physicalLimit; difference=1.11022302462516E-16
+11:45:14 far.1.load6.Auto.sameCapacity; difference=1.03128172668221E-08
+11:45:14 far.1.load6.Auto.sameCriterion
+11:45:14 far.1.load6.LoadMultiplier: capacity start
+11:45:15 far.1.load6.LoadMultiplier.converged
+11:45:15 far.1.load6.LoadMultiplier.N; difference=0
+11:45:15 far.1.load6.LoadMultiplier.Mx; difference=3.70442867279053E-05
+11:45:15 far.1.load6.LoadMultiplier.My; difference=2.48625874519348E-05
+11:45:15 far.1.load6.LoadMultiplier.physicalLimit; difference=1.11022302462516E-16
+11:45:15 far.1.load6.LoadMultiplier.sameCapacity; difference=3.5527136788005E-15
+11:45:15 far.1.load6.LoadMultiplier.sameCriterion
+11:45:15 far.1.load6.LoadMultiplier.savedContours.count
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.1
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.1
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.1
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.1
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.2
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.2
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.2
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.2
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.3
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.3
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.3
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.3
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.4
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.4
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.4
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.4
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.5
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.5
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.5
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.5
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.6
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.6
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.6
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.6
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.7
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.7
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.7
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.7
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.8
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.8
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.8
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.8
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.9
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.9
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.9
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.9
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.10
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.10
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.10
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.10
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.11
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.11
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.11
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.11
+11:45:15 far.1.load6.LoadMultiplier.savedContours.id.12
+11:45:15 far.1.load6.LoadMultiplier.savedContours.context.12
+11:45:15 far.1.load6.LoadMultiplier.savedContours.type.12
+11:45:15 far.1.load6.LoadMultiplier.savedContours.geometry.12
+11:45:15 far.1.load6.LoadMultiplier.savedOriginalX; difference=0
+11:45:15 far.1.load6.LoadMultiplier.savedOriginalY; difference=0

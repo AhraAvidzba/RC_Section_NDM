@@ -1,0 +1,54 @@
+﻿{
+    "Passed":  true,
+    "Created":  "2026-10-17T11:19:57.0280362+03:00",
+    "SourceSHA256":  "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+    "ProbeSHA256":  "5CF7A7EF759A0C4F38C7F106ECF92C89EDF0BF4EAF55A7008F268061AB7C24CB",
+    "Groups":  [
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FocusedAcceptance_2026-10-17_Final\\Probe\\RectSet_Generated_Manifest.txt",
+                       "Shape":  "RectSet",
+                       "ReportSHA256":  "6546A08380422132CB260CC8B23E81D75C8A4DC7084028B94675DC5366FF3C53",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FocusedAcceptance_2026-10-17_Final\\Probe\\Circle_Generated_Manifest.txt",
+                       "Shape":  "Circle",
+                       "ReportSHA256":  "08C7B9CB73D563C2C1E2441E4CE72971C185ED6C60B33F8FE31DC457CF0178B6",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FocusedAcceptance_2026-10-17_Final\\Probe\\RoundedRectangle_Generated_Manifest.txt",
+                       "Shape":  "RoundedRectangle",
+                       "ReportSHA256":  "95862BD7B3077EAF2DD2979FD445B20403386B7806C73C390623AF74C58FAB5D",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Generated",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FocusedAcceptance_2026-10-17_Final\\Probe\\HollowRectangle_Generated_Manifest.txt",
+                       "Shape":  "HollowRectangle",
+                       "ReportSHA256":  "1C4915AA4D5229B9F8843D9F191EDE3DADF4FEF0CB1921D4398E5C8CAD6A0320",
+                       "CasesPerMode":  8
+                   },
+                   {
+                       "Group":  "Saved",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FocusedAcceptance_2026-10-17_Final\\Probe\\SavedWorkbook_Saved_Manifest.txt",
+                       "Shape":  "SavedWorkbook",
+                       "ReportSHA256":  "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23",
+                       "CasesPerMode":  23
+                   },
+                   {
+                       "Group":  "Paths",
+                       "Report":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FocusedAcceptance_2026-10-17_Final\\Probe\\SavedWorkbook_Paths_Manifest.txt",
+                       "Shape":  "SavedWorkbook",
+                       "ReportSHA256":  "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70",
+                       "CasesPerMode":  6
+                   }
+               ],
+    "SingleCasesTwoModes":  122,
+    "SolverExecuted":  false,
+    "AcceptanceExecuted":  false,
+    "ProductionChanged":  false
+}

@@ -1,0 +1,16 @@
+﻿{
+    "Created":  "2026-10-17T11:19:53.7783915+03:00",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+    "ProbeWorkbookSHA256":  "5CF7A7EF759A0C4F38C7F106ECF92C89EDF0BF4EAF55A7008F268061AB7C24CB",
+    "HelperSHA256":  "1BFE48A65895A5B17131479B70615BE2B9F9A8951C4B27602A8DBC08038340A7",
+    "ExtraHelperSHA256":  "F7325BE1BB55BACA61E939BCC7B770A939ECE0B082E38187BE0B4BFCD3DA351E",
+    "SavedFixtureSHA256":  "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F",
+    "Compiled":  true,
+    "ModifiedComponents":  [
+                               "modWorkbookCalculation",
+                               "modTestBatchCalculation"
+                           ],
+    "CalculationExecuted":  false,
+    "ProductionChanged":  false
+}

@@ -1,0 +1,7 @@
+SOURCE: C:\Users\avidzba\Desktop\Ø‡Æ£‡†¨¨Î\Ç_êÄÅéíÖ!\RC_Section_NDM\docs\regression\FocusedAcceptance_2026-10-17_Final\Probe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 5CF7A7EF759A0C4F38C7F106ECF92C89EDF0BF4EAF55A7008F268061AB7C24CB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_f1bb781449924cbf9e3af75afef285f0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TOTAL_FOCUSED_ACCEPTANCE: shape=SavedWorkbook; group=Paths; cases=6; maxSeconds=3.484375; passed=510; failed=0
+MODE_AFTER_SUITE: Yes
+SOURCE_UNCHANGED: True

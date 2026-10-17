@@ -1,0 +1,12 @@
+﻿{
+    "Macro":  "RunRealAutoCADFarCapacityTests",
+    "Mode":  "",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+    "SourceUnchanged":  true,
+    "Passed":  true,
+    "OwnedCadPID":  63388,
+    "LaunchedCadPID":  0,
+    "LaunchedCadStartTicks":  0,
+    "RunnerSHA256":  "8CF0C5D2B3483B52D7274214DB2DF2B78F6392D5BE02DB9CFEFF37FC08E8EA33"
+}

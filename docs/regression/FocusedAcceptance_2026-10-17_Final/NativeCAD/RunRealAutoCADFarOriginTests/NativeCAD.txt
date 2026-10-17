@@ -1,0 +1,460 @@
+﻿OK: far.actualAutoCAD
+OK: far.WCS
+OK: far.0.sourcePreserved
+OK: far.0.imported
+OK: far.0.contours
+OK: far.0.load1.equilibrium
+OK: far.0.load1.N; difference=5.58793544769287E-09
+OK: far.0.load1.Mx; difference=5.75237208977342E-08
+OK: far.0.load1.My; difference=1.80989445652813E-10
+OK: far.0.load1.noNumericalFailure
+FAR_LOAD: far.0.load1; N=-4903325; Mx=0; My=0; formed=False; lambda=0; comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: far.0.load2.equilibrium
+OK: far.0.load2.N; difference=1.11758708953857E-08
+OK: far.0.load2.Mx; difference=2.2409949451685E-09
+OK: far.0.load2.My; difference=5.76437741983682E-09
+OK: far.0.load2.noNumericalFailure
+FAR_LOAD: far.0.load2; N=-9806650; Mx=0; My=0; formed=False; lambda=0; comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: far.0.load3.equilibrium
+OK: far.0.load3.N; difference=5.82076609134674E-11
+OK: far.0.load3.Mx; difference=1.11758708953857E-08
+OK: far.0.load3.My; difference=4.65661287307739E-09
+OK: far.0.load3.noNumericalFailure
+FAR_LOAD: far.0.load3; N=-200000; Mx=20000000; My=5000000; formed=False; lambda=15.8866927751194; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.0.load4.equilibrium
+OK: far.0.load4.N; difference=1.16415321826935E-10
+OK: far.0.load4.Mx; difference=5.58793544769287E-09
+OK: far.0.load4.My; difference=0
+OK: far.0.load4.noNumericalFailure
+FAR_LOAD: far.0.load4; N=-200000; Mx=-5000000; My=20000000; formed=False; lambda=11.2824182865574; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.0.load5.equilibrium
+OK: far.0.load5.N; difference=1.45519152283669E-11
+OK: far.0.load5.Mx; difference=3.72529029846191E-09
+OK: far.0.load5.My; difference=1.86264514923096E-09
+OK: far.0.load5.noNumericalFailure
+FAR_LOAD: far.0.load5; N=-100000; Mx=-15000000; My=-15000000; formed=False; lambda=10.9887372230704; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.0.load6.equilibrium
+OK: far.0.load6.N; difference=7.27595761418343E-12
+OK: far.0.load6.Mx; difference=1.86264514923096E-09
+OK: far.0.load6.My; difference=9.31322574615479E-10
+OK: far.0.load6.noNumericalFailure
+FAR_LOAD: far.0.load6; N=50000; Mx=10000000; My=-2000000; formed=False; lambda=28.1635865079574; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.0.load6.savedContours.count
+OK: far.0.load6.savedContours.id.1
+OK: far.0.load6.savedContours.context.1
+OK: far.0.load6.savedContours.type.1
+OK: far.0.load6.savedContours.geometry.1
+OK: far.0.load6.savedContours.id.2
+OK: far.0.load6.savedContours.context.2
+OK: far.0.load6.savedContours.type.2
+OK: far.0.load6.savedContours.geometry.2
+OK: far.0.load6.savedContours.id.3
+OK: far.0.load6.savedContours.context.3
+OK: far.0.load6.savedContours.type.3
+OK: far.0.load6.savedContours.geometry.3
+OK: far.0.load6.savedContours.id.4
+OK: far.0.load6.savedContours.context.4
+OK: far.0.load6.savedContours.type.4
+OK: far.0.load6.savedContours.geometry.4
+OK: far.0.load6.savedContours.id.5
+OK: far.0.load6.savedContours.context.5
+OK: far.0.load6.savedContours.type.5
+OK: far.0.load6.savedContours.geometry.5
+OK: far.0.load6.savedContours.id.6
+OK: far.0.load6.savedContours.context.6
+OK: far.0.load6.savedContours.type.6
+OK: far.0.load6.savedContours.geometry.6
+OK: far.0.load6.savedContours.id.7
+OK: far.0.load6.savedContours.context.7
+OK: far.0.load6.savedContours.type.7
+OK: far.0.load6.savedContours.geometry.7
+OK: far.0.load6.savedContours.id.8
+OK: far.0.load6.savedContours.context.8
+OK: far.0.load6.savedContours.type.8
+OK: far.0.load6.savedContours.geometry.8
+OK: far.0.load6.savedContours.id.9
+OK: far.0.load6.savedContours.context.9
+OK: far.0.load6.savedContours.type.9
+OK: far.0.load6.savedContours.geometry.9
+OK: far.0.load6.savedContours.id.10
+OK: far.0.load6.savedContours.context.10
+OK: far.0.load6.savedContours.type.10
+OK: far.0.load6.savedContours.geometry.10
+OK: far.0.load6.savedContours.id.11
+OK: far.0.load6.savedContours.context.11
+OK: far.0.load6.savedContours.type.11
+OK: far.0.load6.savedContours.geometry.11
+OK: far.0.load6.savedContours.id.12
+OK: far.0.load6.savedContours.context.12
+OK: far.0.load6.savedContours.type.12
+OK: far.0.load6.savedContours.geometry.12
+OK: far.0.load6.savedOriginalX; difference=0
+OK: far.0.load6.savedOriginalY; difference=0
+OK: far.1.sourcePreserved
+OK: far.1.imported
+OK: far.1.contours
+OK: far.1.meshCount
+OK: far.1.fiberX.1; difference=0
+OK: far.1.fiberY.1; difference=0
+OK: far.1.fiberArea.1; difference=0
+OK: far.1.fiberX.2; difference=0
+OK: far.1.fiberY.2; difference=0
+OK: far.1.fiberArea.2; difference=0
+OK: far.1.fiberX.3; difference=0
+OK: far.1.fiberY.3; difference=0
+OK: far.1.fiberArea.3; difference=0
+OK: far.1.fiberX.4; difference=0
+OK: far.1.fiberY.4; difference=0
+OK: far.1.fiberArea.4; difference=0
+OK: far.1.fiberX.5; difference=0
+OK: far.1.fiberY.5; difference=0
+OK: far.1.fiberArea.5; difference=0
+OK: far.1.fiberX.6; difference=0
+OK: far.1.fiberY.6; difference=0
+OK: far.1.fiberArea.6; difference=0
+OK: far.1.fiberX.7; difference=0
+OK: far.1.fiberY.7; difference=0
+OK: far.1.fiberArea.7; difference=0
+OK: far.1.fiberX.8; difference=0
+OK: far.1.fiberY.8; difference=0
+OK: far.1.fiberArea.8; difference=0
+OK: far.1.fiberX.9; difference=0
+OK: far.1.fiberY.9; difference=0
+OK: far.1.fiberArea.9; difference=0
+OK: far.1.fiberX.10; difference=0
+OK: far.1.fiberY.10; difference=0
+OK: far.1.fiberArea.10; difference=0
+OK: far.1.fiberX.11; difference=0
+OK: far.1.fiberY.11; difference=0
+OK: far.1.fiberArea.11; difference=0
+OK: far.1.fiberX.12; difference=0
+OK: far.1.fiberY.12; difference=0
+OK: far.1.fiberArea.12; difference=0
+OK: far.1.fiberX.13; difference=0
+OK: far.1.fiberY.13; difference=0
+OK: far.1.fiberArea.13; difference=0
+OK: far.1.fiberX.14; difference=0
+OK: far.1.fiberY.14; difference=0
+OK: far.1.fiberArea.14; difference=0
+OK: far.1.fiberX.15; difference=0
+OK: far.1.fiberY.15; difference=0
+OK: far.1.fiberArea.15; difference=0
+OK: far.1.fiberX.16; difference=0
+OK: far.1.fiberY.16; difference=0
+OK: far.1.fiberArea.16; difference=0
+OK: far.1.fiberX.17; difference=0
+OK: far.1.fiberY.17; difference=0
+OK: far.1.fiberArea.17; difference=0
+OK: far.1.fiberX.18; difference=0
+OK: far.1.fiberY.18; difference=0
+OK: far.1.fiberArea.18; difference=0
+OK: far.1.fiberX.19; difference=0
+OK: far.1.fiberY.19; difference=0
+OK: far.1.fiberArea.19; difference=0
+OK: far.1.fiberX.20; difference=0
+OK: far.1.fiberY.20; difference=0
+OK: far.1.fiberArea.20; difference=0
+OK: far.1.fiberX.21; difference=0
+OK: far.1.fiberY.21; difference=0
+OK: far.1.fiberArea.21; difference=0
+OK: far.1.fiberX.22; difference=0
+OK: far.1.fiberY.22; difference=0
+OK: far.1.fiberArea.22; difference=0
+OK: far.1.fiberX.23; difference=0
+OK: far.1.fiberY.23; difference=0
+OK: far.1.fiberArea.23; difference=0
+OK: far.1.fiberX.24; difference=0
+OK: far.1.fiberY.24; difference=0
+OK: far.1.fiberArea.24; difference=0
+OK: far.1.fiberX.25; difference=0
+OK: far.1.fiberY.25; difference=0
+OK: far.1.fiberArea.25; difference=0
+OK: far.1.fiberX.26; difference=0
+OK: far.1.fiberY.26; difference=0
+OK: far.1.fiberArea.26; difference=0
+OK: far.1.fiberX.27; difference=0
+OK: far.1.fiberY.27; difference=0
+OK: far.1.fiberArea.27; difference=0
+OK: far.1.fiberX.28; difference=0
+OK: far.1.fiberY.28; difference=0
+OK: far.1.fiberArea.28; difference=0
+OK: far.1.fiberX.29; difference=0
+OK: far.1.fiberY.29; difference=0
+OK: far.1.fiberArea.29; difference=0
+OK: far.1.fiberX.30; difference=0
+OK: far.1.fiberY.30; difference=0
+OK: far.1.fiberArea.30; difference=0
+OK: far.1.fiberX.31; difference=0
+OK: far.1.fiberY.31; difference=0
+OK: far.1.fiberArea.31; difference=0
+OK: far.1.fiberX.32; difference=0
+OK: far.1.fiberY.32; difference=0
+OK: far.1.fiberArea.32; difference=0
+OK: far.1.fiberX.33; difference=0
+OK: far.1.fiberY.33; difference=0
+OK: far.1.fiberArea.33; difference=0
+OK: far.1.fiberX.34; difference=0
+OK: far.1.fiberY.34; difference=0
+OK: far.1.fiberArea.34; difference=0
+OK: far.1.fiberX.35; difference=0
+OK: far.1.fiberY.35; difference=0
+OK: far.1.fiberArea.35; difference=0
+OK: far.1.fiberX.36; difference=0
+OK: far.1.fiberY.36; difference=0
+OK: far.1.fiberArea.36; difference=0
+OK: far.1.fiberX.37; difference=0
+OK: far.1.fiberY.37; difference=0
+OK: far.1.fiberArea.37; difference=0
+OK: far.1.fiberX.38; difference=0
+OK: far.1.fiberY.38; difference=0
+OK: far.1.fiberArea.38; difference=0
+OK: far.1.fiberX.39; difference=0
+OK: far.1.fiberY.39; difference=0
+OK: far.1.fiberArea.39; difference=0
+OK: far.1.fiberX.40; difference=0
+OK: far.1.fiberY.40; difference=0
+OK: far.1.fiberArea.40; difference=0
+OK: far.1.fiberX.41; difference=0
+OK: far.1.fiberY.41; difference=0
+OK: far.1.fiberArea.41; difference=0
+OK: far.1.fiberX.42; difference=0
+OK: far.1.fiberY.42; difference=0
+OK: far.1.fiberArea.42; difference=0
+OK: far.1.fiberX.43; difference=0
+OK: far.1.fiberY.43; difference=0
+OK: far.1.fiberArea.43; difference=0
+OK: far.1.fiberX.44; difference=0
+OK: far.1.fiberY.44; difference=0
+OK: far.1.fiberArea.44; difference=0
+OK: far.1.fiberX.45; difference=0
+OK: far.1.fiberY.45; difference=0
+OK: far.1.fiberArea.45; difference=0
+OK: far.1.fiberX.46; difference=0
+OK: far.1.fiberY.46; difference=0
+OK: far.1.fiberArea.46; difference=0
+OK: far.1.fiberX.47; difference=0
+OK: far.1.fiberY.47; difference=0
+OK: far.1.fiberArea.47; difference=0
+OK: far.1.fiberX.48; difference=0
+OK: far.1.fiberY.48; difference=0
+OK: far.1.fiberArea.48; difference=0
+OK: far.1.fiberX.49; difference=0
+OK: far.1.fiberY.49; difference=0
+OK: far.1.fiberArea.49; difference=0
+OK: far.1.fiberX.50; difference=0
+OK: far.1.fiberY.50; difference=0
+OK: far.1.fiberArea.50; difference=0
+OK: far.1.fiberX.51; difference=0
+OK: far.1.fiberY.51; difference=0
+OK: far.1.fiberArea.51; difference=0
+OK: far.1.fiberX.52; difference=0
+OK: far.1.fiberY.52; difference=0
+OK: far.1.fiberArea.52; difference=0
+OK: far.1.fiberX.53; difference=0
+OK: far.1.fiberY.53; difference=0
+OK: far.1.fiberArea.53; difference=0
+OK: far.1.fiberX.54; difference=0
+OK: far.1.fiberY.54; difference=0
+OK: far.1.fiberArea.54; difference=0
+OK: far.1.fiberX.55; difference=0
+OK: far.1.fiberY.55; difference=0
+OK: far.1.fiberArea.55; difference=0
+OK: far.1.fiberX.56; difference=0
+OK: far.1.fiberY.56; difference=0
+OK: far.1.fiberArea.56; difference=0
+OK: far.1.fiberX.57; difference=0
+OK: far.1.fiberY.57; difference=0
+OK: far.1.fiberArea.57; difference=0
+OK: far.1.fiberX.58; difference=0
+OK: far.1.fiberY.58; difference=0
+OK: far.1.fiberArea.58; difference=0
+OK: far.1.fiberX.59; difference=0
+OK: far.1.fiberY.59; difference=0
+OK: far.1.fiberArea.59; difference=0
+OK: far.1.fiberX.60; difference=0
+OK: far.1.fiberY.60; difference=0
+OK: far.1.fiberArea.60; difference=0
+OK: far.1.fiberX.61; difference=0
+OK: far.1.fiberY.61; difference=0
+OK: far.1.fiberArea.61; difference=0
+OK: far.1.fiberX.62; difference=0
+OK: far.1.fiberY.62; difference=0
+OK: far.1.fiberArea.62; difference=0
+OK: far.1.fiberX.63; difference=0
+OK: far.1.fiberY.63; difference=0
+OK: far.1.fiberArea.63; difference=0
+OK: far.1.fiberX.64; difference=0
+OK: far.1.fiberY.64; difference=0
+OK: far.1.fiberArea.64; difference=0
+OK: far.1.fiberX.65; difference=0
+OK: far.1.fiberY.65; difference=0
+OK: far.1.fiberArea.65; difference=0
+OK: far.1.fiberX.66; difference=0
+OK: far.1.fiberY.66; difference=0
+OK: far.1.fiberArea.66; difference=0
+OK: far.1.fiberX.67; difference=0
+OK: far.1.fiberY.67; difference=0
+OK: far.1.fiberArea.67; difference=0
+OK: far.1.fiberX.68; difference=0
+OK: far.1.fiberY.68; difference=0
+OK: far.1.fiberArea.68; difference=0
+OK: far.1.fiberX.69; difference=0
+OK: far.1.fiberY.69; difference=0
+OK: far.1.fiberArea.69; difference=0
+OK: far.1.fiberX.70; difference=0
+OK: far.1.fiberY.70; difference=0
+OK: far.1.fiberArea.70; difference=0
+OK: far.1.fiberX.71; difference=0
+OK: far.1.fiberY.71; difference=0
+OK: far.1.fiberArea.71; difference=0
+OK: far.1.fiberX.72; difference=0
+OK: far.1.fiberY.72; difference=0
+OK: far.1.fiberArea.72; difference=0
+OK: far.1.fiberX.73; difference=0
+OK: far.1.fiberY.73; difference=0
+OK: far.1.fiberArea.73; difference=0
+OK: far.1.fiberX.74; difference=0
+OK: far.1.fiberY.74; difference=0
+OK: far.1.fiberArea.74; difference=0
+OK: far.1.fiberX.75; difference=0
+OK: far.1.fiberY.75; difference=0
+OK: far.1.fiberArea.75; difference=0
+OK: far.1.fiberX.76; difference=0
+OK: far.1.fiberY.76; difference=0
+OK: far.1.fiberArea.76; difference=0
+OK: far.1.fiberX.77; difference=0
+OK: far.1.fiberY.77; difference=0
+OK: far.1.fiberArea.77; difference=0
+OK: far.1.fiberX.78; difference=0
+OK: far.1.fiberY.78; difference=0
+OK: far.1.fiberArea.78; difference=0
+OK: far.1.fiberX.79; difference=0
+OK: far.1.fiberY.79; difference=0
+OK: far.1.fiberArea.79; difference=0
+OK: far.1.fiberX.80; difference=0
+OK: far.1.fiberY.80; difference=0
+OK: far.1.fiberArea.80; difference=0
+OK: far.1.load1.equilibrium
+OK: far.1.load1.N; difference=9.31322574615479E-10
+OK: far.1.load1.Mx; difference=4.52995300292969E-05
+OK: far.1.load1.My; difference=4.52995300292969E-05
+OK: far.1.load1.noNumericalFailure
+OK: far.1.load1.centerStrain; difference=1.0842021724855E-19
+OK: far.1.load1.kx; difference=2.01589381066438E-23
+OK: far.1.load1.ky; difference=1.87683314415395E-20
+OK: far.1.load1.lambdaCrc; difference=0
+OK: far.1.load1.originalEpsilon0; difference=1.0842021724855E-19
+OK: far.1.load1.sameCrackStatus
+FAR_LOAD: far.1.load1; N=-4903325; Mx=0; My=0; formed=False; lambda=0; comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: far.1.load2.equilibrium
+OK: far.1.load2.N; difference=1.11758708953857E-08
+OK: far.1.load2.Mx; difference=5.42640686035156E-04
+OK: far.1.load2.My; difference=5.42640686035156E-04
+OK: far.1.load2.noNumericalFailure
+OK: far.1.load2.centerStrain; difference=2.60208521396521E-18
+OK: far.1.load2.kx; difference=7.50520679880494E-23
+OK: far.1.load2.ky; difference=2.65806212957822E-19
+OK: far.1.load2.lambdaCrc; difference=0
+OK: far.1.load2.originalEpsilon0; difference=2.60208521396521E-18
+OK: far.1.load2.sameCrackStatus
+FAR_LOAD: far.1.load2; N=-9806650; Mx=0; My=0; formed=False; lambda=0; comment=Путь λ*N увеличивает только центральное сжатие и не создает растяжения для образования нормальной трещины.
+OK: far.1.load3.equilibrium
+OK: far.1.load3.N; difference=5.82076609134674E-11
+OK: far.1.load3.Mx; difference=2.83122062683105E-06
+OK: far.1.load3.My; difference=2.83122062683105E-06
+OK: far.1.load3.noNumericalFailure
+OK: far.1.load3.centerStrain; difference=2.03287907341032E-20
+OK: far.1.load3.kx; difference=4.96308367531817E-24
+OK: far.1.load3.ky; difference=4.53294975679059E-22
+OK: far.1.load3.lambdaCrc; difference=6.3540284145347E-12
+OK: far.1.load3.originalEpsilon0; difference=0
+OK: far.1.load3.sameCrackStatus
+FAR_LOAD: far.1.load3; N=-200000; Mx=20000000; My=5000000; formed=False; lambda=15.8866927751257; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.1.load4.equilibrium
+OK: far.1.load4.N; difference=0
+OK: far.1.load4.Mx; difference=0
+OK: far.1.load4.My; difference=0
+OK: far.1.load4.noNumericalFailure
+OK: far.1.load4.centerStrain; difference=7.11507675693612E-20
+OK: far.1.load4.kx; difference=6.61744490042422E-24
+OK: far.1.load4.ky; difference=4.6983858793012E-22
+OK: far.1.load4.lambdaCrc; difference=2.38573960587019E-09
+OK: far.1.load4.originalEpsilon0; difference=0
+OK: far.1.load4.sameCrackStatus
+FAR_LOAD: far.1.load4; N=-200000; Mx=-5000000; My=20000000; formed=False; lambda=11.2824182841716; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.1.load5.equilibrium
+OK: far.1.load5.N; difference=0
+OK: far.1.load5.Mx; difference=0
+OK: far.1.load5.My; difference=0
+OK: far.1.load5.noNumericalFailure
+OK: far.1.load5.centerStrain; difference=5.59041745187838E-20
+OK: far.1.load5.kx; difference=1.65436122510606E-24
+OK: far.1.load5.ky; difference=1.310254090284E-21
+OK: far.1.load5.lambdaCrc; difference=1.30420119148766E-10
+OK: far.1.load5.originalEpsilon0; difference=0
+OK: far.1.load5.sameCrackStatus
+FAR_LOAD: far.1.load5; N=-100000; Mx=-15000000; My=-15000000; formed=False; lambda=10.9887372232008; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.1.load6.equilibrium
+OK: far.1.load6.N; difference=2.18278728425503E-11
+OK: far.1.load6.Mx; difference=1.06170773506165E-06
+OK: far.1.load6.My; difference=1.06170773506165E-06
+OK: far.1.load6.noNumericalFailure
+OK: far.1.load6.centerStrain; difference=9.3173624197973E-21
+OK: far.1.load6.kx; difference=0
+OK: far.1.load6.ky; difference=6.57608586979657E-23
+OK: far.1.load6.lambdaCrc; difference=2.32114416576223E-09
+OK: far.1.load6.originalEpsilon0; difference=0
+OK: far.1.load6.sameCrackStatus
+FAR_LOAD: far.1.load6; N=50000; Mx=10000000; My=-2000000; formed=False; lambda=28.1635865102785; comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: far.1.load6.savedContours.count
+OK: far.1.load6.savedContours.id.1
+OK: far.1.load6.savedContours.context.1
+OK: far.1.load6.savedContours.type.1
+OK: far.1.load6.savedContours.geometry.1
+OK: far.1.load6.savedContours.id.2
+OK: far.1.load6.savedContours.context.2
+OK: far.1.load6.savedContours.type.2
+OK: far.1.load6.savedContours.geometry.2
+OK: far.1.load6.savedContours.id.3
+OK: far.1.load6.savedContours.context.3
+OK: far.1.load6.savedContours.type.3
+OK: far.1.load6.savedContours.geometry.3
+OK: far.1.load6.savedContours.id.4
+OK: far.1.load6.savedContours.context.4
+OK: far.1.load6.savedContours.type.4
+OK: far.1.load6.savedContours.geometry.4
+OK: far.1.load6.savedContours.id.5
+OK: far.1.load6.savedContours.context.5
+OK: far.1.load6.savedContours.type.5
+OK: far.1.load6.savedContours.geometry.5
+OK: far.1.load6.savedContours.id.6
+OK: far.1.load6.savedContours.context.6
+OK: far.1.load6.savedContours.type.6
+OK: far.1.load6.savedContours.geometry.6
+OK: far.1.load6.savedContours.id.7
+OK: far.1.load6.savedContours.context.7
+OK: far.1.load6.savedContours.type.7
+OK: far.1.load6.savedContours.geometry.7
+OK: far.1.load6.savedContours.id.8
+OK: far.1.load6.savedContours.context.8
+OK: far.1.load6.savedContours.type.8
+OK: far.1.load6.savedContours.geometry.8
+OK: far.1.load6.savedContours.id.9
+OK: far.1.load6.savedContours.context.9
+OK: far.1.load6.savedContours.type.9
+OK: far.1.load6.savedContours.geometry.9
+OK: far.1.load6.savedContours.id.10
+OK: far.1.load6.savedContours.context.10
+OK: far.1.load6.savedContours.type.10
+OK: far.1.load6.savedContours.geometry.10
+OK: far.1.load6.savedContours.id.11
+OK: far.1.load6.savedContours.context.11
+OK: far.1.load6.savedContours.type.11
+OK: far.1.load6.savedContours.geometry.11
+OK: far.1.load6.savedContours.id.12
+OK: far.1.load6.savedContours.context.12
+OK: far.1.load6.savedContours.type.12
+OK: far.1.load6.savedContours.geometry.12
+OK: far.1.load6.savedOriginalX; difference=0
+OK: far.1.load6.savedOriginalY; difference=0
+TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=447; failed=0

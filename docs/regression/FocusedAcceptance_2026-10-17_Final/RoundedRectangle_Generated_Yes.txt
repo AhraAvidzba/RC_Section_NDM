@@ -1,0 +1,846 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FocusedAcceptance_2026-10-17_Final\Probe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 5CF7A7EF759A0C4F38C7F106ECF92C89EDF0BF4EAF55A7008F268061AB7C24CB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_eead897c76774b8fbdd7fb3780a9aa5a\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=30760; startTicks=639278224019286501
+===== modTestBatchCalculation.RunFocusedAcceptanceCases =====
+SUITE_STARTED: modTestBatchCalculation.RunFocusedAcceptanceCases; 2026-10-17T11:26:47
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=30760; workingSet=166760448; privateBytes=116703232; cpu=13.703125
+FOCUSED_SETUP|shape=RoundedRectangle|group=Generated|mode=Yes|cases=8|fibers=88|rebars=26|offsetX=10|offsetY=-7|profile=PR3|code=SP35
+OK: focused.RoundedRectangle.axialSmall-1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=axialSmall-1|elapsedSec=3.53515625|solverCalls=3
+OK: focused.RoundedRectangle.axialSmall-1.oneCombination
+OK: focused.RoundedRectangle.axialSmall-1.preparationReleased
+OK: focused.RoundedRectangle.axialSmall-1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.axialSmall-1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=axialSmall-1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.axialSmall-1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.axialSmall-1.direct.russianReason
+OK: audit03.comments.axialSmall-1.direct.readable
+OK: audit03.comments.axialSmall-1.direct.noMachinePrefix
+META: audit03.comments.axialSmall-1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.axialSmall-1.capacity.russianReason
+OK: audit03.comments.axialSmall-1.capacity.readable
+OK: audit03.comments.axialSmall-1.capacity.noMachinePrefix
+META: audit03.comments.axialSmall-1.formation|status=rsSuccessWithWarning|code=CRACK_NOT_FORMED|applies=True|calculated=True|comment=При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 31.279258922153; отдельная точка трещинообразования на этом пути не определяется.
+OK: audit03.comments.axialSmall-1.formation.reasonPresent
+OK: audit03.comments.axialSmall-1.formation.russianReason
+OK: audit03.comments.axialSmall-1.formation.readable
+OK: audit03.comments.axialSmall-1.formation.noMachinePrefix
+OK: audit03.comments.axialSmall-1.formation.ownSubtree
+META: audit03.comments.axialSmall-1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.axialSmall-1.current.russianReason
+OK: audit03.comments.axialSmall-1.current.readable
+OK: audit03.comments.axialSmall-1.current.noMachinePrefix
+META: audit03.comments.axialSmall-1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 31.279258922153; отдельная точка трещинообразования на этом пути не определяется.
+OK: audit03.comments.axialSmall-1.width.russianReason
+OK: audit03.comments.axialSmall-1.width.readable
+OK: audit03.comments.axialSmall-1.width.noMachinePrefix
+META: audit03.comments.axialSmall-1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.931 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.axialSmall-1.longitudinal.russianReason
+OK: audit03.comments.axialSmall-1.longitudinal.readable
+OK: audit03.comments.axialSmall-1.longitudinal.noMachinePrefix
+META: audit03.comments.axialSmall-1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.axialSmall-1.formulaNoNumFail
+OK: audit03.comments.axialSmall-1.formationWarningPreserved
+OK: audit03.comments.axialSmall-1.strengthNoCrack
+OK: audit03.comments.axialSmall-1.crackNoCapacity
+OK: audit03.comments.axialSmall-1.overallComposition
+OK: audit03.comments.axialSmall-1.batchOutput
+OK: audit03.comments.axialSmall-1.strengthOutput
+OK: audit03.comments.axialSmall-1.crackOutput
+OK: audit03.comments.axialSmall-1.stabilityOutput
+OUTPUT: audit03.comments.axialSmall-1|strength=|crack=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 31.279258922153; отдельная точка трещинообразования на этом пути не определяется.|stability=|batch=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 31.279258922153; отдельная точка трещинообразования на этом пути не определяется.
+CASE: focused.RoundedRectangle.axialSmall-1|N=-365932.712290139|Mx=0|My=0|offsetX=10|offsetY=-7|path=N|selection=Auto|lambda=25.991108663014|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.axialSmall-1.path
+OK: focused.RoundedRectangle.axialSmall-1.validInput
+OK: focused.RoundedRectangle.axialSmall-1.NU; actual=-9510996.88848461; expected=-9510996.88848461
+OK: focused.RoundedRectangle.axialSmall-1.MxU; actual=73.114093625918; expected=0.
+OK: focused.RoundedRectangle.axialSmall-1.MyU; actual=-2.105805469881; expected=0.
+OK: focused.RoundedRectangle.axialSmall-1.stateMx; actual=66577051.3334859; expected=66576978.2193922
+OK: focused.RoundedRectangle.axialSmall-1.stateMy; actual=-478792231.832928; expected=-478792229.727123
+OK: focused.RoundedRectangle.axialSmall-1.physicalCriterion
+OK: focused.RoundedRectangle.axialSmall-1.finalPhysical
+CASE: focused.RoundedRectangle.axialSmall-1|requested=Auto|resolved=λ*N|lambda=0.|Ncrc=0.|Mcrc=0.|point=False|formed=False
+OK: focused.RoundedRectangle.axialSmall-1.validInput
+OK: focused.RoundedRectangle.axialSmall-1.autoPath
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall-1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:C162240A9C6E7745|Mx=F64:418FBF1291C150B8|My=F64:C1BC89CA25BA24B8|eps0=F64:BF60ED31F345C08D|kx=F64:3EE22BD23874FF34|ky=F64:BEB6650C0B3563DC
+OK: focused.RoundedRectangle.axialSmall-1.snapshot.1
+OK: focused.RoundedRectangle.axialSmall-1.originalN.1; actual=-9510996.88848461; expected=-9510996.88848461
+OK: focused.RoundedRectangle.axialSmall-1.originalMx.1; actual=66577051.3334859; expected=66576978.2193922
+OK: focused.RoundedRectangle.axialSmall-1.originalMy.1; actual=-478792231.832928; expected=-478792229.727123
+OK: focused.RoundedRectangle.axialSmall-1.centerN.1; actual=-9510996.88848461; expected=-9510996.88848461
+OK: focused.RoundedRectangle.axialSmall-1.centerMx.1; actual=66577051.3334859; expected=66576978.2193922
+OK: focused.RoundedRectangle.axialSmall-1.centerMy.1; actual=-95109970.9906515; expected=-95109968.884846
+OK: focused.RoundedRectangle.axialSmall-1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall-1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:C11655B2D9629617|Mx=F64:41438AFC7E364354|My=F64:C17191689671D183|eps0=F64:BF01E176ABF1FD02|kx=F64:3E6A051AA49BB1F8|ky=F64:BE3EA9A9E3FB6E2B
+OK: focused.RoundedRectangle.axialSmall-1.snapshot.2
+OK: focused.RoundedRectangle.axialSmall-1.originalN.2; actual=-365932.71229014; expected=-365932.712290139
+OK: focused.RoundedRectangle.axialSmall-1.originalMx.2; actual=2561528.98603098; expected=2561528.98603098
+OK: focused.RoundedRectangle.axialSmall-1.originalMy.2; actual=-18421385.4027877; expected=-18421385.4027877
+OK: focused.RoundedRectangle.axialSmall-1.centerN.2; actual=-365932.71229014; expected=-365932.712290139
+OK: focused.RoundedRectangle.axialSmall-1.centerMx.2; actual=2561528.98603098; expected=2561528.98603098
+OK: focused.RoundedRectangle.axialSmall-1.centerMy.2; actual=-3659327.12290139; expected=-3659327.12290139
+OK: focused.RoundedRectangle.axialSmall-1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall-1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:C11655B2D9629617|Mx=F64:41438AFC7E364354|My=F64:C17191689671D183|eps0=F64:BF0AD169A884485C|kx=F64:3E7352264B0B12C8|ky=F64:BE4A05BB7E6CA7CF
+OK: focused.RoundedRectangle.axialSmall-1.snapshot.3
+OK: focused.RoundedRectangle.axialSmall-1.originalN.3; actual=-365932.71229014; expected=-365932.712290139
+OK: focused.RoundedRectangle.axialSmall-1.originalMx.3; actual=2561528.98603097; expected=2561528.98603098
+OK: focused.RoundedRectangle.axialSmall-1.originalMy.3; actual=-18421385.4027877; expected=-18421385.4027877
+OK: focused.RoundedRectangle.axialSmall-1.centerN.3; actual=-365932.71229014; expected=-365932.712290139
+OK: focused.RoundedRectangle.axialSmall-1.centerMx.3; actual=2561528.98603097; expected=2561528.98603098
+OK: focused.RoundedRectangle.axialSmall-1.centerMy.3; actual=-3659327.12290139; expected=-3659327.12290139
+OK: focused.RoundedRectangle.axialSmall-1.physicalStatus.3
+FOCUSED_COMPARE|id=axialSmall-1|path=LambdaN|meta1=4:4|meta2=4:4|meta3=9:17|meta1=4:4|meta4=2:17|meta5=4:4|meta3=9:17|number0=25.9911086630144|number1=-9510996.88848461|number2=73.114093625918|number3=-2.10580546988058|number4=0|number5=0|number6=0|number7=0|number8=0|number9=0|number10=6.37888438641326E-02|number11=6.37888438641326E-02
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.axialSmall-1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.axialSmall-1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.axialSmall-1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=axialSmall-1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.Mx-1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=Mx-1|elapsedSec=0.8671875|solverCalls=2
+OK: focused.RoundedRectangle.Mx-1.oneCombination
+OK: focused.RoundedRectangle.Mx-1.preparationReleased
+OK: focused.RoundedRectangle.Mx-1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.Mx-1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=Mx-1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.Mx-1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.Mx-1.direct.russianReason
+OK: audit03.comments.Mx-1.direct.readable
+OK: audit03.comments.Mx-1.direct.noMachinePrefix
+META: audit03.comments.Mx-1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.Mx-1.capacity.russianReason
+OK: audit03.comments.Mx-1.capacity.readable
+OK: audit03.comments.Mx-1.capacity.noMachinePrefix
+META: audit03.comments.Mx-1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.Mx-1.formation.russianReason
+OK: audit03.comments.Mx-1.formation.readable
+OK: audit03.comments.Mx-1.formation.noMachinePrefix
+META: audit03.comments.Mx-1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.Mx-1.current.russianReason
+OK: audit03.comments.Mx-1.current.readable
+OK: audit03.comments.Mx-1.current.noMachinePrefix
+META: audit03.comments.Mx-1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.Mx-1.width.russianReason
+OK: audit03.comments.Mx-1.width.readable
+OK: audit03.comments.Mx-1.width.noMachinePrefix
+META: audit03.comments.Mx-1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.614 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.Mx-1.longitudinal.russianReason
+OK: audit03.comments.Mx-1.longitudinal.readable
+OK: audit03.comments.Mx-1.longitudinal.noMachinePrefix
+META: audit03.comments.Mx-1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.Mx-1.formulaNoNumFail
+OK: audit03.comments.Mx-1.strengthNoCrack
+OK: audit03.comments.Mx-1.crackNoCapacity
+OK: audit03.comments.Mx-1.overallComposition
+OK: audit03.comments.Mx-1.batchOutput
+OK: audit03.comments.Mx-1.strengthOutput
+OK: audit03.comments.Mx-1.crackOutput
+OK: audit03.comments.Mx-1.stabilityOutput
+OUTPUT: audit03.comments.Mx-1|strength=|crack=|stability=|batch=
+CASE: focused.RoundedRectangle.Mx-1|N=0|Mx=-13410817.8072535|My=0|offsetX=10|offsetY=-7|path=Mx|selection=Auto|lambda=40.626546604528|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.Mx-1.path
+OK: focused.RoundedRectangle.Mx-1.validInput
+OK: focused.RoundedRectangle.Mx-1.NU; actual=0.081411104009; expected=0.
+OK: focused.RoundedRectangle.Mx-1.MxU; actual=-544835214.081334; expected=-544835214.651212
+OK: focused.RoundedRectangle.Mx-1.MyU; actual=-33.765559809086; expected=0.
+OK: focused.RoundedRectangle.Mx-1.stateMx; actual=-544835214.651212; expected=-544835214.651212
+OK: focused.RoundedRectangle.Mx-1.stateMy; actual=-29.667250823177; expected=0.
+OK: focused.RoundedRectangle.Mx-1.physicalCriterion
+OK: focused.RoundedRectangle.Mx-1.finalPhysical
+CASE: focused.RoundedRectangle.Mx-1|requested=Auto|resolved=λ*Mx|lambda=4.271202315494|Ncrc=0.|Mcrc=57280316.0710138|point=True|formed=False
+OK: focused.RoundedRectangle.Mx-1.validInput
+OK: focused.RoundedRectangle.Mx-1.autoPath
+OK: focused.RoundedRectangle.Mx-1.preConverged
+OK: focused.RoundedRectangle.Mx-1.prePhysical
+OK: focused.RoundedRectangle.Mx-1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx-1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:C1C03CC347535AEC|My=F64:0000000000000000|eps0=F64:3F5687DC5DD4F6E4|kx=F64:BF095EECC6345E10|ky=F64:3E79D1B872862E47
+OK: focused.RoundedRectangle.Mx-1.snapshot.1
+OK: focused.RoundedRectangle.Mx-1.originalN.1; actual=0.081411104009; expected=0.
+OK: focused.RoundedRectangle.Mx-1.originalMx.1; actual=-544835214.651212; expected=-544835214.651212
+OK: focused.RoundedRectangle.Mx-1.originalMy.1; actual=-29.667250823177; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerN.1; actual=0.081411104009; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerMx.1; actual=-544835214.651212; expected=-544835214.651212
+OK: focused.RoundedRectangle.Mx-1.centerMy.1; actual=-32.951448768996; expected=0.
+OK: focused.RoundedRectangle.Mx-1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx-1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:C169944039D50542|My=F64:0000000000000000|eps0=F64:3EE8D281FF039ADE|kx=F64:BE9C4B607D57B17F|ky=F64:3E0C3AC0BA730BC8
+OK: focused.RoundedRectangle.Mx-1.snapshot.2
+OK: focused.RoundedRectangle.Mx-1.originalN.2; actual=-0.000000000031; expected=0.
+OK: focused.RoundedRectangle.Mx-1.originalMx.2; actual=-13410817.8072535; expected=-13410817.8072535
+OK: focused.RoundedRectangle.Mx-1.originalMy.2; actual=-0.00000000251; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerN.2; actual=-0.000000000031; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerMx.2; actual=-13410817.8072535; expected=-13410817.8072535
+OK: focused.RoundedRectangle.Mx-1.centerMy.2; actual=-0.000000001262; expected=0.
+OK: focused.RoundedRectangle.Mx-1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx-1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:C18B5039E0916FAF|My=F64:0000000000000000|eps0=F64:3EEF894A9346CAC1|kx=F64:BEB69ECBF76D8EA7|ky=F64:BDF8B5339BF3D008
+OK: focused.RoundedRectangle.Mx-1.snapshot.3
+OK: focused.RoundedRectangle.Mx-1.originalN.3; actual=0.000128066366; expected=0.
+OK: focused.RoundedRectangle.Mx-1.originalMx.3; actual=-57280316.0710138; expected=-57280316.0710138
+OK: focused.RoundedRectangle.Mx-1.originalMy.3; actual=-0.04802481431; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerN.3; actual=0.000128066366; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerMx.3; actual=-57280316.0710138; expected=-57280316.0710138
+OK: focused.RoundedRectangle.Mx-1.centerMy.3; actual=-0.053191127919; expected=0.
+OK: focused.RoundedRectangle.Mx-1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx-1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:C169944039D50542|My=F64:0000000000000000|eps0=F64:3EE08D8D870EF6AA|kx=F64:BEA096F80AAFBECF|ky=F64:3E09F31CFCD9C876
+OK: focused.RoundedRectangle.Mx-1.snapshot.4
+OK: focused.RoundedRectangle.Mx-1.originalN.4; actual=0.00000000002; expected=0.
+OK: focused.RoundedRectangle.Mx-1.originalMx.4; actual=-13410817.8072535; expected=-13410817.8072535
+OK: focused.RoundedRectangle.Mx-1.originalMy.4; actual=0.000000000919; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerN.4; actual=0.00000000002; expected=0.
+OK: focused.RoundedRectangle.Mx-1.centerMx.4; actual=-13410817.8072535; expected=-13410817.8072535
+OK: focused.RoundedRectangle.Mx-1.centerMy.4; actual=0.000000000112; expected=0.
+OK: focused.RoundedRectangle.Mx-1.physicalStatus.4
+FOCUSED_COMPARE|id=Mx-1|path=LambdaMx|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=4:4|meta1=4:4|number0=40.6265466045276|number1=8.14111040090211E-02|number2=-544835214.081334|number3=-33.765559809086|number4=4.27120231549434|number5=0|number6=57280316.0710138|number7=0|number8=0|number9=0|number10=4.20223918575364E-02|number11=4.20223918575364E-02
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.Mx-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.Mx-1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.Mx-1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=Mx-1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.My-1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=My-1|elapsedSec=0.87890625|solverCalls=2
+OK: focused.RoundedRectangle.My-1.oneCombination
+OK: focused.RoundedRectangle.My-1.preparationReleased
+OK: focused.RoundedRectangle.My-1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.My-1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=My-1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.My-1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.My-1.direct.russianReason
+OK: audit03.comments.My-1.direct.readable
+OK: audit03.comments.My-1.direct.noMachinePrefix
+META: audit03.comments.My-1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.My-1.capacity.russianReason
+OK: audit03.comments.My-1.capacity.readable
+OK: audit03.comments.My-1.capacity.noMachinePrefix
+META: audit03.comments.My-1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.My-1.formation.russianReason
+OK: audit03.comments.My-1.formation.readable
+OK: audit03.comments.My-1.formation.noMachinePrefix
+META: audit03.comments.My-1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.My-1.current.russianReason
+OK: audit03.comments.My-1.current.readable
+OK: audit03.comments.My-1.current.noMachinePrefix
+META: audit03.comments.My-1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.My-1.width.russianReason
+OK: audit03.comments.My-1.width.readable
+OK: audit03.comments.My-1.width.noMachinePrefix
+META: audit03.comments.My-1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.563 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.My-1.longitudinal.russianReason
+OK: audit03.comments.My-1.longitudinal.readable
+OK: audit03.comments.My-1.longitudinal.noMachinePrefix
+META: audit03.comments.My-1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.My-1.formulaNoNumFail
+OK: audit03.comments.My-1.strengthNoCrack
+OK: audit03.comments.My-1.crackNoCapacity
+OK: audit03.comments.My-1.overallComposition
+OK: audit03.comments.My-1.batchOutput
+OK: audit03.comments.My-1.strengthOutput
+OK: audit03.comments.My-1.crackOutput
+OK: audit03.comments.My-1.stabilityOutput
+OUTPUT: audit03.comments.My-1|strength=|crack=|stability=|batch=
+CASE: focused.RoundedRectangle.My-1|N=0|Mx=0|My=-48278944.1061125|offsetX=10|offsetY=-7|path=My|selection=Auto|lambda=47.47738596665|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.My-1.path
+OK: focused.RoundedRectangle.My-1.validInput
+OK: focused.RoundedRectangle.My-1.NU; actual=-0.000002246758; expected=0.
+OK: focused.RoundedRectangle.My-1.MxU; actual=0.000097033296; expected=0.
+OK: focused.RoundedRectangle.My-1.MyU; actual=-2292158063.38819; expected=-2292158063.38821
+OK: focused.RoundedRectangle.My-1.stateMx; actual=0.000112760598; expected=0.
+OK: focused.RoundedRectangle.My-1.stateMy; actual=-2292158063.3883; expected=-2292158063.38821
+OK: focused.RoundedRectangle.My-1.physicalCriterion
+OK: focused.RoundedRectangle.My-1.finalPhysical
+CASE: focused.RoundedRectangle.My-1|requested=Auto|resolved=λ*My|lambda=4.911589756114|Ncrc=0.|Mcrc=237126367.307574|point=True|formed=False
+OK: focused.RoundedRectangle.My-1.validInput
+OK: focused.RoundedRectangle.My-1.autoPath
+OK: focused.RoundedRectangle.My-1.preConverged
+OK: focused.RoundedRectangle.My-1.prePhysical
+OK: focused.RoundedRectangle.My-1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.My-1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:C1E113F1CDEC6C39|eps0=F64:3F5235959E983550|kx=F64:3C65C59FE44F2000|ky=F64:BEE45C10B5541358
+OK: focused.RoundedRectangle.My-1.snapshot.1
+OK: focused.RoundedRectangle.My-1.originalN.1; actual=-0.000002247223; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMx.1; actual=0.000112760598; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMy.1; actual=-2292158063.3883; expected=-2292158063.38821
+OK: focused.RoundedRectangle.My-1.centerN.1; actual=-0.000002247223; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMx.1; actual=0.000112760598; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMy.1; actual=-2292158063.38821; expected=-2292158063.38821
+OK: focused.RoundedRectangle.My-1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.My-1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:C187056D00D95187|eps0=F64:3EE734AA8269F049|kx=F64:BAE88C45F4186026|ky=F64:BE7734459C02BEB3
+OK: focused.RoundedRectangle.My-1.snapshot.2
+OK: focused.RoundedRectangle.My-1.originalN.2; actual=0.000000000003; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMx.2; actual=-0.000000000002; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMy.2; actual=-48278944.1061125; expected=-48278944.1061125
+OK: focused.RoundedRectangle.My-1.centerN.2; actual=0.000000000003; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMx.2; actual=-0.000000000002; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMy.2; actual=-48278944.1061125; expected=-48278944.1061125
+OK: focused.RoundedRectangle.My-1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.My-1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:C1AC4485BE9D7A5E|eps0=F64:3EF7E91C4869A63D|kx=F64:3C200571EB51B800|ky=F64:BE96C34734F2FC36
+OK: focused.RoundedRectangle.My-1.snapshot.3
+OK: focused.RoundedRectangle.My-1.originalN.3; actual=0.02773463775; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMx.3; actual=0.000018589166; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMy.3; actual=-237126366.188734; expected=-237126367.307574
+OK: focused.RoundedRectangle.My-1.centerN.3; actual=0.02773463775; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMx.3; actual=0.000018589166; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMy.3; actual=-237126367.307574; expected=-237126367.307574
+OK: focused.RoundedRectangle.My-1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.My-1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:C187056D00D95187|eps0=F64:3EE135DA5563C2D5|kx=F64:BB36FEA44E60DAC2|ky=F64:BE7A58AE148C2D2C
+OK: focused.RoundedRectangle.My-1.snapshot.4
+OK: focused.RoundedRectangle.My-1.originalN.4; actual=0.000000000011; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMx.4; actual=-0.00000000038; expected=0.
+OK: focused.RoundedRectangle.My-1.originalMy.4; actual=-48278944.1061125; expected=-48278944.1061125
+OK: focused.RoundedRectangle.My-1.centerN.4; actual=0.000000000011; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMx.4; actual=-0.00000000038; expected=0.
+OK: focused.RoundedRectangle.My-1.centerMy.4; actual=-48278944.1061125; expected=-48278944.1061125
+OK: focused.RoundedRectangle.My-1.physicalStatus.4
+FOCUSED_COMPARE|id=My-1|path=LambdaMy|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=4:4|meta1=4:4|number0=47.4773859666497|number1=-2.24675750359893E-06|number2=9.70332957876963E-05|number3=-2292158063.38819|number4=4.91158975611382|number5=0|number6=237126367.307574|number7=0|number8=0|number9=0|number10=3.85891703701162E-02|number11=3.85891703701162E-02
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.My-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.My-1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.My-1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=My-1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.mixedT-1_1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=mixedT-1_1|elapsedSec=0.88671875|solverCalls=4
+OK: focused.RoundedRectangle.mixedT-1_1.oneCombination
+OK: focused.RoundedRectangle.mixedT-1_1.preparationReleased
+OK: focused.RoundedRectangle.mixedT-1_1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.mixedT-1_1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=mixedT-1_1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.mixedT-1_1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.mixedT-1_1.direct.russianReason
+OK: audit03.comments.mixedT-1_1.direct.readable
+OK: audit03.comments.mixedT-1_1.direct.noMachinePrefix
+META: audit03.comments.mixedT-1_1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.mixedT-1_1.capacity.russianReason
+OK: audit03.comments.mixedT-1_1.capacity.readable
+OK: audit03.comments.mixedT-1_1.capacity.noMachinePrefix
+META: audit03.comments.mixedT-1_1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.mixedT-1_1.formation.russianReason
+OK: audit03.comments.mixedT-1_1.formation.readable
+OK: audit03.comments.mixedT-1_1.formation.noMachinePrefix
+META: audit03.comments.mixedT-1_1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.mixedT-1_1.current.russianReason
+OK: audit03.comments.mixedT-1_1.current.readable
+OK: audit03.comments.mixedT-1_1.current.noMachinePrefix
+META: audit03.comments.mixedT-1_1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.mixedT-1_1.width.russianReason
+OK: audit03.comments.mixedT-1_1.width.readable
+OK: audit03.comments.mixedT-1_1.width.noMachinePrefix
+META: audit03.comments.mixedT-1_1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 1.052 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.mixedT-1_1.longitudinal.russianReason
+OK: audit03.comments.mixedT-1_1.longitudinal.readable
+OK: audit03.comments.mixedT-1_1.longitudinal.noMachinePrefix
+META: audit03.comments.mixedT-1_1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.mixedT-1_1.formulaNoNumFail
+OK: audit03.comments.mixedT-1_1.strengthNoCrack
+OK: audit03.comments.mixedT-1_1.crackNoCapacity
+OK: audit03.comments.mixedT-1_1.overallComposition
+OK: audit03.comments.mixedT-1_1.batchOutput
+OK: audit03.comments.mixedT-1_1.strengthOutput
+OK: audit03.comments.mixedT-1_1.crackOutput
+OK: audit03.comments.mixedT-1_1.stabilityOutput
+OUTPUT: audit03.comments.mixedT-1_1|strength=|crack=|stability=|batch=
+OK: focused.RoundedRectangle.mixedT-1_1.autoAllowedPath
+CASE: focused.RoundedRectangle.mixedT-1_1|N=365932.712290139|Mx=-22351363.0120891|My=48278944.1061125|offsetX=10|offsetY=-7|path=Mxy|selection=Auto|lambda=19.502044339935|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.mixedT-1_1.path
+OK: focused.RoundedRectangle.mixedT-1_1.validInput
+OK: focused.RoundedRectangle.mixedT-1_1.NU; actual=365932.798947788; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.MxU; actual=-435897283.107808; expected=-435897272.519745
+OK: focused.RoundedRectangle.mixedT-1_1.MyU; actual=941538102.593358; expected=941538108.64265
+OK: focused.RoundedRectangle.mixedT-1_1.stateMx; actual=-438458812.700443; expected=-438458801.505776
+OK: focused.RoundedRectangle.mixedT-1_1.stateMy; actual=959959492.35857; expected=959959494.045438
+OK: focused.RoundedRectangle.mixedT-1_1.physicalCriterion
+OK: focused.RoundedRectangle.mixedT-1_1.finalPhysical
+CASE: focused.RoundedRectangle.mixedT-1_1|requested=Auto|resolved=λ*Mxy|lambda=1.046984198384|Ncrc=365932.712290139|Mcrc=62002979.4232346|point=True|formed=False
+OK: focused.RoundedRectangle.mixedT-1_1.validInput
+OK: focused.RoundedRectangle.mixedT-1_1.autoPath
+OK: focused.RoundedRectangle.mixedT-1_1.preConverged
+OK: focused.RoundedRectangle.mixedT-1_1.prePhysical
+OK: focused.RoundedRectangle.mixedT-1_1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedT-1_1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:411655B2D9629617|Mx=F64:C1BA2259B1817A91|My=F64:41CC9BE8E305D0E7|eps0=F64:3F459B5444A358ED|kx=F64:BEFC7906B8E5C198|ky=F64:3ED026A7F227F164
+OK: focused.RoundedRectangle.mixedT-1_1.snapshot.1
+OK: focused.RoundedRectangle.mixedT-1_1.originalN.1; actual=365932.798947788; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.originalMx.1; actual=-438458812.700443; expected=-438458801.505776
+OK: focused.RoundedRectangle.mixedT-1_1.originalMy.1; actual=959959492.35857; expected=959959494.045438
+OK: focused.RoundedRectangle.mixedT-1_1.centerN.1; actual=365932.798947788; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.centerMx.1; actual=-438458812.700443; expected=-438458801.505776
+OK: focused.RoundedRectangle.mixedT-1_1.centerMy.1; actual=945197430.582835; expected=945197435.765551
+OK: focused.RoundedRectangle.mixedT-1_1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedT-1_1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:411655B2D9629617|Mx=F64:C177C23FBFF84CCD|My=F64:418FCE214C123A49|eps0=F64:3F17BF813F5836EC|kx=F64:BEB1920D8A41C44C|ky=F64:3E81044F9D447A38
+OK: focused.RoundedRectangle.mixedT-1_1.snapshot.2
+OK: focused.RoundedRectangle.mixedT-1_1.originalN.2; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.originalMx.2; actual=-24912891.9981201; expected=-24912891.9981201
+OK: focused.RoundedRectangle.mixedT-1_1.originalMy.2; actual=66700329.5089002; expected=66700329.5089002
+OK: focused.RoundedRectangle.mixedT-1_1.centerN.2; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.centerMx.2; actual=-24912891.9981201; expected=-24912891.9981201
+OK: focused.RoundedRectangle.mixedT-1_1.centerMy.2; actual=51938271.2290139; expected=51938271.2290139
+OK: focused.RoundedRectangle.mixedT-1_1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedT-1_1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:411655B2D9629617|Mx=F64:C178C2A2CDF3DE1E|My=F64:4190718393FC7AF9|eps0=F64:3F072E3F5ECB43E4|kx=F64:BEA687A2FEE4F2E7|ky=F64:3E78682EA08B7FFB
+OK: focused.RoundedRectangle.mixedT-1_1.snapshot.3
+OK: focused.RoundedRectangle.mixedT-1_1.originalN.3; actual=365932.705628056; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.originalMx.3; actual=-25963053.3922313; expected=-25963052.872038
+OK: focused.RoundedRectangle.mixedT-1_1.originalMy.3; actual=68968676.7278083; expected=68968676.9965629
+OK: focused.RoundedRectangle.mixedT-1_1.centerN.3; actual=365932.705628056; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.centerMx.3; actual=-25963053.3922313; expected=-25963052.872038
+OK: focused.RoundedRectangle.mixedT-1_1.centerMy.3; actual=54206618.7166765; expected=54206618.7166765
+OK: focused.RoundedRectangle.mixedT-1_1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedT-1_1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:411655B2D9629617|Mx=F64:C177C23FBFF84CCD|My=F64:418FCE214C123A49|eps0=F64:3F1710B2D757A3C5|kx=F64:BEB265156110B57D|ky=F64:3E81EB13A4F278CA
+OK: focused.RoundedRectangle.mixedT-1_1.snapshot.4
+OK: focused.RoundedRectangle.mixedT-1_1.originalN.4; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.originalMx.4; actual=-24912891.9981201; expected=-24912891.9981201
+OK: focused.RoundedRectangle.mixedT-1_1.originalMy.4; actual=66700329.5089002; expected=66700329.5089002
+OK: focused.RoundedRectangle.mixedT-1_1.centerN.4; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.mixedT-1_1.centerMx.4; actual=-24912891.9981201; expected=-24912891.9981201
+OK: focused.RoundedRectangle.mixedT-1_1.centerMy.4; actual=51938271.2290139; expected=51938271.2290139
+OK: focused.RoundedRectangle.mixedT-1_1.physicalStatus.4
+FOCUSED_COMPARE|id=mixedT-1_1|path=LambdaMxy|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=4:4|meta1=4:4|number0=19.502044339935|number1=365932.798947788|number2=-435897283.107808|number3=941538102.593358|number4=1.04698419838423|number5=0|number6=62002979.4232346|number7=0|number8=0|number9=0|number10=.072045572632623|number11=.072045572632623
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.mixedT-1_1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.mixedT-1_1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.mixedT-1_1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=mixedT-1_1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.axialSmall1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=axialSmall1|elapsedSec=0.8671875|solverCalls=2
+OK: focused.RoundedRectangle.axialSmall1.oneCombination
+OK: focused.RoundedRectangle.axialSmall1.preparationReleased
+OK: focused.RoundedRectangle.axialSmall1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.axialSmall1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=axialSmall1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.axialSmall1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.axialSmall1.direct.russianReason
+OK: audit03.comments.axialSmall1.direct.readable
+OK: audit03.comments.axialSmall1.direct.noMachinePrefix
+META: audit03.comments.axialSmall1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.axialSmall1.capacity.russianReason
+OK: audit03.comments.axialSmall1.capacity.readable
+OK: audit03.comments.axialSmall1.capacity.noMachinePrefix
+META: audit03.comments.axialSmall1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.axialSmall1.formation.russianReason
+OK: audit03.comments.axialSmall1.formation.readable
+OK: audit03.comments.axialSmall1.formation.noMachinePrefix
+META: audit03.comments.axialSmall1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.axialSmall1.current.russianReason
+OK: audit03.comments.axialSmall1.current.readable
+OK: audit03.comments.axialSmall1.current.noMachinePrefix
+META: audit03.comments.axialSmall1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.axialSmall1.width.russianReason
+OK: audit03.comments.axialSmall1.width.readable
+OK: audit03.comments.axialSmall1.width.noMachinePrefix
+META: audit03.comments.axialSmall1.longitudinal|status=rsNotApplicable|code=NOT_APPLICABLE|applies=False|calculated=False|comment=Сжатого бетона для проверки продольных трещин нет.
+OK: audit03.comments.axialSmall1.longitudinal.russianReason
+OK: audit03.comments.axialSmall1.longitudinal.readable
+OK: audit03.comments.axialSmall1.longitudinal.noMachinePrefix
+META: audit03.comments.axialSmall1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.axialSmall1.formulaNoNumFail
+OK: audit03.comments.axialSmall1.strengthNoCrack
+OK: audit03.comments.axialSmall1.crackNoCapacity
+OK: audit03.comments.axialSmall1.overallComposition
+OK: audit03.comments.axialSmall1.batchOutput
+OK: audit03.comments.axialSmall1.strengthOutput
+OK: audit03.comments.axialSmall1.crackOutput
+OK: audit03.comments.axialSmall1.stabilityOutput
+OUTPUT: audit03.comments.axialSmall1|strength=|crack=|stability=|batch=
+CASE: focused.RoundedRectangle.axialSmall1|N=365932.712290139|Mx=0|My=0|offsetX=10|offsetY=-7|path=N|selection=Auto|lambda=18.701195626161|method=UltimateStrain|limit=SteelStrainLimit|status=OK
+OK: focused.RoundedRectangle.axialSmall1.path
+OK: focused.RoundedRectangle.axialSmall1.validInput
+OK: focused.RoundedRectangle.axialSmall1.NU; actual=6843379.2385497; expected=6843379.2385497
+OK: focused.RoundedRectangle.axialSmall1.MxU; actual=2.020964821801; expected=0.
+OK: focused.RoundedRectangle.axialSmall1.MyU; actual=-8.684379742073; expected=0.
+OK: focused.RoundedRectangle.axialSmall1.stateMx; actual=-47903652.6488831; expected=-47903654.6698479
+OK: focused.RoundedRectangle.axialSmall1.stateMy; actual=344501923.438066; expected=344501932.122445
+OK: focused.RoundedRectangle.axialSmall1.physicalCriterion
+OK: focused.RoundedRectangle.axialSmall1.finalPhysical
+CASE: focused.RoundedRectangle.axialSmall1|requested=Auto|resolved=λ*N|lambda=2.005929316778|Ncrc=734035.155550899|Mcrc=12641549.0625179|point=True|formed=False
+OK: focused.RoundedRectangle.axialSmall1.validInput
+OK: focused.RoundedRectangle.axialSmall1.autoPath
+OK: focused.RoundedRectangle.axialSmall1.preConverged
+OK: focused.RoundedRectangle.axialSmall1.prePhysical
+OK: focused.RoundedRectangle.axialSmall1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:415A1AFCCF4465FA|Mx=F64:C186D79D355BD93A|My=F64:41B488AEAC1F5893|eps0=F64:3F892424F00DA734|kx=F64:BF19CB6F64644128|ky=F64:3EE7B7E5570E8382
+OK: focused.RoundedRectangle.axialSmall1.snapshot.1
+OK: focused.RoundedRectangle.axialSmall1.originalN.1; actual=6843379.2385497; expected=6843379.2385497
+OK: focused.RoundedRectangle.axialSmall1.originalMx.1; actual=-47903652.6488831; expected=-47903654.6698479
+OK: focused.RoundedRectangle.axialSmall1.originalMy.1; actual=344501923.438066; expected=344501932.122445
+OK: focused.RoundedRectangle.axialSmall1.centerN.1; actual=6843379.2385497; expected=6843379.2385497
+OK: focused.RoundedRectangle.axialSmall1.centerMx.1; actual=-47903652.6488831; expected=-47903654.6698479
+OK: focused.RoundedRectangle.axialSmall1.centerMy.1; actual=68433783.7011173; expected=68433792.385497
+OK: focused.RoundedRectangle.axialSmall1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:411655B2D9629617|Mx=F64:C1438AFC7E364354|My=F64:417191689671D183|eps0=F64:3F16CA6E442E3070|kx=F64:BE8012930879AA34|ky=F64:3E5A45087EB4A6F8
+OK: focused.RoundedRectangle.axialSmall1.snapshot.2
+OK: focused.RoundedRectangle.axialSmall1.originalN.2; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.axialSmall1.originalMx.2; actual=-2561528.98603097; expected=-2561528.98603098
+OK: focused.RoundedRectangle.axialSmall1.originalMy.2; actual=18421385.4027877; expected=18421385.4027877
+OK: focused.RoundedRectangle.axialSmall1.centerN.2; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.axialSmall1.centerMx.2; actual=-2561528.98603097; expected=-2561528.98603098
+OK: focused.RoundedRectangle.axialSmall1.centerMy.2; actual=3659327.1229014; expected=3659327.12290139
+OK: focused.RoundedRectangle.axialSmall1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:412666A64FA45E13|Mx=F64:C15399D185AFD250|My=F64:41819EBDE847EC8A|eps0=F64:3F18926122162106|kx=F64:BE885E6C7B502F4B|ky=F64:3E5D9EE1FDCA86CA
+OK: focused.RoundedRectangle.axialSmall1.snapshot.3
+OK: focused.RoundedRectangle.axialSmall1.originalN.3; actual=734035.155550899; expected=734035.155550899
+OK: focused.RoundedRectangle.axialSmall1.originalMx.3; actual=-5138246.08885631; expected=-5138246.08885629
+OK: focused.RoundedRectangle.axialSmall1.originalMy.3; actual=36951997.0351191; expected=36951997.0351191
+OK: focused.RoundedRectangle.axialSmall1.centerN.3; actual=734035.155550899; expected=734035.155550899
+OK: focused.RoundedRectangle.axialSmall1.centerMx.3; actual=-5138246.08885631; expected=-5138246.08885629
+OK: focused.RoundedRectangle.axialSmall1.centerMy.3; actual=7340351.55550901; expected=7340351.55550899
+OK: focused.RoundedRectangle.axialSmall1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.axialSmall1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:411655B2D9629617|Mx=F64:C1438AFC7E364354|My=F64:417191689671D183|eps0=F64:3F16CA6E442E306F|kx=F64:BE8012930879AA35|ky=F64:3E5A45087EB4A6F6
+OK: focused.RoundedRectangle.axialSmall1.snapshot.4
+OK: focused.RoundedRectangle.axialSmall1.originalN.4; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.axialSmall1.originalMx.4; actual=-2561528.98603098; expected=-2561528.98603098
+OK: focused.RoundedRectangle.axialSmall1.originalMy.4; actual=18421385.4027877; expected=18421385.4027877
+OK: focused.RoundedRectangle.axialSmall1.centerN.4; actual=365932.712290139; expected=365932.712290139
+OK: focused.RoundedRectangle.axialSmall1.centerMx.4; actual=-2561528.98603098; expected=-2561528.98603098
+OK: focused.RoundedRectangle.axialSmall1.centerMy.4; actual=3659327.12290139; expected=3659327.12290139
+OK: focused.RoundedRectangle.axialSmall1.physicalStatus.4
+FOCUSED_COMPARE|id=axialSmall1|path=LambdaN|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=2:2|meta1=4:4|number0=18.7011956261613|number1=6843379.2385497|number2=2.02096482180059|number3=-8.68437974207336|number4=2.00592931677805|number5=0|number6=12641549.0625179|number7=0|number8=0|number9=0|number10=0|number11=5.34725169443759E-02
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.axialSmall1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.axialSmall1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.axialSmall1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=axialSmall1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.Mx1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=Mx1|elapsedSec=0.8828125|solverCalls=2
+OK: focused.RoundedRectangle.Mx1.oneCombination
+OK: focused.RoundedRectangle.Mx1.preparationReleased
+OK: focused.RoundedRectangle.Mx1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.Mx1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=Mx1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.Mx1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.Mx1.direct.russianReason
+OK: audit03.comments.Mx1.direct.readable
+OK: audit03.comments.Mx1.direct.noMachinePrefix
+META: audit03.comments.Mx1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.Mx1.capacity.russianReason
+OK: audit03.comments.Mx1.capacity.readable
+OK: audit03.comments.Mx1.capacity.noMachinePrefix
+META: audit03.comments.Mx1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.Mx1.formation.russianReason
+OK: audit03.comments.Mx1.formation.readable
+OK: audit03.comments.Mx1.formation.noMachinePrefix
+META: audit03.comments.Mx1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.Mx1.current.russianReason
+OK: audit03.comments.Mx1.current.readable
+OK: audit03.comments.Mx1.current.noMachinePrefix
+META: audit03.comments.Mx1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.Mx1.width.russianReason
+OK: audit03.comments.Mx1.width.readable
+OK: audit03.comments.Mx1.width.noMachinePrefix
+META: audit03.comments.Mx1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.614 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.Mx1.longitudinal.russianReason
+OK: audit03.comments.Mx1.longitudinal.readable
+OK: audit03.comments.Mx1.longitudinal.noMachinePrefix
+META: audit03.comments.Mx1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.Mx1.formulaNoNumFail
+OK: audit03.comments.Mx1.strengthNoCrack
+OK: audit03.comments.Mx1.crackNoCapacity
+OK: audit03.comments.Mx1.overallComposition
+OK: audit03.comments.Mx1.batchOutput
+OK: audit03.comments.Mx1.strengthOutput
+OK: audit03.comments.Mx1.crackOutput
+OK: audit03.comments.Mx1.stabilityOutput
+OUTPUT: audit03.comments.Mx1|strength=|crack=|stability=|batch=
+CASE: focused.RoundedRectangle.Mx1|N=0|Mx=13410817.8072535|My=0|offsetX=10|offsetY=-7|path=Mx|selection=Auto|lambda=40.626546256855|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.Mx1.path
+OK: focused.RoundedRectangle.Mx1.validInput
+OK: focused.RoundedRectangle.Mx1.NU; actual=0.437946897611; expected=0.
+OK: focused.RoundedRectangle.Mx1.MxU; actual=544835213.054265; expected=544835209.988636
+OK: focused.RoundedRectangle.Mx1.MyU; actual=-184.403884144449; expected=0.
+OK: focused.RoundedRectangle.Mx1.stateMx; actual=544835209.988636; expected=544835209.988636
+OK: focused.RoundedRectangle.Mx1.stateMy; actual=-162.357239185155; expected=0.
+OK: focused.RoundedRectangle.Mx1.physicalCriterion
+OK: focused.RoundedRectangle.Mx1.finalPhysical
+CASE: focused.RoundedRectangle.Mx1|requested=Auto|resolved=λ*Mx|lambda=4.271202315641|Ncrc=0.|Mcrc=57280316.0729788|point=True|formed=False
+OK: focused.RoundedRectangle.Mx1.validInput
+OK: focused.RoundedRectangle.Mx1.autoPath
+OK: focused.RoundedRectangle.Mx1.preConverged
+OK: focused.RoundedRectangle.Mx1.prePhysical
+OK: focused.RoundedRectangle.Mx1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:41C03CC344FE8BA3|My=F64:0000000000000000|eps0=F64:3F5687DD22BFBEDA|kx=F64:3F095EED2391CDAC|ky=F64:3E79D1A842907371
+OK: focused.RoundedRectangle.Mx1.snapshot.1
+OK: focused.RoundedRectangle.Mx1.originalN.1; actual=0.437946897611; expected=0.
+OK: focused.RoundedRectangle.Mx1.originalMx.1; actual=544835209.988636; expected=544835209.988636
+OK: focused.RoundedRectangle.Mx1.originalMy.1; actual=-162.357239185155; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerN.1; actual=0.437946897611; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerMx.1; actual=544835209.988636; expected=544835209.988636
+OK: focused.RoundedRectangle.Mx1.centerMy.1; actual=-180.024415168336; expected=0.
+OK: focused.RoundedRectangle.Mx1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:4169944039D50542|My=F64:0000000000000000|eps0=F64:3EE8D281FF039AEE|kx=F64:3E9C4B607D57B186|ky=F64:3E0C3AC0BA730C21
+OK: focused.RoundedRectangle.Mx1.snapshot.2
+OK: focused.RoundedRectangle.Mx1.originalN.2; actual=0.000000000077; expected=0.
+OK: focused.RoundedRectangle.Mx1.originalMx.2; actual=13410817.8072535; expected=13410817.8072535
+OK: focused.RoundedRectangle.Mx1.originalMy.2; actual=0.000000003998; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerN.2; actual=0.000000000077; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerMx.2; actual=13410817.8072535; expected=13410817.8072535
+OK: focused.RoundedRectangle.Mx1.centerMy.2; actual=0.00000000088; expected=0.
+OK: focused.RoundedRectangle.Mx1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:418B5039E09575E9|My=F64:0000000000000000|eps0=F64:3EEF894A933BC638|kx=F64:3EB69ECBF770F8C9|ky=F64:BDF8B5339124DED7
+OK: focused.RoundedRectangle.Mx1.snapshot.3
+OK: focused.RoundedRectangle.Mx1.originalN.3; actual=0.000112435873; expected=0.
+OK: focused.RoundedRectangle.Mx1.originalMx.3; actual=57280316.0729788; expected=57280316.0729788
+OK: focused.RoundedRectangle.Mx1.originalMy.3; actual=-0.042163464293; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerN.3; actual=0.000112435873; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerMx.3; actual=57280316.0729788; expected=57280316.0729788
+OK: focused.RoundedRectangle.Mx1.centerMy.3; actual=-0.046699229634; expected=0.
+OK: focused.RoundedRectangle.Mx1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.Mx1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:4169944039D50542|My=F64:0000000000000000|eps0=F64:3EE08D8D870EF6AC|kx=F64:3EA096F80AAFBECE|ky=F64:3E09F31CFCD9C8A6
+OK: focused.RoundedRectangle.Mx1.snapshot.4
+OK: focused.RoundedRectangle.Mx1.originalN.4; actual=0.000000000028; expected=0.
+OK: focused.RoundedRectangle.Mx1.originalMx.4; actual=13410817.8072535; expected=13410817.8072535
+OK: focused.RoundedRectangle.Mx1.originalMy.4; actual=0.000000003779; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerN.4; actual=0.000000000028; expected=0.
+OK: focused.RoundedRectangle.Mx1.centerMx.4; actual=13410817.8072535; expected=13410817.8072535
+OK: focused.RoundedRectangle.Mx1.centerMy.4; actual=0.00000000266; expected=0.
+OK: focused.RoundedRectangle.Mx1.physicalStatus.4
+FOCUSED_COMPARE|id=Mx1|path=LambdaMx|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=4:4|meta1=4:4|number0=40.6265462568549|number1=.437946897611255|number2=544835213.054265|number3=-184.403884144449|number4=4.27120231564086|number5=0|number6=57280316.0729788|number7=0|number8=0|number9=0|number10=4.20223918575364E-02|number11=4.20223918575364E-02
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.Mx1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.Mx1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.Mx1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=Mx1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.My1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=My1|elapsedSec=0.87109375|solverCalls=2
+OK: focused.RoundedRectangle.My1.oneCombination
+OK: focused.RoundedRectangle.My1.preparationReleased
+OK: focused.RoundedRectangle.My1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.My1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=My1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.My1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.My1.direct.russianReason
+OK: audit03.comments.My1.direct.readable
+OK: audit03.comments.My1.direct.noMachinePrefix
+META: audit03.comments.My1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.My1.capacity.russianReason
+OK: audit03.comments.My1.capacity.readable
+OK: audit03.comments.My1.capacity.noMachinePrefix
+META: audit03.comments.My1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.My1.formation.russianReason
+OK: audit03.comments.My1.formation.readable
+OK: audit03.comments.My1.formation.noMachinePrefix
+META: audit03.comments.My1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.My1.current.russianReason
+OK: audit03.comments.My1.current.readable
+OK: audit03.comments.My1.current.noMachinePrefix
+META: audit03.comments.My1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.My1.width.russianReason
+OK: audit03.comments.My1.width.readable
+OK: audit03.comments.My1.width.noMachinePrefix
+META: audit03.comments.My1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 0.518 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.My1.longitudinal.russianReason
+OK: audit03.comments.My1.longitudinal.readable
+OK: audit03.comments.My1.longitudinal.noMachinePrefix
+META: audit03.comments.My1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.My1.formulaNoNumFail
+OK: audit03.comments.My1.strengthNoCrack
+OK: audit03.comments.My1.crackNoCapacity
+OK: audit03.comments.My1.overallComposition
+OK: audit03.comments.My1.batchOutput
+OK: audit03.comments.My1.strengthOutput
+OK: audit03.comments.My1.crackOutput
+OK: audit03.comments.My1.stabilityOutput
+OUTPUT: audit03.comments.My1|strength=|crack=|stability=|batch=
+CASE: focused.RoundedRectangle.My1|N=0|Mx=0|My=48278944.1061125|offsetX=10|offsetY=-7|path=My|selection=Auto|lambda=46.545477688495|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.My1.path
+OK: focused.RoundedRectangle.My1.validInput
+OK: focused.RoundedRectangle.My1.NU; actual=0.000006234681; expected=0.
+OK: focused.RoundedRectangle.My1.MxU; actual=-0.000555997422; expected=0.
+OK: focused.RoundedRectangle.My1.MyU; actual=2247166515.71507; expected=2247166515.71513
+OK: focused.RoundedRectangle.My1.stateMx; actual=-0.000599640187; expected=0.
+OK: focused.RoundedRectangle.My1.stateMy; actual=2247166515.71538; expected=2247166515.71513
+OK: focused.RoundedRectangle.My1.physicalCriterion
+OK: focused.RoundedRectangle.My1.finalPhysical
+CASE: focused.RoundedRectangle.My1|requested=Auto|resolved=λ*My|lambda=4.509331237143|Ncrc=0.|Mcrc=217705750.753985|point=True|formed=False
+OK: focused.RoundedRectangle.My1.validInput
+OK: focused.RoundedRectangle.My1.autoPath
+OK: focused.RoundedRectangle.My1.preConverged
+OK: focused.RoundedRectangle.My1.prePhysical
+OK: focused.RoundedRectangle.My1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.My1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:41E0BE214676E25D|eps0=F64:3F4BC01EB34A1D37|kx=F64:BC91DB9896EE3400|ky=F64:3EE84F3B4D1FDA2B
+OK: focused.RoundedRectangle.My1.snapshot.1
+OK: focused.RoundedRectangle.My1.originalN.1; actual=0.000006234681; expected=0.
+OK: focused.RoundedRectangle.My1.originalMx.1; actual=-0.000599640187; expected=0.
+OK: focused.RoundedRectangle.My1.originalMy.1; actual=2247166515.71538; expected=2247166515.71513
+OK: focused.RoundedRectangle.My1.centerN.1; actual=0.000006234681; expected=0.
+OK: focused.RoundedRectangle.My1.centerMx.1; actual=-0.000599640187; expected=0.
+OK: focused.RoundedRectangle.My1.centerMy.1; actual=2247166515.71513; expected=2247166515.71513
+OK: focused.RoundedRectangle.My1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.My1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:4187056D00D95187|eps0=F64:3EDA223E567B4437|kx=F64:BB03EF74A0B74B8F|ky=F64:3E78A57602E4E2D1
+OK: focused.RoundedRectangle.My1.snapshot.2
+OK: focused.RoundedRectangle.My1.originalN.2; actual=0.000000000007; expected=0.
+OK: focused.RoundedRectangle.My1.originalMx.2; actual=-0.000000000579; expected=0.
+OK: focused.RoundedRectangle.My1.originalMy.2; actual=48278944.1061125; expected=48278944.1061125
+OK: focused.RoundedRectangle.My1.centerN.2; actual=0.000000000007; expected=0.
+OK: focused.RoundedRectangle.My1.centerMx.2; actual=-0.000000000579; expected=0.
+OK: focused.RoundedRectangle.My1.centerMy.2; actual=48278944.1061125; expected=48278944.1061125
+OK: focused.RoundedRectangle.My1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.My1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:41A9F3DA2D820A5D|eps0=F64:BE7EA266D358AF3D|kx=F64:BBC84C1DEC79B548|ky=F64:3E9535597412FCC4
+OK: focused.RoundedRectangle.My1.snapshot.3
+OK: focused.RoundedRectangle.My1.originalN.3; actual=-0.000000032062; expected=0.
+OK: focused.RoundedRectangle.My1.originalMx.3; actual=-0.000000434983; expected=0.
+OK: focused.RoundedRectangle.My1.originalMy.3; actual=217705750.753984; expected=217705750.753985
+OK: focused.RoundedRectangle.My1.centerN.3; actual=-0.000000032062; expected=0.
+OK: focused.RoundedRectangle.My1.centerMx.3; actual=-0.000000434983; expected=0.
+OK: focused.RoundedRectangle.My1.centerMy.3; actual=217705750.753985; expected=217705750.753985
+OK: focused.RoundedRectangle.My1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.My1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:0000000000000000|Mx=F64:0000000000000000|My=F64:4187056D00D95187|eps0=F64:3EC89F88B321C9A4|kx=F64:3B1E8EC2AA41794A|ky=F64:3E7B61BE1A71D6B7
+OK: focused.RoundedRectangle.My1.snapshot.4
+OK: focused.RoundedRectangle.My1.originalN.4; actual=0.000000000047; expected=0.
+OK: focused.RoundedRectangle.My1.originalMx.4; actual=-0.00000000018; expected=0.
+OK: focused.RoundedRectangle.My1.originalMy.4; actual=48278944.1061125; expected=48278944.1061125
+OK: focused.RoundedRectangle.My1.centerN.4; actual=0.000000000047; expected=0.
+OK: focused.RoundedRectangle.My1.centerMx.4; actual=-0.00000000018; expected=0.
+OK: focused.RoundedRectangle.My1.centerMy.4; actual=48278944.1061125; expected=48278944.1061125
+OK: focused.RoundedRectangle.My1.physicalStatus.4
+FOCUSED_COMPARE|id=My1|path=LambdaMy|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=4:4|meta1=4:4|number0=46.5454776884945|number1=6.23468076810241E-06|number2=-5.55997421542997E-04|number3=2247166515.71507|number4=4.50933123714323|number5=0|number6=217705750.753985|number7=0|number8=0|number9=0|number10=3.54778938886854E-02|number11=3.54778938886854E-02
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.My1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.My1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.My1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=My1|overall=OK|capacity=OK|cracks=OK
+OK: focused.RoundedRectangle.mixedC1_-1.within10Seconds
+FOCUSED_TIME|shape=RoundedRectangle|id=mixedC1_-1|elapsedSec=0.875|solverCalls=4
+OK: focused.RoundedRectangle.mixedC1_-1.oneCombination
+OK: focused.RoundedRectangle.mixedC1_-1.preparationReleased
+OK: focused.RoundedRectangle.mixedC1_-1.mechanicalNoRepeatedMaterialPreparation
+OK: focused.RoundedRectangle.mixedC1_-1.crackDomainPreparedOnce
+FOCUSED_PREPARATION|id=mixedC1_-1|mechanicalBuilds=2|crackDomainBuilds=0
+META: audit03.comments.mixedC1_-1.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.mixedC1_-1.direct.russianReason
+OK: audit03.comments.mixedC1_-1.direct.readable
+OK: audit03.comments.mixedC1_-1.direct.noMachinePrefix
+META: audit03.comments.mixedC1_-1.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.mixedC1_-1.capacity.russianReason
+OK: audit03.comments.mixedC1_-1.capacity.readable
+OK: audit03.comments.mixedC1_-1.capacity.noMachinePrefix
+META: audit03.comments.mixedC1_-1.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.mixedC1_-1.formation.russianReason
+OK: audit03.comments.mixedC1_-1.formation.readable
+OK: audit03.comments.mixedC1_-1.formation.noMachinePrefix
+META: audit03.comments.mixedC1_-1.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.mixedC1_-1.current.russianReason
+OK: audit03.comments.mixedC1_-1.current.readable
+OK: audit03.comments.mixedC1_-1.current.noMachinePrefix
+META: audit03.comments.mixedC1_-1.width|status=rsNotApplicable|code=CRACK_NOT_FORMED|applies=False|calculated=False|comment=Трещина не образована: пороговая точка трещинообразования находится за текущей нагрузкой.
+OK: audit03.comments.mixedC1_-1.width.russianReason
+OK: audit03.comments.mixedC1_-1.width.readable
+OK: audit03.comments.mixedC1_-1.width.noMachinePrefix
+META: audit03.comments.mixedC1_-1.longitudinal|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка продольных трещин проходит. Максимальное сжатие бетона 2.792 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.mixedC1_-1.longitudinal.russianReason
+OK: audit03.comments.mixedC1_-1.longitudinal.readable
+OK: audit03.comments.mixedC1_-1.longitudinal.noMachinePrefix
+META: audit03.comments.mixedC1_-1.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.mixedC1_-1.formulaNoNumFail
+OK: audit03.comments.mixedC1_-1.strengthNoCrack
+OK: audit03.comments.mixedC1_-1.crackNoCapacity
+OK: audit03.comments.mixedC1_-1.overallComposition
+OK: audit03.comments.mixedC1_-1.batchOutput
+OK: audit03.comments.mixedC1_-1.strengthOutput
+OK: audit03.comments.mixedC1_-1.crackOutput
+OK: audit03.comments.mixedC1_-1.stabilityOutput
+OUTPUT: audit03.comments.mixedC1_-1|strength=|crack=|stability=|batch=
+OK: focused.RoundedRectangle.mixedC1_-1.autoAllowedPath
+CASE: focused.RoundedRectangle.mixedC1_-1|N=-536432.712290139|Mx=22351363.0120891|My=-48278944.1061125|offsetX=10|offsetY=-7|path=Mxy|selection=Auto|lambda=20.209551786249|method=UltimateStrain|limit=ConcreteStrainLimit|status=OK
+OK: focused.RoundedRectangle.mixedC1_-1.path
+OK: focused.RoundedRectangle.mixedC1_-1.validInput
+OK: focused.RoundedRectangle.mixedC1_-1.NU; actual=-536432.471488972; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.MxU; actual=451711055.737608; expected=451711028.286071
+OK: focused.RoundedRectangle.mixedC1_-1.MyU; actual=-975695811.577254; expected=-975695821.097913
+OK: focused.RoundedRectangle.mixedC1_-1.stateMx; actual=455466083.038031; expected=455466057.272102
+OK: focused.RoundedRectangle.mixedC1_-1.stateMy; actual=-1002700309.85789; expected=-1002700331.5007
+OK: focused.RoundedRectangle.mixedC1_-1.physicalCriterion
+OK: focused.RoundedRectangle.mixedC1_-1.finalPhysical
+CASE: focused.RoundedRectangle.mixedC1_-1|requested=Auto|resolved=λ*Mxy|lambda=2.518696967887|Ncrc=-536432.712290139|Mcrc=143236877.563118|point=True|formed=False
+OK: focused.RoundedRectangle.mixedC1_-1.validInput
+OK: focused.RoundedRectangle.mixedC1_-1.autoPath
+OK: focused.RoundedRectangle.mixedC1_-1.preConverged
+OK: focused.RoundedRectangle.mixedC1_-1.prePhysical
+OK: focused.RoundedRectangle.mixedC1_-1.preNotExtended
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedC1_-1|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:C1205EE16CB14B0B|Mx=F64:41BB25DC4945A876|My=F64:C1CDE1FF15C016F3|eps0=F64:3F38BE9A0E0833BF|kx=F64:3EF9AE97335BE418|ky=F64:BECC314ADE585193
+OK: focused.RoundedRectangle.mixedC1_-1.snapshot.1
+OK: focused.RoundedRectangle.mixedC1_-1.originalN.1; actual=-536432.471488972; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.originalMx.1; actual=455466083.038031; expected=455466057.272102
+OK: focused.RoundedRectangle.mixedC1_-1.originalMy.1; actual=-1002700309.85789; expected=-1002700331.5007
+OK: focused.RoundedRectangle.mixedC1_-1.centerN.1; actual=-536432.471488972; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.centerMx.1; actual=455466083.038031; expected=455466057.272102
+OK: focused.RoundedRectangle.mixedC1_-1.centerMy.1; actual=-981060136.292143; expected=-981060148.220814
+OK: focused.RoundedRectangle.mixedC1_-1.physicalStatus.1
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedC1_-1|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:C1205EE16CB14B0B|Mx=F64:4178E5A17FF84CCC|My=F64:C191F2EFFA091D24|eps0=F64:BF086BD3C0CD366B|kx=F64:3EA15F1A389188CB|ky=F64:BE740EBF5037FFB2
+OK: focused.RoundedRectangle.mixedC1_-1.snapshot.2
+OK: focused.RoundedRectangle.mixedC1_-1.originalN.2; actual=-536432.71229014; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.originalMx.2; actual=26106391.9981201; expected=26106391.9981201
+OK: focused.RoundedRectangle.mixedC1_-1.originalMy.2; actual=-75283454.5089002; expected=-75283454.5089002
+OK: focused.RoundedRectangle.mixedC1_-1.centerN.2; actual=-536432.71229014; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.centerMx.2; actual=26106391.9981201; expected=26106391.9981201
+OK: focused.RoundedRectangle.mixedC1_-1.centerMy.2; actual=-53643271.2290139; expected=-53643271.2290139
+OK: focused.RoundedRectangle.mixedC1_-1.physicalStatus.2
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedC1_-1|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:C1205EE16CB14B0B|Mx=F64:418CA27C59DCA076|My=F64:C1A1B70CF912411F|eps0=F64:BF048F3E4C39AE91|kx=F64:3EB4A491C786E754|ky=F64:BE87AF301F6D244D
+OK: focused.RoundedRectangle.mixedC1_-1.snapshot.3
+OK: focused.RoundedRectangle.mixedC1_-1.originalN.3; actual=-536432.728335081; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.originalMx.3; actual=60051340.7134937; expected=60051339.2327279
+OK: focused.RoundedRectangle.mixedC1_-1.originalMy.3; actual=-148604541.182921; expected=-148604540.535653
+OK: focused.RoundedRectangle.mixedC1_-1.centerN.3; actual=-536432.728335081; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.centerMx.3; actual=60051340.7134937; expected=60051339.2327279
+OK: focused.RoundedRectangle.mixedC1_-1.centerMy.3; actual=-126964357.255767; expected=-126964357.255767
+OK: focused.RoundedRectangle.mixedC1_-1.physicalStatus.3
+FOCUSED_STATE|id=focused.RoundedRectangle.mixedC1_-1|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:C1205EE16CB14B0B|Mx=F64:4178E5A17FF84CCC|My=F64:C191F2EFFA091D24|eps0=F64:BF12B9AC8D14AAD8|kx=F64:3EA93E18709C01D9|ky=F64:BE7B9AD06E3DDB01
+OK: focused.RoundedRectangle.mixedC1_-1.snapshot.4
+OK: focused.RoundedRectangle.mixedC1_-1.originalN.4; actual=-536432.712290139; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.originalMx.4; actual=26106391.9981201; expected=26106391.9981201
+OK: focused.RoundedRectangle.mixedC1_-1.originalMy.4; actual=-75283454.5089002; expected=-75283454.5089002
+OK: focused.RoundedRectangle.mixedC1_-1.centerN.4; actual=-536432.712290139; expected=-536432.712290139
+OK: focused.RoundedRectangle.mixedC1_-1.centerMx.4; actual=26106391.9981201; expected=26106391.9981201
+OK: focused.RoundedRectangle.mixedC1_-1.centerMy.4; actual=-53643271.2290139; expected=-53643271.2290139
+OK: focused.RoundedRectangle.mixedC1_-1.physicalStatus.4
+FOCUSED_COMPARE|id=mixedC1_-1|path=LambdaMxy|meta1=4:4|meta2=4:4|meta3=4:4|meta1=4:4|meta4=2:17|meta5=4:4|meta1=4:4|number0=20.2095517862492|number1=-536432.471488972|number2=451711055.737608|number3=-975695811.577254|number4=2.51869696788729|number5=0|number6=143236877.563118|number7=0|number8=0|number9=0|number10=.191234413481658|number11=.191234413481658
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.2
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.3
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.4
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.5
+OK: focused.RoundedRectangle.mixedC1_-1.noInputOrInternalError.1
+OK: focused.RoundedRectangle.mixedC1_-1.output.rngStrengthSummaryAnchor
+OK: focused.RoundedRectangle.mixedC1_-1.output.rngCrackSummaryAnchor
+FOCUSED_RESULT|id=mixedC1_-1|overall=OK|capacity=OK|cracks=OK
+OK: focused.complete
+TOTAL_FOCUSED_ACCEPTANCE: shape=RoundedRectangle; group=Generated; cases=8; maxSeconds=3.53515625; passed=683; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_eead897c76774b8fbdd7fb3780a9aa5a\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunFocusedAcceptanceCases; 2026-10-17T11:26:57
+RESULTS_SAVE_REOPEN: before=EB1F72A857AE84CD6D805F311B945B19143E82D7459541725225170F7F9AD036; after=EB1F72A857AE84CD6D805F311B945B19143E82D7459541725225170F7F9AD036; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_eead897c76774b8fbdd7fb3780a9aa5a\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=B90CECF2C4DCD1C47E4787640F55022B855B51EF8FC5227A60A8B416D7F47357; after=B90CECF2C4DCD1C47E4787640F55022B855B51EF8FC5227A60A8B416D7F47357; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,19 @@
+﻿{
+    "Passed":  true,
+    "ElapsedSeconds":  53.239858899999994,
+    "LimitSeconds":  420,
+    "Results":  [
+                    {
+                        "ReportSHA256":  "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A",
+                        "Macro":  "RunRealAutoCADFarOriginTests",
+                        "Passed":  true
+                    },
+                    {
+                        "ReportSHA256":  "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3",
+                        "Macro":  "RunRealAutoCADFarCapacityTests",
+                        "Passed":  true
+                    }
+                ],
+    "UserDocumentsUsed":  false,
+    "RunnerSHA256":  "8CF0C5D2B3483B52D7274214DB2DF2B78F6392D5BE02DB9CFEFF37FC08E8EA33"
+}

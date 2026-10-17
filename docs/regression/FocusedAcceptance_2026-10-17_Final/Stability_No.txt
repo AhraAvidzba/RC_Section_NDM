@@ -1,0 +1,125 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FocusedAcceptance_2026-10-17_Final\Probe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 5CF7A7EF759A0C4F38C7F106ECF92C89EDF0BF4EAF55A7008F268061AB7C24CB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0564746525904029a8bd6db32e479c39\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=62844; startTicks=639278230626300340
+===== modTestBatchCalculation.RunFocusedSpecialCase =====
+SUITE_STARTED: modTestBatchCalculation.RunFocusedSpecialCase; 2026-10-17T11:37:47
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=62844; workingSet=156483584; privateBytes=106971136; cpu=8.484375
+SPECIAL_INPUT|case=Stability|N=-4665199.01961483|Mx=1343740308.15019|My=-959642096.609002
+OK: special.within10Seconds
+OK: special.capture
+OK: special.overall.typed
+OK: special.preparationReleased
+OK: special.crackDomainOnce
+OK: special.mechanicalNoRepeat
+OK: special.stability
+META: audit03.comments.Stability.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.Stability.direct.russianReason
+OK: audit03.comments.Stability.direct.readable
+OK: audit03.comments.Stability.direct.noMachinePrefix
+META: audit03.comments.Stability.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.Stability.capacity.russianReason
+OK: audit03.comments.Stability.capacity.readable
+OK: audit03.comments.Stability.capacity.noMachinePrefix
+META: audit03.comments.Stability.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.Stability.formation.russianReason
+OK: audit03.comments.Stability.formation.readable
+OK: audit03.comments.Stability.formation.noMachinePrefix
+META: audit03.comments.Stability.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.Stability.current.russianReason
+OK: audit03.comments.Stability.current.readable
+OK: audit03.comments.Stability.current.noMachinePrefix
+META: audit03.comments.Stability.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=СП 35: раскрытие проверено по текущему НДС; критическая группа G3, напряжение стержня R3.
+OK: audit03.comments.Stability.width.russianReason
+OK: audit03.comments.Stability.width.readable
+OK: audit03.comments.Stability.width.noMachinePrefix
+META: audit03.comments.Stability.longitudinal|status=rsCheckFailed|code=LONGITUDINAL_CRACK_EXCEEDED|applies=True|calculated=True|comment=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.821 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.Stability.longitudinal.reasonPresent
+OK: audit03.comments.Stability.longitudinal.russianReason
+OK: audit03.comments.Stability.longitudinal.readable
+OK: audit03.comments.Stability.longitudinal.noMachinePrefix
+OK: audit03.comments.Stability.longitudinal.ownSubtree
+META: audit03.comments.Stability.stability|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Проверка устойчивости по СП 35 выполнена.
+OK: audit03.comments.Stability.stability.russianReason
+OK: audit03.comments.Stability.stability.readable
+OK: audit03.comments.Stability.stability.noMachinePrefix
+OK: audit03.comments.Stability.formulaNoNumFail
+OK: audit03.comments.Stability.strengthNoCrack
+OK: audit03.comments.Stability.crackNoCapacity
+OK: audit03.comments.Stability.overallComposition
+OK: audit03.comments.Stability.batchOutput
+OK: audit03.comments.Stability.strengthOutput
+OK: audit03.comments.Stability.crackOutput
+OK: audit03.comments.Stability.stabilityOutput
+OUTPUT: audit03.comments.Stability|strength=|crack=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.821 МПа; допускаемое Rb,mc2 = 14.600 МПа.|stability=Проверка устойчивости по СП 35 выполнена.|batch=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.821 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+FOCUSED_STATE|id=special.Stability|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:C151CBDBC1415E91|Mx=F64:41F82D34A3E4EB5F|My=F64:420819D76088F7CC|eps0=F64:BF81A849A7528950|kx=F64:3ED968CE85026307|ky=F64:BED19AE6FF664BE6
+OK: special.Stability.snapshot.1
+OK: special.Stability.originalN.1; actual=-4665198.98826472; expected=-4665199.01961483
+OK: special.Stability.originalMx.1; actual=6489852466.48257; expected=6489852478.30746
+OK: special.Stability.originalMy.1; actual=12939094975.0616; expected=12939095057.121
+OK: special.Stability.centerN.1; actual=-4665198.98826472; expected=-4665199.01961483
+OK: special.Stability.centerMx.1; actual=2818972112.90794; expected=2818972100.06454
+OK: special.Stability.centerMy.1; actual=-1985561401.26453; expected=-1985561419.49876
+OK: special.Stability.physicalStatus.1
+OK: special.Stability.noHiddenExtension.1
+FOCUSED_STATE|id=special.Stability|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:C151CBDBC1415E91|Mx=F64:41F2CD75B2A4A60D|My=F64:4209FE595F78C01D|eps0=F64:BF62D8259DA52815|kx=F64:3EB894242DF2FDE3|ky=F64:BEB154CB7FFA73D8
+OK: special.Stability.snapshot.2
+OK: special.Stability.originalN.2; actual=-4665199.01961483; expected=-4665199.01961483
+OK: special.Stability.originalMx.2; actual=5047278378.29054; expected=5047278378.29054
+OK: special.Stability.originalMy.2; actual=13955181551.0938; expected=13955181551.0938
+OK: special.Stability.centerN.2; actual=-4665199.01961483; expected=-4665199.01961483
+OK: special.Stability.centerMx.2; actual=1376398000.04761; expected=1376398000.04761
+OK: special.Stability.centerMy.2; actual=-969474925.525946; expected=-969474925.525946
+OK: special.Stability.physicalStatus.2
+OK: special.Stability.noHiddenExtension.2
+FOCUSED_STATE|id=special.Stability|type=PostCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:C151CBDBC1415E91|Mx=F64:41F14A01F85B2E4F|My=F64:420A86CD228FECBD|eps0=F64:BF5A9B615C90B4D6|kx=F64:3EAEDB5E9395304A|ky=F64:BEA5C2AB5093FB4C
+OK: special.Stability.snapshot.3
+OK: special.Stability.originalN.3; actual=-4665199.01961483; expected=-4665199.01961483
+OK: special.Stability.originalMx.3; actual=4641005445.6988; expected=4641005445.69881
+OK: special.Stability.originalMy.3; actual=14241342545.9906; expected=14241342545.9906
+OK: special.Stability.centerN.3; actual=-4665199.01961483; expected=-4665199.01961483
+OK: special.Stability.centerMx.3; actual=970125067.45588; expected=970125067.45588
+OK: special.Stability.centerMy.3; actual=-683313930.629157; expected=-683313930.629156
+OK: special.Stability.physicalStatus.3
+OK: special.Stability.noHiddenExtension.3
+FOCUSED_STATE|id=special.Stability|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:C151CBDBC1415E91|Mx=F64:41F14A01F85B2E4F|My=F64:420A86CD228FECBD|eps0=F64:BF4E3F5843D23FCB|kx=F64:3EA1A00BD2C2282D|ky=F64:BE98D21D06DE6564
+OK: special.Stability.snapshot.4
+OK: special.Stability.originalN.4; actual=-4665199.01812942; expected=-4665199.01961483
+OK: special.Stability.originalMx.4; actual=4641005444.52999; expected=4641005445.69881
+OK: special.Stability.originalMy.4; actual=14241342541.5156; expected=14241342545.9906
+OK: special.Stability.centerN.4; actual=-4665199.01812942; expected=-4665199.01961483
+OK: special.Stability.centerMx.4; actual=970125067.455881; expected=970125067.45588
+OK: special.Stability.centerMy.4; actual=-683313930.352143; expected=-683313930.629156
+OK: special.Stability.physicalStatus.4
+OK: special.Stability.noHiddenExtension.4
+FOCUSED_STATE|id=special.Stability|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:C151CBDBC1415E91|Mx=F64:41F2CD75B2A4A60D|My=F64:4209FE595F78C01D|eps0=F64:BF63438C510943C5|kx=F64:3EB844FB045BB8EC|ky=F64:BEB11BFDD01F5901
+OK: special.Stability.snapshot.5
+OK: special.Stability.originalN.5; actual=-4665199.01961483; expected=-4665199.01961483
+OK: special.Stability.originalMx.5; actual=5047278378.29054; expected=5047278378.29054
+OK: special.Stability.originalMy.5; actual=13955181551.0938; expected=13955181551.0938
+OK: special.Stability.centerN.5; actual=-4665199.01961483; expected=-4665199.01961483
+OK: special.Stability.centerMx.5; actual=1376398000.04761; expected=1376398000.04761
+OK: special.Stability.centerMy.5; actual=-969474925.525946; expected=-969474925.525946
+OK: special.Stability.physicalStatus.5
+OK: special.Stability.noHiddenExtension.5
+OK: special.noNumericalOrInputError.1
+OK: special.noNumericalOrInputError.2
+OK: special.noNumericalOrInputError.3
+OK: special.noNumericalOrInputError.1
+OK: special.noNumericalOrInputError.4
+OK: special.noNumericalOrInputError.5
+OK: special.noNumericalOrInputError.5
+OK: special.output.rngStrengthSummaryAnchor
+OK: special.output.rngCrackSummaryAnchor
+TOTAL_FOCUSED_SPECIAL: case=Stability; elapsedSec=3.39453125; passed=92; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0564746525904029a8bd6db32e479c39\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestBatchCalculation.RunFocusedSpecialCase; 2026-10-17T11:37:51
+RESULTS_SAVE_REOPEN: before=B88F986C056FCD045116036796AABD9592A9B08B72B0F9AB3294401B4E3309F5; after=B88F986C056FCD045116036796AABD9592A9B08B72B0F9AB3294401B4E3309F5; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_0564746525904029a8bd6db32e479c39\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=CC978C824F1F3B80EA9B0F3E6F856D4A34588BA88CADF08012902B5FA82E773F; after=CC978C824F1F3B80EA9B0F3E6F856D4A34588BA88CADF08012902B5FA82E773F; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

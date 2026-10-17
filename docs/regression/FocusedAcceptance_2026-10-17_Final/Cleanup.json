@@ -1,0 +1,7 @@
+{
+  "AllPlannedPathsAbsent": true,
+  "CounterRecovery": "Removal completed; final Measure-Object on hashtables failed. Statistics recovered from the saved plan and verified missing paths.",
+  "NoGlobalProcessTermination": true,
+  "Removed": 65,
+  "BytesFreed": 1006026267
+}

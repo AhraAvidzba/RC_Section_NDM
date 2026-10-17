@@ -1,0 +1,17 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+  "CoreSuites": 116,
+  "CorePassedAssertions": 371968,
+  "FocusedSingleCases": 122,
+  "FocusedPassedAssertions": 14240,
+  "IndependentIntegrals": 560,
+  "IndependentlyReviewedNumFailStates": 10,
+  "SameWorkbookBytes": true,
+  "SingleInvocation": false,
+  "CoreDirectory": "docs\\regression\\ExcelGuardGuide_2026-10-13\\ContactFullOnOff_2026-10-17_Final",
+  "FocusedDirectory": "docs\\regression\\FocusedAcceptance_2026-10-17_Final",
+  "FocusedRunSHA256": "F4AF7D7DE318ED628CC0B690C480979B930041689E86057E3235EBCAC2FB9F39",
+  "IndependentSHA256": "E266A5F3F63E6EE40073615E411BADD8ACC4F89CFCC0AE4E08B422491A7C63CC",
+  "Meaning": "All current acceptance groups; separate invocations of exactly the same production workbook."
+}

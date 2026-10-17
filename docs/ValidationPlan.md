@@ -17,6 +17,12 @@
 
 ## Команды
 
+Полный состав, приёмка 17.10.2026:
+`Finalize-CompleteAcceptance.py --core-directory docs/regression/ExcelGuardGuide_2026-10-13/ContactFullOnOff_2026-10-17_Final --focused-directory docs/regression/FocusedAcceptance_2026-10-17_Final`
+повторно проверяет 116 основных наборов и обязательный целевой план только
+для побайтно одной книги. Результат PASS, части выполнены отдельно.
+[Подробный отчёт](reports/FocusedAcceptance_2026-10-17.md).
+
 Разделение чтения ввода и подготовки контактных рядов, 17.10.2026:
 `Verify-ContactResponsibilities.py --published` проверяет отсутствие options
 и CRebarContactBuilder в Read-методах, подготовку в AddReinforcement,

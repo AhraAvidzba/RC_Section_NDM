@@ -10,6 +10,7 @@ import json
 import re
 import sys
 import struct
+import zipfile
 from datetime import datetime
 from pathlib import Path
 
@@ -154,6 +155,8 @@ class Model:
 def independent(directory, run):
     import numpy as np
     import scipy
+    verifier_snapshot=directory/'IndependentVerifier.py'
+    verifier_snapshot.write_bytes(Path(__file__).read_bytes())
     all_reports = reports(directory, run)
     models = {item['ID'][6:]: Model(lines) for item, lines in all_reports if item['ID'].startswith('Model_')}
     controls, failures, unsupported, numerical_messages = [], [], [], []
@@ -205,6 +208,7 @@ def independent(directory, run):
                 if not covered:unsupported.append({'Report':item['ID'],'UnreviewedNumericalMessage':line})
     result = {'Passed': bool(controls) and len(models)==5 and not unsupported and all(r['Passed'] for r in controls+failures),
               'SourceSHA256':run['SourceSHA256'],
+              'VerifierSHA256':digest(verifier_snapshot),
               'ReportHashes':{item['ID']:item['ReportSHA256'] for item,_ in all_reports},
               'ScipyVersion':scipy.__version__, 'ModelCount':len(models), 'IndependentIntegrals':len(controls),
               'ReviewedNumFailStates':len(failures), 'NumericalMessages':numerical_messages,
@@ -217,13 +221,23 @@ def independent(directory, run):
 
 def verify(directory, run):
     errors, checks, cases, assertions = [], [], 0, 0
+    if any(not item.get('Passed') for item in run['Records']):
+        errors.append('A required stage reported an unsuccessful exit')
     preparation=read(directory/'Probe/Preparation.json')
     inputs=read(directory/'Probe/InputManifest.json')
     if (digest(Path(run['SourceWorkbook']))!=run['SourceSHA256'] or
         preparation['SourceSHA256']!=run['SourceSHA256'] or inputs['SourceSHA256']!=run['SourceSHA256'] or
         not preparation['Compiled'] or not inputs['Passed']):
         errors.append('Source, compilation or input provenance differs')
-    if digest(directory/'Probe/RC_Section_NDM.xlsm')!=preparation['ProbeWorkbookSHA256']:
+    probe=directory/'Probe/RC_Section_NDM.xlsm'
+    if probe.exists():
+        probe_hash=digest(probe)
+    elif (directory/'ProbeWorkbook.zip').exists():
+        with zipfile.ZipFile(directory/'ProbeWorkbook.zip') as archive:
+            probe_hash=hashlib.sha256(archive.read('RC_Section_NDM.xlsm')).hexdigest().upper()
+    else:
+        probe_hash=None
+    if probe_hash!=preparation['ProbeWorkbookSHA256']:
         errors.append('Frozen probe workbook changed')
     for file,key in [('FocusedAcceptanceProbe.bas','HelperSHA256'),('Combined.bas','ExtraHelperSHA256'),('SavedSectionFixture.json','SavedFixtureSHA256')]:
         if digest(directory/file)!=preparation[key]:errors.append('Executed helper/fixture snapshot differs: '+file)
@@ -271,6 +285,9 @@ def verify(directory, run):
             compare=[fields(x)['id'] for x in lines if x.startswith('FOCUSED_COMPARE|')]
             if len(compare)!=15 or len(set(compare))!=15:
                 errors.append(item['ID']+': batch must contain 15 distinct results')
+            batch_time=[fields(x) for x in lines if x.startswith('CORE_BATCH_TIME|')]
+            if len(batch_time)!=1 or float(batch_time[0]['seconds'])>10:
+                errors.append(item['ID']+': batch exceeds the existing 10 s gate')
         if item['ID'].startswith(('Batch15_','Stability_','AsymmetricSteel_')) or item['Macro'].endswith('.RunFocusedAcceptanceCases'):
             if 'RESULTS_SAVE_REOPEN:' not in body or 'STATUS_STYLE_SAVE_REOPEN:' not in body or 'equal=False' in body:
                 errors.append(item['ID']+': save/reopen proof missing')
@@ -301,9 +318,15 @@ def verify(directory, run):
         independent_result=read(independent_path)
         if independent_result.get('SourceSHA256')!=run['SourceSHA256'] or independent_result.get('ReportHashes')!={item['ID']:item['ReportSHA256'] for item,_ in reports(directory,run)}:
             errors.append('Independent evidence belongs to another source or reports')
+        if any(item.get('Macro','').endswith('.DumpFocusedForceBoundsExact') for item in run['Records']):
+            snapshot=directory/'IndependentVerifier.py'
+            if not snapshot.exists() or digest(snapshot)!=independent_result.get('VerifierSHA256'):
+                errors.append('Independent verifier snapshot is missing or differs')
     if run['Status']!='COMPLETED_PENDING_REVIEW':errors.append('Driver is incomplete: '+run['Status'])
     if not run.get('ProtectedInputsUnchanged'):errors.append('Protected input changed')
-    if run.get('FinishedUTC') and datetime.fromisoformat(run['FinishedUTC'])>datetime.fromisoformat(run['DeadlineUTC']):
+    if not run.get('FinishedUTC'):
+        errors.append('Driver completion timestamp is missing')
+    elif datetime.fromisoformat(run['FinishedUTC'])>datetime.fromisoformat(run['DeadlineUTC']):
         errors.append('One-hour budget exceeded')
     for entry in run['ProtectedInputs']:
         if digest(Path(entry['Path']))!=entry['SHA256']:errors.append('Protected input changed: '+entry['Path'])

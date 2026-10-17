@@ -1,0 +1,120 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\FocusedAcceptance_2026-10-17_Final\Probe\RC_Section_NDM.xlsm
+SOURCE_SHA256: 5CF7A7EF759A0C4F38C7F106ECF92C89EDF0BF4EAF55A7008F268061AB7C24CB
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bc53ca1bc551453480bf722e4ab5a918\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=60300; startTicks=639278233474303648
+===== modTestBatchCalculation.RunFocusedSpecialCase =====
+SUITE_STARTED: modTestBatchCalculation.RunFocusedSpecialCase; 2026-10-17T11:42:32
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=60300; workingSet=160653312; privateBytes=110878720; cpu=8.1875
+OK: special.steel.compressionLimit; actual=-0.02; expected=-0.02
+OK: special.steel.tensionLimit; actual=0.03; expected=0.03
+OK: special.steel.compressionStress; actual=-253.55; expected=-253.55
+OK: special.steel.tensionStress; actual=405.9; expected=405.9
+SPECIAL_INPUT|case=AsymmetricSteel|N=-4541584.71676705|Mx=1335285175.02377|My=-953560602.598114
+OK: special.within10Seconds
+OK: special.capture
+OK: special.overall.typed
+OK: special.preparationReleased
+OK: special.crackDomainOnce
+OK: special.mechanicalNoRepeat
+META: audit03.comments.AsymmetricSteel.direct|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.AsymmetricSteel.direct.russianReason
+OK: audit03.comments.AsymmetricSteel.direct.readable
+OK: audit03.comments.AsymmetricSteel.direct.noMachinePrefix
+META: audit03.comments.AsymmetricSteel.capacity|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Поиск несущей способности через UltimateStrain сошелся.
+OK: audit03.comments.AsymmetricSteel.capacity.russianReason
+OK: audit03.comments.AsymmetricSteel.capacity.readable
+OK: audit03.comments.AsymmetricSteel.capacity.noMachinePrefix
+META: audit03.comments.AsymmetricSteel.formation|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Предварительная проверка Mcrc: трещина образуется при текущей нагрузке.
+OK: audit03.comments.AsymmetricSteel.formation.russianReason
+OK: audit03.comments.AsymmetricSteel.formation.readable
+OK: audit03.comments.AsymmetricSteel.formation.noMachinePrefix
+META: audit03.comments.AsymmetricSteel.current|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=Равновесие найдено методом Newton со ступенчатым приложением нагрузки.
+OK: audit03.comments.AsymmetricSteel.current.russianReason
+OK: audit03.comments.AsymmetricSteel.current.readable
+OK: audit03.comments.AsymmetricSteel.current.noMachinePrefix
+META: audit03.comments.AsymmetricSteel.width|status=rsSuccess|code=CHECK_PASSED|applies=True|calculated=True|comment=СП 35: раскрытие проверено по текущему НДС; критическая группа G3, напряжение стержня R3.
+OK: audit03.comments.AsymmetricSteel.width.russianReason
+OK: audit03.comments.AsymmetricSteel.width.readable
+OK: audit03.comments.AsymmetricSteel.width.noMachinePrefix
+META: audit03.comments.AsymmetricSteel.longitudinal|status=rsCheckFailed|code=LONGITUDINAL_CRACK_EXCEEDED|applies=True|calculated=True|comment=Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.624 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+OK: audit03.comments.AsymmetricSteel.longitudinal.reasonPresent
+OK: audit03.comments.AsymmetricSteel.longitudinal.russianReason
+OK: audit03.comments.AsymmetricSteel.longitudinal.readable
+OK: audit03.comments.AsymmetricSteel.longitudinal.noMachinePrefix
+OK: audit03.comments.AsymmetricSteel.longitudinal.ownSubtree
+META: audit03.comments.AsymmetricSteel.stability|status=rsNotRequested|code=NOT_REQUESTED|applies=False|calculated=False|comment=
+OK: audit03.comments.AsymmetricSteel.formulaNoNumFail
+OK: audit03.comments.AsymmetricSteel.strengthNoCrack
+OK: audit03.comments.AsymmetricSteel.crackNoCapacity
+OK: audit03.comments.AsymmetricSteel.overallComposition
+OK: audit03.comments.AsymmetricSteel.batchOutput
+OK: audit03.comments.AsymmetricSteel.strengthOutput
+OK: audit03.comments.AsymmetricSteel.crackOutput
+OK: audit03.comments.AsymmetricSteel.stabilityOutput
+OUTPUT: audit03.comments.AsymmetricSteel|strength=|crack=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.624 МПа; допускаемое Rb,mc2 = 14.600 МПа.|stability=|batch=Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 15.624 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+FOCUSED_STATE|id=special.AsymmetricSteel|type=CapacityState|converged=True|physical=True|extension=False|status=OK|N=F64:C15153242DDF82E5|Mx=F64:41F720DB1C2820FC|My=F64:42078ED616D5164B|eps0=F64:BF81507E7D6AA0CC|kx=F64:3ED6E6B7C3D6614F|ky=F64:BED05DAC09169940
+OK: special.AsymmetricSteel.snapshot.1
+OK: special.AsymmetricSteel.originalN.1; actual=-4541584.72006013; expected=-4541584.71676705
+OK: special.AsymmetricSteel.originalMx.1; actual=6208467397.0678; expected=6208467394.50805
+OK: special.AsymmetricSteel.originalMy.1; actual=12647580389.1269; expected=12647580378.6359
+OK: special.AsymmetricSteel.centerN.1; actual=-4541584.72006013; expected=-4541584.71676705
+OK: special.AsymmetricSteel.centerMx.1; actual=2634854746.26752; expected=2634854746.29898
+OK: special.AsymmetricSteel.centerMy.1; actual=-1881615797.65422; expected=-1881615797.61016
+OK: special.AsymmetricSteel.physicalStatus.1
+FOCUSED_STATE|id=special.AsymmetricSteel|type=StrengthState|converged=True|physical=True|extension=False|status=OK|N=F64:C15153242DDF82E5|Mx=F64:41F2497D61F3B9B0|My=F64:4209495E13AD2EF5|eps0=F64:BF628E5BAC37112F|kx=F64:3EB7AF7076659C0C|ky=F64:BEB0EB072FFF6F77
+OK: special.AsymmetricSteel.snapshot.2
+OK: special.AsymmetricSteel.originalN.2; actual=-4541584.71676705; expected=-4541584.71676705
+OK: special.AsymmetricSteel.originalMx.2; actual=4908897823.23283; expected=4908897823.23283
+OK: special.AsymmetricSteel.originalMy.2; actual=13575635573.6479; expected=13575635573.6479
+OK: special.AsymmetricSteel.centerN.2; actual=-4541584.71676705; expected=-4541584.71676705
+OK: special.AsymmetricSteel.centerMx.2; actual=1335285175.02377; expected=1335285175.02377
+OK: special.AsymmetricSteel.centerMy.2; actual=-953560602.598114; expected=-953560602.598114
+OK: special.AsymmetricSteel.physicalStatus.2
+FOCUSED_STATE|id=special.AsymmetricSteel|type=PostCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:C15153242DDF82E5|Mx=F64:41F0DAFB57509D39|My=F64:4209CC3BD72CCEF7|eps0=F64:BF5AFA4F258E224F|kx=F64:3EAEC4CF63A02B42|ky=F64:BEA60089F04CBB60
+OK: special.AsymmetricSteel.snapshot.3
+OK: special.AsymmetricSteel.originalN.3; actual=-4541584.71676705; expected=-4541584.71676705
+OK: special.AsymmetricSteel.originalMx.3; actual=4524586357.03838; expected=4524586357.03838
+OK: special.AsymmetricSteel.originalMy.3; actual=13850082021.6011; expected=13850082021.6011
+OK: special.AsymmetricSteel.centerN.3; actual=-4541584.71676705; expected=-4541584.71676705
+OK: special.AsymmetricSteel.centerMx.3; actual=950973708.829316; expected=950973708.829316
+OK: special.AsymmetricSteel.centerMy.3; actual=-679114154.644985; expected=-679114154.644985
+OK: special.AsymmetricSteel.physicalStatus.3
+FOCUSED_STATE|id=special.AsymmetricSteel|type=PreCrackState|converged=True|physical=True|extension=False|status=OK|N=F64:C15153242DDF82E5|Mx=F64:41F0DAFB57509D39|My=F64:4209CC3BD72CCEF7|eps0=F64:BF4E64981DF67B6E|kx=F64:3EA16DF334561488|ky=F64:BE98DF86CB287F2F
+OK: special.AsymmetricSteel.snapshot.4
+OK: special.AsymmetricSteel.originalN.4; actual=-4541584.73364555; expected=-4541584.71676705
+OK: special.AsymmetricSteel.originalMx.4; actual=4524586370.31948; expected=4524586357.03838
+OK: special.AsymmetricSteel.originalMy.4; actual=13850082072.3665; expected=13850082021.6011
+OK: special.AsymmetricSteel.centerN.4; actual=-4541584.73364555; expected=-4541584.71676705
+OK: special.AsymmetricSteel.centerMx.4; actual=950973708.829315; expected=950973708.829316
+OK: special.AsymmetricSteel.centerMy.4; actual=-679114157.876285; expected=-679114154.644985
+OK: special.AsymmetricSteel.physicalStatus.4
+FOCUSED_STATE|id=special.AsymmetricSteel|type=CrackedState|converged=True|physical=True|extension=False|status=OK|N=F64:C15153242DDF82E5|Mx=F64:41F2497D61F3B9B0|My=F64:4209495E13AD2EF5|eps0=F64:BF6335C9D5F074DE|kx=F64:3EB7A8229DE5C907|ky=F64:BEB0E84DF7AB6F8A
+OK: special.AsymmetricSteel.snapshot.5
+OK: special.AsymmetricSteel.originalN.5; actual=-4541584.71676705; expected=-4541584.71676705
+OK: special.AsymmetricSteel.originalMx.5; actual=4908897823.23283; expected=4908897823.23283
+OK: special.AsymmetricSteel.originalMy.5; actual=13575635573.6479; expected=13575635573.6479
+OK: special.AsymmetricSteel.centerN.5; actual=-4541584.71676705; expected=-4541584.71676705
+OK: special.AsymmetricSteel.centerMx.5; actual=1335285175.02377; expected=1335285175.02377
+OK: special.AsymmetricSteel.centerMy.5; actual=-953560602.598114; expected=-953560602.598114
+OK: special.AsymmetricSteel.physicalStatus.5
+OK: special.noNumericalOrInputError.1
+OK: special.noNumericalOrInputError.2
+OK: special.noNumericalOrInputError.3
+OK: special.noNumericalOrInputError.1
+OK: special.noNumericalOrInputError.4
+OK: special.noNumericalOrInputError.5
+OK: special.noNumericalOrInputError.5
+OK: special.output.rngStrengthSummaryAnchor
+OK: special.output.rngCrackSummaryAnchor
+TOTAL_FOCUSED_SPECIAL: case=AsymmetricSteel; elapsedSec=3.3515625; passed=87; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bc53ca1bc551453480bf722e4ab5a918\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestBatchCalculation.RunFocusedSpecialCase; 2026-10-17T11:42:36
+RESULTS_SAVE_REOPEN: before=AA34ADA507BE85B2E7837AD07A184D3EF214748D6F6A07E6AA1B4FCA4416CC62; after=AA34ADA507BE85B2E7837AD07A184D3EF214748D6F6A07E6AA1B4FCA4416CC62; equal=True; file=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_bc53ca1bc551453480bf722e4ab5a918\RC_Section_NDM_saved.xlsm
+STATUS_STYLE_SAVE_REOPEN: before=24A7E7A3B7D43FB90F4C67F2C02545CE86DF450DE7E88A67251C0538C982218E; after=24A7E7A3B7D43FB90F4C67F2C02545CE86DF450DE7E88A67251C0538C982218E; equal=True
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

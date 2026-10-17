@@ -1,0 +1,189 @@
+{
+  "Status": "PASS",
+  "SourceSHA256": "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+  "IndividualCases": 122,
+  "MaxIndividualSeconds": 6.61328125,
+  "MedianIndividualSeconds": 0.818359375,
+  "BatchSeconds": {
+    "No": 4.40625,
+    "Yes": 4.01953125
+  },
+  "SpecialSeconds": {
+    "Stability_No": 3.39453125,
+    "AsymmetricSteel_No": 3.39453125,
+    "Stability_Yes": 3.43359375,
+    "AsymmetricSteel_Yes": 3.3515625
+  },
+  "Groups": [
+    {
+      "Group": "RectSet_Generated_No",
+      "Cases": 8,
+      "MaxSeconds": 3.796875
+    },
+    {
+      "Group": "RectSet_Generated_Yes",
+      "Cases": 8,
+      "MaxSeconds": 3.6484375
+    },
+    {
+      "Group": "Circle_Generated_No",
+      "Cases": 8,
+      "MaxSeconds": 4.07421875
+    },
+    {
+      "Group": "Circle_Generated_Yes",
+      "Cases": 8,
+      "MaxSeconds": 3.390625
+    },
+    {
+      "Group": "RoundedRectangle_Generated_No",
+      "Cases": 8,
+      "MaxSeconds": 4.5625
+    },
+    {
+      "Group": "RoundedRectangle_Generated_Yes",
+      "Cases": 8,
+      "MaxSeconds": 3.53515625
+    },
+    {
+      "Group": "HollowRectangle_Generated_No",
+      "Cases": 8,
+      "MaxSeconds": 3.99609375
+    },
+    {
+      "Group": "HollowRectangle_Generated_Yes",
+      "Cases": 8,
+      "MaxSeconds": 3.87890625
+    },
+    {
+      "Group": "SavedWorkbook_Saved_No",
+      "Cases": 23,
+      "MaxSeconds": 6.61328125
+    },
+    {
+      "Group": "SavedWorkbook_Saved_Yes",
+      "Cases": 23,
+      "MaxSeconds": 2.453125
+    },
+    {
+      "Group": "SavedWorkbook_Paths_No",
+      "Cases": 6,
+      "MaxSeconds": 3.36328125
+    },
+    {
+      "Group": "SavedWorkbook_Paths_Yes",
+      "Cases": 6,
+      "MaxSeconds": 3.484375
+    }
+  ],
+  "ExactHistoricalInputs": [
+    {
+      "Shape": "RectSet",
+      "Group": "Generated",
+      "Exact": true,
+      "SHA256": "6546A08380422132CB260CC8B23E81D75C8A4DC7084028B94675DC5366FF3C53"
+    },
+    {
+      "Shape": "Circle",
+      "Group": "Generated",
+      "Exact": true,
+      "SHA256": "08C7B9CB73D563C2C1E2441E4CE72971C185ED6C60B33F8FE31DC457CF0178B6"
+    },
+    {
+      "Shape": "RoundedRectangle",
+      "Group": "Generated",
+      "Exact": true,
+      "SHA256": "95862BD7B3077EAF2DD2979FD445B20403386B7806C73C390623AF74C58FAB5D"
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Group": "Generated",
+      "Exact": true,
+      "SHA256": "1C4915AA4D5229B9F8843D9F191EDE3DADF4FEF0CB1921D4398E5C8CAD6A0320"
+    },
+    {
+      "Shape": "SavedWorkbook",
+      "Group": "Saved",
+      "Exact": true,
+      "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+    },
+    {
+      "Shape": "SavedWorkbook",
+      "Group": "Paths",
+      "Exact": true,
+      "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+    }
+  ],
+  "NegativeControls": [
+    {
+      "Name": "missing_load_group",
+      "Rejected": true,
+      "Errors": [
+        "122 selected cases in both modes are incomplete",
+        "Independent evidence belongs to another source or reports"
+      ]
+    },
+    {
+      "Name": "missing_native",
+      "Rejected": true,
+      "Errors": [
+        "Required remaining stages are missing: ['NativeCAD']"
+      ]
+    },
+    {
+      "Name": "missing_independent",
+      "Rejected": true,
+      "Errors": [
+        "Required remaining stages are missing: ['Independent']"
+      ]
+    },
+    {
+      "Name": "wrong_mode",
+      "Rejected": true,
+      "Errors": [
+        "Circle_Generated_Yes: requested ON/OFF mode is not confirmed",
+        "Duplicate load group",
+        "122 selected cases in both modes are incomplete"
+      ]
+    },
+    {
+      "Name": "wrong_source",
+      "Rejected": true,
+      "Errors": [
+        "Source, compilation or input provenance differs",
+        "Native CAD provenance or report differs: RunRealAutoCADFarOriginTests",
+        "Native CAD provenance or report differs: RunRealAutoCADFarCapacityTests",
+        "Independent evidence belongs to another source or reports"
+      ]
+    },
+    {
+      "Name": "missing_finish",
+      "Rejected": true,
+      "Errors": [
+        "Driver completion timestamp is missing"
+      ]
+    },
+    {
+      "Name": "late_finish",
+      "Rejected": true,
+      "Errors": [
+        "One-hour budget exceeded"
+      ]
+    },
+    {
+      "Name": "failed_independent_exit",
+      "Rejected": true,
+      "Errors": [
+        "A required stage reported an unsuccessful exit"
+      ]
+    }
+  ],
+  "IndependentIntegrals": 560,
+  "ReviewedNumFailStates": 10,
+  "MinimumStrictProofMarginN": 273806.43235027854,
+  "RunSHA256": "F4AF7D7DE318ED628CC0B690C480979B930041689E86057E3235EBCAC2FB9F39",
+  "AcceptanceSHA256": "9CC32AF922D02322EED8DC49120B677AF9A7163B699D9A03482E74BDE2AB0905",
+  "StartedUTC": "2026-10-17T08:19:34.6334111+00:00",
+  "FinishedUTC": "2026-10-17T08:45:18.1107849+00:00",
+  "ElapsedSeconds": 1543.4813636
+}

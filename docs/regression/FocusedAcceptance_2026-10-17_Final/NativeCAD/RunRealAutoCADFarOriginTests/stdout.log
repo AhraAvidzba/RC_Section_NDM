@@ -1,0 +1,4 @@
+CAD_ACTIVATE: C:\Program Files\Autodesk\AutoCAD 2023\acad.exe /Automation
+CAD_OWNED: PID=62024; executable=C:\Program Files\Autodesk\AutoCAD 2023\acad.exe
+CAD_BOOTSTRAP_DOCUMENT: Чертеж2.dwg
+TOTAL_REAL_AUTOCAD_FAR_ORIGIN: passed=447; failed=0
