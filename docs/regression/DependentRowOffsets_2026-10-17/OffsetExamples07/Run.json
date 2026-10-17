@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "OffsetExamples07",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.DumpIndependentRowOffsetExamples",
+                     "Seconds":  33.983579,
+                     "Characters":  16996647,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "BCAEC126A3F7081A34131D539EEAB419673ECE178C14070F89E2887180BB8FC4",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:29:05.6824422+03:00"
+}

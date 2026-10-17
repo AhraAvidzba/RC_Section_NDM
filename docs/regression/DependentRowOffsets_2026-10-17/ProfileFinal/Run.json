@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "ProfileFinal",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunRebarContactBuilderTests",
+                     "Seconds":  0.1129395,
+                     "Characters":  3967,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+                     "Seconds":  0.0045745,
+                     "Characters":  4765,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+                     "Seconds":  0.2122693,
+                     "Characters":  3651,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+                     "Seconds":  0.916491,
+                     "Characters":  442,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunCircleSetbackTests",
+                     "Seconds":  0.987003,
+                     "Characters":  2355,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetWallCollisionTests",
+                     "Seconds":  0.32062979999999996,
+                     "Characters":  704,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "C3601B5AD2EFD8C6F6F06F2DE4437A3780EDB5A30F3F83BBFBA4E2484313A8A7",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:32:49.0140180+03:00"
+}

@@ -6346,6 +6346,10 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
             End Select
         Next row
     Next name
+    For Each name In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Diameter", "Rebar.StartSetback", "Rebar.EndSetback")
+        Set target = FixtureCircleFieldCell(ThisWorkbook, CStr(name))
+        Audit03DivideNumericInput target, lengthFactor
+    Next name
     Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
     Audit03DivideNumericInput target, lengthFactor
     Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset3")

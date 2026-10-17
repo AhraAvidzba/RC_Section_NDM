@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\DependentRowOffsets_2026-10-17\\Prepared05.xlsm",
+    "WorkbookSHA256":  "BCAEC126A3F7081A34131D539EEAB419673ECE178C14070F89E2887180BB8FC4",
+    "ProductionSHA256":  "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestAudit02Api"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

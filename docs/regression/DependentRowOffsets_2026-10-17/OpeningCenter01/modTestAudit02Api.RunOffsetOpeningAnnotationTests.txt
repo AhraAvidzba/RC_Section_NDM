@@ -1,0 +1,11 @@
+﻿PASS: opening.offset.source.positions
+PASS: opening.offset.normal100
+PASS: opening.offset.contact18
+PASS: opening.offset.tangent.perpendicular
+PASS: opening.offset.corner.components
+PASS: opening.annotation.full.row.start
+PASS: opening.annotation.full.row.end
+PASS: opening.annotation.full.row.center
+PASS: opening.annotation.extreme.support
+PASS: opening.annotation.found
+TOTAL OFFSET OPENING ANNOTATION: passed=10; failed=0

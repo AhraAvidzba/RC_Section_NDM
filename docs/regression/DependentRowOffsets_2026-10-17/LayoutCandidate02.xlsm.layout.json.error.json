@@ -1,0 +1,5 @@
+﻿{
+    "Error":  "Exception from HRESULT: 0x800A01A8",
+    "Stack":  "at Add-DependentRowsNote, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\DependentRowsConfig.ps1: line 97\r\nat Update-DependentRowsConfigLayout, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\DependentRowsConfig.ps1: line 137\r\nat \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Update-DependentRowsWorkbook.ps1: line 29",
+    "Position":  "At C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\DependentRowsConfig.ps1:97 char:5\r\n+     $Cell.AddComment($Text) | Out-Null\r\n+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}

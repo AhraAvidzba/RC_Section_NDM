@@ -1,0 +1,679 @@
+﻿{
+    "Status":  "DIRECTED_NATIVE_GUIDE_PASS",
+    "ExcelVersion":  "16.0",
+    "ExcelBuild":  10417,
+    "WorkbookSHA256":  "0BF1550FA51A5B9DAD70B57234161840A1216CBB1EABE97C065B7AA3E807F21D",
+    "ProductionSHA256":  "785FE020B34FE931BC98F36F39511CFB1A6D162F1B569CCCA24276A376A29F7B",
+    "ProductionChanged":  false,
+    "Idempotent":  true,
+    "StatesSuccess":  true,
+    "StatesFailure":  [
+
+                      ],
+    "ReopenTextMatch":  true,
+    "OldShapesPreserved":  true,
+    "AddedNames":  [
+                       "rngSectionRecipeGuide"
+                   ],
+    "First":  {
+                  "Status":  "NATIVE_GUIDE_TEXT_MATCH",
+                  "StartRow":  552,
+                  "EndRow":  612,
+                  "OldStartRow":  0,
+                  "OldEndRow":  0,
+                  "PreviousContentBottom":  1686,
+                  "WidthPoints":  1282.5,
+                  "Rows":  61,
+                  "Members":  145,
+                  "BodySHA256":  "16f16e73d40cffaa6c2800b08e92f0e138bb7c7bec66d13db3df11714324ad64",
+                  "ApiStatus":  "COMMENT_ONLY_VBE_API",
+                  "ApiRows":  {
+
+                              },
+                  "SectionRows":  {
+
+                                  },
+                  "Outline":  {
+                                  "Titles":  [
+                                                 "Подготовка геометрии в AutoCAD и импорт",
+                                                 "Поиск НДС текущего сочетания",
+                                                 "Поиск предельной несущей способности",
+                                                 "Расчет ширины раскрытия нормальных трещин",
+                                                 "Расчет продольного изгиба и устойчивости",
+                                                 "Справка по результатам расчета листа Results",
+                                                 "Добавление нового типа сечения",
+                                                 "Справка по настройкам листа Config"
+                                             ],
+                                  "Rows":  [
+                                               1,
+                                               86,
+                                               130,
+                                               175,
+                                               397,
+                                               495,
+                                               552,
+                                               613
+                                           ],
+                                  "LastRow":  1748,
+                                  "DefaultExpanded":  "Справка по настройкам листа Config",
+                                  "Groups":  8,
+                                  "Moves":  [
+                                                {
+                                                    "First":  1632,
+                                                    "Last":  1688,
+                                                    "Destination":  495
+                                                },
+                                                {
+                                                    "First":  1689,
+                                                    "Last":  1749,
+                                                    "Destination":  552
+                                                }
+                                            ]
+                              },
+                  "RowHeights":  [
+                                     {
+                                         "Row":  1689,
+                                         "Before":  18,
+                                         "After":  24
+                                     },
+                                     {
+                                         "Row":  1690,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1693,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1694,
+                                         "Before":  18,
+                                         "After":  21
+                                     },
+                                     {
+                                         "Row":  1696,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1697,
+                                         "Before":  18,
+                                         "After":  44
+                                     },
+                                     {
+                                         "Row":  1698,
+                                         "Before":  18,
+                                         "After":  44
+                                     },
+                                     {
+                                         "Row":  1699,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1700,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1701,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1702,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1703,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1704,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1705,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1706,
+                                         "Before":  18,
+                                         "After":  21
+                                     },
+                                     {
+                                         "Row":  1707,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1709,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1710,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1711,
+                                         "Before":  18,
+                                         "After":  69
+                                     },
+                                     {
+                                         "Row":  1712,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1713,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1714,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1715,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1716,
+                                         "Before":  18,
+                                         "After":  21
+                                     },
+                                     {
+                                         "Row":  1717,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1718,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1719,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1720,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1721,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1722,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1723,
+                                         "Before":  18,
+                                         "After":  44
+                                     },
+                                     {
+                                         "Row":  1724,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1725,
+                                         "Before":  18,
+                                         "After":  21
+                                     },
+                                     {
+                                         "Row":  1726,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1727,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1728,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1729,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1730,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1731,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1732,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1733,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1734,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1735,
+                                         "Before":  18,
+                                         "After":  21
+                                     },
+                                     {
+                                         "Row":  1736,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1738,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1739,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1740,
+                                         "Before":  18,
+                                         "After":  19
+                                     },
+                                     {
+                                         "Row":  1741,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1743,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1744,
+                                         "Before":  18,
+                                         "After":  21
+                                     },
+                                     {
+                                         "Row":  1745,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1746,
+                                         "Before":  18,
+                                         "After":  31
+                                     },
+                                     {
+                                         "Row":  1747,
+                                         "Before":  18,
+                                         "After":  9
+                                     },
+                                     {
+                                         "Row":  1748,
+                                         "Before":  18,
+                                         "After":  44
+                                     },
+                                     {
+                                         "Row":  1749,
+                                         "Before":  18,
+                                         "After":  9
+                                     }
+                                 ]
+              },
+    "Second":  {
+                   "Status":  "NATIVE_GUIDE_TEXT_MATCH",
+                   "StartRow":  552,
+                   "EndRow":  612,
+                   "OldStartRow":  552,
+                   "OldEndRow":  612,
+                   "PreviousContentBottom":  1748,
+                   "WidthPoints":  1282.5,
+                   "Rows":  61,
+                   "Members":  145,
+                   "BodySHA256":  "16f16e73d40cffaa6c2800b08e92f0e138bb7c7bec66d13db3df11714324ad64",
+                   "ApiStatus":  "COMMENT_ONLY_VBE_API",
+                   "ApiRows":  {
+
+                               },
+                   "SectionRows":  {
+
+                                   },
+                   "Outline":  {
+                                   "Titles":  [
+                                                  "Подготовка геометрии в AutoCAD и импорт",
+                                                  "Поиск НДС текущего сочетания",
+                                                  "Поиск предельной несущей способности",
+                                                  "Расчет ширины раскрытия нормальных трещин",
+                                                  "Расчет продольного изгиба и устойчивости",
+                                                  "Справка по результатам расчета листа Results",
+                                                  "Добавление нового типа сечения",
+                                                  "Справка по настройкам листа Config"
+                                              ],
+                                   "Rows":  [
+                                                1,
+                                                86,
+                                                130,
+                                                175,
+                                                397,
+                                                495,
+                                                552,
+                                                613
+                                            ],
+                                   "LastRow":  1748,
+                                   "DefaultExpanded":  "Справка по настройкам листа Config",
+                                   "Groups":  8,
+                                   "Moves":  [
+
+                                             ]
+                               },
+                   "RowHeights":  [
+                                      {
+                                          "Row":  552,
+                                          "Before":  18,
+                                          "After":  24
+                                      },
+                                      {
+                                          "Row":  553,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  556,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  557,
+                                          "Before":  18,
+                                          "After":  21
+                                      },
+                                      {
+                                          "Row":  559,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  560,
+                                          "Before":  18,
+                                          "After":  44
+                                      },
+                                      {
+                                          "Row":  561,
+                                          "Before":  18,
+                                          "After":  44
+                                      },
+                                      {
+                                          "Row":  562,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  563,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  564,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  565,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  566,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  567,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  568,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  569,
+                                          "Before":  18,
+                                          "After":  21
+                                      },
+                                      {
+                                          "Row":  570,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  572,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  573,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  574,
+                                          "Before":  18,
+                                          "After":  69
+                                      },
+                                      {
+                                          "Row":  575,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  576,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  577,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  578,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  579,
+                                          "Before":  18,
+                                          "After":  21
+                                      },
+                                      {
+                                          "Row":  580,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  581,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  582,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  583,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  584,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  585,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  586,
+                                          "Before":  18,
+                                          "After":  44
+                                      },
+                                      {
+                                          "Row":  587,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  588,
+                                          "Before":  18,
+                                          "After":  21
+                                      },
+                                      {
+                                          "Row":  589,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  590,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  591,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  592,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  593,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  594,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  595,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  596,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  597,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  598,
+                                          "Before":  18,
+                                          "After":  21
+                                      },
+                                      {
+                                          "Row":  599,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  601,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  602,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  603,
+                                          "Before":  18,
+                                          "After":  19
+                                      },
+                                      {
+                                          "Row":  604,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  606,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  607,
+                                          "Before":  18,
+                                          "After":  21
+                                      },
+                                      {
+                                          "Row":  608,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  609,
+                                          "Before":  18,
+                                          "After":  31
+                                      },
+                                      {
+                                          "Row":  610,
+                                          "Before":  18,
+                                          "After":  9
+                                      },
+                                      {
+                                          "Row":  611,
+                                          "Before":  18,
+                                          "After":  44
+                                      },
+                                      {
+                                          "Row":  612,
+                                          "Before":  18,
+                                          "After":  9
+                                      }
+                                  ]
+               },
+    "Navigation":  [
+
+                   ],
+    "ApiStatus":  "COMMENT_ONLY_VBE_API"
+}

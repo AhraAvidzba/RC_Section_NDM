@@ -1,0 +1,35 @@
+﻿{
+    "Passed":  true,
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\DependentRowOffsets_2026-10-17\\Accepted.xlsm",
+    "SHA256":  "AF395D26C0D1BB0EE5F0E6DD5C6B8E841969E51E20244AC50B62B6CB1A0F7B3C",
+    "InputsPreserved":  false,
+    "CaptureOnly":  true,
+    "Reopened":  true,
+    "Tables":  [
+                   {
+                       "Name":  "rngCircleGeometry",
+                       "Address":  "$H$87:$R$97",
+                       "Rows":  11,
+                       "Columns":  11
+                   },
+                   {
+                       "Name":  "rngRectSetGeometry",
+                       "Address":  "$H$101:$R$128",
+                       "Rows":  28,
+                       "Columns":  11
+                   },
+                   {
+                       "Name":  "rngRoundedRectangleGeometry",
+                       "Address":  "$H$131:$R$152",
+                       "Rows":  22,
+                       "Columns":  11
+                   },
+                   {
+                       "Name":  "rngHollowRectangleGeometry",
+                       "Address":  "$H$156:$R$183",
+                       "Rows":  28,
+                       "Columns":  11
+                   }
+               ],
+    "Guide":  null
+}

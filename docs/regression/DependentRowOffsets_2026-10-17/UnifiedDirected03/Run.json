@@ -1,0 +1,79 @@
+﻿{
+    "Stage":  "UnifiedDirected03",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunCircleSetbackTests",
+                     "Seconds":  1.1453103999999998,
+                     "Characters":  2355,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetWallCollisionTests",
+                     "Seconds":  0.3355478,
+                     "Characters":  704,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+                     "Seconds":  4.8632960999999995,
+                     "Characters":  7163,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03CircleRebarInputTests",
+                     "Seconds":  13.90471,
+                     "Characters":  49469,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestWorkbookInterface.RunConfigPresentationTests",
+                     "Seconds":  0.088339199999999993,
+                     "Characters":  74452,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+                     "Seconds":  2.3330508,
+                     "Characters":  21403,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.3882811,
+                     "Characters":  7459,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                     "Seconds":  24.6423015,
+                     "Characters":  4055,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+                     "Seconds":  0.08460659999999999,
+                     "Characters":  803,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03RebarCounterTests",
+                     "Seconds":  3.5841345,
+                     "Characters":  3917,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "CED4DAAB7D1014A860E0181235C3A63D65FE01A913418DF1AD1CFD345E47531C",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:27:19.3802271+03:00"
+}

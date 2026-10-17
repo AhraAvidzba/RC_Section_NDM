@@ -48,6 +48,13 @@ function Convert-HelpMovedRow([int]$Row,[int]$First,[int]$Last,[int]$Destination
 # Восстанавливает свободные рисунки и строковые SubAddress по карте строк Cut/Insert.
 function Move-HelpRowsBefore($Workbook,$Sheet,[int]$First,[int]$Last,[int]$Destination) {
     if (($Destination -ge $First -and $Destination -le $Last+1) -or $Last -lt $First) {throw 'Invalid Help block move.'}
+    $ownedNames=@(foreach($name in $Workbook.Names){
+        try{$range=$name.RefersToRange}catch{continue}
+        if($null -eq $range -or $range.Areas.Count -ne 1 -or $range.Worksheet.Name -cne $Sheet.Name){continue}
+        if($range.Row -ge $First -and $range.Row+$range.Rows.Count-1 -le $Last){
+            [pscustomobject]@{Name=$name;Row=[int]$range.Row;Column=[int]$range.Column;Rows=[int]$range.Rows.Count;Columns=[int]$range.Columns.Count}
+        }
+    })
     $pictures=@($Sheet.Shapes | ForEach-Object {
         [pscustomobject]@{Shape=$_;Row=[int]$_.TopLeftCell.Row;Offset=[double]$_.Top-[double]$Sheet.Rows.Item($_.TopLeftCell.Row).Top;
             Left=[double]$_.Left;Width=[double]$_.Width;Height=[double]$_.Height}
@@ -63,6 +70,10 @@ function Move-HelpRowsBefore($Workbook,$Sheet,[int]$First,[int]$Last,[int]$Desti
     $Sheet.Rows.Item("${First}:${Last}").Cut() | Out-Null
     $Sheet.Rows.Item($Destination).Insert(-4121) | Out-Null
     $Workbook.Application.CutCopyMode=$false
+    foreach($saved in $ownedNames){
+        $row=Convert-HelpMovedRow $saved.Row $First $Last $Destination
+        $saved.Name.RefersTo="='"+$Sheet.Name.Replace("'","''")+"'!"+$Sheet.Cells.Item($row,$saved.Column).Resize($saved.Rows,$saved.Columns).Address()
+    }
     foreach ($picture in $pictures) {
         $row=Convert-HelpMovedRow $picture.Row $First $Last $Destination
         $picture.Shape.Top=[double]$Sheet.Rows.Item($row).Top+$picture.Offset
@@ -72,6 +83,7 @@ function Move-HelpRowsBefore($Workbook,$Sheet,[int]$First,[int]$Last,[int]$Desti
         $row=Convert-HelpMovedRow $saved.Row $First $Last $Destination
         $saved.Link.SubAddress="'Справка'!"+$saved.Column+$row
     }
+    $script:HelpRowMoves+=,[ordered]@{First=$First;Last=$Last;Destination=$Destination}
 }
 
 # Меняет число строк только в свободном месте; сохраняет ссылки и положение рисунков.
@@ -110,6 +122,7 @@ function Resize-HelpEmptyRows($Workbook,$Sheet,[int]$First,[int]$Count,[bool]$In
 
 # Создаёт одну outline-группу для каждого раздела; Config последний и раскрыт.
 function Set-HelpSectionOrderAndOutline($Workbook) {
+    $script:HelpRowMoves=@()
     $sheet=$Workbook.Worksheets.Item('Справка')
     $sheet.Rows.Hidden=$false
     Repair-HelpConfigEntries $Workbook
@@ -125,6 +138,12 @@ function Set-HelpSectionOrderAndOutline($Workbook) {
             $next=@($rows.Values | Where-Object {$_ -gt $first} | Sort-Object)[0]
             $last=Get-HelpContentLastRow $sheet
             if ($null -ne $next) {$last=[int]$next-1}
+            # Именованный короткий раздел включает завершающую пустую строку.
+            # Перенос только непустых строк оставлял её на старом месте и растягивал имя.
+            if($title -eq 'Добавление нового типа сечения'){
+                try{$guide=$Workbook.Names.Item('rngSectionRecipeGuide').RefersToRange}catch{$guide=$null}
+                if($null -ne $guide -and $guide.Row -eq $first){$last=[Math]::Max($last,$guide.Row+$guide.Rows.Count-1)}
+            }
             Move-HelpRowsBefore $Workbook $sheet $first $last $destination
         }
     }
@@ -144,7 +163,7 @@ function Set-HelpSectionOrderAndOutline($Workbook) {
     $sheet.Outline.ShowLevels(1) | Out-Null
     $sheet.Rows.Item([int]$rows[$configTitle]).ShowDetail=$true
     $sheet.Range($sheet.Cells.Item(1,1),$sheet.Cells.Item($last,6)).Borders.Item(10).LineStyle=1
-    return [ordered]@{Titles=$script:HelpMainTitles;Rows=$ordered;LastRow=$last;DefaultExpanded=$configTitle;Groups=8}
+    return [ordered]@{Titles=$script:HelpMainTitles;Rows=$ordered;LastRow=$last;DefaultExpanded=$configTitle;Groups=8;Moves=$script:HelpRowMoves}
 }
 
 # Узкие прежние обновления дописывали эти настройки после Results.

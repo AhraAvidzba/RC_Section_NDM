@@ -57,6 +57,7 @@ End Sub
 
 ' Задаёт смещения зависимого ряда для касания стержней: учитывает половины диаметров
 ' основного и добавляемого стержней и полные диаметры промежуточных рядов.
+' interveningDiameterSum также принимает добавки к расстоянию, подготовленные CRebarContactBuilder.
 ' Меняет NormalOffset, TangentOffset и EverySecond; координаты рассчитывает CRebarRuleExecutor.
 ' Оба диаметра должны быть положительными; отключённый ряд пропускается до вызова.
 Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diameter As Double, _

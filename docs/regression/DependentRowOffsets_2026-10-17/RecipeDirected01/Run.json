@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "RecipeDirected01",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestSectionRecipes.RunCircleRecipeInputTests",
+                     "Seconds":  0.41672919999999997,
+                     "Characters":  150,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRoundedRecipeInputTests",
+                     "Seconds":  3.176065,
+                     "Characters":  368,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunHollowRecipeInputTests",
+                     "Seconds":  4.7217721,
+                     "Characters":  491,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "4D904BD3B6389256E302B241A10D06106A5C130CC4F9792369D15F9DC1DF4E8D",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T12:58:40.1356379+03:00"
+}

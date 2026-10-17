@@ -13,18 +13,21 @@ Option Explicit
 ' Подготовка дополнительных рядов арматуры и их контактных смещений
 ' ==========================================================================
 ' Один экземпляр обслуживает дополнительные ряды одного основного ряда.
-' Отступ каждого ряда отсчитывает от основного. Контактные диаметры накапливает
+' Отступ каждого ряда отсчитывает от основного. Промежуточные расстояния накапливает
 ' отдельно для совпадающих базовых отступов и двух направлений. Стержни создают общие построители;
 ' правила и аннотации по подготовленным настройкам объявляет сам рецепт.
+' Между приставляемыми стержнями оставляет 2,5 мм на выступы профиля;
+' расчётные диаметры и площади стержней эта добавка не меняет.
 
-Private mNormalSign As Double ' Знак смещения Stacked по нормали к линии основного ряда.
+Private Const PROFILE_GAP_MM As Double = 2.5 ' Добавка между соседними стержнями контактной цепочки на выступы профиля, мм.
+Private mNormalSign As Double ' Направление базового отступа и смещения Stacked по нормали к основному ряду.
 Private mTangentSign As Double ' Знак смещения SideBySide вдоль линии основного ряда.
 Private mDefaults As CRebarRuleOptions ' Независимый снимок общих настроек только дополнительных рядов.
 Private Type TContactGroup
     Offset As Double ' Расстояние базовой линии группы от основного ряда, мм.
     Diameter As Double ' Диаметр первого стержня этой группы, мм.
-    NormalDiameters As Double ' Сумма промежуточных диаметров Stacked только этой группы, мм.
-    TangentDiameters As Double ' Сумма промежуточных диаметров SideBySide только этой группы, мм.
+    NormalSpacing As Double ' Сумма промежуточных диаметров и добавок на профиль по нормали только этой группы, мм.
+    TangentSpacing As Double ' Сумма промежуточных диаметров и добавок на профиль вдоль линии только этой группы, мм.
 End Type
 Private mGroups() As TContactGroup ' Контактные группы одного семейства; первая соответствует основному ряду.
 Private mGroupCount As Long ' Число уже подготовленных контактных групп.
@@ -49,8 +52,8 @@ Public Sub Initialize(ByVal baseDiameter As Double, ByVal normalSign As Double, 
 End Sub
 
 ' Возвращает независимые настройки активного ряда: базовый отступ от Main плюс контактная поправка.
-' Вызывается один раз на ряд в порядке описания. EverySecondBar не уменьшает накопленные диаметры.
-' При ошибке общие настройки и накопленные диаметры остаются прежними.
+' Вызывается один раз на ряд в порядке описания. EverySecondBar не уменьшает накопленные расстояния.
+' При ошибке общие настройки и накопленные расстояния остаются прежними.
 Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String, Optional ByVal baseOffset As Double = 0#) As CRebarRuleOptions
     On Error GoTo Failed
     If Not mInitialized Then SectionRecipeError "CRebarContactBuilder", "Сначала задайте основной ряд через Initialize.", sourceReference
@@ -67,10 +70,10 @@ Public Function AppendRow(ByVal diameter As Double, ByVal location As String, By
     Select Case location
         Case "Stacked"
             axis = RowNormal: directionSign = mNormalSign
-            If group > 0 Then intermediate = mGroups(group).NormalDiameters
+            If group > 0 Then intermediate = mGroups(group).NormalSpacing
         Case "SideBySide"
             axis = RowTangent: directionSign = mTangentSign
-            If group > 0 Then intermediate = mGroups(group).TangentDiameters
+            If group > 0 Then intermediate = mGroups(group).TangentSpacing
         Case Else: SectionRecipeError "CRebarContactBuilder", "Неизвестное расположение ряда '" & location & "'. Выберите Stacked или SideBySide.", sourceReference
     End Select
     Select Case binding
@@ -81,8 +84,8 @@ Public Function AppendRow(ByVal diameter As Double, ByVal location As String, By
     Set options = mDefaults.Clone
     options.SourceReference = sourceReference ' Адрес активного ряда имеет приоритет над адресом общих настроек.
     If group > 0 Then
-        options.ConfigureDependentContact anchor, diameter, axis, directionSign, everySecond, intermediate
-        nextSum = intermediate + diameter
+        options.ConfigureDependentContact anchor, diameter, axis, directionSign, everySecond, intermediate + PROFILE_GAP_MM
+        nextSum = intermediate + diameter + PROFILE_GAP_MM
     Else
         options.NormalOffset = 0#: options.TangentOffset = 0#: options.EverySecond = everySecond
     End If
@@ -94,9 +97,9 @@ Public Function AppendRow(ByVal diameter As Double, ByVal location As String, By
         mGroupCount = mGroupCount + 1: group = mGroupCount
         mGroups(group).Offset = groupOffset: mGroups(group).Diameter = diameter
     ElseIf axis = RowNormal Then
-        mGroups(group).NormalDiameters = nextSum
+        mGroups(group).NormalSpacing = nextSum
     Else
-        mGroups(group).TangentDiameters = nextSum
+        mGroups(group).TangentSpacing = nextSum
     End If
     Set AppendRow = options
     Exit Function

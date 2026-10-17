@@ -1,0 +1,37 @@
+﻿{
+    "Stage":  "FinalOffsetDirected05",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03RebarCounterTests",
+                     "Seconds":  4.0588117,
+                     "Characters":  3917,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+                     "Seconds":  6.4832354,
+                     "Characters":  7163,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+                     "Seconds":  0.2257807,
+                     "Characters":  3010,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+                     "Seconds":  0.0283541,
+                     "Characters":  4726,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "541F4AF23A3B8FBC4A3F68C13A39498751BE3D654ADB1AC69708D329080AF2F8",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T13:26:08.5420690+03:00"
+}

@@ -1,0 +1,31 @@
+﻿{
+    "Passed":  true,
+    "Tables":  [
+                   {
+                       "Name":  "rngCircleGeometry",
+                       "Address":  "$H$30:$R$40",
+                       "Header":  10,
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngRoundedRectangleGeometry",
+                       "Address":  "$H$45:$R$66",
+                       "Header":  18,
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngHollowRectangleGeometry",
+                       "Address":  "$H$71:$R$98",
+                       "Header":  20,
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngRectSetGeometry",
+                       "Address":  "$H$103:$R$130",
+                       "Header":  20,
+                       "Passed":  true
+                   }
+               ],
+    "Reopened":  true,
+    "MigrationRequired":  false
+}

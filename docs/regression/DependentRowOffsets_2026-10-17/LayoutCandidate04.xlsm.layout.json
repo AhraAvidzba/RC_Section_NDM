@@ -1,0 +1,59 @@
+﻿{
+    "SourceSHA256":  "6347495FA5155C6F14CBF41E942D929BDD28F87692D461C3E8AC1F6A58DEADEC",
+    "First":  {
+                  "Tables":  [
+                                 {
+                                     "Name":  "rngCircleGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$87:$R$97"
+                                 },
+                                 {
+                                     "Name":  "rngRectSetGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$101:$R$128"
+                                 },
+                                 {
+                                     "Name":  "rngRoundedRectangleGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$131:$R$152"
+                                 },
+                                 {
+                                     "Name":  "rngHollowRectangleGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$156:$R$183"
+                                 }
+                             ],
+                  "MovedRight":  [
+
+                                 ]
+              },
+    "Second":  {
+                   "Tables":  [
+                                  {
+                                      "Name":  "rngCircleGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$87:$R$97"
+                                  },
+                                  {
+                                      "Name":  "rngRectSetGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$101:$R$128"
+                                  },
+                                  {
+                                      "Name":  "rngRoundedRectangleGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$131:$R$152"
+                                  },
+                                  {
+                                      "Name":  "rngHollowRectangleGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$156:$R$183"
+                                  }
+                              ],
+                   "MovedRight":  [
+
+                                  ]
+               },
+    "Idempotent":  true,
+    "SourceUnchanged":  true
+}

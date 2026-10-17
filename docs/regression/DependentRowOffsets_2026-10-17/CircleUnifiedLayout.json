@@ -1,0 +1,10 @@
+{
+  "Passed": true,
+  "MainValuesPreserved": true,
+  "OriginalMainCommentsPreservedAsNotes": true,
+  "OtherInputTablesPreserved": true,
+  "SavedXmlAuditPassed": true,
+  "ReceiptHashReadAfterNativeClose": true,
+  "WorkbookSHA256": "C341A048B8551E41F073DCCB7D5F704B7844559CA7111DCEC349E63F404091EF",
+  "OneTimeScriptRemoved": true
+}

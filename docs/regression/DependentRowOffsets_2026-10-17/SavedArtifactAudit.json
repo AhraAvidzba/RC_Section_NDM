@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "Comparisons": 9939,
+  "Tables": [
+    {
+      "Name": "rngCircleGeometry",
+      "Range": "Config!$H$87:$R$97"
+    },
+    {
+      "Name": "rngRectSetGeometry",
+      "Range": "Config!$H$101:$R$128"
+    },
+    {
+      "Name": "rngRoundedRectangleGeometry",
+      "Range": "Config!$H$131:$R$152"
+    },
+    {
+      "Name": "rngHollowRectangleGeometry",
+      "Range": "Config!$H$156:$R$183"
+    }
+  ],
+  "Failures": [],
+  "WorkbookCalculationBefore": "<ns0:calcPr xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" calcId=\"191029\" calcMode=\"manual\" calcCompleted=\"0\" calcOnSave=\"0\" />",
+  "WorkbookCalculationAfter": "<ns0:calcPr xmlns:ns0=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" calcId=\"191029\" calcMode=\"manual\" calcCompleted=\"0\" calcOnSave=\"0\" />"
+}

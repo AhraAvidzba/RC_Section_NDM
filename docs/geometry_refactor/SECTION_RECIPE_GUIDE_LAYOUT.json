@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "09c152edbee889234015eea4131ce87f3570934eca67c568320de0f0829c8106",
+  "bodySHA256": "16f16e73d40cffaa6c2800b08e92f0e138bb7c7bec66d13db3df11714324ad64",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "88fc30eb0195c47535ad676508ea137541c7a92a249eccfeb4d47503ec96a98f",
-    "src/Common/modSectionRecipeApiGuide.bas": "4ddf461bce9462414c4e5699ed01a045a394181bab8cbf6c21b1bc2c23464824"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "07dd356c97b4d705fe2435b75de578c73ee7ef72b69b30e433d3da8ecc616315",
+    "src/Common/modSectionRecipeApiGuide.bas": "e99591edd5eb33865b377b705ab15ca4e6e43849a0cc13597db4ce8f22bf164c"
   },
   "rows": [
     {
@@ -140,7 +140,7 @@
       "line": 22
     },
     {
-      "text": "4. Опишите получение линий центров арматуры, например смещением контура на as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительные ряды можно связать с основным. В CRebarRuleOptions AnnotationGroup объединяет стержни в подпись, Publication задаёт порядок вывода, Coincidence — обработку совпадений. Параметры читает ReadRebarInputs. В AddReinforcement создают CRebarContactBuilder: один на основной ряд, отдельные настройки в Initialize и один AppendRow на активный ряд. Он сам учитывает промежуточные диаметры; отключённые ряды пропускают. Произвольные смещения задаются NormalOffset/TangentOffset. Пример — в modSectionRecipeApiGuide.",
+      "text": "4. Опишите получение линий центров арматуры, например смещением контура на as. Задайте диаметры и число стержней либо расстояния между ними. Дополнительные ряды можно связать с основным. В CRebarRuleOptions AnnotationGroup объединяет стержни в подпись, Publication задаёт порядок вывода, Coincidence — обработку совпадений. Параметры читает ReadRebarInputs. В AddReinforcement создают CRebarContactBuilder: один на основной ряд, отдельные настройки в Initialize и один AppendRow на активный ряд. Последний необязательный аргумент AppendRow — baseOffset в мм от линии основного ряда по нормали в бетон (по умолчанию 0). Одинаковые отступы образуют контактную группу, разные — независимые группы. Внутри группы он учитывает диаметры отдельно для Stacked и SideBySide; EverySecondBar не меняет контактных расстояний. Оба RebarDependent объявляют от Main; отключённые ряды пропускают. Произвольные смещения задаются NormalOffset/TangentOffset. Пример — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 23
@@ -375,5 +375,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 142
+  "members": 146
 }

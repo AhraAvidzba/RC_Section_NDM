@@ -1,0 +1,23 @@
+﻿{
+    "Stage":  "UnifiedDirected01",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunCircleSetbackTests",
+                     "Seconds":  0.8693219,
+                     "Characters":  2355,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetWallCollisionTests",
+                     "Seconds":  0.3700863,
+                     "Characters":  635,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "989B2D1EC27115E0ABFC91646BBF8AAA320E66B46DF2E349C63204D0D3D2179E",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:23:11.1458412+03:00"
+}

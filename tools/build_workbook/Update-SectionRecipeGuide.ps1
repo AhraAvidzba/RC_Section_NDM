@@ -17,7 +17,8 @@ function States($application) {return [ordered]@{Calculation=[int]$application.C
     EnableEvents=[bool]$application.EnableEvents;DisplayAlerts=[bool]$application.DisplayAlerts}}
 function Assert-States($before,$application) {if (($before | ConvertTo-Json -Compress) -cne ((States $application) | ConvertTo-Json -Compress)) {throw 'Excel states were not restored.'}}
 function Shape-Snapshot($sheet) {
-    return @($sheet.Shapes | ForEach-Object {[ordered]@{Name=$_.Name;Type=$_.Type;Top=$_.Top;Left=$_.Left;Width=$_.Width;Height=$_.Height}})
+    return @($sheet.Shapes | ForEach-Object {[ordered]@{Name=$_.Name;Type=$_.Type;Top=$_.Top;Left=$_.Left;Width=$_.Width;Height=$_.Height;
+        Row=[int]$_.TopLeftCell.Row;Offset=[double]$_.Top-[double]$sheet.Rows.Item($_.TopLeftCell.Row).Top}})
 }
 function Export-GuideRange($book,$sheet,[int]$start,[int]$end,[string]$target) {
     $sheet.Activate();$range=$sheet.Range($sheet.Cells.Item($start,1),$sheet.Cells.Item($end,6))
@@ -71,7 +72,16 @@ try {
     Assert-States $state $excel
     if ($first.StartRow -ne $second.StartRow -or $first.EndRow -ne $second.EndRow -or $first.BodySHA256 -cne $second.BodySHA256) {throw 'Guide updater is not idempotent.'}
     $shapesAfter=Shape-Snapshot $sheet
-    if (($shapesBefore | ConvertTo-Json -Compress) -cne ($shapesAfter | ConvertTo-Json -Compress)) {throw 'Old Help shapes changed.'}
+    if($shapesBefore.Count -ne $shapesAfter.Count){throw 'Old Help shape count changed.'}
+    foreach($savedShape in $shapesBefore){
+        $actual=@($shapesAfter | Where-Object Name -ceq $savedShape.Name)
+        if($actual.Count -ne 1 -or $actual[0].Type -ne $savedShape.Type){throw 'Old Help shape identity changed.'}
+        $row=$savedShape.Row
+        foreach($move in $first.Outline.Moves){$row=Convert-HelpMovedRow $row $move.First $move.Last $move.Destination}
+        $expectedTop=[double]$sheet.Rows.Item($row).Top+$savedShape.Offset
+        if($actual[0].Row -ne $row -or [Math]::Abs($actual[0].Top-$expectedTop) -gt 0.05){throw ('Help shape moved relative to its paragraph: '+$savedShape.Name)}
+        foreach($field in @('Left','Width','Height')){if([Math]::Abs($actual[0][$field]-$savedShape[$field]) -gt 0.001){throw ('Help shape geometry changed: '+$savedShape.Name)}}
+    }
     $namesAfter=@($book.Names | ForEach-Object {$_.Name})
     $added=@($namesAfter | Where-Object {$_ -notin $namesBefore})
     $expectedAdded=1

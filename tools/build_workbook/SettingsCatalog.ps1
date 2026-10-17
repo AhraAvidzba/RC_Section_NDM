@@ -244,18 +244,12 @@ function Get-CalculationProfilesCatalog {
 # Возвращает подготовленные данные или справочное значение для дальнейшего шага сборки.
 function Get-GeometrySettingsCatalog {
     @(
-        @{ RangeName = "rngCircleGeometry"; Title = "Круглое сечение"; Rows = @(
+        @{ RangeName = "rngCircleGeometry"; Title = "Круглое сечение"; CircleTable = $true; Rows = @(
             @("Circle.Diameter", "300", "мм", "Наружный диаметр бетонного круга; по нему строится сетка бетона и габаритная аннотация диаметра."),
             @("Rebar.AxisDistance", "40", "мм", "Расстояние от наружной грани круга до оси первого ряда стержней; это именно as до центра стержня, а не защитный слой до поверхности арматуры."),
             @("Rebar.Count", "8", "шт", "Количество стержней первого ряда, равномерно разложенных по окружности. Если указать 0, первый и дополнительные ряды не создаются."),
-            @("Rebar.Diameter", "20", "мм", "Диаметр стержней первого ряда. Пустая ячейка или 0 отключает арматуру по окружности без ошибки."),
-            @("Дополнительные ряды арматуры", "", "", ""),
-            @("Rebar.Diameter2", "", "мм", "Диаметр второго ряда. Ряд появляется только если есть первый ряд и этот диаметр больше 0."),
-            @("Rebar.Diameter3", "", "мм", "Диаметр третьего ряда. Строится от первого ряда; при совпадении направления со вторым рядом перескакивает его, чтобы стержни не легли друг на друга."),
-            @("Rebar.Loc2row", "Stacked", "-", "Куда ставить второй ряд относительно каждого стержня первого ряда: Stacked - внутрь по радиусу, SideBySide - по касательной справа по часовой стрелке."),
-            @("Rebar.Loc3row", "Stacked", "-", "Куда ставить третий ряд относительно первого ряда. Если выбран тот же путь, что у второго ряда, программа отодвигает третий ряд дальше."),
-            @("Rebar.Bind2row", "EachBar", "-", "Второй ряд: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных стержней."),
-            @("Rebar.Bind3row", "EachBar", "-", "Третий ряд: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных стержней. Выбирается независимо от второго ряда.")
+            @("Rebar.Diameter", "20", "мм", "Диаметр стержней первого ряда. Пустая ячейка или 0 отключает арматуру по окружности без ошибки.")
+
         )},
         @{ RangeName = "rngRoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; RoundedRectangleTable = $true; Rows = @(
             @("Размеры сечения", "800", "250", "мм", "B - длина горизонтальной базы, H - полная высота сечения."),
@@ -267,10 +261,10 @@ function Get-GeometrySettingsCatalog {
             @("H - правая", "40", "32", "5", "мм", "Арматура вдоль правой боковой траектории H."),
             @("B - верхняя", "40", "32", "8", "мм", "Арматура по верхнему прямому участку B между скруглениями."),
             @("B - нижняя", "40", "32", "8", "мм", "Арматура по нижнему прямому участку B между скруглениями."),
-            @("H - левая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у левой боковой траектории H."),
-            @("H - правая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у правой боковой траектории H."),
-            @("B - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней грани B."),
-            @("B - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней грани B.")
+            @("H - левая", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у левой боковой траектории H."),
+            @("H - правая", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у правой боковой траектории H."),
+            @("B - верхняя", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у верхней грани B."),
+            @("B - нижняя", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у нижней грани B.")
         )},
         @{ RangeName = "rngHollowRectangleGeometry"; Title = "Пустотелый скругленный прямоугольник"; HollowRectangleTable = $true; Rows = @(
             @("HollowRectangle.InnerOffsetX", "0", "мм", "Смещение центра Opening по X относительно центра наружного прямоугольника; плюс - вправо по оси X."),
@@ -284,14 +278,14 @@ function Get-GeometrySettingsCatalog {
             @("H_o - правая", "40", "20", "-", "мм", "Арматура у правой грани Opening; количество берется проекцией с наружной H-грани."),
             @("B_o - верхняя", "40", "20", "-", "мм", "Арматура у верхней грани Opening; количество берется проекцией с наружной B-грани."),
             @("B_o - нижняя", "40", "20", "-", "мм", "Арматура у нижней грани Opening; количество берется проекцией с наружной B-грани."),
-            @("H - левая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у левой наружной грани H."),
-            @("H - правая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у правой наружной грани H."),
-            @("B - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней наружной грани B."),
-            @("B - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней наружной грани B."),
-            @("H_o - левая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у левой грани Opening."),
-            @("H_o - правая", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у правой грани Opening."),
-            @("B_o - верхняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у верхней грани Opening."),
-            @("B_o - нижняя", "", "Stacked", "EachBar", "", "Stacked", "EachBar", "мм", "Дополнительные ряды у нижней грани Opening.")
+            @("H - левая", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у левой наружной грани H."),
+            @("H - правая", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у правой наружной грани H."),
+            @("B - верхняя", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у верхней наружной грани B."),
+            @("B - нижняя", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у нижней наружной грани B."),
+            @("H_o - левая", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у левой грани Opening."),
+            @("H_o - правая", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у правой грани Opening."),
+            @("B_o - верхняя", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у верхней грани Opening."),
+            @("B_o - нижняя", "", "0", "EachBar", "Stacked", "", "0", "EachBar", "Stacked", "мм", "Дополнительные ряды у нижней грани Opening.")
         )},
         @{ RangeName = "rngRectSetGeometry"; Title = "Сечение из прямоугольников"; FaceTable = $true; Rows = @(
             @("величина размера", "550", "250", "250", "600", "мм", "Габариты прямоугольников RectSet: H1/B1 - верхний прямоугольник, H2/B2 - нижний; для двух прямоугольников полная высота равна H1 + H2."),
@@ -308,10 +302,10 @@ function Get-GeometrySettingsCatalog {
             @("дополнительные ряды арматуры", "", "", "", "", "-", "Параметры дополнительных рядов. Пустой диаметр означает, что ряд не создается. Суффикс _1 - левая грань для H или верхняя грань для B; _2 - правая грань для H или нижняя грань для B."),
             @("d_2row_1", "", "", "", "", "мм", "Диаметр второго ряда у грани _1. Ряд строится только от существующих стержней первого ряда этой же грани."),
             @("d_2row_2", "", "", "", "", "мм", "Диаметр второго ряда у грани _2. Ряд строится только от существующих стержней первого ряда этой же грани."),
-            @("d_3row_1", "", "", "", "", "мм", "Диаметр третьего ряда у грани _1. Если направление совпадает со вторым рядом, третий ряд ставится дальше от первого."),
-            @("d_3row_2", "", "", "", "", "мм", "Диаметр третьего ряда у грани _2. Если направление совпадает со вторым рядом, третий ряд ставится дальше от первого."),
+            @("d_3row_1", "", "", "", "", "мм", "Диаметр третьего ряда у грани _1. Контактная поправка зависит от общего отступа и положения рядов."),
+            @("d_3row_2", "", "", "", "", "мм", "Диаметр третьего ряда у грани _2. Контактная поправка зависит от общего отступа и положения рядов."),
             @("loc_2row", "Stacked", "Stacked", "Stacked", "Stacked", "-", "Положение второго ряда: Stacked - внутрь сечения от первого ряда; SideBySide - вдоль грани рядом с первым рядом."),
-            @("loc_3row", "Stacked", "Stacked", "Stacked", "Stacked", "-", "Положение третьего ряда относительно первого ряда; при совпадении с loc_2row программа учитывает второй ряд как занятое место."),
+            @("loc_3row", "Stacked", "Stacked", "Stacked", "Stacked", "-", "Положение третьего ряда относительно первого ряда; при общем базовом отступе учитывается контакт с другими стержнями группы."),
             @("bind_2row", "EachBar", "EachBar", "EachBar", "EachBar", "-", "Привязка второго ряда к первому: EachBar - к каждому стержню, EverySecondBar - через один."),
             @("bind_3row", "EachBar", "EachBar", "EachBar", "EachBar", "-", "Привязка третьего ряда к первому: EachBar - к каждому стержню, EverySecondBar - через один.")
         )}
@@ -379,6 +373,11 @@ function Apply-ConfigNamedRangeBorders {
         }
         if ([string]$range.Worksheet.Name -ne "Config") { continue }
 
+        if($rangeName -in @('rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry')){
+            Format-GeometrySettingsTable $Workbook $rangeName $range
+            continue
+        }
+
         $range.Borders.LineStyle = -4115
         $range.Borders.Weight = 2
         $range.Borders.Color = 0
@@ -388,6 +387,47 @@ function Apply-ConfigNamedRangeBorders {
         $rightEdge.Weight = 2
         $rightEdge.Color = 0
         $rightEdge.LineStyle = -4115
+    }
+}
+
+# Оформляет реальные подтаблицы геометрии; пустые места справа не превращает в сетку.
+# Пояснения основных полей используют свободную часть своего 11-столбцового блока.
+function Format-GeometrySettingsTable($Workbook,[string]$Name,$Range) {
+    $Range.Borders.LineStyle=-4142
+    foreach($item in @(Get-ConfigFormattingTables $Workbook | Where-Object Name -eq $Name)){
+        $table=$item.Range
+        $tableTop=[int]$table.Row;$tableLeft=[int]$table.Column;$tableRows=[int]$table.Rows.Count
+        for($r=1;$r -le [Math]::Min(2,$table.Rows.Count);$r++){
+            for($c=1;$c -le $table.Columns.Count;$c++){
+                if(([string]$table.Cells.Item($r,$c).Value2).ToLowerInvariant() -ne 'комментарий'){continue}
+                if($c -eq 11){continue}
+                for($row=$r;$row -le $tableRows;$row++){
+                    # После Merge Excel может расширить старый объект Range.
+                    # Каждую следующую строку берём заново по абсолютному адресу.
+                    $absoluteRow=$tableTop+$row-1
+                    $firstColumn=ConvertTo-ExcelColumn ($tableLeft+$c-1)
+                    $lastColumn=ConvertTo-ExcelColumn ($Range.Column+10)
+                    $cell=$Range.Worksheet.Range($firstColumn+$absoluteRow)
+                    $before=$cell.Formula
+                    $textRange=$Range.Worksheet.Range($firstColumn+$absoluteRow+':'+$lastColumn+$absoluteRow)
+                    $textRange.Merge() | Out-Null
+                    $textRange.WrapText=$false
+                    $textRange.HorizontalAlignment=-4131
+                    $cell.EntireRow.RowHeight=[double]15
+                    if($Range.Worksheet.Range($firstColumn+$absoluteRow).Formula -cne $before){throw 'Geometry comment changed while formatting.'}
+                }
+            }
+        }
+        $table.Borders.Weight=2;$table.Borders.Color=0;$table.Borders.LineStyle=-4115
+    }
+    $headings=@{
+        rngCircleGeometry=@(0,4,8);rngRectSetGeometry=@(0,5,8,18)
+        rngRoundedRectangleGeometry=@(0,4,10,16);rngHollowRectangleGeometry=@(0,4,8,18)
+    }
+    foreach($offset in $headings[$Name]){
+        $heading=$Range.Cells.Item(1+$offset,1).Resize(1,11)
+        $heading.Merge() | Out-Null;$heading.Font.Bold=$true;$heading.Interior.Color=15921906
+        foreach($side in 7,8,9,10){$edge=$heading.Borders.Item($side);$edge.Weight=2;$edge.Color=0;$edge.LineStyle=-4115}
     }
 }
 
@@ -455,8 +495,16 @@ function Get-ConfigFormattingTables {
         try { $range = $Workbook.Names.Item($rangeName).RefersToRange }
         catch { continue } # В промежуточной сборке обязательные имена проверяет валидатор.
         if ([string]$range.Worksheet.Name -ne 'Config') { continue }
-        if ($composite.ContainsKey($rangeName)) {
-            foreach ($block in $composite[$rangeName]) {
+        if ($rangeName -eq 'rngCircleGeometry' -and $range.Columns.Count -ge 11) {
+            foreach ($block in @(@(1,2,4),@(5,2,8),@(9,2,11))) {
+                [pscustomobject]@{ Name=$rangeName; Range=$range.Offset($block[0],0).Resize($block[1],$block[2]) }
+            }
+        } elseif ($composite.ContainsKey($rangeName)) {
+            $blocks = $composite[$rangeName]
+            if ($range.Columns.Count -ge 11) {
+                $blocks = @($blocks | ForEach-Object { ,@($_[0], $_[1], $(if ($_[2] -eq 9) {11} else {$_[2]})) })
+            }
+            foreach ($block in $blocks) {
                 if ($range.Rows.Count -lt ($block[0] + $block[1]) -or $range.Columns.Count -lt $block[2]) {
                     throw "Неполная составная таблица Config: $rangeName."
                 }
@@ -469,8 +517,7 @@ function Get-ConfigFormattingTables {
 }
 
 # Выравнивает комментарии в пределах их собственной таблицы, а не всей
-# составной геометрии. Последняя колонка читается справа; при колонке справа
-# комментарий остается слева. Шапка сохраняет левое выравнивание.
+# составной геометрии. Единое правило: слева, без переноса, строка 15 пунктов.
 function Apply-ConfigCommentColumnAlignment {
     param([object]$Workbook)
 
@@ -486,12 +533,14 @@ function Apply-ConfigCommentColumnAlignment {
                     $header = [string]$range.Cells.Item(2, $c).Value2
                     $headerRow = 2
                 }
-                if ($header -eq "Комментарий" -or $header -eq "Комментарии" -or $header -eq "Comment") {
-                    $alignment = -4131
-                    if ($c -eq $range.Columns.Count) { $alignment = -4152 }
-                    $range.Cells.Item($headerRow, $c).HorizontalAlignment = -4131
-                    if ($range.Rows.Count -gt $headerRow) {
-                        $range.Offset($headerRow, $c - 1).Resize($range.Rows.Count - $headerRow, 1).HorizontalAlignment = $alignment
+                if ($header.ToLowerInvariant() -eq "комментарий" -or $header -eq "Комментарии" -or $header -eq "Comment") {
+                    for($r=$headerRow;$r -le $range.Rows.Count;$r++){
+                        $cell=$range.Worksheet.Cells.Item($range.Row+$r-1,$range.Column+$c-1)
+                        $textRange=$cell.MergeArea
+                        if($textRange.Column -ne $cell.Column){continue} # Это заголовок раздела, а не ячейка комментария.
+                        $textRange.HorizontalAlignment=-4131
+                        $textRange.WrapText=$false
+                        $cell.EntireRow.RowHeight=[double]15
                     }
                 }
             }
@@ -525,7 +574,7 @@ function Apply-ConfigShortColumnAlignment {
 
             for ($c = 1; $c -le $range.Columns.Count; $c++) {
                 $header = [string]$range.Cells.Item(1, $c).Value2
-                if ($header -eq "Ед." -or $header -eq "Справка" -or $header -eq "INTERNAL") {
+                if ($header -eq "Ед." -or $header -eq "ед" -or $header -eq "Справка" -or $header -eq "INTERNAL") {
                     Set-ConfigInputCellAlignment $range.Offset(0, $c - 1).Resize($range.Rows.Count, 1)
                 } elseif ($header -eq "Значение") {
                     Set-ConfigInputCellAlignment $range.Cells.Item(1, $c)
@@ -570,6 +619,19 @@ function Apply-ConfigUserInputAlignment {
             # Диапазон может отсутствовать в промежуточной сборке; валидатор
             # отдельно проверит обязательные имена книги.
         }
+    }
+
+    # Новая таблица дополнительных рядов одинакова во всех четырёх формах.
+    foreach($name in @('rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry')){
+        try{
+            $range=$Workbook.Names.Item($name).RefersToRange
+            for($r=1;$r -le $range.Rows.Count;$r++){
+                if([string]$range.Cells.Item($r,2).Value2 -eq 'd2'){
+                    Set-ConfigInputCellAlignment $range.Cells.Item($r+1,2).Resize($range.Rows.Count-$r,8)
+                    break
+                }
+            }
+        }catch{}
     }
 
     try {
@@ -1484,14 +1546,23 @@ function Get-SettingsInstructionCatalog {
         "Color задает цвет текста и основной линии; Plot.Dimensions.ExtensionLineColor - цвет выносных линий. Формат RGB: три целых компонента 0...255.",
         "Включенные подписи требуют корректных применимых настроек: TextHeight и LineWeight больше нуля, Offset и TextGap неотрицательны. Сообщение об ошибке указывает ячейку Config, которую нужно исправить."
     )}) | Out-Null
+    $items.Add(@{ Key = "DependentRebarRows"; Title = "Отступы дополнительных рядов арматуры"; Lines = @(
+        "Второй и третий ряды привязаны непосредственно к стержням основного ряда. Для каждого дополнительного ряда отдельно задаются диаметр, отступ, привязка и положение. Настройки противоположных сторон независимы.",
+        "Отступ задаёт расстояние от линии центров основного ряда до базовой линии дополнительного ряда по нормали в бетон: у наружной границы — внутрь сечения, у отверстия — от пустоты в бетон. Это дополнительный отступ сверх as основного ряда. Единицы — INPUT Length; пустое поле и 0 равнозначны.",
+        "Разные отступы образуют независимые линии. Например, при 100 и 200 мм оба ряда получают собственные базовые положения от основного ряда, а не друг от друга.",
+        "При одинаковых отступах стержни образуют одну группу с добавкой 2,5 мм на выступы профиля между соседними стержнями. При нулевом отступе группа начинается с основного стержня. При одинаковом положительном отступе второй ряд находится на заданном расстоянии, а третий учитывает диаметр второго и добавку профиля.",
+        "Stacked добавляет контактное расстояние по нормали, SideBySide — вдоль линии. Например, при d2=20 и d3=16 мм и двух отступах 100 мм положение Stacked для третьего ряда даёт 120,5 мм от основного; SideBySide оставляет 100 мм по нормали и добавляет 20,5 мм по касательной. К сумме радиусов каждой приставляемой пары добавлены 2,5 мм на выступы профиля; расчётные диаметры и площади не меняются.",
+        "EachBar создаёт стержни у каждой позиции основного ряда, EverySecondBar — у первой, третьей и следующих нечётных позиций. Выбор делается для каждого ряда отдельно и не уменьшает контактные расстояния. Третий ряд можно включить при выключенном втором.",
+        "Пустой диаметр или 0 выключает дополнительный ряд; его отступ, положение и привязка тогда не используются. Если нет основного ряда, не создаются и связанные с ним дополнительные ряды. Отрицательные отступы, текст и ошибки формул активного ряда требуют исправления указанной ячейки.",
+        "При ненулевом отступе программа проверяет оба дополнительных ряда: весь диск стержня должен находиться в бетоне, без пересечения других стержней. Недопустимое совпадение не скрывается объединением. На дуге нельзя переносить стержень до центра или через центр кривизны. Например, отдельные линии 100 и 105 мм при диаметрах 20 и 16 мм пересекаются, а 100 и 118 мм допускают касание."
+    )}) | Out-Null
     $items.Add(@{ Key = "CircleGeometry"; Title = "Круглое сечение"; Lines = @(
-        "Для круга выберите на Config Geometry.Source = Generated и Geometry.Type = Circle. Размеры и армирование задаются в таблице «Круглое сечение» в INPUT Length - единице Config Units.Length.Input.",
-        "Circle.Diameter - наружный диаметр бетона. Rebar.AxisDistance - расстояние от наружной границы до оси первого ряда стержней, а не до поверхности арматуры. Для активного ряда оно больше половины Rebar.Diameter и меньше половины Circle.Diameter.",
-        "Rebar.Count задает число равномерно расположенных стержней первого ряда, Rebar.Diameter - их диаметр. Для активного ряда число целое, не меньше 2. Пустой или нулевой Count либо Diameter выключает первый ряд и его дополнительные стержни.",
-        "Rebar.Diameter2 и Rebar.Diameter3 - диаметры второго и третьего рядов. Пустое значение или 0 означает отсутствие соответствующего ряда.",
-        "Rebar.Loc2row и Rebar.Loc3row задают положение дополнительных стержней: Stacked - внутрь по радиусу к центру, SideBySide - рядом по часовой касательной. Третий ряд строится относительно первого; при совпадении направлений и наличии второго ряда он ставится дальше, за вторым. Rebar.Bind2row и Rebar.Bind3row выбираются независимо: EachBar — у каждого стержня первого ряда; EverySecondBar — у первого, третьего и следующих нечётных. По умолчанию оба ряда используют EachBar.",
-        "Заполняйте положение только существующего дополнительного ряда. Ошибка неактивного поля не мешает построению; при включении ряда программа попросит исправить его данные. Отрицательные диаметры и количества недопустимы.",
-        "Габаритный диаметр и подписи арматуры сохраняются вместе с геометрией и используются на схеме и при экспорте."
+        "Для круга выберите на Config Geometry.Source = Generated и Geometry.Type = Circle. В таблице последовательно расположены три подблока: Геометрия, Основное армирование и Дополнительные ряды. Все длины вводятся в INPUT Length — единице Config Units.Length.Input.",
+        "В геометрии Диаметр задаёт наружный диаметр бетона. Основное армирование задаётся одной строкой Круг: as — расстояние от края бетона до оси стержня, d — диаметр, n — число стержней. Для активного ряда as больше d/2 и меньше радиуса бетона.",
+        "StartSetback и EndSetback измеряются в единицах длины ввода вдоль окружности центров стержней. Начало и конец полного оборота — справа от центра; обход против часовой стрелки. При 0 и 0 стержни равномерно распределяются по полному кругу без повторного конца. При ненулевых отступах — по оставшейся дуге, включая оба её конца. Сумма отступов должна быть меньше длины окружности. n — целое не меньше 2; нулевое n или пустой/нулевой d выключает всё семейство.",
+        "В подблоке Дополнительные ряды одна строка Круг. Слева направо: грань, d2, отступ, привязка, положение, d3, отступ, привязка, положение, ед, комментарий. Каждый отступ относится к основному ряду. Правила и численные примеры приведены в разделе «Отступы дополнительных рядов арматуры».",
+        "Stacked направлен по радиусу к центру, SideBySide — по часовой касательной. EachBar и EverySecondBar выбираются отдельно для второго и третьего рядов. Пустой диаметр или 0 выключает только соответствующий ряд.",
+        "Диаметр бетона и общая подпись всех включённых рядов сохраняются вместе с геометрией и используются на схеме и при экспорте."
     )}) | Out-Null
     $items.Add(@{ Key = "RoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; Lines = @(
         "Выберите на Config Geometry.Source = Generated и Geometry.Type = RoundedRectangle. Остальные размеры и армирование задайте в таблице «Скругленный прямоугольник» в INPUT Length - единице Config Units.Length.Input.",
@@ -1512,7 +1583,7 @@ function Get-SettingsInstructionCatalog {
         "Наружные строки H - левая/правая и B - верхняя/нижняя задают as - расстояние до оси стержня внутрь бетона, d - диаметр, n - количество. Для активного ряда as больше d/2. Пустой или нулевой d либо n выключает ряд и его дополнительные стержни. По B стержни равномерно располагаются между началами скруглений с одинаковыми концевыми отступами, равными шагу.",
         "Строки H_o/B_o задают арматуру у отверстия. Здесь вводятся as и d, а число стержней определяется автоматически проекцией наружного ряда на внутреннюю линию раскладки.",
         "У отверстия отступ as направлен из пустоты в бетон. Он ограничивает также проекции соседних внутренних граней, поэтому задайте его явно даже при выключенном собственном ряде. Отступ неотрицателен; для существующих стержней больше d/2. Пустой или нулевой d выключает собственный ряд.",
-        "В блоке дополнительных рядов d2/d3 - диаметры, Stacked - глубже в бетон, SideBySide - рядом вдоль линии раскладки; EachBar - у каждого стержня первого ряда, EverySecondBar - через один. Настройки каждой грани независимы и используются только для существующего ряда.",
+        "В блоке дополнительных рядов каждой грани d2/d3 задают диаметры; после каждого диаметра находятся отступ, привязка и положение. Оба отступа отсчитываются от основного ряда. Правила и примеры — в разделе «Отступы дополнительных рядов арматуры».",
         "Для подписи у отверстия Placement = Outside означает сторону пустоты, для наружной грани - сторону вне сечения. Эта настройка задается на Config в таблице аннотаций, колонка арматуры: Plot.RebarLabels.Placement.",
         "Наружная граница и отверстие сохраняются в Results. Config AutoCAD.Export.ContourFormat выбирает вывод единой Region с отверстием или отдельных замкнутых полилиний."
     )}) | Out-Null
@@ -1526,8 +1597,8 @@ function Get-SettingsInstructionCatalog {
         "t1_1/t1_2 - отступ первого стержня от начала линии раскладки, t2_1/t2_2 - отступ последнего от ее конца. Начало и конец определяются обходом грани по часовой стрелке. Все отступы t неотрицательны.",
         "Линия осей стержней уже сдвинута внутрь на as, но ее длина равна длине грани соответствующего прямоугольника. Вдоль грани доступную длину уменьшают только два отступа t, а не as. Если отступы длиннее самой грани, исправьте их.",
         "При n > 1 стержни располагаются равномерно на доступной длине с шагом, равным этой длине, деленной на n - 1. При n = 1 стержень ставится посередине доступного участка.",
-        "d_2row/d_3row - диаметры дополнительных рядов. Пустое значение или 0 выключает ряд. Stacked ставит стержни глубже в бетон; SideBySide - вниз вдоль вертикальной H-грани или вправо вдоль горизонтальной B-грани.",
-        "Положение и привязку второго и третьего рядов задайте отдельно для каждой физической грани. EachBar - у каждого стержня первого ряда, EverySecondBar - через один. Третий ряд строится от первого; при совпадении направлений и наличии второго ряда он ставится за вторым.",
+        "В таблице дополнительных рядов после d2 и d3 расположены собственные отступ, привязка и положение. Пустой диаметр или 0 выключает ряд. SideBySide направлен вниз вдоль вертикальной H-грани или вправо вдоль горизонтальной B-грани. Правила отступов и контакта приведены в разделе «Отступы дополнительных рядов арматуры».",
+        "Положение и привязку второго и третьего рядов задайте отдельно для каждой физической грани. EachBar - у каждого стержня первого ряда, EverySecondBar - через один. Оба дополнительных ряда строятся от первого. Контактная поправка зависит от совпадения базовых отступов и выбранного положения.",
         "Настройки неактивной грани или отсутствующего дополнительного ряда не используются. Для активного ряда положение и привязка обязательны. Сообщение об ошибке показывает ячейку Config; неверный ввод не заменяется значениями шаблона.",
         "Ключ складывается из названия формы, грани и параметра. Например RectSet.H2.as_1 - отступ у левой грани нижнего прямоугольника. В составной таблице вы задаете его на пересечении строки отступа и колонки H2."
     )}) | Out-Null
@@ -4413,7 +4484,10 @@ function Apply-SystemSettingsLayout {
     foreach ($geometryRangeName in $geometryOrder) {
         $geometryTable = $geometryTables | Where-Object { $_.RangeName -eq $geometryRangeName } | Select-Object -First 1
         if ($null -eq $geometryTable) { continue }
-        if ($geometryTable.ContainsKey("HollowRectangleTable") -and $geometryTable.HollowRectangleTable) {
+        if ($geometryTable.ContainsKey("CircleTable") -and $geometryTable.CircleTable) {
+            Add-CircleSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
+            $rightRow += 11 + $rightBlockGap
+        } elseif ($geometryTable.ContainsKey("HollowRectangleTable") -and $geometryTable.HollowRectangleTable) {
             Add-HollowRectangleSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
             $rightRow += 29 + $rightBlockGap
         } elseif ($geometryTable.ContainsKey("RoundedRectangleTable") -and $geometryTable.RoundedRectangleTable) {
@@ -4423,8 +4497,7 @@ function Apply-SystemSettingsLayout {
             Add-RectSetFaceSettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
             $rightRow += 28 + $rightBlockGap
         } else {
-            Add-GeometrySettingsTable $Workbook $Sheet $geometryTable.RangeName $rightRow $rightColumn $geometryTable.Title $geometryTable.Rows
-            $rightRow += $geometryTable.Rows.Count + 1 + $rightBlockGap
+            throw "Неизвестная форма геометрии: $($geometryTable.RangeName)"
         }
     }
 
@@ -4536,7 +4609,7 @@ function Apply-SystemSettingsLayout {
     $Sheet.Columns.Item(15).ColumnWidth = 15
     $Sheet.Columns.Item(16).ColumnWidth = 11
     $Sheet.Columns.Item(17).ColumnWidth = 11
-    $Sheet.Columns.Item(18).ColumnWidth = 11
+    $Sheet.Columns.Item(18).ColumnWidth = 45
     $Sheet.Columns.Item(19).ColumnWidth = 15
     $Sheet.Columns.Item(20).ColumnWidth = 18
     $Sheet.Columns.Item(21).ColumnWidth = 22
@@ -4633,65 +4706,74 @@ function Add-CalculationProfilesValidation {
 }
 
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
-function Add-GeometrySettingsTable {
-    param(
-        [object]$Workbook,
-        [object]$Sheet,
-        [string]$RangeName,
-        [int]$HeaderRow,
-        [int]$StartColumn,
-        [string]$Title,
-        [array]$Rows
-    )
-
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 3)).Merge() | Out-Null
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
-    $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
-
-    $headers = @("Параметр", "Значение", "Ед.", "Комментарий")
-    for ($i = 0; $i -lt $headers.Count; $i++) {
-        $cell = $Sheet.Cells.Item($HeaderRow, $StartColumn + $i)
-        $cell.Value2 = $headers[$i]
-        $cell.Font.Bold = $true
-        $cell.Interior.Color = 14277081
-    }
-
-    for ($r = 0; $r -lt $Rows.Count; $r++) {
-        for ($c = 0; $c -lt 4; $c++) {
-            $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + $c).Value2 = $Rows[$r][$c]
-        }
-        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 2) ([string]$Rows[$r][2])
-        if ([string]$Rows[$r][0] -eq "Дополнительные ряды арматуры") {
-            $separator = $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn), $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 3))
-            $separator.Font.Bold = $true
-            $separator.Interior.Color = $script:ConfigSubgroupHeaderColor
+# Создаёт форму круга сразу с геометрией, основным и дополнительными рядами.
+function Add-CircleSettingsTable {
+    param($Workbook,$Sheet,[string]$RangeName,[int]$HeaderRow,[int]$StartColumn,[string]$Title,[array]$Rows)
+    $titleRange=$Sheet.Cells.Item($HeaderRow-1,$StartColumn).Resize(1,11)
+    $titleRange.Merge() | Out-Null
+    $titleRange.Cells.Item(1,1).Value2=$Title;$titleRange.Font.Bold=$true;$titleRange.Interior.Color=15921906
+    foreach($item in @(@(0,'Геометрия'),@(4,'Основное армирование'))){
+        $heading=$Sheet.Cells.Item($HeaderRow+[int]$item[0],$StartColumn).Resize(1,11)
+        $heading.Merge() | Out-Null;$heading.Cells.Item(1,1).Value2=$item[1]
+        $heading.Font.Bold=$true;$heading.Interior.Color=15921906
+        $captions=if([int]$item[0] -eq 0){@('Параметр','Значение','Ед.','Комментарий')}else{@('грань','as','d','n','StartSetback','EndSetback','Ед.','Комментарий')}
+        for($c=0;$c -lt $captions.Count;$c++){
+            $cell=$Sheet.Cells.Item($HeaderRow+[int]$item[0]+1,$StartColumn+$c)
+            $cell.Value2=$captions[$c]
+            $cell.Font.Bold=$true;$cell.Interior.Color=14277081
         }
     }
+    $geometry=@('Диаметр',$Rows[0][1],$Rows[0][2],$Rows[0][3])
+    for($c=0;$c -lt 4;$c++){$Sheet.Cells.Item($HeaderRow+2,$StartColumn+$c).Value2=$geometry[$c]}
+    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow+2,$StartColumn+2) 'мм'
+    $main=@('Круг',$Rows[1][1],$Rows[3][1],$Rows[2][1],0,0,'мм','Арматура равномерно по окружности; as — до осей стержней. Концевые отступы измеряются вдоль дуги от правой точки против часовой стрелки; 0 и 0 дают полный круг.')
+    for($c=0;$c -lt 8;$c++){$Sheet.Cells.Item($HeaderRow+6,$StartColumn+$c).Value2=[string]$main[$c]}
+    Set-InputUnitCell $Sheet.Cells.Item($HeaderRow+6,$StartColumn+6) 'мм'
+    $Sheet.Cells.Item($HeaderRow+6,$StartColumn+1).Resize(1,5).HorizontalAlignment=-4108
+    foreach($c in 4,5){$cell=$Sheet.Cells.Item($HeaderRow+6,$StartColumn+$c);$cell.Validation.Add(2,1,7,'0');$cell.Validation.IgnoreBlank=$false;$cell.Validation.ShowError=$true}
+    $extraRows=@(,@('Круг','',0,'EachBar','Stacked','',0,'EachBar','Stacked','мм','Отступы отсчитываются от основного ряда.'))
+    Add-AdditionalRebarRowsTable $Workbook $Sheet ($HeaderRow+9) $StartColumn $extraRows -Circle
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow+10) ($StartColumn+10)
+}
 
-    $locOptions = @("Stacked", "SideBySide")
-    $listAddress = Get-ConfigValidationListAddress $Sheet $locOptions
-    for ($r = 0; $r -lt $Rows.Count; $r++) {
-        $parameterName = [string]$Rows[$r][0]
-        if ($parameterName -eq "Rebar.Loc2row" -or $parameterName -eq "Rebar.Loc3row") {
-            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 1)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $listAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
+# Создаёт единый 11-столбцовый блок дополнительных рядов сразу в конечном формате.
+function Add-AdditionalRebarRowsTable {
+    param($Workbook,$Sheet,[int]$HeaderRow,[int]$StartColumn,[array]$Rows,[switch]$Circle)
+    $heading=$Sheet.Cells.Item($HeaderRow-1,$StartColumn).Resize(1,11)
+    $heading.Merge() | Out-Null;$heading.Cells.Item(1,1).Value2='Дополнительные ряды'
+    $heading.Font.Bold=$true;$heading.Interior.Color=15921906
+    $captions=@('грань','d2','отступ','привязка','положение','d3','отступ','привязка','положение','ед','комментарий')
+    for($c=0;$c -lt 11;$c++){
+        $cell=$Sheet.Cells.Item($HeaderRow,$StartColumn+$c)
+        $cell.Value2=$captions[$c];$cell.Font.Bold=$true;$cell.Interior.Color=14277081
+    }
+    $locList=Get-ConfigValidationListAddress $Sheet @('Stacked','SideBySide')
+    $bindList=Get-ConfigValidationListAddress $Sheet @('EachBar','EverySecondBar')
+    for($r=0;$r -lt $Rows.Count;$r++){
+        for($c=0;$c -lt 11;$c++){
+            $Sheet.Cells.Item($HeaderRow+1+$r,$StartColumn+$c).Value2=[string]$Rows[$r][$c]
         }
-        if ($parameterName -eq 'Rebar.Bind2row' -or $parameterName -eq 'Rebar.Bind3row') {
-            $cell = $Sheet.Cells.Item($HeaderRow + 1 + $r, $StartColumn + 1)
-            $choiceName = 'rngCircleBind' + $parameterName.Substring(10,1) + 'Choices'
-            $bindingList = Get-ConfigValidationListAddress $Sheet @('EachBar','EverySecondBar') $choiceName
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3,1,1,$bindingList)
-            $cell.Validation.IgnoreBlank = $false
-            $cell.Validation.InCellDropdown = $true
+        Set-InputUnitCell $Sheet.Cells.Item($HeaderRow+1+$r,$StartColumn+9) 'мм'
+        foreach($c in 2,6){
+            $cell=$Sheet.Cells.Item($HeaderRow+1+$r,$StartColumn+$c)
+            $cell.Value2=[double]0
+            $cell.Validation.Add(2,1,7,'0');$cell.Validation.IgnoreBlank=$true;$cell.Validation.ShowError=$true
+        }
+        foreach($c in 3,7,4,8){
+            $list=$locList
+            if($c -eq 3 -or $c -eq 7){
+                $list=$bindList
+                if($Circle){
+                    $rowNumber=if($c -eq 3){'2'}else{'3'}
+                    $list=Get-ConfigValidationListAddress $Sheet @('EachBar','EverySecondBar') ('rngCircleBind'+$rowNumber+'Choices')
+                }
+            }
+            $cell=$Sheet.Cells.Item($HeaderRow+1+$r,$StartColumn+$c)
+            $cell.Validation.Add(3,1,1,$list);$cell.Validation.IgnoreBlank=$false;$cell.Validation.InCellDropdown=$true
         }
     }
-
-    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow + $Rows.Count) ($StartColumn + 3)
+    $Sheet.Cells.Item($HeaderRow+1,$StartColumn+1).Resize($Rows.Count,9).HorizontalAlignment=-4108
+    $Sheet.Cells.Item($HeaderRow,$StartColumn+10).Resize($Rows.Count+1,1).HorizontalAlignment=-4152
 }
 
 # Добавляет секционную таблицу HollowRectangle: наружный контур, Opening и
@@ -4709,7 +4791,7 @@ function Add-HollowRectangleSettingsTable {
     )
 
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 8)).Merge() | Out-Null
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 10)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Color = 255
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
@@ -4773,56 +4855,16 @@ function Add-HollowRectangleSettingsTable {
     }
 
     $extraHeaderRow = $mainHeaderRow + 10
-    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды арматуры"
-    $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
-    $extraSectionRange.Font.Bold = $true
-    $extraSectionRange.Interior.Color = 15921906
-    $extraSectionRange.HorizontalAlignment = -4131
-    $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
-    for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
-        $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
-        $cell.Value2 = $extraHeaders[$i]
-        $cell.Font.Bold = $true
-        $cell.Interior.Color = 14277081
-    }
-    for ($r = 11; $r -le 18; $r++) {
-        $targetRow = $extraHeaderRow + 1 + ($r - 11)
-        for ($c = 0; $c -lt 9; $c++) {
-            $Sheet.Cells.Item($targetRow, $StartColumn + $c).Value2 = $Rows[$r][$c]
-        }
-        Set-InputUnitCell $Sheet.Cells.Item($targetRow, $StartColumn + 7) "мм"
-    }
+    $extraRows = @($Rows[11..18])
+    Add-AdditionalRebarRowsTable $Workbook $Sheet $extraHeaderRow $StartColumn $extraRows
 
-    $locOptions = @("Stacked", "SideBySide")
-    $locListAddress = Get-ConfigValidationListAddress $Sheet $locOptions
-
-    $bindOptions = @("EachBar", "EverySecondBar")
-    $bindListAddress = Get-ConfigValidationListAddress $Sheet $bindOptions
-
-    for ($r = 0; $r -lt 8; $r++) {
-        foreach ($valueColumn in @(2, 5)) {
-            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $locListAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
-        }
-        foreach ($valueColumn in @(3, 6)) {
-            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $bindListAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
-        }
-    }
-
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 8)).VerticalAlignment = -4108
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 1), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 7)).HorizontalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 10)).VerticalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 1), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 9)).HorizontalAlignment = -4108
     $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 3), $Sheet.Cells.Item($HeaderRow + 3, $StartColumn + 3)).HorizontalAlignment = -4152
     $Sheet.Range($Sheet.Cells.Item($mainHeaderRow, $StartColumn + 5), $Sheet.Cells.Item($mainHeaderRow + 8, $StartColumn + 5)).HorizontalAlignment = -4152
-    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 8)).HorizontalAlignment = -4152
+    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 10), $Sheet.Cells.Item($extraHeaderRow + 8, $StartColumn + 10)).HorizontalAlignment = -4152
 
-    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + 8) ($StartColumn + 8)
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + 8) ($StartColumn + 10)
 }
 
 # Добавляет секционную таблицу RoundedRectangle: геометрия сторон и арматура.
@@ -4838,7 +4880,7 @@ function Add-RoundedRectangleSettingsTable {
     )
 
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 8)).Merge() | Out-Null
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 10)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
@@ -4903,25 +4945,8 @@ function Add-RoundedRectangleSettingsTable {
     }
 
     $extraHeaderRow = $mainHeaderRow + 6
-    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды арматуры"
-    $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
-    $extraSectionRange.Font.Bold = $true
-    $extraSectionRange.Interior.Color = 15921906
-    $extraSectionRange.HorizontalAlignment = -4131
-    $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
-    for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
-        $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
-        $cell.Value2 = $extraHeaders[$i]
-        $cell.Font.Bold = $true
-        $cell.Interior.Color = 14277081
-    }
-    for ($r = 9; $r -le 12; $r++) {
-        $targetRow = $extraHeaderRow + 1 + ($r - 9)
-        for ($c = 0; $c -lt 9; $c++) {
-            $Sheet.Cells.Item($targetRow, $StartColumn + $c).Value2 = $Rows[$r][$c]
-        }
-        Set-InputUnitCell $Sheet.Cells.Item($targetRow, $StartColumn + 7) "мм"
-    }
+    $extraRows = @($Rows[9..12])
+    Add-AdditionalRebarRowsTable $Workbook $Sheet $extraHeaderRow $StartColumn $extraRows
 
     $typeOptions = @("Simple", "Tapered")
     $typeListAddress = Get-ConfigValidationListAddress $Sheet $typeOptions
@@ -4933,34 +4958,12 @@ function Add-RoundedRectangleSettingsTable {
         $cell.Validation.InCellDropdown = $true
     }
 
-    $locOptions = @("Stacked", "SideBySide")
-    $locListAddress = Get-ConfigValidationListAddress $Sheet $locOptions
-    $bindOptions = @("EachBar", "EverySecondBar")
-    $bindListAddress = Get-ConfigValidationListAddress $Sheet $bindOptions
-
-    for ($r = 0; $r -lt 4; $r++) {
-        foreach ($valueColumn in @(2, 5)) {
-            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $locListAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
-        }
-        foreach ($valueColumn in @(3, 6)) {
-            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $bindListAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
-        }
-    }
-
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 8)).VerticalAlignment = -4108
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 1), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 7)).HorizontalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 10)).VerticalAlignment = -4108
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow + 1, $StartColumn + 1), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 9)).HorizontalAlignment = -4108
     $Sheet.Range($Sheet.Cells.Item($mainHeaderRow, $StartColumn + 5), $Sheet.Cells.Item($mainHeaderRow + 4, $StartColumn + 5)).HorizontalAlignment = -4152
-    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 8)).HorizontalAlignment = -4152
+    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 10), $Sheet.Cells.Item($extraHeaderRow + 4, $StartColumn + 10)).HorizontalAlignment = -4152
 
-    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + 4) ($StartColumn + 8)
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + 4) ($StartColumn + 10)
 }
 
 # Добавляет структурный элемент книги или отчета, сохраняя единый формат сборочных скриптов.
@@ -4976,7 +4979,7 @@ function Add-RectSetFaceSettingsTable {
     )
 
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Value2 = $Title
-    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 8)).Merge() | Out-Null
+    $Sheet.Range($Sheet.Cells.Item($HeaderRow - 1, $StartColumn), $Sheet.Cells.Item($HeaderRow - 1, $StartColumn + 10)).Merge() | Out-Null
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Font.Bold = $true
     $Sheet.Cells.Item($HeaderRow - 1, $StartColumn).Interior.Color = 15921906
 
@@ -4997,14 +5000,14 @@ function Add-RectSetFaceSettingsTable {
         @("B2 - нижняя",  $Rows[2][4], $Rows[4][4], $Rows[6][4], $Rows[9][4],  $Rows[10][4], "мм", "Нижняя грань B2.")
     )
     $extraRows = @(
-        @("H1 - левая",   $Rows[12][1], $Rows[16][1], $Rows[18][1], $Rows[14][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у левой грани H1."),
-        @("H1 - правая",  $Rows[13][1], $Rows[16][1], $Rows[18][1], $Rows[15][1], $Rows[17][1], $Rows[19][1], "мм", "Дополнительные ряды у правой грани H1."),
-        @("B1 - верхняя", $Rows[12][2], $Rows[16][2], $Rows[18][2], $Rows[14][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у верхней грани B1."),
-        @("B1 - нижняя",  $Rows[13][2], $Rows[16][2], $Rows[18][2], $Rows[15][2], $Rows[17][2], $Rows[19][2], "мм", "Дополнительные ряды у нижней грани B1."),
-        @("H2 - левая",   $Rows[12][3], $Rows[16][3], $Rows[18][3], $Rows[14][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у левой грани H2."),
-        @("H2 - правая",  $Rows[13][3], $Rows[16][3], $Rows[18][3], $Rows[15][3], $Rows[17][3], $Rows[19][3], "мм", "Дополнительные ряды у правой грани H2."),
-        @("B2 - верхняя", $Rows[12][4], $Rows[16][4], $Rows[18][4], $Rows[14][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у верхней грани B2."),
-        @("B2 - нижняя",  $Rows[13][4], $Rows[16][4], $Rows[18][4], $Rows[15][4], $Rows[17][4], $Rows[19][4], "мм", "Дополнительные ряды у нижней грани B2.")
+        @("H1 - левая", $Rows[12][1], 0, $Rows[18][1], $Rows[16][1], $Rows[14][1], 0, $Rows[19][1], $Rows[17][1], "мм", "Дополнительные ряды у левой грани H1."),
+        @("H1 - правая", $Rows[13][1], 0, $Rows[18][1], $Rows[16][1], $Rows[15][1], 0, $Rows[19][1], $Rows[17][1], "мм", "Дополнительные ряды у правой грани H1."),
+        @("B1 - верхняя", $Rows[12][2], 0, $Rows[18][2], $Rows[16][2], $Rows[14][2], 0, $Rows[19][2], $Rows[17][2], "мм", "Дополнительные ряды у верхней грани B1."),
+        @("B1 - нижняя", $Rows[13][2], 0, $Rows[18][2], $Rows[16][2], $Rows[15][2], 0, $Rows[19][2], $Rows[17][2], "мм", "Дополнительные ряды у нижней грани B1."),
+        @("H2 - левая", $Rows[12][3], 0, $Rows[18][3], $Rows[16][3], $Rows[14][3], 0, $Rows[19][3], $Rows[17][3], "мм", "Дополнительные ряды у левой грани H2."),
+        @("H2 - правая", $Rows[13][3], 0, $Rows[18][3], $Rows[16][3], $Rows[15][3], 0, $Rows[19][3], $Rows[17][3], "мм", "Дополнительные ряды у правой грани H2."),
+        @("B2 - верхняя", $Rows[12][4], 0, $Rows[18][4], $Rows[16][4], $Rows[14][4], 0, $Rows[19][4], $Rows[17][4], "мм", "Дополнительные ряды у верхней грани B2."),
+        @("B2 - нижняя", $Rows[13][4], 0, $Rows[18][4], $Rows[16][4], $Rows[15][4], 0, $Rows[19][4], $Rows[17][4], "мм", "Дополнительные ряды у нижней грани B2.")
     )
 
     $Sheet.Cells.Item($HeaderRow, $StartColumn).Value2 = "Общие настройки геометрии"
@@ -5069,50 +5072,10 @@ function Add-RectSetFaceSettingsTable {
     }
 
     $extraHeaderRow = $mainHeaderRow + 10
-    $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn).Value2 = "Дополнительные ряды"
-    $extraSectionRange = $Sheet.Range($Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn), $Sheet.Cells.Item($extraHeaderRow - 1, $StartColumn + 8))
-    $extraSectionRange.Font.Bold = $true
-    $extraSectionRange.Interior.Color = 15921906
-    $extraSectionRange.HorizontalAlignment = -4131
-    $extraSectionRange.VerticalAlignment = -4108
-    $extraHeaders = @("Грань", "d2", "положение", "привязка", "d3", "положение", "привязка", "Ед.", "Комментарий")
-    for ($i = 0; $i -lt $extraHeaders.Count; $i++) {
-        $cell = $Sheet.Cells.Item($extraHeaderRow, $StartColumn + $i)
-        $cell.Value2 = $extraHeaders[$i]
-        $cell.Font.Bold = $true
-        $cell.Interior.Color = 14277081
-    }
-    for ($r = 0; $r -lt $extraRows.Count; $r++) {
-        for ($c = 0; $c -lt $extraRows[$r].Count; $c++) {
-            $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $c).Value2 = $extraRows[$r][$c]
-        }
-        Set-InputUnitCell $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + 7) "мм"
-    }
-
-    $locOptions = @("Stacked", "SideBySide")
-    $listAddress = Get-ConfigValidationListAddress $Sheet $locOptions
-    $bindOptions = @("EachBar", "EverySecondBar")
-    $bindListAddress = Get-ConfigValidationListAddress $Sheet $bindOptions
-
-    for ($r = 0; $r -lt $extraRows.Count; $r++) {
-        foreach ($valueColumn in @(2, 5)) {
-            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $listAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
-        }
-        foreach ($valueColumn in @(3, 6)) {
-            $cell = $Sheet.Cells.Item($extraHeaderRow + 1 + $r, $StartColumn + $valueColumn)
-            $cell.Validation.Delete()
-            $cell.Validation.Add(3, 1, 1, $bindListAddress)
-            $cell.Validation.IgnoreBlank = $true
-            $cell.Validation.InCellDropdown = $true
-        }
-    }
+    Add-AdditionalRebarRowsTable $Workbook $Sheet $extraHeaderRow $StartColumn $extraRows
 
     $Sheet.Range($Sheet.Cells.Item($mainHeaderRow, $StartColumn + 7), $Sheet.Cells.Item($mainHeaderRow + $mainRows.Count, $StartColumn + 7)).HorizontalAlignment = -4152
-    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 8), $Sheet.Cells.Item($extraHeaderRow + $extraRows.Count, $StartColumn + 8)).HorizontalAlignment = -4152
+    $Sheet.Range($Sheet.Cells.Item($extraHeaderRow, $StartColumn + 10), $Sheet.Cells.Item($extraHeaderRow + $extraRows.Count, $StartColumn + 10)).HorizontalAlignment = -4152
 
     $sectionTypeOptions = @("Rectangle", "LSection", "TwoRectangles")
     $sectionTypeListAddress = Get-ConfigValidationListAddress $Sheet $sectionTypeOptions
@@ -5122,8 +5085,7 @@ function Add-RectSetFaceSettingsTable {
     $sectionTypeCell.Validation.IgnoreBlank = $false
     $sectionTypeCell.Validation.InCellDropdown = $true
 
-    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + $extraRows.Count) ($StartColumn + 8)
-    Set-RectSetIndependentSelectorLayout ($Workbook.Names.Item($RangeName).RefersToRange) | Out-Null
+    Set-WorkbookNameByBounds $Workbook $RangeName $Sheet $HeaderRow $StartColumn ($extraHeaderRow + $extraRows.Count) ($StartColumn + 10)
 }
 
 # Разделяет положение и привязку рядов противоположных граней RectSet.

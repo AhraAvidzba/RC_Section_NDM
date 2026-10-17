@@ -1,0 +1,7 @@
+﻿{
+    "Status":  "FAIL",
+    "Reason":  "Old Help shapes changed.",
+    "ScriptStackTrace":  "at \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Update-SectionRecipeGuide.ps1: line 74",
+    "Native":  "Old Help shapes changed.",
+    "ProductionUnchanged":  true
+}

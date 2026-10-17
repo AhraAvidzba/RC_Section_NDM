@@ -1,0 +1,23 @@
+﻿{
+    "Stage":  "RemainingDirected04",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03CircleRebarInputTests",
+                     "Seconds":  17.474938899999998,
+                     "Characters":  49632,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03RebarCounterTests",
+                     "Seconds":  4.1010566,
+                     "Characters":  3544,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "3611843CA44115C13E9BA7DB00F8935EB7F4B0453208D2DE70CF66B1D28C3F52",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T13:22:15.3218420+03:00"
+}

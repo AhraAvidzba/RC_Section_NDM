@@ -1,0 +1,16 @@
+﻿{
+    "Stage":  "OffsetWorkbook01",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+                     "Seconds":  8.501527,
+                     "Characters":  7236,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "87DB5AFFD1A50A60E24DE0EBEEF1540E5AAAFD42D31BA91BDD2004A9F5382064",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T13:13:58.3249695+03:00"
+}

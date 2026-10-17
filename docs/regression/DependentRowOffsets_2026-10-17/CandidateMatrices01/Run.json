@@ -1,0 +1,65 @@
+﻿{
+    "Stage":  "CandidateMatrices01",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpCircleRecipeMatrix",
+                     "Seconds":  6.1049555999999994,
+                     "Characters":  8857991,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpRectSetRecipeMatrix",
+                     "Seconds":  5.8374707999999993,
+                     "Characters":  5078273,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpRoundedRecipeMatrix",
+                     "Seconds":  7.8848208,
+                     "Characters":  7785725,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpHollowRecipeMatrix",
+                     "Seconds":  10.8650503,
+                     "Characters":  10716874,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.DumpHollowRecipeEdgeMatrix",
+                     "Seconds":  3.6864578,
+                     "Characters":  3489276,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Snapshots.DumpRecipeRuleContracts",
+                     "Seconds":  13.6289392,
+                     "Characters":  277126,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Snapshots.DumpRecipePathContracts",
+                     "Seconds":  13.120727299999999,
+                     "Characters":  480365,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.DumpAudit02CloseoutInputContract",
+                     "Seconds":  2.9755262,
+                     "Characters":  23811,
+                     "Passed":  true,
+                     "Snapshot":  true
+                 }
+             ],
+    "SourceSHA256":  "ADE7AB115E77B15903AA9055E0F3CE61702C13314945B2C87BEB92DDD02A70A1",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T12:51:48.6269146+03:00"
+}

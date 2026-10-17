@@ -31,6 +31,8 @@
         "CSectionInputTable.PositiveLength",
         "CSectionInputTable.NonNegativeLength",
         "CSectionInputTable.OptionalDiameter",
+        "CSectionInputTable.OptionalRowOffset",
+        "CSectionInputTable.AdditionalRowsHeader",
         "CSectionInputTable.ColumnByCaption",
         "CSectionInputTable.RowByKey",
         "CSectionInputTable.RowByAnyKey",
@@ -73,6 +75,7 @@
         "CSectionDefinitionBuilder.OffsetRoundedPolygon",
         "CSectionDefinitionBuilder.ConstrainLine",
         "CSectionDefinitionBuilder.Chain",
+        "CSectionDefinitionBuilder.Slice",
         "CSectionDefinitionBuilder.Transform",
         "CSectionDefinitionBuilder.PathGroup"
       ]
@@ -100,6 +103,7 @@
         "CRebarRuleOptions.RemainderPlacement",
         "CRebarRuleOptions.TangentOffset",
         "CRebarRuleOptions.NormalOffset",
+        "CRebarRuleOptions.ValidateRowOffset",
         "CRebarRuleOptions.EverySecond",
         "CRebarRuleOptions.IncomingTangentAtJoint",
         "CRebarRuleOptions.DirectionX",
@@ -256,7 +260,7 @@
       "signature": "Public Function Finish() As CSectionDefinition",
       "parameters": [],
       "resultType": "CSectionDefinition",
-      "line": 473,
+      "line": 484,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Finish",
       "anchor": "api-csectiondefinitionbuilder-finish"
@@ -760,6 +764,55 @@
     },
     {
       "owner": "CSectionInputTable",
+      "name": "OptionalRowOffset",
+      "kind": "Function",
+      "signature": "Public Function OptionalRowOffset(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        },
+        {
+          "name": "units",
+          "type": "CUnitSystem",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal units As CUnitSystem"
+        }
+      ],
+      "resultType": "Double",
+      "line": 168,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.OptionalRowOffset",
+      "anchor": "api-csectioninputtable-optionalrowoffset"
+    },
+    {
+      "owner": "CSectionInputTable",
+      "name": "AdditionalRowsHeader",
+      "kind": "Function",
+      "signature": "Public Function AdditionalRowsHeader() As Long",
+      "parameters": [],
+      "resultType": "Long",
+      "line": 196,
+      "source": "src/Section/CSectionInputTable.cls",
+      "id": "CSectionInputTable.AdditionalRowsHeader",
+      "anchor": "api-csectioninputtable-additionalrowsheader"
+    },
+    {
+      "owner": "CSectionInputTable",
       "name": "ColumnByCaption",
       "kind": "Function",
       "signature": "Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String) As Long",
@@ -782,7 +835,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 168,
+      "line": 179,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.ColumnByCaption",
       "anchor": "api-csectioninputtable-columnbycaption"
@@ -827,7 +880,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 184,
+      "line": 210,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByKey",
       "anchor": "api-csectioninputtable-rowbykey"
@@ -872,7 +925,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 191,
+      "line": 217,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByAnyKey",
       "anchor": "api-csectioninputtable-rowbyanykey"
@@ -1424,7 +1477,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 189,
+      "line": 200,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RectanglePath",
       "anchor": "api-csectiondefinitionbuilder-rectanglepath"
@@ -1482,7 +1535,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 219,
+      "line": 230,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.AdjacentRectangles",
       "anchor": "api-csectiondefinitionbuilder-adjacentrectangles"
@@ -1572,7 +1625,7 @@
         }
       ],
       "resultType": null,
-      "line": 234,
+      "line": 245,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Outer",
       "anchor": "api-csectiondefinitionbuilder-outer"
@@ -1649,7 +1702,7 @@
         }
       ],
       "resultType": null,
-      "line": 248,
+      "line": 259,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Opening",
       "anchor": "api-csectiondefinitionbuilder-opening"
@@ -1884,6 +1937,51 @@
     },
     {
       "owner": "CSectionDefinitionBuilder",
+      "name": "Slice",
+      "kind": "Function",
+      "signature": "Public Function Slice(ByVal pathID As String, ByVal sourcePathID As String, ByVal startDistance As Double, ByVal endDistance As Double) As CGeometryPath",
+      "parameters": [
+        {
+          "name": "pathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal pathID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "startDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal startDistance As Double"
+        },
+        {
+          "name": "endDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal endDistance As Double"
+        }
+      ],
+      "resultType": "CGeometryPath",
+      "line": 177,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.Slice",
+      "anchor": "api-csectiondefinitionbuilder-slice"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
       "name": "Transform",
       "kind": "Function",
       "signature": "Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, ByVal shiftX As Double, ByVal shiftY As Double, Optional ByVal rotation As Double = 0#, Optional ByVal reflectX As Boolean = False) As CGeometryPath",
@@ -1938,7 +2036,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 177,
+      "line": 188,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Transform",
       "anchor": "api-csectiondefinitionbuilder-transform"
@@ -1967,7 +2065,7 @@
         }
       ],
       "resultType": null,
-      "line": 227,
+      "line": 238,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathGroup",
       "anchor": "api-csectiondefinitionbuilder-pathgroup"
@@ -2028,7 +2126,7 @@
         }
       ],
       "resultType": null,
-      "line": 262,
+      "line": 273,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByCount",
       "anchor": "api-csectiondefinitionbuilder-rebarbycount"
@@ -2089,7 +2187,7 @@
         }
       ],
       "resultType": null,
-      "line": 273,
+      "line": 284,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByMaxStep",
       "anchor": "api-csectiondefinitionbuilder-rebarbymaxstep"
@@ -2150,7 +2248,7 @@
         }
       ],
       "resultType": null,
-      "line": 282,
+      "line": 293,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarByFixedStep",
       "anchor": "api-csectiondefinitionbuilder-rebarbyfixedstep"
@@ -2211,7 +2309,7 @@
         }
       ],
       "resultType": null,
-      "line": 291,
+      "line": 302,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarAtStations",
       "anchor": "api-csectiondefinitionbuilder-rebaratstations"
@@ -2264,7 +2362,7 @@
         }
       ],
       "resultType": null,
-      "line": 300,
+      "line": 311,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarDependent",
       "anchor": "api-csectiondefinitionbuilder-rebardependent"
@@ -2325,7 +2423,7 @@
         }
       ],
       "resultType": null,
-      "line": 309,
+      "line": 320,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarProjected",
       "anchor": "api-csectiondefinitionbuilder-rebarprojected"
@@ -2409,11 +2507,22 @@
     },
     {
       "owner": "CRebarRuleOptions",
+      "name": "ValidateRowOffset",
+      "kind": "Field",
+      "signature": "Public ValidateRowOffset As Boolean",
+      "resultType": "Boolean",
+      "line": 26,
+      "source": "src/Section/CRebarRuleOptions.cls",
+      "id": "CRebarRuleOptions.ValidateRowOffset",
+      "anchor": "api-crebarruleoptions-validaterowoffset"
+    },
+    {
+      "owner": "CRebarRuleOptions",
       "name": "EverySecond",
       "kind": "Field",
       "signature": "Public EverySecond As Boolean",
       "resultType": "Boolean",
-      "line": 26,
+      "line": 27,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.EverySecond",
       "anchor": "api-crebarruleoptions-everysecond"
@@ -2424,7 +2533,7 @@
       "kind": "Field",
       "signature": "Public IncomingTangentAtJoint As Boolean",
       "resultType": "Boolean",
-      "line": 27,
+      "line": 28,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.IncomingTangentAtJoint",
       "anchor": "api-crebarruleoptions-incomingtangentatjoint"
@@ -2435,7 +2544,7 @@
       "kind": "Field",
       "signature": "Public DirectionX As Double",
       "resultType": "Double",
-      "line": 28,
+      "line": 29,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.DirectionX",
       "anchor": "api-crebarruleoptions-directionx"
@@ -2446,7 +2555,7 @@
       "kind": "Field",
       "signature": "Public DirectionY As Double",
       "resultType": "Double",
-      "line": 29,
+      "line": 30,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.DirectionY",
       "anchor": "api-crebarruleoptions-directiony"
@@ -2457,7 +2566,7 @@
       "kind": "Field",
       "signature": "Public SourceNormalSign As Double",
       "resultType": "Double",
-      "line": 30,
+      "line": 31,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceNormalSign",
       "anchor": "api-crebarruleoptions-sourcenormalsign"
@@ -2468,7 +2577,7 @@
       "kind": "Field",
       "signature": "Public SuccessfulProjectionOrdinal As Boolean",
       "resultType": "Boolean",
-      "line": 31,
+      "line": 32,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SuccessfulProjectionOrdinal",
       "anchor": "api-crebarruleoptions-successfulprojectionordinal"
@@ -2479,7 +2588,7 @@
       "kind": "Field",
       "signature": "Public NewPublicationRoot As Boolean",
       "resultType": "Boolean",
-      "line": 32,
+      "line": 33,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.NewPublicationRoot",
       "anchor": "api-crebarruleoptions-newpublicationroot"
@@ -2490,7 +2599,7 @@
       "kind": "Field",
       "signature": "Public SkipMissingProjection As Boolean",
       "resultType": "Boolean",
-      "line": 33,
+      "line": 34,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SkipMissingProjection",
       "anchor": "api-crebarruleoptions-skipmissingprojection"
@@ -2501,7 +2610,7 @@
       "kind": "Field",
       "signature": "Public Publication As ERebarPublication",
       "resultType": "ERebarPublication",
-      "line": 34,
+      "line": 35,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Publication",
       "anchor": "api-crebarruleoptions-publication"
@@ -2512,7 +2621,7 @@
       "kind": "Field",
       "signature": "Public PositionOrder As ERebarPositionOrder",
       "resultType": "ERebarPositionOrder",
-      "line": 35,
+      "line": 36,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.PositionOrder",
       "anchor": "api-crebarruleoptions-positionorder"
@@ -2523,7 +2632,7 @@
       "kind": "Field",
       "signature": "Public Coincidence As ERebarCoincidence",
       "resultType": "ERebarCoincidence",
-      "line": 36,
+      "line": 37,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Coincidence",
       "anchor": "api-crebarruleoptions-coincidence"
@@ -2534,7 +2643,7 @@
       "kind": "Field",
       "signature": "Public PlacementCheck As ERebarPlacementCheck",
       "resultType": "ERebarPlacementCheck",
-      "line": 37,
+      "line": 38,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.PlacementCheck",
       "anchor": "api-crebarruleoptions-placementcheck"
@@ -2545,7 +2654,7 @@
       "kind": "Field",
       "signature": "Public OverlapPolicy As ERebarOverlapPolicy",
       "resultType": "ERebarOverlapPolicy",
-      "line": 38,
+      "line": 39,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.OverlapPolicy",
       "anchor": "api-crebarruleoptions-overlappolicy"
@@ -2556,7 +2665,7 @@
       "kind": "Field",
       "signature": "Public SourcePrefix As String",
       "resultType": "String",
-      "line": 39,
+      "line": 40,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourcePrefix",
       "anchor": "api-crebarruleoptions-sourceprefix"
@@ -2567,7 +2676,7 @@
       "kind": "Field",
       "signature": "Public SourceSuffix As String",
       "resultType": "String",
-      "line": 40,
+      "line": 41,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceSuffix",
       "anchor": "api-crebarruleoptions-sourcesuffix"
@@ -2578,7 +2687,7 @@
       "kind": "Field",
       "signature": "Public AnnotationGroup As String",
       "resultType": "String",
-      "line": 41,
+      "line": 42,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.AnnotationGroup",
       "anchor": "api-crebarruleoptions-annotationgroup"
@@ -2589,7 +2698,7 @@
       "kind": "Field",
       "signature": "Public Comment As String",
       "resultType": "String",
-      "line": 42,
+      "line": 43,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Comment",
       "anchor": "api-crebarruleoptions-comment"
@@ -2600,7 +2709,7 @@
       "kind": "Field",
       "signature": "Public SourceReference As String",
       "resultType": "String",
-      "line": 43,
+      "line": 44,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.SourceReference",
       "anchor": "api-crebarruleoptions-sourcereference"
@@ -2661,7 +2770,7 @@
         }
       ],
       "resultType": null,
-      "line": 61,
+      "line": 63,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.ConfigureDependentContact",
       "anchor": "api-crebarruleoptions-configuredependentcontact"
@@ -2673,7 +2782,7 @@
       "signature": "Public Function Clone() As CRebarRuleOptions",
       "parameters": [],
       "resultType": "CRebarRuleOptions",
-      "line": 76,
+      "line": 78,
       "source": "src/Section/CRebarRuleOptions.cls",
       "id": "CRebarRuleOptions.Clone",
       "anchor": "api-crebarruleoptions-clone"
@@ -2718,7 +2827,7 @@
         }
       ],
       "resultType": null,
-      "line": 30,
+      "line": 38,
       "source": "src/Section/CRebarContactBuilder.cls",
       "id": "CRebarContactBuilder.Initialize",
       "anchor": "api-crebarcontactbuilder-initialize"
@@ -2727,7 +2836,7 @@
       "owner": "CRebarContactBuilder",
       "name": "AppendRow",
       "kind": "Function",
-      "signature": "Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String) As CRebarRuleOptions",
+      "signature": "Public Function AppendRow(ByVal diameter As Double, ByVal location As String, ByVal binding As String, ByVal sourceReference As String, Optional ByVal baseOffset As Double = 0#) As CRebarRuleOptions",
       "parameters": [
         {
           "name": "diameter",
@@ -2760,10 +2869,18 @@
           "optional": false,
           "default": null,
           "signature": "ByVal sourceReference As String"
+        },
+        {
+          "name": "baseOffset",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal baseOffset As Double = 0#"
         }
       ],
       "resultType": "CRebarRuleOptions",
-      "line": 47,
+      "line": 57,
       "source": "src/Section/CRebarContactBuilder.cls",
       "id": "CRebarContactBuilder.AppendRow",
       "anchor": "api-crebarcontactbuilder-appendrow"
@@ -3097,7 +3214,7 @@
         }
       ],
       "resultType": null,
-      "line": 330,
+      "line": 341,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalExtent",
       "anchor": "api-csectiondefinitionbuilder-verticalextent"
@@ -3158,7 +3275,7 @@
         }
       ],
       "resultType": null,
-      "line": 341,
+      "line": 352,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalExtent",
       "anchor": "api-csectiondefinitionbuilder-horizontalextent"
@@ -3235,7 +3352,7 @@
         }
       ],
       "resultType": null,
-      "line": 352,
+      "line": 363,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalDistance",
       "anchor": "api-csectiondefinitionbuilder-horizontaldistance"
@@ -3304,7 +3421,7 @@
         }
       ],
       "resultType": null,
-      "line": 366,
+      "line": 377,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalDistance",
       "anchor": "api-csectiondefinitionbuilder-verticaldistance"
@@ -3381,7 +3498,7 @@
         }
       ],
       "resultType": null,
-      "line": 379,
+      "line": 390,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Dimension",
       "anchor": "api-csectiondefinitionbuilder-dimension"
@@ -3434,7 +3551,7 @@
         }
       ],
       "resultType": null,
-      "line": 394,
+      "line": 405,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathLength",
       "anchor": "api-csectiondefinitionbuilder-pathlength"
@@ -3495,7 +3612,7 @@
         }
       ],
       "resultType": null,
-      "line": 405,
+      "line": 416,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Radius",
       "anchor": "api-csectiondefinitionbuilder-radius"
@@ -3556,7 +3673,7 @@
         }
       ],
       "resultType": null,
-      "line": 412,
+      "line": 423,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Diameter",
       "anchor": "api-csectiondefinitionbuilder-diameter"
@@ -3601,7 +3718,7 @@
         }
       ],
       "resultType": null,
-      "line": 431,
+      "line": 442,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Text",
       "anchor": "api-csectiondefinitionbuilder-text"
@@ -3646,7 +3763,7 @@
         }
       ],
       "resultType": null,
-      "line": 442,
+      "line": 453,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarlabel"
@@ -3691,7 +3808,7 @@
         }
       ],
       "resultType": null,
-      "line": 451,
+      "line": 462,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowlabel"
@@ -3744,7 +3861,7 @@
         }
       ],
       "resultType": null,
-      "line": 461,
+      "line": 472,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtentLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextentlabel"
@@ -3805,7 +3922,7 @@
         }
       ],
       "resultType": null,
-      "line": 482,
+      "line": 494,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtremeLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextremelabel"
@@ -4284,7 +4401,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 248,
+      "line": 267,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -4296,7 +4413,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 362,
+      "line": 381,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -4341,7 +4458,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 378,
+      "line": 397,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"

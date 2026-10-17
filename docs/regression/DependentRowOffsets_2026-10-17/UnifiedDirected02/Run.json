@@ -1,0 +1,37 @@
+﻿{
+    "Stage":  "UnifiedDirected02",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetWallCollisionTests",
+                     "Seconds":  0.39981099999999997,
+                     "Characters":  704,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunCircleSetbackTests",
+                     "Seconds":  0.9755381,
+                     "Characters":  2355,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+                     "Seconds":  4.6128097,
+                     "Characters":  7163,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03CircleRebarInputTests",
+                     "Seconds":  12.1799369,
+                     "Characters":  49489,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "C341A048B8551E41F073DCCB7D5F704B7844559CA7111DCEC349E63F404091EF",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:25:07.5302610+03:00"
+}

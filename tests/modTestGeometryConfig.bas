@@ -346,7 +346,7 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
 
         ' Пустой диаметр является допустимым выключением; исчезнувшая строка
         ' имеет другой смысл и не должна незаметно брать шаблонный диаметр.
-        If CStr(key) = "Circle.Diameter" Or CStr(key) = "Rebar.AxisDistance" Or CStr(key) = "Rebar.Count" Or CStr(key) = "Rebar.Diameter" Then
+        If CStr(key) = "Circle.Diameter" Then
             Set label = cell.Offset(0, -1)
         Else
             Set label = cell.Offset(-1, 0)

@@ -10,7 +10,7 @@ SECTIONS = [
     ]),
     ('02', 'Входные размеры и единицы', [
         ('CSectionRecipeContext', 'Table Units'),
-        ('CSectionInputTable', 'Name RowCount ColumnCount SourceReference CellValue IsBlank Text Number Count Choice Length PositiveLength NonNegativeLength OptionalDiameter ColumnByCaption RowByKey RowByAnyKey'),
+        ('CSectionInputTable', 'Name RowCount ColumnCount SourceReference CellValue IsBlank Text Number Count Choice Length PositiveLength NonNegativeLength OptionalDiameter OptionalRowOffset AdditionalRowsHeader ColumnByCaption RowByKey RowByAnyKey'),
         ('CUnitSystem', 'InputLengthToInternal InputAreaToInternal'),
     ]),
     ('03', 'Границы бетона и отверстий', [
@@ -19,7 +19,7 @@ SECTIONS = [
         ('CSectionDefinitionBuilder', 'CirclePath LinePath ArcPath RectanglePath RoundedPolygon AdjacentRectangles AddPath Outer Opening'),
     ]),
     ('04', 'Линии центров стержней и преобразования', [
-        ('CSectionDefinitionBuilder', 'Offset OffsetRoundedPolygon ConstrainLine Chain Transform PathGroup'),
+        ('CSectionDefinitionBuilder', 'Offset OffsetRoundedPolygon ConstrainLine Chain Slice Transform PathGroup'),
     ]),
     ('05', 'Размещение арматуры', [
         ('CSectionDefinitionBuilder', 'RebarByCount RebarByMaxStep RebarByFixedStep RebarAtStations RebarDependent RebarProjected'),

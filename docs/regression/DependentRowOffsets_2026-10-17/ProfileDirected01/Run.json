@@ -1,0 +1,51 @@
+﻿{
+    "Stage":  "ProfileDirected01",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunRebarContactBuilderTests",
+                     "Seconds":  0.11208109999999999,
+                     "Characters":  3967,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+                     "Seconds":  0.0039169,
+                     "Characters":  4765,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+                     "Seconds":  0.2009185,
+                     "Characters":  3651,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+                     "Seconds":  5.9712290999999995,
+                     "Characters":  7163,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+                     "Seconds":  0.8107019,
+                     "Characters":  442,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetWallCollisionTests",
+                     "Seconds":  0.30220969999999997,
+                     "Characters":  159,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "3932C92D934B6226FE3399B39154BD681553CF8F23FEF192D1B20A8EB2277ADE",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T14:15:39.4194060+03:00"
+}

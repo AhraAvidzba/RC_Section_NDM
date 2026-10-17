@@ -1,0 +1,264 @@
+{
+  "Passed": true,
+  "Matrices": [
+    {
+      "Matrix": "DumpCircleRecipeMatrix",
+      "PhysicalRows": 21180,
+      "PhysicalEqual": true,
+      "AnnotationCountEqual": true,
+      "ChangedAnnotationLines": 0,
+      "AnnotationChanges": []
+    },
+    {
+      "Matrix": "DumpRectSetRecipeMatrix",
+      "PhysicalRows": 9742,
+      "PhysicalEqual": true,
+      "AnnotationCountEqual": true,
+      "ChangedAnnotationLines": 0,
+      "AnnotationChanges": []
+    },
+    {
+      "Matrix": "DumpRoundedRecipeMatrix",
+      "PhysicalRows": 16012,
+      "PhysicalEqual": true,
+      "AnnotationCountEqual": true,
+      "ChangedAnnotationLines": 0,
+      "AnnotationChanges": []
+    },
+    {
+      "Matrix": "DumpHollowRecipeMatrix",
+      "PhysicalRows": 35322,
+      "PhysicalEqual": true,
+      "AnnotationCountEqual": true,
+      "ChangedAnnotationLines": 38,
+      "AnnotationChanges": [
+        {
+          "Before": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C05A35CE1A3BB24E\td:4074000000000000\td:405A35CE1A3BB256\td:4074000000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C06A35CE1A3BB250\td:4074000000000000\td:406A35CE1A3BB254\td:4074000000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C059D1462CEAA19E\td:C074500000000000\td:4059D1462CEAA19D\td:C074500000000000\td:0000000000000000\td:3FF0000000000000\ts:7Ø20 + 4Ø16 + 7Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case1\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C069D1462CEAA19C\td:C074500000000000\td:4069D1462CEAA19D\td:C074500000000000\td:0000000000000000\td:3FF0000000000000\ts:7Ø20 + 4Ø16 + 7Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case2\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case2\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case2\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case2\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:4049C743856F137C\td:4061800000000000\td:406A35CE1A3BB254\td:4061800000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C05A35CE1A3BB250\td:4061800000000000\td:4073A85A93ACC5BE\td:4061800000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:4059D1462CEAA19E\td:C07F900000000000\td:4069D1462CEAA19E\td:C07F900000000000\td:0000000000000000\td:3FF0000000000000\ts:6Ø20 + 3Ø16 + 6Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case3\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C059D1462CEAA19E\td:C07F900000000000\td:407705CE5F718D62\td:C07F900000000000\td:0000000000000000\td:3FF0000000000000\ts:6Ø20 + 3Ø16 + 6Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C05A35CE1A3BB24E\td:4074000000000000\td:405A35CE1A3BB256\td:4074000000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C06A35CE1A3BB250\td:4074000000000000\td:406A35CE1A3BB254\td:4074000000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C059D1462CEAA19E\td:C074500000000000\td:4059D1462CEAA19D\td:C074500000000000\td:0000000000000000\td:3FF0000000000000\ts:7Ø20 + 4Ø16 + 7Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case4\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C069D1462CEAA19C\td:C074500000000000\td:4069D1462CEAA19D\td:C074500000000000\td:0000000000000000\td:3FF0000000000000\ts:7Ø20 + 4Ø16 + 7Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case6\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case6\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case6\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case6\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case7\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case7\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case7\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C059D1462CEAA19E\td:C074500000000000\td:4059D1462CEAA19D\td:C074500000000000\td:0000000000000000\td:3FF0000000000000\ts:7Ø20 + 4Ø16 + 7Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case7\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C069D1462CEAA19C\td:C074500000000000\td:4069D1462CEAA19D\td:C074500000000000\td:0000000000000000\td:3FF0000000000000\ts:7Ø20 + 4Ø16 + 7Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case0\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C04A3095024BD878\td:4075400000000000\td:4063A46FC1B8E257\td:4075400000000000\td:0000000000000000\td:BFF0000000000000\ts:5Ø20\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case0\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C063A46FC1B8E259\td:4075400000000000\td:40705E5D216F6749\td:4075400000000000\td:0000000000000000\td:BFF0000000000000\ts:5Ø20\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case0\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C04A3095024BD877\td:C06E000000000000\td:4063A46FC1B8E256\td:C06E000000000000\td:0000000000000000\td:3FF0000000000000\ts:5Ø20\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case0\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C063A46FC1B8E259\td:C06E000000000000\td:40705E5D216F6749\td:C06E000000000000\td:0000000000000000\td:3FF0000000000000\ts:5Ø20\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:3D1C5E0000000000\td:4077200000000000\td:405A35CE1A3BB256\td:4077200000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C06A35CE1A3BB250\td:4077200000000000\td:406E694B72AE7B8D\td:4077200000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:3D1C5E0000000000\td:C071300000000000\td:4059D1462CEAA19E\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:8Ø20 + 4Ø16 + 8Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case1\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C069D1462CEAA19D\td:C071300000000000\td:40735CF4A1AFF936\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:8Ø20 + 4Ø16 + 8Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case2\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case2\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case2\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case2\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:4049C743856F137C\td:4061800000000000\td:406A35CE1A3BB254\td:4061800000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C05A35CE1A3BB250\td:4061800000000000\td:4073A85A93ACC5BE\td:4061800000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:4059D1462CEAA19E\td:C07F900000000000\td:4069D1462CEAA19E\td:C07F900000000000\td:0000000000000000\td:3FF0000000000000\ts:6Ø20 + 3Ø16 + 6Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case3\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C059D1462CEAA19E\td:C07F900000000000\td:407705CE5F718D62\td:C07F900000000000\td:0000000000000000\td:3FF0000000000000\ts:6Ø20 + 3Ø16 + 6Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:3D1C5E0000000000\td:4077200000000000\td:405A35CE1A3BB256\td:4077200000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C06A35CE1A3BB250\td:4077200000000000\td:406E694B72AE7B8D\td:4077200000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:3D1C5E0000000000\td:C071300000000000\td:4059D1462CEAA19E\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:8Ø20 + 4Ø16 + 8Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case4\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C069D1462CEAA19D\td:C071300000000000\td:40735CF4A1AFF936\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:8Ø20 + 4Ø16 + 8Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case6\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C073A85A93ACC5BD\td:4081300000000000\td:4073A85A93ACC5BE\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case6\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C0799F786A0B4050\td:4081300000000000\td:40799F786A0B4051\td:4081300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case6\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case6\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case7\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0735CF4A1AFF936\td:C081080000000000\td:40735CF4A1AFF936\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case7\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C0794B68F25C31D7\td:C081080000000000\td:40794B68F25C31D7\td:C081080000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case7\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:3D1C5E0000000000\td:C071300000000000\td:4059D1462CEAA19E\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:8Ø20 + 4Ø16 + 8Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case7\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C069D1462CEAA19D\td:C071300000000000\td:40735CF4A1AFF936\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:8Ø20 + 4Ø16 + 8Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        }
+      ]
+    },
+    {
+      "Matrix": "DumpHollowRecipeEdgeMatrix",
+      "PhysicalRows": 10888,
+      "PhysicalEqual": true,
+      "AnnotationCountEqual": true,
+      "ChangedAnnotationLines": 16,
+      "AnnotationChanges": [
+        {
+          "Before": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C05DA28C59D5433A\td:406F400000000000\td:405DA28C59D5433B\td:406F400000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C07A66B527417E23\td:406F400000000000\td:407A66B527417E23\td:406F400000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C05D3E046C843286\td:C06EA00000000000\td:405D3E046C843281\td:C06EA00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C07A19ABA8387D24\td:C06EA00000000000\td:407A19ABA8387D24\td:C06EA00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:3D19000000000000\td:4065400000000000\td:3D19000000000000\td:4065400000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C070A890AB3273E3\td:4065400000000000\td:4070A890AB3273E4\td:4065400000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:3D19000000000000\td:C065E00000000000\td:3D19000000000000\td:C065E00000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case8\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C070F17723F4464C\td:C065E00000000000\td:4070F17723F4464B\td:C065E00000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:3D1F05CC00000000\td:407C200000000001\td:3D1F05CC00000000\td:407C200000000001\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C07ABF9B5EEF0EB4\td:407C200000000001\td:407ABF9B5EEF0EB6\td:407C200000000001\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:BD42124E40000000\td:C07BD00000000000\td:BD42124E40000000\td:C07BD00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C07A7385BBBEE3E1\td:C07BD00000000000\td:407A7385BBBEE3E0\td:C07BD00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:3D129D1400000000\td:4070E00000000001\td:3D129D1400000000\td:4070E00000000001\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C0700C906C2908D2\td:4070E00000000001\td:40700C906C2908D4\td:4070E00000000001\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:BD26855700000000\td:C071300000000000\td:BD26855700000000\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowCentered.case9\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C07058A60F5933A8\td:C071300000000000\td:407058A60F5933A6\td:C071300000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C05DA28C59D5433A\td:406F400000000000\td:405DA28C59D5433B\td:406F400000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C07A66B527417E23\td:406F400000000000\td:407A66B527417E23\td:406F400000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C05D3E046C843286\td:C06EA00000000000\td:405D3E046C843281\td:C06EA00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C07A19ABA8387D24\td:C06EA00000000000\td:407A19ABA8387D24\td:C06EA00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:3D21598000000000\td:406B800000000000\td:405DA28C59D5433B\td:406B800000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C06B24FFF51BD1C9\td:406B800000000000\td:40735E13B5A9983B\td:406B800000000000\td:0000000000000000\td:BFF0000000000000\ts:7Ø20 + 7Ø16 + 4Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:3D21598000000000\td:C05F400000000000\td:405D3E046C843282\td:C05F400000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case8\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C06BF262F61D7725\td:C05F400000000000\td:4071EF90B27D6A4C\td:C05F400000000000\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:3D1F05CC00000000\td:407C200000000001\td:3D1F05CC00000000\td:407C200000000001\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_B.Top\ts:REBAR_ANNOTATION\td:C07ABF9B5EEF0EB4\td:407C200000000001\td:407ABF9B5EEF0EB6\td:407C200000000001\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:BD42124E40000000\td:C07BD00000000000\td:BD42124E40000000\td:C07BD00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_B.Bottom\ts:REBAR_ANNOTATION\td:C07A7385BBBEE3E1\td:C07BD00000000000\td:407A7385BBBEE3E0\td:C07BD00000000000\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:3D22200000000000\td:4073D0545F0C0794\td:3D22200000000000\td:4073D0545F0C0794\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_Opening.B.Top\ts:REBAR_ANNOTATION\td:C06C9CB9737939D2\td:4073D0545F0C0794\td:40731783A92DECCA\td:4073D0545F0C0794\td:0000000000000000\td:BFF0000000000000\ts:9Ø20 + 9Ø16 + 5Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        },
+        {
+          "Before": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:40521ED040833E87\td:C06BE26662E423FC\td:40521ED040833E87\td:C06BE26662E423FC\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани.",
+          "After": "HollowMatrix.HollowOffset.case9\tANNOTATION\tREBAR_Opening.B.Bottom\ts:REBAR_ANNOTATION\td:C06A107C13B1E47A\td:C06BE26662E423FC\td:40714BE5E7846266\td:C06BE26662E423FC\td:0000000000000000\td:3FF0000000000000\ts:9Ø20 + 5Ø16 + 9Ø12\td:0000000000000000\ts:\ts:Групповая подпись арматуры по смысловой грани."
+        }
+      ]
+    }
+  ],
+  "Note": "Only explicitly requested annotation anchor correction is permitted; physical zero-offset geometry unchanged."
+}

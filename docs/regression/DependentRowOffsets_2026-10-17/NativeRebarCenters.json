@@ -1,0 +1,244 @@
+{
+  "Passed": true,
+  "StraightTopPairs": [
+    {
+      "Pair": 1,
+      "ModelY20": 1040.0,
+      "ModelY16": 1040.0,
+      "NativeY20Pt": 115.16417360305786,
+      "NativeY16Pt": 115.16417324542999,
+      "NativeDifferencePt": 3.5762786865234375e-07
+    },
+    {
+      "Pair": 3,
+      "ModelY20": 1040.0,
+      "ModelY16": 1040.0,
+      "NativeY20Pt": 115.16417360305786,
+      "NativeY16Pt": 115.16417324542999,
+      "NativeDifferencePt": 3.5762786865234375e-07
+    },
+    {
+      "Pair": 5,
+      "ModelY20": 1040.0,
+      "ModelY16": 1040.0,
+      "NativeY20Pt": 115.16417360305786,
+      "NativeY16Pt": 115.16417324542999,
+      "NativeDifferencePt": 3.5762786865234375e-07
+    }
+  ],
+  "OpeningLabelCenterPt": 334.02984619140625,
+  "OpeningMainCenterPt": 334.0298388004303,
+  "OpeningLabelErrorPt": 7.3909759521484375e-06,
+  "Bars": [
+    {
+      "ID": "R1",
+      "X": -760.0,
+      "Y": 1140.0,
+      "Diameter": 32.0,
+      "Source": "B.Top.Main.1",
+      "Name": "NDMPlot_ElementRebar4543",
+      "Xpt": 223.43283867835999,
+      "Ypt": 100.6119692325592
+    },
+    {
+      "ID": "R2",
+      "X": -760.0,
+      "Y": 1040.0,
+      "Diameter": 20.0,
+      "Source": "B.Top.Row2.1",
+      "Name": "NDMPlot_ElementRebar4544",
+      "Xpt": 223.43282747268677,
+      "Ypt": 115.16417360305786
+    },
+    {
+      "ID": "R3",
+      "X": -742.0,
+      "Y": 1040.0,
+      "Diameter": 16.0,
+      "Source": "B.Top.Row3.1",
+      "Name": "NDMPlot_ElementRebar4545",
+      "Xpt": 226.05220425128937,
+      "Ypt": 115.16417324542999
+    },
+    {
+      "ID": "R4",
+      "X": -380.00000000000006,
+      "Y": 1140.0,
+      "Diameter": 32.0,
+      "Source": "B.Top.Main.2",
+      "Name": "NDMPlot_ElementRebar4546",
+      "Xpt": 278.7313311100006,
+      "Ypt": 100.6119692325592
+    },
+    {
+      "ID": "R5",
+      "X": -380.00000000000006,
+      "Y": 1040.0,
+      "Diameter": 20.0,
+      "Source": "B.Top.Row2.2",
+      "Name": "NDMPlot_ElementRebar4547",
+      "Xpt": 278.73138976097107,
+      "Ypt": 115.16417360305786
+    },
+    {
+      "ID": "R6",
+      "X": 0.0,
+      "Y": 1140.0,
+      "Diameter": 32.0,
+      "Source": "B.Top.Main.3",
+      "Name": "NDMPlot_ElementRebar4548",
+      "Xpt": 334.02985405921936,
+      "Ypt": 100.6119692325592
+    },
+    {
+      "ID": "R7",
+      "X": 0.0,
+      "Y": 1040.0,
+      "Diameter": 20.0,
+      "Source": "B.Top.Row2.3",
+      "Name": "NDMPlot_ElementRebar4549",
+      "Xpt": 334.02984285354614,
+      "Ypt": 115.16417360305786
+    },
+    {
+      "ID": "R8",
+      "X": 18.0,
+      "Y": 1040.0,
+      "Diameter": 16.0,
+      "Source": "B.Top.Row3.3",
+      "Name": "NDMPlot_ElementRebar4550",
+      "Xpt": 336.6492589712143,
+      "Ypt": 115.16417324542999
+    },
+    {
+      "ID": "R9",
+      "X": 379.99999999999994,
+      "Y": 1140.0,
+      "Diameter": 32.0,
+      "Source": "B.Top.Main.4",
+      "Name": "NDMPlot_ElementRebar4551",
+      "Xpt": 389.32834649086,
+      "Ypt": 100.6119692325592
+    },
+    {
+      "ID": "R10",
+      "X": 379.99999999999994,
+      "Y": 1040.0,
+      "Diameter": 20.0,
+      "Source": "B.Top.Row2.4",
+      "Name": "NDMPlot_ElementRebar4552",
+      "Xpt": 389.3283746242523,
+      "Ypt": 115.16417360305786
+    },
+    {
+      "ID": "R11",
+      "X": 760.0000000000001,
+      "Y": 1140.0,
+      "Diameter": 32.0,
+      "Source": "B.Top.Main.5",
+      "Name": "NDMPlot_ElementRebar4553",
+      "Xpt": 444.6268389225006,
+      "Ypt": 100.6119692325592
+    },
+    {
+      "ID": "R12",
+      "X": 760.0000000000001,
+      "Y": 1040.0,
+      "Diameter": 20.0,
+      "Source": "B.Top.Row2.5",
+      "Name": "NDMPlot_ElementRebar4554",
+      "Xpt": 444.62689757347107,
+      "Ypt": 115.16417360305786
+    },
+    {
+      "ID": "R13",
+      "X": 778.0000000000001,
+      "Y": 1040.0,
+      "Diameter": 16.0,
+      "Source": "B.Top.Row3.5",
+      "Name": "NDMPlot_ElementRebar4555",
+      "Xpt": 447.24629604816437,
+      "Ypt": 115.16417324542999
+    },
+    {
+      "ID": "R14",
+      "X": -380.00000000000006,
+      "Y": 494.8331477354788,
+      "Diameter": 32.0,
+      "Source": "Opening.B.Top.Main.2",
+      "Name": "NDMPlot_ElementRebar4556",
+      "Xpt": 278.7313311100006,
+      "Ypt": 194.4981551170349
+    },
+    {
+      "ID": "R15",
+      "X": -435.55555555555566,
+      "Y": 577.9810896637886,
+      "Diameter": 20.0,
+      "Source": "Opening.B.Top.Row2.1",
+      "Name": "NDMPlot_ElementRebar4557",
+      "Xpt": 270.6467339992523,
+      "Ypt": 182.3982663154602
+    },
+    {
+      "ID": "R16",
+      "X": -420.5889260084599,
+      "Y": 587.9810896637886,
+      "Diameter": 16.0,
+      "Source": "Opening.B.Top.Row3.1",
+      "Name": "NDMPlot_ElementRebar4558",
+      "Xpt": 272.8247262239456,
+      "Ypt": 180.94307339191437
+    },
+    {
+      "ID": "R17",
+      "X": -2.220446049250313e-15,
+      "Y": 510.0,
+      "Diameter": 32.0,
+      "Source": "Opening.B.Top.Main.3",
+      "Name": "NDMPlot_ElementRebar4559",
+      "Xpt": 334.02985405921936,
+      "Ypt": 192.29106283187866
+    },
+    {
+      "ID": "R18",
+      "X": -2.220446049250313e-15,
+      "Y": 610.0,
+      "Diameter": 20.0,
+      "Source": "Opening.B.Top.Row2.2",
+      "Name": "NDMPlot_ElementRebar4560",
+      "Xpt": 334.02984285354614,
+      "Ypt": 177.73881196975708
+    },
+    {
+      "ID": "R19",
+      "X": 380.0,
+      "Y": 510.0,
+      "Diameter": 32.0,
+      "Source": "Opening.B.Top.Main.4",
+      "Name": "NDMPlot_ElementRebar4561",
+      "Xpt": 389.32834649086,
+      "Ypt": 192.29106283187866
+    },
+    {
+      "ID": "R20",
+      "X": 380.0,
+      "Y": 610.0,
+      "Diameter": 20.0,
+      "Source": "Opening.B.Top.Row2.3",
+      "Name": "NDMPlot_ElementRebar4562",
+      "Xpt": 389.3283746242523,
+      "Ypt": 177.73881196975708
+    },
+    {
+      "ID": "R21",
+      "X": 398.0,
+      "Y": 610.0,
+      "Diameter": 16.0,
+      "Source": "Opening.B.Top.Row3.3",
+      "Name": "NDMPlot_ElementRebar4563",
+      "Xpt": 391.9477514028549,
+      "Ypt": 177.73881924152374
+    }
+  ]
+}

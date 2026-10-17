@@ -1,0 +1,72 @@
+﻿{
+    "Stage":  "RecipeDirected03",
+    "Passed":  false,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+                     "Seconds":  0.19486579999999998,
+                     "Characters":  803,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestWorkbookInterface.RunConfigPresentationTests",
+                     "Seconds":  0.2686772,
+                     "Characters":  74452,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02OptionsTests",
+                     "Seconds":  0.023511999999999998,
+                     "Characters":  483,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestAudit02Api.RunAudit02InputTests",
+                     "Seconds":  0.0392137,
+                     "Characters":  183,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+                     "Seconds":  22.8898962,
+                     "Characters":  111180,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03RebarFieldConfigTests",
+                     "Seconds":  583.08695419999992,
+                     "Characters":  1050012,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03CircleConfigTests",
+                     "Seconds":  3.7809508999999997,
+                     "Characters":  4409,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03ShapeConfigTests",
+                     "Seconds":  9.8848238,
+                     "Characters":  18137,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestGeometryConfig.RunAudit03CircleRebarInputTests",
+                     "Seconds":  19.405591299999998,
+                     "Characters":  49567,
+                     "Passed":  false,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "F62BA647D2220099D68059D33BC210E503A4961BC7E06D73D6DB17977F731DA9",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T13:19:36.4231822+03:00"
+}

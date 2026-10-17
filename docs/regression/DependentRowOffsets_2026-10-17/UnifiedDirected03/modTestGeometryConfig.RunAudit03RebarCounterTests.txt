@@ -1,0 +1,43 @@
+﻿OK: rebarCounter.RectSet.0.typed
+OK: rebarCounter.RectSet.0.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=0; error=-2147215974; comment=Config!I111; Config!L111; Config!M111: Ряд 'H1.as_1.Main': Количество позиций превышает диапазон счетчиков. Исправьте значение в указанной ячейке.
+OK: rebarCounter.RectSet.1.typed
+OK: rebarCounter.RectSet.1.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=1; error=-2147215974; comment=Config!I112; Config!L112; Config!M112: Ряд 'H1.as_2.Main': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов. Исправьте значение в указанной ячейке.
+OK: rebarCounter.RectSet.2.typed
+OK: rebarCounter.RectSet.2.message
+REBAR_COUNTER_FAILURE: shape=RectSet; scenario=2; error=-2147215974; comment=Config!I121; Config!J121; Config!K121; Config!L121: Ряд 'H1.as_1.Row2': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов. Исправьте значение в указанной ячейке.
+OK: rebarCounter.RectSet.disabled
+OK: rebarCounter.RectSet.recovery
+OK: rebarCounter.RoundedRectangle.0.typed
+OK: rebarCounter.RoundedRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=0; error=-2147215974; comment=Config!I143; Config!L143; Config!M143: Ряд 'H.Left.Main': Количество позиций превышает диапазон счетчиков. Исправьте значение в указанной ячейке.
+OK: rebarCounter.RoundedRectangle.1.typed
+OK: rebarCounter.RoundedRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=1; error=-2147215974; comment=Config!I144; Config!L144; Config!M144: Ряд 'H.Right.Main': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов. Исправьте значение в указанной ячейке.
+OK: rebarCounter.RoundedRectangle.2.typed
+OK: rebarCounter.RoundedRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=RoundedRectangle; scenario=2; error=-2147215974; comment=Config!I149; Config!J149; Config!K149; Config!L149: Ряд 'H.Left.Row2': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов. Исправьте значение в указанной ячейке.
+OK: rebarCounter.RoundedRectangle.disabled
+OK: rebarCounter.RoundedRectangle.recovery
+OK: rebarCounter.HollowRectangle.0.typed
+OK: rebarCounter.HollowRectangle.0.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=0; error=-2147215974; comment=Config!I166; Config!L166; Config!M166: Ряд 'H.Left.Main': Количество позиций превышает диапазон счетчиков. Исправьте значение в указанной ячейке.
+OK: rebarCounter.HollowRectangle.1.typed
+OK: rebarCounter.HollowRectangle.1.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=1; error=-2147215974; comment=Config!I167; Config!L167; Config!M167: Ряд 'H.Right.Main': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов. Исправьте значение в указанной ячейке.
+OK: rebarCounter.HollowRectangle.2.typed
+OK: rebarCounter.HollowRectangle.2.message
+REBAR_COUNTER_FAILURE: shape=HollowRectangle; scenario=2; error=-2147215974; comment=Config!I176; Config!J176; Config!K176; Config!L176: Ряд 'H.Left.Row2': Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов. Исправьте значение в указанной ячейке.
+OK: rebarCounter.HollowRectangle.disabled
+OK: rebarCounter.HollowRectangle.recovery
+OK: rebarCounter.RectSet.inactiveLower
+OK: rebarCounter.binding.5.d16.success
+OK: rebarCounter.binding.5.d16.physical
+OK: rebarCounter.binding.6.d16.success
+OK: rebarCounter.binding.6.d16.physical
+OK: rebarCounter.binding.2147483647.d16.typed
+OK: rebarCounter.binding.2147483647.d16.beforeAllocation
+OK: rebarCounter.binding.2147483647.d0.success
+OK: rebarCounter.binding.2147483647.d0.physical
+TOTAL_REBAR_COUNTER: passed=33; failed=0

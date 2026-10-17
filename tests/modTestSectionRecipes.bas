@@ -66,14 +66,14 @@ Public Function RunWorkbookRecipeInputTests() As String
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set rootRange = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    Set diameterCell = rootRange.Cells(table.RowByKey("Circle.Diameter"), 2)
-    Set coverCell = rootRange.Cells(table.RowByKey("Rebar.AxisDistance"), 2)
+    Set diameterCell = FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter")
+    Set coverCell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance")
     Application.Calculation = xlCalculationManual
     diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": rootRange.Calculate
     diameterCell.Value2 = 320#
     Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    Near "workbook.manual.capture.refreshed", table.Length(table.RowByKey("Rebar.AxisDistance"), 2, units), 80#
+    Near "workbook.manual.capture.refreshed", table.Length(table.RowByKey("as", 2) + 1, 2, units), 80#
     names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
     names = registry.RecipeTableNames("Circle")
     Check "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"

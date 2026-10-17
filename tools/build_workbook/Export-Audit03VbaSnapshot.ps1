@@ -1,4 +1,4 @@
-# Читает фактический VBA из отдельной проверяемой книги без импорта исходников,
+﻿# Читает фактический VBA из отдельной проверяемой книги без импорта исходников,
 # запуска макросов или сохранения книги. Экспорт служит доказательством
 # source/book equality; операция не исправляет проверяемый артефакт.
 param(
@@ -20,11 +20,12 @@ $guardGuideAllowed = [IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Ex
 $source = (Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
 $publishedWorkbook = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
+$dependentRowsAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/DependentRowOffsets_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($source, $output)) {
     # Итоговая приёмка может читать именно опубликованную книгу. Это исключение
     # только для source; dump по-прежнему создаётся в evidence, без Save/macros.
     if ($path -eq $source -and $source -eq $publishedWorkbook) {continue}
-    if (-not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
+    if (-not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($performanceAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($plateauAllowed, [StringComparison]::OrdinalIgnoreCase) -and

@@ -1,0 +1,30 @@
+﻿{
+    "Stage":  "OpeningCenter01",
+    "Passed":  true,
+    "Runs":  [
+                 {
+                     "Macro":  "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+                     "Seconds":  1.1499276999999999,
+                     "Characters":  437,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeRuleTests",
+                     "Seconds":  0.4805023,
+                     "Characters":  7459,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 },
+                 {
+                     "Macro":  "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+                     "Seconds":  27.9902013,
+                     "Characters":  4055,
+                     "Passed":  true,
+                     "Snapshot":  false
+                 }
+             ],
+    "SourceSHA256":  "86091A53705BA53F2AF7845F967F41AF09A5353C77C44E44F8E30D0F2734B656",
+    "ProductionUnchanged":  true,
+    "FinishedAt":  "2026-10-17T13:37:09.8706431+03:00"
+}

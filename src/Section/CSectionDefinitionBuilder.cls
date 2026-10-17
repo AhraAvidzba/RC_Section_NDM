@@ -172,6 +172,17 @@ Public Function Chain(ByVal pathID As String, ByVal sourcePathID As String, _
     mDefinition.AddPath Chain
 End Function
 
+' Создаёт участок существующей линии между расстояниями от её начала, мм.
+' Отрезки и дуги сохраняются точно; выбор участка выполняет общий CGeometryPath.
+Public Function Slice(ByVal pathID As String, ByVal sourcePathID As String, ByVal startDistance As Double, ByVal endDistance As Double) As CGeometryPath
+    RequireOpen
+    Dim source As CGeometryPath, part As CGeometryPath
+    Set source = mDefinition.Path(sourcePathID)
+    Set part = source.Slice(startDistance, endDistance)
+    Set Slice = part.WithID(pathID)
+    mDefinition.AddPath Slice
+End Function
+
 ' Создаёт новую линию отражением, поворотом и переносом исходной.
 ' Сохраняет ID сегментов и сведения об источнике; отражение меняет знак угла дуг.
 Public Function Transform(ByVal pathID As String, ByVal sourcePathID As String, ByVal shiftX As Double, ByVal shiftY As Double, _

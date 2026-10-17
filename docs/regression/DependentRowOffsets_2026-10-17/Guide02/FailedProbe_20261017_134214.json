@@ -1,0 +1,7 @@
+﻿{
+    "Status":  "FAIL",
+    "Reason":  "Guide row count differs from its external baseline.",
+    "ScriptStackTrace":  "at Assert-RecipeGuidePreviousContent, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\SectionRecipeGuide.ps1: line 52\r\nat Update-SectionRecipeGuide, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\SectionRecipeGuide.ps1: line 133\r\nat \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Update-SectionRecipeGuide.ps1: line 70",
+    "Native":  "Guide row count differs from its external baseline.",
+    "ProductionUnchanged":  true
+}

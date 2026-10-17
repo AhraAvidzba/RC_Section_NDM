@@ -1,0 +1,5 @@
+﻿{
+    "Error":  "Нельзя отделить правую таблицу у $L$86 от соседних данных. Укажите её цельным именованным диапазоном.",
+    "Stack":  "at Get-DependentRowsNeighborPlan, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\DependentRowsConfig.ps1: line 100\r\nat Update-DependentRowsConfigLayout, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\DependentRowsConfig.ps1: line 157\r\nat \u003cScriptBlock\u003e, C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Update-DependentRowsWorkbook.ps1: line 29",
+    "Position":  "At C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\DependentRowsConfig.ps1:100 char:46\r\n+ ... $band.Left){throw \"Нельзя отделить правую таблицу у $($cell.Address() ...\r\n+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}

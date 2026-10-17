@@ -1,0 +1,28 @@
+{
+  "Passed": true,
+  "Checks": [
+    "AcceptedSourceEquality.json",
+    "SavedArtifactAudit.json",
+    "ConfigCommentStyle.json",
+    "DirectTemplate07.json",
+    "FinalCalculations.json",
+    "CircleUnifiedLayout.json"
+  ],
+  "Runs": [
+    "UnifiedDirected03",
+    "ProfileFinal",
+    "OffsetExamples07"
+  ],
+  "NDSCases": 48,
+  "BatchCases": 8,
+  "NoNumFail": true,
+  "MigrationCodeRemoved": true,
+  "UserOverrides": [
+    "2.5 mm profile addition",
+    "Unified Circle main row",
+    "Circle start/end setbacks",
+    "Left, nowrap comments; 15 pt rows"
+  ],
+  "FullOnOffRun": false,
+  "Scope": "Directed acceptance of dependent-row offsets and user additions"
+}

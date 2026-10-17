@@ -1,0 +1,128 @@
+{
+  "Passed": true,
+  "NDSCases": 48,
+  "AllConverged": true,
+  "BatchCases": 8,
+  "Batch": [
+    {
+      "Section": "Circle_ThreeRows_100_100",
+      "Load": "1",
+      "Fields": [
+        "s:OK",
+        "s:OK",
+        "i:4",
+        "i:4",
+        "b:0",
+        "d:403BCA34E7DE48F9",
+        "d:40204BF369BACAAB",
+        "d:0000000000000000",
+        "d:0000000000000000"
+      ]
+    },
+    {
+      "Section": "Circle_ThreeRows_100_100",
+      "Load": "2",
+      "Fields": [
+        "s:FAIL",
+        "s:OK",
+        "i:4",
+        "i:4",
+        "b:1",
+        "d:3FF65B0C5848786E",
+        "d:3FD322E8DBE75A5B",
+        "d:3FCFDEADAD402ABE",
+        "d:40F2D0D700EA118F"
+      ]
+    },
+    {
+      "Section": "Rectangle_ThreeRows_100_200",
+      "Load": "1",
+      "Fields": [
+        "s:OK",
+        "s:OK",
+        "i:4",
+        "i:4",
+        "b:0",
+        "d:403CF1520EF90A0F",
+        "d:402C2F2863508E69",
+        "d:0000000000000000",
+        "d:0000000000000000"
+      ]
+    },
+    {
+      "Section": "Rectangle_ThreeRows_100_200",
+      "Load": "2",
+      "Fields": [
+        "s:FAIL",
+        "s:FAIL",
+        "i:5",
+        "i:4",
+        "b:0",
+        "d:3FEA1F4E00D18BA4",
+        "d:3FD33FD54711CCDB",
+        "d:0000000000000000",
+        "d:0000000000000000"
+      ]
+    },
+    {
+      "Section": "Hollow_Opening_100_100_SideBySide",
+      "Load": "1",
+      "Fields": [
+        "s:OK",
+        "s:OK",
+        "i:4",
+        "i:4",
+        "b:0",
+        "d:4033B833048EE698",
+        "d:402C9A5F74A22E74",
+        "d:0000000000000000",
+        "d:0000000000000000"
+      ]
+    },
+    {
+      "Section": "Hollow_Opening_100_100_SideBySide",
+      "Load": "2",
+      "Fields": [
+        "s:FAIL",
+        "s:FAIL",
+        "i:5",
+        "i:4",
+        "b:0",
+        "d:3FD9C01D39230030",
+        "d:3FD3CB0A40A7AF2F",
+        "d:0000000000000000",
+        "d:0000000000000000"
+      ]
+    },
+    {
+      "Section": "Circle_Arc_ThreeRows_100_200",
+      "Load": "1",
+      "Fields": [
+        "s:OK",
+        "s:OK",
+        "i:4",
+        "i:4",
+        "b:0",
+        "d:4039C49FAC1A87A7",
+        "d:401F66F4E02AD128",
+        "d:0000000000000000",
+        "d:0000000000000000"
+      ]
+    },
+    {
+      "Section": "Circle_Arc_ThreeRows_100_200",
+      "Load": "2",
+      "Fields": [
+        "s:FAIL",
+        "s:OK",
+        "i:4",
+        "i:4",
+        "b:1",
+        "d:3FF74DE505861DC9",
+        "d:3FD33AD12EDF8ECD",
+        "d:3FD01C7CE2964033",
+        "d:40F6F32CD9B9C8C2"
+      ]
+    }
+  ]
+}

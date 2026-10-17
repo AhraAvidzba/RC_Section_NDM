@@ -77,10 +77,11 @@ End Sub
 ' Circle: [D, as, n, d, d2, d3, loc2, loc3, bind2, bind3].
 Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSectionDefinition
     Dim values As Variant, table As CSectionInputTable, recipe As ISectionRecipe, keys As Variant, columns As Variant
-    Dim i As Long, extra As Long, value As Variant
+    Dim i As Long, extra As Long, main As Long, value As Variant
     values = ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2
     Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", values
     extra = table.AdditionalRowsHeader + 1
+    main = table.RowByKey("as", 2) + 1
     keys = Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter")
     columns = Array(2, 6, 5, 9, 4, 8)
     For i = 0 To 9
@@ -93,7 +94,13 @@ Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSection
         Else
             value = "EachBar"
         End If
-        If i < 4 Then values(table.RowByKey(CStr(keys(i))), 2) = value Else values(extra, CLng(columns(i - 4))) = value
+        Select Case i
+            Case 0: values(table.RowByKey("Диаметр"), 2) = value
+            Case 1: values(main, 2) = value
+            Case 2: values(main, 4) = value
+            Case 3: values(main, 3) = value
+            Case Else: values(extra, CLng(columns(i - 4))) = value
+        End Select
     Next i
     values(extra, 3) = 0#: values(extra, 7) = 0#
     If UBound(parameters) >= 10 Then values(extra, 3) = parameters(10)
@@ -289,6 +296,12 @@ Public Function FixtureCircleFieldCell(ByVal workbook As Object, ByVal key As St
     If sourceTable Is Nothing Then Set area = workbook.Names("rngCircleGeometry").RefersToRange Else Set area = sourceTable
     Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", area.Value2
     Select Case key
+        Case "Circle.Diameter": row = table.RowByKey("Диаметр"): column = 2
+        Case "Rebar.AxisDistance": row = table.RowByKey("as", 2) + 1: column = 2
+        Case "Rebar.Diameter": row = table.RowByKey("as", 2) + 1: column = 3
+        Case "Rebar.Count": row = table.RowByKey("as", 2) + 1: column = 4
+        Case "Rebar.StartSetback": row = table.RowByKey("as", 2) + 1: column = 5
+        Case "Rebar.EndSetback": row = table.RowByKey("as", 2) + 1: column = 6
         Case "Rebar.Diameter2": column = 2
         Case "Rebar.AxisOffset2": column = 3
         Case "Rebar.Bind2row": column = 4
@@ -298,6 +311,10 @@ Public Function FixtureCircleFieldCell(ByVal workbook As Object, ByVal key As St
         Case "Rebar.Bind3row": column = 8
         Case "Rebar.Loc3row": column = 9
     End Select
-    If column = 0 Then row = table.RowByKey(key): column = 2 Else row = table.AdditionalRowsHeader + 1
+    If column = 0 Then
+        row = table.RowByKey(key): column = 2
+    ElseIf row = 0 Then
+        row = table.AdditionalRowsHeader + 1
+    End If
     Set FixtureCircleFieldCell = area.Cells.Item(row, column)
 End Function

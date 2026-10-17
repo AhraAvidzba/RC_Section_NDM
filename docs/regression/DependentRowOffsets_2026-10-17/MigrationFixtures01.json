@@ -1,0 +1,390 @@
+﻿{
+    "Passed":  false,
+    "Checks":  [
+                   {
+                       "Name":  "right.all.eight.moved",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.merge",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.merge",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.merge",
+                       "Passed":  false
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.merge",
+                       "Passed":  false
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.merge",
+                       "Passed":  false
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.merge",
+                       "Passed":  false
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.merge",
+                       "Passed":  false
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.position",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.merge",
+                       "Passed":  false
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.metadata",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.validation",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.conditional",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.width",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "circle.formula.preserved",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "circle.external.formula.follows",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "circle.named.field.follows",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "circle.comment.preserved",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "lists.stay.hidden",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "repeat.no.moves",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "repeat.offsets.formula.preserved",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "repeat.names.stable",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "reopen.new.layout",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "reopen.offset.formula",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_0.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight1_1.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_0.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight2_1.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_0.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight3_1.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_0.reopen",
+                       "Passed":  true
+                   },
+                   {
+                       "Name":  "rngOffsetTestRight4_1.reopen",
+                       "Passed":  true
+                   }
+               ],
+    "First":  {
+                  "Tables":  [
+                                 {
+                                     "Name":  "rngCircleGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$87:$R$97"
+                                 },
+                                 {
+                                     "Name":  "rngRectSetGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$101:$R$128"
+                                 },
+                                 {
+                                     "Name":  "rngRoundedRectangleGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$131:$R$152"
+                                 },
+                                 {
+                                     "Name":  "rngHollowRectangleGeometry",
+                                     "Changed":  true,
+                                     "Address":  "$H$156:$R$183"
+                                 }
+                             ],
+                  "MovedRight":  [
+                                     {
+                                         "From":  "$V$157:$X$161",
+                                         "Columns":  2
+                                     },
+                                     {
+                                         "From":  "$V$132:$X$136",
+                                         "Columns":  2
+                                     },
+                                     {
+                                         "From":  "$V$102:$X$106",
+                                         "Columns":  2
+                                     },
+                                     {
+                                         "From":  "$R$132:$T$136",
+                                         "Columns":  2
+                                     },
+                                     {
+                                         "From":  "$R$157:$T$161",
+                                         "Columns":  2
+                                     },
+                                     {
+                                         "From":  "$R$102:$T$106",
+                                         "Columns":  2
+                                     },
+                                     {
+                                         "From":  "$Q$88:$S$92",
+                                         "Columns":  7
+                                     },
+                                     {
+                                         "From":  "$M$88:$O$92",
+                                         "Columns":  7
+                                     }
+                                 ]
+              },
+    "Second":  {
+                   "Tables":  [
+                                  {
+                                      "Name":  "rngCircleGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$87:$R$97"
+                                  },
+                                  {
+                                      "Name":  "rngRectSetGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$101:$R$128"
+                                  },
+                                  {
+                                      "Name":  "rngRoundedRectangleGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$131:$R$152"
+                                  },
+                                  {
+                                      "Name":  "rngHollowRectangleGeometry",
+                                      "Changed":  false,
+                                      "Address":  "$H$156:$R$183"
+                                  }
+                              ],
+                   "MovedRight":  [
+
+                                  ]
+               }
+}
