@@ -6166,6 +6166,7 @@ End Function
 ' Измененные таблицы и активный лист восстанавливаются даже после ошибки;
 ' массовый прогон не отображает Results во время каждой табличной записи.
 Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
+    TestAudit03LimitCommentComparison stats
     Dim rangeNames As Variant, original As Collection, prepared As Collection, name As Variant
     Dim target As Object, loads As Object, lengthNames As Variant, lengthFactors As Variant
     Dim stressNames As Variant, stressFactors As Variant, shape As Variant
@@ -6286,7 +6287,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         actual = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange.Resize(4, 49).Value2
                         Audit03ComparePlainSnapshot stats, prefix & ".strength", baselineStrength, actual, 1
                         actual = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 72).Value2
-                        Audit03ComparePlainSnapshot stats, prefix & ".crack", baselineCrack, actual, 1
+                        Audit03ComparePlainSnapshot stats, prefix & ".crack", baselineCrack, actual, 1, True
                         actual = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
                         Audit03ComparePlainSnapshot stats, prefix & ".stability", baselineStability, actual, 1
                     End If
@@ -6381,10 +6382,12 @@ Private Sub Audit03DivideNumericInput(ByVal cell As Object, ByVal factor As Doub
 End Sub
 
 ' ДЛЯ ТЕСТОВ: сравнивает фактические output-таблицы при одинаковых OUTPUT
-' единицах. Тексты и статусы должны совпадать точно; числа сравниваются с
-' относительной погрешностью округления 1e-9, без изменения solver tolerance.
+' единицах. Тексты и статусы совпадают точно; числа допускают округление 1e-9.
+' Только при сравнении комментариев о трещинах можно отдельно сверить lambda
+' с допуском 1e-12; допуски расчётного решателя при этом не меняются.
 Private Sub Audit03ComparePlainSnapshot(ByRef stats As TUiTestStats, ByVal prefix As String, _
-        ByRef baseline As Variant, ByRef actual As Variant, ByVal firstColumn As Long)
+        ByRef baseline As Variant, ByRef actual As Variant, ByVal firstColumn As Long, _
+        Optional ByVal compareCommentLambda As Boolean = False)
     Dim row As Long, column As Long, same As Boolean, detail As String
     same = (UBound(baseline, 1) = UBound(actual, 1) And UBound(baseline, 2) = UBound(actual, 2))
     If Not same Then detail = "размер таблицы"
@@ -6394,6 +6397,8 @@ Private Sub Audit03ComparePlainSnapshot(ByRef stats As TUiTestStats, ByVal prefi
                 If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
                     same = Abs(CDbl(actual(row, column)) - CDbl(baseline(row, column))) <= _
                         0.000000001 * (1# + Abs(CDbl(baseline(row, column))))
+                ElseIf compareCommentLambda And column = 2 Then
+                    same = Audit03SameLimitComment(CStr(baseline(row, column)), CStr(actual(row, column)))
                 Else
                     same = (CStr(baseline(row, column)) = CStr(actual(row, column)))
                 End If
@@ -6407,6 +6412,66 @@ Private Sub Audit03ComparePlainSnapshot(ByRef stats As TUiTestStats, ByVal prefi
         Next row
     End If
     AssertTrue stats, prefix & ".equivalent; " & detail, same
+End Sub
+
+' ДЛЯ ТЕСТОВ: число lambda внутри комментария сравнивает как число с допуском
+' 1e-12 от его величины; весь окружающий текст должен совпасть побуквенно.
+' Это учитывает последние разряды Double после смены единиц, сохраняя проверку причины и статуса.
+Private Function Audit03SameLimitComment(ByVal expected As String, ByVal actual As String) As Boolean
+    On Error GoTo Different
+    If expected = actual Then
+        Audit03SameLimitComment = True
+        Exit Function
+    End If
+    Const marker As String = "lambda = "
+    Dim firstExpected As Long, firstActual As Long, lastExpected As Long, lastActual As Long
+    firstExpected = InStr(1, expected, marker, vbBinaryCompare)
+    firstActual = InStr(1, actual, marker, vbBinaryCompare)
+    If firstExpected = 0 Or firstActual = 0 Then Exit Function
+    firstExpected = firstExpected + Len(marker): firstActual = firstActual + Len(marker)
+    If InStr(firstExpected, expected, marker, vbBinaryCompare) > 0 Or _
+        InStr(firstActual, actual, marker, vbBinaryCompare) > 0 Then Exit Function
+    lastExpected = InStr(firstExpected, expected, ";", vbBinaryCompare)
+    lastActual = InStr(firstActual, actual, ";", vbBinaryCompare)
+    If lastExpected <= firstExpected Or lastActual <= firstActual Then Exit Function
+    If Left$(expected, firstExpected - 1) & Mid$(expected, lastExpected) <> _
+        Left$(actual, firstActual - 1) & Mid$(actual, lastActual) Then Exit Function
+    Dim expectedNumber As String, actualNumber As String, reference As Double
+    expectedNumber = Mid$(expected, firstExpected, lastExpected - firstExpected)
+    actualNumber = Mid$(actual, firstActual, lastActual - firstActual)
+    If Not IsNumeric(expectedNumber) Or Not IsNumeric(actualNumber) Then Exit Function
+    reference = CDbl(expectedNumber)
+    Audit03SameLimitComment = Abs(CDbl(actualNumber) - reference) <= 0.000000000001 * (1# + Abs(reference))
+    Exit Function
+Different:
+    Audit03SameLimitComment = False
+End Function
+
+' ДЛЯ ТЕСТОВ: сравнение комментария допускает только округление lambda;
+' изменение причины, другого числа, недопустимое число или заметное изменение lambda отклоняется.
+Private Sub TestAudit03LimitCommentComparison(ByRef stats As TUiTestStats)
+    Dim prefix As String, suffix As String, baseline As String
+    prefix = "Предел достигнут, при lambda = ": suffix = "; точка трещинообразования не определяется."
+    baseline = prefix & "115.570626695522" & suffix
+    AssertTrue stats, "commentLambda.identical", Audit03SameLimitComment(baseline, baseline)
+    AssertTrue stats, "commentLambda.rectRoundoff", Audit03SameLimitComment(baseline, prefix & "115.570626695521" & suffix)
+    AssertTrue stats, "commentLambda.hollowRoundoff", Audit03SameLimitComment(prefix & "101.47179846739" & suffix, prefix & "101.471798467389" & suffix)
+    AssertTrue stats, "commentLambda.exponent", Audit03SameLimitComment(prefix & "100" & suffix, prefix & "1E+02" & suffix)
+    AssertTrue stats, "commentLambda.nearZero", Audit03SameLimitComment(prefix & "0" & suffix, prefix & "0.0000000000001" & suffix)
+    AssertTrue stats, "commentLambda.signedZero", Audit03SameLimitComment(prefix & "0" & suffix, prefix & "-0" & suffix)
+    AssertTrue stats, "commentLambda.changedNumberRejected", Not Audit03SameLimitComment(baseline, prefix & "115.570627" & suffix)
+    AssertTrue stats, "commentLambda.smallRealChangeRejected", Not Audit03SameLimitComment(prefix & "1" & suffix, prefix & "1.00000001" & suffix)
+    AssertTrue stats, "commentLambda.changedPrefixRejected", Not Audit03SameLimitComment(baseline, "Другой статус: " & baseline)
+    AssertTrue stats, "commentLambda.changedSuffixRejected", Not Audit03SameLimitComment(baseline, prefix & "115.570626695521" & "; другая причина.")
+    AssertTrue stats, "commentLambda.otherNumberRejected", Not Audit03SameLimitComment("Случай 1: " & baseline, "Случай 2: " & prefix & "115.570626695521" & suffix)
+    AssertTrue stats, "commentLambda.plainTextExact", Audit03SameLimitComment("InputErr", "InputErr")
+    AssertTrue stats, "commentLambda.statusRejected", Not Audit03SameLimitComment("InputErr", "NotCracked")
+    AssertTrue stats, "commentLambda.missingMarkerRejected", Not Audit03SameLimitComment(baseline, "lambda отсутствует")
+    AssertTrue stats, "commentLambda.missingEndRejected", Not Audit03SameLimitComment(baseline, prefix & "115.570626695521")
+    AssertTrue stats, "commentLambda.invalidNumberRejected", Not Audit03SameLimitComment(baseline, prefix & "abc" & suffix)
+    AssertTrue stats, "commentLambda.emptyNumberRejected", Not Audit03SameLimitComment(baseline, prefix & suffix)
+    AssertTrue stats, "commentLambda.repeatedMarkerRejected", Not Audit03SameLimitComment(baseline & " lambda = 1;", prefix & "115.570626695521" & suffix & " lambda = 1;")
+    AssertTrue stats, "commentLambda.overflowRejected", Not Audit03SameLimitComment(prefix & "1E+308" & suffix, prefix & "-1E+308" & suffix)
 End Sub
 
 ' ДЛЯ ТЕСТОВ: проверяет INPUT-площадь и численный порог на том же Config ->
