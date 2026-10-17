@@ -53,6 +53,14 @@ Public Function Table(ByVal tableName As String) As CSectionInputTable
     Set Table = mTables(tableName)
 End Function
 
+' Создаёт общий ридер стандартной блочной таблицы с защищёнными единицами ввода.
+' Таблицу другой структуры рецепт может по-прежнему прочитать через Table.
+Public Function Reader(ByVal tableName As String) As CSectionInputReader
+    Dim result As CSectionInputReader: Set result = New CSectionInputReader
+    result.Initialize Table(tableName), Units
+    Set Reader = result
+End Function
+
 ' Возвращает защищённую от изменений копию единиц ввода.
 ' Рецепт использует её для перевода размеров, не меняя настройки.
 Public Property Get Units() As CUnitSystem

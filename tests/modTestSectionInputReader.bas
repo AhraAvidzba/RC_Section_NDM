@@ -1,0 +1,133 @@
+Attribute VB_Name = "modTestSectionInputReader"
+Option Explicit
+
+' Проверки общего ридера: перестановки, типы значений, единицы и адреса ошибок.
+Private mPassed As Long, mFailed As Long, mReport As String
+
+' Создаёт два независимых блока; ошибочное числовое поле остаётся невостребованным.
+Private Function InputValues() As Variant
+    Dim data(1 To 13, 1 To 6) As Variant
+    data(1, 1) = "Dimensions": data(1, 2) = "Размеры"
+    data(3, 1) = "key": data(3, 2) = "name": data(3, 3) = "val"
+    data(3, 4) = "unit": data(3, 5) = "note"
+    data(4, 1) = "B": data(4, 2) = "Ширина": data(4, 3) = 60#
+    data(5, 1) = "Zero": data(5, 3) = 0#
+    data(6, 1) = "Unused": data(6, 3) = CVErr(2015)
+    data(8, 1) = "Bars": data(8, 2) = "Армирование"
+    data(10, 1) = "key": data(10, 2) = "name": data(10, 3) = "d"
+    data(10, 4) = "n": data(10, 5) = "mode": data(10, 6) = "as"
+    data(11, 1) = "B": data(11, 3) = 16#: data(11, 4) = 4
+    data(11, 5) = "stacked": data(11, 6) = 40#
+    data(12, 1) = "Off": data(12, 4) = 0
+    data(13, 1) = "Units": data(13, 3) = "мм"
+    InputValues = data
+End Function
+
+' Строит снимок с адресами, которые зависят от фактической позиции, а не от ключа.
+Private Function MakeReader(ByVal data As Variant, Optional ByVal units As CUnitSystem = Nothing) As CSectionInputReader
+    Dim locations(1 To 13, 1 To 6) As String, row As Long, column As Long
+    For row = 1 To 13
+        For column = 1 To 6
+            locations(row, column) = "Config!" & Chr$(71 + column) & CStr(80 + row)
+        Next column
+    Next row
+    Dim table As CSectionInputTable: Set table = New CSectionInputTable
+    table.Initialize "testTable", data, locations
+    Set MakeReader = New CSectionInputReader: MakeReader.Initialize table, units
+End Function
+
+' Проверяет ошибку структуры либо выбранного числового поля и точный адрес её причины.
+Private Sub Reject(ByVal title As String, ByVal data As Variant, ByVal expectedAddress As String, Optional ByVal operation As String = "structure")
+    Dim reader As CSectionInputReader, ignored As Double, description As String
+    On Error Resume Next
+    Set reader = MakeReader(data)
+    If Err.Number = 0 Then
+        Select Case operation
+            Case "count": ignored = reader.Count("Bars", "B", "n")
+            Case "diameter": ignored = reader.OptionalDiameter("Bars", "B", "d")
+            Case "value": ignored = reader.Number("Dimensions", "Unused")
+            Case "missing": ignored = reader.Number("Dimensions", "Missing")
+            Case "column": ignored = reader.Number("Dimensions", "B", "Missing")
+            Case "block": ignored = reader.Number("Missing", "B")
+        End Select
+    End If
+    description = Err.Description
+    Check title, Err.Number <> 0 And InStr(1, description, expectedAddress, vbTextCompare) > 0
+    Err.Clear: On Error GoTo 0
+End Sub
+
+' Учитывает результат отдельного условия, сохраняя все причины неудач.
+Private Sub Check(ByVal title As String, ByVal condition As Boolean)
+    If condition Then
+        mPassed = mPassed + 1
+    Else
+        mFailed = mFailed + 1: mReport = mReport & "FAIL: " & title & vbCrLf
+    End If
+End Sub
+
+' ========================================================================== 
+' ДЛЯ ТЕСТОВ
+' ========================================================================== 
+' Проверяет независимость чтения от подписей, порядка строк, столбцов и блоков.
+Public Function RunSectionInputReaderTests() As String
+    Dim data As Variant, copy As Variant, reader As CSectionInputReader, scenario As Long
+    Dim row As Long, column As Long, value As Variant, units As CUnitSystem, key As Variant
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Set units = New CUnitSystem: units.InitializeDefaults
+    For scenario = 0 To 7
+        data = InputValues
+        If (scenario And 1) <> 0 Then
+            For row = 1 To 13
+                value = data(row, 3): data(row, 3) = data(row, 6): data(row, 6) = value
+            Next row
+        End If
+        If (scenario And 2) <> 0 Then
+            For column = 1 To 6
+                value = data(4, column): data(4, column) = data(5, column): data(5, column) = value
+                value = data(11, column): data(11, column) = data(12, column): data(12, column) = value
+            Next column
+        End If
+        If (scenario And 4) <> 0 Then
+            For row = 1 To 6
+                For column = 1 To 6
+                    value = data(row, column): data(row, column) = data(row + 7, column): data(row + 7, column) = value
+                Next column
+            Next row
+        End If
+        Set reader = MakeReader(data, units)
+        Check "number." & CStr(scenario), reader.Number("dimensions", "b") = 60#
+        Check "length." & CStr(scenario), reader.PositiveLength("Dimensions", "B") = 60#
+        Check "count." & CStr(scenario), reader.Count("Bars", "B", "n") = 4
+        Check "diameter." & CStr(scenario), reader.OptionalDiameter("Bars", "B", "d") = 16#
+        Check "choice." & CStr(scenario), reader.Choice("Bars", "B", Array("Stacked", "SideBySide"), "mode") = "Stacked"
+        Check "empty.diameter." & CStr(scenario), reader.OptionalDiameter("Bars", "Off", "d") = 0#
+        Check "empty.offset." & CStr(scenario), reader.OptionalRowOffset("Bars", "Off", "as") = 0#
+        key = reader.RowKeys("Bars"): Check "units.excluded." & CStr(scenario), UBound(key) = 1
+        copy = data: data(1, 2) = "Изменённый заголовок"
+        Check "snapshot." & CStr(scenario), reader.Number("Dimensions", "B") = 60#
+    Next scenario
+    data = InputValues: data(8, 1) = "Dimensions": Reject "duplicate.block", data, "Config!H88"
+    data = InputValues: data(5, 1) = "B": Reject "duplicate.row", data, "Config!H85"
+    data = InputValues: data(3, 4) = "val": Reject "duplicate.column", data, "Config!K83"
+    data = InputValues: Reject "unused.error.lazy", data, "Config!J86", "value"
+    Reject "missing.row", data, "Config!H81", "missing"
+    Reject "missing.column", data, "Config!H83", "column"
+    Reject "missing.block", data, "Config!H81", "block"
+    For Each value In Array(-1, 2.5, True, "text")
+        data = InputValues: data(11, 4) = value: Reject "invalid.count", data, "Config!K91", "count"
+    Next value
+    For Each value In Array(-1, "-", True, "text")
+        data = InputValues: data(11, 3) = value: Reject "invalid.diameter", data, "Config!J91", "diameter"
+    Next value
+    Set reader = MakeReader(InputValues, units)
+    units.CopyState "cm", "m", "mm2", "m2", "N", "N", "N*mm", "N*mm", "MPa", "MPa", "1/mm", "1/mm", "Tension", "+Y tension", "+X tension"
+    Check "units.snapshot.unchanged", reader.PositiveLength("Dimensions", "B") = 60#
+    Set reader = MakeReader(InputValues, units)
+    Check "units.cm.to.mm", reader.PositiveLength("Dimensions", "B") = 600#
+    GoTo Finished
+Failed:
+    mFailed = mFailed + 1: mReport = mReport & "RUNTIME ERROR: " & Err.Description & vbCrLf
+Finished:
+    RunSectionInputReaderTests = mReport & "TOTAL_SECTION_INPUT_READER: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
