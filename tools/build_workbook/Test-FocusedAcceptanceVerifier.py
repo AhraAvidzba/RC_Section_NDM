@@ -30,6 +30,11 @@ def analytical_model():
     return focused.Model(lines)
 
 class IndependentChecks(unittest.TestCase):
+    def test_binary_double_decoder_keeps_all_bits(self):
+        import struct
+        for value in (-607338.770498685,-223.95934990203004,1e-300,-0.0,1e20):
+            encoded='F64:'+struct.pack('>d',value).hex()
+            self.assertEqual(struct.pack('>d',focused.number(encoded)),struct.pack('>d',value))
     def test_biaxial_analytical_forces_and_displaced_concrete(self):
         import numpy as np
         actual=analytical_model().integrate(np.array([-0.001,0.000001,-0.000002]),'No','PR1')

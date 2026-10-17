@@ -9,6 +9,7 @@ import hashlib
 import json
 import re
 import sys
+import struct
 from datetime import datetime
 from pathlib import Path
 
@@ -26,6 +27,11 @@ def read(path):
 
 def fields(line):
     return dict(p.split("=", 1) for p in line.split("|")[1:] if "=" in p)
+
+def number(value):
+    if isinstance(value,str) and value.startswith('F64:'):
+        return struct.unpack('>d',bytes.fromhex(value[4:]))[0]
+    return float(value)
 
 
 def reports(directory, run):
@@ -45,9 +51,9 @@ class Model:
         fibers = [fields(x) for x in lines if x.startswith("FIBER|")]
         self.center = fields(next(x for x in lines if x.startswith("CENTER|")))
         self.tol = fields(next(x for x in lines if x.startswith("ACCEPTANCE_TOLERANCE|")))
-        self.tolerance = np.array([float(self.tol[k]) for k in ("N", "Mx", "My")])
-        self.xy = np.array([[float(f["x"]), float(f["y"])] for f in fibers])
-        self.area = np.array([float(f["area"]) for f in fibers])
+        self.tolerance = np.array([number(self.tol[k]) for k in ("N", "Mx", "My")])
+        self.xy = np.array([[number(f["x"]), number(f["y"])] for f in fibers])
+        self.area = np.array([number(f["area"]) for f in fibers])
         self.steel = np.array([f["kind"] == "S" for f in fibers])
         self.matrix = np.array([np.ones(len(fibers)), self.xy[:, 1], self.xy[:, 0]]) * self.area
         self.length = max(np.max(np.abs(self.xy)), 1.0)
@@ -57,7 +63,7 @@ class Model:
                 d = fields(line)
                 key = d["mode"], d["profile"], d["kind"]
                 if line.startswith("MATERIAL|"):
-                    self.points.setdefault(key, []).append([float(d["strain"]), float(d["stress"])])
+                    self.points.setdefault(key, []).append([number(d["strain"]), number(d["stress"])])
                 else:
                     self.flags[key] = d
         self.points = {key: np.array(value) for key, value in self.points.items()}
@@ -86,7 +92,7 @@ class Model:
         flags = [self.flags[mode, role, kind] for kind in ("C", "S")]
         scales = np.array([1., self.length, self.length])
         centered_tolerance = self.tolerance.copy()
-        centered_tolerance[1:] += abs(np.array([float(self.center['y']), float(self.center['x'])])) * self.tolerance[0]
+        centered_tolerance[1:] += abs(np.array([number(self.center['y']), number(self.center['x'])])) * self.tolerance[0]
         # В OFF все напряжения ограничены. Независимые напряжения расширяют
         # множество плоских НДС: несовместность LP доказывает невозможность НДС.
         bounded = all(f['compressionExtension'] == 'False' and f['tensionExtension'] == 'False' for f in flags)
@@ -156,7 +162,7 @@ def independent(directory, run):
             continue
         shape = item['Argument1'] or 'SavedWorkbook'
         model = models[shape]
-        cx, cy = (float(model.center[k]) for k in ('x', 'y'))
+        cx, cy = (number(model.center[k]) for k in ('x', 'y'))
         mode = item['Mode']
         for line in lines:
             if not line.startswith('FOCUSED_STATE|'):
@@ -166,11 +172,11 @@ def independent(directory, run):
                     'PreCrackState':'PR3', 'PostCrackState':'PR2'}.get(state['type'])
             if role is None:
                 unsupported.append({'Report':item['ID'], 'State':state}); continue
-            n, mx, my = (float(state[k]) for k in ('N','Mx','My'))
+            n, mx, my = (number(state[k]) for k in ('N','Mx','My'))
             target = np.array([n, mx-cy*n, my-cx*n])
             record = {'Report':item['ID'], 'ID':state['id'], 'Mode':mode, 'Type':state['type'], 'Role':role}
             if state['converged'] == 'True':
-                eps, kx, ky = (float(state[k]) for k in ('eps0','kx','ky'))
+                eps, kx, ky = (number(state[k]) for k in ('eps0','kx','ky'))
                 efforts = model.integrate(np.array([eps+cy*kx+cx*ky,kx,ky]), mode, role)
                 # Возвращаем интеграл в исходные оси и проверяем исходные допуски.
                 original = efforts.copy(); original[1:] += [cy*efforts[0],cx*efforts[0]]
@@ -198,6 +204,8 @@ def independent(directory, run):
                 covered=message['kind']=='1' and any(key[0]==prefix+message['id'] for key in proved)
                 if not covered:unsupported.append({'Report':item['ID'],'UnreviewedNumericalMessage':line})
     result = {'Passed': bool(controls) and len(models)==5 and not unsupported and all(r['Passed'] for r in controls+failures),
+              'SourceSHA256':run['SourceSHA256'],
+              'ReportHashes':{item['ID']:item['ReportSHA256'] for item,_ in all_reports},
               'ScipyVersion':scipy.__version__, 'ModelCount':len(models), 'IndependentIntegrals':len(controls),
               'ReviewedNumFailStates':len(failures), 'NumericalMessages':numerical_messages,
               'Unsupported':unsupported, 'Controls':controls, 'Failures':failures}
@@ -209,12 +217,24 @@ def independent(directory, run):
 
 def verify(directory, run):
     errors, checks, cases, assertions = [], [], 0, 0
+    preparation=read(directory/'Probe/Preparation.json')
+    inputs=read(directory/'Probe/InputManifest.json')
+    if (digest(Path(run['SourceWorkbook']))!=run['SourceSHA256'] or
+        preparation['SourceSHA256']!=run['SourceSHA256'] or inputs['SourceSHA256']!=run['SourceSHA256'] or
+        not preparation['Compiled'] or not inputs['Passed']):
+        errors.append('Source, compilation or input provenance differs')
+    if digest(directory/'Probe/RC_Section_NDM.xlsm')!=preparation['ProbeWorkbookSHA256']:
+        errors.append('Frozen probe workbook changed')
+    for file,key in [('FocusedAcceptanceProbe.bas','HelperSHA256'),('Combined.bas','ExtraHelperSHA256'),('SavedSectionFixture.json','SavedFixtureSHA256')]:
+        if digest(directory/file)!=preparation[key]:errors.append('Executed helper/fixture snapshot differs: '+file)
     expected = {(shape,group,mode) for shape,group in [('RectSet','Generated'),('Circle','Generated'),
                 ('RoundedRectangle','Generated'),('HollowRectangle','Generated'),('SavedWorkbook','Saved'),
                 ('SavedWorkbook','Paths')] for mode in ('No','Yes')}
     seen=set()
     for item, lines in reports(directory,run):
         body='\n'.join(lines)
+        if 'SOURCE_SHA256: '+preparation['ProbeWorkbookSHA256'] not in lines:
+            errors.append(item['ID']+': test workbook provenance differs')
         if not item['Passed'] or 'WATCHDOG_COMPLETED: exit=0;' not in body:
             errors.append(item['ID']+': execution did not pass')
         if 'GLOBAL_MODE: General.DiagramExtension='+item['Mode']+';' not in body or 'MODE_AFTER_SUITE: '+item['Mode'] not in lines:
@@ -265,8 +285,22 @@ def verify(directory, run):
     native_path=directory/'NativeCAD/Stage.json'
     if native_path.exists():
         native=read(native_path)
+        if digest(directory/'NativeCAD/NativeRunner.ps1')!=native.get('RunnerSHA256'):
+            errors.append('Native runner snapshot differs')
         if {r['Macro'] for r in native.get('Results',[])}!={'RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTests'}:
             errors.append('Both required native CAD gates must finish')
+        for item in native.get('Results',[]):
+            folder=directory/'NativeCAD'/item['Macro']
+            invocation=read(folder/'NativeInvocation.json')
+            if (invocation['SourceSHA256']!=run['SourceSHA256'] or not invocation['SourceUnchanged'] or
+                not invocation['Passed'] or digest(folder/'NativeCAD.txt')!=item['ReportSHA256'] or
+                invocation.get('RunnerSHA256')!=native.get('RunnerSHA256')):
+                errors.append('Native CAD provenance or report differs: '+item['Macro'])
+    independent_path=directory/'Independent.json'
+    if independent_path.exists():
+        independent_result=read(independent_path)
+        if independent_result.get('SourceSHA256')!=run['SourceSHA256'] or independent_result.get('ReportHashes')!={item['ID']:item['ReportSHA256'] for item,_ in reports(directory,run)}:
+            errors.append('Independent evidence belongs to another source or reports')
     if run['Status']!='COMPLETED_PENDING_REVIEW':errors.append('Driver is incomplete: '+run['Status'])
     if not run.get('ProtectedInputsUnchanged'):errors.append('Protected input changed')
     if run.get('FinishedUTC') and datetime.fromisoformat(run['FinishedUTC'])>datetime.fromisoformat(run['DeadlineUTC']):

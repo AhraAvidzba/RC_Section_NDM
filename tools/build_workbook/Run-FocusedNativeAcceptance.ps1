@@ -6,6 +6,11 @@ $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $watch=[Diagnostics.Stopwatch]::StartNew()
 $results=@()
+$stageDirectory=Join-Path $root $ReportDirectory
+[void][IO.Directory]::CreateDirectory($stageDirectory)
+$nativeRunner=Join-Path $PSScriptRoot 'Run-PostAudit03NativeCAD.ps1'
+$nativeRunnerHash=(Get-FileHash -LiteralPath $nativeRunner).Hash
+Copy-Item -LiteralPath $nativeRunner -Destination (Join-Path $stageDirectory 'NativeRunner.ps1')
 function Stop-Owned([string]$Directory) {
     foreach ($item in @(@{File='NativeExcelOwnership.json'; Name='EXCEL'}, @{File='NativeCADOwnership.json'; Name='acad'})) {
         $identityPath=Join-Path $Directory $item.File
@@ -25,7 +30,7 @@ foreach ($macro in @('RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTe
     $directory=Join-Path $root $relative
     if (Test-Path -LiteralPath $directory) { throw 'Native evidence already exists; choose a new output directory.' }
     New-Item -ItemType Directory -Path $directory | Out-Null
-    $arguments='-NoProfile -ExecutionPolicy Bypass -File "'+(Join-Path $PSScriptRoot 'Run-PostAudit03NativeCAD.ps1')+'" -SourceWorkbook "'+$SourceWorkbook+'" -ReportDirectory "'+$relative+'" -Macro '+$macro+' -LaunchInstalledAutoCAD'
+    $arguments='-NoProfile -ExecutionPolicy Bypass -File "'+(Join-Path $PSScriptRoot 'Run-PostAudit03NativeCAD.ps1')+'" -SourceWorkbook "'+$SourceWorkbook+'" -ReportDirectory "'+$relative+'" -Macro '+$macro
     $child=Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $root `
         -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $directory 'stdout.log') -RedirectStandardError (Join-Path $directory 'stderr.log')
     $null=$child.Handle
@@ -42,6 +47,8 @@ foreach ($macro in @('RunRealAutoCADFarOriginTests','RunRealAutoCADFarCapacityTe
         Write-Output (($body -split '\r?\n' | Where-Object {$_ -match '^TOTAL'}) -join '')
     } finally { Stop-Owned $directory }
 }
-[ordered]@{Passed=$true; ElapsedSeconds=$watch.Elapsed.TotalSeconds; LimitSeconds=$MaxSeconds; Results=$results; UserDocumentsUsed=$false} |
+if ((Get-FileHash -LiteralPath $nativeRunner).Hash -cne $nativeRunnerHash) {throw 'Native runner changed during the stage.'}
+[ordered]@{Passed=$true; ElapsedSeconds=$watch.Elapsed.TotalSeconds; LimitSeconds=$MaxSeconds; Results=$results; UserDocumentsUsed=$false;RunnerSHA256=$nativeRunnerHash} |
     ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path (Join-Path $root $ReportDirectory) 'Stage.json') -Encoding UTF8
 Write-Output 'NATIVE_FOCUSED_STAGE: passed=True'
+exit 0

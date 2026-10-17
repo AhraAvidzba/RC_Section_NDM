@@ -3,10 +3,13 @@ param(
     [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
     [Parameter(Mandatory=$true)][string]$EvidenceDirectory,
     [Parameter(Mandatory=$true)][string]$Deadline,
-    [ValidateRange(1,12)][double]$ForecastHours=5
+    [ValidateRange(1,12)][double]$ForecastHours=5,
+    [string]$Python=(Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
+& $Python (Join-Path $PSScriptRoot 'Test-FocusedAcceptanceVerifier.py')
+if($LASTEXITCODE -ne 0){throw 'Focused verification prerequisites must pass before the long full run.'}
 $sourcePath=$SourceWorkbook
 if (-not [IO.Path]::IsPathRooted($sourcePath)) {$sourcePath=Join-Path $root $sourcePath}
 $source=(Resolve-Path -LiteralPath $sourcePath).Path
@@ -122,7 +125,7 @@ foreach ($job in $jobs) {
 $focusedDirectory=$EvidenceDirectory+'/Focused'
 $remaining=[int][Math]::Floor(($limit-[DateTimeOffset]::UtcNow).TotalSeconds)-600
 if ($remaining -ge 3600) {
-    & (Join-Path $PSHOME 'powershell.exe') -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Run-FocusedAcceptance.ps1') -SourceWorkbook $frozen -EvidenceDirectory $focusedDirectory -MaxSeconds 3600
+    & (Join-Path $PSHOME 'powershell.exe') -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Run-FocusedAcceptance.ps1') -SourceWorkbook $frozen -EvidenceDirectory $focusedDirectory -MaxSeconds 3600 -Python $Python
     $focusedCode=$LASTEXITCODE
     $acceptancePath=Join-Path $root ($focusedDirectory+'/Acceptance.json')
     $focusedPassed=$false

@@ -62,7 +62,19 @@ try {
     $body=$module.Lines(1,$module.CountOfLines)
     $declaration='Option Explicit'
     if ([regex]::Matches($body,[regex]::Escape($declaration)).Count -ne 1) { throw 'Test declaration target mismatch.' }
-    $body=$body.Replace($declaration,$declaration+"`r`nPrivate mFocusedSection As CSectionModel`r`nPrivate mFocusedBatch As CBatchSectionCalculator")
+    $numberDeclarations=@'
+Private mFocusedSection As CSectionModel
+Private mFocusedBatch As CBatchSectionCalculator
+Private mFocusedBinaryDump As Boolean
+Private Type TFocusedDouble
+    Value As Double
+End Type
+Private Type TFocusedWords
+    Low As Long
+    High As Long
+End Type
+'@
+    $body=$body.Replace($declaration,$declaration+"`r`n"+$numberDeclarations)
     $module.DeleteLines(1,$module.CountOfLines); $module.AddFromString($body)
     $module.AddFromString([IO.File]::ReadAllText($helper,[Text.Encoding]::UTF8))
     $extraHash=''

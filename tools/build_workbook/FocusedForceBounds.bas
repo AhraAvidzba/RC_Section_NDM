@@ -63,5 +63,16 @@ Private Sub FocusedBoundPoints(ByRef output As String, ByVal mode As String, ByV
 End Sub
 
 Private Function FocusedBoundNumber(ByVal value As Double) As String
-    FocusedBoundNumber = Replace$(Format$(value, "0.0000000000000000E+00"), ",", ".")
+    If mFocusedBinaryDump Then
+        FocusedBoundNumber = FocusedExactNumber(value)
+    Else
+        FocusedBoundNumber = Replace$(Format$(value, "0.0000000000000000E+00"), ",", ".")
+    End If
+End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет все биты Double для независимой проверки больших усилий.
+Public Function DumpFocusedForceBoundsExact(Optional ByVal shapeName As String = "SavedWorkbook") As String
+    mFocusedBinaryDump = True
+    DumpFocusedForceBoundsExact = DumpFocusedForceBounds(shapeName)
+    mFocusedBinaryDump = False
 End Function

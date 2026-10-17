@@ -298,7 +298,9 @@ End Sub
 
  ' ДЛЯ ТЕСТОВ: независимый интеграл использует полную точность сохранённой плоскости.
 Private Function FocusedExactNumber(ByVal value As Double) As String
-    FocusedExactNumber = Replace$(Format$(value, "0.0000000000000000E+00"), ",", ".")
+    Dim number As TFocusedDouble, words As TFocusedWords
+    number.Value = value: LSet words = number
+    FocusedExactNumber = "F64:" & Right$("00000000" & Hex$(words.High), 8) & Right$("00000000" & Hex$(words.Low), 8)
 End Function
 
 Private Sub FocusedCheckOutputRow(ByRef stats As TBatchTestStats, ByVal rangeName As String, _

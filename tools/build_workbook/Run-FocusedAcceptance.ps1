@@ -4,12 +4,14 @@ param(
     [Parameter(Mandatory=$true)][string]$EvidenceDirectory,
     [ValidateRange(60,3600)][int]$MaxSeconds=3600,
     [string]$DeadlineUTC='',
-    [string]$Python='C:/Users/avidzba/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'
+    [string]$Python=(Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 )
 $ErrorActionPreference='Stop'
 if ($PSVersionTable.PSEdition -ne 'Desktop') {throw 'Use Windows PowerShell 5.1.'}
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 Set-Location -LiteralPath $root
+& $Python (Join-Path $PSScriptRoot 'Test-FocusedAcceptanceVerifier.py')
+if($LASTEXITCODE -ne 0){throw 'Independent verifier prerequisites or controls failed before acceptance.'}
 $directory=[IO.Path]::GetFullPath((Join-Path $root $EvidenceDirectory))
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::DirectorySeparatorChar
 if (-not $directory.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -or (Test-Path -LiteralPath $directory)) {throw 'A new evidence directory inside docs/regression is required.'}
@@ -57,7 +59,7 @@ try {
         foreach($case in @('Stability','AsymmetricSteel')){Invoke-Gate ($case+'_'+$mode) 'modTestBatchCalculation.RunFocusedSpecialCase' $mode $case -Reopen}
     }
     foreach($shape in @('RectSet','Circle','RoundedRectangle','HollowRectangle','SavedWorkbook')){
-        Invoke-Gate ('Model_'+$shape) 'modTestBatchCalculation.DumpFocusedForceBounds' 'No' $shape '' 120
+        Invoke-Gate ('Model_'+$shape) 'modTestBatchCalculation.DumpFocusedForceBoundsExact' 'No' $shape '' 120
     }
     Invoke-Gate 'OutputPresentation' 'RunConfigPresentationTests' 'No' '' '' 180
     & (Join-Path $PSScriptRoot 'Run-FocusedNativeAcceptance.ps1') -SourceWorkbook $source -ReportDirectory ($EvidenceDirectory+'/NativeCAD') -MaxSeconds ([math]::Min(420,(Remaining)))
