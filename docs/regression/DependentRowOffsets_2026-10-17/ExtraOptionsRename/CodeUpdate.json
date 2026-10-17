@@ -1,0 +1,20 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\DependentRowOffsets_2026-10-17\\ExtraOptionsRename\\Accepted.xlsm",
+    "WorkbookSHA256":  "1115AFF89C9C19BD2BE99EBB481E1E3B7BF70C6D4E8B0AD5AE39ABE5011E740F",
+    "ProductionSHA256":  "333F831012C63DFB0B90D1B5564931A2F99D6AF44A54A124246EAAFF2B0ECA64",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionRecipeCircle",
+                    "CSectionRecipeHollowRectangle",
+                    "CSectionRecipeRectSet",
+                    "CSectionRecipeRoundedRectangle"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

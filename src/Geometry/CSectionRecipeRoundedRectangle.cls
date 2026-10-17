@@ -172,7 +172,7 @@ End Function
 ' Создаёт линии арматуры и задаёт ряды вдоль четырёх сторон по подготовленным параметрам.
 ' Порядок сторон сохраняет принадлежность общего углового стержня первому из заданных рядов.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef faces() As TRoundedFace, ByVal polygon As CPolygonSpec)
-    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions
+    Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim normalSign As Double, i As Long, rowNumber As Long, path As CGeometryPath, options As CRebarRuleOptions
     For i = 1 To 4
         With faces(i)
@@ -192,12 +192,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
                 Case "B.Top", "H.Right": normalSign = -1#
                 Case "B.Bottom", "H.Left": normalSign = 1#
             End Select
-            Set defaults = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
-            defaults.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-            defaults.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-            defaults.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+            Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
+            extraOptions.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+            extraOptions.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+            extraOptions.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
             Set contact = New CRebarContactBuilder
-            contact.Initialize .Diameter, normalSign, 1#, defaults
+            contact.Initialize .Diameter, normalSign, 1#, extraOptions
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
                     Set options = contact.AppendRow(.Diameters(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), .ExtraSources(rowNumber), .BaseOffsets(rowNumber))

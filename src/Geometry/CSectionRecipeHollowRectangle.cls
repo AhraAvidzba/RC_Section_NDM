@@ -190,7 +190,7 @@ End Sub
 ' Задаёт связанные ряды по подготовленным параметрам каждой стороны.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef sizes As THollowInput, ByRef faces() As THollowFace, _
         ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
-    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions
+    Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim normalSign As Double, i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1
@@ -214,12 +214,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
             options.SuccessfulProjectionOrdinal = True: options.NewPublicationRoot = True ' Нумеруем только найденные проекции как самостоятельный ряд.
             facade.RebarProjected faces(i).ID & ".Main", path.ID, faces(base).ID & ".Main", faces(i).Diameter, options ' Проецируем стержни наружного ряда на линию у отверстия.
         End If
-        Set defaults = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
-        defaults.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-        defaults.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-        defaults.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
+        Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
+        extraOptions.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
+        extraOptions.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+        extraOptions.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
         Set contact = New CRebarContactBuilder
-        contact.Initialize faces(i).Diameter, normalSign, 1#, defaults
+        contact.Initialize faces(i).Diameter, normalSign, 1#, extraOptions
         For rowNumber = 2 To 3
             If faces(i).Diameters(rowNumber) > 0# Then
                 Set options = contact.AppendRow(faces(i).Diameters(rowNumber), faces(i).Locations(rowNumber), faces(i).Bindings(rowNumber), faces(i).ExtraSources(rowNumber), faces(i).BaseOffsets(rowNumber))

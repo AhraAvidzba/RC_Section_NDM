@@ -96,7 +96,7 @@ End Sub
 
 ' Создаёт окружность центров основного ряда и правила размещения всех включённых рядов.
 Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal diameter As Double, ByRef rebar As TCircleRebar)
-    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions
+    Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
     If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
     If rebar.StartSetback = 0# And rebar.EndSetback = 0# Then
@@ -114,13 +114,13 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
     options.Comment = "Круг: основной ряд арматуры"
     options.SourceReference = rebar.Source ' Адреса полей для сообщения об ошибке размещения.
     facade.RebarByCount "Circle.Main", path.ID, rebar.Count, rebar.Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
-    Set defaults = New CRebarRuleOptions ' Общие настройки только дополнительных рядов.
-    defaults.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
-    defaults.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
-    defaults.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
-    defaults.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
+    Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов.
+    extraOptions.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
+    extraOptions.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+    extraOptions.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
+    extraOptions.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
     Set contact = New CRebarContactBuilder
-    contact.Initialize rebar.Diameter, -1#, 1#, defaults ' Stacked направлен внутрь круга, SideBySide — по часовой касательной.
+    contact.Initialize rebar.Diameter, -1#, 1#, extraOptions ' Stacked направлен внутрь круга, SideBySide — по часовой касательной.
     For rowNumber = 2 To 3
         If rebar.Diameters(rowNumber) > 0# Then
             Set options = contact.AppendRow(rebar.Diameters(rowNumber), rebar.Locations(rowNumber), rebar.Bindings(rowNumber), rebar.ExtraSources(rowNumber), rebar.BaseOffsets(rowNumber))

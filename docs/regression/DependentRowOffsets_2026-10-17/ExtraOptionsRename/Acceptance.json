@@ -1,0 +1,36 @@
+{
+  "Passed": true,
+  "SourceRecipeClasses": 4,
+  "IdentifierReplacements": 25,
+  "NativeChangedRecipeClasses": [
+    "CSectionRecipeCircle",
+    "CSectionRecipeHollowRectangle",
+    "CSectionRecipeRectSet",
+    "CSectionRecipeRoundedRectangle"
+  ],
+  "VBECaseOnlyOtherComponents": 87,
+  "StringsCommentsNumbersWhitespaceUnchanged": true,
+  "Compiled": true,
+  "PublishedCodeMatchesCompiledCandidate": true,
+  "SourceComponents": 153,
+  "NativeComponents": 158,
+  "OnlyChangedWorkbookPart": "xl/vbaProject.bin",
+  "UserReportUnchanged": true,
+  "CalculationsRun": false,
+  "WorkbookSHA256": "88597dd2932307d95ef50bdf5a9e80af46dc02c330300ca565447adea6a8ebea",
+  "AllCodeSHA256": "30b7205b2aacad3e699026ad807fbdb572e77901087a84a2692f8b43b2516493",
+  "RemovedOwnRedundantCopies": [
+    {
+      "Name": "Accepted.xlsm",
+      "Bytes": 8418465
+    },
+    {
+      "Name": "AcceptedNativeVBA.txt",
+      "Bytes": 7349278
+    },
+    {
+      "Name": "PublishedNativeVBA.txt",
+      "Bytes": 7349284
+    }
+  ]
+}

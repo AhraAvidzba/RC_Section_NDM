@@ -1,0 +1,16 @@
+{
+  "Passed": true,
+  "Compiled": true,
+  "CandidateSourceEquality": true,
+  "WorkbookSHA256": "88597dd2932307d95ef50bdf5a9e80af46dc02c330300ca565447adea6a8ebea",
+  "ChangedWorkbookParts": [
+    "xl/vbaProject.bin"
+  ],
+  "UnchangedWorkbookParts": 110,
+  "UserReportUnchanged": true,
+  "ReadbackPending": false,
+  "AllCodeSHA256": "30b7205b2aacad3e699026ad807fbdb572e77901087a84a2692f8b43b2516493",
+  "PublishedSourceEquality": true,
+  "SourceComponents": 153,
+  "NativeComponents": 158
+}
