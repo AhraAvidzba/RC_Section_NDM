@@ -1,0 +1,20 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\DependentRowOffsets_2026-10-17\\PublicationComments\\Accepted.xlsm",
+    "WorkbookSHA256":  "9C97BD22BEA68BD1D549EB9B9E116AE07997A20DE2AC07ECDCC6C21BFDD26202",
+    "ProductionSHA256":  "88597DD2932307D95EF50BDF5A9E80AF46DC02C330300CA565447ADEA6A8EBEA",
+    "Compiled":  true,
+    "Modules":  [
+                    "CSectionRecipeCircle",
+                    "CSectionRecipeHollowRectangle",
+                    "CSectionRecipeRectSet",
+                    "CSectionRecipeRoundedRectangle"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

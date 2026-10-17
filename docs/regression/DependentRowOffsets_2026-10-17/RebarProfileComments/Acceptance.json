@@ -1,0 +1,28 @@
+{
+  "Passed": true,
+  "BaselineCommit": "d61068cb9f4ff983aa3dcc190737f1f497ff52a1",
+  "ExecutableVBAUnchangedFromCommit": true,
+  "ProfileCommentComponents": [
+    "CRebarContactBuilder",
+    "modSectionRecipeApiGuide"
+  ],
+  "SourceComponents": 153,
+  "NativeComponents": 158,
+  "Compiled": true,
+  "HelpTextCellsChanged": 2,
+  "AllWorksheetXMLUnchanged": true,
+  "UserReportUnchanged": true,
+  "WorkbookSHA256": "dadcc53e90009147d383dc1480dbdce4fa8d3f0e2bbeb503c63a7a6d629bc708",
+  "AllCodeSHA256": "0b59ce68c227e0ec65826bdaa0f139fdd826b785b7b560322adb7a23446442c5",
+  "CalculationsRun": false,
+  "RemovedOwnRedundantCopies": [
+    {
+      "Name": "Accepted.xlsm",
+      "Bytes": 8419637
+    },
+    {
+      "Name": "PublishedNativeVBA.txt",
+      "Bytes": 7349774
+    }
+  ]
+}

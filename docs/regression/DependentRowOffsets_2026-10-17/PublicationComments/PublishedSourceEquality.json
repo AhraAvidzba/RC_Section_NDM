@@ -1,0 +1,1410 @@
+﻿{
+    "Passed":  true,
+    "SourceComponents":  153,
+    "ExportComponents":  158,
+    "Missing":  [
+
+                ],
+    "Differences":  [
+
+                    ],
+    "VbeCodeCaseDifferences":  [
+                                   "CBatchSectionCalculator",
+                                   "CCalculationProfile",
+                                   "CCalculationProfileCatalog",
+                                   "CCombinationResult",
+                                   "CDirectStateResult",
+                                   "CSectionStateResult",
+                                   "CStateProvider",
+                                   "CStateRepository",
+                                   "CStateRequest",
+                                   "CStrengthResult",
+                                   "CLoadPathDescriptor",
+                                   "CLoadPathMath",
+                                   "CLoadPathVector",
+                                   "CMomentZeroFilter",
+                                   "CResultMeta",
+                                   "CResultStatusPolicy",
+                                   "CSectionLoadState",
+                                   "modGeometryPrimitives",
+                                   "modGeometryTypes",
+                                   "modSectionRecipeTypes",
+                                   "CCrackFormationCalculator",
+                                   "CCrackFormationResult",
+                                   "CCrackResult",
+                                   "CCrackWidthCalculator",
+                                   "CLongitudinalCrackCalculator",
+                                   "CLongitudinalCrackResult",
+                                   "CSP35CrackData",
+                                   "CAutoCADContourReader",
+                                   "CAutoCADSectionModelImporter",
+                                   "CBatchResultWriter",
+                                   "CCrackSummaryWriter",
+                                   "CExcelAppStateGuard",
+                                   "CExecutionReport",
+                                   "CLoadCombinationReader",
+                                   "CNDMResultsWriter",
+                                   "CPlotAnnotationLayout",
+                                   "CSectionInputSnapshotReader",
+                                   "CSectionPlotDataReader",
+                                   "CSectionPlotter",
+                                   "CSectionTypeRegistry",
+                                   "CStabilitySummaryWriter",
+                                   "CStrengthSummaryWriter",
+                                   "CSystemSettingsReader",
+                                   "CUnitSystem",
+                                   "modAutoCADStressExport",
+                                   "modMeshConfiguration",
+                                   "modSectionRecipeSetup",
+                                   "modStatusFormatting",
+                                   "modWorkbookCalculation",
+                                   "modWorkbookMessages",
+                                   "CFiberMeshBuilder",
+                                   "CGeometryDiagnostic",
+                                   "CGeometryPath",
+                                   "CGeometryRegion",
+                                   "CPolygonSpec",
+                                   "CSectionRecipeCircle",
+                                   "CSectionRecipeHollowRectangle",
+                                   "CSectionRecipeRectSet",
+                                   "CSectionRecipeRoundedRectangle",
+                                   "ILimitSearchProblem",
+                                   "CConcreteMaterialParameters",
+                                   "CLinearConcreteMaterial",
+                                   "CLinearSteelMaterial",
+                                   "CMaterialDiagram",
+                                   "CMaterialModelProvider",
+                                   "CMaterialModelSpec",
+                                   "CSteelMaterialParameters",
+                                   "CConcreteRegion",
+                                   "CRebarContactBuilder",
+                                   "CRebarGroupAnnotationBuilder",
+                                   "CRebarLayout",
+                                   "CRebarRuleExecutor",
+                                   "CRebarRuleOptions",
+                                   "CSectionAnnotationBuilder",
+                                   "CSectionAnnotations",
+                                   "CSectionBuilder",
+                                   "CSectionContours",
+                                   "CSectionDefinition",
+                                   "CSectionDefinitionBuilder",
+                                   "CSectionGeometryQuery",
+                                   "CSectionInputTable",
+                                   "CSectionModel",
+                                   "CSectionModelBuilder",
+                                   "CSectionPropertiesCalculator",
+                                   "CSectionRecipeContext",
+                                   "CCapacityCalculator",
+                                   "CCapacityLimitSearchProblem",
+                                   "CCapacityResult",
+                                   "CCapacitySolver",
+                                   "CCrackLimitSearchProblem",
+                                   "CLimitSearchCoordinator",
+                                   "CLimitSearchRequest",
+                                   "CLimitSearchResult",
+                                   "CLinearSystem3x3",
+                                   "CLoadMultiplierSearch",
+                                   "CSectionNumericalFrame",
+                                   "CSectionSolver",
+                                   "CSectionStrainLimits",
+                                   "CStateGuessBuilder",
+                                   "CStateSolutionRunner",
+                                   "CUltimateStrainSearch",
+                                   "modLimitSearchRequestFactory",
+                                   "modNonlinearStepControl",
+                                   "CStabilityCalculator",
+                                   "CStabilityResult",
+                                   "CFakeAcadContour",
+                                   "CFakeAcadContourExport",
+                                   "CFakeAcadDocument",
+                                   "CFakeAcadLine",
+                                   "CFakeAcadRegion",
+                                   "CTestExcelApplicationState",
+                                   "CTestLimitSearchProblem",
+                                   "modTestAudit02Api",
+                                   "modTestAudit02Snapshots",
+                                   "modTestAutoCADConfig",
+                                   "modTestAutoCADContours",
+                                   "modTestBatchCalculation",
+                                   "modTestCapacitySolver",
+                                   "modTestConfiguration",
+                                   "modTestContourMesh",
+                                   "modTestCrackWidth",
+                                   "modTestDeclarativeExamples",
+                                   "modTestDeclarativeGeometry",
+                                   "modTestGeneralGeometryConfig",
+                                   "modTestGeometry",
+                                   "modTestGeometryConfig",
+                                   "modTestGeometryFixtures",
+                                   "modTestGeometryPublication",
+                                   "modTestGeometryQuery",
+                                   "modTestGeometryReview",
+                                   "modTestGeometrySolidSnapshots",
+                                   "modTestLoadTableConfig",
+                                   "modTestMaterialDiagrams",
+                                   "modTestPerformance",
+                                   "modTestPlotConfig",
+                                   "modTestPolygonSpec",
+                                   "modTestProfileConfig",
+                                   "modTestRecipeAnnotations",
+                                   "modTestRecipeApiCatalogue",
+                                   "modTestRecipeOperations",
+                                   "modTestRecipeSetbacks",
+                                   "modTestRegressionBaseline",
+                                   "modTestSectionRecipes",
+                                   "modTestSectionSolver",
+                                   "modTestShapeArchitecture",
+                                   "modTestSP35CrackWidth",
+                                   "modTestWorkbookInterface"
+                               ],
+    "UnexpectedCodeComponents":  [
+
+                                 ],
+    "GeneratedDocumentModules":  [
+                                     "Лист3",
+                                     "Лист4",
+                                     "Лист1",
+                                     "Лист2",
+                                     "ЭтаКнига"
+                                 ],
+    "ExportSHA256":  "78608DED3F36BEE3F812FCC846EA06BB3B1C07A0C995A13DC5F48F8AFE3375E3",
+    "Normalization":  "VBE code case; Double G15 formatting; CP1251 comments; line endings/module tail; exact strings/whitespace/integer types",
+    "VerifierSelfChecks":  {
+                               "CodeCase":  true,
+                               "DoubleFormatting":  true,
+                               "StringCasePreserved":  true,
+                               "StringNumberPreserved":  true,
+                               "EscapedQuotePreserved":  true,
+                               "CommentPreserved":  true,
+                               "NumberChangeRejected":  true,
+                               "IntegerTypePreserved":  true,
+                               "WhitespacePreserved":  true,
+                               "CommentAnsiFormatting":  true
+                           },
+    "Components":  [
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CBatchSectionCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "CB353FB5258BA9F7BC461B052F4C78FC10DC566AF7A61FD71108B95ABE723CD6",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCalculationProfile",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "CC376032DAEC6A9858168DC642933DE0B332BF919144779712E374DC4692F8BD",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCalculationProfileCatalog",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "E4B108D128F6F64756EA0B6A06CC82577713893C6BCEB8DD1DAC90CE6364BCE6",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCombinationResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "C2057D91F9EA5B02A3E8FAABBFD00FBD530F59F1C6C85DBB59A22E074C82A820",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CDirectStateResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "2F40A5FF17DC9D57B86FFB47E4377F18442E9052A6A27EF47A240B7C1EB057AE",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionStateResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "6C13E9883D7680DEB3FAA425CFBC7974A25519E582EDBB8C7EE1B7063145D776",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStateProvider",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "69BB565EF39B3C00DDDE4CBB6774A69EA2066A11A91B8418E38123C58ED80472",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStateRepository",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "3141B21DCA51C0DDB22B9084547D680A77427261D74053700E28ED67A1A47319",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStateRequest",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "BA8D6762B0D8CB20F44AD3C30AD6EBF4998D5579465C45DF5697971316B6000E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStrengthResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "35D5E25C2C628434CA7D681B562CD13D8E1F9A6FDCCCCCEFD5FABB2BFCCA216E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLoadPathDescriptor",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "D12E586909D5E89103B746004AAF3392B58B45A89FFFFC5A8AEE28326405B257",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLoadPathMath",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "D814F4B5AE8F79D96162A41A73468CF806D46972DA79C48624F36C3B7A676A60",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLoadPathVector",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "0787D5AC0370717F70D5DCF91C37D138A4EF67B34698B79751CD6014071C28CB",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CMomentZeroFilter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "05B89EE3FB2D21BD4F3F4332FD88EDAF5FC2DE6FD91DF87A8138700C8B5B47AE",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CResultMeta",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "4FF7B5606E0EFB8EFEBC2194B22BD938D2133CACC083567034FB628AC3D8B600",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CResultStatusPolicy",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "C33E3BBAAE5C6122CD2DE51FECC6DDA4F151DEBFC2016FF547F0E4963ED99F52",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionLoadState",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "FA7CDA72CC31DA6CA5DE087D25318926C44191D7F7A4D9AEB7110B03171FFA66",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  true,
+                           "Name":  "modCalculationPurpose",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "F2CD49850D454E159AAA91DF430B4EE70BDE675FF57D4351826FF974657EE435",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modGeometryPrimitives",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "05542413571B9F7542EF46F14C2BDA3735AAF1C9CB6C86FA4D44C6CF87F0C068",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modGeometryTypes",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "EEA750EED738386E6E424DCFFE25132D23871E0DEC25E36609510EF04B251C75",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  true,
+                           "Name":  "modResultStatus",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "1D4006287B9352321F141F5D20163E45380662BA23323D7934C88FDB6ECB2447",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  true,
+                           "Name":  "modSectionRecipeApiGuide",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "E99591EDD5EB33865B377B705AB15CA4E6E43849A0CC13597DB4CE8F22BF164C",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modSectionRecipeTypes",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "7B1A95C0686DE817B69951EE4F0A8883CD666D0CDA4FD7BE3B702609E2879974",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  true,
+                           "Name":  "modSolverWorkStats",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "365942B0EA59D7308B67FCEF2D83E9115061CBC6E7E18009AE58A687F5D4FA4B",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCrackFormationCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "40F9B275C3D790AB19918FAA219F6FA410EF116BEE53C1DA63E61D5F18638834",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCrackFormationResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "368734E859C9C68E205D99C152DAF5ED89EB5D5EF6AD0B5ACBE2823F368AD06A",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCrackResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "A23BA6B069128112063F53C54E23B0625C7984EF87AAD2A2C874EF286F0E1F4E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCrackWidthCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "8304BC2CF6E116905718A36513C82D727FEAD08558A24F6AFB156C1647B29D08",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  true,
+                           "Name":  "CCrackWidthResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "487F7AB45189402FDB5A4F7D430400B3AD30F95B2D0797172BC591D6D6E8937D",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLongitudinalCrackCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "D1E08F145DA875E355E0E62EDD39D384021F7B2AEB9BADC1434846EDCBFC4A18",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLongitudinalCrackResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "4241C52F7903936055741A3104B0EA006F5F2D1B1443C40D56B4B3ED3A1097C9",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSP35CrackData",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "2856B82E63B7B76DD2F6AE2A7A9AFFCC5067FBB821F8DFA4BA38E5A5B0AA9087",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CAutoCADContourReader",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "4264A653D62E374A7317789AEC37D589FBBF743819EA383E0F4000288FD5F955",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CAutoCADSectionModelImporter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "B43882F75864DEAB3EAA5F1C77D8009D726CB10B363EA2EB69C8C4878605B65E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CBatchResultWriter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "EE846543B71D9226907A60AFF1BE4EA8275FD64EC633743BEB81EED4899195B6",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCrackSummaryWriter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "1B7D85ABC444D68C55EB45829E9EDC1CFD4DF5365BA915E574776BB15A97AD09",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CExcelAppStateGuard",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "2BD5BC3A86F56815D03B358A5E86BF6439FDA2553239340F692EF6AACB38CE67",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CExecutionReport",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "95EB0A5FD212C6D700985FAD94053BE44204E5E6BE3D89C946F0CB6CB57EF0ED",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLoadCombinationReader",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "160985955AF982B5C62E6B576F7156CA5ADF9D7ACE47FCE221FC4F746EAC0294",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CNDMResultsWriter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "5888D8B6B7A30960420C8228506C152A954A275693AA506288511F55A3D5FC5F",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CPlotAnnotationLayout",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "05F26EF82B47B14B973E1FE59945D59E9444F25D09D083937B3DFD6A7597E938",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionInputSnapshotReader",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "EE41F437332D7B26E357D4B0C128B31948E1EC97EAC8A23082CF4CBAC981E722",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionPlotDataReader",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "F533262E58600111116A1A754A05F7F5B67F6A0857E3E259A329DA6E50CD7F78",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionPlotter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "4D6BA268916E3469579B3C2A67E6D19B121E6E36E7C1FA6BE105304A716101D9",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionTypeRegistry",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "9C0F9CCFE629EEABCD83EFD13EC4C51EA56906334D776CA4AA316AE74EE0E962",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStabilitySummaryWriter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "CE76D27D3CFE4E29E627BF118CB1D0012972D56F17C559AD92F04D851E26E22A",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStrengthSummaryWriter",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "C693E9C71FCD670AFAB5AA45C8E1490D64B3ECE511FCF18DE176B04CAD15876D",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSystemSettingsReader",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "C0FB1B9799D83CFB7122EB9450D5F123CB261EFB64D095FB1B725F600032A84A",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CUnitSystem",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "6F2EF519D8515D253F6307EFCA8C83C4ECFE3EA66CB7E211AEB79986433E95C5",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modAutoCADStressExport",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "1D77A178B9C18794EB6AE8936534C65284FF60EADE7B24CE96A6EE07F0BE00CD",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modMeshConfiguration",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "DC5D4170B8082810478299BC9B088344DC3C2B67DFC86A3B546B82BF6D96AFB2",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modSectionRecipeSetup",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "6144A1FA8C4602D919AF22E40737AE04716941CBB2ACE9D58097A8854D95D3D6",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modStatusFormatting",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "B6301FA7141480AE4203A7847B9BC3395D35E8E61DD853BAA257B3EB8D2C3B61",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modWorkbookCalculation",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "EF0C29D211F811E890F2360B9B1F7CAA9860454D92C71BF40F8CE00457768468",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modWorkbookMessages",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "D67370809B7B6573F82F61B54D2E96FB68D036C65A30DDC8F32AB45EDD113D36",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CFiberMeshBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "67C126DB5C000673CA89ED4DCE79D662CCFC2C8BD563F8B9EDC056DC41DBC931",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CGeometryDiagnostic",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CGeometryPath",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "1B4F4C169D87FBE659451B1C0895AD35F01AE3407B1389E9B971449B7BB63E59",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CGeometryRegion",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "8ACF107CF024C5D4A538FF7860071011851191B2D7349DD4C447F4EA1E97E616",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CPolygonSpec",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "D1EF9849436BAAA80F95E38F60A554E060C1682DC1A1F8DCE6DDBCFE7A4C3162",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionRecipeCircle",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "9C3EFC4695C3E435F575A763C4C3A769BB219E1E0E31DBD358E9EC3B33066D16",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionRecipeHollowRectangle",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "F6142411588C2F22E81DF070D78389E6ADF25B65180F736600B1B1C02DC698C9",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionRecipeRectSet",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "51C26FF6C7B939ACAABD0E51406CFCF392C402C5527EC11C12DBC94334E69F75",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionRecipeRoundedRectangle",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "CCB06975CC1272598291DD0A077D92485BFB144DFA4A3AD9EFD6165136C3D5F2",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "ILimitSearchProblem",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "F8420A8235947605EEE03B8CE5614D0BE19842B5C7D6A6856AD3C80F7C57B37E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CConcreteMaterialParameters",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLinearConcreteMaterial",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "644B6C882A120D6DDEAE4E9953F1D69BF7F18B43DD1DFD6DAFF5DF0B25A4FD3F",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLinearSteelMaterial",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "3A01B3A6575E81A6C63BAE7CDCE65B3F3706CAB3A6B236F17E3891D236875C42",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CMaterialDiagram",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "4C2832D64BA2A9CBB950F5C688D87CE09F07D1AE5656E94DACEED4D247AB3C2A",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CMaterialModelProvider",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "CCDC9787FE8A081117DFE3DEFAEAE68FA379019CEC8F4B5E4779692898DC3240",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CMaterialModelSpec",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "E9999EE79D6E94352717821EC5D544AD78876FB4A55398F30FB7EBB9C77D6183",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSteelMaterialParameters",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CConcreteRegion",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "E5CB4041B2AD56ED87CCDF2AE39C0742560CD93209A9D806B4D67C6B9EF52F56",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CRebarContactBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "EAEDD9F198CE5655957114321304030FA3B43D88FD66F6CF7C847A681E1A24DC",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CRebarGroupAnnotationBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "2CBC8DFF2F0CE33C9866404EA7355EBFF8AFF253CEA84C9B7100EC82680B0354",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CRebarLayout",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "ED72BDECCC03288C35F7021C614CCA1262426D437399F3FAB9DEDF09AF312D0F",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CRebarRuleExecutor",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "568854C274179DE53642B6D9A85D8E2AC55C4AE250B61B331AB87EDC17F5C321",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CRebarRuleOptions",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "C405E4920B4FBE48CB750FDFC9FB6E329918E2E94E030EA2D009AC1C2D2191AB",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionAnnotationBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "59E58D8CA1FDB933B734DDCCBA1883EC85A139D973DAB2AFE7C8DB2FA9209346",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionAnnotations",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "52F6719171480F09F07BFEDF0CB4AC1305DA6774C59B7DDA942071DA13BD5C1D",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "289D7D4BD9E3221E07BFBF4EA1622CE0086586841FDB16B985F256BCDA83B950",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionContours",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "D513954C8886FD007196A806BAD50D2B608527F05759F5EC4EAAA50A2E65BFD1",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionDefinition",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "06D7DE6EF75B69EC30215689FEC79EB397E03C3C3B046A6C3A9F14E2AFE0C90D",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionDefinitionBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "B39C5DCA8F34978D0C0E9977341B1EF315046DB6B9D7586BCB107E3525377FA7",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionGeometryQuery",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "0C277348CBB49BC7533689441C36026645763EE43ECFEEB86786E4DA7CBD21A5",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionInputTable",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "449380598394046C36868EB352B6319E4C1DD5FF323805D8C43172492433F98F",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionModel",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "F5876D2EC8BBDB2669EFB1BF3A9BC27B4644757CA7F12F2A0DD04C5243269574",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionModelBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "816625FF0147A85B92329E471CDC1BB25BD2D25C097850CD768DE0E8500F52DB",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionPropertiesCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "5B8E3752CABE4031F1098153127125061124911B880724ED50EB71E36E5C6F48",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionRecipeContext",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "35EA5F91E3371515CBA391766702D7B418513FD1CAE1C8E4D61E0E3537F6CF5D",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  true,
+                           "Name":  "ISectionRecipe",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCapacityCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "0D7ADAEABB6874EA023BD84A1640471E2D3C771CB0F6FF879D7957AB4146B873",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCapacityLimitSearchProblem",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "F83AB0CBCD5DAD60557BD16E38B47C3B16161ADF9221941AFF9263AEC80BDB70",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCapacityResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "8AE4EC79750B79DE3CCCFA9E6D1B966CD4E17A9D532D6FEE39334ED8DFF818B0",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCapacitySolver",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "29A84FCF9886A085FC0ADE94D6876888925C5E2002B656806E9AAEC1625E9457",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CCrackLimitSearchProblem",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "037987C5EF450CA763BC34338C00F7E94853E3AF2E2305F0158C145150EDE6CF",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLimitSearchCoordinator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "DDC253E1FF4D0CAAA7AA9A976ED44161777C0D24758059A37CB2A18A212A9CB8",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLimitSearchRequest",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "E4FE0E3418694360E400F3DB119AF77C6A87F7E3E3F0392C01F0AB9E8C4E5B1E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLimitSearchResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "0ACD86CE666FB330D56C96CF83684E7F330B14AA490AB4388229C6F0690816D7",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLinearSystem3x3",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "3E141C015A42A13A5A9A4E19CAF8CD402981A4747BC031D6F35B6EF13B3BE15E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CLoadMultiplierSearch",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "9E6A1DB9C389C3F669DADEC82B75A8DA084E1BE70C7C6A3216AA7115D22DEFA6",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionNumericalFrame",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "EC3AE7C5A99A25093C38340D51B81F1E60CB1C73D7C0B313BEEF9701C26C241E",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionSolver",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "8D655774602CC46461CF98C99578E6D129DBA179A28D4DA17DC389A904C71097",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CSectionStrainLimits",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "9058A7225397D5DF19797B67CA075636DB76182031760C5F7E762D7841EB8BA9",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStateGuessBuilder",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "1489D6CA49BB11B1F682881B80F1DFED048401966EE5D0AE6C9D872600213E4B",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStateSolutionRunner",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "606BE4C2D6B6293490EA4202B627B93922F22538471A0F1CBB689CD7D1702AA4",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CUltimateStrainSearch",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "1FB7D814BCC12754AA4F0808D7068ACF95491AB0E1C3EDEB367763F02C286A11",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modLimitSearchRequestFactory",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "8D5D51A2506605CB640A4C20DA289E6674D01B5B5DF595F5402F7C88D2A565FF",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modNonlinearStepControl",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "C3320AE5B95F59012478362EF1F360FC59D0E7EE5D1C84C6D68CFB97D920156E",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStabilityCalculator",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "57BFE1102EC22D6D3939E8170E457D9FF4D27E30061F9FCDBA05C5108D6250B6",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CStabilityResult",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "5BDC14C497DC648430D41CE3E6E46495A0E57FD1418DEA9DC7A0CDDA43B13DC2",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CFakeAcadContour",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "434C2AFD3FA509D35BB12D0075B50C8F47D2D5B00989A73F764B128095245074",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CFakeAcadContourExport",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "A4884526E37D8EF221F8A0E4D9C9240EA1658279F4031C0909F4B09FA759834B",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CFakeAcadDocument",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "B27EFBDC22B71955AC24A10E31B3FFAE01D44499F80656127F11E7E7B3935998",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CFakeAcadLine",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "5AED6A096DCDF30977059D78ED6A490677B9E0CE4841C44DC2D9B8328C7DAD68",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CFakeAcadRegion",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "0230AFFA9DEC1F138A3624A3E82A14F2EEC12CD52C3EDF5561FF4AF467FFEED1",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CTestExcelApplicationState",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "5FFBB7FE23ED786E0725C7C03E09C0315022FFAF47994D5A0FC14B181D2AC0CA",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "CTestLimitSearchProblem",
+                           "Equal":  true,
+                           "ExpectedType":  2,
+                           "SourceSHA256":  "5C94D6C29FCD6EC61B745E7B4E627E457F20D1205D59645FACD6F275243D46D2",
+                           "ComponentType":  2
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestAudit02Api",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "4208C9C440A6F5689746C707ED9B4958C52010526705D77832BF845A802E77D2",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestAudit02Snapshots",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "B4161C3A1E7CAE2656FF0A557BAA8519258245B36C6E6D5A85C9B1E9B36B162E",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestAutoCADConfig",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "23F073962EA525671D240ADDA30E9984FFECA947BF815FEB20EC61071ACF8FDD",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestAutoCADContours",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "5EDFD1631F415A361B235512F71DB4D3BC528A35A68EA043793CC1BC56EC5AAE",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestBatchCalculation",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "9220C37E3FFAB8A3161C8510730B0F274CBDA761B03D333895C53D8839850858",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestCapacitySolver",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "75229E774574648C78B29F81B5CE486A4894CDB65CE873D9679E5B08FBA64CE3",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestConfiguration",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "6A41617769498646D562FBDE47410B918518938CFD9AFF77C9019C498A35F3A3",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestContourMesh",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "3729DA3521911350D2B755E304AE3284E053B236630EE4413F7386AC8D1B8133",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestCrackWidth",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "38C3DEBD37E989806D16E7A213E4A67D122653DD8DD6BE3E719D09D5EA5C1404",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestDeclarativeExamples",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "6702D4BEF8672CB5F6E12DC0A93C2A1232E91E26E8AAB034B82212A728B55450",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestDeclarativeGeometry",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "32137F46E96AEA1EB0C7D18E6A8A9042C35497892C8AE112B3D4B0B3CDFF2EE7",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeneralGeometryConfig",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "716D4E0DCFA5AA3F122E4381FBC651040BAFE6082331149CFE48254A0AD12B40",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometry",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "F99B0D6538081433DBA9EE27A5B20E459609CCDC061803C5C4D27E1526BDB42D",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometryConfig",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "D09EF110BA483EE9F4B5F996B719BB71DF43D46C61CCB7D20EDFBFD234A2637D",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometryFixtures",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "1F5D97AA0EB94920D292256A624CD7C91CCA15C5D3C452B9CE45CBF6AB8D2856",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometryPublication",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "48B16C90E96C9E4C3EE5168B4857F99109CE2CD9E04CE1349F6E13137CFC7CE6",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometryQuery",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "461EA2B13A582DA6D256925A730BDFB0A3027EBDDF18B2F95BEBE14E6A7F4B01",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometryReview",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "82CC69D3BD4B5C0B587334B29A0E6BDA44E298ED344F2090D0E5C3F016A30DD3",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestGeometrySolidSnapshots",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "FD3A69815C784B43EB78E1F4F6BFE04D3CF44B94C2A354E57B610692808E59A6",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestLoadTableConfig",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "073C8ABB8AD2C85A336BC840E124C4EA9F1A39B5975E7B9EE447D71A615808D8",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestMaterialDiagrams",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "087F88C86F4B8EBD8D2F0395A903A4F4BF3D6276EF5383E057713D1227B56B4B",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestPerformance",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "4507089ABA9B8A48519676AB429F620591496BA4F43224955F5078C749910F1A",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestPlotConfig",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "C36BFEFD938F247F5751EEC446546A035533DE4F43FB8F38D9CE7D7CDA76B37B",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestPolygonSpec",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "ED5A5EF469AEAB55DE91C42540ADB7D44F44695704B316E8D88EFD7D2681DC1E",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestProfileConfig",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "D47D752D8E105A35DCBD9BD31CE9E07DC98B1CB1D27E0A7FFEAA43084AA1AA93",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestRecipeAnnotations",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "3847AF00D93A63A520806DBADFF9870160DA53ED7A714DD14B1D149BFA569845",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestRecipeApiCatalogue",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "C124966801F6F0EFDEEA86843A580618DF7D4B46F57452428EEF5105E177C863",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestRecipeOperations",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "A200B0FDC4C41673F1469949E5E1324EE7813D7266A9A70A77E439EF6F9244F9",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestRecipeSetbacks",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "808B7D49677FA8AAB21DC88BD1CA689E925FFDBBDE441BF958B6A4E7BB71DDC0",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestRegressionBaseline",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "5A5A7B50812D39DA844F6AEE3BFC9B5A8A5AF5660F939C33264E7DF5A3AC81F5",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestSectionRecipes",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "2B866F5419804228F7FAA7C38476CDBF7E2B1B519BAF9E70DDACC5AC225D405B",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestSectionSolver",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "8A6320E735C1AB212DDF30E744D90B0DE5822C89F9B49605B6C2CF6B33BC54C7",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestShapeArchitecture",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "6EC7ABCD89F13BEA2FDF82BFDCA4E8CC6E0A476DCC18722C174CDB778272B3FA",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestSP35CrackWidth",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "15F5A82E8AB0CC64000F55283DCB33EB81EB194E37900A88CBB2290634117B52",
+                           "ComponentType":  1
+                       },
+                       {
+                           "RawEqual":  false,
+                           "Name":  "modTestWorkbookInterface",
+                           "Equal":  true,
+                           "ExpectedType":  1,
+                           "SourceSHA256":  "233A6E4E125AFB83095F594211145C4A2EE2EB230BE2B3B90A68B77AB6EA4919",
+                           "ComponentType":  1
+                       }
+                   ]
+}

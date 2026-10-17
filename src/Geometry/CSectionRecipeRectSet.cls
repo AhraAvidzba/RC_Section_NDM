@@ -189,7 +189,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             options.PositionOrder = FromPathMiddle ' Нумеруем стержни от середины линии.
             options.SourceReference = .Source ' Адреса полей для сообщения об ошибке размещения.
             options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-            options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
+            options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
             options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
             options.Comment = "RectSet: " & .Caption & ", ряд 1"
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
@@ -199,7 +199,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             End Select
             Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
             extraOptions.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-            extraOptions.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+            extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
             extraOptions.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
             Set contact = New CRebarContactBuilder
             contact.Initialize .Diameter, -1#, tangentSign, extraOptions

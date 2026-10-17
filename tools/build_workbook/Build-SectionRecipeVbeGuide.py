@@ -134,15 +134,15 @@ def build():
     comment()
     comment('ПОДГОТОВКА КОНТАКТНЫХ РЯДОВ', 2)
     comment('ReadRebarInputs читает и проверяет параметры активных рядов. В AddReinforcement создают отдельный CRebarContactBuilder для каждого основного ряда или стороны, задают общие настройки дополнительных рядов и вызывают AppendRow один раз на включённый ряд по порядку. Полученные options передают в facade.RebarDependent. Отключённые ряды пропускают до чтения их необязательных полей; при отрисовке AppendRow не вызывают.', 4)
-    comment('Initialize получает новые общие options именно дополнительных рядов и сохраняет их копию. Каждый AppendRow возвращает отдельный объект. Можно изменить SourceSuffix, Comment и другие индивидуальные поля перед передачей фасаду. Построитель прибавляет к сумме радиусов 2,5 мм на выступы профиля для каждой соседней пары; диаметры и площади в расчёте не меняются. Диаметры промежуточных рядов и эти добавки учитываются отдельно по каждому направлению. EverySecondBar не уменьшает расстояние.', 4)
+    comment('Initialize получает новые общие options именно дополнительных рядов и сохраняет их копию. Каждый AppendRow возвращает отдельный объект. Можно изменить SourceSuffix, Comment и другие индивидуальные поля перед передачей фасаду. Построитель прибавляет к сумме радиусов 2,5 мм на выступы профиля арматуры для каждой соседней пары; диаметры и площади в расчёте не меняются. Диаметры промежуточных рядов и эти добавки учитываются отдельно по каждому направлению. EverySecondBar не уменьшает расстояние.', 4)
     comment('Фрагмент для уже объявленного основного ряда Top.Main диаметром 32 мм. Stacked направлен внутрь от верхней линии; SideBySide — вдоль неё. Смещения составят -28,5 и -49 мм по нормали, затем +24,5 мм вдоль линии. Все дополнительные ряды остаются связанными с Top.Main.', 4)
     for line in [
-        'Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions',
+        'Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions',
         'Dim row2 As CRebarRuleOptions, row3 As CRebarRuleOptions, row4 As CRebarRuleOptions',
-        'Set defaults = New CRebarRuleOptions',
-        'defaults.AnnotationGroup = "Top"  \' Общая подпись основного и дополнительных рядов этой группы.',
+        'Set extraOptions = New CRebarRuleOptions',
+        'extraOptions.AnnotationGroup = "Top"  \' Общая подпись основного и дополнительных рядов этой группы.',
         'Set contact = New CRebarContactBuilder',
-        'contact.Initialize 32#, -1#, 1#, defaults  \' Основной диаметр, знаки нормали и касательной, общие настройки.',
+        'contact.Initialize 32#, -1#, 1#, extraOptions  \' Основной диаметр, знаки нормали и касательной, общие настройки.',
         'Set row2 = contact.AppendRow(20#, "Stacked", "EverySecondBar", "Program.Row2")',
         'row2.SourceSuffix = "_R2"  \' Индивидуальное окончание имени позиции второго ряда.',
         'Set row3 = contact.AppendRow(16#, "Stacked", "EachBar", "Program.Row3")',

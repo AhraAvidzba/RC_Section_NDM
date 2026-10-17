@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "Compiled": true,
+  "WorkbookSHA256": "dadcc53e90009147d383dc1480dbdce4fa8d3f0e2bbeb503c63a7a6d629bc708",
+  "ChangedWorkbookParts": [
+    "xl/vbaProject.bin",
+    "xl/sharedStrings.xml"
+  ],
+  "UnchangedWorkbookParts": 109,
+  "HelpTextCellsChanged": 2,
+  "AllWorksheetXMLUnchanged": true,
+  "UserReportUnchanged": true,
+  "ReadbackPending": false,
+  "AllCodeSHA256": "0b59ce68c227e0ec65826bdaa0f139fdd826b785b7b560322adb7a23446442c5",
+  "PublishedSourceEquality": true,
+  "SourceComponents": 153,
+  "NativeComponents": 158
+}

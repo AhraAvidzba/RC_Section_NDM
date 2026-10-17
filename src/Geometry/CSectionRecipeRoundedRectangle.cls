@@ -182,7 +182,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             If i >= 3 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
             options.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-            options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
+            options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
             options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
             options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
             options.Comment = "RoundedRectangle: " & .Caption & " грань, ряд 1"
@@ -194,7 +194,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             End Select
             Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
             extraOptions.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
-            extraOptions.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+            extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
             extraOptions.Coincidence = KeepPublishedOwner ' В совпавшей позиции сохраняем ранее добавленный стержень.
             Set contact = New CRebarContactBuilder
             contact.Initialize .Diameter, normalSign, 1#, extraOptions

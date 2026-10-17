@@ -8212,6 +8212,6 @@
     "src/Section/CSectionGeometryQuery.cls": "0c277348cbb49bc7533689441c36026645763ee43ecfeeb86786e4da7cbd21a5",
     "src/Common/modSectionRecipeTypes.bas": "7b1a95c0686de817b69951ee4f0a8883cd666d0cda4fd7be3b702609e2879974",
     "src/Common/modGeometryTypes.bas": "eea750eed738386e6e424dcffe25132d23871e0dec25e36609510ef04b251c75",
-    "src/Section/CRebarContactBuilder.cls": "eaedd9f198ce5655957114321304030fa3b43d88fd66f6cf7c847a681e1a24dc"
+    "src/Section/CRebarContactBuilder.cls": "4238ff6064c45d22f000e172d2798bd9ee55c07d23ad7bdf7a502be5aecbd971"
   }
 }

@@ -109,14 +109,14 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
     If path.IsClosed Then options.EndMode = ClosedUniform Else options.EndMode = IncludeBoth ' Полный круг без повторного конца либо дуга с обоими концами.
     options.SourcePrefix = "B" ' Имена стержней начинаются с B.
     options.AnnotationGroup = "Circle" ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой окружности.
-    options.Publication = PublishPerSourcePosition ' В списке стержней нумеруем сначала основной, затем связанные с ним; координаты не меняются.
+    options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
     options.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
     options.Comment = "Круг: основной ряд арматуры"
     options.SourceReference = rebar.Source ' Адреса полей для сообщения об ошибке размещения.
     facade.RebarByCount "Circle.Main", path.ID, rebar.Count, rebar.Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
     Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов.
     extraOptions.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
-    extraOptions.Publication = PublishPerSourcePosition ' Сначала основной стержень, затем связанные с ним.
+    extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
     extraOptions.Coincidence = RejectCoincidence ' Совпадение стержней считаем ошибкой.
     extraOptions.PlacementCheck = CheckFullDisk ' Весь круг стержня должен находиться в бетоне.
     Set contact = New CRebarContactBuilder
