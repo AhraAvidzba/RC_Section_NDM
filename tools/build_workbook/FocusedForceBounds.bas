@@ -6,12 +6,17 @@ Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "Sav
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, mode As Variant, label As Variant
     Dim output As String, x As Double, y As Double, i As Long, oldSystem As Variant
     oldSystem = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
+    FocusedSelectGeometry shapeName
+    SetSystemSetting "SLS.Crack.Code", "SP35"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set section = Audit03LoadMatrixSection(shapeName)
+    Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
     CalculateConcreteSectionCentroid section, x, y
     output = "CENTER|x=" & FocusedBoundNumber(x) & "|y=" & FocusedBoundNumber(y) & vbCrLf
+    output = output & "ACCEPTANCE_TOLERANCE|N=" & FocusedBoundNumber(Abs(units.InputForceToInternal(settings.GetDouble("Solver.ToleranceN")))) & _
+        "|Mx=" & FocusedBoundNumber(Abs(units.InputMomentMxToInternal(settings.GetDouble("Solver.ToleranceMx")))) & _
+        "|My=" & FocusedBoundNumber(Abs(units.InputMomentMyToInternal(settings.GetDouble("Solver.ToleranceMy")))) & vbCrLf
     For i = 1 To section.ConcreteCount
         output = output & "FIBER|kind=C|x=" & FocusedBoundNumber(section.ConcreteX(i) - x) & _
             "|y=" & FocusedBoundNumber(section.ConcreteY(i) - y) & "|area=" & FocusedBoundNumber(section.ConcreteArea(i)) & vbCrLf
@@ -47,6 +52,10 @@ End Function
 Private Sub FocusedBoundPoints(ByRef output As String, ByVal mode As String, ByVal profile As String, _
         ByVal kind As String, ByVal material As CMaterialDiagram)
     Dim i As Long
+    output = output & "MATERIAL_FLAGS|mode=" & mode & "|profile=" & profile & "|kind=" & kind & _
+        "|compressionExtension=" & CStr(material.HasCompressionExtension) & "|tensionExtension=" & CStr(material.HasTensionExtension) & _
+        "|compressionLimit=" & FocusedBoundNumber(material.PhysicalCompressionStrain) & _
+        "|tensionLimit=" & FocusedBoundNumber(material.PhysicalTensionStrain) & vbCrLf
     For i = 1 To material.PointCount
         output = output & "MATERIAL|mode=" & mode & "|profile=" & profile & "|kind=" & kind & _
             "|strain=" & FocusedBoundNumber(material.PointStrain(i)) & "|stress=" & FocusedBoundNumber(material.PointStress(i)) & vbCrLf

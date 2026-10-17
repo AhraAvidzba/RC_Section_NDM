@@ -272,9 +272,9 @@ Private Sub FocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As C
         AppendLine stats, "FOCUSED_STATE|id=" & prefix & "|type=" & state.StateTypeText & _
             "|converged=" & CStr(state.Converged) & "|physical=" & CStr(state.WithinPhysicalRange) & _
             "|extension=" & CStr(state.ExtensionUsed) & "|status=" & state.Status & _
-            "|N=" & FormatNumberInvariant(state.TargetN) & "|Mx=" & FormatNumberInvariant(state.TargetMx) & _
-            "|My=" & FormatNumberInvariant(state.TargetMy) & "|eps0=" & FormatNumberInvariant(state.Epsilon0) & _
-            "|kx=" & FormatNumberInvariant(state.KappaX) & "|ky=" & FormatNumberInvariant(state.KappaY)
+            "|N=" & FocusedExactNumber(state.TargetN) & "|Mx=" & FocusedExactNumber(state.TargetMx) & _
+            "|My=" & FocusedExactNumber(state.TargetMy) & "|eps0=" & FocusedExactNumber(state.Epsilon0) & _
+            "|kx=" & FocusedExactNumber(state.KappaX) & "|ky=" & FocusedExactNumber(state.KappaY)
         If state.Converged Then
             AssertTrue stats, prefix & ".snapshot." & CStr(i), state.HasMaterialSnapshot
             Set probe = New CSectionSolver
@@ -295,6 +295,11 @@ Private Sub FocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As C
         If Not extensionEnabled Then AssertTrue stats, prefix & ".noHiddenExtension." & CStr(i), Not state.ExtensionUsed
     Next i
 End Sub
+
+ ' ДЛЯ ТЕСТОВ: независимый интеграл использует полную точность сохранённой плоскости.
+Private Function FocusedExactNumber(ByVal value As Double) As String
+    FocusedExactNumber = Replace$(Format$(value, "0.0000000000000000E+00"), ",", ".")
+End Function
 
 Private Sub FocusedCheckOutputRow(ByRef stats As TBatchTestStats, ByVal rangeName As String, _
         ByVal id As String, ByVal prefix As String)

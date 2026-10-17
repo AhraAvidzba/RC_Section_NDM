@@ -7,7 +7,9 @@ param(
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-$source=(Resolve-Path -LiteralPath (Join-Path $root $SourceWorkbook)).Path
+$sourcePath=$SourceWorkbook
+if (-not [IO.Path]::IsPathRooted($sourcePath)) {$sourcePath=Join-Path $root $sourcePath}
+$source=(Resolve-Path -LiteralPath $sourcePath).Path
 $directory=[IO.Path]::GetFullPath((Join-Path $root $EvidenceDirectory))
 $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression'))+[IO.Path]::DirectorySeparatorChar
 if (-not $directory.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Evidence must stay inside docs/regression.'}
@@ -57,24 +59,47 @@ $sp35=@(
     'modTestSP35CrackWidth.RunSP35PipelineTests',
     'modTestSP35CrackWidth.RunSP35EndToEndTests'
 )
+$recipes=@(
+    'modTestAudit02Api.RunRebarContactBuilderTests',
+    'modTestSectionRecipes.RunWorkbookRecipeInputTests',
+    'modTestSectionRecipes.RunRecipeDefinitionTests',
+    'modTestSectionRecipes.RunCircleRecipeInputTests',
+    'modTestSectionRecipes.RunRoundedRecipeInputTests',
+    'modTestSectionRecipes.RunHollowRecipeInputTests',
+    'modTestSectionRecipes.RunCircleBindingTests',
+    'modTestSectionRecipes.RunCircleBindingWorkbookTests',
+    'modTestSectionRecipes.RunRecipeAnnotationCountTests',
+    'modTestSectionRecipes.RunRecipeRuleTests',
+    'modTestSectionRecipes.RunRecipeCaptionTests',
+    'modTestRecipeSetbacks.RunRecipeSetbackUnitTests',
+    'modTestRecipeSetbacks.RunRecipeSetbackInputTests',
+    'modTestRecipeOperations.RunRecipeOperationTests',
+    'modTestRecipeOperations.RunRecipeDiagnosticTests',
+    'modTestAudit02Api.RunAudit02CloseoutRectSetInputTests',
+    'modTestAudit02Api.RunAudit02CloseoutContactTests',
+    'modTestRecipeApiCatalogue.RunAdvancedGuideExamples'
+)
 $jobs=@()
 foreach ($mode in @('No','Yes')) {
     $label=if($mode -eq 'No') {'Off'} else {'On'}
     $jobs+=@{Group='Full';Mode=$mode;Label=$label;Macro=@();ExpectedSuites=8;MaximumSeconds=12600}
     $jobs+=@{Group='Geometry';Mode=$mode;Label=$label;Macro=$geometry;ExpectedSuites=$geometry.Count;MaximumSeconds=3600}
     $jobs+=@{Group='SP35';Mode=$mode;Label=$label;Macro=$sp35;ExpectedSuites=$sp35.Count;MaximumSeconds=3600}
+    $jobs+=@{Group='Recipes';Mode=$mode;Label=$label;Macro=$recipes;ExpectedSuites=$recipes.Count;MaximumSeconds=3600}
 }
 $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToString('o');Deadline=$limit.ToString('o');ForecastHours=$ForecastHours;
     SourceCommit=(& git -C $root rev-parse HEAD);SourceWorkbook=$source;SourceSHA256=$sourceHash;FrozenWorkbook=$frozen;
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
     ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
-    GeometryTypeInTestCopies='RectSet';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false}
+    GeometryTypeInTestCopies='RectSet';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
+    CoverageDefinition='AllActiveAcceptanceIncludingFocused';IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
 Save-Run
 $failed=$false
 foreach ($job in $jobs) {
-    $remaining=[int][Math]::Floor(($limit-[DateTimeOffset]::UtcNow).TotalSeconds)-600
+    # Часовой план обязателен; оставляем для него час и 10 минут на итоговую проверку.
+    $remaining=[int][Math]::Floor(($limit-[DateTimeOffset]::UtcNow).TotalSeconds)-4200
     if ($remaining -lt 30) {$manifest.Status='DEADLINE_REACHED';$failed=$true;break}
     $timeout=[Math]::Min([int]$job.MaximumSeconds,$remaining)
     $relative=$EvidenceDirectory+'/'+$job.Group+'_'+$job.Label+'.txt'
@@ -93,6 +118,23 @@ foreach ($job in $jobs) {
     if ($code -ne 0) {$failed=$true}
     Save-Run
     Write-Output ('FINISH: '+$manifest.CurrentJob+'; exit='+$code+'; '+[DateTimeOffset]::Now.ToString('o'))
+}
+$focusedDirectory=$EvidenceDirectory+'/Focused'
+$remaining=[int][Math]::Floor(($limit-[DateTimeOffset]::UtcNow).TotalSeconds)-600
+if ($remaining -ge 3600) {
+    & (Join-Path $PSHOME 'powershell.exe') -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Run-FocusedAcceptance.ps1') -SourceWorkbook $frozen -EvidenceDirectory $focusedDirectory -MaxSeconds 3600
+    $focusedCode=$LASTEXITCODE
+    $acceptancePath=Join-Path $root ($focusedDirectory+'/Acceptance.json')
+    $focusedPassed=$false
+    if (Test-Path -LiteralPath $acceptancePath) {
+        $acceptance=Get-Content -LiteralPath $acceptancePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $focusedPassed=$focusedCode -eq 0 -and $acceptance.Status -eq 'PASS' -and $acceptance.SourceSHA256 -eq $sourceHash
+    }
+    $manifest.FocusedAcceptance=@{Directory=$focusedDirectory;ExitCode=$focusedCode;Passed=$focusedPassed;AcceptanceSHA256=$(if (Test-Path -LiteralPath $acceptancePath) {(Get-FileHash -LiteralPath $acceptancePath).Hash} else {''})}
+    if (-not $focusedPassed) {$failed=$true}
+} else {
+    $manifest.FocusedAcceptance=@{Directory=$focusedDirectory;Passed=$false;Reason='Insufficient time for the mandatory one-hour plan'}
+    $failed=$true
 }
 $manifest.SourceChanged=(Get-FileHash -LiteralPath $frozen -Algorithm SHA256).Hash -ne $sourceHash
 if ($manifest.SourceChanged) {$failed=$true}

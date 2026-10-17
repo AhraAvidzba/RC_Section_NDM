@@ -19,6 +19,25 @@ FULL = (
     'modTestWorkbookInterface.RunWorkbookInterfaceTests',
     'modTestRegressionBaseline.RunRegressionBaselineTests',
 )
+GROUP_COUNTS = {'Full': 8, 'Geometry': 26, 'SP35': 6, 'Recipes': 18}
+
+
+def coverage_errors(manifest):
+    """Исторические запуски читаются в прежнем объёме; новый полный набор обязателен целиком."""
+    if manifest.get('CoverageDefinition') != 'AllActiveAcceptanceIncludingFocused':
+        return []
+    errors=[]
+    if manifest.get('IncludesFocusedAcceptance') is not True:
+        errors.append('The current full definition requires focused acceptance')
+    expected={(group,mode) for group in GROUP_COUNTS for mode in ('No','Yes')}
+    jobs=manifest.get('Jobs',[])
+    actual=[(job['Group'],job['Mode']) for job in jobs]
+    if set(actual)!=expected or len(actual)!=len(expected):
+        errors.append('The current full plan requires all eight ON/OFF groups')
+    for job in jobs:
+        if job.get('ExpectedSuites')!=GROUP_COUNTS.get(job['Group']):
+            errors.append('Canonical suite coverage differs: '+job['Group'])
+    return errors
 
 def load_logs():
     path=Path(__file__).with_name('Summarize-GeometryFull.py')
@@ -33,7 +52,7 @@ def summarize(directory):
     manifest=json.loads(manifest_path.read_text(encoding='utf-8-sig'))
     source=manifest['SourceSHA256'].lower()
     jobs=[]
-    errors=[]
+    errors=coverage_errors(manifest)
     completed={(j['Group'],j['Mode']):j for j in manifest['CompletedJobs']}
     for job in manifest['Jobs']:
         path=directory/(job['Group']+'_'+job['Label']+'.txt')
@@ -65,6 +84,20 @@ def summarize(directory):
     if manifest['Status']!='COMPLETED_PENDING_LOG_REVIEW':errors.append('Driver is not successfully complete')
     if manifest.get('SourceChanged'):errors.append('Frozen input changed')
     if manifest.get('RunnerChanged'):errors.append('Test runners changed during execution')
+    focused = manifest.get('FocusedAcceptance')
+    if manifest.get('IncludesFocusedAcceptance'):
+        if not focused or not focused.get('Passed') or focused.get('ExitCode') != 0:
+            errors.append('Mandatory focused acceptance did not finish successfully')
+        else:
+            focused_path=Path(__file__).resolve().parents[2]/focused['Directory']/'Acceptance.json'
+            if not focused_path.is_file():
+                errors.append('Focused acceptance evidence is missing')
+            else:
+                accepted=json.loads(focused_path.read_text(encoding='utf-8-sig'))
+                if (hashlib.sha256(focused_path.read_bytes()).hexdigest()!=focused.get('AcceptanceSHA256','').lower()
+                    or accepted.get('Status')!='PASS' or accepted.get('SourceSHA256','').lower()!=source
+                    or accepted.get('IndividualCases')!=122):
+                    errors.append('Focused acceptance content or provenance differs')
     for name,key in (('FullRunner.ps1','RunnerSHA256'),('ModeRunner.ps1','ModeRunnerSHA256')):
         snapshot=directory/name
         if not snapshot.is_file() or hashlib.sha256(snapshot.read_bytes()).hexdigest()!=manifest.get(key,'').lower():
@@ -94,6 +127,9 @@ def summarize(directory):
         'sourceCommit':manifest['SourceCommit'], 'sourceSHA256':source,
         'runnerSHA256':manifest['RunnerSHA256'],
         'modeRunnerSHA256':manifest.get('ModeRunnerSHA256'),
+        'coverageDefinition':manifest.get('CoverageDefinition','HistoricalCoreSuitesOnly'),
+        'includesFocusedAcceptance':bool(manifest.get('IncludesFocusedAcceptance')),
+        'focusedAcceptance':focused,
         'inputProvenance':provenance,
         'startedUTC':manifest['StartedUTC'], 'finishedUTC':finished,
         'deadline':manifest['Deadline'], 'expectedSuites':expected_suites,

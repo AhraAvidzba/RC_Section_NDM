@@ -4,6 +4,7 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     Dim stats As TBatchTestStats, systemRange As Object, profileRange As Object, loadRange As Object
     Dim oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant, oldSteel As Variant, values() As Variant
     Dim steelRange As Object
+    Dim durationRange As Object, oldDuration As Variant, durationValues() As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
     Dim provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog, frame As CSectionNumericalFrame
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, evaluator As CSectionSolver
@@ -15,6 +16,8 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
     Set steelRange = ThisWorkbook.Names.Item("rngSteelMaterialParameters").RefersToRange
     oldSteel = steelRange.Formula
+    Set durationRange = ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersToRange
+    oldDuration = durationRange.Formula
     FocusedSelectGeometry "SavedWorkbook"
     SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
     SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
@@ -62,8 +65,11 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     If caseName = "AsymmetricSteel" Then
         AssertClose stats, "special.steel.compressionLimit", steel.PhysicalCompressionStrain, -0.02, 0#
         AssertClose stats, "special.steel.tensionLimit", steel.PhysicalTensionStrain, 0.03, 0#
-        AssertClose stats, "special.steel.compressionStress", steel.GetStress(-0.02), -250#, 0.00000001
-        AssertClose stats, "special.steel.tensionStress", steel.GetStress(0.03), 400#, 0.00000001
+        ' На плато к сопротивлению прибавляется alpha * E * длина участка после текучести.
+        AssertClose stats, "special.steel.compressionStress", steel.GetStress(-0.02), _
+            -250# - settings.GetRequiredDouble("General.PlateauSlopeFactor") * 190000# * (0.02 - 250# / 190000#), 0.00000001
+        AssertClose stats, "special.steel.tensionStress", steel.GetStress(0.03), _
+            400# + settings.GetRequiredDouble("General.PlateauSlopeFactor") * 210000# * (0.03 - 400# / 210000#), 0.00000001
     End If
     Set frame = New CSectionNumericalFrame: frame.Initialize section
     Set evaluator = New CSectionSolver
@@ -75,6 +81,13 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     values(1, 3) = mx / units.InputMomentMxToInternal(1#): values(1, 4) = my / units.InputMomentMyToInternal(1#)
     values(1, 5) = "PR3": values(1, 6) = "Auto"
     loadRange.Offset(1, 0).Resize(loadRange.Rows.Count - 1, loadRange.Columns.Count).Value2 = values
+    If caseName = "Stability" Then
+        ' Совпадающий номер обязателен; нулевые постоянные нагрузки допустимы.
+        ReDim durationValues(1 To durationRange.Rows.Count - 1, 1 To durationRange.Columns.Count)
+        durationValues(1, 1) = caseName
+        durationValues(1, 2) = 0#: durationValues(1, 3) = 0#: durationValues(1, 4) = 0#
+        durationRange.Offset(1, 0).Resize(durationRange.Rows.Count - 1, durationRange.Columns.Count).Value2 = durationValues
+    End If
     AppendLine stats, "SPECIAL_INPUT|case=" & caseName & "|N=" & FormatNumberInvariant(n) & _
         "|Mx=" & FormatNumberInvariant(mx) & "|My=" & FormatNumberInvariant(my)
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
@@ -114,6 +127,7 @@ Restore:
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
     If IsArray(oldLoads) Then loadRange.Formula = oldLoads
     If IsArray(oldSteel) Then steelRange.Formula = oldSteel
+    If IsArray(oldDuration) Then durationRange.Formula = oldDuration
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     RunFocusedSpecialCase = stats.Report
     Exit Function

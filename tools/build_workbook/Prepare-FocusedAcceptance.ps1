@@ -2,11 +2,14 @@
 param(
     [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
     [string]$OutputDirectory='docs/regression/FocusedAcceptance_2026-10-10',
-    [string]$ExtraHelperFile=''
+    [string]$ExtraHelperFile='',
+    [string]$SavedFixture=''
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
-$source=(Resolve-Path -LiteralPath (Join-Path $root $SourceWorkbook)).Path
+$sourcePath=$SourceWorkbook
+if (-not [IO.Path]::IsPathRooted($sourcePath)) {$sourcePath=Join-Path $root $sourcePath}
+$source=(Resolve-Path -LiteralPath $sourcePath).Path
 $sourceHash=(Get-FileHash -LiteralPath $source).Hash
 $directory=Join-Path $root $OutputDirectory
 $rootFull=[IO.Path]::GetFullPath($root).TrimEnd('\')+'\'
@@ -38,6 +41,18 @@ try {
     Write-Output ('OWNED_EXCEL: id='+$ownedPid+'; utcStartTicks='+$ownedTicks)
     $book=$excel.Workbooks.Open($path,0,$false)
     if ($book.ReadOnly) { throw 'Probe is read-only.' }
+    $fixtureHash=''
+    if ($SavedFixture) {
+        $fixture=Get-Content -LiteralPath $SavedFixture -Raw -Encoding UTF8 | ConvertFrom-Json
+        foreach($table in $fixture.Tables) {
+            $anchor=$book.Names.Item($table.Name).RefersToRange.Cells.Item(1,1)
+            $anchor.CurrentRegion.ClearContents()
+            $values=New-Object 'object[,]' ([int]$table.Rows),([int]$table.Columns)
+            for($r=0;$r -lt $table.Rows;$r++){for($c=0;$c -lt $table.Columns;$c++){$values[$r,$c]=$table.Values[$r][$c]}}
+            $anchor.Resize([int]$table.Rows,[int]$table.Columns).Value2=$values
+        }
+        $fixtureHash=(Get-FileHash -LiteralPath $SavedFixture).Hash
+    }
     $before=@{}
     foreach ($component in $book.VBProject.VBComponents) {
         $module=$component.CodeModule
@@ -81,7 +96,7 @@ try {
     if ((Get-FileHash -LiteralPath $source).Hash -cne $sourceHash) { throw 'Source workbook changed.' }
     [ordered]@{Created=(Get-Date).ToString('o'); SourceWorkbook=$source; SourceSHA256=$sourceHash;
         ProbeWorkbookSHA256=(Get-FileHash -LiteralPath $path).Hash; HelperSHA256=(Get-FileHash -LiteralPath $helper).Hash;
-        ExtraHelperSHA256=$extraHash; Compiled=$true; ModifiedComponents=$modified; CalculationExecuted=$false; ProductionChanged=$false} |
+        ExtraHelperSHA256=$extraHash; SavedFixtureSHA256=$fixtureHash; Compiled=$true; ModifiedComponents=$modified; CalculationExecuted=$false; ProductionChanged=$false} |
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $directory 'Preparation.json') -Encoding UTF8
     Write-Output ('FOCUSED_PROBE_READY: '+$directory+'; calculation not executed')
 } finally {

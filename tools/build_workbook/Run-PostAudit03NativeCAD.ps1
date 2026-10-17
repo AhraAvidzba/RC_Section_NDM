@@ -30,6 +30,32 @@ using System.Runtime.InteropServices;
 public static class PostAuditCADIdentity {
     [DllImport("user32.dll")]
     public static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+    [DllImport("ole32.dll")]
+    private static extern int GetRunningObjectTable(int reserved, out System.Runtime.InteropServices.ComTypes.IRunningObjectTable table);
+    [DllImport("ole32.dll")]
+    private static extern int CreateBindCtx(int reserved, out System.Runtime.InteropServices.ComTypes.IBindCtx context);
+
+    // Получаем только известный собственный документ, не первый AutoCAD из ROT.
+    public static object OwnedDocument(string path) {
+        System.Runtime.InteropServices.ComTypes.IRunningObjectTable table;
+        System.Runtime.InteropServices.ComTypes.IBindCtx context;
+        GetRunningObjectTable(0, out table); CreateBindCtx(0, out context);
+        System.Runtime.InteropServices.ComTypes.IEnumMoniker entries; table.EnumRunning(out entries);
+        var monikers = new System.Runtime.InteropServices.ComTypes.IMoniker[1];
+        try {
+            while (entries.Next(1, monikers, IntPtr.Zero) == 0) {
+                try {
+                    string name; monikers[0].GetDisplayName(context, null, out name);
+                    if (String.Equals(name, path, StringComparison.OrdinalIgnoreCase)) {
+                        object document; table.GetObject(monikers[0], out document); return document;
+                    }
+                } finally { Marshal.ReleaseComObject(monikers[0]); }
+            }
+            return null;
+        } finally {
+            Marshal.ReleaseComObject(entries); Marshal.ReleaseComObject(context); Marshal.ReleaseComObject(table);
+        }
+    }
 }
 '@
 $existing=@(Get-Process acad -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
@@ -57,13 +83,32 @@ try {
         # ProgID может быть занят SOFiPLUS. Запускаем проверенный acad.exe и
         # подключаемся только к его ROT-объекту, не меняя регистрацию вручную.
         Write-Output ('CAD_EXPLICIT_LAUNCH: ' + $installedAcad + '; registered server=' + $server)
-        $launchedCad=Start-Process -FilePath $installedAcad -ArgumentList '/nologo' -WindowStyle Hidden -PassThru
+        # ASCII-путь не зависит от кодировки AutoLISP в пользовательском профиле.
+        $bootstrapDirectory=Join-Path ([IO.Path]::GetTempPath()) ('NDM_NativeBootstrap_'+[Guid]::NewGuid().ToString('N'))
+        [void][IO.Directory]::CreateDirectory($bootstrapDirectory)
+        $ownedDrawing=Join-Path $bootstrapDirectory 'OwnedBootstrap.dwg'
+        $startupScript=Join-Path $directory 'OwnedBootstrap.scr'
+        $startupTemplate=Join-Path $env:LOCALAPPDATA 'Autodesk/AutoCAD 2023/R24.2/rus/Template/acadiso.dwt'
+        if (-not (Test-Path -LiteralPath $startupTemplate)) {throw 'Standard AutoCAD test template is missing.'}
+        $lispPath=$ownedDrawing.Replace('\','/').Replace('"','\"')
+        $scriptBody="(vl-load-com)`r`n(vla-SaveAs (vla-get-ActiveDocument (vlax-get-acad-object)) ""$lispPath"")`r`n"
+        [IO.File]::WriteAllText($startupScript,$scriptBody,[Text.UTF8Encoding]::new($false))
+        $launchArguments='/nologo /t "'+$startupTemplate+'" /b "'+$startupScript+'"'
+        $launchedCad=Start-Process -FilePath $installedAcad -ArgumentList $launchArguments -WindowStyle Hidden -PassThru
         $launchedTicks=$launchedCad.StartTime.ToUniversalTime().Ticks
+        [ordered]@{Executable=$installedAcad;OwnedPID=$launchedCad.Id;StartTicks=$launchedTicks;ExistingPIDs=$existing;UserDocumentsUsed=$false;BootstrapDirectory=$bootstrapDirectory} |
+            ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADOwnership.json') -Encoding UTF8
         Write-Output ('CAD_LAUNCHED: PID=' + $launchedCad.Id + '; startTicks=' + $launchedTicks)
         $deadline=[DateTime]::UtcNow.AddSeconds(180)
         while ($null -eq $acad) {
             if ($launchedCad.HasExited) {throw 'Owned Autodesk AutoCAD exited before COM readiness.'}
-            try { $acad=[Runtime.InteropServices.Marshal]::GetActiveObject('AutoCAD.Application.24.2') }
+            try {
+                $ownedDocument=[PostAuditCADIdentity]::OwnedDocument($ownedDrawing)
+                if ($ownedDocument) {
+                    $acad=$ownedDocument.GetType().InvokeMember('Application',[Reflection.BindingFlags]::GetProperty,$null,$ownedDocument,$null)
+                    [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($ownedDocument)
+                } else {Start-Sleep -Milliseconds 1000}
+            }
             catch {
                 if ([DateTime]::UtcNow -ge $deadline) {throw 'Owned Autodesk AutoCAD did not publish its ROT object within 180 seconds.'}
                 Start-Sleep -Milliseconds 1000
@@ -88,7 +133,7 @@ try {
     if (-not $owned) {throw "CAD instance is not owned by this test: PID=$pidValue"}
     Write-Output "CAD_OWNED: PID=$pidValue; executable=$fullName"
     $cadStartTicks=(Get-Process -Id $pidValue).StartTime.ToUniversalTime().Ticks
-    [ordered]@{Executable=$fullName; OwnedPID=$pidValue; StartTicks=$cadStartTicks; ExistingPIDs=$existing; UserDocumentsUsed=$false} |
+    [ordered]@{Executable=$fullName; OwnedPID=$pidValue; StartTicks=$cadStartTicks; ExistingPIDs=$existing; UserDocumentsUsed=$false;BootstrapDirectory=$bootstrapDirectory} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeCADOwnership.json') -Encoding UTF8
     Invoke-CadReady { $acad.Visible=[bool]$ShowOwnedWindow }
     # Готовим первый документ в управляющем COM-процессе до передачи
