@@ -22,50 +22,26 @@ Option Explicit
 
 Private mTable As CSectionInputTable ' Исходные значения и фактические адреса ячеек.
 Private mUnits As CUnitSystem ' Система единиц для чтения длин; для поиска ключей не требуется.
+Private mIndexed As Boolean ' Показывает, что структура блоков уже проверена и проиндексирована.
 Private mBlocks As Object ' Индексы строк и столбцов каждого блока; ключи сравниваются без учёта регистра.
 
-' Находит строки машинных ключей и строит индексы всех блоков без чтения их числовых полей.
-' Над строкой key расположены пользовательские заголовки, ещё выше — ключ и название блока.
+' Сохраняет таблицу и независимые единицы ввода один раз.
+' Структура блоков проверяется только при первом обращении по ключам.
 Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing)
     If Not mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер таблицы уже создан."
     If table Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Не передан снимок входной таблицы."
-    Set mTable = table: Set mBlocks = NewIndex()
+    Set mTable = table
     If Not units Is Nothing Then Set mUnits = units.Clone: mUnits.Freeze
-    Dim row As Long, column As Long, key As String, block As Object, columns As Object, rows As Object
-    Dim names As Variant, index As Long, first As Long, last As Long
-    For row = 3 To mTable.RowCount
-        If StrComp(KeyText(row, 1), "key", vbTextCompare) = 0 Then
-            key = KeyText(row - 2, 1)
-            If Len(key) = 0 Then InvalidCell row - 2, 1, "Не задан ключ блока над строкой ключей столбцов."
-            If mBlocks.Exists(key) Then InvalidCell row - 2, 1, "Повторный ключ блока '" & key & "'."
-            Set block = NewIndex(): Set columns = NewIndex(): Set rows = NewIndex()
-            block.Add "HeaderRow", row: block.Add "TitleRow", row - 2
-            block.Add "Columns", columns: block.Add "Rows", rows
-            mBlocks.Add key, block
-            For column = 1 To mTable.ColumnCount
-                key = KeyText(row, column)
-                If Len(key) > 0 Then
-                    If columns.Exists(key) Then InvalidCell row, column, "Повторный ключ столбца '" & key & "' в одном блоке."
-                    columns.Add key, column
-                End If
-            Next column
-        End If
-    Next row
-    If mBlocks.Count = 0 Then InvalidCell 1, 1, "Не найдена строка key с ключами столбцов. Восстановите структуру входной таблицы."
-    names = mBlocks.Keys
-    For index = 0 To mBlocks.Count - 1
-        Set block = mBlocks(CStr(names(index))): Set rows = block("Rows")
-        first = CLng(block("HeaderRow")) + 1: last = mTable.RowCount
-        If index < mBlocks.Count - 1 Then last = CLng(mBlocks(CStr(names(index + 1)))("TitleRow")) - 1
-        For row = first To last
-            key = KeyText(row, 1)
-            If Len(key) > 0 And StrComp(key, "Units", vbTextCompare) <> 0 Then
-                If rows.Exists(key) Then InvalidCell row, 1, "Повторный ключ строки '" & key & "' в блоке '" & CStr(names(index)) & "'."
-                rows.Add key, row
-            End If
-        Next row
-    Next index
+
 End Sub
+
+' Читает исходное значение по номерам строки и столбца внутри всего диапазона, начиная с 1.
+' Подходит собственной структуре таблицы без блоков и ключей; единицы не преобразует.
+' Выход за диапазон и ошибки формул проверяет снимок с фактическим адресом поля.
+Public Function ValueAt(ByVal row As Long, ByVal column As Long) As Variant
+    If mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер входной таблицы не создан."
+    ValueAt = mTable.CellValue(row, column)
+End Function
 
 ' Возвращает строки выбранного блока в порядке таблицы, без шапок и строки единиц Units.
 Public Function RowKeys(ByVal blockKey As String) As Variant
@@ -76,14 +52,14 @@ End Function
 ' Находит строку только внутри указанного блока; одинаковые ключи разных блоков допустимы.
 Public Function RowIndex(ByVal blockKey As String, ByVal rowKey As String) As Long
     Dim block As Object: Set block = RequiredBlock(blockKey)
-    If Not block("Rows").Exists(rowKey) Then InvalidCell CLng(block("TitleRow")), 1, "В блоке '" & blockKey & "' не найдена строка '" & rowKey & "'."
+    If Not block("Rows").Exists(rowKey) Then InvalidCell CLng(block("TitleRow")), 1, "В блоке '" & blockKey & "' не найдена строка '" & rowKey & "'. Восстановите ключ строки."
     RowIndex = CLng(block("Rows")(rowKey))
 End Function
 
 ' Находит столбец по машинному ключу независимо от его русской подписи и положения.
 Public Function ColumnIndex(ByVal blockKey As String, ByVal columnKey As String) As Long
     Dim block As Object: Set block = RequiredBlock(blockKey)
-    If Not block("Columns").Exists(columnKey) Then InvalidCell CLng(block("HeaderRow")), 1, "В блоке '" & blockKey & "' не найден столбец '" & columnKey & "'."
+    If Not block("Columns").Exists(columnKey) Then InvalidCell CLng(block("HeaderRow")), 1, "В блоке '" & blockKey & "' не найден столбец '" & columnKey & "'. Восстановите ключ столбца."
     ColumnIndex = CLng(block("Columns")(columnKey))
 End Function
 
@@ -164,9 +140,52 @@ Public Sub Require(ByVal blockKey As String, ByVal rowKey As String, ByVal colum
     If Not condition Then SectionRecipeError "CSectionInputReader", reason & " Исправьте указанное значение.", SourceReference(blockKey, rowKey, columnKey)
 End Sub
 
+' Строит индексы при первом запросе по ключам; прямое чтение ValueAt не требует блоков.
+' Над строкой key расположены пользовательские заголовки, ещё выше — ключ и название блока.
+Private Sub EnsureIndex()
+    If mIndexed Then Exit Sub
+    Set mBlocks = NewIndex()
+    Dim row As Long, column As Long, key As String, block As Object, columns As Object, rows As Object
+    Dim names As Variant, index As Long, first As Long, last As Long
+    For row = 3 To mTable.RowCount
+        If StrComp(KeyText(row, 1), "key", vbTextCompare) = 0 Then
+            key = KeyText(row - 2, 1)
+            If Len(key) = 0 Then InvalidCell row - 2, 1, "Не задан ключ блока над строкой ключей столбцов."
+            If mBlocks.Exists(key) Then InvalidCell row - 2, 1, "Повторный ключ блока '" & key & "'."
+            Set block = NewIndex(): Set columns = NewIndex(): Set rows = NewIndex()
+            block.Add "HeaderRow", row: block.Add "TitleRow", row - 2
+            block.Add "Columns", columns: block.Add "Rows", rows
+            mBlocks.Add key, block
+            For column = 1 To mTable.ColumnCount
+                key = KeyText(row, column)
+                If Len(key) > 0 Then
+                    If columns.Exists(key) Then InvalidCell row, column, "Повторный ключ столбца '" & key & "' в одном блоке."
+                    columns.Add key, column
+                End If
+            Next column
+        End If
+    Next row
+    If mBlocks.Count = 0 Then InvalidCell 1, 1, "Не найдена строка key с ключами столбцов. Восстановите структуру входной таблицы."
+    names = mBlocks.Keys
+    For index = 0 To mBlocks.Count - 1
+        Set block = mBlocks(CStr(names(index))): Set rows = block("Rows")
+        first = CLng(block("HeaderRow")) + 1: last = mTable.RowCount
+        If index < mBlocks.Count - 1 Then last = CLng(mBlocks(CStr(names(index + 1)))("TitleRow")) - 1
+        For row = first To last
+            key = KeyText(row, 1)
+            If Len(key) > 0 And StrComp(key, "Units", vbTextCompare) <> 0 Then
+                If rows.Exists(key) Then InvalidCell row, 1, "Повторный ключ строки '" & key & "' в блоке '" & CStr(names(index)) & "'."
+                rows.Add key, row
+            End If
+        Next row
+    Next index
+    mIndexed = True
+End Sub
+
 ' Возвращает индекс блока либо объясняет, какой ключ отсутствует в исходной таблице.
 Private Function RequiredBlock(ByVal key As String) As Object
     If mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер входной таблицы не создан."
+    EnsureIndex
     If Not mBlocks.Exists(key) Then InvalidCell 1, 1, "Не найден блок '" & key & "'. Восстановите ключ блока."
     Set RequiredBlock = mBlocks(key)
 End Function

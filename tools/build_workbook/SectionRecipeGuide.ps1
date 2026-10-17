@@ -62,6 +62,12 @@ function Assert-RecipeGuidePreviousContent([string[]]$Actual,$Layout,[string]$Pr
     }
 }
 
+# Отдельный setter с числовым типом не наследует COM-привязку целых высот
+# от предыдущих операций общей сборки в PowerShell 5.1.
+function Set-RecipeGuideRowHeight($Row,[double]$Height) {
+    $Row.RowHeight=$Height
+}
+
 function Set-RecipeGuideRowHeights($Sheet,[int]$First,$Layout) {
     # Excel не выполняет AutoFit для объединённых ячеек. Измеряем текст
     # тем же шрифтом и по фактической ширине; прежняя высота не сохраняется.
@@ -95,7 +101,7 @@ function Set-RecipeGuideRowHeights($Sheet,[int]$First,$Layout) {
                     $height=[Math]::Max($height,[Math]::Min(409,[Math]::Max(18,[Math]::Ceiling($size.Height*72/96)+4)))
                 } finally {$font.Dispose()}
             }
-            $cell.EntireRow.RowHeight=$height
+            Set-RecipeGuideRowHeight $cell.EntireRow $height
             $cell.EntireRow.Hidden=$hidden
             if ($before -ne $height) {$changes+=,[ordered]@{Row=$First+$i;Before=$before;After=$height}}
         }

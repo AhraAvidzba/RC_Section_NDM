@@ -76,35 +76,25 @@ End Sub
 ' вычисления позиций, пересечений или формы; всю математику выполняет рецепт.
 ' Circle: [D, as, n, d, d2, d3, loc2, loc3, bind2, bind3].
 Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSectionDefinition
-    Dim values As Variant, table As CSectionInputTable, recipe As ISectionRecipe, keys As Variant, columns As Variant
-    Dim i As Long, extra As Long, main As Long, value As Variant
+    Dim values As Variant, reader As CSectionInputReader, recipe As ISectionRecipe, keys As Variant, blocks As Variant
+    Dim i As Long, value As Variant, row As String
     values = ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2
-    Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", values
-    extra = table.AdditionalRowsHeader + 1
-    main = table.RowByKey("as", 2) + 1
-    keys = Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter")
-    columns = Array(2, 6, 5, 9, 4, 8)
-    For i = 0 To 9
+    Set reader = FixtureInput(values)
+    keys = Array("val", "as", "n", "d", "d2", "d3", "pos2", "pos3", "bind2", "bind3", "a2", "a3")
+    blocks = Array("Geom", "Main", "Main", "Main", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra")
+    For i = 0 To 11
         If i <= UBound(parameters) Then
             value = parameters(i)
-        ElseIf i < 6 Then
-            value = 0#
-        ElseIf i < 8 Then
+        ElseIf i = 6 Or i = 7 Then
             value = "Stacked"
-        Else
+        ElseIf i = 8 Or i = 9 Then
             value = "EachBar"
+        Else
+            value = 0#
         End If
-        Select Case i
-            Case 0: values(table.RowByKey("Диаметр"), 2) = value
-            Case 1: values(main, 2) = value
-            Case 2: values(main, 4) = value
-            Case 3: values(main, 3) = value
-            Case Else: values(extra, CLng(columns(i - 4))) = value
-        End Select
+        If i = 0 Then row = "D" Else row = "Circle"
+        values(reader.RowIndex(CStr(blocks(i)), row), reader.ColumnIndex(CStr(blocks(i)), CStr(keys(i)))) = value
     Next i
-    values(extra, 3) = 0#: values(extra, 7) = 0#
-    If UBound(parameters) >= 10 Then values(extra, 3) = parameters(10)
-    If UBound(parameters) >= 11 Then values(extra, 7) = parameters(11)
     Set recipe = New CSectionRecipeCircle
     Set FixtureCircleDefinition = FixtureRecipeDefinition(recipe, "rngCircleGeometry", values)
 End Function
@@ -113,34 +103,40 @@ End Function
 ' Каждая пара: [as1,as2,d1,d2,n1,n2,Start1,End1,Start2,End2,
 ' row2d1,row2d2,row3d1,row3d2,loc2,loc3,bind2,bind3,loc2right,loc3right,bind2right,bind3right].
 Public Function FixtureRectSetDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
-    Dim values As Variant, pair As Variant, rows As Variant, extras As Variant, index As Long, side As Long
-    Dim row As Long, extra As Long, recipe As ISectionRecipe
+    Dim values As Variant, pair As Variant, keys As Variant, fields As Variant, index As Long, side As Long
+    Dim key As String, recipe As ISectionRecipe, reader As CSectionInputReader, row As Long, extra As Long
     values = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange.Value2
-    values(3, 2) = "LSection": values(4, 2) = 0#
-    If UBound(dimensions) >= 4 Then values(4, 2) = dimensions(4)
-    If UBound(dimensions) >= 5 Then values(3, 2) = dimensions(5)
-    values(8, 1) = dimensions(1): values(8, 2) = dimensions(0)
-    values(8, 3) = dimensions(3): values(8, 4) = dimensions(2)
-    rows = Array(11, 15, 13, 17): extras = Array(21, 25, 23, 27)
+    Set reader = FixtureInput(values)
+    FixtureSetInput values, "Geom", "Shape", "val", "LSection"
+    FixtureSetInput values, "Detail", "XOffset", "val", 0#
+    If UBound(dimensions) >= 4 Then FixtureSetInput values, "Detail", "XOffset", "val", dimensions(4)
+    If UBound(dimensions) >= 5 Then FixtureSetInput values, "Geom", "Shape", "val", dimensions(5)
+    fields = Array("B1", "H1", "B2", "H2")
+    For index = 0 To 3: FixtureSetInput values, "Geom", CStr(fields(index)), "val", dimensions(index): Next index
+    keys = Array("R1.Left", "R2.Left", "R1.Top", "R2.Top")
     For index = 0 To 3
         pair = Array(0#, 0#, 0#, 0#, 0, 0, 0#, 0#, 0#, 0#)
         If Not IsMissing(faces) Then pair = faces(index)
         For side = 0 To 1
-            row = CLng(rows(index)) + side: extra = CLng(extras(index)) + side
-            values(row, 2) = pair(side): values(row, 3) = pair(2 + side): values(row, 4) = pair(4 + side)
-            values(row, 5) = pair(6 + side * 2): values(row, 6) = pair(7 + side * 2)
-            values(extra, 2) = 0#: values(extra, 6) = 0#
-            values(extra, 3) = 0#: values(extra, 7) = 0#
-            values(extra, 5) = "Stacked": values(extra, 9) = "Stacked"
-            values(extra, 4) = "EachBar": values(extra, 8) = "EachBar"
+            key = CStr(keys(index))
+            If side = 1 Then key = Replace$(Replace$(key, "Left", "Right"), "Top", "Bottom")
+            row = reader.RowIndex("Main", key): extra = reader.RowIndex("Extra", key)
+            values(row, reader.ColumnIndex("Main", "as")) = pair(side)
+            values(row, reader.ColumnIndex("Main", "d")) = pair(2 + side)
+            values(row, reader.ColumnIndex("Main", "n")) = pair(4 + side)
+            values(row, reader.ColumnIndex("Main", "s0")) = pair(6 + side * 2)
+            values(row, reader.ColumnIndex("Main", "s1")) = pair(7 + side * 2)
+            For Each fields In Array("d2", "d3", "a2", "a3"): values(extra, reader.ColumnIndex("Extra", CStr(fields))) = 0#: Next fields
+            For Each fields In Array("pos2", "pos3"): values(extra, reader.ColumnIndex("Extra", CStr(fields))) = "Stacked": Next fields
+            For Each fields In Array("bind2", "bind3"): values(extra, reader.ColumnIndex("Extra", CStr(fields))) = "EachBar": Next fields
             If UBound(pair) >= 13 Then
-                values(extra, 2) = pair(10 + side): values(extra, 6) = pair(12 + side)
-                values(extra, 5) = pair(14): values(extra, 9) = pair(15)
+                values(extra, reader.ColumnIndex("Extra", "d2")) = pair(10 + side): values(extra, reader.ColumnIndex("Extra", "d3")) = pair(12 + side)
+                values(extra, reader.ColumnIndex("Extra", "pos2")) = pair(14): values(extra, reader.ColumnIndex("Extra", "pos3")) = pair(15)
             End If
-            If UBound(pair) >= 17 Then values(extra, 4) = pair(16): values(extra, 8) = pair(17)
+            If UBound(pair) >= 17 Then values(extra, reader.ColumnIndex("Extra", "bind2")) = pair(16): values(extra, reader.ColumnIndex("Extra", "bind3")) = pair(17)
             If side = 1 And UBound(pair) >= 21 Then
-                values(extra, 5) = pair(18): values(extra, 9) = pair(19)
-                values(extra, 4) = pair(20): values(extra, 8) = pair(21)
+                values(extra, reader.ColumnIndex("Extra", "pos2")) = pair(18): values(extra, reader.ColumnIndex("Extra", "pos3")) = pair(19)
+                values(extra, reader.ColumnIndex("Extra", "bind2")) = pair(20): values(extra, reader.ColumnIndex("Extra", "bind3")) = pair(21)
             End If
         Next side
     Next index
@@ -151,13 +147,14 @@ End Function
 ' Rounded: [B,H,leftType,rightType,Wleft,Wright,R1left,R1right,R2left,R2right].
 ' faces = [H.Left,H.Right,B.Top,B.Bottom], каждый [as,d,n,d2,d3,loc2,loc3,bind2,bind3].
 Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
-    Dim values As Variant, recipe As ISectionRecipe
+    Dim values As Variant, recipe As ISectionRecipe, index As Long, fields As Variant, side As Long
     values = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange.Value2
-    values(3, 2) = dimensions(0): values(3, 3) = dimensions(1)
-    values(7, 2) = dimensions(2): values(7, 3) = dimensions(3)
-    values(8, 2) = dimensions(4): values(8, 3) = dimensions(5)
-    values(9, 2) = dimensions(6): values(9, 3) = dimensions(7)
-    values(10, 2) = dimensions(8): values(10, 3) = dimensions(9)
+    FixtureSetInput values, "Geom", "B", "val", dimensions(0): FixtureSetInput values, "Geom", "H", "val", dimensions(1)
+    fields = Array("Type", "W", "R1", "R2")
+    For index = 0 To 3
+        FixtureSetInput values, "Detail", CStr(fields(index)), "left", dimensions(2 + index * 2)
+        FixtureSetInput values, "Detail", CStr(fields(index)), "right", dimensions(3 + index * 2)
+    Next index
     If IsMissing(faces) Then
         FixtureFaceTable values, Array(Empty, Empty, Empty, Empty)
     Else
@@ -169,16 +166,19 @@ End Function
 
 ' Hollow: [B,H,R,Bo,Ho,Ro,xo,yo]; faces = наружные H/H/B/B, затем внутренние H/H/B/B.
 Public Function FixtureHollowDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
-    Dim values As Variant, table As CSectionInputTable, recipe As ISectionRecipe, row As Long
+    Dim values As Variant, recipe As ISectionRecipe, index As Long, keys As Variant
     values = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange.Value2
-    Set table = New CSectionInputTable: table.Initialize "rngHollowRectangleGeometry", values
-    row = table.RowByKey("H", 1) + 1
-    values(row, 1) = dimensions(1): values(row, 2) = dimensions(0): values(row, 3) = dimensions(2)
-    values(row, 4) = dimensions(4): values(row, 5) = dimensions(3): values(row, 6) = dimensions(5)
-    values(table.RowByKey("HollowRectangle.InnerOffsetX"), 2) = 0#
-    values(table.RowByKey("HollowRectangle.InnerOffsetY"), 2) = 0#
-    If UBound(dimensions) >= 6 Then values(table.RowByKey("HollowRectangle.InnerOffsetX"), 2) = dimensions(6)
-    If UBound(dimensions) >= 7 Then values(table.RowByKey("HollowRectangle.InnerOffsetY"), 2) = dimensions(7)
+    keys = Array("B", "H", "R", "Bo", "Ho", "Ro")
+    For index = 0 To 5
+        If index < 3 Then
+            FixtureSetInput values, "Geom", CStr(keys(index)), "val", dimensions(index)
+        Else
+            FixtureSetInput values, "Detail", CStr(keys(index)), "val", dimensions(index)
+        End If
+    Next index
+    FixtureSetInput values, "Detail", "Xo", "val", 0#: FixtureSetInput values, "Detail", "Yo", "val", 0#
+    If UBound(dimensions) >= 6 Then FixtureSetInput values, "Detail", "Xo", "val", dimensions(6)
+    If UBound(dimensions) >= 7 Then FixtureSetInput values, "Detail", "Yo", "val", dimensions(7)
     If IsMissing(faces) Then
         FixtureFaceTable values, Array(Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty)
     Else
@@ -190,17 +190,21 @@ End Function
 
 ' Общий formatter массива граней: только перенос значений в строки ввода.
 Private Sub FixtureFaceTable(ByRef values As Variant, ByVal faces As Variant)
-    Dim table As CSectionInputTable, main As Long, extra As Long, i As Long, row As Long, pair As Variant
-    Set table = New CSectionInputTable: table.Initialize "FixtureFaces", values
-    main = table.RowByKey("as", 2): extra = table.RowByKey("d2", 2)
+    Dim reader As CSectionInputReader, keys As Variant, fields As Variant, i As Long, j As Long, key As String, pair As Variant
+    Set reader = FixtureInput(values)
+    keys = Array("Left", "Right", "Top", "Bottom", "OpeningLeft", "OpeningRight", "OpeningTop", "OpeningBottom")
+    fields = Array("as", "d", "n", "d2", "d3", "pos2", "pos3", "bind2", "bind3")
     For i = 0 To UBound(faces)
-        row = main + i + 1: pair = faces(i)
+        key = CStr(keys(i)): pair = faces(i)
         If IsEmpty(pair) Then pair = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
-        values(row, 2) = pair(0): values(row, 3) = pair(1): values(row, 4) = pair(2)
-        values(extra + i + 1, 3) = 0#: values(extra + i + 1, 7) = 0#
-        values(extra + i + 1, 2) = pair(3): values(extra + i + 1, 6) = pair(4)
-        values(extra + i + 1, 5) = pair(5): values(extra + i + 1, 9) = pair(6)
-        values(extra + i + 1, 4) = pair(7): values(extra + i + 1, 8) = pair(8)
+        For j = 0 To 8
+            If j < 3 Then
+                FixtureSetInput values, "Main", key, CStr(fields(j)), pair(j)
+            Else
+                FixtureSetInput values, "Extra", key, CStr(fields(j)), pair(j)
+            End If
+        Next j
+        FixtureSetInput values, "Extra", key, "a2", 0#: FixtureSetInput values, "Extra", key, "a3", 0#
     Next i
 End Sub
 
@@ -292,29 +296,45 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: смысловое имя поля Circle переводится в единственный действующий источник новой таблицы.
 Public Function FixtureCircleFieldCell(ByVal workbook As Object, ByVal key As String, Optional ByVal sourceTable As Object = Nothing) As Object
-    Dim area As Object, table As CSectionInputTable, column As Long, row As Long
+    Dim area As Object, column As String, block As String, row As String
     If sourceTable Is Nothing Then Set area = workbook.Names("rngCircleGeometry").RefersToRange Else Set area = sourceTable
-    Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", area.Value2
+    block = "Main": row = "Circle"
     Select Case key
-        Case "Circle.Diameter": row = table.RowByKey("Диаметр"): column = 2
-        Case "Rebar.AxisDistance": row = table.RowByKey("as", 2) + 1: column = 2
-        Case "Rebar.Diameter": row = table.RowByKey("as", 2) + 1: column = 3
-        Case "Rebar.Count": row = table.RowByKey("as", 2) + 1: column = 4
-        Case "Rebar.StartSetback": row = table.RowByKey("as", 2) + 1: column = 5
-        Case "Rebar.EndSetback": row = table.RowByKey("as", 2) + 1: column = 6
-        Case "Rebar.Diameter2": column = 2
-        Case "Rebar.AxisOffset2": column = 3
-        Case "Rebar.Bind2row": column = 4
-        Case "Rebar.Loc2row": column = 5
-        Case "Rebar.Diameter3": column = 6
-        Case "Rebar.AxisOffset3": column = 7
-        Case "Rebar.Bind3row": column = 8
-        Case "Rebar.Loc3row": column = 9
+        Case "Circle.Diameter": block = "Geom": row = "D": column = "val"
+        Case "Rebar.AxisDistance": column = "as"
+        Case "Rebar.Diameter": column = "d"
+        Case "Rebar.Count": column = "n"
+        Case "Rebar.StartSetback": column = "s0"
+        Case "Rebar.EndSetback": column = "s1"
+        Case "Rebar.Diameter2": block = "Extra": column = "d2"
+        Case "Rebar.AxisOffset2": block = "Extra": column = "a2"
+        Case "Rebar.Bind2row": block = "Extra": column = "bind2"
+        Case "Rebar.Loc2row": block = "Extra": column = "pos2"
+        Case "Rebar.Diameter3": block = "Extra": column = "d3"
+        Case "Rebar.AxisOffset3": block = "Extra": column = "a3"
+        Case "Rebar.Bind3row": block = "Extra": column = "bind3"
+        Case "Rebar.Loc3row": block = "Extra": column = "pos3"
+        Case Else: Err.Raise vbObjectError + 5590, , "Неизвестное контрольное поле круга: " & key
     End Select
-    If column = 0 Then
-        row = table.RowByKey(key): column = 2
-    ElseIf row = 0 Then
-        row = table.AdditionalRowsHeader + 1
-    End If
-    Set FixtureCircleFieldCell = area.Cells.Item(row, column)
+    Set FixtureCircleFieldCell = FixtureInputCell(area, block, row, column)
+End Function
+
+
+' ДЛЯ ТЕСТОВ: индексирует массив по реальным ключам без ссылок на Excel.
+Public Function FixtureInput(ByVal values As Variant) As CSectionInputReader
+    Dim table As CSectionInputTable: Set table = New CSectionInputTable
+    table.Initialize "Fixture", values
+    Set FixtureInput = New CSectionInputReader: FixtureInput.Initialize table
+End Function
+
+' ДЛЯ ТЕСТОВ: меняет только указанное поле снимка, не вычисляя геометрию.
+Public Sub FixtureSetInput(ByRef values As Variant, ByVal block As String, ByVal row As String, ByVal column As String, ByVal value As Variant)
+    Dim reader As CSectionInputReader: Set reader = FixtureInput(values)
+    values(reader.RowIndex(block, row), reader.ColumnIndex(block, column)) = value
+End Sub
+
+' ДЛЯ ТЕСТОВ: возвращает настоящую ячейку поля после изменения размещения таблицы.
+Public Function FixtureInputCell(ByVal area As Object, ByVal block As String, ByVal row As String, Optional ByVal column As String = "val") As Object
+    Dim reader As CSectionInputReader: Set reader = FixtureInput(area.Value2)
+    Set FixtureInputCell = area.Cells(reader.RowIndex(block, row), reader.ColumnIndex(block, column))
 End Function

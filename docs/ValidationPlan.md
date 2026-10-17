@@ -275,6 +275,17 @@ powershell -ExecutionPolicy Bypass -File tools/build_workbook/Run-AllTests.ps1
 
 `Build-Workbook.ps1` создает книгу с настройками шаблона; пользовательскую книгу проверять на отдельной копии. Завершать только собственные проверенные процессы Excel/AutoCAD, не все окна общей командой.
 
+После изменений структуры таблиц геометрии проверять также сборку с нуля
+через `Build-Workbook.ps1 -OutputPath docs/regression/<этап>/FreshDefaults.xlsm`.
+Явно задавать отдельный `-FormulaImageDirectory` внутри того же этапа.
+`Test-StructuredGeometryWorkbook.ps1 -WorkbookPath <книга> -ReportPath <json> -CheckDefaults`
+проверяет значения четырёх форм, ключи, отсутствие условного форматирования,
+ширину I–U и формулы единиц при смене INPUT Length между mm, cm и m.
+Книга открывается только для чтения; изменённые для проверки единицы не сохраняются.
+Для ридера запускать `modTestSectionInputReader.RunSectionInputReaderTests`,
+для штатного ввода — `modTestSectionRecipes.RunWorkbookRecipeInputTests`.
+Позиционное чтение произвольной таблицы проверяется отдельно от разбора ключей.
+
 ## Контроль
 
 - VBA компилируется; модули совпадают с книгой и `VBA_All_Code.txt`.

@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "16f16e73d40cffaa6c2800b08e92f0e138bb7c7bec66d13db3df11714324ad64",
+  "bodySHA256": "034d5f670554a30a35024e774ca94e1030b32ef83eb7d2262a9bcd3c524553f9",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "07dd356c97b4d705fe2435b75de578c73ee7ef72b69b30e433d3da8ecc616315",
-    "src/Common/modSectionRecipeApiGuide.bas": "e99591edd5eb33865b377b705ab15ca4e6e43849a0cc13597db4ce8f22bf164c"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "6f3626c0ff78cba97027beb8fab68db4b4134872107801e48b654431733ab3b0",
+    "src/Common/modSectionRecipeApiGuide.bas": "5513cb920452c2994c69f750d7fdf3088f09e90c8386819c05e55d32a67d3f01"
   },
   "rows": [
     {
@@ -338,7 +338,7 @@
       "line": 61
     },
     {
-      "text": "Справочник методов создания сечения",
+      "text": "Чтение размеров и армирования",
       "style": "h2",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 62
@@ -350,7 +350,7 @@
       "line": 63
     },
     {
-      "text": "Откройте редактор VBA (Alt+F11), окно проекта (Ctrl+R), затем Modules → modSectionRecipeApiGuide. Здесь описаны методы создания геометрии, арматуры и аннотаций, чтение размеров и подключение нового типа. Справочник разбит на девять разделов; для каждого метода указаны назначение, точная запись вызова, параметры, единицы и значения по умолчанию. Найти метод можно через Ctrl+F по имени.",
+      "text": "Структура штатных таблиц Config рекомендуется для новых сечений: под неё готов универсальный CSectionInputReader. Каждый блок имеет ключ, строки — ключи параметров, столбцы — короткие ключи полей. Например, `context.Reader(\"rngMyGeometry\").PositiveLength(\"Geom\", \"B\")` читает ширину B и переводит её в мм. Русские подписи и порядок строк не участвуют в поиске.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 64
@@ -362,10 +362,46 @@
       "line": 65
     },
     {
-      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectSet (прямоугольные сечения), CSectionRecipeRoundedRectangle (скруглённые стороны) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. В рецептах чтение и проверка данных отделены от создания границ бетона, армирования и аннотаций. Подробности — в modSectionRecipeApiGuide.",
+      "text": "Эта структура необязательна. В другой таблице `reader.ValueAt(строка, столбец)` читает значение по позиции внутри диапазона, начиная с 1. Рецепт сам согласованно разбирает эти данные, проверяет их и переводит единицы через `context.Units`; также доступен снимок `context.Table(\"имя диапазона\")`. После чтения геометрия, армирование и аннотации задаются теми же декларативными методами. Обращаться к листу из геометрического ядра не требуется.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 66
+    },
+    {
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 67
+    },
+    {
+      "text": "Справочник методов создания сечения",
+      "style": "h2",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 68
+    },
+    {
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 69
+    },
+    {
+      "text": "Откройте редактор VBA (Alt+F11), окно проекта (Ctrl+R), затем Modules → modSectionRecipeApiGuide. Здесь описаны методы создания геометрии, арматуры и аннотаций, чтение размеров и подключение нового типа. Справочник разбит на девять разделов; для каждого метода указаны назначение, точная запись вызова, параметры, единицы и значения по умолчанию. Найти метод можно через Ctrl+F по имени.",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 70
+    },
+    {
+      "text": "",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 71
+    },
+    {
+      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectSet (прямоугольные сечения), CSectionRecipeRoundedRectangle (скруглённые стороны) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. В рецептах чтение и проверка данных отделены от создания границ бетона, армирования и аннотаций. Подробности — в modSectionRecipeApiGuide.",
+      "style": "paragraph",
+      "source": "ADDING_SECTION_TYPE.md",
+      "line": 72
     },
     {
       "text": "",
@@ -375,5 +411,5 @@
   "sections": [],
   "api": {},
   "apiStatus": "COMMENT_ONLY_VBE_API",
-  "members": 146
+  "members": 164
 }

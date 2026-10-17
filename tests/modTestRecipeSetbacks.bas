@@ -7,7 +7,7 @@ Private mPassed As Long, mFailed As Long, mReport As String
 
 ' ДЛЯ ТЕСТОВ: те же внутренние координаты при вводе отступов в мм/см/м.
 Public Function RunRecipeSetbackUnitTests() As String
-    Dim values As Variant, baseline As Variant, scaled As Variant, table As CSectionInputTable
+    Dim values As Variant, baseline As Variant, scaled As Variant, table As CSectionInputReader
     Dim sheet As Object, setting As Object, settings As CSystemSettingsReader, units As CUnitSystem
     Dim recipe As ISectionRecipe, definition As CSectionDefinition, expected As CRebarLayout, actual As CRebarLayout
     Dim main As Long, extra As Long, row As Long, column As Long, i As Long, item As Variant, factor As Double
@@ -15,17 +15,19 @@ Public Function RunRecipeSetbackUnitTests() As String
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = "": alerts = Application.DisplayAlerts
     values = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange.Value2
-    Set table = New CSectionInputTable: table.Initialize "rngRoundedRectangleGeometry", values
-    main = table.RowByKey("as", 2): extra = table.RowByKey("d2", 2)
-    values(3, 2) = 800#: values(3, 3) = 250#
-    values(7, 2) = "Simple": values(7, 3) = "Tapered"
-    values(8, 2) = 0#: values(8, 3) = 150#
-    values(9, 2) = 40#: values(9, 3) = 40#: values(10, 2) = 0#: values(10, 3) = 80#
-    For row = main + 1 To main + 4
-        values(row, 2) = 40#: values(row, 3) = 20#: values(row, 4) = 3
-        values(row, 5) = 10#: values(row, 6) = 20#
-    Next row
-    For row = extra + 1 To extra + 4: values(row, 2) = 0#: values(row, 5) = 0#: Next row
+    FixtureSetInput values, "Geom", "B", "val", 800#: FixtureSetInput values, "Geom", "H", "val", 250#
+    FixtureSetInput values, "Detail", "Type", "left", "Simple": FixtureSetInput values, "Detail", "Type", "right", "Tapered"
+    FixtureSetInput values, "Detail", "W", "left", 0#: FixtureSetInput values, "Detail", "W", "right", 150#
+    FixtureSetInput values, "Detail", "R1", "left", 40#: FixtureSetInput values, "Detail", "R1", "right", 40#
+    FixtureSetInput values, "Detail", "R2", "left", 0#: FixtureSetInput values, "Detail", "R2", "right", 80#
+    Dim key As Variant, block As Variant, fields As Variant, field As Variant, rowKeys As Variant
+    Set table = FixtureInput(values)
+    For Each key In table.RowKeys("Main")
+        FixtureSetInput values, "Main", CStr(key), "as", 40#: FixtureSetInput values, "Main", CStr(key), "d", 20#
+        FixtureSetInput values, "Main", CStr(key), "n", 3
+        FixtureSetInput values, "Main", CStr(key), "s0", 10#: FixtureSetInput values, "Main", CStr(key), "s1", 20#
+        FixtureSetInput values, "Extra", CStr(key), "d2", 0#: FixtureSetInput values, "Extra", CStr(key), "d3", 0#
+    Next key
     Set recipe = New CSectionRecipeRoundedRectangle
     Set expected = FixtureAnnotatedLayout(FixtureRecipeDefinition(recipe, "rngRoundedRectangleGeometry", values))
     baseline = values
@@ -34,15 +36,23 @@ Public Function RunRecipeSetbackUnitTests() As String
     setting.Cells(2, 1).Value2 = "Units.Length.Input"
     For Each item In Array(Array("mm", 1#), Array("cm", 10#), Array("m", 1000#))
         factor = CDbl(item(1)): scaled = baseline
-        For column = 2 To 3
-            scaled(3, column) = CDbl(baseline(3, column)) / factor
-            For row = 8 To 10: scaled(row, column) = CDbl(baseline(row, column)) / factor: Next row
-        Next column
-        For row = main + 1 To main + 4
-            For Each itemColumn In Array(2, 3, 5, 6)
-                scaled(row, CLng(itemColumn)) = CDbl(baseline(row, CLng(itemColumn))) / factor
-            Next itemColumn
-        Next row
+        For Each block In Array("Geom", "Detail", "Main", "Extra")
+            Select Case CStr(block)
+                Case "Geom": fields = Array("val")
+                Case "Detail": fields = Array("left", "right")
+                Case "Main": fields = Array("as", "d", "s0", "s1")
+                Case "Extra": fields = Array("d2", "a2", "d3", "a3")
+            End Select
+            For Each key In table.RowKeys(CStr(block))
+                If CStr(block) <> "Detail" Or CStr(key) <> "Type" Then
+                    row = table.RowIndex(CStr(block), CStr(key))
+                    For Each field In fields
+                        column = table.ColumnIndex(CStr(block), CStr(field))
+                        If IsNumeric(baseline(row, column)) Then scaled(row, column) = CDbl(baseline(row, column)) / factor
+                    Next field
+                End If
+            Next key
+        Next block
         setting.Cells(2, 2).Value2 = CStr(item(0))
         Set settings = New CSystemSettingsReader: settings.LoadFromRange setting
         Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -157,7 +167,7 @@ End Function
 
 Public Function RunRecipeSetbackInputTests() As String
     Dim rounded As Object, hollow As Object, savedRounded As Variant, savedHollow As Variant
-    Dim table As CSectionInputTable, row As Long, main As Long, def As CSectionDefinition
+    Dim table As CSectionInputReader, row As Long, main As Long, def As CSectionDefinition
     Dim original As CRebarLayout, changed As CRebarLayout, region As CConcreteRegion
     Dim face As Variant, faces As Variant, helper As CRebarRuleExecutor, originalHelper As CRebarRuleExecutor, parameters As Variant
     Dim geometryArea As Double, layoutCount As Long, reference As String, reason As String, number As Long
@@ -166,50 +176,50 @@ Public Function RunRecipeSetbackInputTests() As String
     Set rounded = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
     Set hollow = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     savedRounded = rounded.Formula: savedHollow = hollow.Formula
-    Set table = New CSectionInputTable: table.Initialize "rngRoundedRectangleGeometry", rounded.Value2
-    main = table.RowByKey("as", 2): row = table.RowByAnyKey(Array("B - верхняя", "B.Top"), 1, main + 1, main + 4)
-    Check "rounded.start.header", table.ColumnByCaption(main, "StartSetback") = 5
-    Check "rounded.end.header", table.ColumnByCaption(main, "EndSetback") = 6
-    Check "rounded.editable.centered", rounded.Cells(row, 5).HorizontalAlignment = xlCenter And rounded.Cells(row, 6).HorizontalAlignment = xlCenter
+    Set table = FixtureInput(rounded.Value2)
+    row = table.RowIndex("Main", "Top"): main = row - 1
+    Check "rounded.start.header", table.ColumnIndex("Main", "s0") = 6
+    Check "rounded.end.header", table.ColumnIndex("Main", "s1") = 7
+    Check "rounded.editable.centered", rounded.Cells(row, 6).HorizontalAlignment = xlCenter And rounded.Cells(row, 7).HorizontalAlignment = xlCenter
     face = Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
     faces = Array(face, face, Array(40#, 20#, 5, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face)
     parameters = Array(800#, 250#, "Simple", "Tapered", 0#, 150#, 40#, 40#, 0#, 80#)
-    rounded.Cells(main + 1, 5).Resize(4, 2).Value2 = 0#
+    rounded.Cells(main + 1, 6).Resize(4, 2).Value2 = 0#
     Set def = FixtureRoundedDefinition(parameters, faces): Set original = FixtureAnnotatedLayout(def)
     geometryArea = def.ConcreteDomain.Area: layoutCount = original.Count
     Near "rounded.zero.first", original.X(1), -360#
-    rounded.Cells(row, 5).Value2 = 10#: rounded.Cells(row, 6).Value2 = 20#
+    rounded.Cells(row, 6).Value2 = 10#: rounded.Cells(row, 7).Value2 = 20#
     Set def = FixtureRoundedDefinition(parameters, faces): Set changed = FixtureAnnotatedLayout(def)
     Near "rounded.start.actual", changed.X(1), original.X(1) + 10#
     Near "rounded.end.actual", changed.X(5), original.X(5) - 20#
     Near "rounded.concrete.unchanged", def.ConcreteDomain.Area, geometryArea
     Check "rounded.count.unchanged", changed.Count = layoutCount
     Near "rounded.opposite.row.unchanged", changed.Y(6), original.Y(6)
-    rounded.Cells(row, 5).ClearContents
+    rounded.Cells(row, 6).ClearContents
     Set changed = Nothing: number = 0
     On Error Resume Next
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces))
     number = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo Failed
     Check "rounded.active.empty.rejected", number <> 0 And changed Is Nothing
-    rounded.Cells(row, 5).Value2 = -1#
+    rounded.Cells(row, 6).Value2 = -1#
     On Error Resume Next
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces))
     number = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo Failed
-    Check "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(row) & ",5]", vbBinaryCompare) > 0
-    rounded.Cells(row, 5).Value2 = CVErr(xlErrValue)
+    Check "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(row) & ",6]", vbBinaryCompare) > 0
+    rounded.Cells(row, 6).Value2 = CVErr(xlErrValue)
     faces(2) = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces))
     Check "rounded.inactive.error.ignored", changed.Count = layoutCount - 5
     rounded.Formula = savedRounded
 
-    Set table = New CSectionInputTable: table.Initialize "rngHollowRectangleGeometry", hollow.Value2
-    main = table.RowByKey("as", 2)
-    row = table.RowByAnyKey(Array("B_o - верхняя", "Opening.B.Top"), 1, main + 1, main + 8)
-    Check "hollow.start.header", table.ColumnByCaption(main, "StartSetback") = 5
-    Check "hollow.end.header", table.ColumnByCaption(main, "EndSetback") = 6
-    hollow.Cells(main + 1, 5).Resize(8, 2).Value2 = 0#
+    Set table = FixtureInput(hollow.Value2)
+    main = table.RowIndex("Main", "Top") - 1
+    row = table.RowIndex("Main", "OpeningTop")
+    Check "hollow.start.header", table.ColumnIndex("Main", "s0") = 6
+    Check "hollow.end.header", table.ColumnIndex("Main", "s1") = 7
+    hollow.Cells(main + 1, 6).Resize(8, 2).Value2 = 0#
     face = Array(40#, 20#, 6, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
     faces = Array(face, face, Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), _
         Array(40#, 20#, 8, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face, face, face, face)
@@ -218,7 +228,7 @@ Public Function RunRecipeSetbackInputTests() As String
     Set def = FixtureHollowDefinition(parameters, faces): Set original = FixtureAnnotatedLayout(def, originalHelper)
     geometryArea = def.ConcreteDomain.Area
     Check "hollow.zero.projected.count", GroupCount(original, "Opening.B.Top") = 6
-    hollow.Cells(row, 5).Value2 = 75#: hollow.Cells(row, 6).Value2 = 15#
+    hollow.Cells(row, 6).Value2 = 75#: hollow.Cells(row, 7).Value2 = 15#
     Set helper = New CRebarRuleExecutor
     Set def = FixtureHollowDefinition(parameters, faces): Set changed = FixtureAnnotatedLayout(def, helper)
     Check "hollow.projection.filtered", GroupCount(changed, "Opening.B.Top") = 4

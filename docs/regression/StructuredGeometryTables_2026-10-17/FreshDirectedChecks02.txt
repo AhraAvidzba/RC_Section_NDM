@@ -1,0 +1,716 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\StructuredGeometryTables_2026-10-17\FreshDefaults.xlsm
+SOURCE_SHA256: ABAA60FCB940F5C850571F515BF4C7C82DA474E7002B7DD122C54BB4E147C45C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_db8447eae8f246a19d44b4a87f91afac\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=105524; startTicks=639278698803479058
+===== modTestSectionInputReader.RunSectionInputReaderTests =====
+SUITE_STARTED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-18T00:38:05
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=105524; workingSet=142553088; privateBytes=100446208; cpu=4.75
+TOTAL_SECTION_INPUT_READER: passed=101; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_db8447eae8f246a19d44b4a87f91afac\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-18T00:38:06
+===== modTestSectionRecipes.RunWorkbookRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunWorkbookRecipeInputTests; 2026-10-18T00:38:07
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=105524; workingSet=157175808; privateBytes=114253824; cpu=11.390625
+PASS: workbook.reader.noShapeKey.Circle.Circle.Diameter
+PASS: workbook.reader.noShapeKey.Circle.RectSet.B1
+PASS: workbook.reader.noShapeKey.Circle.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.Circle.HollowRectangle.B
+PASS: workbook.inactiveName.Circle
+PASS: workbook.table.immutable.Circle
+PASS: workbook.definition.sealed.Circle
+PASS: workbook.definition.meshCount.Circle
+PASS: workbook.definition.barCount.Circle
+PASS: workbook.definition.x.Circle.1; actual=1.59198825996909E-14; expected=1.59198825996909E-14
+PASS: workbook.definition.y.Circle.1; actual=260; expected=260
+PASS: workbook.definition.x.Circle.2; actual=1.4664661087023E-14; expected=1.4664661087023E-14
+PASS: workbook.definition.y.Circle.2; actual=239.5; expected=239.5
+PASS: workbook.definition.x.Circle.3; actual=18.5; expected=18.5
+PASS: workbook.definition.y.Circle.3; actual=260; expected=260
+PASS: workbook.definition.x.Circle.4; actual=130; expected=130
+PASS: workbook.definition.y.Circle.4; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.x.Circle.5; actual=119.75; expected=119.75
+PASS: workbook.definition.y.Circle.5; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.x.Circle.6; actual=146.021469970012; expected=146.021469970012
+PASS: workbook.definition.y.Circle.6; actual=215.916604983954; expected=215.916604983954
+PASS: workbook.definition.x.Circle.7; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.y.Circle.7; actual=130; expected=130
+PASS: workbook.definition.x.Circle.8; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.y.Circle.8; actual=119.75; expected=119.75
+PASS: workbook.definition.x.Circle.9; actual=234.416604983954; expected=234.416604983954
+PASS: workbook.definition.y.Circle.9; actual=113.978530029988; expected=113.978530029988
+PASS: workbook.definition.x.Circle.10; actual=260; expected=260
+PASS: workbook.definition.y.Circle.10; actual=0; expected=0
+PASS: workbook.definition.x.Circle.11; actual=239.5; expected=239.5
+PASS: workbook.definition.y.Circle.11; actual=0; expected=0
+PASS: workbook.definition.x.Circle.12; actual=260; expected=260
+PASS: workbook.definition.y.Circle.12; actual=-18.5; expected=-18.5
+PASS: workbook.definition.x.Circle.13; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.y.Circle.13; actual=-130; expected=-130
+PASS: workbook.definition.x.Circle.14; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.y.Circle.14; actual=-119.75; expected=-119.75
+PASS: workbook.definition.x.Circle.15; actual=215.916604983954; expected=215.916604983954
+PASS: workbook.definition.y.Circle.15; actual=-146.021469970012; expected=-146.021469970012
+PASS: workbook.definition.x.Circle.16; actual=130; expected=130
+PASS: workbook.definition.y.Circle.16; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.x.Circle.17; actual=119.75; expected=119.75
+PASS: workbook.definition.y.Circle.17; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.x.Circle.18; actual=113.978530029988; expected=113.978530029988
+PASS: workbook.definition.y.Circle.18; actual=-234.416604983954; expected=-234.416604983954
+PASS: workbook.definition.x.Circle.19; actual=1.59198825996909E-14; expected=1.59198825996909E-14
+PASS: workbook.definition.y.Circle.19; actual=-260; expected=-260
+PASS: workbook.definition.x.Circle.20; actual=1.4664661087023E-14; expected=1.4664661087023E-14
+PASS: workbook.definition.y.Circle.20; actual=-239.5; expected=-239.5
+PASS: workbook.definition.x.Circle.21; actual=-18.5; expected=-18.5
+PASS: workbook.definition.y.Circle.21; actual=-260; expected=-260
+PASS: workbook.definition.x.Circle.22; actual=-130; expected=-130
+PASS: workbook.definition.y.Circle.22; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.x.Circle.23; actual=-119.75; expected=-119.75
+PASS: workbook.definition.y.Circle.23; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.x.Circle.24; actual=-146.021469970012; expected=-146.021469970012
+PASS: workbook.definition.y.Circle.24; actual=-215.916604983954; expected=-215.916604983954
+PASS: workbook.definition.x.Circle.25; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.y.Circle.25; actual=-130; expected=-130
+PASS: workbook.definition.x.Circle.26; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.y.Circle.26; actual=-119.75; expected=-119.75
+PASS: workbook.definition.x.Circle.27; actual=-234.416604983954; expected=-234.416604983954
+PASS: workbook.definition.y.Circle.27; actual=-113.978530029988; expected=-113.978530029988
+PASS: workbook.definition.x.Circle.28; actual=-260; expected=-260
+PASS: workbook.definition.y.Circle.28; actual=-3.18397651993818E-14; expected=-3.18397651993818E-14
+PASS: workbook.definition.x.Circle.29; actual=-239.5; expected=-239.5
+PASS: workbook.definition.y.Circle.29; actual=-2.93293221740459E-14; expected=-2.93293221740459E-14
+PASS: workbook.definition.x.Circle.30; actual=-260; expected=-260
+PASS: workbook.definition.y.Circle.30; actual=18.5; expected=18.5
+PASS: workbook.definition.x.Circle.31; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.y.Circle.31; actual=130; expected=130
+PASS: workbook.definition.x.Circle.32; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.y.Circle.32; actual=119.75; expected=119.75
+PASS: workbook.definition.x.Circle.33; actual=-215.916604983954; expected=-215.916604983954
+PASS: workbook.definition.y.Circle.33; actual=146.021469970012; expected=146.021469970012
+PASS: workbook.definition.x.Circle.34; actual=-130; expected=-130
+PASS: workbook.definition.y.Circle.34; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.x.Circle.35; actual=-119.75; expected=-119.75
+PASS: workbook.definition.y.Circle.35; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.x.Circle.36; actual=-113.978530029988; expected=-113.978530029988
+PASS: workbook.definition.y.Circle.36; actual=234.416604983954; expected=234.416604983954
+PASS: workbook.activeName.reject.Circle
+PASS: workbook.reader.noShapeKey.Rectangle.Circle.Diameter
+PASS: workbook.reader.noShapeKey.Rectangle.RectSet.B1
+PASS: workbook.reader.noShapeKey.Rectangle.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.Rectangle.HollowRectangle.B
+PASS: workbook.inactiveName.Rectangle
+PASS: workbook.table.immutable.Rectangle
+PASS: workbook.definition.sealed.Rectangle
+PASS: workbook.definition.meshCount.Rectangle
+PASS: workbook.definition.barCount.Rectangle
+PASS: workbook.definition.x.Rectangle.1; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.1; actual=200; expected=200
+PASS: workbook.definition.x.Rectangle.2; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.2; actual=140; expected=140
+PASS: workbook.definition.x.Rectangle.3; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.3; actual=260; expected=260
+PASS: workbook.definition.x.Rectangle.4; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.4; actual=80; expected=80
+PASS: workbook.definition.x.Rectangle.5; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.5; actual=320; expected=320
+PASS: workbook.definition.x.Rectangle.6; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.6; actual=200; expected=200
+PASS: workbook.definition.x.Rectangle.7; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.7; actual=260; expected=260
+PASS: workbook.definition.x.Rectangle.8; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.8; actual=140; expected=140
+PASS: workbook.definition.x.Rectangle.9; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.9; actual=320; expected=320
+PASS: workbook.definition.x.Rectangle.10; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.10; actual=80; expected=80
+PASS: workbook.definition.x.Rectangle.11; actual=80; expected=80
+PASS: workbook.definition.y.Rectangle.11; actual=360; expected=360
+PASS: workbook.definition.x.Rectangle.12; actual=220; expected=220
+PASS: workbook.definition.y.Rectangle.12; actual=360; expected=360
+PASS: workbook.definition.x.Rectangle.13; actual=220; expected=220
+PASS: workbook.definition.y.Rectangle.13; actual=40; expected=40
+PASS: workbook.definition.x.Rectangle.14; actual=80; expected=80
+PASS: workbook.definition.y.Rectangle.14; actual=40; expected=40
+PASS: workbook.activeName.reject.Rectangle
+PASS: workbook.reader.noShapeKey.RoundedMixed.Circle.Diameter
+PASS: workbook.reader.noShapeKey.RoundedMixed.RectSet.B1
+PASS: workbook.reader.noShapeKey.RoundedMixed.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.RoundedMixed.HollowRectangle.B
+PASS: workbook.inactiveName.RoundedMixed
+PASS: workbook.table.immutable.RoundedMixed
+PASS: workbook.definition.sealed.RoundedMixed
+PASS: workbook.definition.meshCount.RoundedMixed
+PASS: workbook.definition.barCount.RoundedMixed
+PASS: workbook.definition.x.RoundedMixed.1; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.1; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.2; actual=-183.101063109644; expected=-183.101063109644
+PASS: workbook.definition.y.RoundedMixed.2; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.3; actual=-106.202126219288; expected=-106.202126219288
+PASS: workbook.definition.y.RoundedMixed.3; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.4; actual=-29.3031893289313; expected=-29.3031893289313
+PASS: workbook.definition.y.RoundedMixed.4; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.5; actual=47.595747561425; expected=47.595747561425
+PASS: workbook.definition.y.RoundedMixed.5; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.6; actual=124.494684451781; expected=124.494684451781
+PASS: workbook.definition.y.RoundedMixed.6; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.7; actual=201.393621342137; expected=201.393621342137
+PASS: workbook.definition.y.RoundedMixed.7; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.8; actual=278.292558232494; expected=278.292558232494
+PASS: workbook.definition.y.RoundedMixed.8; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.9; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.9; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.10; actual=-183.101063109644; expected=-183.101063109644
+PASS: workbook.definition.y.RoundedMixed.10; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.11; actual=-106.202126219288; expected=-106.202126219288
+PASS: workbook.definition.y.RoundedMixed.11; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.12; actual=-29.3031893289313; expected=-29.3031893289313
+PASS: workbook.definition.y.RoundedMixed.12; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.13; actual=47.595747561425; expected=47.595747561425
+PASS: workbook.definition.y.RoundedMixed.13; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.14; actual=124.494684451781; expected=124.494684451781
+PASS: workbook.definition.y.RoundedMixed.14; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.15; actual=201.393621342137; expected=201.393621342137
+PASS: workbook.definition.y.RoundedMixed.15; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.16; actual=278.292558232494; expected=278.292558232494
+PASS: workbook.definition.y.RoundedMixed.16; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.17; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.17; actual=106.666666666667; expected=106.666666666667
+PASS: workbook.definition.x.RoundedMixed.18; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.18; actual=53.3333333333333; expected=53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.19; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.19; actual=0; expected=0
+PASS: workbook.definition.x.RoundedMixed.20; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.20; actual=-53.3333333333334; expected=-53.3333333333334
+PASS: workbook.definition.x.RoundedMixed.21; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.21; actual=-106.666666666667; expected=-106.666666666667
+PASS: workbook.definition.x.RoundedMixed.22; actual=312.95922489916; expected=312.95922489916
+PASS: workbook.definition.y.RoundedMixed.22; actual=106.666666666667; expected=106.666666666667
+PASS: workbook.definition.x.RoundedMixed.23; actual=347.625891565827; expected=347.625891565827
+PASS: workbook.definition.y.RoundedMixed.23; actual=53.3333333333333; expected=53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.24; actual=382.292558232494; expected=382.292558232494
+PASS: workbook.definition.y.RoundedMixed.24; actual=0; expected=0
+PASS: workbook.definition.x.RoundedMixed.25; actual=347.625891565827; expected=347.625891565827
+PASS: workbook.definition.y.RoundedMixed.25; actual=-53.3333333333333; expected=-53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.26; actual=312.95922489916; expected=312.95922489916
+PASS: workbook.definition.y.RoundedMixed.26; actual=-106.666666666667; expected=-106.666666666667
+PASS: workbook.activeName.reject.RoundedMixed
+PASS: workbook.reader.noShapeKey.HollowOffset.Circle.Diameter
+PASS: workbook.reader.noShapeKey.HollowOffset.RectSet.B1
+PASS: workbook.reader.noShapeKey.HollowOffset.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.HollowOffset.HollowRectangle.B
+PASS: workbook.inactiveName.HollowOffset
+PASS: workbook.table.immutable.HollowOffset
+PASS: workbook.definition.sealed.HollowOffset
+PASS: workbook.definition.meshCount.HollowOffset
+PASS: workbook.definition.barCount.HollowOffset
+PASS: workbook.definition.x.HollowOffset.1; actual=-366.656831750143; expected=-366.656831750143
+PASS: workbook.definition.y.HollowOffset.1; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.2; actual=-261.897736964388; expected=-261.897736964388
+PASS: workbook.definition.y.HollowOffset.2; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.3; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.3; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.4; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.4; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.5; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.5; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.6; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.6; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.7; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.7; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.8; actual=366.656831750143; expected=366.656831750143
+PASS: workbook.definition.y.HollowOffset.8; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.9; actual=-366.656831750143; expected=-366.656831750143
+PASS: workbook.definition.y.HollowOffset.9; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.10; actual=-261.897736964388; expected=-261.897736964388
+PASS: workbook.definition.y.HollowOffset.10; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.11; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.11; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.12; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.12; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.13; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.13; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.14; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.14; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.15; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.15; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.16; actual=366.656831750143; expected=366.656831750143
+PASS: workbook.definition.y.HollowOffset.16; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.17; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.17; actual=-540; expected=-540
+PASS: workbook.definition.x.HollowOffset.18; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.18; actual=-324; expected=-324
+PASS: workbook.definition.x.HollowOffset.19; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.19; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.20; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.20; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.21; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.21; actual=324; expected=324
+PASS: workbook.definition.x.HollowOffset.22; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.22; actual=540; expected=540
+PASS: workbook.definition.x.HollowOffset.23; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.23; actual=-540; expected=-540
+PASS: workbook.definition.x.HollowOffset.24; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.24; actual=-324; expected=-324
+PASS: workbook.definition.x.HollowOffset.25; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.25; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.26; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.26; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.27; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.27; actual=324; expected=324
+PASS: workbook.definition.x.HollowOffset.28; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.28; actual=540; expected=540
+PASS: workbook.definition.x.HollowOffset.29; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.29; actual=334.525143166832; expected=334.525143166832
+PASS: workbook.definition.x.HollowOffset.30; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.30; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.31; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.31; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.32; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.32; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.33; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.33; actual=316.974726161791; expected=316.974726161791
+PASS: workbook.definition.x.HollowOffset.34; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.34; actual=-234.525143166832; expected=-234.525143166832
+PASS: workbook.definition.x.HollowOffset.35; actual=-52.3795473928775; expected=-52.3795473928775
+PASS: workbook.definition.y.HollowOffset.35; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.36; actual=52.3795473928774; expected=52.3795473928774
+PASS: workbook.definition.y.HollowOffset.36; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.37; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.37; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.38; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.38; actual=-216.974726161791; expected=-216.974726161791
+PASS: workbook.definition.x.HollowOffset.39; actual=-200; expected=-200
+PASS: workbook.definition.y.HollowOffset.39; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.40; actual=-200; expected=-200
+PASS: workbook.definition.y.HollowOffset.40; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.41; actual=280; expected=280
+PASS: workbook.definition.y.HollowOffset.41; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.42; actual=280; expected=280
+PASS: workbook.definition.y.HollowOffset.42; actual=108; expected=108
+PASS: workbook.activeName.reject.HollowOffset
+PASS: workbook.manual.stale.fixture; actual=75; expected=75
+PASS: workbook.manual.capture.refreshed; actual=80; expected=80
+PASS: workbook.registry.metadata.copy
+PASS: workbook.registry.emptyMetadata
+PASS: workbook.registry.dynamicChoice
+PASS: inputTable.caption.ignoresInactiveError
+PASS: inputTable.caption.activeReadRejects
+PASS: inputTable.caption.otherValuePreserved; actual=50; expected=50
+TOTAL WORKBOOK RECIPE INPUT: passed=284; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_db8447eae8f246a19d44b4a87f91afac\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunWorkbookRecipeInputTests; 2026-10-18T00:38:13
+===== modTestGeometryConfig.RunAudit03ShapeConfigTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03ShapeConfigTests; 2026-10-18T00:38:13
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=105524; workingSet=161005568; privateBytes=117571584; cpu=21.375
+OK: shapeConfig.RectSet.oracle.area
+CIRCLE_CONFIG_NUMBER: shapeConfig.RectSet.oracle.area; actual=210000; expected=210000
+OK: shapeConfig.RectSet.oracle.cx
+CIRCLE_CONFIG_NUMBER: shapeConfig.RectSet.oracle.cx; actual=228.571428571429; expected=228.571428571429
+OK: shapeConfig.RectSet.oracle.cy
+CIRCLE_CONFIG_NUMBER: shapeConfig.RectSet.oracle.cy; actual=203.571428571429; expected=203.571428571429
+OK: shapeConfig.RectSet.H1.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.H1; area=220000; cx=220.454545454545; cy=220.454545454545
+OK: shapeConfig.RectSet.H1.invalid
+OK: shapeConfig.RectSet.H1.recovery
+OK: shapeConfig.RectSet.B1.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.B1; area=222000; cx=225.405405405405; cy=214.189189189189
+OK: shapeConfig.RectSet.B1.invalid
+OK: shapeConfig.RectSet.B1.recovery
+OK: shapeConfig.RectSet.H2.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.H2; area=240000; cx=237.5; cy=225
+OK: shapeConfig.RectSet.H2.invalid
+OK: shapeConfig.RectSet.H2.recovery
+OK: shapeConfig.RectSet.B2.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.B2; area=222500; cx=250.842696629213; cy=199.157303370787
+OK: shapeConfig.RectSet.B2.invalid
+OK: shapeConfig.RectSet.B2.recovery
+OK: shapeConfig.RectSet.UpperOffsetX.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.UpperOffsetX; area=210000; cx=222.857142857143; cy=203.571428571429
+OK: shapeConfig.RectSet.UpperOffsetX.invalid
+OK: shapeConfig.RectSet.UpperOffsetX.recovery
+OK: shapeConfig.RectSet.SectionType.effect
+SHAPE_CONFIG_EFFECT: key=RectSet.SectionType; area=60000; cx=100; cy=150
+OK: shapeConfig.RectSet.SectionType.invalid
+OK: shapeConfig.RectSet.SectionType.recovery
+OK: shapeConfig.RectSet.Rectangle.inactive.7.3
+OK: shapeConfig.RectSet.Rectangle.inactive.8.3
+OK: shapeConfig.RectSet.Rectangle.inactive.13.3
+OK: shapeConfig.RectSet.LSection.inactive.offset
+OK: shapeConfig.RectSet.units.cm
+OK: shapeConfig.RectSet.units.cm.rebars
+OK: shapeConfig.RectSet.H1.inactive.type
+OK: shapeConfig.RectSet.B1.inactive.type
+OK: shapeConfig.RectSet.H2.inactive.type
+OK: shapeConfig.RectSet.B2.inactive.type
+OK: shapeConfig.RectSet.UpperOffsetX.inactive.type
+OK: shapeConfig.RectSet.SectionType.inactive.type
+OK: shapeConfig.RoundedRectangle.oracle.cx
+CIRCLE_CONFIG_NUMBER: shapeConfig.RoundedRectangle.oracle.cx; actual=-1.38389300019526E-13; expected=0
+OK: shapeConfig.RoundedRectangle.oracle.cy
+CIRCLE_CONFIG_NUMBER: shapeConfig.RoundedRectangle.oracle.cy; actual=1.83048021185073E-14; expected=0
+OK: shapeConfig.RoundedRectangle.B.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.B; area=299738.86341973; cx=-1.28286270495437E-13; cy=1.70835567914196E-14
+OK: shapeConfig.RoundedRectangle.B.invalid
+OK: shapeConfig.RoundedRectangle.B.recovery
+OK: shapeConfig.RoundedRectangle.H.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.H; area=314714.110382378; cx=-1.70974345792274E-14; cy=5.15976150694542E-14
+OK: shapeConfig.RoundedRectangle.H.invalid
+OK: shapeConfig.RoundedRectangle.H.recovery
+OK: shapeConfig.RoundedRectangle.Left.Type.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.Type; area=259483.148403981; cx=25.97323400697; cy=8.97892871165595E-15
+OK: shapeConfig.RoundedRectangle.Left.Type.invalid
+OK: shapeConfig.RoundedRectangle.Left.Type.recovery
+OK: shapeConfig.RoundedRectangle.Right.Type.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.Type; area=259483.148403981; cx=-25.9732340069701; cy=2.692290834716E-15
+OK: shapeConfig.RoundedRectangle.Right.Type.invalid
+OK: shapeConfig.RoundedRectangle.Right.Type.recovery
+OK: shapeConfig.RoundedRectangle.Left.W.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.W; area=285758.125914147; cx=-7.92047988077209; cy=3.2612801348364E-15
+OK: shapeConfig.RoundedRectangle.Left.W.invalid
+OK: shapeConfig.RoundedRectangle.Left.W.recovery
+OK: shapeConfig.RoundedRectangle.Right.W.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.W; area=285758.125914147; cx=7.92047988077223; cy=3.2612801348364E-15
+OK: shapeConfig.RoundedRectangle.Right.W.invalid
+OK: shapeConfig.RoundedRectangle.Right.W.recovery
+OK: shapeConfig.RoundedRectangle.Left.R1.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.R1; area=279593.829252562; cx=0.15348776936265; cy=1.16573417585641E-14
+OK: shapeConfig.RoundedRectangle.Left.R1.invalid
+OK: shapeConfig.RoundedRectangle.Left.R1.recovery
+OK: shapeConfig.RoundedRectangle.Right.R1.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.R1; area=279593.829252562; cx=-0.153487769362775; cy=1.16573417585641E-14
+OK: shapeConfig.RoundedRectangle.Right.R1.invalid
+OK: shapeConfig.RoundedRectangle.Right.R1.recovery
+OK: shapeConfig.RoundedRectangle.Left.R2.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Left.R2; area=279708.872697156; cx=4.24676254397956E-02; cy=3.33066907387547E-15
+OK: shapeConfig.RoundedRectangle.Left.R2.invalid
+OK: shapeConfig.RoundedRectangle.Left.R2.recovery
+OK: shapeConfig.RoundedRectangle.Right.R2.effect
+SHAPE_CONFIG_EFFECT: key=RoundedRectangle.Right.R2; area=279708.872697156; cx=-4.24676254398076E-02; cy=4.4950154709511E-14
+OK: shapeConfig.RoundedRectangle.Right.R2.invalid
+OK: shapeConfig.RoundedRectangle.Right.R2.recovery
+OK: shapeConfig.RoundedRectangle.Simple.inactive.11.3
+OK: shapeConfig.RoundedRectangle.Simple.inactive.11.4
+OK: shapeConfig.RoundedRectangle.Simple.inactive.13.3
+OK: shapeConfig.RoundedRectangle.Simple.inactive.13.4
+OK: shapeConfig.RoundedRectangle.units.cm
+OK: shapeConfig.RoundedRectangle.units.cm.rebars
+OK: shapeConfig.RoundedRectangle.B.inactive.type
+OK: shapeConfig.RoundedRectangle.H.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.Type.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.Type.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.W.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.W.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.R1.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.R1.inactive.type
+OK: shapeConfig.RoundedRectangle.Left.R2.inactive.type
+OK: shapeConfig.RoundedRectangle.Right.R2.inactive.type
+OK: shapeConfig.HollowRectangle.oracle.area
+CIRCLE_CONFIG_NUMBER: shapeConfig.HollowRectangle.oracle.area; actual=997682.300164693; expected=997682.300164692
+OK: shapeConfig.HollowRectangle.oracle.cx
+CIRCLE_CONFIG_NUMBER: shapeConfig.HollowRectangle.oracle.cx; actual=-7.98761021841723; expected=-7.98761021841696
+OK: shapeConfig.HollowRectangle.oracle.cy
+CIRCLE_CONFIG_NUMBER: shapeConfig.HollowRectangle.oracle.cy; actual=-9.984512773021; expected=-9.9845127730212
+OK: shapeConfig.HollowRectangle.H.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.H; area=1097682.30016469; cx=-7.25993061410752; cy=-9.07491326763359
+OK: shapeConfig.HollowRectangle.H.invalid
+OK: shapeConfig.HollowRectangle.H.recovery
+OK: shapeConfig.HollowRectangle.B.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.B; area=1117682.30016469; cx=-7.13002016257679; cy=-8.91252520322049
+OK: shapeConfig.HollowRectangle.B.invalid
+OK: shapeConfig.HollowRectangle.B.recovery
+OK: shapeConfig.HollowRectangle.R.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.R; area=995278.759594744; cx=-8.00689983454911; cy=-10.0086247931861
+OK: shapeConfig.HollowRectangle.R.invalid
+OK: shapeConfig.HollowRectangle.R.recovery
+OK: shapeConfig.HollowRectangle.OpeningH.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.OpeningH; area=977682.300164693; cx=-8.96927082964715; cy=-11.2115885370584
+OK: shapeConfig.HollowRectangle.OpeningH.invalid
+OK: shapeConfig.HollowRectangle.OpeningH.recovery
+OK: shapeConfig.HollowRectangle.OpeningB.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.OpeningB; area=972682.300164693; cx=-9.22099367286806; cy=-11.5262420910847
+OK: shapeConfig.HollowRectangle.OpeningB.invalid
+OK: shapeConfig.HollowRectangle.OpeningB.recovery
+OK: shapeConfig.HollowRectangle.OpeningR.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.OpeningR; area=998283.18530718; cx=-7.95872558685338; cy=-9.94840698356661
+OK: shapeConfig.HollowRectangle.OpeningR.invalid
+OK: shapeConfig.HollowRectangle.OpeningR.recovery
+OK: shapeConfig.HollowRectangle.InnerOffsetX.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.InnerOffsetX; area=997682.300164693; cx=-11.9814153276256; cy=-9.984512773021
+OK: shapeConfig.HollowRectangle.InnerOffsetX.invalid
+OK: shapeConfig.HollowRectangle.InnerOffsetX.recovery
+OK: shapeConfig.HollowRectangle.InnerOffsetY.effect
+SHAPE_CONFIG_EFFECT: key=HollowRectangle.InnerOffsetY; area=997682.300164693; cx=-7.98761021841723; cy=-13.9783178822295
+OK: shapeConfig.HollowRectangle.InnerOffsetY.invalid
+OK: shapeConfig.HollowRectangle.InnerOffsetY.recovery
+OK: shapeConfig.HollowRectangle.units.cm
+OK: shapeConfig.HollowRectangle.units.cm.rebars
+OK: shapeConfig.HollowRectangle.H.inactive.type
+OK: shapeConfig.HollowRectangle.B.inactive.type
+OK: shapeConfig.HollowRectangle.R.inactive.type
+OK: shapeConfig.HollowRectangle.OpeningH.inactive.type
+OK: shapeConfig.HollowRectangle.OpeningB.inactive.type
+OK: shapeConfig.HollowRectangle.OpeningR.inactive.type
+OK: shapeConfig.HollowRectangle.InnerOffsetX.inactive.type
+OK: shapeConfig.HollowRectangle.InnerOffsetY.inactive.type
+OK: shapeConfig.hollowCount.B.Top.effect
+OK: shapeConfig.hollowCount.B.Top.1.reject
+OK: shapeConfig.hollowCount.B.Top.1.location
+OK: shapeConfig.hollowCount.B.Top.1.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.1; error=-2147215979; Config!L199 (rngHollowRectangleGeometry); Top: Ожидается число. Введите числовое значение.
+OK: shapeConfig.hollowCount.B.Top.1.recovery
+OK: shapeConfig.hollowCount.B.Top.2.reject
+OK: shapeConfig.hollowCount.B.Top.2.location
+OK: shapeConfig.hollowCount.B.Top.2.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.2; error=-2147215979; Config!L199 (rngHollowRectangleGeometry); Top: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.B.Top.2.recovery
+OK: shapeConfig.hollowCount.B.Top.3.reject
+OK: shapeConfig.hollowCount.B.Top.3.location
+OK: shapeConfig.hollowCount.B.Top.3.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.3; error=-2147215979; Config!L199 (rngHollowRectangleGeometry); Top: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.B.Top.3.recovery
+OK: shapeConfig.hollowCount.B.Top.4.reject
+OK: shapeConfig.hollowCount.B.Top.4.location
+OK: shapeConfig.hollowCount.B.Top.4.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.4; error=-2147215979; Config!L199 (rngHollowRectangleGeometry); Top: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: shapeConfig.hollowCount.B.Top.4.recovery
+OK: shapeConfig.hollowCount.B.Top.5.reject
+OK: shapeConfig.hollowCount.B.Top.5.location
+OK: shapeConfig.hollowCount.B.Top.5.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Top.5; error=-2147215979; Config!L199 (rngHollowRectangleGeometry); Top: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.B.Top.5.recovery
+OK: shapeConfig.hollowCount.B.Top.blank.off
+OK: shapeConfig.hollowCount.B.Top.zero.off
+OK: shapeConfig.hollowCount.B.Bottom.effect
+OK: shapeConfig.hollowCount.B.Bottom.6.reject
+OK: shapeConfig.hollowCount.B.Bottom.6.location
+OK: shapeConfig.hollowCount.B.Bottom.6.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.6; error=-2147215979; Config!L200 (rngHollowRectangleGeometry); Bottom: Ожидается число. Введите числовое значение.
+OK: shapeConfig.hollowCount.B.Bottom.6.recovery
+OK: shapeConfig.hollowCount.B.Bottom.7.reject
+OK: shapeConfig.hollowCount.B.Bottom.7.location
+OK: shapeConfig.hollowCount.B.Bottom.7.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.7; error=-2147215979; Config!L200 (rngHollowRectangleGeometry); Bottom: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.B.Bottom.7.recovery
+OK: shapeConfig.hollowCount.B.Bottom.8.reject
+OK: shapeConfig.hollowCount.B.Bottom.8.location
+OK: shapeConfig.hollowCount.B.Bottom.8.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.8; error=-2147215979; Config!L200 (rngHollowRectangleGeometry); Bottom: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.B.Bottom.8.recovery
+OK: shapeConfig.hollowCount.B.Bottom.9.reject
+OK: shapeConfig.hollowCount.B.Bottom.9.location
+OK: shapeConfig.hollowCount.B.Bottom.9.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.9; error=-2147215979; Config!L200 (rngHollowRectangleGeometry); Bottom: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: shapeConfig.hollowCount.B.Bottom.9.recovery
+OK: shapeConfig.hollowCount.B.Bottom.10.reject
+OK: shapeConfig.hollowCount.B.Bottom.10.location
+OK: shapeConfig.hollowCount.B.Bottom.10.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.B.Bottom.10; error=-2147215979; Config!L200 (rngHollowRectangleGeometry); Bottom: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.B.Bottom.10.recovery
+OK: shapeConfig.hollowCount.B.Bottom.blank.off
+OK: shapeConfig.hollowCount.B.Bottom.zero.off
+OK: shapeConfig.hollowCount.H.Left.effect
+OK: shapeConfig.hollowCount.H.Left.11.reject
+OK: shapeConfig.hollowCount.H.Left.11.location
+OK: shapeConfig.hollowCount.H.Left.11.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.11; error=-2147215979; Config!L201 (rngHollowRectangleGeometry); Left: Ожидается число. Введите числовое значение.
+OK: shapeConfig.hollowCount.H.Left.11.recovery
+OK: shapeConfig.hollowCount.H.Left.12.reject
+OK: shapeConfig.hollowCount.H.Left.12.location
+OK: shapeConfig.hollowCount.H.Left.12.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.12; error=-2147215979; Config!L201 (rngHollowRectangleGeometry); Left: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.H.Left.12.recovery
+OK: shapeConfig.hollowCount.H.Left.13.reject
+OK: shapeConfig.hollowCount.H.Left.13.location
+OK: shapeConfig.hollowCount.H.Left.13.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.13; error=-2147215979; Config!L201 (rngHollowRectangleGeometry); Left: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.H.Left.13.recovery
+OK: shapeConfig.hollowCount.H.Left.14.reject
+OK: shapeConfig.hollowCount.H.Left.14.location
+OK: shapeConfig.hollowCount.H.Left.14.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.14; error=-2147215979; Config!L201 (rngHollowRectangleGeometry); Left: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: shapeConfig.hollowCount.H.Left.14.recovery
+OK: shapeConfig.hollowCount.H.Left.15.reject
+OK: shapeConfig.hollowCount.H.Left.15.location
+OK: shapeConfig.hollowCount.H.Left.15.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Left.15; error=-2147215979; Config!L201 (rngHollowRectangleGeometry); Left: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.H.Left.15.recovery
+OK: shapeConfig.hollowCount.H.Left.blank.off
+OK: shapeConfig.hollowCount.H.Left.zero.off
+OK: shapeConfig.hollowCount.H.Right.effect
+OK: shapeConfig.hollowCount.H.Right.16.reject
+OK: shapeConfig.hollowCount.H.Right.16.location
+OK: shapeConfig.hollowCount.H.Right.16.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.16; error=-2147215979; Config!L202 (rngHollowRectangleGeometry); Right: Ожидается число. Введите числовое значение.
+OK: shapeConfig.hollowCount.H.Right.16.recovery
+OK: shapeConfig.hollowCount.H.Right.17.reject
+OK: shapeConfig.hollowCount.H.Right.17.location
+OK: shapeConfig.hollowCount.H.Right.17.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.17; error=-2147215979; Config!L202 (rngHollowRectangleGeometry); Right: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.H.Right.17.recovery
+OK: shapeConfig.hollowCount.H.Right.18.reject
+OK: shapeConfig.hollowCount.H.Right.18.location
+OK: shapeConfig.hollowCount.H.Right.18.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.18; error=-2147215979; Config!L202 (rngHollowRectangleGeometry); Right: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.H.Right.18.recovery
+OK: shapeConfig.hollowCount.H.Right.19.reject
+OK: shapeConfig.hollowCount.H.Right.19.location
+OK: shapeConfig.hollowCount.H.Right.19.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.19; error=-2147215979; Config!L202 (rngHollowRectangleGeometry); Right: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: shapeConfig.hollowCount.H.Right.19.recovery
+OK: shapeConfig.hollowCount.H.Right.20.reject
+OK: shapeConfig.hollowCount.H.Right.20.location
+OK: shapeConfig.hollowCount.H.Right.20.parameter
+HOLLOW_COUNT_ERROR: shapeConfig.hollowCount.H.Right.20; error=-2147215979; Config!L202 (rngHollowRectangleGeometry); Right: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: shapeConfig.hollowCount.H.Right.20.recovery
+OK: shapeConfig.hollowCount.H.Right.blank.off
+OK: shapeConfig.hollowCount.H.Right.zero.off
+OK: shapeConfig.restore.0
+OK: shapeConfig.restore.1
+OK: shapeConfig.restore.2
+OK: shapeConfig.restore.system
+OK: shapeConfig.restore.units
+OK: shapeConfig.restore.circle
+TOTAL_SHAPE_CONFIG: passed=216; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_db8447eae8f246a19d44b4a87f91afac\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03ShapeConfigTests; 2026-10-18T00:38:22
+===== modTestSectionRecipes.RunRecipeDefinitionTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeDefinitionTests; 2026-10-18T00:38:23
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=105524; workingSet=141721600; privateBytes=97476608; cpu=22.78125
+PASS: definition.sealed
+PASS: definition.loops
+PASS: definition.area
+PASS: definition.concrete
+PASS: definition.hole.a
+PASS: definition.hole.b
+PASS: definition.roles
+PASS: definition.ids
+PASS: definition.contours.copy
+PASS: definition.region.copy
+PASS: definition.invalid.0
+PASS: definition.invalid.1
+PASS: definition.invalid.2
+PASS: definition.invalid.3
+PASS: definition.invalid.4
+TOTAL RECIPE DEFINITION: passed=15; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_db8447eae8f246a19d44b4a87f91afac\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeDefinitionTests; 2026-10-18T00:38:23
+===== modTestSectionRecipes.RunRecipeAnnotationCountTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeAnnotationCountTests; 2026-10-18T00:38:24
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=105524; workingSet=163647488; privateBytes=119799808; cpu=93.703125
+PASS: annotations.total.Circle.n2.case0
+PASS: annotations.total.Circle.n2.case1
+PASS: annotations.total.Circle.n2.case2
+PASS: annotations.total.Circle.n2.case3
+PASS: annotations.total.Circle.n2.case4
+PASS: annotations.total.Circle.n2.case5
+PASS: annotations.total.Circle.n2.case6
+PASS: annotations.total.Circle.n3.case0
+PASS: annotations.total.Circle.n3.case1
+PASS: annotations.total.Circle.n3.case2
+PASS: annotations.total.Circle.n3.case3
+PASS: annotations.total.Circle.n3.case4
+PASS: annotations.total.Circle.n3.case5
+PASS: annotations.total.Circle.n3.case6
+PASS: annotations.total.Circle.n12.case0
+PASS: annotations.total.Circle.n12.case1
+PASS: annotations.total.Circle.n12.case2
+PASS: annotations.total.Circle.n12.case3
+PASS: annotations.total.Circle.n12.case4
+PASS: annotations.total.Circle.n12.case5
+PASS: annotations.total.Circle.n12.case6
+PASS: annotations.total.Circle.n13.case0
+PASS: annotations.total.Circle.n13.case1
+PASS: annotations.total.Circle.n13.case2
+PASS: annotations.total.Circle.n13.case3
+PASS: annotations.total.Circle.n13.case4
+PASS: annotations.total.Circle.n13.case5
+PASS: annotations.total.Circle.n13.case6
+PASS: annotations.total.Rectangle.case0
+PASS: annotations.total.Rectangle.case1
+PASS: annotations.total.Rectangle.case2
+PASS: annotations.total.Rectangle.case3
+PASS: annotations.total.Rectangle.case4
+PASS: annotations.total.Rectangle.case5
+PASS: annotations.total.LSection.case0
+PASS: annotations.total.LSection.case1
+PASS: annotations.total.LSection.case2
+PASS: annotations.total.LSection.case3
+PASS: annotations.total.LSection.case4
+PASS: annotations.total.LSection.case5
+PASS: annotations.total.TwoRectangles.case0
+PASS: annotations.total.TwoRectangles.case1
+PASS: annotations.total.TwoRectangles.case2
+PASS: annotations.total.TwoRectangles.case3
+PASS: annotations.total.TwoRectangles.case4
+PASS: annotations.total.TwoRectangles.case5
+PASS: annotations.total.RoundedSimple.case0
+PASS: annotations.total.RoundedSimple.case1
+PASS: annotations.total.RoundedSimple.case2
+PASS: annotations.total.RoundedSimple.case3
+PASS: annotations.total.RoundedSimple.case4
+PASS: annotations.total.RoundedSimple.case5
+PASS: annotations.total.RoundedTapered.case0
+PASS: annotations.total.RoundedTapered.case1
+PASS: annotations.total.RoundedTapered.case2
+PASS: annotations.total.RoundedTapered.case3
+PASS: annotations.total.RoundedTapered.case4
+PASS: annotations.total.RoundedTapered.case5
+PASS: annotations.total.RoundedMixed.case0
+PASS: annotations.total.RoundedMixed.case1
+PASS: annotations.total.RoundedMixed.case2
+PASS: annotations.total.RoundedMixed.case3
+PASS: annotations.total.RoundedMixed.case4
+PASS: annotations.total.RoundedMixed.case5
+PASS: annotations.total.RoundedMixedLeft.case0
+PASS: annotations.total.RoundedMixedLeft.case1
+PASS: annotations.total.RoundedMixedLeft.case2
+PASS: annotations.total.RoundedMixedLeft.case3
+PASS: annotations.total.RoundedMixedLeft.case4
+PASS: annotations.total.RoundedMixedLeft.case5
+PASS: annotations.total.HollowCentered.case0
+PASS: annotations.total.HollowCentered.case1
+PASS: annotations.total.HollowCentered.case2
+PASS: annotations.total.HollowCentered.case3
+PASS: annotations.total.HollowCentered.case4
+PASS: annotations.total.HollowCentered.case5
+PASS: annotations.total.HollowCentered.case6
+PASS: annotations.total.HollowCentered.case7
+PASS: annotations.total.HollowCentered.case8
+PASS: annotations.total.HollowCentered.case9
+PASS: annotations.total.HollowCentered.case10
+PASS: annotations.total.HollowOffset.case0
+PASS: annotations.total.HollowOffset.case1
+PASS: annotations.total.HollowOffset.case2
+PASS: annotations.total.HollowOffset.case3
+PASS: annotations.total.HollowOffset.case4
+PASS: annotations.total.HollowOffset.case5
+PASS: annotations.total.HollowOffset.case6
+PASS: annotations.total.HollowOffset.case7
+PASS: annotations.total.HollowOffset.case8
+PASS: annotations.total.HollowOffset.case9
+PASS: annotations.total.HollowOffset.case10
+TOTAL RECIPE ANNOTATIONS: passed=92; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_db8447eae8f246a19d44b4a87f91afac\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeAnnotationCountTests; 2026-10-18T00:39:34
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

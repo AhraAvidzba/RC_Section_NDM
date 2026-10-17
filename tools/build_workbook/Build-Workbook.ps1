@@ -459,27 +459,7 @@ try {
     Apply-ConfigNamedRangeBorders $workbook
     $system.Range("A1:U80").Font.Name = "Arial"
     $system.Range("A1:U80").Font.Size = 9
-    $system.Columns.Item(1).ColumnWidth = 34
-    $system.Columns.Item(2).ColumnWidth = 18
-    $system.Columns.Item(3).ColumnWidth = 12
-    $system.Columns.Item(4).ColumnWidth = 20
-    $system.Columns.Item(5).ColumnWidth = 11
-    $system.Columns.Item(6).ColumnWidth = 11
-    $system.Columns.Item(7).ColumnWidth = 11
-    $system.Columns.Item(8).ColumnWidth = 32
-    foreach ($col in @(9, 10, 11, 12, 13)) {
-        $system.Columns.Item($col).ColumnWidth = 17
-    }
-    for ($col = 14; $col -le 69; $col++) {
-        $system.Columns.Item($col).ColumnWidth = 8.43
-    }
-    $system.Columns.Item(15).ColumnWidth = 15
-    $system.Columns.Item(16).ColumnWidth = 11
-    $system.Columns.Item(17).ColumnWidth = 11
-    $system.Columns.Item(18).ColumnWidth = 11
-    $system.Columns.Item(19).ColumnWidth = 15
-    $system.Columns.Item(20).ColumnWidth = 18
-    $system.Columns.Item(21).ColumnWidth = 22
+    # Размеры столбцов Config уже назначены Add-SystemSettings; повторно их не меняем.
     $results.Range("A1:AE1").Font.Bold = $true
     # Заливка относится только к построенному снимку, не ко всей строке листа.
     $results.Range("A154:CL154").Interior.Color = 15652797

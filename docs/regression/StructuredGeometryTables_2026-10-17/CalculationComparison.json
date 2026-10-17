@@ -1,0 +1,21 @@
+{
+  "Passed": true,
+  "Comparisons": [
+    {
+      "Code": "SP35",
+      "Passed": true,
+      "Cases": 8,
+      "ExactRows": 32,
+      "BeforeSHA256": "203de072b61d97a017f2c73c746ac5e9c172a9da04cea9f40a8de9d9a6a9e413",
+      "AfterSHA256": "da5e26ee4f58dd08f404d7f31c7e951c960d2b298831b7d73e599e2f825613f3"
+    },
+    {
+      "Code": "SP63",
+      "Passed": true,
+      "Cases": 8,
+      "ExactRows": 32,
+      "BeforeSHA256": "76e704a95e72dc7e581336e2db3521db1e26d1bf999260a0769fb2a9d3589908",
+      "AfterSHA256": "7e40c521676edd4b73d39f0965d341d19497ee83218e68ba83c233d1bd1a21af"
+    }
+  ]
+}

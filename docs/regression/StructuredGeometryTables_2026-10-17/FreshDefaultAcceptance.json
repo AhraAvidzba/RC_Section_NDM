@@ -1,0 +1,35 @@
+﻿{
+    "Passed":  true,
+    "WorkbookSHA256":  "ABAA60FCB940F5C850571F515BF4C7C82DA474E7002B7DD122C54BB4E147C45C",
+    "Tables":  [
+                   {
+                       "Name":  "rngCircleGeometry",
+                       "Address":  "$H$87:$R$102",
+                       "Blocks":  3
+                   },
+                   {
+                       "Name":  "rngRectSetGeometry",
+                       "Address":  "$H$105:$R$143",
+                       "Blocks":  4
+                   },
+                   {
+                       "Name":  "rngRoundedRectangleGeometry",
+                       "Address":  "$H$146:$R$176",
+                       "Blocks":  4
+                   },
+                   {
+                       "Name":  "rngHollowRectangleGeometry",
+                       "Address":  "$H$179:$R$219",
+                       "Blocks":  4
+                   }
+               ],
+    "DefaultFieldsChecked":  298,
+    "DynamicLengthUnitCells":  51,
+    "InputLengthUnits":  [
+                             "mm",
+                             "cm",
+                             "m"
+                         ],
+    "UniformConfigWidth":  17,
+    "Saved":  false
+}

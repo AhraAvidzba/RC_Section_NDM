@@ -10,8 +10,9 @@ $allowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/PostAudit03'))
 $openIssuesAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/OpenIssues_2026-10-11'))+[IO.Path]::DirectorySeparatorChar
 $guardGuideAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/ExcelGuardGuide_2026-10-13'))+[IO.Path]::DirectorySeparatorChar
 $dependentRowsAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/DependentRowOffsets_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
+$structuredTablesAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/StructuredGeometryTables_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($export,$report)) {
-    if (-not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
+    if (-not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($openIssuesAllowed,[StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($guardGuideAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside its regression directory.'}
 }

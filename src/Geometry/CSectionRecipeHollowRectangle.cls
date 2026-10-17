@@ -61,12 +61,12 @@ End Type
 ' и отверстия, суммарное количество стержней каждого диаметра по каждой стороне).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     On Error GoTo InvalidGeometry
-    Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As THollowInput, faces(1 To 8) As THollowFace
     Dim outerPolygon As CPolygonSpec, openingPolygon As CPolygonSpec
-    Set table = context.Table("rngHollowRectangleGeometry"): Set units = context.Units ' Берём копию входной таблицы и единицы измерения.
-    ReadGeometryInputs table, units, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs table, units, faces ' Читаем армирование наружных и внутренних сторон.
+    Set reader = context.Reader("rngHollowRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
+    ReadRebarInputs reader, faces ' Читаем армирование наружных и внутренних сторон.
     Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle" ' Создаём сборщик описания сечения.
@@ -81,41 +81,38 @@ End Function
 
 ' Заполняет sizes наружными размерами, размерами и смещением отверстия в миллиметрах.
 ' Проверяет размеры и радиусы, сохраняет адреса полей для сообщений об ошибках.
-Private Sub ReadGeometryInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As THollowInput)
-    Dim row As Long, column As Long
-    row = table.RowByKey("H", 1) + 1
-    sizes.H = table.PositiveLength(row, 1, units): sizes.B = table.PositiveLength(row, 2, units): sizes.R = table.NonNegativeLength(row, 3, units)
-    sizes.Ho = table.PositiveLength(row, 4, units): sizes.Bo = table.PositiveLength(row, 5, units): sizes.Ro = table.NonNegativeLength(row, 6, units)
-    For column = 1 To 6
-        sizes.GeometrySource = sizes.GeometrySource & table.SourceReference(row, column) & "; "
-    Next column
-    row = table.RowByKey("HollowRectangle.InnerOffsetX")
-    sizes.Xo = table.Length(row, 2, units): sizes.GeometrySource = sizes.GeometrySource & table.SourceReference(row, 2) & "; "
-    row = table.RowByKey("HollowRectangle.InnerOffsetY")
-    sizes.Yo = table.Length(row, 2, units): sizes.GeometrySource = sizes.GeometrySource & table.SourceReference(row, 2)
+Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As THollowInput)
+    sizes.H = reader.PositiveLength("Geom", "H"): sizes.B = reader.PositiveLength("Geom", "B")
+    sizes.R = reader.NonNegativeLength("Geom", "R")
+    sizes.Ho = reader.PositiveLength("Detail", "Ho"): sizes.Bo = reader.PositiveLength("Detail", "Bo")
+    sizes.Ro = reader.NonNegativeLength("Detail", "Ro")
+    sizes.Xo = reader.Length("Detail", "Xo"): sizes.Yo = reader.Length("Detail", "Yo")
+    sizes.GeometrySource = reader.SourceReference("Geom", "H") & "; " & reader.SourceReference("Geom", "B") & "; " & reader.SourceReference("Geom", "R") & "; " & _
+        reader.SourceReference("Detail", "Ho") & "; " & reader.SourceReference("Detail", "Bo") & "; " & reader.SourceReference("Detail", "Ro") & "; " & _
+        reader.SourceReference("Detail", "Xo") & "; " & reader.SourceReference("Detail", "Yo")
 End Sub
 
 ' Заполняет faces параметрами четырёх наружных и четырёх внутренних сторон.
 ' У выключенных рядов не читает ненужные параметры. Внутренние as читает всегда:
 ' они ограничивают линии у отверстия даже при отсутствии арматуры на соседней стороне.
-Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef faces() As THollowFace)
-    Dim ids As Variant, captions As Variant, i As Long, row As Long, extra As Long, base As Long, annotationSign As Double
-    Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long, mainHeader As Long, extraHeader As Long
+Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As THollowFace)
+    Dim ids As Variant, captions As Variant, keys As Variant, key As String, i As Long, base As Long, annotationSign As Double
+    Dim rowNumber As Long, suffix As String
+    keys = Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая", "B_o - верхняя", "B_o - нижняя", "H_o - левая", "H_o - правая")
-    mainHeader = table.RowByKey("as", 2): extraHeader = table.AdditionalRowsHeader
     For i = 1 To 8
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
             .RowComment = "HollowRectangle: " & .Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд "
-            row = table.RowByKey(.Caption, 1, mainHeader + 1, mainHeader + 8)
-            .Source = table.SourceReference(row, 2)
-            If i <= 4 Then .Count = table.Count(row, 4)
-            .Diameter = table.OptionalDiameter(row, 3, units)
+            key = CStr(keys(i - 1))
+            .Source = reader.SourceReference("Main", key, "as")
+            If i <= 4 Then .Count = reader.Count("Main", key, "n")
+            .Diameter = reader.OptionalDiameter("Main", key, "d")
             .Active = (.Diameter > 0# And (i > 4 Or .Count > 0))
             If i > 4 Then .Active = .Active And faces(i - 4).Count > 0 And faces(i - 4).Diameter > 0#
             If i > 4 Or .Active Then
-                .AxisDistance = table.NonNegativeLength(row, 2, units)
+                .AxisDistance = reader.NonNegativeLength("Main", key, "as")
             End If
             base = (i - 1) Mod 4 + 1
             annotationSign = 1#
@@ -127,24 +124,19 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
                 Case 4: .LabelX = annotationSign
             End Select
             If .Active Then
-                Require table, row, 2, .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
-                If startColumn = 0 Then
-                    startColumn = table.ColumnByCaption(mainHeader, "StartSetback")
-                    endColumn = table.ColumnByCaption(mainHeader, "EndSetback")
-                End If
-                .StartSetback = table.NonNegativeLength(row, startColumn, units)
-                .EndSetback = table.NonNegativeLength(row, endColumn, units)
-                .Source = .Source & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
-                extra = table.RowByKey(.Caption, 1, extraHeader + 1, extraHeader + 8)
-                .Diameters(2) = table.OptionalDiameter(extra, 2, units)
-                .Diameters(3) = table.OptionalDiameter(extra, 6, units)
+                reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
+                .StartSetback = reader.NonNegativeLength("Main", key, "s0")
+                .EndSetback = reader.NonNegativeLength("Main", key, "s1")
+                .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
+                .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
+                .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
                 For rowNumber = 2 To 3
                     If .Diameters(rowNumber) > 0# Then
-                        column = 2 + (rowNumber - 2) * 4 ' На ряд отведены диаметр, отступ, привязка и положение.
-                        .BaseOffsets(rowNumber) = table.OptionalRowOffset(extra, column + 1, units)
-                        .Locations(rowNumber) = table.Choice(extra, column + 3, Array("Stacked", "SideBySide"))
-                        .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                        .ExtraSources(rowNumber) = table.SourceReference(extra, column) & "; " & table.SourceReference(extra, column + 1) & "; " & table.SourceReference(extra, column + 2) & "; " & table.SourceReference(extra, column + 3)
+                        suffix = CStr(rowNumber)
+                        .BaseOffsets(rowNumber) = reader.OptionalRowOffset("Extra", key, "a" & suffix)
+                        .Locations(rowNumber) = reader.Choice("Extra", key, Array("Stacked", "SideBySide"), "pos" & suffix)
+                        .Bindings(rowNumber) = reader.Choice("Extra", key, Array("EachBar", "EverySecondBar"), "bind" & suffix)
+                        .ExtraSources(rowNumber) = reader.SourceReferences("Extra", key, Array("d" & suffix, "a" & suffix, "bind" & suffix, "pos" & suffix))
                     End If
                 Next rowNumber
             End If
@@ -302,9 +294,4 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     ' Ширина отверстия; размер под сечением.
     facade.HorizontalDistance "DIM_B_OPENING", "B_o", sizes.Xo - sizes.Bo / 2#, sizes.Xo + sizes.Bo / 2#, -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening."
     facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.B / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
-End Sub
-
-' Проверяет условие для указанной ячейки. При нарушении сообщает причину и её фактический адрес.
-Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)
-    If Not condition Then SectionRecipeError "CSectionRecipeHollowRectangle", reason, table.SourceReference(row, column)
 End Sub

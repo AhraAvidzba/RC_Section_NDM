@@ -40,11 +40,11 @@ End Type
 ' круга бетона, расположения стержней и аннотаций схемы (размер диаметра сечения,
 ' суммарное количество стержней каждого диаметра) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim diameter As Double, rebar As TCircleRebar
-    Set table = context.Table("rngCircleGeometry"): Set units = context.Units ' Берём копию входной таблицы и единицы измерения.
-    diameter = table.PositiveLength(table.RowByKey("Диаметр"), 2, units)
-    ReadRebarInputs table, units, diameter, rebar ' Читаем только параметры включённых рядов.
+    Set reader = context.Reader("rngCircleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    diameter = reader.PositiveLength("Geom", "D")
+    ReadRebarInputs reader, diameter, rebar ' Читаем только параметры включённых рядов.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Circle" ' Создаём сборщик описания сечения.
     AddGeometry facade, diameter ' Добавляем круговую границу бетона.
     AddReinforcement facade, diameter, rebar ' Создаём линии арматуры и задаём правила размещения стержней.
@@ -54,35 +54,27 @@ End Function
 
 ' Читает число и диаметры стержней, а для включённых рядов — отступ и привязки.
 ' Если основного ряда нет, его отступ и параметры дополнительных рядов не требуются.
-Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal diameter As Double, ByRef rebar As TCircleRebar)
-    Dim main As Long, rowNumber As Long, header As Long, extra As Long, column As Long, captions As Variant
-    header = table.AdditionalRowsHeader: extra = header + 1
-    Require table, extra, StrComp(table.Text(extra, 1), "Круг", vbTextCompare) = 0, "В таблице дополнительных рядов ожидается строка Круг."
-    main = table.RowByKey("as", 2) + 1
-    captions = Array("грань", "as", "d", "n", "StartSetback", "EndSetback", "Ед.", "Комментарий")
-    For column = 1 To 8
-        Require table, main - 1, StrComp(table.Text(main - 1, column), CStr(captions(column - 1)), vbTextCompare) = 0, "Восстановите заголовок основного армирования круга: " & CStr(captions(column - 1)) & ".", column
-    Next column
-    Require table, main, StrComp(table.Text(main, 1), "Круг", vbTextCompare) = 0, "В таблице основного армирования ожидается строка Круг."
-    rebar.Count = table.Count(main, 4)
-    rebar.Diameter = table.OptionalDiameter(main, 3, units)
+Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByVal diameter As Double, ByRef rebar As TCircleRebar)
+    Dim rowNumber As Long, suffix As String
+    rebar.Count = reader.Count("Main", "Circle", "n")
+    rebar.Diameter = reader.OptionalDiameter("Main", "Circle", "d")
     If rebar.Count = 0 Or rebar.Diameter = 0# Then Exit Sub
-    Require table, main, rebar.Count >= 2, "Для круговой раскладки требуется не меньше двух стержней первого ряда.", 4
-    rebar.AxisDistance = table.Length(main, 2, units)
-    Require table, main, rebar.AxisDistance > rebar.Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-    Require table, main, rebar.AxisDistance < diameter / 2#, "Расстояние до оси должно быть меньше радиуса бетонного круга."
-    rebar.StartSetback = table.NonNegativeLength(main, 5, units)
-    rebar.EndSetback = table.NonNegativeLength(main, 6, units)
-    Require table, main, rebar.StartSetback + rebar.EndSetback < 2# * GEOM_PI * (diameter / 2# - rebar.AxisDistance) - GEOM_TOLERANCE, "Сумма концевых отступов должна быть меньше длины окружности центров стержней.", 5
-    rebar.Source = table.SourceReference(main, 2) & "; " & table.SourceReference(main, 3) & "; " & table.SourceReference(main, 4) & "; " & table.SourceReference(main, 5) & "; " & table.SourceReference(main, 6)
+    reader.Require "Main", "Circle", "n", rebar.Count >= 2, "Для круговой раскладки требуется не меньше двух стержней первого ряда."
+    rebar.AxisDistance = reader.Length("Main", "Circle", "as")
+    reader.Require "Main", "Circle", "as", rebar.AxisDistance > rebar.Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
+    reader.Require "Main", "Circle", "as", rebar.AxisDistance < diameter / 2#, "Расстояние до оси должно быть меньше радиуса бетонного круга."
+    rebar.StartSetback = reader.NonNegativeLength("Main", "Circle", "s0")
+    rebar.EndSetback = reader.NonNegativeLength("Main", "Circle", "s1")
+    reader.Require "Main", "Circle", "s0", rebar.StartSetback + rebar.EndSetback < 2# * GEOM_PI * (diameter / 2# - rebar.AxisDistance) - GEOM_TOLERANCE, "Сумма концевых отступов должна быть меньше длины окружности центров стержней."
+    rebar.Source = reader.SourceReferences("Main", "Circle", Array("as", "d", "n", "s0", "s1"))
     For rowNumber = 2 To 3
-        column = 2 + (rowNumber - 2) * 4
-        rebar.Diameters(rowNumber) = table.OptionalDiameter(extra, column, units)
+        suffix = CStr(rowNumber)
+        rebar.Diameters(rowNumber) = reader.OptionalDiameter("Extra", "Circle", "d" & suffix)
         If rebar.Diameters(rowNumber) > 0# Then
-            rebar.BaseOffsets(rowNumber) = table.OptionalRowOffset(extra, column + 1, units)
-            rebar.Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-            rebar.Locations(rowNumber) = table.Choice(extra, column + 3, Array("Stacked", "SideBySide"))
-            rebar.ExtraSources(rowNumber) = table.SourceReference(extra, column) & "; " & table.SourceReference(extra, column + 1) & "; " & table.SourceReference(extra, column + 2) & "; " & table.SourceReference(extra, column + 3)
+            rebar.BaseOffsets(rowNumber) = reader.OptionalRowOffset("Extra", "Circle", "a" & suffix)
+            rebar.Bindings(rowNumber) = reader.Choice("Extra", "Circle", Array("EachBar", "EverySecondBar"), "bind" & suffix)
+            rebar.Locations(rowNumber) = reader.Choice("Extra", "Circle", Array("Stacked", "SideBySide"), "pos" & suffix)
+            rebar.ExtraSources(rowNumber) = reader.SourceReferences("Extra", "Circle", Array("d" & suffix, "a" & suffix, "bind" & suffix, "pos" & suffix))
         End If
     Next rowNumber
 End Sub
@@ -135,9 +127,4 @@ End Sub
 Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByVal diameter As Double, ByRef rebar As TCircleRebar)
     If rebar.Count > 0 And rebar.Diameter > 0# Then facade.RebarLabel "Circle", "Circle.Axis", 0#, 1# ' Общая подпись всех круговых рядов над сечением.
     facade.VerticalExtent "DIM_CIRCLE_D", "CONTOUR_CIRCLE", "D", -diameter / 2#, -1#, "Диаметр параметрического круглого сечения." ' Диаметр бетонного круга; размер вынесен влево.
-End Sub
-
-' Проверяет условие для указанного параметра. При нарушении сообщает причину и адрес его ячейки.
-Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal condition As Boolean, ByVal reason As String, Optional ByVal column As Long = 2)
-    If Not condition Then SectionRecipeError "CSectionRecipeCircle", reason & " Исправьте указанное значение.", table.SourceReference(row, column)
 End Sub

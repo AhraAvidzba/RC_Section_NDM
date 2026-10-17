@@ -19,21 +19,32 @@ try{
     Add-UnitSettingsTable $book $sheet 3 1
     $top=30
     foreach($item in (Get-GeometrySettingsCatalog)){
-        if($item.CircleTable){Add-CircleSettingsTable $book $sheet $item.RangeName $top 8 $item.Title $item.Rows;$rows=11}
-        elseif($item.RoundedRectangleTable){Add-RoundedRectangleSettingsTable $book $sheet $item.RangeName $top 8 $item.Title $item.Rows;$rows=22}
-        elseif($item.HollowRectangleTable){Add-HollowRectangleSettingsTable $book $sheet $item.RangeName $top 8 $item.Title $item.Rows;$rows=28}
-        else{Add-RectSetFaceSettingsTable $book $sheet $item.RangeName $top 8 $item.Title $item.Rows;$rows=28}
+        $rows=Add-GeometrySettingsTable $book $sheet $item $top 8
         $range=$book.Names.Item($item.RangeName).RefersToRange
         if($range.Columns.Count -ne 11 -or $range.Rows.Count -ne $rows){throw "Wrong range: $($item.RangeName)"}
-        $header=0
-        for($r=1;$r -le $range.Rows.Count;$r++){if([string]$range.Cells.Item($r,2).Value2 -eq 'd2'){$header=$r}}
-        $expected=@('грань','d2','отступ','привязка','положение','d3','отступ','привязка','положение','ед','комментарий')
-        for($c=1;$c -le 11;$c++){if([string]$range.Cells.Item($header,$c).Value2 -cne $expected[$c-1]){throw 'Wrong caption.'}}
-        for($r=$header+1;$r -le $range.Rows.Count;$r++){
-            foreach($c in 3,7){if($range.Cells.Item($r,$c).Value2 -ne 0 -or $range.Cells.Item($r,$c).Validation.Type -ne 2){throw 'Wrong offset input.'}}
-            foreach($c in 4,5,8,9){if($range.Cells.Item($r,$c).Validation.Type -ne 3 -or -not $range.Cells.Item($r,$c).Validation.Value){throw 'Wrong selector.'}}
+        if($range.FormatConditions.Count -ne 0){throw 'Conditional formatting is not permitted.'}
+        $blocks=@(Get-GeometryTableBlocks $range)
+        if($blocks.Count -ne $item.Blocks.Count){throw 'Wrong block count.'}
+        $extra=@($blocks | Where-Object Key -eq 'Extra')[0]
+        if([string]$range.Cells.Item($extra.HeaderRow,4).Value2 -cne 'Смещение 2' -or
+            [string]$range.Cells.Item($extra.HeaderRow,8).Value2 -cne 'Смещение 3'){throw 'Wrong offset captions.'}
+        foreach($block in $blocks){
+            for($r=$block.FirstRow;$r -le $block.LastRow;$r++){
+                $rowKey=[string]$range.Cells.Item($r,1).Value2
+                if(-not $rowKey -or $rowKey -eq 'Units'){continue}
+                $comment=$range.Cells.Item($r,[int]$block.Columns['note'])
+                if($comment.HorizontalAlignment -ne -4152 -or $comment.WrapText){throw 'Wrong comment alignment.'}
+                foreach($key in @($block.Columns.Keys)){
+                    if($key -in @('key','name','unit','note')){continue}
+                    $cell=$range.Cells.Item($r,[int]$block.Columns[$key])
+                    if($cell.Interior.Color -ne 16777215 -or $cell.HorizontalAlignment -ne -4108){throw 'Wrong input format.'}
+                    if($key -like 'bind*' -or $key -like 'pos*' -or $rowKey -eq 'Type' -or $rowKey -eq 'Shape'){
+                        if($cell.Validation.Type -ne 3 -or -not $cell.Validation.Value){throw 'Wrong selector.'}
+                    }
+                }
+            }
         }
-        $checks+=,[ordered]@{Name=$item.RangeName;Address=$range.Address();Header=$header;Passed=$true}
+        $checks+=,[ordered]@{Name=$item.RangeName;Address=$range.Address();Blocks=$blocks.Count;Passed=$true}
         $top+=$rows+4
     }
     $beforeFormat=$sheet.UsedRange.Formula | ConvertTo-Json -Depth 4 -Compress

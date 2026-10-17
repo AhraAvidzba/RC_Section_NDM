@@ -21,6 +21,7 @@ SOURCES = [
     "src/Section/CSectionGeometryQuery.cls", "src/Common/modSectionRecipeTypes.bas",
     "src/Common/modGeometryTypes.bas",
     "src/Section/CRebarContactBuilder.cls",
+    "src/Section/CSectionInputReader.cls",
 ]
 
 

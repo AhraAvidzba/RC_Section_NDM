@@ -191,21 +191,6 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
     If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'. Восстановите заголовок столбца."
 End Function
 
-' Проверяет единственный действующий 11-столбцовый блок дополнительных рядов и возвращает строку его шапки.
-' Повторные подписи отступов/привязок проверяются по месту внутри d2 и d3, без неоднозначного поиска.
-Public Function AdditionalRowsHeader() As Long
-    Dim expected As Variant, column As Long, caption As String
-    If mColumns < 11 Then InputError 1, 1, "Таблица дополнительных рядов имеет прежний формат. Восстановите таблицу Config с 11 столбцами для независимых отступов."
-    AdditionalRowsHeader = RowByKey("d2", 2)
-    expected = Array("грань", "d2", "отступ", "привязка", "положение", "d3", "отступ", "привязка", "положение", "ед", "комментарий")
-    For column = 1 To 11
-        caption = LCase$(Trim$(Text(AdditionalRowsHeader, column)))
-        If column = 10 Then caption = Replace(caption, ".", "")
-        If caption <> CStr(expected(column - 1)) Then _
-            InputError AdditionalRowsHeader, column, "Неизвестный порядок полей дополнительных рядов. Восстановите таблицу Config; ожидался заголовок '" & CStr(expected(column - 1)) & "'."
-    Next column
-End Function
-
 ' Находит единственную строку с заданным названием параметра в указанной части таблицы.
 Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long = 1, _
         Optional ByVal firstRow As Long = 1, Optional ByVal lastRow As Long = 0) As Long

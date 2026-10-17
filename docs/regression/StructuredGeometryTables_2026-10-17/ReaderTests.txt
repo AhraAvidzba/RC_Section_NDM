@@ -1,0 +1,18 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\StructuredGeometryTables_2026-10-17\ReaderTests.xlsm
+SOURCE_SHA256: 0A983F725E01FCA165BAF96724F67B9672D712EB941BF53AD2B684609295F667
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_92950349c5ef4bc6b6d644b18c6327ab\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=103064; startTicks=639278665864295996
+===== modTestSectionInputReader.RunSectionInputReaderTests =====
+SUITE_STARTED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-17T23:43:15
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=100188; workingSet=145911808; privateBytes=92602368; cpu=8.046875
+EXCEL_AFTER_SUITE: pid=103064; workingSet=143978496; privateBytes=94756864; cpu=6.484375
+TOTAL_SECTION_INPUT_READER: passed=89; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_92950349c5ef4bc6b6d644b18c6327ab\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-17T23:43:22
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

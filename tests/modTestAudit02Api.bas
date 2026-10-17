@@ -467,6 +467,7 @@ End Function
 ' Записываем номер ошибки, её источник и полный текст с фактическим адресом ячейки.
 ' Сравнение должно выявлять любое различие.
 Private Function CloseoutRectSetInputMatrix() As String
+    Dim keyed As CSectionInputReader, fieldKeys As Variant
     Dim config As Object, saved As Variant, range As Object, block As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
     Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, table As CSectionInputTable
@@ -474,6 +475,7 @@ Private Function CloseoutRectSetInputMatrix() As String
     Dim row As Long, column As Long, maxColumn As Long, offsetRow As Long, shapeRow As Long
     Dim code As Long, source As String, reason As String, expectedAddress As String, area As Double
     Dim result As String, factor As Double, pair As Variant, number As Double, otherCode As Long, otherReason As String
+    fieldKeys = Array("H1", "B1", "H2", "B2")
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     For Each unit In Array("mm", "cm", "m")
@@ -486,9 +488,9 @@ Private Function CloseoutRectSetInputMatrix() As String
             Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
             Set range = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange: block = range.Formula
             Set reader = New CSectionInputSnapshotReader
-            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry")
-            row = table.RowByKey("H1") + 1: offsetRow = table.RowByKey("RectSet.UpperOffsetX")
-            shapeRow = table.RowByKey("RectSet.SectionType")
+            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
+            offsetRow = keyed.RowIndex("Detail", "XOffset")
+            shapeRow = keyed.RowIndex("Geom", "Shape")
             Set definition = RectSetInputOutcome(settings, units, code, source, reason)
             Check "rect.valid." & CStr(unit) & "." & CStr(fixture), code = 0
             If code <> 0 Then GoTo Failed
@@ -496,14 +498,14 @@ Private Function CloseoutRectSetInputMatrix() As String
             result = result & InputContractRow(CStr(unit), CStr(fixture), "base", code, source, reason, area)
             maxColumn = 4: If CStr(fixture) = "Rectangle" Then maxColumn = 2
             For column = 1 To maxColumn
-                expectedAddress = table.SourceReference(row, column)
+                expectedAddress = keyed.SourceReference("Geom", CStr(fieldKeys(column - 1)))
                 For Each valueKind In Array("positive", "zero", "negative", "empty", "text")
                     range.Formula = block
                     Select Case CStr(valueKind)
-                        Case "zero": range.Cells(row, column).Value2 = 0#
-                        Case "negative": range.Cells(row, column).Value2 = -1# / factor
-                        Case "empty": range.Cells(row, column).ClearContents
-                        Case "text": range.Cells(row, column).Value2 = "bad dimension"
+                        Case "zero": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).Value2 = 0#
+                        Case "negative": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).Value2 = -1# / factor
+                        Case "empty": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).ClearContents
+                        Case "text": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).Value2 = "bad dimension"
                     End Select
                     Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                     If CStr(valueKind) = "positive" Then
@@ -519,16 +521,16 @@ Private Function CloseoutRectSetInputMatrix() As String
             ' Для Rectangle нижние размеры и смещение не читаются; для LSection смещение также неактивно.
             range.Formula = block
             If CStr(fixture) = "Rectangle" Then
-                range.Cells(row, 3).Value2 = "inactive H2": range.Cells(row, 4).Value2 = CVErr(xlErrValue)
+                FixtureInputCell(range, "Geom", "H2").Value2 = "inactive H2": FixtureInputCell(range, "Geom", "B2").Value2 = CVErr(xlErrValue)
             End If
             If CStr(fixture) <> "TwoRectangles" Then
-                range.Cells(offsetRow, 2).Value2 = "inactive offset"
+                range.Cells(offsetRow, 3).Value2 = "inactive offset"
                 Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                 Check "rect.inactive.fields." & CStr(unit) & "." & CStr(fixture), code = 0 And definition.ConcreteDomain.Area = area
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "inactive", code, source, reason, 0#)
             Else
                 For Each pair In Array(-100#, 0#, 100#)
-                    range.Formula = block: range.Cells(offsetRow, 2).Value2 = CDbl(pair) / factor
+                    range.Formula = block: range.Cells(offsetRow, 3).Value2 = CDbl(pair) / factor
                     Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                     Check "rect.signed.offset." & CStr(unit) & "." & CStr(pair), code = 0
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "offset." & CStr(pair), code, source, reason, 0#)
@@ -538,38 +540,38 @@ Private Function CloseoutRectSetInputMatrix() As String
             ' и только затем — положительность первого.
             For Each pair In Array(1, 3)
                 If CLng(pair) <= maxColumn Then
-                    range.Formula = block: range.Cells(row, CLng(pair)).Value2 = 0#
-                    range.Cells(row, CLng(pair) + 1).Value2 = "bad dimension"
+                    range.Formula = block: FixtureInputCell(range, "Geom", CStr(fieldKeys(CLng(pair) - 1))).Value2 = 0#
+                    FixtureInputCell(range, "Geom", CStr(fieldKeys(CLng(pair)))).Value2 = "bad dimension"
                     Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                     Check "rect.pair.numeric.before.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(pair), _
-                        code <> 0 And InStr(reason, table.SourceReference(row, CLng(pair) + 1)) > 0
+                        code <> 0 And InStr(reason, keyed.SourceReference("Geom", CStr(fieldKeys(CLng(pair))))) > 0
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "pair." & CStr(pair), code, source, reason, 0#)
-                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry")
+                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
                     On Error Resume Next
-                    number = table.PositiveLength(row, CLng(pair), units)
+                    number = keyed.PositiveLength("Geom", CStr(fieldKeys(CLng(pair) - 1)))
                     otherCode = Err.Number: otherReason = Err.Description: Err.Clear
                     On Error GoTo Failed
                     Check "rect.direct.helper.changes.first.address", otherCode <> 0 And _
-                        InStr(otherReason, table.SourceReference(row, CLng(pair))) > 0 And otherReason <> reason
+                        InStr(otherReason, keyed.SourceReference("Geom", CStr(fieldKeys(CLng(pair) - 1)))) > 0 And otherReason <> reason
                 End If
             Next pair
             range.Formula = block
             ' Составные условия остаются у рецепта и указывают соответствующее поле.
             If CStr(fixture) = "LSection" Then
-                range.Cells(row, 2).Value2 = range.Cells(row, 4).Value2
+                FixtureInputCell(range, "Geom", "B1").Value2 = FixtureInputCell(range, "Geom", "B2").Value2
                 Set definition = RectSetInputOutcome(settings, units, code, source, reason)
-                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, table.SourceReference(row, 2)) > 0
+                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, keyed.SourceReference("Geom", "B1")) > 0
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "incompatible.widths", code, source, reason, 0#)
             ElseIf CStr(fixture) = "TwoRectangles" Then
-                range.Cells(offsetRow, 2).Value2 = range.Cells(row, 4).Value2
+                range.Cells(offsetRow, 3).Value2 = FixtureInputCell(range, "Geom", "B2").Value2
                 Set definition = RectSetInputOutcome(settings, units, code, source, reason)
-                Check "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 2)) > 0
+                Check "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 3)) > 0
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "nonadjacent", code, source, reason, 0#)
             End If
             For Each aliasName In Array("RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles")
                 If (CStr(fixture) = "LSection" And CStr(aliasName) = "RectSet") Or _
                         (CStr(fixture) = "TwoRectangles" And CStr(aliasName) <> "RectSet") Then
-                    range.Formula = block: range.Cells(shapeRow, 2).Value2 = CStr(aliasName)
+                    range.Formula = block: range.Cells(shapeRow, 3).Value2 = CStr(aliasName)
                     Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                     Check "rect.alias." & CStr(unit) & "." & CStr(aliasName), code = 0 And definition.ConcreteDomain.Area = area
                     result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(aliasName), code, source, reason, 0#)
@@ -980,7 +982,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
         ConfigureOffsetWorkbook CStr(fixture), "mm", 100#, 118#
         Set target = OffsetWorkbookTable(CStr(fixture))
         OffsetWorkbookRows target, CStr(fixture), main, extra
-        Set cell = target.Cells(extra, 3)
+        Set cell = target.Cells(extra, 4)
         For Each bad In Array(-1#, "abc", True, CVErr(2015))
             cell.Value2 = bad: number = 0: description = ""
             On Error Resume Next
@@ -993,10 +995,10 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
         actual = OffsetBarsSnapshot(bars)
         cell.Value2 = 0#: Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         Check "offset.input.blank.zero." & CStr(fixture), OffsetBarsEqual(actual, OffsetBarsSnapshot(bars))
-        target.Cells(extra, 2).Value2 = 0#: cell.Value2 = "inactive"
+        target.Cells(extra, 3).Value2 = 0#: cell.Value2 = "inactive"
         Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         Check "offset.input.disabled.second." & CStr(fixture), bars.Count >= 10
-        target.Cells(extra, 6).Value2 = 0#: target.Cells(extra, 7).Value2 = CVErr(2015)
+        target.Cells(extra, 7).Value2 = 0#: target.Cells(extra, 8).Value2 = CVErr(2015)
         Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         Check "offset.input.disabled.extras." & CStr(fixture), bars.Count >= 5
     Next fixture
@@ -1004,7 +1006,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
     Set units = New CUnitSystem: units.InitializeDefaults
     Set target = OffsetWorkbookTable("Circle")
     Set inputTable = New CSectionInputTable: inputTable.Initialize "rngCircleGeometry", target.Value2
-    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(inputTable.AdditionalRowsHeader + 1, 3, units) = 100#
+    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(FixtureInput(target.Value2).RowIndex("Extra", "Circle"), FixtureInput(target.Value2).ColumnIndex("Extra", "a2"), units) = 100#
     Set cell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
     cell.Formula = "=" & FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Address() & "/10"
     FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1200#
@@ -1024,8 +1026,8 @@ End Function
 ' ДЛЯ ТЕСТОВ: задаёт достаточно просторные сечения; отступы и диаметры даны в мм.
 ' Открытый ряд берём по верхней стороне; в пустотелом сечении добавляем ряд у отверстия.
 Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As String, ByVal a2 As Double, ByVal a3 As Double)
-    Dim unitTable As Object, target As Object, factor As Double, row As Long, column As Variant
-    Dim main As Long, extra As Long, firstMain As Long, firstExtra As Long, lastMain As Long, active As Boolean
+    Dim unitTable As Object, target As Object, factor As Double, row As Long, key As Variant
+    Dim keyed As CSectionInputReader, active As Boolean
     Set unitTable = ThisWorkbook.Names("rngUnitSettings").RefersToRange
     For row = 1 To unitTable.Rows.Count
         If CStr(unitTable.Cells(row, 1).Value2) = "Length" Then unitTable.Cells(row, 2).Value2 = unitName
@@ -1034,50 +1036,46 @@ Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As S
     If unitName = "m" Then factor = 1000#
     modTestShapeArchitecture.ConfigureShapeFixture fixture
     Set target = OffsetWorkbookTable(fixture)
-    If fixture = "Circle" Then
-        FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1000# / factor
-        FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance").Value2 = 60# / factor
-        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Count").Value2 = 12
-        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter").Value2 = 32# / factor
-        OffsetWorkbookRows target, fixture, main, extra
-        firstMain = main: lastMain = main: firstExtra = extra
-    Else
-        If fixture = "Rectangle" Then
-            target.Cells(8, 1).Value2 = 1200# / factor: target.Cells(8, 2).Value2 = 1200# / factor
-        ElseIf fixture = "RoundedMixed" Then
-            target.Cells(3, 2).Value2 = 1600# / factor: target.Cells(3, 3).Value2 = 1600# / factor
-            target.Cells(8, 2).Value2 = 400# / factor: target.Cells(8, 3).Value2 = 400# / factor
-            For row = 9 To 10
-                target.Cells(row, 2).Value2 = 300# / factor: target.Cells(row, 3).Value2 = 300# / factor
-            Next row
-        Else
-            target.Cells(7, 1).Value2 = 2400# / factor: target.Cells(7, 2).Value2 = 2400# / factor
-            target.Cells(7, 4).Value2 = 800# / factor: target.Cells(7, 5).Value2 = 800# / factor
-        End If
-        For row = 1 To target.Rows.Count
-            If CStr(target.Cells(row, 2).Value2) = "as" Then firstMain = row + 1
-            If CStr(target.Cells(row, 2).Value2) = "d2" Then firstExtra = row + 1
-        Next row
-        lastMain = firstMain + 3: If fixture = "Rectangle" Or fixture = "HollowOffset" Then lastMain = firstMain + 7
-    End If
-    For row = firstMain To lastMain
-        extra = firstExtra + row - firstMain
-        active = (fixture = "Circle" Or row = firstMain + 2)
-        If fixture = "HollowOffset" And row = firstMain + 6 Then active = True
+    Select Case fixture
+        Case "Circle"
+            FixtureInputCell(target, "Geom", "D").Value2 = 1000# / factor
+            FixtureInputCell(target, "Main", "Circle", "as").Value2 = 60# / factor
+            FixtureInputCell(target, "Main", "Circle", "n").Value2 = 12
+            FixtureInputCell(target, "Main", "Circle", "d").Value2 = 32# / factor
+        Case "Rectangle"
+            FixtureInputCell(target, "Geom", "H1").Value2 = 1200# / factor: FixtureInputCell(target, "Geom", "B1").Value2 = 1200# / factor
+        Case "RoundedMixed"
+            FixtureInputCell(target, "Geom", "B").Value2 = 1600# / factor: FixtureInputCell(target, "Geom", "H").Value2 = 1600# / factor
+            For Each key In Array("left", "right")
+                FixtureInputCell(target, "Detail", "W", CStr(key)).Value2 = 400# / factor
+                FixtureInputCell(target, "Detail", "R1", CStr(key)).Value2 = 300# / factor
+                FixtureInputCell(target, "Detail", "R2", CStr(key)).Value2 = 300# / factor
+            Next key
+        Case Else
+            FixtureInputCell(target, "Geom", "H").Value2 = 2400# / factor: FixtureInputCell(target, "Geom", "B").Value2 = 2400# / factor
+            FixtureInputCell(target, "Detail", "Ho").Value2 = 800# / factor: FixtureInputCell(target, "Detail", "Bo").Value2 = 800# / factor
+    End Select
+    Set keyed = FixtureInput(target.Value2)
+    For Each key In keyed.RowKeys("Main")
+        active = (CStr(key) = "Circle" Or CStr(key) = "Top" Or CStr(key) = "R1.Top" Or CStr(key) = "OpeningTop")
         If fixture <> "Circle" Then
-            target.Cells(row, 2).Value2 = 60# / factor
-            target.Cells(row, 3).Value2 = IIf(active, 32# / factor, 0#)
-            target.Cells(row, 4).Value2 = IIf(active, 5, 0)
+            FixtureInputCell(target, "Main", CStr(key), "as").Value2 = 60# / factor
+            FixtureInputCell(target, "Main", CStr(key), "d").Value2 = IIf(active, 32# / factor, 0#)
+            If Left$(CStr(key), 7) <> "Opening" Then FixtureInputCell(target, "Main", CStr(key), "n").Value2 = IIf(active, 5, 0)
             If fixture = "Rectangle" Then
-                target.Cells(row, 5).Value2 = 150# / factor: target.Cells(row, 6).Value2 = 150# / factor
+                FixtureInputCell(target, "Main", CStr(key), "s0").Value2 = 150# / factor
+                FixtureInputCell(target, "Main", CStr(key), "s1").Value2 = 150# / factor
             End If
         End If
-        target.Cells(extra, 2).Value2 = IIf(active, 20# / factor, 0#)
-        target.Cells(extra, 6).Value2 = IIf(active, 16# / factor, 0#)
-        target.Cells(extra, 3).Value2 = a2 / factor: target.Cells(extra, 7).Value2 = a3 / factor
-        target.Cells(extra, 4).Value2 = "EachBar": target.Cells(extra, 8).Value2 = "EachBar"
-        target.Cells(extra, 5).Value2 = "Stacked": target.Cells(extra, 9).Value2 = "Stacked"
-    Next row
+        FixtureInputCell(target, "Extra", CStr(key), "d2").Value2 = IIf(active, 20# / factor, 0#)
+        FixtureInputCell(target, "Extra", CStr(key), "d3").Value2 = IIf(active, 16# / factor, 0#)
+        FixtureInputCell(target, "Extra", CStr(key), "a2").Value2 = a2 / factor
+        FixtureInputCell(target, "Extra", CStr(key), "a3").Value2 = a3 / factor
+        FixtureInputCell(target, "Extra", CStr(key), "bind2").Value2 = "EachBar"
+        FixtureInputCell(target, "Extra", CStr(key), "bind3").Value2 = "EachBar"
+        FixtureInputCell(target, "Extra", CStr(key), "pos2").Value2 = "Stacked"
+        FixtureInputCell(target, "Extra", CStr(key), "pos3").Value2 = "Stacked"
+    Next key
 End Sub
 
 ' ДЛЯ ТЕСТОВ: получает действующую таблицу выбранного рецепта по штатному имени.
@@ -1094,12 +1092,10 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: строки основного и дополнительного армирования тестируемой верхней стороны.
 Private Sub OffsetWorkbookRows(ByVal target As Object, ByVal fixture As String, ByRef main As Long, ByRef extra As Long)
-    Dim row As Long
-    For row = 1 To target.Rows.Count
-        If CStr(target.Cells(row, 2).Value2) = "d2" Then extra = row + 1
-        If CStr(target.Cells(row, 2).Value2) = "as" Then main = row + 3
-    Next row
-    If fixture <> "Circle" Then extra = extra + 2
+    Dim keyed As CSectionInputReader, key As String: Set keyed = FixtureInput(target.Value2)
+    key = "Top": If fixture = "Circle" Then key = "Circle"
+    If fixture = "Rectangle" Then key = "R1.Top"
+    main = keyed.RowIndex("Main", key): extra = keyed.RowIndex("Extra", key)
 End Sub
 
 ' ДЛЯ ТЕСТОВ: чтение тем же снимком входа, которым пользуется рабочий сборщик.
@@ -1151,10 +1147,10 @@ Public Function DumpIndependentRowOffsetExamples(ByVal outputDirectory As String
         If index = 3 Then a2 = 60#: a3 = 100#
         ConfigureOffsetWorkbook fixture, "mm", a2, a3
         Set target = OffsetWorkbookTable(fixture): OffsetWorkbookRows target, fixture, main, extra
-        If index = 0 Then target.Cells(extra, 6).Value2 = 0#
+        If index = 0 Then target.Cells(extra, 7).Value2 = 0#
         If index = 3 Then
-            target.Cells(main, 3).Value2 = 0#: target.Cells(main, 4).Value2 = 0
-            target.Cells(extra, 2).Value2 = 0#: target.Cells(extra, 6).Value2 = 0#
+            target.Cells(main, 4).Value2 = 0#: target.Cells(main, 5).Value2 = 0
+            target.Cells(extra, 3).Value2 = 0#: target.Cells(extra, 7).Value2 = 0#
             target.Cells(main - 1, 3).Value2 = 32#: target.Cells(main - 1, 4).Value2 = 5
             target.Cells(extra - 1, 2).Value2 = 20#: target.Cells(extra - 1, 6).Value2 = 16#
         End If
@@ -1163,9 +1159,9 @@ Public Function DumpIndependentRowOffsetExamples(ByVal outputDirectory As String
             FixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 250#
         End If
         If index = 4 Or index = 5 Then
-            target.Cells(extra, 9).Value2 = "SideBySide": target.Cells(extra, 8).Value2 = "EverySecondBar"
+            target.Cells(extra, 10).Value2 = "SideBySide": target.Cells(extra, 9).Value2 = "EverySecondBar"
             If index = 4 Then
-                target.Cells(extra + 4, 9).Value2 = "SideBySide": target.Cells(extra + 4, 8).Value2 = "EverySecondBar"
+                target.Cells(extra + 4, 10).Value2 = "SideBySide": target.Cells(extra + 4, 9).Value2 = "EverySecondBar"
             End If
         End If
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -1222,7 +1218,7 @@ Public Function RunOffsetOpeningAnnotationTests() As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
     Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
-    target.Cells(extra + 4, 9).Value2 = "SideBySide": target.Cells(extra + 4, 8).Value2 = "EverySecondBar"
+    target.Cells(extra + 4, 10).Value2 = "SideBySide": target.Cells(extra + 4, 9).Value2 = "EverySecondBar"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
@@ -1380,14 +1376,14 @@ Public Function RunOffsetWallCollisionTests() As String
     For scenario = 0 To 2
         ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
         Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
-        target.Cells(7, 1).Value2 = 1000#: target.Cells(7, 4).Value2 = 324#: target.Cells(7, 6).Value2 = 0#
-        target.Cells(3, 2).Value2 = 0#: target.Cells(4, 2).Value2 = 0#
-        target.Cells(extra, 6).Value2 = 0#: target.Cells(extra + 4, 6).Value2 = 0#
-        target.Cells(extra + 4, 2).Value2 = 16#
-        If scenario = 1 Then target.Cells(7, 1).Value2 = 992#
+        FixtureInputCell(target, "Geom", "H", "val").Value2 = 1000#: FixtureInputCell(target, "Detail", "Ho", "val").Value2 = 324#: FixtureInputCell(target, "Detail", "Ro", "val").Value2 = 0#
+        FixtureInputCell(target, "Detail", "Xo", "val").Value2 = 0#: FixtureInputCell(target, "Detail", "Yo", "val").Value2 = 0#
+        target.Cells(extra, 7).Value2 = 0#: target.Cells(extra + 4, 7).Value2 = 0#
+        target.Cells(extra + 4, 3).Value2 = 16#
+        If scenario = 1 Then FixtureInputCell(target, "Geom", "H", "val").Value2 = 992#
         If scenario = 2 Then
-            target.Cells(extra, 2).Value2 = 0#
-            target.Cells(extra + 4, 2).Value2 = 200#: target.Cells(extra + 4, 3).Value2 = 1#
+            target.Cells(extra, 3).Value2 = 0#
+            target.Cells(extra + 4, 3).Value2 = 200#: target.Cells(extra + 4, 4).Value2 = 1#
         End If
         Set bars = Nothing: number = 0: reason = ""
         On Error Resume Next

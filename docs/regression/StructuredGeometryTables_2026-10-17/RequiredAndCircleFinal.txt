@@ -1,0 +1,2090 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\StructuredGeometryTables_2026-10-17\Candidate.xlsm
+SOURCE_SHA256: 00E3DC72764759B84FCED9EA0BC5F6A5E9FC09EE7636803F439015AC993236F5
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a4c7eab4c2a24379b46e1691b4c2956f\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=75912; startTicks=639278685780989656
+===== modTestSectionInputReader.RunSectionInputReaderTests =====
+SUITE_STARTED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-18T00:16:23
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=75912; workingSet=158199808; privateBytes=111489024; cpu=5.109375
+EXCEL_AFTER_SUITE: pid=96064; workingSet=160747520; privateBytes=111878144; cpu=5.8125
+TOTAL_SECTION_INPUT_READER: passed=94; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a4c7eab4c2a24379b46e1691b4c2956f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-18T00:16:23
+===== modTestGeometryConfig.RunAudit03RequiredGeometryInputTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03RequiredGeometryInputTests; 2026-10-18T00:16:24
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=75912; workingSet=152502272; privateBytes=105304064; cpu=30.375
+EXCEL_AFTER_SUITE: pid=96064; workingSet=163655680; privateBytes=114180096; cpu=30.9375
+OK: requiredGeometry.Circle.Diameter.Geometry.1.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.1.namedRange
+OK: requiredGeometry.Circle.Diameter.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.1; error=-2147215979; Config!J90 (rngCircleGeometry); D: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.Circle.Diameter.Geometry.1.recovery
+OK: requiredGeometry.Circle.Diameter.Geometry.2.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.2.namedRange
+OK: requiredGeometry.Circle.Diameter.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.2; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.Circle.Diameter.Geometry.2.recovery
+OK: requiredGeometry.Circle.Diameter.Geometry.3.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.3.namedRange
+OK: requiredGeometry.Circle.Diameter.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.3; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.Circle.Diameter.Geometry.3.recovery
+OK: requiredGeometry.Circle.Diameter.Geometry.4.reject
+OK: requiredGeometry.Circle.Diameter.Geometry.4.namedRange
+OK: requiredGeometry.Circle.Diameter.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Geometry.4; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.Circle.Diameter.Geometry.4.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.1.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.1.namedRange
+OK: requiredGeometry.Circle.Diameter.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.1; error=-2147215979; Config!J90 (rngCircleGeometry); D: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.Circle.Diameter.Rebars.1.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.2.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.2.namedRange
+OK: requiredGeometry.Circle.Diameter.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.2; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.Circle.Diameter.Rebars.2.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.3.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.3.namedRange
+OK: requiredGeometry.Circle.Diameter.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.3; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.Circle.Diameter.Rebars.3.recovery
+OK: requiredGeometry.Circle.Diameter.Rebars.4.reject
+OK: requiredGeometry.Circle.Diameter.Rebars.4.namedRange
+OK: requiredGeometry.Circle.Diameter.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.Circle.Diameter.Rebars.4; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.Circle.Diameter.Rebars.4.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.1.reject
+OK: requiredGeometry.RectSet.H1.Geometry.1.namedRange
+OK: requiredGeometry.RectSet.H1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.1; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.H1.Geometry.1.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.2.reject
+OK: requiredGeometry.RectSet.H1.Geometry.2.namedRange
+OK: requiredGeometry.RectSet.H1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.2; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H1.Geometry.2.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.3.reject
+OK: requiredGeometry.RectSet.H1.Geometry.3.namedRange
+OK: requiredGeometry.RectSet.H1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.3; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H1.Geometry.3.recovery
+OK: requiredGeometry.RectSet.H1.Geometry.4.reject
+OK: requiredGeometry.RectSet.H1.Geometry.4.namedRange
+OK: requiredGeometry.RectSet.H1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Geometry.4; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.H1.Geometry.4.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.1.reject
+OK: requiredGeometry.RectSet.B1.Geometry.1.namedRange
+OK: requiredGeometry.RectSet.B1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.1; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.B1.Geometry.1.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.2.reject
+OK: requiredGeometry.RectSet.B1.Geometry.2.namedRange
+OK: requiredGeometry.RectSet.B1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.2; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B1.Geometry.2.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.3.reject
+OK: requiredGeometry.RectSet.B1.Geometry.3.namedRange
+OK: requiredGeometry.RectSet.B1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.3; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B1.Geometry.3.recovery
+OK: requiredGeometry.RectSet.B1.Geometry.4.reject
+OK: requiredGeometry.RectSet.B1.Geometry.4.namedRange
+OK: requiredGeometry.RectSet.B1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Geometry.4; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.B1.Geometry.4.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.1.reject
+OK: requiredGeometry.RectSet.H2.Geometry.1.namedRange
+OK: requiredGeometry.RectSet.H2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.1; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.H2.Geometry.1.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.2.reject
+OK: requiredGeometry.RectSet.H2.Geometry.2.namedRange
+OK: requiredGeometry.RectSet.H2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.2; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H2.Geometry.2.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.3.reject
+OK: requiredGeometry.RectSet.H2.Geometry.3.namedRange
+OK: requiredGeometry.RectSet.H2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.3; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H2.Geometry.3.recovery
+OK: requiredGeometry.RectSet.H2.Geometry.4.reject
+OK: requiredGeometry.RectSet.H2.Geometry.4.namedRange
+OK: requiredGeometry.RectSet.H2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Geometry.4; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.H2.Geometry.4.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.1.reject
+OK: requiredGeometry.RectSet.B2.Geometry.1.namedRange
+OK: requiredGeometry.RectSet.B2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.1; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.B2.Geometry.1.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.2.reject
+OK: requiredGeometry.RectSet.B2.Geometry.2.namedRange
+OK: requiredGeometry.RectSet.B2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.2; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B2.Geometry.2.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.3.reject
+OK: requiredGeometry.RectSet.B2.Geometry.3.namedRange
+OK: requiredGeometry.RectSet.B2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.3; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B2.Geometry.3.recovery
+OK: requiredGeometry.RectSet.B2.Geometry.4.reject
+OK: requiredGeometry.RectSet.B2.Geometry.4.namedRange
+OK: requiredGeometry.RectSet.B2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Geometry.4; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.B2.Geometry.4.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.1; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.1.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.2; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.2.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.3; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.3.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Geometry.4; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.UpperOffsetX.Geometry.4.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.namedRange
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.1; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Недопустимый вариант ''. Выберите: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Geometry.1.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.namedRange
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.2; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Недопустимый вариант 'TODO'. Выберите: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Geometry.2.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.namedRange
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.3; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Недопустимый вариант 'abc'. Выберите: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Geometry.3.recovery
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.reject
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.namedRange
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Geometry.4; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.SectionType.Geometry.4.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.1.reject
+OK: requiredGeometry.RectSet.H1.Rebars.1.namedRange
+OK: requiredGeometry.RectSet.H1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.1; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.H1.Rebars.1.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.2.reject
+OK: requiredGeometry.RectSet.H1.Rebars.2.namedRange
+OK: requiredGeometry.RectSet.H1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.2; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H1.Rebars.2.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.3.reject
+OK: requiredGeometry.RectSet.H1.Rebars.3.namedRange
+OK: requiredGeometry.RectSet.H1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.3; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H1.Rebars.3.recovery
+OK: requiredGeometry.RectSet.H1.Rebars.4.reject
+OK: requiredGeometry.RectSet.H1.Rebars.4.namedRange
+OK: requiredGeometry.RectSet.H1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H1.Rebars.4; error=-2147215979; Config!J110 (rngRectSetGeometry); H1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.H1.Rebars.4.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.1.reject
+OK: requiredGeometry.RectSet.B1.Rebars.1.namedRange
+OK: requiredGeometry.RectSet.B1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.1; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.B1.Rebars.1.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.2.reject
+OK: requiredGeometry.RectSet.B1.Rebars.2.namedRange
+OK: requiredGeometry.RectSet.B1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.2; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B1.Rebars.2.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.3.reject
+OK: requiredGeometry.RectSet.B1.Rebars.3.namedRange
+OK: requiredGeometry.RectSet.B1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.3; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B1.Rebars.3.recovery
+OK: requiredGeometry.RectSet.B1.Rebars.4.reject
+OK: requiredGeometry.RectSet.B1.Rebars.4.namedRange
+OK: requiredGeometry.RectSet.B1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B1.Rebars.4; error=-2147215979; Config!J111 (rngRectSetGeometry); B1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.B1.Rebars.4.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.1.reject
+OK: requiredGeometry.RectSet.H2.Rebars.1.namedRange
+OK: requiredGeometry.RectSet.H2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.1; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.H2.Rebars.1.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.2.reject
+OK: requiredGeometry.RectSet.H2.Rebars.2.namedRange
+OK: requiredGeometry.RectSet.H2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.2; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H2.Rebars.2.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.3.reject
+OK: requiredGeometry.RectSet.H2.Rebars.3.namedRange
+OK: requiredGeometry.RectSet.H2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.3; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.H2.Rebars.3.recovery
+OK: requiredGeometry.RectSet.H2.Rebars.4.reject
+OK: requiredGeometry.RectSet.H2.Rebars.4.namedRange
+OK: requiredGeometry.RectSet.H2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.H2.Rebars.4; error=-2147215979; Config!J112 (rngRectSetGeometry); H2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.H2.Rebars.4.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.1.reject
+OK: requiredGeometry.RectSet.B2.Rebars.1.namedRange
+OK: requiredGeometry.RectSet.B2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.1; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.B2.Rebars.1.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.2.reject
+OK: requiredGeometry.RectSet.B2.Rebars.2.namedRange
+OK: requiredGeometry.RectSet.B2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.2; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B2.Rebars.2.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.3.reject
+OK: requiredGeometry.RectSet.B2.Rebars.3.namedRange
+OK: requiredGeometry.RectSet.B2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.3; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.B2.Rebars.3.recovery
+OK: requiredGeometry.RectSet.B2.Rebars.4.reject
+OK: requiredGeometry.RectSet.B2.Rebars.4.namedRange
+OK: requiredGeometry.RectSet.B2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.B2.Rebars.4; error=-2147215979; Config!J113 (rngRectSetGeometry); B2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.B2.Rebars.4.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.1; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.1.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.2; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.2.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.3; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.3.recovery
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.reject
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.namedRange
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.UpperOffsetX.Rebars.4; error=-2147215979; Config!J118 (rngRectSetGeometry); XOffset: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.UpperOffsetX.Rebars.4.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.namedRange
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.1; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Недопустимый вариант ''. Выберите: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Rebars.1.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.namedRange
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.2; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Недопустимый вариант 'TODO'. Выберите: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Rebars.2.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.namedRange
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.3; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Недопустимый вариант 'abc'. Выберите: Rectangle, LSection, TwoRectangles, RectSet, TwoRectangle, TwoRectanglesOffset, OffsetTwoRectangles.
+OK: requiredGeometry.RectSet.SectionType.Rebars.3.recovery
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.reject
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.namedRange
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RectSet.SectionType.Rebars.4; error=-2147215979; Config!J109 (rngRectSetGeometry); Shape: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RectSet.SectionType.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.1; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.2; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.3; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Geometry.4; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.B.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.1; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.2; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.3; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Geometry.4; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.H.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант ''. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'TODO'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'abc'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант ''. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'TODO'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'abc'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.1; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.2; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.3; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Geometry.4; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.W.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.1; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.2; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.3; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Geometry.4; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.W.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Geometry.4.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.1; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.2; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.3; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.B.Rebars.4; error=-2147215979; Config!J151 (rngRoundedRectangleGeometry); B: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.B.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.1; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.2; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.3; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.H.Rebars.4; error=-2147215979; Config!J152 (rngRoundedRectangleGeometry); H: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.H.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант ''. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'TODO'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'abc'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4; error=-2147215979; Config!J157 (rngRoundedRectangleGeometry); Type: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.Type.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант ''. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'TODO'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Недопустимый вариант 'abc'. Выберите: Simple, Tapered.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4; error=-2147215979; Config!K157 (rngRoundedRectangleGeometry); Type: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.Type.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.1; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.2; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.3; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.W.Rebars.4; error=-2147215979; Config!J158 (rngRoundedRectangleGeometry); W: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.W.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.1; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.2; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.3; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.W.Rebars.4; error=-2147215979; Config!K158 (rngRoundedRectangleGeometry); W: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.W.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4; error=-2147215979; Config!J159 (rngRoundedRectangleGeometry); R1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R1.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4; error=-2147215979; Config!K159 (rngRoundedRectangleGeometry); R1: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R1.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4; error=-2147215979; Config!J160 (rngRoundedRectangleGeometry); R2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Left.R2.Rebars.4.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.1.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.2.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.3.recovery
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.reject
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.namedRange
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4; error=-2147215979; Config!K160 (rngRoundedRectangleGeometry); R2: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.RoundedRectangle.Right.R2.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.1; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.H.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.2; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.H.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.3; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.H.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Geometry.4; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.H.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.1; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.B.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.2; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.B.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.3; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.B.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Geometry.4; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.B.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.1; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.R.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.2; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.R.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.3; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.R.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Geometry.4; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.R.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.1; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.2; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.3; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Geometry.4; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.OpeningH.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.1; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.2; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.3; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Geometry.4; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.OpeningB.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.1; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.2; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.3; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Geometry.4; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.OpeningR.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Geometry.4.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.1; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.H.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.2; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.H.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.3; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.H.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.H.Rebars.4; error=-2147215979; Config!J186 (rngHollowRectangleGeometry); H: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.H.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.1; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.B.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.2; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.B.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.3; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.B.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.B.Rebars.4; error=-2147215979; Config!J185 (rngHollowRectangleGeometry); B: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.B.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.1; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.R.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.2; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.R.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.3; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.R.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.R.Rebars.4; error=-2147215979; Config!J187 (rngHollowRectangleGeometry); R: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.R.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.1; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.2; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.3; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningH.Rebars.4; error=-2147215979; Config!J193 (rngHollowRectangleGeometry); Ho: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.OpeningH.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.1; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.2; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.3; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningB.Rebars.4; error=-2147215979; Config!J192 (rngHollowRectangleGeometry); Bo: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.OpeningB.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.1; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.2; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.3; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.OpeningR.Rebars.4; error=-2147215979; Config!J194 (rngHollowRectangleGeometry); Ro: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.OpeningR.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4; error=-2147215979; Config!J195 (rngHollowRectangleGeometry); Xo: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetX.Rebars.4.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Обязательное числовое поле не заполнено. Введите число.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.1.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.2.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Ожидается число. Введите числовое значение.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.3.recovery
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.reject
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.namedRange
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4; error=-2147215979; Config!J196 (rngHollowRectangleGeometry); Yo: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: requiredGeometry.HollowRectangle.InnerOffsetY.Rebars.4.recovery
+OK: requiredGeometry.inactive.Rectangle.Geometry.7.3.
+OK: requiredGeometry.inactive.Rectangle.Geometry.7.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.7.3.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.7.3.TODO
+OK: requiredGeometry.inactive.Rectangle.Geometry.7.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.7.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.7.3.abc
+OK: requiredGeometry.inactive.Rectangle.Geometry.7.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.7.3.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.11.4.
+OK: requiredGeometry.inactive.Rectangle.Geometry.11.4..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.11.4.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.11.4.TODO
+OK: requiredGeometry.inactive.Rectangle.Geometry.11.4.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.11.4.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.11.4.abc
+OK: requiredGeometry.inactive.Rectangle.Geometry.11.4.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.11.4.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.13.3.
+OK: requiredGeometry.inactive.Rectangle.Geometry.13.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.13.3.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.13.3.TODO
+OK: requiredGeometry.inactive.Rectangle.Geometry.13.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.13.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Geometry.13.3.abc
+OK: requiredGeometry.inactive.Rectangle.Geometry.13.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Geometry.13.3.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.7.3.
+OK: requiredGeometry.inactive.Rectangle.Rebars.7.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.7.3.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.7.3.TODO
+OK: requiredGeometry.inactive.Rectangle.Rebars.7.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.7.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.7.3.abc
+OK: requiredGeometry.inactive.Rectangle.Rebars.7.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.7.3.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.11.4.
+OK: requiredGeometry.inactive.Rectangle.Rebars.11.4..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.11.4.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.11.4.TODO
+OK: requiredGeometry.inactive.Rectangle.Rebars.11.4.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.11.4.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.11.4.abc
+OK: requiredGeometry.inactive.Rectangle.Rebars.11.4.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.11.4.abc; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.13.3.
+OK: requiredGeometry.inactive.Rectangle.Rebars.13.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.13.3.; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.13.3.TODO
+OK: requiredGeometry.inactive.Rectangle.Rebars.13.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.13.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Rectangle.Rebars.13.3.abc
+OK: requiredGeometry.inactive.Rectangle.Rebars.13.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Rectangle.Rebars.13.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.11.3.
+OK: requiredGeometry.inactive.Simple.Geometry.11.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.11.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.11.3.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.11.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.11.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.11.3.abc
+OK: requiredGeometry.inactive.Simple.Geometry.11.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.11.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.7.3.
+OK: requiredGeometry.inactive.Simple.Geometry.7.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.7.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.7.3.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.7.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.7.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.7.3.abc
+OK: requiredGeometry.inactive.Simple.Geometry.7.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.7.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.13.3.
+OK: requiredGeometry.inactive.Simple.Geometry.13.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.13.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.13.3.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.13.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.13.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.13.3.abc
+OK: requiredGeometry.inactive.Simple.Geometry.13.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.13.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.13.4.
+OK: requiredGeometry.inactive.Simple.Geometry.13.4..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.13.4.; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.13.4.TODO
+OK: requiredGeometry.inactive.Simple.Geometry.13.4.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.13.4.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Geometry.13.4.abc
+OK: requiredGeometry.inactive.Simple.Geometry.13.4.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Geometry.13.4.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.11.3.
+OK: requiredGeometry.inactive.Simple.Rebars.11.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.11.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.11.3.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.11.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.11.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.11.3.abc
+OK: requiredGeometry.inactive.Simple.Rebars.11.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.11.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.7.3.
+OK: requiredGeometry.inactive.Simple.Rebars.7.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.7.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.7.3.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.7.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.7.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.7.3.abc
+OK: requiredGeometry.inactive.Simple.Rebars.7.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.7.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.13.3.
+OK: requiredGeometry.inactive.Simple.Rebars.13.3..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.13.3.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.13.3.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.13.3.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.13.3.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.13.3.abc
+OK: requiredGeometry.inactive.Simple.Rebars.13.3.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.13.3.abc; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.13.4.
+OK: requiredGeometry.inactive.Simple.Rebars.13.4..snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.13.4.; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.13.4.TODO
+OK: requiredGeometry.inactive.Simple.Rebars.13.4.TODO.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.13.4.TODO; error=0; 
+OK: requiredGeometry.inactive.Simple.Rebars.13.4.abc
+OK: requiredGeometry.inactive.Simple.Rebars.13.4.abc.snapshot
+INACTIVE_GEOMETRY: requiredGeometry.inactive.Simple.Rebars.13.4.abc; error=0; 
+OK: requiredGeometry.common.Geometry.Type.1.reject
+OK: requiredGeometry.common.Geometry.Type.1.key
+OK: requiredGeometry.common.Geometry.Type.1.location
+OK: requiredGeometry.common.Geometry.Type.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.1; error=-2147217193; Настройка Geometry.Type (лист Config, ячейка B14): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Type.1.recovery
+OK: requiredGeometry.common.Geometry.Type.2.reject
+OK: requiredGeometry.common.Geometry.Type.2.key
+OK: requiredGeometry.common.Geometry.Type.2.location
+OK: requiredGeometry.common.Geometry.Type.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.2; error=-2147217193; Настройка Geometry.Type (лист Config, ячейка B14): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Type.2.recovery
+OK: requiredGeometry.common.Geometry.Type.3.reject
+OK: requiredGeometry.common.Geometry.Type.3.key
+OK: requiredGeometry.common.Geometry.Type.3.location
+OK: requiredGeometry.common.Geometry.Type.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.3; error=-2147217193; Настройка Geometry.Type (лист Config, ячейка B14): Недопустимый вариант: "abc". Выберите из списка: Circle, RectSet, RoundedRectangle, HollowRectangle.
+OK: requiredGeometry.common.Geometry.Type.3.recovery
+OK: requiredGeometry.common.Geometry.Type.4.reject
+OK: requiredGeometry.common.Geometry.Type.4.key
+OK: requiredGeometry.common.Geometry.Type.4.location
+OK: requiredGeometry.common.Geometry.Type.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.4; error=-2147217195; Настройка Geometry.Type (лист Config, ячейка B14) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Geometry.Type.4.recovery
+OK: requiredGeometry.common.Geometry.Type.5.reject
+OK: requiredGeometry.common.Geometry.Type.5.key
+OK: requiredGeometry.common.Geometry.Type.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Type.5; error=-2147217193; Настройка Geometry.Type (лист Config, раздел "геометрия и расчетная сетка"): Обязательное значение не задано. Восстановите строку Geometry.Type в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Type.5.recovery
+OK: requiredGeometry.common.Geometry.Source.1.reject
+OK: requiredGeometry.common.Geometry.Source.1.key
+OK: requiredGeometry.common.Geometry.Source.1.location
+OK: requiredGeometry.common.Geometry.Source.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.1; error=-2147217193; Настройка Geometry.Source (лист Config, ячейка B13): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Source.1.recovery
+OK: requiredGeometry.common.Geometry.Source.2.reject
+OK: requiredGeometry.common.Geometry.Source.2.key
+OK: requiredGeometry.common.Geometry.Source.2.location
+OK: requiredGeometry.common.Geometry.Source.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.2; error=-2147217193; Настройка Geometry.Source (лист Config, ячейка B13): Обязательное значение не задано. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Source.2.recovery
+OK: requiredGeometry.common.Geometry.Source.3.reject
+OK: requiredGeometry.common.Geometry.Source.3.key
+OK: requiredGeometry.common.Geometry.Source.3.location
+OK: requiredGeometry.common.Geometry.Source.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.3; error=-2147217193; Настройка Geometry.Source (лист Config, ячейка B13): Недопустимый вариант: "abc". Выберите из списка: Generated, AutoCAD.
+OK: requiredGeometry.common.Geometry.Source.3.recovery
+OK: requiredGeometry.common.Geometry.Source.4.reject
+OK: requiredGeometry.common.Geometry.Source.4.key
+OK: requiredGeometry.common.Geometry.Source.4.location
+OK: requiredGeometry.common.Geometry.Source.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.4; error=-2147217195; Настройка Geometry.Source (лист Config, ячейка B13) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Geometry.Source.4.recovery
+OK: requiredGeometry.common.Geometry.Source.5.reject
+OK: requiredGeometry.common.Geometry.Source.5.key
+OK: requiredGeometry.common.Geometry.Source.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Geometry.Source.5; error=-2147217193; Настройка Geometry.Source (лист Config, раздел "геометрия и расчетная сетка"): Обязательное значение не задано. Восстановите строку Geometry.Source в указанном разделе. Заполните значение или выберите допустимый вариант из списка; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Geometry.Source.5.recovery
+OK: requiredGeometry.common.Mesh.StepX.1.reject
+OK: requiredGeometry.common.Mesh.StepX.1.key
+OK: requiredGeometry.common.Mesh.StepX.1.location
+OK: requiredGeometry.common.Mesh.StepX.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.1; error=-2147217194; Настройка Mesh.StepX (лист Config, ячейка B15): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepX.1.recovery
+OK: requiredGeometry.common.Mesh.StepX.2.reject
+OK: requiredGeometry.common.Mesh.StepX.2.key
+OK: requiredGeometry.common.Mesh.StepX.2.location
+OK: requiredGeometry.common.Mesh.StepX.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.2; error=-2147217194; Настройка Mesh.StepX (лист Config, ячейка B15): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepX.2.recovery
+OK: requiredGeometry.common.Mesh.StepX.3.reject
+OK: requiredGeometry.common.Mesh.StepX.3.key
+OK: requiredGeometry.common.Mesh.StepX.3.location
+OK: requiredGeometry.common.Mesh.StepX.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.3; error=-2147217191; Настройка Mesh.StepX (лист Config, ячейка B15): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.common.Mesh.StepX.3.recovery
+OK: requiredGeometry.common.Mesh.StepX.4.reject
+OK: requiredGeometry.common.Mesh.StepX.4.key
+OK: requiredGeometry.common.Mesh.StepX.4.location
+OK: requiredGeometry.common.Mesh.StepX.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.4; error=-2147217195; Настройка Mesh.StepX (лист Config, ячейка B15) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Mesh.StepX.4.recovery
+OK: requiredGeometry.common.Mesh.StepX.5.reject
+OK: requiredGeometry.common.Mesh.StepX.5.key
+OK: requiredGeometry.common.Mesh.StepX.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepX.5; error=-2147217194; Настройка Mesh.StepX (лист Config, раздел "геометрия и расчетная сетка"): Обязательное числовое значение не задано. Восстановите строку Mesh.StepX в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepX.5.recovery
+OK: requiredGeometry.common.Mesh.StepY.1.reject
+OK: requiredGeometry.common.Mesh.StepY.1.key
+OK: requiredGeometry.common.Mesh.StepY.1.location
+OK: requiredGeometry.common.Mesh.StepY.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.1; error=-2147217194; Настройка Mesh.StepY (лист Config, ячейка B16): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepY.1.recovery
+OK: requiredGeometry.common.Mesh.StepY.2.reject
+OK: requiredGeometry.common.Mesh.StepY.2.key
+OK: requiredGeometry.common.Mesh.StepY.2.location
+OK: requiredGeometry.common.Mesh.StepY.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.2; error=-2147217194; Настройка Mesh.StepY (лист Config, ячейка B16): Обязательное числовое значение не задано. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepY.2.recovery
+OK: requiredGeometry.common.Mesh.StepY.3.reject
+OK: requiredGeometry.common.Mesh.StepY.3.key
+OK: requiredGeometry.common.Mesh.StepY.3.location
+OK: requiredGeometry.common.Mesh.StepY.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.3; error=-2147217191; Настройка Mesh.StepY (лист Config, ячейка B16): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.common.Mesh.StepY.3.recovery
+OK: requiredGeometry.common.Mesh.StepY.4.reject
+OK: requiredGeometry.common.Mesh.StepY.4.key
+OK: requiredGeometry.common.Mesh.StepY.4.location
+OK: requiredGeometry.common.Mesh.StepY.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.4; error=-2147217195; Настройка Mesh.StepY (лист Config, ячейка B16) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Mesh.StepY.4.recovery
+OK: requiredGeometry.common.Mesh.StepY.5.reject
+OK: requiredGeometry.common.Mesh.StepY.5.key
+OK: requiredGeometry.common.Mesh.StepY.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.StepY.5; error=-2147217194; Настройка Mesh.StepY (лист Config, раздел "геометрия и расчетная сетка"): Обязательное числовое значение не задано. Восстановите строку Mesh.StepY в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.StepY.5.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.1; error=-2147217365; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B17): Число подъячеек не задано. Введите целое число не меньше 1.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.1.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.2; error=-2147217365; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B17): Число подъячеек не задано. Введите целое число не меньше 1.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.2.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.3; error=-2147217191; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B17): Не удалось прочитать обязательное число: "abc". Введите конечное число допустимого диапазона или исправьте формулу.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.3.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.location
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.address
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.4; error=-2147217195; Настройка Mesh.BoundarySubdivisions (лист Config, ячейка B17) содержит ошибку Excel в колонке "значение". Исправьте формулу или введите допустимое значение вместо ошибки Excel.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.4.recovery
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.reject
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.key
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.location
+REQUIRED_GEOMETRY_ERROR: requiredGeometry.common.Mesh.BoundarySubdivisions.5; error=-2147217194; Настройка Mesh.BoundarySubdivisions (лист Config, раздел "геометрия и расчетная сетка"): Обязательное числовое значение не задано. Восстановите строку Mesh.BoundarySubdivisions в указанном разделе. Введите число или формулу, возвращающую число; пустое значение и TODO недопустимы.
+OK: requiredGeometry.common.Mesh.BoundarySubdivisions.5.recovery
+OK: requiredGeometry.restore.rngSystemSettings
+OK: requiredGeometry.restore.rngUnitSettings
+OK: requiredGeometry.restore.rngCircleGeometry
+OK: requiredGeometry.restore.rngRectSetGeometry
+OK: requiredGeometry.restore.rngRoundedRectangleGeometry
+OK: requiredGeometry.restore.rngHollowRectangleGeometry
+TOTAL_REQUIRED_GEOMETRY: passed=1010; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a4c7eab4c2a24379b46e1691b4c2956f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03RequiredGeometryInputTests; 2026-10-18T00:16:49
+===== modTestGeometryConfig.RunAudit03CircleConfigTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03CircleConfigTests; 2026-10-18T00:16:49
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=75912; workingSet=148537344; privateBytes=100388864; cpu=37.265625
+EXCEL_AFTER_SUITE: pid=96064; workingSet=163319808; privateBytes=113922048; cpu=37.65625
+OK: circleConfig.effect.Circle.Diameter.concreteExtent
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Circle.Diameter.concreteExtent; actual=550; expected=550
+OK: circleConfig.effect.Circle.Diameter.barAxis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Circle.Diameter.barAxis; actual=500; expected=500
+CIRCLE_CONFIG_EFFECT: key=Circle.Diameter; bars=24
+OK: circleConfig.effect.Rebar.AxisDistance.barAxis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.AxisDistance.barAxis; actual=440; expected=440
+OK: circleConfig.effect.Rebar.AxisDistance.row2Axis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.AxisDistance.row2Axis; actual=423.5; expected=423.5
+CIRCLE_CONFIG_EFFECT: key=Rebar.AxisDistance; bars=24
+OK: circleConfig.effect.Rebar.Count.allRows
+OK: circleConfig.effect.Rebar.Count.secondAngleX
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Count.secondAngleX; actual=264.503363531613; expected=264.503363531613
+CIRCLE_CONFIG_EFFECT: key=Rebar.Count; bars=30
+OK: circleConfig.effect.Rebar.Diameter.diameter
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter.diameter; actual=20; expected=20
+OK: circleConfig.effect.Rebar.Diameter.row2Axis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter.row2Axis; actual=431.5; expected=431.5
+CIRCLE_CONFIG_EFFECT: key=Rebar.Diameter; bars=24
+OK: circleConfig.effect.Rebar.Diameter2.diameter
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter2.diameter; actual=20; expected=20
+OK: circleConfig.effect.Rebar.Diameter2.row3Skip
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter2.row3Skip; actual=412; expected=412
+CIRCLE_CONFIG_EFFECT: key=Rebar.Diameter2; bars=24
+OK: circleConfig.effect.Rebar.Diameter3.diameter
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter3.diameter; actual=14; expected=14
+OK: circleConfig.effect.Rebar.Diameter3.row3Axis
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Diameter3.row3Axis; actual=418; expected=418
+CIRCLE_CONFIG_EFFECT: key=Rebar.Diameter3; bars=24
+OK: circleConfig.effect.Rebar.Loc2row.radialY
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc2row.radialY; actual=450; expected=450
+OK: circleConfig.effect.Rebar.Loc2row.clockwiseX
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc2row.clockwiseX; actual=16.5; expected=16.5
+OK: circleConfig.effect.Rebar.Loc2row.row3NoSkip
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc2row.row3NoSkip; actual=434.5; expected=434.5
+CIRCLE_CONFIG_EFFECT: key=Rebar.Loc2row; bars=24
+OK: circleConfig.effect.Rebar.Loc3row.radialY
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc3row.radialY; actual=450; expected=450
+OK: circleConfig.effect.Rebar.Loc3row.clockwiseX
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc3row.clockwiseX; actual=15.5; expected=15.5
+OK: circleConfig.effect.Rebar.Loc3row.row2Unchanged
+CIRCLE_CONFIG_NUMBER: circleConfig.effect.Rebar.Loc3row.row2Unchanged; actual=433.5; expected=433.5
+CIRCLE_CONFIG_EFFECT: key=Rebar.Loc3row; bars=24
+OK: circleConfig.invalid.Circle.Diameter
+OK: circleConfig.recovery.Circle.Diameter
+OK: circleConfig.invalid.Rebar.AxisDistance
+OK: circleConfig.recovery.Rebar.AxisDistance
+OK: circleConfig.invalid.Rebar.Count
+OK: circleConfig.recovery.Rebar.Count
+OK: circleConfig.invalid.Rebar.Diameter
+OK: circleConfig.recovery.Rebar.Diameter
+OK: circleConfig.invalid.Rebar.Diameter2
+OK: circleConfig.recovery.Rebar.Diameter2
+OK: circleConfig.invalid.Rebar.Diameter3
+OK: circleConfig.recovery.Rebar.Diameter3
+OK: circleConfig.invalid.Rebar.Loc2row
+OK: circleConfig.recovery.Rebar.Loc2row
+OK: circleConfig.invalid.Rebar.Loc3row
+OK: circleConfig.recovery.Rebar.Loc3row
+OK: circleConfig.optional.Rebar.Diameter.
+OK: circleConfig.optional.Rebar.Diameter.0
+OK: circleConfig.optional.Rebar.Diameter2.
+OK: circleConfig.optional.Rebar.Diameter2.0
+OK: circleConfig.optional.Rebar.Diameter3.
+OK: circleConfig.optional.Rebar.Diameter3.0
+OK: circleConfig.count.zero
+OK: circleConfig.count.minimum
+OK: circleConfig.inactive.Circle.Diameter
+OK: circleConfig.inactive.Rebar.AxisDistance
+OK: circleConfig.inactive.Rebar.Count
+OK: circleConfig.inactive.Rebar.Diameter
+OK: circleConfig.inactive.Rebar.Diameter2
+OK: circleConfig.inactive.Rebar.Diameter3
+OK: circleConfig.inactive.Rebar.Loc2row
+OK: circleConfig.inactive.Rebar.Loc3row
+OK: circleConfig.restore.system
+OK: circleConfig.restore.circle
+OK: circleConfig.restore.units
+TOTAL_CIRCLE_CONFIG: passed=53; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a4c7eab4c2a24379b46e1691b4c2956f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03CircleConfigTests; 2026-10-18T00:16:55
+===== modTestGeometryConfig.RunAudit03CircleRebarInputTests =====
+SUITE_STARTED: modTestGeometryConfig.RunAudit03CircleRebarInputTests; 2026-10-18T00:16:56
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=75912; workingSet=152621056; privateBytes=104841216; cpu=59.09375
+EXCEL_AFTER_SUITE: pid=96064; workingSet=166256640; privateBytes=117067776; cpu=59.359375
+OK: circleRebar.active.Circle.Diameter.1.reject
+OK: circleRebar.active.Circle.Diameter.1.address
+OK: circleRebar.active.Circle.Diameter.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.1; error=-2147215979; Config!J90 (rngCircleGeometry); D: Обязательное числовое поле не заполнено. Введите число.
+OK: circleRebar.active.Circle.Diameter.1.recovery
+OK: circleRebar.active.Circle.Diameter.2.reject
+OK: circleRebar.active.Circle.Diameter.2.address
+OK: circleRebar.active.Circle.Diameter.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.2; error=-2147215979; Config!J90 (rngCircleGeometry); D: Размер должен быть положительным. Введите значение больше нуля.
+OK: circleRebar.active.Circle.Diameter.2.recovery
+OK: circleRebar.active.Circle.Diameter.3.reject
+OK: circleRebar.active.Circle.Diameter.3.address
+OK: circleRebar.active.Circle.Diameter.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.3; error=-2147215979; Config!J90 (rngCircleGeometry); D: Размер должен быть положительным. Введите значение больше нуля.
+OK: circleRebar.active.Circle.Diameter.3.recovery
+OK: circleRebar.active.Circle.Diameter.4.reject
+OK: circleRebar.active.Circle.Diameter.4.address
+OK: circleRebar.active.Circle.Diameter.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.4; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ожидается число. Введите числовое значение.
+OK: circleRebar.active.Circle.Diameter.4.recovery
+OK: circleRebar.active.Circle.Diameter.5.reject
+OK: circleRebar.active.Circle.Diameter.5.address
+OK: circleRebar.active.Circle.Diameter.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Circle.Diameter.5; error=-2147215979; Config!J90 (rngCircleGeometry); D: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Circle.Diameter.5.recovery
+OK: circleRebar.missing.Circle.Diameter.reject
+OK: circleRebar.missing.Circle.Diameter.key
+OK: circleRebar.missing.Circle.Diameter.repair
+CIRCLE_MISSING_INPUT: Circle.Diameter; error=-2147215979; Config!H87 (rngCircleGeometry): В блоке 'Geom' не найдена строка 'D'. Восстановите ключ строки.
+OK: circleRebar.missing.Circle.Diameter.recovery
+OK: circleRebar.active.Rebar.AxisDistance.1.reject
+OK: circleRebar.active.Rebar.AxisDistance.1.address
+OK: circleRebar.active.Rebar.AxisDistance.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.1; error=-2147215979; Config!J96 (rngCircleGeometry); Circle: Обязательное числовое поле не заполнено. Введите число.
+OK: circleRebar.active.Rebar.AxisDistance.1.recovery
+OK: circleRebar.active.Rebar.AxisDistance.2.reject
+OK: circleRebar.active.Rebar.AxisDistance.2.address
+OK: circleRebar.active.Rebar.AxisDistance.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.2; error=-2147215974; Config!J96: Расстояние до оси должно быть больше половины диаметра стержня. Исправьте указанное значение.
+OK: circleRebar.active.Rebar.AxisDistance.2.recovery
+OK: circleRebar.active.Rebar.AxisDistance.3.reject
+OK: circleRebar.active.Rebar.AxisDistance.3.address
+OK: circleRebar.active.Rebar.AxisDistance.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.3; error=-2147215974; Config!J96: Расстояние до оси должно быть больше половины диаметра стержня. Исправьте указанное значение.
+OK: circleRebar.active.Rebar.AxisDistance.3.recovery
+OK: circleRebar.active.Rebar.AxisDistance.4.reject
+OK: circleRebar.active.Rebar.AxisDistance.4.address
+OK: circleRebar.active.Rebar.AxisDistance.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.4; error=-2147215974; Config!J96: Расстояние до оси должно быть меньше радиуса бетонного круга. Исправьте указанное значение.
+OK: circleRebar.active.Rebar.AxisDistance.4.recovery
+OK: circleRebar.active.Rebar.AxisDistance.5.reject
+OK: circleRebar.active.Rebar.AxisDistance.5.address
+OK: circleRebar.active.Rebar.AxisDistance.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.5; error=-2147215979; Config!J96 (rngCircleGeometry); Circle: Ожидается число. Введите числовое значение.
+OK: circleRebar.active.Rebar.AxisDistance.5.recovery
+OK: circleRebar.active.Rebar.AxisDistance.6.reject
+OK: circleRebar.active.Rebar.AxisDistance.6.address
+OK: circleRebar.active.Rebar.AxisDistance.6.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.AxisDistance.6; error=-2147215979; Config!J96 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.AxisDistance.6.recovery
+OK: circleRebar.missing.Rebar.AxisDistance.reject
+OK: circleRebar.missing.Rebar.AxisDistance.key
+OK: circleRebar.missing.Rebar.AxisDistance.repair
+CIRCLE_MISSING_INPUT: Rebar.AxisDistance; error=-2147215979; Config!H94 (rngCircleGeometry): В блоке 'Main' не найден столбец 'as'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.AxisDistance.recovery
+OK: circleRebar.active.Rebar.Count.1.reject
+OK: circleRebar.active.Rebar.Count.1.address
+OK: circleRebar.active.Rebar.Count.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.1; error=-2147215979; Config!L96 (rngCircleGeometry); Circle: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: circleRebar.active.Rebar.Count.1.recovery
+OK: circleRebar.active.Rebar.Count.2.reject
+OK: circleRebar.active.Rebar.Count.2.address
+OK: circleRebar.active.Rebar.Count.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.2; error=-2147215974; Config!L96: Для круговой раскладки требуется не меньше двух стержней первого ряда. Исправьте указанное значение.
+OK: circleRebar.active.Rebar.Count.2.recovery
+OK: circleRebar.active.Rebar.Count.3.reject
+OK: circleRebar.active.Rebar.Count.3.address
+OK: circleRebar.active.Rebar.Count.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.3; error=-2147215979; Config!L96 (rngCircleGeometry); Circle: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: circleRebar.active.Rebar.Count.3.recovery
+OK: circleRebar.active.Rebar.Count.4.reject
+OK: circleRebar.active.Rebar.Count.4.address
+OK: circleRebar.active.Rebar.Count.4.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.4; error=-2147215979; Config!L96 (rngCircleGeometry); Circle: Число стержней должно быть целым неотрицательным и представимым счетчиком Long. Введите целое число от 0 до 2147483647.
+OK: circleRebar.active.Rebar.Count.4.recovery
+OK: circleRebar.active.Rebar.Count.5.reject
+OK: circleRebar.active.Rebar.Count.5.address
+OK: circleRebar.active.Rebar.Count.5.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.5; error=-2147215979; Config!L96 (rngCircleGeometry); Circle: Ожидается число. Введите числовое значение.
+OK: circleRebar.active.Rebar.Count.5.recovery
+OK: circleRebar.active.Rebar.Count.6.reject
+OK: circleRebar.active.Rebar.Count.6.address
+OK: circleRebar.active.Rebar.Count.6.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Count.6; error=-2147215979; Config!L96 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.Count.6.recovery
+OK: circleRebar.missing.Rebar.Count.reject
+OK: circleRebar.missing.Rebar.Count.key
+OK: circleRebar.missing.Rebar.Count.repair
+CIRCLE_MISSING_INPUT: Rebar.Count; error=-2147215979; Config!H94 (rngCircleGeometry): В блоке 'Main' не найден столбец 'n'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.Count.recovery
+OK: circleRebar.active.Rebar.Diameter.1.reject
+OK: circleRebar.active.Rebar.Diameter.1.address
+OK: circleRebar.active.Rebar.Diameter.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.1; error=-2147215979; Config!K96 (rngCircleGeometry); Circle: Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд. Введите неотрицательное значение.
+OK: circleRebar.active.Rebar.Diameter.1.recovery
+OK: circleRebar.active.Rebar.Diameter.2.reject
+OK: circleRebar.active.Rebar.Diameter.2.address
+OK: circleRebar.active.Rebar.Diameter.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.2; error=-2147215979; Config!K96 (rngCircleGeometry); Circle: Ожидается число. Введите числовое значение.
+OK: circleRebar.active.Rebar.Diameter.2.recovery
+OK: circleRebar.active.Rebar.Diameter.3.reject
+OK: circleRebar.active.Rebar.Diameter.3.address
+OK: circleRebar.active.Rebar.Diameter.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter.3; error=-2147215979; Config!K96 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.Diameter.3.recovery
+OK: circleRebar.missing.Rebar.Diameter.reject
+OK: circleRebar.missing.Rebar.Diameter.key
+OK: circleRebar.missing.Rebar.Diameter.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter; error=-2147215979; Config!H94 (rngCircleGeometry): В блоке 'Main' не найден столбец 'd'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.Diameter.recovery
+OK: circleRebar.active.Rebar.Diameter2.1.reject
+OK: circleRebar.active.Rebar.Diameter2.1.address
+OK: circleRebar.active.Rebar.Diameter2.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.1; error=-2147215979; Config!J102 (rngCircleGeometry); Circle: Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд. Введите неотрицательное значение.
+OK: circleRebar.active.Rebar.Diameter2.1.recovery
+OK: circleRebar.active.Rebar.Diameter2.2.reject
+OK: circleRebar.active.Rebar.Diameter2.2.address
+OK: circleRebar.active.Rebar.Diameter2.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.2; error=-2147215979; Config!J102 (rngCircleGeometry); Circle: Ожидается число. Введите числовое значение.
+OK: circleRebar.active.Rebar.Diameter2.2.recovery
+OK: circleRebar.active.Rebar.Diameter2.3.reject
+OK: circleRebar.active.Rebar.Diameter2.3.address
+OK: circleRebar.active.Rebar.Diameter2.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter2.3; error=-2147215979; Config!J102 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.Diameter2.3.recovery
+OK: circleRebar.missing.Rebar.Diameter2.reject
+OK: circleRebar.missing.Rebar.Diameter2.key
+OK: circleRebar.missing.Rebar.Diameter2.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter2; error=-2147215979; Config!H100 (rngCircleGeometry): В блоке 'Extra' не найден столбец 'd2'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.Diameter2.recovery
+OK: circleRebar.active.Rebar.Diameter3.1.reject
+OK: circleRebar.active.Rebar.Diameter3.1.address
+OK: circleRebar.active.Rebar.Diameter3.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.1; error=-2147215979; Config!N102 (rngCircleGeometry); Circle: Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд. Введите неотрицательное значение.
+OK: circleRebar.active.Rebar.Diameter3.1.recovery
+OK: circleRebar.active.Rebar.Diameter3.2.reject
+OK: circleRebar.active.Rebar.Diameter3.2.address
+OK: circleRebar.active.Rebar.Diameter3.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.2; error=-2147215979; Config!N102 (rngCircleGeometry); Circle: Ожидается число. Введите числовое значение.
+OK: circleRebar.active.Rebar.Diameter3.2.recovery
+OK: circleRebar.active.Rebar.Diameter3.3.reject
+OK: circleRebar.active.Rebar.Diameter3.3.address
+OK: circleRebar.active.Rebar.Diameter3.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Diameter3.3; error=-2147215979; Config!N102 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.Diameter3.3.recovery
+OK: circleRebar.missing.Rebar.Diameter3.reject
+OK: circleRebar.missing.Rebar.Diameter3.key
+OK: circleRebar.missing.Rebar.Diameter3.repair
+CIRCLE_MISSING_INPUT: Rebar.Diameter3; error=-2147215979; Config!H100 (rngCircleGeometry): В блоке 'Extra' не найден столбец 'd3'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.Diameter3.recovery
+OK: circleRebar.active.Rebar.Loc2row.1.reject
+OK: circleRebar.active.Rebar.Loc2row.1.address
+OK: circleRebar.active.Rebar.Loc2row.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.1; error=-2147215979; Config!M102 (rngCircleGeometry); Circle: Недопустимый вариант ''. Выберите: Stacked, SideBySide.
+OK: circleRebar.active.Rebar.Loc2row.1.recovery
+OK: circleRebar.active.Rebar.Loc2row.2.reject
+OK: circleRebar.active.Rebar.Loc2row.2.address
+OK: circleRebar.active.Rebar.Loc2row.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.2; error=-2147215979; Config!M102 (rngCircleGeometry); Circle: Недопустимый вариант 'Wrong'. Выберите: Stacked, SideBySide.
+OK: circleRebar.active.Rebar.Loc2row.2.recovery
+OK: circleRebar.active.Rebar.Loc2row.3.reject
+OK: circleRebar.active.Rebar.Loc2row.3.address
+OK: circleRebar.active.Rebar.Loc2row.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc2row.3; error=-2147215979; Config!M102 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.Loc2row.3.recovery
+OK: circleRebar.missing.Rebar.Loc2row.reject
+OK: circleRebar.missing.Rebar.Loc2row.key
+OK: circleRebar.missing.Rebar.Loc2row.repair
+CIRCLE_MISSING_INPUT: Rebar.Loc2row; error=-2147215979; Config!H100 (rngCircleGeometry): В блоке 'Extra' не найден столбец 'pos2'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.Loc2row.recovery
+OK: circleRebar.active.Rebar.Loc3row.1.reject
+OK: circleRebar.active.Rebar.Loc3row.1.address
+OK: circleRebar.active.Rebar.Loc3row.1.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.1; error=-2147215979; Config!Q102 (rngCircleGeometry); Circle: Недопустимый вариант ''. Выберите: Stacked, SideBySide.
+OK: circleRebar.active.Rebar.Loc3row.1.recovery
+OK: circleRebar.active.Rebar.Loc3row.2.reject
+OK: circleRebar.active.Rebar.Loc3row.2.address
+OK: circleRebar.active.Rebar.Loc3row.2.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.2; error=-2147215979; Config!Q102 (rngCircleGeometry); Circle: Недопустимый вариант 'Wrong'. Выберите: Stacked, SideBySide.
+OK: circleRebar.active.Rebar.Loc3row.2.recovery
+OK: circleRebar.active.Rebar.Loc3row.3.reject
+OK: circleRebar.active.Rebar.Loc3row.3.address
+OK: circleRebar.active.Rebar.Loc3row.3.repair
+CIRCLE_REBAR_INPUT: circleRebar.active.Rebar.Loc3row.3; error=-2147215979; Config!Q102 (rngCircleGeometry); Circle: Ячейка содержит ошибку Excel. Исправьте значение или формулу.
+OK: circleRebar.active.Rebar.Loc3row.3.recovery
+OK: circleRebar.missing.Rebar.Loc3row.reject
+OK: circleRebar.missing.Rebar.Loc3row.key
+OK: circleRebar.missing.Rebar.Loc3row.repair
+CIRCLE_MISSING_INPUT: Rebar.Loc3row; error=-2147215979; Config!H100 (rngCircleGeometry): В блоке 'Extra' не найден столбец 'pos3'. Восстановите ключ столбца.
+OK: circleRebar.missing.Rebar.Loc3row.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Count.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.AxisDistance.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter2.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Diameter3.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2..Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter2.0.Rebar.Loc2row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3..Rebar.Loc3row.4.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.1.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.2.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.3.recovery
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.noInterference
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4; error=0; 
+OK: circleRebar.inactive.Rebar.Diameter3.0.Rebar.Loc3row.4.recovery
+OK: circleRebar.otherShape.Circle.Diameter.1.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.1; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.1.recovery
+OK: circleRebar.otherShape.Circle.Diameter.2.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.2; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.2.recovery
+OK: circleRebar.otherShape.Circle.Diameter.3.noInterference
+OK: circleRebar.otherShape.Circle.Diameter.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Circle.Diameter.3; error=0; 
+OK: circleRebar.otherShape.Circle.Diameter.3.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.1; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.1.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.2; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.2.recovery
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.noInterference
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.AxisDistance.3; error=0; 
+OK: circleRebar.otherShape.Rebar.AxisDistance.3.recovery
+OK: circleRebar.otherShape.Rebar.Count.1.noInterference
+OK: circleRebar.otherShape.Rebar.Count.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.1.recovery
+OK: circleRebar.otherShape.Rebar.Count.2.noInterference
+OK: circleRebar.otherShape.Rebar.Count.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.2.recovery
+OK: circleRebar.otherShape.Rebar.Count.3.noInterference
+OK: circleRebar.otherShape.Rebar.Count.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Count.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Count.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.2.recovery
+OK: circleRebar.otherShape.Rebar.Diameter.3.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.2.recovery
+OK: circleRebar.otherShape.Rebar.Diameter2.3.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter2.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter2.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter2.3.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.1.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.1.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.2.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.2.recovery
+OK: circleRebar.otherShape.Rebar.Diameter3.3.noInterference
+OK: circleRebar.otherShape.Rebar.Diameter3.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Diameter3.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Diameter3.3.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.1.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.1.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.2.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.2.recovery
+OK: circleRebar.otherShape.Rebar.Loc2row.3.noInterference
+OK: circleRebar.otherShape.Rebar.Loc2row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc2row.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc2row.3.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.1.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.1.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.1; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.1.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.2.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.2.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.2; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.2.recovery
+OK: circleRebar.otherShape.Rebar.Loc3row.3.noInterference
+OK: circleRebar.otherShape.Rebar.Loc3row.3.snapshot
+CIRCLE_REBAR_INPUT: circleRebar.otherShape.Rebar.Loc3row.3; error=0; 
+OK: circleRebar.otherShape.Rebar.Loc3row.3.recovery
+OK: circleRebar.restore.rngSystemSettings
+OK: circleRebar.restore.rngUnitSettings
+OK: circleRebar.restore.rngCircleGeometry
+OK: circleRebar.restore.rngRectSetGeometry
+TOTAL_CIRCLE_REBAR_INPUT: passed=524; failed=0; cases=160
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_a4c7eab4c2a24379b46e1691b4c2956f\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryConfig.RunAudit03CircleRebarInputTests; 2026-10-18T00:17:17
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

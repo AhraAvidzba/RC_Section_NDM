@@ -169,24 +169,24 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
             SetSetting "Rebar.Loc2row", "Stacked": SetSetting "Rebar.Loc3row", "SideBySide"
         Case "Rectangle", "LSection", "TwoRectangles"
             shapeName = "RectSet": Set table = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
-            table.Cells(3, 2).Value2 = fixture: table.Cells(4, 2).Value2 = -50# / factor
-            table.Cells(8, 1).Value2 = 400# / factor: table.Cells(8, 2).Value2 = 300# / factor
-            table.Cells(8, 3).Value2 = 200# / factor: table.Cells(8, 4).Value2 = 600# / factor
+            FixtureInputCell(table, "Geom", "Shape", "val").Value2 = fixture: FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = -50# / factor
+            FixtureInputCell(table, "Geom", "H1", "val").Value2 = 400# / factor: FixtureInputCell(table, "Geom", "B1", "val").Value2 = 300# / factor
+            FixtureInputCell(table, "Geom", "H2", "val").Value2 = 200# / factor: FixtureInputCell(table, "Geom", "B2", "val").Value2 = 600# / factor
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
             shapeName = "RoundedRectangle": Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
-            table.Cells(3, 2).Value2 = 600# / factor: table.Cells(3, 3).Value2 = 400# / factor
-            table.Cells(7, 2).Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", "Tapered", "Simple")
-            table.Cells(7, 3).Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", "Simple", "Tapered")
-            table.Cells(8, 2).Value2 = 100# / factor: table.Cells(8, 3).Value2 = 130# / factor
-            table.Cells(9, 2).Value2 = 30# / factor: table.Cells(9, 3).Value2 = 40# / factor
-            table.Cells(10, 2).Value2 = 20# / factor: table.Cells(10, 3).Value2 = 25# / factor
+            FixtureInputCell(table, "Geom", "B", "val").Value2 = 600# / factor: FixtureInputCell(table, "Geom", "H", "val").Value2 = 400# / factor
+            FixtureInputCell(table, "Detail", "Type", "left").Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", "Tapered", "Simple")
+            FixtureInputCell(table, "Detail", "Type", "right").Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", "Simple", "Tapered")
+            FixtureInputCell(table, "Detail", "W", "left").Value2 = 100# / factor: FixtureInputCell(table, "Detail", "W", "right").Value2 = 130# / factor
+            FixtureInputCell(table, "Detail", "R1", "left").Value2 = 30# / factor: FixtureInputCell(table, "Detail", "R1", "right").Value2 = 40# / factor
+            FixtureInputCell(table, "Detail", "R2", "left").Value2 = 20# / factor: FixtureInputCell(table, "Detail", "R2", "right").Value2 = 25# / factor
         Case "HollowCentered", "HollowOffset"
             shapeName = "HollowRectangle": Set table = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
-            table.Cells(7, 1).Value2 = 1200# / factor: table.Cells(7, 2).Value2 = 1000# / factor
-            table.Cells(7, 3).Value2 = 60# / factor: table.Cells(7, 4).Value2 = 500# / factor
-            table.Cells(7, 5).Value2 = 400# / factor: table.Cells(7, 6).Value2 = 30# / factor
-            table.Cells(3, 2).Value2 = IIf(fixture = "HollowOffset", 40#, 0#) / factor
-            table.Cells(4, 2).Value2 = IIf(fixture = "HollowOffset", 50#, 0#) / factor
+            FixtureInputCell(table, "Geom", "H", "val").Value2 = 1200# / factor: FixtureInputCell(table, "Geom", "B", "val").Value2 = 1000# / factor
+            FixtureInputCell(table, "Geom", "R", "val").Value2 = 60# / factor: FixtureInputCell(table, "Detail", "Ho", "val").Value2 = 500# / factor
+            FixtureInputCell(table, "Detail", "Bo", "val").Value2 = 400# / factor: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 30# / factor
+            FixtureInputCell(table, "Detail", "Xo", "val").Value2 = IIf(fixture = "HollowOffset", 40#, 0#) / factor
+            FixtureInputCell(table, "Detail", "Yo", "val").Value2 = IIf(fixture = "HollowOffset", 50#, 0#) / factor
     End Select
     SetSetting "Geometry.Type", shapeName
     ThisWorkbook.Worksheets("Config").Calculate
@@ -232,42 +232,43 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: ввод расширенной RectSet-матрицы без сборки формы.
 Public Sub ConfigureRectSetScenario(ByVal fixture As String, ByVal scenario As Long)
+    Dim keys As Variant
     Dim table As Object, settings As CSystemSettingsReader, units As CUnitSystem, factor As Double
     Dim i As Long, row As Long, extra As Long, count As Long
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     factor = units.InputLengthToInternal(1#)
+    keys = Array("R1.Left", "R1.Right", "R1.Top", "R1.Bottom", "R2.Left", "R2.Right", "R2.Top", "R2.Bottom")
     Set table = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
     If scenario = 0 Then Exit Sub
     For i = 1 To 8
-        row = 10 + i: extra = 20 + i
-        table.Cells(extra, 3).Value2 = 0#: table.Cells(extra, 7).Value2 = 0#
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a2").Value2 = 0#: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a3").Value2 = 0#
         If fixture = "Rectangle" And i > 4 Then GoTo InactiveSide
         count = 5
         If scenario = 2 Then count = 3
         If scenario = 4 Then count = 1
-        table.Cells(row, 4).Value2 = count
-        table.Cells(row, 5).Value2 = 70# / factor
-        table.Cells(row, 6).Value2 = 90# / factor
-        table.Cells(extra, 2).Value2 = IIf(scenario = 4, 0#, 16# / factor)
-        table.Cells(extra, 6).Value2 = 12# / factor
-        table.Cells(extra, 5).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 0), "SideBySide", "Stacked")
-        table.Cells(extra, 9).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 1), "SideBySide", "Stacked")
-        table.Cells(extra, 4).Value2 = IIf(scenario = 2 Or i Mod 2 = 0, "EverySecondBar", "EachBar")
-        table.Cells(extra, 8).Value2 = IIf(scenario = 4 Or i Mod 2 = 1, "EverySecondBar", "EachBar")
-        If scenario = 4 Then table.Cells(extra, 5).Value2 = "inactive value"
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = count
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "s0").Value2 = 70# / factor
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "s1").Value2 = 90# / factor
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = IIf(scenario = 4, 0#, 16# / factor)
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = 12# / factor
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos2").Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 0), "SideBySide", "Stacked")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos3").Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 1), "SideBySide", "Stacked")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind2").Value2 = IIf(scenario = 2 Or i Mod 2 = 0, "EverySecondBar", "EachBar")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind3").Value2 = IIf(scenario = 4 Or i Mod 2 = 1, "EverySecondBar", "EachBar")
+        If scenario = 4 Then FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos2").Value2 = "inactive value"
 InactiveSide:
     Next i
     If scenario = 5 Then
-        table.Cells(14, 4).Value2 = 0
-        table.Cells(14, 2).Value2 = "inactive value"
-        table.Cells(14, 5).Value2 = "inactive value"
-        table.Cells(24, 2).Value2 = "inactive value"
+        FixtureInputCell(table, "Main", "R1.Bottom", "n").Value2 = 0
+        FixtureInputCell(table, "Main", "R1.Bottom", "as").Value2 = "inactive value"
+        FixtureInputCell(table, "Main", "R1.Bottom", "s0").Value2 = "inactive value"
+        FixtureInputCell(table, "Extra", "R1.Bottom", "d2").Value2 = "inactive value"
         If fixture = "Rectangle" Then
-            table.Cells(8, 3).Value2 = "inactive value": table.Cells(8, 4).Value2 = "inactive value"
-            For i = 15 To 18: table.Cells(i, 3).Value2 = "inactive value": Next i
+            FixtureInputCell(table, "Geom", "H2", "val").Value2 = "inactive value": FixtureInputCell(table, "Geom", "B2", "val").Value2 = "inactive value"
+            For i = 15 To 18: FixtureInputCell(table, "Main", CStr(keys(i - 11)), "d").Value2 = "inactive value": Next i
         End If
-        If fixture <> "TwoRectangles" Then table.Cells(4, 2).Value2 = "inactive value"
+        If fixture <> "TwoRectangles" Then FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = "inactive value"
     End If
     ThisWorkbook.Worksheets("Config").Calculate
 End Sub
@@ -303,43 +304,43 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: одинаковая матрица двух независимых сторон и активных дуг.
 Public Sub ConfigureRoundedScenario(ByVal scenario As Long)
+    Dim keys As Variant
     Dim table As Object, data As Variant, settings As CSystemSettingsReader, units As CUnitSystem
     Dim factor As Double, mainHeader As Long, extraHeader As Long, i As Long, row As Long, extra As Long
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    keys = Array("Left", "Right", "Top", "Bottom")
     Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange: data = table.Value2
-    mainHeader = FixtureHeaderRow(data, "Грань", 1): extraHeader = FixtureHeaderRow(data, "d2", 2)
     If scenario = 0 Then Exit Sub
     If scenario = 1 Then
-        table.Cells(9, 2).Value2 = 80# / factor: table.Cells(9, 3).Value2 = 100# / factor
-        table.Cells(10, 2).Value2 = 40# / factor: table.Cells(10, 3).Value2 = 50# / factor
+        FixtureInputCell(table, "Detail", "R1", "left").Value2 = 80# / factor: FixtureInputCell(table, "Detail", "R1", "right").Value2 = 100# / factor
+        FixtureInputCell(table, "Detail", "R2", "left").Value2 = 40# / factor: FixtureInputCell(table, "Detail", "R2", "right").Value2 = 50# / factor
     ElseIf scenario = 2 Then
-        table.Cells(9, 2).Value2 = 0#: table.Cells(9, 3).Value2 = 0#
-        table.Cells(10, 2).Value2 = 0#: table.Cells(10, 3).Value2 = 0#
+        FixtureInputCell(table, "Detail", "R1", "left").Value2 = 0#: FixtureInputCell(table, "Detail", "R1", "right").Value2 = 0#
+        FixtureInputCell(table, "Detail", "R2", "left").Value2 = 0#: FixtureInputCell(table, "Detail", "R2", "right").Value2 = 0#
     End If
     For i = 1 To 4
-        row = mainHeader + i: extra = extraHeader + i
-        table.Cells(extra, 3).Value2 = 0#: table.Cells(extra, 7).Value2 = 0#
-        table.Cells(row, 2).Value2 = (35# + 5# * CDbl(i)) / factor
-        table.Cells(row, 3).Value2 = 20# / factor
-        table.Cells(row, 4).Value2 = IIf(i <= 2, 7, 5)
-        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 6).Value2 = 12# / factor
-        table.Cells(extra, 5).Value2 = IIf(scenario = 3 And i Mod 2 = 0, "SideBySide", "Stacked")
-        table.Cells(extra, 9).Value2 = IIf(scenario = 3 And i Mod 2 = 1, "SideBySide", "Stacked")
-        table.Cells(extra, 4).Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
-        table.Cells(extra, 8).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a2").Value2 = 0#: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a3").Value2 = 0#
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "as").Value2 = (35# + 5# * CDbl(i)) / factor
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "d").Value2 = 20# / factor
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = IIf(i <= 2, 7, 5)
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = 16# / factor: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = 12# / factor
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos2").Value2 = IIf(scenario = 3 And i Mod 2 = 0, "SideBySide", "Stacked")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos3").Value2 = IIf(scenario = 3 And i Mod 2 = 1, "SideBySide", "Stacked")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind2").Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind3").Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
         If scenario = 4 Then
-            table.Cells(row, 4).Value2 = 1: table.Cells(extra, 2).Value2 = 0#
-            table.Cells(extra, 5).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
+            FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = 1: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = 0#
+            FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos2").Value2 = "inactive value": FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind2").Value2 = "inactive value"
         End If
     Next i
     If scenario = 5 Then
-        table.Cells(mainHeader + 3, 4).Value2 = 0
-        table.Cells(mainHeader + 3, 2).Value2 = "inactive value"
-        table.Cells(extraHeader + 3, 2).Value2 = "inactive value"
+        FixtureInputCell(table, "Main", "Top", "n").Value2 = 0
+        FixtureInputCell(table, "Main", "Top", "as").Value2 = "inactive value"
+        FixtureInputCell(table, "Extra", "Top", "d2").Value2 = "inactive value"
         For i = 2 To 3
-            If CStr(table.Cells(7, i).Value2) = "Simple" Then
-                table.Cells(8, i).Value2 = "inactive value": table.Cells(10, i).Value2 = "inactive value"
+            If CStr(FixtureInputCell(table, "Detail", "Type", IIf(i = 2, "left", "right")).Value2) = "Simple" Then
+                FixtureInputCell(table, "Detail", "W", IIf(i = 2, "left", "right")).Value2 = "inactive value": FixtureInputCell(table, "Detail", "R2", IIf(i = 2, "left", "right")).Value2 = "inactive value"
             End If
         Next i
     End If
@@ -385,55 +386,55 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: одинаковые параметры HollowRectangle для baseline и рецепта.
 Public Sub ConfigureHollowScenario(ByVal scenario As Long)
+    Dim keys As Variant
     Dim table As Object, data As Variant, settings As CSystemSettingsReader, units As CUnitSystem
     Dim factor As Double, mainHeader As Long, extraHeader As Long, i As Long, row As Long, extra As Long
     If scenario = 0 Then Exit Sub
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    keys = Array("Left", "Right", "Top", "Bottom", "OpeningLeft", "OpeningRight", "OpeningTop", "OpeningBottom")
     Set table = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange: data = table.Value2
-    mainHeader = FixtureHeaderRow(data, "as", 2): extraHeader = FixtureHeaderRow(data, "d2", 2)
-    table.Cells(7, 3).Value2 = 180# / factor: table.Cells(7, 6).Value2 = 90# / factor
-    If scenario = 2 Or scenario = 6 Then table.Cells(7, 6).Value2 = 0#
+    FixtureInputCell(table, "Geom", "R", "val").Value2 = 180# / factor: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 90# / factor
+    If scenario = 2 Or scenario = 6 Then FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 0#
     If scenario = 8 Or scenario = 9 Then
-        table.Cells(7, 1).Value2 = IIf(scenario = 8, 600#, 1000#) / factor
-        table.Cells(7, 2).Value2 = 1000# / factor
-        table.Cells(7, 3).Value2 = IIf(scenario = 8, 300#, 500#) / factor
-        table.Cells(7, 4).Value2 = IIf(scenario = 8, 200#, 400#) / factor
-        table.Cells(7, 5).Value2 = 400# / factor
-        table.Cells(7, 6).Value2 = IIf(scenario = 8, 100#, 200#) / factor
+        FixtureInputCell(table, "Geom", "H", "val").Value2 = IIf(scenario = 8, 600#, 1000#) / factor
+        FixtureInputCell(table, "Geom", "B", "val").Value2 = 1000# / factor
+        FixtureInputCell(table, "Geom", "R", "val").Value2 = IIf(scenario = 8, 300#, 500#) / factor
+        FixtureInputCell(table, "Detail", "Ho", "val").Value2 = IIf(scenario = 8, 200#, 400#) / factor
+        FixtureInputCell(table, "Detail", "Bo", "val").Value2 = 400# / factor
+        FixtureInputCell(table, "Detail", "Ro", "val").Value2 = IIf(scenario = 8, 100#, 200#) / factor
     End If
-    If scenario = 10 Then table.Cells(7, 3).Value2 = 0#: table.Cells(7, 6).Value2 = 0#
+    If scenario = 10 Then FixtureInputCell(table, "Geom", "R", "val").Value2 = 0#: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 0#
     If scenario = 3 Then
-        table.Cells(3, 2).Value2 = 160# / factor: table.Cells(4, 2).Value2 = -180# / factor
+        FixtureInputCell(table, "Detail", "Xo", "val").Value2 = 160# / factor: FixtureInputCell(table, "Detail", "Yo", "val").Value2 = -180# / factor
     End If
     For i = 1 To 8
-        row = mainHeader + i: extra = extraHeader + i
-        table.Cells(extra, 3).Value2 = 0#: table.Cells(extra, 7).Value2 = 0#
-        table.Cells(row, 2).Value2 = (35# + 5# * CDbl(i)) / factor
-        table.Cells(row, 3).Value2 = 20# / factor
-        If i <= 4 Then table.Cells(row, 4).Value2 = IIf(i <= 2, 7, 9)
-        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 6).Value2 = 12# / factor
-        table.Cells(extra, 5).Value2 = IIf(scenario = 4 And i Mod 2 = 0, "SideBySide", "Stacked")
-        table.Cells(extra, 9).Value2 = IIf(scenario = 4 And i Mod 2 = 1, "SideBySide", "Stacked")
-        table.Cells(extra, 4).Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
-        table.Cells(extra, 8).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a2").Value2 = 0#: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a3").Value2 = 0#
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "as").Value2 = (35# + 5# * CDbl(i)) / factor
+        FixtureInputCell(table, "Main", CStr(keys(i - 1)), "d").Value2 = 20# / factor
+        If i <= 4 Then FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = IIf(i <= 2, 7, 9)
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = 16# / factor: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = 12# / factor
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos2").Value2 = IIf(scenario = 4 And i Mod 2 = 0, "SideBySide", "Stacked")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos3").Value2 = IIf(scenario = 4 And i Mod 2 = 1, "SideBySide", "Stacked")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind2").Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
+        FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind3").Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
         If scenario = 5 Then
-            If i <= 4 Then table.Cells(row, 4).Value2 = 1
-            table.Cells(extra, 2).Value2 = 0#
-            table.Cells(extra, 5).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
+            If i <= 4 Then FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = 1
+            FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = 0#
+            FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "pos2").Value2 = "inactive value": FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "bind2").Value2 = "inactive value"
         End If
         If scenario = 6 And i = 5 Then
-            table.Cells(row, 3).Value2 = 0#
-            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 6).Value2 = "inactive value"
+            FixtureInputCell(table, "Main", CStr(keys(i - 1)), "d").Value2 = 0#
+            FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = "inactive value": FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = "inactive value"
         End If
         If scenario = 7 And i = 3 Then
-            table.Cells(row, 4).Value2 = 0
-            table.Cells(row, 2).Value2 = "inactive value"
-            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 6).Value2 = "inactive value"
+            FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = 0
+            FixtureInputCell(table, "Main", CStr(keys(i - 1)), "as").Value2 = "inactive value"
+            FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = "inactive value": FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = "inactive value"
         End If
         If (scenario = 8 Or scenario = 9) And (i = 1 Or i = 2 Or i = 5 Or i = 6) Then
-            table.Cells(row, 3).Value2 = 0#: If i <= 4 Then table.Cells(row, 4).Value2 = 0
-            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 6).Value2 = "inactive value"
+            FixtureInputCell(table, "Main", CStr(keys(i - 1)), "d").Value2 = 0#: If i <= 4 Then FixtureInputCell(table, "Main", CStr(keys(i - 1)), "n").Value2 = 0
+            FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d2").Value2 = "inactive value": FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "d3").Value2 = "inactive value"
         End If
     Next i
     ThisWorkbook.Worksheets("Config").Calculate

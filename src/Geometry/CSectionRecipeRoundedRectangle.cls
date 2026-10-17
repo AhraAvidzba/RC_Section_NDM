@@ -56,11 +56,11 @@ End Type
 ' описание границы бетона, размещения стержней вдоль прямых и скруглённых сторон,
 ' а также аннотаций схемы (размеры сечения, количество и диаметры стержней).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As TRoundedInput, faces(1 To 4) As TRoundedFace, outer As CGeometryPath, polygon As CPolygonSpec
-    Set table = context.Table("rngRoundedRectangleGeometry"): Set units = context.Units ' Берём копию входной таблицы и единицы измерения.
-    ReadGeometryInputs table, units, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs table, units, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
+    Set reader = context.Reader("rngRoundedRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
+    ReadRebarInputs reader, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
     Set polygon = DescribePolygon(sizes) ' Общее описание вершин для бетона и всех смещённых линий.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle" ' Создаём сборщик описания сечения.
     Set outer = AddGeometry(facade, sizes, polygon) ' Получаем наружный контур по подготовленному многоугольнику.
@@ -71,66 +71,58 @@ End Function
 
 ' Заполняет sizes размерами в миллиметрах и проверяет параметры обеих сторон.
 ' Для обычной стороны не читает ширину выступа и его радиус; сохраняет адреса активных полей.
-Private Sub ReadGeometryInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRoundedInput)
-    Dim row As Long, sides As Long, side As Long, column As Long
-    row = table.RowByKey("B", 2) + 1
-    sizes.B = table.PositiveLength(row, 2, units): sizes.H = table.PositiveLength(row, 3, units)
-    sizes.GeometrySource = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 3)
-    sides = table.RowByKey("слева", 2)
+Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRoundedInput)
+    Dim side As Long, key As String
+    sizes.B = reader.PositiveLength("Geom", "B"): sizes.H = reader.PositiveLength("Geom", "H")
+    sizes.GeometrySource = reader.SourceReference("Geom", "B") & "; " & reader.SourceReference("Geom", "H")
     For side = 1 To 2
-        column = side + 1
-        sizes.SideTypes(side) = table.Choice(sides + 1, column, Array("Simple", "Tapered"))
-        sizes.R1(side) = table.NonNegativeLength(sides + 3, column, units)
-        sizes.GeometrySource = sizes.GeometrySource & "; " & table.SourceReference(sides + 3, column)
+        If side = 1 Then key = "left" Else key = "right"
+        sizes.SideTypes(side) = reader.Choice("Detail", "Type", Array("Simple", "Tapered"), key)
+        sizes.R1(side) = reader.NonNegativeLength("Detail", "R1", key)
+        sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("Detail", "R1", key)
         If sizes.SideTypes(side) = "Tapered" Then
-            sizes.Widths(side) = table.Length(sides + 2, column, units)
-            sizes.R2(side) = table.NonNegativeLength(sides + 4, column, units)
-            sizes.GeometrySource = sizes.GeometrySource & "; " & table.SourceReference(sides + 2, column) & "; " & table.SourceReference(sides + 4, column)
-            Require table, sides + 2, column, sizes.Widths(side) > GEOM_TOLERANCE, "Для Tapered размер W должен быть положительным."
+            sizes.Widths(side) = reader.Length("Detail", "W", key)
+            sizes.R2(side) = reader.NonNegativeLength("Detail", "R2", key)
+            sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("Detail", "W", key) & "; " & reader.SourceReference("Detail", "R2", key)
+            reader.Require "Detail", "W", key, sizes.Widths(side) > GEOM_TOLERANCE, "Для Tapered размер W должен быть положительным."
         End If
     Next side
 End Sub
 
-' Читает четыре стороны по утверждённым названиям Config и готовит параметры армирования.
+' Читает четыре стороны по коротким ключам Config и готовит параметры армирования.
 ' Выключенная сторона не требует as, отступов и дополнительных рядов.
-Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef faces() As TRoundedFace)
-    Dim ids As Variant, captions As Variant, i As Long, row As Long, extra As Long, mainHeader As Long, extraHeader As Long
-    Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long
+Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() As TRoundedFace)
+    Dim ids As Variant, captions As Variant, keys As Variant, key As String, i As Long, rowNumber As Long, suffix As String
+    keys = Array("Top", "Bottom", "Left", "Right")
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая")
-    mainHeader = table.RowByKey("as", 2): extraHeader = table.AdditionalRowsHeader
     For i = 1 To 4
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
-            row = table.RowByKey(.Caption, 1, mainHeader + 1, mainHeader + 4)
-            .Count = table.Count(row, 4): .Diameter = table.OptionalDiameter(row, 3, units)
+            key = CStr(keys(i - 1))
+            .Count = reader.Count("Main", key, "n"): .Diameter = reader.OptionalDiameter("Main", key, "d")
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
-            .AxisDistance = table.Length(row, 2, units)
-            Require table, row, 2, .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-            .AxisSource = table.SourceReference(row, 2)
+            .AxisDistance = reader.Length("Main", key, "as")
+            reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
+            .AxisSource = reader.SourceReference("Main", key, "as")
             Select Case .ID
                 Case "B.Top": .LabelY = 1#
                 Case "B.Bottom": .LabelY = -1#
                 Case "H.Left": .LabelX = -1#
                 Case "H.Right": .LabelX = 1#
             End Select
-            If startColumn = 0 Then
-                startColumn = table.ColumnByCaption(mainHeader, "StartSetback")
-                endColumn = table.ColumnByCaption(mainHeader, "EndSetback")
-            End If
-            .StartSetback = table.NonNegativeLength(row, startColumn, units)
-            .EndSetback = table.NonNegativeLength(row, endColumn, units)
-            .Source = .AxisSource & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
-            extra = table.RowByKey(.Caption, 1, extraHeader + 1, extraHeader + 4)
-            .Diameters(2) = table.OptionalDiameter(extra, 2, units)
-            .Diameters(3) = table.OptionalDiameter(extra, 6, units)
+            .StartSetback = reader.NonNegativeLength("Main", key, "s0")
+            .EndSetback = reader.NonNegativeLength("Main", key, "s1")
+            .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
+            .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
+            .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
-                    column = 2 + (rowNumber - 2) * 4 ' На ряд отведены диаметр, отступ, привязка и положение.
-                    .BaseOffsets(rowNumber) = table.OptionalRowOffset(extra, column + 1, units)
-                    .Locations(rowNumber) = table.Choice(extra, column + 3, Array("Stacked", "SideBySide"))
-                    .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                    .ExtraSources(rowNumber) = table.SourceReference(extra, column) & "; " & table.SourceReference(extra, column + 1) & "; " & table.SourceReference(extra, column + 2) & "; " & table.SourceReference(extra, column + 3)
+                    suffix = CStr(rowNumber)
+                    .BaseOffsets(rowNumber) = reader.OptionalRowOffset("Extra", key, "a" & suffix)
+                    .Locations(rowNumber) = reader.Choice("Extra", key, Array("Stacked", "SideBySide"), "pos" & suffix)
+                    .Bindings(rowNumber) = reader.Choice("Extra", key, Array("EachBar", "EverySecondBar"), "bind" & suffix)
+                    .ExtraSources(rowNumber) = reader.SourceReferences("Extra", key, Array("d" & suffix, "a" & suffix, "bind" & suffix, "pos" & suffix))
                 End If
             Next rowNumber
         End With
@@ -255,9 +247,4 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     If sizes.SideTypes(1) = "Tapered" And -sizes.B / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.B / 2#, sizes.H / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1#
     ' Фактическая ширина правого выступа; подпись округляется до 1 мм.
     If sizes.SideTypes(2) = "Tapered" And maxX - sizes.B / 2# > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_RIGHT", "W'", sizes.B / 2#, maxX, sizes.H / 2#, 1#, "Фактический вынос правого края бетона относительно правого торца базы B.", 1#
-End Sub
-
-' Проверяет условие для указанной ячейки. При нарушении сообщает причину и её фактический адрес.
-Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)
-    If Not condition Then SectionRecipeError "CSectionRecipeRoundedRectangle", reason, table.SourceReference(row, column)
 End Sub

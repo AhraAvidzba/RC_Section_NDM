@@ -102,9 +102,10 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeTypes. Пустой Array()
 '     подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных
 '     таблиц.
-'     Ввод из Config передаётся в context общим CSectionInputSnapshotReader: table = context.Table("имя
-'     таблицы"), units = context.Units. table.PositiveLength/NonNegativeLength возвращают мм и проверяют
-'     знак; SourceReference возвращает адрес. Полный пример такого ввода —
+'     Штатная блочная структура Config рекомендуется: Set reader = context.Reader("имя таблицы"), B =
+'     reader.PositiveLength("Geom", "B"). Ридер ищет ключ блока, строки и столбца, проверяет значение и
+'     переводит длину в мм. Для собственной структуры рецепт читает context.Table и context.Units
+'     самостоятельно; далее использует те же методы описания сечения. Пример —
 '     CSectionRecipeRoundedRectangle.
 '
 '   УСТРОЙСТВО ШТАТНЫХ РЕЦЕПТОВ
@@ -116,10 +117,9 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     AddAnnotations. AddGeometry задаёт границы бетона и отверстий. AddReinforcement создаёт линии
 '     центров арматуры и регистрирует правила размещения стержней. AddAnnotations задаёт размеры и
 '     подписи. Эти методы получают готовые параметры и не читают входные таблицы.
-'     Неактивные поля не становятся обязательными: параметры отключённого ряда пропускаются. В
-'     HollowRectangle внутренние as нужны и без стержней на соответствующей стороне: они ограничивают
-'     линии арматуры у отверстия. В таблицах используются утверждённые названия Config без
-'     альтернативных ключей.
+'     Параметры отключённого ряда пропускаются. В HollowRectangle внутренние as нужны и без стержней на
+'     соответствующей стороне: они ограничивают линии арматуры у отверстия. Ридер использует короткие
+'     ключи независимо от русских подписей и порядка полей.
 '
 '   ПОДГОТОВКА КОНТАКТНЫХ РЯДОВ
 '     ReadRebarInputs читает и проверяет параметры активных рядов. В AddReinforcement создают отдельный
@@ -386,6 +386,20 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '   Класс / модуль: CSectionRecipeContext
 '
 '     ----------------------------------------------------------------------------------------------
+'     CSectionRecipeContext.Reader
+'
+'       Создаёт ридер блочной таблицы по её имени. Поля находятся по ключам блока, строки и столбца;
+'       длины переводятся в мм по единицам контекста. Для собственной структуры таблицы доступен Table.
+'
+'       Объявление:
+'         Public Function Reader(ByVal tableName As String) As CSectionInputReader
+'
+'       Параметры:
+'         ByVal tableName As String
+'           Имя единственного корневого входного блока этого снимка.
+'
+'
+'     ----------------------------------------------------------------------------------------------
 '     CSectionRecipeContext.Table
 '
 '       Возвращает копию зарегистрированной таблицы по имени; если таблицы нет, выдаёт ошибку.
@@ -406,6 +420,397 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Property Get Units() As CUnitSystem
+'
+'
+'   Класс / модуль: CSectionInputReader
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Initialize
+'
+'       Сохраняет снимок и независимую копию единиц. Блоки индексируются только при первом обращении по
+'       ключам. Блок задаётся за две строки до строки key; столбец key расположен первым. Для прямого
+'       чтения ValueAt структура блоков не требуется.
+'
+'       Объявление:
+'         Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem =
+'         Nothing)
+'
+'       Параметры:
+'         ByVal table As CSectionInputTable
+'           Неизменяемый CSectionInputTable.
+'
+'         Optional ByVal units As CUnitSystem = Nothing
+'           CUnitSystem с уже выбранными единицами; преобразование выполняется её методами.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.ValueAt
+'
+'       Возвращает исходное значение по номерам строки и столбца внутри диапазона, начиная с 1. Работает
+'       с произвольной структурой без блоков и ключей. Единицы не преобразует; ошибки формул и выход за
+'       диапазон отклоняются с указанием источника.
+'
+'       Объявление:
+'         Public Function ValueAt(ByVal row As Long, ByVal column As Long) As Variant
+'
+'       Параметры:
+'         ByVal row As Long
+'           Номер строки снимка 1..RowCount.
+'
+'         ByVal column As Long
+'           Номер столбца снимка 1..ColumnCount.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.RowKeys
+'
+'       Возвращает массив ключей строк блока в порядке таблицы; пустые строки и строка единиц Units
+'       пропускаются.
+'
+'       Объявление:
+'         Public Function RowKeys(ByVal blockKey As String) As Variant
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.RowIndex
+'
+'       Возвращает номер строки ключа внутри выбранного блока. Повтор одного ключа в разных блоках
+'       допустим.
+'
+'       Объявление:
+'         Public Function RowIndex(ByVal blockKey As String, ByVal rowKey As String) As Long
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.ColumnIndex
+'
+'       Возвращает номер столбца по короткому ключу, независимо от русской подписи и порядка столбцов
+'       данных.
+'
+'       Объявление:
+'         Public Function ColumnIndex(ByVal blockKey As String, ByVal columnKey As String) As Long
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal columnKey As String
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.CellValue
+'
+'       Находит поле по ключам блока, строки и столбца. Возвращает исходное значение из копии таблицы.
+'       При ошибке Excel сообщает адрес ячейки, которую нужно исправить.
+'
+'       Объявление:
+'         Public Function CellValue(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal
+'         columnKey As String = "val") As Variant
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Text
+'
+'       Находит поле по ключам блока, строки и столбца. Читает непустой текст либо переданное значение
+'       по умолчанию, удаляя крайние пробелы.
+'
+'       Объявление:
+'         Public Function Text(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal
+'         columnKey As String = "val", Optional ByVal defaultValue As Variant) As String
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'         Optional ByVal defaultValue As Variant
+'           Значение для пустой ячейки. В Text и Number без этого параметра пустая ячейка считается
+'           ошибкой; остальные методы используют указанное в объявлении значение по умолчанию.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Number
+'
+'       Находит поле по ключам блока, строки и столбца. Читает число, исключая Boolean/ошибки/объекты;
+'       обязательное пустое поле не заменяется нулём.
+'
+'       Объявление:
+'         Public Function Number(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal
+'         columnKey As String = "val", Optional ByVal defaultValue As Variant) As Double
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'         Optional ByVal defaultValue As Variant
+'           Значение для пустой ячейки. В Text и Number без этого параметра пустая ячейка считается
+'           ошибкой; остальные методы используют указанное в объявлении значение по умолчанию.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Count
+'
+'       Находит поле по ключам блока, строки и столбца. Читает целое неотрицательное 0..2147483647;
+'       отдельный executor проверяет суммарное число позиций.
+'
+'       Объявление:
+'         Public Function Count(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal
+'         columnKey As String = "val", Optional ByVal defaultValue As Long = 0) As Long
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'         Optional ByVal defaultValue As Long = 0
+'           Значение для пустой ячейки. В Text и Number без этого параметра пустая ячейка считается
+'           ошибкой; остальные методы используют указанное в объявлении значение по умолчанию.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Choice
+'
+'       Находит поле по ключам блока, строки и столбца. Проверяет вариант по allowed без учёта регистра
+'       и возвращает написание из allowed.
+'
+'       Объявление:
+'         Public Function Choice(ByVal blockKey As String, ByVal rowKey As String, ByVal allowed As
+'         Variant, Optional ByVal columnKey As String = "val", Optional ByVal defaultValue As String =
+'         vbNullString) As String
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         ByVal allowed As Variant
+'           Массив разрешённых строк; Choice возвращает строку именно в написании из этого массива.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'         Optional ByVal defaultValue As String = vbNullString
+'           Значение для пустой ячейки. В Text и Number без этого параметра пустая ячейка считается
+'           ошибкой; остальные методы используют указанное в объявлении значение по умолчанию.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Length
+'
+'       Находит поле по ключам блока, строки и столбца. Читает обязательное число и один раз переводит
+'       input length в мм через CUnitSystem.
+'
+'       Объявление:
+'         Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal
+'         columnKey As String = "val") As Double
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.PositiveLength
+'
+'       Находит поле по ключам блока, строки и столбца. Читает обязательную длину существующим Length и
+'       один раз переводит её в мм; проверяет >0. Пустота/текст/ошибка не становятся нулём; отказ
+'       содержит фактический адрес. Не заменяет ограничения GEOM_TOLERANCE/as>d/2.
+'
+'       Объявление:
+'         Public Function PositiveLength(ByVal blockKey As String, ByVal rowKey As String, Optional
+'         ByVal columnKey As String = "val") As Double
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.NonNegativeLength
+'
+'       Находит поле по ключам блока, строки и столбца. Читает обязательную длину существующим Length и
+'       один раз переводит её в мм; проверяет >=0. Пустота/текст/ошибка не становятся нулём; отказ
+'       содержит фактический адрес. Не заменяет ограничения GEOM_TOLERANCE/as>d/2.
+'
+'       Объявление:
+'         Public Function NonNegativeLength(ByVal blockKey As String, ByVal rowKey As String, Optional
+'         ByVal columnKey As String = "val") As Double
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.OptionalDiameter
+'
+'       Находит поле по ключам блока, строки и столбца. Пустая ячейка или 0 отключают ряд; положительный
+'       диаметр переводится в мм. Текст, включая одиночный дефис и TODO, и отрицательный диаметр
+'       вызывают адресную ошибку ввода.
+'
+'       Объявление:
+'         Public Function OptionalDiameter(ByVal blockKey As String, ByVal rowKey As String, Optional
+'         ByVal columnKey As String = "val") As Double
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.OptionalRowOffset
+'
+'       Находит поле по ключам блока, строки и столбца. Читает базовый отступ дополнительного ряда:
+'       пустая ячейка равна нулю, число неотрицательно и переводится из INPUT Length в мм. Текст,
+'       Boolean, ошибка формулы и отрицательное число дают адресную ошибку.
+'
+'       Объявление:
+'         Public Function OptionalRowOffset(ByVal blockKey As String, ByVal rowKey As String, Optional
+'         ByVal columnKey As String = "val") As Double
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.SourceReference
+'
+'       Возвращает фактический адрес исходного поля с именем таблицы, в том числе после перестановки
+'       строк и столбцов.
+'
+'       Объявление:
+'         Public Function SourceReference(ByVal blockKey As String, ByVal rowKey As String, Optional
+'         ByVal columnKey As String = "val") As String
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         Optional ByVal columnKey As String = "val"
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.SourceReferences
+'
+'       Объединяет адреса нескольких полей одной строки для пояснения об ошибке размещения арматуры или
+'       геометрии.
+'
+'       Объявление:
+'         Public Function SourceReferences(ByVal blockKey As String, ByVal rowKey As String, ByVal
+'         columnKeys As Variant) As String
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         ByVal columnKeys As Variant
+'           Массив ключей полей, чьи адреса нужно включить в пояснение об ошибке.
+'
+'
+'     ----------------------------------------------------------------------------------------------
+'     CSectionInputReader.Require
+'
+'       При нарушении переданного условия сообщает причину и фактический адрес поля. Инженерное условие
+'       определяет рецепт.
+'
+'       Объявление:
+'         Public Sub Require(ByVal blockKey As String, ByVal rowKey As String, ByVal columnKey As
+'         String, ByVal condition As Boolean, ByVal reason As String)
+'
+'       Параметры:
+'         ByVal blockKey As String
+'           Короткий ключ блока, например Geom, Main или Extra.
+'
+'         ByVal rowKey As String
+'           Ключ строки внутри выбранного блока, например B или Top.
+'
+'         ByVal columnKey As String
+'           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
+'
+'         ByVal condition As Boolean
+'           Проверяемое рецептом инженерное условие; при False выдаётся ошибка ввода.
+'
+'         ByVal reason As String
+'           Понятная причина нарушения условия, без заранее заданного адреса ячейки.
+'
 '
 '
 '   Класс / модуль: CSectionInputTable
@@ -677,15 +1082,6 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '         ByVal units As CUnitSystem
 '           CUnitSystem с уже выбранными единицами; преобразование выполняется её методами.
 '
-'
-'     ----------------------------------------------------------------------------------------------
-'     CSectionInputTable.AdditionalRowsHeader
-'
-'       Находит единственный заголовок d2 и проверяет полный порядок 11 столбцов дополнительных рядов.
-'       Повторяющиеся подписи отступ/привязка/положение различаются по соседним d2 и d3.
-'
-'       Объявление:
-'         Public Function AdditionalRowsHeader() As Long
 '
 '     ----------------------------------------------------------------------------------------------
 '     CSectionInputTable.ColumnByCaption

@@ -1,0 +1,729 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\StructuredGeometryTables_2026-10-17\Candidate.xlsm
+SOURCE_SHA256: 366A5DDCA6A5688BE6F7A651723466010A52F5A157C882094BE5577E4658830C
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=107864; startTicks=639278674316355095
+===== modTestSectionInputReader.RunSectionInputReaderTests =====
+SUITE_STARTED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-17T23:57:17
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=107864; workingSet=159891456; privateBytes=111087616; cpu=5.546875
+EXCEL_AFTER_SUITE: pid=108372; workingSet=165728256; privateBytes=118116352; cpu=5.40625
+TOTAL_SECTION_INPUT_READER: passed=94; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionInputReader.RunSectionInputReaderTests; 2026-10-17T23:57:18
+===== modTestSectionRecipes.RunWorkbookRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunWorkbookRecipeInputTests; 2026-10-17T23:57:19
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=105992; workingSet=78069760; privateBytes=52678656; cpu=0.734375
+EXCEL_AFTER_SUITE: pid=107864; workingSet=174731264; privateBytes=124616704; cpu=12.5
+EXCEL_AFTER_SUITE: pid=108372; workingSet=182874112; privateBytes=135327744; cpu=12.34375
+PASS: workbook.reader.noShapeKey.Circle.Circle.Diameter
+PASS: workbook.reader.noShapeKey.Circle.RectSet.B1
+PASS: workbook.reader.noShapeKey.Circle.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.Circle.HollowRectangle.B
+PASS: workbook.inactiveName.Circle
+PASS: workbook.table.immutable.Circle
+PASS: workbook.definition.sealed.Circle
+PASS: workbook.definition.meshCount.Circle
+PASS: workbook.definition.barCount.Circle
+PASS: workbook.definition.x.Circle.1; actual=1.59198825996909E-14; expected=1.59198825996909E-14
+PASS: workbook.definition.y.Circle.1; actual=260; expected=260
+PASS: workbook.definition.x.Circle.2; actual=1.4664661087023E-14; expected=1.4664661087023E-14
+PASS: workbook.definition.y.Circle.2; actual=239.5; expected=239.5
+PASS: workbook.definition.x.Circle.3; actual=18.5; expected=18.5
+PASS: workbook.definition.y.Circle.3; actual=260; expected=260
+PASS: workbook.definition.x.Circle.4; actual=130; expected=130
+PASS: workbook.definition.y.Circle.4; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.x.Circle.5; actual=119.75; expected=119.75
+PASS: workbook.definition.y.Circle.5; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.x.Circle.6; actual=146.021469970012; expected=146.021469970012
+PASS: workbook.definition.y.Circle.6; actual=215.916604983954; expected=215.916604983954
+PASS: workbook.definition.x.Circle.7; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.y.Circle.7; actual=130; expected=130
+PASS: workbook.definition.x.Circle.8; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.y.Circle.8; actual=119.75; expected=119.75
+PASS: workbook.definition.x.Circle.9; actual=234.416604983954; expected=234.416604983954
+PASS: workbook.definition.y.Circle.9; actual=113.978530029988; expected=113.978530029988
+PASS: workbook.definition.x.Circle.10; actual=260; expected=260
+PASS: workbook.definition.y.Circle.10; actual=0; expected=0
+PASS: workbook.definition.x.Circle.11; actual=239.5; expected=239.5
+PASS: workbook.definition.y.Circle.11; actual=0; expected=0
+PASS: workbook.definition.x.Circle.12; actual=260; expected=260
+PASS: workbook.definition.y.Circle.12; actual=-18.5; expected=-18.5
+PASS: workbook.definition.x.Circle.13; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.y.Circle.13; actual=-130; expected=-130
+PASS: workbook.definition.x.Circle.14; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.y.Circle.14; actual=-119.75; expected=-119.75
+PASS: workbook.definition.x.Circle.15; actual=215.916604983954; expected=215.916604983954
+PASS: workbook.definition.y.Circle.15; actual=-146.021469970012; expected=-146.021469970012
+PASS: workbook.definition.x.Circle.16; actual=130; expected=130
+PASS: workbook.definition.y.Circle.16; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.x.Circle.17; actual=119.75; expected=119.75
+PASS: workbook.definition.y.Circle.17; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.x.Circle.18; actual=113.978530029988; expected=113.978530029988
+PASS: workbook.definition.y.Circle.18; actual=-234.416604983954; expected=-234.416604983954
+PASS: workbook.definition.x.Circle.19; actual=1.59198825996909E-14; expected=1.59198825996909E-14
+PASS: workbook.definition.y.Circle.19; actual=-260; expected=-260
+PASS: workbook.definition.x.Circle.20; actual=1.4664661087023E-14; expected=1.4664661087023E-14
+PASS: workbook.definition.y.Circle.20; actual=-239.5; expected=-239.5
+PASS: workbook.definition.x.Circle.21; actual=-18.5; expected=-18.5
+PASS: workbook.definition.y.Circle.21; actual=-260; expected=-260
+PASS: workbook.definition.x.Circle.22; actual=-130; expected=-130
+PASS: workbook.definition.y.Circle.22; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.x.Circle.23; actual=-119.75; expected=-119.75
+PASS: workbook.definition.y.Circle.23; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.x.Circle.24; actual=-146.021469970012; expected=-146.021469970012
+PASS: workbook.definition.y.Circle.24; actual=-215.916604983954; expected=-215.916604983954
+PASS: workbook.definition.x.Circle.25; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.y.Circle.25; actual=-130; expected=-130
+PASS: workbook.definition.x.Circle.26; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.y.Circle.26; actual=-119.75; expected=-119.75
+PASS: workbook.definition.x.Circle.27; actual=-234.416604983954; expected=-234.416604983954
+PASS: workbook.definition.y.Circle.27; actual=-113.978530029988; expected=-113.978530029988
+PASS: workbook.definition.x.Circle.28; actual=-260; expected=-260
+PASS: workbook.definition.y.Circle.28; actual=-3.18397651993818E-14; expected=-3.18397651993818E-14
+PASS: workbook.definition.x.Circle.29; actual=-239.5; expected=-239.5
+PASS: workbook.definition.y.Circle.29; actual=-2.93293221740459E-14; expected=-2.93293221740459E-14
+PASS: workbook.definition.x.Circle.30; actual=-260; expected=-260
+PASS: workbook.definition.y.Circle.30; actual=18.5; expected=18.5
+PASS: workbook.definition.x.Circle.31; actual=-225.166604983954; expected=-225.166604983954
+PASS: workbook.definition.y.Circle.31; actual=130; expected=130
+PASS: workbook.definition.x.Circle.32; actual=-207.413084206373; expected=-207.413084206373
+PASS: workbook.definition.y.Circle.32; actual=119.75; expected=119.75
+PASS: workbook.definition.x.Circle.33; actual=-215.916604983954; expected=-215.916604983954
+PASS: workbook.definition.y.Circle.33; actual=146.021469970012; expected=146.021469970012
+PASS: workbook.definition.x.Circle.34; actual=-130; expected=-130
+PASS: workbook.definition.y.Circle.34; actual=225.166604983954; expected=225.166604983954
+PASS: workbook.definition.x.Circle.35; actual=-119.75; expected=-119.75
+PASS: workbook.definition.y.Circle.35; actual=207.413084206373; expected=207.413084206373
+PASS: workbook.definition.x.Circle.36; actual=-113.978530029988; expected=-113.978530029988
+PASS: workbook.definition.y.Circle.36; actual=234.416604983954; expected=234.416604983954
+PASS: workbook.activeName.reject.Circle
+PASS: workbook.reader.noShapeKey.Rectangle.Circle.Diameter
+PASS: workbook.reader.noShapeKey.Rectangle.RectSet.B1
+PASS: workbook.reader.noShapeKey.Rectangle.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.Rectangle.HollowRectangle.B
+PASS: workbook.inactiveName.Rectangle
+PASS: workbook.table.immutable.Rectangle
+PASS: workbook.definition.sealed.Rectangle
+PASS: workbook.definition.meshCount.Rectangle
+PASS: workbook.definition.barCount.Rectangle
+PASS: workbook.definition.x.Rectangle.1; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.1; actual=200; expected=200
+PASS: workbook.definition.x.Rectangle.2; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.2; actual=140; expected=140
+PASS: workbook.definition.x.Rectangle.3; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.3; actual=260; expected=260
+PASS: workbook.definition.x.Rectangle.4; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.4; actual=80; expected=80
+PASS: workbook.definition.x.Rectangle.5; actual=40; expected=40
+PASS: workbook.definition.y.Rectangle.5; actual=320; expected=320
+PASS: workbook.definition.x.Rectangle.6; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.6; actual=200; expected=200
+PASS: workbook.definition.x.Rectangle.7; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.7; actual=260; expected=260
+PASS: workbook.definition.x.Rectangle.8; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.8; actual=140; expected=140
+PASS: workbook.definition.x.Rectangle.9; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.9; actual=320; expected=320
+PASS: workbook.definition.x.Rectangle.10; actual=260; expected=260
+PASS: workbook.definition.y.Rectangle.10; actual=80; expected=80
+PASS: workbook.definition.x.Rectangle.11; actual=80; expected=80
+PASS: workbook.definition.y.Rectangle.11; actual=360; expected=360
+PASS: workbook.definition.x.Rectangle.12; actual=220; expected=220
+PASS: workbook.definition.y.Rectangle.12; actual=360; expected=360
+PASS: workbook.definition.x.Rectangle.13; actual=220; expected=220
+PASS: workbook.definition.y.Rectangle.13; actual=40; expected=40
+PASS: workbook.definition.x.Rectangle.14; actual=80; expected=80
+PASS: workbook.definition.y.Rectangle.14; actual=40; expected=40
+PASS: workbook.activeName.reject.Rectangle
+PASS: workbook.reader.noShapeKey.RoundedMixed.Circle.Diameter
+PASS: workbook.reader.noShapeKey.RoundedMixed.RectSet.B1
+PASS: workbook.reader.noShapeKey.RoundedMixed.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.RoundedMixed.HollowRectangle.B
+PASS: workbook.inactiveName.RoundedMixed
+PASS: workbook.table.immutable.RoundedMixed
+PASS: workbook.definition.sealed.RoundedMixed
+PASS: workbook.definition.meshCount.RoundedMixed
+PASS: workbook.definition.barCount.RoundedMixed
+PASS: workbook.definition.x.RoundedMixed.1; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.1; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.2; actual=-183.101063109644; expected=-183.101063109644
+PASS: workbook.definition.y.RoundedMixed.2; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.3; actual=-106.202126219288; expected=-106.202126219288
+PASS: workbook.definition.y.RoundedMixed.3; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.4; actual=-29.3031893289313; expected=-29.3031893289313
+PASS: workbook.definition.y.RoundedMixed.4; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.5; actual=47.595747561425; expected=47.595747561425
+PASS: workbook.definition.y.RoundedMixed.5; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.6; actual=124.494684451781; expected=124.494684451781
+PASS: workbook.definition.y.RoundedMixed.6; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.7; actual=201.393621342137; expected=201.393621342137
+PASS: workbook.definition.y.RoundedMixed.7; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.8; actual=278.292558232494; expected=278.292558232494
+PASS: workbook.definition.y.RoundedMixed.8; actual=160; expected=160
+PASS: workbook.definition.x.RoundedMixed.9; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.9; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.10; actual=-183.101063109644; expected=-183.101063109644
+PASS: workbook.definition.y.RoundedMixed.10; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.11; actual=-106.202126219288; expected=-106.202126219288
+PASS: workbook.definition.y.RoundedMixed.11; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.12; actual=-29.3031893289313; expected=-29.3031893289313
+PASS: workbook.definition.y.RoundedMixed.12; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.13; actual=47.595747561425; expected=47.595747561425
+PASS: workbook.definition.y.RoundedMixed.13; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.14; actual=124.494684451781; expected=124.494684451781
+PASS: workbook.definition.y.RoundedMixed.14; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.15; actual=201.393621342137; expected=201.393621342137
+PASS: workbook.definition.y.RoundedMixed.15; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.16; actual=278.292558232494; expected=278.292558232494
+PASS: workbook.definition.y.RoundedMixed.16; actual=-160; expected=-160
+PASS: workbook.definition.x.RoundedMixed.17; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.17; actual=106.666666666667; expected=106.666666666667
+PASS: workbook.definition.x.RoundedMixed.18; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.18; actual=53.3333333333333; expected=53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.19; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.19; actual=0; expected=0
+PASS: workbook.definition.x.RoundedMixed.20; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.20; actual=-53.3333333333334; expected=-53.3333333333334
+PASS: workbook.definition.x.RoundedMixed.21; actual=-260; expected=-260
+PASS: workbook.definition.y.RoundedMixed.21; actual=-106.666666666667; expected=-106.666666666667
+PASS: workbook.definition.x.RoundedMixed.22; actual=312.95922489916; expected=312.95922489916
+PASS: workbook.definition.y.RoundedMixed.22; actual=106.666666666667; expected=106.666666666667
+PASS: workbook.definition.x.RoundedMixed.23; actual=347.625891565827; expected=347.625891565827
+PASS: workbook.definition.y.RoundedMixed.23; actual=53.3333333333333; expected=53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.24; actual=382.292558232494; expected=382.292558232494
+PASS: workbook.definition.y.RoundedMixed.24; actual=0; expected=0
+PASS: workbook.definition.x.RoundedMixed.25; actual=347.625891565827; expected=347.625891565827
+PASS: workbook.definition.y.RoundedMixed.25; actual=-53.3333333333333; expected=-53.3333333333333
+PASS: workbook.definition.x.RoundedMixed.26; actual=312.95922489916; expected=312.95922489916
+PASS: workbook.definition.y.RoundedMixed.26; actual=-106.666666666667; expected=-106.666666666667
+PASS: workbook.activeName.reject.RoundedMixed
+PASS: workbook.reader.noShapeKey.HollowOffset.Circle.Diameter
+PASS: workbook.reader.noShapeKey.HollowOffset.RectSet.B1
+PASS: workbook.reader.noShapeKey.HollowOffset.RoundedRectangle.B
+PASS: workbook.reader.noShapeKey.HollowOffset.HollowRectangle.B
+PASS: workbook.inactiveName.HollowOffset
+PASS: workbook.table.immutable.HollowOffset
+PASS: workbook.definition.sealed.HollowOffset
+PASS: workbook.definition.meshCount.HollowOffset
+PASS: workbook.definition.barCount.HollowOffset
+PASS: workbook.definition.x.HollowOffset.1; actual=-366.656831750143; expected=-366.656831750143
+PASS: workbook.definition.y.HollowOffset.1; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.2; actual=-261.897736964388; expected=-261.897736964388
+PASS: workbook.definition.y.HollowOffset.2; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.3; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.3; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.4; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.4; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.5; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.5; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.6; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.6; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.7; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.7; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.8; actual=366.656831750143; expected=366.656831750143
+PASS: workbook.definition.y.HollowOffset.8; actual=560; expected=560
+PASS: workbook.definition.x.HollowOffset.9; actual=-366.656831750143; expected=-366.656831750143
+PASS: workbook.definition.y.HollowOffset.9; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.10; actual=-261.897736964388; expected=-261.897736964388
+PASS: workbook.definition.y.HollowOffset.10; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.11; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.11; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.12; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.12; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.13; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.13; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.14; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.14; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.15; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.15; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.16; actual=366.656831750143; expected=366.656831750143
+PASS: workbook.definition.y.HollowOffset.16; actual=-560; expected=-560
+PASS: workbook.definition.x.HollowOffset.17; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.17; actual=-540; expected=-540
+PASS: workbook.definition.x.HollowOffset.18; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.18; actual=-324; expected=-324
+PASS: workbook.definition.x.HollowOffset.19; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.19; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.20; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.20; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.21; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.21; actual=324; expected=324
+PASS: workbook.definition.x.HollowOffset.22; actual=-460; expected=-460
+PASS: workbook.definition.y.HollowOffset.22; actual=540; expected=540
+PASS: workbook.definition.x.HollowOffset.23; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.23; actual=-540; expected=-540
+PASS: workbook.definition.x.HollowOffset.24; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.24; actual=-324; expected=-324
+PASS: workbook.definition.x.HollowOffset.25; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.25; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.26; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.26; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.27; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.27; actual=324; expected=324
+PASS: workbook.definition.x.HollowOffset.28; actual=460; expected=460
+PASS: workbook.definition.y.HollowOffset.28; actual=540; expected=540
+PASS: workbook.definition.x.HollowOffset.29; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.29; actual=334.525143166832; expected=334.525143166832
+PASS: workbook.definition.x.HollowOffset.30; actual=-52.3795473928776; expected=-52.3795473928776
+PASS: workbook.definition.y.HollowOffset.30; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.31; actual=52.3795473928775; expected=52.3795473928775
+PASS: workbook.definition.y.HollowOffset.31; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.32; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.32; actual=340; expected=340
+PASS: workbook.definition.x.HollowOffset.33; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.33; actual=316.974726161791; expected=316.974726161791
+PASS: workbook.definition.x.HollowOffset.34; actual=-157.138642178633; expected=-157.138642178633
+PASS: workbook.definition.y.HollowOffset.34; actual=-234.525143166832; expected=-234.525143166832
+PASS: workbook.definition.x.HollowOffset.35; actual=-52.3795473928775; expected=-52.3795473928775
+PASS: workbook.definition.y.HollowOffset.35; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.36; actual=52.3795473928774; expected=52.3795473928774
+PASS: workbook.definition.y.HollowOffset.36; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.37; actual=157.138642178633; expected=157.138642178633
+PASS: workbook.definition.y.HollowOffset.37; actual=-240; expected=-240
+PASS: workbook.definition.x.HollowOffset.38; actual=261.897736964388; expected=261.897736964388
+PASS: workbook.definition.y.HollowOffset.38; actual=-216.974726161791; expected=-216.974726161791
+PASS: workbook.definition.x.HollowOffset.39; actual=-200; expected=-200
+PASS: workbook.definition.y.HollowOffset.39; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.40; actual=-200; expected=-200
+PASS: workbook.definition.y.HollowOffset.40; actual=108; expected=108
+PASS: workbook.definition.x.HollowOffset.41; actual=280; expected=280
+PASS: workbook.definition.y.HollowOffset.41; actual=-108; expected=-108
+PASS: workbook.definition.x.HollowOffset.42; actual=280; expected=280
+PASS: workbook.definition.y.HollowOffset.42; actual=108; expected=108
+PASS: workbook.activeName.reject.HollowOffset
+PASS: workbook.manual.stale.fixture; actual=75; expected=75
+PASS: workbook.manual.capture.refreshed; actual=80; expected=80
+PASS: workbook.registry.metadata.copy
+PASS: workbook.registry.emptyMetadata
+PASS: workbook.registry.dynamicChoice
+PASS: inputTable.caption.ignoresInactiveError
+PASS: inputTable.caption.activeReadRejects
+PASS: inputTable.caption.otherValuePreserved; actual=50; expected=50
+TOTAL WORKBOOK RECIPE INPUT: passed=284; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunWorkbookRecipeInputTests; 2026-10-17T23:57:25
+===== modTestSectionRecipes.RunRoundedRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRoundedRecipeInputTests; 2026-10-17T23:57:25
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=107864; workingSet=181141504; privateBytes=131768320; cpu=19.078125
+EXCEL_AFTER_SUITE: pid=108372; workingSet=151842816; privateBytes=103268352; cpu=18.109375
+PASS: rounded.input.0
+PASS: rounded.input.1
+PASS: rounded.input.2
+PASS: rounded.input.3
+PASS: rounded.input.4
+PASS: rounded.input.5
+PASS: rounded.input.6
+PASS: rounded.input.7
+PASS: rounded.input.8
+PASS: rounded.input.9
+PASS: rounded.input.10
+PASS: rounded.input.11
+PASS: rounded.input.12
+PASS: rounded.input.13
+TOTAL ROUNDED INPUT: passed=14; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRoundedRecipeInputTests; 2026-10-17T23:57:31
+===== modTestSectionRecipes.RunHollowRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunHollowRecipeInputTests; 2026-10-17T23:57:32
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=107864; workingSet=178831360; privateBytes=128532480; cpu=28.171875
+EXCEL_AFTER_SUITE: pid=108372; workingSet=170860544; privateBytes=122232832; cpu=26.953125
+PASS: hollow.input.0
+PASS: hollow.input.1
+PASS: hollow.input.2
+PASS: hollow.input.3
+PASS: hollow.input.4
+PASS: hollow.input.5
+PASS: hollow.input.6
+PASS: hollow.input.7
+PASS: hollow.input.8
+PASS: hollow.input.9
+PASS: hollow.input.10
+PASS: hollow.input.11
+PASS: hollow.input.12
+PASS: hollow.input.13
+PASS: hollow.input.14
+PASS: hollow.input.15
+PASS: hollow.input.16
+PASS: hollow.input.17
+PASS: hollow.input.18
+PASS: hollow.input.19
+TOTAL HOLLOW INPUT: passed=20; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunHollowRecipeInputTests; 2026-10-17T23:57:40
+===== modTestSectionRecipes.RunRecipeCaptionTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeCaptionTests; 2026-10-17T23:57:41
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=107864; workingSet=183181312; privateBytes=133009408; cpu=37.453125
+EXCEL_AFTER_SUITE: pid=108372; workingSet=175665152; privateBytes=126849024; cpu=36.21875
+PASS: Circle.visible.caption.MainCircle
+PASS: Circle.missing.key.MainCircle
+PASS: Circle.visible.caption.ExtraCircle
+PASS: Circle.missing.key.ExtraCircle
+PASS: RectSet.visible.caption.MainR1.Top
+PASS: RectSet.missing.key.MainR1.Top
+PASS: RectSet.visible.caption.MainR1.Bottom
+PASS: RectSet.missing.key.MainR1.Bottom
+PASS: RectSet.visible.caption.MainR1.Left
+PASS: RectSet.missing.key.MainR1.Left
+PASS: RectSet.visible.caption.MainR1.Right
+PASS: RectSet.missing.key.MainR1.Right
+PASS: RectSet.visible.caption.MainR2.Top
+PASS: RectSet.missing.key.MainR2.Top
+PASS: RectSet.visible.caption.MainR2.Bottom
+PASS: RectSet.missing.key.MainR2.Bottom
+PASS: RectSet.visible.caption.MainR2.Left
+PASS: RectSet.missing.key.MainR2.Left
+PASS: RectSet.visible.caption.MainR2.Right
+PASS: RectSet.missing.key.MainR2.Right
+PASS: RectSet.visible.caption.ExtraR1.Top
+PASS: RectSet.missing.key.ExtraR1.Top
+PASS: RectSet.visible.caption.ExtraR1.Bottom
+PASS: RectSet.missing.key.ExtraR1.Bottom
+PASS: RectSet.visible.caption.ExtraR1.Left
+PASS: RectSet.missing.key.ExtraR1.Left
+PASS: RectSet.visible.caption.ExtraR1.Right
+PASS: RectSet.missing.key.ExtraR1.Right
+PASS: RectSet.visible.caption.ExtraR2.Top
+PASS: RectSet.missing.key.ExtraR2.Top
+PASS: RectSet.visible.caption.ExtraR2.Bottom
+PASS: RectSet.missing.key.ExtraR2.Bottom
+PASS: RectSet.visible.caption.ExtraR2.Left
+PASS: RectSet.missing.key.ExtraR2.Left
+PASS: RectSet.visible.caption.ExtraR2.Right
+PASS: RectSet.missing.key.ExtraR2.Right
+PASS: RoundedRectangle.visible.caption.MainTop
+PASS: RoundedRectangle.missing.key.MainTop
+PASS: RoundedRectangle.visible.caption.MainBottom
+PASS: RoundedRectangle.missing.key.MainBottom
+PASS: RoundedRectangle.visible.caption.MainLeft
+PASS: RoundedRectangle.missing.key.MainLeft
+PASS: RoundedRectangle.visible.caption.MainRight
+PASS: RoundedRectangle.missing.key.MainRight
+PASS: RoundedRectangle.visible.caption.ExtraTop
+PASS: RoundedRectangle.missing.key.ExtraTop
+PASS: RoundedRectangle.visible.caption.ExtraBottom
+PASS: RoundedRectangle.missing.key.ExtraBottom
+PASS: RoundedRectangle.visible.caption.ExtraLeft
+PASS: RoundedRectangle.missing.key.ExtraLeft
+PASS: RoundedRectangle.visible.caption.ExtraRight
+PASS: RoundedRectangle.missing.key.ExtraRight
+PASS: HollowRectangle.visible.caption.MainTop
+PASS: HollowRectangle.missing.key.MainTop
+PASS: HollowRectangle.visible.caption.MainBottom
+PASS: HollowRectangle.missing.key.MainBottom
+PASS: HollowRectangle.visible.caption.MainLeft
+PASS: HollowRectangle.missing.key.MainLeft
+PASS: HollowRectangle.visible.caption.MainRight
+PASS: HollowRectangle.missing.key.MainRight
+PASS: HollowRectangle.visible.caption.MainOpeningTop
+PASS: HollowRectangle.missing.key.MainOpeningTop
+PASS: HollowRectangle.visible.caption.MainOpeningBottom
+PASS: HollowRectangle.missing.key.MainOpeningBottom
+PASS: HollowRectangle.visible.caption.MainOpeningLeft
+PASS: HollowRectangle.missing.key.MainOpeningLeft
+PASS: HollowRectangle.visible.caption.MainOpeningRight
+PASS: HollowRectangle.missing.key.MainOpeningRight
+PASS: HollowRectangle.visible.caption.ExtraTop
+PASS: HollowRectangle.missing.key.ExtraTop
+PASS: HollowRectangle.visible.caption.ExtraBottom
+PASS: HollowRectangle.missing.key.ExtraBottom
+PASS: HollowRectangle.visible.caption.ExtraLeft
+PASS: HollowRectangle.missing.key.ExtraLeft
+PASS: HollowRectangle.visible.caption.ExtraRight
+PASS: HollowRectangle.missing.key.ExtraRight
+PASS: HollowRectangle.visible.caption.ExtraOpeningTop
+PASS: HollowRectangle.missing.key.ExtraOpeningTop
+PASS: HollowRectangle.visible.caption.ExtraOpeningBottom
+PASS: HollowRectangle.missing.key.ExtraOpeningBottom
+PASS: HollowRectangle.visible.caption.ExtraOpeningLeft
+PASS: HollowRectangle.missing.key.ExtraOpeningLeft
+PASS: HollowRectangle.visible.caption.ExtraOpeningRight
+PASS: HollowRectangle.missing.key.ExtraOpeningRight
+TOTAL RECIPE CAPTIONS: passed=84; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeCaptionTests; 2026-10-17T23:57:49
+===== modTestAudit02Api.RunAudit02CloseoutRectSetInputTests =====
+SUITE_STARTED: modTestAudit02Api.RunAudit02CloseoutRectSetInputTests; 2026-10-17T23:57:50
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=106692; workingSet=124887040; privateBytes=87502848; cpu=6.984375
+EXCEL_AFTER_SUITE: pid=107864; workingSet=163008512; privateBytes=112824320; cpu=46.625
+EXCEL_AFTER_SUITE: pid=108372; workingSet=167469056; privateBytes=118784000; cpu=44.65625
+PASS: rect.valid.mm.Rectangle
+PASS: rect.positive.mm.Rectangle.1
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.Rectangle.1.zero
+PASS: rect.reject.address.mm.Rectangle.1.negative
+PASS: rect.reject.address.mm.Rectangle.1.empty
+PASS: rect.reject.address.mm.Rectangle.1.text
+PASS: rect.positive.mm.Rectangle.2
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.Rectangle.2.zero
+PASS: rect.reject.address.mm.Rectangle.2.negative
+PASS: rect.reject.address.mm.Rectangle.2.empty
+PASS: rect.reject.address.mm.Rectangle.2.text
+PASS: rect.inactive.fields.mm.Rectangle
+PASS: rect.pair.numeric.before.positive.mm.Rectangle.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.valid.mm.LSection
+PASS: rect.positive.mm.LSection.1
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.LSection.1.zero
+PASS: rect.reject.address.mm.LSection.1.negative
+PASS: rect.reject.address.mm.LSection.1.empty
+PASS: rect.reject.address.mm.LSection.1.text
+PASS: rect.positive.mm.LSection.2
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.LSection.2.zero
+PASS: rect.reject.address.mm.LSection.2.negative
+PASS: rect.reject.address.mm.LSection.2.empty
+PASS: rect.reject.address.mm.LSection.2.text
+PASS: rect.positive.mm.LSection.3
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.LSection.3.zero
+PASS: rect.reject.address.mm.LSection.3.negative
+PASS: rect.reject.address.mm.LSection.3.empty
+PASS: rect.reject.address.mm.LSection.3.text
+PASS: rect.positive.mm.LSection.4
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.LSection.4.zero
+PASS: rect.reject.address.mm.LSection.4.negative
+PASS: rect.reject.address.mm.LSection.4.empty
+PASS: rect.reject.address.mm.LSection.4.text
+PASS: rect.inactive.fields.mm.LSection
+PASS: rect.pair.numeric.before.positive.mm.LSection.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.pair.numeric.before.positive.mm.LSection.3
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.LSection.B1.less.B2
+PASS: rect.alias.mm.RectSet
+PASS: rect.valid.mm.TwoRectangles
+PASS: rect.positive.mm.TwoRectangles.1
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.TwoRectangles.1.zero
+PASS: rect.reject.address.mm.TwoRectangles.1.negative
+PASS: rect.reject.address.mm.TwoRectangles.1.empty
+PASS: rect.reject.address.mm.TwoRectangles.1.text
+PASS: rect.positive.mm.TwoRectangles.2
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.TwoRectangles.2.zero
+PASS: rect.reject.address.mm.TwoRectangles.2.negative
+PASS: rect.reject.address.mm.TwoRectangles.2.empty
+PASS: rect.reject.address.mm.TwoRectangles.2.text
+PASS: rect.positive.mm.TwoRectangles.3
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.TwoRectangles.3.zero
+PASS: rect.reject.address.mm.TwoRectangles.3.negative
+PASS: rect.reject.address.mm.TwoRectangles.3.empty
+PASS: rect.reject.address.mm.TwoRectangles.3.text
+PASS: rect.positive.mm.TwoRectangles.4
+PASS: rect.unit.once
+PASS: rect.reject.address.mm.TwoRectangles.4.zero
+PASS: rect.reject.address.mm.TwoRectangles.4.negative
+PASS: rect.reject.address.mm.TwoRectangles.4.empty
+PASS: rect.reject.address.mm.TwoRectangles.4.text
+PASS: rect.signed.offset.mm.-100
+PASS: rect.signed.offset.mm.0
+PASS: rect.signed.offset.mm.100
+PASS: rect.pair.numeric.before.positive.mm.TwoRectangles.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.pair.numeric.before.positive.mm.TwoRectangles.3
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.adjacency.address
+PASS: rect.alias.mm.TwoRectangle
+PASS: rect.alias.mm.TwoRectanglesOffset
+PASS: rect.alias.mm.OffsetTwoRectangles
+PASS: rect.valid.cm.Rectangle
+PASS: rect.positive.cm.Rectangle.1
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.Rectangle.1.zero
+PASS: rect.reject.address.cm.Rectangle.1.negative
+PASS: rect.reject.address.cm.Rectangle.1.empty
+PASS: rect.reject.address.cm.Rectangle.1.text
+PASS: rect.positive.cm.Rectangle.2
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.Rectangle.2.zero
+PASS: rect.reject.address.cm.Rectangle.2.negative
+PASS: rect.reject.address.cm.Rectangle.2.empty
+PASS: rect.reject.address.cm.Rectangle.2.text
+PASS: rect.inactive.fields.cm.Rectangle
+PASS: rect.pair.numeric.before.positive.cm.Rectangle.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.valid.cm.LSection
+PASS: rect.positive.cm.LSection.1
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.LSection.1.zero
+PASS: rect.reject.address.cm.LSection.1.negative
+PASS: rect.reject.address.cm.LSection.1.empty
+PASS: rect.reject.address.cm.LSection.1.text
+PASS: rect.positive.cm.LSection.2
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.LSection.2.zero
+PASS: rect.reject.address.cm.LSection.2.negative
+PASS: rect.reject.address.cm.LSection.2.empty
+PASS: rect.reject.address.cm.LSection.2.text
+PASS: rect.positive.cm.LSection.3
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.LSection.3.zero
+PASS: rect.reject.address.cm.LSection.3.negative
+PASS: rect.reject.address.cm.LSection.3.empty
+PASS: rect.reject.address.cm.LSection.3.text
+PASS: rect.positive.cm.LSection.4
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.LSection.4.zero
+PASS: rect.reject.address.cm.LSection.4.negative
+PASS: rect.reject.address.cm.LSection.4.empty
+PASS: rect.reject.address.cm.LSection.4.text
+PASS: rect.inactive.fields.cm.LSection
+PASS: rect.pair.numeric.before.positive.cm.LSection.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.pair.numeric.before.positive.cm.LSection.3
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.LSection.B1.less.B2
+PASS: rect.alias.cm.RectSet
+PASS: rect.valid.cm.TwoRectangles
+PASS: rect.positive.cm.TwoRectangles.1
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.TwoRectangles.1.zero
+PASS: rect.reject.address.cm.TwoRectangles.1.negative
+PASS: rect.reject.address.cm.TwoRectangles.1.empty
+PASS: rect.reject.address.cm.TwoRectangles.1.text
+PASS: rect.positive.cm.TwoRectangles.2
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.TwoRectangles.2.zero
+PASS: rect.reject.address.cm.TwoRectangles.2.negative
+PASS: rect.reject.address.cm.TwoRectangles.2.empty
+PASS: rect.reject.address.cm.TwoRectangles.2.text
+PASS: rect.positive.cm.TwoRectangles.3
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.TwoRectangles.3.zero
+PASS: rect.reject.address.cm.TwoRectangles.3.negative
+PASS: rect.reject.address.cm.TwoRectangles.3.empty
+PASS: rect.reject.address.cm.TwoRectangles.3.text
+PASS: rect.positive.cm.TwoRectangles.4
+PASS: rect.unit.once
+PASS: rect.reject.address.cm.TwoRectangles.4.zero
+PASS: rect.reject.address.cm.TwoRectangles.4.negative
+PASS: rect.reject.address.cm.TwoRectangles.4.empty
+PASS: rect.reject.address.cm.TwoRectangles.4.text
+PASS: rect.signed.offset.cm.-100
+PASS: rect.signed.offset.cm.0
+PASS: rect.signed.offset.cm.100
+PASS: rect.pair.numeric.before.positive.cm.TwoRectangles.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.pair.numeric.before.positive.cm.TwoRectangles.3
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.adjacency.address
+PASS: rect.alias.cm.TwoRectangle
+PASS: rect.alias.cm.TwoRectanglesOffset
+PASS: rect.alias.cm.OffsetTwoRectangles
+PASS: rect.valid.m.Rectangle
+PASS: rect.positive.m.Rectangle.1
+PASS: rect.unit.once
+PASS: rect.reject.address.m.Rectangle.1.zero
+PASS: rect.reject.address.m.Rectangle.1.negative
+PASS: rect.reject.address.m.Rectangle.1.empty
+PASS: rect.reject.address.m.Rectangle.1.text
+PASS: rect.positive.m.Rectangle.2
+PASS: rect.unit.once
+PASS: rect.reject.address.m.Rectangle.2.zero
+PASS: rect.reject.address.m.Rectangle.2.negative
+PASS: rect.reject.address.m.Rectangle.2.empty
+PASS: rect.reject.address.m.Rectangle.2.text
+PASS: rect.inactive.fields.m.Rectangle
+PASS: rect.pair.numeric.before.positive.m.Rectangle.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.valid.m.LSection
+PASS: rect.positive.m.LSection.1
+PASS: rect.unit.once
+PASS: rect.reject.address.m.LSection.1.zero
+PASS: rect.reject.address.m.LSection.1.negative
+PASS: rect.reject.address.m.LSection.1.empty
+PASS: rect.reject.address.m.LSection.1.text
+PASS: rect.positive.m.LSection.2
+PASS: rect.unit.once
+PASS: rect.reject.address.m.LSection.2.zero
+PASS: rect.reject.address.m.LSection.2.negative
+PASS: rect.reject.address.m.LSection.2.empty
+PASS: rect.reject.address.m.LSection.2.text
+PASS: rect.positive.m.LSection.3
+PASS: rect.unit.once
+PASS: rect.reject.address.m.LSection.3.zero
+PASS: rect.reject.address.m.LSection.3.negative
+PASS: rect.reject.address.m.LSection.3.empty
+PASS: rect.reject.address.m.LSection.3.text
+PASS: rect.positive.m.LSection.4
+PASS: rect.unit.once
+PASS: rect.reject.address.m.LSection.4.zero
+PASS: rect.reject.address.m.LSection.4.negative
+PASS: rect.reject.address.m.LSection.4.empty
+PASS: rect.reject.address.m.LSection.4.text
+PASS: rect.inactive.fields.m.LSection
+PASS: rect.pair.numeric.before.positive.m.LSection.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.pair.numeric.before.positive.m.LSection.3
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.LSection.B1.less.B2
+PASS: rect.alias.m.RectSet
+PASS: rect.valid.m.TwoRectangles
+PASS: rect.positive.m.TwoRectangles.1
+PASS: rect.unit.once
+PASS: rect.reject.address.m.TwoRectangles.1.zero
+PASS: rect.reject.address.m.TwoRectangles.1.negative
+PASS: rect.reject.address.m.TwoRectangles.1.empty
+PASS: rect.reject.address.m.TwoRectangles.1.text
+PASS: rect.positive.m.TwoRectangles.2
+PASS: rect.unit.once
+PASS: rect.reject.address.m.TwoRectangles.2.zero
+PASS: rect.reject.address.m.TwoRectangles.2.negative
+PASS: rect.reject.address.m.TwoRectangles.2.empty
+PASS: rect.reject.address.m.TwoRectangles.2.text
+PASS: rect.positive.m.TwoRectangles.3
+PASS: rect.unit.once
+PASS: rect.reject.address.m.TwoRectangles.3.zero
+PASS: rect.reject.address.m.TwoRectangles.3.negative
+PASS: rect.reject.address.m.TwoRectangles.3.empty
+PASS: rect.reject.address.m.TwoRectangles.3.text
+PASS: rect.positive.m.TwoRectangles.4
+PASS: rect.unit.once
+PASS: rect.reject.address.m.TwoRectangles.4.zero
+PASS: rect.reject.address.m.TwoRectangles.4.negative
+PASS: rect.reject.address.m.TwoRectangles.4.empty
+PASS: rect.reject.address.m.TwoRectangles.4.text
+PASS: rect.signed.offset.m.-100
+PASS: rect.signed.offset.m.0
+PASS: rect.signed.offset.m.100
+PASS: rect.pair.numeric.before.positive.m.TwoRectangles.1
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.pair.numeric.before.positive.m.TwoRectangles.3
+PASS: rect.direct.helper.changes.first.address
+PASS: rect.adjacency.address
+PASS: rect.alias.m.TwoRectangle
+PASS: rect.alias.m.TwoRectanglesOffset
+PASS: rect.alias.m.OffsetTwoRectangles
+TOTAL AUDIT02 CLOSEOUT RECTSET INPUT: passed=252; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_c76bc78e11584492b2f324d04ec8c6c0\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestAudit02Api.RunAudit02CloseoutRectSetInputTests; 2026-10-17T23:57:58
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

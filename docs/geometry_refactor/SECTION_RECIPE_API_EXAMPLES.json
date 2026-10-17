@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
-  "members": 303,
+  "members": 321,
   "examples": {
     "ISectionRecipe.CreateDefinition": {
       "source": "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas",
@@ -37,7 +37,7 @@
     },
     "CSectionDefinitionBuilder.CirclePath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1280,
+      "line": 1276,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.CirclePath(\"Full\", 0#, 0#, 100#)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -341,7 +341,7 @@
     },
     "CSectionDefinitionBuilder.Slice": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1283,
+      "line": 1279,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.Slice(\"Half\", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -605,7 +605,7 @@
     },
     "CSectionDefinitionBuilder.RebarDependent": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 901,
+      "line": 903,
       "routine": "OffsetGeometryDefinition",
       "code": "    facade.RebarDependent \"Row2\", \"Main\", 20#, options",
       "context": "В теле modTestAudit02Api.OffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -1466,7 +1466,7 @@
     },
     "CGeometryPath.AtDistance": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1281,
+      "line": 1277,
       "routine": "RunCircleSetbackTests",
       "code": "    path.AtDistance 0#, x, y, tx, ty",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -1483,7 +1483,7 @@
     },
     "CGeometryPath.ValidateNormalTransfer": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 894,
+      "line": 896,
       "routine": "OffsetGeometryDefinition",
       "code": "    If kind = 1 Then path.ValidateNormalTransfer 0#, 10#",
       "context": "В теле modTestAudit02Api.OffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -1673,7 +1673,7 @@
     },
     "CPolygonSpec.Count": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 618,
+      "line": 620,
       "routine": "SpecSnapshot",
       "code": "    For i = 1 To polygon.Count",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1776,7 +1776,7 @@
     },
     "CPolygonSpec.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 619,
+      "line": 621,
       "routine": "SpecSnapshot",
       "code": "        SpecSnapshot = SpecSnapshot & polygon.VertexID(i) & \"|\" & CStr(polygon.X(i)) & \"|\" & CStr(polygon.Y(i)) & _\n            \"|\" & CStr(polygon.FilletRadius(i)) & \"|\" & polygon.SourceReference(i) & vbCrLf",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1930,6 +1930,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
@@ -1973,6 +1974,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
@@ -2057,7 +2059,7 @@
     },
     "CSectionDefinition.ConcreteDomain": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 219,
+      "line": 229,
       "routine": "RunRecipeSetbackInputTests",
       "code": "    geometryArea = def.ConcreteDomain.Area",
       "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
@@ -2093,6 +2095,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
@@ -2317,7 +2320,7 @@
     },
     "CRebarRuleOptions.ValidateRowOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 930,
+      "line": 932,
       "routine": "OffsetSharedJointDefinition",
       "code": "    options.NormalOffset = 100#: options.ValidateRowOffset = True: options.SourceReference = \"OffsetJoint[2,3]\"",
       "context": "В теле modTestAudit02Api.OffsetSharedJointDefinition с его подготовленными локальными объектами/входом.",
@@ -2334,7 +2337,7 @@
     },
     "CRebarRuleOptions.EverySecond": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 654,
+      "line": 656,
       "routine": "TestContactSequence",
       "code": "    Check \"contactBuilder.example.binding\", row.EverySecond",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -2371,7 +2374,7 @@
     },
     "CRebarRuleOptions.DirectionX": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 690,
+      "line": 692,
       "routine": "TestContactDefaults",
       "code": "    Check \"contactBuilder.clone.DirectionX\", copy.DirectionX = defaults.DirectionX",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2616,7 +2619,7 @@
     },
     "CRebarRuleOptions.PlacementCheck": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 721,
+      "line": 723,
       "routine": "TestContactDefaults",
       "code": "    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2755,7 +2758,7 @@
     },
     "CRebarRuleOptions.Comment": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 704,
+      "line": 706,
       "routine": "TestContactDefaults",
       "code": "    Check \"contactBuilder.clone.Comment\", copy.Comment = defaults.Comment",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2773,7 +2776,7 @@
     },
     "CRebarRuleOptions.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 712,
+      "line": 714,
       "routine": "TestContactDefaults",
       "code": "    defaults.SourceReference = \"ChangedDefaults\"",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2808,7 +2811,7 @@
     },
     "CRebarRuleOptions.Clone": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 680,
+      "line": 682,
       "routine": "TestContactDefaults",
       "code": "    Set copy = defaults.Clone",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -3056,19 +3059,36 @@
       ]
     },
     "CSectionInputTable.SourceReference": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 499,
-      "routine": "CloseoutRectSetInputMatrix",
-      "code": "                expectedAddress = table.SourceReference(row, column)",
-      "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestDeclarativeGeometry.bas",
+      "line": 479,
+      "routine": "RunInputTableTests",
+      "code": "    Check \"input.source\", table.SourceReference(2, 2) = \"Config!B12\"",
+      "context": "В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+          "entryPoint": "modTestDeclarativeGeometry.RunCoreGeometryTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreFinal.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestDeclarativeGeometry.RunInputTableTests",
+          "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/InputTables.txt"
           ]
         }
       ]
@@ -3087,6 +3107,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
           ]
@@ -3356,9 +3378,9 @@
     },
     "CSectionInputTable.OptionalRowOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1007,
+      "line": 1009,
       "routine": "RunIndependentRowOffsetWorkbookTests",
-      "code": "    Check \"offset.input.direct.reader\", inputTable.OptionalRowOffset(inputTable.AdditionalRowsHeader + 1, 3, units) = 100#",
+      "code": "    Check \"offset.input.direct.reader\", inputTable.OptionalRowOffset(FixtureInput(target.Value2).RowIndex(\"Extra\", \"Circle\"), FixtureInput(target.Value2).ColumnIndex(\"Extra\", \"a2\"), units) = 100#",
       "context": "В теле modTestAudit02Api.RunIndependentRowOffsetWorkbookTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
@@ -3407,42 +3429,37 @@
         }
       ]
     },
-    "CSectionInputTable.AdditionalRowsHeader": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 1007,
-      "routine": "RunIndependentRowOffsetWorkbookTests",
-      "code": "    Check \"offset.input.direct.reader\", inputTable.OptionalRowOffset(inputTable.AdditionalRowsHeader + 1, 3, units) = 100#",
-      "context": "В теле modTestAudit02Api.RunIndependentRowOffsetWorkbookTests с его подготовленными локальными объектами/входом.",
-      "nativeRoots": [
-        {
-          "entryPoint": "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
-          "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/OffsetWorkbook02/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
-          ]
-        }
-      ]
-    },
     "CSectionInputTable.RowByKey": {
-      "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 208,
-      "routine": "RunRecipeSetbackInputTests",
-      "code": "    main = table.RowByKey(\"as\", 2)",
-      "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestDeclarativeGeometry.bas",
+      "line": 530,
+      "routine": "InvalidInputRejected",
+      "code": "        Case 7: value = table.RowByKey(\"Count\")",
+      "context": "В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "entryPoint": "modTestDeclarativeGeometry.RunCoreGeometryTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRules/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreFinal.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipeEvidencePack/data/HollowRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/CoreGeometry.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/RoundedRecipeEvidencePack/RoundedRecipe/CoreTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestDeclarativeGeometry.RunInputTableTests",
+          "reports": [
+            "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/InputTables.txt"
           ]
         }
       ]
@@ -3535,9 +3552,27 @@
     },
     "CSectionRecipeContext.Table": {
       "source": "tests/modTestGeometryConfig.bas",
-      "line": 116,
+      "line": 117,
       "routine": "CounterFixture",
       "code": "    Set table = context.Table(CStr(names(0)))",
+      "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestGeometryConfig.RunAudit03RebarCounterTests",
+          "reports": [
+            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestGeometryConfig.RunAudit03RebarCounterTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestGeometryConfig.RunAudit03RebarCounterTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/RebarCounters.txt",
+            "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionRecipeContext.Reader": {
+      "source": "tests/modTestGeometryConfig.bas",
+      "line": 118,
+      "routine": "CounterFixture",
+      "code": "    Set keyed = context.Reader(CStr(names(0)))",
       "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
@@ -3582,6 +3617,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
           ]
@@ -3602,6 +3639,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
           ]
@@ -3639,6 +3678,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
           ]
@@ -3677,6 +3718,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipe/WorkbookInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/WorkbookInput.txt"
           ]
@@ -3700,6 +3743,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/AnnotationCountFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/AnnotationCounts1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RectSetRules/AnnotationCounts.txt",
@@ -3742,7 +3786,8 @@
         {
           "entryPoint": "modTestSectionRecipes.RunRecipeCaptionTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunRecipeCaptionTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunRecipeCaptionTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
           ]
         }
       ]
@@ -4058,7 +4103,7 @@
     },
     "CRebarRuleExecutor.PositionRuleID": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 856,
+      "line": 858,
       "routine": "RunIndependentRowOffsetGeometryTests",
       "code": "                If executor.PositionRuleID(i) = \"Row2\" Then",
       "context": "В теле modTestAudit02Api.RunIndependentRowOffsetGeometryTests с его подготовленными локальными объектами/входом.",
@@ -4115,7 +4160,7 @@
     },
     "CRebarRuleExecutor.PositionPhysicalOwner": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1347,
+      "line": 1343,
       "routine": "RunCircleSetbackTests",
       "code": "                    owner = executor.PositionPhysicalOwner(i)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -6052,7 +6097,7 @@
     },
     "modSectionRecipeTypes.ERebarPlacementCheck": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 721,
+      "line": 723,
       "routine": "TestContactDefaults",
       "code": "    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -6371,7 +6416,7 @@
     },
     "modGeometryTypes.GeomMax": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1238,
+      "line": 1234,
       "routine": "RunOffsetOpeningAnnotationTests",
       "code": "            maxY = GeomMax(maxY, model.RebarY(i))",
       "context": "В теле modTestAudit02Api.RunOffsetOpeningAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -6441,7 +6486,7 @@
     },
     "CRebarContactBuilder.Initialize": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 651,
+      "line": 653,
       "routine": "TestContactSequence",
       "code": "    contact.Initialize 32#, 1#, 1#, defaults",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -6459,7 +6504,7 @@
     },
     "CRebarContactBuilder.AppendRow": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 656,
+      "line": 658,
       "routine": "TestContactSequence",
       "code": "    Set row = contact.AppendRow(16#, \"Stacked\", \"EachBar\", \"ContactTest[2,2]\")",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -6474,19 +6519,367 @@
           ]
         }
       ]
+    },
+    "CSectionInputReader.Initialize": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 154,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Set reader = New CSectionInputReader: reader.Initialize customTable",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.ValueAt": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 149,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    ignored = reader.ValueAt(3, 1): code = Err.Number: Err.Clear",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.RowKeys": {
+      "source": "tests/modTestAudit02Api.bas",
+      "line": 1059,
+      "routine": "ConfigureOffsetWorkbook",
+      "code": "    For Each key In keyed.RowKeys(\"Main\")",
+      "context": "В теле modTestAudit02Api.ConfigureOffsetWorkbook с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+          "reports": [
+            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/OffsetWorkbook02/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+          "reports": [
+            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/OpeningCenter01/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
+          "reports": [
+            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.RowIndex": {
+      "source": "tests/modTestRecipeSetbacks.bas",
+      "line": 218,
+      "routine": "RunRecipeSetbackInputTests",
+      "code": "    main = table.RowIndex(\"Main\", \"Top\") - 1",
+      "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.ColumnIndex": {
+      "source": "tests/modTestRecipeSetbacks.bas",
+      "line": 221,
+      "routine": "RunRecipeSetbackInputTests",
+      "code": "    Check \"hollow.end.header\", table.ColumnIndex(\"Main\", \"s1\") = 7",
+      "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.CellValue": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 130,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"raw.value.no.conversion\", reader.CellValue(\"Dimensions\", \"B\") = 60#",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.Text": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 131,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"text.original.case\", reader.Text(\"Bars\", \"B\", \"mode\") = \"stacked\"",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.Number": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 52,
+      "routine": "Reject",
+      "code": "            Case \"block\": ignored = reader.Number(\"Missing\", \"B\")",
+      "context": "В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.Count": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 47,
+      "routine": "Reject",
+      "code": "            Case \"count\": ignored = reader.Count(\"Bars\", \"B\", \"n\")",
+      "context": "В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.Choice": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 105,
+      "routine": "RunSectionInputReaderTests",
+      "code": "        Check \"choice.\" & CStr(scenario), reader.Choice(\"Bars\", \"B\", Array(\"Stacked\", \"SideBySide\"), \"mode\") = \"Stacked\"",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.Length": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 132,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"signed.length.cm.to.mm\", reader.Length(\"Dimensions\", \"B\") = 600#",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.PositiveLength": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 129,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"units.cm.to.mm\", reader.PositiveLength(\"Dimensions\", \"B\") = 600#",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.NonNegativeLength": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 133,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"nonnegative.zero\", reader.NonNegativeLength(\"Dimensions\", \"Zero\") = 0#",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.OptionalDiameter": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 48,
+      "routine": "Reject",
+      "code": "            Case \"diameter\": ignored = reader.OptionalDiameter(\"Bars\", \"B\", \"d\")",
+      "context": "В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.OptionalRowOffset": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 107,
+      "routine": "RunSectionInputReaderTests",
+      "code": "        Check \"empty.offset.\" & CStr(scenario), reader.OptionalRowOffset(\"Bars\", \"Off\", \"as\") = 0#",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.SourceReference": {
+      "source": "tests/modTestAudit02Api.bas",
+      "line": 501,
+      "routine": "CloseoutRectSetInputMatrix",
+      "code": "                expectedAddress = keyed.SourceReference(\"Geom\", CStr(fieldKeys(column - 1)))",
+      "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+          "reports": [
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.SourceReferences": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 134,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"source.related.fields\", reader.SourceReferences(\"Bars\", \"B\", Array(\"d\", \"n\")) = \"Config!J91; Config!K91\"",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionInputReader.Require": {
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 135,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    reader.Require \"Dimensions\", \"B\", \"val\", True, \"Размер допустим.\"",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "reports": [
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+          ]
+        }
+      ]
     }
   },
   "missingCalls": [],
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "f6a35be1e38936529b2882b9fdad6b7b1b086f44de31dc9313809ddcb6415fd8",
-    "tests/modTestAudit02Api.bas": "4208c9c440a6f5689746c707ed9b4958c52010526705d77832bf845a802e77d2",
+    "tests/modTestAudit02Api.bas": "b4ac0a524fd858e7294ade68d631ba1fdd8c4d0e2af5cef1080d763a28cccd3a",
     "tests/modTestAutoCADContours.bas": "5edfd1631f415a361b235512f71db4d3bc528a35a68ea043793cc1bc56ec5aae",
     "tests/modTestContourMesh.bas": "3729da3521911350d2b755e304ae3284e053b236630ee4413f7386ac8d1b8133",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
     "tests/modTestDeclarativeGeometry.bas": "32137f46e96aea1eb0c7d18e6a8a9042c35497892c8ae112b3d4b0b3cdff2ee7",
     "tests/modTestGeometry.bas": "f99b0d6538081433dba9ee27a5b20e459609ccdc061803c5c4d27e1526bdb42d",
-    "tests/modTestGeometryConfig.bas": "d09ef110ba483ee9f4b5f996b719bb71df43d46c61ccb7d20edfbfd234a2637d",
+    "tests/modTestGeometryConfig.bas": "19e40eef9672042a6d36c16fb1861d0c7199a0066cba29010a972b1bb20b9c9f",
     "tests/modTestGeometryPublication.bas": "48b16c90e96c9e4c3ee5168b4857f99109ce2cd9e04ce1349f6e13137cfc7ce6",
     "tests/modTestGeometryQuery.bas": "461ea2b13a582da6d256925a730bdfb0a3027ebddf18b2f95bebe14e6a7f4b01",
     "tests/modTestGeometryReview.bas": "82cc69d3bd4b5c0b587334b29a0e6bda44e298ed344f2090d0e5c3f016a30dd3",
@@ -6495,8 +6888,9 @@
     "tests/modTestRecipeAnnotations.bas": "3847af00d93a63a520806dbadff9870160da53ed7a714dd14b1d149bfa569845",
     "tests/modTestRecipeApiCatalogue.bas": "c124966801f6f0efdeea86843a580618df7d4b46f57452428eef5105e177c863",
     "tests/modTestRecipeOperations.bas": "a200b0fdc4c41673f1469949e5e1324ee7813d7266a9a70a77e439ef6f9244f9",
-    "tests/modTestRecipeSetbacks.bas": "808b7d49677fa8aab21dc88bd1ca689e925ffdbbde441bf958b6a4e7bb71ddc0",
-    "tests/modTestSectionRecipes.bas": "2b866f5419804228f7faa7c38476cdbf7e2b1b519baf9e70ddacc5ac225d405b",
+    "tests/modTestRecipeSetbacks.bas": "ceee5fb7a687291509d78e405a9b6b032ea96af1c2e88a5436e952daf319928c",
+    "tests/modTestSectionInputReader.bas": "5f9d214d0967dd669e5a551e8f98247385757200ba5b52450bfc32813dba199e",
+    "tests/modTestSectionRecipes.bas": "53bede49a9f1cb9839e5a63ff0144228c4b2117ba8e56fc5afbe648020867324",
     "tests/modTestSectionSolver.bas": "8a6320e735c1ab212ddf30e744d90b0de5822c89f9b49605b6c2cf6b33bc54c7"
   },
   "reportHashes": {
@@ -6713,7 +7107,11 @@
     "docs/regression/GeometryDeclarative_2026-10-12/OneClassExample/InputAndBuild.txt": "35efb6cd1565caa9113c5872b99989669b086157fddbb938b9162ce7b9cac3ae",
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt": "7b887fe724d8e88f020cec956de823f1bf3073871acbfbe9c6b242b8b4a94841",
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt": "5a366129218f79ec78d4781882a2d92c51573d40bffbcfa4c714ba97470b0ae4",
-    "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed"
+    "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed",
+    "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt": "0f6a85ca0084b2a793382d3c14b69e3b321aff4a9d570fa01ecbceb5b3f9f2a0",
+    "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt": "66631e5044888e066f5ca4c04ea7495baaa54bae1c2c0c933f65e056a912c392",
+    "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt": "32b305f42b66465bee6baeff77c747d0722067cbb5c3333b48a744389e39107c",
+    "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt": "98c3ec7a069efcda53263f08bd8cfb6785c8161a0116abffc805032538d47283"
   },
   "note": "Фрагменты исполняются в явно указанном полном контексте теста/fixture; это не самостоятельные процедуры. Root подтверждён журналом; условные ветви дополнительно проверяются смысловыми assertions."
 }

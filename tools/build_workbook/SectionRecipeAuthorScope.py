@@ -9,8 +9,9 @@ SECTIONS = [
         ('CSectionTypeRegistry', 'RegisterRecipe'),
     ]),
     ('02', 'Входные размеры и единицы', [
-        ('CSectionRecipeContext', 'Table Units'),
-        ('CSectionInputTable', 'Name RowCount ColumnCount SourceReference CellValue IsBlank Text Number Count Choice Length PositiveLength NonNegativeLength OptionalDiameter OptionalRowOffset AdditionalRowsHeader ColumnByCaption RowByKey RowByAnyKey'),
+        ('CSectionRecipeContext', 'Reader Table Units'),
+        ('CSectionInputReader', '*'),
+        ('CSectionInputTable', 'Name RowCount ColumnCount SourceReference CellValue IsBlank Text Number Count Choice Length PositiveLength NonNegativeLength OptionalDiameter OptionalRowOffset ColumnByCaption RowByKey RowByAnyKey'),
         ('CUnitSystem', 'InputLengthToInternal InputAreaToInternal'),
     ]),
     ('03', 'Границы бетона и отверстий', [

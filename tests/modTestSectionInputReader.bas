@@ -38,11 +38,12 @@ End Function
 
 ' Проверяет ошибку структуры либо выбранного числового поля и точный адрес её причины.
 Private Sub Reject(ByVal title As String, ByVal data As Variant, ByVal expectedAddress As String, Optional ByVal operation As String = "structure")
-    Dim reader As CSectionInputReader, ignored As Double, description As String
+    Dim reader As CSectionInputReader, ignored As Double, description As String, keys As Variant
     On Error Resume Next
     Set reader = MakeReader(data)
     If Err.Number = 0 Then
         Select Case operation
+            Case "structure": keys = reader.RowKeys("Dimensions")
             Case "count": ignored = reader.Count("Bars", "B", "n")
             Case "diameter": ignored = reader.OptionalDiameter("Bars", "B", "d")
             Case "value": ignored = reader.Number("Dimensions", "Unused")
@@ -65,13 +66,14 @@ Private Sub Check(ByVal title As String, ByVal condition As Boolean)
     End If
 End Sub
 
-' ========================================================================== 
+' ==========================================================================
 ' ДЛЯ ТЕСТОВ
-' ========================================================================== 
+' ==========================================================================
 ' Проверяет независимость чтения от подписей, порядка строк, столбцов и блоков.
 Public Function RunSectionInputReaderTests() As String
     Dim data As Variant, copy As Variant, reader As CSectionInputReader, scenario As Long
     Dim row As Long, column As Long, value As Variant, units As CUnitSystem, key As Variant
+    Dim custom(1 To 2, 1 To 2) As Variant, customTable As CSectionInputTable, ignored As Variant, code As Long, description As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Set units = New CUnitSystem: units.InitializeDefaults
@@ -125,6 +127,35 @@ Public Function RunSectionInputReaderTests() As String
     Check "units.snapshot.unchanged", reader.PositiveLength("Dimensions", "B") = 60#
     Set reader = MakeReader(InputValues, units)
     Check "units.cm.to.mm", reader.PositiveLength("Dimensions", "B") = 600#
+    Check "raw.value.no.conversion", reader.CellValue("Dimensions", "B") = 60#
+    Check "text.original.case", reader.Text("Bars", "B", "mode") = "stacked"
+    Check "signed.length.cm.to.mm", reader.Length("Dimensions", "B") = 600#
+    Check "nonnegative.zero", reader.NonNegativeLength("Dimensions", "Zero") = 0#
+    Check "source.related.fields", reader.SourceReferences("Bars", "B", Array("d", "n")) = "Config!J91; Config!K91"
+    reader.Require "Dimensions", "B", "val", True, "Размер допустим."
+    Check "require.valid", True
+    On Error Resume Next
+    reader.Require "Dimensions", "B", "val", False, "Ширина недостаточна."
+    description = Err.Description: code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "require.actual.address", code <> 0 And InStr(description, "Config!J84") > 0 And InStr(description, "Ширина недостаточна.") > 0
+    custom(1, 1) = "Размер": custom(1, 2) = "Значение": custom(2, 1) = "B": custom(2, 2) = 25#
+    Set customTable = New CSectionInputTable: customTable.Initialize "Custom", custom
+    Set reader = New CSectionInputReader: reader.Initialize customTable, units
+    Check "custom.positional.text", reader.ValueAt(1, 2) = "Значение"
+    Check "custom.positional.number.raw", reader.ValueAt(2, 2) = 25#
+    custom(2, 2) = 99#: Check "custom.positional.snapshot", reader.ValueAt(2, 2) = 25#
+    On Error Resume Next
+    ignored = reader.ValueAt(3, 1): code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check "custom.positional.bounds", code <> 0
+    custom(2, 2) = CVErr(2015)
+    Set customTable = New CSectionInputTable: customTable.Initialize "Custom", custom
+    Set reader = New CSectionInputReader: reader.Initialize customTable
+    On Error Resume Next
+    ignored = reader.ValueAt(2, 2): code = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "custom.positional.formula.error", code <> 0 And InStr(description, "Custom[2,2]") > 0
     GoTo Finished
 Failed:
     mFailed = mFailed + 1: mReport = mReport & "RUNTIME ERROR: " & Err.Description & vbCrLf

@@ -56,12 +56,11 @@ End Type
 ' бетона, размещения стержней вдоль сторон и аннотаций схемы (размеры сечения,
 ' суммарное количество стержней каждого диаметра по каждой стороне) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim table As CSectionInputTable, units As CUnitSystem, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As TRectSetDimensions, faces() As TRectangleFace, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
-    Set table = context.Table("rngRectSetGeometry") ' Берём копию входной таблицы и единицы измерения.
-    Set units = context.Units
-    ReadGeometryInputs table, units, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs table, units, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
+    Set reader = context.Reader("rngRectSetGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
+    ReadRebarInputs reader, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
     Set facade = New CSectionDefinitionBuilder ' Создаём сборщик описания сечения.
     facade.Initialize "RectSet" ' Начинаем описание выбранного типа.
     AddGeometry facade, sizes, upper, lower, outer ' Добавляем подготовленные границы бетона.
@@ -74,63 +73,55 @@ End Function
 ' Для одного прямоугольника не читает размеры нижней части; смещение нужно только двум прямоугольникам.
 ' В каждой паре сначала читаются H и B, затем проверяются их знаки. Так текст в B не
 ' теряется за ошибкой знака H, а сообщение сохраняет прежний адрес исходной ячейки.
-Private Sub ReadGeometryInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions)
-    Dim header As Long, row As Long
-    sizes.Shape = table.Choice(table.RowByKey("RectSet.SectionType"), 2, Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRectSetDimensions)
+    sizes.Shape = reader.Choice("Geom", "Shape", Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
     If sizes.Shape = "RectSet" Then sizes.Shape = "LSection"
     If sizes.Shape <> "Rectangle" And sizes.Shape <> "LSection" Then sizes.Shape = "TwoRectangles"
-    header = table.RowByKey("H1")
-    sizes.H1 = table.Length(header + 1, 1, units)
-    sizes.B1 = table.Length(header + 1, 2, units)
-    Require table, header + 1, 1, sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
-    Require table, header + 1, 2, sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
+    sizes.H1 = reader.Length("Geom", "H1"): sizes.B1 = reader.Length("Geom", "B1")
+    reader.Require "Geom", "H1", "val", sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
+    reader.Require "Geom", "B1", "val", sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
     If sizes.Shape <> "Rectangle" Then
-        sizes.H2 = table.Length(header + 1, 3, units)
-        sizes.B2 = table.Length(header + 1, 4, units)
-        Require table, header + 1, 3, sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
-        Require table, header + 1, 4, sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
-        If sizes.Shape = "LSection" Then Require table, header + 1, 2, sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
+        sizes.H2 = reader.Length("Geom", "H2"): sizes.B2 = reader.Length("Geom", "B2")
+        reader.Require "Geom", "H2", "val", sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
+        reader.Require "Geom", "B2", "val", sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
+        If sizes.Shape = "LSection" Then reader.Require "Geom", "B1", "val", sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
     End If
     If sizes.Shape = "TwoRectangles" Then
-        row = table.RowByKey("RectSet.UpperOffsetX")
-        sizes.Offset = table.Length(row, 2, units)
-        Require table, row, 2, sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
+        sizes.Offset = reader.Length("Detail", "XOffset")
+        reader.Require "Detail", "XOffset", "val", sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
     End If
 End Sub
 
 ' Читает параметры четырёх сторон каждого включённого прямоугольника.
 ' У одиночного прямоугольника строки нижней части не читаются; выключенные ряды не требуют отступов и привязок.
-Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByRef sizes As TRectSetDimensions, ByRef faces() As TRectangleFace)
-    Dim header As Long
-    header = table.RowByKey("H1")
+Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRectSetDimensions, ByRef faces() As TRectangleFace)
     If sizes.Shape = "Rectangle" Then ReDim faces(1 To 4) Else ReDim faces(1 To 8)
-    ReadRectangleFaces table, units, header, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1, faces
-    If sizes.Shape <> "Rectangle" Then ReadRectangleFaces table, units, header, 4, 0#, 0#, sizes.B2, sizes.H2, faces
+    ReadRectangleFaces reader, 0, sizes.Offset, sizes.H2, sizes.B1, sizes.H1, faces
+    If sizes.Shape <> "Rectangle" Then ReadRectangleFaces reader, 4, 0#, 0#, sizes.B2, sizes.H2, faces
 End Sub
 
 ' Сопоставляет строки Config со сторонами одного прямоугольника и готовит их параметры в мм.
 ' Отступы считаются от полной грани; направления линий и связанных рядов сохраняются.
-Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal header As Long, _
+Private Sub ReadRectangleFaces(ByVal reader As CSectionInputReader, _
         ByVal base As Long, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByRef faces() As TRectangleFace)
-    Dim side As Long, row As Long, extra As Long, axisDistance As Double, rowNumber As Long, column As Long, ids As Variant
-    Dim extraHeader As Long
-    extraHeader = table.AdditionalRowsHeader
-    ' Строки каждого прямоугольника в Config: левая, правая, верхняя и нижняя стороны.
-    If base = 0 Then ids = Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2") Else ids = Array("H2.as_1", "H2.as_2", "B2.as_1", "B2.as_2")
+    Dim side As Long, axisDistance As Double, rowNumber As Long, ids As Variant, keys As Variant
+    Dim key As String, prefix As String, suffix As String, captions As Variant
+    keys = Array("Left", "Right", "Top", "Bottom")
+    captions = Array(" - левая грань", " - правая грань", " - верхняя грань", " - нижняя грань")
+    If base = 0 Then ids = Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2"): prefix = "R1." Else ids = Array("H2.as_1", "H2.as_2", "B2.as_1", "B2.as_2"): prefix = "R2."
     For side = 1 To 4
-        row = header + 3 + base + side
-        extra = extraHeader + base + side
+        key = prefix & CStr(keys(side - 1))
         With faces(base + side)
             .ID = CStr(ids(side - 1))
-            .Count = table.Count(row, 4)
-            .Diameter = table.OptionalDiameter(row, 3, units)
+            .Count = reader.Count("Main", key, "n")
+            .Diameter = reader.OptionalDiameter("Main", key, "d")
             If .Count = 0 Or .Diameter = 0# Then GoTo NextSide
-            axisDistance = table.Length(row, 2, units)
-            Require table, row, 2, axisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-            .StartSetback = table.Length(row, 5, units)
-            .EndSetback = table.Length(row, 6, units)
-            .Source = table.SourceReference(row, 2) & "; " & table.SourceReference(row, 5) & "; " & table.SourceReference(row, 6)
-            .Caption = table.Text(row, 1) & " грань"
+            axisDistance = reader.Length("Main", key, "as")
+            reader.Require "Main", key, "as", axisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
+            .StartSetback = reader.Length("Main", key, "s0")
+            .EndSetback = reader.Length("Main", key, "s1")
+            .Source = reader.SourceReferences("Main", key, Array("as", "s0", "s1"))
+            .Caption = Left$(.ID, 2) & CStr(captions(side - 1))
             Select Case side
                 Case 1 ' Линия арматуры у левой грани: отступ as, снизу вверх.
                     .X1 = x + axisDistance: .Y1 = y: .X2 = x + axisDistance: .Y2 = y + height
@@ -145,15 +136,15 @@ Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As
                     .X1 = x + width: .Y1 = y + axisDistance: .X2 = x: .Y2 = y + axisDistance
                     .LabelY = -1#
             End Select
-            .Diameters(2) = table.OptionalDiameter(extra, 2, units)
-            .Diameters(3) = table.OptionalDiameter(extra, 6, units)
+            .Diameters(2) = reader.OptionalDiameter("Extra", key, "d2")
+            .Diameters(3) = reader.OptionalDiameter("Extra", key, "d3")
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
-                    column = 2 + (rowNumber - 2) * 4 ' На ряд отведены диаметр, отступ, привязка и положение.
-                    .BaseOffsets(rowNumber) = table.OptionalRowOffset(extra, column + 1, units)
-                    .Locations(rowNumber) = table.Choice(extra, column + 3, Array("Stacked", "SideBySide"))
-                    .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                    .ExtraSources(rowNumber) = table.SourceReference(extra, column) & "; " & table.SourceReference(extra, column + 1) & "; " & table.SourceReference(extra, column + 2) & "; " & table.SourceReference(extra, column + 3)
+                    suffix = CStr(rowNumber)
+                    .BaseOffsets(rowNumber) = reader.OptionalRowOffset("Extra", key, "a" & suffix)
+                    .Locations(rowNumber) = reader.Choice("Extra", key, Array("Stacked", "SideBySide"), "pos" & suffix)
+                    .Bindings(rowNumber) = reader.Choice("Extra", key, Array("EachBar", "EverySecondBar"), "bind" & suffix)
+                    .ExtraSources(rowNumber) = reader.SourceReferences("Extra", key, Array("d" & suffix, "a" & suffix, "bind" & suffix, "pos" & suffix))
                 End If
             Next rowNumber
         End With
@@ -229,9 +220,4 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
         ' Размер идёт слева направо: его величина равна Abs(sizes.Offset), а выноски остаются у смещённых граней.
         If Abs(sizes.Offset) > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_UPPER_OFFSET_X", ChrW$(&H394), GeomMin(0#, sizes.Offset), GeomMax(0#, sizes.Offset), sizes.H2, 1#, "Горизонтальное смещение верхнего прямоугольника относительно базового положения."
     End If
-End Sub
-
-' Проверяет условие для указанной ячейки. При нарушении сообщает причину и её фактический адрес.
-Private Sub Require(ByVal table As CSectionInputTable, ByVal row As Long, ByVal column As Long, ByVal condition As Boolean, ByVal reason As String)
-    If Not condition Then SectionRecipeError "CSectionRecipeRectSet", reason, table.SourceReference(row, column)
 End Sub

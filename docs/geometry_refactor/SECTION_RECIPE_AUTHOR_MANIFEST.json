@@ -15,8 +15,27 @@
       "number": "02",
       "title": "Входные размеры и единицы",
       "members": [
+        "CSectionRecipeContext.Reader",
         "CSectionRecipeContext.Table",
         "CSectionRecipeContext.Units",
+        "CSectionInputReader.Initialize",
+        "CSectionInputReader.ValueAt",
+        "CSectionInputReader.RowKeys",
+        "CSectionInputReader.RowIndex",
+        "CSectionInputReader.ColumnIndex",
+        "CSectionInputReader.CellValue",
+        "CSectionInputReader.Text",
+        "CSectionInputReader.Number",
+        "CSectionInputReader.Count",
+        "CSectionInputReader.Choice",
+        "CSectionInputReader.Length",
+        "CSectionInputReader.PositiveLength",
+        "CSectionInputReader.NonNegativeLength",
+        "CSectionInputReader.OptionalDiameter",
+        "CSectionInputReader.OptionalRowOffset",
+        "CSectionInputReader.SourceReference",
+        "CSectionInputReader.SourceReferences",
+        "CSectionInputReader.Require",
         "CSectionInputTable.Name",
         "CSectionInputTable.RowCount",
         "CSectionInputTable.ColumnCount",
@@ -32,7 +51,6 @@
         "CSectionInputTable.NonNegativeLength",
         "CSectionInputTable.OptionalDiameter",
         "CSectionInputTable.OptionalRowOffset",
-        "CSectionInputTable.AdditionalRowsHeader",
         "CSectionInputTable.ColumnByCaption",
         "CSectionInputTable.RowByKey",
         "CSectionInputTable.RowByAnyKey",
@@ -304,6 +322,27 @@
     },
     {
       "owner": "CSectionRecipeContext",
+      "name": "Reader",
+      "kind": "Function",
+      "signature": "Public Function Reader(ByVal tableName As String) As CSectionInputReader",
+      "parameters": [
+        {
+          "name": "tableName",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal tableName As String"
+        }
+      ],
+      "resultType": "CSectionInputReader",
+      "line": 58,
+      "source": "src/Section/CSectionRecipeContext.cls",
+      "id": "CSectionRecipeContext.Reader",
+      "anchor": "api-csectionrecipecontext-reader"
+    },
+    {
+      "owner": "CSectionRecipeContext",
       "name": "Table",
       "kind": "Function",
       "signature": "Public Function Table(ByVal tableName As String) As CSectionInputTable",
@@ -330,10 +369,684 @@
       "signature": "Public Property Get Units() As CUnitSystem",
       "parameters": [],
       "resultType": "CUnitSystem",
-      "line": 58,
+      "line": 66,
       "source": "src/Section/CSectionRecipeContext.cls",
       "id": "CSectionRecipeContext.Units",
       "anchor": "api-csectionrecipecontext-units"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Initialize",
+      "kind": "Sub",
+      "signature": "Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing)",
+      "parameters": [
+        {
+          "name": "table",
+          "type": "CSectionInputTable",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal table As CSectionInputTable"
+        },
+        {
+          "name": "units",
+          "type": "CUnitSystem",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "Nothing",
+          "signature": "Optional ByVal units As CUnitSystem = Nothing"
+        }
+      ],
+      "resultType": null,
+      "line": 30,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Initialize",
+      "anchor": "api-csectioninputreader-initialize"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "ValueAt",
+      "kind": "Function",
+      "signature": "Public Function ValueAt(ByVal row As Long, ByVal column As Long) As Variant",
+      "parameters": [
+        {
+          "name": "row",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row As Long"
+        },
+        {
+          "name": "column",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal column As Long"
+        }
+      ],
+      "resultType": "Variant",
+      "line": 41,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.ValueAt",
+      "anchor": "api-csectioninputreader-valueat"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "RowKeys",
+      "kind": "Function",
+      "signature": "Public Function RowKeys(ByVal blockKey As String) As Variant",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        }
+      ],
+      "resultType": "Variant",
+      "line": 47,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.RowKeys",
+      "anchor": "api-csectioninputreader-rowkeys"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "RowIndex",
+      "kind": "Function",
+      "signature": "Public Function RowIndex(ByVal blockKey As String, ByVal rowKey As String) As Long",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        }
+      ],
+      "resultType": "Long",
+      "line": 53,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.RowIndex",
+      "anchor": "api-csectioninputreader-rowindex"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "ColumnIndex",
+      "kind": "Function",
+      "signature": "Public Function ColumnIndex(ByVal blockKey As String, ByVal columnKey As String) As Long",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal columnKey As String"
+        }
+      ],
+      "resultType": "Long",
+      "line": 60,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.ColumnIndex",
+      "anchor": "api-csectioninputreader-columnindex"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "CellValue",
+      "kind": "Function",
+      "signature": "Public Function CellValue(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Variant",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "Variant",
+      "line": 67,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.CellValue",
+      "anchor": "api-csectioninputreader-cellvalue"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Text",
+      "kind": "Function",
+      "signature": "Public Function Text(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\", Optional ByVal defaultValue As Variant) As String",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        },
+        {
+          "name": "defaultValue",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal defaultValue As Variant"
+        }
+      ],
+      "resultType": "String",
+      "line": 72,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Text",
+      "anchor": "api-csectioninputreader-text"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Number",
+      "kind": "Function",
+      "signature": "Public Function Number(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\", Optional ByVal defaultValue As Variant) As Double",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        },
+        {
+          "name": "defaultValue",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal defaultValue As Variant"
+        }
+      ],
+      "resultType": "Double",
+      "line": 81,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Number",
+      "anchor": "api-csectioninputreader-number"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Count",
+      "kind": "Function",
+      "signature": "Public Function Count(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\", Optional ByVal defaultValue As Long = 0) As Long",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        },
+        {
+          "name": "defaultValue",
+          "type": "Long",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0",
+          "signature": "Optional ByVal defaultValue As Long = 0"
+        }
+      ],
+      "resultType": "Long",
+      "line": 90,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Count",
+      "anchor": "api-csectioninputreader-count"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Choice",
+      "kind": "Function",
+      "signature": "Public Function Choice(ByVal blockKey As String, ByVal rowKey As String, ByVal allowed As Variant, Optional ByVal columnKey As String = \"val\", Optional ByVal defaultValue As String = vbNullString) As String",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "allowed",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal allowed As Variant"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        },
+        {
+          "name": "defaultValue",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "vbNullString",
+          "signature": "Optional ByVal defaultValue As String = vbNullString"
+        }
+      ],
+      "resultType": "String",
+      "line": 95,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Choice",
+      "anchor": "api-csectioninputreader-choice"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Length",
+      "kind": "Function",
+      "signature": "Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "Double",
+      "line": 100,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Length",
+      "anchor": "api-csectioninputreader-length"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "PositiveLength",
+      "kind": "Function",
+      "signature": "Public Function PositiveLength(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "Double",
+      "line": 105,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.PositiveLength",
+      "anchor": "api-csectioninputreader-positivelength"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "NonNegativeLength",
+      "kind": "Function",
+      "signature": "Public Function NonNegativeLength(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "Double",
+      "line": 110,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.NonNegativeLength",
+      "anchor": "api-csectioninputreader-nonnegativelength"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "OptionalDiameter",
+      "kind": "Function",
+      "signature": "Public Function OptionalDiameter(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "Double",
+      "line": 115,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.OptionalDiameter",
+      "anchor": "api-csectioninputreader-optionaldiameter"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "OptionalRowOffset",
+      "kind": "Function",
+      "signature": "Public Function OptionalRowOffset(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As Double",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "Double",
+      "line": 120,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.OptionalRowOffset",
+      "anchor": "api-csectioninputreader-optionalrowoffset"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "SourceReference",
+      "kind": "Function",
+      "signature": "Public Function SourceReference(ByVal blockKey As String, ByVal rowKey As String, Optional ByVal columnKey As String = \"val\") As String",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "\"val\"",
+          "signature": "Optional ByVal columnKey As String = \"val\""
+        }
+      ],
+      "resultType": "String",
+      "line": 125,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.SourceReference",
+      "anchor": "api-csectioninputreader-sourcereference"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "SourceReferences",
+      "kind": "Function",
+      "signature": "Public Function SourceReferences(ByVal blockKey As String, ByVal rowKey As String, ByVal columnKeys As Variant) As String",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKeys",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal columnKeys As Variant"
+        }
+      ],
+      "resultType": "String",
+      "line": 130,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.SourceReferences",
+      "anchor": "api-csectioninputreader-sourcereferences"
+    },
+    {
+      "owner": "CSectionInputReader",
+      "name": "Require",
+      "kind": "Sub",
+      "signature": "Public Sub Require(ByVal blockKey As String, ByVal rowKey As String, ByVal columnKey As String, ByVal condition As Boolean, ByVal reason As String)",
+      "parameters": [
+        {
+          "name": "blockKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal blockKey As String"
+        },
+        {
+          "name": "rowKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal rowKey As String"
+        },
+        {
+          "name": "columnKey",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal columnKey As String"
+        },
+        {
+          "name": "condition",
+          "type": "Boolean",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal condition As Boolean"
+        },
+        {
+          "name": "reason",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal reason As String"
+        }
+      ],
+      "resultType": null,
+      "line": 139,
+      "source": "src/Section/CSectionInputReader.cls",
+      "id": "CSectionInputReader.Require",
+      "anchor": "api-csectioninputreader-require"
     },
     {
       "owner": "CSectionInputTable",
@@ -801,18 +1514,6 @@
     },
     {
       "owner": "CSectionInputTable",
-      "name": "AdditionalRowsHeader",
-      "kind": "Function",
-      "signature": "Public Function AdditionalRowsHeader() As Long",
-      "parameters": [],
-      "resultType": "Long",
-      "line": 196,
-      "source": "src/Section/CSectionInputTable.cls",
-      "id": "CSectionInputTable.AdditionalRowsHeader",
-      "anchor": "api-csectioninputtable-additionalrowsheader"
-    },
-    {
-      "owner": "CSectionInputTable",
       "name": "ColumnByCaption",
       "kind": "Function",
       "signature": "Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String) As Long",
@@ -880,7 +1581,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 210,
+      "line": 195,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByKey",
       "anchor": "api-csectioninputtable-rowbykey"
@@ -925,7 +1626,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 217,
+      "line": 202,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByAnyKey",
       "anchor": "api-csectioninputtable-rowbyanykey"

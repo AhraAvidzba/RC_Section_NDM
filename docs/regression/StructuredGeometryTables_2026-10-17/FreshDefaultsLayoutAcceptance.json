@@ -1,0 +1,34 @@
+{
+  "Passed": true,
+  "Tables": [
+    {
+      "Name": "rngCircleGeometry",
+      "Range": "Config!$H$87:$R$102",
+      "Blocks": 3,
+      "Help": "'Справка'!A749"
+    },
+    {
+      "Name": "rngRectSetGeometry",
+      "Range": "Config!$H$105:$R$143",
+      "Blocks": 4,
+      "Help": "'Справка'!A771"
+    },
+    {
+      "Name": "rngRoundedRectangleGeometry",
+      "Range": "Config!$H$146:$R$176",
+      "Blocks": 4,
+      "Help": "'Справка'!A757"
+    },
+    {
+      "Name": "rngHollowRectangleGeometry",
+      "Range": "Config!$H$179:$R$219",
+      "Blocks": 4,
+      "Help": "'Справка'!A764"
+    }
+  ],
+  "BorderedUnmergedCells": 1300,
+  "Inputs": 294,
+  "IndependentChoiceSources": 87,
+  "ErrorCount": 0,
+  "Errors": []
+}

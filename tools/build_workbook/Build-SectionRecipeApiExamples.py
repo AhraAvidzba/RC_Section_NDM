@@ -35,6 +35,18 @@ def procedures(path):
 
 def evidence():
     result = defaultdict(list)
+    # Завершённые направленные batch-журналы новой структуры таблиц.
+    # Не принимаем отдельный успешный фрагмент незавершённого/ошибочного запуска.
+    structured = ROOT / "docs/regression/StructuredGeometryTables_2026-10-17"
+    for path in structured.glob("*.txt"):
+        text = path.read_text(encoding="utf-8-sig", errors="replace")
+        if not re.search(r"(?m)^WATCHDOG_COMPLETED: exit=0; source unchanged=True\s*$", text):
+            continue
+        matches = list(re.finditer(r"(?m)^===== (\w+\.\w+) =====\s*$", text))
+        for index, match in enumerate(matches):
+            body = text[match.end():matches[index+1].start() if index+1 < len(matches) else len(text)]
+            if re.search(r"failed=0\b", body, re.I) and not re.search(r"(?m)^FAIL|failed=[1-9]|SUITE_ERROR|WATCHDOG_TIMEOUT", body, re.I):
+                result[match[1]].append(path.relative_to(ROOT).as_posix())
     for folder in ("GeometryDeclarative_2026-10-11", "GeometryDeclarative_2026-10-12"):
         for path in (ROOT / "docs/regression" / folder).rglob("*.txt"):
             text = path.read_text(encoding="utf-8-sig", errors="replace")

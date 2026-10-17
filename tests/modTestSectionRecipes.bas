@@ -73,7 +73,7 @@ Public Function RunWorkbookRecipeInputTests() As String
     diameterCell.Value2 = 320#
     Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    Near "workbook.manual.capture.refreshed", table.Length(table.RowByKey("as", 2) + 1, 2, units), 80#
+    Near "workbook.manual.capture.refreshed", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
     names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
     names = registry.RecipeTableNames("Circle")
     Check "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"
@@ -705,29 +705,29 @@ Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set range = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
     Select Case scenario
-        Case 0: row = 13: column = 4: range.Cells(row, column).Value2 = 1.5
-        Case 1: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
-        Case 2: row = 13: column = 2: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 3).Value2) / 2#
-        Case 3: row = 19: column = 2: range.Cells(row, column).Value2 = -1#
-        Case 4: row = 19: column = 5: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
-        Case 5: row = 19: column = 4: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
+        Case 0: row = 21: column = 5: range.Cells(row, column).Value2 = 1.5
+        Case 1: row = 21: column = 4: range.Cells(row, column).Value2 = -1#
+        Case 2: row = 21: column = 3: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 4).Value2) / 2#
+        Case 3: row = 30: column = 3: range.Cells(row, column).Value2 = -1#
+        Case 4: row = 30: column = 6: range.Cells(30, 3).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
+        Case 5: row = 30: column = 5: range.Cells(30, 3).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
         Case 6
-            valid = True: range.Cells(8, 2).Value2 = "inactive": range.Cells(10, 2).Value2 = "inactive"
+            valid = True: range.Cells(11, 3).Value2 = "inactive": range.Cells(13, 3).Value2 = "inactive"
         Case 7
-            valid = True: range.Cells(13, 4).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
-            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 5).Value2 = "inactive"
+            valid = True: range.Cells(21, 5).Value2 = 0: range.Cells(21, 3).Value2 = "inactive"
+            range.Cells(30, 3).Value2 = "inactive": range.Cells(30, 6).Value2 = "inactive"
         Case 8
-            valid = True: range.Cells(13, 3).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
-            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 5).Value2 = "inactive"
+            valid = True: range.Cells(21, 4).Value2 = 0: range.Cells(21, 3).Value2 = "inactive"
+            range.Cells(30, 3).Value2 = "inactive": range.Cells(30, 6).Value2 = "inactive"
         Case 9
-            valid = True: range.Cells(19, 2).Value2 = 0: range.Cells(19, 6).Value2 = 0
-            range.Cells(19, 5).Value2 = "inactive": range.Cells(19, 4).Value2 = "inactive"
-        Case 10: row = 9: column = 2: range.Cells(row, column).Value2 = 1000#
+            valid = True: range.Cells(30, 3).Value2 = 0: range.Cells(30, 7).Value2 = 0
+            range.Cells(30, 6).Value2 = "inactive": range.Cells(30, 5).Value2 = "inactive"
+        Case 10: row = 12: column = 3: range.Cells(row, column).Value2 = 1000#
         Case 11
-            valid = True: range.Cells(7, 2).Value2 = "Tapered": range.Cells(8, 2).Value2 = 100#
-            range.Cells(9, 2).Value2 = 220#: range.Cells(10, 2).Value2 = 0#
-        Case 12: valid = True: range.Cells(9, 2).Value2 = 200#: range.Cells(9, 3).Value2 = 200#
-        Case 13: row = 13: column = 2: range.Cells(row, column).Value2 = 380#
+            valid = True: range.Cells(10, 3).Value2 = "Tapered": range.Cells(11, 3).Value2 = 100#
+            range.Cells(12, 3).Value2 = 220#: range.Cells(13, 3).Value2 = 0#
+        Case 12: valid = True: range.Cells(12, 3).Value2 = 200#: range.Cells(12, 4).Value2 = 200#
+        Case 13: row = 21: column = 3: range.Cells(row, column).Value2 = 380#
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngRoundedRectangleGeometry"), units)
     Set table = context.Table("rngRoundedRectangleGeometry")
@@ -775,32 +775,32 @@ Private Function HollowInputCase(ByVal scenario As Long) As Boolean
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     Select Case scenario
-        Case 0: row = 13: column = 4: range.Cells(row, column).Value2 = 1.5
-        Case 1: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
-        Case 2: row = 13: column = 2: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 3).Value2) / 2#
-        Case 3: row = 15: column = 2: range.Cells(15, 3).Value2 = 0#: range.Cells(row, column).Value2 = -1#
-        Case 4: row = 7: column = 6: range.Cells(row, column).Value2 = -1#
-        Case 5: row = 3: column = 2: range.Cells(row, column).Value2 = 1000# / factor
+        Case 0: row = 21: column = 5: range.Cells(row, column).Value2 = 1.5
+        Case 1: row = 21: column = 4: range.Cells(row, column).Value2 = -1#
+        Case 2: row = 21: column = 3: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 4).Value2) / 2#
+        Case 3: row = 27: column = 3: range.Cells(27, 4).Value2 = 0#: range.Cells(row, column).Value2 = -1#
+        Case 4: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
+        Case 5: row = 14: column = 3: range.Cells(row, column).Value2 = 1000# / factor
         Case 6
-            valid = True: range.Cells(13, 4).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
-            range.Cells(23, 2).Value2 = "inactive": range.Cells(23, 6).Value2 = "inactive"
+            valid = True: range.Cells(21, 5).Value2 = 0: range.Cells(21, 3).Value2 = "inactive"
+            range.Cells(34, 3).Value2 = "inactive": range.Cells(34, 7).Value2 = "inactive"
         Case 7
-            valid = True: range.Cells(15, 3).Value2 = 0#: range.Cells(25, 2).Value2 = "inactive"
-            range.Cells(25, 6).Value2 = "inactive"
-        Case 8: row = 15: column = 2: range.Cells(7, 6).Value2 = 0#: range.Cells(15, 3).Value2 = 0#: range.Cells(row, column).Value2 = "bad"
+            valid = True: range.Cells(27, 4).Value2 = 0#: range.Cells(40, 3).Value2 = "inactive"
+            range.Cells(40, 7).Value2 = "inactive"
+        Case 8: row = 27: column = 3: range.Cells(13, 3).Value2 = 0#: range.Cells(27, 4).Value2 = 0#: range.Cells(row, column).Value2 = "bad"
         Case 9
-            valid = True: range.Cells(23, 2).Value2 = 0#: range.Cells(23, 6).Value2 = 0#
-            range.Cells(23, 5).Value2 = "inactive": range.Cells(23, 4).Value2 = "inactive"
-        Case 10: row = 7: column = 6: range.Cells(row, column).Value2 = 1000# / factor
-        Case 11: valid = True: range.Cells(7, 3).Value2 = 500# / factor
-        Case 12: row = 23: column = 4: range.Cells(23, 2).Value2 = 16# / factor: range.Cells(row, column).Value2 = "bad"
-        Case 13: row = 13: column = 4: range.Cells(13, 3).Value2 = 0#: range.Cells(row, column).Value2 = 1.5
-        Case 14: row = 13: column = 3: range.Cells(row, column).Value2 = "-"
-        Case 15: row = 23: column = 2: range.Cells(row, column).Value2 = "-"
-        Case 16: row = 23: column = 6: range.Cells(row, column).Value2 = "-"
-        Case 17: row = 23: column = 2: range.Cells(row, column).Value2 = "TODO"
-        Case 18: valid = True: range.Cells(23, 2).ClearContents: range.Cells(23, 6).ClearContents
-        Case 19: valid = True: range.Cells(13, 3).ClearContents
+            valid = True: range.Cells(34, 3).Value2 = 0#: range.Cells(34, 7).Value2 = 0#
+            range.Cells(34, 6).Value2 = "inactive": range.Cells(34, 5).Value2 = "inactive"
+        Case 10: row = 13: column = 3: range.Cells(row, column).Value2 = 1000# / factor
+        Case 11: valid = True: range.Cells(6, 3).Value2 = 500# / factor
+        Case 12: row = 34: column = 5: range.Cells(34, 3).Value2 = 16# / factor: range.Cells(row, column).Value2 = "bad"
+        Case 13: row = 21: column = 5: range.Cells(21, 4).Value2 = 0#: range.Cells(row, column).Value2 = 1.5
+        Case 14: row = 21: column = 4: range.Cells(row, column).Value2 = "-"
+        Case 15: row = 34: column = 3: range.Cells(row, column).Value2 = "-"
+        Case 16: row = 34: column = 7: range.Cells(row, column).Value2 = "-"
+        Case 17: row = 34: column = 3: range.Cells(row, column).Value2 = "TODO"
+        Case 18: valid = True: range.Cells(34, 3).ClearContents: range.Cells(34, 7).ClearContents
+        Case 19: valid = True: range.Cells(21, 4).ClearContents
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
     Set table = context.Table("rngHollowRectangleGeometry")
@@ -1498,51 +1498,47 @@ End Sub
 
 ' ДЛЯ ТЕСТОВ: рецепты используют названия сторон из Config, а не внутренние имена и прежние варианты.
 Public Function RunRecipeCaptionTests() As String
-    Dim config As Object, saved As Variant, fixture As Variant, table As Object, mainHeader As Long, extraHeader As Long
-    Dim ids As Variant, aliases As Variant, i As Long, block As Long, firstRow As Long, caption As String
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel, typeID As String
-    Dim reader As CSectionInputSnapshotReader, context As CSectionRecipeContext, inputTable As CSectionInputTable, tableName As String
+    Dim config As Object, saved As Variant, fixture As Variant, table As Object, reader As CSectionInputReader
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, typeID As String, tableName As String
+    Dim block As Variant, key As Variant, keys As Variant, row As Long, caption As Variant, count As Long
+    Dim builder As CSectionBuilder, model As CSectionModel, number As Long, reason As String
     Dim events As Boolean, updating As Boolean
-    mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
+    mPassed = 0: mFailed = 0: mReport = ""
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
-    For Each fixture In Array("RoundedSimple", "HollowCentered")
-        config.Formula = saved
-        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
-        modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+    For Each fixture In Array("Circle", "LSection", "RoundedSimple", "HollowCentered")
+        config.Formula = saved: modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        Select Case CStr(fixture)
+            Case "Circle": typeID = "Circle"
+            Case "LSection": typeID = "RectSet"
+            Case "RoundedSimple": typeID = "RoundedRectangle"
+            Case Else: typeID = "HollowRectangle"
+        End Select
+        tableName = "rng" & typeID & "Geometry"
+        Set table = ThisWorkbook.Names(tableName).RefersToRange: Set reader = FixtureInput(table.Value2)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        If CStr(fixture) = "RoundedSimple" Then
-            modTestShapeArchitecture.ConfigureRoundedScenario 1
-            typeID = "RoundedRectangle"
-            tableName = "rngRoundedRectangleGeometry"
-            ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right")
-            aliases = Array("B-Top", "B-Bottom", "H-Left", "H-Right")
-        Else
-            modTestShapeArchitecture.ConfigureHollowScenario 1
-            typeID = "HollowRectangle"
-            tableName = "rngHollowRectangleGeometry"
-            ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
-            aliases = Array("B-top", "B-bottom", "H-left", "H-right", "bo-top", "bo-bottom", "ho-left", "ho-right")
-        End If
-        Set table = ThisWorkbook.Names(tableName).RefersToRange
-        Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array(tableName), units)
-        Set inputTable = context.Table(tableName)
-        mainHeader = inputTable.RowByKey("as", 2): extraHeader = inputTable.RowByKey("d2", 2)
-        Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
-        Check CStr(fixture) & ".approvedCaptions", model.RebarCount > 0
-        For block = 0 To 1
-            If block = 0 Then firstRow = mainHeader + 1 Else firstRow = extraHeader + 1
-            For i = 0 To UBound(ids)
-                caption = CStr(table.Cells(firstRow + i, 1).Value2)
-                table.Cells(firstRow + i, 1).Value2 = ids(i)
-                Check CStr(fixture) & ".internalCaption." & CStr(block) & "." & CStr(i), RecipeCaptionRejected(typeID, settings, units, caption)
-                table.Cells(firstRow + i, 1).Value2 = aliases(i)
-                Check CStr(fixture) & ".legacyCaption." & CStr(block) & "." & CStr(i), RecipeCaptionRejected(typeID, settings, units, caption)
-                table.Cells(firstRow + i, 1).Value2 = caption
-            Next i
+        Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder): count = model.RebarCount
+        For Each block In Array("Main", "Extra")
+            keys = reader.RowKeys(CStr(block))
+            For Each key In keys
+                row = reader.RowIndex(CStr(block), CStr(key))
+                caption = table.Cells(row, reader.ColumnIndex(CStr(block), "name")).Value2
+                table.Cells(row, reader.ColumnIndex(CStr(block), "name")).Value2 = "Свободное название стороны"
+                Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+                Check typeID & ".visible.caption." & CStr(block) & CStr(key), model.RebarCount = count
+                table.Cells(row, reader.ColumnIndex(CStr(block), "name")).Value2 = caption
+                table.Cells(row, 1).Value2 = "Missing"
+                number = 0: reason = ""
+                On Error Resume Next
+                Set builder = New CSectionBuilder: Set model = BuildRecipe(typeID, settings, units, builder)
+                number = Err.Number: reason = Err.Description: Err.Clear
+                On Error GoTo Failed
+                Check typeID & ".missing.key." & CStr(block) & CStr(key), number <> 0 And InStr(1, reason, CStr(key), vbTextCompare) > 0
+                table.Cells(row, 1).Value2 = key
+            Next key
         Next block
     Next fixture
     GoTo Finished
