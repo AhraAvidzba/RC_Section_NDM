@@ -245,19 +245,21 @@ Private Sub ConfigureCircleRuleContract(ByVal scenario As Long)
     units.LoadFromSettings settings
     factor = units.InputLengthToInternal(1#)
     Set table = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
-    For row = 2 To table.Rows.Count
-        key = CStr(table.Cells(row, 1).Value2)
+    Dim fields As Variant, field As Variant, inputCell As Object
+    fields = Array("Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row", "Rebar.Bind2row", "Rebar.Bind3row")
+    For Each field In fields
+        key = CStr(field): Set inputCell = FixtureCircleFieldCell(ThisWorkbook, key)
         Select Case key
-            Case "Rebar.Diameter2": table.Cells(row, 2).Value2 = IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
-            Case "Rebar.Diameter3": table.Cells(row, 2).Value2 = IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
-            Case "Rebar.Loc2row": table.Cells(row, 2).Value2 = IIf(scenario >= 4, "SideBySide", "Stacked")
-            Case "Rebar.Loc3row": table.Cells(row, 2).Value2 = IIf(scenario = 4, "SideBySide", "Stacked")
-            Case "Rebar.Bind2row": table.Cells(row, 2).Value2 = IIf(scenario Mod 2 = 0, "EverySecondBar", "EachBar")
-            Case "Rebar.Bind3row": table.Cells(row, 2).Value2 = IIf(scenario Mod 2 = 0, "EachBar", "EverySecondBar")
+            Case "Rebar.Diameter2": inputCell.Value2 = IIf(scenario = 0 Or scenario = 2, 0#, 16# / factor)
+            Case "Rebar.Diameter3": inputCell.Value2 = IIf(scenario = 0 Or scenario = 1, 0#, 12# / factor)
+            Case "Rebar.Loc2row": inputCell.Value2 = IIf(scenario >= 4, "SideBySide", "Stacked")
+            Case "Rebar.Loc3row": inputCell.Value2 = IIf(scenario = 4, "SideBySide", "Stacked")
+            Case "Rebar.Bind2row": inputCell.Value2 = IIf(scenario Mod 2 = 0, "EverySecondBar", "EachBar")
+            Case "Rebar.Bind3row": inputCell.Value2 = IIf(scenario Mod 2 = 0, "EachBar", "EverySecondBar")
         End Select
         If scenario = 0 And (key = "Rebar.Loc2row" Or key = "Rebar.Loc3row" Or _
-                key = "Rebar.Bind2row" Or key = "Rebar.Bind3row") Then table.Cells(row, 2).Value2 = "inactive value"
-    Next row
+                key = "Rebar.Bind2row" Or key = "Rebar.Bind3row") Then inputCell.Value2 = "inactive value"
+    Next field
 End Sub
 
 ' Сериализует все поля TRebarRule без округления Double и без отбора «важных» настроек.

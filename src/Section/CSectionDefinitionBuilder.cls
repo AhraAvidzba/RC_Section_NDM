@@ -479,6 +479,7 @@ End Function
 
 ' Отдельно задаёт, с какой стороны выбирать крайний ряд арматуры и куда выносить подпись.
 ' Например, ряд у отверстия выбирается со стороны бетона, а его подпись выводится в отверстие.
+' Середина подписи учитывает все позиции указанного правила, в том числе на скруглениях.
 Public Sub RebarRowExtremeLabel(ByVal groupID As String, ByVal ruleID As String, ByVal directionX As Double, ByVal directionY As Double, _
         ByVal normalX As Double, ByVal normalY As Double)
     RequireOpen

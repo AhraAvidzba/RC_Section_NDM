@@ -76,22 +76,28 @@ End Sub
 ' вычисления позиций, пересечений или формы; всю математику выполняет рецепт.
 ' Circle: [D, as, n, d, d2, d3, loc2, loc3, bind2, bind3].
 Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSectionDefinition
-    Dim values As Variant, table As CSectionInputTable, recipe As ISectionRecipe, keys As Variant, i As Long
+    Dim values As Variant, table As CSectionInputTable, recipe As ISectionRecipe, keys As Variant, columns As Variant
+    Dim i As Long, extra As Long, value As Variant
     values = ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2
     Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", values
-    keys = Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
-        "Rebar.Diameter2", "Rebar.Diameter3", "Rebar.Loc2row", "Rebar.Loc3row", "Rebar.Bind2row", "Rebar.Bind3row")
+    extra = table.AdditionalRowsHeader + 1
+    keys = Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter")
+    columns = Array(2, 6, 5, 9, 4, 8)
     For i = 0 To 9
         If i <= UBound(parameters) Then
-            values(table.RowByKey(CStr(keys(i))), 2) = parameters(i)
+            value = parameters(i)
         ElseIf i < 6 Then
-            values(table.RowByKey(CStr(keys(i))), 2) = 0#
+            value = 0#
         ElseIf i < 8 Then
-            values(table.RowByKey(CStr(keys(i))), 2) = "Stacked"
+            value = "Stacked"
         Else
-            values(table.RowByKey(CStr(keys(i))), 2) = "EachBar"
+            value = "EachBar"
         End If
+        If i < 4 Then values(table.RowByKey(CStr(keys(i))), 2) = value Else values(extra, CLng(columns(i - 4))) = value
     Next i
+    values(extra, 3) = 0#: values(extra, 7) = 0#
+    If UBound(parameters) >= 10 Then values(extra, 3) = parameters(10)
+    If UBound(parameters) >= 11 Then values(extra, 7) = parameters(11)
     Set recipe = New CSectionRecipeCircle
     Set FixtureCircleDefinition = FixtureRecipeDefinition(recipe, "rngCircleGeometry", values)
 End Function
@@ -116,17 +122,18 @@ Public Function FixtureRectSetDefinition(ByVal dimensions As Variant, Optional B
             row = CLng(rows(index)) + side: extra = CLng(extras(index)) + side
             values(row, 2) = pair(side): values(row, 3) = pair(2 + side): values(row, 4) = pair(4 + side)
             values(row, 5) = pair(6 + side * 2): values(row, 6) = pair(7 + side * 2)
-            values(extra, 2) = 0#: values(extra, 5) = 0#
-            values(extra, 3) = "Stacked": values(extra, 6) = "Stacked"
-            values(extra, 4) = "EachBar": values(extra, 7) = "EachBar"
+            values(extra, 2) = 0#: values(extra, 6) = 0#
+            values(extra, 3) = 0#: values(extra, 7) = 0#
+            values(extra, 5) = "Stacked": values(extra, 9) = "Stacked"
+            values(extra, 4) = "EachBar": values(extra, 8) = "EachBar"
             If UBound(pair) >= 13 Then
-                values(extra, 2) = pair(10 + side): values(extra, 5) = pair(12 + side)
-                values(extra, 3) = pair(14): values(extra, 6) = pair(15)
+                values(extra, 2) = pair(10 + side): values(extra, 6) = pair(12 + side)
+                values(extra, 5) = pair(14): values(extra, 9) = pair(15)
             End If
-            If UBound(pair) >= 17 Then values(extra, 4) = pair(16): values(extra, 7) = pair(17)
+            If UBound(pair) >= 17 Then values(extra, 4) = pair(16): values(extra, 8) = pair(17)
             If side = 1 And UBound(pair) >= 21 Then
-                values(extra, 3) = pair(18): values(extra, 6) = pair(19)
-                values(extra, 4) = pair(20): values(extra, 7) = pair(21)
+                values(extra, 5) = pair(18): values(extra, 9) = pair(19)
+                values(extra, 4) = pair(20): values(extra, 8) = pair(21)
             End If
         Next side
     Next index
@@ -183,9 +190,10 @@ Private Sub FixtureFaceTable(ByRef values As Variant, ByVal faces As Variant)
         row = main + i + 1: pair = faces(i)
         If IsEmpty(pair) Then pair = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
         values(row, 2) = pair(0): values(row, 3) = pair(1): values(row, 4) = pair(2)
-        values(extra + i + 1, 2) = pair(3): values(extra + i + 1, 5) = pair(4)
-        values(extra + i + 1, 3) = pair(5): values(extra + i + 1, 6) = pair(6)
-        values(extra + i + 1, 4) = pair(7): values(extra + i + 1, 7) = pair(8)
+        values(extra + i + 1, 3) = 0#: values(extra + i + 1, 7) = 0#
+        values(extra + i + 1, 2) = pair(3): values(extra + i + 1, 6) = pair(4)
+        values(extra + i + 1, 5) = pair(5): values(extra + i + 1, 9) = pair(6)
+        values(extra + i + 1, 4) = pair(7): values(extra + i + 1, 8) = pair(8)
     Next i
 End Sub
 
@@ -272,4 +280,24 @@ Public Function FixtureFillets(ByVal polygon As CPolygonSpec) As CGeometryRegion
     Set query = New CSectionGeometryQuery
     Set path = query.RoundedPolygon("FixtureBoundary", polygon)
     Set FixtureFillets = FixtureGeometry(query.RegionFromPath(path))
+End Function
+
+
+' ДЛЯ ТЕСТОВ: смысловое имя поля Circle переводится в единственный действующий источник новой таблицы.
+Public Function FixtureCircleFieldCell(ByVal workbook As Object, ByVal key As String, Optional ByVal sourceTable As Object = Nothing) As Object
+    Dim area As Object, table As CSectionInputTable, column As Long, row As Long
+    If sourceTable Is Nothing Then Set area = workbook.Names("rngCircleGeometry").RefersToRange Else Set area = sourceTable
+    Set table = New CSectionInputTable: table.Initialize "rngCircleGeometry", area.Value2
+    Select Case key
+        Case "Rebar.Diameter2": column = 2
+        Case "Rebar.AxisOffset2": column = 3
+        Case "Rebar.Bind2row": column = 4
+        Case "Rebar.Loc2row": column = 5
+        Case "Rebar.Diameter3": column = 6
+        Case "Rebar.AxisOffset3": column = 7
+        Case "Rebar.Bind3row": column = 8
+        Case "Rebar.Loc3row": column = 9
+    End Select
+    If column = 0 Then row = table.RowByKey(key): column = 2 Else row = table.AdditionalRowsHeader + 1
+    Set FixtureCircleFieldCell = area.Cells.Item(row, column)
 End Function

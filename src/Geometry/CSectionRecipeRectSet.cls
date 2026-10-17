@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -44,6 +44,7 @@ Private Type TRectangleFace
     LabelY As Double ' Компонента Y направления выноса подписи.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
     EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
+    BaseOffsets(2 To 3) As Double ' Базовые отступы второго и третьего рядов от основного, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
     Locations(2 To 3) As String ' Прочитанное расположение каждого дополнительного ряда относительно основного.
     Bindings(2 To 3) As String ' Прочитанный способ привязки дополнительных рядов к основному.
@@ -112,11 +113,13 @@ End Sub
 Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As CUnitSystem, ByVal header As Long, _
         ByVal base As Long, ByVal x As Double, ByVal y As Double, ByVal width As Double, ByVal height As Double, ByRef faces() As TRectangleFace)
     Dim side As Long, row As Long, extra As Long, axisDistance As Double, rowNumber As Long, column As Long, ids As Variant
+    Dim extraHeader As Long
+    extraHeader = table.AdditionalRowsHeader
     ' Строки каждого прямоугольника в Config: левая, правая, верхняя и нижняя стороны.
     If base = 0 Then ids = Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2") Else ids = Array("H2.as_1", "H2.as_2", "B2.as_1", "B2.as_2")
     For side = 1 To 4
         row = header + 3 + base + side
-        extra = header + 13 + base + side
+        extra = extraHeader + base + side
         With faces(base + side)
             .ID = CStr(ids(side - 1))
             .Count = table.Count(row, 4)
@@ -143,13 +146,14 @@ Private Sub ReadRectangleFaces(ByVal table As CSectionInputTable, ByVal units As
                     .LabelY = -1#
             End Select
             .Diameters(2) = table.OptionalDiameter(extra, 2, units)
-            .Diameters(3) = table.OptionalDiameter(extra, 5, units)
+            .Diameters(3) = table.OptionalDiameter(extra, 6, units)
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
-                    column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
-                    .Locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                    column = 2 + (rowNumber - 2) * 4 ' На ряд отведены диаметр, отступ, привязка и положение.
+                    .BaseOffsets(rowNumber) = table.OptionalRowOffset(extra, column + 1, units)
+                    .Locations(rowNumber) = table.Choice(extra, column + 3, Array("Stacked", "SideBySide"))
                     .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
-                    .ExtraSources(rowNumber) = table.SourceReference(extra, column)
+                    .ExtraSources(rowNumber) = table.SourceReference(extra, column) & "; " & table.SourceReference(extra, column + 1) & "; " & table.SourceReference(extra, column + 2) & "; " & table.SourceReference(extra, column + 3)
                 End If
             Next rowNumber
         End With
@@ -201,7 +205,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             contact.Initialize .Diameter, -1#, tangentSign, defaults
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
-                    Set options = contact.AppendRow(.Diameters(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), .ExtraSources(rowNumber))
+                    Set options = contact.AppendRow(.Diameters(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), .ExtraSources(rowNumber), .BaseOffsets(rowNumber))
                     options.Comment = "RectSet: " & .Caption & ", ряд " & CStr(rowNumber)
                     facade.RebarDependent .ID & ".Row" & CStr(rowNumber), .ID & ".Main", .Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
                 End If

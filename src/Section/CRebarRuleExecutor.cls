@@ -34,6 +34,8 @@ Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection ' Пос�
 Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Списки близких стержней, размер ячейки поиска в мм и число пар пересекающихся стержней.
 Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило, создавшее каждый стержень, и размер массива этих связей.
 Private mPhysicalOwner() As Long ' Номер фактического стержня для каждой запрошенной позиции, включая объединённые совпадения.
+Private mPhysicalFirstPosition() As Long ' Первая исходная позиция физического стержня для проверки законного общего узла.
+Private mPhysicalOffsetRule() As Long ' Правило нового режима, участвующее в физическом стержне; сохраняется после объединения.
 Private mDiagnosticRecordsOmitted As Long ' Число событий сверх лимита подробных записей; счётчики остаются полными.
 
 ' Все запрошенные позиции, включая пропущенные проекции; это не число физических стержней.
@@ -161,6 +163,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     mDiagnosticRecordsOmitted = 0
     Set mDiagnostic = Nothing: Set mDiagnostics = New Collection
     Set mBarBuckets = CreateObject("Scripting.Dictionary"): Erase mPhysicalRule
+    Erase mPhysicalFirstPosition: Erase mPhysicalOffsetRule
     Erase mPhysicalOwner: Erase mRules: Erase mState: Erase mStart: Erase mCount
     Erase mSkippedByRule: Erase mMergedByRule: Erase mCreatedByRule
     If definition Is Nothing Or geometry Is Nothing Then RuleError 0, "Определение и бетонная область обязательны."
@@ -174,6 +177,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     ReDim mStart(1 To ruleCount): ReDim mCount(1 To ruleCount)
     ReDim mSkippedByRule(1 To ruleCount): ReDim mMergedByRule(1 To ruleCount): ReDim mCreatedByRule(1 To ruleCount)
     For i = 1 To ruleCount: definition.CopyRule i, mRules(i): Next i
+    EnableRowOffsetChecks
     mBarBinSize = 1#
     For i = 1 To ruleCount
         If mRules(i).Enabled Then mBarBinSize = GeomMax(mBarBinSize, mRules(i).Diameter)
@@ -192,6 +196,10 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
             position = mPositions(order(i)): index = position.RuleIndex
             owner = result.FindBarAt(position.X, position.Y)
             If owner > 0 Then
+                If mRules(index).ValidateRowOffset Or mPhysicalOffsetRule(owner) > 0 Then
+                    If Not SharedSourceJoint(order(i), mPhysicalFirstPosition(owner)) Then _
+                        RuleError OffsetCheckRule(index, owner), "Дополнительный стержень совпал с самостоятельным стержнем. Измените отступы рядов.", "ROW_OFFSET_COINCIDENCE", result.BarID(owner), position.X, position.Y
+                End If
                 identical = (result.Diameter(owner) = mRules(index).Diameter And _
                     StrComp(result.SteelClass(owner), mRules(index).SteelClass, vbTextCompare) = 0)
                 If mRules(index).Coincidence = RejectCoincidence Then _
@@ -199,6 +207,10 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
                 If Not identical And mRules(index).Coincidence = MergeIdentical Then _
                     RuleError index, "Совпавшие позиции имеют разные диаметры или материалы.", "COINCIDENCE_CONFLICT", result.BarID(owner), result.Diameter(owner), mRules(index).Diameter
                 ValidatePlacement index, result.X(owner), result.Y(owner), result.Diameter(owner), position.SourcePositionID, geometry, region, query
+                If mRules(index).ValidateRowOffset Then
+                    mPhysicalOffsetRule(owner) = index
+                    CheckNeighbors index, position, result, owner, result.Diameter(owner)
+                End If
                 If Not identical Then
                     mConflicts = mConflicts + 1
                     AddDiagnostic index, "COINCIDENCE_OWNER", result.BarID(owner), "Сохранен явно заданный опубликованный владелец.", result.Diameter(owner), mRules(index).Diameter
@@ -216,7 +228,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
             mCreatedByRule(index) = mCreatedByRule(index) + 1
             mCreatedPhysical = mCreatedPhysical + 1
             mPhysicalOwner(order(i)) = result.Count
-            IndexPhysicalBar result, index
+            IndexPhysicalBar result, index, order(i)
 NextPosition:
         Next i
     End If
@@ -224,12 +236,52 @@ NextPosition:
     Set Build = result
 End Function
 
+' Включает проверки обоих дополнительных рядов только у семейства с активным ненулевым базовым отступом.
+Private Sub EnableRowOffsetChecks()
+    Dim families As Object, i As Long
+    Set families = CreateObject("Scripting.Dictionary")
+    families.CompareMode = vbBinaryCompare
+    For i = 1 To mDefinition.RuleCount
+        If mRules(i).Enabled And mRules(i).Mode = DependentOffset And mRules(i).ValidateRowOffset Then families(mRules(i).SourceRuleID) = True
+    Next i
+    For i = 1 To mDefinition.RuleCount
+        If mRules(i).Enabled And mRules(i).Mode = DependentOffset Then
+            If families.Exists(mRules(i).SourceRuleID) Then
+                mRules(i).ValidateRowOffset = True
+                mRules(i).PlacementCheck = CheckFullDisk
+                mRules(i).OverlapPolicy = RejectOverlap
+            End If
+        End If
+    Next i
+End Sub
+
+' Возвращает участника нового режима, чтобы ошибка указывала на его фактические исходные поля.
+Private Function OffsetCheckRule(ByVal index As Long, ByVal owner As Long) As Long
+    OffsetCheckRule = index
+    If Not mRules(index).ValidateRowOffset And mPhysicalOffsetRule(owner) > 0 Then OffsetCheckRule = mPhysicalOffsetRule(owner)
+End Function
+
+' Допускает совместное владение только при одном исходном узле на концах разных линий.
+' Совпадение самостоятельных стержней внутри линии или двух рядов одного Main таким узлом не считается.
+Private Function SharedSourceJoint(ByVal first As Long, ByVal last As Long) As Boolean
+    Do While mPositions(first).SourcePositionIndex > 0: first = mPositions(first).SourcePositionIndex: Loop
+    Do While mPositions(last).SourcePositionIndex > 0: last = mPositions(last).SourcePositionIndex: Loop
+    If mPositions(first).PathID = mPositions(last).PathID Then Exit Function
+    If Abs(mPositions(first).X - mPositions(last).X) > GEOM_TOLERANCE Or Abs(mPositions(first).Y - mPositions(last).Y) > GEOM_TOLERANCE Then Exit Function
+    Dim firstPath As CGeometryPath, lastPath As CGeometryPath
+    Set firstPath = mDefinition.Path(mPositions(first).PathID): Set lastPath = mDefinition.Path(mPositions(last).PathID)
+    If firstPath.IsClosed Or lastPath.IsClosed Then Exit Function
+    SharedSourceJoint = (mPositions(first).Station <= GEOM_TOLERANCE Or firstPath.Length - mPositions(first).Station <= GEOM_TOLERANCE) And _
+        (mPositions(last).Station <= GEOM_TOLERANCE Or lastPath.Length - mPositions(last).Station <= GEOM_TOLERANCE)
+End Function
+
 ' Сначала выбирает близкие стержни по координатным ячейкам, затем проверяет
 ' зазор по исходным координатам центров и радиусам. Простое касание
 ' стержней зависимых рядов допускается.
-Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition, ByVal result As CRebarLayout)
+Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition, ByVal result As CRebarLayout, Optional ByVal excludedOwner As Long = 0, Optional ByVal actualDiameter As Double = -1#)
     Dim bx As Double, by As Double, dx As Long, dy As Long, key As String, bucket As Collection, candidate As Variant
     Dim gap As Double, other As Long
+    If actualDiameter < 0# Then actualDiameter = mRules(index).Diameter
     bx = Int(position.X / mBarBinSize): by = Int(position.Y / mBarBinSize)
     For dx = -1 To 1
         For dy = -1 To 1
@@ -238,14 +290,16 @@ Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition
                 Set bucket = mBarBuckets(key)
                 For Each candidate In bucket
                     other = CLng(candidate)
+                    If other = excludedOwner Then GoTo NextCandidate
                     gap = Sqr((position.X - result.X(other)) ^ 2 + (position.Y - result.Y(other)) ^ 2) - _
-                        (mRules(index).Diameter + result.Diameter(other)) / 2#
+                        (actualDiameter + result.Diameter(other)) / 2#
                     If gap < -GEOM_TOLERANCE Then
                         mBarOverlaps = mBarOverlaps + 1
-                        If mRules(index).OverlapPolicy = RejectOverlap Or mRules(mPhysicalRule(other)).OverlapPolicy = RejectOverlap Then _
-                            RuleError index, "Диски стержней пересекаются; измените шаг или смещения связанных рядов.", "BAR_OVERLAP", result.BarID(other), gap, mRules(index).Diameter
+                        If mRules(index).OverlapPolicy = RejectOverlap Or mRules(mPhysicalRule(other)).OverlapPolicy = RejectOverlap Or mPhysicalOffsetRule(other) > 0 Then _
+                            RuleError OffsetCheckRule(index, other), "Диски стержней пересекаются; измените шаг или смещения связанных рядов.", "BAR_OVERLAP", result.BarID(other), gap, actualDiameter
                         AddDiagnostic index, "BAR_OVERLAP", result.BarID(other), "Отрицательный геометрический зазор между дисками стержней.", gap, mRules(index).Diameter
                     End If
+NextCandidate:
                 Next candidate
             End If
         Next dy
@@ -254,14 +308,18 @@ End Sub
 
 ' Запоминает координатную ячейку добавленного стержня для дальнейшей проверки
 ' совпадающих центров и пересечений поперечных сечений.
-Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Long)
+Private Sub IndexPhysicalBar(ByVal result As CRebarLayout, ByVal ruleIndex As Long, ByVal positionIndex As Long)
     Dim key As String, bucket As Collection, index As Long
     index = result.Count
     If index > mPhysicalCapacity Then
         mPhysicalCapacity = CLng(GeomMin(GEOM_MAX_REBAR_COUNT, GeomMax(16#, CDbl(mPhysicalCapacity) * 2#)))
         ReDim Preserve mPhysicalRule(1 To mPhysicalCapacity)
+        ReDim Preserve mPhysicalFirstPosition(1 To mPhysicalCapacity)
+        ReDim Preserve mPhysicalOffsetRule(1 To mPhysicalCapacity)
     End If
     mPhysicalRule(index) = ruleIndex
+    mPhysicalFirstPosition(index) = positionIndex
+    If mRules(ruleIndex).ValidateRowOffset Then mPhysicalOffsetRule(index) = ruleIndex
     key = Format$(Int(result.X(index) / mBarBinSize), "0") & "|" & Format$(Int(result.Y(index) / mBarBinSize), "0")
     If mBarBuckets.Exists(key) Then Set bucket = mBarBuckets(key) Else Set bucket = New Collection: mBarBuckets.Add key, bucket
     bucket.Add index
@@ -405,6 +463,7 @@ Private Sub PrepareIndependent(ByVal index As Long)
                 ordinal = ordinal + 1
                 path.AtDistance CDbl(stations(i)), position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = CDbl(stations(i)): position.RuleIndex = index
+                position.SourcePositionIndex = 0: position.IncomingTangentAtJoint = mRules(index).IncomingTangentAtJoint
                 position.RootRuleIndex = index: position.RootOrdinal = ordinal
                 ' Сохраняем общий порядок добавления стержней; выбор позиций для зависимого ряда
                 ' определяется отдельно по исходным номерам на каждой линии.
@@ -480,41 +539,44 @@ Friend Function RuleBounds(ByVal ruleID As String, ByRef minX As Double, ByRef m
     RuleBounds = True
 End Function
 
-' Привязка к самому удаленному ряду вдоль заданной нормали. Стержни на
-' наклонных/дуговых участках не расширяют подпись прямого крайнего ряда.
+' Опорную прямую подписи выбирает крайнее положение по заданной нормали.
+' Длину и середину вдоль грани определяют все стержни основного ряда,
+' включая участки скруглений: их исключение смещало подпись в сторону.
 Friend Function RuleExtremeEnds(ByVal ruleID As String, ByVal nx As Double, ByVal ny As Double, _
         ByRef startX As Double, ByRef startY As Double, ByRef endX As Double, ByRef endY As Double) As Boolean
-    Dim index As Long, i As Long, projection As Double, best As Double, along As Double, first As Double, last As Double
-    index = mDefinition.RuleIndex(ruleID): best = -1E+100
-    For i = mStart(index) To mStart(index) + mCount(index) - 1
-        projection = mPositions(i).X * nx + mPositions(i).Y * ny
-        along = mPositions(i).X * ny - mPositions(i).Y * nx
-        If Not RuleExtremeEnds Or projection > best + GEOM_TOLERANCE Then
-            best = projection: first = along: last = along
-            startX = mPositions(i).X: startY = mPositions(i).Y: endX = startX: endY = startY
-            RuleExtremeEnds = True
-        ElseIf Abs(projection - best) <= GEOM_TOLERANCE Then
-            If along < first Then first = along: startX = mPositions(i).X: startY = mPositions(i).Y
-            If along > last Then last = along: endX = mPositions(i).X: endY = mPositions(i).Y
-        End If
-    Next i
+    Dim first As Double, last As Double, low As Double, support As Double
+    If Not RuleBounds(ruleID, first, last, low, support, ny, -nx) Then Exit Function
+    startX = first * ny + support * nx: startY = -first * nx + support * ny
+    endX = last * ny + support * nx: endY = -last * nx + support * ny
+    RuleExtremeEnds = True
 End Function
 
 ' Получает координаты зависимого ряда смещением исходных стержней.
 ' Сохраняет их исходные номера на каждой линии и связь с основным рядом.
 Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
+    On Error GoTo InvalidTransfer
     Dim i As Long, ordinal As Long, position As TRebarPosition
+    Dim path As CGeometryPath
     For i = mStart(source) To mStart(source) + mCount(source) - 1
         ordinal = ordinal + 1
         position = mPositions(i)
         If Not mRules(index).EverySecond Or position.SourceOrdinal Mod 2 = 1 Then
+            If mRules(index).ValidateRowOffset Then
+                Set path = mDefinition.Path(position.PathID)
+                path.ValidateNormalTransfer position.Station, mRules(index).NormalOffset, position.IncomingTangentAtJoint
+            End If
             position.X = position.X + mRules(index).TangentOffset * position.TangentX - mRules(index).NormalOffset * position.TangentY
             position.Y = position.Y + mRules(index).TangentOffset * position.TangentY + mRules(index).NormalOffset * position.TangentX
             position.RuleIndex = index
+            position.SourcePositionIndex = i
             position.SourcePositionID = PositionID(index, ordinal, mPositions(i).SourcePositionID)
             AppendPosition position
         End If
     Next i
+    Exit Sub
+InvalidTransfer:
+    If Err.Number = 6 Then RuleError index, "Отступ ряда выходит за числовой диапазон. Уменьшите заданное расстояние."
+    SectionRecipeGeometryError "CRebarRuleExecutor", mRules(index).SourceReference
 End Sub
 
 ' Для каждого исходного стержня ищет ближайшее пересечение по заданному направлению
@@ -561,6 +623,7 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 Set path = mDefinition.Path(bestID)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
                 position.Station = bestStation: position.PathID = bestID: position.RuleIndex = index
+                position.SourcePositionIndex = 0: position.IncomingTangentAtJoint = mRules(index).IncomingTangentAtJoint
                 ' Обычная проекция сохраняет исходные номера позиций отдельно на каждой линии,
                 ' даже при пропусках. Для рядов у отверстия можно отдельно включить нумерацию
                 ' только успешно полученных проекций.
@@ -777,7 +840,7 @@ End Sub
 ' Выдаёт ошибку арматурного правила с ID и исходным адресом параметра.
 Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVal code As String = "RULE_INVALID", _
         Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
-    If code = "COINCIDENCE" Or code = "COINCIDENCE_CONFLICT" Or code = "BAR_OVERLAP" Then mConflicts = mConflicts + 1
+    If code = "COINCIDENCE" Or code = "COINCIDENCE_CONFLICT" Or code = "BAR_OVERLAP" Or code = "ROW_OFFSET_COINCIDENCE" Then mConflicts = mConflicts + 1
     AddDiagnostic index, code, relatedEntityID, reason, detail1, detail2
     Dim reference As String
     If index > 0 Then reference = mDiagnostic.SourceReference: reason = "Ряд '" & mRules(index).RuleID & "': " & reason

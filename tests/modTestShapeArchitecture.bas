@@ -241,6 +241,7 @@ Public Sub ConfigureRectSetScenario(ByVal fixture As String, ByVal scenario As L
     If scenario = 0 Then Exit Sub
     For i = 1 To 8
         row = 10 + i: extra = 20 + i
+        table.Cells(extra, 3).Value2 = 0#: table.Cells(extra, 7).Value2 = 0#
         If fixture = "Rectangle" And i > 4 Then GoTo InactiveSide
         count = 5
         If scenario = 2 Then count = 3
@@ -249,12 +250,12 @@ Public Sub ConfigureRectSetScenario(ByVal fixture As String, ByVal scenario As L
         table.Cells(row, 5).Value2 = 70# / factor
         table.Cells(row, 6).Value2 = 90# / factor
         table.Cells(extra, 2).Value2 = IIf(scenario = 4, 0#, 16# / factor)
-        table.Cells(extra, 5).Value2 = 12# / factor
-        table.Cells(extra, 3).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 0), "SideBySide", "Stacked")
-        table.Cells(extra, 6).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 1), "SideBySide", "Stacked")
+        table.Cells(extra, 6).Value2 = 12# / factor
+        table.Cells(extra, 5).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 0), "SideBySide", "Stacked")
+        table.Cells(extra, 9).Value2 = IIf(scenario = 2 Or (scenario = 3 And i Mod 2 = 1), "SideBySide", "Stacked")
         table.Cells(extra, 4).Value2 = IIf(scenario = 2 Or i Mod 2 = 0, "EverySecondBar", "EachBar")
-        table.Cells(extra, 7).Value2 = IIf(scenario = 4 Or i Mod 2 = 1, "EverySecondBar", "EachBar")
-        If scenario = 4 Then table.Cells(extra, 3).Value2 = "inactive value"
+        table.Cells(extra, 8).Value2 = IIf(scenario = 4 Or i Mod 2 = 1, "EverySecondBar", "EachBar")
+        If scenario = 4 Then table.Cells(extra, 5).Value2 = "inactive value"
 InactiveSide:
     Next i
     If scenario = 5 Then
@@ -318,17 +319,18 @@ Public Sub ConfigureRoundedScenario(ByVal scenario As Long)
     End If
     For i = 1 To 4
         row = mainHeader + i: extra = extraHeader + i
+        table.Cells(extra, 3).Value2 = 0#: table.Cells(extra, 7).Value2 = 0#
         table.Cells(row, 2).Value2 = (35# + 5# * CDbl(i)) / factor
         table.Cells(row, 3).Value2 = 20# / factor
         table.Cells(row, 4).Value2 = IIf(i <= 2, 7, 5)
-        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 5).Value2 = 12# / factor
-        table.Cells(extra, 3).Value2 = IIf(scenario = 3 And i Mod 2 = 0, "SideBySide", "Stacked")
-        table.Cells(extra, 6).Value2 = IIf(scenario = 3 And i Mod 2 = 1, "SideBySide", "Stacked")
+        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 6).Value2 = 12# / factor
+        table.Cells(extra, 5).Value2 = IIf(scenario = 3 And i Mod 2 = 0, "SideBySide", "Stacked")
+        table.Cells(extra, 9).Value2 = IIf(scenario = 3 And i Mod 2 = 1, "SideBySide", "Stacked")
         table.Cells(extra, 4).Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
-        table.Cells(extra, 7).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
+        table.Cells(extra, 8).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
         If scenario = 4 Then
             table.Cells(row, 4).Value2 = 1: table.Cells(extra, 2).Value2 = 0#
-            table.Cells(extra, 3).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
+            table.Cells(extra, 5).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
         End If
     Next i
     If scenario = 5 Then
@@ -406,31 +408,32 @@ Public Sub ConfigureHollowScenario(ByVal scenario As Long)
     End If
     For i = 1 To 8
         row = mainHeader + i: extra = extraHeader + i
+        table.Cells(extra, 3).Value2 = 0#: table.Cells(extra, 7).Value2 = 0#
         table.Cells(row, 2).Value2 = (35# + 5# * CDbl(i)) / factor
         table.Cells(row, 3).Value2 = 20# / factor
         If i <= 4 Then table.Cells(row, 4).Value2 = IIf(i <= 2, 7, 9)
-        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 5).Value2 = 12# / factor
-        table.Cells(extra, 3).Value2 = IIf(scenario = 4 And i Mod 2 = 0, "SideBySide", "Stacked")
-        table.Cells(extra, 6).Value2 = IIf(scenario = 4 And i Mod 2 = 1, "SideBySide", "Stacked")
+        table.Cells(extra, 2).Value2 = 16# / factor: table.Cells(extra, 6).Value2 = 12# / factor
+        table.Cells(extra, 5).Value2 = IIf(scenario = 4 And i Mod 2 = 0, "SideBySide", "Stacked")
+        table.Cells(extra, 9).Value2 = IIf(scenario = 4 And i Mod 2 = 1, "SideBySide", "Stacked")
         table.Cells(extra, 4).Value2 = IIf(i Mod 2 = 0, "EverySecondBar", "EachBar")
-        table.Cells(extra, 7).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
+        table.Cells(extra, 8).Value2 = IIf(i Mod 2 = 1, "EverySecondBar", "EachBar")
         If scenario = 5 Then
             If i <= 4 Then table.Cells(row, 4).Value2 = 1
             table.Cells(extra, 2).Value2 = 0#
-            table.Cells(extra, 3).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
+            table.Cells(extra, 5).Value2 = "inactive value": table.Cells(extra, 4).Value2 = "inactive value"
         End If
         If scenario = 6 And i = 5 Then
             table.Cells(row, 3).Value2 = 0#
-            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 5).Value2 = "inactive value"
+            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 6).Value2 = "inactive value"
         End If
         If scenario = 7 And i = 3 Then
             table.Cells(row, 4).Value2 = 0
             table.Cells(row, 2).Value2 = "inactive value"
-            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 5).Value2 = "inactive value"
+            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 6).Value2 = "inactive value"
         End If
         If (scenario = 8 Or scenario = 9) And (i = 1 Or i = 2 Or i = 5 Or i = 6) Then
             table.Cells(row, 3).Value2 = 0#: If i <= 4 Then table.Cells(row, 4).Value2 = 0
-            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 5).Value2 = "inactive value"
+            table.Cells(extra, 2).Value2 = "inactive value": table.Cells(extra, 6).Value2 = "inactive value"
         End If
     Next i
     ThisWorkbook.Worksheets("Config").Calculate
@@ -778,6 +781,10 @@ End Function
 
 Private Sub SetSetting(ByVal key As String, ByVal value As Variant)
     Dim name As Variant, table As Object, i As Long
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        Dim circleCell As Object
+        Set circleCell = FixtureCircleFieldCell(ThisWorkbook, key): circleCell.Value2 = value: Exit Sub
+    End If
     For Each name In Array("rngSystemSettings", "rngCircleGeometry")
         Set table = ThisWorkbook.Names(CStr(name)).RefersToRange
         For i = 2 To table.Rows.Count

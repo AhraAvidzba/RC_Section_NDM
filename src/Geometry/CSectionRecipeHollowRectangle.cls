@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -46,7 +46,9 @@ Private Type THollowFace
     Count As Long ' Заданное число наружных стержней; у отверстия число определяет проекция.
     StartSetback As Double ' Отступ начала участка размещения от начала линии, мм.
     EndSetback As Double ' Отступ конца участка размещения от конца линии, мм.
+    BaseOffsets(2 To 3) As Double ' Базовые отступы второго и третьего рядов от основного, мм.
     Diameters(2 To 3) As Double ' Диаметры второго и третьего рядов арматуры, мм.
+    ExtraSources(2 To 3) As String ' Адреса диаметра, отступа, привязки и положения каждого дополнительного ряда.
     Locations(2 To 3) As String ' Прочитанное расположение каждого дополнительного ряда относительно основного.
     Bindings(2 To 3) As String ' Прочитанный способ привязки дополнительных рядов к основному.
     LabelX As Double ' Компонента X направления выноса подписи.
@@ -101,7 +103,7 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
     Dim startColumn As Long, endColumn As Long, rowNumber As Long, column As Long, mainHeader As Long, extraHeader As Long
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
     captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая", "B_o - верхняя", "B_o - нижняя", "H_o - левая", "H_o - правая")
-    mainHeader = table.RowByKey("as", 2): extraHeader = table.RowByKey("d2", 2)
+    mainHeader = table.RowByKey("as", 2): extraHeader = table.AdditionalRowsHeader
     For i = 1 To 8
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
@@ -135,12 +137,14 @@ Private Sub ReadRebarInputs(ByVal table As CSectionInputTable, ByVal units As CU
                 .Source = .Source & "; " & table.SourceReference(row, startColumn) & "; " & table.SourceReference(row, endColumn)
                 extra = table.RowByKey(.Caption, 1, extraHeader + 1, extraHeader + 8)
                 .Diameters(2) = table.OptionalDiameter(extra, 2, units)
-                .Diameters(3) = table.OptionalDiameter(extra, 5, units)
+                .Diameters(3) = table.OptionalDiameter(extra, 6, units)
                 For rowNumber = 2 To 3
                     If .Diameters(rowNumber) > 0# Then
-                        column = 2 + (rowNumber - 2) * 3 ' В таблице на каждый ряд отведены диаметр, расположение и привязка.
-                        .Locations(rowNumber) = table.Choice(extra, column + 1, Array("Stacked", "SideBySide"))
+                        column = 2 + (rowNumber - 2) * 4 ' На ряд отведены диаметр, отступ, привязка и положение.
+                        .BaseOffsets(rowNumber) = table.OptionalRowOffset(extra, column + 1, units)
+                        .Locations(rowNumber) = table.Choice(extra, column + 3, Array("Stacked", "SideBySide"))
                         .Bindings(rowNumber) = table.Choice(extra, column + 2, Array("EachBar", "EverySecondBar"))
+                        .ExtraSources(rowNumber) = table.SourceReference(extra, column) & "; " & table.SourceReference(extra, column + 1) & "; " & table.SourceReference(extra, column + 2) & "; " & table.SourceReference(extra, column + 3)
                     End If
                 Next rowNumber
             End If
@@ -218,7 +222,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         contact.Initialize faces(i).Diameter, normalSign, 1#, defaults
         For rowNumber = 2 To 3
             If faces(i).Diameters(rowNumber) > 0# Then
-                Set options = contact.AppendRow(faces(i).Diameters(rowNumber), faces(i).Locations(rowNumber), faces(i).Bindings(rowNumber), faces(i).Source)
+                Set options = contact.AppendRow(faces(i).Diameters(rowNumber), faces(i).Locations(rowNumber), faces(i).Bindings(rowNumber), faces(i).ExtraSources(rowNumber), faces(i).BaseOffsets(rowNumber))
                 options.Comment = faces(i).RowComment & CStr(rowNumber)
                 facade.RebarDependent faces(i).ID & ".Row" & CStr(rowNumber), faces(i).ID & ".Main", faces(i).Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
             End If

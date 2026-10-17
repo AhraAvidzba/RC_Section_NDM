@@ -23,6 +23,7 @@ Public DistributionScope As ERebarDistributionScope ' Допустимо тол�
 Public RemainderPlacement As ERemainderPlacement ' К какому концу или середине ряда отнести остаток длины при постоянном шаге.
 Public TangentOffset As Double ' Смещение зависимого стержня вдоль касательной к исходной линии, мм; знак задаёт направление.
 Public NormalOffset As Double ' Смещение зависимого стержня поперёк исходной линии, мм; положительный знак направлен влево по её обходу.
+Public ValidateRowOffset As Boolean ' Активный пользовательский отступ требует проверки всех дополнительных стержней своего семейства.
 Public EverySecond As Boolean ' Брать локальные исходные позиции 1, 3, ... отдельно на каждом пути; SuccessfulProjectionOrdinal задаёт отдельный отсчёт успешных проекций.
 Public IncomingTangentAtJoint As Boolean ' В точке соединения двух сегментов брать касательную предыдущего сегмента. По умолчанию берётся касательная следующего сегмента.
 Public DirectionX As Double ' Компонента X заданного направления проекции; используется, если SourceNormalSign = 0.
@@ -83,6 +84,7 @@ Public Function Clone() As CRebarRuleOptions
     result.RemainderPlacement = RemainderPlacement
     result.TangentOffset = TangentOffset
     result.NormalOffset = NormalOffset
+    result.ValidateRowOffset = ValidateRowOffset
     result.EverySecond = EverySecond
     result.IncomingTangentAtJoint = IncomingTangentAtJoint
     result.DirectionX = DirectionX
@@ -111,6 +113,7 @@ Friend Sub CopyTo(ByRef rule As TRebarRule)
     rule.DistributionScope = DistributionScope
     rule.EndMode = EndMode: rule.RemainderPlacement = RemainderPlacement
     rule.TangentOffset = TangentOffset: rule.NormalOffset = NormalOffset
+    rule.ValidateRowOffset = ValidateRowOffset
     rule.EverySecond = EverySecond
     rule.IncomingTangentAtJoint = IncomingTangentAtJoint
     rule.DirectionX = DirectionX: rule.DirectionY = DirectionY

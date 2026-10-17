@@ -164,6 +164,17 @@ Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal 
     OptionalDiameter = units.InputLengthToInternal(value)
 End Function
 
+' Читает необязательный отступ ряда: пустая ячейка равна нулю; остальные размеры не ослабляет.
+Public Function OptionalRowOffset(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
+    If IsBlank(row, column) Then Exit Function
+    On Error GoTo Invalid
+    OptionalRowOffset = NonNegativeLength(row, column, units)
+    Exit Function
+Invalid:
+    If Err.Number = 6 Then InputError row, column, "Отступ выходит за числовой диапазон. Введите меньшее неотрицательное расстояние."
+    Err.Raise Err.Number, Err.Source, Err.Description
+End Function
+
 ' Находит уникальный столбец заголовка, без фиксированного адреса.
 Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String) As Long
     Dim column As Long, value As Variant
@@ -178,6 +189,21 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
         End If
     Next column
     If ColumnByCaption = 0 Then InputError headerRow, 1, "Не найден столбец '" & caption & "'. Восстановите заголовок столбца."
+End Function
+
+' Проверяет единственный действующий 11-столбцовый блок дополнительных рядов и возвращает строку его шапки.
+' Повторные подписи отступов/привязок проверяются по месту внутри d2 и d3, без неоднозначного поиска.
+Public Function AdditionalRowsHeader() As Long
+    Dim expected As Variant, column As Long, caption As String
+    If mColumns < 11 Then InputError 1, 1, "Таблица дополнительных рядов имеет прежний формат. Восстановите таблицу Config с 11 столбцами для независимых отступов."
+    AdditionalRowsHeader = RowByKey("d2", 2)
+    expected = Array("грань", "d2", "отступ", "привязка", "положение", "d3", "отступ", "привязка", "положение", "ед", "комментарий")
+    For column = 1 To 11
+        caption = LCase$(Trim$(Text(AdditionalRowsHeader, column)))
+        If column = 10 Then caption = Replace(caption, ".", "")
+        If caption <> CStr(expected(column - 1)) Then _
+            InputError AdditionalRowsHeader, column, "Неизвестный порядок полей дополнительных рядов. Восстановите таблицу Config; ожидался заголовок '" & CStr(expected(column - 1)) & "'."
+    Next column
 End Function
 
 ' Находит единственную строку с заданным названием параметра в указанной части таблицы.

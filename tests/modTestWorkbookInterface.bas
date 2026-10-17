@@ -2814,6 +2814,10 @@ End Sub
 ' Изменяет ячейку fixture по каноническому ключу с учетом специализированных таблиц.
 ' Неизвестный ключ вызывает ошибку теста, а не создает новую настройку.
 Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        Dim circleCell As Object
+        Set circleCell = FixtureCircleFieldCell(ThisWorkbook, key): circleCell.Value2 = value: Exit Sub
+    End If
     If TrySetUnitOrSignSetting(key, value) Then Exit Sub
 
     Dim settings As Object
@@ -3053,17 +3057,17 @@ Private Function RectSetSettingAddress(ByVal key As String, ByRef rowIndex As Lo
     ElseIf StrComp(key, "RectSet." & faceName & ".d_2row_2", vbTextCompare) = 0 Then
         rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 2
     ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_1", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 5
+        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 6
     ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_2", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 5
+        rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 6
     ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".loc_2row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 3
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 5
     ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".loc_3row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 6
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 9
     ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".bind_2row_", vbTextCompare) = 0 Then
         rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 4
     ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".bind_3row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 7
+        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 8
     Else
         Exit Function
     End If
@@ -3166,15 +3170,15 @@ Private Function RoundedRectangleFaceSettingAddress(ByVal key As String, _
         Case "d_2row"
             rowIndex = 18 + faceOrdinal: columnIndex = 2
         Case "loc_2row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 3
+            rowIndex = 18 + faceOrdinal: columnIndex = 5
         Case "bind_2row"
             rowIndex = 18 + faceOrdinal: columnIndex = 4
         Case "d_3row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 5
-        Case "loc_3row"
             rowIndex = 18 + faceOrdinal: columnIndex = 6
+        Case "loc_3row"
+            rowIndex = 18 + faceOrdinal: columnIndex = 9
         Case "bind_3row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 7
+            rowIndex = 18 + faceOrdinal: columnIndex = 8
         Case Else
             Exit Function
     End Select
@@ -3261,15 +3265,15 @@ Private Function HollowRectangleFaceSettingAddress(ByVal key As String, _
         Case "d_2row"
             rowIndex = 20 + faceOrdinal: columnIndex = 2
         Case "loc_2row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 3
+            rowIndex = 20 + faceOrdinal: columnIndex = 5
         Case "bind_2row"
             rowIndex = 20 + faceOrdinal: columnIndex = 4
         Case "d_3row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 5
-        Case "loc_3row"
             rowIndex = 20 + faceOrdinal: columnIndex = 6
+        Case "loc_3row"
+            rowIndex = 20 + faceOrdinal: columnIndex = 9
         Case "bind_3row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 7
+            rowIndex = 20 + faceOrdinal: columnIndex = 8
         Case Else
             Exit Function
     End Select
@@ -3301,6 +3305,9 @@ End Function
 ' Читает значение fixture из специальных таблиц или упорядоченных диапазонов Config.
 ' Отсутствие ключа вызывает ошибку теста, вместо подмены прочитанного значения default.
 Private Function GetSystemSetting(ByVal key As String) As String
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        GetSystemSetting = CStr(FixtureCircleFieldCell(ThisWorkbook, key).Value2): Exit Function
+    End If
     Dim directValue As String
     If TryGetUnitOrSignSetting(key, directValue) Then
         GetSystemSetting = directValue
@@ -3556,6 +3563,10 @@ End Function
 ' Ищет validation ключа в реально существующих таблицах выбранной конфигурации.
 ' Успех требует совпадения полного списка вариантов, а не только наличия dropdown.
 Private Function AnySettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        AnySettingValidationHasOptions = ValidationCellHasOptions(FixtureCircleFieldCell(ThisWorkbook, key), expectedOptions)
+        Exit Function
+    End If
     Dim ranges As Variant
     ranges = SettingsRangeSearchOrder()
 
@@ -5321,9 +5332,9 @@ Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
     target.Value2 = source.Value2
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2
-        For Each column In Array(3, 4, 6, 7)
+        For Each column In Array(5, 4, 9, 8)
             tail = RectSetSelectorTail(CLng(column))
-            If CLng(column) = 3 Or CLng(column) = 6 Then
+            If CLng(column) = 5 Or CLng(column) = 9 Then
                 firstValue = "Stacked": secondValue = "SideBySide"
             Else
                 firstValue = "EachBar": secondValue = "EverySecondBar"
@@ -5367,7 +5378,7 @@ Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
     Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2
-        For Each column In Array(3, 4, 6, 7)
+        For Each column In Array(5, 4, 9, 8)
             For side = 1 To 2
                 key = "RectSet." & CStr(face) & "." & RectSetSelectorTail(CLng(column)) & "_" & CStr(side)
                 prefix = "rectset.independent.layout." & key
@@ -5409,7 +5420,7 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
     ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo = "='" & sheet.Name & "'!" & target.Address
     For Each face In Array("H1", "B1", "H2", "B2")
         topRow = 21 + pairIndex * 2: mainRow = 11 + pairIndex * 2
-        For Each column In Array(3, 4, 6, 7)
+        For Each column In Array(5, 4, 9, 8)
             For side = 1 To 2
                 target.Value2 = source.Value2
                 target.Cells(3, 2).Value2 = "LSection": target.Cells(4, 2).Value2 = 0#
@@ -5419,20 +5430,21 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                     target.Cells(row, 3).Value2 = 0#: target.Cells(row, 4).Value2 = 0
                 Next row
                 For row = 21 To 28
-                    target.Cells(row, 2).Value2 = 0#: target.Cells(row, 5).Value2 = 0#
-                    target.Cells(row, 3).Value2 = "Stacked": target.Cells(row, 6).Value2 = "Stacked"
-                    target.Cells(row, 4).Value2 = "EachBar": target.Cells(row, 7).Value2 = "EachBar"
+        target.Cells(row, 3).Value2 = 0#: target.Cells(row, 7).Value2 = 0#
+                    target.Cells(row, 2).Value2 = 0#: target.Cells(row, 6).Value2 = 0#
+                    target.Cells(row, 5).Value2 = "Stacked": target.Cells(row, 9).Value2 = "Stacked"
+                    target.Cells(row, 4).Value2 = "EachBar": target.Cells(row, 8).Value2 = "EachBar"
                 Next row
                 For row = mainRow To mainRow + 1
                     target.Cells(row, 2).Value2 = 20#
                     target.Cells(row, 3).Value2 = 10#: target.Cells(row, 4).Value2 = 3
                     target.Cells(row, 5).Value2 = 30#: target.Cells(row, 6).Value2 = 30#
                 Next row
-                If CLng(column) <= 4 Then diameterColumn = 2 Else diameterColumn = 5
+                If CLng(column) <= 5 Then diameterColumn = 2 Else diameterColumn = 6
                 target.Cells(topRow, diameterColumn).Value2 = 8#
                 target.Cells(topRow + 1, diameterColumn).Value2 = 8#
                 selectedRow = topRow + side - 1
-                If CLng(column) = 3 Or CLng(column) = 6 Then
+                If CLng(column) = 5 Or CLng(column) = 9 Then
                     original = "Stacked": alternative = "SideBySide"
                 Else
                     original = "EachBar": alternative = "EverySecondBar"
@@ -5444,7 +5456,7 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                 target.Cells(selectedRow, CLng(column)).Value2 = alternative
 
                 Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
-                If CLng(column) = 3 Or CLng(column) = 6 Then
+                If CLng(column) = 5 Or CLng(column) = 9 Then
                     changedBars = 0
                     For i = 1 To baseline.Count
                         If Abs(baseline.X(i) - changed.X(i)) + Abs(baseline.Y(i) - changed.Y(i)) > 0.00000001 Then changedBars = changedBars + 1
@@ -5512,18 +5524,19 @@ Private Sub TestRectSetIndependentThirdRows(ByRef stats As TUiTestStats)
         values(row, 5) = 100#: values(row, 6) = 100#
     Next row
     For row = 21 To 28
-        values(row, 2) = 0#: values(row, 5) = 0#
-        values(row, 3) = "Stacked": values(row, 6) = "Stacked"
-        values(row, 4) = "EachBar": values(row, 7) = "EachBar"
+        values(row, 3) = 0#: values(row, 7) = 0#
+        values(row, 2) = 0#: values(row, 6) = 0#
+        values(row, 5) = "Stacked": values(row, 9) = "Stacked"
+        values(row, 4) = "EachBar": values(row, 8) = "EachBar"
     Next row
     values(11, 4) = 1: values(12, 4) = 1
-    values(21, 2) = 18#: values(21, 5) = 28#: values(21, 3) = "SideBySide"
-    values(22, 2) = 22#: values(22, 5) = 34#
+    values(21, 2) = 18#: values(21, 6) = 28#: values(21, 5) = "SideBySide"
+    values(22, 2) = 22#: values(22, 6) = 34#
     Set layout = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
     AssertTrue stats, "rectset.thirdRows.count", layout.Count = 6
     AssertTrue stats, "rectset.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - 24#) < 0.00000001
     AssertTrue stats, "rectset.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - 49#) < 0.00000001
-    values(21, 6) = "SideBySide"
+    values(21, 9) = "SideBySide"
     Set changed = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
     AssertTrue stats, "rectset.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - 42#) < 0.00000001
     AssertTrue stats, "rectset.thirdRows.rightUnchanged", RectSetLayoutContainsBar(changed, layout, 6)
@@ -5536,10 +5549,10 @@ End Sub
 ' ДЛЯ ТЕСТОВ: связывает столбец пользовательской таблицы с независимым ключом.
 Private Function RectSetSelectorTail(ByVal column As Long) As String
     Select Case column
-        Case 3: RectSetSelectorTail = "loc_2row"
+        Case 5: RectSetSelectorTail = "loc_2row"
         Case 4: RectSetSelectorTail = "bind_2row"
-        Case 6: RectSetSelectorTail = "loc_3row"
-        Case 7: RectSetSelectorTail = "bind_3row"
+        Case 9: RectSetSelectorTail = "loc_3row"
+        Case 8: RectSetSelectorTail = "bind_3row"
     End Select
 End Function
 
@@ -6333,6 +6346,14 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
             End Select
         Next row
     Next name
+    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
+    Audit03DivideNumericInput target, lengthFactor
+    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset3")
+    Audit03DivideNumericInput target, lengthFactor
+    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter2")
+    Audit03DivideNumericInput target, lengthFactor
+    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter3")
+    Audit03DivideNumericInput target, lengthFactor
     ' Порог имеет размерность момент/длина; входные единицы момента не меняются.
     SetSystemSetting "Calculation.ZeroMomentPerDepth", CStr(0.001 * lengthFactor)
     Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
@@ -6342,7 +6363,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
         For Each column In Array(2, 3, 5, 6): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
     Next row
     For row = 21 To 28
-        For Each column In Array(2, 5): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+        For Each column In Array(2, 3, 6, 7): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
     Next row
     Set target = ThisWorkbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
     For column = 2 To 3: Audit03DivideNumericInput target.Cells(3, column), lengthFactor: Next column
@@ -6353,7 +6374,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
         For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
     Next row
     For row = 19 To 22
-        For Each column In Array(2, 5): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+        For Each column In Array(2, 3, 6, 7): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
     Next row
     Set target = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
     For row = 3 To 4: Audit03DivideNumericInput target.Cells(row, 2), lengthFactor: Next row
@@ -6362,7 +6383,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
         For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
     Next row
     For row = 21 To 28
-        For Each column In Array(2, 5): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
+        For Each column In Array(2, 3, 6, 7): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
     Next row
     For Each name In Array("rngConcreteMaterialParameters", "rngSteelMaterialParameters")
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange

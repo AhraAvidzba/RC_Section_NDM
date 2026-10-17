@@ -120,7 +120,8 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
         root.Cells(main + i, 2).Value2 = 40# / factor
         root.Cells(main + i, 3).Value2 = 0#
         If shapeName <> "HollowRectangle" Or i <= 4 Then root.Cells(main + i, 4).Value2 = 0
-        root.Cells(extra + i, 2).Value2 = 0#: root.Cells(extra + i, 5).Value2 = 0#
+        root.Cells(extra + i, 2).Value2 = 0#: root.Cells(extra + i, 6).Value2 = 0#
+        root.Cells(extra + i, 3).Value2 = 0#: root.Cells(extra + i, 7).Value2 = 0#
     Next i
     count1 = 2147483647
     If scenario = 1 Or scenario = 2 Then count1 = 1100000000
@@ -132,7 +133,7 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
     If count2 > 0 Then root.Cells(main + 2, 4).Value2 = count2: root.Cells(main + 2, 3).Value2 = 16# / factor
     If scenario = 2 Then
         root.Cells(extra + 1, 2).Value2 = 16# / factor
-        root.Cells(extra + 1, 3).Value2 = "Stacked": root.Cells(extra + 1, 4).Value2 = "EachBar"
+        root.Cells(extra + 1, 5).Value2 = "Stacked": root.Cells(extra + 1, 4).Value2 = "EachBar"
     End If
     Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
     Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
@@ -307,7 +308,7 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
         Optional ByRef failed As Long = 0) As String
     Dim stats As TGeometryConfigStats, ranges(0 To 3) As Object, saved(0 To 3) As Variant
     Dim names As Variant, keys As Variant, key As Variant, bad As Variant, badValues As Variant
-    Dim i As Long, cases As Long, cell As Object, savedKey As Variant
+    Dim i As Long, cases As Long, cell As Object, savedKey As Variant, label As Object
     Dim baseline As Variant, prefix As String, offKey As Variant, offValue As Variant, ignored As Variant
     names = Array("rngSystemSettings", "rngUnitSettings", "rngCircleGeometry", "rngRectSetGeometry")
     keys = Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Count", "Rebar.Diameter", _
@@ -345,10 +346,15 @@ Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 
 
         ' Пустой диаметр является допустимым выключением; исчезнувшая строка
         ' имеет другой смысл и не должна незаметно брать шаблонный диаметр.
-        savedKey = cell.Offset(0, -1).Formula
-        cell.Offset(0, -1).Value2 = "Audit03.AbsentCircleField"
-        CheckCircleMissingInput stats, CStr(key), cases
-        cell.Offset(0, -1).Formula = savedKey
+        If CStr(key) = "Circle.Diameter" Or CStr(key) = "Rebar.AxisDistance" Or CStr(key) = "Rebar.Count" Or CStr(key) = "Rebar.Diameter" Then
+            Set label = cell.Offset(0, -1)
+        Else
+            Set label = cell.Offset(-1, 0)
+        End If
+        savedKey = label.Formula
+        label.Value2 = "Audit03.AbsentCircleField"
+        CheckCircleMissingInput stats, CStr(key), cases, CStr(savedKey)
+        label.Formula = savedKey
         Check stats, "circleRebar.missing." & CStr(key) & ".recovery", _
             SameGeometryRouteSnapshot(baseline, RequiredGeometryRouteSnapshot("Circle", "Rebars"))
     Next key
@@ -411,14 +417,7 @@ End Function
 ' Находит фактическую ячейку значения по ключу, без типовых адресов Config.
 ' Это позволяет проверить адресную диагностику после перемещения таблицы.
 Private Function CircleInputCell(ByVal target As Object, ByVal key As String) As Object
-    Dim i As Long
-    For i = 2 To target.Rows.Count
-        If CStr(target.Cells(i, 1).Value2) = key Then
-            Set CircleInputCell = target.Cells(i, 2)
-            Exit Function
-        End If
-    Next i
-    Err.Raise vbObjectError + 5960, "modTestGeometryConfig", "Не найдена строка fixture: " & key
+    Set CircleInputCell = FixtureCircleFieldCell(target.Worksheet.Parent, key, target)
 End Function
 
 ' Проверяет один ввод через полный production-маршрут. Ошибка активного поля
@@ -450,7 +449,7 @@ End Sub
 
 ' Проверяет структурно отсутствующий активный параметр отдельно от пустой
 ' ячейки. Сообщение должно назвать ключ и способ восстановить ввод, а не default.
-Private Sub CheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal key As String, ByRef cases As Long)
+Private Sub CheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal key As String, ByRef cases As Long, ByVal expectedCaption As String)
     Dim actual As Variant, number As Long, description As String
     cases = cases + 1: RequiredGeometryProgress "circleRebar.missing." & key, stats.Report
     On Error Resume Next
@@ -458,7 +457,7 @@ Private Sub CheckCircleMissingInput(ByRef stats As TGeometryConfigStats, ByVal k
     number = Err.Number: description = Err.Description
     Err.Clear: On Error GoTo 0
     Check stats, "circleRebar.missing." & key & ".reject", number <> 0
-    Check stats, "circleRebar.missing." & key & ".key", InStr(1, description, key, vbBinaryCompare) > 0
+    Check stats, "circleRebar.missing." & key & ".key", InStr(1, description, expectedCaption, vbBinaryCompare) > 0
     Check stats, "circleRebar.missing." & key & ".repair", InStr(1, description, "Восстанов", vbTextCompare) > 0 Or _
         InStr(1, description, "Введите", vbTextCompare) > 0 Or InStr(1, description, "Выберите", vbTextCompare) > 0
     stats.Report = stats.Report & "CIRCLE_MISSING_INPUT: " & key & "; error=" & CStr(number) & "; " & description & vbCrLf
@@ -638,9 +637,10 @@ Private Sub CheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target 
         If rowIndex <= 14 Then target.Cells(rowIndex, 4).Value2 = 3 Else target.Cells(rowIndex, 4).Value2 = "auto"
     Next rowIndex
     For rowIndex = 21 To 28
-        target.Cells(rowIndex, 2).Value2 = 0#: target.Cells(rowIndex, 5).Value2 = 0#
-        target.Cells(rowIndex, 3).Value2 = "Stacked": target.Cells(rowIndex, 6).Value2 = "Stacked"
-        target.Cells(rowIndex, 4).Value2 = "EachBar": target.Cells(rowIndex, 7).Value2 = "EachBar"
+        target.Cells(rowIndex, 3).Value2 = 0#: target.Cells(rowIndex, 7).Value2 = 0#
+        target.Cells(rowIndex, 2).Value2 = 0#: target.Cells(rowIndex, 6).Value2 = 0#
+        target.Cells(rowIndex, 5).Value2 = "Stacked": target.Cells(rowIndex, 9).Value2 = "Stacked"
+        target.Cells(rowIndex, 4).Value2 = "EachBar": target.Cells(rowIndex, 8).Value2 = "EachBar"
     Next rowIndex
     For rowIndex = 11 To 14
         face = CStr(faceNames(rowIndex - 11))
@@ -838,6 +838,10 @@ End Sub
 ' Меняет существующую ячейку по ключу таблицы. Отсутствующий ключ означает
 ' ошибку подготовки теста; новая настройка вместо него не создаётся.
 Private Sub SetKey(ByVal target As Object, ByVal key As String, ByVal value As Variant)
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        Dim circleCell As Object
+        Set circleCell = FixtureCircleFieldCell(target.Worksheet.Parent, key, target): circleCell.Value2 = value: Exit Sub
+    End If
     Dim rowIndex As Long
     For rowIndex = 2 To target.Rows.Count
         If CStr(target.Cells(rowIndex, 1).Value2) = key Then
@@ -1028,6 +1032,9 @@ End Function
 ' Находит фактическую ячейку параметра в таблице. Отсутствующая строка —
 ' ошибка теста; значение по умолчанию не подставляется.
 Private Function RequiredGeometryKeyCell(ByVal target As Object, ByVal key As String) As Object
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        Set RequiredGeometryKeyCell = FixtureCircleFieldCell(target.Worksheet.Parent, key, target): Exit Function
+    End If
     Dim rowIndex As Long
     For rowIndex = 2 To target.Rows.Count
         If CStr(target.Cells(rowIndex, 1).Value2) = key Then
@@ -1352,16 +1359,16 @@ Private Function RebarFaceFields(ByVal shape As String, ByVal face As Variant) A
     If shape = "RectSet" Then
         RebarFaceFields = Array(Array("as", mainRow, 2, False), Array("d", mainRow, 3, False), _
             Array("n", mainRow, 4, False), Array("start", mainRow, 5, False), Array("end", mainRow, 6, False), _
-            Array("d2", extraRow, 2, True), Array("loc2", extraRow, 3, True), Array("bind2", extraRow, 4, True), _
-            Array("d3", extraRow, 5, True), Array("loc3", extraRow, 6, True), Array("bind3", extraRow, 7, True))
+            Array("d2", extraRow, 2, True), Array("loc2", extraRow, 5, True), Array("bind2", extraRow, 4, True), _
+            Array("d3", extraRow, 6, True), Array("loc3", extraRow, 9, True), Array("bind3", extraRow, 8, True))
     ElseIf Left$(CStr(face(0)), 8) = "Opening." Then
         RebarFaceFields = Array(Array("as", mainRow, 2, False), Array("d", mainRow, 3, False), _
-            Array("d2", extraRow, 2, True), Array("loc2", extraRow, 3, True), Array("bind2", extraRow, 4, True), _
-            Array("d3", extraRow, 5, True), Array("loc3", extraRow, 6, True), Array("bind3", extraRow, 7, True))
+            Array("d2", extraRow, 2, True), Array("loc2", extraRow, 5, True), Array("bind2", extraRow, 4, True), _
+            Array("d3", extraRow, 6, True), Array("loc3", extraRow, 9, True), Array("bind3", extraRow, 8, True))
     Else
         RebarFaceFields = Array(Array("as", mainRow, 2, False), Array("d", mainRow, 3, False), Array("n", mainRow, 4, False), _
-            Array("d2", extraRow, 2, True), Array("loc2", extraRow, 3, True), Array("bind2", extraRow, 4, True), _
-            Array("d3", extraRow, 5, True), Array("loc3", extraRow, 6, True), Array("bind3", extraRow, 7, True))
+            Array("d2", extraRow, 2, True), Array("loc2", extraRow, 5, True), Array("bind2", extraRow, 4, True), _
+            Array("d3", extraRow, 6, True), Array("loc3", extraRow, 9, True), Array("bind3", extraRow, 8, True))
     End If
 End Function
 
@@ -1388,20 +1395,21 @@ Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As St
     End Select
     For Each face In RebarFieldFaces(shape)
         mainRow = CLng(face(1)): extraRow = CLng(face(2))
+        target.Cells(extraRow, 3).Value2 = 0#: target.Cells(extraRow, 7).Value2 = 0#
         target.Cells(mainRow, 2).Value2 = 50#: target.Cells(mainRow, 3).Value2 = 16#
         If Left$(CStr(face(0)), 8) <> "Opening." Then target.Cells(mainRow, 4).Value2 = 5
         If shape = "RectSet" Then
             target.Cells(mainRow, 5).Value2 = 80#: target.Cells(mainRow, 6).Value2 = 80#
         End If
         If extras Then
-            target.Cells(extraRow, 2).Value2 = 12#: target.Cells(extraRow, 5).Value2 = 10#
+            target.Cells(extraRow, 2).Value2 = 12#: target.Cells(extraRow, 6).Value2 = 10#
         Else
-            target.Cells(extraRow, 2).Value2 = 0#: target.Cells(extraRow, 5).Value2 = 0#
+            target.Cells(extraRow, 2).Value2 = 0#: target.Cells(extraRow, 6).Value2 = 0#
         End If
-        RebarFieldCell(target, extraRow, 3).Value2 = "Stacked"
-        RebarFieldCell(target, extraRow, 6).Value2 = "Stacked"
+        RebarFieldCell(target, extraRow, 5).Value2 = "Stacked"
+        RebarFieldCell(target, extraRow, 9).Value2 = "Stacked"
         RebarFieldCell(target, extraRow, 4).Value2 = "EachBar"
-        RebarFieldCell(target, extraRow, 7).Value2 = "EachBar"
+        RebarFieldCell(target, extraRow, 8).Value2 = "EachBar"
     Next face
 End Sub
 

@@ -291,7 +291,7 @@ Private Sub TestProjectionNormalsAndOrdinals()
         Near "projection.normal.y." & CStr(i), model.RebarY(i + 3), 2# * model.RebarY(i)
     Next i
     Near "extreme.anchor.start", model.Annotations.StartX(1), 0#
-    Near "extreme.anchor.end", model.Annotations.EndX(1), 0#
+    Near "extreme.anchor.end", model.Annotations.EndX(1), 100#
     Near "extreme.anchor.y", model.Annotations.StartY(1), 100#
     For mode = 0 To 1
         Set facade = RuleFacade
@@ -662,7 +662,7 @@ Private Function CircleInputCase(ByVal scenario As Long) As Boolean
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
     Set table = context.Table("rngCircleGeometry")
-    If Len(key) > 0 Then expectedReference = table.SourceReference(table.RowByKey(key), 2)
+    If Len(key) > 0 Then expectedReference = "Config!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
     If scenario = 3 Then CircleInputCase = (definition.RuleCount = 0): Exit Function
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
@@ -709,19 +709,19 @@ Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
         Case 1: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
         Case 2: row = 13: column = 2: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 3).Value2) / 2#
         Case 3: row = 19: column = 2: range.Cells(row, column).Value2 = -1#
-        Case 4: row = 19: column = 3: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
+        Case 4: row = 19: column = 5: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
         Case 5: row = 19: column = 4: range.Cells(19, 2).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
         Case 6
             valid = True: range.Cells(8, 2).Value2 = "inactive": range.Cells(10, 2).Value2 = "inactive"
         Case 7
             valid = True: range.Cells(13, 4).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
-            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 3).Value2 = "inactive"
+            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 5).Value2 = "inactive"
         Case 8
             valid = True: range.Cells(13, 3).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
-            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 3).Value2 = "inactive"
+            range.Cells(19, 2).Value2 = "inactive": range.Cells(19, 5).Value2 = "inactive"
         Case 9
-            valid = True: range.Cells(19, 2).Value2 = 0: range.Cells(19, 5).Value2 = 0
-            range.Cells(19, 3).Value2 = "inactive": range.Cells(19, 4).Value2 = "inactive"
+            valid = True: range.Cells(19, 2).Value2 = 0: range.Cells(19, 6).Value2 = 0
+            range.Cells(19, 5).Value2 = "inactive": range.Cells(19, 4).Value2 = "inactive"
         Case 10: row = 9: column = 2: range.Cells(row, column).Value2 = 1000#
         Case 11
             valid = True: range.Cells(7, 2).Value2 = "Tapered": range.Cells(8, 2).Value2 = 100#
@@ -783,23 +783,23 @@ Private Function HollowInputCase(ByVal scenario As Long) As Boolean
         Case 5: row = 3: column = 2: range.Cells(row, column).Value2 = 1000# / factor
         Case 6
             valid = True: range.Cells(13, 4).Value2 = 0: range.Cells(13, 2).Value2 = "inactive"
-            range.Cells(23, 2).Value2 = "inactive": range.Cells(23, 5).Value2 = "inactive"
+            range.Cells(23, 2).Value2 = "inactive": range.Cells(23, 6).Value2 = "inactive"
         Case 7
             valid = True: range.Cells(15, 3).Value2 = 0#: range.Cells(25, 2).Value2 = "inactive"
-            range.Cells(25, 5).Value2 = "inactive"
+            range.Cells(25, 6).Value2 = "inactive"
         Case 8: row = 15: column = 2: range.Cells(7, 6).Value2 = 0#: range.Cells(15, 3).Value2 = 0#: range.Cells(row, column).Value2 = "bad"
         Case 9
-            valid = True: range.Cells(23, 2).Value2 = 0#: range.Cells(23, 5).Value2 = 0#
-            range.Cells(23, 3).Value2 = "inactive": range.Cells(23, 4).Value2 = "inactive"
+            valid = True: range.Cells(23, 2).Value2 = 0#: range.Cells(23, 6).Value2 = 0#
+            range.Cells(23, 5).Value2 = "inactive": range.Cells(23, 4).Value2 = "inactive"
         Case 10: row = 7: column = 6: range.Cells(row, column).Value2 = 1000# / factor
         Case 11: valid = True: range.Cells(7, 3).Value2 = 500# / factor
         Case 12: row = 23: column = 4: range.Cells(23, 2).Value2 = 16# / factor: range.Cells(row, column).Value2 = "bad"
         Case 13: row = 13: column = 4: range.Cells(13, 3).Value2 = 0#: range.Cells(row, column).Value2 = 1.5
         Case 14: row = 13: column = 3: range.Cells(row, column).Value2 = "-"
         Case 15: row = 23: column = 2: range.Cells(row, column).Value2 = "-"
-        Case 16: row = 23: column = 5: range.Cells(row, column).Value2 = "-"
+        Case 16: row = 23: column = 6: range.Cells(row, column).Value2 = "-"
         Case 17: row = 23: column = 2: range.Cells(row, column).Value2 = "TODO"
-        Case 18: valid = True: range.Cells(23, 2).ClearContents: range.Cells(23, 5).ClearContents
+        Case 18: valid = True: range.Cells(23, 2).ClearContents: range.Cells(23, 6).ClearContents
         Case 19: valid = True: range.Cells(13, 3).ClearContents
     End Select
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
@@ -1096,12 +1096,9 @@ Rejected:
 End Function
 
 Private Sub SetCircleInput(ByVal key As String, ByVal value As Variant)
-    Dim table As Object, i As Long
-    Set table = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
-    For i = 1 To table.Rows.Count
-        If CStr(table.Cells(i, 1).Value2) = key Then table.Cells(i, 2).Value2 = value: Exit Sub
-    Next i
-    Err.Raise vbObjectError + 5531, "modTestSectionRecipes", "Не найден ключ тестового ввода '" & key & "'."
+    Dim cell As Object
+    Set cell = FixtureCircleFieldCell(ThisWorkbook, key)
+    cell.Value2 = value
 End Sub
 
 ' ДЛЯ ТЕСТОВ: обе независимые привязки круга, нечётные n, направления и реальные подписи.
@@ -1195,7 +1192,7 @@ Public Function RunCircleBindingWorkbookTests() As String
     keys = Array("Rebar.Bind2row", "Rebar.Bind3row"): names = Array("rngCircleBind2Choices", "rngCircleBind3Choices")
     Check "circle.bind.lists.independent", ThisWorkbook.Names(names(0)).RefersToRange.Address <> ThisWorkbook.Names(names(1)).RefersToRange.Address
     For index = 0 To 1
-        row = values.RowByKey(CStr(keys(index))): Set cell = table.Cells(row, 2)
+        Set cell = FixtureCircleFieldCell(ThisWorkbook, CStr(keys(index)))
         Set choices = ThisWorkbook.Names(names(index)).RefersToRange
         Check "circle.bind.list.name." & CStr(index), cell.Validation.Formula1 = "=" & names(index)
         Check "circle.bind.list.size." & CStr(index), choices.Rows.Count = 2 And choices.Columns.Count = 1
@@ -1210,8 +1207,8 @@ Public Function RunCircleBindingWorkbookTests() As String
     Next index
     SetCircleInput "Rebar.Bind2row", "EverySecondBar": SetCircleInput "Rebar.Bind3row", "EachBar"
     modSectionRecipeSetup.UpdateSectionRecipeTypes
-    Check "circle.bind.update.preserves2", table.Cells(values.RowByKey("Rebar.Bind2row"), 2).Value2 = "EverySecondBar"
-    Check "circle.bind.update.preserves3", table.Cells(values.RowByKey("Rebar.Bind3row"), 2).Value2 = "EachBar"
+    Check "circle.bind.update.preserves2", FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind2row").Value2 = "EverySecondBar"
+    Check "circle.bind.update.preserves3", FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind3row").Value2 = "EachBar"
     Check "circle.bind.workbook.address2", CircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2", table, values)
     Check "circle.bind.workbook.address3", CircleBindingWorkbookRejected("Rebar.Bind3row", "Rebar.Diameter3", table, values)
     GoTo Restore
@@ -1239,8 +1236,10 @@ Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diamet
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
     Exit Function
 Rejected:
-    CircleBindingWorkbookRejected = InStr(1, Err.Description, table.Cells(values.RowByKey(key), 2).Address(False, False), vbBinaryCompare) > 0 And _
-        InStr(1, Err.Description, table.Worksheet.Name, vbBinaryCompare) > 0
+    Dim reason As String
+    reason = Err.Description ' Чтение нового helper не должно сбросить исходную ошибку до её проверки.
+    CircleBindingWorkbookRejected = InStr(1, reason, FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False), vbBinaryCompare) > 0 And _
+        InStr(1, reason, table.Worksheet.Name, vbBinaryCompare) > 0
 End Function
 
 ' ДЛЯ ТЕСТОВ: НДС/несущая/трещины для фактической модели нового Circle.

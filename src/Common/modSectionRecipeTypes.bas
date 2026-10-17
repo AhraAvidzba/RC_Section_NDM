@@ -106,6 +106,7 @@ Public Type TRebarRule
     SourceRuleID As String
     TangentOffset As Double
     NormalOffset As Double
+    ValidateRowOffset As Boolean ' Проверять диски и криволинейный перенос дополнительных рядов семейства с новым отступом.
     EverySecond As Boolean
     IncomingTangentAtJoint As Boolean
     DirectionX As Double
@@ -167,6 +168,8 @@ Public Type TRebarPosition
     RootOrdinal As Long
     RootPublicationRank As Long
     SourceOrdinal As Long
+    SourcePositionIndex As Long ' Позиция непосредственного исходного ряда; 0 у независимого или спроецированного Main.
+    IncomingTangentAtJoint As Boolean ' Какую касательную фактически использовали на стыке исходного пути.
     SourcePositionID As String
     PathID As String
 End Type

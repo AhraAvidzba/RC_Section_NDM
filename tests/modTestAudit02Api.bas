@@ -82,6 +82,61 @@ Finished:
     RunAudit02PolygonApiTests = mReport & "TOTAL AUDIT02 POLYGON API: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
+' ДЛЯ ТЕСТОВ: независимые отступы, контактные группы, знаки и сохранение старого нулевого режима.
+Public Function RunIndependentRowOffsetBuilderTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim cases As Variant, item As Variant, firstLocation As Variant, lastLocation As Variant
+    Dim contact As CRebarContactBuilder, defaults As CRebarRuleOptions
+    Dim second As CRebarRuleOptions, third As CRebarRuleOptions, copy As CRebarRuleOptions
+    Dim expectedNormal As Double, expectedTangent As Double, groupBase As Double, intermediate As Double, tag As String
+    cases = Array(Array(0#, 0#), Array(100#, 200#), Array(200#, 100#), Array(100#, 100#), Array(0#, 100#), Array(100#, 0#))
+    For Each item In cases
+        For Each firstLocation In Array("Stacked", "SideBySide")
+            For Each lastLocation In Array("Stacked", "SideBySide")
+                Set defaults = New CRebarRuleOptions
+                Set contact = New CRebarContactBuilder: contact.Initialize 32#, -1#, 1#, defaults
+                Set second = contact.AppendRow(20#, CStr(firstLocation), "EverySecondBar", "Offsets[2]", CDbl(item(0)))
+                Set third = contact.AppendRow(16#, CStr(lastLocation), "EachBar", "Offsets[3]", CDbl(item(1)))
+                tag = CStr(item(0)) & "/" & CStr(item(1)) & "/" & CStr(firstLocation) & "/" & CStr(lastLocation)
+                expectedNormal = CDbl(item(1)): expectedTangent = 0#: intermediate = 0#: groupBase = 0#
+                If CDbl(item(1)) = 0# Then groupBase = 32#
+                If CDbl(item(1)) = CDbl(item(0)) Then
+                    If CDbl(item(1)) > 0# Then
+                        groupBase = 20#
+                    ElseIf CStr(firstLocation) = CStr(lastLocation) Then
+                        intermediate = 20#
+                    End If
+                End If
+                If groupBase > 0# Then
+                    If CStr(lastLocation) = "Stacked" Then
+                        expectedNormal = expectedNormal + groupBase / 2# + intermediate + 8#
+                    Else
+                        expectedTangent = groupBase / 2# + intermediate + 8#
+                    End If
+                End If
+                Check "offsets.normal." & tag, third.NormalOffset = -expectedNormal
+                Check "offsets.tangent." & tag, third.TangentOffset = expectedTangent
+                Check "offsets.binding." & tag, second.EverySecond And Not third.EverySecond
+                Set copy = third.Clone
+                Check "offsets.clone." & tag, copy.ValidateRowOffset = third.ValidateRowOffset And copy.NormalOffset = third.NormalOffset
+            Next lastLocation
+        Next firstLocation
+    Next item
+    Set contact = New CRebarContactBuilder: contact.Initialize 32#, 1#, -1#, defaults
+    Set second = contact.AppendRow(20#, "Stacked", "EachBar", "Tolerance[2]", 100#)
+    Set third = contact.AppendRow(16#, "Stacked", "EachBar", "Tolerance[3]", 100# + GEOM_TOLERANCE / 2#)
+    Check "offsets.tolerance.same.group", Abs(third.NormalOffset - 118#) < GEOM_TOLERANCE
+    Set contact = New CRebarContactBuilder: contact.Initialize 32#, 1#, -1#, defaults
+    Set third = contact.AppendRow(16#, "SideBySide", "EverySecondBar", "DisabledSecond[3]", 100#)
+    Check "offsets.disabled.second", third.NormalOffset = 100# And third.TangentOffset = 0# And third.EverySecond
+    GoTo Finished
+Failed:
+    Check "offsets.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunIndependentRowOffsetBuilderTests = mReport & "TOTAL INDEPENDENT ROW OFFSET BUILDER: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
 ' ДЛЯ ТЕСТОВ: контактный helper меняет только компоненты смещения и EverySecond.
 Public Function RunAudit02OptionsTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -757,4 +812,408 @@ Private Function ContactInitializeRejected(ByVal contact As CRebarContactBuilder
 Rejected:
     ContactInitializeRejected = Err.Number <> 0
     If scenario <> 4 Then ContactInitializeRejected = ContactInitializeRejected And InStr(1, Err.Description, defaults.SourceReference, vbBinaryCompare) > 0
+End Function
+
+' ДЛЯ ТЕСТОВ: реальные координаты, фильтр исходных позиций и запрет новых коллизий общим исполнителем.
+Public Function RunIndependentRowOffsetGeometryTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim kind As Long, b2 As Variant, b3 As Variant, definition As CSectionDefinition, layout As CRebarLayout
+    Dim executor As CRebarRuleExecutor, i As Long, secondCount As Long, thirdCount As Long, radius As Double
+    For kind = 0 To 1
+        For Each b2 In Array("EachBar", "EverySecondBar")
+            For Each b3 In Array("EachBar", "EverySecondBar")
+                Set definition = OffsetGeometryDefinition(kind, 100#, 100#, CStr(b2), CStr(b3))
+                Set executor = New CRebarRuleExecutor
+                Set layout = executor.Build(definition, FixtureGeometry(definition.ConcreteDomain))
+                secondCount = 0: thirdCount = 0
+                For i = 1 To executor.PositionCount
+                    If executor.PositionRuleID(i) = "Row2" Then
+                        secondCount = secondCount + 1
+                        If kind = 0 Then radius = layout.Y(executor.PositionPhysicalOwner(i)) Else radius = Sqr(layout.X(executor.PositionPhysicalOwner(i)) ^ 2 + layout.Y(executor.PositionPhysicalOwner(i)) ^ 2)
+                        Check "offset.geometry.row2." & CStr(kind) & "." & CStr(i), Abs(radius - IIf(kind = 0, 100#, 200#)) < 0.000001
+                    ElseIf executor.PositionRuleID(i) = "Row3" Then
+                        thirdCount = thirdCount + 1
+                        If kind = 0 Then radius = layout.Y(executor.PositionPhysicalOwner(i)) Else radius = Sqr(layout.X(executor.PositionPhysicalOwner(i)) ^ 2 + layout.Y(executor.PositionPhysicalOwner(i)) ^ 2)
+                        Check "offset.geometry.row3." & CStr(kind) & "." & CStr(i), Abs(radius - IIf(kind = 0, 118#, 182#)) < 0.000001
+                    End If
+                Next i
+                Check "offset.geometry.count2", secondCount = IIf(CStr(b2) = "EachBar", 5, 3)
+                Check "offset.geometry.count3", thirdCount = IIf(CStr(b3) = "EachBar", 5, 3)
+            Next b3
+        Next b2
+    Next kind
+    Check "offset.overlap.rejected", OffsetGeometryRejected(OffsetGeometryDefinition(0, 100#, 105#), "Диски стержней")
+    Set layout = FixtureLayout(OffsetGeometryDefinition(0, 100#, 118#))
+    Check "offset.touch.allowed", layout.Count = 15
+    Check "offset.disk.outside", OffsetGeometryRejected(OffsetGeometryDefinition(0, 1499#, 100#), "целиком")
+    Check "offset.arc.center", OffsetGeometryRejected(OffsetGeometryDefinition(1, 300#, 0#), "центра")
+    Check "offset.arc.inversion", OffsetGeometryRejected(OffsetGeometryDefinition(1, 301#, 0#), "центра")
+    Check "offset.arc.contact.collapse", OffsetGeometryRejected(OffsetGeometryDefinition(1, 290#, 290#), "центра")
+    For kind = 0 To 1
+        Check "offset.coincidence.order." & CStr(kind), OffsetGeometryRejected(OffsetGeometryDefinition(0, 100#, 200#, "EachBar", "EachBar", kind + 1), "совпал")
+        Check "offset.shared.upgrade.order." & CStr(kind), OffsetGeometryRejected(OffsetSharedJointDefinition(kind, True), "Диски стержней")
+        Set layout = FixtureLayout(OffsetSharedJointDefinition(kind, False))
+        Check "offset.shared.joint.allowed." & CStr(kind), layout.Count = 2
+    Next kind
+    GoTo Finished
+Failed:
+    Check "offset.geometry.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunIndependentRowOffsetGeometryTests = mReport & "TOTAL INDEPENDENT ROW OFFSET GEOMETRY: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: пять исходных позиций и два связанных с Main ряда; формулы координат выполняет рабочий код.
+Private Function OffsetGeometryDefinition(ByVal kind As Long, ByVal a2 As Double, ByVal a3 As Double, _
+        Optional ByVal b2 As String = "EachBar", Optional ByVal b3 As String = "EachBar", Optional ByVal intruder As Long = 0) As CSectionDefinition
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim contact As CRebarContactBuilder, sign As Double
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "OffsetGeometryTest"
+    If kind = 0 Then Set path = facade.RectanglePath("Boundary", -500#, -500#, 2000#, 2000#) Else Set path = facade.CirclePath("Boundary", 0#, 0#, 500#)
+    facade.Outer "OUTER", path.ID
+    If intruder = 1 Then AddOffsetIntruder facade, 100#
+    If kind = 0 Then Set path = facade.LinePath("Axis", 0#, 0#, 400#, 0#) Else Set path = facade.CirclePath("Axis", 0#, 0#, 300#)
+    If kind = 1 Then path.ValidateNormalTransfer 0#, 10#
+    Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
+    If kind = 1 Then options.EndMode = ClosedUniform
+    facade.RebarByCount "Main", path.ID, 5, 32#, options
+    Set options = New CRebarRuleOptions: options.SourceReference = "OffsetTest[2,3]": options.Coincidence = KeepPublishedOwner
+    Set contact = New CRebarContactBuilder: contact.Initialize 32#, 1#, 1#, options
+    Set options = contact.AppendRow(20#, "Stacked", b2, "OffsetTest[2,3]", a2)
+    facade.RebarDependent "Row2", "Main", 20#, options
+    Set options = contact.AppendRow(16#, "Stacked", b3, "OffsetTest[3,3]", a3)
+    facade.RebarDependent "Row3", "Main", 16#, options
+    If intruder = 2 Then AddOffsetIntruder facade, 100#
+    Set OffsetGeometryDefinition = facade.Finish
+End Function
+
+' ДЛЯ ТЕСТОВ: независимый стержень на месте нового ряда; его нельзя скрыть слиянием.
+Private Sub AddOffsetIntruder(ByVal facade As CSectionDefinitionBuilder, ByVal y As Double)
+    Dim path As CGeometryPath, options As CRebarRuleOptions
+    Set path = facade.LinePath("IntruderPath", 0#, y, 400#, y)
+    Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
+    facade.RebarByCount "Intruder", path.ID, 5, 20#, options
+End Sub
+
+' ДЛЯ ТЕСТОВ: два Main делят конец соседних линий; новое участие должно усилить проверки общего стержня.
+Private Function OffsetSharedJointDefinition(ByVal reversed As Long, ByVal neighbor As Boolean) As CSectionDefinition
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "SharedOffsetJoint"
+    Set path = facade.RectanglePath("Boundary", -500#, -500#, 1000#, 1000#): facade.Outer "OUTER", path.ID
+    If neighbor And reversed = 1 Then AddOffsetJointNeighbor facade
+    Set path = facade.LinePath("FirstPath", 0#, 0#, 400#, 0#)
+    Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
+    facade.RebarAtStations "FirstMain", path.ID, Array(0#), 32#, options
+    options.NormalOffset = 100#: options.SourceReference = "LegacyJoint[2,3]"
+    facade.RebarDependent "LegacyJoint", "FirstMain", 20#, options
+    Set path = facade.LinePath("SecondPath", -400#, 0#, 0#, 0#)
+    Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
+    facade.RebarAtStations "SecondMain", path.ID, Array(400#), 32#, options
+    options.NormalOffset = 100#: options.ValidateRowOffset = True: options.SourceReference = "OffsetJoint[2,3]"
+    facade.RebarDependent "OffsetJoint", "SecondMain", 20#, options
+    If neighbor And reversed = 0 Then AddOffsetJointNeighbor facade
+    Set OffsetSharedJointDefinition = facade.Finish
+End Function
+
+' ДЛЯ ТЕСТОВ: сосед пересекает общий дополнительный стержень, но не основные ряды.
+Private Sub AddOffsetJointNeighbor(ByVal facade As CSectionDefinitionBuilder)
+    Dim path As CGeometryPath, options As CRebarRuleOptions
+    Set path = facade.LinePath("NeighborPath", 5#, 100#, 100#, 100#)
+    Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
+    facade.RebarAtStations "Neighbor", path.ID, Array(0#), 8#, options
+End Sub
+
+' ДЛЯ ТЕСТОВ: ожидает понятную адресную ошибку общего исполнителя.
+Private Function OffsetGeometryRejected(ByVal definition As CSectionDefinition, ByVal expected As String) As Boolean
+    Dim layout As CRebarLayout
+    On Error GoTo Rejected
+    Set layout = FixtureLayout(definition)
+    Exit Function
+Rejected:
+    OffsetGeometryRejected = InStr(1, Err.Description, expected, vbTextCompare) > 0 And _
+        (InStr(1, Err.Description, "OffsetTest[", vbBinaryCompare) > 0 Or InStr(1, Err.Description, "OffsetJoint[", vbBinaryCompare) > 0)
+End Function
+
+' ДЛЯ ТЕСТОВ: настоящий ввод четырёх рецептов, единицы, пустые и формульные отступы.
+' Каждая попытка строит арматуру общим исполнителем; исходный Config восстанавливается.
+Public Function RunIndependentRowOffsetWorkbookTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, calculation As Long, fixture As Variant, item As Variant
+    Dim unitName As Variant, offsets As Variant, settings As CSystemSettingsReader, units As CUnitSystem
+    Dim definition As CSectionDefinition, bars As CRebarLayout, expected As Variant, actual As Variant
+    Dim target As Object, extra As Long, main As Long, cell As Object, bad As Variant, i As Long, inputTable As CSectionInputTable
+    Dim description As String, number As Long, prefix As String, rowCount As Long
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    calculation = Application.Calculation: Application.Calculation = -4135
+    offsets = Array(Array(0#, 0#), Array(100#, 0#), Array(0#, 200#), Array(100#, 200#), Array(100#, 100#))
+    For Each fixture In Array("Circle", "Rectangle", "RoundedMixed", "HollowOffset")
+        For Each item In offsets
+            expected = Empty
+            For Each unitName In Array("mm", "cm", "m")
+                ConfigureOffsetWorkbook CStr(fixture), CStr(unitName), CDbl(item(0)), CDbl(item(1))
+                Set definition = ReadOffsetWorkbookDefinition()
+                Set bars = FixtureLayout(definition): actual = OffsetBarsSnapshot(bars)
+                prefix = "offset.workbook." & CStr(fixture) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(unitName)
+                Check prefix & ".three.rows", bars.Count >= 15
+                If IsEmpty(expected) Then expected = actual Else Check prefix & ".units", OffsetBarsEqual(expected, actual)
+            Next unitName
+        Next item
+        ConfigureOffsetWorkbook CStr(fixture), "mm", 100#, 118#
+        Set target = OffsetWorkbookTable(CStr(fixture))
+        OffsetWorkbookRows target, CStr(fixture), main, extra
+        Set cell = target.Cells(extra, 3)
+        For Each bad In Array(-1#, "abc", True, CVErr(2015))
+            cell.Value2 = bad: number = 0: description = ""
+            On Error Resume Next
+            Set definition = ReadOffsetWorkbookDefinition(): number = Err.Number: description = Err.Description
+            Err.Clear: On Error GoTo Failed
+            Check "offset.input.reject." & CStr(fixture) & "." & CStr(VarType(bad)), number <> 0
+            Check "offset.input.address." & CStr(fixture) & "." & CStr(VarType(bad)), InStr(description, cell.Address(False, False)) > 0 And InStr(description, "Config") > 0
+        Next bad
+        cell.ClearContents: Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+        actual = OffsetBarsSnapshot(bars)
+        cell.Value2 = 0#: Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+        Check "offset.input.blank.zero." & CStr(fixture), OffsetBarsEqual(actual, OffsetBarsSnapshot(bars))
+        target.Cells(extra, 2).Value2 = 0#: cell.Value2 = "inactive"
+        Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+        Check "offset.input.disabled.second." & CStr(fixture), bars.Count >= 10
+        target.Cells(extra, 6).Value2 = 0#: target.Cells(extra, 7).Value2 = CVErr(2015)
+        Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+        Check "offset.input.disabled.extras." & CStr(fixture), bars.Count >= 5
+    Next fixture
+    ConfigureOffsetWorkbook "Circle", "mm", 100#, 200#
+    Set units = New CUnitSystem: units.InitializeDefaults
+    Set target = OffsetWorkbookTable("Circle")
+    Set inputTable = New CSectionInputTable: inputTable.Initialize "rngCircleGeometry", target.Value2
+    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(inputTable.AdditionalRowsHeader + 1, 3, units) = 100#
+    Set cell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
+    cell.Formula = "=" & FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Address() & "/10"
+    FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1200#
+    Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+    actual = OffsetBarsSnapshot(bars)
+    cell.Value2 = 120#: Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
+    Check "offset.input.formula.manual.recalculated", OffsetBarsEqual(actual, OffsetBarsSnapshot(bars))
+    GoTo Finished
+Failed:
+    Check "offset.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation
+    RunIndependentRowOffsetWorkbookTests = mReport & "TOTAL INDEPENDENT ROW OFFSET WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: задаёт достаточно просторные сечения; отступы и диаметры даны в мм.
+' Открытый ряд берём по верхней стороне; в пустотелом сечении добавляем ряд у отверстия.
+Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As String, ByVal a2 As Double, ByVal a3 As Double)
+    Dim unitTable As Object, target As Object, factor As Double, row As Long, column As Variant
+    Dim main As Long, extra As Long, firstMain As Long, firstExtra As Long, lastMain As Long, active As Boolean
+    Set unitTable = ThisWorkbook.Names("rngUnitSettings").RefersToRange
+    For row = 1 To unitTable.Rows.Count
+        If CStr(unitTable.Cells(row, 1).Value2) = "Length" Then unitTable.Cells(row, 2).Value2 = unitName
+    Next row
+    factor = 1#: If unitName = "cm" Then factor = 10#
+    If unitName = "m" Then factor = 1000#
+    modTestShapeArchitecture.ConfigureShapeFixture fixture
+    Set target = OffsetWorkbookTable(fixture)
+    If fixture = "Circle" Then
+        FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1000# / factor
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance").Value2 = 60# / factor
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Count").Value2 = 12
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter").Value2 = 32# / factor
+        OffsetWorkbookRows target, fixture, main, extra
+        firstMain = main: lastMain = main: firstExtra = extra
+    Else
+        If fixture = "Rectangle" Then
+            target.Cells(8, 1).Value2 = 1200# / factor: target.Cells(8, 2).Value2 = 1200# / factor
+        ElseIf fixture = "RoundedMixed" Then
+            target.Cells(3, 2).Value2 = 1600# / factor: target.Cells(3, 3).Value2 = 1600# / factor
+            target.Cells(8, 2).Value2 = 400# / factor: target.Cells(8, 3).Value2 = 400# / factor
+            For row = 9 To 10
+                target.Cells(row, 2).Value2 = 300# / factor: target.Cells(row, 3).Value2 = 300# / factor
+            Next row
+        Else
+            target.Cells(7, 1).Value2 = 2400# / factor: target.Cells(7, 2).Value2 = 2400# / factor
+            target.Cells(7, 4).Value2 = 800# / factor: target.Cells(7, 5).Value2 = 800# / factor
+        End If
+        For row = 1 To target.Rows.Count
+            If CStr(target.Cells(row, 2).Value2) = "as" Then firstMain = row + 1
+            If CStr(target.Cells(row, 2).Value2) = "d2" Then firstExtra = row + 1
+        Next row
+        lastMain = firstMain + 3: If fixture = "Rectangle" Or fixture = "HollowOffset" Then lastMain = firstMain + 7
+    End If
+    For row = firstMain To lastMain
+        extra = firstExtra + row - firstMain
+        active = (fixture = "Circle" Or row = firstMain + 2)
+        If fixture = "HollowOffset" And row = firstMain + 6 Then active = True
+        If fixture <> "Circle" Then
+            target.Cells(row, 2).Value2 = 60# / factor
+            target.Cells(row, 3).Value2 = IIf(active, 32# / factor, 0#)
+            target.Cells(row, 4).Value2 = IIf(active, 5, 0)
+            If fixture = "Rectangle" Then
+                target.Cells(row, 5).Value2 = 150# / factor: target.Cells(row, 6).Value2 = 150# / factor
+            End If
+        End If
+        target.Cells(extra, 2).Value2 = IIf(active, 20# / factor, 0#)
+        target.Cells(extra, 6).Value2 = IIf(active, 16# / factor, 0#)
+        target.Cells(extra, 3).Value2 = a2 / factor: target.Cells(extra, 7).Value2 = a3 / factor
+        target.Cells(extra, 4).Value2 = "EachBar": target.Cells(extra, 8).Value2 = "EachBar"
+        target.Cells(extra, 5).Value2 = "Stacked": target.Cells(extra, 9).Value2 = "Stacked"
+    Next row
+End Sub
+
+' ДЛЯ ТЕСТОВ: получает действующую таблицу выбранного рецепта по штатному имени.
+Private Function OffsetWorkbookTable(ByVal fixture As String) As Object
+    Dim name As String
+    Select Case fixture
+        Case "Circle": name = "rngCircleGeometry"
+        Case "Rectangle": name = "rngRectSetGeometry"
+        Case "RoundedMixed": name = "rngRoundedRectangleGeometry"
+        Case Else: name = "rngHollowRectangleGeometry"
+    End Select
+    Set OffsetWorkbookTable = ThisWorkbook.Names(name).RefersToRange
+End Function
+
+' ДЛЯ ТЕСТОВ: строки основного и дополнительного армирования тестируемой верхней стороны.
+Private Sub OffsetWorkbookRows(ByVal target As Object, ByVal fixture As String, ByRef main As Long, ByRef extra As Long)
+    Dim row As Long
+    For row = 1 To target.Rows.Count
+        If CStr(target.Cells(row, 2).Value2) = "d2" Then extra = row + 1
+        If CStr(target.Cells(row, 2).Value2) = "as" Then main = row + 3
+    Next row
+    If fixture <> "Circle" Then extra = extra + 2
+End Sub
+
+' ДЛЯ ТЕСТОВ: чтение тем же снимком входа, которым пользуется рабочий сборщик.
+Private Function ReadOffsetWorkbookDefinition() As CSectionDefinition
+    Dim settings As CSystemSettingsReader, units As CUnitSystem
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set ReadOffsetWorkbookDefinition = FixtureWorkbookDefinition(settings.GetString("Geometry.Type"), ThisWorkbook, units)
+End Function
+
+' ДЛЯ ТЕСТОВ: независимая численная запись координат и диаметров в порядке публикации.
+Private Function OffsetBarsSnapshot(ByVal bars As CRebarLayout) As Variant
+    Dim values() As Double, i As Long
+    ReDim values(1 To bars.Count, 1 To 3)
+    For i = 1 To bars.Count
+        values(i, 1) = bars.X(i): values(i, 2) = bars.Y(i): values(i, 3) = bars.Diameter(i)
+    Next i
+    OffsetBarsSnapshot = values
+End Function
+
+' ДЛЯ ТЕСТОВ: допускает только погрешность пересчёта единиц, без округления входа.
+Private Function OffsetBarsEqual(ByVal first As Variant, ByVal second As Variant) As Boolean
+    Dim i As Long, j As Long
+    If UBound(first, 1) <> UBound(second, 1) Then Exit Function
+    For i = 1 To UBound(first, 1)
+        For j = 1 To 3
+            If Abs(first(i, j) - second(i, j)) > 0.00000001 Then Exit Function
+        Next j
+    Next i
+    OffsetBarsEqual = True
+End Function
+
+' ДЛЯ ТЕСТОВ: настоящие схемы Results и расчётные снимки новых рядов, без изменения рабочей книги.
+Public Function DumpIndependentRowOffsetExamples(ByVal outputDirectory As String) As String
+    Dim config As Object, saved As Variant, result As String, fixtures As Variant, fixture As String
+    Dim titles As Variant, a2 As Double, a3 As Double, index As Long, target As Object, main As Long, extra As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    Dim calculation As Long, events As Boolean, updating As Boolean, plot As String
+    On Error GoTo Failed
+    calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
+    Application.EnableEvents = False: Application.ScreenUpdating = True
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    fixtures = Array("Circle", "Circle", "Rectangle", "RoundedMixed", "HollowOffset", "Rectangle")
+    titles = Array("Circle_TwoRows_100", "Circle_ThreeRows_100_100", "Rectangle_ThreeRows_100_200", _
+        "Rounded_Sloped_60_100", "Hollow_Opening_100_100_SideBySide", "Rectangle_100_100_EverySecond")
+    For index = 0 To UBound(fixtures)
+        fixture = CStr(fixtures(index)): a2 = 100#: a3 = 100#
+        If index = 2 Then a3 = 200#
+        If index = 3 Then a2 = 60#: a3 = 100#
+        ConfigureOffsetWorkbook fixture, "mm", a2, a3
+        Set target = OffsetWorkbookTable(fixture): OffsetWorkbookRows target, fixture, main, extra
+        If index = 0 Then target.Cells(extra, 6).Value2 = 0#
+        If index = 3 Then
+            target.Cells(main, 3).Value2 = 0#: target.Cells(main, 4).Value2 = 0
+            target.Cells(extra, 2).Value2 = 0#: target.Cells(extra, 6).Value2 = 0#
+            target.Cells(main - 1, 3).Value2 = 32#: target.Cells(main - 1, 4).Value2 = 5
+            target.Cells(extra - 1, 2).Value2 = 20#: target.Cells(extra - 1, 6).Value2 = 16#
+        End If
+        If index >= 4 Then
+            target.Cells(extra, 9).Value2 = "SideBySide": target.Cells(extra, 8).Value2 = "EverySecondBar"
+            If index = 4 Then
+                target.Cells(extra + 4, 9).Value2 = "SideBySide": target.Cells(extra + 4, 8).Value2 = "EverySecondBar"
+            End If
+        End If
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+        result = result & "EXAMPLE: " & CStr(titles(index)) & "; bars=" & CStr(builder.Rebars.Count) & vbCrLf
+        result = result & modTestShapeArchitecture.PreparedShapeSnapshot(CStr(titles(index)), model, builder.Mesh, builder.Rebars)
+        If index = 1 Or index = 2 Or index = 4 Then result = result & modTestShapeArchitecture.PreparedCalculationSnapshot(CStr(titles(index)), model)
+        plot = modTestShapeArchitecture.PreparedPreviewSnapshot(CStr(titles(index)), model, outputDirectory)
+        result = result & plot
+    Next index
+    GoTo Finished
+Failed:
+    result = result & "FAIL: offset.examples; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
+    DumpIndependentRowOffsetExamples = result
+End Function
+
+' ДЛЯ ТЕСТОВ: смещение по касательной скругления и центр подписи асимметричного ряда у отверстия.
+Public Function RunOffsetOpeningAnnotationTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, target As Object, main As Long, extra As Long
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    Dim i As Long, source As Long, second As Long, third As Long, minX As Double, maxX As Double, maxY As Double
+    Dim dx As Double, dy As Double, nx As Double, ny As Double, found As Boolean, annotations As CSectionAnnotations
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
+    Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
+    target.Cells(extra + 4, 9).Value2 = "SideBySide": target.Cells(extra + 4, 8).Value2 = "EverySecondBar"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+    minX = 1E+100: maxX = -1E+100: maxY = -1E+100
+    For i = 1 To model.RebarCount
+        Select Case model.RebarSourceName(i)
+            Case "Opening.B.Top.Main.2": source = i
+            Case "Opening.B.Top.Row2.1": second = i
+            Case "Opening.B.Top.Row3.1": third = i
+        End Select
+        If Left$(model.RebarSourceName(i), 19) = "Opening.B.Top.Main." Then
+            minX = GeomMin(minX, model.RebarX(i)): maxX = GeomMax(maxX, model.RebarX(i))
+            maxY = GeomMax(maxY, model.RebarY(i))
+        End If
+    Next i
+    Check "opening.offset.source.positions", source > 0 And second > 0 And third > 0
+    If source = 0 Or second = 0 Or third = 0 Then GoTo Finished
+    nx = model.RebarX(second) - model.RebarX(source): ny = model.RebarY(second) - model.RebarY(source)
+    dx = model.RebarX(third) - model.RebarX(second): dy = model.RebarY(third) - model.RebarY(second)
+    Check "opening.offset.normal100", Abs(Sqr(nx * nx + ny * ny) - 100#) < 0.0000001
+    Check "opening.offset.contact18", Abs(Sqr(dx * dx + dy * dy) - 18#) < 0.0000001
+    Check "opening.offset.tangent.perpendicular", Abs(nx * dx + ny * dy) < 0.0000001
+    Check "opening.offset.corner.components", Abs(dx - 14.9666295471958) < 0.0000001 And Abs(dy - 10#) < 0.0000001
+    Set annotations = model.Annotations
+    For i = 1 To annotations.Count
+        If annotations.AnnotationID(i) = "REBAR_Opening.B.Top" Then
+            found = True
+            Check "opening.annotation.full.row.start", Abs(annotations.StartX(i) - minX) < 0.0000001
+            Check "opening.annotation.full.row.end", Abs(annotations.EndX(i) - maxX) < 0.0000001
+            Check "opening.annotation.full.row.center", Abs((annotations.StartX(i) + annotations.EndX(i)) / 2#) < 0.0000001
+            Check "opening.annotation.extreme.support", Abs(annotations.StartY(i) - maxY) < 0.0000001 And Abs(annotations.EndY(i) - maxY) < 0.0000001
+        End If
+    Next i
+    Check "opening.annotation.found", found
+    GoTo Finished
+Failed:
+    Check "opening.annotation.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    RunOffsetOpeningAnnotationTests = mReport & "TOTAL OFFSET OPENING ANNOTATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function

@@ -210,7 +210,31 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
         ByRef tangentX As Double, ByRef tangentY As Double, Optional ByVal incomingTangentAtJoint As Boolean = False)
     RequireSealed
     distance = CheckedDistance(distance)
-    Dim lo As Long, hi As Long, middle As Long, parameter As Double, norm As Double
+    Dim lo As Long, parameter As Double, norm As Double
+    lo = SegmentAtDistance(distance, incomingTangentAtJoint)
+    parameter = (distance - mStations(lo - 1)) / (mStations(lo) - mStations(lo - 1))
+    parameter = GeomMax(0#, GeomMin(1#, parameter))
+    modGeometryPrimitives.EdgePoint mEdges(lo), parameter, x, y
+    modGeometryPrimitives.EdgeTangent mEdges(lo), parameter, tangentX, tangentY
+    norm = Sqr(tangentX * tangentX + tangentY * tangentY)
+    tangentX = tangentX / norm: tangentY = tangentY / norm
+End Sub
+
+' Проверяет перенос исходной позиции по нормали: используемая дуга не должна схлопнуться или вывернуться.
+' Положение по длине и выбор касательной на стыке совпадают с AtDistance; новую раскладку не строит.
+Public Sub ValidateNormalTransfer(ByVal distance As Double, ByVal normalOffset As Double, Optional ByVal incomingTangentAtJoint As Boolean = False)
+    RequireSealed
+    Dim segment As Long, radius As Double
+    distance = CheckedDistance(distance): segment = SegmentAtDistance(distance, incomingTangentAtJoint)
+    If Abs(mEdges(segment).Sweep) <= GEOM_TOLERANCE Then Exit Sub
+    radius = Sqr((mEdges(segment).X1 - mEdges(segment).CenterX) ^ 2 + (mEdges(segment).Y1 - mEdges(segment).CenterY) ^ 2)
+    If radius - Sgn(mEdges(segment).Sweep) * normalOffset <= GEOM_TOLERANCE Then _
+        PathError "Отступ ряда достигает центра используемой дуги или проходит за него. Уменьшите отступ или контактное смещение.", "ROW_OFFSET_COLLAPSED", mSegmentIDs(segment), normalOffset, radius
+End Sub
+
+' Находит используемый сегмент для точки и проверки её нормального переноса одним правилом выбора стыка.
+Private Function SegmentAtDistance(ByVal distance As Double, ByVal incomingTangentAtJoint As Boolean) As Long
+    Dim lo As Long, hi As Long, middle As Long
     lo = 1: hi = mCount
     Do While lo < hi
         middle = lo + (hi - lo) \ 2
@@ -220,13 +244,8 @@ Public Sub AtDistance(ByVal distance As Double, ByRef x As Double, ByRef y As Do
             lo = middle + 1
         End If
     Loop
-    parameter = (distance - mStations(lo - 1)) / (mStations(lo) - mStations(lo - 1))
-    parameter = GeomMax(0#, GeomMin(1#, parameter))
-    modGeometryPrimitives.EdgePoint mEdges(lo), parameter, x, y
-    modGeometryPrimitives.EdgeTangent mEdges(lo), parameter, tangentX, tangentY
-    norm = Sqr(tangentX * tangentX + tangentY * tangentY)
-    tangentX = tangentX / norm: tangentY = tangentY / norm
-End Sub
+    SegmentAtDistance = lo
+End Function
 
 ' Возвращает наименьшую и наибольшую проекции линии на заданное направление.
 ' Учитывает крайние точки дуг, которые могут лежать между их концами.
