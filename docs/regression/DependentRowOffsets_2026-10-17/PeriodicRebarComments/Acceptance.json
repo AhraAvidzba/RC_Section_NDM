@@ -1,0 +1,29 @@
+{
+  "Passed": true,
+  "BaselineCommit": "45684b7ca06e9b98464c790535fca48a2a14b013",
+  "ExecutableVBAUnchanged": true,
+  "CommentComponents": [
+    "CRebarContactBuilder",
+    "modSectionRecipeApiGuide"
+  ],
+  "AgreedTerm": "выступы арматуры периодического профиля",
+  "SourceComponents": 153,
+  "NativeComponents": 158,
+  "Compiled": true,
+  "HelpTextCellsChanged": 2,
+  "AllWorksheetXMLUnchanged": true,
+  "UserReportUnchanged": true,
+  "WorkbookSHA256": "73df05ca58b4acf7326e73970096fedcc73cb460a547fc69100b8e2e8f6649da",
+  "AllCodeSHA256": "e7c053989c0eaf6aa0f44d1d347cd119e91fdd45f1bbc9f8a67c60f52c07afd4",
+  "CalculationsRun": false,
+  "RemovedOwnRedundantCopies": [
+    {
+      "Name": "Accepted.xlsm",
+      "Bytes": 8419716
+    },
+    {
+      "Name": "PublishedNativeVBA.txt",
+      "Bytes": 7349934
+    }
+  ]
+}

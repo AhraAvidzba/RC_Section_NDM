@@ -1,0 +1,22 @@
+[
+  {
+    "Path": "src/Section/CRebarContactBuilder.cls",
+    "TermReplacements": 4
+  },
+  {
+    "Path": "tools/build_workbook/Build-SectionRecipeVbeGuide.py",
+    "TermReplacements": 1
+  },
+  {
+    "Path": "tools/build_workbook/SectionRecipeApiText.py",
+    "TermReplacements": 1
+  },
+  {
+    "Path": "tools/build_workbook/SettingsCatalog.ps1",
+    "TermReplacements": 3
+  },
+  {
+    "Path": "docs/geometry_refactor/SECTION_RECIPE_API.md",
+    "TermReplacements": 1
+  }
+]

@@ -1,0 +1,18 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\DependentRowOffsets_2026-10-17\\PeriodicRebarComments\\Accepted.xlsm",
+    "WorkbookSHA256":  "6FAF441D64B74B8342BE65239DEF5C6F87F3A683E82E63A8E8467A6220CAEA9A",
+    "ProductionSHA256":  "DADCC53E90009147D383DC1480DBDCE4FA8D3F0E2BBEB503C63A7A6D629BC708",
+    "Compiled":  true,
+    "Modules":  [
+                    "modSectionRecipeApiGuide",
+                    "CRebarContactBuilder"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}
