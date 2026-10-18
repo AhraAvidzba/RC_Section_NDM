@@ -1,0 +1,30 @@
+{
+  "Passed": true,
+  "WorkbookSHA256": "70066E3CB52F5E92D58E1293C53BFAF1ED9359B08C59EC93A28BC92186280FB0",
+  "AllCodeSHA256": "D0B13D589EFC255776134944A420F19753D3311A9F975DC003B7D313B4139A19",
+  "SourceFile": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+  "HorizontalDimensionsUseContours": [
+    "OUTER.Boundary",
+    "OPENING.Boundary"
+  ],
+  "Compiled": true,
+  "SourceComponents": 155,
+  "WorkbookComponents": 160,
+  "OtherNativeComponentsExactlyEqual": 159,
+  "Scenarios": 10,
+  "DimensionRecords": 40,
+  "AnnotationRecords": 42,
+  "NumericFieldsCompared": 294,
+  "NumericFieldsBitwiseEqual": 284,
+  "MaxAbsoluteDifferenceMm": 1.1368683772161603E-13,
+  "AnnotationChecksPassed": 92,
+  "StructureChecks": 27,
+  "ChangedPackageParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllOtherPackagePartsUnchanged": true,
+  "NativeAllCodePayloadEqual": true,
+  "UserExecutionReportUnchanged": true,
+  "PublishedReadback": true,
+  "SolverOrFullOnOffRunsRequired": false
+}

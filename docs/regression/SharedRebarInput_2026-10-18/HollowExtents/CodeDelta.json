@@ -1,0 +1,8 @@
+{
+  "Passed": true,
+  "Components": 160,
+  "ChangedComponents": [
+    "CSectionRecipeHollowRectangle"
+  ],
+  "OtherComponentsExactlyEqual": 159
+}

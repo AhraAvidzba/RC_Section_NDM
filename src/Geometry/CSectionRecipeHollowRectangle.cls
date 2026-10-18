@@ -290,9 +290,9 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
             End If
         End If
     Next i
-    facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Наружная ширина HollowRectangle." ' Общая ширина сечения B.
+    facade.HorizontalExtent "DIM_B", "OUTER.Boundary", "B", sizes.H / 2#, 1#, "Наружная ширина HollowRectangle." ' Полная ширина по наружному контуру; размер вынесен вверх.
     facade.VerticalExtent "DIM_H", "OUTER.Boundary", "H", -sizes.B / 2#, -1#, "Наружная высота HollowRectangle." ' Полная высота сечения H; размер вынесен влево.
-    ' Ширина отверстия; размер под сечением.
-    facade.HorizontalDistance "DIM_B_OPENING", "B_o", sizes.Xo - sizes.Bo / 2#, sizes.Xo + sizes.Bo / 2#, -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening."
+    ' Полная ширина по контуру отверстия; размер под сечением.
+    facade.HorizontalExtent "DIM_B_OPENING", "OPENING.Boundary", "B_o", -sizes.H / 2#, -1#, "Ширина внутреннего отверстия Opening."
     facade.VerticalExtent "DIM_H_OPENING", "OPENING.Boundary", "H_o", sizes.B / 2#, 1#, "Высота внутреннего отверстия Opening." ' Высота отверстия; размер справа от сечения.
 End Sub

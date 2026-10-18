@@ -1,0 +1,11 @@
+{
+  "Passed": true,
+  "Scenarios": 10,
+  "DimensionRecords": 40,
+  "AnnotationRecords": 42,
+  "NumericFieldsCompared": 294,
+  "NumericFieldsBitwiseEqual": 284,
+  "MaxAbsoluteDifferenceMm": 1.1368683772161603e-13,
+  "TextUnitsNormalsPositionsAndCommentsPreserved": true,
+  "ExistingAnnotationChecksPassed": 92
+}

@@ -1,0 +1,9 @@
+{
+  "Passed": true,
+  "BeforeSHA256": "A20FE9AE3EB6D4F70EA2C16C5197E76C030F951B76ADE60275CAC69902DC39E6",
+  "AcceptedSHA256": "70066E3CB52F5E92D58E1293C53BFAF1ED9359B08C59EC93A28BC92186280FB0",
+  "ChangedPackageParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllWorksheetDataAndFormattingPreservedByteForByte": true
+}
