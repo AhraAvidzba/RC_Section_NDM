@@ -914,8 +914,8 @@ Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
 
     AssertTrue stats, "rectset.rows.stacked.count", stacked.Count = 3
     AssertClose stats, "rectset.rows.stacked.row1.x", stacked.X(1), 50#, 0.000001
-    AssertClose stats, "rectset.rows.stacked.row2.x", stacked.X(2), 70#, 0.000001
-    AssertClose stats, "rectset.rows.stacked.row3.x", stacked.X(3), 95#, 0.000001
+    AssertClose stats, "rectset.rows.stacked.row2.x", stacked.X(2), 50# + 20# + 2.5, 0.000001
+    AssertClose stats, "rectset.rows.stacked.row3.x", stacked.X(3), 50# + 20# + 2.5 + 25# + 2.5, 0.000001
     AssertClose stats, "rectset.rows.stacked.sameY", stacked.Y(3), stacked.Y(1), 0.000001
 
     Dim sideVertical As CRebarLayout
@@ -924,16 +924,16 @@ Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
 
     AssertTrue stats, "rectset.rows.side.vertical.count", sideVertical.Count = 3
     AssertClose stats, "rectset.rows.side.vertical.sameX", sideVertical.X(3), sideVertical.X(1), 0.000001
-    AssertClose stats, "rectset.rows.side.vertical.row2.y", sideVertical.Y(2), sideVertical.Y(1) - 20#, 0.000001
-    AssertClose stats, "rectset.rows.side.vertical.row3.y", sideVertical.Y(3), sideVertical.Y(1) - 45#, 0.000001
+    AssertClose stats, "rectset.rows.side.vertical.row2.y", sideVertical.Y(2), sideVertical.Y(1) - (20# + 2.5), 0.000001
+    AssertClose stats, "rectset.rows.side.vertical.row3.y", sideVertical.Y(3), sideVertical.Y(1) - (20# + 2.5 + 25# + 2.5), 0.000001
 
     Dim sideHorizontal As CRebarLayout
     Set sideHorizontal = FixtureAnnotatedLayout(FixtureRectSetDefinition(Array(250#, 550#, 600#, 250#, 0#, "LSection"), _
         Array(EmptyFaceSettings(), EmptyFaceSettings(), Array(50#, 50#, 20#, 20#, 1, 0, 50#, 50#, 50#, 50#, 20#, 0#, 30#, 0#, "SideBySide", "SideBySide"), EmptyFaceSettings())), builder)
 
     AssertTrue stats, "rectset.rows.side.horizontal.count", sideHorizontal.Count = 3
-    AssertClose stats, "rectset.rows.side.horizontal.row2.x", sideHorizontal.X(2), sideHorizontal.X(1) + 20#, 0.000001
-    AssertClose stats, "rectset.rows.side.horizontal.row3.x", sideHorizontal.X(3), sideHorizontal.X(1) + 45#, 0.000001
+    AssertClose stats, "rectset.rows.side.horizontal.row2.x", sideHorizontal.X(2), sideHorizontal.X(1) + 20# + 2.5, 0.000001
+    AssertClose stats, "rectset.rows.side.horizontal.row3.x", sideHorizontal.X(3), sideHorizontal.X(1) + 20# + 2.5 + 25# + 2.5, 0.000001
     AssertClose stats, "rectset.rows.side.horizontal.sameY", sideHorizontal.Y(3), sideHorizontal.Y(1), 0.000001
 
     Dim thirdOnly As CRebarLayout
@@ -941,7 +941,7 @@ Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 0#, 0#, 30#, 0#, "Stacked", "Stacked"), EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings())), builder)
 
     AssertTrue stats, "rectset.rows.thirdOnly.count", thirdOnly.Count = 2
-    AssertClose stats, "rectset.rows.thirdOnly.row3.x", thirdOnly.X(2), thirdOnly.X(1) + 25#, 0.000001
+    AssertClose stats, "rectset.rows.thirdOnly.row3.x", thirdOnly.X(2), thirdOnly.X(1) + 25# + 2.5, 0.000001
     AssertClose stats, "rectset.rows.thirdOnly.sameY", thirdOnly.Y(2), thirdOnly.Y(1), 0.000001
 
     Dim noFirstRow As CRebarLayout
@@ -956,8 +956,8 @@ Private Sub TestRectSetAdditionalRebarRows(ByRef stats As TTestStats)
         Array(Array(50#, 50#, 20#, 20#, 1, 0, 100#, 100#, 100#, 100#, 20#, 0#, 30#, 0#, "SideBySide", "Stacked"), EmptyFaceSettings(), EmptyFaceSettings(), EmptyFaceSettings())), builder)
 
     AssertTrue stats, "rectset.rows.mixed.count", mixed.Count = 3
-    AssertClose stats, "rectset.rows.mixed.row2.y", mixed.Y(2), mixed.Y(1) - 20#, 0.000001
-    AssertClose stats, "rectset.rows.mixed.row3.x", mixed.X(3), mixed.X(1) + 25#, 0.000001
+    AssertClose stats, "rectset.rows.mixed.row2.y", mixed.Y(2), mixed.Y(1) - (20# + 2.5), 0.000001
+    AssertClose stats, "rectset.rows.mixed.row3.x", mixed.X(3), mixed.X(1) + 25# + 2.5, 0.000001
     AssertClose stats, "rectset.rows.mixed.row3.y", mixed.Y(3), mixed.Y(1), 0.000001
 
     Dim separateLineDiameters As CRebarLayout
@@ -1275,6 +1275,8 @@ End Sub
 ' Защищает направление Stack/SideBySide и пропуск зависимых рядов без первого;
 ' невозможные диаметр, защитное расстояние и расположение отклоняются.
 Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
+    ' Начало окружности — на 12 часах; касательная направлена вправо.
+    ' Контактные расстояния равны сумме радиусов и прибавке 2,5 мм.
     Dim builder As CRebarRuleExecutor
     Set builder = New CRebarRuleExecutor
 
@@ -1283,9 +1285,10 @@ Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
 
     AssertTrue stats, "circle.rebar.count", layout.Count = 8
     AssertClose stats, "circle.rebar.angleStep", Atn((layout.Y(2) + 20#) / (layout.X(2) - 10#)), 2# * GEOM_PI / 8#, 0.000000001
+    AssertTrue stats, "circle.rebar.clockwise.firstQuadrant", layout.X(2) > 10# And layout.Y(2) < layout.Y(1)
     AssertClose stats, "circle.rebar.axisRadius", Sqr((layout.X(1) - 10#) ^ 2 + (layout.Y(1) + 20#) ^ 2), 110#, 0.000001
-    AssertClose stats, "circle.rebar.firstX", layout.X(1), 120#, 0.000001
-    AssertClose stats, "circle.rebar.firstY", layout.Y(1), -20#, 0.000001
+    AssertClose stats, "circle.rebar.firstX", layout.X(1), 10#, 0.000001
+    AssertClose stats, "circle.rebar.firstY", layout.Y(1), -20# + 110#, 0.000001
     AssertClose stats, "circle.rebar.centroidX", (layout.X(1) + layout.X(5)) / 2#, 10#, 0.000001
     AssertClose stats, "circle.rebar.centroidY", (layout.Y(1) + layout.Y(5)) / 2#, -20#, 0.000001
     AssertRelative stats, "circle.rebar.area", layout.Area(1), GEOM_PI * 20# * 20# / 4#, 0.000000001
@@ -1293,31 +1296,31 @@ Private Sub TestCircleAutoRebarLayout(ByRef stats As TTestStats)
     Dim stacked As CRebarLayout
     Set stacked = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 8, 20#, 20#, 30#, "Stacked", "Stacked")), builder), 10#, -20#)
     AssertTrue stats, "circle.rebar.rows.stacked.count", stacked.Count = 24
-    AssertClose stats, "circle.rebar.rows.stacked.row2.x", stacked.X(2), 100#, 0.000001
-    AssertClose stats, "circle.rebar.rows.stacked.row2.y", stacked.Y(2), -20#, 0.000001
-    AssertClose stats, "circle.rebar.rows.stacked.row3.x", stacked.X(3), 75#, 0.000001
-    AssertClose stats, "circle.rebar.rows.stacked.row3.y", stacked.Y(3), -20#, 0.000001
+    AssertClose stats, "circle.rebar.rows.stacked.row2.x", stacked.X(2), 10#, 0.000001
+    AssertClose stats, "circle.rebar.rows.stacked.row2.y", stacked.Y(2), 90# - ((20# + 20#) / 2# + 2.5), 0.000001
+    AssertClose stats, "circle.rebar.rows.stacked.row3.x", stacked.X(3), 10#, 0.000001
+    AssertClose stats, "circle.rebar.rows.stacked.row3.y", stacked.Y(3), 90# - ((20# + 20#) / 2# + 2.5) - ((20# + 30#) / 2# + 2.5), 0.000001
 
     Dim sideBySide As CRebarLayout
     Set sideBySide = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 8, 20#, 20#, 30#, "SideBySide", "SideBySide")), builder), 10#, -20#)
     AssertTrue stats, "circle.rebar.rows.side.count", sideBySide.Count = 24
-    AssertClose stats, "circle.rebar.rows.side.row2.x", sideBySide.X(2), 120#, 0.000001
-    AssertClose stats, "circle.rebar.rows.side.row2.y", sideBySide.Y(2), -40#, 0.000001
-    AssertClose stats, "circle.rebar.rows.side.row3.x", sideBySide.X(3), 120#, 0.000001
-    AssertClose stats, "circle.rebar.rows.side.row3.y", sideBySide.Y(3), -65#, 0.000001
+    AssertClose stats, "circle.rebar.rows.side.row2.x", sideBySide.X(2), 10# + ((20# + 20#) / 2# + 2.5), 0.000001
+    AssertClose stats, "circle.rebar.rows.side.row2.y", sideBySide.Y(2), 90#, 0.000001
+    AssertClose stats, "circle.rebar.rows.side.row3.x", sideBySide.X(3), 10# + ((20# + 20#) / 2# + 2.5) + ((20# + 30#) / 2# + 2.5), 0.000001
+    AssertClose stats, "circle.rebar.rows.side.row3.y", sideBySide.Y(3), 90#, 0.000001
 
     Dim mixed As CRebarLayout
     Set mixed = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 8, 20#, 20#, 30#, "SideBySide", "Stacked")), builder), 10#, -20#)
     AssertTrue stats, "circle.rebar.rows.mixed.count", mixed.Count = 24
-    AssertClose stats, "circle.rebar.rows.mixed.row2.y", mixed.Y(2), -40#, 0.000001
-    AssertClose stats, "circle.rebar.rows.mixed.row3.x", mixed.X(3), 95#, 0.000001
-    AssertClose stats, "circle.rebar.rows.mixed.row3.y", mixed.Y(3), -20#, 0.000001
+    AssertClose stats, "circle.rebar.rows.mixed.row2.y", mixed.Y(2), 90#, 0.000001
+    AssertClose stats, "circle.rebar.rows.mixed.row3.x", mixed.X(3), 10#, 0.000001
+    AssertClose stats, "circle.rebar.rows.mixed.row3.y", mixed.Y(3), 90# - ((20# + 30#) / 2# + 2.5), 0.000001
 
     Dim thirdOnly As CRebarLayout
     Set thirdOnly = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 8, 20#, 0#, 30#, "Stacked", "Stacked")), builder), 10#, -20#)
     AssertTrue stats, "circle.rebar.rows.thirdOnly.count", thirdOnly.Count = 16
-    AssertClose stats, "circle.rebar.rows.thirdOnly.row3.x", thirdOnly.X(2), 95#, 0.000001
-    AssertClose stats, "circle.rebar.rows.thirdOnly.row3.y", thirdOnly.Y(2), -20#, 0.000001
+    AssertClose stats, "circle.rebar.rows.thirdOnly.row3.x", thirdOnly.X(2), 10#, 0.000001
+    AssertClose stats, "circle.rebar.rows.thirdOnly.row3.y", thirdOnly.Y(2), 90# - ((20# + 30#) / 2# + 2.5), 0.000001
 
     Dim noFirstByCount As CRebarLayout
     Set noFirstByCount = FixtureMoveLayout(FixtureAnnotatedLayout(FixtureCircleDefinition(Array(300#, 40#, 0, 20#, 20#, 30#, "Stacked", "Stacked")), builder), 10#, -20#)
@@ -2653,7 +2656,7 @@ Private Sub TestAudit03CircleCountGuard(ByRef stats As TTestStats)
         On Error GoTo 0
         prefix = "audit03.circle.countGuard." & CStr(scenario)
         AssertTrue stats, prefix & ".countReason", errorNumber = vbObjectError + 5530
-        AssertTrue stats, prefix & ".sheet", InStr(1, errorDescription, "rngCircleGeometry", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".table", InStr(1, errorDescription, "rngRebarInput", vbBinaryCompare) > 0
         AssertTrue stats, prefix & ".key", InStr(1, errorDescription, "количество", vbTextCompare) > 0
         AssertClose stats, prefix & ".beforeCoordinates", CDbl(builder.CreatedPositions), 0#, 0#
         AppendLine stats, "CIRCLE_COUNT_ERROR: rows=" & CStr(scenario) & "; number=" & CStr(errorNumber) & "; " & errorDescription
@@ -2680,70 +2683,60 @@ End Function
 ' Меняет только собственную временную таблицу. Исходный Name, активный лист
 ' и режим предупреждений восстанавливаются при успехе и при runtime-ошибке.
 Private Sub TestAudit03CirclePlacementAddresses(ByRef stats As TTestStats)
-    Dim originalRefersTo As String, previousSheet As Object, sheet As Object, source As Object, target As Object
-    Dim alerts As Boolean, position As Variant, rowNumber As Long, additionalRow As Long, location As Variant
-    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CRebarRuleExecutor
-    Dim layout As CRebarLayout, key As String, prefix As String, errorNumber As Long, errorDescription As String
-    Dim diameter2Address As String, diameter3Address As String, axisAddress As String
+    Dim geometryRef As String, rebarRef As String, previousSheet As Object, sheet As Object
+    Dim geometry As Object, rebars As Object, targetGeometry As Object, targetRebars As Object
+    Dim config As Object, saved As Variant, alerts As Boolean, position As Variant, extraRow As Long, location As Variant
+    Dim units As CUnitSystem, builder As CRebarRuleExecutor, layout As CRebarLayout
+    Dim prefix As String, number As Long, reason As String, axis As Object, diameter As Object
     On Error GoTo FailedRun
-    originalRefersTo = ThisWorkbook.Names.Item("rngCircleGeometry").RefersTo
-    Set source = ThisWorkbook.Names.Item("rngCircleGeometry").RefersToRange
-    Set previousSheet = ThisWorkbook.ActiveSheet
-    alerts = ThisWorkbook.Application.DisplayAlerts
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    geometryRef = ThisWorkbook.Names("rngCircleGeometry").RefersTo
+    rebarRef = ThisWorkbook.Names("rngRebarInput").RefersTo
+    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    Set geometry = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
+    Set rebars = ThisWorkbook.Names("rngRebarInput").RefersToRange
+    Set previousSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
     Set sheet = ThisWorkbook.Worksheets.Add
     Set units = New CUnitSystem: units.InitializeDefaults
     Set builder = New CRebarRuleExecutor
     For Each position In Array("E10", "BH800")
-        Set target = sheet.Range(CStr(position)).Resize(source.Rows.Count, source.Columns.Count)
-        target.Formula = source.Formula
-        For rowNumber = 1 To target.Rows.Count
-            key = CStr(target.Cells(rowNumber, 1).Value2)
-            Select Case key
-                Case "Circle.Diameter": target.Cells(rowNumber, 2).Value2 = 300#
-                Case "Rebar.AxisDistance"
-                    target.Cells(rowNumber, 2).Value2 = 20#
-                    axisAddress = target.Cells(rowNumber, 2).Address(False, False)
-                Case "Rebar.Count": target.Cells(rowNumber, 2).Value2 = 8
-                Case "Rebar.Diameter": target.Cells(rowNumber, 2).Value2 = 20#
-                Case "Rebar.Diameter2": diameter2Address = target.Cells(rowNumber, 2).Address(False, False)
-                Case "Rebar.Diameter3": diameter3Address = target.Cells(rowNumber, 2).Address(False, False)
-            End Select
-        Next rowNumber
-        ThisWorkbook.Names.Item("rngCircleGeometry").RefersTo = "='" & sheet.Name & "'!" & target.Address
-        For additionalRow = 2 To 3
+        Set targetGeometry = sheet.Range(CStr(position)).Resize(geometry.Rows.Count, geometry.Columns.Count)
+        Set targetRebars = sheet.Range(CStr(position)).Offset(20, 0).Resize(rebars.Rows.Count, rebars.Columns.Count)
+        ' Проверяем перенос адресов; ключи фиксируем уже вычисленным снимком,
+        ' чтобы относительная формула Extra не ссылалась на старое место Main.
+        targetGeometry.Value2 = geometry.Value2: targetRebars.Value2 = rebars.Value2
+        ThisWorkbook.Names("rngCircleGeometry").RefersTo = "='" & sheet.Name & "'!" & targetGeometry.Address
+        ThisWorkbook.Names("rngRebarInput").RefersTo = "='" & sheet.Name & "'!" & targetRebars.Address
+        FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 300#
+        Set axis = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance"): axis.Value2 = 20#
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter").Value2 = 20#
+        FixtureCircleFieldCell(ThisWorkbook, "Rebar.Count").Value2 = 8
+        For extraRow = 2 To 3
             For Each location In Array("Stacked", "SideBySide")
-                For rowNumber = 1 To target.Rows.Count
-                    key = CStr(target.Cells(rowNumber, 1).Value2)
-                    Select Case key
-                        Case "Rebar.Diameter2": target.Cells(rowNumber, 2).Value2 = 10#
-                        Case "Rebar.Diameter3": target.Cells(rowNumber, 2).Value2 = 0#
-                        Case "Rebar.Loc2row", "Rebar.Loc3row": target.Cells(rowNumber, 2).Value2 = CStr(location)
-                    End Select
-                    If key = "Rebar.Diameter" & CStr(additionalRow) Then target.Cells(rowNumber, 2).Value2 = 1000#
-                Next rowNumber
-                Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-                Set layout = Nothing: errorNumber = 0: errorDescription = vbNullString
+                FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter2").Value2 = 10#
+                FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter3").Value2 = 0#
+                FixtureCircleFieldCell(ThisWorkbook, "Rebar.Loc2row").Value2 = CStr(location)
+                FixtureCircleFieldCell(ThisWorkbook, "Rebar.Loc3row").Value2 = CStr(location)
+                Set diameter = FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter" & CStr(extraRow))
+                diameter.Value2 = 1000#: Set layout = Nothing: number = 0: reason = ""
                 On Error Resume Next
                 Set layout = FixtureAnnotatedLayout(FixtureWorkbookDefinition("Circle", ThisWorkbook, units), builder)
-                errorNumber = Err.Number: errorDescription = Err.Description: Err.Clear
+                number = Err.Number: reason = Err.Description: Err.Clear
                 On Error GoTo FailedRun
-                prefix = "audit03.circle.placementAddress." & CStr(position) & "." & CStr(additionalRow) & "." & CStr(location)
-                AssertTrue stats, prefix & ".sameCode", errorNumber = vbObjectError + 5530
+                prefix = "audit03.circle.placementAddress." & CStr(position) & "." & CStr(extraRow) & "." & CStr(location)
+                AssertTrue stats, prefix & ".sameCode", number = vbObjectError + 5530
                 AssertTrue stats, prefix & ".noLayout", layout Is Nothing
-                AssertTrue stats, prefix & ".sheet", InStr(1, errorDescription, sheet.Name, vbBinaryCompare) > 0
-                AssertTrue stats, prefix & ".activeDiameter", InStr(1, errorDescription, IIf(additionalRow = 2, diameter2Address, diameter3Address), vbBinaryCompare) > 0
-                AssertTrue stats, prefix & ".rule", InStr(1, errorDescription, "Circle.Row" & CStr(additionalRow), vbBinaryCompare) > 0
-                AssertTrue stats, prefix & ".axisUnchanged", sheet.Range(axisAddress).Value2 = 20#
-                AssertTrue stats, prefix & ".action", InStr(1, errorDescription, "уменьшите", vbTextCompare) > 0
-                AppendLine stats, "CIRCLE_PLACEMENT_ERROR: " & prefix & "; " & errorDescription
-                For rowNumber = 1 To target.Rows.Count
-                    If CStr(target.Cells(rowNumber, 1).Value2) = "Rebar.Diameter" & CStr(additionalRow) Then target.Cells(rowNumber, 2).Value2 = 10#
-                Next rowNumber
-                settings.LoadFromWorkbook ThisWorkbook
+                AssertTrue stats, prefix & ".sheet", InStr(1, reason, sheet.Name, vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".activeDiameter", InStr(1, reason, diameter.Address(False, False), vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".rule", InStr(1, reason, "Circle.Row" & CStr(extraRow), vbBinaryCompare) > 0
+                AssertTrue stats, prefix & ".axisUnchanged", axis.Value2 = 20#
+                AssertTrue stats, prefix & ".action", InStr(1, reason, "уменьшите", vbTextCompare) > 0
+                AppendLine stats, "CIRCLE_PLACEMENT_ERROR: " & prefix & "; " & reason
+                diameter.Value2 = 10#
                 Set layout = FixtureAnnotatedLayout(FixtureWorkbookDefinition("Circle", ThisWorkbook, units), builder)
-                AssertTrue stats, prefix & ".recovery", layout.Count = 8 * additionalRow
+                AssertTrue stats, prefix & ".recovery", layout.Count = 8 * extraRow
             Next location
-        Next additionalRow
+        Next extraRow
     Next position
     GoTo Restore
 FailedRun:
@@ -2751,11 +2744,13 @@ FailedRun:
     AppendLine stats, "FAIL: audit03.circle.placementAddress.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error Resume Next
-    If Len(originalRefersTo) > 0 Then ThisWorkbook.Names.Item("rngCircleGeometry").RefersTo = originalRefersTo
+    If Len(geometryRef) > 0 Then ThisWorkbook.Names("rngCircleGeometry").RefersTo = geometryRef
+    If Len(rebarRef) > 0 Then ThisWorkbook.Names("rngRebarInput").RefersTo = rebarRef
+    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
     If Not previousSheet Is Nothing Then previousSheet.Activate
-    ThisWorkbook.Application.DisplayAlerts = False
+    Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
-    ThisWorkbook.Application.DisplayAlerts = alerts
+    Application.DisplayAlerts = alerts
     On Error GoTo 0
 End Sub
 

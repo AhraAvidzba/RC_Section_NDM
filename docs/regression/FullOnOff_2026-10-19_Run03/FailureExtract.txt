@@ -1,0 +1,30 @@
+FAIL: circle.rebar.firstX; actual=10.; expected=120.; absDiff=110.
+FAIL: circle.rebar.firstY; actual=90.; expected=-20.; absDiff=110.
+FAIL: circle.rebar.rows.stacked.row2.x; actual=10.; expected=100.; absDiff=90.
+FAIL: circle.rebar.rows.stacked.row2.y; actual=67.5; expected=-20.; absDiff=87.5
+FAIL: circle.rebar.rows.stacked.row3.x; actual=10.; expected=75.; absDiff=65.
+FAIL: circle.rebar.rows.stacked.row3.y; actual=40.; expected=-20.; absDiff=60.
+FAIL: circle.rebar.rows.side.row2.x; actual=32.5; expected=120.; absDiff=87.5
+FAIL: circle.rebar.rows.side.row2.y; actual=90.; expected=-40.; absDiff=130.
+FAIL: circle.rebar.rows.side.row3.x; actual=60.; expected=120.; absDiff=60.
+FAIL: circle.rebar.rows.side.row3.y; actual=90.; expected=-65.; absDiff=155.
+FAIL: circle.rebar.rows.mixed.row2.y; actual=90.; expected=-40.; absDiff=130.
+FAIL: circle.rebar.rows.mixed.row3.x; actual=10.; expected=95.; absDiff=85.
+FAIL: circle.rebar.rows.mixed.row3.y; actual=62.5; expected=-20.; absDiff=82.5
+FAIL: circle.rebar.rows.thirdOnly.row3.x; actual=10.; expected=95.; absDiff=85.
+FAIL: circle.rebar.rows.thirdOnly.row3.y; actual=62.5; expected=-20.; absDiff=82.5
+FAIL: rectset.rows.stacked.row2.x; actual=72.5; expected=70.; absDiff=2.5
+FAIL: rectset.rows.stacked.row3.x; actual=100.; expected=95.; absDiff=5.
+FAIL: rectset.rows.side.vertical.row2.y; actual=502.5; expected=505.; absDiff=2.5
+FAIL: rectset.rows.side.vertical.row3.y; actual=475.; expected=480.; absDiff=5.
+FAIL: rectset.rows.side.horizontal.row2.x; actual=147.5; expected=145.; absDiff=2.5
+FAIL: rectset.rows.side.horizontal.row3.x; actual=175.; expected=170.; absDiff=5.
+FAIL: rectset.rows.thirdOnly.row3.x; actual=77.5; expected=75.; absDiff=2.5
+FAIL: rectset.rows.mixed.row2.y; actual=502.5; expected=505.; absDiff=2.5
+FAIL: rectset.rows.mixed.row3.x; actual=77.5; expected=75.; absDiff=2.5
+FAIL: audit03.circle.countGuard.2.sheet
+FAIL: audit03.circle.countGuard.3.sheet
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.sameCode
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.sheet
+FAIL: audit03.circle.placementAddress.E10.2.Stacked.rule
+FAIL: audit03.circle.placementAddress.runtime; 1004; Application-defined or object-defined error

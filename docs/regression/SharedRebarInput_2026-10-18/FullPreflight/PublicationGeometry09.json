@@ -1,0 +1,26 @@
+{
+  "Passed": true,
+  "PublishedAt": "2026-10-19T00:35:52.602884+03:00",
+  "BeforeWorkbookSHA256": "C0EA981FD6AE1A0F2CB035D9DEAA88AFA608862DBCDDBE1ED766E42EC4456990",
+  "WorkbookSHA256": "783532CD344F3DA44177C00D0BF83EF3576329AA0BE14A54D61EF21316D789F3",
+  "AllCodeSHA256": "3BD3396CCB73FF06B5BC1ABB0B65F7C7CE89CD08734357EE422CA8372819791D",
+  "CandidateSHA256": "D3C145BE8797884E64699B49E89FAD6A9A367CFB42139E6D4B56FF64CA3B19C3",
+  "ChangedSinceRun03": [
+    "modTestGeometry"
+  ],
+  "WorkingComponentsChanged": [],
+  "ChangedPackageParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllWorksheetDataAndFormattingPreservedByteForByte": true,
+  "UserReportUnchanged": true,
+  "GeometryTest": {
+    "Passed": 766,
+    "Failed": 0,
+    "Mode": "No",
+    "LogSHA256": "19485BE04C0F8BCA4A8642CC19ECA4BC02320D1A649DD4E4F976899E6EAA27D8"
+  },
+  "FullAcceptancePassed": false,
+  "AllCodeIsExactNativeReadback": true,
+  "PublishedSourceEqualityPassed": true
+}

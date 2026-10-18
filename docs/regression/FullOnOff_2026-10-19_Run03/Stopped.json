@@ -1,0 +1,30 @@
+{
+  "SourceUnchanged": true,
+  "Stopped": [
+    {
+      "ParentPID": 177524,
+      "PID": 177684,
+      "Name": "powershell.exe"
+    },
+    {
+      "ParentPID": 173764,
+      "PID": 177524,
+      "Name": "powershell.exe"
+    },
+    {
+      "ParentPID": 177684,
+      "PID": 176572,
+      "Name": "powershell.exe"
+    },
+    {
+      "ParentPID": 166728,
+      "PID": 173764,
+      "Name": "powershell.exe"
+    },
+    {
+      "IdentityVerified": true,
+      "PID": 171168,
+      "Name": "EXCEL"
+    }
+  ]
+}

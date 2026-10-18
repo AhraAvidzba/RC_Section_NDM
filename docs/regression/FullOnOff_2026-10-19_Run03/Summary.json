@@ -1,0 +1,395 @@
+{
+  "status": "INCOMPLETE_OR_FAILED",
+  "sourceCommit": "fd12d5ad75d463b289b1db8278ad203f0e8dc873",
+  "sourceSHA256": "c0ea981fd6ae1a0f2cb035d9deaa88afa608862dbcddbe1ed766e42ec4456990",
+  "runnerSHA256": "DDE87826F75ECB3B51EA59D8DD58CA0636CFB6301BECC09BACB7BD9C316FEACC",
+  "modeRunnerSHA256": "4E03CFA85C1651418C75CCB5D0A5CC7B8F89FB35D58F91DBBEDB3E840A3241A7",
+  "coverageDefinition": "AllActiveAcceptanceIncludingFocused",
+  "includesFocusedAcceptance": true,
+  "focusedAcceptance": null,
+  "inputProvenance": "frozen file",
+  "startedUTC": "2026-10-19T00:09:37.7839387+03:00",
+  "finishedUTC": null,
+  "deadline": "2026-10-19T10:00:00+03:00",
+  "expectedSuites": 132,
+  "completedSuites": 5,
+  "observedSuites": 6,
+  "printedSuccessfulAssertions": 42117,
+  "failedAssertions": 30,
+  "errors": [
+    "Full_Off.txt",
+    "Geometry_Off.txt",
+    "SP35_Off.txt",
+    "Recipes_Off.txt",
+    "Full_On.txt",
+    "Geometry_On.txt",
+    "SP35_On.txt",
+    "Recipes_On.txt",
+    "Driver is not successfully complete",
+    "Mandatory focused acceptance did not finish successfully",
+    "Completion before the requested deadline is not confirmed"
+  ],
+  "jobs": [
+    {
+      "name": "Full_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "c0ea981fd6ae1a0f2cb035d9deaa88afa608862dbcddbe1ed766e42ec4456990",
+      "reportSHA256": "1f1dd38cea084ae46b5845c58c13c5f2ad65cc826988fa89197ce5322f61a20d",
+      "suites": [
+        {
+          "name": "modTestGeometry.RunGeometryTests",
+          "status": "FAIL",
+          "started": "2026-10-19T00:09:45",
+          "finished": "2026-10-19T00:10:08",
+          "passed": 677,
+          "failedLines": 30,
+          "nestedFailureCounts": [
+            30
+          ]
+        },
+        {
+          "name": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+          "status": "PASS",
+          "started": "2026-10-19T00:10:09",
+          "finished": "2026-10-19T00:11:37",
+          "passed": 30457,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionSolver.RunSectionSolverTests",
+          "status": "PASS",
+          "started": "2026-10-19T00:11:38",
+          "finished": "2026-10-19T00:11:40",
+          "passed": 3494,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestCapacitySolver.RunCapacitySolverTests",
+          "status": "PASS",
+          "started": "2026-10-19T00:11:41",
+          "finished": "2026-10-19T00:15:32",
+          "passed": 5355,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestCrackWidth.RunCrackWidthTests",
+          "status": "PASS",
+          "started": "2026-10-19T00:15:33",
+          "finished": "2026-10-19T00:16:36",
+          "passed": 2134,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestBatchCalculation.RunBatchCalculationTests",
+          "status": "RUNNING",
+          "started": "2026-10-19T00:16:37",
+          "finished": null,
+          "passed": null,
+          "failedLines": 0,
+          "nestedFailureCounts": []
+        }
+      ],
+      "errors": [
+        "Expected 8 suites, observed 6",
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Suite names/order differ from the declared plan",
+        "Successful driver completion is missing"
+      ],
+      "passed": 42117,
+      "group": "Full",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "printedSuccessfulAssertions": 42117,
+      "failures": [
+        "FAIL: circle.rebar.firstX; actual=10.; expected=120.; absDiff=110.",
+        "FAIL: circle.rebar.firstY; actual=90.; expected=-20.; absDiff=110.",
+        "FAIL: circle.rebar.rows.stacked.row2.x; actual=10.; expected=100.; absDiff=90.",
+        "FAIL: circle.rebar.rows.stacked.row2.y; actual=67.5; expected=-20.; absDiff=87.5",
+        "FAIL: circle.rebar.rows.stacked.row3.x; actual=10.; expected=75.; absDiff=65.",
+        "FAIL: circle.rebar.rows.stacked.row3.y; actual=40.; expected=-20.; absDiff=60.",
+        "FAIL: circle.rebar.rows.side.row2.x; actual=32.5; expected=120.; absDiff=87.5",
+        "FAIL: circle.rebar.rows.side.row2.y; actual=90.; expected=-40.; absDiff=130.",
+        "FAIL: circle.rebar.rows.side.row3.x; actual=60.; expected=120.; absDiff=60.",
+        "FAIL: circle.rebar.rows.side.row3.y; actual=90.; expected=-65.; absDiff=155.",
+        "FAIL: circle.rebar.rows.mixed.row2.y; actual=90.; expected=-40.; absDiff=130.",
+        "FAIL: circle.rebar.rows.mixed.row3.x; actual=10.; expected=95.; absDiff=85.",
+        "FAIL: circle.rebar.rows.mixed.row3.y; actual=62.5; expected=-20.; absDiff=82.5",
+        "FAIL: circle.rebar.rows.thirdOnly.row3.x; actual=10.; expected=95.; absDiff=85.",
+        "FAIL: circle.rebar.rows.thirdOnly.row3.y; actual=62.5; expected=-20.; absDiff=82.5",
+        "FAIL: rectset.rows.stacked.row2.x; actual=72.5; expected=70.; absDiff=2.5",
+        "FAIL: rectset.rows.stacked.row3.x; actual=100.; expected=95.; absDiff=5.",
+        "FAIL: rectset.rows.side.vertical.row2.y; actual=502.5; expected=505.; absDiff=2.5",
+        "FAIL: rectset.rows.side.vertical.row3.y; actual=475.; expected=480.; absDiff=5.",
+        "FAIL: rectset.rows.side.horizontal.row2.x; actual=147.5; expected=145.; absDiff=2.5",
+        "FAIL: rectset.rows.side.horizontal.row3.x; actual=175.; expected=170.; absDiff=5.",
+        "FAIL: rectset.rows.thirdOnly.row3.x; actual=77.5; expected=75.; absDiff=2.5",
+        "FAIL: rectset.rows.mixed.row2.y; actual=502.5; expected=505.; absDiff=2.5",
+        "FAIL: rectset.rows.mixed.row3.x; actual=77.5; expected=75.; absDiff=2.5",
+        "FAIL: audit03.circle.countGuard.2.sheet",
+        "FAIL: audit03.circle.countGuard.3.sheet",
+        "FAIL: audit03.circle.placementAddress.E10.2.Stacked.sameCode",
+        "FAIL: audit03.circle.placementAddress.E10.2.Stacked.sheet",
+        "FAIL: audit03.circle.placementAddress.E10.2.Stacked.rule",
+        "FAIL: audit03.circle.placementAddress.runtime; 1004; Application-defined or object-defined error"
+      ]
+    },
+    {
+      "name": "Geometry_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "Geometry",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    },
+    {
+      "name": "SP35_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "SP35",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    },
+    {
+      "name": "Recipes_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "Recipes",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    },
+    {
+      "name": "Full_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "Full",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    },
+    {
+      "name": "Geometry_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "Geometry",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    },
+    {
+      "name": "SP35_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "SP35",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    },
+    {
+      "name": "Recipes_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "suites": [],
+      "group": "Recipes",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [],
+      "errors": [
+        "Suite names/order differ from the declared plan",
+        "Requested global mode is not confirmed",
+        "Successful driver completion is missing"
+      ]
+    }
+  ]
+}

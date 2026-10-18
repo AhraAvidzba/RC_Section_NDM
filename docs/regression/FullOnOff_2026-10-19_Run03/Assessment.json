@@ -1,0 +1,81 @@
+{
+  "Status": "INCOMPLETE_OR_FAILED",
+  "AssessedAt": "2026-10-19T00:38:26.164135+03:00",
+  "SourceCommit": "fd12d5ad75d463b289b1db8278ad203f0e8dc873",
+  "SourceSHA256": "C0EA981FD6AE1A0F2CB035D9DEAA88AFA608862DBCDDBE1ED766E42EC4456990",
+  "Started": "2026-10-19T00:09:37.7839387+03:00",
+  "StoppedUTC": "2026-10-18T21:20:14.5625338+00:00",
+  "Deadline": "2026-10-19T10:00:00+03:00",
+  "ExpectedSuites": 132,
+  "CompletedSuites": 5,
+  "PassingSuites": 4,
+  "FailedSuites": 1,
+  "AbortedSuites": 1,
+  "NotStartedSuites": 126,
+  "PassingMathematicalAssertions": 41440,
+  "OriginalGeometry": {
+    "Passed": 677,
+    "Failed": 30
+  },
+  "FocusedAcceptance": {
+    "Status": "NOT_STARTED",
+    "ExpectedIndividualCases": 122,
+    "ExpectedBatchCases": 15,
+    "Stability": false,
+    "AsymmetricSteel": false,
+    "RealAutoCAD": false,
+    "IndependentControl": false
+  },
+  "SummaryCheck": {
+    "ExitCode": 1,
+    "Status": "INCOMPLETE_OR_FAILED",
+    "SHA256": "56BC7DAA330DD1B190122A3FD9EE07A54FE62D22C05444D247071C3A0E12BE9C"
+  },
+  "CombinedFinalizer": {
+    "ExitCode": 1,
+    "Status": "REJECTED_INCOMPLETE_CORE",
+    "LogSHA256": "F33FF6DD1542D1D674F079C74407E68868B3A692542F73DFDD1DFA28F7982847"
+  },
+  "OldNightDriverResultIgnored": "docs/regression/FullOnOff_2026-10-19_Run02",
+  "FullRestartedAutomatically": false,
+  "Automation": {
+    "ID": "ndm",
+    "Status": "PAUSED"
+  },
+  "CorrectedGeometry": {
+    "Passed": 766,
+    "Failed": 0,
+    "Mode": "No",
+    "LogSHA256": "19485BE04C0F8BCA4A8642CC19ECA4BC02320D1A649DD4E4F976899E6EAA27D8"
+  },
+  "PublishedWorkbookSHA256": "783532CD344F3DA44177C00D0BF83EF3576329AA0BE14A54D61EF21316D789F3",
+  "AllCodeSHA256": "3BD3396CCB73FF06B5BC1ABB0B65F7C7CE89CD08734357EE422CA8372819791D",
+  "WorkingComponentsChanged": [],
+  "ChangedSinceRun03": [
+    "modTestGeometry"
+  ],
+  "AllWorksheetDataAndFormattingPreservedByteForByte": true,
+  "UserExecutionReportUnchanged": true,
+  "Artifacts": [
+    {
+      "Path": "docs\\regression\\FullOnOff_2026-10-19_Run03\\Full_Off.txt",
+      "SHA256": "1F1DD38CEA084AE46B5845C58C13C5F2AD65CC826988FA89197CE5322F61A20D"
+    },
+    {
+      "Path": "docs\\regression\\FullOnOff_2026-10-19_Run03\\FailureExtract.txt",
+      "SHA256": "8FA20684DC52C734F331ABFEB7640833AE240D153E208F6260E797C61B91DA19"
+    },
+    {
+      "Path": "docs\\regression\\FullOnOff_2026-10-19_Preflight\\Geometry09.txt",
+      "SHA256": "19485BE04C0F8BCA4A8642CC19ECA4BC02320D1A649DD4E4F976899E6EAA27D8"
+    },
+    {
+      "Path": "docs\\regression\\SharedRebarInput_2026-10-18\\FullPreflight\\PublicationGeometry09.json",
+      "SHA256": "D49FF0DBF18F4E41A67A942171602127F805775B92B0EB702B11146082D4E575"
+    },
+    {
+      "Path": "docs\\regression\\SharedRebarInput_2026-10-18\\FullPreflight\\ChangedSinceRun03.json",
+      "SHA256": "57FFFEB6C48FD2A668456F13046BA2E10E503DE1CE6BEA57EF237426DA1DA418"
+    }
+  ]
+}

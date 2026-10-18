@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\FullPreflight\\Candidate09.xlsm",
+    "WorkbookSHA256":  "D3C145BE8797884E64699B49E89FAD6A9A367CFB42139E6D4B56FF64CA3B19C3",
+    "ProductionSHA256":  "C0EA981FD6AE1A0F2CB035D9DEAA88AFA608862DBCDDBE1ED766E42EC4456990",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestGeometry"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

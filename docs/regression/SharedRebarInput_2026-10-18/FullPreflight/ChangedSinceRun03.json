@@ -1,0 +1,10 @@
+{
+  "Passed": true,
+  "Components": 160,
+  "ChangedComponents": [
+    "modTestGeometry"
+  ],
+  "WorkingComponentsChanged": [],
+  "CaseOnlyChangesAllowed": true,
+  "StringsCommentsAndNumbersCompared": true
+}
