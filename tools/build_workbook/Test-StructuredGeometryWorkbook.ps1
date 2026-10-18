@@ -24,10 +24,14 @@ try{
     $book=$excel.Workbooks.Open($path,0,$true)
     if(-not $book.ReadOnly){throw 'Read-only opening required.'}
     $sheet=$book.Worksheets.Item('Config')
-    for($c=9;$c -le 21;$c++){if($sheet.Columns.Item($c).ColumnWidth -ne 17){throw "Wrong Config column width: $c"}}
-    foreach($definition in @(Get-GeometrySettingsCatalog)){
+    for($c=9;$c -le 24;$c++){if($sheet.Columns.Item($c).ColumnWidth -ne 17){throw "Wrong Config column width: $c"}}
+    $definitions=@(Get-GeometrySettingsCatalog)
+    foreach($definition in $definitions+@(Get-RebarSettingsCatalog)){
         $range=$book.Names.Item($definition.RangeName).RefersToRange
-        if($range.Columns.Count -ne 11 -or $range.FormatConditions.Count -ne 0){throw "Wrong table: $($definition.RangeName)"}
+        $width=5;if($definition.RangeName -eq 'rngRebarInput'){$width=11}
+        if($range.Columns.Count -ne $width -or $range.FormatConditions.Count -ne 0){throw "Wrong table: $($definition.RangeName)"}
+        foreach($edge in 7,8,9,10,11,12){if($range.Borders.Item($edge).LineStyle -ne -4115){throw 'Full dotted borders required.'}}
+        if($range.WrapText -ne $false){throw 'Input tables must not wrap text.'}
         $blocks=@(Get-GeometryTableBlocks $range)
         if($blocks.Count -ne $definition.Blocks.Count){throw 'Wrong block count.'}
         for($i=0;$i -lt $blocks.Count;$i++){
@@ -42,13 +46,23 @@ try{
             if($expected.Units){$first++}
             for($r=0;$r -lt $expected.Rows.Count;$r++){
                 $values=$expected.Rows[$r]
-                if([string]$range.Cells.Item($first+$r,1).Value2 -cne $values[0]){throw 'Wrong row key.'}
+                $expectedKey=$values[0]
+                if($expectedKey -is [string] -and $definition.RangeName -ne 'rngRebarInput'){
+                    if([string]$range.Cells.Item($first+$r,1).Value2 -cne $expectedKey){throw 'Wrong row key.'}
+                }
                 if($block.Columns.ContainsKey('unit') -and $values[[int]$block.Columns['unit']-1] -ceq 'мм'){
                     $unitCells.Add($range.Cells.Item($first+$r,[int]$block.Columns['unit']))
                 }
                 foreach($key in @($block.Columns.Keys)){
                     if($key -in @('key','name','unit','note')){continue}
                     $column=[int]$block.Columns[$key];$cell=$range.Cells.Item($first+$r,$column)
+                    if($block.Key -eq 'Edges'){
+                        if(-not $cell.HasFormula -or ([string]$cell.Formula).Length -gt 80){throw 'Control size must be a short Excel formula.'}
+                        if($cell.Interior.Color -eq 15135487){throw 'Computed control size is highlighted as input.'}
+                        continue
+                    }
+                    if($cell.HasFormula){if($cell.Interior.Color -eq 15135487){throw 'Formula is highlighted as input.'};continue}
+                    if([string]$cell.Value2 -notin @('-','—') -and $cell.Interior.Color -ne 15135487){throw ('Input is not orange: '+$cell.Address())}
                     if($CheckDefaults){
                         $value=$values[$column-1]
                         if([string]$cell.Value2 -cne [string]$value){throw "Wrong default: $($definition.RangeName)/$($block.Key)/$($values[0])/$key"}
@@ -58,6 +72,85 @@ try{
             }
         }
         $tables+=,[ordered]@{Name=$definition.RangeName;Address=$range.Address();Blocks=$blocks.Count}
+    }
+    $common=$book.Names.Item('rngRebarInput').RefersToRange
+    $firstGeometry=$book.Names.Item($definitions[0].RangeName).RefersToRange
+    if($firstGeometry.Row -ne 87 -or $firstGeometry.Column -ne 8 -or $common.Row -ne $firstGeometry.Row -or $common.Column -ne 14){throw 'Geometry/reinforcement layout changed.'}
+    $last=0
+    foreach($definition in $definitions){$area=$book.Names.Item($definition.RangeName).RefersToRange;if($area.Row -le $last){throw 'Geometry tables overlap.'};$last=$area.Row+$area.Rows.Count}
+    $system=$book.Names.Item('rngSystemSettings').RefersToRange;$selector=$null
+    for($r=2;$r -le $system.Rows.Count;$r++){if([string]$system.Cells.Item($r,1).Value2 -eq 'Geometry.Type'){$selector=$system.Cells.Item($r,2)}}
+    if($null -eq $selector){throw 'Geometry.Type missing.'}
+    $blocks=@(Get-GeometryTableBlocks $common);$main=$blocks | Where-Object Key -eq 'Main';$extra=$blocks | Where-Object Key -eq 'Extra'
+    if($main.LastRow-$main.FirstRow -ne 8 -or $extra.LastRow-$extra.FirstRow -ne 8){throw 'Common table must have exactly eight rows in each block.'}
+    $manualBefore=$common.Formula
+    $switches=@()
+    foreach($definition in $definitions){
+        $selector.Value2=[string]$definition.Type;$sheet.Calculate()
+        $source=$book.Names.Item($definition.RangeName).RefersToRange
+        $edges=@(Get-GeometryTableBlocks $source | Where-Object Key -eq 'Edges')[0]
+        for($i=0;$i -lt 8;$i++){
+            $expectedKey='';$expectedName=''
+            if($edges.FirstRow+$i -le $edges.LastRow){
+                $short=[string]$source.Cells.Item($edges.FirstRow+$i,1).Value2
+                if($short){$expectedKey=$definition.Type+'.'+$short;$expectedName=[string]$source.Cells.Item($edges.FirstRow+$i,2).Value2}
+            }
+            foreach($block in @($main,$extra)){
+                $row=$block.FirstRow+1+$i
+                if([string]$common.Cells.Item($row,1).Value2 -cne $expectedKey -or [string]$common.Cells.Item($row,2).Value2 -cne $expectedName){throw 'Formula keys/names do not follow selected geometry.'}
+                if(-not $common.Cells.Item($row,1).HasFormula -or -not $common.Cells.Item($row,2).HasFormula){throw 'Key/name must be ordinary Excel formulas.'}
+            }
+        }
+        $switches+=,[ordered]@{Type=$definition.Type;EdgeRows=$edges.LastRow-$edges.FirstRow+1}
+    }
+    $selector.Value2='RectSet';$rect=$book.Names.Item('rngRectSetGeometry').RefersToRange
+    $shape=Get-GeometryTableCell $rect 'General' 'Shape';$originalShape=$shape.Value2
+    foreach($subtype in @('Rectangle','LSection','TwoRectangles')){
+        $shape.Value2=$subtype;$sheet.Calculate()
+        for($i=0;$i -lt 8;$i++){
+            $key=[string]$common.Cells.Item($main.FirstRow+1+$i,1).Value2
+            if(($subtype -eq 'Rectangle' -and $i -ge 4) -ne ($key -eq '')){throw 'RectSet inactive lower edges are incorrect.'}
+        }
+    }
+    $shape.Value2=$originalShape;$sheet.Calculate()
+    $afterSwitch=$common.Formula
+    for($r=1;$r -le $common.Rows.Count;$r++){for($c=1;$c -le $common.Columns.Count;$c++){
+        if([string]$manualBefore[$r,$c] -cne [string]$afterSwitch[$r,$c]){throw 'Type switching changed manual reinforcement data.'}
+    }}
+    $choiceNames=@{}
+    foreach($field in @('bind2','pos2','bind3','pos3')){
+        for($i=0;$i -lt 8;$i++){
+            $cell=$common.Cells.Item($extra.FirstRow+1+$i,[int]$extra.Columns[$field]);$formula=[string]$cell.Validation.Formula1
+            if($formula -notmatch '^=[A-Za-z_][A-Za-z0-9_]*$' -or $choiceNames.ContainsKey($formula)){throw 'Choice lists must have independent named sources.'}
+            $choiceNames[$formula]=$true
+            if($book.Names.Item($formula.Substring(1)).RefersToRange.Rows.Count -ne 2){throw 'Invalid choice source.'}
+        }
+    }
+    $orangeCount=0
+    $inputs=@{rngSystemSettings=@(2);rngUnitSettings=@(2,4);rngSignConventionSettings=@(2);rngSteelMaterialParameters=@(2,3);
+        rngConcreteMaterialParameters=@(2,3);rngCalculationProfiles=@(3,4,5,6);rngPlotAnnotationSettings=@(2,3);
+        rngLoadCombinations=@(1,2,3,4,5,6);rngStabilityDurationLoads=@(1,2,3,4);rngSP35Table721=@(1,2,3,4,5,6,7,8)}
+    foreach($name in $inputs.Keys){
+        $range=$book.Names.Item($name).RefersToRange
+        foreach($column in $inputs[$name]){for($r=2;$r -le $range.Rows.Count;$r++){
+            $cell=$range.Cells.Item($r,$column);$key=[string]$range.Cells.Item($r,1).Value2
+            if($key.StartsWith('[') -or ($name -eq 'rngSystemSettings' -and -not $key.Contains('.')) -or $cell.HasFormula -or [string]$cell.Value2 -in @('-','—')){continue}
+            if($cell.MergeCells -and ($cell.MergeArea.Row -ne $cell.Row -or $cell.MergeArea.Column -ne $cell.Column)){continue}
+            if($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108){throw ('Input formatting: '+$name+' '+$cell.Address())}
+            $orangeCount++
+        }}
+    }
+    foreach($definition in $definitions+@(Get-RebarSettingsCatalog)){
+        $range=$book.Names.Item($definition.RangeName).RefersToRange
+        foreach($block in @(Get-GeometryTableBlocks $range)){
+            $note=$range.Cells.Item($block.HeaderRow,[int]$block.Columns['note']).Resize($block.LastRow-$block.HeaderRow+1,1)
+            if($note.HorizontalAlignment -ne -4152 -or $note.WrapText -ne $false){throw 'Comments must stay right-aligned in their own cell.'}
+        }
+    }
+    $profiles=$book.Names.Item('rngCalculationProfiles').RefersToRange
+    for($r=2;$r -le $profiles.Rows.Count;$r++){
+        $cell=$profiles.Cells.Item($r,7)
+        if(-not $cell.MergeCells -and ($cell.HorizontalAlignment -ne -4152 -or $cell.WrapText -ne $false)){throw 'Profile comments must stay right-aligned without wrapping.'}
     }
     $expectedFormula=Get-InputUnitFormulaForUnit 'мм'
     foreach($cell in $unitCells){if([string]$cell.Formula -cne $expectedFormula){throw "Unit formula missing: $($cell.Address())"}}
@@ -70,6 +163,8 @@ try{
     }
     [ordered]@{Passed=$true;WorkbookSHA256=$beforeHash;Tables=$tables;DefaultFieldsChecked=$defaultCount;
         DynamicLengthUnitCells=$unitCells.Count;InputLengthUnits=@('mm','cm','m');UniformConfigWidth=17;
+        MacroSecurity=3;FormulaTypeSwitches=$switches;OtherConfigInputCells=$orangeCount;InputColorRGB=@(255,242,230);
+        RectSetSubtypes=@('Rectangle','LSection','TwoRectangles');ManualInputsPreservedOnSwitch=$true;IndependentRebarChoiceLists=$choiceNames.Count;
         Saved=$false} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $report -Encoding UTF8
 }finally{
     if($book){$book.Close($false)}

@@ -102,11 +102,12 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeTypes. Пустой Array()
 '     подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных
 '     таблиц.
-'     Штатная блочная структура Config рекомендуется: Set reader = context.Reader("имя таблицы"), B =
-'     reader.PositiveLength("Geom", "B"). Ридер ищет ключ блока, строки и столбца, проверяет значение и
-'     переводит длину в мм. Для собственной структуры рецепт читает context.Table и context.Units
-'     самостоятельно; далее использует те же методы описания сечения. Пример —
-'     CSectionRecipeRoundedRectangle.
+'     Таблица каждого типа содержит General с размерами и Edges с участками армирования. Например: Set
+'     reader = context.Reader("rngRoundedRectangleGeometry"), B = reader.PositiveLength("General", "B").
+'     Общую таблицу армирования читают отдельно: Set rebar = context.Reader("rngRebarInput",
+'     "RoundedRectangle."). Префикс позволяет обращаться к строке Top по полному ключу
+'     RoundedRectangle.Top. Ридер проверяет значения и переводит длины в мм. Для своей структуры
+'     доступны context.Table и ValueAt.
 '
 '   УСТРОЙСТВО ШТАТНЫХ РЕЦЕПТОВ
 '     В Circle, RectSet, RoundedRectangle и HollowRectangle сначала читаются и проверяются размеры и
@@ -392,11 +393,16 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '       длины переводятся в мм по единицам контекста. Для собственной структуры таблицы доступен Table.
 '
 '       Объявление:
-'         Public Function Reader(ByVal tableName As String) As CSectionInputReader
+'         Public Function Reader(ByVal tableName As String, Optional ByVal rowPrefix As String =
+'         vbNullString) As CSectionInputReader
 '
 '       Параметры:
 '         ByVal tableName As String
 '           Имя единственного корневого входного блока этого снимка.
+'
+'         Optional ByVal rowPrefix As String = vbNullString
+'           Начальная часть ключей строк общей таблицы, например Circle.; пустая строка означает чтение
+'           полных ключей. Префикс добавляется при поиске строки и удаляется из результата RowKeys.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -433,7 +439,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Объявление:
 '         Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem =
-'         Nothing)
+'         Nothing, Optional ByVal rowPrefix As String = vbNullString)
 '
 '       Параметры:
 '         ByVal table As CSectionInputTable
@@ -441,6 +447,10 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '         Optional ByVal units As CUnitSystem = Nothing
 '           CUnitSystem с уже выбранными единицами; преобразование выполняется её методами.
+'
+'         Optional ByVal rowPrefix As String = vbNullString
+'           Начальная часть ключей строк общей таблицы, например Circle.; пустая строка означает чтение
+'           полных ключей. Префикс добавляется при поиске строки и удаляется из результата RowKeys.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -472,7 +482,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '
 '     ----------------------------------------------------------------------------------------------
@@ -486,7 +496,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -503,7 +513,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal columnKey As String
 '           Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.
@@ -521,7 +531,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -542,7 +552,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -567,7 +577,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -592,7 +602,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -618,7 +628,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -646,7 +656,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -668,7 +678,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -690,7 +700,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -712,7 +722,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -734,7 +744,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -755,7 +765,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -776,7 +786,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.
@@ -797,7 +807,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '       Параметры:
 '         ByVal blockKey As String
-'           Короткий ключ блока, например Geom, Main или Extra.
+'           Короткий ключ блока, например General, Edges, Main или Extra.
 '
 '         ByVal rowKey As String
 '           Ключ строки внутри выбранного блока, например B или Top.

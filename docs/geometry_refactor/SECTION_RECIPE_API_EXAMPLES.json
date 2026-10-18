@@ -2059,7 +2059,7 @@
     },
     "CSectionDefinition.ConcreteDomain": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 229,
+      "line": 233,
       "routine": "RunRecipeSetbackInputTests",
       "code": "    geometryArea = def.ConcreteDomain.Area",
       "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
@@ -3552,7 +3552,7 @@
     },
     "CSectionRecipeContext.Table": {
       "source": "tests/modTestGeometryConfig.bas",
-      "line": 117,
+      "line": 120,
       "routine": "CounterFixture",
       "code": "    Set table = context.Table(CStr(names(0)))",
       "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
@@ -3570,7 +3570,7 @@
     },
     "CSectionRecipeContext.Reader": {
       "source": "tests/modTestGeometryConfig.bas",
-      "line": 118,
+      "line": 121,
       "routine": "CounterFixture",
       "code": "    Set keyed = context.Reader(CStr(names(0)))",
       "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
@@ -6522,7 +6522,7 @@
     },
     "CSectionInputReader.Initialize": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 154,
+      "line": 168,
       "routine": "RunSectionInputReaderTests",
       "code": "    Set reader = New CSectionInputReader: reader.Initialize customTable",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6540,7 +6540,7 @@
     },
     "CSectionInputReader.ValueAt": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 149,
+      "line": 163,
       "routine": "RunSectionInputReaderTests",
       "code": "    ignored = reader.ValueAt(3, 1): code = Err.Number: Err.Clear",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6557,85 +6557,63 @@
       ]
     },
     "CSectionInputReader.RowKeys": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 1059,
-      "routine": "ConfigureOffsetWorkbook",
-      "code": "    For Each key In keyed.RowKeys(\"Main\")",
-      "context": "В теле modTestAudit02Api.ConfigureOffsetWorkbook с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 85,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    key = scoped.RowKeys(\"Bars\")",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
           "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/OffsetWorkbook02/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
-          ]
-        },
-        {
-          "entryPoint": "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
-          "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/OpeningCenter01/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt"
-          ]
-        },
-        {
-          "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
-          "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
           ]
         }
       ]
     },
     "CSectionInputReader.RowIndex": {
-      "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 218,
-      "routine": "RunRecipeSetbackInputTests",
-      "code": "    main = table.RowIndex(\"Main\", \"Top\") - 1",
-      "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestAudit02Api.bas",
+      "line": 493,
+      "routine": "CloseoutRectSetInputMatrix",
+      "code": "            shapeRow = keyed.RowIndex(\"General\", \"Shape\")",
+      "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "entryPoint": "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
           ]
         }
       ]
     },
     "CSectionInputReader.ColumnIndex": {
-      "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 221,
-      "routine": "RunRecipeSetbackInputTests",
-      "code": "    Check \"hollow.end.header\", table.ColumnIndex(\"Main\", \"s1\") = 7",
-      "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestSectionInputReader.bas",
+      "line": 87,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"prefix.column\", scoped.ColumnIndex(\"Bars\", \"d\") = 3",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
+            "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt",
+            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
           ]
         }
       ]
     },
     "CSectionInputReader.CellValue": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 130,
+      "line": 144,
       "routine": "RunSectionInputReaderTests",
       "code": "    Check \"raw.value.no.conversion\", reader.CellValue(\"Dimensions\", \"B\") = 60#",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6653,7 +6631,7 @@
     },
     "CSectionInputReader.Text": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 131,
+      "line": 145,
       "routine": "RunSectionInputReaderTests",
       "code": "    Check \"text.original.case\", reader.Text(\"Bars\", \"B\", \"mode\") = \"stacked\"",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6689,10 +6667,10 @@
     },
     "CSectionInputReader.Count": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 47,
-      "routine": "Reject",
-      "code": "            Case \"count\": ignored = reader.Count(\"Bars\", \"B\", \"n\")",
-      "context": "В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.",
+      "line": 84,
+      "routine": "RunSectionInputReaderTests",
+      "code": "    Check \"prefix.count\", scoped.Count(\"Bars\", \"B\", \"n\") = 4",
+      "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
           "entryPoint": "modTestSectionInputReader.RunSectionInputReaderTests",
@@ -6707,7 +6685,7 @@
     },
     "CSectionInputReader.Choice": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 105,
+      "line": 116,
       "routine": "RunSectionInputReaderTests",
       "code": "        Check \"choice.\" & CStr(scenario), reader.Choice(\"Bars\", \"B\", Array(\"Stacked\", \"SideBySide\"), \"mode\") = \"Stacked\"",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6725,7 +6703,7 @@
     },
     "CSectionInputReader.Length": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 132,
+      "line": 146,
       "routine": "RunSectionInputReaderTests",
       "code": "    Check \"signed.length.cm.to.mm\", reader.Length(\"Dimensions\", \"B\") = 600#",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6743,7 +6721,7 @@
     },
     "CSectionInputReader.PositiveLength": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 129,
+      "line": 143,
       "routine": "RunSectionInputReaderTests",
       "code": "    Check \"units.cm.to.mm\", reader.PositiveLength(\"Dimensions\", \"B\") = 600#",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6761,7 +6739,7 @@
     },
     "CSectionInputReader.NonNegativeLength": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 133,
+      "line": 147,
       "routine": "RunSectionInputReaderTests",
       "code": "    Check \"nonnegative.zero\", reader.NonNegativeLength(\"Dimensions\", \"Zero\") = 0#",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6797,7 +6775,7 @@
     },
     "CSectionInputReader.OptionalRowOffset": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 107,
+      "line": 118,
       "routine": "RunSectionInputReaderTests",
       "code": "        Check \"empty.offset.\" & CStr(scenario), reader.OptionalRowOffset(\"Bars\", \"Off\", \"as\") = 0#",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6817,7 +6795,7 @@
       "source": "tests/modTestAudit02Api.bas",
       "line": 501,
       "routine": "CloseoutRectSetInputMatrix",
-      "code": "                expectedAddress = keyed.SourceReference(\"Geom\", CStr(fieldKeys(column - 1)))",
+      "code": "                expectedAddress = keyed.SourceReference(\"General\", CStr(fieldKeys(column - 1)))",
       "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
@@ -6834,7 +6812,7 @@
     },
     "CSectionInputReader.SourceReferences": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 134,
+      "line": 148,
       "routine": "RunSectionInputReaderTests",
       "code": "    Check \"source.related.fields\", reader.SourceReferences(\"Bars\", \"B\", Array(\"d\", \"n\")) = \"Config!J91; Config!K91\"",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6852,7 +6830,7 @@
     },
     "CSectionInputReader.Require": {
       "source": "tests/modTestSectionInputReader.bas",
-      "line": 135,
+      "line": 149,
       "routine": "RunSectionInputReaderTests",
       "code": "    reader.Require \"Dimensions\", \"B\", \"val\", True, \"Размер допустим.\"",
       "context": "В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.",
@@ -6873,13 +6851,13 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "f6a35be1e38936529b2882b9fdad6b7b1b086f44de31dc9313809ddcb6415fd8",
-    "tests/modTestAudit02Api.bas": "b4ac0a524fd858e7294ade68d631ba1fdd8c4d0e2af5cef1080d763a28cccd3a",
+    "tests/modTestAudit02Api.bas": "941b13358873b0daebfe9c46f231e7f41d67ac000d5aa1453982595564761b09",
     "tests/modTestAutoCADContours.bas": "5edfd1631f415a361b235512f71db4d3bc528a35a68ea043793cc1bc56ec5aae",
     "tests/modTestContourMesh.bas": "3729da3521911350d2b755e304ae3284e053b236630ee4413f7386ac8d1b8133",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
     "tests/modTestDeclarativeGeometry.bas": "32137f46e96aea1eb0c7d18e6a8a9042c35497892c8ae112b3d4b0b3cdff2ee7",
     "tests/modTestGeometry.bas": "f99b0d6538081433dba9ee27a5b20e459609ccdc061803c5c4d27e1526bdb42d",
-    "tests/modTestGeometryConfig.bas": "19e40eef9672042a6d36c16fb1861d0c7199a0066cba29010a972b1bb20b9c9f",
+    "tests/modTestGeometryConfig.bas": "b8e439e703805957d6227a50f3890b85172fa2266a6bdd52375f293cf929c384",
     "tests/modTestGeometryPublication.bas": "48b16c90e96c9e4c3ee5168b4857f99109ce2cd9e04ce1349f6e13137cfc7ce6",
     "tests/modTestGeometryQuery.bas": "461ea2b13a582da6d256925a730bdfb0a3027ebddf18b2f95bebe14e6a7f4b01",
     "tests/modTestGeometryReview.bas": "82cc69d3bd4b5c0b587334b29a0e6bda44e298ed344f2090d0e5c3f016a30dd3",
@@ -6888,9 +6866,9 @@
     "tests/modTestRecipeAnnotations.bas": "3847af00d93a63a520806dbadff9870160da53ed7a714dd14b1d149bfa569845",
     "tests/modTestRecipeApiCatalogue.bas": "c124966801f6f0efdeea86843a580618df7d4b46f57452428eef5105e177c863",
     "tests/modTestRecipeOperations.bas": "a200b0fdc4c41673f1469949e5e1324ee7813d7266a9a70a77e439ef6f9244f9",
-    "tests/modTestRecipeSetbacks.bas": "ceee5fb7a687291509d78e405a9b6b032ea96af1c2e88a5436e952daf319928c",
-    "tests/modTestSectionInputReader.bas": "5f9d214d0967dd669e5a551e8f98247385757200ba5b52450bfc32813dba199e",
-    "tests/modTestSectionRecipes.bas": "53bede49a9f1cb9839e5a63ff0144228c4b2117ba8e56fc5afbe648020867324",
+    "tests/modTestRecipeSetbacks.bas": "c586f58b6363ef6a6c1b3e9afa07a5a87dd80e961679f718aaa80650fe5341d0",
+    "tests/modTestSectionInputReader.bas": "170add03409db8afc8a8d9c619180c483f183ed155fc60929ee1a30aef5f7b65",
+    "tests/modTestSectionRecipes.bas": "a74e544064089fc54184ff5056a4c5418b19b347b99a0c60f4a8523b824453dc",
     "tests/modTestSectionSolver.bas": "8a6320e735c1ab212ddf30e744d90b0de5822c89f9b49605b6c2cf6b33bc54c7"
   },
   "reportHashes": {

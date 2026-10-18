@@ -1,0 +1,56 @@
+﻿{
+    "WorkbookSHA256":  "9A383DF8A50FC3A17BAE464A2CF2F86A2ECB87E97B560F512BDF929750F7E33D",
+    "Checks":  [
+                   {
+                       "Seconds":  11.562439999999999,
+                       "SHA256":  "AF089DE0A6135CF92FC0159C40263AD352EC7DAFBF89C81E033893079D4689AE",
+                       "Macro":  "modTestSectionRecipes.DumpCircleRecipeMatrix"
+                   },
+                   {
+                       "Seconds":  39.657036999999995,
+                       "SHA256":  "3F184B3C85F8278D264BE6DFF3A729B9E2B8AF820279B8D25078B91592CE00E4",
+                       "Macro":  "modTestSectionRecipes.DumpRectSetRecipeMatrix"
+                   },
+                   {
+                       "Seconds":  30.348799699999997,
+                       "SHA256":  "27978761FB0999BA34CA7AE59EA76976E31AD3F16724C0EC92B423B7DD9E5C8B",
+                       "Macro":  "modTestSectionRecipes.DumpRoundedRecipeMatrix"
+                   },
+                   {
+                       "Seconds":  35.865841599999996,
+                       "SHA256":  "CC3611DD36C1F06B4408911B3377B3601B2571F3E05FACC8073B28819C03A409",
+                       "Macro":  "modTestSectionRecipes.DumpHollowRecipeMatrix"
+                   },
+                   {
+                       "Seconds":  14.700973399999999,
+                       "SHA256":  "0951B7591EEAF8B807B0F10E159632D8A087D5BCCCA4C4D98D7145B4029D2BAD",
+                       "Macro":  "modTestSectionRecipes.DumpHollowRecipeEdgeMatrix"
+                   },
+                   {
+                       "Seconds":  92.7572726,
+                       "SHA256":  "68E86C710896B3E7E11E0C6815F5AF58828AC6B8263696F873B1281F65607C0B",
+                       "Macro":  "modTestAudit02Snapshots.DumpRecipePathContracts"
+                   },
+                   {
+                       "Seconds":  0.1858253,
+                       "SHA256":  "B971D5FA80DF242A33286071ACC65746344833835564ED014A21AD246CD02790",
+                       "Macro":  "modTestSectionInputReader.RunSectionInputReaderTests"
+                   },
+                   {
+                       "Seconds":  0.0413565,
+                       "SHA256":  "E41406128DD458E3E2EC29FDDD1D37595C9DFC2E67187C797B2C812D5202D038",
+                       "Macro":  "modTestSectionRecipes.RunRecipeDefinitionTests"
+                   },
+                   {
+                       "Seconds":  109.782876,
+                       "SHA256":  "A0D3E03AD8F65C98A86FD467D7AC7E9B5A1C960E770D863399CF26F3DB0E1C08",
+                       "Macro":  "modTestSectionRecipes.RunRecipeAnnotationCountTests"
+                   },
+                   {
+                       "Seconds":  7.4287611,
+                       "SHA256":  "3022F2679409E03797171ECF4E887629BA7A96040B9779D901A418FE3092EB79",
+                       "Macro":  "modTestSectionRecipes.RunCircleBindingTests"
+                   }
+               ],
+    "Passed":  true
+}

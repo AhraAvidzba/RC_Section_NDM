@@ -1,0 +1,56 @@
+﻿{
+    "WorkbookSHA256":  "9A383DF8A50FC3A17BAE464A2CF2F86A2ECB87E97B560F512BDF929750F7E33D",
+    "Checks":  [
+                   {
+                       "Seconds":  8.9027017999999991,
+                       "SHA256":  "0102068BCA44068DCA2DF91155F36F0C497AF7363787E54797AF2138A68AFA14",
+                       "Macro":  "modTestSectionRecipes.RunWorkbookRecipeInputTests"
+                   },
+                   {
+                       "Seconds":  1.5633688,
+                       "SHA256":  "72BA28C6763DFAACF1D1A02906814B9BA1FD5C8071414012587AFA8DE1D31C00",
+                       "Macro":  "modTestSectionRecipes.RunCircleRecipeInputTests"
+                   },
+                   {
+                       "Seconds":  12.278091199999999,
+                       "SHA256":  "2B8DA0135EC230030ED7ACD352E06906F92140B90BF5F74AD5372F187A60E3D5",
+                       "Macro":  "modTestSectionRecipes.RunRoundedRecipeInputTests"
+                   },
+                   {
+                       "Seconds":  23.9347933,
+                       "SHA256":  "21FDA6CF164DBFD311E27E08C62F47C25AEAB93DFA7E51621D5798B0F6A64A5E",
+                       "Macro":  "modTestSectionRecipes.RunHollowRecipeInputTests"
+                   },
+                   {
+                       "Seconds":  0.8050856,
+                       "SHA256":  "6B4C36846E896D8FF1DEC401418EDDCA2EDA76C3A87CA1CD132EE66171FE23AD",
+                       "Macro":  "modTestSectionRecipes.RunCircleBindingWorkbookTests"
+                   },
+                   {
+                       "Seconds":  11.3607748,
+                       "SHA256":  "4B2978BA9AEE39F4872B36E0D30B6D904DACD973A225D2A2D9A67DE5CF9E45EE",
+                       "Macro":  "modTestSectionRecipes.RunRecipeCaptionTests"
+                   },
+                   {
+                       "Seconds":  0.074379,
+                       "SHA256":  "44958DF71ACCC5A1990EC5A88E01529A2A32433EE77490C997BE8A5D4F23F408",
+                       "Macro":  "modTestRecipeApiCatalogue.RunApiInputAndDataExamples"
+                   },
+                   {
+                       "Seconds":  0.85789529999999992,
+                       "SHA256":  "30C137BB09EE10039697EF0E789826369D3B6E07F1BB0DD92A6643CD36BD81D5",
+                       "Macro":  "modTestRecipeSetbacks.RunRecipeSetbackUnitTests"
+                   },
+                   {
+                       "Seconds":  6.8581452,
+                       "SHA256":  "9E53D81A1EBED41F952A084CBE92EF497D49AEA232D3A9E5CE63A37902203B1D",
+                       "Macro":  "modTestRecipeSetbacks.RunRecipeSetbackInputTests"
+                   },
+                   {
+                       "Seconds":  3.3346934,
+                       "SHA256":  "B8C280360B1E2D2F248C5844C24E7FB6A4D4D6E48BA10E397B59536293FC7A91",
+                       "Macro":  "modTestRecipeSetbacks.RunRecipeTypeListTests"
+                   }
+               ],
+    "Passed":  true
+}

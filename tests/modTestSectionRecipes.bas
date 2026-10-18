@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestSectionRecipes"
+﻿Attribute VB_Name = "modTestSectionRecipes"
 Option Explicit
 
 Private mPassed As Long, mFailed As Long, mReport As String
@@ -65,15 +65,15 @@ Public Function RunWorkbookRecipeInputTests() As String
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set rootRange = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
-    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units): Set table = context.Table("rngCircleGeometry")
     Set diameterCell = FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter")
     Set coverCell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance")
     Application.Calculation = xlCalculationManual
     diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": rootRange.Calculate
     diameterCell.Value2 = 320#
     Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
-    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    Near "workbook.manual.capture.refreshed", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units): Set table = context.Table("rngCircleGeometry")
+    Near "workbook.manual.capture.refreshed", context.Reader("rngRebarInput", "Circle.").Length("Main", "Circle", "as"), 80#
     names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
     names = registry.RecipeTableNames("Circle")
     Check "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"
@@ -660,7 +660,7 @@ Private Function CircleInputCase(ByVal scenario As Long) As Boolean
             key = "Rebar.Diameter2": SetCircleInput key, 400# / units.InputLengthToInternal(1#)
             SetCircleInput "Rebar.Loc2row", "SideBySide"
     End Select
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units)
     Set table = context.Table("rngCircleGeometry")
     If Len(key) > 0 Then expectedReference = "Config!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
@@ -694,7 +694,7 @@ Finished:
 End Function
 
 Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
-    Dim range As Object, row As Long, column As Long, valid As Boolean, reference As String
+    Dim range As Object, invalid As Object, valid As Boolean, reference As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
     Dim context As CSectionRecipeContext, table As CSectionInputTable, recipe As ISectionRecipe, definition As CSectionDefinition
     Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
@@ -705,33 +705,33 @@ Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set range = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
     Select Case scenario
-        Case 0: row = 21: column = 5: range.Cells(row, column).Value2 = 1.5
-        Case 1: row = 21: column = 4: range.Cells(row, column).Value2 = -1#
-        Case 2: row = 21: column = 3: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 4).Value2) / 2#
-        Case 3: row = 30: column = 3: range.Cells(row, column).Value2 = -1#
-        Case 4: row = 30: column = 6: range.Cells(30, 3).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
-        Case 5: row = 30: column = 5: range.Cells(30, 3).Value2 = 10#: range.Cells(row, column).Value2 = "bad"
+        Case 0: Set invalid = FixtureInputCell(range, "Main", "Left", "n"): invalid.Value2 = 1.5
+        Case 1: Set invalid = FixtureInputCell(range, "Main", "Left", "d"): invalid.Value2 = -1#
+        Case 2: Set invalid = FixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = CDbl(invalid.Offset(0, 1).Value2) / 2#
+        Case 3: Set invalid = FixtureInputCell(range, "Extra", "Left", "d2"): invalid.Value2 = -1#
+        Case 4: Set invalid = FixtureInputCell(range, "Extra", "Left", "pos2"): FixtureInputCell(range, "Extra", "Left", "d2").Value2 = 10#: invalid.Value2 = "bad"
+        Case 5: Set invalid = FixtureInputCell(range, "Extra", "Left", "bind2"): FixtureInputCell(range, "Extra", "Left", "d2").Value2 = 10#: invalid.Value2 = "bad"
         Case 6
-            valid = True: range.Cells(11, 3).Value2 = "inactive": range.Cells(13, 3).Value2 = "inactive"
+            valid = True: FixtureInputCell(range, "Detail", "W", "left").Value2 = "inactive": FixtureInputCell(range, "Detail", "R2", "left").Value2 = "inactive"
         Case 7
-            valid = True: range.Cells(21, 5).Value2 = 0: range.Cells(21, 3).Value2 = "inactive"
-            range.Cells(30, 3).Value2 = "inactive": range.Cells(30, 6).Value2 = "inactive"
+            valid = True: FixtureInputCell(range, "Main", "Left", "n").Value2 = 0: FixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
+            FixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
         Case 8
-            valid = True: range.Cells(21, 4).Value2 = 0: range.Cells(21, 3).Value2 = "inactive"
-            range.Cells(30, 3).Value2 = "inactive": range.Cells(30, 6).Value2 = "inactive"
+            valid = True: FixtureInputCell(range, "Main", "Left", "d").Value2 = 0: FixtureInputCell(range, "Main", "Left", "as").Value2 = "inactive"
+            FixtureInputCell(range, "Extra", "Left", "d2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive"
         Case 9
-            valid = True: range.Cells(30, 3).Value2 = 0: range.Cells(30, 7).Value2 = 0
-            range.Cells(30, 6).Value2 = "inactive": range.Cells(30, 5).Value2 = "inactive"
-        Case 10: row = 12: column = 3: range.Cells(row, column).Value2 = 1000#
+            valid = True: FixtureInputCell(range, "Extra", "Left", "d2").Value2 = 0: FixtureInputCell(range, "Extra", "Left", "d3").Value2 = 0
+            FixtureInputCell(range, "Extra", "Left", "pos2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Left", "bind2").Value2 = "inactive"
+        Case 10: Set invalid = FixtureInputCell(range, "Detail", "R1", "left"): invalid.Value2 = 1000#
         Case 11
-            valid = True: range.Cells(10, 3).Value2 = "Tapered": range.Cells(11, 3).Value2 = 100#
-            range.Cells(12, 3).Value2 = 220#: range.Cells(13, 3).Value2 = 0#
-        Case 12: valid = True: range.Cells(12, 3).Value2 = 200#: range.Cells(12, 4).Value2 = 200#
-        Case 13: row = 21: column = 3: range.Cells(row, column).Value2 = 380#
+            valid = True: FixtureInputCell(range, "Detail", "Type", "left").Value2 = "Tapered": FixtureInputCell(range, "Detail", "W", "left").Value2 = 100#
+            FixtureInputCell(range, "Detail", "R1", "left").Value2 = 220#: FixtureInputCell(range, "Detail", "R2", "left").Value2 = 0#
+        Case 12: valid = True: FixtureInputCell(range, "Detail", "R1", "left").Value2 = 200#: FixtureInputCell(range, "Detail", "R1", "right").Value2 = 200#
+        Case 13: Set invalid = FixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 380#
     End Select
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngRoundedRectangleGeometry"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngRoundedRectangleGeometry", "rngRebarInput"), units)
     Set table = context.Table("rngRoundedRectangleGeometry")
-    If Not valid Then reference = table.SourceReference(row, column)
+    If Not valid Then reference = "Config!" & invalid.Address(False, False)
     Set recipe = New CSectionRecipeRoundedRectangle: Set definition = recipe.CreateDefinition(context)
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
@@ -764,7 +764,7 @@ Finished:
 End Function
 
 Private Function HollowInputCase(ByVal scenario As Long) As Boolean
-    Dim range As Object, row As Long, column As Long, valid As Boolean, reference As String, factor As Double
+    Dim range As Object, invalid As Object, valid As Boolean, reference As String, factor As Double
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
     Dim context As CSectionRecipeContext, table As CSectionInputTable, recipe As ISectionRecipe, definition As CSectionDefinition
     Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions
@@ -775,36 +775,36 @@ Private Function HollowInputCase(ByVal scenario As Long) As Boolean
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     Select Case scenario
-        Case 0: row = 21: column = 5: range.Cells(row, column).Value2 = 1.5
-        Case 1: row = 21: column = 4: range.Cells(row, column).Value2 = -1#
-        Case 2: row = 21: column = 3: range.Cells(row, column).Value2 = CDbl(range.Cells(row, 4).Value2) / 2#
-        Case 3: row = 27: column = 3: range.Cells(27, 4).Value2 = 0#: range.Cells(row, column).Value2 = -1#
-        Case 4: row = 13: column = 3: range.Cells(row, column).Value2 = -1#
-        Case 5: row = 14: column = 3: range.Cells(row, column).Value2 = 1000# / factor
+        Case 0: Set invalid = FixtureInputCell(range, "Main", "Top", "n"): invalid.Value2 = 1.5
+        Case 1: Set invalid = FixtureInputCell(range, "Main", "Top", "d"): invalid.Value2 = -1#
+        Case 2: Set invalid = FixtureInputCell(range, "Main", "Top", "as"): invalid.Value2 = CDbl(invalid.Offset(0, 1).Value2) / 2#
+        Case 3: Set invalid = FixtureInputCell(range, "Main", "OpeningLeft", "as"): FixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: invalid.Value2 = -1#
+        Case 4: Set invalid = FixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = -1#
+        Case 5: Set invalid = FixtureInputCell(range, "Detail", "Xo", "val"): invalid.Value2 = 1000# / factor
         Case 6
-            valid = True: range.Cells(21, 5).Value2 = 0: range.Cells(21, 3).Value2 = "inactive"
-            range.Cells(34, 3).Value2 = "inactive": range.Cells(34, 7).Value2 = "inactive"
+            valid = True: FixtureInputCell(range, "Main", "Top", "n").Value2 = 0: FixtureInputCell(range, "Main", "Top", "as").Value2 = "inactive"
+            FixtureInputCell(range, "Extra", "Top", "d2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Top", "d3").Value2 = "inactive"
         Case 7
-            valid = True: range.Cells(27, 4).Value2 = 0#: range.Cells(40, 3).Value2 = "inactive"
-            range.Cells(40, 7).Value2 = "inactive"
-        Case 8: row = 27: column = 3: range.Cells(13, 3).Value2 = 0#: range.Cells(27, 4).Value2 = 0#: range.Cells(row, column).Value2 = "bad"
+            valid = True: FixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: FixtureInputCell(range, "Extra", "OpeningLeft", "d2").Value2 = "inactive"
+            FixtureInputCell(range, "Extra", "OpeningLeft", "d3").Value2 = "inactive"
+        Case 8: Set invalid = FixtureInputCell(range, "Main", "OpeningLeft", "as"): FixtureInputCell(range, "Detail", "Ro", "val").Value2 = 0#: FixtureInputCell(range, "Main", "OpeningLeft", "d").Value2 = 0#: invalid.Value2 = "bad"
         Case 9
-            valid = True: range.Cells(34, 3).Value2 = 0#: range.Cells(34, 7).Value2 = 0#
-            range.Cells(34, 6).Value2 = "inactive": range.Cells(34, 5).Value2 = "inactive"
-        Case 10: row = 13: column = 3: range.Cells(row, column).Value2 = 1000# / factor
-        Case 11: valid = True: range.Cells(6, 3).Value2 = 500# / factor
-        Case 12: row = 34: column = 5: range.Cells(34, 3).Value2 = 16# / factor: range.Cells(row, column).Value2 = "bad"
-        Case 13: row = 21: column = 5: range.Cells(21, 4).Value2 = 0#: range.Cells(row, column).Value2 = 1.5
-        Case 14: row = 21: column = 4: range.Cells(row, column).Value2 = "-"
-        Case 15: row = 34: column = 3: range.Cells(row, column).Value2 = "-"
-        Case 16: row = 34: column = 7: range.Cells(row, column).Value2 = "-"
-        Case 17: row = 34: column = 3: range.Cells(row, column).Value2 = "TODO"
-        Case 18: valid = True: range.Cells(34, 3).ClearContents: range.Cells(34, 7).ClearContents
-        Case 19: valid = True: range.Cells(21, 4).ClearContents
+            valid = True: FixtureInputCell(range, "Extra", "Top", "d2").Value2 = 0#: FixtureInputCell(range, "Extra", "Top", "d3").Value2 = 0#
+            FixtureInputCell(range, "Extra", "Top", "pos2").Value2 = "inactive": FixtureInputCell(range, "Extra", "Top", "bind2").Value2 = "inactive"
+        Case 10: Set invalid = FixtureInputCell(range, "Detail", "Ro", "val"): invalid.Value2 = 1000# / factor
+        Case 11: valid = True: FixtureInputCell(range, "General", "R", "val").Value2 = 500# / factor
+        Case 12: Set invalid = FixtureInputCell(range, "Extra", "Top", "bind2"): FixtureInputCell(range, "Extra", "Top", "d2").Value2 = 16# / factor: invalid.Value2 = "bad"
+        Case 13: Set invalid = FixtureInputCell(range, "Main", "Top", "n"): FixtureInputCell(range, "Main", "Top", "d").Value2 = 0#: invalid.Value2 = 1.5
+        Case 14: Set invalid = FixtureInputCell(range, "Main", "Top", "d"): invalid.Value2 = "-"
+        Case 15: Set invalid = FixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "-"
+        Case 16: Set invalid = FixtureInputCell(range, "Extra", "Top", "d3"): invalid.Value2 = "-"
+        Case 17: Set invalid = FixtureInputCell(range, "Extra", "Top", "d2"): invalid.Value2 = "TODO"
+        Case 18: valid = True: FixtureInputCell(range, "Extra", "Top", "d2").ClearContents: FixtureInputCell(range, "Extra", "Top", "d3").ClearContents
+        Case 19: valid = True: FixtureInputCell(range, "Main", "Top", "d").ClearContents
     End Select
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry", "rngRebarInput"), units)
     Set table = context.Table("rngHollowRectangleGeometry")
-    If Not valid Then reference = table.SourceReference(row, column)
+    If Not valid Then reference = "Config!" & invalid.Address(False, False)
     Set recipe = New CSectionRecipeHollowRectangle: Set definition = recipe.CreateDefinition(context)
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
@@ -1178,18 +1178,20 @@ Private Function CircleBindingInputCase(ByVal diameter2 As Double, ByVal diamete
     CircleBindingInputCase = valid
     Exit Function
 Rejected:
-    CircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngCircleGeometry", vbBinaryCompare) > 0
+    CircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngRebarInput", vbBinaryCompare) > 0
 End Function
 
 ' ДЛЯ ТЕСТОВ: два реальных выпадающих списка, независимость и адрес ошибки Config.
 Public Function RunCircleBindingWorkbookTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
-    Dim table As Object, saved As Variant, values As CSectionInputTable, row As Long, index As Long
+    Dim table As Object, saved As Variant, index As Long
     Dim keys As Variant, names As Variant, choices As Object, optionValue As Variant, cell As Object
     On Error GoTo Failed
-    Set table = ThisWorkbook.Names("rngCircleGeometry").RefersToRange: saved = table.Formula
-    Set values = New CSectionInputTable: values.Initialize "rngCircleGeometry", table.Value2
-    keys = Array("Rebar.Bind2row", "Rebar.Bind3row"): names = Array("rngCircleBind2Choices", "rngCircleBind3Choices")
+    Set table = ThisWorkbook.Worksheets("Config").UsedRange: saved = table.Formula
+    modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+    keys = Array("Rebar.Bind2row", "Rebar.Bind3row")
+    names = Array(Mid$(FixtureCircleFieldCell(ThisWorkbook, CStr(keys(0))).Validation.Formula1, 2), _
+        Mid$(FixtureCircleFieldCell(ThisWorkbook, CStr(keys(1))).Validation.Formula1, 2))
     Check "circle.bind.lists.independent", ThisWorkbook.Names(names(0)).RefersToRange.Address <> ThisWorkbook.Names(names(1)).RefersToRange.Address
     For index = 0 To 1
         Set cell = FixtureCircleFieldCell(ThisWorkbook, CStr(keys(index)))
@@ -1209,8 +1211,8 @@ Public Function RunCircleBindingWorkbookTests() As String
     modSectionRecipeSetup.UpdateSectionRecipeTypes
     Check "circle.bind.update.preserves2", FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind2row").Value2 = "EverySecondBar"
     Check "circle.bind.update.preserves3", FixtureCircleFieldCell(ThisWorkbook, "Rebar.Bind3row").Value2 = "EachBar"
-    Check "circle.bind.workbook.address2", CircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2", table, values)
-    Check "circle.bind.workbook.address3", CircleBindingWorkbookRejected("Rebar.Bind3row", "Rebar.Diameter3", table, values)
+    Check "circle.bind.workbook.address2", CircleBindingWorkbookRejected("Rebar.Bind2row", "Rebar.Diameter2")
+    Check "circle.bind.workbook.address3", CircleBindingWorkbookRejected("Rebar.Bind3row", "Rebar.Diameter3")
     GoTo Restore
 Failed:
     Check "circle.bind.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
@@ -1220,8 +1222,7 @@ Restore:
 End Function
 
 ' Ошибка активной привязки должна содержать действительный адрес её пользовательской ячейки.
-Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diameterKey As String, _
-        ByVal table As Object, ByVal values As CSectionInputTable) As Boolean
+Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diameterKey As String) As Boolean
     On Error GoTo Rejected
     Dim settings As CSystemSettingsReader, units As CUnitSystem, context As CSectionRecipeContext, reader As CSectionInputSnapshotReader
     Dim recipe As ISectionRecipe, definition As CSectionDefinition, factor As Double
@@ -1232,14 +1233,13 @@ Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diamet
     SetCircleInput "Rebar.Diameter2", 0#: SetCircleInput "Rebar.Diameter3", 0#
     SetCircleInput diameterKey, 12# / factor: SetCircleInput "Rebar.Loc2row", "Stacked": SetCircleInput "Rebar.Loc3row", "Stacked"
     SetCircleInput key, "bad"
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
     Exit Function
 Rejected:
     Dim reason As String
     reason = Err.Description ' Чтение нового helper не должно сбросить исходную ошибку до её проверки.
-    CircleBindingWorkbookRejected = InStr(1, reason, FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False), vbBinaryCompare) > 0 And _
-        InStr(1, reason, table.Worksheet.Name, vbBinaryCompare) > 0
+    CircleBindingWorkbookRejected = InStr(1, reason, "Config!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False), vbBinaryCompare) > 0
 End Function
 
 ' ДЛЯ ТЕСТОВ: НДС/несущая/трещины для фактической модели нового Circle.
@@ -1516,7 +1516,7 @@ Public Function RunRecipeCaptionTests() As String
             Case "RoundedSimple": typeID = "RoundedRectangle"
             Case Else: typeID = "HollowRectangle"
         End Select
-        tableName = "rng" & typeID & "Geometry"
+        tableName = "rngRebarInput"
         Set table = ThisWorkbook.Names(tableName).RefersToRange: Set reader = FixtureInput(table.Value2)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings

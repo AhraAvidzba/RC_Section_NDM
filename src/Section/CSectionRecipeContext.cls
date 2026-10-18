@@ -54,10 +54,11 @@ Public Function Table(ByVal tableName As String) As CSectionInputTable
 End Function
 
 ' Создаёт ридер с защищёнными единицами: по ключам блоков либо по позиции ValueAt.
+' rowPrefix ограничивает чтение строками с общей начальной частью ключа; для общей таблицы это имя типа и точка.
 ' Таблица произвольной структуры также доступна через Table.
-Public Function Reader(ByVal tableName As String) As CSectionInputReader
+Public Function Reader(ByVal tableName As String, Optional ByVal rowPrefix As String = vbNullString) As CSectionInputReader
     Dim result As CSectionInputReader: Set result = New CSectionInputReader
-    result.Initialize Table(tableName), Units
+    result.Initialize Table(tableName), Units, rowPrefix
     Set Reader = result
 End Function
 

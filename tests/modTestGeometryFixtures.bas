@@ -78,10 +78,10 @@ End Sub
 Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSectionDefinition
     Dim values As Variant, reader As CSectionInputReader, recipe As ISectionRecipe, keys As Variant, blocks As Variant
     Dim i As Long, value As Variant, row As String
-    values = ThisWorkbook.Names("rngCircleGeometry").RefersToRange.Value2
+    values = FixtureRecipeValues("rngCircleGeometry")
     Set reader = FixtureInput(values)
     keys = Array("val", "as", "n", "d", "d2", "d3", "pos2", "pos3", "bind2", "bind3", "a2", "a3")
-    blocks = Array("Geom", "Main", "Main", "Main", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra")
+    blocks = Array("General", "Main", "Main", "Main", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra", "Extra")
     For i = 0 To 11
         If i <= UBound(parameters) Then
             value = parameters(i)
@@ -105,14 +105,14 @@ End Function
 Public Function FixtureRectSetDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
     Dim values As Variant, pair As Variant, keys As Variant, fields As Variant, index As Long, side As Long
     Dim key As String, recipe As ISectionRecipe, reader As CSectionInputReader, row As Long, extra As Long
-    values = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange.Value2
+    values = FixtureRecipeValues("rngRectSetGeometry")
     Set reader = FixtureInput(values)
-    FixtureSetInput values, "Geom", "Shape", "val", "LSection"
+    FixtureSetInput values, "General", "Shape", "val", "LSection"
     FixtureSetInput values, "Detail", "XOffset", "val", 0#
     If UBound(dimensions) >= 4 Then FixtureSetInput values, "Detail", "XOffset", "val", dimensions(4)
-    If UBound(dimensions) >= 5 Then FixtureSetInput values, "Geom", "Shape", "val", dimensions(5)
+    If UBound(dimensions) >= 5 Then FixtureSetInput values, "General", "Shape", "val", dimensions(5)
     fields = Array("B1", "H1", "B2", "H2")
-    For index = 0 To 3: FixtureSetInput values, "Geom", CStr(fields(index)), "val", dimensions(index): Next index
+    For index = 0 To 3: FixtureSetInput values, "General", CStr(fields(index)), "val", dimensions(index): Next index
     keys = Array("R1.Left", "R2.Left", "R1.Top", "R2.Top")
     For index = 0 To 3
         pair = Array(0#, 0#, 0#, 0#, 0, 0, 0#, 0#, 0#, 0#)
@@ -146,10 +146,10 @@ End Function
 
 ' Rounded: [B,H,leftType,rightType,Wleft,Wright,R1left,R1right,R2left,R2right].
 ' faces = [H.Left,H.Right,B.Top,B.Bottom], каждый [as,d,n,d2,d3,loc2,loc3,bind2,bind3].
-Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
+Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant, Optional ByVal readSetbacks As Boolean = False) As CSectionDefinition
     Dim values As Variant, recipe As ISectionRecipe, index As Long, fields As Variant, side As Long
-    values = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange.Value2
-    FixtureSetInput values, "Geom", "B", "val", dimensions(0): FixtureSetInput values, "Geom", "H", "val", dimensions(1)
+    values = FixtureRecipeValues("rngRoundedRectangleGeometry", readSetbacks)
+    FixtureSetInput values, "General", "B", "val", dimensions(0): FixtureSetInput values, "General", "H", "val", dimensions(1)
     fields = Array("Type", "W", "R1", "R2")
     For index = 0 To 3
         FixtureSetInput values, "Detail", CStr(fields(index)), "left", dimensions(2 + index * 2)
@@ -165,13 +165,13 @@ Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional B
 End Function
 
 ' Hollow: [B,H,R,Bo,Ho,Ro,xo,yo]; faces = наружные H/H/B/B, затем внутренние H/H/B/B.
-Public Function FixtureHollowDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
+Public Function FixtureHollowDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant, Optional ByVal readSetbacks As Boolean = False) As CSectionDefinition
     Dim values As Variant, recipe As ISectionRecipe, index As Long, keys As Variant
-    values = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange.Value2
+    values = FixtureRecipeValues("rngHollowRectangleGeometry", readSetbacks)
     keys = Array("B", "H", "R", "Bo", "Ho", "Ro")
     For index = 0 To 5
         If index < 3 Then
-            FixtureSetInput values, "Geom", CStr(keys(index)), "val", dimensions(index)
+            FixtureSetInput values, "General", CStr(keys(index)), "val", dimensions(index)
         Else
             FixtureSetInput values, "Detail", CStr(keys(index)), "val", dimensions(index)
         End If
@@ -214,10 +214,20 @@ Public Function FixtureRecipeDefinition(ByVal recipe As ISectionRecipe, ByVal ta
     If units Is Nothing Then
         Set units = New CUnitSystem: units.InitializeDefaults
     End If
-    Dim context As CSectionRecipeContext, table As CSectionInputTable
+    Dim context As CSectionRecipeContext, table As CSectionInputTable, common As CSectionInputTable
+    Dim reader As CSectionInputReader, block As Variant, key As Variant, rebars As Variant, typeID As String
     Set table = New CSectionInputTable: table.Initialize tableName, values
     Set context = New CSectionRecipeContext: context.Initialize units
-    context.AddTable table: context.Seal
+    context.AddTable table
+    rebars = values: Set reader = FixtureInput(values)
+    typeID = Mid$(tableName, 4, Len(tableName) - 11)
+    For Each block In Array("Main", "Extra")
+        For Each key In reader.RowKeys(CStr(block))
+            rebars(reader.RowIndex(CStr(block), CStr(key)), 1) = typeID & "." & CStr(key)
+        Next key
+    Next block
+    Set common = New CSectionInputTable: common.Initialize "rngRebarInput", rebars
+    context.AddTable common: context.Seal
     Set FixtureRecipeDefinition = recipe.CreateDefinition(context)
 End Function
 
@@ -300,7 +310,7 @@ Public Function FixtureCircleFieldCell(ByVal workbook As Object, ByVal key As St
     If sourceTable Is Nothing Then Set area = workbook.Names("rngCircleGeometry").RefersToRange Else Set area = sourceTable
     block = "Main": row = "Circle"
     Select Case key
-        Case "Circle.Diameter": block = "Geom": row = "D": column = "val"
+        Case "Circle.Diameter": block = "General": row = "D": column = "val"
         Case "Rebar.AxisDistance": column = "as"
         Case "Rebar.Diameter": column = "d"
         Case "Rebar.Count": column = "n"
@@ -329,12 +339,146 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: меняет только указанное поле снимка, не вычисляя геометрию.
 Public Sub FixtureSetInput(ByRef values As Variant, ByVal block As String, ByVal row As String, ByVal column As String, ByVal value As Variant)
+    FixtureNormalizeField block, row, column
     Dim reader As CSectionInputReader: Set reader = FixtureInput(values)
     values(reader.RowIndex(block, row), reader.ColumnIndex(block, column)) = value
 End Sub
 
 ' ДЛЯ ТЕСТОВ: возвращает настоящую ячейку поля после изменения размещения таблицы.
 Public Function FixtureInputCell(ByVal area As Object, ByVal block As String, ByVal row As String, Optional ByVal column As String = "val") As Object
-    Dim reader As CSectionInputReader: Set reader = FixtureInput(area.Value2)
+    FixtureNormalizeField block, row, column
+    Dim reader As CSectionInputReader, parts As Variant, name As String, typeID As String
+    Dim inactive As Boolean, index As Long, headerRow As Long, side As String, localKey As String
+    If (block = "Main" Or block = "Extra") And area.Columns.Count = 5 Then
+        parts = Split(CStr(area.Name.Name), "!"): name = CStr(parts(UBound(parts)))
+        typeID = Mid$(name, 4, Len(name) - 11)
+        localKey = row
+        If typeID = "RectSet" And Left$(localKey, 3) = "R2." Then inactive = (CStr(FixtureInputCell(area, "General", "Shape").Value2) = "Rectangle")
+        FixtureSelectRecipeType area.Worksheet.Parent, typeID
+        area.Calculate
+        Set area = area.Worksheet.Parent.Names("rngRebarInput").RefersToRange
+        area.Calculate
+        If Left$(row, Len(typeID) + 1) <> typeID & "." Then row = typeID & "." & row
+    End If
+    Set reader = FixtureInput(area.Value2)
+    If inactive Then
+        side = Mid$(localKey, 4)
+        parts = Array("Top", "Bottom", "Left", "Right")
+        For index = 0 To 3
+            If CStr(parts(index)) = side Then Exit For
+        Next index
+        For headerRow = 1 To area.Rows.Count
+            If CStr(area.Cells(headerRow, 1).Value2) = block Then Exit For
+        Next headerRow
+        Set FixtureInputCell = area.Cells(headerRow + 8 + index, reader.ColumnIndex(block, column))
+        Exit Function
+    End If
     Set FixtureInputCell = area.Cells(reader.RowIndex(block, row), reader.ColumnIndex(block, column))
 End Function
+
+' ДЛЯ ТЕСТОВ: выбирает тип до обращения к строкам общей таблицы с формульными ключами.
+Public Sub FixtureSelectRecipeType(ByVal workbook As Object, ByVal typeID As String)
+    Dim settings As Object, row As Long
+    Set settings = workbook.Names("rngSystemSettings").RefersToRange
+    For row = 2 To settings.Rows.Count
+        If CStr(settings.Cells(row, 1).Value2) = "Geometry.Type" Then settings.Cells(row, 2).Value2 = typeID: Exit Sub
+    Next row
+    Err.Raise vbObjectError + 5590, "modTestGeometryFixtures", "Не найдена настройка Geometry.Type."
+End Sub
+
+' Приводит обозначения параметров в контрольных наборах к двум блокам новой таблицы.
+Private Sub FixtureNormalizeField(ByRef block As String, ByRef row As String, ByRef column As String)
+    If block = "Detail" Then
+        block = "General"
+        If column = "left" Or column = "right" Then row = UCase$(Left$(column, 1)) & Mid$(column, 2) & "." & row: column = "val"
+    End If
+End Sub
+
+' ДЛЯ ТЕСТОВ: объединяет два источника в независимый массив для подготовки контрольного ввода.
+' Позиции стержней и контуры здесь не вычисляются; размеры и ключи берутся из действующей книги.
+' Обычно s0/s1 равны нулю; readSetbacks включает их чтение из общей таблицы для проверки отступов.
+Public Function FixtureRecipeValues(ByVal tableName As String, Optional ByVal readSetbacks As Boolean = False) As Variant
+    Dim geometry As Variant, commonValues As Variant, result() As Variant, key As Variant, keys As Variant
+    Dim reader As CSectionInputReader, row As Long, column As Long, i As Long, count As Long, base As Long, block As Variant
+    geometry = ThisWorkbook.Names(tableName).RefersToRange.Value2
+    commonValues = ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2
+    Select Case tableName
+        Case "rngCircleGeometry": keys = Array("Circle")
+        Case "rngRectSetGeometry": keys = Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
+        Case "rngRoundedRectangleGeometry": keys = Array("Top", "Bottom", "Left", "Right")
+        Case Else: keys = Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
+    End Select
+    base = UBound(geometry, 1): count = UBound(keys) + 1
+    ReDim result(1 To base + UBound(commonValues, 1) + 1, 1 To 11)
+    For row = 1 To base: For column = 1 To UBound(geometry, 2): result(row, column) = geometry(row, column): Next column: Next row
+    base = base + 1
+    For row = 1 To UBound(commonValues, 1): For column = 1 To 11: result(base + row, column) = commonValues(row, column): Next column: Next row
+    For Each block In Array("Main", "Extra")
+        For row = base + 1 To UBound(result, 1)
+            If CStr(result(row, 1)) = CStr(block) Then
+                For i = 0 To 7
+                    If i < count Then result(row + 4 + i, 1) = CStr(keys(i)) Else result(row + 4 + i, 1) = Empty
+                    If CStr(block) = "Main" And Not readSetbacks Then result(row + 4 + i, 6) = 0#: result(row + 4 + i, 7) = 0#
+                Next i
+                Exit For
+            End If
+        Next row
+    Next block
+    FixtureRecipeValues = result
+End Function
+
+' ДЛЯ ТЕСТОВ: явные исходные параметры армирования, одинаковые для обеих версий таблиц.
+' Выбор типа в рабочей книге ничего не сбрасывает; только контрольный набор готовит свои значения.
+Public Sub FixtureResetReinforcement(ByVal typeID As String)
+    Dim rows As Variant, item As Variant, fields As Variant, index As Long, table As Object, value As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, factor As Double
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
+    FixtureSelectRecipeType ThisWorkbook, typeID
+    Select Case typeID
+        Case "Circle"
+            rows = Array( _
+                Array("Circle", 40#, 20#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
+        Case "RectSet"
+            rows = Array( _
+                Array("R1.Top", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R1.Bottom", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R1.Left", 40#, 32#, 5#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R1.Right", 40#, 32#, 5#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R2.Top", 40#, 32#, 5#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R2.Bottom", 40#, 32#, 5#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R2.Left", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("R2.Right", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
+        Case "RoundedRectangle"
+            rows = Array( _
+                Array("Top", 40#, 32#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("Bottom", 40#, 32#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("Left", 40#, 32#, 5#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("Right", 40#, 32#, 5#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
+        Case "HollowRectangle"
+            rows = Array( _
+                Array("Top", 40#, 20#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("Bottom", 40#, 20#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("Left", 40#, 20#, 6#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("Right", 40#, 20#, 6#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("OpeningTop", 40#, 20#, "—", 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("OpeningBottom", 40#, 20#, "—", 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("OpeningLeft", 40#, 20#, "—", 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
+                Array("OpeningRight", 40#, 20#, "—", 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
+    End Select
+    Set table = ThisWorkbook.Names("rng" & typeID & "Geometry").RefersToRange
+    fields = Array("as", "d", "n", "s0", "s1", "d2", "a2", "bind2", "pos2", "d3", "a3", "bind3", "pos3")
+    For Each item In rows
+        For index = 0 To UBound(fields)
+            value = item(index + 1)
+            If IsNumeric(value) And CStr(fields(index)) <> "n" Then value = CDbl(value) / factor
+            If CStr(fields(index)) <> "n" Or CStr(value) <> "—" Then
+                If index < 5 Then
+                    FixtureInputCell(table, "Main", CStr(item(0)), CStr(fields(index))).Value2 = value
+                Else
+                    FixtureInputCell(table, "Extra", CStr(item(0)), CStr(fields(index))).Value2 = value
+                End If
+            End If
+        Next index
+    Next item
+End Sub

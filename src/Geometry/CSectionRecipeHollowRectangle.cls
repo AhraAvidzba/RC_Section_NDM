@@ -61,12 +61,13 @@ End Type
 ' и отверстия, суммарное количество стержней каждого диаметра по каждой стороне).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     On Error GoTo InvalidGeometry
-    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As THollowInput, faces(1 To 8) As THollowFace
     Dim outerPolygon As CPolygonSpec, openingPolygon As CPolygonSpec
     Set reader = context.Reader("rngHollowRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    Set rebarReader = context.Reader("rngRebarInput", "HollowRectangle.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs reader, faces ' Читаем армирование наружных и внутренних сторон.
+    ReadRebarInputs rebarReader, faces ' Читаем армирование наружных и внутренних сторон.
     Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle" ' Создаём сборщик описания сечения.
@@ -82,14 +83,14 @@ End Function
 ' Заполняет sizes наружными размерами, размерами и смещением отверстия в миллиметрах.
 ' Проверяет размеры и радиусы, сохраняет адреса полей для сообщений об ошибках.
 Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As THollowInput)
-    sizes.H = reader.PositiveLength("Geom", "H"): sizes.B = reader.PositiveLength("Geom", "B")
-    sizes.R = reader.NonNegativeLength("Geom", "R")
-    sizes.Ho = reader.PositiveLength("Detail", "Ho"): sizes.Bo = reader.PositiveLength("Detail", "Bo")
-    sizes.Ro = reader.NonNegativeLength("Detail", "Ro")
-    sizes.Xo = reader.Length("Detail", "Xo"): sizes.Yo = reader.Length("Detail", "Yo")
-    sizes.GeometrySource = reader.SourceReference("Geom", "H") & "; " & reader.SourceReference("Geom", "B") & "; " & reader.SourceReference("Geom", "R") & "; " & _
-        reader.SourceReference("Detail", "Ho") & "; " & reader.SourceReference("Detail", "Bo") & "; " & reader.SourceReference("Detail", "Ro") & "; " & _
-        reader.SourceReference("Detail", "Xo") & "; " & reader.SourceReference("Detail", "Yo")
+    sizes.H = reader.PositiveLength("General", "H"): sizes.B = reader.PositiveLength("General", "B")
+    sizes.R = reader.NonNegativeLength("General", "R")
+    sizes.Ho = reader.PositiveLength("General", "Ho"): sizes.Bo = reader.PositiveLength("General", "Bo")
+    sizes.Ro = reader.NonNegativeLength("General", "Ro")
+    sizes.Xo = reader.Length("General", "Xo"): sizes.Yo = reader.Length("General", "Yo")
+    sizes.GeometrySource = reader.SourceReference("General", "H") & "; " & reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "R") & "; " & _
+        reader.SourceReference("General", "Ho") & "; " & reader.SourceReference("General", "Bo") & "; " & reader.SourceReference("General", "Ro") & "; " & _
+        reader.SourceReference("General", "Xo") & "; " & reader.SourceReference("General", "Yo")
 End Sub
 
 ' Заполняет faces параметрами четырёх наружных и четырёх внутренних сторон.

@@ -162,6 +162,7 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
     Select Case fixture
         Case "Circle"
             shapeName = "Circle"
+            FixtureResetReinforcement shapeName
             SetSetting "Circle.Diameter", 600# / factor
             SetSetting "Rebar.AxisDistance", 40# / factor
             SetSetting "Rebar.Count", 12: SetSetting "Rebar.Diameter", 20# / factor
@@ -169,12 +170,12 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
             SetSetting "Rebar.Loc2row", "Stacked": SetSetting "Rebar.Loc3row", "SideBySide"
         Case "Rectangle", "LSection", "TwoRectangles"
             shapeName = "RectSet": Set table = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
-            FixtureInputCell(table, "Geom", "Shape", "val").Value2 = fixture: FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = -50# / factor
-            FixtureInputCell(table, "Geom", "H1", "val").Value2 = 400# / factor: FixtureInputCell(table, "Geom", "B1", "val").Value2 = 300# / factor
-            FixtureInputCell(table, "Geom", "H2", "val").Value2 = 200# / factor: FixtureInputCell(table, "Geom", "B2", "val").Value2 = 600# / factor
+            FixtureInputCell(table, "General", "Shape", "val").Value2 = fixture: FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = -50# / factor
+            FixtureInputCell(table, "General", "H1", "val").Value2 = 400# / factor: FixtureInputCell(table, "General", "B1", "val").Value2 = 300# / factor
+            FixtureInputCell(table, "General", "H2", "val").Value2 = 200# / factor: FixtureInputCell(table, "General", "B2", "val").Value2 = 600# / factor
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
             shapeName = "RoundedRectangle": Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
-            FixtureInputCell(table, "Geom", "B", "val").Value2 = 600# / factor: FixtureInputCell(table, "Geom", "H", "val").Value2 = 400# / factor
+            FixtureInputCell(table, "General", "B", "val").Value2 = 600# / factor: FixtureInputCell(table, "General", "H", "val").Value2 = 400# / factor
             FixtureInputCell(table, "Detail", "Type", "left").Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", "Tapered", "Simple")
             FixtureInputCell(table, "Detail", "Type", "right").Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", "Simple", "Tapered")
             FixtureInputCell(table, "Detail", "W", "left").Value2 = 100# / factor: FixtureInputCell(table, "Detail", "W", "right").Value2 = 130# / factor
@@ -182,13 +183,14 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
             FixtureInputCell(table, "Detail", "R2", "left").Value2 = 20# / factor: FixtureInputCell(table, "Detail", "R2", "right").Value2 = 25# / factor
         Case "HollowCentered", "HollowOffset"
             shapeName = "HollowRectangle": Set table = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
-            FixtureInputCell(table, "Geom", "H", "val").Value2 = 1200# / factor: FixtureInputCell(table, "Geom", "B", "val").Value2 = 1000# / factor
-            FixtureInputCell(table, "Geom", "R", "val").Value2 = 60# / factor: FixtureInputCell(table, "Detail", "Ho", "val").Value2 = 500# / factor
+            FixtureInputCell(table, "General", "H", "val").Value2 = 1200# / factor: FixtureInputCell(table, "General", "B", "val").Value2 = 1000# / factor
+            FixtureInputCell(table, "General", "R", "val").Value2 = 60# / factor: FixtureInputCell(table, "Detail", "Ho", "val").Value2 = 500# / factor
             FixtureInputCell(table, "Detail", "Bo", "val").Value2 = 400# / factor: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 30# / factor
             FixtureInputCell(table, "Detail", "Xo", "val").Value2 = IIf(fixture = "HollowOffset", 40#, 0#) / factor
             FixtureInputCell(table, "Detail", "Yo", "val").Value2 = IIf(fixture = "HollowOffset", 50#, 0#) / factor
     End Select
     SetSetting "Geometry.Type", shapeName
+    If shapeName <> "Circle" Then FixtureResetReinforcement shapeName
     ThisWorkbook.Worksheets("Config").Calculate
 End Sub
 
@@ -265,7 +267,7 @@ InactiveSide:
         FixtureInputCell(table, "Main", "R1.Bottom", "s0").Value2 = "inactive value"
         FixtureInputCell(table, "Extra", "R1.Bottom", "d2").Value2 = "inactive value"
         If fixture = "Rectangle" Then
-            FixtureInputCell(table, "Geom", "H2", "val").Value2 = "inactive value": FixtureInputCell(table, "Geom", "B2", "val").Value2 = "inactive value"
+            FixtureInputCell(table, "General", "H2", "val").Value2 = "inactive value": FixtureInputCell(table, "General", "B2", "val").Value2 = "inactive value"
             For i = 15 To 18: FixtureInputCell(table, "Main", CStr(keys(i - 11)), "d").Value2 = "inactive value": Next i
         End If
         If fixture <> "TwoRectangles" Then FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = "inactive value"
@@ -394,17 +396,17 @@ Public Sub ConfigureHollowScenario(ByVal scenario As Long)
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     keys = Array("Left", "Right", "Top", "Bottom", "OpeningLeft", "OpeningRight", "OpeningTop", "OpeningBottom")
     Set table = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange: data = table.Value2
-    FixtureInputCell(table, "Geom", "R", "val").Value2 = 180# / factor: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 90# / factor
+    FixtureInputCell(table, "General", "R", "val").Value2 = 180# / factor: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 90# / factor
     If scenario = 2 Or scenario = 6 Then FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 0#
     If scenario = 8 Or scenario = 9 Then
-        FixtureInputCell(table, "Geom", "H", "val").Value2 = IIf(scenario = 8, 600#, 1000#) / factor
-        FixtureInputCell(table, "Geom", "B", "val").Value2 = 1000# / factor
-        FixtureInputCell(table, "Geom", "R", "val").Value2 = IIf(scenario = 8, 300#, 500#) / factor
+        FixtureInputCell(table, "General", "H", "val").Value2 = IIf(scenario = 8, 600#, 1000#) / factor
+        FixtureInputCell(table, "General", "B", "val").Value2 = 1000# / factor
+        FixtureInputCell(table, "General", "R", "val").Value2 = IIf(scenario = 8, 300#, 500#) / factor
         FixtureInputCell(table, "Detail", "Ho", "val").Value2 = IIf(scenario = 8, 200#, 400#) / factor
         FixtureInputCell(table, "Detail", "Bo", "val").Value2 = 400# / factor
         FixtureInputCell(table, "Detail", "Ro", "val").Value2 = IIf(scenario = 8, 100#, 200#) / factor
     End If
-    If scenario = 10 Then FixtureInputCell(table, "Geom", "R", "val").Value2 = 0#: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 0#
+    If scenario = 10 Then FixtureInputCell(table, "General", "R", "val").Value2 = 0#: FixtureInputCell(table, "Detail", "Ro", "val").Value2 = 0#
     If scenario = 3 Then
         FixtureInputCell(table, "Detail", "Xo", "val").Value2 = 160# / factor: FixtureInputCell(table, "Detail", "Yo", "val").Value2 = -180# / factor
     End If

@@ -77,6 +77,13 @@ Public Function CellValue(ByVal row As Long, ByVal column As Long) As Variant
     CellValue = mValues(row, column)
 End Function
 
+' Проверяет служебную подпись при поиске структуры, не читая данные остальных блоков.
+' Ошибка формулы не считается подписью; обращение к самому полю через CellValue её отклонит.
+Friend Function HasTextAt(ByVal row As Long, ByVal column As Long, ByVal text As String) As Boolean
+    CheckCell row, column
+    If VarType(mValues(row, column)) = vbString Then HasTextAt = (StrComp(Trim$(CStr(mValues(row, column))), text, vbTextCompare) = 0)
+End Function
+
 ' Проверяет, пусто ли сохранённое значение ячейки. Ошибка Excel не считается пустой ячейкой.
 Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean
     IsBlank = BlankValue(CellValue(row, column))

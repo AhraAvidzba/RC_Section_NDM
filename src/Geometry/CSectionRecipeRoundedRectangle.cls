@@ -56,11 +56,12 @@ End Type
 ' описание границы бетона, размещения стержней вдоль прямых и скруглённых сторон,
 ' а также аннотаций схемы (размеры сечения, количество и диаметры стержней).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As TRoundedInput, faces(1 To 4) As TRoundedFace, outer As CGeometryPath, polygon As CPolygonSpec
     Set reader = context.Reader("rngRoundedRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    Set rebarReader = context.Reader("rngRebarInput", "RoundedRectangle.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs reader, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
+    ReadRebarInputs rebarReader, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
     Set polygon = DescribePolygon(sizes) ' Общее описание вершин для бетона и всех смещённых линий.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle" ' Создаём сборщик описания сечения.
     Set outer = AddGeometry(facade, sizes, polygon) ' Получаем наружный контур по подготовленному многоугольнику.
@@ -73,18 +74,18 @@ End Function
 ' Для обычной стороны не читает ширину выступа и его радиус; сохраняет адреса активных полей.
 Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRoundedInput)
     Dim side As Long, key As String
-    sizes.B = reader.PositiveLength("Geom", "B"): sizes.H = reader.PositiveLength("Geom", "H")
-    sizes.GeometrySource = reader.SourceReference("Geom", "B") & "; " & reader.SourceReference("Geom", "H")
+    sizes.B = reader.PositiveLength("General", "B"): sizes.H = reader.PositiveLength("General", "H")
+    sizes.GeometrySource = reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "H")
     For side = 1 To 2
-        If side = 1 Then key = "left" Else key = "right"
-        sizes.SideTypes(side) = reader.Choice("Detail", "Type", Array("Simple", "Tapered"), key)
-        sizes.R1(side) = reader.NonNegativeLength("Detail", "R1", key)
-        sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("Detail", "R1", key)
+        If side = 1 Then key = "Left." Else key = "Right."
+        sizes.SideTypes(side) = reader.Choice("General", key & "Type", Array("Simple", "Tapered"))
+        sizes.R1(side) = reader.NonNegativeLength("General", key & "R1")
+        sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("General", key & "R1")
         If sizes.SideTypes(side) = "Tapered" Then
-            sizes.Widths(side) = reader.Length("Detail", "W", key)
-            sizes.R2(side) = reader.NonNegativeLength("Detail", "R2", key)
-            sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("Detail", "W", key) & "; " & reader.SourceReference("Detail", "R2", key)
-            reader.Require "Detail", "W", key, sizes.Widths(side) > GEOM_TOLERANCE, "Для Tapered размер W должен быть положительным."
+            sizes.Widths(side) = reader.Length("General", key & "W")
+            sizes.R2(side) = reader.NonNegativeLength("General", key & "R2")
+            sizes.GeometrySource = sizes.GeometrySource & "; " & reader.SourceReference("General", key & "W") & "; " & reader.SourceReference("General", key & "R2")
+            reader.Require "General", key & "W", "val", sizes.Widths(side) > GEOM_TOLERANCE, "Для Tapered размер W должен быть положительным."
         End If
     Next side
 End Sub

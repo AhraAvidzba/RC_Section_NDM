@@ -149,6 +149,7 @@ try {
         "rngRoundedRectangleGeometry",
         "rngHollowRectangleGeometry",
         "rngRectSetGeometry",
+        "rngRebarInput",
         "rngBatchSummary",
         "rngStrengthSummaryAnchor",
         "rngCrackSummaryAnchor",
@@ -220,7 +221,7 @@ try {
     Add-Check $checks "No duplicate names" ($duplicates.Count -eq 0) ("Duplicates: " + ($duplicates -join ", "))
 
     $obsoleteNames = @(
-        "rngResultMx", "rngResultMy", "rngResultMxy", "rngMainInput", "rngRebarInput",
+        "rngResultMx", "rngResultMy", "rngResultMxy", "rngMainInput",
         "rngSystemDiagnostics", "rngConcreteDiagramPoints", "rngSteelDiagramPoints",
         "SolverSettings", "CapacitySettings", "ConcreteDiagram", "SteelDiagram", "GeometrySettings",
         "OutputSettings", "AutoCADSettings"

@@ -1,0 +1,133 @@
+{
+  "Passed": true,
+  "CandidateSHA256": "9A383DF8A50FC3A17BAE464A2CF2F86A2ECB87E97B560F512BDF929750F7E33D",
+  "AcceptedSHA256": "6A2D7A18FAFD066427C47C2AA65AD8D0A6B70BE295AE9CE17774851DB3092571",
+  "DirectedRuns": [
+    {
+      "Macro": "modTestSectionRecipes.DumpCircleRecipeMatrix",
+      "Seconds": 11.562439999999999
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpRectSetRecipeMatrix",
+      "Seconds": 39.657036999999995
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpRoundedRecipeMatrix",
+      "Seconds": 30.348799699999997
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpHollowRecipeMatrix",
+      "Seconds": 35.865841599999996
+    },
+    {
+      "Macro": "modTestSectionRecipes.DumpHollowRecipeEdgeMatrix",
+      "Seconds": 14.700973399999999
+    },
+    {
+      "Macro": "modTestAudit02Snapshots.DumpRecipePathContracts",
+      "Seconds": 92.7572726
+    },
+    {
+      "Macro": "modTestSectionInputReader.RunSectionInputReaderTests",
+      "Seconds": 0.1858253
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Seconds": 0.0413565
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "Seconds": 109.782876
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingTests",
+      "Seconds": 7.4287611
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+      "Seconds": 8.902701799999999
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleRecipeInputTests",
+      "Seconds": 1.5633688
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+      "Seconds": 12.278091199999999
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunHollowRecipeInputTests",
+      "Seconds": 23.9347933
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+      "Seconds": 0.8050856
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeCaptionTests",
+      "Seconds": 11.3607748
+    },
+    {
+      "Macro": "modTestRecipeApiCatalogue.RunApiInputAndDataExamples",
+      "Seconds": 0.074379
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "Seconds": 0.8578952999999999
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Seconds": 6.8581452
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeTypeListTests",
+      "Seconds": 3.3346934
+    },
+    {
+      "Macro": "modTestGeometryConfig.RunAudit03CircleConfigTests",
+      "Seconds": 6.2392755
+    },
+    {
+      "Macro": "modTestGeometryConfig.RunAudit03CircleRebarInputTests",
+      "Seconds": 15.357002699999999
+    },
+    {
+      "Macro": "modTestGeometryConfig.RunAudit03RebarFieldConfigTests",
+      "Seconds": 1422.1142756
+    },
+    {
+      "Macro": "modTestGeometryConfig.RunAudit03ShapeConfigTests",
+      "Seconds": 91.0351671
+    },
+    {
+      "Macro": "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+      "Seconds": 28.4539321
+    }
+  ],
+  "Assertions": 15696,
+  "GeometryMatrices": 5,
+  "RuleAndPathCases": 60,
+  "CalculationCases": 16,
+  "CalculationCodes": [
+    "SP35",
+    "SP63"
+  ],
+  "GeometryAndCalculationsUnchanged": true,
+  "AcceptedCodeMatchesTestedCandidate": true,
+  "InputColorRGB": [
+    255,
+    242,
+    230
+  ],
+  "OtherConfigInputFields": 676,
+  "DefaultTypesBuilt": 4,
+  "SourceComponents": 155,
+  "WorkbookComponents": 160,
+  "GuideRows": 69,
+  "FullOnOffRun": false,
+  "PreservedGeometryInputs": 25,
+  "PreservedActiveRebarInputs": 104,
+  "UserExecutionReportUnchanged": true,
+  "Published": true,
+  "AllCodeSHA256": "B9D3E22FF54AA57E6584142BB88741363E2073806B365FB321AE1E7ECC64C7A4"
+}

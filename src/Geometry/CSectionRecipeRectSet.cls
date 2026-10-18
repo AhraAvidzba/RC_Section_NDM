@@ -56,11 +56,12 @@ End Type
 ' бетона, размещения стержней вдоль сторон и аннотаций схемы (размеры сечения,
 ' суммарное количество стержней каждого диаметра по каждой стороне) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As TRectSetDimensions, faces() As TRectangleFace, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
     Set reader = context.Reader("rngRectSetGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
+    Set rebarReader = context.Reader("rngRebarInput", "RectSet.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs reader, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
+    ReadRebarInputs rebarReader, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
     Set facade = New CSectionDefinitionBuilder ' Создаём сборщик описания сечения.
     facade.Initialize "RectSet" ' Начинаем описание выбранного типа.
     AddGeometry facade, sizes, upper, lower, outer ' Добавляем подготовленные границы бетона.
@@ -74,21 +75,21 @@ End Function
 ' В каждой паре сначала читаются H и B, затем проверяются их знаки. Так текст в B не
 ' теряется за ошибкой знака H, а сообщение сохраняет прежний адрес исходной ячейки.
 Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes As TRectSetDimensions)
-    sizes.Shape = reader.Choice("Geom", "Shape", Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
+    sizes.Shape = reader.Choice("General", "Shape", Array("Rectangle", "LSection", "TwoRectangles", "RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles"))
     If sizes.Shape = "RectSet" Then sizes.Shape = "LSection"
     If sizes.Shape <> "Rectangle" And sizes.Shape <> "LSection" Then sizes.Shape = "TwoRectangles"
-    sizes.H1 = reader.Length("Geom", "H1"): sizes.B1 = reader.Length("Geom", "B1")
-    reader.Require "Geom", "H1", "val", sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
-    reader.Require "Geom", "B1", "val", sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
+    sizes.H1 = reader.Length("General", "H1"): sizes.B1 = reader.Length("General", "B1")
+    reader.Require "General", "H1", "val", sizes.H1 > 0#, "Высота верхнего прямоугольника должна быть положительной."
+    reader.Require "General", "B1", "val", sizes.B1 > 0#, "Ширина верхнего прямоугольника должна быть положительной."
     If sizes.Shape <> "Rectangle" Then
-        sizes.H2 = reader.Length("Geom", "H2"): sizes.B2 = reader.Length("Geom", "B2")
-        reader.Require "Geom", "H2", "val", sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
-        reader.Require "Geom", "B2", "val", sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
-        If sizes.Shape = "LSection" Then reader.Require "Geom", "B1", "val", sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
+        sizes.H2 = reader.Length("General", "H2"): sizes.B2 = reader.Length("General", "B2")
+        reader.Require "General", "H2", "val", sizes.H2 > 0#, "Высота нижнего прямоугольника должна быть положительной."
+        reader.Require "General", "B2", "val", sizes.B2 > 0#, "Ширина нижнего прямоугольника должна быть положительной."
+        If sizes.Shape = "LSection" Then reader.Require "General", "B1", "val", sizes.B1 < sizes.B2, "Для LSection ширина верхнего прямоугольника должна быть меньше нижнего."
     End If
     If sizes.Shape = "TwoRectangles" Then
-        sizes.Offset = reader.Length("Detail", "XOffset")
-        reader.Require "Detail", "XOffset", "val", sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
+        sizes.Offset = reader.Length("General", "XOffset")
+        reader.Require "General", "XOffset", "val", sizes.Offset < sizes.B2 - GEOM_TOLERANCE And sizes.Offset + sizes.B1 > GEOM_TOLERANCE, "Верхний и нижний прямоугольники должны иметь общий участок по X."
     End If
 End Sub
 

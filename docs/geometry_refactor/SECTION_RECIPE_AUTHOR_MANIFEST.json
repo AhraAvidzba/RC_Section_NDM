@@ -324,7 +324,7 @@
       "owner": "CSectionRecipeContext",
       "name": "Reader",
       "kind": "Function",
-      "signature": "Public Function Reader(ByVal tableName As String) As CSectionInputReader",
+      "signature": "Public Function Reader(ByVal tableName As String, Optional ByVal rowPrefix As String = vbNullString) As CSectionInputReader",
       "parameters": [
         {
           "name": "tableName",
@@ -333,10 +333,18 @@
           "optional": false,
           "default": null,
           "signature": "ByVal tableName As String"
+        },
+        {
+          "name": "rowPrefix",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "vbNullString",
+          "signature": "Optional ByVal rowPrefix As String = vbNullString"
         }
       ],
       "resultType": "CSectionInputReader",
-      "line": 58,
+      "line": 59,
       "source": "src/Section/CSectionRecipeContext.cls",
       "id": "CSectionRecipeContext.Reader",
       "anchor": "api-csectionrecipecontext-reader"
@@ -369,7 +377,7 @@
       "signature": "Public Property Get Units() As CUnitSystem",
       "parameters": [],
       "resultType": "CUnitSystem",
-      "line": 66,
+      "line": 67,
       "source": "src/Section/CSectionRecipeContext.cls",
       "id": "CSectionRecipeContext.Units",
       "anchor": "api-csectionrecipecontext-units"
@@ -378,7 +386,7 @@
       "owner": "CSectionInputReader",
       "name": "Initialize",
       "kind": "Sub",
-      "signature": "Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing)",
+      "signature": "Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing, Optional ByVal rowPrefix As String = vbNullString)",
       "parameters": [
         {
           "name": "table",
@@ -395,10 +403,18 @@
           "optional": true,
           "default": "Nothing",
           "signature": "Optional ByVal units As CUnitSystem = Nothing"
+        },
+        {
+          "name": "rowPrefix",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "vbNullString",
+          "signature": "Optional ByVal rowPrefix As String = vbNullString"
         }
       ],
       "resultType": null,
-      "line": 30,
+      "line": 32,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Initialize",
       "anchor": "api-csectioninputreader-initialize"
@@ -427,7 +443,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 41,
+      "line": 44,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.ValueAt",
       "anchor": "api-csectioninputreader-valueat"
@@ -448,7 +464,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 47,
+      "line": 50,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.RowKeys",
       "anchor": "api-csectioninputreader-rowkeys"
@@ -477,7 +493,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 53,
+      "line": 60,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.RowIndex",
       "anchor": "api-csectioninputreader-rowindex"
@@ -506,7 +522,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 60,
+      "line": 68,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.ColumnIndex",
       "anchor": "api-csectioninputreader-columnindex"
@@ -543,7 +559,7 @@
         }
       ],
       "resultType": "Variant",
-      "line": 67,
+      "line": 75,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.CellValue",
       "anchor": "api-csectioninputreader-cellvalue"
@@ -588,7 +604,7 @@
         }
       ],
       "resultType": "String",
-      "line": 72,
+      "line": 80,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Text",
       "anchor": "api-csectioninputreader-text"
@@ -633,7 +649,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 81,
+      "line": 89,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Number",
       "anchor": "api-csectioninputreader-number"
@@ -678,7 +694,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 90,
+      "line": 98,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Count",
       "anchor": "api-csectioninputreader-count"
@@ -731,7 +747,7 @@
         }
       ],
       "resultType": "String",
-      "line": 95,
+      "line": 103,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Choice",
       "anchor": "api-csectioninputreader-choice"
@@ -768,7 +784,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 100,
+      "line": 108,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Length",
       "anchor": "api-csectioninputreader-length"
@@ -805,7 +821,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 105,
+      "line": 113,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.PositiveLength",
       "anchor": "api-csectioninputreader-positivelength"
@@ -842,7 +858,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 110,
+      "line": 118,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.NonNegativeLength",
       "anchor": "api-csectioninputreader-nonnegativelength"
@@ -879,7 +895,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 115,
+      "line": 123,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.OptionalDiameter",
       "anchor": "api-csectioninputreader-optionaldiameter"
@@ -916,7 +932,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 120,
+      "line": 128,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.OptionalRowOffset",
       "anchor": "api-csectioninputreader-optionalrowoffset"
@@ -953,7 +969,7 @@
         }
       ],
       "resultType": "String",
-      "line": 125,
+      "line": 133,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.SourceReference",
       "anchor": "api-csectioninputreader-sourcereference"
@@ -990,7 +1006,7 @@
         }
       ],
       "resultType": "String",
-      "line": 130,
+      "line": 138,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.SourceReferences",
       "anchor": "api-csectioninputreader-sourcereferences"
@@ -1043,7 +1059,7 @@
         }
       ],
       "resultType": null,
-      "line": 139,
+      "line": 147,
       "source": "src/Section/CSectionInputReader.cls",
       "id": "CSectionInputReader.Require",
       "anchor": "api-csectioninputreader-require"
@@ -1166,7 +1182,7 @@
         }
       ],
       "resultType": "Boolean",
-      "line": 81,
+      "line": 88,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.IsBlank",
       "anchor": "api-csectioninputtable-isblank"
@@ -1203,7 +1219,7 @@
         }
       ],
       "resultType": "String",
-      "line": 87,
+      "line": 94,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Text",
       "anchor": "api-csectioninputtable-text"
@@ -1240,7 +1256,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 99,
+      "line": 106,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Number",
       "anchor": "api-csectioninputtable-number"
@@ -1277,7 +1293,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 117,
+      "line": 124,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Count",
       "anchor": "api-csectioninputtable-count"
@@ -1322,7 +1338,7 @@
         }
       ],
       "resultType": "String",
-      "line": 127,
+      "line": 134,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Choice",
       "anchor": "api-csectioninputtable-choice"
@@ -1359,7 +1375,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 138,
+      "line": 145,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.Length",
       "anchor": "api-csectioninputtable-length"
@@ -1396,7 +1412,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 144,
+      "line": 151,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.PositiveLength",
       "anchor": "api-csectioninputtable-positivelength"
@@ -1433,7 +1449,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 150,
+      "line": 157,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.NonNegativeLength",
       "anchor": "api-csectioninputtable-nonnegativelength"
@@ -1470,7 +1486,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 157,
+      "line": 164,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalDiameter",
       "anchor": "api-csectioninputtable-optionaldiameter"
@@ -1507,7 +1523,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 168,
+      "line": 175,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalRowOffset",
       "anchor": "api-csectioninputtable-optionalrowoffset"
@@ -1536,7 +1552,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 179,
+      "line": 186,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.ColumnByCaption",
       "anchor": "api-csectioninputtable-columnbycaption"
@@ -1581,7 +1597,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 195,
+      "line": 202,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByKey",
       "anchor": "api-csectioninputtable-rowbykey"
@@ -1626,7 +1642,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 202,
+      "line": 209,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByAnyKey",
       "anchor": "api-csectioninputtable-rowbyanykey"

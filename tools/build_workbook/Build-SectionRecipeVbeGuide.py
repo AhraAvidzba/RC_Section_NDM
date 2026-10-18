@@ -125,7 +125,7 @@ def build():
     comment()
     comment('В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeTypes. Пустой Array() подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных таблиц.', 4)
 
-    comment('Штатная блочная структура Config рекомендуется: Set reader = context.Reader("имя таблицы"), B = reader.PositiveLength("Geom", "B"). Ридер ищет ключ блока, строки и столбца, проверяет значение и переводит длину в мм. Для собственной структуры рецепт читает context.Table и context.Units самостоятельно; далее использует те же методы описания сечения. Пример — CSectionRecipeRoundedRectangle.', 4)
+    comment('Таблица каждого типа содержит General с размерами и Edges с участками армирования. Например: Set reader = context.Reader("rngRoundedRectangleGeometry"), B = reader.PositiveLength("General", "B"). Общую таблицу армирования читают отдельно: Set rebar = context.Reader("rngRebarInput", "RoundedRectangle."). Префикс позволяет обращаться к строке Top по полному ключу RoundedRectangle.Top. Ридер проверяет значения и переводит длины в мм. Для своей структуры доступны context.Table и ValueAt.', 4)
     comment()
     comment('УСТРОЙСТВО ШТАТНЫХ РЕЦЕПТОВ', 2)
     comment('В Circle, RectSet, RoundedRectangle и HollowRectangle сначала читаются и проверяются размеры и параметры включённых рядов. Подготовленные значения, адреса исходных ячеек и соответствие названий Config внутренним именам сторон сохраняются в Private Type самого рецепта. Для одного размера отдельный метод чтения не нужен.', 4)

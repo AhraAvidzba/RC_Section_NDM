@@ -5,6 +5,11 @@ function Get-GeometrySettingsCatalog {
     foreach($definition in $catalog){Write-Output $definition}
 }
 
+# Общая таблица армирования содержит только необходимый текущим типам максимум строк.
+function Get-RebarSettingsCatalog {
+    Get-Content -LiteralPath (Join-Path $PSScriptRoot 'RebarTable.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+}
+
 # Находит блоки по строкам key, без привязки к форме сечения и русским подписям.
 function Get-GeometryTableBlocks {
     param([object]$Range)
@@ -51,32 +56,77 @@ function Add-GeometrySettingsTable {
     $count=0
     foreach($block in $Definition.Blocks){$count+=3+$block.Rows.Count+1;if($block.Units){$count++}}
     $count--
-    $range=$Sheet.Cells.Item($HeaderRow,$StartColumn).Resize($count,11)
+    $width=($Definition.Blocks | ForEach-Object {$_.Keys.Count} | Measure-Object -Maximum).Maximum
+    $range=$Sheet.Cells.Item($HeaderRow,$StartColumn).Resize($count,[int]$width)
     $range.UnMerge() | Out-Null
     $range.Clear() | Out-Null
     $range.FormatConditions.Delete()
-    $data=New-Object 'object[,]' $count,11
+    $data=New-Object 'object[,]' $count,([int]$width)
+    $formulas=New-Object 'System.Collections.Generic.List[object]'
     $r=0
     foreach($block in $Definition.Blocks){
         $data[$r,0]=[string]$block.Key;$data[$r,1]=[string]$block.Title;$r++
         foreach($values in @($block.Headers,$block.Keys)){
-            for($c=0;$c -lt $values.Count;$c++){$data[$r,$c]=$values[$c]};$r++
+            for($c=0;$c -lt $values.Count;$c++){
+                $value=$values[$c]
+                if($value -is [pscustomobject] -and $value.PSObject.Properties['Formula']){
+                    $formulas.Add(@{Row=($r+1);Column=($c+1);Text=[string]$value.Formula})
+                }else{$data[$r,$c]=$value}
+            };$r++
         }
         if($block.Units){for($c=0;$c -lt $block.Units.Count;$c++){$data[$r,$c]=$block.Units[$c]};$r++}
         foreach($values in $block.Rows){
-            for($c=0;$c -lt $values.Count;$c++){$data[$r,$c]=$values[$c]};$r++
+            for($c=0;$c -lt $values.Count;$c++){
+                $value=$values[$c]
+                if($value -is [pscustomobject] -and $value.PSObject.Properties['Formula']){$formulas.Add(@{Row=($r+1);Column=($c+1);Text=[string]$value.Formula})}
+                else{$data[$r,$c]=$value}
+            };$r++
         }
         $r++
     }
     Set-GeometryTableMatrix $range $data
-    Set-WorkbookNameByBounds $Workbook $Definition.RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow+$count-1) ($StartColumn+10)
-    $title=$Sheet.Cells.Item($HeaderRow-1,$StartColumn).Resize(1,11)
+    Set-WorkbookNameByBounds $Workbook $Definition.RangeName $Sheet $HeaderRow $StartColumn ($HeaderRow+$count-1) ($StartColumn+$width-1)
+    foreach($formula in $formulas){
+        $expression=[regex]::Replace($formula.Text,'\{([^}]+)\}',[Text.RegularExpressions.MatchEvaluator]{param($match) (Get-GeometryTableCell $range 'General' $match.Groups[1].Value).Address($true,$true)})
+        $range.Cells.Item($formula.Row,$formula.Column).Formula=$expression
+    }
+    $title=$Sheet.Cells.Item($HeaderRow-1,$StartColumn).Resize(1,[int]$width)
     $title.UnMerge() | Out-Null;$title.ClearContents() | Out-Null;$title.Merge() | Out-Null
     $title.Cells.Item(1,1).Value2=[string]$Definition.Title
     $title.Font.Bold=$true;$title.Interior.Color=15921906;$title.HorizontalAlignment=-4131
     Format-GeometrySettingsTable $Workbook $Definition.RangeName $range
     Add-GeometryTableValidation $range
     return $count
+}
+
+# Формулы берут ключи и названия из Edges выбранной таблицы. В книге нет VBA-обработчика переключения.
+# Неожиданные ошибки исходной таблицы сохраняются; за концом короткого списка возвращается пустая строка.
+function Set-SharedRebarFormulas {
+    param([object]$Workbook,[object]$Range,[object[]]$GeometryTables)
+    $type='INDEX(rngSystemSettings,MATCH("Geometry.Type",INDEX(rngSystemSettings,0,1),0),2)'
+    $blocks=@(Get-GeometryTableBlocks $Range)
+    $main=$blocks | Where-Object Key -eq 'Main';$extra=$blocks | Where-Object Key -eq 'Extra'
+    for($index=0;$index -lt 8;$index++){
+        $row=$main.FirstRow+1+$index;$extraRow=$extra.FirstRow+1+$index
+        foreach($column in @(1,2)){
+            $formula='NA()'
+            foreach($definition in @($GeometryTables | Sort-Object Type -Descending)){
+                $source=$Workbook.Names.Item([string]$definition.RangeName).RefersToRange
+                $edge=@(Get-GeometryTableBlocks $source | Where-Object Key -eq 'Edges')[0]
+                $count=$edge.LastRow-$edge.FirstRow+1;$value='""'
+                if($index -lt $count){
+                    $key='INDEX('+$definition.RangeName+','+($edge.FirstRow+$index)+',1)'
+                    $data='INDEX('+$definition.RangeName+','+($edge.FirstRow+$index)+','+$column+')'
+                    if($column -eq 1){$data=$type+'&"."&'+$data}
+                    $value='IF('+$key+'="","",'+$data+')'
+                }
+                $formula='IF('+$type+'="'+$definition.Type+'",'+$value+','+$formula+')'
+            }
+            $Range.Cells.Item($row,$column).Formula='='+$formula
+            $address=$Range.Cells.Item($row,$column).Address($true,$true)
+            $Range.Cells.Item($extraRow,$column).Formula='='+$address+'&""'
+        }
+    }
 }
 
 # Оформляет весь диапазон, включая разделительные строки и свободные ячейки справа.
@@ -109,6 +159,23 @@ function Format-GeometrySettingsTable {
         $Range.Cells.Item($block.HeaderRow,$width).Resize($block.LastRow-$block.HeaderRow+1,1).HorizontalAlignment=-4152
     }
     $Range.Borders.Weight=2;$Range.Borders.Color=0;$Range.Borders.LineStyle=-4115
+    Set-GeometryEditableCellFormat $Range
+}
+
+# Отдельно выделяет только вводимые значения. Формулы, ключи, единицы и комментарии не окрашивает.
+function Set-GeometryEditableCellFormat {
+    param([object]$Range)
+    foreach($block in @(Get-GeometryTableBlocks $Range)){
+        if($block.Key -eq 'Edges'){continue}
+        foreach($key in @($block.Columns.Keys)){
+            if($key -in @('key','name','unit','note')){continue}
+            for($r=$block.FirstRow;$r -le $block.LastRow;$r++){
+                if([string]$Range.Cells.Item($r,1).Value2 -eq 'Units'){continue}
+                $cell=$Range.Cells.Item($r,[int]$block.Columns[$key])
+                if(-not $cell.HasFormula -and [string]$cell.Value2 -notin @('-','—')){$cell.Interior.Color=15135487}
+            }
+        }
+    }
 }
 
 # Каждое поле выбора имеет собственный именованный источник, в том числе противоположные стороны.
@@ -119,19 +186,19 @@ function Add-GeometryTableValidation {
             $rowKey=[string]$Range.Cells.Item($r,1).Value2
             if(-not $rowKey -or $rowKey -eq 'Units'){continue}
             foreach($key in @($block.Columns.Keys)){
-                if($key -in @('key','name','unit','note')){continue}
+                if($key -in @('key','name','unit','note') -or $block.Key -eq 'Edges'){continue}
                 $cell=$Range.Cells.Item($r,[int]$block.Columns[$key]);$options=@()
                 if($key -like 'bind*'){$options=@('EachBar','EverySecondBar')}
                 elseif($key -like 'pos*'){$options=@('Stacked','SideBySide')}
-                elseif($block.Key -eq 'Geom' -and $rowKey -eq 'Shape'){$options=@('Rectangle','LSection','TwoRectangles')}
-                elseif($block.Key -eq 'Detail' -and $rowKey -eq 'Type'){$options=@('Simple','Tapered')}
+                elseif($block.Key -eq 'General' -and $rowKey -eq 'Shape'){$options=@('Rectangle','LSection','TwoRectangles')}
+                elseif($block.Key -eq 'General' -and $rowKey -like '*.Type'){$options=@('Simple','Tapered')}
                 $cell.Validation.Delete()
                 if($options.Count){
                     $tableName=(([string]$Range.Name.Name) -split '!')[-1]
                     if(-not $tableName -or $tableName.Length -gt 100){throw "Не удалось определить короткое имя таблицы: $tableName"}
                     $name=($tableName+'_'+$block.Key+'_'+$rowKey+'_'+$key+'_Choices') -replace '[^A-Za-z0-9_]','_'
                     $list=Get-ConfigValidationListAddress $Range.Worksheet $options $name
-                    $cell.Validation.Add(3,1,1,$list);$cell.Validation.IgnoreBlank=$false;$cell.Validation.InCellDropdown=$true
+                    $cell.Validation.Add(3,1,1,$list);$cell.Validation.IgnoreBlank=$true;$cell.Validation.InCellDropdown=$true
                 }elseif($key -eq 'n' -and $rowKey -like 'Opening*'){
                     # Прочерк показывает, что количество определяется проекцией наружной арматуры.
                 }elseif($key -eq 'n'){

@@ -1,0 +1,32 @@
+{
+  "Passed": true,
+  "Geometry": [
+    {
+      "Name": "DumpCircleRecipeMatrix",
+      "Records": 21236,
+      "ExactDoubleBits": true
+    },
+    {
+      "Name": "DumpRectSetRecipeMatrix",
+      "Records": 9931,
+      "ExactDoubleBits": true
+    },
+    {
+      "Name": "DumpRoundedRecipeMatrix",
+      "Records": 16176,
+      "ExactDoubleBits": true
+    },
+    {
+      "Name": "DumpHollowRecipeMatrix",
+      "Records": 35508,
+      "ExactDoubleBits": true
+    },
+    {
+      "Name": "DumpHollowRecipeEdgeMatrix",
+      "Records": 10944,
+      "ExactDoubleBits": true
+    }
+  ],
+  "RuleAndPathRecords": 2956,
+  "OnlySourceAddressesNormalized": true
+}

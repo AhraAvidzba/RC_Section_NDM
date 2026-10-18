@@ -17,6 +17,18 @@
 
 ## Команды
 
+Общая таблица армирования и оформление Config, 18.10.2026:
+`Run-SharedRebarChecks.ps1` выполняет адресные проверки выбранной изолированной
+книги. `Compare-SharedRebarEvidence.py` сравнивает пять матриц геометрии и
+описания правил с исходной версией. `Test-StructuredGeometryWorkbook.ps1`
+проверяет формулы без макросов, четыре типа и три подтипа RectSet, сохранение
+ручных значений при переключении, единицы mm/cm/m, 32 независимых списка,
+границы таблиц и бледную заливку всех полей ввода Config. `-CheckDefaults`
+дополнительно проверяет исходные значения новой сборки.
+`Verify-SharedRebarPreservation.py` сверяет размеры, активное армирование,
+остальные входные таблицы и сохранённые Results. Эти проверки направленные;
+полные ON/OFF к этой правке не относятся.
+
 Полный состав, приёмка 17.10.2026:
 `Finalize-CompleteAcceptance.py --core-directory docs/regression/ExcelGuardGuide_2026-10-13/ContactFullOnOff_2026-10-17_Final --focused-directory docs/regression/FocusedAcceptance_2026-10-17_Final`
 повторно проверяет 116 основных наборов и обязательный целевой план только

@@ -1,0 +1,31 @@
+﻿{
+    "WorkbookSHA256":  "9A383DF8A50FC3A17BAE464A2CF2F86A2ECB87E97B560F512BDF929750F7E33D",
+    "Checks":  [
+                   {
+                       "Seconds":  6.2392755,
+                       "SHA256":  "200D794BA352594C64A75634D680C02201D7D063CAA1FC2EE188BED073989E1D",
+                       "Macro":  "modTestGeometryConfig.RunAudit03CircleConfigTests"
+                   },
+                   {
+                       "Seconds":  15.357002699999999,
+                       "SHA256":  "83EA86378AB5588DD1BA14284E434476C2CD13564027CE96671739E6B036EA93",
+                       "Macro":  "modTestGeometryConfig.RunAudit03CircleRebarInputTests"
+                   },
+                   {
+                       "Seconds":  1422.1142756,
+                       "SHA256":  "CA7E2724AEC8E23D86FAFBFC5080E1A246386BD9280858655D8FF440A2D0379D",
+                       "Macro":  "modTestGeometryConfig.RunAudit03RebarFieldConfigTests"
+                   },
+                   {
+                       "Seconds":  91.0351671,
+                       "SHA256":  "9C4F0B53908F56EBD4001D8E04E09A689CA1283CAEA821E327260E5A580DEFA7",
+                       "Macro":  "modTestGeometryConfig.RunAudit03ShapeConfigTests"
+                   },
+                   {
+                       "Seconds":  28.4539321,
+                       "SHA256":  "17C3B5089EC17E2B388C425FFFD26449ED7FC07A3A68A47D9558BF2EFFEDB11C",
+                       "Macro":  "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests"
+                   }
+               ],
+    "Passed":  true
+}

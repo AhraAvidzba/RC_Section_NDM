@@ -23,14 +23,17 @@ Option Explicit
 Private mTable As CSectionInputTable ' Исходные значения и фактические адреса ячеек.
 Private mUnits As CUnitSystem ' Система единиц для чтения длин; для поиска ключей не требуется.
 Private mIndexed As Boolean ' Показывает, что структура блоков уже проверена и проиндексирована.
+Private mRowPrefix As String ' Общая часть ключей строк выбранного набора, например Circle.; пустая строка означает полные ключи.
 Private mBlocks As Object ' Индексы строк и столбцов каждого блока; ключи сравниваются без учёта регистра.
 
 ' Сохраняет таблицу и независимые единицы ввода один раз.
+' rowPrefix задаёт общую начальную часть ключей выбранного набора строк.
 ' Структура блоков проверяется только при первом обращении по ключам.
-Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing)
+Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing, Optional ByVal rowPrefix As String = vbNullString)
     If Not mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер таблицы уже создан."
     If table Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Не передан снимок входной таблицы."
     Set mTable = table
+    mRowPrefix = rowPrefix
     If Not units Is Nothing Then Set mUnits = units.Clone: mUnits.Freeze
 
 End Sub
@@ -46,12 +49,17 @@ End Function
 ' Возвращает строки выбранного блока в порядке таблицы, без шапок и строки единиц Units.
 Public Function RowKeys(ByVal blockKey As String) As Variant
     Dim block As Object: Set block = RequiredBlock(blockKey)
-    RowKeys = block("Rows").Keys
+    Dim result As Object, key As Variant: Set result = NewIndex()
+    For Each key In block("Rows").Keys
+        If StrComp(Left$(CStr(key), Len(mRowPrefix)), mRowPrefix, vbTextCompare) = 0 Then result.Add Mid$(CStr(key), Len(mRowPrefix) + 1), True
+    Next key
+    RowKeys = result.Keys
 End Function
 
 ' Находит строку только внутри указанного блока; одинаковые ключи разных блоков допустимы.
 Public Function RowIndex(ByVal blockKey As String, ByVal rowKey As String) As Long
     Dim block As Object: Set block = RequiredBlock(blockKey)
+    rowKey = mRowPrefix & rowKey
     If Not block("Rows").Exists(rowKey) Then InvalidCell CLng(block("TitleRow")), 1, "В блоке '" & blockKey & "' не найдена строка '" & rowKey & "'. Восстановите ключ строки."
     RowIndex = CLng(block("Rows")(rowKey))
 End Function
@@ -148,7 +156,7 @@ Private Sub EnsureIndex()
     Dim row As Long, column As Long, key As String, block As Object, columns As Object, rows As Object
     Dim names As Variant, index As Long, first As Long, last As Long
     For row = 3 To mTable.RowCount
-        If StrComp(KeyText(row, 1), "key", vbTextCompare) = 0 Then
+        If mTable.HasTextAt(row, 1, "key") Then
             key = KeyText(row - 2, 1)
             If Len(key) = 0 Then InvalidCell row - 2, 1, "Не задан ключ блока над строкой ключей столбцов."
             If mBlocks.Exists(key) Then InvalidCell row - 2, 1, "Повторный ключ блока '" & key & "'."
@@ -171,13 +179,7 @@ Private Sub EnsureIndex()
         Set block = mBlocks(CStr(names(index))): Set rows = block("Rows")
         first = CLng(block("HeaderRow")) + 1: last = mTable.RowCount
         If index < mBlocks.Count - 1 Then last = CLng(mBlocks(CStr(names(index + 1)))("TitleRow")) - 1
-        For row = first To last
-            key = KeyText(row, 1)
-            If Len(key) > 0 And StrComp(key, "Units", vbTextCompare) <> 0 Then
-                If rows.Exists(key) Then InvalidCell row, 1, "Повторный ключ строки '" & key & "' в блоке '" & CStr(names(index)) & "'."
-                rows.Add key, row
-            End If
-        Next row
+        block.Add "FirstRow", first: block.Add "LastRow", last: block.Add "RowsIndexed", False
     Next index
     mIndexed = True
 End Sub
@@ -188,7 +190,23 @@ Private Function RequiredBlock(ByVal key As String) As Object
     EnsureIndex
     If Not mBlocks.Exists(key) Then InvalidCell 1, 1, "Не найден блок '" & key & "'. Восстановите ключ блока."
     Set RequiredBlock = mBlocks(key)
+    IndexBlockRows RequiredBlock, key
 End Function
+
+' Индексирует строки только запрошенного блока. Ошибка исходного размера сначала
+' указывает на поле ввода, а не на зависимую формулу ключа в другом блоке Edges.
+Private Sub IndexBlockRows(ByVal block As Object, ByVal blockKey As String)
+    If CBool(block("RowsIndexed")) Then Exit Sub
+    Dim rows As Object, row As Long, key As String: Set rows = NewIndex()
+    For row = CLng(block("FirstRow")) To CLng(block("LastRow"))
+        key = KeyText(row, 1)
+        If Len(key) > 0 And StrComp(key, "Units", vbTextCompare) <> 0 Then
+            If rows.Exists(key) Then InvalidCell row, 1, "Повторный ключ строки '" & key & "' в блоке '" & blockKey & "'."
+            rows.Add key, row
+        End If
+    Next row
+    Set block("Rows") = rows: block("RowsIndexed") = True
+End Sub
 
 ' Создаёт независимый индекс без различения регистра, не хранящий объекты Excel.
 Private Function NewIndex() As Object

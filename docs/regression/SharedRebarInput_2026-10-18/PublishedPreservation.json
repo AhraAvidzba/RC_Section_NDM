@@ -1,0 +1,24 @@
+{
+  "Passed": true,
+  "BeforeSHA256": "ABAA60FCB940F5C850571F515BF4C7C82DA474E7002B7DD122C54BB4E147C45C",
+  "AfterSHA256": "6A2D7A18FAFD066427C47C2AA65AD8D0A6B70BE295AE9CE17774851DB3092571",
+  "UnchangedSheets": [
+    "Расчет",
+    "Results"
+  ],
+  "OtherConfigTablesUnchanged": [
+    "rngSystemSettings",
+    "rngUnitSettings",
+    "rngSignConventionSettings",
+    "rngSteelMaterialParameters",
+    "rngConcreteMaterialParameters",
+    "rngCalculationProfiles",
+    "rngPlotAnnotationSettings",
+    "rngLoadCombinations",
+    "rngStabilityDurationLoads",
+    "rngSP35Table721"
+  ],
+  "GeometryInputsPreserved": 25,
+  "SelectedType": "RectSet",
+  "RebarInputsPreserved": 104
+}

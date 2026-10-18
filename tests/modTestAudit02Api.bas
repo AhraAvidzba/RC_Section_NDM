@@ -488,9 +488,9 @@ Private Function CloseoutRectSetInputMatrix() As String
             Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
             Set range = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange: block = range.Formula
             Set reader = New CSectionInputSnapshotReader
-            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
+            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry", "rngRebarInput"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
             offsetRow = keyed.RowIndex("Detail", "XOffset")
-            shapeRow = keyed.RowIndex("Geom", "Shape")
+            shapeRow = keyed.RowIndex("General", "Shape")
             Set definition = RectSetInputOutcome(settings, units, code, source, reason)
             Check "rect.valid." & CStr(unit) & "." & CStr(fixture), code = 0
             If code <> 0 Then GoTo Failed
@@ -498,14 +498,14 @@ Private Function CloseoutRectSetInputMatrix() As String
             result = result & InputContractRow(CStr(unit), CStr(fixture), "base", code, source, reason, area)
             maxColumn = 4: If CStr(fixture) = "Rectangle" Then maxColumn = 2
             For column = 1 To maxColumn
-                expectedAddress = keyed.SourceReference("Geom", CStr(fieldKeys(column - 1)))
+                expectedAddress = keyed.SourceReference("General", CStr(fieldKeys(column - 1)))
                 For Each valueKind In Array("positive", "zero", "negative", "empty", "text")
                     range.Formula = block
                     Select Case CStr(valueKind)
-                        Case "zero": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).Value2 = 0#
-                        Case "negative": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).Value2 = -1# / factor
-                        Case "empty": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).ClearContents
-                        Case "text": FixtureInputCell(range, "Geom", CStr(fieldKeys(column - 1))).Value2 = "bad dimension"
+                        Case "zero": FixtureInputCell(range, "General", CStr(fieldKeys(column - 1))).Value2 = 0#
+                        Case "negative": FixtureInputCell(range, "General", CStr(fieldKeys(column - 1))).Value2 = -1# / factor
+                        Case "empty": FixtureInputCell(range, "General", CStr(fieldKeys(column - 1))).ClearContents
+                        Case "text": FixtureInputCell(range, "General", CStr(fieldKeys(column - 1))).Value2 = "bad dimension"
                     End Select
                     Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                     If CStr(valueKind) = "positive" Then
@@ -521,7 +521,7 @@ Private Function CloseoutRectSetInputMatrix() As String
             ' Для Rectangle нижние размеры и смещение не читаются; для LSection смещение также неактивно.
             range.Formula = block
             If CStr(fixture) = "Rectangle" Then
-                FixtureInputCell(range, "Geom", "H2").Value2 = "inactive H2": FixtureInputCell(range, "Geom", "B2").Value2 = CVErr(xlErrValue)
+                FixtureInputCell(range, "General", "H2").Value2 = "inactive H2": FixtureInputCell(range, "General", "B2").Value2 = CVErr(xlErrValue)
             End If
             If CStr(fixture) <> "TwoRectangles" Then
                 range.Cells(offsetRow, 3).Value2 = "inactive offset"
@@ -540,30 +540,30 @@ Private Function CloseoutRectSetInputMatrix() As String
             ' и только затем — положительность первого.
             For Each pair In Array(1, 3)
                 If CLng(pair) <= maxColumn Then
-                    range.Formula = block: FixtureInputCell(range, "Geom", CStr(fieldKeys(CLng(pair) - 1))).Value2 = 0#
-                    FixtureInputCell(range, "Geom", CStr(fieldKeys(CLng(pair)))).Value2 = "bad dimension"
+                    range.Formula = block: FixtureInputCell(range, "General", CStr(fieldKeys(CLng(pair) - 1))).Value2 = 0#
+                    FixtureInputCell(range, "General", CStr(fieldKeys(CLng(pair)))).Value2 = "bad dimension"
                     Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                     Check "rect.pair.numeric.before.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(pair), _
-                        code <> 0 And InStr(reason, keyed.SourceReference("Geom", CStr(fieldKeys(CLng(pair))))) > 0
+                        code <> 0 And InStr(reason, keyed.SourceReference("General", CStr(fieldKeys(CLng(pair))))) > 0
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "pair." & CStr(pair), code, source, reason, 0#)
-                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
+                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry", "rngRebarInput"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
                     On Error Resume Next
-                    number = keyed.PositiveLength("Geom", CStr(fieldKeys(CLng(pair) - 1)))
+                    number = keyed.PositiveLength("General", CStr(fieldKeys(CLng(pair) - 1)))
                     otherCode = Err.Number: otherReason = Err.Description: Err.Clear
                     On Error GoTo Failed
                     Check "rect.direct.helper.changes.first.address", otherCode <> 0 And _
-                        InStr(otherReason, keyed.SourceReference("Geom", CStr(fieldKeys(CLng(pair) - 1)))) > 0 And otherReason <> reason
+                        InStr(otherReason, keyed.SourceReference("General", CStr(fieldKeys(CLng(pair) - 1)))) > 0 And otherReason <> reason
                 End If
             Next pair
             range.Formula = block
             ' Составные условия остаются у рецепта и указывают соответствующее поле.
             If CStr(fixture) = "LSection" Then
-                FixtureInputCell(range, "Geom", "B1").Value2 = FixtureInputCell(range, "Geom", "B2").Value2
+                FixtureInputCell(range, "General", "B1").Value2 = FixtureInputCell(range, "General", "B2").Value2
                 Set definition = RectSetInputOutcome(settings, units, code, source, reason)
-                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, keyed.SourceReference("Geom", "B1")) > 0
+                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, keyed.SourceReference("General", "B1")) > 0
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "incompatible.widths", code, source, reason, 0#)
             ElseIf CStr(fixture) = "TwoRectangles" Then
-                range.Cells(offsetRow, 3).Value2 = FixtureInputCell(range, "Geom", "B2").Value2
+                range.Cells(offsetRow, 3).Value2 = FixtureInputCell(range, "General", "B2").Value2
                 Set definition = RectSetInputOutcome(settings, units, code, source, reason)
                 Check "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 3)) > 0
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "nonadjacent", code, source, reason, 0#)
@@ -1038,21 +1038,21 @@ Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As S
     Set target = OffsetWorkbookTable(fixture)
     Select Case fixture
         Case "Circle"
-            FixtureInputCell(target, "Geom", "D").Value2 = 1000# / factor
+            FixtureInputCell(target, "General", "D").Value2 = 1000# / factor
             FixtureInputCell(target, "Main", "Circle", "as").Value2 = 60# / factor
             FixtureInputCell(target, "Main", "Circle", "n").Value2 = 12
             FixtureInputCell(target, "Main", "Circle", "d").Value2 = 32# / factor
         Case "Rectangle"
-            FixtureInputCell(target, "Geom", "H1").Value2 = 1200# / factor: FixtureInputCell(target, "Geom", "B1").Value2 = 1200# / factor
+            FixtureInputCell(target, "General", "H1").Value2 = 1200# / factor: FixtureInputCell(target, "General", "B1").Value2 = 1200# / factor
         Case "RoundedMixed"
-            FixtureInputCell(target, "Geom", "B").Value2 = 1600# / factor: FixtureInputCell(target, "Geom", "H").Value2 = 1600# / factor
+            FixtureInputCell(target, "General", "B").Value2 = 1600# / factor: FixtureInputCell(target, "General", "H").Value2 = 1600# / factor
             For Each key In Array("left", "right")
                 FixtureInputCell(target, "Detail", "W", CStr(key)).Value2 = 400# / factor
                 FixtureInputCell(target, "Detail", "R1", CStr(key)).Value2 = 300# / factor
                 FixtureInputCell(target, "Detail", "R2", CStr(key)).Value2 = 300# / factor
             Next key
         Case Else
-            FixtureInputCell(target, "Geom", "H").Value2 = 2400# / factor: FixtureInputCell(target, "Geom", "B").Value2 = 2400# / factor
+            FixtureInputCell(target, "General", "H").Value2 = 2400# / factor: FixtureInputCell(target, "General", "B").Value2 = 2400# / factor
             FixtureInputCell(target, "Detail", "Ho").Value2 = 800# / factor: FixtureInputCell(target, "Detail", "Bo").Value2 = 800# / factor
     End Select
     Set keyed = FixtureInput(target.Value2)
@@ -1376,11 +1376,11 @@ Public Function RunOffsetWallCollisionTests() As String
     For scenario = 0 To 2
         ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
         Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
-        FixtureInputCell(target, "Geom", "H", "val").Value2 = 1000#: FixtureInputCell(target, "Detail", "Ho", "val").Value2 = 324#: FixtureInputCell(target, "Detail", "Ro", "val").Value2 = 0#
+        FixtureInputCell(target, "General", "H", "val").Value2 = 1000#: FixtureInputCell(target, "Detail", "Ho", "val").Value2 = 324#: FixtureInputCell(target, "Detail", "Ro", "val").Value2 = 0#
         FixtureInputCell(target, "Detail", "Xo", "val").Value2 = 0#: FixtureInputCell(target, "Detail", "Yo", "val").Value2 = 0#
         target.Cells(extra, 7).Value2 = 0#: target.Cells(extra + 4, 7).Value2 = 0#
         target.Cells(extra + 4, 3).Value2 = 16#
-        If scenario = 1 Then FixtureInputCell(target, "Geom", "H", "val").Value2 = 992#
+        If scenario = 1 Then FixtureInputCell(target, "General", "H", "val").Value2 = 992#
         If scenario = 2 Then
             target.Cells(extra, 3).Value2 = 0#
             target.Cells(extra + 4, 3).Value2 = 200#: target.Cells(extra + 4, 4).Value2 = 1#

@@ -1,0 +1,15 @@
+{
+  "Passed": true,
+  "Checks": [
+    {
+      "Code": "SP35",
+      "Records": 32,
+      "ExactValuesAndComments": true
+    },
+    {
+      "Code": "SP63",
+      "Records": 32,
+      "ExactValuesAndComments": true
+    }
+  ]
+}

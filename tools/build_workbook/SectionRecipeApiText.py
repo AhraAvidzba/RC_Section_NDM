@@ -467,8 +467,10 @@ def purpose(member):
 def parameter_meaning(member, parameter):
     import re
     name, passing = parameter["name"], parameter["passing"]
-    if member['owner'] == 'CSectionInputReader' and name in ('blockKey', 'rowKey', 'columnKey', 'columnKeys', 'condition', 'reason'):
-        meaning = {'blockKey':'Короткий ключ блока, например Geom, Main или Extra.', 'rowKey':'Ключ строки внутри выбранного блока, например B или Top.', 'columnKey':'Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.', 'columnKeys':'Массив ключей полей, чьи адреса нужно включить в пояснение об ошибке.', 'condition':'Проверяемое рецептом инженерное условие; при False выдаётся ошибка ввода.', 'reason':'Понятная причина нарушения условия, без заранее заданного адреса ячейки.'}[name]
+    if name == 'rowPrefix' and member['owner'] in ('CSectionInputReader','CSectionRecipeContext'):
+        meaning = 'Начальная часть ключей строк общей таблицы, например Circle.; пустая строка означает чтение полных ключей. Префикс добавляется при поиске строки и удаляется из результата RowKeys.'
+    elif member['owner'] == 'CSectionInputReader' and name in ('blockKey', 'rowKey', 'columnKey', 'columnKeys', 'condition', 'reason'):
+        meaning = {'blockKey':'Короткий ключ блока, например General, Edges, Main или Extra.', 'rowKey':'Ключ строки внутри выбранного блока, например B или Top.', 'columnKey':'Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.', 'columnKeys':'Массив ключей полей, чьи адреса нужно включить в пояснение об ошибке.', 'condition':'Проверяемое рецептом инженерное условие; при False выдаётся ошибка ввода.', 'reason':'Понятная причина нарушения условия, без заранее заданного адреса ячейки.'}[name]
     elif member['owner'] == 'CGeometryPath' and member['name'] == 'ValidateNormalTransfer' and name == 'normalOffset':
         meaning = 'Окончательное смещение по левой нормали исходного сегмента, мм; знак учитывает направление обхода.'
     elif member['owner'] == 'CRebarContactBuilder':

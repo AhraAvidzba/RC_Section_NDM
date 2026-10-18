@@ -1,0 +1,16 @@
+﻿{
+    "WorkbookSHA256":  "C98B1F280AE486D18ADDFDCA131F1A3C541787F5303DD853DD0F718E60FA07E7",
+    "Checks":  [
+                   {
+                       "Seconds":  5.9270397,
+                       "SHA256":  "1A92588ACE50664FC7F892619B9FC7C8C5DA7F751A5A6D3CA0C5AB98A87EDD34",
+                       "Macro":  "modTestAudit02Snapshots.DumpAudit02Calculations:SP35"
+                   },
+                   {
+                       "Seconds":  5.7664162999999995,
+                       "SHA256":  "C87D83B9885D57B43FF92D58AA0EC9C38B8F33620D8EB25DB125082FC2416B7E",
+                       "Macro":  "modTestAudit02Snapshots.DumpAudit02Calculations:SP63"
+                   }
+               ],
+    "Passed":  true
+}

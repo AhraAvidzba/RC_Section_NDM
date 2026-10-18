@@ -22,11 +22,12 @@ $output = [IO.Path]::GetFullPath((Join-Path $root $OutputPath))
 $publishedWorkbook = Join-Path $root 'workbook/output/RC_Section_NDM.xlsm'
 $dependentRowsAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/DependentRowOffsets_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
 $structuredTablesAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/StructuredGeometryTables_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
+$sharedRebarAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/SharedRebarInput_2026-10-18"))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($source, $output)) {
     # Итоговая приёмка может читать именно опубликованную книгу. Это исключение
     # только для source; dump по-прежнему создаётся в evidence, без Save/macros.
     if ($path -eq $source -and $source -eq $publishedWorkbook) {continue}
-    if (-not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
+    if (-not $path.StartsWith($sharedRebarAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($postAuditAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($performanceAllowed, [StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($plateauAllowed, [StringComparison]::OrdinalIgnoreCase) -and

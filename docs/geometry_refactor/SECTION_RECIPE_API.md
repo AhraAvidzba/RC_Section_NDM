@@ -3020,7 +3020,7 @@ Source: src/Section/CSectionDefinition.cls:107
     geometryArea = def.ConcreteDomain.Area
 ```
 
-Полный контекст: tests/modTestRecipeSetbacks.bas:229.
+Полный контекст: tests/modTestRecipeSetbacks.bas:233.
 
 Native entrypoint: modTestRecipeSetbacks.RunRecipeSetbackInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt.
 
@@ -4298,7 +4298,7 @@ Public Function IsBlank(ByVal row As Long, ByVal column As Long) As Boolean
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:81
+Source: src/Section/CSectionInputTable.cls:88
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.
 
@@ -4333,7 +4333,7 @@ Public Function Text(ByVal row As Long, ByVal column As Long, Optional ByVal def
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:87
+Source: src/Section/CSectionInputTable.cls:94
 
 Минимальный вызов; требуемый контекст: В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.
 
@@ -4366,7 +4366,7 @@ Public Function Number(ByVal row As Long, ByVal column As Long, Optional ByVal d
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:99
+Source: src/Section/CSectionInputTable.cls:106
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4401,7 +4401,7 @@ Public Function Count(ByVal row As Long, ByVal column As Long, Optional ByVal de
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:117
+Source: src/Section/CSectionInputTable.cls:124
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.
 
@@ -4437,7 +4437,7 @@ Public Function Choice(ByVal row As Long, ByVal column As Long, ByVal allowed As
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:127
+Source: src/Section/CSectionInputTable.cls:134
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4472,7 +4472,7 @@ Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As C
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:138
+Source: src/Section/CSectionInputTable.cls:145
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.
 
@@ -4507,7 +4507,7 @@ Public Function PositiveLength(ByVal row As Long, ByVal column As Long, ByVal un
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:144
+Source: src/Section/CSectionInputTable.cls:151
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.
 
@@ -4540,7 +4540,7 @@ Public Function NonNegativeLength(ByVal row As Long, ByVal column As Long, ByVal
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:150
+Source: src/Section/CSectionInputTable.cls:157
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunAudit02InputTests с его подготовленными локальными объектами/входом.
 
@@ -4573,7 +4573,7 @@ Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal 
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:157
+Source: src/Section/CSectionInputTable.cls:164
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.RunInputTableTests с его подготовленными локальными объектами/входом.
 
@@ -4608,7 +4608,7 @@ Public Function OptionalRowOffset(ByVal row As Long, ByVal column As Long, ByVal
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:168
+Source: src/Section/CSectionInputTable.cls:175
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.RunIndependentRowOffsetWorkbookTests с его подготовленными локальными объектами/входом.
 
@@ -4640,7 +4640,7 @@ Public Function ColumnByCaption(ByVal headerRow As Long, ByVal caption As String
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:179
+Source: src/Section/CSectionInputTable.cls:186
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4676,7 +4676,7 @@ Public Function RowByKey(ByVal key As String, Optional ByVal keyColumn As Long =
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:195
+Source: src/Section/CSectionInputTable.cls:202
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4712,7 +4712,7 @@ Public Function RowByAnyKey(ByVal keys As Variant, Optional ByVal keyColumn As L
 
 Ошибки/исправление: 5525/адресные input codes: несогласованные массивы, пустое обязательное поле, ошибка Excel, нечисло/Boolean, повтор ключа/заголовка, неверный Choice/Count. Исправьте реальную ячейку.
 
-Source: src/Section/CSectionInputTable.cls:202
+Source: src/Section/CSectionInputTable.cls:209
 
 Минимальный вызов; требуемый контекст: В теле modTestDeclarativeGeometry.InvalidInputRejected с его подготовленными локальными объектами/входом.
 
@@ -4840,7 +4840,7 @@ Source: src/Section/CSectionRecipeContext.cls:50
     Set table = context.Table(CStr(names(0)))
 ```
 
-Полный контекст: tests/modTestGeometryConfig.bas:117.
+Полный контекст: tests/modTestGeometryConfig.bas:120.
 
 Native entrypoint: modTestGeometryConfig.RunAudit03RebarCounterTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt.
 
@@ -4850,12 +4850,13 @@ Native entrypoint: modTestGeometryConfig.RunAudit03RebarCounterTests; журна
 Создаёт ридер блочной таблицы по её имени. Поля находятся по ключам блока, строки и столбца; длины переводятся в мм по единицам контекста. Для собственной структуры таблицы доступен Table.
 
 ```vb
-Public Function Reader(ByVal tableName As String) As CSectionInputReader
+Public Function Reader(ByVal tableName As String, Optional ByVal rowPrefix As String = vbNullString) As CSectionInputReader
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | tableName | String; ByVal; обязательный | Имя единственного корневого входного блока этого снимка. |
+| rowPrefix | String; ByVal; Optional; default=vbNullString | Начальная часть ключей строк общей таблицы, например Circle.; пустая строка означает чтение полных ключей. Префикс добавляется при поиске строки и удаляется из результата RowKeys. |
 
 Тип результата: CSectionInputReader. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
 
@@ -4863,7 +4864,7 @@ Public Function Reader(ByVal tableName As String) As CSectionInputReader
 
 Ошибки/исправление: 5530: нет units/table, повтор имени, добавление после Seal. Готовьте новый context на внешней границе.
 
-Source: src/Section/CSectionRecipeContext.cls:58
+Source: src/Section/CSectionRecipeContext.cls:59
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.
 
@@ -4871,7 +4872,7 @@ Source: src/Section/CSectionRecipeContext.cls:58
     Set keyed = context.Reader(CStr(names(0)))
 ```
 
-Полный контекст: tests/modTestGeometryConfig.bas:118.
+Полный контекст: tests/modTestGeometryConfig.bas:121.
 
 Native entrypoint: modTestGeometryConfig.RunAudit03RebarCounterTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/ProductionRecipeEvidencePack/data/ProductionRecipe/RebarCounters.txt.
 
@@ -4890,7 +4891,7 @@ Public Property Get Units() As CUnitSystem
 
 Ошибки/исправление: 5530: нет units/table, повтор имени, добавление после Seal. Готовьте новый context на внешней границе.
 
-Source: src/Section/CSectionRecipeContext.cls:66
+Source: src/Section/CSectionRecipeContext.cls:67
 
 Минимальный вызов; требуемый контекст: В теле modTestGeometryPublication.RunRecipeContextFreezeTests с его подготовленными локальными объектами/входом.
 
@@ -9550,19 +9551,20 @@ Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: 
 Сохраняет снимок и независимую копию единиц. Блоки индексируются только при первом обращении по ключам. Блок задаётся за две строки до строки key; столбец key расположен первым. Для прямого чтения ValueAt структура блоков не требуется.
 
 ```vb
-Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing)
+Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing, Optional ByVal rowPrefix As String = vbNullString)
 ```
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
 | table | CSectionInputTable; ByVal; обязательный | Неизменяемый CSectionInputTable. |
 | units | CUnitSystem; ByVal; Optional; default=Nothing | CUnitSystem, уже подготовленная вызывающим workflow; преобразование только через её методы. |
+| rowPrefix | String; ByVal; Optional; default=vbNullString | Начальная часть ключей строк общей таблицы, например Circle.; пустая строка означает чтение полных ключей. Префикс добавляется при поиске строки и удаляется из результата RowKeys. |
 
 Жизненный цикл: Создаётся через context.Reader либо Initialize один раз. Хранит снимок и индексы ключей без ссылок на Excel. Поле выбирается по блоку, строке и столбцу; числовые поля отключённых рядов не читаются автоматически.
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:30
+Source: src/Section/CSectionInputReader.cls:32
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9570,7 +9572,7 @@ Source: src/Section/CSectionInputReader.cls:30
     Set reader = New CSectionInputReader: reader.Initialize customTable
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:154.
+Полный контекст: tests/modTestSectionInputReader.bas:168.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9594,7 +9596,7 @@ Public Function ValueAt(ByVal row As Long, ByVal column As Long) As Variant
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:41
+Source: src/Section/CSectionInputReader.cls:44
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9602,7 +9604,7 @@ Source: src/Section/CSectionInputReader.cls:41
     ignored = reader.ValueAt(3, 1): code = Err.Number: Err.Clear
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:149.
+Полный контекст: tests/modTestSectionInputReader.bas:163.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9617,7 +9619,7 @@ Public Function RowKeys(ByVal blockKey As String) As Variant
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 
 Тип результата: Variant. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
 
@@ -9625,21 +9627,17 @@ Public Function RowKeys(ByVal blockKey As String) As Variant
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:47
+Source: src/Section/CSectionInputReader.cls:50
 
-Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.ConfigureOffsetWorkbook с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    For Each key In keyed.RowKeys("Main")
+    key = scoped.RowKeys("Bars")
 ```
 
-Полный контекст: tests/modTestAudit02Api.bas:1059.
+Полный контекст: tests/modTestSectionInputReader.bas:85.
 
-Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt.
-
-Native entrypoint: modTestAudit02Api.RunOffsetOpeningAnnotationTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/OpeningCenter01/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt.
-
-Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt.
+Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
 <a id="api-csectioninputreader-rowindex"></a>
 ### CSectionInputReader.RowIndex
@@ -9652,7 +9650,7 @@ Public Function RowIndex(ByVal blockKey As String, ByVal rowKey As String) As Lo
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 
 Тип результата: Long. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
@@ -9661,17 +9659,17 @@ Public Function RowIndex(ByVal blockKey As String, ByVal rowKey As String) As Lo
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:53
+Source: src/Section/CSectionInputReader.cls:60
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.
 
 ```vb
-    main = table.RowIndex("Main", "Top") - 1
+            shapeRow = keyed.RowIndex("General", "Shape")
 ```
 
-Полный контекст: tests/modTestRecipeSetbacks.bas:218.
+Полный контекст: tests/modTestAudit02Api.bas:493.
 
-Native entrypoint: modTestRecipeSetbacks.RunRecipeSetbackInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt.
+Native entrypoint: modTestAudit02Api.RunAudit02CloseoutRectSetInputTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
 <a id="api-csectioninputreader-columnindex"></a>
 ### CSectionInputReader.ColumnIndex
@@ -9684,7 +9682,7 @@ Public Function ColumnIndex(ByVal blockKey As String, ByVal columnKey As String)
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | columnKey | String; ByVal; обязательный | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
 Тип результата: Long. Назначение, единицы и ограничения приведены выше. Для объектного результата используйте Set.
@@ -9693,17 +9691,17 @@ Public Function ColumnIndex(ByVal blockKey As String, ByVal columnKey As String)
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:60
+Source: src/Section/CSectionInputReader.cls:68
 
-Минимальный вызов; требуемый контекст: В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
 ```vb
-    Check "hollow.end.header", table.ColumnIndex("Main", "s1") = 7
+    Check "prefix.column", scoped.ColumnIndex("Bars", "d") = 3
 ```
 
-Полный контекст: tests/modTestRecipeSetbacks.bas:221.
+Полный контекст: tests/modTestSectionInputReader.bas:87.
 
-Native entrypoint: modTestRecipeSetbacks.RunRecipeSetbackInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt.
+Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
 <a id="api-csectioninputreader-cellvalue"></a>
 ### CSectionInputReader.CellValue
@@ -9716,7 +9714,7 @@ Public Function CellValue(ByVal blockKey As String, ByVal rowKey As String, Opti
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -9726,7 +9724,7 @@ Public Function CellValue(ByVal blockKey As String, ByVal rowKey As String, Opti
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:67
+Source: src/Section/CSectionInputReader.cls:75
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9734,7 +9732,7 @@ Source: src/Section/CSectionInputReader.cls:67
     Check "raw.value.no.conversion", reader.CellValue("Dimensions", "B") = 60#
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:130.
+Полный контекст: tests/modTestSectionInputReader.bas:144.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9749,7 +9747,7 @@ Public Function Text(ByVal blockKey As String, ByVal rowKey As String, Optional 
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 | defaultValue | Variant; ByVal; Optional; пропущенный Variant=Missing | Явный fallback конкретного вызова. Пропущенный Optional Variant без default означает обязательное поле. |
@@ -9760,7 +9758,7 @@ Public Function Text(ByVal blockKey As String, ByVal rowKey As String, Optional 
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:72
+Source: src/Section/CSectionInputReader.cls:80
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9768,7 +9766,7 @@ Source: src/Section/CSectionInputReader.cls:72
     Check "text.original.case", reader.Text("Bars", "B", "mode") = "stacked"
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:131.
+Полный контекст: tests/modTestSectionInputReader.bas:145.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9783,7 +9781,7 @@ Public Function Number(ByVal blockKey As String, ByVal rowKey As String, Optiona
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 | defaultValue | Variant; ByVal; Optional; пропущенный Variant=Missing | Явный fallback конкретного вызова. Пропущенный Optional Variant без default означает обязательное поле. |
@@ -9794,7 +9792,7 @@ Public Function Number(ByVal blockKey As String, ByVal rowKey As String, Optiona
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:81
+Source: src/Section/CSectionInputReader.cls:89
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.
 
@@ -9817,7 +9815,7 @@ Public Function Count(ByVal blockKey As String, ByVal rowKey As String, Optional
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 | defaultValue | Long; ByVal; Optional; default=0 | Явный fallback конкретного вызова. Пропущенный Optional Variant без default означает обязательное поле. |
@@ -9828,15 +9826,15 @@ Public Function Count(ByVal blockKey As String, ByVal rowKey As String, Optional
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:90
+Source: src/Section/CSectionInputReader.cls:98
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
 ```vb
-            Case "count": ignored = reader.Count("Bars", "B", "n")
+    Check "prefix.count", scoped.Count("Bars", "B", "n") = 4
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:47.
+Полный контекст: tests/modTestSectionInputReader.bas:84.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9851,7 +9849,7 @@ Public Function Choice(ByVal blockKey As String, ByVal rowKey As String, ByVal a
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | allowed | Variant; ByVal; обязательный | Массив разрешённых строк; Choice возвращает каноническую строку из этого массива. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
@@ -9863,7 +9861,7 @@ Public Function Choice(ByVal blockKey As String, ByVal rowKey As String, ByVal a
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:95
+Source: src/Section/CSectionInputReader.cls:103
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9871,7 +9869,7 @@ Source: src/Section/CSectionInputReader.cls:95
         Check "choice." & CStr(scenario), reader.Choice("Bars", "B", Array("Stacked", "SideBySide"), "mode") = "Stacked"
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:105.
+Полный контекст: tests/modTestSectionInputReader.bas:116.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9886,7 +9884,7 @@ Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optiona
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -9896,7 +9894,7 @@ Public Function Length(ByVal blockKey As String, ByVal rowKey As String, Optiona
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:100
+Source: src/Section/CSectionInputReader.cls:108
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9904,7 +9902,7 @@ Source: src/Section/CSectionInputReader.cls:100
     Check "signed.length.cm.to.mm", reader.Length("Dimensions", "B") = 600#
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:132.
+Полный контекст: tests/modTestSectionInputReader.bas:146.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9919,7 +9917,7 @@ Public Function PositiveLength(ByVal blockKey As String, ByVal rowKey As String,
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -9929,7 +9927,7 @@ Public Function PositiveLength(ByVal blockKey As String, ByVal rowKey As String,
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:105
+Source: src/Section/CSectionInputReader.cls:113
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9937,7 +9935,7 @@ Source: src/Section/CSectionInputReader.cls:105
     Check "units.cm.to.mm", reader.PositiveLength("Dimensions", "B") = 600#
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:129.
+Полный контекст: tests/modTestSectionInputReader.bas:143.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9952,7 +9950,7 @@ Public Function NonNegativeLength(ByVal blockKey As String, ByVal rowKey As Stri
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -9962,7 +9960,7 @@ Public Function NonNegativeLength(ByVal blockKey As String, ByVal rowKey As Stri
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:110
+Source: src/Section/CSectionInputReader.cls:118
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -9970,7 +9968,7 @@ Source: src/Section/CSectionInputReader.cls:110
     Check "nonnegative.zero", reader.NonNegativeLength("Dimensions", "Zero") = 0#
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:133.
+Полный контекст: tests/modTestSectionInputReader.bas:147.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -9985,7 +9983,7 @@ Public Function OptionalDiameter(ByVal blockKey As String, ByVal rowKey As Strin
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -9995,7 +9993,7 @@ Public Function OptionalDiameter(ByVal blockKey As String, ByVal rowKey As Strin
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:115
+Source: src/Section/CSectionInputReader.cls:123
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.Reject с его подготовленными локальными объектами/входом.
 
@@ -10018,7 +10016,7 @@ Public Function OptionalRowOffset(ByVal blockKey As String, ByVal rowKey As Stri
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -10028,7 +10026,7 @@ Public Function OptionalRowOffset(ByVal blockKey As String, ByVal rowKey As Stri
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:120
+Source: src/Section/CSectionInputReader.cls:128
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -10036,7 +10034,7 @@ Source: src/Section/CSectionInputReader.cls:120
         Check "empty.offset." & CStr(scenario), reader.OptionalRowOffset("Bars", "Off", "as") = 0#
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:107.
+Полный контекст: tests/modTestSectionInputReader.bas:118.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -10051,7 +10049,7 @@ Public Function SourceReference(ByVal blockKey As String, ByVal rowKey As String
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; Optional; default="val" | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 
@@ -10061,12 +10059,12 @@ Public Function SourceReference(ByVal blockKey As String, ByVal rowKey As String
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:125
+Source: src/Section/CSectionInputReader.cls:133
 
 Минимальный вызов; требуемый контекст: В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.
 
 ```vb
-                expectedAddress = keyed.SourceReference("Geom", CStr(fieldKeys(column - 1)))
+                expectedAddress = keyed.SourceReference("General", CStr(fieldKeys(column - 1)))
 ```
 
 Полный контекст: tests/modTestAudit02Api.bas:501.
@@ -10084,7 +10082,7 @@ Public Function SourceReferences(ByVal blockKey As String, ByVal rowKey As Strin
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKeys | Variant; ByVal; обязательный | Массив ключей полей, чьи адреса нужно включить в пояснение об ошибке. |
 
@@ -10094,7 +10092,7 @@ Public Function SourceReferences(ByVal blockKey As String, ByVal rowKey As Strin
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:130
+Source: src/Section/CSectionInputReader.cls:138
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -10102,7 +10100,7 @@ Source: src/Section/CSectionInputReader.cls:130
     Check "source.related.fields", reader.SourceReferences("Bars", "B", Array("d", "n")) = "Config!J91; Config!K91"
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:134.
+Полный контекст: tests/modTestSectionInputReader.bas:148.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 
@@ -10117,7 +10115,7 @@ Public Sub Require(ByVal blockKey As String, ByVal rowKey As String, ByVal colum
 
 | Параметр | Тип / передача / default | Смысл и единицы |
 |---|---|---|
-| blockKey | String; ByVal; обязательный | Короткий ключ блока, например Geom, Main или Extra. |
+| blockKey | String; ByVal; обязательный | Короткий ключ блока, например General, Edges, Main или Extra. |
 | rowKey | String; ByVal; обязательный | Ключ строки внутри выбранного блока, например B или Top. |
 | columnKey | String; ByVal; обязательный | Ключ столбца внутри выбранного блока; val означает значение скалярного параметра. |
 | condition | Boolean; ByVal; обязательный | Проверяемое рецептом инженерное условие; при False выдаётся ошибка ввода. |
@@ -10127,7 +10125,7 @@ Public Sub Require(ByVal blockKey As String, ByVal rowKey As String, ByVal colum
 
 Ошибки/исправление: 5525: отсутствующие или повторные ключи, неправильная структура. Ошибка содержит имя таблицы и фактический адрес. Проверки типов и размерностей передаются CSectionInputTable и CUnitSystem; инженерные ограничения задаёт рецепт.
 
-Source: src/Section/CSectionInputReader.cls:139
+Source: src/Section/CSectionInputReader.cls:147
 
 Минимальный вызов; требуемый контекст: В теле modTestSectionInputReader.RunSectionInputReaderTests с его подготовленными локальными объектами/входом.
 
@@ -10135,7 +10133,7 @@ Source: src/Section/CSectionInputReader.cls:139
     reader.Require "Dimensions", "B", "val", True, "Размер допустим."
 ```
 
-Полный контекст: tests/modTestSectionInputReader.bas:135.
+Полный контекст: tests/modTestSectionInputReader.bas:149.
 
 Native entrypoint: modTestSectionInputReader.RunSectionInputReaderTests; журнал: docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt.
 

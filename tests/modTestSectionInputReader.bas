@@ -50,6 +50,7 @@ Private Sub Reject(ByVal title As String, ByVal data As Variant, ByVal expectedA
             Case "missing": ignored = reader.Number("Dimensions", "Missing")
             Case "column": ignored = reader.Number("Dimensions", "B", "Missing")
             Case "block": ignored = reader.Number("Missing", "B")
+            Case "barKeys": keys = reader.RowKeys("Bars")
         End Select
     End If
     description = Err.Description
@@ -72,11 +73,21 @@ End Sub
 ' Проверяет независимость чтения от подписей, порядка строк, столбцов и блоков.
 Public Function RunSectionInputReaderTests() As String
     Dim data As Variant, copy As Variant, reader As CSectionInputReader, scenario As Long
-    Dim row As Long, column As Long, value As Variant, units As CUnitSystem, key As Variant
+    Dim row As Long, column As Long, value As Variant, units As CUnitSystem, key As Variant, scoped As CSectionInputReader, scopedTable As CSectionInputTable
     Dim custom(1 To 2, 1 To 2) As Variant, customTable As CSectionInputTable, ignored As Variant, code As Long, description As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Set units = New CUnitSystem: units.InitializeDefaults
+    data = InputValues: data(11, 1) = "TypeA.B": data(12, 1) = "TypeB.Off"
+    Set scopedTable = New CSectionInputTable: scopedTable.Initialize "sharedInput", data
+    Set scoped = New CSectionInputReader: scoped.Initialize scopedTable, units, "typea."
+    Check "prefix.count", scoped.Count("Bars", "B", "n") = 4
+    key = scoped.RowKeys("Bars")
+    Check "prefix.keys", UBound(key) = 0 And CStr(key(0)) = "B"
+    Check "prefix.column", scoped.ColumnIndex("Bars", "d") = 3
+    Set scoped = New CSectionInputReader: scoped.Initialize scopedTable, units, "Missing."
+    key = scoped.RowKeys("Bars")
+    Check "prefix.empty", UBound(key) < LBound(key)
     For scenario = 0 To 7
         data = InputValues
         If (scenario And 1) <> 0 Then
@@ -113,6 +124,9 @@ Public Function RunSectionInputReaderTests() As String
     data = InputValues: data(5, 1) = "B": Reject "duplicate.row", data, "Config!H85"
     data = InputValues: data(3, 4) = "val": Reject "duplicate.column", data, "Config!K83"
     data = InputValues: Reject "unused.error.lazy", data, "Config!J86", "value"
+    data = InputValues: data(11, 1) = CVErr(2015): Set reader = MakeReader(data)
+    Check "unused.block.key.error.lazy", reader.Number("Dimensions", "B") = 60#
+    Reject "requested.block.key.error.address", data, "Config!H91", "barKeys"
     Reject "missing.row", data, "Config!H81", "missing"
     Reject "missing.column", data, "Config!H83", "column"
     Reject "missing.block", data, "Config!H81", "block"

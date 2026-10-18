@@ -282,6 +282,7 @@ function Get-ConfigNamedRangeNames {
         "rngRectSetGeometry",
         "rngRoundedRectangleGeometry",
         "rngHollowRectangleGeometry",
+        "rngRebarInput",
         "rngConcreteMaterialParameters",
         "rngSteelMaterialParameters",
         "rngCalculationProfiles",
@@ -308,7 +309,7 @@ function Apply-ConfigNamedRangeBorders {
         }
         if ([string]$range.Worksheet.Name -ne "Config") { continue }
 
-        if($rangeName -in @('rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry')){
+        if($rangeName -in @('rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngRebarInput')){
             Format-GeometrySettingsTable $Workbook $rangeName $range
             continue
         }
@@ -382,7 +383,7 @@ function Get-ConfigFormattingTables {
     foreach($name in @(Get-ConfigNamedRangeNames)){
         try{$range=$Workbook.Names.Item($name).RefersToRange}catch{continue}
         if([string]$range.Worksheet.Name -ne 'Config'){continue}
-        if($name -in @((Get-GeometrySettingsCatalog).RangeName)){
+        if($name -eq 'rngRebarInput' -or $name -in @((Get-GeometrySettingsCatalog).RangeName)){
             foreach($block in @(Get-GeometryTableBlocks $range)){
                 [pscustomobject]@{Name=$name;Range=$range.Cells.Item($block.HeaderRow,1).Resize($block.LastRow-$block.HeaderRow+1,[int]$block.Columns['note']);Geometry=$true}
             }
@@ -391,7 +392,8 @@ function Get-ConfigFormattingTables {
 }
 
 # Выравнивает комментарии в пределах их собственной таблицы, а не всей
-# составной геометрии. Единое правило: слева, без переноса, строка 15 пунктов.
+# составной геометрии. В геометрии, армировании и профилях комментарии справа;
+# в остальных таблицах — слева, без переноса, строка 15 пунктов.
 function Apply-ConfigCommentColumnAlignment {
     param([object]$Workbook)
 
@@ -412,7 +414,7 @@ function Apply-ConfigCommentColumnAlignment {
                         $cell=$range.Worksheet.Cells.Item($range.Row+$r-1,$range.Column+$c-1)
                         $textRange=$cell.MergeArea
                         if($textRange.Column -ne $cell.Column){continue} # Это заголовок раздела, а не ячейка комментария.
-                        $textRange.HorizontalAlignment=$(if($table.Geometry){-4152}else{-4131})
+                        $textRange.HorizontalAlignment=$(if($table.Geometry -or $table.Name -eq 'rngCalculationProfiles'){-4152}else{-4131})
                         $textRange.WrapText=$false
                         if(-not $table.Geometry){$cell.EntireRow.RowHeight=[double]15}
                     }
@@ -487,6 +489,17 @@ function Apply-ConfigUserInputAlignment {
 
             foreach ($columnIndex in $item.Columns) {
                 Set-ConfigInputCellAlignment $range.Offset(1, $columnIndex - 1).Resize($range.Rows.Count - 1, 1)
+                for($r=2;$r -le $range.Rows.Count;$r++){
+                    $rowKey=[string]$range.Cells.Item($r,1).Value2
+                    if($rowKey.StartsWith('[') -or ($item.Name -eq 'rngSystemSettings' -and -not $rowKey.Contains('.'))){continue}
+                    $cell=$range.Cells.Item($r,$columnIndex)
+                    $inputArea=$cell
+                    if($cell.MergeCells){
+                        $inputArea=$cell.MergeArea
+                        if($inputArea.Row -ne $cell.Row -or $inputArea.Column -ne $cell.Column){continue}
+                    }
+                    if(-not $cell.HasFormula -and [string]$cell.Value2 -notin @('-','—')){$inputArea.Interior.Color=15135487}
+                }
             }
         } catch {
             # Диапазон может отсутствовать в промежуточной сборке; валидатор
@@ -494,8 +507,9 @@ function Apply-ConfigUserInputAlignment {
         }
     }
 
-    foreach($name in @((Get-GeometrySettingsCatalog).RangeName)){
+    foreach($name in @((Get-GeometrySettingsCatalog).RangeName)+@('rngRebarInput')){
         $range=$Workbook.Names.Item($name).RefersToRange
+        Set-GeometryEditableCellFormat $range
         foreach($block in @(Get-GeometryTableBlocks $range)){
             foreach($key in @($block.Columns.Keys)){
                 if($key -in @('key','name','unit','note')){continue}
@@ -553,7 +567,7 @@ function Get-SettingInstructionLines {
             "У импортированной из AutoCAD сетки обычно нет сведений о смысловых гранях и группах арматуры. Поэтому программа сохраняет фактические элементы и результаты, но не пытается угадывать специальные подписи граней по координатам."
         ) }
         "Geometry.Type" { return @($lead) + @(
-            "Поддерживаются Circle, RoundedRectangle, HollowRectangle и RectSet. Тип определяет геометрию, раскладку арматуры и доступные аннотации.",
+            "Поддерживаются Circle, RoundedRectangle, HollowRectangle и RectSet. Тип определяет геометрию, раскладку арматуры и доступные аннотации. Таблицы геометрии расположены друг под другом; справа находится общая таблица армирования. Её ключи подставляются формулами из Edges выбранного типа. Параметры армирования вводятся вручную и при смене типа сохраняются.",
             "При Generated тип и все активные размеры выбранной формы обязательны. Пустая ячейка, TODO, ошибка формулы, нечисловое значение или потерянная строка не заменяются размерами шаблона. Сообщение указывает настройку и ее фактическую ячейку; для отсутствующей строки указывается раздел, где ее нужно восстановить.",
             "Не используется при Geometry.Source = AutoCAD: форму задают импортированные элементы либо точные наружные контуры и отверстия.",
             "Если для выбранной формы нет специальных аннотаций, расчет все равно выполняется. На схеме будут показаны геометрия и расчетные значения без этих дополнительных подписей."
@@ -1381,7 +1395,7 @@ function Get-SettingsInstructionCatalog {
         "При ненулевом отступе программа проверяет оба дополнительных ряда: весь диск стержня должен находиться в бетоне, без пересечения других стержней. Недопустимое совпадение не скрывается объединением. На дуге нельзя переносить стержень до центра или через центр кривизны. Например, отдельные линии 100 и 105 мм при диаметрах 20 и 16 мм пересекаются, а 100 и 118 мм допускают касание."
     )}) | Out-Null
     $items.Add(@{ Key = "CircleGeometry"; Title = "Круглое сечение"; Lines = @(
-        "Таблица разделена на блоки общих и дополнительных настроек геометрии, основного и дополнительного армирования. Блок дополнительных настроек есть только там, где он нужен. Короткие ключи служат для чтения программой; русские подписи поясняют назначение полей. Длины задаются в единицах INPUT Length.",
+        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
         "Выберите Geometry.Source = Generated и Geometry.Type = Circle. В общей геометрии задайте наружный диаметр бетонного круга D; строки основного и дополнительного армирования относятся ко всей окружности.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
         "Начало полного оборота — над центром, на «12 часах», обход по часовой стрелке. При s0 = 0 и s1 = 0 стержни равномерно распределяются по полному кругу без повторения начальной точки. При ненулевых отступах — по оставшейся дуге с обоими концами. Сумма отступов меньше длины окружности центров; активное n — целое не меньше 2, as больше d/2 и меньше радиуса бетона.",
@@ -1389,23 +1403,23 @@ function Get-SettingsInstructionCatalog {
         "Для круга Stacked направлен к центру, SideBySide — по часовой касательной. Диаметр бетона и общая подпись всех рядов сохраняются со схемой."
     )}) | Out-Null
     $items.Add(@{ Key = "RoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; Lines = @(
-        "Таблица разделена на блоки общих и дополнительных настроек геометрии, основного и дополнительного армирования. Блок дополнительных настроек есть только там, где он нужен. Короткие ключи служат для чтения программой; русские подписи поясняют назначение полей. Длины задаются в единицах INPUT Length.",
+        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
         "Выберите Geometry.Type = RoundedRectangle. В общих настройках B — ширина прямой базы, H — высота. Дополнительные настройки заданы отдельно слева и справа: Type = Simple — вертикальная сторона со скруглениями R1; Type = Tapered — выступ с наклонными сторонами. Для выступа дополнительно задаются вынос W и радиус носа R2; для Simple они не используются.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
         "Сверху и снизу стержни располагаются на прямых участках между скруглениями; слева и справа — вдоль соответствующей боковой стороны с отступом as.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры»."
     )}) | Out-Null
     $items.Add(@{ Key = "HollowRectangleGeometry"; Title = "Пустотелый скругленный прямоугольник"; Lines = @(
-        "Таблица разделена на блоки общих и дополнительных настроек геометрии, основного и дополнительного армирования. Блок дополнительных настроек есть только там, где он нужен. Короткие ключи служат для чтения программой; русские подписи поясняют назначение полей. Длины задаются в единицах INPUT Length.",
-        "Выберите Geometry.Type = HollowRectangle. B/H/R — наружные ширина, высота и радиус углов. В дополнительных настройках Bo/Ho/Ro — размеры и радиус отверстия; Xo/Yo — смещение его центра вправо и вверх относительно центра наружного контура. Нулевой радиус означает прямой угол.",
+        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
+        "Выберите Geometry.Type = HollowRectangle. B/H/R — наружные ширина, высота и радиус углов. В General Bo/Ho/Ro — размеры и радиус отверстия; Xo/Yo — смещение его центра вправо и вверх относительно центра наружного контура. Нулевой радиус означает прямой угол.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
-        "Для сторон отверстия количество не задаётся: прочерк показывает, что стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах.",
+        "Для сторон отверстия значение количества из общей таблицы не используется: стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры»."
     )}) | Out-Null
     $items.Add(@{ Key = "RectSetGeometry"; Title = "Сечение из прямоугольников"; Lines = @(
-        "Таблица разделена на блоки общих и дополнительных настроек геометрии, основного и дополнительного армирования. Блок дополнительных настроек есть только там, где он нужен. Короткие ключи служат для чтения программой; русские подписи поясняют назначение полей. Длины задаются в единицах INPUT Length.",
+        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
         "Выберите Geometry.Type = RectSet. Форма Shape: Rectangle — один прямоугольник, LSection — Г-образное сечение, TwoRectangles — два смежных прямоугольника. H1/B1 задают высоту и ширину верхнего прямоугольника, H2/B2 — нижнего. Для Rectangle нужны только H1/B1.",
-        "В дополнительных настройках X — смещение верхнего прямоугольника вправо относительно нижнего; используется для TwoRectangles. Прямоугольники должны иметь общий участок по X.",
+        "В General параметр XOffset задаёт смещение верхнего прямоугольника вправо относительно нижнего; используется для TwoRectangles. Прямоугольники должны иметь общий участок по X.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
         "Строки R1 относятся к верхнему прямоугольнику, R2 — к нижнему. Для Rectangle строки R2 не используются. По каждой стороне настройки независимы.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры»."
@@ -3310,6 +3324,7 @@ function Add-SettingsInstructions {
         "Скругленный прямоугольник" = "RoundedRectangleGeometry"
         "Пустотелый скругленный прямоугольник" = "HollowRectangleGeometry"
         "Сечение из прямоугольников" = "RectSetGeometry"
+        "Армирование выбранного сечения" = "Geometry.Type"
     }
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
         for ($c = 1; $c -le 40; $c++) {
@@ -4286,6 +4301,7 @@ function Apply-SystemSettingsLayout {
     $rightRow += (Get-PlotAnnotationSettingsCatalog).Count + 1 + $rightBlockGap
 
     $geometryTables = Get-GeometrySettingsCatalog
+    $geometryStartRow=$rightRow
     $geometryOrder = @("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
     foreach ($geometryRangeName in $geometryOrder) {
         $geometryTable = $geometryTables | Where-Object { $_.RangeName -eq $geometryRangeName } | Select-Object -First 1
@@ -4293,6 +4309,9 @@ function Apply-SystemSettingsLayout {
         $height=Add-GeometrySettingsTable $Workbook $Sheet $geometryTable $rightRow $rightColumn
         $rightRow += $height + $rightBlockGap
     }
+    $rebarTable=Get-RebarSettingsCatalog
+    Add-GeometrySettingsTable $Workbook $Sheet $rebarTable $geometryStartRow ($rightColumn+6) | Out-Null
+    Set-SharedRebarFormulas $Workbook $Workbook.Names.Item('rngRebarInput').RefersToRange $geometryTables
 
     Add-MaterialDiagramCharts $Sheet $materialChartTopRow $materialChartColumn $materialControlHeaderRow $materialControlColumn
 
@@ -4394,10 +4413,10 @@ function Apply-SystemSettingsLayout {
     $Sheet.Columns.Item(7).ColumnWidth = 11
     $Sheet.Columns.Item(8).ColumnWidth = 32
     # Ширину Config назначаем один раз при сборке; I–U одинаковы для всех таблиц.
-    for ($colIndex = 9; $colIndex -le 21; $colIndex++) {
+    for ($colIndex = 9; $colIndex -le 24; $colIndex++) {
         $Sheet.Columns.Item($colIndex).ColumnWidth = 17
     }
-    for ($colIndex = 22; $colIndex -le 69; $colIndex++) {
+    for ($colIndex = 25; $colIndex -le 69; $colIndex++) {
         $Sheet.Columns.Item($colIndex).ColumnWidth = 8.43
     }
     $Sheet.Columns.Item("BR:EF").Hidden = $true
