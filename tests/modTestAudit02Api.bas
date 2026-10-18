@@ -982,7 +982,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
         ConfigureOffsetWorkbook CStr(fixture), "mm", 100#, 118#
         Set target = OffsetWorkbookTable(CStr(fixture))
         OffsetWorkbookRows target, CStr(fixture), main, extra
-        Set cell = target.Cells(extra, 4)
+        Set cell = OffsetRebarCell(extra, 4)
         For Each bad In Array(-1#, "abc", True, CVErr(2015))
             cell.Value2 = bad: number = 0: description = ""
             On Error Resume Next
@@ -995,18 +995,18 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
         actual = OffsetBarsSnapshot(bars)
         cell.Value2 = 0#: Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         Check "offset.input.blank.zero." & CStr(fixture), OffsetBarsEqual(actual, OffsetBarsSnapshot(bars))
-        target.Cells(extra, 3).Value2 = 0#: cell.Value2 = "inactive"
+        OffsetRebarCell(extra, 3).Value2 = 0#: cell.Value2 = "inactive"
         Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         Check "offset.input.disabled.second." & CStr(fixture), bars.Count >= 10
-        target.Cells(extra, 7).Value2 = 0#: target.Cells(extra, 8).Value2 = CVErr(2015)
+        OffsetRebarCell(extra, 7).Value2 = 0#: OffsetRebarCell(extra, 8).Value2 = CVErr(2015)
         Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         Check "offset.input.disabled.extras." & CStr(fixture), bars.Count >= 5
     Next fixture
     ConfigureOffsetWorkbook "Circle", "mm", 100#, 200#
     Set units = New CUnitSystem: units.InitializeDefaults
     Set target = OffsetWorkbookTable("Circle")
-    Set inputTable = New CSectionInputTable: inputTable.Initialize "rngCircleGeometry", target.Value2
-    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(FixtureInput(target.Value2).RowIndex("Extra", "Circle"), FixtureInput(target.Value2).ColumnIndex("Extra", "a2"), units) = 100#
+    Set inputTable = New CSectionInputTable: inputTable.Initialize "rngRebarInput", ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2
+    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2).RowIndex("Extra", "Circle.Circle"), FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2).ColumnIndex("Extra", "a2"), units) = 100#
     Set cell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
     cell.Formula = "=" & FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Address() & "/10"
     FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1200#
@@ -1055,7 +1055,12 @@ Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As S
             FixtureInputCell(target, "General", "H").Value2 = 2400# / factor: FixtureInputCell(target, "General", "B").Value2 = 2400# / factor
             FixtureInputCell(target, "Detail", "Ho").Value2 = 800# / factor: FixtureInputCell(target, "Detail", "Bo").Value2 = 800# / factor
     End Select
-    Set keyed = FixtureInput(target.Value2)
+    Select Case fixture
+        Case "Circle": Set keyed = FixtureInput(FixtureRecipeValues("rngCircleGeometry"))
+        Case "Rectangle": Set keyed = FixtureInput(FixtureRecipeValues("rngRectSetGeometry"))
+        Case "RoundedMixed": Set keyed = FixtureInput(FixtureRecipeValues("rngRoundedRectangleGeometry"))
+        Case Else: Set keyed = FixtureInput(FixtureRecipeValues("rngHollowRectangleGeometry"))
+    End Select
     For Each key In keyed.RowKeys("Main")
         active = (CStr(key) = "Circle" Or CStr(key) = "Top" Or CStr(key) = "R1.Top" Or CStr(key) = "OpeningTop")
         If fixture <> "Circle" Then
@@ -1092,9 +1097,17 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: строки основного и дополнительного армирования тестируемой верхней стороны.
 Private Sub OffsetWorkbookRows(ByVal target As Object, ByVal fixture As String, ByRef main As Long, ByRef extra As Long)
-    Dim keyed As CSectionInputReader, key As String: Set keyed = FixtureInput(target.Value2)
-    key = "Top": If fixture = "Circle" Then key = "Circle"
-    If fixture = "Rectangle" Then key = "R1.Top"
+    Dim keyed As CSectionInputReader, key As String, typeID As String
+    Select Case fixture
+        Case "Circle": typeID = "Circle": key = "Circle"
+        Case "Rectangle": typeID = "RectSet": key = "R1.Top"
+        Case "RoundedMixed": typeID = "RoundedRectangle": key = "Top"
+        Case Else: typeID = "HollowRectangle": key = "Top"
+    End Select
+    FixtureSelectRecipeType ThisWorkbook, typeID
+    ThisWorkbook.Names("rngRebarInput").RefersToRange.Calculate
+    Set keyed = FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2)
+    key = typeID & "." & key
     main = keyed.RowIndex("Main", key): extra = keyed.RowIndex("Extra", key)
 End Sub
 
@@ -1147,21 +1160,21 @@ Public Function DumpIndependentRowOffsetExamples(ByVal outputDirectory As String
         If index = 3 Then a2 = 60#: a3 = 100#
         ConfigureOffsetWorkbook fixture, "mm", a2, a3
         Set target = OffsetWorkbookTable(fixture): OffsetWorkbookRows target, fixture, main, extra
-        If index = 0 Then target.Cells(extra, 7).Value2 = 0#
+        If index = 0 Then OffsetRebarCell(extra, 7).Value2 = 0#
         If index = 3 Then
-            target.Cells(main, 4).Value2 = 0#: target.Cells(main, 5).Value2 = 0
-            target.Cells(extra, 3).Value2 = 0#: target.Cells(extra, 7).Value2 = 0#
-            target.Cells(main - 1, 3).Value2 = 32#: target.Cells(main - 1, 4).Value2 = 5
-            target.Cells(extra - 1, 2).Value2 = 20#: target.Cells(extra - 1, 6).Value2 = 16#
+            OffsetRebarCell(main, 4).Value2 = 0#: OffsetRebarCell(main, 5).Value2 = 0
+            OffsetRebarCell(extra, 3).Value2 = 0#: OffsetRebarCell(extra, 7).Value2 = 0#
+            FixtureInputCell(target, "Main", "Left", "d").Value2 = 32#: FixtureInputCell(target, "Main", "Left", "n").Value2 = 5
+            FixtureInputCell(target, "Extra", "Left", "d2").Value2 = 20#: FixtureInputCell(target, "Extra", "Left", "d3").Value2 = 16#
         End If
         If index = 6 Then
             FixtureCircleFieldCell(ThisWorkbook, "Rebar.StartSetback").Value2 = 150#
             FixtureCircleFieldCell(ThisWorkbook, "Rebar.EndSetback").Value2 = 250#
         End If
         If index = 4 Or index = 5 Then
-            target.Cells(extra, 10).Value2 = "SideBySide": target.Cells(extra, 9).Value2 = "EverySecondBar"
+            OffsetRebarCell(extra, 10).Value2 = "SideBySide": OffsetRebarCell(extra, 9).Value2 = "EverySecondBar"
             If index = 4 Then
-                target.Cells(extra + 4, 10).Value2 = "SideBySide": target.Cells(extra + 4, 9).Value2 = "EverySecondBar"
+                OffsetRebarCell(extra + 4, 10).Value2 = "SideBySide": OffsetRebarCell(extra + 4, 9).Value2 = "EverySecondBar"
             End If
         End If
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -1218,7 +1231,7 @@ Public Function RunOffsetOpeningAnnotationTests() As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
     Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
-    target.Cells(extra + 4, 10).Value2 = "SideBySide": target.Cells(extra + 4, 9).Value2 = "EverySecondBar"
+    OffsetRebarCell(extra + 4, 10).Value2 = "SideBySide": OffsetRebarCell(extra + 4, 9).Value2 = "EverySecondBar"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
@@ -1378,12 +1391,12 @@ Public Function RunOffsetWallCollisionTests() As String
         Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
         FixtureInputCell(target, "General", "H", "val").Value2 = 1000#: FixtureInputCell(target, "Detail", "Ho", "val").Value2 = 324#: FixtureInputCell(target, "Detail", "Ro", "val").Value2 = 0#
         FixtureInputCell(target, "Detail", "Xo", "val").Value2 = 0#: FixtureInputCell(target, "Detail", "Yo", "val").Value2 = 0#
-        target.Cells(extra, 7).Value2 = 0#: target.Cells(extra + 4, 7).Value2 = 0#
-        target.Cells(extra + 4, 3).Value2 = 16#
+        OffsetRebarCell(extra, 7).Value2 = 0#: OffsetRebarCell(extra + 4, 7).Value2 = 0#
+        OffsetRebarCell(extra + 4, 3).Value2 = 16#
         If scenario = 1 Then FixtureInputCell(target, "General", "H", "val").Value2 = 992#
         If scenario = 2 Then
-            target.Cells(extra, 3).Value2 = 0#
-            target.Cells(extra + 4, 3).Value2 = 200#: target.Cells(extra + 4, 4).Value2 = 1#
+            OffsetRebarCell(extra, 3).Value2 = 0#
+            OffsetRebarCell(extra + 4, 3).Value2 = 200#: OffsetRebarCell(extra + 4, 4).Value2 = 1#
         End If
         Set bars = Nothing: number = 0: reason = ""
         On Error Resume Next
@@ -1406,4 +1419,9 @@ Failed:
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
     RunOffsetWallCollisionTests = mReport & "TOTAL OFFSET WALL COLLISION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: физическая ячейка дополнительного ряда в общей таблице армирования.
+Private Function OffsetRebarCell(ByVal row As Long, ByVal column As Long) As Object
+    Set OffsetRebarCell = ThisWorkbook.Names("rngRebarInput").RefersToRange.Cells(row, column)
 End Function

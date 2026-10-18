@@ -1,0 +1,39 @@
+{
+  "Passed": true,
+  "PublishedAt": "2026-10-19T00:01:55.911842+03:00",
+  "BeforeWorkbookSHA256": "70066E3CB52F5E92D58E1293C53BFAF1ED9359B08C59EC93A28BC92186280FB0",
+  "WorkbookSHA256": "C0EA981FD6AE1A0F2CB035D9DEAA88AFA608862DBCDDBE1ED766E42EC4456990",
+  "AllCodeSHA256": "07BEACB65C1828CF10CEE333CC9898177143F464A4666FE70F83A64FA908F6A3",
+  "UserReportUnchanged": true,
+  "ChangedPackageParts": [
+    "xl/vbaProject.bin"
+  ],
+  "AllWorksheetDataAndFormattingPreservedByteForByte": true,
+  "WorkingCodeChanged": false,
+  "PreflightReports": [
+    {
+      "Report": "docs\\regression\\FullOnOff_2026-10-19_Preflight\\Selectors07.txt",
+      "SHA256": "7E6EA81EA59396BB3A141206480F5EC9638C8C94BEA080375ABD92D758F439A0",
+      "Passed": true
+    },
+    {
+      "Report": "docs\\regression\\FullOnOff_2026-10-19_Preflight\\RecipeInputs03.txt",
+      "SHA256": "0E8D71D3394FC244F8C5E63137F88FDB72A26195C4F2C6B3D7F2451C7CE0F1CB",
+      "Passed": true
+    },
+    {
+      "Report": "docs\\regression\\FullOnOff_2026-10-19_Preflight\\KernelCatalog05.txt",
+      "SHA256": "91B6BC219FCE7F2F8220C1B198D5B90A33B3691C82162F3E79C5278876C408E6",
+      "Passed": true
+    },
+    {
+      "Report": "docs\\regression\\FullOnOff_2026-10-19_Preflight\\Units06.txt",
+      "SHA256": "8E797AB4E9478F063DBF362C3BED7CB3D8F79888D94306911E1AF202D1C852CF",
+      "Passed": true
+    }
+  ],
+  "RebarInputScenarios": 2168,
+  "RebarInputAssertionsPassed": 8418,
+  "ThreeOldProfileGapExpectationsCorrectedAndRechecked": true,
+  "AllCodeIsExactNativeReadback": true
+}

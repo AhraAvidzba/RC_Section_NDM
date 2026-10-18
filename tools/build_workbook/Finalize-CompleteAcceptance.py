@@ -42,16 +42,17 @@ def finalize(core,focused):
             if 'GLOBAL_MODE: General.DiagramExtension='+item['Mode']+';' not in body or 'WATCHDOG_COMPLETED: exit=0;' not in body:
                 raise ValueError('Recipe mode or completion differs')
             suites+=len(report['suites']);assertions+=report['passed']
-    if suites!=116:raise ValueError('All 116 core suites are required')
+    expected = 116 if main.get('coverageDefinition') == 'HistoricalCoreSuitesOnly' else 132
+    if suites!=expected:raise ValueError(f'All {expected} core suites are required')
     independent=read(focused/'Independent.json')
     return {'Status':'PASS','SourceSHA256':source,'CoreSuites':suites,'CorePassedAssertions':assertions,
             'FocusedSingleCases':target['IndividualCases'],'FocusedPassedAssertions':target['PassedAssertions'],
             'IndependentIntegrals':independent['IndependentIntegrals'],
             'IndependentlyReviewedNumFailStates':independent['ReviewedNumFailStates'],
-            'SameWorkbookBytes':True,'SingleInvocation':False,
+            'SameWorkbookBytes':True,'SingleInvocation':bool(main.get('includesFocusedAcceptance')),
             'CoreDirectory':str(core),'FocusedDirectory':str(focused),
             'FocusedRunSHA256':sha(focused/'Run.json'),'IndependentSHA256':sha(focused/'Independent.json'),
-            'Meaning':'All current acceptance groups; separate invocations of exactly the same production workbook.'}
+            'Meaning':'All current acceptance groups use exactly the same production workbook; invocation is recorded above.'}
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)

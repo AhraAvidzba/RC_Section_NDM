@@ -19,7 +19,7 @@ FULL = (
     'modTestWorkbookInterface.RunWorkbookInterfaceTests',
     'modTestRegressionBaseline.RunRegressionBaselineTests',
 )
-GROUP_COUNTS = {'Full': 8, 'Geometry': 26, 'SP35': 6, 'Recipes': 18}
+GROUP_COUNTS = {'Full': 8, 'Geometry': 26, 'SP35': 6, 'Recipes': 26}
 
 
 def coverage_errors(manifest):

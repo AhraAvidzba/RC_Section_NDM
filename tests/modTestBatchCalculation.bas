@@ -9729,15 +9729,16 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
     Dim stats As TBatchTestStats, fields As New Collection, range As Object, cell As Object
     Dim name As Variant, row As Long, column As Long, baseline As String, actual As String
     Dim errorText As String, saved As Variant, invalidIndex As Long, prefix As String
-    Dim hasSavedCell As Boolean
+    Dim hasSavedCell As Boolean, config As Object, savedConfig As Variant
     On Error GoTo Failed
-    For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry")
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = config.Formula
+    modTestShapeArchitecture.ConfigureShapeFixture "HollowCentered"
+    For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings")
         Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To range.Rows.Count
             For column = 2 To 4
                 If (CStr(name) = "rngConcreteMaterialParameters" And column = 3) Or _
-                        (CStr(name) = "rngPlotAnnotationSettings" And column <= 3) Or _
-                        (CStr(name) = "rngHollowRectangleGeometry" And column = 4) Then
+                        (CStr(name) = "rngPlotAnnotationSettings" And column <= 3) Then
                     Set cell = range.Cells(row, column)
                     If VarType(cell.Value2) = vbString Then
                         If CStr(cell.Value2) = "-" Then fields.Add cell
@@ -9745,6 +9746,10 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
                 End If
             Next column
         Next row
+    Next name
+    Set range = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
+    For Each name In Array("OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
+        fields.Add FixtureInputCell(range, "Main", CStr(name), "n")
     Next name
     AssertTrue stats, "audit03.inactive.count", fields.Count = 10
     AssertTrue stats, "audit03.inactive.baseline", Audit03TryConfigPayload(baseline, errorText)
@@ -9772,6 +9777,7 @@ Failed:
     AppendLine stats, "FAIL: audit03.inactive.runtime; " & CStr(Err.Number) & "; " & Err.Description
     If hasSavedCell Then cell.Formula = saved
 Finish:
+    If Not config Is Nothing And IsArray(savedConfig) Then config.Formula = savedConfig
     AppendLine stats, "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=" & CStr(fields.Count) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03InactiveConfigCellTests = stats.Report
@@ -9789,6 +9795,12 @@ Private Function Audit03TryConfigPayload(ByRef payload As String, ByRef errorTex
     For index = 1 To settings.KeyCount
         key = settings.KeyAt(index)
         payload = payload & key & "=" & settings.GetRawString(key) & vbLf
+    Next index
+    Dim units As CUnitSystem, bars As CRebarLayout
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set bars = FixtureLayout(ReadWorkbookSectionDefinition(ThisWorkbook, settings, units))
+    For index = 1 To bars.Count
+        payload = payload & CStr(bars.X(index)) & ";" & CStr(bars.Y(index)) & ";" & CStr(bars.Diameter(index)) & vbLf
     Next index
     Audit03TryConfigPayload = True
     Exit Function

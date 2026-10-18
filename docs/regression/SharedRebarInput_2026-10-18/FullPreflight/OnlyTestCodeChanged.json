@@ -1,0 +1,19 @@
+﻿{
+    "Passed":  true,
+    "Components":  160,
+    "ChangedComponents":  [
+                              "modTestAudit02Api",
+                              "modTestBatchCalculation",
+                              "modTestGeometryConfig",
+                              "modTestGeometryFixtures",
+                              "modTestProfileConfig",
+                              "modTestSectionRecipes",
+                              "modTestSectionSolver",
+                              "modTestWorkbookInterface"
+                          ],
+    "WorkingComponentsChanged":  [
+
+                                 ],
+    "CaseOnlyChangesAllowed":  true,
+    "StringsCommentsAndNumbersCompared":  true
+}

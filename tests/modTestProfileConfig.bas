@@ -98,11 +98,14 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
     Dim provider As CMaterialModelProvider, batch As CBatchSectionCalculator, oldAlerts As Boolean
     Dim caption As String, address As String, oldAddress As String, key As String
+    Dim config As Object, savedConfig As Variant
     On Error GoTo FailedRun
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = config.Formula
+    modTestShapeArchitecture.ConfigureShapeFixture "TwoRectangles"
     names = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCircleGeometry", _
         "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry", _
-        "rngPlotAnnotationSettings", "rngCalculationProfiles", "rngLoadCombinations")
+        "rngPlotAnnotationSettings", "rngCalculationProfiles", "rngLoadCombinations", "rngRebarInput")
     ReDim refs(0 To UBound(names))
     For index = 0 To UBound(names): refs(index) = ThisWorkbook.Names.Item(CStr(names(index))).RefersTo: Next index
     Set profiles = ThisWorkbook.Names.Item("rngCalculationProfiles").RefersToRange
@@ -131,7 +134,7 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
                 oldAddress = source.Cells(CLng(field(0)), CLng(field(1))).Address(False, False)
                 prefix = "relocated." & CStr(names(index)) & ".p" & CStr(position) & "." & key
                 LogLine stats, "RUN: " & prefix & "; actual=" & sheet.Name & "!" & address
-                If index >= 5 And index <= 8 Then
+                If (index >= 5 And index <= 8) Or CStr(names(index)) = "rngRebarInput" Then
                     Dim inputTable As CSectionInputTable
                     Set inputTable = RelocatedRecipeTable(CStr(names(index)), units)
                     reason = inputTable.SourceReference(CLng(field(0)), CLng(field(1)))
@@ -180,7 +183,7 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
                 End If
                 stats.Cases = stats.Cases + 1
             Next field
-            If index = 8 Then TestRelocatedRectSetSelectors stats, target, position
+            If CStr(names(index)) = "rngRebarInput" Then TestRelocatedRectSetSelectors stats, target, position
             ThisWorkbook.Names.Item(CStr(names(index))).RefersTo = refs(index)
         Next position
     Next index
@@ -199,6 +202,7 @@ Restore:
         If Len(refs(index)) > 0 Then ThisWorkbook.Names.Item(CStr(names(index))).RefersTo = refs(index)
     Next index
     profiles.Formula = savedProfiles: loads.Formula = savedLoads
+    If Not config Is Nothing And IsArray(savedConfig) Then config.Formula = savedConfig
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete
     Application.DisplayAlerts = oldAlerts
@@ -213,47 +217,44 @@ End Function
 ' Адрес ввода берется из перемещенной таблицы; другая грань не подменяет
 ' ошибочное значение, а исходные настройки восстанавливаются после пробы.
 Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal source As Object, ByVal position As Long)
-    Dim face As Variant, column As Variant, row As Long, first As Object, second As Object
-    Dim savedFirst As Variant, savedSecond As Variant, code As Long, reason As String, prefix As String
-    Dim settings As CSystemSettingsReader, choices As Variant, tail As String, key As String, value As String, side As Long, cell As Object
-    row = CaptionRow(source, "H1", 1) + 14
-    For Each face In Array("H1", "B1", "H2", "B2")
-        For Each column In Array(3, 4, 6, 7)
-            Set first = source.Cells(row, CLng(column)): Set second = source.Cells(row + 1, CLng(column))
+    Dim reader As CSectionInputReader, pair As Variant, field As Variant, rowKey As Variant
+    Dim first As Object, second As Object, cell As Object, column As Long, row As Long
+    Dim savedFirst As Variant, savedSecond As Variant, choices As Variant, code As Long, reason As String
+    Dim inputTable As CSectionInputTable, units As CUnitSystem, value As String, prefix As String
+    Set units = New CUnitSystem: units.InitializeDefaults
+    Set reader = FixtureInput(source.Value2)
+    For Each pair In Array(Array("RectSet.R1.Left", "RectSet.R1.Right"), Array("RectSet.R1.Top", "RectSet.R1.Bottom"), _
+            Array("RectSet.R2.Left", "RectSet.R2.Right"), Array("RectSet.R2.Top", "RectSet.R2.Bottom"))
+        For Each field In Array("pos2", "bind2", "pos3", "bind3")
+            column = reader.ColumnIndex("Extra", CStr(field))
+            Set first = source.Cells(reader.RowIndex("Extra", CStr(pair(0))), column)
+            Set second = source.Cells(reader.RowIndex("Extra", CStr(pair(1))), column)
             savedFirst = first.Value2: savedSecond = second.Value2
-            prefix = "relocated.rectset.p" & CStr(position) & "." & CStr(face) & ".c" & CStr(column)
-            Select Case CLng(column)
-                Case 3: tail = "loc_2row": choices = Array("Stacked", "SideBySide")
-                Case 4: tail = "bind_2row": choices = Array("EachBar", "EverySecondBar")
-                Case 6: tail = "loc_3row": choices = Array("Stacked", "SideBySide")
-                Case 7: tail = "bind_3row": choices = Array("EachBar", "EverySecondBar")
-            End Select
+            choices = Array("EachBar", "EverySecondBar")
+            If Left$(CStr(field), 3) = "pos" Then choices = Array("Stacked", "SideBySide")
             first.Value2 = choices(0): second.Value2 = choices(1)
-            Dim inputTable As CSectionInputTable, units As CUnitSystem
-            Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
-            Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set inputTable = RelocatedRecipeTable("rngRectSetGeometry", units)
-            key = "RectSet." & CStr(face) & "." & tail
-            Check stats, prefix & ".firstIndependent", inputTable.Choice(row, CLng(column), choices) = choices(0)
-            Check stats, prefix & ".secondIndependent", inputTable.Choice(row + 1, CLng(column), choices) = choices(1)
-            For side = 1 To 2
-                Set cell = source.Cells(row + side - 1, CLng(column))
+            prefix = "relocated.rectset.p" & CStr(position) & "." & CStr(pair(0)) & "." & CStr(field)
+            Set inputTable = RelocatedRecipeTable("rngRebarInput", units)
+            Check stats, prefix & ".firstIndependent", inputTable.Choice(first.Row - source.Row + 1, column, choices) = choices(0)
+            Check stats, prefix & ".secondIndependent", inputTable.Choice(second.Row - source.Row + 1, column, choices) = choices(1)
+            For Each rowKey In pair
+                row = reader.RowIndex("Extra", CStr(rowKey)): Set cell = source.Cells(row, column)
                 cell.Value2 = CVErr(xlErrDiv0)
-                Set inputTable = RelocatedRecipeTable("rngRectSetGeometry", units)
+                Set inputTable = RelocatedRecipeTable("rngRebarInput", units)
+                code = 0: reason = ""
                 On Error Resume Next
-                value = inputTable.Choice(row + side - 1, CLng(column), choices)
+                value = inputTable.Choice(row, column, choices)
                 code = Err.Number: reason = Err.Description: Err.Clear
                 On Error GoTo 0
-                Check stats, prefix & ".formulaRejected." & CStr(side), code <> 0
-                Check stats, prefix & ".formulaAddress." & CStr(side), InStr(1, reason, cell.Address(False, False), vbBinaryCompare) > 0
-                Check stats, prefix & ".formulaSheet." & CStr(side), InStr(1, reason, source.Worksheet.Name, vbBinaryCompare) > 0
+                Check stats, prefix & ".formulaRejected." & CStr(rowKey), code <> 0
+                Check stats, prefix & ".formulaAddress." & CStr(rowKey), InStr(1, reason, cell.Address(False, False), vbBinaryCompare) > 0
+                Check stats, prefix & ".formulaSheet." & CStr(rowKey), InStr(1, reason, source.Worksheet.Name, vbBinaryCompare) > 0
                 first.Value2 = choices(0): second.Value2 = choices(1)
-            Next side
+            Next rowKey
             first.Value2 = savedFirst: second.Value2 = savedSecond
             stats.Cases = stats.Cases + 1
-        Next column
-        row = row + 2
-    Next face
+        Next field
+    Next pair
 End Sub
 
 ' ДЛЯ ТЕСТОВ: изменение геометрии проверяется через копию входной таблицы.
@@ -275,7 +276,7 @@ Private Function RelocatedRecipeError(ByVal rangeName As String, ByRef reason As
         Case "rngCircleGeometry": typeID = "Circle"
         Case "rngRoundedRectangleGeometry": typeID = "RoundedRectangle"
         Case "rngHollowRectangleGeometry": typeID = "HollowRectangle"
-        Case "rngRectSetGeometry": typeID = "RectSet"
+        Case "rngRectSetGeometry", "rngRebarInput": typeID = "RectSet"
     End Select
     Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange
     For row = 2 To system.Rows.Count
@@ -315,26 +316,23 @@ Private Function RelocatedFields(ByVal source As Object, ByVal rangeName As Stri
         Case "rngSteelMaterialParameters"
             fields.Add Array(CaptionRow(source, "Steel.E", 1), 2, "Steel.Esc")
             fields.Add Array(CaptionRow(source, "Steel.E", 1), 3, "Steel.Es")
-        Case "rngCircleGeometry"
-            fields.Add Array(CaptionRow(source, "Circle.Diameter", 1), 2, "Circle.Diameter")
-            fields.Add Array(CaptionRow(source, "Rebar.AxisDistance", 1), 2, "Rebar.AxisDistance")
-        Case "rngRoundedRectangleGeometry"
-            fields.Add Array(CaptionRow(source, "B", 2) + 1, 2, "RoundedRectangle.B")
-            row = CaptionRow(source, "Грань", 1) + 1
-            fields.Add Array(row, 2, "RoundedRectangle.H.Left.as")
-            fields.Add Array(row, 3, "RoundedRectangle.H.Left.d")
-            fields.Add Array(row, 4, "RoundedRectangle.H.Left.n")
-        Case "rngHollowRectangleGeometry"
-            fields.Add Array(CaptionRow(source, "HollowRectangle.InnerOffsetX", 1), 2, "HollowRectangle.InnerOffsetX")
-            row = CaptionRow(source, "Грань", 1) + 1
-            fields.Add Array(row, 2, "HollowRectangle.H.Left.as")
-            fields.Add Array(row, 3, "HollowRectangle.H.Left.d")
-        Case "rngRectSetGeometry"
-            fields.Add Array(CaptionRow(source, "RectSet.SectionType", 1), 2, "RectSet.SectionType")
-            row = CaptionRow(source, "H1", 1) + 4
-            fields.Add Array(row, 2, "RectSet.H1.as_1")
-            fields.Add Array(row, 3, "RectSet.H1.d_1")
-            fields.Add Array(row, 4, "RectSet.H1.n_1")
+        Case "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry"
+            Dim reader As CSectionInputReader, key As Variant, selected As Variant
+            Set reader = FixtureInput(source.Value2)
+            Select Case rangeName
+                Case "rngCircleGeometry": selected = Array("D")
+                Case "rngRoundedRectangleGeometry": selected = Array("B", "H", "Left.R1")
+                Case "rngHollowRectangleGeometry": selected = Array("B", "H", "Xo")
+                Case Else: selected = Array("Shape", "H1", "B1")
+            End Select
+            For Each key In selected
+                fields.Add Array(reader.RowIndex("General", CStr(key)), reader.ColumnIndex("General", "val"), rangeName & "." & CStr(key))
+            Next key
+        Case "rngRebarInput"
+            Set reader = FixtureInput(source.Value2)
+            For Each key In Array("as", "d", "n")
+                fields.Add Array(reader.RowIndex("Main", "RectSet.R1.Left"), reader.ColumnIndex("Main", CStr(key)), "RectSet.R1.Left." & CStr(key))
+            Next key
         Case "rngPlotAnnotationSettings"
             fields.Add Array(CaptionRow(source, "Enabled", 1), 2, "Plot.RebarLabels.Enabled")
             fields.Add Array(CaptionRow(source, "TextHeight", 1), 3, "Plot.Dimensions.TextHeight")

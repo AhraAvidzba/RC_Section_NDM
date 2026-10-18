@@ -386,6 +386,75 @@ Public Sub FixtureSelectRecipeType(ByVal workbook As Object, ByVal typeID As Str
     Err.Raise vbObjectError + 5590, "modTestGeometryFixtures", "Не найдена настройка Geometry.Type."
 End Sub
 
+' ДЛЯ ТЕСТОВ: смысловое имя контрольного параметра находит в действующих блоках.
+' Размеры читаются из General, армирование — из общей таблицы выбранного типа.
+Public Function FixtureConfigFieldCell(ByVal key As String) As Object
+    Dim parts As Variant, typeID As String, field As String, side As String, block As String
+    Dim area As Object, rowKey As String, columnKey As String, index As Long, suffix As String
+    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
+        Set FixtureConfigFieldCell = FixtureCircleFieldCell(ThisWorkbook, key): Exit Function
+    End If
+    parts = Split(key, "."): typeID = CStr(parts(0))
+    If typeID <> "RectSet" And typeID <> "RoundedRectangle" And typeID <> "HollowRectangle" Then Exit Function
+    Set area = ThisWorkbook.Names("rng" & typeID & "Geometry").RefersToRange
+    field = Mid$(key, Len(typeID) + 2): block = "General": columnKey = "val"
+    Select Case typeID
+        Case "RectSet"
+            Select Case field
+                Case "SectionType": rowKey = "Shape"
+                Case "UpperOffsetX": rowKey = "XOffset"
+                Case "H1", "B1", "H2", "B2": rowKey = field
+                Case Else
+                    side = CStr(parts(1)): field = CStr(parts(2))
+                    index = CLng(Right$(field, 1)): field = Left$(field, Len(field) - 1)
+                    rowKey = "R" & Right$(side, 1) & "."
+                    If Left$(side, 1) = "H" Then
+                        rowKey = rowKey & IIf(index = 1, "Left", "Right")
+                    Else
+                        rowKey = rowKey & IIf(index = 1, "Top", "Bottom")
+                    End If
+                    Select Case field
+                        Case "as_": columnKey = "as"
+                        Case "d_": columnKey = "d"
+                        Case "n_": columnKey = "n"
+                        Case "StartOffset": columnKey = "s0"
+                        Case "EndOffset": columnKey = "s1"
+                        Case "d_2row_": columnKey = "d2"
+                        Case "d_3row_": columnKey = "d3"
+                        Case "loc_2row_": columnKey = "pos2"
+                        Case "loc_3row_": columnKey = "pos3"
+                        Case "bind_2row_": columnKey = "bind2"
+                        Case "bind_3row_": columnKey = "bind3"
+                        Case Else: Err.Raise 5, , "Неизвестное контрольное поле: " & key
+                    End Select
+                    block = "Main": If InStr(columnKey, "2") Or InStr(columnKey, "3") Then block = "Extra"
+            End Select
+        Case Else
+            Select Case field
+                Case "InnerOffsetX": rowKey = "Xo"
+                Case "InnerOffsetY": rowKey = "Yo"
+                Case "OpeningB": rowKey = "Bo"
+                Case "OpeningH": rowKey = "Ho"
+                Case "OpeningR": rowKey = "Ro"
+                Case "B", "H", "R": rowKey = field
+                Case "Left.Type", "Left.W", "Left.R1", "Left.R2", "Right.Type", "Right.W", "Right.R1", "Right.R2": rowKey = field
+                Case Else
+                    index = UBound(parts): field = CStr(parts(index)): side = CStr(parts(index - 1))
+                    rowKey = side: If CStr(parts(1)) = "Opening" Then rowKey = "Opening" & side
+                    block = "Main": columnKey = field
+                    Select Case field
+                        Case "d_2row": block = "Extra": columnKey = "d2"
+                        Case "d_3row": block = "Extra": columnKey = "d3"
+                        Case "loc_2row": block = "Extra": columnKey = "pos2"
+                        Case "loc_3row": block = "Extra": columnKey = "pos3"
+                        Case "bind_2row": block = "Extra": columnKey = "bind2"
+                        Case "bind_3row": block = "Extra": columnKey = "bind3"
+                    End Select
+            End Select
+    End Select
+    Set FixtureConfigFieldCell = FixtureInputCell(area, block, rowKey, columnKey)
+End Function
+
 ' Приводит обозначения параметров в контрольных наборах к двум блокам новой таблицы.
 Private Sub FixtureNormalizeField(ByRef block As String, ByRef row As String, ByRef column As String)
     If block = "Detail" Then

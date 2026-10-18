@@ -1586,7 +1586,7 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
 End Sub
 
 ' Запускает RectSet через пользовательский workbook-entrypoint и проверяет
-' фактический Results, блок диаграмм и отсутствие отдельного ручного RebarInput.
+' фактический Results, блок диаграмм и общую таблицу армирования.
 Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareRectSetInput
     Dim message As String
@@ -1599,7 +1599,7 @@ Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
-    AssertTrue stats, "ui.rectset.system.noLegacyRebarInput", Not WorkbookNameExists("rngRebarInput")
+    AssertTrue stats, "ui.rectset.system.sharedRebarInput", WorkbookNameExists("rngRebarInput")
     AssertTrue stats, "ui.rectset.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
@@ -2814,9 +2814,10 @@ End Sub
 ' Изменяет ячейку fixture по каноническому ключу с учетом специализированных таблиц.
 ' Неизвестный ключ вызывает ошибку теста, а не создает новую настройку.
 Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
-    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
-        Dim circleCell As Object
-        Set circleCell = FixtureCircleFieldCell(ThisWorkbook, key): circleCell.Value2 = value: Exit Sub
+    Dim geometryCell As Object
+    Set geometryCell = FixtureConfigFieldCell(key)
+    If Not geometryCell Is Nothing Then
+        geometryCell.Value2 = value: Exit Sub
     End If
     If TrySetUnitOrSignSetting(key, value) Then Exit Sub
 
@@ -2837,9 +2838,6 @@ Private Sub SetSystemSetting(ByVal key As String, ByVal value As String)
         Next rowIndex
     Next rangeIndex
 
-    If TrySetRectSetFaceSetting(key, value) Then Exit Sub
-    If TrySetRoundedRectangleSetting(key, value) Then Exit Sub
-    If TrySetHollowRectangleSetting(key, value) Then Exit Sub
 
     Err.Raise vbObjectError + 4210, "modTestWorkbookInterface", "System setting not found: " & key
 End Sub
@@ -2988,325 +2986,12 @@ Private Function SignSettingAddress(ByVal key As String, ByRef rowIndex As Long,
     SignSettingAddress = True
 End Function
 
-' Записывает распознанное поле RectSet в видимую таблицу геометрии и армирования.
-' Отказ распознавания не меняет книгу и позволяет проверить другие формы.
-Private Function TrySetRectSetFaceSetting(ByVal key As String, ByVal value As String) As Boolean
-    Dim target As Object
-    Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-
-    Dim rowIndex As Long
-    Dim columnIndex As Long
-    If Not RectSetSettingAddress(key, rowIndex, columnIndex) Then Exit Function
-    target.Cells.Item(rowIndex, columnIndex).Value2 = value
-    TrySetRectSetFaceSetting = True
-End Function
-
-' Сопоставляет размеры, форму, смещение и параметры рядов с ячейками RectSet.
-' Положение граней определяется helpers ниже; это адреса fixture, не расчет координат.
-Private Function RectSetSettingAddress(ByVal key As String, ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
-    If StrComp(key, "RectSet.SectionType", vbTextCompare) = 0 Then
-        rowIndex = 3
-        columnIndex = 2
-        RectSetSettingAddress = True
-        Exit Function
-    ElseIf StrComp(key, "RectSet.UpperOffsetX", vbTextCompare) = 0 Then
-        rowIndex = 4
-        columnIndex = 2
-        RectSetSettingAddress = True
-        Exit Function
-    End If
-
-    Dim faceName As String
-    If InStr(1, key, "RectSet.H1", vbTextCompare) = 1 Then
-        faceName = "H1"
-    ElseIf InStr(1, key, "RectSet.B1", vbTextCompare) = 1 Then
-        faceName = "B1"
-    ElseIf InStr(1, key, "RectSet.H2", vbTextCompare) = 1 Then
-        faceName = "H2"
-    ElseIf InStr(1, key, "RectSet.B2", vbTextCompare) = 1 Then
-        faceName = "B2"
-    Else
-        Exit Function
-    End If
-
-    If StrComp(key, "RectSet." & faceName, vbTextCompare) = 0 Then
-        rowIndex = 8
-        columnIndex = RectSetGeometryColumn(faceName)
-    ElseIf StrComp(key, "RectSet." & faceName & ".as_1", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 2
-    ElseIf StrComp(key, "RectSet." & faceName & ".as_2", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 2
-    ElseIf StrComp(key, "RectSet." & faceName & ".d_1", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 3
-    ElseIf StrComp(key, "RectSet." & faceName & ".d_2", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 3
-    ElseIf StrComp(key, "RectSet." & faceName & ".n_1", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 4
-    ElseIf StrComp(key, "RectSet." & faceName & ".n_2", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 4
-    ElseIf StrComp(key, "RectSet." & faceName & ".StartOffset1", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 5
-    ElseIf StrComp(key, "RectSet." & faceName & ".EndOffset1", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 1): columnIndex = 6
-    ElseIf StrComp(key, "RectSet." & faceName & ".StartOffset2", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 5
-    ElseIf StrComp(key, "RectSet." & faceName & ".EndOffset2", vbTextCompare) = 0 Then
-        rowIndex = RectSetMainRow(faceName, 2): columnIndex = 6
-    ElseIf StrComp(key, "RectSet." & faceName & ".d_2row_1", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 2
-    ElseIf StrComp(key, "RectSet." & faceName & ".d_2row_2", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 2
-    ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_1", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 1): columnIndex = 6
-    ElseIf StrComp(key, "RectSet." & faceName & ".d_3row_2", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, 2): columnIndex = 6
-    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".loc_2row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 5
-    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".loc_3row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 9
-    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".bind_2row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 4
-    ElseIf StrComp(Left$(key, Len(key) - 1), "RectSet." & faceName & ".bind_3row_", vbTextCompare) = 0 Then
-        rowIndex = RectSetExtraRow(faceName, CLng(Right$(key, 1))): columnIndex = 8
-    Else
-        Exit Function
-    End If
-    RectSetSettingAddress = True
-End Function
-
-' Группа адресных helpers сохраняет порядок граней H1/B1/H2/B2 и двух сторон.
-' Основные ряды и дополнительные ряды находятся в разных блоках таблицы.
-Private Function RectSetGeometryColumn(ByVal faceName As String) As Long
-    Select Case UCase$(faceName)
-        Case "H1": RectSetGeometryColumn = 1
-        Case "B1": RectSetGeometryColumn = 2
-        Case "H2": RectSetGeometryColumn = 3
-        Case "B2": RectSetGeometryColumn = 4
-    End Select
-End Function
-
-Private Function RectSetMainRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    RectSetMainRow = 10 + RectSetFaceOrdinal(faceName, sideIndex)
-End Function
-
-Private Function RectSetExtraRow(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    RectSetExtraRow = 20 + RectSetFaceOrdinal(faceName, sideIndex)
-End Function
-
-' Переводит пару грань/сторона в порядковый номер строки fixture-таблицы:
-' H1, B1, H2, B2 занимают по две строки, стороны сохраняют порядок 1/2.
-Private Function RectSetFaceOrdinal(ByVal faceName As String, ByVal sideIndex As Long) As Long
-    Select Case UCase$(faceName)
-        Case "H1": RectSetFaceOrdinal = sideIndex
-        Case "B1": RectSetFaceOrdinal = 2 + sideIndex
-        Case "H2": RectSetFaceOrdinal = 4 + sideIndex
-        Case "B2": RectSetFaceOrdinal = 6 + sideIndex
-    End Select
-End Function
-
-' Меняет одну ячейку табличного блока RoundedRectangle в тестовой книге.
-' Адресация учитывает видимые блоки размеров, граней и дополнительных рядов.
-Private Function TrySetRoundedRectangleSetting(ByVal key As String, ByVal value As String) As Boolean
-    Dim target As Object
-    Set target = ThisWorkbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
-
-    Dim rowIndex As Long
-    Dim columnIndex As Long
-    If Not RoundedRectangleSettingAddress(key, rowIndex, columnIndex) Then Exit Function
-    target.Cells.Item(rowIndex, columnIndex).Value2 = value
-    TrySetRoundedRectangleSetting = True
-End Function
-
-' Возвращает адрес пользовательского параметра внутри табличного диапазона
-' RoundedRectangle. Номера строк привязаны к layout-у SettingsCatalog, а не к
-' старым внутренним ключам, которых пользователь в этой таблице не видит.
-Private Function RoundedRectangleSettingAddress(ByVal key As String, _
-        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
-    Select Case LCase$(key)
-        Case "roundedrectangle.b"
-            rowIndex = 3: columnIndex = 2
-        Case "roundedrectangle.h"
-            rowIndex = 3: columnIndex = 3
-        Case "roundedrectangle.left.type"
-            rowIndex = 7: columnIndex = 2
-        Case "roundedrectangle.right.type"
-            rowIndex = 7: columnIndex = 3
-        Case "roundedrectangle.left.w"
-            rowIndex = 8: columnIndex = 2
-        Case "roundedrectangle.right.w"
-            rowIndex = 8: columnIndex = 3
-        Case "roundedrectangle.left.r1"
-            rowIndex = 9: columnIndex = 2
-        Case "roundedrectangle.right.r1"
-            rowIndex = 9: columnIndex = 3
-        Case "roundedrectangle.left.r2"
-            rowIndex = 10: columnIndex = 2
-        Case "roundedrectangle.right.r2"
-            rowIndex = 10: columnIndex = 3
-        Case Else
-            If Not RoundedRectangleFaceSettingAddress(key, rowIndex, columnIndex) Then Exit Function
-    End Select
-    RoundedRectangleSettingAddress = True
-End Function
-
-' Возвращает адрес параметра арматуры по одной из четырех видимых граней:
-' H.Left, H.Right, B.Top или B.Bottom.
-Private Function RoundedRectangleFaceSettingAddress(ByVal key As String, _
-        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
-    Dim prefix As String
-    Dim faceOrdinal As Long
-    prefix = RoundedRectangleFacePrefix(key, faceOrdinal)
-    If Len(prefix) = 0 Then Exit Function
-
-    Dim tail As String
-    tail = Mid$(key, Len(prefix) + 2)
-    Select Case LCase$(tail)
-        Case "as"
-            rowIndex = 12 + faceOrdinal: columnIndex = 2
-        Case "d"
-            rowIndex = 12 + faceOrdinal: columnIndex = 3
-        Case "n"
-            rowIndex = 12 + faceOrdinal: columnIndex = 4
-        Case "d_2row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 2
-        Case "loc_2row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 5
-        Case "bind_2row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 4
-        Case "d_3row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 6
-        Case "loc_3row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 9
-        Case "bind_3row"
-            rowIndex = 18 + faceOrdinal: columnIndex = 8
-        Case Else
-            Exit Function
-    End Select
-    RoundedRectangleFaceSettingAddress = True
-End Function
-
-' Нормализует имя грани RoundedRectangle и возвращает ее порядковый номер в
-' блоках основного и дополнительного армирования.
-Private Function RoundedRectangleFacePrefix(ByVal key As String, ByRef faceOrdinal As Long) As String
-    If InStr(1, key, "RoundedRectangle.H.Left.", vbTextCompare) = 1 Then
-        RoundedRectangleFacePrefix = "RoundedRectangle.H.Left"
-        faceOrdinal = 1
-    ElseIf InStr(1, key, "RoundedRectangle.H.Right.", vbTextCompare) = 1 Then
-        RoundedRectangleFacePrefix = "RoundedRectangle.H.Right"
-        faceOrdinal = 2
-    ElseIf InStr(1, key, "RoundedRectangle.B.Top.", vbTextCompare) = 1 Then
-        RoundedRectangleFacePrefix = "RoundedRectangle.B.Top"
-        faceOrdinal = 3
-    ElseIf InStr(1, key, "RoundedRectangle.B.Bottom.", vbTextCompare) = 1 Then
-        RoundedRectangleFacePrefix = "RoundedRectangle.B.Bottom"
-        faceOrdinal = 4
-    End If
-End Function
-
-' Меняет одну ячейку таблицы HollowRectangle. Таблица содержит наружный
-' контур, Opening и восемь смысловых граней, поэтому адреса задаются не
-' обычным Key/Value-списком, а видимой структурой блока Config.
-Private Function TrySetHollowRectangleSetting(ByVal key As String, ByVal value As String) As Boolean
-    Dim target As Object
-    Set target = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
-
-    Dim rowIndex As Long
-    Dim columnIndex As Long
-    If Not HollowRectangleSettingAddress(key, rowIndex, columnIndex) Then Exit Function
-    target.Cells.Item(rowIndex, columnIndex).Value2 = value
-    TrySetHollowRectangleSetting = True
-End Function
-
-' Определяет ячейку размеров/смещения отверстия или передает ключ адресатору грани.
-' Распознавание не меняет значение, позволяя отдельно проверять чтение и запись.
-Private Function HollowRectangleSettingAddress(ByVal key As String, _
-        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
-    Select Case LCase$(key)
-        Case "hollowrectangle.inneroffsetx"
-            rowIndex = 3: columnIndex = 2
-        Case "hollowrectangle.inneroffsety"
-            rowIndex = 4: columnIndex = 2
-        Case "hollowrectangle.h"
-            rowIndex = 7: columnIndex = 1
-        Case "hollowrectangle.b"
-            rowIndex = 7: columnIndex = 2
-        Case "hollowrectangle.r"
-            rowIndex = 7: columnIndex = 3
-        Case "hollowrectangle.openingh"
-            rowIndex = 7: columnIndex = 4
-        Case "hollowrectangle.openingb"
-            rowIndex = 7: columnIndex = 5
-        Case "hollowrectangle.openingr"
-            rowIndex = 7: columnIndex = 6
-        Case Else
-            If Not HollowRectangleFaceSettingAddress(key, rowIndex, columnIndex) Then Exit Function
-    End Select
-    HollowRectangleSettingAddress = True
-End Function
-
-' Сопоставляет арматурный параметр с наружной или внутренней гранью HollowRectangle.
-' Основные и дополнительные ряды адресуются отдельно; неверный параметр отклоняется.
-Private Function HollowRectangleFaceSettingAddress(ByVal key As String, _
-        ByRef rowIndex As Long, ByRef columnIndex As Long) As Boolean
-    Dim prefix As String
-    Dim faceOrdinal As Long
-    prefix = HollowRectangleFacePrefix(key, faceOrdinal)
-    If Len(prefix) = 0 Then Exit Function
-
-    Dim tail As String
-    tail = Mid$(key, Len(prefix) + 2)
-    Select Case LCase$(tail)
-        Case "as"
-            rowIndex = 10 + faceOrdinal: columnIndex = 2
-        Case "d"
-            rowIndex = 10 + faceOrdinal: columnIndex = 3
-        Case "n"
-            rowIndex = 10 + faceOrdinal: columnIndex = 4
-        Case "d_2row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 2
-        Case "loc_2row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 5
-        Case "bind_2row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 4
-        Case "d_3row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 6
-        Case "loc_3row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 9
-        Case "bind_3row"
-            rowIndex = 20 + faceOrdinal: columnIndex = 8
-        Case Else
-            Exit Function
-    End Select
-    HollowRectangleFaceSettingAddress = True
-End Function
-
-' Возвращает принятое начало имени и номер одной из восьми сторон.
-' Стороны отверстия проверяются отдельно от наружных.
-Private Function HollowRectangleFacePrefix(ByVal key As String, ByRef faceOrdinal As Long) As String
-    If InStr(1, key, "HollowRectangle.H.Left.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.H.Left": faceOrdinal = 1
-    ElseIf InStr(1, key, "HollowRectangle.H.Right.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.H.Right": faceOrdinal = 2
-    ElseIf InStr(1, key, "HollowRectangle.B.Top.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.B.Top": faceOrdinal = 3
-    ElseIf InStr(1, key, "HollowRectangle.B.Bottom.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.B.Bottom": faceOrdinal = 4
-    ElseIf InStr(1, key, "HollowRectangle.Opening.H.Left.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.Opening.H.Left": faceOrdinal = 5
-    ElseIf InStr(1, key, "HollowRectangle.Opening.H.Right.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.Opening.H.Right": faceOrdinal = 6
-    ElseIf InStr(1, key, "HollowRectangle.Opening.B.Top.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.Opening.B.Top": faceOrdinal = 7
-    ElseIf InStr(1, key, "HollowRectangle.Opening.B.Bottom.", vbTextCompare) = 1 Then
-        HollowRectangleFacePrefix = "HollowRectangle.Opening.B.Bottom": faceOrdinal = 8
-    End If
-End Function
-
-' Читает значение fixture из специальных таблиц или упорядоченных диапазонов Config.
-' Отсутствие ключа вызывает ошибку теста, вместо подмены прочитанного значения default.
+' Читает контрольный параметр из его действующей именованной таблицы.
 Private Function GetSystemSetting(ByVal key As String) As String
-    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
-        GetSystemSetting = CStr(FixtureCircleFieldCell(ThisWorkbook, key).Value2): Exit Function
+    Dim geometryCell As Object
+    Set geometryCell = FixtureConfigFieldCell(key)
+    If Not geometryCell Is Nothing Then
+        GetSystemSetting = CStr(geometryCell.Value2): Exit Function
     End If
     Dim directValue As String
     If TryGetUnitOrSignSetting(key, directValue) Then
@@ -3374,11 +3059,11 @@ Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
     If StrComp(geometryType, "RectSet", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput")
     ElseIf StrComp(geometryType, "RoundedRectangle", vbTextCompare) = 0 Then
         SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngHollowRectangleGeometry")
     ElseIf StrComp(geometryType, "HollowRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngRebarInput")
     Else
         SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry")
     End If
@@ -3563,8 +3248,10 @@ End Function
 ' Ищет validation ключа в реально существующих таблицах выбранной конфигурации.
 ' Успех требует совпадения полного списка вариантов, а не только наличия dropdown.
 Private Function AnySettingValidationHasOptions(ByVal key As String, ByVal expectedOptions As Variant) As Boolean
-    If Left$(key, 6) = "Rebar." Or Left$(key, 7) = "Circle." Then
-        AnySettingValidationHasOptions = ValidationCellHasOptions(FixtureCircleFieldCell(ThisWorkbook, key), expectedOptions)
+    Dim geometryCell As Object
+    Set geometryCell = FixtureConfigFieldCell(key)
+    If Not geometryCell Is Nothing Then
+        AnySettingValidationHasOptions = ValidationCellHasOptions(geometryCell, expectedOptions)
         Exit Function
     End If
     Dim ranges As Variant
@@ -3637,18 +3324,7 @@ End Function
 ' Находит строку параметра RectSet и проверяет validation ее ячейки значения.
 Private Function RectSetParameterValidationHasOptions(ByVal parameterName As String, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
-
-    Dim settings As Object
-    Set settings = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-
-    Dim rowIndex As Long
-    For rowIndex = 1 To settings.Rows.Count
-        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), parameterName, vbTextCompare) = 0 Then
-            RectSetParameterValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, 2), expectedOptions)
-            Exit Function
-        End If
-    Next rowIndex
-    Exit Function
+    RectSetParameterValidationHasOptions = ValidationCellHasOptions(FixtureConfigFieldCell(parameterName), expectedOptions)
 Failed:
 End Function
 
@@ -3658,42 +3334,12 @@ End Function
 Private Function RectSetExtraValidationHasOptions(ByVal faceCaption As String, ByVal headerCaption As String, _
         ByVal occurrenceIndex As Long, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
-
-    Dim settings As Object
-    Set settings = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-
-    Dim headerRow As Long
-    Dim rowIndex As Long
-    For rowIndex = 1 To settings.Rows.Count
-        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), "Грань", vbTextCompare) = 0 And _
-                StrComp(CStr(settings.Cells.Item(rowIndex, 2).Value2), "d2", vbTextCompare) = 0 Then
-            headerRow = rowIndex
-            Exit For
-        End If
-    Next rowIndex
-    If headerRow = 0 Then Exit Function
-
-    Dim valueColumn As Long
-    Dim foundCount As Long
-    Dim columnIndex As Long
-    For columnIndex = 1 To settings.Columns.Count
-        If StrComp(CStr(settings.Cells.Item(headerRow, columnIndex).Value2), headerCaption, vbTextCompare) = 0 Then
-            foundCount = foundCount + 1
-            If foundCount = occurrenceIndex Then
-                valueColumn = columnIndex
-                Exit For
-            End If
-        End If
-    Next columnIndex
-    If valueColumn = 0 Then Exit Function
-
-    For rowIndex = headerRow + 1 To settings.Rows.Count
-        If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), faceCaption, vbTextCompare) = 0 Then
-            RectSetExtraValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
-            Exit Function
-        End If
-    Next rowIndex
-    Exit Function
+    Dim field As String, face As String, side As Long, key As String
+    face = Left$(faceCaption, 2): side = 1
+    If InStr(faceCaption, "правая") Or InStr(faceCaption, "нижняя") Then side = 2
+    field = "bind_": If InStr(1, headerCaption, "Положение", vbTextCompare) Then field = "loc_"
+    key = "RectSet." & face & "." & field & CStr(occurrenceIndex + 1) & "row_" & CStr(side)
+    RectSetExtraValidationHasOptions = ValidationCellHasOptions(FixtureConfigFieldCell(key), expectedOptions)
 Failed:
 End Function
 
@@ -5320,143 +4966,106 @@ End Function
 ' ДЛЯ ТЕСТОВ: разные значения противоположных граней сохраняются в своих
 ' ячейках снимка. Чтение первой строки не подменяет значение второй строки.
 Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
-    Dim sheet As Object, target As Object, source As Object, table As CSectionInputTable
-    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, side As Long
-    Dim firstValue As String, secondValue As String, tail As String, key As String
-    Dim savedAlerts As Boolean
+    Dim values As Variant, reader As CSectionInputReader, side As Variant, field As Variant
+    Dim firstValue As String, secondValue As String, pair As Variant
     On Error GoTo Failed
-    savedAlerts = Application.DisplayAlerts
-    Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-    Set sheet = ThisWorkbook.Worksheets.Add
-    Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
-    target.Value2 = source.Value2
-    For Each face In Array("H1", "B1", "H2", "B2")
-        topRow = 21 + pairIndex * 2
-        For Each column In Array(5, 4, 9, 8)
-            tail = RectSetSelectorTail(CLng(column))
-            If CLng(column) = 5 Or CLng(column) = 9 Then
-                firstValue = "Stacked": secondValue = "SideBySide"
-            Else
-                firstValue = "EachBar": secondValue = "EverySecondBar"
-            End If
-            target.Cells(topRow, CLng(column)).Value2 = firstValue
-            target.Cells(topRow + 1, CLng(column)).Value2 = secondValue
-            Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
-            key = "RectSet." & CStr(face) & "." & tail
-            AssertTextEquals stats, key & ".first", table.Text(topRow, CLng(column), vbNullString), firstValue
-            AssertTextEquals stats, key & ".second", table.Text(topRow + 1, CLng(column), vbNullString), secondValue
-            For side = 1 To 2
-                target.Cells(topRow + side - 1, CLng(column)).ClearContents
-                Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
-                AssertTextEquals stats, key & ".empty" & CStr(side), table.Text(topRow + side - 1, CLng(column), vbNullString), vbNullString
-                target.Cells(topRow, CLng(column)).Value2 = firstValue
-                target.Cells(topRow + 1, CLng(column)).Value2 = secondValue
+    values = FixtureRecipeValues("rngRectSetGeometry")
+    For Each pair In Array(Array("R1.Left", "R1.Right"), Array("R1.Top", "R1.Bottom"), _
+            Array("R2.Left", "R2.Right"), Array("R2.Top", "R2.Bottom"))
+        For Each field In Array("pos2", "bind2", "pos3", "bind3")
+            firstValue = "EachBar": secondValue = "EverySecondBar"
+            If Left$(CStr(field), 3) = "pos" Then firstValue = "Stacked": secondValue = "SideBySide"
+            FixtureSetInput values, "Extra", CStr(pair(0)), CStr(field), firstValue
+            FixtureSetInput values, "Extra", CStr(pair(1)), CStr(field), secondValue
+            Set reader = FixtureInput(values)
+            AssertTextEquals stats, CStr(pair(0)) & "." & CStr(field), reader.Text("Extra", CStr(pair(0)), CStr(field)), firstValue
+            AssertTextEquals stats, CStr(pair(1)) & "." & CStr(field), reader.Text("Extra", CStr(pair(1)), CStr(field)), secondValue
+            For Each side In pair
+                FixtureSetInput values, "Extra", CStr(side), CStr(field), Empty
+                Set reader = FixtureInput(values)
+                AssertTextEquals stats, CStr(side) & "." & CStr(field) & ".empty", reader.Text("Extra", CStr(side), CStr(field), ""), ""
             Next side
-        Next column
-        pairIndex = pairIndex + 1
-    Next face
-    GoTo Restore
+        Next field
+    Next pair
+    Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: rectset.independent.reader; " & CStr(Err.Number) & "; " & Err.Description
-Restore:
-    On Error Resume Next
-    Application.DisplayAlerts = False
-    If Not sheet Is Nothing Then sheet.Delete
-    Application.DisplayAlerts = savedAlerts
-    On Error GoTo 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: все 32 селектора фактического Config не объединены, имеют
 ' вертикальный список выбора и читаются по адресу своей физической грани.
 Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
-    Dim target As Object, cell As Object, table As CSectionInputTable
-    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, side As Long
-    Dim key As String, prefix As String
+    Dim target As Object, cell As Object, reader As CSectionInputReader
+    Dim side As Variant, field As Variant, prefix As String, config As Object, saved As Variant
     On Error GoTo Failed
-    Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-    Set table = New CSectionInputTable: table.Initialize "rngRectSetGeometry", target.Value2
-    For Each face In Array("H1", "B1", "H2", "B2")
-        topRow = 21 + pairIndex * 2
-        For Each column In Array(5, 4, 9, 8)
-            For side = 1 To 2
-                key = "RectSet." & CStr(face) & "." & RectSetSelectorTail(CLng(column)) & "_" & CStr(side)
-                prefix = "rectset.independent.layout." & key
-                Set cell = target.Cells(topRow + side - 1, CLng(column))
-                AssertTrue stats, prefix & ".unmerged", Not cell.MergeCells
-                AssertTrue stats, prefix & ".dropdown", cell.Validation.Type = 3 And cell.Validation.InCellDropdown
-                AssertTrue stats, prefix & ".rangeList", Left$(cell.Validation.Formula1, 1) = "="
-                AssertTrue stats, prefix & ".centered", cell.HorizontalAlignment = xlCenter And cell.VerticalAlignment = xlCenter
-                AssertTextEquals stats, prefix & ".reader", table.Text(topRow + side - 1, CLng(column), vbNullString), CStr(cell.Value2)
-            Next side
-        Next column
-        pairIndex = pairIndex + 1
-    Next face
-    Exit Sub
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    modTestShapeArchitecture.ConfigureShapeFixture "TwoRectangles"
+    Set target = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+    For Each side In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
+        For Each field In Array("pos2", "bind2", "pos3", "bind3")
+            Set cell = FixtureInputCell(target, "Extra", CStr(side), CStr(field))
+            prefix = "rectset.independent.layout." & CStr(side) & "." & CStr(field)
+            AssertTrue stats, prefix & ".unmerged", Not cell.MergeCells
+            AssertTrue stats, prefix & ".dropdown", cell.Validation.Type = 3 And cell.Validation.InCellDropdown
+            AssertTrue stats, prefix & ".rangeList", Left$(cell.Validation.Formula1, 1) = "="
+            AssertTrue stats, prefix & ".centered", cell.HorizontalAlignment = xlCenter And cell.VerticalAlignment = xlCenter
+            Set reader = FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2)
+            AssertTextEquals stats, prefix & ".reader", reader.Text("Extra", "RectSet." & CStr(side), CStr(field)), CStr(cell.Value2)
+        Next field
+    Next side
+    GoTo Finished
 Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: rectset.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
+Finished:
+    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
 End Sub
 
 ' ДЛЯ ТЕСТОВ: меняет каждый из 32 вариантов размещения через обычное чтение
 ' таблиц и рецепт. Меняются только три дополнительных стержня выбранной стороны;
 ' шесть стержней противоположной стороны сохраняются.
 Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
-    Dim source As Object, sheet As Object, target As Object, savedReference As String
-    Dim units As CUnitSystem
+    Dim target As Object, config As Object, saved As Variant, cell As Object, units As CUnitSystem
     Dim baseline As CRebarLayout, changed As CRebarLayout, inactive As CRebarLayout
-    Dim face As Variant, column As Variant, pairIndex As Long, topRow As Long, mainRow As Long
-    Dim row As Long, i As Long, side As Long, selectedRow As Long, diameterColumn As Long
+    Dim pair As Variant, field As Variant, side As Long, rowKey As Variant, diameter As String
     Dim prefix As String, alternative As String, original As String, changedBars As Long
-    Dim oppositeStart As Long, number As Long, reason As String, savedAlerts As Boolean
-    Dim invalid As Variant
+    Dim i As Long, oppositeStart As Long, number As Long, reason As String, invalid As Variant
     On Error GoTo Failed
-    savedAlerts = Application.DisplayAlerts
-    savedReference = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo
-    Set source = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-    Set sheet = ThisWorkbook.Worksheets.Add
-    Set target = sheet.Range("A1").Resize(source.Rows.Count, source.Columns.Count)
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     Set units = New CUnitSystem: units.InitializeDefaults
-    ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo = "='" & sheet.Name & "'!" & target.Address
-    For Each face In Array("H1", "B1", "H2", "B2")
-        topRow = 21 + pairIndex * 2: mainRow = 11 + pairIndex * 2
-        For Each column In Array(5, 4, 9, 8)
-            For side = 1 To 2
-                target.Value2 = source.Value2
-                target.Cells(3, 2).Value2 = "LSection": target.Cells(4, 2).Value2 = 0#
-                target.Cells(8, 1).Value2 = 300#: target.Cells(8, 2).Value2 = 200#
-                target.Cells(8, 3).Value2 = 200#: target.Cells(8, 4).Value2 = 500#
-                For row = 11 To 18
-                    target.Cells(row, 3).Value2 = 0#: target.Cells(row, 4).Value2 = 0
-                Next row
-                For row = 21 To 28
-        target.Cells(row, 3).Value2 = 0#: target.Cells(row, 7).Value2 = 0#
-                    target.Cells(row, 2).Value2 = 0#: target.Cells(row, 6).Value2 = 0#
-                    target.Cells(row, 5).Value2 = "Stacked": target.Cells(row, 9).Value2 = "Stacked"
-                    target.Cells(row, 4).Value2 = "EachBar": target.Cells(row, 8).Value2 = "EachBar"
-                Next row
-                For row = mainRow To mainRow + 1
-                    target.Cells(row, 2).Value2 = 20#
-                    target.Cells(row, 3).Value2 = 10#: target.Cells(row, 4).Value2 = 3
-                    target.Cells(row, 5).Value2 = 30#: target.Cells(row, 6).Value2 = 30#
-                Next row
-                If CLng(column) <= 5 Then diameterColumn = 2 Else diameterColumn = 6
-                target.Cells(topRow, diameterColumn).Value2 = 8#
-                target.Cells(topRow + 1, diameterColumn).Value2 = 8#
-                selectedRow = topRow + side - 1
-                If CLng(column) = 5 Or CLng(column) = 9 Then
-                    original = "Stacked": alternative = "SideBySide"
-                Else
-                    original = "EachBar": alternative = "EverySecondBar"
-                End If
-                prefix = "rectset.independent.effect." & CStr(face) & "." & CStr(column) & "." & CStr(side)
-
+    For Each pair In Array(Array("R1.Left", "R1.Right"), Array("R1.Top", "R1.Bottom"), _
+            Array("R2.Left", "R2.Right"), Array("R2.Top", "R2.Bottom"))
+        For Each field In Array("pos2", "bind2", "pos3", "bind3")
+            For side = 0 To 1
+                modTestShapeArchitecture.ConfigureShapeFixture "LSection"
+                Set target = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+                FixtureInputCell(target, "General", "H1").Value2 = 300#: FixtureInputCell(target, "General", "B1").Value2 = 200#
+                FixtureInputCell(target, "General", "H2").Value2 = 200#: FixtureInputCell(target, "General", "B2").Value2 = 500#
+                For Each rowKey In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
+                    FixtureInputCell(target, "Main", CStr(rowKey), "n").Value2 = 0
+                    FixtureInputCell(target, "Main", CStr(rowKey), "d").Value2 = 0#
+                    FixtureInputCell(target, "Extra", CStr(rowKey), "d2").Value2 = 0#
+                    FixtureInputCell(target, "Extra", CStr(rowKey), "d3").Value2 = 0#
+                Next rowKey
+                diameter = "d" & Right$(CStr(field), 1)
+                For Each rowKey In pair
+                    FixtureInputCell(target, "Main", CStr(rowKey), "as").Value2 = 20#
+                    FixtureInputCell(target, "Main", CStr(rowKey), "d").Value2 = 10#
+                    FixtureInputCell(target, "Main", CStr(rowKey), "n").Value2 = 3
+                    FixtureInputCell(target, "Main", CStr(rowKey), "s0").Value2 = 30#
+                    FixtureInputCell(target, "Main", CStr(rowKey), "s1").Value2 = 30#
+                    FixtureInputCell(target, "Extra", CStr(rowKey), diameter).Value2 = 8#
+                Next rowKey
+                original = "EachBar": alternative = "EverySecondBar"
+                If Left$(CStr(field), 3) = "pos" Then original = "Stacked": alternative = "SideBySide"
+                Set cell = FixtureInputCell(target, "Extra", CStr(pair(side)), CStr(field))
+                prefix = "rectset.independent.effect." & CStr(pair(side)) & "." & CStr(field)
                 Set baseline = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".baseline", baseline.Count = 12
-                target.Cells(selectedRow, CLng(column)).Value2 = alternative
-
+                cell.Value2 = alternative
                 Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
-                If CLng(column) = 5 Or CLng(column) = 9 Then
+                If Left$(CStr(field), 3) = "pos" Then
                     changedBars = 0
                     For i = 1 To baseline.Count
                         If Abs(baseline.X(i) - changed.X(i)) + Abs(baseline.Y(i) - changed.Y(i)) > 0.00000001 Then changedBars = changedBars + 1
@@ -5465,47 +5074,35 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                 Else
                     AssertTrue stats, prefix & ".oneSideBound", changed.Count = 11
                 End If
-                If side = 1 Then oppositeStart = 7 Else oppositeStart = 1
+                oppositeStart = 1: If side = 0 Then oppositeStart = 7
                 For i = oppositeStart To oppositeStart + 5
                     AssertTrue stats, prefix & ".opposite" & CStr(i), RectSetLayoutContainsBar(changed, baseline, i)
                 Next i
                 For Each invalid In Array(vbNullString, "InvalidChoice", CVErr(xlErrDiv0))
-                    target.Cells(selectedRow, CLng(column)).Value2 = invalid
-
+                    cell.Value2 = invalid
+                    number = 0: reason = ""
                     On Error Resume Next
                     Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                     number = Err.Number: reason = Err.Description: Err.Clear
                     On Error GoTo Failed
                     AssertTrue stats, prefix & ".invalidRejected." & TypeName(invalid), number <> 0
-                    AssertTrue stats, prefix & ".invalidAddress." & TypeName(invalid), _
-                        InStr(1, reason, sheet.Name & "!" & target.Cells(selectedRow, CLng(column)).Address(False, False), vbBinaryCompare) > 0
+                    AssertTrue stats, prefix & ".invalidAddress." & TypeName(invalid), InStr(1, reason, cell.Worksheet.Name & "!" & cell.Address(False, False), vbBinaryCompare) > 0
                 Next invalid
-                target.Cells(selectedRow, diameterColumn).Value2 = 0#
-
+                FixtureInputCell(target, "Extra", CStr(pair(side)), diameter).Value2 = 0#
                 Set inactive = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".inactiveIgnored", inactive.Count = 9
-                target.Cells(selectedRow, CLng(column)).Value2 = original
-
+                cell.Value2 = original
                 Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".inactiveSameCount", changed.Count = inactive.Count
-                For i = 1 To inactive.Count
-                    AssertTrue stats, prefix & ".inactiveSame" & CStr(i), RectSetLayoutContainsBar(changed, inactive, i)
-                Next i
             Next side
-        Next column
-        pairIndex = pairIndex + 1
-    Next face
-    GoTo Restore
+        Next field
+    Next pair
+    GoTo Finished
 Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: rectset.independent.effect; " & CStr(Err.Number) & "; " & Err.Description
-Restore:
-    On Error Resume Next
-    Application.DisplayAlerts = False
-    If Len(savedReference) > 0 Then ThisWorkbook.Names.Item("rngRectSetGeometry").RefersTo = savedReference
-    If Not sheet Is Nothing Then sheet.Delete
-    Application.DisplayAlerts = savedAlerts
-    On Error GoTo 0
+Finished:
+    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
 End Sub
 
 ' ДЛЯ ТЕСТОВ: третий ряд учитывает направление и диаметр второго ряда только
@@ -5513,32 +5110,32 @@ End Sub
 ' слева, где направления различаются; последующее изменение слева изолировано.
 Private Sub TestRectSetIndependentThirdRows(ByRef stats As TUiTestStats)
     Dim recipe As ISectionRecipe, layout As CRebarLayout, changed As CRebarLayout
-    Dim values As Variant, row As Long
+    Dim values As Variant, rowKey As Variant, field As Variant
     On Error GoTo Failed
     Set recipe = New CSectionRecipeRectSet
-    values = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange.Value2
-    values(3, 2) = "Rectangle": values(4, 2) = 0#
-    values(8, 1) = 300#: values(8, 2) = 200#: values(8, 3) = 0#: values(8, 4) = 0#
-    For row = 11 To 18
-        values(row, 2) = 50#: values(row, 3) = 20#: values(row, 4) = 0
-        values(row, 5) = 100#: values(row, 6) = 100#
-    Next row
-    For row = 21 To 28
-        values(row, 3) = 0#: values(row, 7) = 0#
-        values(row, 2) = 0#: values(row, 6) = 0#
-        values(row, 5) = "Stacked": values(row, 9) = "Stacked"
-        values(row, 4) = "EachBar": values(row, 8) = "EachBar"
-    Next row
-    values(11, 4) = 1: values(12, 4) = 1
-    values(21, 2) = 18#: values(21, 6) = 28#: values(21, 5) = "SideBySide"
-    values(22, 2) = 22#: values(22, 6) = 34#
+    values = FixtureRecipeValues("rngRectSetGeometry")
+    FixtureSetInput values, "General", "Shape", "val", "Rectangle"
+    FixtureSetInput values, "General", "H1", "val", 300#: FixtureSetInput values, "General", "B1", "val", 200#
+    For Each rowKey In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
+        FixtureSetInput values, "Main", CStr(rowKey), "as", 50#: FixtureSetInput values, "Main", CStr(rowKey), "d", 20#
+        FixtureSetInput values, "Main", CStr(rowKey), "n", 0
+        FixtureSetInput values, "Main", CStr(rowKey), "s0", 100#: FixtureSetInput values, "Main", CStr(rowKey), "s1", 100#
+        For Each field In Array("d2", "a2", "d3", "a3"): FixtureSetInput values, "Extra", CStr(rowKey), CStr(field), 0#: Next field
+        For Each field In Array("pos2", "pos3"): FixtureSetInput values, "Extra", CStr(rowKey), CStr(field), "Stacked": Next field
+        For Each field In Array("bind2", "bind3"): FixtureSetInput values, "Extra", CStr(rowKey), CStr(field), "EachBar": Next field
+    Next rowKey
+    FixtureSetInput values, "Main", "R1.Left", "n", 1: FixtureSetInput values, "Main", "R1.Right", "n", 1
+    FixtureSetInput values, "Extra", "R1.Left", "d2", 18#: FixtureSetInput values, "Extra", "R1.Left", "d3", 28#
+    FixtureSetInput values, "Extra", "R1.Left", "pos2", "SideBySide"
+    FixtureSetInput values, "Extra", "R1.Right", "d2", 22#: FixtureSetInput values, "Extra", "R1.Right", "d3", 34#
     Set layout = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
     AssertTrue stats, "rectset.thirdRows.count", layout.Count = 6
-    AssertTrue stats, "rectset.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - 24#) < 0.00000001
-    AssertTrue stats, "rectset.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - 49#) < 0.00000001
-    values(21, 9) = "SideBySide"
+    ' К каждой приставленной паре добавляются 2,5 мм для арматуры периодического профиля.
+    AssertTrue stats, "rectset.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - ((20# + 28#) / 2# + 2.5)) < 0.00000001
+    AssertTrue stats, "rectset.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - ((20# + 22#) / 2# + 2.5 + (22# + 34#) / 2# + 2.5)) < 0.00000001
+    FixtureSetInput values, "Extra", "R1.Left", "pos3", "SideBySide"
     Set changed = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
-    AssertTrue stats, "rectset.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - 42#) < 0.00000001
+    AssertTrue stats, "rectset.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - ((20# + 18#) / 2# + 2.5 + (18# + 28#) / 2# + 2.5)) < 0.00000001
     AssertTrue stats, "rectset.thirdRows.rightUnchanged", RectSetLayoutContainsBar(changed, layout, 6)
     Exit Sub
 Failed:
@@ -6064,6 +5661,17 @@ Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix
                 End If
                 If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
                     expected = CDbl(baseline(row, column)): converted = CDbl(actual(row, column)) * factor
+                    If compareInertiaRoundoff And kind = "Properties" And column = 4 Then
+                        Dim axisPrefix As String, opposite As String
+                        axisPrefix = Split(parameter, ".")(0): opposite = vbNullString
+                        Select Case Mid$(parameter, Len(axisPrefix) + 2)
+                            Case "CoreDistance1Plus", "CoreDistance2Plus": opposite = Left$(parameter, Len(parameter) - 4) & "Minus"
+                            Case "CoreDistance1Minus", "CoreDistance2Minus": opposite = Left$(parameter, Len(parameter) - 5) & "Plus"
+                        End Select
+                        If Len(opposite) > 0 Then
+                            If Audit03PrincipalAxisSign(baseline, actual, axisPrefix) < 0# Then converted = Audit03PropertyNumber(actual, opposite) * factor
+                        End If
+                    End If
                     absoluteLimit = tolerance * (1# + Abs(expected))
                     If kind = "Properties" And column = 4 Then
                         If CStr(baseline(row, 5)) = "1/mm" Then
@@ -6091,6 +5699,12 @@ Private Sub Audit03CompareUnitSnapshot(ByRef stats As TUiTestStats, ByVal prefix
                             End If
                             If roundoffLimit > absoluteLimit Then absoluteLimit = roundoffLimit
                         End If
+                    End If
+                    ' Главная ось — прямая без выделенного положительного направления.
+                    ' Поворот на pi допустим; поворот на pi/2 переставляет оси и не принимается.
+                    If compareInertiaRoundoff And column = 4 And kind = "Properties" And _
+                            (parameter = "Concrete.PrincipalAngle" Or parameter = "Transformed.PrincipalAngle") Then
+                        If Abs(Sin(converted - expected)) <= 0.000000001 Then converted = expected
                     End If
                     If Abs(converted - expected) > absoluteLimit Then same = False
                 ElseIf CStr(baseline(row, column)) <> CStr(actual(row, column)) Then
@@ -6187,13 +5801,14 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     Dim baselineElements As Variant, baselineGeometry As Variant, baselineProperties As Variant
     Dim baselineDiagrams As Variant, baselineStrength As Variant, baselineCrack As Variant, baselineStability As Variant
     Dim actual As Variant, prefix As String, message As String, caseFailures As Long, savedSheet As Object
+    Dim principalSign As Double
     On Error GoTo Failed
     Set savedSheet = ThisWorkbook.Application.ActiveSheet
     ThisWorkbook.Worksheets.Item("Config").Activate
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", _
         "rngSteelMaterialParameters", "rngCircleGeometry", "rngRectSetGeometry", _
-        "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+        "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -6294,6 +5909,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         actual = ResultTable("rngNDMSectionGeometry")
                         Audit03CompareUnitSnapshot stats, prefix & ".geometry", baselineGeometry, actual, "Geometry", 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#
                         actual = ResultTable("rngNDMSectionProperties")
+                        principalSign = Audit03PrincipalAxisSign(baselineProperties, actual)
                         Audit03CompareUnitSnapshot stats, prefix & ".properties", baselineProperties, actual, "Properties", 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, 1#, True
                         actual = ResultTable("rngNDMMaterialDiagrams")
                         Audit03ComparePlainSnapshot stats, prefix & ".diagrams", baselineDiagrams, actual, 2
@@ -6302,7 +5918,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         actual = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Resize(4, 72).Value2
                         Audit03ComparePlainSnapshot stats, prefix & ".crack", baselineCrack, actual, 1, True
                         actual = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Resize(4, 84).Value2
-                        Audit03ComparePlainSnapshot stats, prefix & ".stability", baselineStability, actual, 1
+                        Audit03ComparePlainSnapshot stats, prefix & ".stability", baselineStability, actual, 1, False, True, principalSign
                     End If
                     caseCount = caseCount + 1
                     AppendLine stats, "INPUT_UNIT_CASE: " & prefix & "; newFailures=" & CStr(stats.Failed - caseFailures)
@@ -6332,7 +5948,7 @@ End Sub
 ' единиц не масштабируются. Коэффициенты независимы от CUnitSystem.
 Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stressFactor As Double)
     Dim target As Object, name As Variant, row As Long, column As Variant, key As String
-    For Each name In Array("rngCircleGeometry", "rngSystemSettings")
+    For Each name In Array("rngSystemSettings")
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To target.Rows.Count
             key = CStr(target.Cells(row, 1).Value2)
@@ -6346,49 +5962,37 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
             End Select
         Next row
     Next name
-    For Each name In Array("Circle.Diameter", "Rebar.AxisDistance", "Rebar.Diameter", "Rebar.StartSetback", "Rebar.EndSetback")
-        Set target = FixtureCircleFieldCell(ThisWorkbook, CStr(name))
-        Audit03DivideNumericInput target, lengthFactor
-    Next name
-    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
-    Audit03DivideNumericInput target, lengthFactor
-    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset3")
-    Audit03DivideNumericInput target, lengthFactor
-    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter2")
-    Audit03DivideNumericInput target, lengthFactor
-    Set target = FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter3")
-    Audit03DivideNumericInput target, lengthFactor
     ' Порог имеет размерность момент/длина; входные единицы момента не меняются.
     SetSystemSetting "Calculation.ZeroMomentPerDepth", CStr(0.001 * lengthFactor)
-    Set target = ThisWorkbook.Names.Item("rngRectSetGeometry").RefersToRange
-    Audit03DivideNumericInput target.Cells(4, 2), lengthFactor
-    For column = 1 To 4: Audit03DivideNumericInput target.Cells(8, column), lengthFactor: Next column
-    For row = 11 To 18
-        For Each column In Array(2, 3, 5, 6): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
-    Next row
-    For row = 21 To 28
-        For Each column In Array(2, 3, 6, 7): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
-    Next row
-    Set target = ThisWorkbook.Names.Item("rngRoundedRectangleGeometry").RefersToRange
-    For column = 2 To 3: Audit03DivideNumericInput target.Cells(3, column), lengthFactor: Next column
-    For row = 8 To 10
-        For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
-    Next row
-    For row = 13 To 16
-        For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
-    Next row
-    For row = 19 To 22
-        For Each column In Array(2, 3, 6, 7): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
-    Next row
-    Set target = ThisWorkbook.Names.Item("rngHollowRectangleGeometry").RefersToRange
-    For row = 3 To 4: Audit03DivideNumericInput target.Cells(row, 2), lengthFactor: Next row
-    For column = 1 To 6: Audit03DivideNumericInput target.Cells(7, column), lengthFactor: Next column
-    For row = 11 To 18
-        For column = 2 To 3: Audit03DivideNumericInput target.Cells(row, column), lengthFactor: Next column
-    Next row
-    For row = 21 To 28
-        For Each column In Array(2, 3, 6, 7): Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor: Next column
-    Next row
+    Dim fieldReader As CSectionInputReader, fieldKey As Variant, fieldRow As Long, fieldColumn As Long
+    For Each name In Array("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+        Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
+        Set fieldReader = FixtureInput(target.Value2)
+        For Each fieldKey In fieldReader.RowKeys("General")
+            If CStr(fieldKey) <> "Shape" And InStr(CStr(fieldKey), ".Type") = 0 Then
+                Audit03DivideNumericInput FixtureInputCell(target, "General", CStr(fieldKey)), lengthFactor
+            End If
+        Next fieldKey
+    Next name
+    Set target = ThisWorkbook.Names("rngRebarInput").RefersToRange
+    Set fieldReader = FixtureInput(target.Value2)
+    For Each name In Array("Main", "Extra")
+        For fieldRow = 1 To target.Rows.Count
+            If CStr(target.Cells(fieldRow, 1).Value2) = CStr(name) Then Exit For
+        Next fieldRow
+        fieldRow = fieldRow + 4
+        For row = fieldRow To fieldRow + 7
+            If CStr(name) = "Main" Then
+                For Each column In Array(3, 4, 6, 7)
+                    Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor
+                Next column
+            Else
+                For Each column In Array(3, 4, 7, 8)
+                    Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor
+                Next column
+            End If
+        Next row
+    Next name
     For Each name In Array("rngConcreteMaterialParameters", "rngSteelMaterialParameters")
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To target.Rows.Count
@@ -6412,16 +6016,26 @@ End Sub
 ' с допуском 1e-12; допуски расчётного решателя при этом не меняются.
 Private Sub Audit03ComparePlainSnapshot(ByRef stats As TUiTestStats, ByVal prefix As String, _
         ByRef baseline As Variant, ByRef actual As Variant, ByVal firstColumn As Long, _
-        Optional ByVal compareCommentLambda As Boolean = False)
-    Dim row As Long, column As Long, same As Boolean, detail As String
+        Optional ByVal compareCommentLambda As Boolean = False, _
+        Optional ByVal compareStability As Boolean = False, Optional ByVal principalSign As Double = 1#)
+    Dim row As Long, column As Long, same As Boolean, detail As String, converted As Double
     same = (UBound(baseline, 1) = UBound(actual, 1) And UBound(baseline, 2) = UBound(actual, 2))
     If Not same Then detail = "размер таблицы"
     If same Then
         For row = 1 To UBound(baseline, 1)
             For column = firstColumn To UBound(baseline, 2)
                 If IsNumeric(baseline(row, column)) And IsNumeric(actual(row, column)) Then
-                    same = Abs(CDbl(actual(row, column)) - CDbl(baseline(row, column))) <= _
+                    converted = CDbl(actual(row, column))
+                    If compareStability Then
+                        Select Case column
+                            Case 7, 8, 17, 18, 20, 21, 30, 31, 45, 46, 62, 63, 74, 75
+                                converted = converted * principalSign
+                        End Select
+                    End If
+                    same = Abs(converted - CDbl(baseline(row, column))) <= _
                         0.000000001 * (1# + Abs(CDbl(baseline(row, column))))
+                ElseIf compareStability And column = 2 Then
+                    same = Audit03SameStabilityComment(CStr(baseline(row, column)), CStr(actual(row, column)))
                 ElseIf compareCommentLambda And column = 2 Then
                     same = Audit03SameLimitComment(CStr(baseline(row, column)), CStr(actual(row, column)))
                 Else
@@ -6682,7 +6296,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", _
-        "rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+        "rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -7997,7 +7611,7 @@ Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
             "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", _
-            "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngLoadCombinations")
+            "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput", "rngLoadCombinations")
         Set table = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To table.Rows.Count
             For column = 2 To table.Columns.Count
@@ -8018,6 +7632,13 @@ Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
                         key = LCase$(CStr(table.Cells(headerRow, column).Value2))
                         If key = "положение" Then expected = "Stacked|SideBySide": Exit For
                         If key = "привязка" Then expected = "EachBar|EverySecondBar": Exit For
+                    Next headerRow
+                End If
+                If CStr(name) = "rngRebarInput" Then
+                    For headerRow = row - 1 To 1 Step -1
+                        key = LCase$(CStr(table.Cells(headerRow, column).Value2))
+                        If key = "pos2" Or key = "pos3" Then expected = "Stacked|SideBySide": Exit For
+                        If key = "bind2" Or key = "bind3" Then expected = "EachBar|EverySecondBar": Exit For
                     Next headerRow
                 End If
                 If Len(expected) > 0 Then
@@ -8183,3 +7804,91 @@ Private Sub TestConfigSettingsRightBorder(ByRef stats As TUiTestStats)
 Failed:
     AssertTrue stats, "config.settings.rightBorder.runtime." & CStr(Err.Number) & "." & Err.Description, False
 End Sub
+
+' ДЛЯ ТЕСТОВ: проверка ожиданий новой структуры Config до долгого расчётного набора.
+Public Function RunSharedConfigPreflightTests() As String
+    Dim stats As TUiTestStats, config As Object, saved As Variant, passed As Long, failed As Long
+    On Error GoTo FailedRun
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    stats.Report = stats.Report & RunConfigComparisonContractTests(passed, failed)
+    stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    TestConfigDropdownChoices stats
+    TestConfigDropdownMeaning stats
+    TestConfigSettingsRightBorder stats
+    TestRectSetIndependentSelectors stats
+    TestRectSetIndependentSelectorLayout stats
+    TestRectSetIndependentSelectorEffects stats
+    TestRectSetIndependentThirdRows stats
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03ShapeConfigTests(passed, failed)
+    stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarCounterTests(passed, failed)
+    stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarFieldConfigTests(passed, failed)
+    stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    GoTo Finished
+FailedRun:
+    stats.Failed = stats.Failed + 1
+    AppendLine stats, "FAIL: config.preflight; " & CStr(Err.Number) & "; " & Err.Description
+Finished:
+    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
+    RunSharedConfigPreflightTests = stats.Report & "TOTAL_SHARED_CONFIG_PREFLIGHT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: противоположные направления одной главной оси меняют знак её проекций.
+Private Function Audit03PrincipalAxisSign(ByRef baseline As Variant, ByRef actual As Variant, Optional ByVal sectionPrefix As String = "Transformed") As Double
+    Dim row As Long, delta As Double
+    Audit03PrincipalAxisSign = 1#
+    For row = 2 To UBound(baseline, 1)
+        If CStr(baseline(row, 3)) = sectionPrefix & ".PrincipalAngle" Then
+            delta = CDbl(actual(row, 4)) - CDbl(baseline(row, 4))
+            If Abs(Sin(delta)) <= 0.000000001 And Cos(delta) < 0# Then Audit03PrincipalAxisSign = -1#
+            Exit Function
+        End If
+    Next row
+    Err.Raise 5, , "В контрольном снимке отсутствует угол главных осей приведённого сечения."
+End Function
+
+' ДЛЯ ТЕСТОВ: читает направленное ядровое расстояние из фактического снимка.
+Private Function Audit03PropertyNumber(ByRef values As Variant, ByVal key As String) As Double
+    Dim row As Long
+    For row = 2 To UBound(values, 1)
+        If CStr(values(row, 3)) = key Then Audit03PropertyNumber = CDbl(values(row, 4)): Exit Function
+    Next row
+    Err.Raise 5, , "В контрольном снимке отсутствует параметр " & key
+End Function
+
+' ДЛЯ ТЕСТОВ: причина и все числа комментария сохраняются; допускается только ошибка Double.
+Private Function Audit03SameStabilityComment(ByVal expected As String, ByVal actual As String) As Boolean
+    On Error GoTo Different
+    If expected = actual Then Audit03SameStabilityComment = True: Exit Function
+    Dim expression As Object, first As Object, second As Object, i As Long, reference As Double
+    Set expression = CreateObject("VBScript.RegExp")
+    expression.Global = True: expression.Pattern = "[-+]?[0-9]+([.][0-9]+)?([Ee][-+]?[0-9]+)?"
+    If expression.Replace(expected, "#") <> expression.Replace(actual, "#") Then Exit Function
+    Set first = expression.Execute(expected): Set second = expression.Execute(actual)
+    If first.Count <> second.Count Then Exit Function
+    For i = 0 To first.Count - 1
+        reference = CDbl(Replace(first(i).Value, ".", Application.International(xlDecimalSeparator)))
+        If Abs(CDbl(Replace(second(i).Value, ".", Application.International(xlDecimalSeparator))) - reference) > _
+                0.000000000001 * (1# + Abs(reference)) Then Exit Function
+    Next i
+    Audit03SameStabilityComment = True
+Different:
+End Function
+
+' ДЛЯ ТЕСТОВ: сравнение не скрывает смену причины, статуса или значимого числа.
+Public Function RunConfigComparisonContractTests(Optional ByRef passed As Long = 0, Optional ByRef failed As Long = 0) As String
+    Dim stats As TUiTestStats, first As Variant, second As Variant
+    AssertTrue stats, "comparison.comment.roundoff", Audit03SameStabilityComment("Запас = 0.86662649246776; eta = 5.20101263390298.", "Запас = 0.866626492467761; eta = 5.20101263390296.")
+    AssertTrue stats, "comparison.comment.numberChange", Not Audit03SameStabilityComment("eta = 5.201", "eta = 5.202")
+    AssertTrue stats, "comparison.comment.reasonChange", Not Audit03SameStabilityComment("Проходит: 1", "Не проходит: 1")
+    AssertTrue stats, "comparison.comment.status", Not Audit03SameStabilityComment("OK", "NumFail")
+    ReDim first(1 To 2, 1 To 4): ReDim second(1 To 2, 1 To 4)
+    first(2, 3) = "Transformed.PrincipalAngle": second(2, 3) = first(2, 3)
+    first(2, 4) = -GEOM_PI / 2#: second(2, 4) = GEOM_PI / 2#
+    AssertTrue stats, "comparison.axis.opposite", Audit03PrincipalAxisSign(first, second) = -1#
+    second(2, 4) = 0#
+    AssertTrue stats, "comparison.axis.swapNotReversed", Audit03PrincipalAxisSign(first, second) = 1#
+    passed = stats.Passed: failed = stats.Failed
+    RunConfigComparisonContractTests = stats.Report & "TOTAL_CONFIG_COMPARISON_CONTRACT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function

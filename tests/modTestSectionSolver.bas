@@ -442,7 +442,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim rangeNames As Variant
     rangeNames = Array("rngUnitSettings", "rngSignConventionSettings", _
         "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", _
-        "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry", _
+        "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry", "rngRebarInput", _
         "rngNDMSectionProperties", "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams")
     For i = LBound(rangeNames) To UBound(rangeNames)
         AssertTrue stats, "settings.range." & CStr(rangeNames(i)), NamedRangeExists(CStr(rangeNames(i)))
@@ -451,7 +451,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim removedRanges As Variant
     removedRanges = Array("SolverSettings", "CapacitySettings", "ConcreteDiagram", _
         "SteelDiagram", "GeometrySettings", "OutputSettings", "AutoCADSettings", _
-        "rngMainInput", "rngRebarInput", "rngConcreteDiagramPoints", "rngSteelDiagramPoints", _
+        "rngMainInput", "rngConcreteDiagramPoints", "rngSteelDiagramPoints", _
         "rngCalculationDiagramSettings")
     For i = LBound(removedRanges) To UBound(removedRanges)
         AssertTrue stats, "settings.range.removed." & CStr(removedRanges(i)), Not NamedRangeExists(CStr(removedRanges(i)))

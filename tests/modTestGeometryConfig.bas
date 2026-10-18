@@ -117,8 +117,9 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
     Set registry = New CSectionTypeRegistry: names = registry.RecipeTableNames(shapeName)
     Set root = ThisWorkbook.Names(CStr(names(0))).RefersToRange
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, names, units)
-    Set table = context.Table(CStr(names(0)))
-    Set keyed = context.Reader(CStr(names(0)))
+    Set root = ThisWorkbook.Names("rngRebarInput").RefersToRange
+    Set table = context.Table("rngRebarInput")
+    Set keyed = context.Reader("rngRebarInput", shapeName & ".")
     key = "Top": If shapeName = "RectSet" Then key = "R1.Top"
     main = keyed.RowIndex("Main", key) - 1: extra = keyed.RowIndex("Extra", key) - 1
     faceCount = 8: If shapeName = "RoundedRectangle" Then faceCount = 4

@@ -69,7 +69,7 @@ Public Function RunWorkbookRecipeInputTests() As String
     Set diameterCell = FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter")
     Set coverCell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance")
     Application.Calculation = xlCalculationManual
-    diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": rootRange.Calculate
+    diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": coverCell.Calculate
     diameterCell.Value2 = 320#
     Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units): Set table = context.Table("rngCircleGeometry")

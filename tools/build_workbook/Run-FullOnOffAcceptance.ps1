@@ -80,7 +80,15 @@ $recipes=@(
     'modTestRecipeOperations.RunRecipeDiagnosticTests',
     'modTestAudit02Api.RunAudit02CloseoutRectSetInputTests',
     'modTestAudit02Api.RunAudit02CloseoutContactTests',
-    'modTestRecipeApiCatalogue.RunAdvancedGuideExamples'
+    'modTestRecipeApiCatalogue.RunAdvancedGuideExamples',
+    'modTestSectionInputReader.RunSectionInputReaderTests',
+    'modTestAudit02Api.RunIndependentRowOffsetBuilderTests',
+    'modTestAudit02Api.RunIndependentRowOffsetGeometryTests',
+    'modTestAudit02Api.RunIndependentRowOffsetWorkbookTests',
+    'modTestAudit02Api.RunOffsetOpeningAnnotationTests',
+    'modTestAudit02Api.RunCircleSetbackTests',
+    'modTestAudit02Api.RunOffsetWallCollisionTests',
+    'modTestWorkbookInterface.RunConfigComparisonContractTests'
 )
 $jobs=@()
 foreach ($mode in @('No','Yes')) {

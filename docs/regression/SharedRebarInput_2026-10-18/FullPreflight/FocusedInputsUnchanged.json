@@ -1,0 +1,42 @@
+{
+  "Passed": true,
+  "IndividualCases": 122,
+  "Checks": [
+    {
+      "Shape": "RectSet",
+      "Group": "Generated",
+      "CasesPerMode": 8,
+      "ExactlyMatchesAcceptedInputManifest": true
+    },
+    {
+      "Shape": "Circle",
+      "Group": "Generated",
+      "CasesPerMode": 8,
+      "ExactlyMatchesAcceptedInputManifest": true
+    },
+    {
+      "Shape": "RoundedRectangle",
+      "Group": "Generated",
+      "CasesPerMode": 8,
+      "ExactlyMatchesAcceptedInputManifest": true
+    },
+    {
+      "Shape": "HollowRectangle",
+      "Group": "Generated",
+      "CasesPerMode": 8,
+      "ExactlyMatchesAcceptedInputManifest": true
+    },
+    {
+      "Shape": "SavedWorkbook",
+      "Group": "Saved",
+      "CasesPerMode": 23,
+      "ExactlyMatchesAcceptedInputManifest": true
+    },
+    {
+      "Shape": "SavedWorkbook",
+      "Group": "Paths",
+      "CasesPerMode": 6,
+      "ExactlyMatchesAcceptedInputManifest": true
+    }
+  ]
+}
