@@ -1,4 +1,4 @@
-# Creates an isolated probe; does not execute the acceptance calculations.
+﻿# Creates an isolated probe; does not execute the acceptance calculations.
 param(
     [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
     [string]$OutputDirectory='docs/regression/FocusedAcceptance_2026-10-10',
@@ -6,6 +6,7 @@ param(
     [string]$SavedFixture=''
 )
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $sourcePath=$SourceWorkbook
 if (-not [IO.Path]::IsPathRooted($sourcePath)) {$sourcePath=Join-Path $root $sourcePath}

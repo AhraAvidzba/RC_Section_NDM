@@ -15,6 +15,7 @@ param(
     [ValidateRange(10, 172800)][int]$TimeoutSeconds = 120
 )
 $ErrorActionPreference = "Stop"
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")).Path
 $source = (Resolve-Path -LiteralPath $SourceWorkbook).Path
 $hash = (Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash

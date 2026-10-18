@@ -9,6 +9,7 @@ param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [switch]$AcquireInsideExcel,
       [switch]$ShowOwnedWindow)
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=Join-Path $root $ReportDirectory
 New-Item -ItemType Directory -Path $directory -Force | Out-Null

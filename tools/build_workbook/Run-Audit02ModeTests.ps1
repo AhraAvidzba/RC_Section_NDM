@@ -17,6 +17,7 @@ param(
     [switch]$Visible
 )
 $ErrorActionPreference = "Stop"
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $Macro = @($Macro | ForEach-Object { $_ -split ',' })
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
 $root = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")).Path

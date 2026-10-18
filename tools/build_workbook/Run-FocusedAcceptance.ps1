@@ -1,4 +1,4 @@
-# Полный часовой план: 122 случая, batch-15, специальные случаи, CAD и независимый контроль.
+﻿# Полный часовой план: 122 случая, batch-15, специальные случаи, CAD и независимый контроль.
 param(
     [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
     [Parameter(Mandatory=$true)][string]$EvidenceDirectory,
@@ -7,6 +7,7 @@ param(
     [string]$Python=(Join-Path $env:USERPROFILE '.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 )
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 if ($PSVersionTable.PSEdition -ne 'Desktop') {throw 'Use Windows PowerShell 5.1.'}
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 Set-Location -LiteralPath $root

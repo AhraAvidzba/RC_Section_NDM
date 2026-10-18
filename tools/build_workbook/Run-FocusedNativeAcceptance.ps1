@@ -1,8 +1,9 @@
-# Bounded native CAD tests; only processes with recorded PID and start time are closed.
+﻿# Bounded native CAD tests; only processes with recorded PID and start time are closed.
 param([string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
       [string]$ReportDirectory='docs/regression/FocusedAcceptance_2026-10-10_V3/NativeCAD',
       [ValidateRange(30,900)][int]$MaxSeconds=420)
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $watch=[Diagnostics.Stopwatch]::StartNew()
 $results=@()

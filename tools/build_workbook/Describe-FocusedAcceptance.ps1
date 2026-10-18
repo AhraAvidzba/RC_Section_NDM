@@ -1,6 +1,7 @@
-# Lists actual generated/saved geometry and selected loads without solving.
+﻿# Lists actual generated/saved geometry and selected loads without solving.
 param([string]$ProbeDirectory='docs/regression/FocusedAcceptance_2026-10-10_V2')
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules/Microsoft.PowerShell.Utility/Microsoft.PowerShell.Utility.psd1') -Global -ErrorAction Stop
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=Join-Path $root $ProbeDirectory
 $source=Join-Path $directory 'RC_Section_NDM.xlsm'
