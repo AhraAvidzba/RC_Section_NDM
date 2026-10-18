@@ -1,0 +1,29 @@
+{
+  "Passed": true,
+  "BeforeSHA256": "6A2D7A18FAFD066427C47C2AA65AD8D0A6B70BE295AE9CE17774851DB3092571",
+  "PublishedSHA256": "A20FE9AE3EB6D4F70EA2C16C5197E76C030F951B76ADE60275CAC69902DC39E6",
+  "MacroSecurity": 3,
+  "DisplayedColorsChecked": 728,
+  "GeometryTypes": 4,
+  "RectSetForms": 3,
+  "ConditionalRules": 3,
+  "OtherConfigInputCells": 706,
+  "OptionalCommentCells": 30,
+  "DynamicUnitCells": 51,
+  "IndependentRebarChoiceLists": 32,
+  "StructureChecks": 27,
+  "ValueAndFormulaCellsPreserved": 4752,
+  "HelpCellsChanged": 2,
+  "VbaPreservedByteForByte": true,
+  "ActualNativeComponents": 160,
+  "NativeAllCodePayloadEqual": true,
+  "AllCodeUnchanged": true,
+  "AllCodeSHA256": "B9D3E22FF54AA57E6584142BB88741363E2073806B365FB321AE1E7ECC64C7A4",
+  "UserExecutionReportUnchanged": true,
+  "PublishedReadback": true,
+  "VisualReview": [
+    "HollowRectangle",
+    "Circle"
+  ],
+  "FullCalculationRunsRequired": false
+}

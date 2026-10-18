@@ -476,7 +476,7 @@ function Apply-ConfigUserInputAlignment {
         @{ Name = "rngConcreteMaterialParameters"; Columns = @(2, 3) },
         @{ Name = "rngCalculationProfiles"; Columns = @(3, 4, 5, 6) },
         @{ Name = "rngPlotAnnotationSettings"; Columns = @(2, 3) },
-        @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6) },
+        @{ Name = "rngLoadCombinations"; Columns = @(1, 2, 3, 4, 5, 6, 7); CommentColumns = @(7) },
         @{ Name = "rngStabilityDurationLoads"; Columns = @(1, 2, 3, 4) },
         @{ Name = "rngSP35Table721"; Columns = @(1, 2, 3, 4, 5, 6, 7, 8) }
     )
@@ -488,7 +488,9 @@ function Apply-ConfigUserInputAlignment {
             if ($range.Rows.Count -lt 2) { continue }
 
             foreach ($columnIndex in $item.Columns) {
-                Set-ConfigInputCellAlignment $range.Offset(1, $columnIndex - 1).Resize($range.Rows.Count - 1, 1)
+                if($columnIndex -notin $item.CommentColumns){
+                    Set-ConfigInputCellAlignment $range.Offset(1, $columnIndex - 1).Resize($range.Rows.Count - 1, 1)
+                }
                 for($r=2;$r -le $range.Rows.Count;$r++){
                     $rowKey=[string]$range.Cells.Item($r,1).Value2
                     if($rowKey.StartsWith('[') -or ($item.Name -eq 'rngSystemSettings' -and -not $rowKey.Contains('.'))){continue}
@@ -498,7 +500,7 @@ function Apply-ConfigUserInputAlignment {
                         $inputArea=$cell.MergeArea
                         if($inputArea.Row -ne $cell.Row -or $inputArea.Column -ne $cell.Column){continue}
                     }
-                    if(-not $cell.HasFormula -and [string]$cell.Value2 -notin @('-','—')){$inputArea.Interior.Color=15135487}
+                    if($columnIndex -in $item.CommentColumns -or (-not $cell.HasFormula -and [string]$cell.Value2 -notin @('-','—'))){$inputArea.Interior.Color=15135487}
                 }
             }
         } catch {
@@ -567,7 +569,7 @@ function Get-SettingInstructionLines {
             "У импортированной из AutoCAD сетки обычно нет сведений о смысловых гранях и группах арматуры. Поэтому программа сохраняет фактические элементы и результаты, но не пытается угадывать специальные подписи граней по координатам."
         ) }
         "Geometry.Type" { return @($lead) + @(
-            "Поддерживаются Circle, RoundedRectangle, HollowRectangle и RectSet. Тип определяет геометрию, раскладку арматуры и доступные аннотации. Таблицы геометрии расположены друг под другом; справа находится общая таблица армирования. Её ключи подставляются формулами из Edges выбранного типа. Параметры армирования вводятся вручную и при смене типа сохраняются.",
+            "Доступны Circle, RoundedRectangle, HollowRectangle и RectSet. Таблицы геометрии идут друг под другом, общая таблица армирования — справа. Ключи берутся формулами из Edges; ввод при смене типа сохраняется. Серым выделены строки без участка и n у отверстия HollowRectangle. Оранжевым — доступные поля ввода, включая необязательные.",
             "При Generated тип и все активные размеры выбранной формы обязательны. Пустая ячейка, TODO, ошибка формулы, нечисловое значение или потерянная строка не заменяются размерами шаблона. Сообщение указывает настройку и ее фактическую ячейку; для отсутствующей строки указывается раздел, где ее нужно восстановить.",
             "Не используется при Geometry.Source = AutoCAD: форму задают импортированные элементы либо точные наружные контуры и отверстия.",
             "Если для выбранной формы нет специальных аннотаций, расчет все равно выполняется. На схеме будут показаны геометрия и расчетные значения без этих дополнительных подписей."
@@ -1413,7 +1415,7 @@ function Get-SettingsInstructionCatalog {
         "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
         "Выберите Geometry.Type = HollowRectangle. B/H/R — наружные ширина, высота и радиус углов. В General Bo/Ho/Ro — размеры и радиус отверстия; Xo/Yo — смещение его центра вправо и вверх относительно центра наружного контура. Нулевой радиус означает прямой угол.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
-        "Для сторон отверстия значение количества из общей таблицы не используется: стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах.",
+        "Для сторон отверстия поле n выделено серым: его значение не используется, стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры»."
     )}) | Out-Null
     $items.Add(@{ Key = "RectSetGeometry"; Title = "Сечение из прямоугольников"; Lines = @(

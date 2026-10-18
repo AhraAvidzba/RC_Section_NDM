@@ -15,7 +15,7 @@ $beforeHash=(Get-FileHash -LiteralPath $path).Hash
 Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class StructuredGeometryWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'
 $excel=$null;$book=$null;$ownedPid=0;$ownedTicks=0
 $unitCells=New-Object 'System.Collections.Generic.List[object]'
-$tables=@();$defaultCount=0
+$tables=@();$defaultCount=0;$conditionalChecks=0
 try{
     $excel=New-Object -ComObject Excel.Application
     $excel.Visible=$false;$excel.DisplayAlerts=$false;$excel.EnableEvents=$false;$excel.AutomationSecurity=3
@@ -29,7 +29,8 @@ try{
     foreach($definition in $definitions+@(Get-RebarSettingsCatalog)){
         $range=$book.Names.Item($definition.RangeName).RefersToRange
         $width=5;if($definition.RangeName -eq 'rngRebarInput'){$width=11}
-        if($range.Columns.Count -ne $width -or $range.FormatConditions.Count -ne 0){throw "Wrong table: $($definition.RangeName)"}
+        $rules=0;if($definition.RangeName -eq 'rngRebarInput'){$rules=3}
+        if($range.Columns.Count -ne $width -or $range.FormatConditions.Count -ne $rules){throw "Wrong table: $($definition.RangeName)"}
         foreach($edge in 7,8,9,10,11,12){if($range.Borders.Item($edge).LineStyle -ne -4115){throw 'Full dotted borders required.'}}
         if($range.WrapText -ne $false){throw 'Input tables must not wrap text.'}
         $blocks=@(Get-GeometryTableBlocks $range)
@@ -83,6 +84,28 @@ try{
     if($null -eq $selector){throw 'Geometry.Type missing.'}
     $blocks=@(Get-GeometryTableBlocks $common);$main=$blocks | Where-Object Key -eq 'Main';$extra=$blocks | Where-Object Key -eq 'Extra'
     if($main.LastRow-$main.FirstRow -ne 8 -or $extra.LastRow-$extra.FirstRow -ne 8){throw 'Common table must have exactly eight rows in each block.'}
+    # Проверяем фактическую заливку Excel, а не только текст условий в файле.
+    # Серые поля сохраняют значения; отключённый диаметр сам по себе не запрещает ввод.
+    function Test-RebarInputDisplay {
+        param([object]$Range,[object[]]$Blocks)
+        $checks=0
+        foreach($block in $Blocks){
+            foreach($columnKey in @($block.Columns.Keys)){
+                if($columnKey -in @('key','name','unit','note')){continue}
+                for($r=$block.FirstRow+1;$r -le $block.LastRow;$r++){
+                    $key=[string]$Range.Cells.Item($r,[int]$block.Columns['key']).Value2
+                    $cell=$Range.Cells.Item($r,[int]$block.Columns[$columnKey])
+                    $expected=15135487
+                    if(-not $key -or ($block.Key -eq 'Main' -and $columnKey -eq 'n' -and $key.StartsWith('HollowRectangle.Opening'))){$expected=15132390}
+                    if($cell.DisplayFormat.Interior.Color -ne $expected){throw ('Wrong displayed input color: '+$key+'/'+$columnKey+' '+$cell.Address())}
+                    if($cell.Interior.Color -ne 15135487){throw 'Conditional color changed the static input format.'}
+                    $checks++
+                }
+            }
+        }
+        return $checks
+    }
+    $sheet.Activate()
     $manualBefore=$common.Formula
     $switches=@()
     foreach($definition in $definitions){
@@ -101,6 +124,7 @@ try{
                 if(-not $common.Cells.Item($row,1).HasFormula -or -not $common.Cells.Item($row,2).HasFormula){throw 'Key/name must be ordinary Excel formulas.'}
             }
         }
+        $conditionalChecks+=Test-RebarInputDisplay $common @($main,$extra)
         $switches+=,[ordered]@{Type=$definition.Type;EdgeRows=$edges.LastRow-$edges.FirstRow+1}
     }
     $selector.Value2='RectSet';$rect=$book.Names.Item('rngRectSetGeometry').RefersToRange
@@ -111,6 +135,7 @@ try{
             $key=[string]$common.Cells.Item($main.FirstRow+1+$i,1).Value2
             if(($subtype -eq 'Rectangle' -and $i -ge 4) -ne ($key -eq '')){throw 'RectSet inactive lower edges are incorrect.'}
         }
+        $conditionalChecks+=Test-RebarInputDisplay $common @($main,$extra)
     }
     $shape.Value2=$originalShape;$sheet.Calculate()
     $afterSwitch=$common.Formula
@@ -129,14 +154,16 @@ try{
     $orangeCount=0
     $inputs=@{rngSystemSettings=@(2);rngUnitSettings=@(2,4);rngSignConventionSettings=@(2);rngSteelMaterialParameters=@(2,3);
         rngConcreteMaterialParameters=@(2,3);rngCalculationProfiles=@(3,4,5,6);rngPlotAnnotationSettings=@(2,3);
-        rngLoadCombinations=@(1,2,3,4,5,6);rngStabilityDurationLoads=@(1,2,3,4);rngSP35Table721=@(1,2,3,4,5,6,7,8)}
+        rngLoadCombinations=@(1,2,3,4,5,6,7);rngStabilityDurationLoads=@(1,2,3,4);rngSP35Table721=@(1,2,3,4,5,6,7,8)}
     foreach($name in $inputs.Keys){
         $range=$book.Names.Item($name).RefersToRange
         foreach($column in $inputs[$name]){for($r=2;$r -le $range.Rows.Count;$r++){
             $cell=$range.Cells.Item($r,$column);$key=[string]$range.Cells.Item($r,1).Value2
-            if($key.StartsWith('[') -or ($name -eq 'rngSystemSettings' -and -not $key.Contains('.')) -or $cell.HasFormula -or [string]$cell.Value2 -in @('-','—')){continue}
+            $isComment=($name -eq 'rngLoadCombinations' -and $column -eq 7)
+            if($key.StartsWith('[') -or ($name -eq 'rngSystemSettings' -and -not $key.Contains('.')) -or (-not $isComment -and ($cell.HasFormula -or [string]$cell.Value2 -in @('-','—')))){continue}
             if($cell.MergeCells -and ($cell.MergeArea.Row -ne $cell.Row -or $cell.MergeArea.Column -ne $cell.Column)){continue}
-            if($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108){throw ('Input formatting: '+$name+' '+$cell.Address())}
+            $alignment=-4108;if($isComment){$alignment=-4131}
+            if($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne $alignment){throw ('Input formatting: '+$name+' '+$cell.Address())}
             $orangeCount++
         }}
     }
@@ -165,6 +192,7 @@ try{
         DynamicLengthUnitCells=$unitCells.Count;InputLengthUnits=@('mm','cm','m');UniformConfigWidth=17;
         MacroSecurity=3;FormulaTypeSwitches=$switches;OtherConfigInputCells=$orangeCount;InputColorRGB=@(255,242,230);
         RectSetSubtypes=@('Rectangle','LSection','TwoRectangles');ManualInputsPreservedOnSwitch=$true;IndependentRebarChoiceLists=$choiceNames.Count;
+        RebarConditionalFormattingRules=3;DisplayedInputColorsChecked=$conditionalChecks;UnusedInputColorRGB=@(230,230,230);
         Saved=$false} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $report -Encoding UTF8
 }finally{
     if($book){$book.Close($false)}

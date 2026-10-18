@@ -160,6 +160,35 @@ function Format-GeometrySettingsTable {
     }
     $Range.Borders.Weight=2;$Range.Borders.Color=0;$Range.Borders.LineStyle=-4115
     Set-GeometryEditableCellFormat $Range
+    if($Name -eq 'rngRebarInput'){Set-RebarInputConditionalFormatting $Range}
+}
+
+# Серым отмечает ввод без соответствующего участка и количество стержней у отверстия.
+# Правила читают формульные ключи: переключение типа не требует VBA и не стирает значения.
+function Set-RebarInputConditionalFormatting {
+    param([object]$Range)
+    $Range.FormatConditions.Delete()
+    $blocks=@(Get-GeometryTableBlocks $Range)
+    foreach($block in $blocks){
+        if($block.Key -eq 'Main'){$firstColumn=[int]$block.Columns['as'];$lastColumn=[int]$block.Columns['s1']}
+        elseif($block.Key -eq 'Extra'){$firstColumn=[int]$block.Columns['d2'];$lastColumn=[int]$block.Columns['pos3']}
+        else{throw "Неизвестный блок общей таблицы армирования: $($block.Key)"}
+        $first=$block.FirstRow+1 # Первую строку с единицами не окрашиваем.
+        $key=$Range.Cells.Item($first,[int]$block.Columns['key']).Address($false,$true)
+        $inputs=$Range.Cells.Item($first,$firstColumn).Resize($block.LastRow-$first+1,$lastColumn-$firstColumn+1)
+        $rule=$inputs.FormatConditions.Add(2,1,('='+$key+'=""'))
+        $rule.Interior.Color=15132390;$rule.StopIfTrue=$true # RGB(230,230,230).
+    }
+    $main=@($blocks | Where-Object Key -eq 'Main')[0]
+    $first=$main.FirstRow+1
+    $key=$Range.Cells.Item($first,[int]$main.Columns['key']).Address($false,$true)
+    $counts=$Range.Cells.Item($first,[int]$main.Columns['n']).Resize($main.LastRow-$first+1,1)
+    $hollow=@(Get-GeometrySettingsCatalog | Where-Object Type -eq 'HollowRectangle')[0]
+    $edges=@($hollow.Blocks | Where-Object Key -eq 'Edges')[0]
+    $terms=@($edges.Rows | Where-Object {([string]$_[0]).StartsWith('Opening')} | ForEach-Object {'('+$key+'="'+$hollow.Type+'.'+$_[0]+'")'})
+    # Сравнения без имён функций принимаются Excel при любом языке интерфейса.
+    $rule=$counts.FormatConditions.Add(2,1,('='+($terms -join '+')))
+    $rule.Interior.Color=15132390;$rule.StopIfTrue=$true
 }
 
 # Отдельно выделяет только вводимые значения. Формулы, ключи, единицы и комментарии не окрашивает.

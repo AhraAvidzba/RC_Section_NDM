@@ -1,0 +1,79 @@
+﻿{
+    "Passed":  true,
+    "WorkbookSHA256":  "A20FE9AE3EB6D4F70EA2C16C5197E76C030F951B76ADE60275CAC69902DC39E6",
+    "Tables":  [
+                   {
+                       "Name":  "rngCircleGeometry",
+                       "Address":  "$H$87:$L$95",
+                       "Blocks":  2
+                   },
+                   {
+                       "Name":  "rngRectSetGeometry",
+                       "Address":  "$H$98:$L$118",
+                       "Blocks":  2
+                   },
+                   {
+                       "Name":  "rngRoundedRectangleGeometry",
+                       "Address":  "$H$121:$L$141",
+                       "Blocks":  2
+                   },
+                   {
+                       "Name":  "rngHollowRectangleGeometry",
+                       "Address":  "$H$144:$L$166",
+                       "Blocks":  2
+                   },
+                   {
+                       "Name":  "rngRebarInput",
+                       "Address":  "$N$87:$X$111",
+                       "Blocks":  2
+                   }
+               ],
+    "DefaultFieldsChecked":  0,
+    "DynamicLengthUnitCells":  51,
+    "InputLengthUnits":  [
+                             "mm",
+                             "cm",
+                             "m"
+                         ],
+    "UniformConfigWidth":  17,
+    "MacroSecurity":  3,
+    "FormulaTypeSwitches":  [
+                                {
+                                    "Type":  "Circle",
+                                    "EdgeRows":  1
+                                },
+                                {
+                                    "Type":  "RectSet",
+                                    "EdgeRows":  8
+                                },
+                                {
+                                    "Type":  "RoundedRectangle",
+                                    "EdgeRows":  4
+                                },
+                                {
+                                    "Type":  "HollowRectangle",
+                                    "EdgeRows":  8
+                                }
+                            ],
+    "OtherConfigInputCells":  706,
+    "InputColorRGB":  [
+                          255,
+                          242,
+                          230
+                      ],
+    "RectSetSubtypes":  [
+                            "Rectangle",
+                            "LSection",
+                            "TwoRectangles"
+                        ],
+    "ManualInputsPreservedOnSwitch":  true,
+    "IndependentRebarChoiceLists":  32,
+    "RebarConditionalFormattingRules":  3,
+    "DisplayedInputColorsChecked":  728,
+    "UnusedInputColorRGB":  [
+                                230,
+                                230,
+                                230
+                            ],
+    "Saved":  false
+}

@@ -1,0 +1,73 @@
+{
+  "Passed": true,
+  "BeforeSHA256": "6A2D7A18FAFD066427C47C2AA65AD8D0A6B70BE295AE9CE17774851DB3092571",
+  "AfterSHA256": "A20FE9AE3EB6D4F70EA2C16C5197E76C030F951B76ADE60275CAC69902DC39E6",
+  "UnchangedValueOrFormulaCells": 4752,
+  "HelpCellsChanged": [
+    {
+      "Sheet": "Справка",
+      "Cell": "$B$843",
+      "Before": "Поддерживаются Circle, RoundedRectangle, HollowRectangle и RectSet. Тип определяет геометрию, раскладку арматуры и доступные аннотации. Таблицы геометрии расположены друг под другом; справа находится общая таблица армирования. Её ключи подставляются формулами из Edges выбранного типа. Параметры армирования вводятся вручную и при смене типа сохраняются.",
+      "After": "Доступны Circle, RoundedRectangle, HollowRectangle и RectSet. Таблицы геометрии идут друг под другом, общая таблица армирования — справа. Ключи берутся формулами из Edges; ввод при смене типа сохраняется. Серым выделены строки без участка и n у отверстия HollowRectangle. Оранжевым — доступные поля ввода, включая необязательные."
+    },
+    {
+      "Sheet": "Справка",
+      "Cell": "$B$770",
+      "Before": "Для сторон отверстия значение количества из общей таблицы не используется: стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах.",
+      "After": "Для сторон отверстия поле n выделено серым: его значение не используется, стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах."
+    }
+  ],
+  "AllDefinedNamesUnchanged": true,
+  "VbaProjectPreservedByteForByte": true,
+  "ChartDrawingAndRelationshipPartsUnchanged": 12,
+  "ColumnWidthsRowHeightsMergesValidationsHyperlinksUnchanged": true,
+  "StaticStyleChangesOnlyLoadComments": [
+    "U10",
+    "U11",
+    "U12",
+    "U13",
+    "U14",
+    "U15",
+    "U16",
+    "U17",
+    "U18",
+    "U19",
+    "U20",
+    "U21",
+    "U22",
+    "U23",
+    "U24",
+    "U25",
+    "U26",
+    "U27",
+    "U28",
+    "U29",
+    "U30",
+    "U31",
+    "U32",
+    "U33",
+    "U4",
+    "U5",
+    "U6",
+    "U7",
+    "U8",
+    "U9"
+  ],
+  "ConditionalFormatting": [
+    {
+      "Part": "xl/worksheets/sheet1.xml",
+      "AppliesTo": "P91:T98",
+      "Formula": "$N91=\"\""
+    },
+    {
+      "Part": "xl/worksheets/sheet1.xml",
+      "AppliesTo": "P104:W111",
+      "Formula": "$N104=\"\""
+    },
+    {
+      "Part": "xl/worksheets/sheet1.xml",
+      "AppliesTo": "R91:R98",
+      "Formula": "($N91=\"HollowRectangle.OpeningTop\")+($N91=\"HollowRectangle.OpeningBottom\")+($N91=\"HollowRectangle.OpeningLeft\")+($N91=\"HollowRectangle.OpeningRight\")"
+    }
+  ]
+}
