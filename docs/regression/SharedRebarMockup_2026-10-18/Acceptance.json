@@ -1,10 +1,24 @@
 ﻿{
     "Passed":  true,
-    "Checks":  1430,
+    "Checks":  2685,
     "File":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\Config_LSection_SharedRebar_Proposal.xlsx",
-    "SHA256":  "B71932B72E6A854EBF3CBA379DA7270EBFA2649399822219C541858B4E1C120D",
+    "SHA256":  "E9BF3BEFFD1B1D2028B77A0D29FD36E4BE013D37BE5E6119195B26527FB4601F",
     "NoVBA":  true,
-    "KeyFormulas":  12,
+    "KeyFormulas":  16,
+    "FormulaSideNames":  16,
+    "Capacity":  8,
+    "ActiveRows":  {
+                       "LSection":  8,
+                       "Circle":  1
+                   },
+    "FormulaSideLengths":  9,
+    "GeneralDimensionChanges":  [
+                                    "B1",
+                                    "H1",
+                                    "B2",
+                                    "H2",
+                                    "D"
+                                ],
     "FormulaKeyRenaming":  true,
     "InputLengthUnits":  [
                              "mm",

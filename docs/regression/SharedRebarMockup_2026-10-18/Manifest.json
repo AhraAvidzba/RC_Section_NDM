@@ -1,56 +1,155 @@
 {
   "file": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\Config_LSection_SharedRebar_Proposal.xlsx",
-  "geometry": "H5:L20",
-  "rebar": "H23:R43",
-  "mainRows": [
-    27,
-    28,
-    29,
-    30,
-    31,
-    32
+  "capacity": 8,
+  "geometry": "H5:L26",
+  "circleGeometry": "H56:L67",
+  "rebar": "H29:R53",
+  "geometryRows": [
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
   ],
-  "extraRows": [
+  "mainRows": [
+    33,
+    34,
+    35,
+    36,
+    37,
     38,
     39,
-    40,
-    41,
-    42,
-    43
+    40
+  ],
+  "extraRows": [
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53
+  ],
+  "dimensions": [
+    {
+      "key": "B1",
+      "name": "Ширина R1",
+      "cell": "J11",
+      "value": 250,
+      "note": "B1 — ширина верхнего прямоугольника R1."
+    },
+    {
+      "key": "H1",
+      "name": "Высота R1",
+      "cell": "J12",
+      "value": 550,
+      "note": "H1 — высота верхнего прямоугольника R1."
+    },
+    {
+      "key": "B2",
+      "name": "Ширина R2",
+      "cell": "J13",
+      "value": 600,
+      "note": "B2 — ширина нижнего прямоугольника R2."
+    },
+    {
+      "key": "H2",
+      "name": "Высота R2",
+      "cell": "J14",
+      "value": 250,
+      "note": "H2 — высота нижнего прямоугольника R2."
+    }
   ],
   "sides": [
     {
-      "key": "Top",
-      "name": "Верх"
+      "key": "R1.Top",
+      "name": "R1: сверху",
+      "lengthCell": "J19",
+      "sourceCell": "J11"
     },
     {
-      "key": "InnerRight",
-      "name": "Внутр. вертикаль"
+      "key": "R1.Bottom",
+      "name": "R1: снизу",
+      "lengthCell": "J20",
+      "sourceCell": "J11"
     },
     {
-      "key": "Shoulder",
-      "name": "Верх полки"
+      "key": "R1.Left",
+      "name": "R1: слева",
+      "lengthCell": "J21",
+      "sourceCell": "J12"
     },
     {
-      "key": "Right",
-      "name": "Справа"
+      "key": "R1.Right",
+      "name": "R1: справа",
+      "lengthCell": "J22",
+      "sourceCell": "J12"
     },
     {
-      "key": "Bottom",
-      "name": "Низ"
+      "key": "R2.Top",
+      "name": "R2: сверху",
+      "lengthCell": "J23",
+      "sourceCell": "J13"
     },
     {
-      "key": "Left",
-      "name": "Слева"
+      "key": "R2.Bottom",
+      "name": "R2: снизу",
+      "lengthCell": "J24",
+      "sourceCell": "J13"
+    },
+    {
+      "key": "R2.Left",
+      "name": "R2: слева",
+      "lengthCell": "J25",
+      "sourceCell": "J14"
+    },
+    {
+      "key": "R2.Right",
+      "name": "R2: справа",
+      "lengthCell": "J26",
+      "sourceCell": "J14"
     }
   ],
+  "captureRanges": [
+    {
+      "name": "Geometry",
+      "range": "H4:L26"
+    },
+    {
+      "name": "Rebar",
+      "range": "H28:R53"
+    },
+    {
+      "name": "CircleGeometry",
+      "range": "H55:L67"
+    },
+    {
+      "name": "CircleRebar",
+      "range": "H28:R53",
+      "type": "Circle"
+    }
+  ],
+  "commentRanges": [
+    "L8:L14",
+    "L19:L26",
+    "O33:O40",
+    "R46:R53",
+    "L59:L62",
+    "L67"
+  ],
   "expectedKeys": [
-    "LSection.Top",
-    "LSection.InnerRight",
-    "LSection.Shoulder",
-    "LSection.Right",
-    "LSection.Bottom",
-    "LSection.Left"
+    "LSection.R1.Top",
+    "LSection.R1.Bottom",
+    "LSection.R1.Left",
+    "LSection.R1.Right",
+    "LSection.R2.Top",
+    "LSection.R2.Bottom",
+    "LSection.R2.Left",
+    "LSection.R2.Right"
   ],
   "validations": [
     {
@@ -58,237 +157,282 @@
       "name": "lstInputLength"
     },
     {
-      "address": "I27",
-      "name": "lstSide1"
+      "address": "B7",
+      "name": "lstGeometryType"
     },
     {
-      "address": "L38",
+      "address": "L46",
       "name": "lstBind2_1"
     },
     {
-      "address": "M38",
+      "address": "M46",
       "name": "lstPos2_1"
     },
     {
-      "address": "P38",
+      "address": "P46",
       "name": "lstBind3_1"
     },
     {
-      "address": "Q38",
+      "address": "Q46",
       "name": "lstPos3_1"
     },
     {
-      "address": "I28",
-      "name": "lstSide2"
-    },
-    {
-      "address": "L39",
+      "address": "L47",
       "name": "lstBind2_2"
     },
     {
-      "address": "M39",
+      "address": "M47",
       "name": "lstPos2_2"
     },
     {
-      "address": "P39",
+      "address": "P47",
       "name": "lstBind3_2"
     },
     {
-      "address": "Q39",
+      "address": "Q47",
       "name": "lstPos3_2"
     },
     {
-      "address": "I29",
-      "name": "lstSide3"
-    },
-    {
-      "address": "L40",
+      "address": "L48",
       "name": "lstBind2_3"
     },
     {
-      "address": "M40",
+      "address": "M48",
       "name": "lstPos2_3"
     },
     {
-      "address": "P40",
+      "address": "P48",
       "name": "lstBind3_3"
     },
     {
-      "address": "Q40",
+      "address": "Q48",
       "name": "lstPos3_3"
     },
     {
-      "address": "I30",
-      "name": "lstSide4"
-    },
-    {
-      "address": "L41",
+      "address": "L49",
       "name": "lstBind2_4"
     },
     {
-      "address": "M41",
+      "address": "M49",
       "name": "lstPos2_4"
     },
     {
-      "address": "P41",
+      "address": "P49",
       "name": "lstBind3_4"
     },
     {
-      "address": "Q41",
+      "address": "Q49",
       "name": "lstPos3_4"
     },
     {
-      "address": "I31",
-      "name": "lstSide5"
-    },
-    {
-      "address": "L42",
+      "address": "L50",
       "name": "lstBind2_5"
     },
     {
-      "address": "M42",
+      "address": "M50",
       "name": "lstPos2_5"
     },
     {
-      "address": "P42",
+      "address": "P50",
       "name": "lstBind3_5"
     },
     {
-      "address": "Q42",
+      "address": "Q50",
       "name": "lstPos3_5"
     },
     {
-      "address": "I32",
-      "name": "lstSide6"
-    },
-    {
-      "address": "L43",
+      "address": "L51",
       "name": "lstBind2_6"
     },
     {
-      "address": "M43",
+      "address": "M51",
       "name": "lstPos2_6"
     },
     {
-      "address": "P43",
+      "address": "P51",
       "name": "lstBind3_6"
     },
     {
-      "address": "Q43",
+      "address": "Q51",
       "name": "lstPos3_6"
+    },
+    {
+      "address": "L52",
+      "name": "lstBind2_7"
+    },
+    {
+      "address": "M52",
+      "name": "lstPos2_7"
+    },
+    {
+      "address": "P52",
+      "name": "lstBind3_7"
+    },
+    {
+      "address": "Q52",
+      "name": "lstPos3_7"
+    },
+    {
+      "address": "L53",
+      "name": "lstBind2_8"
+    },
+    {
+      "address": "M53",
+      "name": "lstPos2_8"
+    },
+    {
+      "address": "P53",
+      "name": "lstBind3_8"
+    },
+    {
+      "address": "Q53",
+      "name": "lstPos3_8"
     }
   ],
   "inputCells": [
-    "J8",
+    "B7",
     "J9",
     "J10",
-    "J15",
-    "J16",
-    "J18",
-    "J19",
+    "J11",
+    "J12",
+    "J13",
+    "J14",
     "B5",
-    "I27",
-    "J27",
-    "K27",
-    "L27",
-    "M27",
-    "N27",
-    "L38",
-    "M38",
-    "P38",
-    "Q38",
+    "J60",
+    "J61",
+    "J62",
+    "J33",
+    "K33",
+    "L33",
+    "M33",
+    "N33",
+    "L46",
+    "M46",
+    "P46",
+    "Q46",
+    "J46",
+    "K46",
+    "N46",
+    "O46",
+    "J34",
+    "K34",
+    "L34",
+    "M34",
+    "N34",
+    "L47",
+    "M47",
+    "P47",
+    "Q47",
+    "J47",
+    "K47",
+    "N47",
+    "O47",
+    "J35",
+    "K35",
+    "L35",
+    "M35",
+    "N35",
+    "L48",
+    "M48",
+    "P48",
+    "Q48",
+    "J48",
+    "K48",
+    "N48",
+    "O48",
+    "J36",
+    "K36",
+    "L36",
+    "M36",
+    "N36",
+    "L49",
+    "M49",
+    "P49",
+    "Q49",
+    "J49",
+    "K49",
+    "N49",
+    "O49",
+    "J37",
+    "K37",
+    "L37",
+    "M37",
+    "N37",
+    "L50",
+    "M50",
+    "P50",
+    "Q50",
+    "J50",
+    "K50",
+    "N50",
+    "O50",
     "J38",
     "K38",
+    "L38",
+    "M38",
     "N38",
-    "O38",
-    "I28",
-    "J28",
-    "K28",
-    "L28",
-    "M28",
-    "N28",
-    "L39",
-    "M39",
-    "P39",
-    "Q39",
+    "L51",
+    "M51",
+    "P51",
+    "Q51",
+    "J51",
+    "K51",
+    "N51",
+    "O51",
     "J39",
     "K39",
+    "L39",
+    "M39",
     "N39",
-    "O39",
-    "I29",
-    "J29",
-    "K29",
-    "L29",
-    "M29",
-    "N29",
-    "L40",
-    "M40",
-    "P40",
-    "Q40",
+    "L52",
+    "M52",
+    "P52",
+    "Q52",
+    "J52",
+    "K52",
+    "N52",
+    "O52",
     "J40",
     "K40",
+    "L40",
+    "M40",
     "N40",
-    "O40",
-    "I30",
-    "J30",
-    "K30",
-    "L30",
-    "M30",
-    "N30",
-    "L41",
-    "M41",
-    "P41",
-    "Q41",
-    "J41",
-    "K41",
-    "N41",
-    "O41",
-    "I31",
-    "J31",
-    "K31",
-    "L31",
-    "M31",
-    "N31",
-    "L42",
-    "M42",
-    "P42",
-    "Q42",
-    "J42",
-    "K42",
-    "N42",
-    "O42",
-    "I32",
-    "J32",
-    "K32",
-    "L32",
-    "M32",
-    "N32",
-    "L43",
-    "M43",
-    "P43",
-    "Q43",
-    "J43",
-    "K43",
-    "N43",
-    "O43"
+    "L53",
+    "M53",
+    "P53",
+    "Q53",
+    "J53",
+    "K53",
+    "N53",
+    "O53"
   ],
   "unitCells": [
     "K9",
     "K10",
-    "K15",
-    "K16",
-    "K17",
-    "K18",
+    "K11",
+    "K12",
+    "K13",
+    "K14",
     "K19",
     "K20",
-    "J26",
+    "K21",
+    "K22",
+    "K23",
+    "K24",
+    "K25",
     "K26",
-    "M26",
-    "N26",
-    "J37",
-    "K37",
-    "N37",
-    "O37"
+    "J32",
+    "K32",
+    "M32",
+    "N32",
+    "J45",
+    "K45",
+    "N45",
+    "O45",
+    "K60",
+    "K61",
+    "K62",
+    "K67"
   ],
   "mainWorkbookSHA256": "ABAA60FCB940F5C850571F515BF4C7C82DA474E7002B7DD122C54BB4E147C45C"
 }
