@@ -1,0 +1,294 @@
+{
+  "file": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\outputs\\01a12ece-8192-7141-89b3-f83f1176184c\\Config_LSection_SharedRebar_Proposal.xlsx",
+  "geometry": "H5:L20",
+  "rebar": "H23:R43",
+  "mainRows": [
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+  ],
+  "extraRows": [
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+  ],
+  "sides": [
+    {
+      "key": "Top",
+      "name": "Верх"
+    },
+    {
+      "key": "InnerRight",
+      "name": "Внутр. вертикаль"
+    },
+    {
+      "key": "Shoulder",
+      "name": "Верх полки"
+    },
+    {
+      "key": "Right",
+      "name": "Справа"
+    },
+    {
+      "key": "Bottom",
+      "name": "Низ"
+    },
+    {
+      "key": "Left",
+      "name": "Слева"
+    }
+  ],
+  "expectedKeys": [
+    "LSection.Top",
+    "LSection.InnerRight",
+    "LSection.Shoulder",
+    "LSection.Right",
+    "LSection.Bottom",
+    "LSection.Left"
+  ],
+  "validations": [
+    {
+      "address": "B5",
+      "name": "lstInputLength"
+    },
+    {
+      "address": "I27",
+      "name": "lstSide1"
+    },
+    {
+      "address": "L38",
+      "name": "lstBind2_1"
+    },
+    {
+      "address": "M38",
+      "name": "lstPos2_1"
+    },
+    {
+      "address": "P38",
+      "name": "lstBind3_1"
+    },
+    {
+      "address": "Q38",
+      "name": "lstPos3_1"
+    },
+    {
+      "address": "I28",
+      "name": "lstSide2"
+    },
+    {
+      "address": "L39",
+      "name": "lstBind2_2"
+    },
+    {
+      "address": "M39",
+      "name": "lstPos2_2"
+    },
+    {
+      "address": "P39",
+      "name": "lstBind3_2"
+    },
+    {
+      "address": "Q39",
+      "name": "lstPos3_2"
+    },
+    {
+      "address": "I29",
+      "name": "lstSide3"
+    },
+    {
+      "address": "L40",
+      "name": "lstBind2_3"
+    },
+    {
+      "address": "M40",
+      "name": "lstPos2_3"
+    },
+    {
+      "address": "P40",
+      "name": "lstBind3_3"
+    },
+    {
+      "address": "Q40",
+      "name": "lstPos3_3"
+    },
+    {
+      "address": "I30",
+      "name": "lstSide4"
+    },
+    {
+      "address": "L41",
+      "name": "lstBind2_4"
+    },
+    {
+      "address": "M41",
+      "name": "lstPos2_4"
+    },
+    {
+      "address": "P41",
+      "name": "lstBind3_4"
+    },
+    {
+      "address": "Q41",
+      "name": "lstPos3_4"
+    },
+    {
+      "address": "I31",
+      "name": "lstSide5"
+    },
+    {
+      "address": "L42",
+      "name": "lstBind2_5"
+    },
+    {
+      "address": "M42",
+      "name": "lstPos2_5"
+    },
+    {
+      "address": "P42",
+      "name": "lstBind3_5"
+    },
+    {
+      "address": "Q42",
+      "name": "lstPos3_5"
+    },
+    {
+      "address": "I32",
+      "name": "lstSide6"
+    },
+    {
+      "address": "L43",
+      "name": "lstBind2_6"
+    },
+    {
+      "address": "M43",
+      "name": "lstPos2_6"
+    },
+    {
+      "address": "P43",
+      "name": "lstBind3_6"
+    },
+    {
+      "address": "Q43",
+      "name": "lstPos3_6"
+    }
+  ],
+  "inputCells": [
+    "J8",
+    "J9",
+    "J10",
+    "J15",
+    "J16",
+    "J18",
+    "J19",
+    "B5",
+    "I27",
+    "J27",
+    "K27",
+    "L27",
+    "M27",
+    "N27",
+    "L38",
+    "M38",
+    "P38",
+    "Q38",
+    "J38",
+    "K38",
+    "N38",
+    "O38",
+    "I28",
+    "J28",
+    "K28",
+    "L28",
+    "M28",
+    "N28",
+    "L39",
+    "M39",
+    "P39",
+    "Q39",
+    "J39",
+    "K39",
+    "N39",
+    "O39",
+    "I29",
+    "J29",
+    "K29",
+    "L29",
+    "M29",
+    "N29",
+    "L40",
+    "M40",
+    "P40",
+    "Q40",
+    "J40",
+    "K40",
+    "N40",
+    "O40",
+    "I30",
+    "J30",
+    "K30",
+    "L30",
+    "M30",
+    "N30",
+    "L41",
+    "M41",
+    "P41",
+    "Q41",
+    "J41",
+    "K41",
+    "N41",
+    "O41",
+    "I31",
+    "J31",
+    "K31",
+    "L31",
+    "M31",
+    "N31",
+    "L42",
+    "M42",
+    "P42",
+    "Q42",
+    "J42",
+    "K42",
+    "N42",
+    "O42",
+    "I32",
+    "J32",
+    "K32",
+    "L32",
+    "M32",
+    "N32",
+    "L43",
+    "M43",
+    "P43",
+    "Q43",
+    "J43",
+    "K43",
+    "N43",
+    "O43"
+  ],
+  "unitCells": [
+    "K9",
+    "K10",
+    "K15",
+    "K16",
+    "K17",
+    "K18",
+    "K19",
+    "K20",
+    "J26",
+    "K26",
+    "M26",
+    "N26",
+    "J37",
+    "K37",
+    "N37",
+    "O37"
+  ],
+  "mainWorkbookSHA256": "ABAA60FCB940F5C850571F515BF4C7C82DA474E7002B7DD122C54BB4E147C45C"
+}
