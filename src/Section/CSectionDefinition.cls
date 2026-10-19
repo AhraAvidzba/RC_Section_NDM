@@ -86,7 +86,7 @@ Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCoun
 
 ' Возвращает завершённую линию по её ID; изменять полученную геометрию нельзя.
 Public Function Path(ByVal pathID As String) As CGeometryPath
-    If Not mPaths.Exists(pathID) Then DefinitionError "Не найден путь '" & pathID & "'.", pathID, "MISSING_PATH"
+    If Not mPaths.Exists(pathID) Then DefinitionError "Не найдена геометрическая линия '" & pathID & "'.", pathID, "MISSING_PATH"
     Set Path = mPaths(pathID)
 End Function
 
@@ -98,7 +98,7 @@ Public Function TargetPaths(ByVal targetID As String) As Variant
     ElseIf mGroups.Exists(targetID) Then
         TargetPaths = mGroups(targetID)
     Else
-        DefinitionError "Не найден путь или группа '" & targetID & "'."
+        DefinitionError "Не найдена геометрическая линия или группа линий '" & targetID & "'."
     End If
 End Function
 
@@ -112,9 +112,9 @@ End Function
 ' Добавляет аналитический путь с уникальным ID в определение сечения.
 Friend Sub AddPath(ByVal path As CGeometryPath)
     RequireMutable
-    If path Is Nothing Then DefinitionError "Путь не передан."
-    If Not path.IsSealed Then DefinitionError "Путь '" & path.ID & "' еще не подготовлен."
-    If mPaths.Exists(path.ID) Or mGroups.Exists(path.ID) Then DefinitionError "Повторный ID пути '" & path.ID & "'."
+    If path Is Nothing Then DefinitionError "Не передана геометрическая линия размещения."
+    If Not path.IsSealed Then DefinitionError "Геометрическая линия '" & path.ID & "' еще не подготовлен."
+    If mPaths.Exists(path.ID) Or mGroups.Exists(path.ID) Then DefinitionError "Повторный ID геометрической линии '" & path.ID & "'."
     mPaths.Add path.ID, path
 End Sub
 
@@ -123,7 +123,7 @@ Friend Sub AddGroup(ByVal groupID As String, ByVal pathIDs As Variant)
     RequireMutable
     If Len(Trim$(groupID)) = 0 Then DefinitionError "Не задан ID группы."
     If mPaths.Exists(groupID) Or mGroups.Exists(groupID) Then DefinitionError "Повторный ID группы '" & groupID & "'."
-    If Not IsArray(pathIDs) Then DefinitionError "Группа должна содержать массив ID путей."
+    If Not IsArray(pathIDs) Then DefinitionError "Для группы геометрических линий нужен массив их идентификаторов (ID)."
     Dim names() As String, i As Long, j As Long, count As Long
     count = UBound(pathIDs) - LBound(pathIDs) + 1
     If count < 1 Then DefinitionError "Группа не может быть пустой."
@@ -190,10 +190,10 @@ Friend Sub AddRule(ByRef value As TRebarRule)
             If IsObject(value.ExplicitStations(i)) Or IsArray(value.ExplicitStations(i)) Then _
                 DefinitionError "Явные позиции должны содержать только числа."
             If VarType(value.ExplicitStations(i)) = vbBoolean Or Not IsNumeric(value.ExplicitStations(i)) Then _
-                DefinitionError "Явная станция должна быть числом."
+                DefinitionError "Расстояние от начала линии до места установки стержня должно быть числом."
         Next i
     ElseIf Not IsEmpty(value.ExplicitStations) Then
-        DefinitionError "Явные станции должны быть массивом чисел."
+        DefinitionError "Положения стержней должны задаваться массивом числовых расстояний от начала линии."
     End If
     mRuleCount = mRuleCount + 1: ReDim Preserve mRules(1 To mRuleCount)
     mRules(mRuleCount) = value
@@ -292,7 +292,7 @@ Private Sub ValidateAnnotation(ByRef value As TSectionAnnotation)
             unused = RuleIndex(value.Target)
         Case "BetweenPoints"
         Case Else
-            DefinitionError "Неизвестное измерение '" & value.Kind & "'.", value.AnnotationID, "MEASUREMENT_KIND"
+            DefinitionError "Не распознан способ построения размера '" & value.Kind & "'.", value.AnnotationID, "MEASUREMENT_KIND"
     End Select
 End Sub
 

@@ -112,13 +112,13 @@ Public Function RunAudit03ProfileFailureScopeTests(Optional ByRef passed As Long
             CheckProfileFailureMeta stats, prefix & ".longitudinal", result.LongitudinalCrackMeta, (mask And 4) <> 0, True, reason
             Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch, units
             Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-            Check stats, prefix & ".batchComment", CStr(anchor.Offset(12, 2).Value2) = result.OverallMeta.ResultComment
+            Check stats, prefix & ".batchComment", CStr(anchor.Offset(12, 2).Value2) = CalculationResultMessage(batch, 1, result.OverallMeta)
             Set anchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
-            Check stats, prefix & ".strengthComment", CStr(anchor.Offset(0, 1).Value2) = result.StrengthMeta.ResultComment
+            Check stats, prefix & ".strengthComment", CStr(anchor.Offset(0, 1).Value2) = CalculationResultMessage(batch, 1, result.StrengthMeta)
             Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-            Check stats, prefix & ".crackComment", CStr(anchor.Offset(0, 1).Value2) = result.CrackSummaryMeta.ResultComment
+            Check stats, prefix & ".crackComment", CStr(anchor.Offset(0, 1).Value2) = CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
             Set anchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
-            Check stats, prefix & ".stabilityComment", CStr(anchor.Offset(0, 1).Value2) = result.StabilityMeta.ResultComment
+            Check stats, prefix & ".stabilityComment", CStr(anchor.Offset(0, 1).Value2) = CalculationResultMessage(batch, 1, result.StabilityMeta)
             LogLine stats, "PROFILE_SCOPE: " & prefix & "|batch=" & result.OverallMeta.ResultComment & _
                 "|strength=" & result.StrengthMeta.ResultComment & "|crack=" & result.CrackSummaryMeta.ResultComment & _
                 "|stability=" & result.StabilityMeta.ResultComment
@@ -443,7 +443,7 @@ Private Sub CheckValidRows(ByRef stats As TLoadTableStats, ByVal source As Objec
         End If
         Check stats, prefix & ".writerID", CStr(summary.Cells(slot + 12, 1).Value2) = batch.CombinationID(slot)
         Check stats, prefix & ".writerComment", CStr(summary.Cells(slot + 12, 2).Value2) = expectedComment
-        Check stats, prefix & ".writerResultComment", CStr(summary.Cells(slot + 12, 3).Value2) = batch.ResultAt(slot).OverallMeta.ResultComment
+        Check stats, prefix & ".writerResultComment", CStr(summary.Cells(slot + 12, 3).Value2) = CalculationResultMessage(batch, slot, batch.ResultAt(slot).OverallMeta)
         Check stats, prefix & ".writerStatus", CStr(summary.Cells(slot + 12, 4).Value2) = batch.ResultAt(slot).Status
     Next slot
 End Sub
@@ -484,7 +484,12 @@ Private Sub CheckInvalidRows(ByRef stats As TLoadTableStats, ByVal source As Obj
                 Check stats, prefix & ".Slot" & CStr(slot) & ".InputErr", batch.ResultAt(slot).Status = "InputErr"
                 Check stats, prefix & ".Slot" & CStr(slot) & ".address", InStr(1, reason, address, vbBinaryCompare) > 0
                 Check stats, prefix & ".Slot" & CStr(slot) & ".sourceSlot", batch.SourceDataOffset(slot) = slot
-                Check stats, prefix & ".Slot" & CStr(slot) & ".writerComment", CStr(summary.Cells(slot + 12, 3).Value2) = reason
+                Check stats, prefix & ".Slot" & CStr(slot) & ".writerComment", _
+                    CStr(summary.Cells(slot + 12, 3).Value2) = CalculationResultMessage(batch, slot, batch.ResultAt(slot).OverallMeta)
+                Check stats, prefix & ".Slot" & CStr(slot) & ".writerReason", _
+                    InStr(1, CStr(summary.Cells(slot + 12, 3).Value2), reason, vbBinaryCompare) > 0
+                Check stats, prefix & ".Slot" & CStr(slot) & ".writerSource", _
+                    InStr(1, CStr(summary.Cells(slot + 12, 3).Value2), batch.SourceReference(slot), vbBinaryCompare) > 0
                 Check stats, prefix & ".Slot" & CStr(slot) & ".writerStatus", CStr(summary.Cells(slot + 12, 4).Value2) = "InputErr"
                 LogLine stats, "LOAD_TABLE_ERROR: " & prefix & ".Slot" & CStr(slot) & "; " & reason
             Next slot
@@ -566,7 +571,7 @@ Private Sub CheckActivePaths(ByRef stats As TLoadTableStats, ByVal source As Obj
         lambda = batch.ResultAt(slot).CrackResult.Formation.LambdaCrc
         CheckPathPoint stats, prefix & ".formationPoint", point, actual, lambda, batch.N(slot), batch.Mx(slot), batch.My(slot)
         Check stats, prefix & ".currentState", batch.ResultAt(slot).CrackResult.CurrentStateMeta.InternalStatus = rsSuccess
-        Check stats, prefix & ".summaryComment", CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(slot + 12, 3).Value2) = batch.ResultAt(slot).OverallMeta.ResultComment
+        Check stats, prefix & ".summaryComment", CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Cells(slot + 12, 3).Value2) = CalculationResultMessage(batch, slot, batch.ResultAt(slot).OverallMeta)
         LogLine stats, "LOAD_TABLE_PATH: " & prefix & _
             "; capacityStatus=" & CStr(batch.ResultAt(slot).CapacityMeta.InternalStatus) & _
             "; capacityCode=" & CStr(batch.ResultAt(slot).CapacityMeta.ResultCode) & _

@@ -720,8 +720,8 @@ End Function
 
 ' Проверяет, заданы ли допустимые параметры модели материалов выбранного профиля.
 Private Sub ValidateSpec(ByVal spec As CMaterialModelSpec)
-    If spec Is Nothing Then Err.Raise vbObjectError + 3250, "CMaterialModelProvider", "MaterialModelSpec не передан."
-    If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, "CMaterialModelProvider", "MaterialModelSpec заполнен не полностью."
+    If spec Is Nothing Then Err.Raise vbObjectError + 3250, "CMaterialModelProvider", "Не передано описание выбранных диаграмм и характеристик материалов (MaterialModelSpec)."
+    If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, "CMaterialModelProvider", "В описании материалов указаны не все обязательные характеристики и диаграммы (MaterialModelSpec)."
 End Sub
 
 ' Возвращает диаграмму из кэша, если такой MaterialModelSpec уже запрашивался.

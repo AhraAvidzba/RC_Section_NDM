@@ -1374,7 +1374,7 @@ Public Function RunSP35EndToEndTests() As String
         Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, presentationUnits
         Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
         For i = 1 To 6
-            Check "E2E.writer." & CStr(standard) & "." & CStr(i) & ".comment", CStr(anchor.Offset(i - 1, 1).Value2) = batch.ResultAt(i).CrackSummaryMeta.ResultComment
+            Check "E2E.writer." & CStr(standard) & "." & CStr(i) & ".comment", CStr(anchor.Offset(i - 1, 1).Value2) = CalculationResultMessage(batch, i, batch.ResultAt(i).CrackSummaryMeta)
         Next i
         ThisWorkbook.SaveCopyAs ThisWorkbook.Path & "\E2E_" & CStr(standard) & ".xlsm"
     Next standard

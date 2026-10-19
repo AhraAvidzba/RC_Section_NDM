@@ -1,0 +1,908 @@
+{
+  "ProductionComponents": 112,
+  "ProductionClasses": 97,
+  "ReviewScope": "Все src/*.cls и src/*.bas, включая компоненты без собственных сообщений; тестовые компоненты не считаются рабочими классами.",
+  "Files": [
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "SHA256": "65639876706519E906F7C27A55238BA334951CE69FBB938B4FCACC009610C114",
+      "MessageStatements": 113,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CCalculationProfile.cls",
+      "SHA256": "EADDC6A7E3E4F9136736F02451CB3B062951DB16F4121534B3BFABB73AA764F3",
+      "MessageStatements": 14,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CCalculationProfileCatalog.cls",
+      "SHA256": "BDCEA9B990B4CB29364D90EBB08F20F2B3D21B3667A2213600AB1193F283B96A",
+      "MessageStatements": 19,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CCombinationResult.cls",
+      "SHA256": "C2057D91F9EA5B02A3E8FAABBFD00FBD530F59F1C6C85DBB59A22E074C82A820",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CDirectStateResult.cls",
+      "SHA256": "2F40A5FF17DC9D57B86FFB47E4377F18442E9052A6A27EF47A240B7C1EB057AE",
+      "MessageStatements": 2,
+      "Changed": false,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CSectionStateResult.cls",
+      "SHA256": "90F104531659714FAF8419553A9C7A2A3ABB4B1A90A898DC229BCAB6C8EA6B96",
+      "MessageStatements": 14,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CStateProvider.cls",
+      "SHA256": "F72B48054B932F09F865C1929981834AE352A9E4537010E77AC775424CB38B69",
+      "MessageStatements": 5,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CStateRepository.cls",
+      "SHA256": "20A9F756F6051EFF3047C5E78D5F23CB37F1B0C3C86266571E33FD2404C8F803",
+      "MessageStatements": 3,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CStateRequest.cls",
+      "SHA256": "3FE3A1D113E36788838C56580890C1497DEEBA2750301827487D2F79F9CDB1E0",
+      "MessageStatements": 1,
+      "Changed": true,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Batch/CStrengthResult.cls",
+      "SHA256": "35D5E25C2C628434CA7D681B562CD13D8E1F9A6FDCCCCCEFD5FABB2BFCCA216E",
+      "MessageStatements": 3,
+      "Changed": false,
+      "Review": "Проверены причины остановки сочетаний, выбор профиля, сохранение отдельных статусов и общий ResultComment. Адрес строки нагрузок и ключи настроек передаются как данные.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/CLoadPathDescriptor.cls",
+      "SHA256": "63B5A181DB8E04193BAAFD56024A2D0EBB2223DA2403BAE12BB7B96C63F3DFF9",
+      "MessageStatements": 2,
+      "Changed": true,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/CLoadPathMath.cls",
+      "SHA256": "882C9F1E1C5C821CF91F3CC58537871739084BFE99682850052A945A50F6B799",
+      "MessageStatements": 5,
+      "Changed": true,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/CLoadPathVector.cls",
+      "SHA256": "0787D5AC0370717F70D5DCF91C37D138A4EF67B34698B79751CD6014071C28CB",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Common/CMomentZeroFilter.cls",
+      "SHA256": "05B89EE3FB2D21BD4F3F4332FD88EDAF5FC2DE6FD91DF87A8138700C8B5B47AE",
+      "MessageStatements": 1,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/CResultMeta.cls",
+      "SHA256": "CB16997F094F4A11CF9FE21ADC3BF9943759823EB6928A5776E79D2A2569EF90",
+      "MessageStatements": 12,
+      "Changed": true,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/CResultStatusPolicy.cls",
+      "SHA256": "3D32AA880FCC624E1AE8C385E7C84FBF3DC521E68AD648EE8FE761A083B3145B",
+      "MessageStatements": 0,
+      "Changed": true,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Common/CSectionLoadState.cls",
+      "SHA256": "FA7CDA72CC31DA6CA5DE087D25318926C44191D7F7A4D9AEB7110B03171FFA66",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "SHA256": "54E696BE0C8DE34E5037EB1FB874F255DBFA7ACBC23351E5688F71DC69716D8F",
+      "MessageStatements": 27,
+      "Changed": true,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/modGeometryPrimitives.bas",
+      "SHA256": "05542413571B9F7542EF46F14C2BDA3735AAF1C9CB6C86FA4D44C6CF87F0C068",
+      "MessageStatements": 2,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/modGeometryTypes.bas",
+      "SHA256": "EEA750EED738386E6E424DCFFE25132D23871E0DEC25E36609510EF04B251C75",
+      "MessageStatements": 1,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/modResultStatus.bas",
+      "SHA256": "1D4006287B9352321F141F5D20163E45380662BA23323D7934C88FDB6ECB2447",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Common/modSectionRecipeApiGuide.bas",
+      "SHA256": "4526833E691D32301273195C8BC2B2A72FDCB7EE7FAECBFE6B5F18ED8E63DCF0",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Common/modSectionRecipeTypes.bas",
+      "SHA256": "2AEC95687A0064A1EE19C1A8E5CF869B8606A2907F587FC9E8C63239F53CDC82",
+      "MessageStatements": 4,
+      "Changed": true,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Common/modSolverWorkStats.bas",
+      "SHA256": "365942B0EA59D7308B67FCEF2D83E9115061CBC6E7E18009AE58A687F5D4FA4B",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены общие статусы, преобразования расчётных назначений и диагностические записи. Машинные идентификаторы сохранены; пояснения не участвуют в выборе статуса.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Crack/CCrackFormationCalculator.cls",
+      "SHA256": "1098620D0D33ACA50884DCCD57735DAF47D9F1B4F2A055E27F054DBFC3286252",
+      "MessageStatements": 81,
+      "Changed": true,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CCrackFormationResult.cls",
+      "SHA256": "A2A6B179580FAC60345B4559617680C9534FBED461C39D518AEDBA7545BE5B30",
+      "MessageStatements": 5,
+      "Changed": true,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CCrackResult.cls",
+      "SHA256": "A23BA6B069128112063F53C54E23B0625C7984EF87AAD2A2C874EF286F0E1F4E",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CCrackWidthCalculator.cls",
+      "SHA256": "336167F76E8F7DD2272F272F3AF0AF2E5771E41E1E558C2B6535F19D8AC72476",
+      "MessageStatements": 75,
+      "Changed": true,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CCrackWidthResult.cls",
+      "SHA256": "4B8D27BF059FA982062D0CB1682776041767325B0ADD3AD3DD5AF98DA0AB7274",
+      "MessageStatements": 2,
+      "Changed": true,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CLongitudinalCrackCalculator.cls",
+      "SHA256": "D1E08F145DA875E355E0E62EDD39D384021F7B2AEB9BADC1434846EDCBFC4A18",
+      "MessageStatements": 8,
+      "Changed": false,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CLongitudinalCrackResult.cls",
+      "SHA256": "EFDE23A077F8905DC2D1B05120C6CE4728A68CCF280F488C03E50DB1BB50C83C",
+      "MessageStatements": 2,
+      "Changed": true,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Crack/CSP35CrackData.cls",
+      "SHA256": "3A615F09B11B0262B1305B9563C08AD36C12D1CD1267C2586D97125DE284C97F",
+      "MessageStatements": 15,
+      "Changed": true,
+      "Review": "Проверены сообщения образования, ширины и продольных трещин, неприменимости и зависимостей. Сохранены различия физического отказа, отсутствия трещины и численной несходимости.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CAutoCADContourReader.cls",
+      "SHA256": "4264A653D62E374A7317789AEC37D589FBBF743819EA383E0F4000288FD5F955",
+      "MessageStatements": 17,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "SHA256": "082CB8DF75AF9A9EF7DDB4A98B4423DC1E2CAF3E300623C829649CE0E0BED73A",
+      "MessageStatements": 52,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CBatchResultWriter.cls",
+      "SHA256": "D7E36F67B6C7F19C0979B0CB748EACD1E5E1579EB301A11F99BF507548DF8465",
+      "MessageStatements": 69,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CCrackSummaryWriter.cls",
+      "SHA256": "087A9C74BB2452972A42BD48CD761A7878A5C3D4787F383340ADCE1DF7E99289",
+      "MessageStatements": 100,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CExcelAppStateGuard.cls",
+      "SHA256": "2BD5BC3A86F56815D03B358A5E86BF6439FDA2553239340F692EF6AACB38CE67",
+      "MessageStatements": 3,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CExecutionReport.cls",
+      "SHA256": "29E4C5D2D28D84051DA683D3518B8EF85FB01B4473F95EF7BF767F0E9E280D34",
+      "MessageStatements": 117,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CLoadCombinationReader.cls",
+      "SHA256": "E0FA005A791A839BEECF372F9B099121FDAACE62AFE976A7C35CF977A3048436",
+      "MessageStatements": 18,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CNDMResultsWriter.cls",
+      "SHA256": "3E81E9D17F129F17106DF3F2E1048FA7D4FE67B8E17D5B4CFBCAA0766E7FD30D",
+      "MessageStatements": 153,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CPlotAnnotationLayout.cls",
+      "SHA256": "05F26EF82B47B14B973E1FE59945D59E9444F25D09D083937B3DFD6A7597E938",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CSectionInputSnapshotReader.cls",
+      "SHA256": "EE41F437332D7B26E357D4B0C128B31948E1EC97EAC8A23082CF4CBAC981E722",
+      "MessageStatements": 2,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CSectionPlotDataReader.cls",
+      "SHA256": "289D79F1F790E6387D569C2D94E0061B4FC94C9D39D4B3E7FA55C10D90D1693A",
+      "MessageStatements": 38,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CSectionPlotter.cls",
+      "SHA256": "4D6BA268916E3469579B3C2A67E6D19B121E6E36E7C1FA6BE105304A716101D9",
+      "MessageStatements": 20,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CSectionTypeRegistry.cls",
+      "SHA256": "95FC678EADA46E34A37A134BD26806A04465D3C5B4CF58CBC69300A03D25EF5E",
+      "MessageStatements": 10,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CStabilitySummaryWriter.cls",
+      "SHA256": "204070FEFEEFCBF50BAA286279255FAD059B5976E9F988B8CE4999BDE79869D9",
+      "MessageStatements": 86,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CStrengthSummaryWriter.cls",
+      "SHA256": "2940F2A3A360A11DC5CCD5B6FF35C429EA7C84C6255D95A80531AF8745A233BA",
+      "MessageStatements": 71,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CSystemSettingsReader.cls",
+      "SHA256": "598BAAB16791146A42004453ED8BC4DFBDC662B65EB4BBC15159D3623C644AF8",
+      "MessageStatements": 88,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "SHA256": "14378B6E65B200A138319391DDEB4A8303090CCAA99752E22203B539EE3DCAA4",
+      "MessageStatements": 16,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/modAutoCADStressExport.bas",
+      "SHA256": "EC2D0A3DE0227B31BA47197C10CE40669233988714A8BF7F330B0B1637728B50",
+      "MessageStatements": 68,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/modMeshConfiguration.bas",
+      "SHA256": "B45DDAEB7D0AFFCAB065EA59806D24B681AD2E9131A1F4744901A3C67AB4A4C0",
+      "MessageStatements": 7,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/modSectionRecipeSetup.bas",
+      "SHA256": "6144A1FA8C4602D919AF22E40737AE04716941CBB2ACE9D58097A8854D95D3D6",
+      "MessageStatements": 7,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/modStatusFormatting.bas",
+      "SHA256": "B6301FA7141480AE4203A7847B9BC3395D35E8E61DD853BAA257B3EB8D2C3B61",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "SHA256": "D2EA291740BF649CA2FE7CA22F04B77606416656BB7E8052A14C0805C0B95E47",
+      "MessageStatements": 146,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Excel/modWorkbookMessages.bas",
+      "SHA256": "1FAC38D57247ED9FBDD221CE83CB514DACC25C9C8E07E131BDC22F12388CE432",
+      "MessageStatements": 8,
+      "Changed": true,
+      "Review": "Проверены ввод, восстановление сохранённых Results, вывод сводок и команды Excel/AutoCAD. В сообщениях используются реальные именованные диапазоны, ячейки или исходные объекты CAD; внутренним ошибкам адреса не придумываются.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CFiberMeshBuilder.cls",
+      "SHA256": "CA1A3C927E51AABF75971EA9C5E041AF577D40F319EDC3354C03AB985AD166F6",
+      "MessageStatements": 16,
+      "Changed": true,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CGeometryDiagnostic.cls",
+      "SHA256": "8946153D9883BC493BB4015304782921F4E281D52C51C58FDD5A90C60ECFD49B",
+      "MessageStatements": 1,
+      "Changed": false,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CGeometryPath.cls",
+      "SHA256": "9D768156ABA0EADF6AE28D2FD26126E7CA205C8C8947EFE90D68C13231F65489",
+      "MessageStatements": 31,
+      "Changed": true,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CGeometryRegion.cls",
+      "SHA256": "B5C9E7E1ADBB99CB7FF9F9131B34C96D19B7AED7AF175AD84FA9221710DB3EE7",
+      "MessageStatements": 8,
+      "Changed": true,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CPolygonSpec.cls",
+      "SHA256": "2F6770DD33811D4B997FBA54766979305F50F5387FE3F855B1DDE634C597BEAF",
+      "MessageStatements": 14,
+      "Changed": true,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CSectionRecipeCircle.cls",
+      "SHA256": "B40C9FA605EA9C0BCC1B0E17BC2F5A762722656ACD2770E839933E2A7F6328CF",
+      "MessageStatements": 8,
+      "Changed": false,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "SHA256": "6C2A2815D78326395A8FD44C1647BF40C9481DAD60B28DEA28E1DAB47D710FBB",
+      "MessageStatements": 10,
+      "Changed": true,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CSectionRecipeRectSet.cls",
+      "SHA256": "79BFB1C8BB5374F1B56EAEFD0B972B484AC634D738947D7E26D4415ABA691795",
+      "MessageStatements": 16,
+      "Changed": false,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+      "SHA256": "F15DF8DB695270D4792E648431CBFC2182730403630E6240AF75F4C1BB3AB6CE",
+      "MessageStatements": 10,
+      "Changed": false,
+      "Review": "Проверены параметры контуров, сетки и рецептов. Общая геометрия сообщает причину и идентификатор объекта; источники ввода добавляются вызывающим слоем.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Interfaces/ILimitSearchProblem.cls",
+      "SHA256": "F8420A8235947605EEE03B8CE5614D0BE19842B5C7D6A6856AD3C80F7C57B37E",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверен контракт интерфейса: собственных пользовательских сообщений нет, причины возвращают реализации.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Materials/CConcreteMaterialParameters.cls",
+      "SHA256": "9D9A9B2E62060EB32CCDCF8C56FF27C8C26C56292B2DB825E4BC55A6564889E3",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Materials/CLinearConcreteMaterial.cls",
+      "SHA256": "644B6C882A120D6DDEAE4E9953F1D69BF7F18B43DD1DFD6DAFF5DF0B25A4FD3F",
+      "MessageStatements": 1,
+      "Changed": false,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Materials/CLinearSteelMaterial.cls",
+      "SHA256": "3A01B3A6575E81A6C63BAE7CDCE65B3F3706CAB3A6B236F17E3891D236875C42",
+      "MessageStatements": 1,
+      "Changed": false,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Materials/CMaterialDiagram.cls",
+      "SHA256": "C5A532B2C551713750FBD214843170F5F0F3729C284211E49B3408978A1AB4AC",
+      "MessageStatements": 18,
+      "Changed": true,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Materials/CMaterialModelProvider.cls",
+      "SHA256": "27782B50D7FC40468C426D05299407FD1C35B087322C10690D0C33D1A2188B9F",
+      "MessageStatements": 13,
+      "Changed": true,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Materials/CMaterialModelSpec.cls",
+      "SHA256": "E9999EE79D6E94352717821EC5D544AD78876FB4A55398F30FB7EBB9C77D6183",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Materials/CSteelMaterialParameters.cls",
+      "SHA256": "4892B7954916023BF325536ACD4F075189D56776B0B57F5787A9C67D860E7045",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены диаграммы и характеристики материалов. Ошибки ввода проходят общий ридер с ключом, значением, адресом и допустимым вариантом; программный вызов сохраняет источник и код.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CConcreteRegion.cls",
+      "SHA256": "D489F2FF82C5ADD9DDDEEC119C05D12E23D515590B1EA21E0963312DEAF43F98",
+      "MessageStatements": 2,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CRebarContactBuilder.cls",
+      "SHA256": "D9CF1C301573450B141461C2EB5464E57C7EEB27E21B62F837DF50B5E8427A55",
+      "MessageStatements": 12,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CRebarGroupAnnotationBuilder.cls",
+      "SHA256": "2CBC8DFF2F0CE33C9866404EA7355EBFF8AFF253CEA84C9B7100EC82680B0354",
+      "MessageStatements": 1,
+      "Changed": false,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CRebarLayout.cls",
+      "SHA256": "F1721043C6829F2D303CB5B1A693F102BE36691638C6E494E23550050B200670",
+      "MessageStatements": 9,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "SHA256": "DE0C11AE2930A42C2D7102DC9A7385185E67F2EA6DEF77ABD06A0331E912CA9D",
+      "MessageStatements": 51,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CRebarRuleOptions.cls",
+      "SHA256": "5DD52F9C2943224D069BD02D2BA651EAF54CEE16BB1448A81BF4C3BCDE48A95B",
+      "MessageStatements": 3,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionAnnotationBuilder.cls",
+      "SHA256": "757ED5B4BAB5D4FDD6B9E9BC9D5E39221EFC86EF5395E318A4E58B31F6EA5700",
+      "MessageStatements": 14,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionAnnotations.cls",
+      "SHA256": "7C3763DEE6D8FB5E27C5BCBADBB64A413B3E081A0BA1A30E05A0F8085E11CDD9",
+      "MessageStatements": 6,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionBuilder.cls",
+      "SHA256": "8F110EADF50C2827923F020E957B6A9577534F7FFA8A0314F453C4AB04FB7853",
+      "MessageStatements": 9,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionContours.cls",
+      "SHA256": "DDDDC93E4507E34137D24D712B71856CDE86880F4400FDE284469BFD5E8047B1",
+      "MessageStatements": 9,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "SHA256": "5A128106F3ACCD59109CD490A8651E91C664777D9063DE2756C6ADCE93294352",
+      "MessageStatements": 51,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionDefinitionBuilder.cls",
+      "SHA256": "8D28F83882B7018FB235A836645712AB2E96AF1E02FF1144C6306FB2FB667CF9",
+      "MessageStatements": 8,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionGeometryQuery.cls",
+      "SHA256": "4D090B28023E86D2810F3500C2E76373F7171FA9D8EEE6C5E80BB7A3A000F834",
+      "MessageStatements": 77,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionInputReader.cls",
+      "SHA256": "AC394927AD7B43E5BD84390E63342F83B87CE5D7324CEE4DD1DF2D1B8001D0CF",
+      "MessageStatements": 15,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionInputTable.cls",
+      "SHA256": "1FFFF2F6F0A920CAD38888386E143133C179F749D6A4641646FE852211E76712",
+      "MessageStatements": 33,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionModel.cls",
+      "SHA256": "02EDA6D7C16ABCC32B6515A611328E57FA7C94BB374A7146822383507116CD9C",
+      "MessageStatements": 7,
+      "Changed": true,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionModelBuilder.cls",
+      "SHA256": "816625FF0147A85B92329E471CDC1BB25BD2D25C097850CD768DE0E8500F52DB",
+      "MessageStatements": 7,
+      "Changed": false,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionPropertiesCalculator.cls",
+      "SHA256": "5B8E3752CABE4031F1098153127125061124911B880724ED50EB71E36E5C6F48",
+      "MessageStatements": 28,
+      "Changed": false,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/CSectionRecipeContext.cls",
+      "SHA256": "A35EB093DCC9F0BFB093DB01CFBEEE50D8629362918561F3CBA8D35466595B35",
+      "MessageStatements": 10,
+      "Changed": false,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Section/ISectionRecipe.cls",
+      "SHA256": "D963BC8C3C3F105FED9825B07DB11A0258E275604286FEA66D7322488AD5EDF0",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены сборка сечения, правила армирования, контуры, свойства и аннотации. Причина формируется в ответственном общем классе, а сохранённая ссылка связывает её с вводом.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Solver/CCapacityCalculator.cls",
+      "SHA256": "8A00B333019203F67EE987A9D6AF906B641AF9F852FFF5D6BB79BC6798E141BD",
+      "MessageStatements": 23,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "SHA256": "DECAB394DA04023302B21A6BF9EFA223699B34A4E81327D3614C546027FB41A1",
+      "MessageStatements": 8,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CCapacityResult.cls",
+      "SHA256": "59FAB7727C57A8486CC8D0CD8ECDE6EC2CA8147AE0E76CBD4637C12EDE3E2954",
+      "MessageStatements": 19,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "SHA256": "2323EC81A0279DC47DD907D32A3CF32F28819BB523DD18684FE0724082E8EE5F",
+      "MessageStatements": 60,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CCrackLimitSearchProblem.cls",
+      "SHA256": "55FD022C0FD15F0C0A4D00B7A41E8509854C89E87796ACA1EE4FD43C1C54BBA7",
+      "MessageStatements": 9,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CLimitSearchCoordinator.cls",
+      "SHA256": "005F858A344E00A6DE54B8F9D699093EE2BFCF9C3FE904155553930829B88A26",
+      "MessageStatements": 13,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CLimitSearchRequest.cls",
+      "SHA256": "39DBD3B7ED5A0BEB9FBE68299C849B9E4943787CA683008C05C66E03009B1267",
+      "MessageStatements": 12,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CLimitSearchResult.cls",
+      "SHA256": "DC7932258180C7F695FC8A637BFA4BE642B526086DEC9CD9DC33F08869D0B2F7",
+      "MessageStatements": 4,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CLinearSystem3x3.cls",
+      "SHA256": "F38FF4B37FC5507952A1C665175D14970FB3CA0434414BCC49411C3EB18B13D1",
+      "MessageStatements": 6,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CLoadMultiplierSearch.cls",
+      "SHA256": "81B5AE617AEE63C322703B59D20ACE5683FA95C01BC6A107E662BDD96712DEA4",
+      "MessageStatements": 25,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CSectionNumericalFrame.cls",
+      "SHA256": "EC3AE7C5A99A25093C38340D51B81F1E60CB1C73D7C0B313BEEF9701C26C241E",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Solver/CSectionSolver.cls",
+      "SHA256": "18C2FAC207CF86D623B44639A96B59C2B24DFBC647367092609F65501F282D82",
+      "MessageStatements": 45,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CSectionStrainLimits.cls",
+      "SHA256": "9058A7225397D5DF19797B67CA075636DB76182031760C5F7E762D7841EB8BA9",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CStateGuessBuilder.cls",
+      "SHA256": "1489D6CA49BB11B1F682881B80F1DFED048401966EE5D0AE6C9D872600213E4B",
+      "MessageStatements": 4,
+      "Changed": false,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CStateSolutionRunner.cls",
+      "SHA256": "87FA6E5B7F1C0DEC77BEB45B968FB3D31D7C375DC36F4B411CE56B0D0393AFD5",
+      "MessageStatements": 15,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/CUltimateStrainSearch.cls",
+      "SHA256": "91A11DF0F7956FDCA8EAFC7F961E6C39F703A9C39FD346D612A09FCA26329025",
+      "MessageStatements": 21,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/modLimitSearchRequestFactory.bas",
+      "SHA256": "680EE52AC8589CED2A84C78C4FAC8F4CCF1311BE11051A9A513610E655DCE942",
+      "MessageStatements": 4,
+      "Changed": true,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Solver/modNonlinearStepControl.bas",
+      "SHA256": "C3320AE5B95F59012478362EF1F360FC59D0E7EE5D1C84C6D68CFB97D920156E",
+      "MessageStatements": 0,
+      "Changed": false,
+      "Review": "Проверены причины численной остановки, валидация настроек и преобразование итогов поиска. Предел арифметики и отсутствие равновесия не выдаются за физическое разрушение.",
+      "OwnMessages": false
+    },
+    {
+      "File": "src/Stability/CStabilityCalculator.cls",
+      "SHA256": "7BBD2CEA79A8C72D867ECD0769E9D8F164798DE4D25E89D32EBECB67409EA25F",
+      "MessageStatements": 61,
+      "Changed": true,
+      "Review": "Проверены настройки, геометрические условия, таблица СП35 и итоги двух плоскостей. Сохранены численные значения, нормативные ветви и адресные ошибки ридера.",
+      "OwnMessages": true
+    },
+    {
+      "File": "src/Stability/CStabilityResult.cls",
+      "SHA256": "5BDC14C497DC648430D41CE3E6E46495A0E57FD1418DEA9DC7A0CDDA43B13DC2",
+      "MessageStatements": 9,
+      "Changed": false,
+      "Review": "Проверены настройки, геометрические условия, таблица СП35 и итоги двух плоскостей. Сохранены численные значения, нормативные ветви и адресные ошибки ридера.",
+      "OwnMessages": true
+    }
+  ],
+  "NativeDocuments": {
+    "Count": 5,
+    "MessageEmitters": 0,
+    "Evidence": "SharedRebarInput_2026-10-18/ProgramMessages_2026-10-19/BeforeNative.txt"
+  }
+}

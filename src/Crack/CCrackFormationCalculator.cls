@@ -45,6 +45,7 @@ Private mCrackFormed As Boolean ' True, если по выбранной вет�
 Private mCrackFormationPath As String ' Auto либо LambdaMx/My/Mxy/N/NMxy: масштабируемая часть LC общего LoadPath.
 Private mResolvedCrackFormationPath As String ' Фактический путь, который дал принятую точку образования трещины.
 Private mCrackFormationSolutionStrategy As String ' Auto, UltimateStrain или LoadMultiplier для поиска стадии образования трещины.
+Private mFailureSettingKeys As String ' Ключи ошибочных настроек для адресного пояснения готового результата.
 Private mFormationSolutionMethod As String ' Фактически выполненный метод; Ncrc для аналитической центральной ветки.
 Private mConcreteRbtSer As Double ' Rbt,ser для центральной ветки Ncrc и модели образования трещины, МПа.
 Private mConcreteEb As Double ' Eb для Ared в центральной ветке Ncrc, МПа.
@@ -211,6 +212,7 @@ Public Property Get ResultMeta() As CResultMeta
             vbNullString, True, (mSearchExecuted Or mSolverCallCount > 0 Or mFormationInternalStatus = rsSuccess Or _
                 mFormationInternalStatus = rsSuccessWithWarning)
     End If
+    meta.SourceKeys = mFailureSettingKeys
     Set ResultMeta = meta
 End Property
 
@@ -319,9 +321,9 @@ Private Sub ValidateFormationInputs(ByVal section As CSectionModel, ByVal materi
     If materialProvider Is Nothing Then Err.Raise vbObjectError + 3729, "CCrackFormationCalculator", "Поставщик материалов не передан."
     If loadStateForClassification Is Nothing Then Err.Raise vbObjectError + 3730, "CCrackFormationCalculator", "CSectionLoadState не передан."
     If crackedStateSpec Is Nothing Then _
-        Err.Raise vbObjectError + 3731, "CCrackFormationCalculator", "MaterialModel.CrackedState не передан."
+        Err.Raise vbObjectError + 3731, "CCrackFormationCalculator", "Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState)."
     If Not crackedStateSpec.IsComplete Then _
-        Err.Raise vbObjectError + 3731, "CCrackFormationCalculator", "MaterialModel.CrackedState не передан."
+        Err.Raise vbObjectError + 3731, "CCrackFormationCalculator", "Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState)."
     If crackInitiationSpec Is Nothing Then _
         Err.Raise vbObjectError + 3732, "CCrackFormationCalculator", "Для Calculation.Crack.Width нужна MaterialModel.CrackInitiation."
     If Not crackInitiationSpec.IsComplete Then _
@@ -507,6 +509,7 @@ Public Sub LimitSearchClearStopReason()
     mStopReason = vbNullString
     mFormationInternalStatus = rsUnset
     mFormationResultCode = rcNone
+    mFailureSettingKeys = vbNullString
 End Sub
 
 ' Возвращает прежнюю причину, если дополнительный способ решения не записал своей.
@@ -1212,7 +1215,7 @@ Private Function AcceptFormationState(ByVal state As CSectionStateResult, ByVal 
         Set meta = state.ResultMeta
         mConverged = False
         If Not HasLimitPoint Then mCrackFormed = False
-        SetFormationResult meta.InternalStatus, meta.ResultCode, stageName & ": " & meta.ResultComment
+        SetFormationResult meta.InternalStatus, meta.ResultCode, stageName & ": " & meta.ResultComment, meta.SourceKeys
         Exit Function
     End If
     AcceptFormationState = True
@@ -1562,10 +1565,11 @@ End Sub
 ' Записывает машинный результат этапа образования трещины. StopReason остается
 ' только пользовательским комментарием и больше не используется для классификации.
 Private Sub SetFormationResult(ByVal internalStatus As EResultInternalStatus, _
-        ByVal resultCode As EResultCode, ByVal reason As String)
+        ByVal resultCode As EResultCode, ByVal reason As String, Optional ByVal sourceKeys As String = vbNullString)
     mFormationInternalStatus = internalStatus
     mFormationResultCode = resultCode
     mStopReason = UserStopReason(reason)
+    mFailureSettingKeys = sourceKeys
 End Sub
 
 ' Помечает успешное нахождение точки образования нормальной трещины.
@@ -1751,8 +1755,8 @@ Private Sub CaptureFormationSolverFailure(ByVal solver As CSectionSolver)
     End If
     Dim meta As CResultMeta
     Set meta = New CResultMeta
-    meta.SetSolverFailure solver.FailureCode, rkCrackFormation, solver.StopReason, (solver.Iterations > 0)
-    SetFormationResult meta.InternalStatus, meta.ResultCode, meta.ResultComment
+    meta.SetSolverFailure solver.FailureCode, rkCrackFormation, solver.StopReason, (solver.Iterations > 0), solver.FailureSettingKeys
+    SetFormationResult meta.InternalStatus, meta.ResultCode, meta.ResultComment, meta.SourceKeys
 End Sub
 
 ' Передаёт настройки решения НДС для трещин общему CStateSolutionRunner.
@@ -2172,6 +2176,6 @@ End Property
 Private Function ExecuteFormationSearch(ByVal request As CLimitSearchRequest) As CLimitSearchResult
     Dim coordinator As CLimitSearchCoordinator
     Set coordinator = New CLimitSearchCoordinator
-    If request Is Nothing Then Err.Raise vbObjectError + 4231, "CCrackFormationCalculator", "Не передан запрос limit-search."
+    If request Is Nothing Then Err.Raise vbObjectError + 4231, "CCrackFormationCalculator", "Не переданы исходные данные для поиска предельного состояния."
     Set ExecuteFormationSearch = coordinator.ExecuteCrackFormation(request)
 End Function

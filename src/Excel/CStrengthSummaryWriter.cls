@@ -155,7 +155,8 @@ Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows A
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
-        "rngStrengthSummaryAnchor должен иметь место для шапки над собой."
+        "Диапазон rngStrengthSummaryAnchor привязан к " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & _
+        ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
@@ -164,7 +165,8 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, "CStrengthSummaryWriter", _
-        "rngStrengthSummaryAnchor должен иметь место для шапки над собой."
+        "Диапазон rngStrengthSummaryAnchor привязан к " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & _
+        ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
 
     Dim topRow As Long
     topRow = anchor.Row - HEADER_ROWS
@@ -395,7 +397,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).StrengthMeta)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).StrengthMeta)
     data(rowIndex, COL_STATUS) = policy.ExternalStatus(batch.ResultAt(index).StrengthMeta)
     data(rowIndex, COL_STATE_STATUS) = policy.NotApplicable
     data(rowIndex, COL_CAP_STATUS) = policy.NotApplicable
@@ -698,11 +700,6 @@ Private Function CapacityStatusText(ByVal batch As CBatchSectionCalculator, ByVa
     CapacityStatusText = policy.ExternalStatus(meta)
 End Function
 
-' Возвращает готовое пояснение ResultMeta без повторного разбора причины остановки.
-Private Function MetaComment(ByVal meta As CResultMeta) As String
-    If meta Is Nothing Then Exit Function
-    MetaComment = meta.ResultComment
-End Function
 
 ' Объединяет прямоугольный участок шапки.
 Private Sub MergeRange(ByVal target As Object, ByVal firstRow As Long, ByVal firstCol As Long, _

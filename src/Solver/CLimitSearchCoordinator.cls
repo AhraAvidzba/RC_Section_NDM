@@ -22,7 +22,7 @@ Option Explicit
 ' Возвращает объект результата даже при неизвестной стратегии, чтобы вызывающий
 ' слой мог единообразно обработать ошибку настройки.
 Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4230, "CLimitSearchCoordinator", "Не передан запрос limit-search."
+    If request Is Nothing Then Err.Raise vbObjectError + 4230, "CLimitSearchCoordinator", "Не переданы исходные данные для поиска предельного состояния."
     If request.HasLoadPathSelection Then
         Set ExecuteCapacity = ExecuteLoadPaths(request)
     Else
@@ -56,7 +56,7 @@ End Function
 ' Критерий eps_bt,ult, материалы и физический смысл нагрузки
 ' задаёт CCrackFormationCalculator.
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4231, "CLimitSearchCoordinator", "Не передан запрос limit-search."
+    If request Is Nothing Then Err.Raise vbObjectError + 4231, "CLimitSearchCoordinator", "Не переданы исходные данные для поиска предельного состояния."
     If request.HasLoadPathSelection Then
         Set ExecuteCrackFormation = ExecuteLoadPaths(request)
     Else
@@ -74,7 +74,7 @@ Public Function LoadPathKeys(ByVal requestedPath As String, ByVal loadState As C
     Set descriptor = New CLoadPathDescriptor
     Dim pathKey As String
     pathKey = descriptor.NormalizeKey(requestedPath)
-    If Len(pathKey) = 0 Then Err.Raise vbObjectError + 4233, "CLimitSearchCoordinator", "Неизвестный LoadPath."
+    If Len(pathKey) = 0 Then Err.Raise vbObjectError + 4233, "CLimitSearchCoordinator", "Не распознан способ изменения нагрузки (LoadPath). Выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy."
     If pathKey <> "Auto" Then
         LoadPathKeys = Array(pathKey)
         Exit Function

@@ -41,8 +41,8 @@ Public Sub Initialize(ByVal baseDiameter As Double, ByVal normalSign As Double, 
     If mInitialized Then SectionRecipeError "CRebarContactBuilder", "Подготовщик контактных рядов уже инициализирован. Создайте отдельный экземпляр для другого основного ряда.", sourceReference
     If defaults Is Nothing Then SectionRecipeError "CRebarContactBuilder", "Не переданы общие настройки дополнительных рядов."
     If baseDiameter <= 0# Then SectionRecipeError "CRebarContactBuilder", "Диаметр основного ряда должен быть положительным.", sourceReference
-    If normalSign <> -1# And normalSign <> 1# Then SectionRecipeError "CRebarContactBuilder", "Знак смещения Stacked должен быть -1 или 1.", sourceReference
-    If tangentSign <> -1# And tangentSign <> 1# Then SectionRecipeError "CRebarContactBuilder", "Знак смещения SideBySide должен быть -1 или 1.", sourceReference
+    If normalSign <> -1# And normalSign <> 1# Then SectionRecipeError "CRebarContactBuilder", "Для размещения ряда по нормали к линии (Stacked) задайте знак направления -1 или 1.", sourceReference
+    If tangentSign <> -1# And tangentSign <> 1# Then SectionRecipeError "CRebarContactBuilder", "Для размещения ряда вдоль линии (SideBySide) задайте знак направления -1 или 1.", sourceReference
     Set snapshot = defaults.Clone
     mNormalSign = normalSign: mTangentSign = tangentSign
     ReDim mGroups(1 To 1)

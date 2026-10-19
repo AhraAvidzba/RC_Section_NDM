@@ -268,7 +268,7 @@ End Property
 
 ' Проверяет индекс стержня перед доступом к массивам раскладки.
 Private Sub CheckIndex(ByVal index As Long)
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, "CRebarLayout", "Индекс стержня вне допустимого диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, "CRebarLayout", "Индекс стержня вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
 
 ' Завершает заполнение списка стержней и запрещает менять его.

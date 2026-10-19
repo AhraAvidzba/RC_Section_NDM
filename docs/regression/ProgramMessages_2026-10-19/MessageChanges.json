@@ -1,0 +1,1769 @@
+{
+  "ReviewedProductionComponents": 112,
+  "ChangedMethods": 155,
+  "ChangedStatementGroups": [
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "Method": "CurrentCrackedStateMeta",
+      "Before": [
+        "If Not stateResult.Converged Then blockReason = \"CurrentCrackedState не сошелся.\"",
+        "If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then blockReason = \"CurrentCrackedState найден вне физического диапазона диаграмм.\""
+      ],
+      "After": [
+        "If Not stateResult.Converged Then blockReason = \"Для заданного сочетания не найдено равновесие сечения с трещинами.\"",
+        "If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then blockReason = \"НДС с трещинами найдено с выходом за физические пределы диаграмм материалов.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "Method": "DetailedInvalidInputMessage",
+      "Before": [],
+      "After": [
+        "If Len(mInputs(index).SourceReference) > 0 Then DetailedInvalidInputMessage = DetailedInvalidInputMessage & \" Исходная строка сочетания: \" & mInputs(index).SourceReference & \".\""
+      ]
+    },
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "Method": "RunCombination",
+      "Before": [
+        "ReportStep \"Сочетание не передано в solver из-за ошибки входных данных: \" & mInputs(index).InputError",
+        "ReportStep \"Сочетание не передано в solver из-за ошибки настроек: \" & mSettingsError"
+      ],
+      "After": [
+        "ReportStep \"Решение НДС не запущено из-за ошибки исходных данных: \" & mInputs(index).InputError",
+        "ReportStep \"Решение НДС не запущено из-за ошибки настроек: \" & mSettingsError"
+      ]
+    },
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "Method": "RunCrackWidth",
+      "Before": [
+        "ReportStep \"Запускается текущее CrackedState полного сочетания по профилю трещин.\""
+      ],
+      "After": [
+        "ReportStep \"Запускается расчёт НДС с трещинами от полной нагрузки сочетания по выбранному профилю.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "Method": "RunProfileState",
+      "Before": [
+        "ReportStep \"Прямое НДС \" & SectionStateTypeToText(stateType) & \" не вернуло расчетное состояние.\"",
+        "ReportValue \"НДС \" & SectionStateTypeToText(stateType) & \" сошлось\", IIf(stateResult.Converged, \"да\", \"нет\")",
+        "ReportStep \"Прямое НДС \" & SectionStateTypeToText(stateType) & \" переиспользовано из StateRepository.\""
+      ],
+      "After": [
+        "ReportStep \"Прямое НДС \" & SectionStateDisplayName(stateType) & \" не вернуло расчетное состояние.\"",
+        "ReportValue \"НДС \" & SectionStateDisplayName(stateType) & \" сошлось\", IIf(stateResult.Converged, \"да\", \"нет\")",
+        "ReportStep \"Прямое НДС \" & SectionStateDisplayName(stateType) & \" взято из сохранённого результата без повторного решения равновесия.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CBatchSectionCalculator.cls",
+      "Method": "RunProfileState",
+      "Before": [
+        "ReportStep \"Прямое НДС \" & SectionStateTypeToText(stateType) & \" не сошлось: \" & stateResult.StopReason",
+        "ReportStep \"Прямое НДС \" & SectionStateTypeToText(stateType) & \" найдено, но вышло за физический диапазон диаграммы материала.\""
+      ],
+      "After": [
+        "ReportStep \"Прямое НДС \" & SectionStateDisplayName(stateType) & \" не сошлось: \" & stateResult.StopReason",
+        "ReportStep \"Прямое НДС \" & SectionStateDisplayName(stateType) & \" найдено, но вышло за физический диапазон диаграммы материала.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CCalculationProfile.cls",
+      "Method": "ValidateForCalculation",
+      "Before": [
+        "errorText = \"ProfileId профиля не задан.\"",
+        "errorText = \"Профиль \" & mProfileId & \" не настроен: задайте имя и включите хотя бы один расчет.\"",
+        "errorText = \"Профиль \" & mProfileId & \": не задана MaterialModel.Strength.\"",
+        "errorText = \"Профиль \" & mProfileId & \": для устойчивости задайте MaterialModel.Stability.ValueSet.\"",
+        "errorText = \"Профиль \" & mProfileId & \": не задана MaterialModel.CrackedState.\"",
+        "errorText = \"Профиль \" & mProfileId & \": MaterialModel.CrackedState.ConcreteTension должен быть Ignore.\"",
+        "errorText = \"Профиль \" & mProfileId & \": для Calculation.Crack.Width нужна MaterialModel.CrackInitiation.\"",
+        "errorText = \"Профиль \" & mProfileId & \": MaterialModel.CrackInitiation.ConcreteTension должен быть UseDiagram.\""
+      ],
+      "After": [
+        "errorText = ValidationMessage(\"ProfileId\", \"Не задан номер профиля ProfileId.\")",
+        "errorText = ValidationMessage(\"Profile.DisplayName;Calculation.Strength.DirectState;Calculation.Strength.Capacity;Calculation.Crack.Width;Calculation.Stability.Enabled\", \"Задайте имя профиля и включите хотя бы одну расчётную проверку.\")",
+        "errorText = ValidationMessage(\"MaterialModel.Strength.ValueSet;MaterialModel.Strength.ConcreteDiagram;MaterialModel.Strength.SteelDiagram;MaterialModel.Strength.ConcreteTension\", \"Не полностью задана модель материалов для прочности (MaterialModel.Strength). Заполните набор характеристик, диаграммы бетона и арматуры, способ учёта растяжения бетона.\")",
+        "errorText = ValidationMessage(\"MaterialModel.Stability.ValueSet\", \"Для устойчивости задайте набор характеристик материалов MaterialModel.Stability.ValueSet.\")",
+        "errorText = ValidationMessage(\"MaterialModel.CrackedState.ValueSet;MaterialModel.CrackedState.ConcreteDiagram;MaterialModel.CrackedState.SteelDiagram;MaterialModel.CrackedState.ConcreteTension\", \"Не полностью задана модель материалов для НДС с трещинами (MaterialModel.CrackedState). Заполните её обязательные параметры.\")",
+        "errorText = ValidationMessage(\"MaterialModel.CrackedState.ConcreteTension\", \"Для НДС с трещинами выберите Ignore: растянутый бетон в этой модели не учитывается.\")",
+        "errorText = ValidationMessage(\"MaterialModel.CrackInitiation.ValueSet;MaterialModel.CrackInitiation.ConcreteDiagram;MaterialModel.CrackInitiation.SteelDiagram;MaterialModel.CrackInitiation.ConcreteTension\", \"Для расчёта ширины трещин задайте модель материалов стадии образования трещины (MaterialModel.CrackInitiation).\")",
+        "errorText = ValidationMessage(\"MaterialModel.CrackInitiation.ConcreteTension\", \"Для определения нагрузки образования трещины выберите UseDiagram: требуется растянутая ветвь диаграммы бетона.\")"
+      ]
+    },
+    {
+      "File": "src/Batch/CCalculationProfile.cls",
+      "Method": "ValidationMessage",
+      "Before": [],
+      "After": [
+        "ValidationMessage = \"Профиль \" & mProfileId & \": \" & reason",
+        "ValidationMessage = ValidationMessage & \" Параметры: \" & keys & \".\"",
+        "ValidationMessage = ValidationMessage & \" Параметр \" & CStr(key) & \": восстановите его строку в таблице профилей.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CCalculationProfileCatalog.cls",
+      "Method": "ProfileAt",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, \"CCalculationProfileCatalog\", \"Индекс профиля вне диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, \"CCalculationProfileCatalog\", \"Индекс профиля вне диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Batch/CCalculationProfileCatalog.cls",
+      "Method": "ProfileId",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3985, \"CCalculationProfileCatalog\", \"Индекс профиля вне диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3985, \"CCalculationProfileCatalog\", \"Индекс профиля вне диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Batch/CSectionStateResult.cls",
+      "Method": "InitializeFromSolver",
+      "Before": [
+        "If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, \"CSectionStateResult\", \"MaterialModelSpec не передан.\""
+      ],
+      "After": [
+        "If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, \"CSectionStateResult\", \"Не передано описание выбранных диаграмм и характеристик материалов (MaterialModelSpec).\""
+      ]
+    },
+    {
+      "File": "src/Batch/CStateProvider.cls",
+      "Method": "GetOrSolve",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 3992, \"CStateProvider\", \"Запрос named-state не передан.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 3992, \"CStateProvider\", \"Не передан запрос на расчёт НДС выбранного назначения.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CStateRepository.cls",
+      "Method": "BindContext",
+      "Before": [
+        "If section Is Nothing Or materials Is Nothing Then Err.Raise vbObjectError + 3986, \"CStateRepository\", \"Не передан расчетный контекст repository.\""
+      ],
+      "After": [
+        "If section Is Nothing Or materials Is Nothing Then Err.Raise vbObjectError + 3986, \"CStateRepository\", \"Для хранилища результатов НДС не переданы модель сечения или описание материалов.\""
+      ]
+    },
+    {
+      "File": "src/Batch/CStateRequest.cls",
+      "Method": "Initialize",
+      "Before": [
+        "If materialSpec Is Nothing Then Err.Raise vbObjectError + 3980, \"CStateRequest\", \"MaterialModelSpec не передан.\""
+      ],
+      "After": [
+        "If materialSpec Is Nothing Then Err.Raise vbObjectError + 3980, \"CStateRequest\", \"Не передано описание выбранных диаграмм и характеристик материалов (MaterialModelSpec).\""
+      ]
+    },
+    {
+      "File": "src/Common/CLoadPathDescriptor.cls",
+      "Method": "InitializeFromLoadState",
+      "Before": [
+        "If loadState Is Nothing Then Err.Raise vbObjectError + 3821, \"CLoadPathDescriptor\", \"Не передан CSectionLoadState.\""
+      ],
+      "After": [
+        "If loadState Is Nothing Then Err.Raise vbObjectError + 3821, \"CLoadPathDescriptor\", \"Не переданы продольная сила, изгибающие моменты и точка приложения нагрузки (CSectionLoadState).\""
+      ]
+    },
+    {
+      "File": "src/Common/CLoadPathMath.cls",
+      "Method": "PrepareNumericalPath",
+      "Before": [
+        "If section Is Nothing Or loadPath Is Nothing Then Err.Raise 91, \"CLoadPathMath\""
+      ],
+      "After": [
+        "If section Is Nothing Or loadPath Is Nothing Then Err.Raise 91, \"CLoadPathMath\", \"Не удалось подготовить изменение нагрузки: не передана модель сечения или описание изменения N, Mx и My.\""
+      ]
+    },
+    {
+      "File": "src/Common/CLoadPathMath.cls",
+      "Method": "RequireNumericalPath",
+      "Before": [
+        "If Not mNumericalReady Then Err.Raise vbObjectError + 3845, \"CLoadPathMath\", \"Численная траектория нагружения не подготовлена.\""
+      ],
+      "After": [
+        "If Not mNumericalReady Then Err.Raise vbObjectError + 3845, \"CLoadPathMath\", \"Не подготовлено правило численного изменения продольной силы и изгибающих моментов при поиске предела.\""
+      ]
+    },
+    {
+      "File": "src/Common/CResultMeta.cls",
+      "Method": "DependencyCaption",
+      "Before": [],
+      "After": [
+        "Case \"CurrentCrackedState\": DependencyCaption = \"текущее НДС с трещинами от заданного сочетания\"",
+        "Case \"исходных данных сочетания\": DependencyCaption = \"исходные данные сочетания\"",
+        "Case \"текущего НДС от сочетания\": DependencyCaption = \"текущее НДС от сочетания\""
+      ]
+    },
+    {
+      "File": "src/Common/CResultMeta.cls",
+      "Method": "ResultKindLabel",
+      "Before": [
+        "Case rkCapacity: ResultKindLabel = \"Несущая\""
+      ],
+      "After": [
+        "Case rkCapacity: ResultKindLabel = \"Несущая способность\""
+      ]
+    },
+    {
+      "File": "src/Common/CResultMeta.cls",
+      "Method": "SetBlockedByDependency",
+      "Before": [
+        "comment = \"Расчет не выполнен: нет допустимого обязательного результата \" & dependencyName & \".\""
+      ],
+      "After": [
+        "comment = \"Расчет не выполнен: недоступны обязательные данные — \" & DependencyCaption(dependencyName) & \".\""
+      ]
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "Method": "ConcreteTensionKindFromText",
+      "Before": [
+        "Err.Raise vbObjectError + 3315, \"modCalculationPurpose\", \"Растянутый бетон должен быть Ignore или UseDiagram.\""
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 3315, \"modCalculationPurpose\", \"Выберите способ учёта растянутого бетона: Ignore — не учитывать; UseDiagram — использовать растянутую ветвь диаграммы.\""
+      ]
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "Method": "MaterialRoleFromStateType",
+      "Before": [
+        "Err.Raise vbObjectError + 3321, \"modCalculationPurpose\", \"Для StateType не определена роль material model.\""
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 3321, \"modCalculationPurpose\", \"Для указанного НДС не определено назначение модели материалов. Проверьте соответствие StateType расчётной проверке.\""
+      ]
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "Method": "SectionStateDisplayName",
+      "Before": [],
+      "After": [
+        "Case sstStrengthState: SectionStateDisplayName = \"при заданной нагрузке для проверки прочности\"",
+        "Case sstCapacityState: SectionStateDisplayName = \"при достижении несущей способности\"",
+        "Case sstPreCrackState: SectionStateDisplayName = \"перед образованием нормальной трещины\"",
+        "Case sstPostCrackState: SectionStateDisplayName = \"сразу после образования нормальной трещины\"",
+        "Case sstCrackedState: SectionStateDisplayName = \"с трещинами при заданной нагрузке\"",
+        "Case Else: SectionStateDisplayName = \"неизвестного назначения (код \" & CStr(stateType) & \")\""
+      ]
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "Method": "SectionStateTypeToText",
+      "Before": [
+        "Err.Raise vbObjectError + 3320, \"modCalculationPurpose\", \"Неизвестный StateType.\""
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 3320, \"modCalculationPurpose\", \"Не распознано назначение расчётного состояния. Проверьте передачу StateType между этапами расчёта.\""
+      ]
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "Method": "VisualizationQuantityFromText",
+      "Before": [
+        "Err.Raise vbObjectError + 3322, \"modCalculationPurpose\", \"Visualization.Quantity должен быть Stress или Strain.\""
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 3322, \"modCalculationPurpose\", \"В Visualization.Quantity выберите Stress для отображения напряжений или Strain для отображения деформаций.\""
+      ]
+    },
+    {
+      "File": "src/Common/modCalculationPurpose.bas",
+      "Method": "VisualizationQuantityToText",
+      "Before": [
+        "Err.Raise vbObjectError + 3323, \"modCalculationPurpose\", \"Неизвестная Visualization.Quantity.\""
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 3323, \"modCalculationPurpose\", \"Не распознана отображаемая величина Visualization.Quantity: допустимы Stress (напряжения) и Strain (деформации).\""
+      ]
+    },
+    {
+      "File": "src/Crack/CCrackFormationCalculator.cls",
+      "Method": "ExecuteFormationSearch",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4231, \"CCrackFormationCalculator\", \"Не передан запрос limit-search.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4231, \"CCrackFormationCalculator\", \"Не переданы исходные данные для поиска предельного состояния.\""
+      ]
+    },
+    {
+      "File": "src/Crack/CCrackFormationCalculator.cls",
+      "Method": "ValidateFormationInputs",
+      "Before": [
+        "If crackedStateSpec Is Nothing Then Err.Raise vbObjectError + 3731, \"CCrackFormationCalculator\", \"MaterialModel.CrackedState не передан.\"",
+        "If Not crackedStateSpec.IsComplete Then Err.Raise vbObjectError + 3731, \"CCrackFormationCalculator\", \"MaterialModel.CrackedState не передан.\""
+      ],
+      "After": [
+        "If crackedStateSpec Is Nothing Then Err.Raise vbObjectError + 3731, \"CCrackFormationCalculator\", \"Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState).\"",
+        "If Not crackedStateSpec.IsComplete Then Err.Raise vbObjectError + 3731, \"CCrackFormationCalculator\", \"Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState).\""
+      ]
+    },
+    {
+      "File": "src/Crack/CCrackFormationResult.cls",
+      "Method": "InitializeFromCalculator",
+      "Before": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, \"Meta результата образования трещины не сформирована.\", vbNullString, True, False"
+      ],
+      "After": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, \"Не сформированы статус и причина результата проверки образования трещины.\", vbNullString, True, False"
+      ]
+    },
+    {
+      "File": "src/Crack/CCrackWidthCalculator.cls",
+      "Method": "Calculate",
+      "Before": [
+        "If crackedStateSpec Is Nothing Then Err.Raise vbObjectError + 3714, \"CCrackWidthCalculator\", \"MaterialModel.CrackedState не передан.\"",
+        "If Not crackedStateSpec.IsComplete Then Err.Raise vbObjectError + 3714, \"CCrackWidthCalculator\", \"MaterialModel.CrackedState не заполнен.\""
+      ],
+      "After": [
+        "If crackedStateSpec Is Nothing Then Err.Raise vbObjectError + 3714, \"CCrackWidthCalculator\", \"Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState).\"",
+        "If Not crackedStateSpec.IsComplete Then Err.Raise vbObjectError + 3714, \"CCrackWidthCalculator\", \"Модель материалов для НДС с трещинами заполнена не полностью (MaterialModel.CrackedState).\""
+      ]
+    },
+    {
+      "File": "src/Crack/CCrackWidthResult.cls",
+      "Method": "InitializeFromCalculator",
+      "Before": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, \"Meta результата ширины трещины не сформирована.\", vbNullString, True, False"
+      ],
+      "After": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkCrackWidth, \"Не сформированы статус и причина результата расчёта ширины трещины.\", vbNullString, True, False"
+      ]
+    },
+    {
+      "File": "src/Crack/CLongitudinalCrackResult.cls",
+      "Method": "Initialize",
+      "Before": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkLongitudinalCrack, \"Meta результата продольных трещин не сформирована.\", vbNullString, True, False"
+      ],
+      "After": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkLongitudinalCrack, \"Не сформированы статус и причина результата проверки продольных трещин.\", vbNullString, True, False"
+      ]
+    },
+    {
+      "File": "src/Crack/CSP35CrackData.cls",
+      "Method": "CheckCandidate",
+      "Before": [
+        "If index < 1 Or index > mCandidateCount Then InvalidData \"Номер якорного расчета СП 35 вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCandidateCount Then InvalidData \"Номер якорного расчета СП 35 вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCandidateCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Method": "AddConcreteRegion",
+      "Before": [
+        "commentText = \"Region: прямоугольная оболочка была явно передана источником; расчетные A/I хранит CSectionModel.\"",
+        "commentText = \"AutoCAD Region: реальные A/I прочитаны; почти изотропная оболочка строится в CSectionModel по площади и углу простой грани.\"",
+        "commentText = \"AutoCAD Region: реальные A/I прочитаны; прямоугольную оболочку по ним строит CSectionModel.\"",
+        "commentText = \"AutoCAD Region: A/I не получены; CSectionModel применит последний fallback-квадрат по площади.\""
+      ],
+      "After": [
+        "commentText = \"Для бетонного элемента передана прямоугольная граница; площадь и моменты инерции сохранены в модели сечения.\"",
+        "commentText = \"AutoCAD Region: прочитаны площадь и моменты инерции. При близких главных моментах граница элемента строится по площади и направлению прямой грани.\"",
+        "commentText = \"AutoCAD Region: прочитаны площадь и моменты инерции; по ним строится эквивалентная прямоугольная граница элемента.\"",
+        "commentText = \"AutoCAD Region: моменты инерции не получены. Для границы элемента используется квадрат с той же площадью.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Method": "MissingImportedMaterialMessage",
+      "Before": [],
+      "After": [
+        "MissingImportedMaterialMessage = reason & \" Проверьте объекты слоя \" & layerKey & \" и порог площади AutoCAD.Import.MinArea.\"",
+        "MissingImportedMaterialMessage = settings.InputErrorMessage(layerKey, reason, \"Проверьте имя слоя и наличие объектов Region на нём.\") & \" \" & settings.InputErrorMessage(\"AutoCAD.Import.MinArea\", \"Этот порог исключает объекты меньшей площади.\", \"Проверьте значение фильтра площади.\")"
+      ]
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Method": "ReadMaterialContours",
+      "Before": [],
+      "After": [
+        "location = \"слой '\" & CStr(entity.Layer) & \"', объект \" & CStr(entity.Handle)",
+        "location = \"Контуры AutoCAD: \" & allLocations",
+        "location = \"Контур AutoCAD: \" & CStr(sourceLocations(i))"
+      ]
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Method": "ReadMaterialContours",
+      "Before": [],
+      "After": [
+        "Err.Raise Err.Number, Err.Source, location & \". \" & Err.Description"
+      ]
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Method": "ValidateContourLayerMapping",
+      "Before": [
+        "If Len(CStr(layers(j))) > 0 And SameLayer(CStr(layers(i)), CStr(layers(j))) Then Err.Raise vbObjectError + 4411, \"CAutoCADSectionModelImporter\", \"Слои бетона, арматуры, внешнего контура и отверстий должны иметь разные имена. Исправьте AutoCAD.Common/Import на Config.\""
+      ],
+      "After": [
+        "reason = \"Слой \"\"\" & CStr(layers(i)) & \"\"\" назначен одновременно для \" & CStr(keys(i)) & \" и \" & CStr(keys(j)) & \". Укажите разные слои.\"",
+        "If Not settings Is Nothing Then reason = settings.InputErrorMessage(CStr(keys(i)), reason, \"Измените одно из имён слоёв.\") & \" Связанная настройка \" & CStr(keys(j)) & \": \" & settings.InputLocation(CStr(keys(j))) & \".\"",
+        "Err.Raise vbObjectError + 4411, \"CAutoCADSectionModelImporter\", reason"
+      ]
+    },
+    {
+      "File": "src/Excel/CAutoCADSectionModelImporter.cls",
+      "Method": "ValidateImportedModel",
+      "Before": [
+        "If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4405, \"CAutoCADSectionModelImporter\", \"Не найдено бетонных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Common.ConcreteLayer и порог AutoCAD.Import.MinArea на листе Config.\"",
+        "If model.RebarCount <= 0 Then Err.Raise vbObjectError + 4406, \"CAutoCADSectionModelImporter\", \"Не найдено арматурных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Common.RebarLayer и порог AutoCAD.Import.MinArea на листе Config.\""
+      ],
+      "After": [
+        "If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4405, \"CAutoCADSectionModelImporter\", MissingImportedMaterialMessage(\"AutoCAD.Common.ConcreteLayer\", \"После чтения объектов и фильтрации по площади не осталось бетонных Region.\", settings)",
+        "If model.RebarCount <= 0 Then Err.Raise vbObjectError + 4406, \"CAutoCADSectionModelImporter\", MissingImportedMaterialMessage(\"AutoCAD.Common.RebarLayer\", \"После чтения объектов и фильтрации по площади не осталось арматурных Region.\", settings)"
+      ]
+    },
+    {
+      "File": "src/Excel/CCrackSummaryWriter.cls",
+      "Method": "ClearTargetRange",
+      "Before": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, \"CCrackSummaryWriter\", \"rngCrackSummaryAnchor должен иметь место для шапки над собой.\""
+      ],
+      "After": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, \"CCrackSummaryWriter\", \"Диапазон rngCrackSummaryAnchor привязан к \" & anchor.Worksheet.Name & \"!\" & anchor.Address(False, False) & \". Для шапки таблицы нужны \" & CStr(HEADER_ROWS) & \" строк выше этой ячейки. Перенесите именованный диапазон ниже.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CCrackSummaryWriter.cls",
+      "Method": "PutHeaderNotes",
+      "Before": [
+        "headers(HEADER_NOTES_ROW, COL_SP35_ACRC) = \"раскрытие в \" & OutputLengthUnit(units) & \"; максимум рассчитанных якорей\""
+      ],
+      "After": [
+        "headers(HEADER_NOTES_ROW, COL_SP35_ACRC) = \"раскрытие в \" & OutputLengthUnit(units) & \"; наибольшее значение среди проверенных стержней\""
+      ]
+    },
+    {
+      "File": "src/Excel/CCrackSummaryWriter.cls",
+      "Method": "PutHeaderNotes",
+      "Before": [
+        "headers(HEADER_NOTES_ROW, COL_SP35_STATUS) = \"статус собственной проверки ширины по общей policy\""
+      ],
+      "After": [
+        "headers(HEADER_NOTES_ROW, COL_SP35_STATUS) = \"статус проверки ширины раскрытия трещин по общим правилам определения статусов\""
+      ]
+    },
+    {
+      "File": "src/Excel/CCrackSummaryWriter.cls",
+      "Method": "TargetRange",
+      "Before": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, \"CCrackSummaryWriter\", \"rngCrackSummaryAnchor должен иметь место для шапки над собой.\""
+      ],
+      "After": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, \"CCrackSummaryWriter\", \"Диапазон rngCrackSummaryAnchor привязан к \" & anchor.Worksheet.Name & \"!\" & anchor.Address(False, False) & \". Для шапки таблицы нужны \" & CStr(HEADER_ROWS) & \" строк выше этой ячейки. Перенесите именованный диапазон ниже.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CExecutionReport.cls",
+      "Method": "TranslateDiagnosticLine",
+      "Before": [
+        "ReplaceDiagnosticMarker translated, \"secantGuard=insideBracket\", \"защита Secant=точка возвращена внутрь скобки\""
+      ],
+      "After": [
+        "ReplaceDiagnosticMarker translated, \"secantGuard=insideBracket\", \"защита Secant=точка возвращена внутрь интервала поиска\""
+      ]
+    },
+    {
+      "File": "src/Excel/CExecutionReport.cls",
+      "Method": "TranslateDiagnosticLine",
+      "Before": [
+        "ReplaceDiagnosticMarker translated, \"lineSearchUsed=\", \"line search использован=\"",
+        "ReplaceDiagnosticMarker translated, \"lineSearchIterations=\", \"итераций line search=\""
+      ],
+      "After": [
+        "ReplaceDiagnosticMarker translated, \"lineSearchUsed=\", \"подбор длины шага использован=\"",
+        "ReplaceDiagnosticMarker translated, \"lineSearchIterations=\", \"итераций подбора длины шага=\""
+      ]
+    },
+    {
+      "File": "src/Excel/CNDMResultsWriter.cls",
+      "Method": "OutputAnnotationComment",
+      "Before": [
+        "OutputAnnotationComment = \"Групповая подпись арматуры по смысловой грани.\""
+      ],
+      "After": [
+        "OutputAnnotationComment = \"Подпись общего количества и диаметров арматуры у выбранного участка контура.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CNDMResultsWriter.cls",
+      "Method": "OutputAnnotationComment",
+      "Before": [
+        "OutputAnnotationComment = \"Semantic-аннотация схемы.\""
+      ],
+      "After": [
+        "OutputAnnotationComment = \"Описание элемента оформления схемы: размера или подписи.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CNDMResultsWriter.cls",
+      "Method": "PutCrackBoundaryProbeRows",
+      "Before": [
+        "data(rowIndex, 13) = \"Готовые внешняя P и внутренняя Q границы локального интервала материала.\""
+      ],
+      "After": [
+        "data(rowIndex, 13) = \"Точки P и Q ограничивают участок бетона по нормали через выбранную арматуру.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CNDMResultsWriter.cls",
+      "Method": "PutNamedStateProperties",
+      "Before": [
+        "PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & \"Status\", stateResult.Status, \"-\", \"Короткий статус состояния, сохраненный orchestrator-ом.\"",
+        "PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & \"ResultComment\", stateResult.ResultComment, \"-\", \"Пользовательское пояснение результата named-state из ResultMeta.\""
+      ],
+      "After": [
+        "PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & \"Status\", stateResult.Status, \"-\", \"Короткий статус НДС, сохранённый при расчёте сочетания.\"",
+        "PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & \"ResultComment\", CalculationResultMessage(batch, combinationIndex, stateResult.ResultMeta), \"-\", \"Причина результата НДС, номер сочетания и сохранённый адрес исходной строки нагрузок.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CNDMResultsWriter.cls",
+      "Method": "WriteGeometryPreview",
+      "Before": [
+        "If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, \"CNDMResultsWriter\", \"Готовые характеристики preview не переданы.\""
+      ],
+      "After": [
+        "If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, \"CNDMResultsWriter\", \"Для предварительной схемы не переданы подготовленные характеристики сечения.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CSectionPlotDataReader.cls",
+      "Method": "MissingStateMessage",
+      "Before": [
+        "MissingStateMessage = MissingStateMessage & \" Для запрашиваемого сочетания расчет трещин был включен, поэтому CrackedState должен быть в snapshot. Проверьте статус расчета трещин и сообщения о сходимости CrackedState.\""
+      ],
+      "After": [
+        "MissingStateMessage = MissingStateMessage & \" Для этого сочетания расчёт трещин был включён, но НДС с учётом трещин (CrackedState) не сохранено в Results. Проверьте статус и пояснения расчёта трещин; при необходимости повторите расчёт.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CSectionPlotDataReader.cls",
+      "Method": "ResolveLoadCase",
+      "Before": [
+        "If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, \"CSectionPlotDataReader\", \"В rngBatchSummary не найдено определяющее сочетание для Plot.LoadCase = Worst.\""
+      ],
+      "After": [
+        "If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, \"CSectionPlotDataReader\", \"В сохранённых Results нет определяющего или другого рассчитанного сочетания для Plot.LoadCase = Worst. Сначала выполните расчёт.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CStabilitySummaryWriter.cls",
+      "Method": "ClearTargetRange",
+      "Before": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, \"CStabilitySummaryWriter\", \"rngStabilitySummaryAnchor должен иметь место для шапки над собой.\""
+      ],
+      "After": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, \"CStabilitySummaryWriter\", \"Диапазон rngStabilitySummaryAnchor привязан к \" & anchor.Worksheet.Name & \"!\" & anchor.Address(False, False) & \". Для шапки таблицы нужны \" & CStr(HEADER_ROWS) & \" строк выше этой ячейки. Перенесите именованный диапазон ниже.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CStabilitySummaryWriter.cls",
+      "Method": "TargetRange",
+      "Before": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, \"CStabilitySummaryWriter\", \"rngStabilitySummaryAnchor должен иметь место для шапки над собой.\""
+      ],
+      "After": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3983, \"CStabilitySummaryWriter\", \"Диапазон rngStabilitySummaryAnchor привязан к \" & anchor.Worksheet.Name & \"!\" & anchor.Address(False, False) & \". Для шапки таблицы нужны \" & CStr(HEADER_ROWS) & \" строк выше этой ячейки. Перенесите именованный диапазон ниже.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CStrengthSummaryWriter.cls",
+      "Method": "ClearTargetRange",
+      "Before": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, \"CStrengthSummaryWriter\", \"rngStrengthSummaryAnchor должен иметь место для шапки над собой.\""
+      ],
+      "After": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, \"CStrengthSummaryWriter\", \"Диапазон rngStrengthSummaryAnchor привязан к \" & anchor.Worksheet.Name & \"!\" & anchor.Address(False, False) & \". Для шапки таблицы нужны \" & CStr(HEADER_ROWS) & \" строк выше этой ячейки. Перенесите именованный диапазон ниже.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CStrengthSummaryWriter.cls",
+      "Method": "TargetRange",
+      "Before": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, \"CStrengthSummaryWriter\", \"rngStrengthSummaryAnchor должен иметь место для шапки над собой.\""
+      ],
+      "After": [
+        "If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3999, \"CStrengthSummaryWriter\", \"Диапазон rngStrengthSummaryAnchor привязан к \" & anchor.Worksheet.Name & \"!\" & anchor.Address(False, False) & \". Для шапки таблицы нужны \" & CStr(HEADER_ROWS) & \" строк выше этой ячейки. Перенесите именованный диапазон ниже.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CSystemSettingsReader.cls",
+      "Method": "InputErrorMessage",
+      "Before": [
+        "InputErrorMessage = \"Настройка \" & key & \" (\" & location & \"): \" & reason & \" \" & correction"
+      ],
+      "After": [
+        "InputErrorMessage = \"Настройка \" & key & \" (\" & location & \"): \" & reason",
+        "InputErrorMessage = InputErrorMessage & \" Введённое значение: \"\"\" & mValues(index) & \"\"\".\"",
+        "InputErrorMessage = InputErrorMessage & \" Ячейка значения не заполнена.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CSystemSettingsReader.cls",
+      "Method": "KeyAt",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, \"CSystemSettingsReader\", \"Индекс настройки вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, \"CSystemSettingsReader\", \"Индекс настройки вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "Method": "AreaFactorToMm2",
+      "Before": [
+        "Case Else: Err.Raise vbObjectError + 4521, \"CUnitSystem\", \"Недопустимая единица площади: \" & unitName"
+      ],
+      "After": [
+        "Case Else: Err.Raise vbObjectError + 4521, \"CUnitSystem\", \"Недопустимая единица площади: \" & unitName & \". Используйте mm2, cm2 или m2.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "Method": "CurvatureFactorToInvMm",
+      "Before": [
+        "Case Else: Err.Raise vbObjectError + 4525, \"CUnitSystem\", \"Недопустимая единица кривизны: \" & unitName"
+      ],
+      "After": [
+        "Case Else: Err.Raise vbObjectError + 4525, \"CUnitSystem\", \"Недопустимая единица кривизны: \" & unitName & \". Используйте 1/mm или 1/m.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "Method": "ForceFactorToN",
+      "Before": [
+        "Case Else: Err.Raise vbObjectError + 4522, \"CUnitSystem\", \"Недопустимая единица силы: \" & unitName"
+      ],
+      "After": [
+        "Case Else: Err.Raise vbObjectError + 4522, \"CUnitSystem\", \"Недопустимая единица силы: \" & unitName & \". Используйте N, kN или tf.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "Method": "LengthFactorToMm",
+      "Before": [
+        "Case Else: Err.Raise vbObjectError + 4520, \"CUnitSystem\", \"Недопустимая единица длины: \" & unitName"
+      ],
+      "After": [
+        "Case Else: Err.Raise vbObjectError + 4520, \"CUnitSystem\", \"Недопустимая единица длины: \" & unitName & \". Используйте mm, cm или m.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "Method": "MomentFactorToNmm",
+      "Before": [
+        "Case Else: Err.Raise vbObjectError + 4523, \"CUnitSystem\", \"Недопустимая единица момента: \" & unitName"
+      ],
+      "After": [
+        "Case Else: Err.Raise vbObjectError + 4523, \"CUnitSystem\", \"Недопустимая единица момента: \" & unitName & \". Используйте N*mm, kN*m или tf*m.\""
+      ]
+    },
+    {
+      "File": "src/Excel/CUnitSystem.cls",
+      "Method": "StressFactorToMPa",
+      "Before": [
+        "Case Else: Err.Raise vbObjectError + 4524, \"CUnitSystem\", \"Недопустимая единица напряжения: \" & unitName"
+      ],
+      "After": [
+        "Case Else: Err.Raise vbObjectError + 4524, \"CUnitSystem\", \"Недопустимая единица напряжения: \" & unitName & \". Используйте Pa, kPa, MPa, kgf/cm2 или tf/m2.\""
+      ]
+    },
+    {
+      "File": "src/Excel/modAutoCADStressExport.bas",
+      "Method": "ClearAutoCADDrawing",
+      "Before": [
+        "ShowWorkbookMessage \"Очистка чертежа AutoCAD не выполнена: \" & Err.Description, vbExclamation, \"RC Section NDM\""
+      ],
+      "After": [
+        "ShowWorkbookMessage WorkbookErrorMessage(\"Очистка чертежа AutoCAD не выполнена\", Err.Number, Err.Source, Err.Description), vbExclamation, \"RC Section NDM\""
+      ]
+    },
+    {
+      "File": "src/Excel/modAutoCADStressExport.bas",
+      "Method": "ExportSectionStressToAutoCAD",
+      "Before": [
+        "ShowWorkbookMessage \"Экспорт в AutoCAD не выполнен: \" & Err.Description, vbExclamation, \"RC Section NDM\""
+      ],
+      "After": [
+        "ShowWorkbookMessage WorkbookErrorMessage(\"Экспорт в AutoCAD не выполнен\", Err.Number, Err.Source, Err.Description), vbExclamation, \"RC Section NDM\""
+      ]
+    },
+    {
+      "File": "src/Excel/modAutoCADStressExport.bas",
+      "Method": "MissingExportStateMessage",
+      "Before": [
+        "MissingExportStateMessage = MissingExportStateMessage & \" Для запрашиваемого сочетания расчет трещин был включен, поэтому CrackedState должен быть в snapshot. Проверьте статус расчета трещин и сообщения о сходимости CrackedState.\""
+      ],
+      "After": [
+        "MissingExportStateMessage = MissingExportStateMessage & \" Для этого сочетания расчёт трещин был включён, но НДС с учётом трещин (CrackedState) не сохранено в Results. Проверьте статус и пояснения расчёта трещин; при необходимости повторите расчёт.\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Method": "ClearSectionResults",
+      "Before": [
+        "ShowWorkbookMessage \"Не удалось очистить результаты: \" & Err.Description, vbExclamation, \"RC Section NDM\""
+      ],
+      "After": [
+        "ShowWorkbookMessage WorkbookErrorMessage(\"Не удалось очистить результаты\", Err.Number, Err.Source, Err.Description), vbExclamation, \"RC Section NDM\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Method": "ImportGeometryFromAutoCAD",
+      "Before": [
+        "ShowWorkbookMessage \"Импорт геометрии из AutoCAD не выполнен: \" & Err.Description, vbExclamation, \"RC Section NDM\""
+      ],
+      "After": [
+        "ShowWorkbookMessage WorkbookErrorMessage(\"Импорт геометрии из AutoCAD не выполнен\", Err.Number, Err.Source, Err.Description), vbExclamation, \"RC Section NDM\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Method": "RunSectionCalculation",
+      "Before": [
+        "ShowWorkbookMessage \"Расчет не выполнен: \" & Err.Description, vbExclamation, \"RC Section NDM\""
+      ],
+      "After": [
+        "ShowWorkbookMessage WorkbookErrorMessage(\"Расчет не выполнен\", Err.Number, Err.Source, Err.Description), vbExclamation, \"RC Section NDM\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Method": "RunSectionCalculationForWorkbook",
+      "Before": [
+        "report.AddStep \"Начата запись расчетного snapshot NDM.\""
+      ],
+      "After": [
+        "report.AddStep \"Начата запись результатов расчёта, геометрии и диаграмм в Results.\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Method": "UpdateSectionPlot",
+      "Before": [
+        "ShowWorkbookMessage \"Схема не обновлена: \" & Err.Description, vbExclamation, \"RC Section NDM\""
+      ],
+      "After": [
+        "ShowWorkbookMessage WorkbookErrorMessage(\"Схема не обновлена\", Err.Number, Err.Source, Err.Description), vbExclamation, \"RC Section NDM\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookCalculation.bas",
+      "Method": "ValidateResultsOutputLayout",
+      "Before": [
+        "AddRowsGapIssue issues, \"rngNDMElementResults и нижних snapshot-диапазонов\", stabilityBottomRow, snapshotTitleRow, snapshotTitleRow"
+      ],
+      "After": [
+        "AddRowsGapIssue issues, \"rngNDMElementResults и расположенных ниже таблиц Results\", stabilityBottomRow, snapshotTitleRow, snapshotTitleRow"
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookMessages.bas",
+      "Method": "CalculationResultMessage",
+      "Before": [],
+      "After": [
+        "CalculationResultMessage = \"Сочетание \" & batch.CombinationID(index) & \": \" & reason",
+        "If meta.InternalStatus = rsNumericalFailure Then CalculationResultMessage = CalculationResultMessage & \" Эта проверка не получила подтверждённого численного результата; сам статус NumFail не доказывает физическое невыполнение. Проверьте исходные данные и диагностику расчёта.\"",
+        "If Len(reference) > 0 Then CalculationResultMessage = CalculationResultMessage & \" Исходная строка сочетания: \" & reference & \".\""
+      ]
+    },
+    {
+      "File": "src/Excel/modWorkbookMessages.bas",
+      "Method": "WorkbookErrorMessage",
+      "Before": [],
+      "After": [
+        "WorkbookErrorMessage = WorkbookErrorMessage & \"Программа остановилась без описания причины.\"",
+        "If Len(source) > 0 Then WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & \"Источник ошибки: \" & source & \".\"",
+        "WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & \"Код ошибки: \" & CStr(number) & \".\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CFiberMeshBuilder.cls",
+      "Method": "BuildMesh",
+      "Before": [
+        "Err.Raise vbObjectError + 2108, \"CFiberMeshBuilder\", \"Шаг бетонной сетки слишком мал: число ячеек по одной оси не помещается в Long. Увеличьте Mesh.StepX или Mesh.StepY.\""
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 2108, \"CFiberMeshBuilder\", \"Шаг бетонной сетки слишком мал: число ячеек по одной оси превышает предел счётчика программы (2147483647). Увеличьте Mesh.StepX или Mesh.StepY.\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CFiberMeshBuilder.cls",
+      "Method": "BuildMesh",
+      "Before": [],
+      "After": [
+        "If Len(sourceReference) > 0 Then reason = reason & \" Параметры бетонной сетки: \" & sourceReference & \".\"",
+        "Err.Raise number, source, reason"
+      ]
+    },
+    {
+      "File": "src/Geometry/CGeometryPath.cls",
+      "Method": "CheckIndex",
+      "Before": [
+        "If index < 1 Or index > mCount Then PathError \"Номер сегмента вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then PathError \"Номер сегмента вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CGeometryPath.cls",
+      "Method": "CheckedDistance",
+      "Before": [
+        "If distance < -PATH_TOLERANCE Or distance > mStations(mCount) + PATH_TOLERANCE Then PathError \"Позиция выходит за пределы длины пути.\""
+      ],
+      "After": [
+        "If distance < -PATH_TOLERANCE Or distance > mStations(mCount) + PATH_TOLERANCE Then PathError \"Расстояние \" & CStr(distance) & \" мм выходит за пределы линии длиной \" & CStr(mStations(mCount)) & \" мм. Задайте расстояние от 0 до полной длины линии.\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CGeometryPath.cls",
+      "Method": "PathError",
+      "Before": [
+        "Err.Raise vbObjectError + 5520, \"CGeometryPath\", \"Путь '\" & mID & \"': \" & description"
+      ],
+      "After": [
+        "Err.Raise vbObjectError + 5520, \"CGeometryPath\", \"Геометрическая линия '\" & mID & \"': \" & description"
+      ]
+    },
+    {
+      "File": "src/Geometry/CGeometryPath.cls",
+      "Method": "Slice",
+      "Before": [
+        "If endDistance <= startDistance + PATH_TOLERANCE Then PathError \"Рабочая длина пути после отсечения неположительна.\""
+      ],
+      "After": [
+        "If endDistance <= startDistance + PATH_TOLERANCE Then PathError \"После обрезки не осталось участка линии. \" & \"Начало участка: \" & CStr(startDistance) & \" мм; конец: \" & CStr(endDistance) & \" мм. \" & \"Задайте конец дальше начала по направлению линии.\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CGeometryRegion.cls",
+      "Method": "GetExtremePoints",
+      "Before": [
+        "If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, \"CGeometryRegion\", \"Точный контур бетона не инициализирован.\""
+      ],
+      "After": [
+        "If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, \"CGeometryRegion\", \"Точный контур бетонной области ещё не подготовлен.\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CGeometryRegion.cls",
+      "Method": "IsValid",
+      "Before": [
+        "message = \"Точный контур бетона не инициализирован.\"",
+        "message = \"Габариты точного контура бетона вырождены.\""
+      ],
+      "After": [
+        "message = \"Точный контур бетонной области ещё не подготовлен.\"",
+        "message = \"Ширина или высота наружного контура равна нулю. Проверьте координаты и размеры бетонной области.\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CPolygonSpec.cls",
+      "Method": "CheckIndex",
+      "Before": [
+        "If index < 1 Or index > mCount Then SpecError \"Номер исходной вершины вне диапазона 1..Count.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then SpecError \"Номер исходной вершины вне диапазона 1..Count.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Geometry/CSectionRecipeHollowRectangle.cls",
+      "Method": "ReadRebarInputs",
+      "Before": [
+        "captions = Array(\"B - верхняя\", \"B - нижняя\", \"H - левая\", \"H - правая\", \"B_o - верхняя\", \"B_o - нижняя\", \"H_o - левая\", \"H_o - правая\")",
+        ".RowComment = \"HollowRectangle: \" & .Caption & IIf(i > 4, \" грань Opening\", \" наружная грань\") & \", ряд \""
+      ],
+      "After": [
+        "captions = Array(\"у верхней наружной стороны\", \"у нижней наружной стороны\", \"у левой наружной стороны\", \"у правой наружной стороны\", \"у верхней стороны отверстия\", \"у нижней стороны отверстия\", \"у левой стороны отверстия\", \"у правой стороны отверстия\")",
+        ".RowComment = \"Прямоугольник с отверстием: арматура \" & .Caption & \", ряд \""
+      ]
+    },
+    {
+      "File": "src/Materials/CMaterialDiagram.cls",
+      "Method": "PointStrain",
+      "Before": [
+        "If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, \"CMaterialDiagram\", \"Индекс точки диаграммы вне диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, \"CMaterialDiagram\", \"Индекс точки диаграммы вне диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mPointCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Materials/CMaterialDiagram.cls",
+      "Method": "PointStress",
+      "Before": [
+        "If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, \"CMaterialDiagram\", \"Индекс точки диаграммы вне диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, \"CMaterialDiagram\", \"Индекс точки диаграммы вне диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mPointCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Materials/CMaterialModelProvider.cls",
+      "Method": "ValidateSpec",
+      "Before": [
+        "If spec Is Nothing Then Err.Raise vbObjectError + 3250, \"CMaterialModelProvider\", \"MaterialModelSpec не передан.\"",
+        "If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, \"CMaterialModelProvider\", \"MaterialModelSpec заполнен не полностью.\""
+      ],
+      "After": [
+        "If spec Is Nothing Then Err.Raise vbObjectError + 3250, \"CMaterialModelProvider\", \"Не передано описание выбранных диаграмм и характеристик материалов (MaterialModelSpec).\"",
+        "If Not spec.IsComplete Then Err.Raise vbObjectError + 3251, \"CMaterialModelProvider\", \"В описании материалов указаны не все обязательные характеристики и диаграммы (MaterialModelSpec).\""
+      ]
+    },
+    {
+      "File": "src/Section/CConcreteRegion.cls",
+      "Method": "GetSegment",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5400, \"CConcreteRegion\", \"Номер сегмента области вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5400, \"CConcreteRegion\", \"Номер сегмента области вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CConcreteRegion.cls",
+      "Method": "LoopIsOpening",
+      "Before": [
+        "If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, \"CConcreteRegion\", \"Номер замкнутого контура области вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, \"CConcreteRegion\", \"Номер замкнутого контура области вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mLoopCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarContactBuilder.cls",
+      "Method": "Initialize",
+      "Before": [
+        "If normalSign <> -1# And normalSign <> 1# Then SectionRecipeError \"CRebarContactBuilder\", \"Знак смещения Stacked должен быть -1 или 1.\", sourceReference",
+        "If tangentSign <> -1# And tangentSign <> 1# Then SectionRecipeError \"CRebarContactBuilder\", \"Знак смещения SideBySide должен быть -1 или 1.\", sourceReference"
+      ],
+      "After": [
+        "If normalSign <> -1# And normalSign <> 1# Then SectionRecipeError \"CRebarContactBuilder\", \"Для размещения ряда по нормали к линии (Stacked) задайте знак направления -1 или 1.\", sourceReference",
+        "If tangentSign <> -1# And tangentSign <> 1# Then SectionRecipeError \"CRebarContactBuilder\", \"Для размещения ряда вдоль линии (SideBySide) задайте знак направления -1 или 1.\", sourceReference"
+      ]
+    },
+    {
+      "File": "src/Section/CRebarLayout.cls",
+      "Method": "CheckIndex",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, \"CRebarLayout\", \"Индекс стержня вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3106, \"CRebarLayout\", \"Индекс стержня вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "AppendPosition",
+      "Before": [
+        "If mPositionCount >= GEOM_MAX_REBAR_COUNT Then RuleError value.RuleIndex, \"Суммарное количество позиций превышает диапазон счетчиков.\""
+      ],
+      "After": [
+        "If mPositionCount >= GEOM_MAX_REBAR_COUNT Then RuleError value.RuleIndex, \"Суммарное число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "Build",
+      "Before": [
+        "AddDiagnostic index, \"COINCIDENCE_OWNER\", result.BarID(owner), \"Сохранен явно заданный опубликованный владелец.\", result.Diameter(owner), mRules(index).Diameter"
+      ],
+      "After": [
+        "AddDiagnostic index, \"COINCIDENCE_OWNER\", result.BarID(owner), \"В совпавшей позиции сохранён стержень, которому правило отдаёт приоритет.\", result.Diameter(owner), mRules(index).Diameter"
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "CheckNeighbors",
+      "Before": [
+        "If mRules(index).OverlapPolicy = RejectOverlap Or mRules(mPhysicalRule(other)).OverlapPolicy = RejectOverlap Or mPhysicalOffsetRule(other) > 0 Then RuleError OffsetCheckRule(index, other), \"Диски стержней пересекаются; измените шаг или смещения связанных рядов.\", \"BAR_OVERLAP\", result.BarID(other), gap, actualDiameter",
+        "AddDiagnostic index, \"BAR_OVERLAP\", result.BarID(other), \"Отрицательный геометрический зазор между дисками стержней.\", gap, mRules(index).Diameter"
+      ],
+      "After": [
+        "If mRules(index).OverlapPolicy = RejectOverlap Or mRules(mPhysicalRule(other)).OverlapPolicy = RejectOverlap Or mPhysicalOffsetRule(other) > 0 Then RuleError OffsetCheckRule(index, other), \"Поперечные сечения стержней пересекаются. Измените шаг арматуры или смещения связанных рядов.\", \"BAR_OVERLAP\", result.BarID(other), gap, actualDiameter",
+        "AddDiagnostic index, \"BAR_OVERLAP\", result.BarID(other), \"Поперечные сечения стержней пересекаются: расстояние между центрами меньше суммы радиусов.\", gap, mRules(index).Diameter"
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "EstimateRule",
+      "Before": [
+        "If state(index) = 1 Then RuleError index, \"Циклическая зависимость рядов.\"",
+        "If counts(index) > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Количество позиций превышает диапазон счетчиков.\""
+      ],
+      "After": [
+        "If state(index) = 1 Then RuleError index, \"Зависимости рядов арматуры образуют замкнутую цепочку. Уберите циклическую ссылку между правилами.\"",
+        "If counts(index) > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "FixedStations",
+      "Before": [
+        "If count > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Количество позиций превышает диапазон счетчиков.\""
+      ],
+      "After": [
+        "If count > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "PositionCountFor",
+      "Before": [
+        "If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, \"Не заданы явные станции.\""
+      ],
+      "After": [
+        "If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, \"Не заданы расстояния от начала линии до мест установки стержней.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "PositionCountFor",
+      "Before": [
+        "RuleError index, \"Неизвестный режим раскладки.\"",
+        "If PositionCountFor < 0# Or PositionCountFor > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Количество позиций превышает диапазон счетчиков.\""
+      ],
+      "After": [
+        "RuleError index, \"Не распознан способ размещения арматуры. Проверьте правило задания количества, шага или проекции.\"",
+        "If PositionCountFor < 0# Or PositionCountFor > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "PrepareProjected",
+      "Before": [
+        "If Not mRules(index).SkipMissingProjection Then RuleError index, \"Нет пересечения исходной позиции с целевым рабочим путем.\", \"PROJECTION_MISSING\", position.SourcePositionID, position.X, position.Y",
+        "AddDiagnostic index, \"PROJECTION_MISSING\", position.SourcePositionID, \"Исходная позиция пропущена: нет hit на конечной целевой траектории.\", position.X, position.Y"
+      ],
+      "After": [
+        "If Not mRules(index).SkipMissingProjection Then RuleError index, \"Не удалось спроецировать исходный стержень на заданный участок линии размещения. Проверьте направление проекции и концевые отступы.\", \"PROJECTION_MISSING\", position.SourcePositionID, position.X, position.Y",
+        "AddDiagnostic index, \"PROJECTION_MISSING\", position.SourcePositionID, \"Стержень пропущен: направление его проекции не пересекает заданный участок линии размещения.\", position.X, position.Y"
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "PrepareRule",
+      "Before": [
+        "If mState(index) = 1 Then RuleError index, \"Циклическая зависимость рядов.\"",
+        "RuleError index, \"Неизвестный режим раскладки.\""
+      ],
+      "After": [
+        "If mState(index) = 1 Then RuleError index, \"Зависимости рядов арматуры образуют замкнутую цепочку. Уберите циклическую ссылку между правилами.\"",
+        "RuleError index, \"Не распознан способ размещения арматуры. Проверьте правило задания количества, шага или проекции.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "RuleError",
+      "Before": [
+        "If index > 0 Then reference = mDiagnostic.SourceReference: reason = \"Ряд '\" & mRules(index).RuleID & \"': \" & reason"
+      ],
+      "After": [
+        "reason = \"Ряд '\" & mRules(index).RuleID & \"': \" & reason"
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "StationsFor",
+      "Before": [
+        "If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, \"Не заданы явные станции.\"",
+        "If stations(i) < first Or stations(i) > last Then RuleError index, \"Явная станция вне целевого рабочего участка.\"",
+        "If path.IsClosed And stations(i) = path.Length Then RuleError index, \"Последняя станция замкнутого пути дублирует первую.\"",
+        "If mRules(index).Mode <> ByCount Or mRules(index).Count <> 1 Then RuleError index, \"Вырожденный рабочий участок допускает только один явно заданный стержень.\"",
+        "If count < 0# Or count > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Количество позиций превышает диапазон счетчиков.\""
+      ],
+      "After": [
+        "If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, \"Не заданы расстояния от начала линии до мест установки стержней.\"",
+        "If stations(i) < first Or stations(i) > last Then RuleError index, \"Заданное расстояние до стержня выходит за участок линии, оставшийся после концевых отступов.\"",
+        "If path.IsClosed And stations(i) = path.Length Then RuleError index, \"Стержень в конце полного замкнутого обхода совпадает с первым. Удалите повторную конечную позицию.\"",
+        "If mRules(index).Mode <> ByCount Or mRules(index).Count <> 1 Then RuleError index, \"После концевых отступов участок сократился до точки. В ней можно задать только один стержень по количеству.\"",
+        "If count < 0# Or count > GEOM_MAX_REBAR_COUNT Then RuleError index, \"Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "ValidateOptions",
+      "Before": [
+        "If .EndMode < IncludeBoth Or .EndMode > ClosedUniform Then RuleError index, \"Неизвестное правило концов.\"",
+        "If .PlacementCheck <> CheckCenter And .PlacementCheck <> CheckFullDisk Then RuleError index, \"Неизвестная проверка размещения.\"",
+        "If .OverlapPolicy <> ReportOverlap And .OverlapPolicy <> RejectOverlap Then RuleError index, \"Неизвестная политика пересечения дисков.\"",
+        "If .Publication <> PublishByRule And .Publication <> PublishPerSourcePosition Then RuleError index, \"Неизвестный порядок публикации.\"",
+        "If .PositionOrder <> AlongPath And .PositionOrder <> FromPathMiddle Then RuleError index, \"Неизвестный порядок позиций.\"",
+        "If .Coincidence < RejectCoincidence Or .Coincidence > KeepPublishedOwner Then RuleError index, \"Неизвестная политика совпадений.\"",
+        "If .RemainderPlacement < RemainderStart Or .RemainderPlacement > RemainderCenter Then RuleError index, \"Неизвестное размещение остатка шага.\""
+      ],
+      "After": [
+        "If .EndMode < IncludeBoth Or .EndMode > ClosedUniform Then RuleError index, \"Не распознан способ установки стержней на концах линии (EndMode).\"",
+        "If .PlacementCheck <> CheckCenter And .PlacementCheck <> CheckFullDisk Then RuleError index, \"Не распознана проверка положения арматуры: принадлежность центров или всего поперечного сечения стержней бетону (PlacementCheck).\"",
+        "If .OverlapPolicy <> ReportOverlap And .OverlapPolicy <> RejectOverlap Then RuleError index, \"Не распознано правило обработки пересечения поперечных сечений стержней.\"",
+        "If .Publication <> PublishByRule And .Publication <> PublishPerSourcePosition Then RuleError index, \"Не распознан порядок присвоения расчётных имён основным и связанным стержням (Publication).\"",
+        "If .PositionOrder <> AlongPath And .PositionOrder <> FromPathMiddle Then RuleError index, \"Не распознан порядок нумерации стержней вдоль линии или от её середины (PositionOrder).\"",
+        "If .Coincidence < RejectCoincidence Or .Coincidence > KeepPublishedOwner Then RuleError index, \"Не распознано правило обработки стержней с совпавшими центрами (Coincidence).\"",
+        "If .RemainderPlacement < RemainderStart Or .RemainderPlacement > RemainderCenter Then RuleError index, \"Не распознано положение остатка длины при размещении с фиксированным шагом (RemainderPlacement).\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleExecutor.cls",
+      "Method": "ValidateWorkInterval",
+      "Before": [
+        "If mRules(index).StartSetback + mRules(index).EndSetback > path.Length + GEOM_TOLERANCE Then RuleError index, \"Концевые отступы превышают длину пути.\"",
+        "If mRules(index).StartSetback <> 0# Or mRules(index).EndSetback <> 0# Then RuleError index, \"Для полного замкнутого пути концевые отступы неприменимы.\"",
+        "If mRules(index).EndMode <> ClosedUniform Then RuleError index, \"Замкнутый путь требует ClosedUniform; для иных концов задайте открытый участок.\"",
+        "RuleError index, \"ClosedUniform требует замкнутого пути.\""
+      ],
+      "After": [
+        "RuleError index, \"После концевых отступов не осталось участка для размещения арматуры. \" & \"Длина линии — \" & CStr(path.Length) & \" мм; отступ от начала — \" & CStr(mRules(index).StartSetback) & \" мм; отступ от конца — \" & CStr(mRules(index).EndSetback) & \" мм. Уменьшите концевые отступы так, чтобы их сумма была меньше длины линии.\", \"WORK_INTERVAL_EMPTY\", path.ID, path.Length, mRules(index).StartSetback + mRules(index).EndSetback",
+        "If mRules(index).StartSetback <> 0# Or mRules(index).EndSetback <> 0# Then RuleError index, \"При равномерном размещении по всей замкнутой линии концевые отступы должны быть нулевыми. Для ненулевых отступов задайте открытый участок.\"",
+        "If mRules(index).EndMode <> ClosedUniform Then RuleError index, \"Для всей замкнутой линии используйте ClosedUniform — равномерное размещение без повторного стержня на замыкании. Для других способов задайте открытый участок.\"",
+        "RuleError index, \"Равномерное размещение по полному замкнутому обходу (ClosedUniform) неприменимо к открытой линии.\""
+      ]
+    },
+    {
+      "File": "src/Section/CRebarRuleOptions.cls",
+      "Method": "ConfigureDependentContact",
+      "Before": [
+        "If axis <> RowNormal And axis <> RowTangent Then SectionRecipeError \"CRebarRuleOptions\", \"Неизвестное направление контактного ряда.\", SourceReference"
+      ],
+      "After": [
+        "If axis <> RowNormal And axis <> RowTangent Then SectionRecipeError \"CRebarRuleOptions\", \"Для связанного ряда выберите смещение по нормали к линии (RowNormal) или вдоль неё (RowTangent).\", SourceReference"
+      ]
+    },
+    {
+      "File": "src/Section/CSectionAnnotationBuilder.cls",
+      "Method": "Build",
+      "Before": [
+        "If Not definition.IsSealed Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для аннотаций нужно опубликованное определение.\"",
+        "If rules Is Nothing Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для подписи ряда нужны исполненные правила.\"",
+        "If rules Is Nothing Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для подписи ряда нужны исполненные правила.\"",
+        "If rules Is Nothing Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для подписи ряда нужны исполненные правила.\"",
+        "SectionRecipeError \"CSectionAnnotationBuilder\", \"Неизвестное измерение '\" & value.Kind & \"'.\""
+      ],
+      "After": [
+        "If Not definition.IsSealed Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Перед созданием размеров и подписей завершите описание сечения методом Finish.\"",
+        "If rules Is Nothing Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для подписи арматуры сначала требуется построить стержни по заданным правилам.\"",
+        "If rules Is Nothing Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для подписи арматуры сначала требуется построить стержни по заданным правилам.\"",
+        "If rules Is Nothing Then SectionRecipeError \"CSectionAnnotationBuilder\", \"Для подписи арматуры сначала требуется построить стержни по заданным правилам.\"",
+        "SectionRecipeError \"CSectionAnnotationBuilder\", \"Не распознан способ построения размера '\" & value.Kind & \"'.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionAnnotations.cls",
+      "Method": "AddRebarLabel",
+      "Before": [
+        "Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, ByVal labelText As String, Optional ByVal commentValue As String = \"Групповая подпись арматуры по смысловой грани.\")"
+      ],
+      "After": [
+        "Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, ByVal labelText As String, Optional ByVal commentValue As String = \"Подпись общего количества и диаметров арматуры у выбранного участка контура.\")"
+      ]
+    },
+    {
+      "File": "src/Section/CSectionAnnotations.cls",
+      "Method": "CheckIndex",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, \"CSectionAnnotations\", \"Индекс аннотации вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, \"CSectionAnnotations\", \"Индекс аннотации вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionBuilder.cls",
+      "Method": "Build",
+      "Before": [
+        "If definition Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Определение не передано.\"",
+        "If Not definition.IsSealed Then SectionRecipeError \"CSectionBuilder\", \"Нельзя собирать неопубликованное определение.\""
+      ],
+      "After": [
+        "If definition Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Не передано описание геометрии и армирования сечения.\"",
+        "If Not definition.IsSealed Then SectionRecipeError \"CSectionBuilder\", \"Описание сечения ещё не завершено. Перед сборкой завершите его методом Finish.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionBuilder.cls",
+      "Method": "Build",
+      "Before": [
+        "If rebars.Count = 0 Then SectionRecipeError \"CSectionBuilder\", \"Для параметрического сечения не задан ни один стержень арматуры.\""
+      ],
+      "After": [
+        "If rebars.Count = 0 Then SectionRecipeError \"CSectionBuilder\", \"После построения сечения не получен ни один стержень. Проверьте количества и диаметры в общей таблице армирования rngRebarInput.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionBuilder.cls",
+      "Method": "Mesh",
+      "Before": [
+        "If mMesh Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Нет успешно собранной сетки.\""
+      ],
+      "After": [
+        "If mMesh Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Бетонная сетка ещё не была успешно построена.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionBuilder.cls",
+      "Method": "Rebars",
+      "Before": [
+        "If mRebars Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Нет успешно собранной арматуры.\""
+      ],
+      "After": [
+        "If mRebars Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Расстановка арматуры ещё не была успешно построена.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionBuilder.cls",
+      "Method": "Rules",
+      "Before": [
+        "If mRules Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Нет успешно исполненных правил.\""
+      ],
+      "After": [
+        "If mRules Is Nothing Then SectionRecipeError \"CSectionBuilder\", \"Правила размещения арматуры ещё не были успешно выполнены.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionContours.cls",
+      "Method": "CheckIndex",
+      "Before": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, \"CSectionContours\", \"Индекс сегмента контура вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, \"CSectionContours\", \"Индекс сегмента контура вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "Method": "AddGroup",
+      "Before": [
+        "If Not IsArray(pathIDs) Then DefinitionError \"Группа должна содержать массив ID путей.\""
+      ],
+      "After": [
+        "If Not IsArray(pathIDs) Then DefinitionError \"Для группы геометрических линий нужен массив их идентификаторов (ID).\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "Method": "AddPath",
+      "Before": [
+        "If path Is Nothing Then DefinitionError \"Путь не передан.\"",
+        "If Not path.IsSealed Then DefinitionError \"Путь '\" & path.ID & \"' еще не подготовлен.\"",
+        "If mPaths.Exists(path.ID) Or mGroups.Exists(path.ID) Then DefinitionError \"Повторный ID пути '\" & path.ID & \"'.\""
+      ],
+      "After": [
+        "If path Is Nothing Then DefinitionError \"Не передана геометрическая линия размещения.\"",
+        "If Not path.IsSealed Then DefinitionError \"Геометрическая линия '\" & path.ID & \"' еще не подготовлен.\"",
+        "If mPaths.Exists(path.ID) Or mGroups.Exists(path.ID) Then DefinitionError \"Повторный ID геометрической линии '\" & path.ID & \"'.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "Method": "AddRule",
+      "Before": [
+        "If VarType(value.ExplicitStations(i)) = vbBoolean Or Not IsNumeric(value.ExplicitStations(i)) Then DefinitionError \"Явная станция должна быть числом.\"",
+        "DefinitionError \"Явные станции должны быть массивом чисел.\""
+      ],
+      "After": [
+        "If VarType(value.ExplicitStations(i)) = vbBoolean Or Not IsNumeric(value.ExplicitStations(i)) Then DefinitionError \"Расстояние от начала линии до места установки стержня должно быть числом.\"",
+        "DefinitionError \"Положения стержней должны задаваться массивом числовых расстояний от начала линии.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "Method": "Path",
+      "Before": [
+        "If Not mPaths.Exists(pathID) Then DefinitionError \"Не найден путь '\" & pathID & \"'.\", pathID, \"MISSING_PATH\""
+      ],
+      "After": [
+        "If Not mPaths.Exists(pathID) Then DefinitionError \"Не найдена геометрическая линия '\" & pathID & \"'.\", pathID, \"MISSING_PATH\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "Method": "TargetPaths",
+      "Before": [
+        "DefinitionError \"Не найден путь или группа '\" & targetID & \"'.\""
+      ],
+      "After": [
+        "DefinitionError \"Не найдена геометрическая линия или группа линий '\" & targetID & \"'.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinition.cls",
+      "Method": "ValidateAnnotation",
+      "Before": [
+        "DefinitionError \"Неизвестное измерение '\" & value.Kind & \"'.\", value.AnnotationID, \"MEASUREMENT_KIND\""
+      ],
+      "After": [
+        "DefinitionError \"Не распознан способ построения размера '\" & value.Kind & \"'.\", value.AnnotationID, \"MEASUREMENT_KIND\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionDefinitionBuilder.cls",
+      "Method": "Dimension",
+      "Before": [
+        "If measurement <> \"Horizontal\" And measurement <> \"Vertical\" And measurement <> \"Aligned\" Then SectionRecipeError \"CSectionDefinitionBuilder\", \"Measurement должен быть Horizontal, Vertical или Aligned.\""
+      ],
+      "After": [
+        "If measurement <> \"Horizontal\" And measurement <> \"Vertical\" And measurement <> \"Aligned\" Then SectionRecipeError \"CSectionDefinitionBuilder\", \"Для размера выберите Horizontal (горизонтальный), Vertical (вертикальный) или Aligned (вдоль заданной линии).\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionGeometryQuery.cls",
+      "Method": "MakeRegion",
+      "Before": [
+        "If area < -QUERY_TOLERANCE Then GeometryError \"Граница области имеет отрицательную площадь; проверьте outer/opening.\""
+      ],
+      "After": [
+        "If area < -QUERY_TOLERANCE Then GeometryError \"Не удалось получить положительную площадь бетона. Проверьте наружные границы Outer и отверстия Opening, их положение и направление обхода.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionGeometryQuery.cls",
+      "Method": "StitchLoops",
+      "Before": [
+        "If position > count Then GeometryError \"Нарушена топология замкнутых контуров.\""
+      ],
+      "After": [
+        "If position > count Then GeometryError \"Не удалось собрать замкнутые контуры из заданных сегментов. Проверьте разрывы, пересечения и повторяющиеся участки границ.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionInputReader.cls",
+      "Method": "Initialize",
+      "Before": [
+        "If Not mTable Is Nothing Then Err.Raise vbObjectError + 5525, \"CSectionInputReader\", \"Ридер таблицы уже создан.\""
+      ],
+      "After": [
+        "If Not mTable Is Nothing Then Err.Raise vbObjectError + 5525, \"CSectionInputReader\", \"Объект чтения входной таблицы уже создан; повторная инициализация запрещена.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionInputReader.cls",
+      "Method": "RequiredBlock",
+      "Before": [
+        "If mTable Is Nothing Then Err.Raise vbObjectError + 5525, \"CSectionInputReader\", \"Ридер входной таблицы не создан.\""
+      ],
+      "After": [
+        "If mTable Is Nothing Then Err.Raise vbObjectError + 5525, \"CSectionInputReader\", \"Перед чтением данных передайте входную таблицу методом Initialize.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionInputReader.cls",
+      "Method": "ValueAt",
+      "Before": [
+        "If mTable Is Nothing Then Err.Raise vbObjectError + 5525, \"CSectionInputReader\", \"Ридер входной таблицы не создан.\""
+      ],
+      "After": [
+        "If mTable Is Nothing Then Err.Raise vbObjectError + 5525, \"CSectionInputReader\", \"Перед чтением данных передайте входную таблицу методом Initialize.\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionInputTable.cls",
+      "Method": "InputError",
+      "Before": [],
+      "After": [
+        "valueText = \"ошибка формулы Excel\"",
+        "valueText = \"неопределённое значение\"",
+        "valueText = \"пустая ячейка\"",
+        "If Len(valueText) > 0 Then reason = reason & \" Прочитано: \" & valueText & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionInputTable.cls",
+      "Method": "Length",
+      "Before": [],
+      "After": [
+        "If Err.Number = 6 Then InputError row, column, \"Размер после перевода в миллиметры выходит за числовой диапазон. Уменьшите значение и проверьте выбранную единицу длины.\"",
+        "Err.Raise Err.Number, Err.Source, Err.Description"
+      ]
+    },
+    {
+      "File": "src/Section/CSectionInputTable.cls",
+      "Method": "OptionalDiameter",
+      "Before": [
+        "If units Is Nothing Then InputError row, column, \"Не передана система единиц.\""
+      ],
+      "After": []
+    },
+    {
+      "File": "src/Section/CSectionModel.cls",
+      "Method": "CheckConcreteIndex",
+      "Before": [
+        "If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, \"CSectionModel\", \"Индекс бетонного элемента вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, \"CSectionModel\", \"Индекс бетонного элемента вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mConcreteCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Section/CSectionModel.cls",
+      "Method": "CheckRebarIndex",
+      "Before": [
+        "If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, \"CSectionModel\", \"Индекс арматурного элемента вне допустимого диапазона.\""
+      ],
+      "After": [
+        "If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, \"CSectionModel\", \"Индекс арматурного элемента вне допустимого диапазона.\" & \" Запрошен номер \" & CStr(index) & \"; доступно элементов: \" & CStr(mRebarCount) & \".\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacityCalculator.cls",
+      "Method": "Calculate",
+      "Before": [
+        "result.InitializeInvalidInput \"LoadPath не подготовлен.\""
+      ],
+      "After": [
+        "result.InitializeInvalidInput \"Не подготовлено правило изменения N, Mx и My при поиске предела (LoadPath).\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacityLimitSearchProblem.cls",
+      "Method": "ILimitSearchProblem_RunUltimateAttempts",
+      "Before": [
+        "ILimitSearchProblem_RunUltimateAttempts = search.RunNewton(Me, request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath, Nothing, \"UltimateStrain: итерации Newton не сошлись.\")"
+      ],
+      "After": [
+        "ILimitSearchProblem_RunUltimateAttempts = search.RunNewton(Me, request.Section, request.ConcreteMaterial, request.SteelMaterial, loadPath, Nothing, \"Поиск по предельной деформации (UltimateStrain) не завершён: итерации Newton не нашли равновесие.\")"
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacityResult.cls",
+      "Method": "InitializeFromSearch",
+      "Before": [
+        "InitializeInvalidInput \"LoadPath не подготовлен.\", CAPACITY_PATH_NONE"
+      ],
+      "After": [
+        "InitializeInvalidInput \"Не подготовлено правило изменения N, Mx и My при поиске предела (LoadPath).\", CAPACITY_PATH_NONE"
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "Method": "LimitSearchCompleteCapacityUltimate",
+      "Before": [
+        "If Len(mStopReason) = 0 Then mStopReason = \"UltimateStrain: итерации Newton не сошлись.\""
+      ],
+      "After": [
+        "If Len(mStopReason) = 0 Then mStopReason = \"Поиск по предельной деформации (UltimateStrain) не завершён: итерации Newton не нашли равновесие.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "Method": "LimitSearchHandleCapacityBracketNumericalFailure",
+      "Before": [
+        "mStopReason = \"Внутри физической скобки возникла численная несходимость; сохранена последняя сходящаяся lambda.\""
+      ],
+      "After": [
+        "mStopReason = \"При уточнении интервала поиска не удалось найти равновесие. Сохранён последний множитель нагрузки lambda с подтверждённым равновесием; предельная точка не подтверждена.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "Method": "ReduceLambdaAfterNumericalFailure",
+      "Before": [
+        "mStopReason = \"Численная несходимость возникла до нахождения верхней физической границы; сохранена последняя сходящаяся lambda.\""
+      ],
+      "After": [
+        "mStopReason = \"Не удалось найти равновесие до определения верхней границы поиска. Сохранён последний множитель нагрузки lambda с подтверждённым равновесием; считать его несущей способностью нельзя.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "Method": "ValidateLoadMultiplierSettings",
+      "Before": [
+        "SetInvalidConfiguration \"Capacity.SearchMethod должен быть Bisection, Brent или Secant.\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля.\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля.\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля.\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток.\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля.\"",
+        "SetInvalidConfiguration \"Число ступеней Capacity.BaseLoadSteps не помещается в расчетный счетчик. Уменьшите его до 2147483646 или менее.\"",
+        "SetInvalidConfiguration \"Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите Capacity.MaxRetries или Capacity.BaseLoadSteps.\""
+      ],
+      "After": [
+        "SetInvalidConfiguration \"Capacity.SearchMethod должен быть Bisection, Brent или Secant.\", \"Capacity.SearchMethod\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля.\", \"Capacity.InitialLambda\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля.\", \"Capacity.ToleranceLambda\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля.\", \"Capacity.MaxLambda\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток.\", \"Capacity.MaxRetries\"",
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля.\", \"Capacity.BaseLoadSteps\"",
+        "SetInvalidConfiguration \"Число ступеней Capacity.BaseLoadSteps не помещается в расчетный счетчик. Уменьшите его до 2147483646 или менее.\", \"Capacity.BaseLoadSteps\"",
+        "SetInvalidConfiguration \"Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите Capacity.MaxRetries или Capacity.BaseLoadSteps.\", \"Capacity.MaxRetries;Capacity.BaseLoadSteps\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "Method": "ValidateLoadPathCapacityInputs",
+      "Before": [
+        "SetInvalidConfiguration \"Число итераций решателя несущей способности должно быть положительным.\""
+      ],
+      "After": [
+        "SetInvalidConfiguration \"Число итераций решателя несущей способности должно быть положительным.\", \"Capacity.SolverMaxIterations\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCapacitySolver.cls",
+      "Method": "ValidateUltimateStrainSettings",
+      "Before": [
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля.\""
+      ],
+      "After": [
+        "SetInvalidConfiguration \"На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля.\", \"Capacity.ToleranceStrain\""
+      ]
+    },
+    {
+      "File": "src/Solver/CCrackLimitSearchProblem.cls",
+      "Method": "Initialize",
+      "Before": [
+        "If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, \"CCrackLimitSearchProblem\", \"Не передан расчетчик трещинообразования.\""
+      ],
+      "After": [
+        "If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, \"CCrackLimitSearchProblem\", \"Не передан объект, который должен определить нагрузку образования нормальной трещины.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLimitSearchCoordinator.cls",
+      "Method": "ExecuteCapacity",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4230, \"CLimitSearchCoordinator\", \"Не передан запрос limit-search.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4230, \"CLimitSearchCoordinator\", \"Не переданы исходные данные для поиска предельного состояния.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLimitSearchCoordinator.cls",
+      "Method": "ExecuteCrackFormation",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4231, \"CLimitSearchCoordinator\", \"Не передан запрос limit-search.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4231, \"CLimitSearchCoordinator\", \"Не переданы исходные данные для поиска предельного состояния.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLimitSearchCoordinator.cls",
+      "Method": "LoadPathKeys",
+      "Before": [
+        "If Len(pathKey) = 0 Then Err.Raise vbObjectError + 4233, \"CLimitSearchCoordinator\", \"Неизвестный LoadPath.\""
+      ],
+      "After": [
+        "If Len(pathKey) = 0 Then Err.Raise vbObjectError + 4233, \"CLimitSearchCoordinator\", \"Не распознан способ изменения нагрузки (LoadPath). Выберите Auto, lambda*Mx, lambda*My, lambda*Mxy, lambda*N или lambda*NMxy.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLimitSearchRequest.cls",
+      "Method": "InitializeCapacity",
+      "Before": [
+        "If section Is Nothing Then Err.Raise vbObjectError + 4201, \"CLimitSearchRequest\", \"Не передана модель сечения для limit-search.\"",
+        "If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, \"CLimitSearchRequest\", \"Не передана диаграмма бетона для limit-search.\"",
+        "If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4203, \"CLimitSearchRequest\", \"Не передана диаграмма арматуры для limit-search.\""
+      ],
+      "After": [
+        "If section Is Nothing Then Err.Raise vbObjectError + 4201, \"CLimitSearchRequest\", \"Для поиска предельного состояния не передана геометрия сечения.\"",
+        "If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, \"CLimitSearchRequest\", \"Для поиска предельного состояния не передана диаграмма бетона.\"",
+        "If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4203, \"CLimitSearchRequest\", \"Для поиска предельного состояния не передана диаграмма арматуры.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLimitSearchResult.cls",
+      "Method": "Initialize",
+      "Before": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, \"Поиск завершен без машинного результата.\", vbNullString, True, searchExecuted"
+      ],
+      "After": [
+        "mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, \"Поиск завершён без обязательного статуса и кода причины результата. Это внутренняя ошибка передачи результатов.\", vbNullString, True, searchExecuted"
+      ]
+    },
+    {
+      "File": "src/Solver/CLinearSystem3x3.cls",
+      "Method": "Solve",
+      "Before": [
+        "mStopReason = \"Матрица вырождена.\""
+      ],
+      "After": [
+        "mStopReason = \"Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLoadMultiplierSearch.cls",
+      "Method": "Execute",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4220, \"CLoadMultiplierSearch\", \"Не передан запрос limit-search.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4220, \"CLoadMultiplierSearch\", \"Не переданы исходные данные для поиска предельного состояния.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLoadMultiplierSearch.cls",
+      "Method": "FinalizeBracketWithRecovery",
+      "Before": [
+        "request.Problem.SetNumericalFailure \"Исчерпан бюджет поиска lambda: точность интервала достигнута, но физический предел не подтвержден.\"",
+        "request.Problem.SetNumericalFailure \"Уточнение физического предела остановлено: скобку lambda невозможно уменьшить.\""
+      ],
+      "After": [
+        "request.Problem.SetNumericalFailure \"Достигнуто допустимое число попыток поиска множителя нагрузки lambda. Точность интервала достигнута, но равновесие предельной точки не подтверждено.\"",
+        "request.Problem.SetNumericalFailure \"Уточнение предельной точки остановлено: интервал поиска множителя нагрузки lambda больше не удаётся уменьшить.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLoadMultiplierSearch.cls",
+      "Method": "FindBracket",
+      "Before": [
+        "request.Problem.SetNumericalFailure \"Исчерпан общий бюджет восстановления lambda: равновесие следующей точки не подтверждено.\""
+      ],
+      "After": [
+        "request.Problem.SetNumericalFailure \"Исчерпано допустимое число попыток восстановить поиск множителя нагрузки lambda. Равновесие следующей точки не подтверждено.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLoadMultiplierSearch.cls",
+      "Method": "SearchByBrent",
+      "Before": [
+        "request.Problem.SetInvalidInput \"Методу Brent нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом.\"",
+        "request.Problem.SetNumericalFailure \"В конечной скобке Brent не сохранена допустимая точка равновесия.\""
+      ],
+      "After": [
+        "request.Problem.SetInvalidInput \"Для метода Brent нужен интервал поиска: при нижнем множителе нагрузки lambda состояние должно быть допустимым, при верхнем — достигать или превышать физический предел.\"",
+        "request.Problem.SetNumericalFailure \"В итоговом интервале поиска Brent нет сохранённой точки с подтверждённым допустимым равновесием.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CLoadMultiplierSearch.cls",
+      "Method": "SearchBySecant",
+      "Before": [
+        "request.Problem.SetInvalidInput \"Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом.\""
+      ],
+      "After": [
+        "request.Problem.SetInvalidInput \"Для метода Secant нужен интервал поиска: при нижнем множителе нагрузки lambda состояние должно быть допустимым, при верхнем — достигать или превышать физический предел.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CSectionSolver.cls",
+      "Method": "ConfigurationMessage",
+      "Before": [],
+      "After": [
+        "ConfigurationMessage = \"Ошибка настройки \" & key & \": \" & reason"
+      ]
+    },
+    {
+      "File": "src/Solver/CSectionSolver.cls",
+      "Method": "SolveSelectedLoadStep",
+      "Before": [
+        "mStopReason = \"Ошибка настройки Solver.Method: допустимы только Newton или Secant.\""
+      ],
+      "After": [
+        "mStopReason = ConfigurationMessage(\"Solver.Method\", \"Выберите Newton или Secant. Введено: \"\"\" & mSolverMethod & \"\"\".\")"
+      ]
+    },
+    {
+      "File": "src/Solver/CSectionSolver.cls",
+      "Method": "ValidateInputs",
+      "Before": [
+        "SetValidationFailure sfcInvalidConfiguration, \"Solver.MaxIterations должен быть положительным.\"",
+        "SetValidationFailure sfcInvalidConfiguration, \"Solver.LoadSteps должен быть положительным.\"",
+        "SetValidationFailure sfcInvalidConfiguration, \"Solver.SecantMaxRestarts не может быть отрицательным.\"",
+        "SetValidationFailure sfcInvalidConfiguration, \"Допуски Solver.ToleranceN/Mx/My должны быть положительными.\""
+      ],
+      "After": [
+        "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.MaxIterations\", \"Число итераций должно быть больше нуля. Сейчас: \" & CStr(mMaxIterations) & \".\"), \"Solver.MaxIterations\"",
+        "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.LoadSteps\", \"Число ступеней приложения нагрузки должно быть больше нуля. Сейчас: \" & CStr(mLoadSteps) & \".\"), \"Solver.LoadSteps\"",
+        "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.SecantMaxRestarts\", \"Число перезапусков метода Secant не может быть отрицательным. Сейчас: \" & CStr(mSecantMaxRestarts) & \".\"), \"Solver.SecantMaxRestarts\"",
+        "SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage(\"Solver.ToleranceN\", \"Допуски равновесия по N, Mx и My должны быть больше нуля.\") & \" \" & ConfigurationMessage(\"Solver.ToleranceMx\", \"Проверьте допуск по Mx.\") & \" \" & ConfigurationMessage(\"Solver.ToleranceMy\", \"Проверьте допуск по My.\"), \"Solver.ToleranceN;Solver.ToleranceMx;Solver.ToleranceMy\""
+      ]
+    },
+    {
+      "File": "src/Solver/CSectionSolver.cls",
+      "Method": "ValidateSolverMethod",
+      "Before": [
+        "mStopReason = \"Ошибка настройки Solver.Method: допустимы только Newton или Secant.\""
+      ],
+      "After": [
+        "mStopReason = ConfigurationMessage(\"Solver.Method\", \"Выберите Newton или Secant. Введено: \"\"\" & mSolverMethod & \"\"\".\")"
+      ]
+    },
+    {
+      "File": "src/Solver/CStateSolutionRunner.cls",
+      "Method": "BeginRetryAttemptSession",
+      "Before": [
+        "If section Is Nothing Then Err.Raise vbObjectError + 3483, \"CStateSolutionRunner\", \"Модель retry-сессии не передана.\"",
+        "If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3484, \"CStateSolutionRunner\", \"Материал бетона retry-сессии не передан.\"",
+        "If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3485, \"CStateSolutionRunner\", \"Материал арматуры retry-сессии не передан.\""
+      ],
+      "After": [
+        "If section Is Nothing Then Err.Raise vbObjectError + 3483, \"CStateSolutionRunner\", \"Для повторных попыток решения НДС не передана модель сечения.\"",
+        "If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3484, \"CStateSolutionRunner\", \"Для повторных попыток решения НДС не передана диаграмма бетона.\"",
+        "If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3485, \"CStateSolutionRunner\", \"Для повторных попыток решения НДС не передана диаграмма арматуры.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CUltimateStrainSearch.cls",
+      "Method": "ExecuteCapacity",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4210, \"CUltimateStrainSearch\", \"Не передан запрос limit-search.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4210, \"CUltimateStrainSearch\", \"Не переданы исходные данные для поиска предельного состояния.\""
+      ]
+    },
+    {
+      "File": "src/Solver/CUltimateStrainSearch.cls",
+      "Method": "ExecuteCrackFormation",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4211, \"CUltimateStrainSearch\", \"Не передан запрос limit-search.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4211, \"CUltimateStrainSearch\", \"Не переданы исходные данные для поиска предельного состояния.\""
+      ]
+    },
+    {
+      "File": "src/Solver/modLimitSearchRequestFactory.bas",
+      "Method": "InitializeCapacitySearchRequest",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4208, \"modLimitSearchRequestFactory\", \"Не передан запрос LimitSearch.\"",
+        "If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, \"CLimitSearchRequest\", \"Не передан solver поиска несущей способности.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4208, \"modLimitSearchRequestFactory\", \"Не переданы исходные данные для поиска предельного состояния.\"",
+        "If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, \"CLimitSearchRequest\", \"Не передан объект расчёта несущей способности.\""
+      ]
+    },
+    {
+      "File": "src/Solver/modLimitSearchRequestFactory.bas",
+      "Method": "InitializeCrackFormationSearchRequest",
+      "Before": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4208, \"modLimitSearchRequestFactory\", \"Не передан запрос LimitSearch.\"",
+        "If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4204, \"CLimitSearchRequest\", \"Не передан расчетчик трещинообразования.\""
+      ],
+      "After": [
+        "If request Is Nothing Then Err.Raise vbObjectError + 4208, \"modLimitSearchRequestFactory\", \"Не переданы исходные данные для поиска предельного состояния.\"",
+        "If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4204, \"CLimitSearchRequest\", \"Не передан объект, который должен определить нагрузку образования нормальной трещины.\""
+      ]
+    },
+    {
+      "File": "src/Stability/CStabilityCalculator.cls",
+      "Method": "SP35ConcreteAreaForTableNult",
+      "Before": [
+        "If SP35ConcreteAreaForTableNult <= SMALL_VALUE Then RaiseInput \"Площадь стали больше или равна gross-площади бетона; формула Nult СП 35 неприменима.\""
+      ],
+      "After": [
+        "If SP35ConcreteAreaForTableNult <= SMALL_VALUE Then RaiseInput \"Суммарная площадь арматуры не меньше общей площади сечения до вычитания арматуры. Формула Nult СП 35 неприменима; проверьте геометрию, диаметры и единицы.\""
+      ]
+    }
+  ]
+}

@@ -787,7 +787,7 @@ Private Function SP35ConcreteAreaForTableNult(ByVal concreteArea As Double, _
     If totalSteelArea / concreteArea > SP35_REBAR_AREA_LIMIT_RATIO Then
         SP35ConcreteAreaForTableNult = concreteArea - totalSteelArea
         If SP35ConcreteAreaForTableNult <= SMALL_VALUE Then _
-            RaiseInput "Площадь стали больше или равна gross-площади бетона; формула Nult СП 35 неприменима."
+            RaiseInput "Суммарная площадь арматуры не меньше общей площади сечения до вычитания арматуры. Формула Nult СП 35 неприменима; проверьте геометрию, диаметры и единицы."
     End If
 End Function
 

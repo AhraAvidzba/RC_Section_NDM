@@ -1,0 +1,147 @@
+{
+  "Passed": true,
+  "Scope": "Направленная приёмка сообщений программы, не полный ON/OFF",
+  "FullOnOffPerformed": false,
+  "ProductionComponentsReviewed": 112,
+  "ProductionClassesReviewed": 97,
+  "AcceptedSuites": 18,
+  "AssertionsPassed": 80869,
+  "AssertionsFailed": 0,
+  "Tests": [
+    {
+      "Report": "FinalCore07.txt",
+      "Macro": "modTestSectionSolver.RunSectionSolverTests",
+      "Passed": 3494,
+      "Failed": 0,
+      "ReportSHA256": "CE025D215E2CF292DFB1949B17554960866D6F30B4EB748588D44688AA200568"
+    },
+    {
+      "Report": "FinalCore07.txt",
+      "Macro": "modTestGeometry.RunGeometryTests",
+      "Passed": 766,
+      "Failed": 0,
+      "ReportSHA256": "CE025D215E2CF292DFB1949B17554960866D6F30B4EB748588D44688AA200568"
+    },
+    {
+      "Report": "FinalCore07.txt",
+      "Macro": "modTestAutoCADContours.RunAutoCADContourTests",
+      "Passed": 622,
+      "Failed": 0,
+      "ReportSHA256": "CE025D215E2CF292DFB1949B17554960866D6F30B4EB748588D44688AA200568"
+    },
+    {
+      "Report": "FinalCore07.txt",
+      "Macro": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+      "Passed": 30457,
+      "Failed": 0,
+      "ReportSHA256": "CE025D215E2CF292DFB1949B17554960866D6F30B4EB748588D44688AA200568"
+    },
+    {
+      "Report": "FinalCapacity09.txt",
+      "Macro": "modTestCapacitySolver.RunCapacitySolverTests",
+      "Passed": 5355,
+      "Failed": 0,
+      "ReportSHA256": "F185154E53C71ADA5C3EF69B322881432CFEF92F62CCB3B29CFA68BEE8620AF1"
+    },
+    {
+      "Report": "FinalCrack10.txt",
+      "Macro": "modTestCrackWidth.RunCrackWidthTests",
+      "Passed": 2134,
+      "Failed": 0,
+      "ReportSHA256": "FDE6C6B840A3939C5919C3B7FD7B5EE038FA1235092A216B49954B8453A82A11"
+    },
+    {
+      "Report": "FinalSettings11.txt",
+      "Macro": "modTestWorkbookInterface.RunAudit03SettingErrorMessageTests",
+      "Passed": 1973,
+      "Failed": 0,
+      "ReportSHA256": "0CA92FB8739EAAC9328026980B85265022E33D77E5A90FC15CCF206EB208FDFF"
+    },
+    {
+      "Report": "FinalInput07.txt",
+      "Macro": "modTestProfileConfig.RunAudit03ProfileConfigTests",
+      "Passed": 8860,
+      "Failed": 0,
+      "ReportSHA256": "DD4F836530352C07F1E1AFECDC5839C404A5D5EBAF1F96690DF5BB3B28DBD1E6"
+    },
+    {
+      "Report": "FinalInput07.txt",
+      "Macro": "modTestProfileConfig.RunAudit03RelocatedInputTests",
+      "Passed": 742,
+      "Failed": 0,
+      "ReportSHA256": "DD4F836530352C07F1E1AFECDC5839C404A5D5EBAF1F96690DF5BB3B28DBD1E6"
+    },
+    {
+      "Report": "FinalInput07.txt",
+      "Macro": "modTestBatchCalculation.RunAudit03CommentCompositionTests",
+      "Passed": 32,
+      "Failed": 0,
+      "ReportSHA256": "DD4F836530352C07F1E1AFECDC5839C404A5D5EBAF1F96690DF5BB3B28DBD1E6"
+    },
+    {
+      "Report": "FinalInput07.txt",
+      "Macro": "modTestBatchCalculation.RunAudit03StabilityCommentTests",
+      "Passed": 100,
+      "Failed": 0,
+      "ReportSHA256": "DD4F836530352C07F1E1AFECDC5839C404A5D5EBAF1F96690DF5BB3B28DBD1E6"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestAudit02Api.RunProgramMessageTests",
+      "Passed": 38,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestLoadTableConfig.RunAudit03LoadTableTests",
+      "Passed": 11981,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestProfileConfig.RunAudit03DurationConfigTests",
+      "Passed": 12721,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestSP35CrackWidth.RunSP35EndToEndTests",
+      "Passed": 270,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestWorkbookInterface.RunAudit02SavedSnapshotTests",
+      "Passed": 267,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestBatchCalculation.RunAudit03LoadPathCommentTests",
+      "Passed": 910,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    },
+    {
+      "Report": "FinalPresentation09.txt",
+      "Macro": "modTestBatchCalculation.RunAudit03PublishedResultTests",
+      "Passed": 147,
+      "Failed": 0,
+      "ReportSHA256": "07DCE99C85440DF527DD7775DB4D4B2E630F535271ABB40E8B5C90CD6A7F8EA0"
+    }
+  ],
+  "CoreSourceContinuity": true,
+  "SupersededFailures": {
+    "FinalInput07.LoadTable": "480 старых сравнений сообщения без контекста; исправлены ожидания, добавлена независимая проверка причины и адреса.",
+    "FinalCore07.Crack": "5 проверок требовали системный Error$(91); код 91 сохранён, русский текст проверен отдельно.",
+    "FinalCore07.Capacity": "Сценарий tf ожидает RectSet, а в пользовательской книге выбран HollowRectangle с ошибочными отступами. Повтор использует предусмотренный FixtureGeometryType=RectSet.",
+    "InputAndMessages06": "Системное прерывание VBA; остановлен только проверенный тестовый PID.",
+    "InputAndMessages04": "32 старых ожидания вывода ResultComment без номера сочетания и адреса.",
+    "FinalPresentation09.Settings": "Тест создавал модель круга при ключах таблицы выбранного HollowRectangle. Подготовка теста теперь явно выбирает Circle; рабочие классы не менялись."
+  }
+}

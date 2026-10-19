@@ -29,7 +29,7 @@ Public Sub RunSectionCalculation()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage "Расчет не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Расчет не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Очищает Results по кнопке, сохраняя Config и таблицу нагрузок.
@@ -46,7 +46,7 @@ Public Sub ClearSectionResults()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage "Не удалось очистить результаты: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Не удалось очистить результаты", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Обновляет схему по сохранённым Results и показывает причину ошибки.
@@ -62,7 +62,7 @@ Public Sub UpdateSectionPlot()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage "Схема не обновлена: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Схема не обновлена", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Импортирует геометрию из активного чертежа AutoCAD и сохраняет её в Results.
@@ -77,7 +77,7 @@ Public Sub ImportGeometryFromAutoCAD()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage "Импорт геометрии из AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Импорт геометрии из AutoCAD не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Читает выбранное НДС из Results и перерисовывает схему указанной книги.
@@ -380,7 +380,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
-    report.AddStep "Начата запись расчетного snapshot NDM."
+    report.AddStep "Начата запись результатов расчёта, геометрии и диаграмм в Results."
     ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
@@ -551,7 +551,7 @@ Private Sub ValidateResultsOutputLayout(ByVal workbook As Object, ByVal section 
         AddRowsGapIssue issues, "rngStabilitySummaryAnchor", crackBottomRow, stabilityTopRow, stabilityTopRow - 1
     End If
     If stabilityBottomRow + RESULTS_TABLE_GAP_ROWS >= snapshotTitleRow Then
-        AddRowsGapIssue issues, "rngNDMElementResults и нижних snapshot-диапазонов", stabilityBottomRow, snapshotTitleRow, snapshotTitleRow
+        AddRowsGapIssue issues, "rngNDMElementResults и расположенных ниже таблиц Results", stabilityBottomRow, snapshotTitleRow, snapshotTitleRow
     End If
 
     Dim estimatedStateCount As Long

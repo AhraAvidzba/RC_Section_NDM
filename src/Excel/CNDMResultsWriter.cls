@@ -101,7 +101,7 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
         Optional ByVal units As CUnitSystem = Nothing)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
-    If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики preview не переданы."
+    If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Для предварительной схемы не переданы подготовленные характеристики сечения."
     snapshot.ValidateSnapshot section
 
     ClearResults workbook
@@ -845,9 +845,9 @@ Private Sub PutNamedStateProperties(ByRef data() As Variant, ByRef rowIndex As L
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ExtensionUsed", _
                 BooleanText(stateResult.ExtensionUsed), "-", "True, если это расчетное состояние использовало numerical extension."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "Status", _
-                stateResult.Status, "-", "Короткий статус состояния, сохраненный orchestrator-ом."
+                stateResult.Status, "-", "Короткий статус НДС, сохранённый при расчёте сочетания."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "ResultComment", _
-                stateResult.ResultComment, "-", "Пользовательское пояснение результата named-state из ResultMeta."
+                CalculationResultMessage(batch, combinationIndex, stateResult.ResultMeta), "-", "Причина результата НДС, номер сочетания и сохранённый адрес исходной строки нагрузок."
             PutProperty data, rowIndex, runID, batch.CombinationID(combinationIndex), prefix & "StopReason", _
                 stateResult.StopReason, "-", "Служебная причина остановки solver-а для диагностики."
         End If
@@ -1311,7 +1311,7 @@ Private Sub PutCrackBoundaryProbeRows(ByRef data() As Variant, ByRef rowIndex As
         If CBool(probes(i, 1)) Then
             data(rowIndex, 4) = OutputLength(CDbl(probes(i, 4)), units): data(rowIndex, 5) = OutputLength(CDbl(probes(i, 5)), units)
             data(rowIndex, 6) = OutputLength(CDbl(probes(i, 2)), units): data(rowIndex, 7) = OutputLength(CDbl(probes(i, 3)), units)
-            data(rowIndex, 13) = "Готовые внешняя P и внутренняя Q границы локального интервала материала."
+            data(rowIndex, 13) = "Точки P и Q ограничивают участок бетона по нормали через выбранную арматуру."
         End If
         data(rowIndex, 14) = region.OwnerID: data(rowIndex, 15) = region.Standard: data(rowIndex, 16) = region.AnchorID
         data(rowIndex, 19) = region.SectionRevision
@@ -1434,7 +1434,7 @@ Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotation
     ElseIf StrComp(commentValue, "Section dimension.", vbTextCompare) = 0 Then
         OutputAnnotationComment = "Размер сечения для отображения на схеме."
     ElseIf StrComp(commentValue, "Grouped rebar annotation.", vbTextCompare) = 0 Then
-        OutputAnnotationComment = "Групповая подпись арматуры по смысловой грани."
+        OutputAnnotationComment = "Подпись общего количества и диаметров арматуры у выбранного участка контура."
     ElseIf StrComp(commentValue, "Overall concrete width.", vbTextCompare) = 0 Then
         OutputAnnotationComment = "Общая ширина бетонного сечения."
     ElseIf StrComp(commentValue, "Overall concrete height.", vbTextCompare) = 0 Then
@@ -1446,7 +1446,7 @@ Private Function OutputAnnotationComment(ByVal annotations As CSectionAnnotation
     ElseIf Len(commentValue) > 0 Then
         OutputAnnotationComment = commentValue
     Else
-        OutputAnnotationComment = "Semantic-аннотация схемы."
+        OutputAnnotationComment = "Описание элемента оформления схемы: размера или подписи."
     End If
 End Function
 

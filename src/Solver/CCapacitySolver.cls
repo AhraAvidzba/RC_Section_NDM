@@ -34,6 +34,7 @@ Private mConverged As Boolean ' Признак того, что выбранны
 Private mStopReason As String ' Причина остановки поиска несущей способности для вывода и тестов.
 Private mLimitState As String ' Физический или численный статус найденного предела.
 Private mFailureCode As ESolverFailureCode ' Точная техническая причина, независимая от текста комментария и LimitState.
+Private mFailureSettingKeys As String ' Ключи ошибочных исходных настроек, передаваемые с результатом для вывода фактических адресов.
 Private mUpperLimitState As String ' Статус верхней границы при LoadMultiplier.
 Private mInitialLambdaRejected As Boolean ' Признак того, что постоянная нагрузка при lambda = 0 уже не удовлетворяет критерию несущей способности.
 Private mUltimateOriginX As Double, mUltimateOriginY As Double ' Координаты начала отсчёта моментов при поиске предела по деформациям, мм.
@@ -841,7 +842,7 @@ End Sub
 Public Sub LimitSearchHandleCapacityBracketNumericalFailure(ByVal lowLambda As Double, _
         ByVal probeState As String)
     mLimitState = probeState
-    mStopReason = "Внутри физической скобки возникла численная несходимость; сохранена последняя сходящаяся lambda."
+    mStopReason = "При уточнении интервала поиска не удалось найти равновесие. Сохранён последний множитель нагрузки lambda с подтверждённым равновесием; предельная точка не подтверждена."
     mLambdaUltimate = lowLambda
     If Not mLastAcceptableSolver Is Nothing Then Set mLastSolver = mLastAcceptableSolver
 End Sub
@@ -1074,6 +1075,7 @@ Public Function LimitSearchFinalizeUltimateResult(ByVal section As CSectionModel
     mUpperLimitState = state
     mConverged = True
     mFailureCode = sfcNone
+    mFailureSettingKeys = vbNullString
     LimitSearchFinalizeUltimateResult = True
 End Function
 
@@ -1081,7 +1083,7 @@ End Function
 Public Sub LimitSearchCompleteCapacityUltimate(ByVal loadPath As CLoadPathVector)
     If Not mConverged Then
         If Len(mLimitState) = 0 Then mLimitState = STATE_NUMERICAL_FAILURE
-        If Len(mStopReason) = 0 Then mStopReason = "UltimateStrain: итерации Newton не сошлись."
+        If Len(mStopReason) = 0 Then mStopReason = "Поиск по предельной деформации (UltimateStrain) не завершён: итерации Newton не нашли равновесие."
         Exit Sub
     End If
 
@@ -1240,7 +1242,7 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
     ElseIf Abs(nBase) <= 0.000000001 And Abs(mxBase) <= 0.000000001 And Abs(myBase) <= 0.000000001 Then
         SetInvalidInput "В траектории несущей способности нет масштабируемой нагрузки."
     ElseIf mSolverMaxIterations <= 0 Then
-        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным."
+        SetInvalidConfiguration "Число итераций решателя несущей способности должно быть положительным.", "Capacity.SolverMaxIterations"
     Else
         ' Оба поиска используют ту же проверку настроек равновесия, без проб НДС.
         Dim validation As CSectionSolver
@@ -1253,6 +1255,7 @@ Private Function ValidateLoadPathCapacityInputs(ByVal section As CSectionModel, 
         Else
             Set mLastSolver = validation
             LimitSearchSetFailure validation.FailureCode, validation.StopReason
+            mFailureSettingKeys = validation.FailureSettingKeys
         End If
     End If
 End Function
@@ -1277,21 +1280,21 @@ End Function
 ' или материалы, которые проверяются выше по цепочке.
 Private Function ValidateLoadMultiplierSettings() As Boolean
     If Len(NormalizedSearchMethod()) = 0 Then
-        SetInvalidConfiguration "Capacity.SearchMethod должен быть Bisection, Brent или Secant."
+        SetInvalidConfiguration "Capacity.SearchMethod должен быть Bisection, Brent или Secant.", "Capacity.SearchMethod"
     ElseIf mInitialLambdaStep <= 0# Then
-        SetInvalidConfiguration "На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля."
+        SetInvalidConfiguration "На листе Config в строке Capacity.InitialLambda задайте начальный шаг больше нуля.", "Capacity.InitialLambda"
     ElseIf mLambdaTolerance <= 0# Then
-        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля."
+        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceLambda задайте допуск поиска больше нуля.", "Capacity.ToleranceLambda"
     ElseIf mMaxLambda <= 0# Then
-        SetInvalidConfiguration "На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля."
+        SetInvalidConfiguration "На листе Config в строке Capacity.MaxLambda задайте верхнюю границу поиска больше нуля.", "Capacity.MaxLambda"
     ElseIf mMaxRetries < 0 Then
-        SetInvalidConfiguration "На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток."
+        SetInvalidConfiguration "На листе Config в строке Capacity.MaxRetries задайте неотрицательное число повторных попыток.", "Capacity.MaxRetries"
     ElseIf mSolverBaseLoadSteps <= 0 Then
-        SetInvalidConfiguration "На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля."
+        SetInvalidConfiguration "На листе Config в строке Capacity.BaseLoadSteps задайте число ступеней нагрузки больше нуля.", "Capacity.BaseLoadSteps"
     ElseIf MaximumRetryCountForLoadSteps(mSolverBaseLoadSteps) < 0 Then
-        SetInvalidConfiguration "Число ступеней Capacity.BaseLoadSteps не помещается в расчетный счетчик. Уменьшите его до 2147483646 или менее."
+        SetInvalidConfiguration "Число ступеней Capacity.BaseLoadSteps не помещается в расчетный счетчик. Уменьшите его до 2147483646 или менее.", "Capacity.BaseLoadSteps"
     ElseIf mMaxRetries > MaximumRetryCountForLoadSteps(mSolverBaseLoadSteps) Then
-        SetInvalidConfiguration "Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите Capacity.MaxRetries или Capacity.BaseLoadSteps."
+        SetInvalidConfiguration "Число ступеней с учетом повторов не помещается в расчетный счетчик. Уменьшите Capacity.MaxRetries или Capacity.BaseLoadSteps.", "Capacity.MaxRetries;Capacity.BaseLoadSteps"
     Else
         ValidateLoadMultiplierSettings = True
     End If
@@ -1302,7 +1305,7 @@ End Function
 ' после нахождения предельного поля проверяется корректность самого множителя.
 Private Function ValidateUltimateStrainSettings() As Boolean
     If mStrainTolerance <= 0# Then
-        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля."
+        SetInvalidConfiguration "На листе Config в строке Capacity.ToleranceStrain задайте допуск предельной деформации больше нуля.", "Capacity.ToleranceStrain"
     Else
         ValidateUltimateStrainSettings = True
     End If
@@ -1313,15 +1316,17 @@ End Function
 Private Sub SetInvalidInput(ByVal reason As String)
     mLimitState = STATE_INVALID_INPUT
     mFailureCode = sfcInvalidInput
+    mFailureSettingKeys = vbNullString
     mStopReason = reason
 End Sub
 
 ' Сохраняет ошибку численных настроек отдельным кодом без повторных попыток
 ' и смены метода. Внутренний LimitState и внешнее обозначение статуса различаются.
-Private Sub SetInvalidConfiguration(ByVal reason As String)
+Private Sub SetInvalidConfiguration(ByVal reason As String, Optional ByVal sourceKeys As String = vbNullString)
     mLimitState = STATE_INVALID_INPUT
     mFailureCode = sfcInvalidConfiguration
     mStopReason = reason
+    mFailureSettingKeys = sourceKeys
 End Sub
 
 ' Отсутствие обязательного программного объекта или неожиданная ошибка
@@ -1329,6 +1334,7 @@ End Sub
 Private Sub SetInternalError(ByVal reason As String)
     mLimitState = STATE_INTERNAL_ERROR
     mFailureCode = sfcInternalError
+    mFailureSettingKeys = vbNullString
     mStopReason = reason
 End Sub
 
@@ -1450,9 +1456,11 @@ Private Function ProbeOnce(ByVal section As CSectionModel, _
         mLastProbeNumericalFailure = (solver.FailureCode = sfcNumericalFailure Or solver.FailureCode = sfcSingularTangent)
         ProbeOnce = ClassifyNumericalFailure(solver.FailureCode)
         mFailureCode = solver.FailureCode
+        mFailureSettingKeys = solver.FailureSettingKeys
         mStopReason = solver.StopReason
     Else
         mFailureCode = sfcNone
+        mFailureSettingKeys = vbNullString
         UpdateCriticalState section, concreteMaterial, solver
         If mCriticalStrainUtilization >= 1# Then
             ProbeOnce = CriticalLimitState()
@@ -1520,12 +1528,14 @@ Private Function EvaluateZeroLoadProbe(ByVal section As CSectionModel, _
     Set mLastSolver = solver
     If solver.FailureCode <> sfcNone Then
         mFailureCode = solver.FailureCode
+        mFailureSettingKeys = solver.FailureSettingKeys
         mStopReason = solver.StopReason
         EvaluateZeroLoadProbe = ClassifyNumericalFailure(mFailureCode)
         Exit Function
     End If
     If Not solver.ConfirmEquilibrium(0#, 0#, 0#) Then
         mFailureCode = solver.FailureCode
+        mFailureSettingKeys = solver.FailureSettingKeys
         mStopReason = solver.StopReason
         EvaluateZeroLoadProbe = STATE_NUMERICAL_FAILURE
         Exit Function
@@ -1555,6 +1565,7 @@ Private Function TryRestoreProbeCache(ByVal nSpecified As Double, ByVal mx As Do
             probeState = mProbeCacheState(slot)
             Set mLastSolver = mProbeCacheSolver(slot)
             mFailureCode = sfcNone
+            mFailureSettingKeys = vbNullString
             mLastProbeNumericalFailure = False
             mCriticalStrain = mProbeCacheCriticalStrain(slot)
             mCriticalElement = mProbeCacheCriticalElement(slot)
@@ -1693,7 +1704,7 @@ Private Function ReduceLambdaAfterNumericalFailure(ByVal lowLambda As Double, By
     reduced = lowLambda + (highLambda - lowLambda) / 2#
     If lowLambda > 0# And (reduced - lowLambda) <= mLambdaTolerance Then
         mLimitState = probeState
-        mStopReason = "Численная несходимость возникла до нахождения верхней физической границы; сохранена последняя сходящаяся lambda."
+        mStopReason = "Не удалось найти равновесие до определения верхней границы поиска. Сохранён последний множитель нагрузки lambda с подтверждённым равновесием; считать его несущей способностью нельзя."
         mLambdaUltimate = lowLambda
         If Not mLastAcceptableSolver Is Nothing Then Set mLastSolver = mLastAcceptableSolver
         ReduceLambdaAfterNumericalFailure = lowLambda
@@ -1808,6 +1819,7 @@ Private Sub ClearResult()
     mUpperLimitState = vbNullString
     mInitialLambdaRejected = False
     mFailureCode = sfcNone
+    mFailureSettingKeys = vbNullString
     mSearchBoundReached = False
     mLastProbeNumericalFailure = False
     mLambdaUltimate = 0#
@@ -1882,6 +1894,11 @@ End Property
 ' Слова причины остановки и внешнего статуса на их выбор не влияют.
 Public Property Get FailureCode() As ESolverFailureCode
     FailureCode = mFailureCode
+End Property
+
+' Сохраняет связь причины с настройками отдельно от её формулировки.
+Public Property Get FailureSettingKeys() As String
+    FailureSettingKeys = mFailureSettingKeys
 End Property
 
 ' Показывает, отклонена ли уже постоянная нагрузка при lambda = 0.

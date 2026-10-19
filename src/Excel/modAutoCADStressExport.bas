@@ -111,7 +111,7 @@ Public Sub ExportSectionStressToAutoCAD()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage "Экспорт в AutoCAD не выполнен: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Экспорт в AutoCAD не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Очищает активный чертеж AutoCAD от объектов оформления, созданных NDM-export.
@@ -150,7 +150,7 @@ Public Sub ClearAutoCADDrawing()
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage "Очистка чертежа AutoCAD не выполнена: " & Err.Description, vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Очистка чертежа AutoCAD не выполнена", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Собирает перечень слоев, которые относятся к оформлению, а не к геометрии.
@@ -659,7 +659,7 @@ Private Function MissingExportStateMessage(ByVal combinationID As String, ByVal 
                 " Для запрашиваемого сочетания расчет трещин не выполнялся: этому сочетанию назначен профиль, где Calculation.Crack.Width = No."
         ElseIf StrComp(stateType, "CrackedState", vbTextCompare) = 0 Then
             MissingExportStateMessage = MissingExportStateMessage & _
-                " Для запрашиваемого сочетания расчет трещин был включен, поэтому CrackedState должен быть в snapshot. Проверьте статус расчета трещин и сообщения о сходимости CrackedState."
+                " Для этого сочетания расчёт трещин был включён, но НДС с учётом трещин (CrackedState) не сохранено в Results. Проверьте статус и пояснения расчёта трещин; при необходимости повторите расчёт."
         Else
             MissingExportStateMessage = MissingExportStateMessage & _
                 " Для запрашиваемого сочетания расчет трещин был включен, но пороговое состояние образования трещины не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."

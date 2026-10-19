@@ -77,9 +77,9 @@ End Function
 Public Function IsValid(ByRef message As String) As Boolean
     message = vbNullString
     If mRegion Is Nothing Then
-        message = "Точный контур бетона не инициализирован."
+        message = "Точный контур бетонной области ещё не подготовлен."
     ElseIf mMaxX <= mMinX + GEOM_TOLERANCE Or mMaxY <= mMinY + GEOM_TOLERANCE Then
-        message = "Габариты точного контура бетона вырождены."
+        message = "Ширина или высота наружного контура равна нулю. Проверьте координаты и размеры бетонной области."
     Else
         IsValid = True
     End If
@@ -99,7 +99,7 @@ End Sub
 
 ' Возвращает крайние точки области по заданному направлению для геометрических проекций.
 Public Sub GetExtremePoints(ByRef pointX() As Double, ByRef pointY() As Double)
-    If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Точный контур бетона не инициализирован."
+    If mRegion Is Nothing Then Err.Raise vbObjectError + 5290, "CGeometryRegion", "Точный контур бетонной области ещё не подготовлен."
     mQuery.MeshExtremePoints mEdges, mEdgeCount, pointX, pointY
 End Sub
 

@@ -177,5 +177,5 @@ End Property
 
 ' Проверяет индекс перед доступом к геометрическим массивам.
 Private Sub CheckIndex(ByVal index As Long)
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionContours", "Индекс сегмента контура вне допустимого диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionContours", "Индекс сегмента контура вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub

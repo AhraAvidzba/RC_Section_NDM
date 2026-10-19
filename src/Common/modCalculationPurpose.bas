@@ -164,7 +164,7 @@ Public Function ConcreteTensionKindFromText(ByVal valueText As String) As EConcr
             ConcreteTensionKindFromText = ctkIgnore
         Case Else
             Err.Raise vbObjectError + 3315, "modCalculationPurpose", _
-                "Растянутый бетон должен быть Ignore или UseDiagram."
+                "Выберите способ учёта растянутого бетона: Ignore — не учитывать; UseDiagram — использовать растянутую ветвь диаграммы."
     End Select
 End Function
 
@@ -245,7 +245,20 @@ Public Function SectionStateTypeToText(ByVal stateType As ESectionStateType) As 
         Case sstCrackedState
             SectionStateTypeToText = "CrackedState"
         Case Else
-            Err.Raise vbObjectError + 3320, "modCalculationPurpose", "Неизвестный StateType."
+            Err.Raise vbObjectError + 3320, "modCalculationPurpose", "Не распознано назначение расчётного состояния. Проверьте передачу StateType между этапами расчёта."
+    End Select
+End Function
+
+' Называет назначение НДС для сообщения человеку. Расчётные ключи состояния
+' задаёт SectionStateTypeToText; их запись и сравнение от этой подписи не зависят.
+Public Function SectionStateDisplayName(ByVal stateType As ESectionStateType) As String
+    Select Case stateType
+        Case sstStrengthState: SectionStateDisplayName = "при заданной нагрузке для проверки прочности"
+        Case sstCapacityState: SectionStateDisplayName = "при достижении несущей способности"
+        Case sstPreCrackState: SectionStateDisplayName = "перед образованием нормальной трещины"
+        Case sstPostCrackState: SectionStateDisplayName = "сразу после образования нормальной трещины"
+        Case sstCrackedState: SectionStateDisplayName = "с трещинами при заданной нагрузке"
+        Case Else: SectionStateDisplayName = "неизвестного назначения (код " & CStr(stateType) & ")"
     End Select
 End Function
 
@@ -261,7 +274,7 @@ Public Function MaterialRoleFromStateType(ByVal stateType As ESectionStateType) 
             MaterialRoleFromStateType = cpCrackedNDS
         Case Else
             Err.Raise vbObjectError + 3321, "modCalculationPurpose", _
-                "Для StateType не определена роль material model."
+                "Для указанного НДС не определено назначение модели материалов. Проверьте соответствие StateType расчётной проверке."
     End Select
 End Function
 
@@ -275,7 +288,7 @@ Public Function VisualizationQuantityFromText(ByVal valueText As String) As EVis
             VisualizationQuantityFromText = vqStrain
         Case Else
             Err.Raise vbObjectError + 3322, "modCalculationPurpose", _
-                "Visualization.Quantity должен быть Stress или Strain."
+                "В Visualization.Quantity выберите Stress для отображения напряжений или Strain для отображения деформаций."
     End Select
 End Function
 
@@ -289,7 +302,7 @@ Public Function VisualizationQuantityToText(ByVal quantity As EVisualizationQuan
             VisualizationQuantityToText = "Strain"
         Case Else
             Err.Raise vbObjectError + 3323, "modCalculationPurpose", _
-                "Неизвестная Visualization.Quantity."
+                "Не распознана отображаемая величина Visualization.Quantity: допустимы Stress (напряжения) и Strain (деформации)."
     End Select
 End Function
 

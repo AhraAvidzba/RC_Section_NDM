@@ -83,7 +83,7 @@ Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath A
         ByVal toleranceN As Double, ByVal toleranceMx As Double, ByVal toleranceMy As Double, _
         Optional ByVal commonForceScale As Boolean = False)
     ' Технический журнал сохраняет стандартный текст VBA; потребитель дает понятное пояснение.
-    If section Is Nothing Or loadPath Is Nothing Then Err.Raise 91, "CLoadPathMath"
+    If section Is Nothing Or loadPath Is Nothing Then Err.Raise 91, "CLoadPathMath", "Не удалось подготовить изменение нагрузки: не передана модель сечения или описание изменения N, Mx и My."
     If NumericalPathMatches(section, loadPath, toleranceN, toleranceMx, toleranceMy, commonForceScale) Then Exit Sub
     mNumericalReady = False
     If mNumericalFrame Is Nothing Then Set mNumericalFrame = New CSectionNumericalFrame
@@ -148,7 +148,7 @@ End Function
 ' Отклоняет вызов до подготовки численной траектории и масштабов усилий.
 Private Sub RequireNumericalPath()
     If Not mNumericalReady Then _
-        Err.Raise vbObjectError + 3845, "CLoadPathMath", "Численная траектория нагружения не подготовлена."
+        Err.Raise vbObjectError + 3845, "CLoadPathMath", "Не подготовлено правило численного изменения продольной силы и изгибающих моментов при поиске предела."
 End Sub
 
 ' Подготовленная численная система координат и масштабов усилий.

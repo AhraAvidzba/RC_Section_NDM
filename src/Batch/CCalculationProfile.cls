@@ -20,6 +20,7 @@ Option Explicit
 Private mProfileId As String ' Стабильный ID столбца профиля, например PR1.
 Private mDisplayName As String ' Человекочитаемое имя профиля.
 Private mDescription As String ' Короткое описание для пользователя.
+Private mInputLocations As Object ' Копии адресов полей профиля; используется только для пояснений, без ссылок на Excel.
 Private mStrengthDirectState As Boolean ' Запрошено StrengthState.
 Private mStrengthCapacity As Boolean ' Запрошена несущая способность.
 Private mCrackWidth As Boolean ' Запрошен расчет раскрытия нормальных трещин.
@@ -54,6 +55,7 @@ End Sub
 Public Sub Initialize(ByVal profileId As String, ByVal displayName As String, ByVal description As String, _
         ByVal strengthDirectState As Boolean, ByVal strengthCapacity As Boolean, _
         ByVal crackWidth As Boolean, Optional ByVal stabilityEnabled As Boolean = False)
+    Set mInputLocations = Nothing
     mProfileId = Trim$(profileId)
     mDisplayName = Trim$(displayName)
     mDescription = Trim$(description)
@@ -126,38 +128,70 @@ End Function
 Public Function ValidateForCalculation(ByRef errorText As String) As Boolean
     ValidateForCalculation = False
     If Len(mProfileId) = 0 Then
-        errorText = "ProfileId профиля не задан."
+        errorText = ValidationMessage("ProfileId", "Не задан номер профиля ProfileId.")
         Exit Function
     End If
     If Not IsConfigured Then
-        errorText = "Профиль " & mProfileId & " не настроен: задайте имя и включите хотя бы один расчет."
+        errorText = ValidationMessage("Profile.DisplayName;Calculation.Strength.DirectState;Calculation.Strength.Capacity;Calculation.Crack.Width;Calculation.Stability.Enabled", _
+            "Задайте имя профиля и включите хотя бы одну расчётную проверку.")
         Exit Function
     End If
     If (mStrengthDirectState Or mStrengthCapacity) And Not mStrengthSpec.IsComplete Then
-        errorText = "Профиль " & mProfileId & ": не задана MaterialModel.Strength."
+        errorText = ValidationMessage("MaterialModel.Strength.ValueSet;MaterialModel.Strength.ConcreteDiagram;MaterialModel.Strength.SteelDiagram;MaterialModel.Strength.ConcreteTension", _
+            "Не полностью задана модель материалов для прочности (MaterialModel.Strength). Заполните набор характеристик, диаграммы бетона и арматуры, способ учёта растяжения бетона.")
         Exit Function
     End If
     If mStabilityEnabled And Not mHasStabilityValueSet Then
-        errorText = "Профиль " & mProfileId & ": для устойчивости задайте MaterialModel.Stability.ValueSet."
+        errorText = ValidationMessage("MaterialModel.Stability.ValueSet", "Для устойчивости задайте набор характеристик материалов MaterialModel.Stability.ValueSet.")
         Exit Function
     End If
     If mCrackWidth And Not mCrackedStateSpec.IsComplete Then
-        errorText = "Профиль " & mProfileId & ": не задана MaterialModel.CrackedState."
+        errorText = ValidationMessage("MaterialModel.CrackedState.ValueSet;MaterialModel.CrackedState.ConcreteDiagram;MaterialModel.CrackedState.SteelDiagram;MaterialModel.CrackedState.ConcreteTension", _
+            "Не полностью задана модель материалов для НДС с трещинами (MaterialModel.CrackedState). Заполните её обязательные параметры.")
         Exit Function
     End If
     If mCrackWidth And mCrackedStateSpec.ConcreteTension <> ctkIgnore Then
-        errorText = "Профиль " & mProfileId & ": MaterialModel.CrackedState.ConcreteTension должен быть Ignore."
+        errorText = ValidationMessage("MaterialModel.CrackedState.ConcreteTension", "Для НДС с трещинами выберите Ignore: растянутый бетон в этой модели не учитывается.")
         Exit Function
     End If
     If mCrackWidth And Not mCrackInitiationSpec.IsComplete Then
-        errorText = "Профиль " & mProfileId & ": для Calculation.Crack.Width нужна MaterialModel.CrackInitiation."
+        errorText = ValidationMessage("MaterialModel.CrackInitiation.ValueSet;MaterialModel.CrackInitiation.ConcreteDiagram;MaterialModel.CrackInitiation.SteelDiagram;MaterialModel.CrackInitiation.ConcreteTension", _
+            "Для расчёта ширины трещин задайте модель материалов стадии образования трещины (MaterialModel.CrackInitiation).")
         Exit Function
     End If
     If mCrackWidth And mCrackInitiationSpec.IsComplete And mCrackInitiationSpec.ConcreteTension <> ctkUseDiagram Then
-        errorText = "Профиль " & mProfileId & ": MaterialModel.CrackInitiation.ConcreteTension должен быть UseDiagram."
+        errorText = ValidationMessage("MaterialModel.CrackInitiation.ConcreteTension", "Для определения нагрузки образования трещины выберите UseDiagram: требуется растянутая ветвь диаграммы бетона.")
         Exit Function
     End If
     ValidateForCalculation = True
+End Function
+
+' Получает только строковые адреса из ридера профилей и делает независимую копию.
+Friend Sub SetInputLocations(ByVal locations As Object)
+    Dim key As Variant
+    Set mInputLocations = CreateObject("Scripting.Dictionary")
+    mInputLocations.CompareMode = vbTextCompare
+    For Each key In locations.Keys
+        mInputLocations(CStr(key)) = CStr(locations(key))
+    Next key
+End Sub
+
+' Добавляет к нарушенному условию профиль и сохранённые адреса связанных полей.
+' Допустимость профиля определяется выше; пояснение не участвует в выборе расчётных ветвей.
+Private Function ValidationMessage(ByVal keys As String, ByVal reason As String) As String
+    Dim key As Variant
+    ValidationMessage = "Профиль " & mProfileId & ": " & reason
+    If mInputLocations Is Nothing Then
+        ValidationMessage = ValidationMessage & " Параметры: " & keys & "."
+        Exit Function
+    End If
+    For Each key In Split(keys, ";")
+        If mInputLocations.Exists(CStr(key)) Then
+            ValidationMessage = ValidationMessage & " " & CStr(key) & ": " & mInputLocations(key) & "."
+        Else
+            ValidationMessage = ValidationMessage & " Параметр " & CStr(key) & ": восстановите его строку в таблице профилей."
+        End If
+    Next key
 End Function
 
 ' Стабильный ID столбца профиля, например PR1.

@@ -621,8 +621,8 @@ Private Sub CheckState(ByRef stats As TProfileStats, ByVal prefix As String, ByV
     CheckClose stats, prefix & ".expectedMaterialMy", my, state.TargetMy, 1#
 End Sub
 
-' Проверяет готовые пояснения всех этапов в подробных таблицах и сводке.
-' Неудача не может остаться без причины; класс записи не должен сочинять новый текст.
+' Проверяет пояснения всех этапов и адресный контекст в таблицах. Форматирование
+' может добавить сочетание и ссылки, но исходная причина и статус сохраняются.
 Private Sub CheckComments(ByRef stats As TProfileStats, ByVal prefix As String, _
         ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CBatchResultWriter, result As CCombinationResult, meta As CResultMeta
@@ -630,13 +630,20 @@ Private Sub CheckComments(ByRef stats As TProfileStats, ByVal prefix As String, 
     Set result = batch.ResultAt(1): Set writer = New CBatchResultWriter
     solves = batch.SolverCallCount: writer.WriteSummary ThisWorkbook, batch, units
     Check stats, prefix & ".writerNoSolve", batch.SolverCallCount = solves
-    Check stats, prefix & ".batchComment", CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2) = result.OverallMeta.ResultComment
+    Check stats, prefix & ".batchComment", CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2) = CalculationResultMessage(batch, 1, result.OverallMeta)
     names = Array("rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
     metas = Array(result.StrengthMeta, result.CrackSummaryMeta, result.StabilityMeta)
     Set policy = New CResultStatusPolicy
     For i = 0 To UBound(names)
         Set meta = metas(i)
-        Check stats, prefix & ".comment" & CStr(i), CStr(ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange.Offset(0, 1).Value2) = meta.ResultComment
+        Dim displayed As String
+        displayed = CStr(ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange.Offset(0, 1).Value2)
+        Check stats, prefix & ".comment" & CStr(i), displayed = CalculationResultMessage(batch, 1, meta)
+        If Len(meta.ResultComment) > 0 Then
+            Check stats, prefix & ".causePreserved" & CStr(i), InStr(1, displayed, meta.ResultComment, vbBinaryCompare) > 0
+            Check stats, prefix & ".combinationContext" & CStr(i), InStr(1, displayed, batch.CombinationID(1), vbBinaryCompare) > 0
+            If Len(batch.SourceReference(1)) > 0 Then Check stats, prefix & ".inputRow" & CStr(i), InStr(1, displayed, batch.SourceReference(1), vbBinaryCompare) > 0
+        End If
         If policy.IsFailedOverall(policy.ExternalStatus(meta)) Then Check stats, prefix & ".failureReason" & CStr(i), Len(Trim$(meta.ResultComment)) > 0
     Next i
     LogLine stats, "PROFILE_CONFIG_RESULT: " & prefix & "; status=" & result.Status & "; comment=" & result.OverallMeta.ResultComment
@@ -903,9 +910,9 @@ Private Sub TestDurationInvalidRows(ByRef stats As TProfileStats, ByVal profiles
                     Check stats, prefix & ".recovery", batch.Count = 2 And batch.ResultAt(2).StabilityMeta.InternalStatus = rsSuccess
                     Check stats, prefix & ".recoveryDirect", batch.ResultAt(2).DirectStateMeta.InternalStatus = rsSuccess
                     Check stats, prefix & ".recoveryBatchComment", _
-                        CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(13, 2).Value2) = batch.ResultAt(2).OverallMeta.ResultComment
+                        CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(13, 2).Value2) = CalculationResultMessage(batch, 2, batch.ResultAt(2).OverallMeta)
                     Check stats, prefix & ".recoveryOwnComment", _
-                        CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(1, 1).Value2) = batch.ResultAt(2).StabilityMeta.ResultComment
+                        CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(1, 1).Value2) = CalculationResultMessage(batch, 2, batch.ResultAt(2).StabilityMeta)
                     Check stats, prefix & ".noReasonLeak", InStr(1, batch.ResultAt(2).StabilityMeta.ResultComment, _
                         cell.Worksheet.Name & "!" & cell.Address(False, False), vbBinaryCompare) = 0
                 Else

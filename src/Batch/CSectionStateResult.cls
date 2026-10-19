@@ -71,7 +71,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
         Optional ByVal solverCallCount As Long = 0, _
         Optional ByVal diagnosticLog As String = vbNullString)
     AssertWritable
-    If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, "CSectionStateResult", "MaterialModelSpec не передан."
+    If materialSpec Is Nothing Then Err.Raise vbObjectError + 3970, "CSectionStateResult", "Не передано описание выбранных диаграмм и характеристик материалов (MaterialModelSpec)."
     If solver Is Nothing Then Err.Raise vbObjectError + 3971, "CSectionStateResult", "Решатель для именованного состояния не передан."
 
     ClearSnapshot
@@ -501,7 +501,7 @@ Private Function BuildFailureMeta(ByVal stateType As ESectionStateType, ByVal so
     Dim meta As CResultMeta
     Set meta = New CResultMeta
     meta.SetSolverFailure solver.FailureCode, ResultKindFromStateType(stateType), _
-        resultComment, (solver.Iterations > 0)
+        resultComment, (solver.Iterations > 0), solver.FailureSettingKeys
     meta.DiagnosticDetails = solver.DiagnosticLog
     Set BuildFailureMeta = meta
 End Function

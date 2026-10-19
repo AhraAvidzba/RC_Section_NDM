@@ -21,6 +21,7 @@ Private mResultCode As EResultCode ' Машинный код точной при
 Private mResultKind As EResultKind ' Вид проверки: НДС при заданной нагрузке, несущая способность, трещины или устойчивость.
 Private mResultComment As String ' Короткое русское пояснение для пользователя и report.
 Private mDiagnosticDetails As String ' Подробная диагностика решения равновесия или поиска предела, если она сохранена.
+Private mSourceKeys As String ' Ключи исходных параметров через точку с запятой; адреса сопоставляются при выводе, без обращения ядра к Excel.
 Private mApplies As Boolean ' Ветка относится к LC; blocked сохраняет True, хотя нужных данных нет.
 Private mCalculated As Boolean ' Показывает, выполнялся ли сам расчёт, а не только проверка его применимости.
 
@@ -36,6 +37,7 @@ Public Sub Clear()
     mResultKind = rkGeneric
     mResultComment = vbNullString
     mDiagnosticDetails = vbNullString
+    mSourceKeys = vbNullString
     mApplies = True
     mCalculated = False
 End Sub
@@ -54,6 +56,7 @@ Public Sub SetResult(ByVal internalStatus As EResultInternalStatus, _
     mResultKind = resultKind
     mResultComment = resultComment
     mDiagnosticDetails = diagnosticDetails
+    mSourceKeys = vbNullString
     mApplies = applies
     mCalculated = calculated
     Select Case internalStatus
@@ -80,16 +83,28 @@ End Sub
 Public Sub SetBlockedByDependency(ByVal resultKind As EResultKind, _
         ByVal dependencyName As String, Optional ByVal reason As String = vbNullString)
     Dim comment As String
-    comment = "Расчет не выполнен: нет допустимого обязательного результата " & dependencyName & "."
+    comment = "Расчет не выполнен: недоступны обязательные данные — " & DependencyCaption(dependencyName) & "."
     If Len(Trim$(reason)) > 0 Then comment = comment & " " & Trim$(reason)
     SetResult rsBlockedByDependency, rcBlockedByDependency, resultKind, comment, vbNullString, True, False
 End Sub
+
+' Переводит названия обязательных данных в понятное пояснение; выбор зависимостей
+' и решение о запуске проверки остаются у вызывающего расчётного класса.
+Private Function DependencyCaption(ByVal dependencyName As String) As String
+    Select Case dependencyName
+        Case "CurrentCrackedState": DependencyCaption = "текущее НДС с трещинами от заданного сочетания"
+        Case "исходных данных сочетания": DependencyCaption = "исходные данные сочетания"
+        Case "текущего НДС от сочетания": DependencyCaption = "текущее НДС от сочетания"
+        Case Else: DependencyCaption = dependencyName
+    End Select
+End Function
 
 ' Сохраняет код причины неудачного решения без разбора текста сообщения.
 ' Факт запуска численных итераций передаётся отдельно. Отсутствие обязательного
 ' объекта решателя считается внутренней ошибкой программы.
 Public Sub SetSolverFailure(ByVal failureCode As ESolverFailureCode, _
-        ByVal resultKind As EResultKind, ByVal reason As String, ByVal attempted As Boolean)
+        ByVal resultKind As EResultKind, ByVal reason As String, ByVal attempted As Boolean, _
+        Optional ByVal sourceKeys As String = vbNullString)
     Dim internalStatus As EResultInternalStatus
     Dim resultCode As EResultCode
     Select Case failureCode
@@ -106,7 +121,18 @@ Public Sub SetSolverFailure(ByVal failureCode As ESolverFailureCode, _
             If Len(Trim$(reason)) = 0 Then reason = "Решатель не сформировал результат равновесия."
     End Select
     SetResult internalStatus, resultCode, resultKind, reason, vbNullString, True, attempted
+    mSourceKeys = sourceKeys
 End Sub
+
+' Хранит структурированную связь с настройками; ключи не извлекаются из русского пояснения.
+Public Property Get SourceKeys() As String
+    SourceKeys = mSourceKeys
+End Property
+
+' Получает ключи от класса, проверившего условие, отдельно от пользовательского текста.
+Public Property Let SourceKeys(ByVal value As String)
+    mSourceKeys = value
+End Property
 
 ' Создаёт независимую копию статуса и пояснения для хранения в объекте результата.
 Public Function Clone() As CResultMeta
@@ -114,6 +140,7 @@ Public Function Clone() As CResultMeta
     Set result = New CResultMeta
     result.SetResult mInternalStatus, mResultCode, mResultKind, mResultComment, _
         mDiagnosticDetails, mApplies, mCalculated
+    result.SourceKeys = mSourceKeys
     Set Clone = result
 End Function
 
@@ -144,7 +171,7 @@ End Sub
 Private Function ResultKindLabel() As String
     Select Case mResultKind
         Case rkDirectState: ResultKindLabel = "НДС"
-        Case rkCapacity: ResultKindLabel = "Несущая"
+        Case rkCapacity: ResultKindLabel = "Несущая способность"
         Case rkCrackFormation: ResultKindLabel = "Трещинообразование"
         Case rkCrackWidth: ResultKindLabel = "Ширина трещин"
         Case rkLongitudinalCrack: ResultKindLabel = "Продольные трещины"

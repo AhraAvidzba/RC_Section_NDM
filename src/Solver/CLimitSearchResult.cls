@@ -56,7 +56,7 @@ Public Sub Initialize(ByVal meta As CResultMeta, ByVal requestedStrategy As Stri
     mDiagnosticLog = diagnosticLog
     mLastSolverDiagnosticLog = finalSolverDiagnosticLog
     If meta Is Nothing Then
-        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершен без машинного результата.", _
+        mMeta.SetResult rsInternalError, rcInternalError, rkGeneric, "Поиск завершён без обязательного статуса и кода причины результата. Это внутренняя ошибка передачи результатов.", _
             vbNullString, True, searchExecuted
         Exit Sub
     End If
@@ -122,12 +122,14 @@ Public Sub AddLoadPathHistory(ByVal history As String, ByVal pathDisplayName As 
             mDiagnosticLog = diagnosticHistory & vbCrLf & mDiagnosticLog
     End If
     If Len(Trim$(history)) = 0 Then Exit Sub
-    Dim status As EResultInternalStatus
+    Dim status As EResultInternalStatus, sourceKeys As String
     status = mMeta.InternalStatus
+    sourceKeys = mMeta.SourceKeys
     If status = rsSuccess Then status = rsSuccessWithWarning
     mMeta.SetResult status, mMeta.ResultCode, mMeta.ResultKind, _
         Trim$(history) & " Итоговый путь " & pathDisplayName & ": " & mMeta.ResultComment, _
         mMeta.DiagnosticDetails, mMeta.Applies, mMeta.Calculated
+    mMeta.SourceKeys = sourceKeys
 End Sub
 
 ' Возвращает отдельную копию статуса, причины и пояснения вместо изменяемого внутреннего

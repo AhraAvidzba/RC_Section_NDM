@@ -565,9 +565,25 @@ End Function
 Public Function InputErrorMessage(ByVal key As String, ByVal reason As String, ByVal correction As String) As String
     Dim index As Long, location As String
     index = FindKey(key)
-    If index > 0 Then location = mLocations(index)
-    If Len(location) = 0 Then location = InputSettingsSection(key)
-    InputErrorMessage = "Настройка " & key & " (" & location & "): " & reason & " " & correction
+    location = InputLocation(key)
+    InputErrorMessage = "Настройка " & key & " (" & location & "): " & reason
+    If index > 0 Then
+        If Len(mValues(index)) > 0 Then
+            InputErrorMessage = InputErrorMessage & " Введённое значение: """ & mValues(index) & """."
+        Else
+            InputErrorMessage = InputErrorMessage & " Ячейка значения не заполнена."
+        End If
+    End If
+    If Len(Trim$(correction)) > 0 Then InputErrorMessage = InputErrorMessage & " " & correction
+End Function
+
+' Возвращает сохранённое место задания настройки как строку. Расчётный класс
+' может сохранить эту ссылку для последующей ошибки, не сохраняя объекты Excel.
+Public Function InputLocation(ByVal key As String) As String
+    Dim index As Long
+    index = FindKey(key)
+    If index > 0 Then InputLocation = mLocations(index)
+    If Len(InputLocation) = 0 Then InputLocation = InputSettingsSection(key)
 End Function
 
 ' Называет видимую таблицу для утраченной строки. Это навигация по Config,
@@ -869,7 +885,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: возвращает имя ключа по порядковому номеру для проверок дубликатов и тестов.
 Public Function KeyAt(ByVal index As Long) As String
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Индекс настройки вне допустимого диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 4300, "CSystemSettingsReader", "Индекс настройки вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     KeyAt = mKeys(index)
 End Function
 

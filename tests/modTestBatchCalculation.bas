@@ -5187,7 +5187,7 @@ Private Sub TestCombinationResultTreeDrivesDisplayFields(ByRef stats As TBatchTe
     AssertTrue stats, "combinationTree.strength.baseFail.comment", _
         InStr(1, baseResult.StrengthMeta.ResultComment, "НДС: Проверка не проходит.", vbTextCompare) > 0 And _
         InStr(1, baseResult.StrengthMeta.ResultComment, _
-            "Несущая: Несущая способность не проходит уже для исходной части выбранного пути", vbTextCompare) > 0
+            "Несущая способность: Несущая способность не проходит уже для исходной части выбранного пути", vbTextCompare) > 0
 End Sub
 
 ' Проверяет, что общий статус detailed-блока трещин не скрывает ошибку
@@ -7087,7 +7087,7 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     End If
     AssertTrue stats, prefix & ".strengthNoCrack", InStr(1, result.StrengthMeta.ResultComment, "Трещинообразование:") = 0 And _
         InStr(1, result.StrengthMeta.ResultComment, "Продольные трещины:") = 0
-    AssertTrue stats, prefix & ".crackNoCapacity", InStr(1, result.CrackSummaryMeta.ResultComment, "Несущая:") = 0 And _
+    AssertTrue stats, prefix & ".crackNoCapacity", InStr(1, result.CrackSummaryMeta.ResultComment, "Несущая способность:") = 0 And _
         InStr(1, result.CrackSummaryMeta.ResultComment, "Устойчивость:") = 0
     Dim expectedOverall As String, part As Variant
     For Each part In Array(result.StrengthMeta.ResultComment, result.CrackSummaryMeta.ResultComment)
@@ -7104,13 +7104,13 @@ Private Sub Audit03CheckResultComments(ByRef stats As TBatchTestStats, ByVal bat
     AssertEquals stats, prefix & ".overallComposition", result.OverallMeta.ResultComment, expectedOverall
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-    AssertEquals stats, prefix & ".batchOutput", CStr(anchor.Offset(11 + index, 2).Value2), result.OverallMeta.ResultComment
+    AssertEquals stats, prefix & ".batchOutput", CStr(anchor.Offset(11 + index, 2).Value2), CalculationResultMessage(batch, index, result.OverallMeta)
     Set anchor = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
-    AssertEquals stats, prefix & ".strengthOutput", CStr(anchor.Offset(index - 1, 1).Value2), result.StrengthMeta.ResultComment
+    AssertEquals stats, prefix & ".strengthOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.StrengthMeta)
     Set anchor = ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
-    AssertEquals stats, prefix & ".crackOutput", CStr(anchor.Offset(index - 1, 1).Value2), result.CrackSummaryMeta.ResultComment
+    AssertEquals stats, prefix & ".crackOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.CrackSummaryMeta)
     Set anchor = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
-    AssertEquals stats, prefix & ".stabilityOutput", CStr(anchor.Offset(index - 1, 1).Value2), result.StabilityMeta.ResultComment
+    AssertEquals stats, prefix & ".stabilityOutput", CStr(anchor.Offset(index - 1, 1).Value2), CalculationResultMessage(batch, index, result.StabilityMeta)
     AppendLine stats, "OUTPUT: " & prefix & "|strength=" & result.StrengthMeta.ResultComment & _
         "|crack=" & result.CrackSummaryMeta.ResultComment & "|stability=" & result.StabilityMeta.ResultComment & _
         "|batch=" & result.OverallMeta.ResultComment
@@ -8539,9 +8539,9 @@ Private Sub TestAudit03StabilityComments(ByRef stats As TBatchTestStats)
             AssertTrue stats, prefix & ".commentPresent", Len(Trim$(result.StabilityMeta.ResultComment)) > 0
             Audit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
             AssertEquals stats, prefix & ".writer", _
-                CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(i - 1, 1).Value2), result.StabilityMeta.ResultComment
+                CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(i - 1, 1).Value2), CalculationResultMessage(batch, i, result.StabilityMeta)
             AssertEquals stats, prefix & ".batchWriter", _
-                CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(11 + i, 2).Value2), result.OverallMeta.ResultComment
+                CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(11 + i, 2).Value2), CalculationResultMessage(batch, i, result.OverallMeta)
             AppendLine stats, "STABILITY_COMMENT: " & prefix & "; " & result.StabilityMeta.ResultComment
         Next i
         AssertTrue stats, "audit03.stabilityComments." & CStr(mode) & ".noStateSolve", batch.SolverCallCount = 0
@@ -9364,7 +9364,7 @@ Private Sub TestAudit03NotCrackedBatchOutput(ByRef stats As TBatchTestStats)
                 AssertEquals stats, prefix & ".writerPsiBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 57).Value2), vbNullString
                 AssertEquals stats, prefix & ".writerWidthBlank", CStr(sheet.Cells.Item(outputRow, anchor.Column + 63).Value2), vbNullString
                 AssertEquals stats, prefix & ".writerLongitudinal", CStr(sheet.Cells.Item(outputRow, anchor.Column + 71).Value2), expectedLongitudinal
-                AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), result.CrackSummaryMeta.ResultComment
+                AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), CalculationResultMessage(batch, i, result.CrackSummaryMeta)
                 AppendLine stats, "NOT_CRACKED_OUTPUT: " & prefix & "|formation=" & result.CrackFormationMeta.ResultComment & _
                     "|width=" & result.CrackWidthMeta.ResultComment & "|longitudinal=" & result.LongitudinalCrackMeta.ResultComment & _
                     "|summary=" & result.CrackSummaryMeta.ResultComment
@@ -9485,7 +9485,7 @@ Private Sub TestAudit03CrackSpacingWarning(ByRef stats As TBatchTestStats)
                 AssertTrue stats, prefix & ".success", result.CrackWidthMeta.InternalStatus = rsSuccess
             End If
             outputRow = DetailedRowByCombination(sheet, "rngCrackSummaryAnchor", "SPACING_TENSION")
-            AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), result.CrackSummaryMeta.ResultComment
+            AssertEquals stats, prefix & ".writerComment", CStr(sheet.Cells.Item(outputRow, anchor.Column + 1).Value2), CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
             Audit03CheckResultComments stats, batch, 1
             AppendLine stats, "SPACING_WARNING: " & prefix & "|ls=" & FormatNumberInvariant(width.CrackSpacing) & _
                 "|width=" & result.CrackWidthMeta.ResultComment & "|summary=" & result.OverallMeta.ResultComment
@@ -9912,9 +9912,9 @@ Public Function RunAudit03SP35TableDiagnosticTests(Optional ByRef passed As Long
         AssertEquals stats, prefix & ".batchExactComment", result.StabilityMeta.ResultComment, reason
         Set writer = New CBatchResultWriter: writer.WriteSummary ThisWorkbook, batch
         AssertEquals stats, prefix & ".writer", _
-            CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(0, 1).Value2), reason
+            CStr(ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Offset(0, 1).Value2), CalculationResultMessage(batch, 1, result.StabilityMeta)
         AssertEquals stats, prefix & ".summaryWriter", _
-            CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2), result.OverallMeta.ResultComment
+            CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2), CalculationResultMessage(batch, 1, result.OverallMeta)
         Audit03CheckMetaComment stats, prefix, result.StabilityMeta, result.OverallMeta
         AssertTrue stats, prefix & ".noStateSolve", batch.SolverCallCount = 0
         AppendLine stats, "SP35_DIAGNOSTIC: " & prefix & "|cell=" & expectedCell & "|comment=" & reason
@@ -10311,7 +10311,7 @@ Public Function RunPostAudit03FormationTests() As String
         solves = batch.SolverCallCount
         writer.WriteSummary ThisWorkbook, batch
         AssertTrue stats, prefix & ".noWriterSolve", batch.SolverCallCount = solves
-        AssertEquals stats, prefix & ".comment", CStr(anchor.Offset(0, 1).Value2), result.CrackSummaryMeta.ResultComment
+        AssertEquals stats, prefix & ".comment", CStr(anchor.Offset(0, 1).Value2), CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
         If Not formation.PreCrackState Is Nothing Then AssertEquals stats, prefix & ".preDisplay", _
             CStr(anchor.Offset(0, 20).Value2), policy.ExternalStatus(formation.PreCrackState.ResultMeta)
         If Not formation.PostCrackState Is Nothing Then AssertEquals stats, prefix & ".postDisplay", _

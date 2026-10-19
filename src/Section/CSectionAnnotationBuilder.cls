@@ -25,7 +25,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
         Optional ByVal rules As CRebarRuleExecutor = Nothing)
     If definition Is Nothing Or rebars Is Nothing Or annotations Is Nothing Then _
         SectionRecipeError "CSectionAnnotationBuilder", "Определение, арматура и контейнер аннотаций обязательны."
-    If Not definition.IsSealed Then SectionRecipeError "CSectionAnnotationBuilder", "Для аннотаций нужно опубликованное определение."
+    If Not definition.IsSealed Then SectionRecipeError "CSectionAnnotationBuilder", "Перед созданием размеров и подписей завершите описание сечения методом Finish."
     Dim value As TSectionAnnotation, i As Long, minX As Double, maxX As Double, minY As Double, maxY As Double
     Dim anchors() As TSectionAnnotation, anchorCount As Long
     If definition.AnnotationCount > 0 Then ReDim anchors(1 To definition.AnnotationCount)
@@ -56,11 +56,11 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                 TargetLabelAnchor definition, value
                 AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowLabel"
-                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
+                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
                 If rules.RuleEnds(value.Target, value.StartX, value.StartY, value.EndX, value.EndY) Then _
                     AppendLabelAnchor anchors, anchorCount, value
             Case "RebarRowExtentLabel"
-                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
+                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
                 Dim nx As Double, ny As Double, tx As Double, ty As Double, support As Double
                 LabelDirections value.NormalX, value.NormalY, nx, ny, tx, ty
                 If rules.RuleBounds(value.Target, minX, maxX, minY, maxY, tx, ty) Then
@@ -74,7 +74,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                     AppendLabelAnchor anchors, anchorCount, value
                 End If
             Case "RebarRowExtremeLabel"
-                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи ряда нужны исполненные правила."
+                If rules Is Nothing Then SectionRecipeError "CSectionAnnotationBuilder", "Для подписи арматуры сначала требуется построить стержни по заданным правилам."
                 If rules.RuleExtremeEnds(value.Target, value.DirectionX, value.DirectionY, value.StartX, value.StartY, value.EndX, value.EndY) Then
                     If value.DirectionY < 0# Then
                         swap = value.StartX: value.StartX = value.EndX: value.EndX = swap
@@ -83,7 +83,7 @@ Public Sub Build(ByVal definition As CSectionDefinition, ByVal rebars As CRebarL
                     AppendLabelAnchor anchors, anchorCount, value
                 End If
             Case Else
-                SectionRecipeError "CSectionAnnotationBuilder", "Неизвестное измерение '" & value.Kind & "'."
+                SectionRecipeError "CSectionAnnotationBuilder", "Не распознан способ построения размера '" & value.Kind & "'."
         End Select
     Next i
     Dim labels As CRebarGroupAnnotationBuilder

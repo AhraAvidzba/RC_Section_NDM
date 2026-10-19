@@ -65,6 +65,7 @@ Private mToleranceMx As Double ' Абсолютный допуск равнов�
 Private mToleranceMy As Double ' Абсолютный допуск равновесия по My во внутренних единицах.
 Private mDiagnosticsEnabled As Boolean ' Управляет накоплением текстовой диагностики итераций.
 Private mSolverMethod As String ' Выбранная численная ветка: Newton или Secant.
+Private mFailureSettingKeys As String ' Ключи настроек, вызвавших отказ проверки; адреса определяются в слое вывода.
 Private mSecantMaxRestarts As Long ' Сколько раз Secant может пересобрать приближенную матрицу чувствительности.
 Private mDiagnosticLog As String ' Текстовый журнал ключевых итераций для тестов и диагностики.
 Private mLastAlpha As Double ' Коэффициент изменения последнего принятого шага при подборе его величины.
@@ -288,6 +289,7 @@ Private Sub EvaluatePlaneCore(ByVal section As CSectionModel, _
     SetResiduals mNint, mMxint, mMyint
     mConverged = False
     mFailureCode = sfcNone
+    mFailureSettingKeys = vbNullString
     mStopReason = "Плоскость деформаций оценена; равновесие с заданной нагрузкой еще не проверено."
 End Sub
 
@@ -322,7 +324,8 @@ Private Function SolveSelectedLoadStep(ByVal section As CSectionModel, _
     Else
         mConverged = False
         mFailureCode = sfcInvalidConfiguration
-        mStopReason = "Ошибка настройки Solver.Method: допустимы только Newton или Secant."
+        mStopReason = ConfigurationMessage("Solver.Method", "Выберите Newton или Secant. Введено: """ & mSolverMethod & """.")
+        mFailureSettingKeys = "Solver.Method"
         SolveSelectedLoadStep = False
     End If
 End Function
@@ -1211,13 +1214,15 @@ Private Function ValidateInputs(ByVal section As CSectionModel, ByVal concreteMa
     ElseIf section.ConcreteCount <= 0 Then
         SetValidationFailure sfcInvalidInput, "В модели сечения нет бетонных элементов."
     ElseIf mMaxIterations <= 0 Then
-        SetValidationFailure sfcInvalidConfiguration, "Solver.MaxIterations должен быть положительным."
+        SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage("Solver.MaxIterations", "Число итераций должно быть больше нуля. Сейчас: " & CStr(mMaxIterations) & "."), "Solver.MaxIterations"
     ElseIf mLoadSteps <= 0 Then
-        SetValidationFailure sfcInvalidConfiguration, "Solver.LoadSteps должен быть положительным."
+        SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage("Solver.LoadSteps", "Число ступеней приложения нагрузки должно быть больше нуля. Сейчас: " & CStr(mLoadSteps) & "."), "Solver.LoadSteps"
     ElseIf mSecantMaxRestarts < 0 Then
-        SetValidationFailure sfcInvalidConfiguration, "Solver.SecantMaxRestarts не может быть отрицательным."
+        SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage("Solver.SecantMaxRestarts", "Число перезапусков метода Secant не может быть отрицательным. Сейчас: " & CStr(mSecantMaxRestarts) & "."), "Solver.SecantMaxRestarts"
     ElseIf mToleranceN <= 0# Or mToleranceMx <= 0# Or mToleranceMy <= 0# Then
-        SetValidationFailure sfcInvalidConfiguration, "Допуски Solver.ToleranceN/Mx/My должны быть положительными."
+        SetValidationFailure sfcInvalidConfiguration, ConfigurationMessage("Solver.ToleranceN", "Допуски равновесия по N, Mx и My должны быть больше нуля.") & " " & _
+            ConfigurationMessage("Solver.ToleranceMx", "Проверьте допуск по Mx.") & " " & ConfigurationMessage("Solver.ToleranceMy", "Проверьте допуск по My."), _
+            "Solver.ToleranceN;Solver.ToleranceMx;Solver.ToleranceMy"
 
     Else
         ValidateInputs = True
@@ -1226,10 +1231,11 @@ End Function
 
 ' Сохраняет окончательную причину ошибки обязательных программных данных
 ' без признака несуществующего численного запуска.
-Private Sub SetValidationFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String)
+Private Sub SetValidationFailure(ByVal failureCode As ESolverFailureCode, ByVal reason As String, Optional ByVal sourceKeys As String = vbNullString)
     mConverged = False
     mFailureCode = failureCode
     mStopReason = reason
+    mFailureSettingKeys = sourceKeys
 End Sub
 
 ' Нормализует выбранный численный метод и формирует InputError при неизвестном
@@ -1244,9 +1250,21 @@ Private Function ValidateSolverMethod() As Boolean
     Else
         mConverged = False
         mFailureCode = sfcInvalidConfiguration
-        mStopReason = "Ошибка настройки Solver.Method: допустимы только Newton или Secant."
+        mStopReason = ConfigurationMessage("Solver.Method", "Выберите Newton или Secant. Введено: """ & mSolverMethod & """.")
+        mFailureSettingKeys = "Solver.Method"
     End If
 End Function
+
+' Называет нарушенное условие и настройку; адрес сопоставляется со структурированным
+' FailureSettingKeys при выводе результата и не определяется по тексту причины.
+Private Function ConfigurationMessage(ByVal key As String, ByVal reason As String) As String
+    ConfigurationMessage = "Ошибка настройки " & key & ": " & reason
+End Function
+
+' Передаёт ключи нарушенных настроек вместе с машинной причиной отказа решателя.
+Public Property Get FailureSettingKeys() As String
+    FailureSettingKeys = mFailureSettingKeys
+End Property
 
 ' Очищает результат последней попытки, сохраняя численные настройки
 ' и явно заданное начальное приближение.

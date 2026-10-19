@@ -125,11 +125,21 @@ End Function
 Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
         ParamArray metas() As Variant) As CResultMeta
     Dim selected As CResultMeta, candidate As CResultMeta
-    Dim i As Long
+    Dim i As Long, sourceKeys As String, key As Variant
     For i = LBound(metas) To UBound(metas)
         Set candidate = Nothing
         If IsObject(metas(i)) Then Set candidate = metas(i)
         If Not candidate Is Nothing Then
+            If Len(candidate.SourceKeys) > 0 Then
+                For Each key In Split(candidate.SourceKeys, ";")
+                    If Len(Trim$(CStr(key))) > 0 Then
+                        If InStr(1, ";" & sourceKeys & ";", ";" & Trim$(CStr(key)) & ";", vbTextCompare) = 0 Then
+                            If Len(sourceKeys) > 0 Then sourceKeys = sourceKeys & ";"
+                            sourceKeys = sourceKeys & Trim$(CStr(key))
+                        End If
+                    End If
+                Next key
+            End If
             If selected Is Nothing Then
                 Set selected = candidate
             ElseIf StatusPriority(ExternalStatus(candidate)) > StatusPriority(ExternalStatus(selected)) Then
@@ -148,6 +158,7 @@ Public Function WorstResultMeta(ByVal fallbackKind As EResultKind, _
     Else
         Set result = selected.Clone
     End If
+    result.SourceKeys = sourceKeys
     Set WorstResultMeta = result
 End Function
 

@@ -224,9 +224,9 @@ Public Sub Calculate(ByVal currentSolver As CSectionStateResult, ByVal section A
     If loadStateForClassification Is Nothing Then _
         Err.Raise vbObjectError + 3715, "CCrackWidthCalculator", "Состояние нагрузки для коэффициента phi3 не передано."
     If crackedStateSpec Is Nothing Then _
-        Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "MaterialModel.CrackedState не передан."
+        Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Не передана модель материалов для НДС с трещинами (MaterialModel.CrackedState)."
     If Not crackedStateSpec.IsComplete Then _
-        Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "MaterialModel.CrackedState не заполнен."
+        Err.Raise vbObjectError + 3714, "CCrackWidthCalculator", "Модель материалов для НДС с трещинами заполнена не полностью (MaterialModel.CrackedState)."
     Set mCrackedStateSpec = crackedStateSpec.Clone
     mSteelEs = materialProvider.SteelElasticModulusFromSpec(mCrackedStateSpec)
     ValidateSettings

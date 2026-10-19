@@ -334,6 +334,7 @@ Public Function BuildSnapshot(ByVal requestedStrategy As String, _
             vbNullString, True, searchExecuted
     End If
 
+    If Not mCapacity Is Nothing Then meta.SourceKeys = mCapacity.FailureSettingKeys
     Dim pointState As CSectionStateResult
     Dim hasPoint As Boolean
     Dim finalDiagnostic As String
@@ -407,7 +408,7 @@ Private Function ILimitSearchProblem_RunUltimateAttempts(ByVal request As CLimit
     Set loadPath = ILimitSearchProblem_BuildLoadPath(request)
     ILimitSearchProblem_RunUltimateAttempts = search.RunNewton(Me, request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, loadPath, Nothing, _
-        "UltimateStrain: итерации Newton не сошлись.")
+        "Поиск по предельной деформации (UltimateStrain) не завершён: итерации Newton не нашли равновесие.")
     If ILimitSearchProblem_RunUltimateAttempts Or mCapacity.LimitSearchHasTerminalFailure Then Exit Function
     Set alternate = mCapacity.LimitSearchAlternativeUltimateStart(request.Section, _
         request.ConcreteMaterial, request.SteelMaterial, loadPath)

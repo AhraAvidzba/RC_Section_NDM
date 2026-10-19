@@ -333,7 +333,7 @@ Private Function LengthFactorToMm(ByVal unitName As String) As Double
         Case "mm": LengthFactorToMm = 1#
         Case "cm": LengthFactorToMm = 10#
         Case "m": LengthFactorToMm = 1000#
-        Case Else: Err.Raise vbObjectError + 4520, "CUnitSystem", "Недопустимая единица длины: " & unitName
+        Case Else: Err.Raise vbObjectError + 4520, "CUnitSystem", "Недопустимая единица длины: " & unitName & ". Используйте mm, cm или m."
     End Select
 End Function
 
@@ -343,7 +343,7 @@ Private Function AreaFactorToMm2(ByVal unitName As String) As Double
         Case "mm2": AreaFactorToMm2 = 1#
         Case "cm2": AreaFactorToMm2 = 100#
         Case "m2": AreaFactorToMm2 = 1000000#
-        Case Else: Err.Raise vbObjectError + 4521, "CUnitSystem", "Недопустимая единица площади: " & unitName
+        Case Else: Err.Raise vbObjectError + 4521, "CUnitSystem", "Недопустимая единица площади: " & unitName & ". Используйте mm2, cm2 или m2."
     End Select
 End Function
 
@@ -353,7 +353,7 @@ Private Function ForceFactorToN(ByVal unitName As String) As Double
         Case "n": ForceFactorToN = 1#
         Case "kn": ForceFactorToN = 1000#
         Case "tf": ForceFactorToN = TF_IN_N
-        Case Else: Err.Raise vbObjectError + 4522, "CUnitSystem", "Недопустимая единица силы: " & unitName
+        Case Else: Err.Raise vbObjectError + 4522, "CUnitSystem", "Недопустимая единица силы: " & unitName & ". Используйте N, kN или tf."
     End Select
 End Function
 
@@ -363,7 +363,7 @@ Private Function MomentFactorToNmm(ByVal unitName As String) As Double
         Case "n*mm": MomentFactorToNmm = 1#
         Case "kn*m": MomentFactorToNmm = 1000000#
         Case "tf*m": MomentFactorToNmm = TF_IN_N * 1000#
-        Case Else: Err.Raise vbObjectError + 4523, "CUnitSystem", "Недопустимая единица момента: " & unitName
+        Case Else: Err.Raise vbObjectError + 4523, "CUnitSystem", "Недопустимая единица момента: " & unitName & ". Используйте N*mm, kN*m или tf*m."
     End Select
 End Function
 
@@ -375,7 +375,7 @@ Private Function StressFactorToMPa(ByVal unitName As String) As Double
         Case "mpa": StressFactorToMPa = 1#
         Case "kgf/cm2": StressFactorToMPa = KGF_CM2_IN_MPA
         Case "tf/m2": StressFactorToMPa = TF_M2_IN_MPA
-        Case Else: Err.Raise vbObjectError + 4524, "CUnitSystem", "Недопустимая единица напряжения: " & unitName
+        Case Else: Err.Raise vbObjectError + 4524, "CUnitSystem", "Недопустимая единица напряжения: " & unitName & ". Используйте Pa, kPa, MPa, kgf/cm2 или tf/m2."
     End Select
 End Function
 
@@ -384,7 +384,7 @@ Private Function CurvatureFactorToInvMm(ByVal unitName As String) As Double
     Select Case LCase$(Trim$(unitName))
         Case "1/mm": CurvatureFactorToInvMm = 1#
         Case "1/m": CurvatureFactorToInvMm = 0.001
-        Case Else: Err.Raise vbObjectError + 4525, "CUnitSystem", "Недопустимая единица кривизны: " & unitName
+        Case Else: Err.Raise vbObjectError + 4525, "CUnitSystem", "Недопустимая единица кривизны: " & unitName & ". Используйте 1/mm или 1/m."
     End Select
 End Function
 

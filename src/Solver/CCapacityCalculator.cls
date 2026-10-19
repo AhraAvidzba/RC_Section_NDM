@@ -141,7 +141,7 @@ Public Function Calculate(ByVal section As CSectionModel, _
     Dim result As CCapacityResult
     Set result = New CCapacityResult
     If loadPath Is Nothing Then
-        result.InitializeInvalidInput "LoadPath не подготовлен."
+        result.InitializeInvalidInput "Не подготовлено правило изменения N, Mx и My при поиске предела (LoadPath)."
         Set Calculate = result
         Exit Function
     End If

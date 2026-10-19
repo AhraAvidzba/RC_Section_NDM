@@ -986,12 +986,12 @@ End Property
 
 ' Проверяет индекс бетонного элемента перед доступом к массивам модели.
 Private Sub CheckConcreteIndex(ByVal index As Long)
-    If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Индекс бетонного элемента вне допустимого диапазона."
+    If index < 1 Or index > mConcreteCount Then Err.Raise vbObjectError + 5220, "CSectionModel", "Индекс бетонного элемента вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mConcreteCount) & "."
 End Sub
 
 ' Проверяет индекс арматурного элемента перед доступом к массивам модели.
 Private Sub CheckRebarIndex(ByVal index As Long)
-    If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс арматурного элемента вне допустимого диапазона."
+    If index < 1 Or index > mRebarCount Then Err.Raise vbObjectError + 5221, "CSectionModel", "Индекс арматурного элемента вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mRebarCount) & "."
 End Sub
 
 ' Возвращает atan2(y, x) без зависимости от внешних модулей.

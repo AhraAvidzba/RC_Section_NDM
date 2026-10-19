@@ -142,7 +142,7 @@ End Sub
 ' Проверяет индекс исходного описания; чтение геометрических данных возможно после Seal.
 Private Sub CheckIndex(ByVal index As Long)
     RequireSealed
-    If index < 1 Or index > mCount Then SpecError "Номер исходной вершины вне диапазона 1..Count."
+    If index < 1 Or index > mCount Then SpecError "Номер исходной вершины вне диапазона 1..Count." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
 ' Отклоняет чтение координат до завершения и проверки описания многоугольника.
 Private Sub RequireSealed()

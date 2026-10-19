@@ -267,7 +267,9 @@ End Sub
 Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double) As CGeometryPath
     RequireSealed
     startDistance = CheckedDistance(startDistance): endDistance = CheckedDistance(endDistance)
-    If endDistance <= startDistance + PATH_TOLERANCE Then PathError "Рабочая длина пути после отсечения неположительна."
+    If endDistance <= startDistance + PATH_TOLERANCE Then PathError "После обрезки не осталось участка линии. " & _
+        "Начало участка: " & CStr(startDistance) & " мм; конец: " & CStr(endDistance) & " мм. " & _
+        "Задайте конец дальше начала по направлению линии."
     Dim result As CGeometryPath, i As Long, first As Double, last As Double, segmentLength As Double, edge As TRegionEdge
     Set result = New CGeometryPath: result.Initialize mID
     For i = 1 To mCount
@@ -494,7 +496,8 @@ End Function
 ' Проверяет расстояние от начала линии до точки. Исправляет только малую
 ' погрешность у концов; заведомо недопустимое расстояние вызывает ошибку.
 Private Function CheckedDistance(ByVal distance As Double) As Double
-    If distance < -PATH_TOLERANCE Or distance > mStations(mCount) + PATH_TOLERANCE Then PathError "Позиция выходит за пределы длины пути."
+    If distance < -PATH_TOLERANCE Or distance > mStations(mCount) + PATH_TOLERANCE Then PathError "Расстояние " & CStr(distance) & _
+        " мм выходит за пределы линии длиной " & CStr(mStations(mCount)) & " мм. Задайте расстояние от 0 до полной длины линии."
     CheckedDistance = GeomMax(0#, GeomMin(mStations(mCount), distance))
 End Function
 
@@ -511,7 +514,7 @@ End Sub
 
 ' Проверяет индекс перед обращением к массивам геометрического объекта.
 Private Sub CheckIndex(ByVal index As Long)
-    If index < 1 Or index > mCount Then PathError "Номер сегмента вне допустимого диапазона."
+    If index < 1 Or index > mCount Then PathError "Номер сегмента вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub
 
 ' Выдаёт геометрическую ошибку с ID пути и фактической причиной.
@@ -519,5 +522,5 @@ Private Sub PathError(ByVal description As String, Optional ByVal code As String
         Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
     Set mDiagnostic = New CGeometryDiagnostic
     mDiagnostic.Initialize code, mID, relatedEntityID, description, detail1, detail2
-    Err.Raise vbObjectError + 5520, "CGeometryPath", "Путь '" & mID & "': " & description
+    Err.Raise vbObjectError + 5520, "CGeometryPath", "Геометрическая линия '" & mID & "': " & description
 End Sub

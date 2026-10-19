@@ -1408,7 +1408,7 @@ Public Function RunOffsetWallCollisionTests() As String
                 Check "offset.wall.touch.allowed", number = 0
                 If Not bars Is Nothing Then Check "offset.wall.touch.both.families", bars.Count = 16
             Case 1
-                Check "offset.wall.overlap.rejected", number <> 0 And InStr(reason, "Диски стержней") > 0 And InStr(reason, "Config!") > 0
+                Check "offset.wall.overlap.rejected", number <> 0 And InStr(reason, "Поперечные сечения стержней") > 0 And InStr(reason, "Config!") > 0
             Case 2
                 Check "offset.wall.disk.opening.rejected", number <> 0 And InStr(reason, "целиком") > 0 And InStr(reason, "Config!") > 0
         End Select
@@ -1424,4 +1424,148 @@ End Function
 ' ДЛЯ ТЕСТОВ: физическая ячейка дополнительного ряда в общей таблице армирования.
 Private Function OffsetRebarCell(ByVal row As Long, ByVal column As Long) As Object
     Set OffsetRebarCell = ThisWorkbook.Names("rngRebarInput").RefersToRange.Cells(row, column)
+End Function
+
+' ДЛЯ ТЕСТОВ: адреса сообщений после переноса таблицы, числовая причина ошибки
+' концевых отступов и сохранение допустимого размещения одного стержня в точке.
+Public Function RunProgramMessageTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim sheet As Object, alerts As Boolean, previousSheet As Object, source As Object
+    Dim reader As CLoadCombinationReader, batch As CBatchSectionCalculator, meta As CResultMeta, copiedMeta As CResultMeta
+    Dim settings As CSystemSettingsReader, message As String, errorNumber As Long
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim definition As CSectionDefinition, executor As CRebarRuleExecutor, layout As CRebarLayout
+    Dim diagnostic As CGeometryDiagnostic, rectangle As CGeometryPath
+    Dim profile As CCalculationProfile, locations As Object, policy As CResultStatusPolicy
+    Dim otherMeta As CResultMeta, merged As CResultMeta, mesh As CFiberMeshBuilder, reason As String
+    Dim searchResult As CLimitSearchResult, inputTable As CSectionInputTable, units As CUnitSystem
+    Dim values(1 To 1, 1 To 1) As Variant, addresses(1 To 1, 1 To 1) As Variant, lengthValue As Double
+    On Error GoTo Failed
+    Set previousSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
+    Set sheet = ThisWorkbook.Worksheets.Add
+    Set source = sheet.Range("AA20:AG21")
+    source.Rows(1).Value2 = Array("CombinationID", "N", "Mx", "My", "ProfileId", "LoadPath", "Comment")
+    source.Rows(2).Value2 = Array("Message.LC", 1#, 2#, 3#, "Message.Profile", "Auto", "")
+    Set batch = New CBatchSectionCalculator: Set reader = New CLoadCombinationReader
+    reader.LoadFromRange source, batch
+    Check "messages.source.count", batch.Count = 1
+    Check "messages.source.relocated", batch.SourceReference(1) = sheet.Name & "!AA21:AG21"
+    Set meta = New CResultMeta
+    meta.SetResult rsNumericalFailure, rcNumericalFailure, rkDirectState, "Равновесие не найдено."
+    message = CalculationResultMessage(batch, 1, meta)
+    Check "messages.result.combination", InStr(message, "Message.LC") > 0
+    Check "messages.result.address", InStr(message, sheet.Name & "!AA21:AG21") > 0
+    Check "messages.result.reason", InStr(message, "Равновесие не найдено.") > 0
+    Check "messages.result.statusUnchanged", meta.InternalStatus = rsNumericalFailure And meta.ResultCode = rcNumericalFailure
+    meta.ResultComment = "": Check "messages.empty.staysEmpty", CalculationResultMessage(batch, 1, meta) = ""
+    Set source = sheet.Range("AA30:AD31")
+    source.Rows(1).Value2 = Array("Key", "Value", "Default", "Comment")
+    source.Rows(2).Value2 = Array("Solver.Method", "WrongMethod", "Newton", "")
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange source
+    message = settings.InputErrorMessage("Solver.Method", "Неизвестный метод.", "Выберите Newton или Secant.")
+    Check "messages.setting.address", InStr(message, sheet.Name) > 0 And InStr(message, "AB31") > 0
+    mReport = mReport & "SETTING_MESSAGE: " & message & vbCrLf
+    Check "messages.setting.value", InStr(message, "WrongMethod") > 0
+    Check "messages.setting.action", InStr(message, "Выберите Newton или Secant.") > 0
+    batch.ApplySettings settings
+    meta.SetSolverFailure sfcInvalidConfiguration, rkDirectState, "Выберите метод равновесия.", False, "Solver.Method"
+    Set copiedMeta = meta.Clone
+    Check "messages.keys.clone", copiedMeta.SourceKeys = "Solver.Method"
+    message = CalculationResultMessage(batch, 1, copiedMeta)
+    Check "messages.keys.actualAddress", InStr(message, sheet.Name) > 0 And InStr(message, "AB31") > 0
+    Check "messages.keys.noStatusParsing", copiedMeta.InternalStatus = rsInvalidConfiguration And copiedMeta.ResultCode = rcInvalidConfiguration
+    copiedMeta.SetNotRequested rkDirectState
+    Check "messages.keys.clearedForNewResult", copiedMeta.SourceKeys = ""
+    Set policy = New CResultStatusPolicy: Set otherMeta = New CResultMeta
+    otherMeta.SetSolverFailure sfcInvalidConfiguration, rkCapacity, "Другой параметр.", False, "Capacity.MaxLambda;Solver.Method"
+    Set merged = policy.WorstResultMeta(rkGeneric, meta, otherMeta)
+    Check "messages.keys.merge.first", InStr(merged.SourceKeys, "Solver.Method") > 0
+    Check "messages.keys.merge.second", InStr(merged.SourceKeys, "Capacity.MaxLambda") > 0
+    Check "messages.keys.merge.noDuplicates", UBound(Split(merged.SourceKeys, ";")) = 1
+    Set searchResult = New CLimitSearchResult
+    searchResult.Initialize meta, "Auto", "LoadMultiplier", False, 0#, 0#, 0#, 0#, Nothing, "InvalidInput", "", vbNullString, False
+    searchResult.AddLoadPathHistory "Первая попытка не завершена.", "lambda*N"
+    Check "messages.keys.pathHistory", searchResult.Meta.SourceKeys = "Solver.Method"
+    Set profile = New CCalculationProfile
+    profile.Initialize "Message.Profile", "", "", True, False, False
+    Set locations = CreateObject("Scripting.Dictionary")
+    locations.Add "Profile.DisplayName", sheet.Name & "!AZ50"
+    profile.SetInputLocations locations
+    Check "messages.profile.invalid", Not profile.ValidateForCalculation(reason)
+    Check "messages.profile.address", InStr(reason, sheet.Name & "!AZ50") > 0
+    Check "messages.profile.action", InStr(reason, "имя профиля") > 0
+    message = WorkbookErrorMessage("Расчёт остановлен", 12345, "Probe.Stage", "")
+    Check "messages.runtime.code", InStr(message, "12345") > 0
+    Check "messages.runtime.stage", InStr(message, "Probe.Stage") > 0
+    Check "messages.runtime.reason", InStr(message, "без описания причины") > 0
+
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "Messages"
+    Set rectangle = facade.RectanglePath("Boundary", 0#, 0#, 1000#, 1000#)
+    facade.Outer "OUTER", rectangle.ID
+    Set path = facade.LinePath("Source", 100#, 400#, 100#, 600#)
+    facade.RebarByCount "Source.Main", path.ID, 3, 10#
+    Set path = facade.LinePath("Target", 200#, 430#, 200#, 570#)
+    Set options = New CRebarRuleOptions
+    options.StartSetback = 80#: options.EndSetback = 60#: options.DirectionX = 1#
+    options.SourceReference = sheet.Name & "!AA40; " & sheet.Name & "!AB40"
+    options.Comment = "Арматура справа от отверстия"
+    facade.RebarProjected "Target.Main", path.ID, "Source.Main", 10#, options
+    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor
+    On Error Resume Next
+    Set layout = executor.Build(definition, FixtureGeometry(definition.ConcreteDomain))
+    errorNumber = Err.Number: message = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Set diagnostic = executor.LastDiagnostic
+    Check "messages.interval.error", errorNumber = vbObjectError + 5530
+    Check "messages.interval.code", diagnostic.Code = "WORK_INTERVAL_EMPTY"
+    Check "messages.interval.source", InStr(message, sheet.Name & "!AA40") > 0 And InStr(message, sheet.Name & "!AB40") > 0
+    Check "messages.interval.numbers", InStr(message, "140") > 0 And InStr(message, "80") > 0 And InStr(message, "60") > 0
+    Check "messages.interval.caption", InStr(message, "Арматура справа от отверстия") > 0
+    Check "messages.interval.action", InStr(message, "Уменьшите концевые отступы") > 0
+    Check "messages.interval.details", Abs(diagnostic.Detail1 - 140#) < 0.000001 And Abs(diagnostic.Detail2 - 140#) < 0.000001
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "PointMessage"
+    Set rectangle = facade.RectanglePath("Boundary", 0#, 0#, 1000#, 1000#)
+    facade.Outer "OUTER", rectangle.ID
+    Set path = facade.LinePath("Axis", 200#, 430#, 200#, 570#)
+    facade.RebarByCount "Point.Main", path.ID, 1, 10#, options
+    Set layout = FixtureLayout(facade.Finish)
+    Check "messages.interval.oneBarStillAllowed", layout.Count = 1
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "ExplicitPointMessage"
+    Set rectangle = facade.RectanglePath("Boundary", 0#, 0#, 1000#, 1000#)
+    facade.Outer "OUTER", rectangle.ID
+    Set path = facade.LinePath("Axis", 200#, 430#, 200#, 570#)
+    facade.RebarAtStations "Point.Main", path.ID, Array(80#), 10#, options
+    Set layout = FixtureLayout(facade.Finish)
+    Check "messages.interval.explicitPointStillAllowed", layout.Count = 1
+    Set mesh = New CFiberMeshBuilder
+    On Error Resume Next
+    mesh.BuildMesh FixtureGeometry(definition.ConcreteDomain), 0.00000000001, 100#, 1, 1, sheet.Name & "!AC60"
+    errorNumber = Err.Number: message = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "messages.mesh.existingCode", errorNumber = vbObjectError + 2108
+    Check "messages.mesh.address", InStr(message, sheet.Name & "!AC60") > 0
+    source.Rows(2).Value2 = Array("Units.Length.Input", "m", "mm", "")
+    settings.LoadFromRange source
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    values(1, 1) = 1E+308: addresses(1, 1) = sheet.Name & "!AD70"
+    Set inputTable = New CSectionInputTable: inputTable.Initialize "Message.Geometry", values, addresses
+    On Error Resume Next
+    lengthValue = inputTable.Length(1, 1, units)
+    errorNumber = Err.Number: message = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check "messages.length.overflowCode", errorNumber = vbObjectError + 5525
+    Check "messages.length.overflowAddress", InStr(message, sheet.Name & "!AD70") > 0
+    Check "messages.length.overflowAction", InStr(message, "Уменьшите значение") > 0
+    GoTo Restore
+Failed:
+    Check "messages.runtime", False
+    mReport = mReport & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+Restore:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not previousSheet Is Nothing Then previousSheet.Activate
+    If Not sheet Is Nothing Then sheet.Delete
+    Application.DisplayAlerts = alerts
+    On Error GoTo 0
+    RunProgramMessageTests = mReport & "TOTAL PROGRAM MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function

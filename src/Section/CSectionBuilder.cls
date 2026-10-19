@@ -28,8 +28,8 @@ Private mModelRevision As Long ' Изменение модели запреща�
 ' и добавляет контуры, размеры и подписи сечения.
 Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions As TSectionMeshOptions) As CSectionModel
     Set mMesh = Nothing: Set mRebars = Nothing: Set mRules = Nothing: Set mModel = Nothing
-    If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Определение не передано."
-    If Not definition.IsSealed Then SectionRecipeError "CSectionBuilder", "Нельзя собирать неопубликованное определение."
+    If definition Is Nothing Then SectionRecipeError "CSectionBuilder", "Не передано описание геометрии и армирования сечения."
+    If Not definition.IsSealed Then SectionRecipeError "CSectionBuilder", "Описание сечения ещё не завершено. Перед сборкой завершите его методом Finish."
     If meshOptions.StepX <= 0# Or meshOptions.StepY <= 0# Or meshOptions.BoundarySubdivisions < 1 Or meshOptions.MaterialID < 1 Then _
         SectionRecipeError "CSectionBuilder", "Недопустимые внутренние настройки бетонной сетки."
     Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, rebars As CRebarLayout, rules As CRebarRuleExecutor
@@ -37,9 +37,9 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
     ' Сначала проверяем арматуру общим исполнителем правил, затем строим бетонную сетку.
     Set rules = New CRebarRuleExecutor: Set rebars = rules.Build(definition, geometry)
-    If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "Для параметрического сечения не задан ни один стержень арматуры."
+    If rebars.Count = 0 Then SectionRecipeError "CSectionBuilder", "После построения сечения не получен ни один стержень. Проверьте количества и диаметры в общей таблице армирования rngRebarInput."
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions
+    mesh.BuildMesh geometry, meshOptions.StepX, meshOptions.StepY, meshOptions.MaterialID, meshOptions.BoundarySubdivisions, meshOptions.SourceReference
     Set modelBuilder = New CSectionModelBuilder: Set model = modelBuilder.BuildFromGenerated(mesh, rebars)
     model.GeometryDiagnosticsText = rules.DiagnosticsText
     Dim i As Long
@@ -58,21 +58,21 @@ End Function
 ' Возвращает готовую бетонную сетку последней успешной сборки без её повторного построения.
 Public Property Get Mesh() As CFiberMeshBuilder
     RequireCurrentModel
-    If mMesh Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной сетки."
+    If mMesh Is Nothing Then SectionRecipeError "CSectionBuilder", "Бетонная сетка ещё не была успешно построена."
     Set Mesh = mMesh
 End Property
 
 ' Возвращает стержни последней успешной сборки с уже обработанными совпадениями позиций.
 Public Property Get Rebars() As CRebarLayout
     RequireCurrentModel
-    If mRebars Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной арматуры."
+    If mRebars Is Nothing Then SectionRecipeError "CSectionBuilder", "Расстановка арматуры ещё не была успешно построена."
     Set Rebars = mRebars
 End Property
 
 ' Возвращает исполненные правила расстановки: количество, шаги, связи стержней и диагностику.
 Public Property Get Rules() As CRebarRuleExecutor
     RequireCurrentModel
-    If mRules Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно исполненных правил."
+    If mRules Is Nothing Then SectionRecipeError "CSectionBuilder", "Правила размещения арматуры ещё не были успешно выполнены."
     Set Rules = mRules
 End Property
 

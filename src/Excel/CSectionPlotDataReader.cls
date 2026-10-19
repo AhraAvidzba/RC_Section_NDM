@@ -198,7 +198,7 @@ Private Function ResolveLoadCase(ByVal workbook As Object, ByVal requested As St
     If Len(ResolveLoadCase) = 0 Then ResolveLoadCase = FirstLoadCaseFromSectionProperties(workbook)
     mLoadCaseComment = ReadBatchSummaryComment(workbook, ResolveLoadCase)
     If Len(ResolveLoadCase) = 0 Then Err.Raise vbObjectError + 4702, "CSectionPlotDataReader", _
-        "В rngBatchSummary не найдено определяющее сочетание для Plot.LoadCase = Worst."
+        "В сохранённых Results нет определяющего или другого рассчитанного сочетания для Plot.LoadCase = Worst. Сначала выполните расчёт."
 End Function
 
 ' Читает поле «Определяющее сочетание» над компактной сводкой Results.
@@ -934,7 +934,7 @@ Private Function MissingStateMessage(ByVal loadCase As String, ByVal stateType A
                 " Для запрашиваемого сочетания расчет трещин не выполнялся: этому сочетанию назначен профиль, где Calculation.Crack.Width = No."
         ElseIf StrComp(stateType, "CrackedState", vbTextCompare) = 0 Then
             MissingStateMessage = MissingStateMessage & _
-                " Для запрашиваемого сочетания расчет трещин был включен, поэтому CrackedState должен быть в snapshot. Проверьте статус расчета трещин и сообщения о сходимости CrackedState."
+                " Для этого сочетания расчёт трещин был включён, но НДС с учётом трещин (CrackedState) не сохранено в Results. Проверьте статус и пояснения расчёта трещин; при необходимости повторите расчёт."
         Else
             MissingStateMessage = MissingStateMessage & _
                 " Для запрашиваемого сочетания расчет трещин был включен, но пороговое состояние образования трещины не записано. Это штатно только когда нет действия для поиска нормальной трещины, например чистое сжатие без момента. Если растяжение или изгиб есть, проверьте статус проверки образования трещины."

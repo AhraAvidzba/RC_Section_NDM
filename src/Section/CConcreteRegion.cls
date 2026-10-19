@@ -82,7 +82,7 @@ End Sub
 Public Sub GetSegment(ByVal index As Long, ByRef x1 As Double, ByRef y1 As Double, _
         ByRef x2 As Double, ByRef y2 As Double, ByRef centerX As Double, _
         ByRef centerY As Double, ByRef sweep As Double, ByRef loopID As Long)
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер сегмента области вне допустимого диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер сегмента области вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     x1 = mEdges(index).X1: y1 = mEdges(index).Y1
     x2 = mEdges(index).X2: y2 = mEdges(index).Y2
     centerX = mEdges(index).CenterX: centerY = mEdges(index).CenterY
@@ -112,7 +112,7 @@ End Property
 ' Возвращает назначение контура: наружная граница или отверстие.
 ' При подготовке аннотаций заново определять ориентацию границы не нужно.
 Public Property Get LoopIsOpening(ByVal index As Long) As Boolean
-    If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер замкнутого контура области вне допустимого диапазона."
+    If index < 1 Or index > mLoopCount Then Err.Raise vbObjectError + 5400, "CConcreteRegion", "Номер замкнутого контура области вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mLoopCount) & "."
     LoopIsOpening = mLoopOpening(index)
 End Property
 ' Возвращает площадь области по точным контурам, мм2; она рассчитывается отдельно от площади

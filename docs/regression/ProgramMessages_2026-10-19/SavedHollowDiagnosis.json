@@ -1,0 +1,11 @@
+﻿{
+    "SourceSHA256":  "36FFED490F2973DCDE9FA3B7A6F5F8DA05056AF4C8F313B76DF8E62004466668",
+    "Copy":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\ProgramMessages_2026-10-19\\SavedHollow\\SavedInput.xlsm",
+    "Results":  [
+                    "scenario=0; length=140; s0=80; s1=60; remaining=2.8421709430404E-14; ERROR=-2147215974; Config!P98; Config!S98; Config!T98: Прямоугольник с отверстием: арматура у правой стороны отверстия, ряд 1. Ряд \u0027Opening.H.Right.Main\u0027: После концевых отступов не осталось участка для размещения арматуры. Длина линии — 140 мм; отступ от начала — 80 мм; отступ от конца — 60 мм. Уменьшите концевые отступы так, чтобы их сумма была меньше длины линии. Исправьте значение в указанной ячейке.",
+                    "scenario=1; length=140; s0=79; s1=60; remaining=1.00000000000003; OK; bars=14",
+                    "scenario=2; length=140; s0=0; s1=0; remaining=140; OK; bars=15"
+                ],
+    "SourceWasNotOpened":  true,
+    "BookSaved":  false
+}

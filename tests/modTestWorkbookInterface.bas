@@ -6721,6 +6721,8 @@ Private Sub TestAudit03ConfigConversionMessages(ByRef stats As TUiTestStats)
     ' ДЛЯ ТЕСТОВ: готовим неизменяемую модель до смены единиц ввода.
     ' Проверка переполнения настройки не требует новой геометрии размером
     ' в тысячи раз больше и сетки с неизменным внутренним шагом 20 мм.
+    ' Общая таблица армирования должна вычислить ключи именно тестового круга.
+    SetSystemSetting "Geometry.Type", "Circle"
     Set batch = BuildUiBatch()
     batch.AddCombination "CONFIG_OVERFLOW", 0#, 0#, 0#, "PR1", "Переполнение пересчета настройки"
     For unitRow = 2 To unitRange.Rows.Count

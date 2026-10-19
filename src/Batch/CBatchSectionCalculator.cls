@@ -28,6 +28,7 @@ Private Const DEFAULT_ZERO_MOMENT_PER_DEPTH As Double = 4903.325 ' 0.5 tf*m/m в
 Private Type TCombinationInput
     CombinationID As String ' Номер сочетания из входной таблицы.
     SourceDataOffset As Long ' Смещение строки сочетания от начала входной таблицы.
+    SourceReference As String ' Фактический адрес исходной строки, переданный ридером без зависимости расчёта от Excel.
     N As Double ' Продольная сила во внутренних единицах, Н.
     Mx As Double ' Момент Mx во внутренних единицах, Н*мм.
     My As Double ' Момент My во внутренних единицах, Н*мм.
@@ -112,6 +113,7 @@ Private mReport As CExecutionReport ' Необязательный челове�
 Private mReportUnits As CUnitSystem ' Единицы и знаки для вывода физических величин в отчёт выполнения.
 Private mSettingsValid As Boolean ' False, если ApplySettings нашел ошибку Config и все LC должны получить InputErr.
 Private mSettingsError As String ' Человекочитаемая причина ошибки чтения настроек Config.
+Private mSettingLocations As Object ' Строковый снимок адресов настроек для пояснений результатов; живые ячейки в расчёте не используются.
 
 Private mStabilityCode As String ' SP63 или SP35: выбранная нормативная ветвь фильтра устойчивости.
 Private mStabilityElementLength As Double ' Геометрическая длина элемента l, мм.
@@ -243,6 +245,13 @@ Public Sub ApplySettings(ByVal settings As CSystemSettingsReader, Optional ByVal
     If settings Is Nothing Then Exit Sub
     mSettingsValid = True
     mSettingsError = vbNullString
+    Dim settingIndex As Long, settingKey As String
+    Set mSettingLocations = CreateObject("Scripting.Dictionary")
+    mSettingLocations.CompareMode = vbTextCompare
+    For settingIndex = 1 To settings.KeyCount
+        settingKey = settings.KeyAt(settingIndex)
+        mSettingLocations(settingKey) = settings.InputLocation(settingKey)
+    Next settingIndex
     Set mReportUnits = units
     Set mReport.UnitSystem = units
     Dim conversionKey As String ' Настройка текущего пересчета единиц для точной диагностики переполнения.
@@ -496,16 +505,17 @@ End Sub
 ' Усилия уже должны быть во внутренних единицах и в INTERNAL-системе знаков.
 Public Sub AddCombination(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
-        Optional ByVal loadPathText As String = vbNullString, Optional ByVal sourceDataOffset As Long = 0)
-    AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, loadPathText, sourceDataOffset
+        Optional ByVal loadPathText As String = vbNullString, Optional ByVal sourceDataOffset As Long = 0, _
+        Optional ByVal sourceReference As String = vbNullString)
+    AddCombinationInternal combinationID, nValue, mxValue, myValue, profileId, comment, True, vbNullString, loadPathText, sourceDataOffset, sourceReference
 End Sub
 
 ' Сохраняет сочетание с ошибкой ввода для вывода причины в отчёте.
 ' НДС по нему не решается; в таблице ставится InputErr.
 Public Sub AddInvalidCombination(ByVal combinationID As String, ByVal profileId As String, _
         ByVal comment As String, ByVal reason As String, Optional ByVal loadPathText As String = vbNullString, _
-        Optional ByVal sourceDataOffset As Long = 0)
-    AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, loadPathText, sourceDataOffset
+        Optional ByVal sourceDataOffset As Long = 0, Optional ByVal sourceReference As String = vbNullString)
+    AddCombinationInternal combinationID, 0#, 0#, 0#, profileId, comment, False, reason, loadPathText, sourceDataOffset, sourceReference
 End Sub
 
 ' Единая точка добавления строки сочетания. Через нее проходят и корректные
@@ -515,12 +525,13 @@ End Sub
 Private Sub AddCombinationInternal(ByVal combinationID As String, ByVal nValue As Double, ByVal mxValue As Double, _
         ByVal myValue As Double, ByVal profileId As String, ByVal comment As String, _
         ByVal inputValid As Boolean, ByVal inputError As String, ByVal loadPathText As String, _
-        ByVal sourceDataOffset As Long)
+        ByVal sourceDataOffset As Long, ByVal sourceReference As String)
     EnsureCombinationCapacity mCount + 1
     mCount = mCount + 1
     If Len(Trim$(combinationID)) = 0 Then combinationID = "ROW" & CStr(mCount)
     mInputs(mCount).CombinationID = combinationID
     mInputs(mCount).SourceDataOffset = sourceDataOffset
+    mInputs(mCount).SourceReference = sourceReference
     mInputs(mCount).N = nValue
     mInputs(mCount).Mx = mxValue
     mInputs(mCount).My = myValue
@@ -788,13 +799,13 @@ Private Sub RunCombination(ByVal index As Long)
     ReportValue "Комментарий", mInputs(index).Comment
     ReportValue "ID профиля", mInputs(index).ProfileId
     If Not mInputs(index).InputValid Then
-        ReportStep "Сочетание не передано в solver из-за ошибки входных данных: " & mInputs(index).InputError
+        ReportStep "Решение НДС не запущено из-за ошибки исходных данных: " & mInputs(index).InputError
         MarkInvalid index, mInputs(index).InputError
         Exit Sub
     End If
 
     If Not mSettingsValid Then
-        ReportStep "Сочетание не передано в solver из-за ошибки настроек: " & mSettingsError
+        ReportStep "Решение НДС не запущено из-за ошибки настроек: " & mSettingsError
         MarkInvalid index, mSettingsError
         Exit Sub
     End If
@@ -1192,7 +1203,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     If stateResult Is Nothing Then
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, _
             MissingStateMeta(runner, "Прямое НДС не получено: решатель не вернул расчетное состояние.")
-        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не вернуло расчетное состояние."
+        ReportStep "Прямое НДС " & SectionStateDisplayName(stateType) & " не вернуло расчетное состояние."
         Set RunProfileState = runner
         Exit Function
     End If
@@ -1202,9 +1213,9 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     If stateType = sstStrengthState Then mResults(index).StoreSectionStateResult stateResult, _
         mMaterialProvider.ConcreteMaterialFromSpec(spec), mMaterialProvider.SteelMaterialFromSpec(spec)
 
-    ReportValue "НДС " & SectionStateTypeToText(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
+    ReportValue "НДС " & SectionStateDisplayName(stateType) & " сошлось", IIf(stateResult.Converged, "да", "нет")
     If provider.LastStateWasReused Then
-        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " переиспользовано из StateRepository."
+        ReportStep "Прямое НДС " & SectionStateDisplayName(stateType) & " взято из сохранённого результата без повторного решения равновесия."
     ElseIf Not runner Is Nothing Then
         ReportValue "Итераций НДС", CStr(runner.Iterations)
         ReportBlock "Сценарий прямого StateSolution", runner.DiagnosticLog
@@ -1213,7 +1224,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
 
     If Not stateResult.Converged Then
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
-        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " не сошлось: " & stateResult.StopReason
+        ReportStep "Прямое НДС " & SectionStateDisplayName(stateType) & " не сошлось: " & stateResult.StopReason
         Set RunProfileState = runner
         Exit Function
     End If
@@ -1222,7 +1233,7 @@ Private Function RunProfileState(ByVal index As Long, ByVal stateType As ESectio
     stateStatus = mStatusPolicy.ExternalStatus(stateResult.ResultMeta)
     If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
-        ReportStep "Прямое НДС " & SectionStateTypeToText(stateType) & " найдено, но вышло за физический диапазон диаграммы материала."
+        ReportStep "Прямое НДС " & SectionStateDisplayName(stateType) & " найдено, но вышло за физический диапазон диаграммы материала."
     Else
         If mergeIntoDirectStateStatus Then MergeDirectStateMeta index, stateResult.ResultMeta
     End If
@@ -1279,7 +1290,7 @@ Private Sub RunCrackWidth(ByVal index As Long, ByVal profile As CCalculationProf
     If Not mReport Is Nothing Then mReport.ReportCrackFormationChoice formationResult
     ReportBlock "Диагностика образования трещины", formationResult.DiagnosticLog
 
-    ReportStep "Запускается текущее CrackedState полного сочетания по профилю трещин."
+    ReportStep "Запускается расчёт НДС с трещинами от полной нагрузки сочетания по выбранному профилю."
     Dim runner As CStateSolutionRunner
     Set runner = RunProfileState(index, sstCrackedState, cpCrackedNDS, profile.CrackedStateSpec, True, False)
     Dim currentCrackedState As CSectionStateResult
@@ -1383,9 +1394,9 @@ Private Function CurrentCrackedStateMeta(ByVal stateResult As CSectionStateResul
         Set CurrentCrackedStateMeta = stateResult.ResultMeta
         blockReason = CurrentCrackedStateMeta.ResultComment
         If Len(Trim$(blockReason)) = 0 Then
-            If Not stateResult.Converged Then blockReason = "CurrentCrackedState не сошелся."
+            If Not stateResult.Converged Then blockReason = "Для заданного сочетания не найдено равновесие сечения с трещинами."
             If stateResult.ExtensionUsed Or Not stateResult.WithinPhysicalRange Then _
-                blockReason = "CurrentCrackedState найден вне физического диапазона диаграмм."
+                blockReason = "НДС с трещинами найдено с выходом за физические пределы диаграмм материалов."
         End If
         Exit Function
     End If
@@ -1792,6 +1803,33 @@ Public Property Get SourceDataOffset(ByVal index As Long) As Long
     SourceDataOffset = mInputs(index).SourceDataOffset
 End Property
 
+' Возвращает сохранённое место задания нагрузок; адрес получает ридер исходной таблицы.
+' Для программно заданного сочетания возвращается пустая строка, адрес не выдумывается.
+Public Property Get SourceReference(ByVal index As Long) As String
+    SourceReference = mInputs(index).SourceReference
+End Property
+
+' Сопоставляет переданный расчётом ключ параметра с сохранённым местом его задания.
+' Неизвестный ключ остаётся без адреса, чтобы не указывать пользователю постороннюю ячейку.
+Public Function SettingLocation(ByVal key As String) As String
+    If mSettingLocations Is Nothing Then Exit Function
+    If mSettingLocations.Exists(key) Then SettingLocation = mSettingLocations(key)
+End Function
+
+' Разрешает ключи параметров по сохранённому снимку. Сводки и итоговое сообщение
+' используют один способ сопоставления, не ищут ключи в тексте причины и не читают Excel.
+Public Function SettingReferences(ByVal sourceKeys As String) As String
+    Dim key As Variant, location As String
+    If Len(sourceKeys) = 0 Then Exit Function
+    For Each key In Split(sourceKeys, ";")
+        location = SettingLocation(Trim$(CStr(key)))
+        If Len(location) > 0 Then
+            If Len(SettingReferences) > 0 Then SettingReferences = SettingReferences & " "
+            SettingReferences = SettingReferences & Trim$(CStr(key)) & ": " & location & "."
+        End If
+    Next key
+End Function
+
 ' Исходные данные LC, прочитанные из фактических строк rngLoadCombinations.
 Public Property Get CombinationName(ByVal index As Long) As String
     CombinationName = mInputs(index).Comment
@@ -2094,7 +2132,7 @@ End Property
 ' Короткий статус остается в Results, а popup показывает, какая настройка,
 ' профиль или геометрическая величина фактически остановила расчет.
 Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
-    Dim detail As String
+    Dim detail As String, references As String
     detail = Trim$(mInputs(index).InputError)
     ' Итог уже собран владельцами result-tree, включая самостоятельный crack
     ' subtree. Popup не подменяет его машинным LimitState или display-статусом.
@@ -2104,6 +2142,10 @@ Private Function DetailedInvalidInputMessage(ByVal index As Long) As String
 
     DetailedInvalidInputMessage = "CombinationID=" & DisplayCombinationID(index) & _
         ": " & detail & " (статус " & mResults(index).Status & ")"
+    references = SettingReferences(mResults(index).OverallMeta.SourceKeys)
+    If Len(references) > 0 Then DetailedInvalidInputMessage = DetailedInvalidInputMessage & " " & references
+    If Len(mInputs(index).SourceReference) > 0 Then DetailedInvalidInputMessage = DetailedInvalidInputMessage & _
+        " Исходная строка сочетания: " & mInputs(index).SourceReference & "."
 End Function
 
 ' Формирует устойчивое имя LC для сообщения об ошибке даже при неполной строке

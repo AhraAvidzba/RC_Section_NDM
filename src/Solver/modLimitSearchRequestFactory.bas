@@ -15,8 +15,8 @@ Public Sub InitializeCapacitySearchRequest(ByVal request As CLimitSearchRequest,
         ByVal myOffset As Double, ByVal myBase As Double, _
         ByVal forceOnly As Boolean, ByVal pureAxialForMethod As Boolean, _
         Optional ByVal materialSpec As CMaterialModelSpec = Nothing)
-    If request Is Nothing Then Err.Raise vbObjectError + 4208, "modLimitSearchRequestFactory", "Не передан запрос LimitSearch."
-    If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передан solver поиска несущей способности."
+    If request Is Nothing Then Err.Raise vbObjectError + 4208, "modLimitSearchRequestFactory", "Не переданы исходные данные для поиска предельного состояния."
+    If capacitySolver Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передан объект расчёта несущей способности."
     Dim problem As CCapacityLimitSearchProblem
     Set problem = New CCapacityLimitSearchProblem
     problem.Initialize capacitySolver
@@ -32,8 +32,8 @@ Public Sub InitializeCrackFormationSearchRequest(ByVal request As CLimitSearchRe
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal momentMxAtReference As Double, ByVal momentMyAtReference As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
-    If request Is Nothing Then Err.Raise vbObjectError + 4208, "modLimitSearchRequestFactory", "Не передан запрос LimitSearch."
-    If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4204, "CLimitSearchRequest", "Не передан расчетчик трещинообразования."
+    If request Is Nothing Then Err.Raise vbObjectError + 4208, "modLimitSearchRequestFactory", "Не переданы исходные данные для поиска предельного состояния."
+    If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4204, "CLimitSearchRequest", "Не передан объект, который должен определить нагрузку образования нормальной трещины."
     Dim problem As CCrackLimitSearchProblem
     Set problem = New CCrackLimitSearchProblem
     problem.Initialize crackCalculator

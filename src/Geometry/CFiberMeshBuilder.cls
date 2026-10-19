@@ -25,8 +25,10 @@ Private mBuildSeconds As Double ' Время создания только се�
 ' добавляет целиком, а пограничные при необходимости делит на более мелкие
 ' по настройке Mesh.BoundarySubdivisions.
 Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, ByVal stepY As Double, _
-        Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1)
+        Optional ByVal materialID As Long = 1, Optional ByVal boundarySubdivisions As Long = 1, _
+        Optional ByVal sourceReference As String = vbNullString)
 
+    On Error GoTo FailedBuild
     If mReadOnly Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Опубликованную сетку нельзя перестроить. Создайте новый построитель."
     Dim message As String
     If geometry Is Nothing Then Err.Raise vbObjectError + 2107, "CFiberMeshBuilder", "Геометрия бетонного сечения не передана."
@@ -60,7 +62,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     ' Это ограничение представимости массива, а не изменение точности сетки.
     If stepX <= (maxX - minX) / 2147483646# Or stepY <= (maxY - minY) / 2147483646# Then
         Err.Raise vbObjectError + 2108, "CFiberMeshBuilder", _
-            "Шаг бетонной сетки слишком мал: число ячеек по одной оси не помещается в Long. Увеличьте Mesh.StepX или Mesh.StepY."
+            "Шаг бетонной сетки слишком мал: число ячеек по одной оси превышает предел счётчика программы (2147483647). Увеличьте Mesh.StepX или Mesh.StepY."
     End If
     nx = CLng(Fix((maxX - minX) / stepX)) + 1
     ny = CLng(Fix((maxY - minY) / stepY)) + 1
@@ -140,6 +142,12 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     End If
 
     mBuildSeconds = Timer - t0
+    Exit Sub
+FailedBuild:
+    Dim number As Long, source As String, reason As String
+    number = Err.Number: source = Err.Source: reason = Err.Description
+    If Len(sourceReference) > 0 Then reason = reason & " Параметры бетонной сетки: " & sourceReference & "."
+    Err.Raise number, source, reason
 End Sub
 
 ' Дробит пограничную ячейку на более мелкие прямоугольники и добавляет только

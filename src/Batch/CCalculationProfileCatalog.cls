@@ -103,6 +103,7 @@ Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
         YesNo(ProfileValue(values, "Calculation.Crack.Width"), "Calculation.Crack.Width", profileId, locations), _
         YesNo(ProfileValue(values, "Calculation.Stability.Enabled"), "Calculation.Stability.Enabled", profileId, locations)
 
+    profile.SetInputLocations locations
     Dim spec As CMaterialModelSpec
     Set spec = SpecFromValues(values, locations, profileId, "MaterialModel.Strength")
     If spec.IsComplete Then profile.SetStrengthSpec spec
@@ -317,13 +318,13 @@ End Property
 ' Возвращает ID профиля по его номеру в каталоге. Недопустимый номер
 ' вызывает ошибку; другой профиль вместо указанного не выбирается.
 Public Property Get ProfileId(ByVal index As Long) As String
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3985, "CCalculationProfileCatalog", "Индекс профиля вне диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3985, "CCalculationProfileCatalog", "Индекс профиля вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     ProfileId = mProfileIds(index)
 End Property
 
 ' Возвращает сам профиль по проверенному номеру. Новый запасной профиль
 ' не создаётся, настройки материалов не меняются.
 Public Property Get ProfileAt(ByVal index As Long) As CCalculationProfile
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 3986, "CCalculationProfileCatalog", "Индекс профиля вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
     Set ProfileAt = mProfiles(index)
 End Property

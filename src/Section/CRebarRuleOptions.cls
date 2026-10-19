@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -65,7 +65,7 @@ Public Sub ConfigureDependentContact(ByVal baseDiameter As Double, ByVal diamete
         Optional ByVal interveningDiameterSum As Double = 0#)
     If baseDiameter <= 0# Or diameter <= 0# Or interveningDiameterSum < 0# Then _
         SectionRecipeError "CRebarRuleOptions", "Для контактного ряда нужны положительные диаметры и неотрицательная сумма промежуточных диаметров.", SourceReference
-    If axis <> RowNormal And axis <> RowTangent Then SectionRecipeError "CRebarRuleOptions", "Неизвестное направление контактного ряда.", SourceReference
+    If axis <> RowNormal And axis <> RowTangent Then SectionRecipeError "CRebarRuleOptions", "Для связанного ряда выберите смещение по нормали к линии (RowNormal) или вдоль неё (RowTangent).", SourceReference
     If directionSign <> -1# And directionSign <> 1# Then SectionRecipeError "CRebarRuleOptions", "Знак направления должен быть -1 или 1.", SourceReference
     Dim distance As Double
     distance = baseDiameter / 2# + interveningDiameterSum + diameter / 2#

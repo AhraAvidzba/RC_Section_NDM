@@ -200,16 +200,16 @@ Public Function ImportFromModelSpace(ByVal modelSpace As Object, ByVal concreteL
 
     ' Непригодные или отфильтрованные объекты не равны пустому слою:
     ' ошибки существующей сетки не подменяются новой геометрией.
-    If model.ConcreteCount = 0 And concreteObjectCount > 0 Then ValidateImportedModel model
+    If model.ConcreteCount = 0 And concreteObjectCount > 0 Then ValidateImportedModel model, meshSettings
     model.ApplyAverageRotationToEquivalentAreaFallbacks
     Dim domain As CConcreteRegion
-    Set domain = ImportMaterialContours(model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities)
+    Set domain = ImportMaterialContours(model, modelSpace, concreteLayer, rebarLayer, contourLayer, openingLayer, drawingLayers, outerEntities, openingEntities, meshSettings)
     If model.ConcreteCount = 0 Then
         If domain Is Nothing Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
             "Слой бетона пуст и наружный контур не задан. Добавьте бетонные Region на AutoCAD.Common.ConcreteLayer либо наружный контур на AutoCAD.Common.SectionContourLayer. Одних отверстий недостаточно."
         GenerateConcreteFromContour model, domain, meshSettings, units
     End If
-    ValidateImportedModel model
+    ValidateImportedModel model, meshSettings
     Set ImportFromModelSpace = model
 End Function
 
@@ -239,13 +239,14 @@ End Sub
 Private Function ImportMaterialContours(ByVal model As CSectionModel, ByVal modelSpace As Object, _
         ByVal concreteLayer As String, ByVal rebarLayer As String, ByVal contourLayer As String, _
         ByVal openingLayer As String, ByVal drawingLayers As Object, _
-        ByVal outerEntities As Collection, ByVal openingEntities As Collection) As CConcreteRegion
+        ByVal outerEntities As Collection, ByVal openingEntities As Collection, _
+        Optional ByVal settings As CSystemSettingsReader = Nothing) As CConcreteRegion
     If Len(contourLayer) = 0 And Len(openingLayer) = 0 Then
         mImportComment = mImportComment & "Границы для расчета трещин определяются по бетонной сетке."
         AppendImportWarning "Наружный контур не задан: границы для расчета трещин определяются по бетонной сетке."
         Exit Function
     End If
-    ValidateContourLayerMapping concreteLayer, rebarLayer, contourLayer, openingLayer
+    ValidateContourLayerMapping concreteLayer, rebarLayer, contourLayer, openingLayer, settings
     If drawingLayers Is Nothing Then
         On Error Resume Next
         Set drawingLayers = modelSpace.Document.Layers
@@ -358,14 +359,19 @@ End Function
 ' Не позволяет использовать один слой сразу для расчетных Region и
 ' достоверных границ: это неоднозначный вход, а не повод менять роль объекта.
 Private Sub ValidateContourLayerMapping(ByVal concreteLayer As String, ByVal rebarLayer As String, _
-        ByVal contourLayer As String, ByVal openingLayer As String)
-    Dim layers As Variant, i As Long, j As Long
+        ByVal contourLayer As String, ByVal openingLayer As String, Optional ByVal settings As CSystemSettingsReader = Nothing)
+    Dim layers As Variant, keys As Variant, i As Long, j As Long, reason As String
     layers = Array(concreteLayer, rebarLayer, contourLayer, openingLayer)
+    keys = Array("AutoCAD.Common.ConcreteLayer", "AutoCAD.Common.RebarLayer", "AutoCAD.Common.SectionContourLayer", "AutoCAD.Common.OpeningContourLayer")
     For i = 0 To UBound(layers)
         If Len(CStr(layers(i))) > 0 Then
             For j = 0 To i - 1
-                If Len(CStr(layers(j))) > 0 And SameLayer(CStr(layers(i)), CStr(layers(j))) Then _
-                    Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", "Слои бетона, арматуры, внешнего контура и отверстий должны иметь разные имена. Исправьте AutoCAD.Common/Import на Config."
+                If Len(CStr(layers(j))) > 0 And SameLayer(CStr(layers(i)), CStr(layers(j))) Then
+                    reason = "Слой """ & CStr(layers(i)) & """ назначен одновременно для " & CStr(keys(i)) & " и " & CStr(keys(j)) & ". Укажите разные слои."
+                    If Not settings Is Nothing Then reason = settings.InputErrorMessage(CStr(keys(i)), reason, "Измените одно из имён слоёв.") & _
+                        " Связанная настройка " & CStr(keys(j)) & ": " & settings.InputLocation(CStr(keys(j))) & "."
+                    Err.Raise vbObjectError + 4411, "CAutoCADSectionModelImporter", reason
+                End If
             Next j
         End If
     Next i
@@ -395,21 +401,30 @@ Private Function ReadMaterialContours(ByVal outers As Collection, ByVal openings
     Dim entity As Object, region As CConcreteRegion, group As Long, entities As Collection, i As Long
     Dim sourceRegions As Collection, sourceRoles As Collection, domain As CConcreteRegion, loopID As Long
     Dim boundary As CConcreteRegion, actualOpening As Boolean, expectedOpening As Boolean
+    Dim sourceLocations As Collection, location As String, allLocations As String
     Set sourceRegions = New Collection: Set sourceRoles = New Collection
+    Set sourceLocations = New Collection
     For group = 0 To 1
         If group = 0 Then Set entities = outers Else Set entities = openings
         For Each entity In entities
             Set region = reader.ReadRegion(entity): region.CopyEdges one, oneCount
             sourceRegions.Add region: sourceRoles.Add (group = 1)
+            location = "слой '" & CStr(entity.Layer) & "', объект " & CStr(entity.Handle)
+            sourceLocations.Add location
+            If Len(allLocations) > 0 Then allLocations = allLocations & "; "
+            allLocations = allLocations & location
             ReDim Preserve raw(1 To count + oneCount)
             For i = 1 To oneCount: LSet raw(count + i) = one(i): Next i
             count = count + oneCount
         Next entity
     Next group
+    On Error GoTo InvalidBoundary
+    location = "Контуры AutoCAD: " & allLocations
     Set domain = query.BoundaryRegion(raw, count, "ValidatedAutoCADMaterialContours")
     ' Вложенность не должна превращать ошибочно расположенное opening
     ' в новый бетонный участок или наружную границу в отверстие.
     For i = 1 To sourceRegions.Count
+        location = "Контур AutoCAD: " & CStr(sourceLocations(i))
         Set region = sourceRegions(i)
         For loopID = 1 To region.LoopCount
             Set boundary = BoundaryLoopRegion(region, loopID, query)
@@ -421,6 +436,9 @@ Private Function ReadMaterialContours(ByVal outers As Collection, ByVal openings
         Next loopID
     Next i
     Set ReadMaterialContours = domain
+    Exit Function
+InvalidBoundary:
+    Err.Raise Err.Number, Err.Source, location & ". " & Err.Description
 End Function
 
 ' Возвращает одну замкнутую границу как положительную область для точного
@@ -524,13 +542,13 @@ Private Sub AddConcreteRegion(ByVal model As CSectionModel, ByVal area As Double
         shapeHint = "Rectangle"
         widthHint = realWidth
         heightHint = realHeight
-        commentText = "Region: прямоугольная оболочка была явно передана источником; расчетные A/I хранит CSectionModel."
+        commentText = "Для бетонного элемента передана прямоугольная граница; площадь и моменты инерции сохранены в модели сечения."
     ElseIf model.LocalInertiaIsNearlySquare(localIx, localIy, localIxy, LOCAL_INERTIA_SQUARE_REL_TOLERANCE) Then
-        commentText = "AutoCAD Region: реальные A/I прочитаны; почти изотропная оболочка строится в CSectionModel по площади и углу простой грани."
+        commentText = "AutoCAD Region: прочитаны площадь и моменты инерции. При близких главных моментах граница элемента строится по площади и направлению прямой грани."
     ElseIf IsPositiveDefiniteInertia(localIx, localIy, localIxy) Then
-        commentText = "AutoCAD Region: реальные A/I прочитаны; прямоугольную оболочку по ним строит CSectionModel."
+        commentText = "AutoCAD Region: прочитаны площадь и моменты инерции; по ним строится эквивалентная прямоугольная граница элемента."
     Else
-        commentText = "AutoCAD Region: A/I не получены; CSectionModel применит последний fallback-квадрат по площади."
+        commentText = "AutoCAD Region: моменты инерции не получены. Для границы элемента используется квадрат с той же площадью."
     End If
 
     model.AddConcreteElement xCoord, yCoord, area, 1, sourceName, sourceHandle, _
@@ -742,12 +760,24 @@ End Function
 ' Проверяет результат фильтрации Region по слоям и площади: для принятого
 ' импорта должны остаться бетон и арматура. Пустой слой получает собственную
 ' причину, а не передает пустую модель в решатель НДС.
-Private Sub ValidateImportedModel(ByVal model As CSectionModel)
+Private Sub ValidateImportedModel(ByVal model As CSectionModel, Optional ByVal settings As CSystemSettingsReader = Nothing)
     If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4405, "CAutoCADSectionModelImporter", _
-        "Не найдено бетонных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Common.ConcreteLayer и порог AutoCAD.Import.MinArea на листе Config."
+        MissingImportedMaterialMessage("AutoCAD.Common.ConcreteLayer", "После чтения объектов и фильтрации по площади не осталось бетонных Region.", settings)
     If model.RebarCount <= 0 Then Err.Raise vbObjectError + 4406, "CAutoCADSectionModelImporter", _
-        "Не найдено арматурных AutoCAD Region на заданном слое импорта. Проверьте слой AutoCAD.Common.RebarLayer и порог AutoCAD.Import.MinArea на листе Config."
+        MissingImportedMaterialMessage("AutoCAD.Common.RebarLayer", "После чтения объектов и фильтрации по площади не осталось арматурных Region.", settings)
 End Sub
+
+' Называет связанные параметры и их сохранённые адреса без изменения правил фильтрации.
+' Программный импорт без Config получает ключи параметров, а не вымышленные ячейки.
+Private Function MissingImportedMaterialMessage(ByVal layerKey As String, ByVal reason As String, _
+        ByVal settings As CSystemSettingsReader) As String
+    If settings Is Nothing Then
+        MissingImportedMaterialMessage = reason & " Проверьте объекты слоя " & layerKey & " и порог площади AutoCAD.Import.MinArea."
+    Else
+        MissingImportedMaterialMessage = settings.InputErrorMessage(layerKey, reason, "Проверьте имя слоя и наличие объектов Region на нём.") & _
+            " " & settings.InputErrorMessage("AutoCAD.Import.MinArea", "Этот порог исключает объекты меньшей площади.", "Проверьте значение фильтра площади.")
+    End If
+End Function
 
 ' Возвращает длину AutoCAD в мм. Параметр units сохранён для общего вида вызовов;
 ' геометрия чертежа по принятому правилу уже задана в мм.

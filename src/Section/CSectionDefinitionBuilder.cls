@@ -392,7 +392,7 @@ Public Sub Dimension(ByVal annotationID As String, ByVal startAnchorID As String
         Optional ByVal normalX As Double = 0#, Optional ByVal normalY As Double = 0#, Optional ByVal comment As String = "")
     RequireOpen
     If measurement <> "Horizontal" And measurement <> "Vertical" And measurement <> "Aligned" Then _
-        SectionRecipeError "CSectionDefinitionBuilder", "Measurement должен быть Horizontal, Vertical или Aligned."
+        SectionRecipeError "CSectionDefinitionBuilder", "Для размера выберите Horizontal (горизонтальный), Vertical (вертикальный) или Aligned (вдоль заданной линии)."
     Dim value As TSectionAnnotation
     value.AnnotationID = annotationID: value.Kind = "Anchors." & measurement: value.Name = name
     value.StartAnchorID = startAnchorID: value.EndAnchorID = endAnchorID

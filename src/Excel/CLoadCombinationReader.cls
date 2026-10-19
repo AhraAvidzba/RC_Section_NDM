@@ -101,9 +101,9 @@ Private Sub AddRow(ByRef data As Variant, ByVal batch As CBatchSectionCalculator
     If Len(profileId) = 0 Then AppendError errorText, CellLocation(source, rowIndex, 5, "ProfileId") & " не заполнен"
 
     If Len(errorText) > 0 Then
-        batch.AddInvalidCombination combinationID, profileId, comment, errorText, loadPathText, rowIndex - 1
+        batch.AddInvalidCombination combinationID, profileId, comment, errorText, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     Else
-        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1
+        batch.AddCombination combinationID, nValue, mxValue, myValue, profileId, comment, loadPathText, rowIndex - 1, RowLocation(source, rowIndex)
     End If
 End Sub
 
@@ -174,9 +174,14 @@ ConversionFailed:
     AppendError errorText, fieldName & " не может быть переведено во внутренние единицы: числовой диапазон превышен"
 End Sub
 
+' Передаёт адрес прочитанной строки вместе с сочетанием, чтобы сообщения
+' расчётных результатов оставались адресными без повторного чтения Excel.
+Private Function RowLocation(ByVal source As Object, ByVal rowIndex As Long) As String
+    RowLocation = source.Worksheet.Name & "!" & source.Rows(rowIndex).Address(False, False)
+End Function
+
 ' Добавляет к названию параметра фактический адрес его ячейки.
-' Пакетный расчёт и запись результатов получают готовую причину,
-' без повторного чтения таблицы или поиска адреса в тексте.
+' Пакетный расчёт получает готовую причину без поиска адреса в тексте ошибки.
 Private Function CellLocation(ByVal source As Object, ByVal rowIndex As Long, _
         ByVal columnIndex As Long, ByVal fieldName As String) As String
     CellLocation = fieldName & ", " & source.Worksheet.Name & "!" & _

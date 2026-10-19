@@ -151,10 +151,11 @@ Public Type TSectionAnnotation
 End Type
 
 Public Type TSectionMeshOptions
-    StepX As Double
-    StepY As Double
-    BoundarySubdivisions As Long
-    MaterialID As Long
+    StepX As Double ' Ширина основной ячейки бетонной сетки, мм.
+    StepY As Double ' Высота основной ячейки бетонной сетки, мм.
+    BoundarySubdivisions As Long ' Число подъячеек вдоль стороны граничной ячейки.
+    MaterialID As Long ' Номер материала создаваемых бетонных элементов.
+    SourceReference As String ' Сохранённые адреса параметров сетки для пояснения ошибок построения.
 End Type
 
 Public Type TRebarPosition

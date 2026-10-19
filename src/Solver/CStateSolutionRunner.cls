@@ -59,9 +59,9 @@ End Sub
 ' Другое начальное поле или численные настройки дают отдельную попытку.
 Friend Sub BeginRetryAttemptSession(ByVal section As CSectionModel, _
         ByVal concreteMaterial As Object, ByVal steelMaterial As Object)
-    If section Is Nothing Then Err.Raise vbObjectError + 3483, "CStateSolutionRunner", "Модель retry-сессии не передана."
-    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3484, "CStateSolutionRunner", "Материал бетона retry-сессии не передан."
-    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3485, "CStateSolutionRunner", "Материал арматуры retry-сессии не передан."
+    If section Is Nothing Then Err.Raise vbObjectError + 3483, "CStateSolutionRunner", "Для повторных попыток решения НДС не передана модель сечения."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 3484, "CStateSolutionRunner", "Для повторных попыток решения НДС не передана диаграмма бетона."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 3485, "CStateSolutionRunner", "Для повторных попыток решения НДС не передана диаграмма арматуры."
     Set mRetryContextSection = section
     Set mRetryContextConcrete = concreteMaterial
     Set mRetryContextSteel = steelMaterial

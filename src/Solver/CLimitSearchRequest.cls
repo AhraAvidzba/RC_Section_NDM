@@ -58,9 +58,9 @@ Public Sub InitializeCapacity(ByVal problem As ILimitSearchProblem, _
         Optional ByVal materialSpec As CMaterialModelSpec = Nothing)
     ClearLoadPathSelection
     If problem Is Nothing Then Err.Raise vbObjectError + 4200, "CLimitSearchRequest", "Не передана задача поиска несущей способности."
-    If section Is Nothing Then Err.Raise vbObjectError + 4201, "CLimitSearchRequest", "Не передана модель сечения для limit-search."
-    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Не передана диаграмма бетона для limit-search."
-    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4203, "CLimitSearchRequest", "Не передана диаграмма арматуры для limit-search."
+    If section Is Nothing Then Err.Raise vbObjectError + 4201, "CLimitSearchRequest", "Для поиска предельного состояния не передана геометрия сечения."
+    If concreteMaterial Is Nothing Then Err.Raise vbObjectError + 4202, "CLimitSearchRequest", "Для поиска предельного состояния не передана диаграмма бетона."
+    If steelMaterial Is Nothing Then Err.Raise vbObjectError + 4203, "CLimitSearchRequest", "Для поиска предельного состояния не передана диаграмма арматуры."
 
     Set mProblem = problem
     Set mSection = section

@@ -213,7 +213,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
                 End If
                 If Not identical Then
                     mConflicts = mConflicts + 1
-                    AddDiagnostic index, "COINCIDENCE_OWNER", result.BarID(owner), "Сохранен явно заданный опубликованный владелец.", result.Diameter(owner), mRules(index).Diameter
+                    AddDiagnostic index, "COINCIDENCE_OWNER", result.BarID(owner), "В совпавшей позиции сохранён стержень, которому правило отдаёт приоритет.", result.Diameter(owner), mRules(index).Diameter
                 End If
                 mMergedPositions = mMergedPositions + 1
                 mMergedByRule(index) = mMergedByRule(index) + 1
@@ -296,8 +296,8 @@ Private Sub CheckNeighbors(ByVal index As Long, ByRef position As TRebarPosition
                     If gap < -GEOM_TOLERANCE Then
                         mBarOverlaps = mBarOverlaps + 1
                         If mRules(index).OverlapPolicy = RejectOverlap Or mRules(mPhysicalRule(other)).OverlapPolicy = RejectOverlap Or mPhysicalOffsetRule(other) > 0 Then _
-                            RuleError OffsetCheckRule(index, other), "Диски стержней пересекаются; измените шаг или смещения связанных рядов.", "BAR_OVERLAP", result.BarID(other), gap, actualDiameter
-                        AddDiagnostic index, "BAR_OVERLAP", result.BarID(other), "Отрицательный геометрический зазор между дисками стержней.", gap, mRules(index).Diameter
+                            RuleError OffsetCheckRule(index, other), "Поперечные сечения стержней пересекаются. Измените шаг арматуры или смещения связанных рядов.", "BAR_OVERLAP", result.BarID(other), gap, actualDiameter
+                        AddDiagnostic index, "BAR_OVERLAP", result.BarID(other), "Поперечные сечения стержней пересекаются: расстояние между центрами меньше суммы радиусов.", gap, mRules(index).Diameter
                     End If
 NextCandidate:
                 Next candidate
@@ -355,7 +355,7 @@ End Sub
 ' независимом пути.
 Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef counts() As Double)
     If state(index) = 2 Then Exit Sub
-    If state(index) = 1 Then RuleError index, "Циклическая зависимость рядов."
+    If state(index) = 1 Then RuleError index, "Зависимости рядов арматуры образуют замкнутую цепочку. Уберите циклическую ссылку между правилами."
     state(index) = 1
     If mRules(index).Enabled Then
         ValidateOptions index
@@ -382,7 +382,7 @@ Private Sub EstimateRule(ByVal index As Long, ByRef state() As Long, ByRef count
                 counts(index) = counts(index) + PositionCountFor(index, path)
             Next id
         End If
-        If counts(index) > GEOM_MAX_REBAR_COUNT Then RuleError index, "Количество позиций превышает диапазон счетчиков."
+        If counts(index) > GEOM_MAX_REBAR_COUNT Then RuleError index, "Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг."
     End If
     state(index) = 2
 End Sub
@@ -396,7 +396,7 @@ Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPa
         Case ByCount
             PositionCountFor = mRules(index).Count
         Case ExplicitPositions
-            If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, "Не заданы явные станции."
+            If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, "Не заданы расстояния от начала линии до мест установки стержней."
             PositionCountFor = UBound(mRules(index).ExplicitStations) - LBound(mRules(index).ExplicitStations) + 1#
         Case ByMaxStep
             intervals = -Int(-length / mRules(index).Step)
@@ -415,16 +415,17 @@ Private Function PositionCountFor(ByVal index As Long, ByVal path As CGeometryPa
                 PositionCountFor = Fix(intervals) + 1#
             End If
         Case Else
-            RuleError index, "Неизвестный режим раскладки."
+            RuleError index, "Не распознан способ размещения арматуры. Проверьте правило задания количества, шага или проекции."
     End Select
-    If PositionCountFor < 0# Or PositionCountFor > GEOM_MAX_REBAR_COUNT Then RuleError index, "Количество позиций превышает диапазон счетчиков."
+    If PositionCountFor < 0# Or PositionCountFor > GEOM_MAX_REBAR_COUNT Then RuleError index, "Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг."
 End Function
 
 ' Подготавливает правило после его зависимостей и сохраняет исходные номера позиций.
 ' Порядок добавления стержней и пропуски проекций не меняют выбор каждого второго стержня.
 Private Sub PrepareRule(ByVal index As Long)
+    On Error GoTo InvalidGeometry
     If mState(index) = 2 Then Exit Sub
-    If mState(index) = 1 Then RuleError index, "Циклическая зависимость рядов."
+    If mState(index) = 1 Then RuleError index, "Зависимости рядов арматуры образуют замкнутую цепочку. Уберите циклическую ссылку между правилами."
     mState(index) = 1
     If Not mRules(index).Enabled Then mState(index) = 2: Exit Sub
     ' Общее число стержней и параметры всех правил уже проверены до расчёта координат.
@@ -442,10 +443,13 @@ Private Sub PrepareRule(ByVal index As Long)
         Case ProjectFrom
             PrepareProjected index, source
         Case Else
-            RuleError index, "Неизвестный режим раскладки."
+            RuleError index, "Не распознан способ размещения арматуры. Проверьте правило задания количества, шага или проекции."
     End Select
     mCount(index) = mPositionCount - mStart(index) + 1
     mState(index) = 2
+    Exit Sub
+InvalidGeometry:
+    SectionRecipeGeometryError "CRebarRuleExecutor", mRules(index).SourceReference
 End Sub
 
 ' Вычисляет координаты независимого ряда. Нумерация позиций начинается с 1
@@ -615,10 +619,10 @@ Private Sub PrepareProjected(ByVal index As Long, ByVal source As Long)
                 End If
             Next targetIndex
             If Len(bestID) = 0 Then
-                If Not mRules(index).SkipMissingProjection Then RuleError index, "Нет пересечения исходной позиции с целевым рабочим путем.", "PROJECTION_MISSING", position.SourcePositionID, position.X, position.Y
+                If Not mRules(index).SkipMissingProjection Then RuleError index, "Не удалось спроецировать исходный стержень на заданный участок линии размещения. Проверьте направление проекции и концевые отступы.", "PROJECTION_MISSING", position.SourcePositionID, position.X, position.Y
                 mSkippedProjections = mSkippedProjections + 1
                 mSkippedByRule(index) = mSkippedByRule(index) + 1
-                AddDiagnostic index, "PROJECTION_MISSING", position.SourcePositionID, "Исходная позиция пропущена: нет hit на конечной целевой траектории.", position.X, position.Y
+                AddDiagnostic index, "PROJECTION_MISSING", position.SourcePositionID, "Стержень пропущен: направление его проекции не пересекает заданный участок линии размещения.", position.X, position.Y
             Else
                 Set path = mDefinition.Path(bestID)
                 path.AtDistance bestStation, position.X, position.Y, position.TangentX, position.TangentY, mRules(index).IncomingTangentAtJoint
@@ -648,18 +652,18 @@ Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) A
     first = mRules(index).StartSetback: last = path.Length - mRules(index).EndSetback
     length = last - first
     If mRules(index).Mode = ExplicitPositions Then
-        If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, "Не заданы явные станции."
+        If Not IsArray(mRules(index).ExplicitStations) Then RuleError index, "Не заданы расстояния от начала линии до мест установки стержней."
         count = UBound(mRules(index).ExplicitStations) - LBound(mRules(index).ExplicitStations) + 1
         ReDim stations(0 To CLng(count) - 1)
         For i = 0 To CLng(count) - 1
             stations(i) = CDbl(mRules(index).ExplicitStations(LBound(mRules(index).ExplicitStations) + i))
-            If stations(i) < first Or stations(i) > last Then RuleError index, "Явная станция вне целевого рабочего участка."
-            If path.IsClosed And stations(i) = path.Length Then RuleError index, "Последняя станция замкнутого пути дублирует первую."
+            If stations(i) < first Or stations(i) > last Then RuleError index, "Заданное расстояние до стержня выходит за участок линии, оставшийся после концевых отступов."
+            If path.IsClosed And stations(i) = path.Length Then RuleError index, "Стержень в конце полного замкнутого обхода совпадает с первым. Удалите повторную конечную позицию."
         Next i
         StationsFor = stations: Exit Function
     End If
     If length <= GEOM_TOLERANCE Then
-        If mRules(index).Mode <> ByCount Or mRules(index).Count <> 1 Then RuleError index, "Вырожденный рабочий участок допускает только один явно заданный стержень."
+        If mRules(index).Mode <> ByCount Or mRules(index).Count <> 1 Then RuleError index, "После концевых отступов участок сократился до точки. В ней можно задать только один стержень по количеству."
     End If
     If mRules(index).Mode = ByFixedStep Then
         StationsFor = FixedStations(index, path, first, length): Exit Function
@@ -673,7 +677,7 @@ Private Function StationsFor(ByVal index As Long, ByVal path As CGeometryPath) A
             Case Else: count = intervals
         End Select
     End If
-    If count < 0# Or count > GEOM_MAX_REBAR_COUNT Then RuleError index, "Количество позиций превышает диапазон счетчиков."
+    If count < 0# Or count > GEOM_MAX_REBAR_COUNT Then RuleError index, "Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг."
     If count = 0# Then Exit Function
     ReDim stations(0 To CLng(count) - 1)
     If count = 1# And mRules(index).Mode = ByCount And mRules(index).EndMode <> ClosedUniform Then
@@ -706,7 +710,7 @@ Private Function FixedStations(ByVal index As Long, ByVal path As CGeometryPath,
     Else
         count = Fix(intervals) + 1#
     End If
-    If count > GEOM_MAX_REBAR_COUNT Then RuleError index, "Количество позиций превышает диапазон счетчиков."
+    If count > GEOM_MAX_REBAR_COUNT Then RuleError index, "Число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг."
     If count = 0# Then Exit Function
     ReDim stations(0 To CLng(count) - 1)
     start = first
@@ -734,13 +738,13 @@ Private Sub ValidateOptions(ByVal index As Long)
     With mRules(index)
         If .Diameter <= 0# Then RuleError index, "Диаметр активного ряда должен быть положительным."
         If .StartSetback < 0# Or .EndSetback < 0# Then RuleError index, "Концевые отступы не могут быть отрицательными."
-        If .EndMode < IncludeBoth Or .EndMode > ClosedUniform Then RuleError index, "Неизвестное правило концов."
-        If .PlacementCheck <> CheckCenter And .PlacementCheck <> CheckFullDisk Then RuleError index, "Неизвестная проверка размещения."
-        If .OverlapPolicy <> ReportOverlap And .OverlapPolicy <> RejectOverlap Then RuleError index, "Неизвестная политика пересечения дисков."
-        If .Publication <> PublishByRule And .Publication <> PublishPerSourcePosition Then RuleError index, "Неизвестный порядок публикации."
-        If .PositionOrder <> AlongPath And .PositionOrder <> FromPathMiddle Then RuleError index, "Неизвестный порядок позиций."
-        If .Coincidence < RejectCoincidence Or .Coincidence > KeepPublishedOwner Then RuleError index, "Неизвестная политика совпадений."
-        If .RemainderPlacement < RemainderStart Or .RemainderPlacement > RemainderCenter Then RuleError index, "Неизвестное размещение остатка шага."
+        If .EndMode < IncludeBoth Or .EndMode > ClosedUniform Then RuleError index, "Не распознан способ установки стержней на концах линии (EndMode)."
+        If .PlacementCheck <> CheckCenter And .PlacementCheck <> CheckFullDisk Then RuleError index, "Не распознана проверка положения арматуры: принадлежность центров или всего поперечного сечения стержней бетону (PlacementCheck)."
+        If .OverlapPolicy <> ReportOverlap And .OverlapPolicy <> RejectOverlap Then RuleError index, "Не распознано правило обработки пересечения поперечных сечений стержней."
+        If .Publication <> PublishByRule And .Publication <> PublishPerSourcePosition Then RuleError index, "Не распознан порядок присвоения расчётных имён основным и связанным стержням (Publication)."
+        If .PositionOrder <> AlongPath And .PositionOrder <> FromPathMiddle Then RuleError index, "Не распознан порядок нумерации стержней вдоль линии или от её середины (PositionOrder)."
+        If .Coincidence < RejectCoincidence Or .Coincidence > KeepPublishedOwner Then RuleError index, "Не распознано правило обработки стержней с совпавшими центрами (Coincidence)."
+        If .RemainderPlacement < RemainderStart Or .RemainderPlacement > RemainderCenter Then RuleError index, "Не распознано положение остатка длины при размещении с фиксированным шагом (RemainderPlacement)."
         If .Mode = ByMaxStep Or .Mode = ByFixedStep Then
             If .Step <= 0# Then RuleError index, "Шаг должен быть положительным."
         End If
@@ -753,12 +757,23 @@ End Sub
 
 ' Проверяет ненулевой рабочий интервал после концевых отступов.
 Private Sub ValidateWorkInterval(ByVal index As Long, ByVal path As CGeometryPath)
-    If mRules(index).StartSetback + mRules(index).EndSetback > path.Length + GEOM_TOLERANCE Then RuleError index, "Концевые отступы превышают длину пути."
+    Dim remaining As Double, pointPlacement As Boolean
+    remaining = path.Length - mRules(index).StartSetback - mRules(index).EndSetback
+    pointPlacement = (mRules(index).Mode = ByCount And mRules(index).Count = 1) Or mRules(index).Mode = ExplicitPositions
+    ' Один стержень по количеству или явно заданная позиция допускают точечный
+    ' участок. Допустимость каждой явной позиции проверяется в StationsFor.
+    If remaining < -GEOM_TOLERANCE Or (remaining <= GEOM_TOLERANCE And Not pointPlacement) Then
+        RuleError index, "После концевых отступов не осталось участка для размещения арматуры. " & _
+            "Длина линии — " & CStr(path.Length) & " мм; отступ от начала — " & CStr(mRules(index).StartSetback) & _
+            " мм; отступ от конца — " & CStr(mRules(index).EndSetback) & _
+            " мм. Уменьшите концевые отступы так, чтобы их сумма была меньше длины линии.", _
+            "WORK_INTERVAL_EMPTY", path.ID, path.Length, mRules(index).StartSetback + mRules(index).EndSetback
+    End If
     If path.IsClosed Then
-        If mRules(index).StartSetback <> 0# Or mRules(index).EndSetback <> 0# Then RuleError index, "Для полного замкнутого пути концевые отступы неприменимы."
-        If mRules(index).EndMode <> ClosedUniform Then RuleError index, "Замкнутый путь требует ClosedUniform; для иных концов задайте открытый участок."
+        If mRules(index).StartSetback <> 0# Or mRules(index).EndSetback <> 0# Then RuleError index, "При равномерном размещении по всей замкнутой линии концевые отступы должны быть нулевыми. Для ненулевых отступов задайте открытый участок."
+        If mRules(index).EndMode <> ClosedUniform Then RuleError index, "Для всей замкнутой линии используйте ClosedUniform — равномерное размещение без повторного стержня на замыкании. Для других способов задайте открытый участок."
     ElseIf mRules(index).EndMode = ClosedUniform Then
-        RuleError index, "ClosedUniform требует замкнутого пути."
+        RuleError index, "Равномерное размещение по полному замкнутому обходу (ClosedUniform) неприменимо к открытой линии."
     End If
 End Sub
 
@@ -777,7 +792,7 @@ End Function
 ' Сохраняет подготовленную позицию стержня, её правило, исходную позицию
 ' и порядок добавления в общий список.
 Private Sub AppendPosition(ByRef value As TRebarPosition)
-    If mPositionCount >= GEOM_MAX_REBAR_COUNT Then RuleError value.RuleIndex, "Суммарное количество позиций превышает диапазон счетчиков."
+    If mPositionCount >= GEOM_MAX_REBAR_COUNT Then RuleError value.RuleIndex, "Суммарное число мест установки арматуры превышает предел счётчика программы. Уменьшите количество стержней или увеличьте их шаг."
     If mPositionCount = mCapacity Then
         mCapacity = CLng(GeomMin(GEOM_MAX_REBAR_COUNT, GeomMax(16#, CDbl(mCapacity) * 2#)))
         ReDim Preserve mPositions(1 To mCapacity)
@@ -843,7 +858,11 @@ Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVa
     If code = "COINCIDENCE" Or code = "COINCIDENCE_CONFLICT" Or code = "BAR_OVERLAP" Or code = "ROW_OFFSET_COINCIDENCE" Then mConflicts = mConflicts + 1
     AddDiagnostic index, code, relatedEntityID, reason, detail1, detail2
     Dim reference As String
-    If index > 0 Then reference = mDiagnostic.SourceReference: reason = "Ряд '" & mRules(index).RuleID & "': " & reason
+    If index > 0 Then
+        reference = mDiagnostic.SourceReference
+        reason = "Ряд '" & mRules(index).RuleID & "': " & reason
+        If Len(mRules(index).Comment) > 0 Then reason = mRules(index).Comment & ". " & reason
+    End If
     SectionRecipeError "CRebarRuleExecutor", reason, reference
 End Sub
 

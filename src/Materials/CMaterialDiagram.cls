@@ -434,7 +434,7 @@ End Function
 ' материалов.
 Public Function PointStrain(ByVal index As Long) As Double
     EnsureInitialized
-    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3109, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mPointCount) & "."
     PointStrain = mStrains(index)
 End Function
 
@@ -442,7 +442,7 @@ End Function
 ' материалов.
 Public Function PointStress(ByVal index As Long) As Double
     EnsureInitialized
-    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона."
+    If index < 1 Or index > mPointCount Then Err.Raise vbObjectError + 3110, "CMaterialDiagram", "Индекс точки диаграммы вне диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mPointCount) & "."
     PointStress = mStresses(index)
 End Function
 

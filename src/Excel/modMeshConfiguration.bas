@@ -13,7 +13,7 @@ Public Function BuildConfiguredConcreteMesh(ByVal geometry As CGeometryRegion, _
     Dim options As TSectionMeshOptions, mesh As CFiberMeshBuilder
     options = ReadSectionMeshOptions(settings, units)
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions
+    mesh.BuildMesh geometry, options.StepX, options.StepY, options.MaterialID, options.BoundarySubdivisions, options.SourceReference
     Set BuildConfiguredConcreteMesh = mesh
 End Function
 
@@ -26,6 +26,8 @@ Public Function ReadSectionMeshOptions(ByVal settings As CSystemSettingsReader, 
     options.StepY = ReadMeshStep(settings, units, "Mesh.StepY")
     options.BoundarySubdivisions = ReadMeshBoundarySubdivisions(settings)
     options.MaterialID = 1
+    options.SourceReference = "Mesh.StepX: " & settings.InputLocation("Mesh.StepX") & "; Mesh.StepY: " & _
+        settings.InputLocation("Mesh.StepY") & "; Mesh.BoundarySubdivisions: " & settings.InputLocation("Mesh.BoundarySubdivisions")
     ReadSectionMeshOptions = options
 End Function
 

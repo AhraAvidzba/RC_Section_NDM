@@ -143,8 +143,13 @@ End Function
 
 ' Читает обязательную длину и переводит её из входных единиц в мм через CUnitSystem.
 Public Function Length(ByVal row As Long, ByVal column As Long, ByVal units As CUnitSystem) As Double
+    On Error GoTo InvalidConversion
     If units Is Nothing Then InputError row, column, "Не передана система единиц."
     Length = units.InputLengthToInternal(Number(row, column))
+    Exit Function
+InvalidConversion:
+    If Err.Number = 6 Then InputError row, column, "Размер после перевода в миллиметры выходит за числовой диапазон. Уменьшите значение и проверьте выбранную единицу длины."
+    Err.Raise Err.Number, Err.Source, Err.Description
 End Function
 
 ' Читает длину через общий перевод Length в мм, затем проверяет, что она больше нуля.
@@ -167,8 +172,7 @@ Public Function OptionalDiameter(ByVal row As Long, ByVal column As Long, ByVal 
     If Len(raw) = 0 Then Exit Function
     value = Number(row, column)
     If value < 0# Then InputError row, column, "Диаметр не может быть отрицательным; 0 или пустая ячейка выключают ряд. Введите неотрицательное значение."
-    If units Is Nothing Then InputError row, column, "Не передана система единиц."
-    OptionalDiameter = units.InputLengthToInternal(value)
+    OptionalDiameter = Length(row, column, units)
 End Function
 
 ' Читает необязательный отступ ряда: пустая ячейка равна нулю; остальные размеры не ослабляет.
@@ -255,7 +259,7 @@ End Sub
 
 ' Формирует ошибку входной таблицы с фактическим адресом ячейки и причиной.
 Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As String)
-    Dim location As String
+    Dim location As String, value As Variant, valueText As String
     location = mName
     If row >= 1 And row <= mRows And column >= 1 And column <= mColumns Then
         location = mAddresses(row, column) & " (" & mName & ")"
@@ -264,6 +268,17 @@ Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
         If column > 1 And VarType(mValues(row, 1)) = vbString Then
             If Len(Trim$(CStr(mValues(row, 1)))) > 0 Then location = location & "; " & CStr(mValues(row, 1))
         End If
+        value = mValues(row, column)
+        If IsError(value) Then
+            valueText = "ошибка формулы Excel"
+        ElseIf IsNull(value) Then
+            valueText = "неопределённое значение"
+        ElseIf IsEmpty(value) Then
+            valueText = "пустая ячейка"
+        ElseIf Not IsObject(value) And Not IsArray(value) Then
+            valueText = """" & CStr(value) & """"
+        End If
+        If Len(valueText) > 0 Then reason = reason & " Прочитано: " & valueText & "."
     End If
     Err.Raise vbObjectError + 5525, "CSectionInputTable", location & ": " & reason
 End Sub

@@ -1714,11 +1714,18 @@ Private Sub TestAudit03FormationResidualContracts(ByRef stats As TCrackTestStats
                 AssertTrue stats, prefix & ".localizedRuntimeReason", _
                     InStr(1, search.Meta.ResultComment, "Object variable", vbTextCompare) = 0 And _
                     InStr(1, search.Meta.ResultComment, "Overflow", vbTextCompare) = 0
-                Dim runtimeNumber As Long
-                If scenario = 5 Then runtimeNumber = 91 Else runtimeNumber = 6
+                Dim runtimeNumber As Long, runtimeDescription As String
+                If scenario = 5 Then
+                    runtimeNumber = 91
+                    ' Общая проверка нагрузки сохраняет код 91, но поясняет отсутствие
+                    ' данных своим русским текстом вместо системного английского.
+                    runtimeDescription = "не передана модель сечения или описание изменения N, Mx и My."
+                Else
+                    runtimeNumber = 6: runtimeDescription = Error$(runtimeNumber)
+                End If
                 AssertTrue stats, prefix & ".runtimeDiagnostic", _
                     InStr(1, search.DiagnosticLog, "formationResidualRuntimeError=" & CStr(runtimeNumber), vbBinaryCompare) > 0 And _
-                    InStr(1, search.DiagnosticLog, Error$(runtimeNumber), vbBinaryCompare) > 0
+                    InStr(1, search.DiagnosticLog, runtimeDescription, vbBinaryCompare) > 0
             End If
             If scenario >= 7 Then
                 AssertTrue stats, prefix & ".noTerminalProbe", calculator.SolverCallCount = 0

@@ -55,7 +55,7 @@ Public Sub InitializeFromSearch(ByVal searchResult As CLimitSearchResult, _
     If Not searchResult Is Nothing Then Set mSearchResult = searchResult.Clone
     mPureAxialForMethod = pureAxialForMethod
     If loadPath Is Nothing Then
-        InitializeInvalidInput "LoadPath не подготовлен.", CAPACITY_PATH_NONE
+        InitializeInvalidInput "Не подготовлено правило изменения N, Mx и My при поиске предела (LoadPath).", CAPACITY_PATH_NONE
         Exit Sub
     End If
 

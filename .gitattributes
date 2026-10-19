@@ -1,0 +1,2 @@
+# ALL CODE хранит точные байты нативного экспорта VBA, включая переводы строк.
+workbook/output/VBA_All_Code.txt -text -diff

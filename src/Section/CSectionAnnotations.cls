@@ -100,7 +100,7 @@ End Sub
 ' Добавляет групповую подпись арматуры; пустой текст означает, что подпись выводить не нужно.
 Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        ByVal labelText As String, Optional ByVal commentValue As String = "Групповая подпись арматуры по смысловой грани.")
+        ByVal labelText As String, Optional ByVal commentValue As String = "Подпись общего количества и диаметров арматуры у выбранного участка контура.")
     If Len(Trim$(labelText)) = 0 Then Exit Sub
     AddAnnotation "REBAR_ANNOTATION", annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
 End Sub
@@ -185,5 +185,5 @@ End Property
 ' Проверяет, что номер аннотации находится в пределах сохранённого списка, прежде чем читать её
 ' данные.
 Private Sub CheckIndex(ByVal index As Long)
-    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона."
+    If index < 1 Or index > mCount Then Err.Raise vbObjectError + 5282, "CSectionAnnotations", "Индекс аннотации вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCount) & "."
 End Sub

@@ -22,7 +22,7 @@ Option Explicit
 ' Инженерная задача задаёт подготовку, физический смысл начальной точки
 ' и окончательное подтверждение найденного предела.
 Public Function Execute(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4220, "CLoadMultiplierSearch", "Не передан запрос limit-search."
+    If request Is Nothing Then Err.Raise vbObjectError + 4220, "CLoadMultiplierSearch", "Не переданы исходные данные для поиска предельного состояния."
     If request.Problem Is Nothing Then
         Set Execute = ContractFailure(request, "Не передана задача общего поиска.")
         Exit Function
@@ -141,7 +141,7 @@ Private Function FindBracket(ByVal request As CLimitSearchRequest, ByVal loadPat
             ' Работу ограничивают бюджет и представимость следующей пробы.
             If request.Problem.MaxIterations > 0 Then
                 If recoveryAttempts >= request.Problem.MaxIterations Then
-                    request.Problem.SetNumericalFailure "Исчерпан общий бюджет восстановления lambda: равновесие следующей точки не подтверждено."
+                    request.Problem.SetNumericalFailure "Исчерпано допустимое число попыток восстановить поиск множителя нагрузки lambda. Равновесие следующей точки не подтверждено."
                     Exit Function
                 End If
             End If
@@ -258,7 +258,7 @@ Private Function FinalizeBracketWithRecovery(ByVal request As CLimitSearchReques
         If request.Problem.Converged Or request.Problem.StoppedTerminally Then Exit Function
         If maxIterations > 0 And iterations >= maxIterations Then
             request.Problem.SetNumericalFailure _
-                "Исчерпан бюджет поиска lambda: точность интервала достигнута, но физический предел не подтвержден."
+                "Достигнуто допустимое число попыток поиска множителя нагрузки lambda. Точность интервала достигнута, но равновесие предельной точки не подтверждено."
             Exit Function
         End If
         Dim width As Double, recoveryTolerance As Double
@@ -266,7 +266,7 @@ Private Function FinalizeBracketWithRecovery(ByVal request As CLimitSearchReques
         recoveryTolerance = width / 4#
         If recoveryTolerance <= 0# Or recoveryTolerance >= width Then
             request.Problem.SetNumericalFailure _
-                "Уточнение физического предела остановлено: скобку lambda невозможно уменьшить."
+                "Уточнение предельной точки остановлено: интервал поиска множителя нагрузки lambda больше не удаётся уменьшить."
             Exit Function
         End If
         request.Problem.AppendDiagnostic "bracketFinalizationRecovery; width=" & _
@@ -374,7 +374,7 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
     End If
     If fa >= 0# Or fb <= 0# Then
         request.Problem.SetInvalidInput _
-            "Методу Brent нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
+            "Для метода Brent нужен интервал поиска: при нижнем множителе нагрузки lambda состояние должно быть допустимым, при верхнем — достигать или превышать физический предел."
         Exit Sub
     End If
 
@@ -421,7 +421,7 @@ Private Sub SearchByBrent(ByVal request As CLimitSearchRequest, _
             ElseIf IsAcceptableState(request, stateC) Then
                 pointAccepted = FinalizeBracketWithRecovery(request, loadPath, c, solverC, b, solverB, "Brent", iter, maxIterations)
             Else
-                request.Problem.SetNumericalFailure "В конечной скобке Brent не сохранена допустимая точка равновесия."
+                request.Problem.SetNumericalFailure "В итоговом интервале поиска Brent нет сохранённой точки с подтверждённым допустимым равновесием."
             End If
             Exit Sub
         End If
@@ -538,7 +538,7 @@ Private Sub SearchBySecant(ByVal request As CLimitSearchRequest, _
     End If
     If f0 >= 0# Or f1 <= 0# Then
         request.Problem.SetInvalidInput _
-            "Методу Secant нужна скобка: нижняя lambda с запасом и верхняя lambda за физическим пределом."
+            "Для метода Secant нужен интервал поиска: при нижнем множителе нагрузки lambda состояние должно быть допустимым, при верхнем — достигать или превышать физический предел."
         Exit Sub
     End If
     bracketLow = x0

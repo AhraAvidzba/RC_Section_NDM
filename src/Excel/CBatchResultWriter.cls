@@ -453,7 +453,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, ByVa
 
     data(rowIndex, SUM_COL_ID) = batch.CombinationID(index)
     data(rowIndex, SUM_COL_COMMENT) = batch.CombinationName(index)
-    data(rowIndex, SUM_COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).OverallMeta)
+    data(rowIndex, SUM_COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).OverallMeta)
     data(rowIndex, SUM_COL_OVERALL_STATUS) = MetaStatus(policy, batch.ResultAt(index).OverallMeta)
 
     PutStatusCell data, rowIndex, SUM_COL_STATUS_STRAIN, policy, _
@@ -601,11 +601,6 @@ Private Function MetaStatus(ByVal policy As CResultStatusPolicy, ByVal meta As C
 End Function
 
 ' Возвращает готовое пояснение результата. Причина остановки численного
-' метода при записи на лист повторно не разбирается.
-Private Function MetaComment(ByVal meta As CResultMeta) As String
-    If meta Is Nothing Then Exit Function
-    MetaComment = meta.ResultComment
-End Function
 
 ' Записывает только положительные расчетные коэффициенты запаса.
 Private Sub PutReserveCell(ByRef data() As Variant, ByVal rowIndex As Long, _

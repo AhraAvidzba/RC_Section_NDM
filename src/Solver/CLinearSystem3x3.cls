@@ -69,7 +69,7 @@ Public Function Solve(ByVal a11 As Double, ByVal a12 As Double, ByVal a13 As Dou
 
         If pivotAbs <= 1E-18 Then
             mFailureCode = sfcSingularTangent
-            mStopReason = "Матрица вырождена."
+            mStopReason = "Не удалось решить систему равновесия: матрица не позволяет однозначно определить приращения деформаций."
             Solve = False
             Exit Function
         End If

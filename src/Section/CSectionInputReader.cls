@@ -30,7 +30,7 @@ Private mBlocks As Object ' Индексы строк и столбцов каж
 ' rowPrefix задаёт общую начальную часть ключей выбранного набора строк.
 ' Структура блоков проверяется только при первом обращении по ключам.
 Public Sub Initialize(ByVal table As CSectionInputTable, Optional ByVal units As CUnitSystem = Nothing, Optional ByVal rowPrefix As String = vbNullString)
-    If Not mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер таблицы уже создан."
+    If Not mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Объект чтения входной таблицы уже создан; повторная инициализация запрещена."
     If table Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Не передан снимок входной таблицы."
     Set mTable = table
     mRowPrefix = rowPrefix
@@ -42,7 +42,7 @@ End Sub
 ' Подходит собственной структуре таблицы без блоков и ключей; единицы не преобразует.
 ' Выход за диапазон и ошибки формул проверяет снимок с фактическим адресом поля.
 Public Function ValueAt(ByVal row As Long, ByVal column As Long) As Variant
-    If mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер входной таблицы не создан."
+    If mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Перед чтением данных передайте входную таблицу методом Initialize."
     ValueAt = mTable.CellValue(row, column)
 End Function
 
@@ -186,7 +186,7 @@ End Sub
 
 ' Возвращает индекс блока либо объясняет, какой ключ отсутствует в исходной таблице.
 Private Function RequiredBlock(ByVal key As String) As Object
-    If mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Ридер входной таблицы не создан."
+    If mTable Is Nothing Then Err.Raise vbObjectError + 5525, "CSectionInputReader", "Перед чтением данных передайте входную таблицу методом Initialize."
     EnsureIndex
     If Not mBlocks.Exists(key) Then InvalidCell 1, 1, "Не найден блок '" & key & "'. Восстановите ключ блока."
     Set RequiredBlock = mBlocks(key)

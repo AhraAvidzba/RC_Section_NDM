@@ -667,7 +667,7 @@ End Function
 ' Проверяет номер подготовленной области перед чтением, чтобы исключить
 ' неверный индекс и данные другого сочетания.
 Private Sub CheckCandidate(ByVal index As Long)
-    If index < 1 Or index > mCandidateCount Then InvalidData "Номер якорного расчета СП 35 вне допустимого диапазона."
+    If index < 1 Or index > mCandidateCount Then InvalidData "Номер якорного расчета СП 35 вне допустимого диапазона." & " Запрошен номер " & CStr(index) & "; доступно элементов: " & CStr(mCandidateCount) & "."
 End Sub
 
 ' Сообщает вызывающему расчёту об ошибке подготовленных данных.

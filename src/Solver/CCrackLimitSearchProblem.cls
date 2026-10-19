@@ -43,7 +43,7 @@ End Sub
 ' Подключает существующий расчетчик трещин без изменения его настроек.
 Public Sub Initialize(ByVal crackCalculator As CCrackFormationCalculator)
     If crackCalculator Is Nothing Then Err.Raise vbObjectError + 4250, "CCrackLimitSearchProblem", _
-        "Не передан расчетчик трещинообразования."
+        "Не передан объект, который должен определить нагрузку образования нормальной трещины."
     Set mCrack = crackCalculator
 End Sub
 

@@ -6,10 +6,10 @@ Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТ
 ' ==========================================================================
 ' Unicode-сообщения пользовательских сценариев Excel
 ' ==========================================================================
-' Модуль показывает уже подготовленный текст без преобразования через ANSI.
+' Модуль дополняет готовые пояснения адресами ввода и показывает их без ANSI.
 ' Это сохраняет греческие обозначения, математические знаки и адреса файлов
-' независимо от системной кодовой страницы. Расчеты, статусы и комментарии
-' результатов формируются ответственными слоями и здесь не изменяются.
+' независимо от системной кодовой страницы. Причины, статусы и коды результата
+' определяют расчётные классы; оформление сообщений на их выбор не влияет.
 ' Все сообщения кнопок Excel и AutoCAD-export используют этот общий вывод.
 
 #If VBA7 Then
@@ -46,4 +46,35 @@ Public Function ShowWorkbookMessage(ByVal message As String, _
     If response = 0 Then Err.Raise vbObjectError + 4250, "ShowWorkbookMessage", _
         "Не удалось показать сообщение Excel. Код системной ошибки: " & CStr(Err.LastDllError) & "."
     ShowWorkbookMessage = response
+End Function
+
+' Дополняет готовое пояснение проверки номером сочетания и сохранённым адресом ввода.
+' Статус и физическую причину определяют расчётные классы; здесь меняется только текст.
+Public Function CalculationResultMessage(ByVal batch As CBatchSectionCalculator, ByVal index As Long, _
+        ByVal meta As CResultMeta) As String
+    If meta Is Nothing Then Exit Function
+    Dim reason As String, reference As String, parameterReferences As String
+    reason = Trim$(meta.ResultComment)
+    If Len(reason) = 0 Then Exit Function
+    CalculationResultMessage = "Сочетание " & batch.CombinationID(index) & ": " & reason
+    If meta.InternalStatus = rsNumericalFailure Then CalculationResultMessage = CalculationResultMessage & _
+        " Эта проверка не получила подтверждённого численного результата; сам статус NumFail не доказывает физическое невыполнение. Проверьте исходные данные и диагностику расчёта."
+    parameterReferences = batch.SettingReferences(meta.SourceKeys)
+    If Len(parameterReferences) > 0 Then CalculationResultMessage = CalculationResultMessage & " " & parameterReferences
+    reference = batch.SourceReference(index)
+    If Len(reference) > 0 Then CalculationResultMessage = CalculationResultMessage & " Исходная строка сочетания: " & reference & "."
+End Function
+
+' Сохраняет исходную причину ошибки кнопки и технический источник для проверки разработчиком.
+' При пустом системном описании пользователь всё равно получает код и место остановки.
+Public Function WorkbookErrorMessage(ByVal operation As String, ByVal number As Long, _
+        ByVal source As String, ByVal reason As String) As String
+    WorkbookErrorMessage = operation & ": "
+    If Len(Trim$(reason)) > 0 Then
+        WorkbookErrorMessage = WorkbookErrorMessage & reason
+    Else
+        WorkbookErrorMessage = WorkbookErrorMessage & "Программа остановилась без описания причины."
+    End If
+    If Len(source) > 0 Then WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Источник ошибки: " & source & "."
+    WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Код ошибки: " & CStr(number) & "."
 End Function

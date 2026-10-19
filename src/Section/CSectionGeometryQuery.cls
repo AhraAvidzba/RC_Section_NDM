@@ -1581,7 +1581,7 @@ Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
         loopAreas(ordered(i).LoopID) = loopAreas(ordered(i).LoopID) + contribution
     Next i
     For i = 1 To loopCount: loopOpening(i) = (loopAreas(i) < 0#): Next i
-    If area < -QUERY_TOLERANCE Then GeometryError "Граница области имеет отрицательную площадь; проверьте outer/opening."
+    If area < -QUERY_TOLERANCE Then GeometryError "Не удалось получить положительную площадь бетона. Проверьте наружные границы Outer и отверстия Opening, их положение и направление обхода."
     Dim result As CConcreteRegion
     Set result = New CConcreteRegion
     result.SetGeometry ordered, count, loopCount, GeomMax(area, 0#), source, revision, loopOpening
@@ -1626,7 +1626,7 @@ Private Sub StitchLoops(ByRef edges() As TRegionEdge, ByVal count As Long, ByRef
                 LSet current = edges(candidate)
                 If reverseCandidate Then modGeometryPrimitives.ReverseEdge current
                 used(candidate) = True
-                If position > count Then GeometryError "Нарушена топология замкнутых контуров."
+                If position > count Then GeometryError "Не удалось собрать замкнутые контуры из заданных сегментов. Проверьте разрывы, пересечения и повторяющиеся участки границ."
             Loop
         End If
     Next i

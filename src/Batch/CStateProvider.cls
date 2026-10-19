@@ -61,7 +61,7 @@ End Sub
 ' initialSolver задаёт только начальное приближение и не определяет совпадение запросов.
 Public Function GetOrSolve(ByVal request As CStateRequest, _
         Optional ByVal initialSolver As CSectionSolver = Nothing) As CSectionStateResult
-    If request Is Nothing Then Err.Raise vbObjectError + 3992, "CStateProvider", "Запрос named-state не передан."
+    If request Is Nothing Then Err.Raise vbObjectError + 3992, "CStateProvider", "Не передан запрос на расчёт НДС выбранного назначения."
     Set mLastRunner = Nothing
     mLastStateWasReused = False
 

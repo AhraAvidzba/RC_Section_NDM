@@ -1,0 +1,17 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\ProgramMessages_2026-10-19\\Checkpoint11.xlsm",
+    "WorkbookSHA256":  "6FBF5C0810CD726429030C20D1C4E1509116D66197D44F3BD9D5DBFCCBDC0429",
+    "ProductionSHA256":  "2FC42017F6E448F01D0282D1F68AC9A9CA048F6CB8058A99E441881DBE0D5F55",
+    "Compiled":  true,
+    "Modules":  [
+                    "modTestWorkbookInterface"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

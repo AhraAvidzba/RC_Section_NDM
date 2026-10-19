@@ -50,7 +50,7 @@ End Sub
 ' а здесь нагрузка только разделяется на постоянную и масштабируемую части.
 Public Sub InitializeFromLoadState(ByVal rawPath As String, ByVal loadState As CSectionLoadState)
     If loadState Is Nothing Then _
-        Err.Raise vbObjectError + 3821, "CLoadPathDescriptor", "Не передан CSectionLoadState."
+        Err.Raise vbObjectError + 3821, "CLoadPathDescriptor", "Не переданы продольная сила, изгибающие моменты и точка приложения нагрузки (CSectionLoadState)."
 
     Clear
     mRawText = Trim$(rawPath)

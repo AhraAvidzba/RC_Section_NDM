@@ -34,7 +34,7 @@ Public Sub Initialize(ByVal stateType As ESectionStateType, _
         ByVal targetN As Double, ByVal targetMx As Double, ByVal targetMy As Double, _
         ByVal useDiagramExtension As Boolean, _
         Optional ByVal allowRetryStarts As Boolean = False)
-    If materialSpec Is Nothing Then Err.Raise vbObjectError + 3980, "CStateRequest", "MaterialModelSpec не передан."
+    If materialSpec Is Nothing Then Err.Raise vbObjectError + 3980, "CStateRequest", "Не передано описание выбранных диаграмм и характеристик материалов (MaterialModelSpec)."
     mStateType = stateType
     mMaterialRole = materialRole
     Set mMaterialSpec = materialSpec.Clone

@@ -101,11 +101,12 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
     Dim rowNumber As Long, suffix As String
     keys = Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
     ids = Array("B.Top", "B.Bottom", "H.Left", "H.Right", "Opening.B.Top", "Opening.B.Bottom", "Opening.H.Left", "Opening.H.Right")
-    captions = Array("B - верхняя", "B - нижняя", "H - левая", "H - правая", "B_o - верхняя", "B_o - нижняя", "H_o - левая", "H_o - правая")
+    captions = Array("у верхней наружной стороны", "у нижней наружной стороны", "у левой наружной стороны", "у правой наружной стороны", _
+        "у верхней стороны отверстия", "у нижней стороны отверстия", "у левой стороны отверстия", "у правой стороны отверстия")
     For i = 1 To 8
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
-            .RowComment = "HollowRectangle: " & .Caption & IIf(i > 4, " грань Opening", " наружная грань") & ", ряд "
+            .RowComment = "Прямоугольник с отверстием: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
             If i <= 4 Then .Count = reader.Count("Main", key, "n")

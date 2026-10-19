@@ -25,7 +25,7 @@ Private Const INITIAL_STEP_SCALE_FACTOR As Double = 2# ' Численный ра
 ' Ищет несущую способность методом UltimateStrain. Чисто осевое изменение
 ' нагрузки направляет в LoadMultiplier по общему правилу численной устойчивости.
 Public Function ExecuteCapacity(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4210, "CUltimateStrainSearch", "Не передан запрос limit-search."
+    If request Is Nothing Then Err.Raise vbObjectError + 4210, "CUltimateStrainSearch", "Не переданы исходные данные для поиска предельного состояния."
 
     If request.PureAxialForMethod Then
         Set ExecuteCapacity = ExecuteCapacityLoadMultiplier(request)
@@ -93,7 +93,7 @@ End Function
 ' и сохранение НДС до и после трещины задаёт её расчёт;
 ' численный цикл Ньютона общий с несущей способностью.
 Public Function ExecuteCrackFormation(ByVal request As CLimitSearchRequest) As CLimitSearchResult
-    If request Is Nothing Then Err.Raise vbObjectError + 4211, "CUltimateStrainSearch", "Не передан запрос limit-search."
+    If request Is Nothing Then Err.Raise vbObjectError + 4211, "CUltimateStrainSearch", "Не переданы исходные данные для поиска предельного состояния."
 
     Dim searchSucceeded As Boolean
     searchSucceeded = request.Problem.RunUltimateAttempts(request)

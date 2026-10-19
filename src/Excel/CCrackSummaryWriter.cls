@@ -174,7 +174,8 @@ Private Function TargetRange(ByVal workbook As Object, Optional ByVal dataRows A
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
-        "rngCrackSummaryAnchor должен иметь место для шапки над собой."
+        "Диапазон rngCrackSummaryAnchor привязан к " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & _
+        ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
     Set TargetRange = anchor.Offset(-HEADER_ROWS, 0).Resize(RequiredRows(dataRows), TOTAL_COLUMNS)
 End Function
 
@@ -183,7 +184,8 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Dim anchor As Object
     Set anchor = workbook.Names.Item("rngCrackSummaryAnchor").RefersToRange
     If anchor.Row <= HEADER_ROWS Then Err.Raise vbObjectError + 3991, "CCrackSummaryWriter", _
-        "rngCrackSummaryAnchor должен иметь место для шапки над собой."
+        "Диапазон rngCrackSummaryAnchor привязан к " & anchor.Worksheet.Name & "!" & anchor.Address(False, False) & _
+        ". Для шапки таблицы нужны " & CStr(HEADER_ROWS) & " строк выше этой ячейки. Перенесите именованный диапазон ниже."
 
     Dim topRow As Long
     topRow = anchor.Row - HEADER_ROWS
@@ -292,10 +294,10 @@ Private Sub PutHeaderNotes(ByRef headers() As Variant, ByVal units As CUnitSyste
     headers(HEADER_NOTES_ROW, COL_SP35_NREBARS) = "общее число стержней критической области"
     headers(HEADER_NOTES_ROW, COL_SP35_SIGMA) = "напряжение в " & OutputStressUnit(units) & "; критическая группа"
     headers(HEADER_NOTES_ROW, COL_SP35_ES) = "модуль арматуры в " & OutputStressUnit(units) & "; текущая модель"
-    headers(HEADER_NOTES_ROW, COL_SP35_ACRC) = "раскрытие в " & OutputLengthUnit(units) & "; максимум рассчитанных якорей"
+    headers(HEADER_NOTES_ROW, COL_SP35_ACRC) = "раскрытие в " & OutputLengthUnit(units) & "; наибольшее значение среди проверенных стержней"
     headers(HEADER_NOTES_ROW, COL_SP35_ALLOWABLE) = "допускаемая ширина в " & OutputLengthUnit(units) & "; настройка пользователя"
     headers(HEADER_NOTES_ROW, COL_SP35_RATIO) = "запас: допускаемая ширина / рассчитанная ширина"
-    headers(HEADER_NOTES_ROW, COL_SP35_STATUS) = "статус собственной проверки ширины по общей policy"
+    headers(HEADER_NOTES_ROW, COL_SP35_STATUS) = "статус проверки ширины раскрытия трещин по общим правилам определения статусов"
     headers(HEADER_NOTES_ROW, COL_RESULT_COMMENT) = "пояснение расчетного статуса блока трещин"
     headers(HEADER_NOTES_ROW, COL_REF_N) = "нагрузки, переданные в расчет трещин, в центре приведенного сечения"
     headers(HEADER_NOTES_ROW, COL_REF_MX) = "момент Mx там же, вокруг глобальной оси X/Y принятой системы"
@@ -462,7 +464,7 @@ Private Sub PutCombination(ByRef data() As Variant, ByVal rowIndex As Long, _
     Set policy = StatusPolicy()
 
     data(rowIndex, COL_ID) = batch.CombinationID(index)
-    data(rowIndex, COL_RESULT_COMMENT) = MetaComment(batch.ResultAt(index).CrackSummaryMeta)
+    data(rowIndex, COL_RESULT_COMMENT) = CalculationResultMessage(batch, index, batch.ResultAt(index).CrackSummaryMeta)
     data(rowIndex, COL_STATUS) = batch.ResultAt(index).CrackSummaryStatus
 
     If CrackWidthStatusText(batch, index, policy) = policy.NotApplicable And _
@@ -974,11 +976,6 @@ Private Function LongitudinalStatusText(ByVal batch As CBatchSectionCalculator, 
 End Function
 
 ' Возвращает готовое пояснение проверки из ResultMeta.
-' При записи причины остановки не разбираются и не собираются заново.
-Private Function MetaComment(ByVal meta As CResultMeta) As String
-    If meta Is Nothing Then Exit Function
-    MetaComment = meta.ResultComment
-End Function
 
 ' Возвращает напряжение или N/A для величин, которые расчетно могут отсутствовать.
 Private Function OptionalStress(ByVal value As Double, ByVal units As CUnitSystem, ByVal policy As CResultStatusPolicy) As Variant

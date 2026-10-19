@@ -52,7 +52,7 @@ Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMater
         ByVal acceptanceKey As String)
     AssertWritable
     If section Is Nothing Or materials Is Nothing Then _
-        Err.Raise vbObjectError + 3986, "CStateRepository", "Не передан расчетный контекст repository."
+        Err.Raise vbObjectError + 3986, "CStateRepository", "Для хранилища результатов НДС не переданы модель сечения или описание материалов."
 
     Dim changed As Boolean
     If mContextBound Then

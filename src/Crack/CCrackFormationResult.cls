@@ -50,7 +50,7 @@ Public Sub InitializeFromCalculator(ByVal crack As CCrackFormationCalculator, By
     ResetResult
     If meta Is Nothing Then
         mMeta.SetResult rsInternalError, rcInternalError, rkCrackFormation, _
-            "Meta результата образования трещины не сформирована.", vbNullString, True, False
+            "Не сформированы статус и причина результата проверки образования трещины.", vbNullString, True, False
     Else
         Set mMeta = meta.Clone
     End If
