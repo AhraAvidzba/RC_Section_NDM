@@ -60,7 +60,7 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         Else
             radiusValue = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
             radialScale = (radiusValue - Sgn(edges(i).Sweep) * distance) / radiusValue
-            If radialScale <= QUERY_TOLERANCE / radiusValue Then GeometryError "Смещенная дуга исчезла; уменьшите offset или задайте другой участок.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), radiusValue, distance
+            If radialScale <= QUERY_TOLERANCE / radiusValue Then GeometryError "После смещения радиус дуги стал нулевым или отрицательным. Уменьшите расстояние смещения или увеличьте исходный радиус дуги.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), radiusValue, distance
             edges(i).X1 = edges(i).CenterX + (edges(i).X1 - edges(i).CenterX) * radialScale
             edges(i).Y1 = edges(i).CenterY + (edges(i).Y1 - edges(i).CenterY) * radialScale
             edges(i).X2 = edges(i).CenterX + (edges(i).X2 - edges(i).CenterX) * radialScale
@@ -83,7 +83,7 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         sourceFirst = source.SourceStartParameter(i): sourceLast = source.SourceEndParameter(i)
         If edges(i).Sweep = 0# Then
             If (edges(i).X2 - edges(i).X1) * (original.X2 - original.X1) + (edges(i).Y2 - edges(i).Y1) * (original.Y2 - original.Y1) <= QUERY_TOLERANCE Then _
-                GeometryError "Offset изменил направление или уничтожил сегмент.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
+                GeometryError "После смещения у прямого участка не осталось положительной длины. Уменьшите расстояние смещения или увеличьте размеры исходного контура.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
             ' После соединения продолжений длина отрезка может измениться. Сохраняем
             ' соответствие новых концов параметрам исходного отрезка для правильных привязок.
             tx = original.X2 - original.X1: ty = original.Y2 - original.Y1
@@ -135,7 +135,7 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryP
     denom = endNX * tx + endNY * ty
     If Abs(denom) <= PARAM_TOLERANCE Then GeometryError "Конечный ограничитель параллелен линии.", "CONSTRAINT_PARALLEL", pathID, source.ID
     last = (endBound - endNX * edge.X1 - endNY * edge.Y1) / denom
-    If last <= first + QUERY_TOLERANCE Then GeometryError "Ограничители уничтожили или развернули линию.", "CONSTRAINT_DISAPPEARED", pathID, source.ID, first, last
+    If last <= first + QUERY_TOLERANCE Then GeometryError "После ограничения концов у линии не осталось положительной длины. Проверьте положение начала и конца: конец должен находиться дальше начала по направлению линии.", "CONSTRAINT_DISAPPEARED", pathID, source.ID, first, last
     Dim result As CGeometryPath, startParameter As Double, endParameter As Double
     startParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * first / length
     endParameter = source.SourceStartParameter(1) + (source.SourceEndParameter(1) - source.SourceStartParameter(1)) * last / length
@@ -1010,7 +1010,7 @@ Private Function OffsetRoundedPolygonKernel(ByVal pathID As String, ByVal vertic
         following = i Mod count + 1
         dot = directions(i).X * (shifted(following).X - shifted(i).X) + _
             directions(i).Y * (shifted(following).Y - shifted(i).Y)
-        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": смещенный путь исчез или изменил топологию на грани '" & edgeIDs(i - 1) & "'.", "OFFSET_DISAPPEARED", pathID, CStr(edgeIDs(i - 1)), distance, dot
+        If dot <= QUERY_TOLERANCE Then GeometryError pathID & ": после смещения прямой участок '" & edgeIDs(i - 1) & "' исчез или изменил направление. Уменьшите расстояние смещения или увеличьте размеры исходного контура.", "OFFSET_DISAPPEARED", pathID, CStr(edgeIDs(i - 1)), distance, dot
     Next i
     ' Проверяем радиусы и самопересечения общими средствами проверки контура.
     Set OffsetRoundedPolygonKernel = RoundedPolygonKernel(pathID, shiftedVertices, shiftedRadii, vertexIDs, edgeIDs, cornerIDs)

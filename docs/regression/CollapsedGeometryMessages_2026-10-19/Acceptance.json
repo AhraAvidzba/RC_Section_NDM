@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "AcceptedSuites": 12,
+  "AssertionsPassed": 8210,
+  "AssertionsFailed": 0,
+  "FullOnOffPerformed": false,
+  "InitialTestFailure": "Старый тест искал as/d2 в прежней таблице геометрии; адресатор исправлен на ключи rngRebarInput.",
+  "CollapsedInputScenarios": 30,
+  "ExtraRowScenario": 1,
+  "RelocatedAddressScenarios": 4,
+  "PreservedUserData": true,
+  "NumericalFormulasChanged": false,
+  "NewVbaComponents": 0
+}

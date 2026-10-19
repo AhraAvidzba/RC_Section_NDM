@@ -194,8 +194,14 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
     If last > first + PATH_TOLERANCE Then
         Set part = Slice(first, last): Set BetweenAnchors = part.WithID(pathID): Exit Function
     End If
-    If Not mClosed Then PathError "Привязки открытого пути не соответствуют выбранному направлению."
-    If Abs(first - last) <= PATH_TOLERANCE And Not fullLoopIfSame Then PathError "Привязки совпадают; полный обход должен быть задан явно."
+    If Abs(first - last) <= PATH_TOLERANCE And Not fullLoopIfSame Then
+        If HasCollapsedSegmentID(startSegmentID) Or HasCollapsedSegmentID(endSegmentID) Then _
+            PathError "После скругления или смещения контура между выбранными концами не осталось участка ненулевой длины. Измените размеры контура, радиусы скругления или величину смещения.", _
+                "SEGMENT_DISAPPEARED", startSegmentID
+    End If
+    If Not mClosed Then PathError "Конец выбранного участка расположен раньше его начала. Измените направление обхода или поменяйте местами начало и конец.", "ANCHOR_DIRECTION", endSegmentID
+    If Abs(first - last) <= PATH_TOLERANCE And Not fullLoopIfSame Then _
+        PathError "Начало и конец выбранного участка совпадают. Укажите разные точки; для полного обхода замкнутого контура задайте fullLoopIfSame = True.", "ANCHORS_COINCIDE", startSegmentID
     Set result = New CGeometryPath: result.Initialize pathID
     AppendInterval result, first, mStations(mCount)
     AppendInterval result, 0#, last
@@ -229,7 +235,9 @@ Public Sub ValidateNormalTransfer(ByVal distance As Double, ByVal normalOffset A
     If Abs(mEdges(segment).Sweep) <= GEOM_TOLERANCE Then Exit Sub
     radius = Sqr((mEdges(segment).X1 - mEdges(segment).CenterX) ^ 2 + (mEdges(segment).Y1 - mEdges(segment).CenterY) ^ 2)
     If radius - Sgn(mEdges(segment).Sweep) * normalOffset <= GEOM_TOLERANCE Then _
-        PathError "Отступ ряда достигает центра используемой дуги или проходит за него. Уменьшите отступ или контактное смещение.", "ROW_OFFSET_COLLAPSED", mSegmentIDs(segment), normalOffset, radius
+        PathError "После смещения дополнительного ряда центры стержней достигают центра дуги или переходят на её другую сторону. " & _
+            "Смещение ряда — " & CStr(Abs(normalOffset)) & " мм; радиус линии основного ряда — " & CStr(radius) & _
+            " мм. Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.", "ROW_OFFSET_COLLAPSED", mSegmentIDs(segment), normalOffset, radius
 End Sub
 
 ' Находит используемый сегмент для точки и проверки её нормального переноса одним правилом выбора стыка.

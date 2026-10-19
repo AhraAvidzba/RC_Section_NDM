@@ -187,11 +187,26 @@ Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Opt
     Err.Raise vbObjectError + 5530, owner, reason
 End Sub
 
-' Добавляет адрес исходных параметров к ошибке общего геометрического слоя;
+' Добавляет название стороны и адреса исходных параметров к геометрической ошибке.
+' Исчезнувший участок объясняет как невозможность разместить заданную арматуру;
 ' непредвиденные ошибки сохраняют свой исходный код и источник.
-Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReference As String)
+Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReference As String, _
+        Optional ByVal rebarCaption As String = "", Optional ByVal path As CGeometryPath = Nothing)
     Dim number As Long, source As String, reason As String
     number = Err.Number: source = Err.Source: reason = Err.Description
-    If source = "CSectionGeometryQuery" Or source = "CGeometryPath" Then SectionRecipeError owner, reason, sourceReference
+    If source = "CSectionGeometryQuery" Or source = "CGeometryPath" Then
+        If Len(rebarCaption) > 0 Then
+            Dim diagnostic As CGeometryDiagnostic
+            If source = "CGeometryPath" And Not path Is Nothing Then Set diagnostic = path.LastDiagnostic
+            If Not diagnostic Is Nothing Then
+                If diagnostic.Code = "SEGMENT_DISAPPEARED" Then reason = _
+                    "После скругления или смещения контура на выбранной стороне не осталось участка для размещения арматуры. " & _
+                    "Измените размеры сечения, радиусы скругления или расстояние as от края бетона до осей стержней. " & _
+                    "Если арматура на этой стороне не требуется, отключите её: задайте диаметр 0 либо оставьте диаметр пустым."
+            End If
+            reason = rebarCaption & ". " & reason
+        End If
+        SectionRecipeError owner, reason, sourceReference
+    End If
     Err.Raise number, source, reason
 End Sub

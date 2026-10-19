@@ -227,6 +227,7 @@ Private Sub TestCollapsedBoundaries()
     errorNumber = Err.Number: Err.Clear
     On Error GoTo Failed
     Check "core.emptyStillRejected", errorNumber <> 0
+    Check "core.emptyReason", path.LastDiagnostic.Code = "SEGMENT_DISAPPEARED" And InStr(path.LastDiagnostic.Reason, "После скругления") > 0
     On Error Resume Next
     station = path.AnchorStation("Misspelled")
     errorNumber = Err.Number: Err.Clear
@@ -236,6 +237,185 @@ Private Sub TestCollapsedBoundaries()
 Failed:
     Check "core.runtime." & CStr(Err.Number) & "." & Err.Description, False
 End Sub
+
+' ДЛЯ ТЕСТОВ: исчезнувшая наружная сторона, сторона отверстия и горизонтальная
+' сторона скруглённого сечения. Проверяет причину, источники и отключение ряда.
+Public Function RunCollapsedInputMessageTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim scenario As Long, mode As Long, message As String, prefix As String, captions As Variant
+    captions = Array("левой наружной", "правой наружной", "левой стороны отверстия", "правой стороны отверстия", "верхняя", "нижняя")
+    For scenario = 0 To 5
+        For mode = 0 To 4
+            prefix = "collapsed." & CStr(scenario) & "." & CStr(mode)
+            message = CollapsedInputMessage(scenario, mode)
+            If mode = 0 Then
+                Check prefix & ".inputError", Left$(message, 11) = "INPUT_ERROR"
+                Check prefix & ".cause", InStr(message, "не осталось участка для размещения арматуры") > 0
+                Check prefix & ".side", InStr(message, CStr(captions(scenario))) > 0
+                Check prefix & ".geometrySource", InStr(message, "Geometry[") > 0
+                Check prefix & ".rebarSource", InStr(message, "rngRebarInput[") > 0
+                Check prefix & ".action", InStr(message, "задайте диаметр 0") > 0 And InStr(message, "fullLoopIfSame") = 0
+            Else
+                Check prefix & ".accepted", message = "OK"
+            End If
+        Next mode
+    Next scenario
+    message = CollapsedExtraRowMessage()
+    Check "collapsed.extra.inputError", Left$(message, 11) = "INPUT_ERROR"
+    Check "collapsed.extra.row", InStr(message, "Круг: дополнительный ряд арматуры 2") > 0
+    Check "collapsed.extra.cause", InStr(message, "центры стержней достигают центра дуги") > 0
+    Check "collapsed.extra.values", InStr(message, "радиус линии основного ряда — 110") > 0
+    Check "collapsed.extra.source", InStr(message, "rngRebarInput[") > 0
+    RunCollapsedInputMessageTests = mReport & "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: слишком большое смещение второго ряда на дуге должно сохранить
+' номер ряда и источники его параметров в сообщении общего исполнителя.
+Private Function CollapsedExtraRowMessage() As String
+    On Error GoTo Failed
+    Dim definition As CSectionDefinition, layout As CRebarLayout
+    Set definition = FixtureCircleDefinition(Array(300#, 40#, 8, 20#, 16#, 0#, "Stacked", "Stacked", "EachBar", "EachBar", 200#, 0#))
+    Set layout = FixtureLayout(definition)
+    CollapsedExtraRowMessage = "UNEXPECTED_SUCCESS"
+    Exit Function
+Failed:
+    If Err.Number = vbObjectError + 5530 Then
+        CollapsedExtraRowMessage = "INPUT_ERROR: " & Err.Description
+    Else
+        CollapsedExtraRowMessage = "UNEXPECTED: " & CStr(Err.Number) & "; " & Err.Description
+    End If
+End Function
+
+' ДЛЯ ТЕСТОВ: mode 0 — включённый ряд; 1 — нулевое количество; 2/3 — нулевой/пустой
+' диаметр; 4 — включённый ряд при радиусе, оставляющем прямой участок ненулевой длины.
+Private Function CollapsedInputMessage(ByVal scenario As Long, ByVal mode As Long) As String
+    On Error GoTo Failed
+    Dim definition As CSectionDefinition, active As Variant, selected As Variant, faces As Variant, radius As Double
+    active = Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
+    selected = active: radius = 200#
+    If mode = 1 Then selected(2) = 0
+    If mode = 2 Then selected(1) = 0#
+    If mode = 3 Then selected(1) = Empty
+    If mode = 4 Then radius = 199#
+    If scenario < 4 Then
+        faces = Array(Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty)
+        If scenario < 2 Then
+            faces(scenario) = selected
+            Set definition = FixtureHollowDefinition(Array(600#, 400#, radius, 100#, 100#, 20#), faces)
+        Else
+            faces(scenario - 2) = active
+            ' У отверстия количество определяется проекцией; выключаем исходный ряд,
+            ' если проверяется нулевое количество, а диаметр отверстия оставляем заданным.
+            If mode = 1 Then faces(scenario - 2) = selected
+            If mode = 4 Then radius = 99# Else radius = 100#
+            faces(scenario + 2) = selected
+            Set definition = FixtureHollowDefinition(Array(1000#, 1000#, 50#, 400#, 200#, radius), faces)
+        End If
+    Else
+        faces = Array(Empty, Empty, Empty, Empty): faces(scenario - 2) = selected
+        Set definition = FixtureRoundedDefinition(Array(400#, 1000#, "Simple", "Simple", 0#, 0#, radius, radius, 0#, 0#), faces)
+    End If
+    CollapsedInputMessage = "OK"
+    Exit Function
+Failed:
+    If Err.Number = vbObjectError + 5530 Then
+        CollapsedInputMessage = "INPUT_ERROR: " & Err.Description
+    Else
+        CollapsedInputMessage = "UNEXPECTED: " & CStr(Err.Number) & "; " & Err.Description
+    End If
+End Function
+
+' ДЛЯ ТЕСТОВ: читает настоящие именованные диапазоны в двух новых местах листа.
+' Ошибка должна ссылаться на геометрию и арматуру нужного контура, без концевых отступов.
+Public Function RunCollapsedInputAddressTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim originalGeometry As String, originalRebar As String, config As Object, saved As Variant
+    Dim probe As Object, geometry As Object, rebar As Object, geometryValues As Variant, rebarValues As Variant
+    Dim units As CUnitSystem, location As Long, opening As Long, key As Variant, field As Variant, message As String
+    Dim expected As String, prefix As String, alerts As Boolean
+    originalGeometry = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersTo
+    originalRebar = ThisWorkbook.Names("rngRebarInput").RefersTo
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    alerts = Application.DisplayAlerts
+    FixtureSelectRecipeType ThisWorkbook, "HollowRectangle"
+    Application.Calculate
+    geometryValues = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange.Value2
+    rebarValues = ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2
+    Set probe = ThisWorkbook.Worksheets.Add
+    Set units = New CUnitSystem: units.InitializeDefaults
+    For location = 0 To 1
+        Set geometry = probe.Cells(40 + 160 * location, 2 + 28 * location).Resize(UBound(geometryValues, 1), UBound(geometryValues, 2))
+        Set rebar = probe.Cells(120 + 230 * location, 12 + 28 * location).Resize(UBound(rebarValues, 1), UBound(rebarValues, 2))
+        geometry.Value2 = geometryValues: rebar.Value2 = rebarValues
+        ThisWorkbook.Names("rngHollowRectangleGeometry").RefersTo = "='" & probe.Name & "'!" & geometry.Address
+        ThisWorkbook.Names("rngRebarInput").RefersTo = "='" & probe.Name & "'!" & rebar.Address
+        For Each key In Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
+            FixtureInputCell(geometry, "Main", CStr(key), "as").Value2 = 40#
+            For Each field In Array("d", "n", "s0", "s1")
+                FixtureInputCell(geometry, "Main", CStr(key), CStr(field)).Value2 = 0#
+            Next field
+            For Each field In Array("d2", "d3")
+                FixtureInputCell(geometry, "Extra", CStr(key), CStr(field)).Value2 = 0#
+            Next field
+        Next key
+        FixtureInputCell(geometry, "Main", "Left", "d").Value2 = 20#
+        FixtureInputCell(geometry, "Main", "Left", "n").Value2 = 3
+        FixtureInputCell(geometry, "General", "Xo").Value2 = 0#
+        FixtureInputCell(geometry, "General", "Yo").Value2 = 0#
+        For opening = 0 To 1
+            prefix = "collapsed.address." & CStr(location) & "." & CStr(opening)
+            FixtureInputCell(geometry, "General", "B").Value2 = IIf(opening = 0, 600#, 1000#)
+            FixtureInputCell(geometry, "General", "H").Value2 = IIf(opening = 0, 400#, 1000#)
+            FixtureInputCell(geometry, "General", "R").Value2 = IIf(opening = 0, 200#, 50#)
+            FixtureInputCell(geometry, "General", "Bo").Value2 = IIf(opening = 0, 100#, 400#)
+            FixtureInputCell(geometry, "General", "Ho").Value2 = IIf(opening = 0, 100#, 200#)
+            FixtureInputCell(geometry, "General", "Ro").Value2 = IIf(opening = 0, 20#, 100#)
+            If opening = 1 Then FixtureInputCell(geometry, "Main", "OpeningLeft", "d").Value2 = 16#
+            message = NativeCollapsedInputMessage(units)
+            Check prefix & ".inputError", Left$(message, Len(CStr(vbObjectError + 5530))) = CStr(vbObjectError + 5530)
+            Check prefix & ".cause", InStr(message, "не осталось участка для размещения арматуры") > 0
+            If opening = 0 Then key = "Left" Else key = "OpeningLeft"
+            For Each field In Array("as", "d", "s0", "s1", "n")
+                expected = probe.Name & "!" & FixtureInputCell(geometry, "Main", CStr(key), CStr(field)).Address(False, False)
+                If field = "s0" Or field = "s1" Or (opening = 1 And field = "n") Then
+                    Check prefix & ".excluded." & CStr(field), InStr(message, expected & ";") = 0 And InStr(message, expected & ":") = 0
+                Else
+                    Check prefix & ".included." & CStr(field), InStr(message, expected) > 0
+                End If
+            Next field
+            For Each field In Array("B", "H", "R")
+                If opening = 0 Then key = field Else key = CStr(field) & "o"
+                expected = probe.Name & "!" & FixtureInputCell(geometry, "General", CStr(key)).Address(False, False)
+                Check prefix & ".geometry." & CStr(key), InStr(message, expected) > 0
+            Next field
+        Next opening
+    Next location
+    GoTo Restore
+Failed:
+    Check "collapsed.address.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    On Error Resume Next
+    ThisWorkbook.Names("rngHollowRectangleGeometry").RefersTo = originalGeometry
+    ThisWorkbook.Names("rngRebarInput").RefersTo = originalRebar
+    If IsArray(saved) Then config.Formula = saved
+    Application.DisplayAlerts = False
+    If Not probe Is Nothing Then probe.Delete
+    Application.DisplayAlerts = alerts
+    On Error GoTo 0
+    RunCollapsedInputAddressTests = mReport & "TOTAL_COLLAPSED_INPUT_ADDRESSES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: перехватывает только ожидаемую ошибку ввода рабочего рецепта.
+Private Function NativeCollapsedInputMessage(ByVal units As CUnitSystem) As String
+    On Error GoTo Failed
+    Dim definition As CSectionDefinition
+    Set definition = FixtureWorkbookDefinition("HollowRectangle", ThisWorkbook, units)
+    NativeCollapsedInputMessage = "UNEXPECTED_SUCCESS"
+    Exit Function
+Failed:
+    NativeCollapsedInputMessage = CStr(Err.Number) & ": " & Err.Description
+End Function
 
 ' ДЛЯ ТЕСТОВ: точные снимки обычных Simple/Tapered/смешанных сечений до и после правки.
 Public Function RunRoundedOrdinarySnapshots() As String
@@ -277,16 +457,13 @@ Private Sub TestRoundedEndpoints(ByVal label As String, ByVal height As Double, 
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
-    table.Cells(3, 2).Value2 = 600# / factor: table.Cells(3, 3).Value2 = height / factor
-    table.Cells(7, 2).Value2 = "Simple": table.Cells(7, 3).Value2 = "Simple"
-    table.Cells(9, 2).Value2 = leftRadius / factor: table.Cells(9, 3).Value2 = rightRadius / factor
-    main = HeaderRow(table, "as", 2): extra = HeaderRow(table, "d2", 2)
-    For row = main + 1 To main + 4
-        table.Cells(row, 2).Value2 = cover / factor: table.Cells(row, 3).Value2 = 20# / factor
-        table.Cells(row, 4).Value2 = IIf(row < main + 3, 5, 0)
-        table.Cells(row, 5).Value2 = 0#: table.Cells(row, 6).Value2 = 0#
-    Next row
-    For row = extra + 1 To extra + 4: table.Cells(row, 2).Value2 = 0#: table.Cells(row, 5).Value2 = 0#: Next row
+    FixtureInputCell(table, "General", "B").Value2 = 600# / factor
+    FixtureInputCell(table, "General", "H").Value2 = height / factor
+    FixtureInputCell(table, "General", "Left.Type").Value2 = "Simple"
+    FixtureInputCell(table, "General", "Right.Type").Value2 = "Simple"
+    FixtureInputCell(table, "General", "Left.R1").Value2 = leftRadius / factor
+    FixtureInputCell(table, "General", "Right.R1").Value2 = rightRadius / factor
+    ConfigureReviewRebar table, Array("Left", "Right", "Top", "Bottom"), cover, factor, True
     Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
     Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
     Check label & ".tenBars", model.RebarCount = 10
@@ -349,7 +526,10 @@ Public Function RunGeometryReviewTests(Optional ByVal outputDirectory As String 
     TestDisabledSides "Rectangle", "rngRectSetGeometry", Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2")
     TestDisabledSides "RoundedSimple", "rngRoundedRectangleGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
     TestDisabledSides "HollowCentered", "rngHollowRectangleGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
-    RunGeometryReviewTests = mReport & "TOTAL_GEOMETRY_REVIEW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    Dim result As String
+    result = mReport & "TOTAL_GEOMETRY_REVIEW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    result = result & RunCollapsedInputMessageTests()
+    RunGeometryReviewTests = result & RunCollapsedInputAddressTests()
 End Function
 
 ' Две независимые линии имеют собственную нумерацию позиций 1, 3, ...
@@ -395,19 +575,15 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
     Dim config As Object, saved As Variant, table As Object, main As Long, extra As Long, side As Long, mode As Long, row As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim labels As Object, counts As Object, diameters As Object, group As Variant, i As Long, key As String, factor As Double
-    Dim baseDimensions As Long, dimensions As Long, label As String
+    Dim baseDimensions As Long, dimensions As Long, label As String, keys As Variant, field As String
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
     modTestShapeArchitecture.ConfigureShapeFixture "Circle": modTestShapeArchitecture.ConfigureShapeFixture fixture
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set table = ThisWorkbook.Names(tableName).RefersToRange
-    main = HeaderRow(table, "as", 2): extra = HeaderRow(table, "d2", 2)
-    For row = main + 1 To main + 4
-        table.Cells(row, 2).Value2 = 50# / factor: table.Cells(row, 3).Value2 = 20# / factor
-        table.Cells(row, 4).Value2 = 4: table.Cells(row, 5).Value2 = 0#: table.Cells(row, 6).Value2 = 0#
-    Next row
-    For row = extra + 1 To extra + 4: table.Cells(row, 2).Value2 = 0#: table.Cells(row, 5).Value2 = 0#: Next row
+    If tableName = "rngRectSetGeometry" Then keys = Array("R1.Left", "R1.Right", "R1.Top", "R1.Bottom") Else keys = Array("Left", "Right", "Top", "Bottom")
+    ConfigureReviewRebar table, keys, 50#, factor, False
     Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
     For i = 1 To model.AnnotationCount
         If model.Annotations.AnnotationType(i) = "DIMENSION" Then baseDimensions = baseDimensions + 1
@@ -415,7 +591,8 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
     For side = 1 To 4
         For mode = 3 To 4
             label = "disabledSide." & fixture & "." & CStr(groups(side - 1)) & ".column" & CStr(mode)
-            table.Cells(main + side, mode).Value2 = 0
+            If mode = 3 Then field = "d" Else field = "n"
+            FixtureInputCell(table, "Main", CStr(keys(side - 1)), field).Value2 = 0
             Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
             Set labels = CreateObject("Scripting.Dictionary"): Set counts = CreateObject("Scripting.Dictionary")
             Set diameters = CreateObject("Scripting.Dictionary")
@@ -439,7 +616,8 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
                 If labels.Exists(CStr(group)) Then Check label & ".quantity." & CStr(group), _
                     CStr(labels(group)) = CStr(counts(group)) & ChrW$(216) & CStr(diameters(group))
             Next group
-            table.Cells(main + side, 3).Value2 = 20# / factor: table.Cells(main + side, 4).Value2 = 4
+            FixtureInputCell(table, "Main", CStr(keys(side - 1)), "d").Value2 = 20# / factor
+            FixtureInputCell(table, "Main", CStr(keys(side - 1)), "n").Value2 = 4
         Next mode
     Next side
     GoTo Restore
@@ -464,17 +642,13 @@ Private Sub TestRoundedLimit(ByVal height As Double, ByVal outputDirectory As St
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
-    table.Cells(3, 2).Value2 = 600# / factor: table.Cells(3, 3).Value2 = height / factor
-    table.Cells(7, 2).Value2 = "Simple": table.Cells(7, 3).Value2 = "Simple"
-    table.Cells(9, 2).Value2 = 300# / factor: table.Cells(9, 3).Value2 = 300# / factor
-    header = HeaderRow(table, "as", 2): extra = HeaderRow(table, "d2", 2)
-    For row = header + 1 To header + 4
-        table.Cells(row, 2).Value2 = 50# / factor: table.Cells(row, 3).Value2 = 20# / factor
-        ' В таблице сначала H.Left/H.Right, затем B.Top/B.Bottom.
-        table.Cells(row, 4).Value2 = IIf(row < header + 3, 5, 0)
-        table.Cells(row, 5).Value2 = 0#: table.Cells(row, 6).Value2 = 0#
-    Next row
-    For row = extra + 1 To extra + 4: table.Cells(row, 2).Value2 = 0#: table.Cells(row, 5).Value2 = 0#: Next row
+    FixtureInputCell(table, "General", "B").Value2 = 600# / factor
+    FixtureInputCell(table, "General", "H").Value2 = height / factor
+    FixtureInputCell(table, "General", "Left.Type").Value2 = "Simple"
+    FixtureInputCell(table, "General", "Right.Type").Value2 = "Simple"
+    FixtureInputCell(table, "General", "Left.R1").Value2 = 300# / factor
+    FixtureInputCell(table, "General", "Right.R1").Value2 = 300# / factor
+    ConfigureReviewRebar table, Array("Left", "Right", "Top", "Bottom"), 50#, factor, True
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
@@ -532,14 +706,32 @@ Private Sub CheckRoundedWorkbookRun(ByVal label As String, ByVal units As CUnitS
     mReport = mReport & "WORKBOOK_RUN: " & label & "; " & message & vbCrLf
 End Sub
 
-' Находит строку заголовка тестовой таблицы; перенос таблицы не должен ломать проверку.
+' ДЛЯ ТЕСТОВ: находит настройку единиц по ключу строки, без фиксированного адреса.
 Private Function HeaderRow(ByVal table As Object, ByVal text As String, ByVal column As Long) As Long
     Dim row As Long
     For row = 1 To table.Rows.Count
         If CStr(table.Cells(row, column).Value2) = text Then HeaderRow = row: Exit Function
     Next row
-    Err.Raise 5, "modTestGeometryReview", "Не найден заголовок " & text
+    Err.Raise 5, "modTestGeometryReview", "Не найден ключ настройки " & text
 End Function
+
+' ДЛЯ ТЕСТОВ: параметры сторон задаются по ключам общей таблицы армирования.
+' В проверке скруглений включены только две боковые стороны, в остальных — все четыре.
+Private Sub ConfigureReviewRebar(ByVal table As Object, ByVal keys As Variant, ByVal cover As Double, ByVal factor As Double, ByVal sidesOnly As Boolean)
+    Dim index As Long, key As String, field As Variant
+    For index = 0 To UBound(keys)
+        key = CStr(keys(index))
+        FixtureInputCell(table, "Main", key, "as").Value2 = cover / factor
+        FixtureInputCell(table, "Main", key, "d").Value2 = 20# / factor
+        If sidesOnly Then
+            FixtureInputCell(table, "Main", key, "n").Value2 = IIf(index < 2, 5, 0)
+        Else
+            FixtureInputCell(table, "Main", key, "n").Value2 = 4
+        End If
+        For Each field In Array("s0", "s1"): FixtureInputCell(table, "Main", key, CStr(field)).Value2 = 0#: Next field
+        For Each field In Array("d2", "d3"): FixtureInputCell(table, "Extra", key, CStr(field)).Value2 = 0#: Next field
+    Next index
+End Sub
 
 Private Sub Check(ByVal name As String, ByVal success As Boolean)
     If success Then mPassed = mPassed + 1: mReport = mReport & "OK: " & name & vbCrLf Else mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf

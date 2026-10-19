@@ -118,7 +118,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
         If rebar.Diameters(rowNumber) > 0# Then
             Set options = contact.AppendRow(rebar.Diameters(rowNumber), rebar.Locations(rowNumber), rebar.Bindings(rowNumber), rebar.ExtraSources(rowNumber), rebar.BaseOffsets(rowNumber))
             options.SourceSuffix = "_R" & CStr(rowNumber) ' Добавляем к имени основного стержня суффикс ряда.
-            options.Comment = "Круг: дополнительный ряд арматуры"
+            options.Comment = "Круг: дополнительный ряд арматуры " & CStr(rowNumber)
             facade.RebarDependent "Circle.Row" & CStr(rowNumber), "Circle.Main", rebar.Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
         End If
     Next rowNumber

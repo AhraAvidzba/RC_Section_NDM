@@ -449,7 +449,7 @@ Private Sub PrepareRule(ByVal index As Long)
     mState(index) = 2
     Exit Sub
 InvalidGeometry:
-    SectionRecipeGeometryError "CRebarRuleExecutor", mRules(index).SourceReference
+    SectionRecipeGeometryError "CRebarRuleExecutor", mRules(index).SourceReference, mRules(index).Comment
 End Sub
 
 ' Вычисляет координаты независимого ряда. Нумерация позиций начинается с 1
@@ -580,7 +580,7 @@ Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     Exit Sub
 InvalidTransfer:
     If Err.Number = 6 Then RuleError index, "Отступ ряда выходит за числовой диапазон. Уменьшите заданное расстояние."
-    SectionRecipeGeometryError "CRebarRuleExecutor", mRules(index).SourceReference
+    SectionRecipeGeometryError "CRebarRuleExecutor", mRules(index).SourceReference, mRules(index).Comment, path
 End Sub
 
 ' Для каждого исходного стержня ищет ближайшее пересечение по заданному направлению

@@ -1,0 +1,15 @@
+{
+  "Workbook": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\CollapsedDiagnostics_2026-10-19\\Candidate.xlsm",
+  "WorkbookSHA256": "2DCBD4FC66F7C1123CCD7B41895F26106BAF3E5120D6BDEDF2F7CCD3D0FEEDFD",
+  "ProductionSHA256": "9791379641923A39E7C27F79D5731A07434222FDA552DA8FC7EAF0B4BC1514C2",
+  "Compiled": true,
+  "Modules": [
+    "CGeometryPath",
+    "CSectionRecipeCircle",
+    "modTestGeometryReview"
+  ],
+  "RetiredModules": [],
+  "EntryPointNames": [],
+  "TraceGeometry": false,
+  "ProductionChanged": false
+}

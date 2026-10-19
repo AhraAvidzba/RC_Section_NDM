@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "classes": 106,
+  "methods": 3579,
+  "missingHeaderCount": 0,
+  "missingMethodCount": 0,
+  "nonstandardHeaders": [],
+  "fields": 2014,
+  "missingFieldCount": 0,
+  "wrongTestMethodOrder": []
+}

@@ -49,7 +49,7 @@ Private Type TRoundedFace
     Bindings(2 To 3) As String ' Прочитанный способ привязки дополнительных рядов к основному.
     ExtraSources(2 To 3) As String ' Адреса исходных полей дополнительных рядов для сообщения об ошибке.
     Source As String ' Адреса отступов основного ряда для сообщения об ошибке размещения.
-    AxisSource As String ' Адрес расстояния до оси для пояснения ошибки построения линии.
+    AxisSource As String ' Адреса as, диаметра и количества для пояснения ошибки построения линии арматуры.
 End Type
 
 ' Читает форму сечения со скруглёнными сторонами и параметры армирования. Формирует
@@ -105,7 +105,7 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
             .AxisDistance = reader.Length("Main", key, "as")
             reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
-            .AxisSource = reader.SourceReference("Main", key, "as")
+            .AxisSource = reader.SourceReferences("Main", key, Array("as", "d", "n"))
             Select Case .ID
                 Case "B.Top": .LabelY = 1#
                 Case "B.Bottom": .LabelY = -1#
@@ -170,7 +170,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
     For i = 1 To 4
         With faces(i)
             If .Count = 0 Or .Diameter = 0# Then GoTo NextFace
-            Set path = AxisPath(facade, polygon, .ID, .AxisDistance, .AxisSource) ' Получаем линию центров стержней выбранной стороны с отступом as.
+            Set path = AxisPath(facade, polygon, .ID, .AxisDistance, .AxisSource, "Арматура у стороны «" & .Caption & "»") ' Получаем линию центров стержней выбранной стороны с отступом as.
             Set options = New CRebarRuleOptions ' Создаём настройки размещения этого ряда.
             If i >= 3 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             options.StartSetback = .StartSetback: options.EndSetback = .EndSetback ' Отступы от начала и конца линии, мм.
@@ -207,7 +207,7 @@ End Sub
 ' Горизонтальные линии направлены слева направо; боковые включают скругления и идут сверху вниз.
 ' Параметры 0 и 1 задают концы сегмента, а forward выбирает обход исходного контура между ними.
 Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polygon As CPolygonSpec, _
-        ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String) As CGeometryPath
+        ByVal groupID As String, ByVal axisDistance As Double, ByVal sourceReference As String, ByVal rebarCaption As String) As CGeometryPath
     On Error GoTo InvalidPath
     Dim offset As CGeometryPath
     Set offset = facade.OffsetRoundedPolygon("Offset." & groupID, polygon, axisDistance) ' Смещаем тот же многоугольник внутрь бетона на as, мм.
@@ -223,7 +223,7 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polyg
     End Select
     Exit Function
 InvalidPath:
-    SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sourceReference
+    SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", polygon.SourceReference(1) & "; " & sourceReference, rebarCaption, offset
 End Function
 
 ' Добавляет подписи арматуры, ширину основы B, полную высоту H и размеры включённых боковых выступов.

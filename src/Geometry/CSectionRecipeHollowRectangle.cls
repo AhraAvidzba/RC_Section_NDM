@@ -34,6 +34,8 @@ Private Type THollowInput
     Xo As Double ' Смещение центра отверстия по X, мм.
     Yo As Double ' Смещение центра отверстия по Y, мм.
     GeometrySource As String ' Адрес исходных размеров для пояснения геометрических ошибок.
+    OuterSource As String ' Адреса ширины, высоты и радиуса наружного контура.
+    OpeningSource As String ' Адреса ширины, высоты и радиуса отверстия.
 End Type
 
 Private Type THollowFace
@@ -54,6 +56,7 @@ Private Type THollowFace
     LabelX As Double ' Компонента X направления выноса подписи.
     LabelY As Double ' Компонента Y направления выноса подписи.
     Source As String ' Адрес исходных данных для пояснения ошибок.
+    AxisSource As String ' Адреса as, диаметра и заданного количества для ошибки построения линии арматуры.
 End Type
 
 ' Читает размеры сечения и отверстия, параметры арматуры вдоль их сторон. Формирует
@@ -88,9 +91,9 @@ Private Sub ReadGeometryInputs(ByVal reader As CSectionInputReader, ByRef sizes 
     sizes.Ho = reader.PositiveLength("General", "Ho"): sizes.Bo = reader.PositiveLength("General", "Bo")
     sizes.Ro = reader.NonNegativeLength("General", "Ro")
     sizes.Xo = reader.Length("General", "Xo"): sizes.Yo = reader.Length("General", "Yo")
-    sizes.GeometrySource = reader.SourceReference("General", "H") & "; " & reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "R") & "; " & _
-        reader.SourceReference("General", "Ho") & "; " & reader.SourceReference("General", "Bo") & "; " & reader.SourceReference("General", "Ro") & "; " & _
-        reader.SourceReference("General", "Xo") & "; " & reader.SourceReference("General", "Yo")
+    sizes.OuterSource = reader.SourceReference("General", "H") & "; " & reader.SourceReference("General", "B") & "; " & reader.SourceReference("General", "R")
+    sizes.OpeningSource = reader.SourceReference("General", "Ho") & "; " & reader.SourceReference("General", "Bo") & "; " & reader.SourceReference("General", "Ro")
+    sizes.GeometrySource = sizes.OuterSource & "; " & sizes.OpeningSource & "; " & reader.SourceReference("General", "Xo") & "; " & reader.SourceReference("General", "Yo")
 End Sub
 
 ' Заполняет faces параметрами четырёх наружных и четырёх внутренних сторон.
@@ -126,6 +129,8 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
                 Case 4: .LabelX = annotationSign
             End Select
             If .Active Then
+                .AxisSource = reader.SourceReferences("Main", key, Array("as", "d"))
+                If i <= 4 Then .AxisSource = .AxisSource & "; " & reader.SourceReference("Main", key, "n")
                 reader.Require "Main", key, "as", .AxisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра."
                 .StartSetback = reader.NonNegativeLength("Main", key, "s0")
                 .EndSetback = reader.NonNegativeLength("Main", key, "s1")
@@ -233,12 +238,14 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     On Error GoTo InvalidPath
     Dim B As Double, H As Double, radius As Double, x As Double, y As Double, offset As Double, base As Long, shape As CGeometryPath
     Dim first As String, last As String, firstParameter As Double, lastParameter As Double
-    Dim polygon As CPolygonSpec
+    Dim polygon As CPolygonSpec, geometrySource As String
     Set polygon = outerPolygon
+    geometrySource = sizes.OuterSource
     B = sizes.B: H = sizes.H: radius = sizes.R: offset = faces(index).AxisDistance
     base = (index - 1) Mod 4 + 1
     If index > 4 Then
         Set polygon = openingPolygon
+        geometrySource = sizes.OpeningSource
         B = sizes.Bo: H = sizes.Ho: radius = sizes.Ro: x = sizes.Xo: y = sizes.Yo: offset = -offset
         If radius <= GEOM_TOLERANCE Then
             facade.Source faces(index).ID, faces(index).Source ' Связываем ошибки этой линии с её исходными полями.
@@ -275,7 +282,7 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByRef sizes
     End Select
     Exit Function
 InvalidPath:
-    SectionRecipeGeometryError "CSectionRecipeHollowRectangle", faces(index).Source
+    SectionRecipeGeometryError "CSectionRecipeHollowRectangle", geometrySource & "; " & faces(index).AxisSource, "Арматура " & faces(index).Caption, shape
 End Function
 
 ' Добавляет подписи арматуры, наружные ширину и высоту сечения, а также размеры внутреннего отверстия.
