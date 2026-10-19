@@ -26,10 +26,12 @@ Private mBuilt As Boolean ' Freeze разрешён только после по
 Private mDefinition As CSectionDefinition ' Готовое описание сечения, по которому выполнены расстановка и её проверки.
 Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long ' Правила, стадия их выполнения, первый индекс и число позиций каждого правила.
 Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Места установки стержней до объединения дублей, их количество и вместимость массива.
+Private mTotalNormalOffset() As Double ' Суммарное нормальное смещение зависимого ряда от его независимой или спроецированной линии.
+Private mSkippedOffsets As Long ' Дополнительные позиции вне полного смещённого контура.
 Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
 Private mMergedPositions As Long, mConflicts As Long ' Объединённые позиции и отклонённые конфликты.
 Private mCreatedPhysical As Long ' Количество действительно созданных стержней; совпавшие позиции не считаются повторно.
-Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Число пропущенных проекций, объединённых позиций и созданных стержней по каждому правилу.
+Private mSkippedByRule() As Long, mMergedByRule() As Long, mCreatedByRule() As Long ' Число пропущенных позиций, объединённых позиций и созданных стержней по каждому правилу.
 Private mDiagnostic As CGeometryDiagnostic, mDiagnostics As Collection ' Последнее событие и ограниченный набор подробных записей.
 Private mBarBuckets As Object, mBarBinSize As Double, mBarOverlaps As Long ' Списки близких стержней, размер ячейки поиска в мм и число пар пересекающихся стержней.
 Private mPhysicalRule() As Long, mPhysicalCapacity As Long ' Правило, создавшее каждый стержень, и размер массива этих связей.
@@ -38,8 +40,8 @@ Private mPhysicalFirstPosition() As Long ' Первая исходная поз�
 Private mPhysicalOffsetRule() As Long ' Правило нового режима, участвующее в физическом стержне; сохраняется после объединения.
 Private mDiagnosticRecordsOmitted As Long ' Число событий сверх лимита подробных записей; счётчики остаются полными.
 
-' Все запрошенные позиции, включая пропущенные проекции; это не число физических стержней.
-Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections: End Property
+' Все запрошенные позиции, включая пропуски проекции и смещения; это не число физических стержней.
+Public Property Get RequestedPositions() As Long: RequestedPositions = mPositionCount + mSkippedProjections + mSkippedOffsets: End Property
 ' Действительно добавленные физические стержни текущего Build, даже при отказе в середине.
 Public Property Get CreatedPositions() As Long: CreatedPositions = mCreatedPhysical: End Property
 ' Возвращает число позиций без пересечения с целевой линией, пропуск которых разрешён правилом.
@@ -140,11 +142,23 @@ End Sub
 ' Собирает текстовый отчёт по всем правилам и счётчикам.
 ' Длины в отчёте указаны в мм независимо от выбранных единиц вывода.
 Public Function DiagnosticsText() As String
-    Dim i As Long
+    Dim i As Long, diagnostic As CGeometryDiagnostic
     DiagnosticsText = "Requested=" & CStr(RequestedPositions) & "; Created=" & CStr(CreatedPositions) & _
-        "; Merged=" & CStr(MergedPositions) & "; Skipped=" & CStr(SkippedProjections) & _
+        "; Merged=" & CStr(MergedPositions) & "; Skipped=" & CStr(mSkippedProjections + mSkippedOffsets) & _
         "; Conflicts=" & CStr(Conflicts) & "; BarOverlaps=" & CStr(BarOverlaps) & _
         "; DiagnosticRecordsOmitted=" & CStr(DiagnosticRecordsOmitted) & vbCrLf
+    If mSkippedOffsets > 0 Then
+        DiagnosticsText = DiagnosticsText & "Предупреждение: после смещения не размещено дополнительных стержней: " & CStr(mSkippedOffsets) & _
+            ". Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results." & vbCrLf
+        For i = 1 To mDefinition.RuleCount
+            If mRules(i).Mode = DependentOffset And mSkippedByRule(i) > 0 Then DiagnosticsText = DiagnosticsText & _
+                mRules(i).SourceReference & ": " & mRules(i).Comment & "; пропущено " & CStr(mSkippedByRule(i)) & " стержней." & vbCrLf
+        Next i
+        For Each diagnostic In mDiagnostics
+            If diagnostic.Code = "OFFSET_POSITION_SKIPPED" Then DiagnosticsText = DiagnosticsText & diagnostic.SourceReference & ": " & _
+                diagnostic.EntityID & "; " & diagnostic.RelatedEntityID & ". " & diagnostic.Reason & vbCrLf
+        Next diagnostic
+    End If
     If Not mDefinition Is Nothing Then
         For i = 1 To mDefinition.RuleCount: DiagnosticsText = DiagnosticsText & RuleTrace(mRules(i).RuleID) & vbCrLf: Next i
     End If
@@ -158,7 +172,8 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     ' Даже отказ до подготовки начинает новый отчет, без счетчиков и ID
     ' предыдущего успешного запуска того же исполнителя.
     Set mDefinition = Nothing
-    mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: Erase mPositions
+    mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: mSkippedOffsets = 0: Erase mPositions
+    Erase mTotalNormalOffset
     mMergedPositions = 0: mConflicts = 0: mBarOverlaps = 0: mPhysicalCapacity = 0: mCreatedPhysical = 0
     mDiagnosticRecordsOmitted = 0
     Set mDiagnostic = Nothing: Set mDiagnostics = New Collection
@@ -174,7 +189,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     Set result = New CRebarLayout
     If ruleCount = 0 Then mBuilt = True: Set Build = result: Exit Function
     ReDim mRules(1 To ruleCount): ReDim mState(1 To ruleCount)
-    ReDim mStart(1 To ruleCount): ReDim mCount(1 To ruleCount)
+    ReDim mStart(1 To ruleCount): ReDim mCount(1 To ruleCount): ReDim mTotalNormalOffset(1 To ruleCount)
     ReDim mSkippedByRule(1 To ruleCount): ReDim mMergedByRule(1 To ruleCount): ReDim mCreatedByRule(1 To ruleCount)
     For i = 1 To ruleCount: definition.CopyRule i, mRules(i): Next i
     EnableRowOffsetChecks
@@ -559,15 +574,38 @@ End Function
 ' Сохраняет их исходные номера на каждой линии и связь с основным рядом.
 Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
     On Error GoTo InvalidTransfer
-    Dim i As Long, ordinal As Long, position As TRebarPosition
-    Dim path As CGeometryPath
+    Dim i As Long, ordinal As Long, position As TRebarPosition, paths As Object, offset As CGeometryPath
+    Dim path As CGeometryPath, boundary As CGeometryPath, query As CSectionGeometryQuery, x As Double, y As Double, tx As Double, ty As Double
+    ' Для нормального смещения проверяем весь контур. Контактную добавку вдоль
+    ' касательной применяем после этой проверки, как и у исходного связанного ряда.
+    Set paths = CreateObject("Scripting.Dictionary"): Set query = New CSectionGeometryQuery
+    mTotalNormalOffset(index) = mTotalNormalOffset(source) + mRules(index).NormalOffset
     For i = mStart(source) To mStart(source) + mCount(source) - 1
         ordinal = ordinal + 1
         position = mPositions(i)
         If Not mRules(index).EverySecond Or position.SourceOrdinal Mod 2 = 1 Then
-            If mRules(index).ValidateRowOffset Then
+            If Abs(mTotalNormalOffset(index)) > GEOM_TOLERANCE Then
                 Set path = mDefinition.Path(position.PathID)
-                path.ValidateNormalTransfer position.Station, mRules(index).NormalOffset, position.IncomingTangentAtJoint
+                Set boundary = path.OffsetBoundary
+                If Not boundary Is Nothing Or path.HasCollapsedNormalArc(mTotalNormalOffset(index)) Then
+                    If Not paths.Exists(path.ID) Then
+                        If boundary Is Nothing Then
+                            Set offset = query.OffsetPath("Offset." & mRules(index).RuleID & "." & path.ID, path, mTotalNormalOffset(index))
+                        Else
+                            Set offset = query.OffsetPath("Offset." & mRules(index).RuleID & "." & path.ID, boundary, mTotalNormalOffset(index) * path.BoundaryDirection)
+                        End If
+                        paths.Add path.ID, offset
+                    End If
+                    Set offset = paths.Item(path.ID)
+                    path.AtDistance position.Station, x, y, tx, ty, position.IncomingTangentAtJoint
+                    x = x - mTotalNormalOffset(index) * ty: y = y + mTotalNormalOffset(index) * tx
+                    If Not offset.ContainsPoint(x, y) Then
+                        mSkippedOffsets = mSkippedOffsets + 1: mSkippedByRule(index) = mSkippedByRule(index) + 1
+                        AddDiagnostic index, "OFFSET_POSITION_SKIPPED", position.SourcePositionID, _
+                            "Дополнительный стержень пропущен: его положение по нормали не попадает на полный смещённый контур.", x, y
+                        GoTo NextPosition
+                    End If
+                End If
             End If
             position.X = position.X + mRules(index).TangentOffset * position.TangentX - mRules(index).NormalOffset * position.TangentY
             position.Y = position.Y + mRules(index).TangentOffset * position.TangentY + mRules(index).NormalOffset * position.TangentX
@@ -576,6 +614,7 @@ Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
             position.SourcePositionID = PositionID(index, ordinal, mPositions(i).SourcePositionID)
             AppendPosition position
         End If
+NextPosition:
     Next i
     Exit Sub
 InvalidTransfer:

@@ -44,13 +44,15 @@ End Sub
 
 ' Строит линию на заданном расстоянии от исходной: положительное смещение
 ' направлено влево по обходу. Гладкие стыки отрезков и дуг сохраняют касание,
-' соседние прямые соединяются пересечением продолжений. Для негладкого стыка
+' соседние прямые соединяются пересечением продолжений. Исчезнувшее скругление
+' между касательными прямыми заменяется их стыком. Для негладкого стыка
 ' с дугой требуется явно заданный скруглённый многоугольник RoundedPolygon.
 Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath, ByVal distance As Double) As CGeometryPath
     If source Is Nothing Then GeometryError "Не передан исходный путь.", "MISSING_PATH", pathID
     Dim edges() As TRegionEdge, original As TRegionEdge, i As Long, following As Long, count As Long
     Dim radiusValue As Double, radialScale As Double, tx As Double, ty As Double, length As Double, result As CGeometryPath
     count = source.SegmentCount: ReDim edges(1 To count)
+    Dim removed() As Boolean: ReDim removed(1 To count)
     For i = 1 To count
         source.CopySegment i, edges(i)
         If edges(i).Sweep = 0# Then
@@ -60,7 +62,10 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         Else
             radiusValue = Sqr((edges(i).X1 - edges(i).CenterX) ^ 2 + (edges(i).Y1 - edges(i).CenterY) ^ 2)
             radialScale = (radiusValue - Sgn(edges(i).Sweep) * distance) / radiusValue
-            If radialScale <= QUERY_TOLERANCE / radiusValue Then GeometryError "После смещения радиус дуги стал нулевым или отрицательным. Уменьшите расстояние смещения или увеличьте исходный радиус дуги.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), radiusValue, distance
+            If radialScale <= QUERY_TOLERANCE / radiusValue Then
+                RequireOffsetCorner pathID, source, i, radiusValue, distance
+                removed(i) = True
+            End If
             edges(i).X1 = edges(i).CenterX + (edges(i).X1 - edges(i).CenterX) * radialScale
             edges(i).Y1 = edges(i).CenterY + (edges(i).Y1 - edges(i).CenterY) * radialScale
             edges(i).X2 = edges(i).CenterX + (edges(i).X2 - edges(i).CenterX) * radialScale
@@ -68,33 +73,49 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
         End If
     Next i
     For i = 1 To count
-        following = i + 1
-        If following > count Then
-            If Not source.IsClosed Then Exit For
-            following = 1
+        If Not removed(i) Then
+            following = i + 1
+            Do While following <= count
+                If Not removed(following) Then Exit Do
+                following = following + 1
+            Loop
+            If following > count Then
+                If Not source.IsClosed Then Exit For
+                following = 1
+                Do While removed(following): following = following + 1: Loop
+            End If
+            JoinOffsetEdges pathID, source.SegmentID(i), edges(i), edges(following)
         End If
-        JoinOffsetEdges pathID, source.SegmentID(i), edges(i), edges(following)
     Next i
     Dim sourceFirst As Double, sourceLast As Double, lengthSquared As Double, span As Double, stations As Variant
     ReDim stations(0 To count)
     Set result = New CGeometryPath: result.Initialize pathID
     For i = 1 To count
-        source.CopySegment i, original
-        sourceFirst = source.SourceStartParameter(i): sourceLast = source.SourceEndParameter(i)
-        If edges(i).Sweep = 0# Then
-            If (edges(i).X2 - edges(i).X1) * (original.X2 - original.X1) + (edges(i).Y2 - edges(i).Y1) * (original.Y2 - original.Y1) <= QUERY_TOLERANCE Then _
-                GeometryError "После смещения у прямого участка не осталось положительной длины. Уменьшите расстояние смещения или увеличьте размеры исходного контура.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
-            ' После соединения продолжений длина отрезка может измениться. Сохраняем
-            ' соответствие новых концов параметрам исходного отрезка для правильных привязок.
-            tx = original.X2 - original.X1: ty = original.Y2 - original.Y1
-            lengthSquared = tx * tx + ty * ty: span = sourceLast - sourceFirst
-            sourceLast = sourceFirst + span * ((edges(i).X2 - original.X1) * tx + (edges(i).Y2 - original.Y1) * ty) / lengthSquared
-            sourceFirst = sourceFirst + span * ((edges(i).X1 - original.X1) * tx + (edges(i).Y1 - original.Y1) * ty) / lengthSquared
+        If removed(i) Then
+            result.AddCollapsedSegment source.SegmentID(i)
+        Else
+            source.CopySegment i, original
+            sourceFirst = source.SourceStartParameter(i): sourceLast = source.SourceEndParameter(i)
+            If edges(i).Sweep = 0# Then
+                If (edges(i).X2 - edges(i).X1) * (original.X2 - original.X1) + (edges(i).Y2 - edges(i).Y1) * (original.Y2 - original.Y1) <= QUERY_TOLERANCE Then _
+                    GeometryError "После смещения у прямого участка не осталось положительной длины. Уменьшите расстояние смещения или увеличьте размеры исходного контура.", "OFFSET_DISAPPEARED", pathID, source.SegmentID(i), distance
+                ' После соединения продолжений длина отрезка может измениться. Сохраняем
+                ' соответствие новых концов параметрам исходного отрезка для правильных привязок.
+                tx = original.X2 - original.X1: ty = original.Y2 - original.Y1
+                lengthSquared = tx * tx + ty * ty: span = sourceLast - sourceFirst
+                sourceLast = sourceFirst + span * ((edges(i).X2 - original.X1) * tx + (edges(i).Y2 - original.Y1) * ty) / lengthSquared
+                sourceFirst = sourceFirst + span * ((edges(i).X1 - original.X1) * tx + (edges(i).Y1 - original.Y1) * ty) / lengthSquared
+            End If
+            result.Append source.SegmentID(i), edges(i), source.SourcePathID(i), source.SourceSegmentID(i), sourceFirst, sourceLast
         End If
-        result.Append source.SegmentID(i), edges(i), source.SourcePathID(i), source.SourceSegmentID(i), sourceFirst, sourceLast
         stations(i) = result.AccumulatedLength
     Next i
     source.CopyCollapsedAnchors result, 0#, source.Length, 0#, segmentStations:=stations
+    Dim boundary As CGeometryPath
+    If Not source.IsClosed Then
+        Set boundary = source.OffsetBoundary
+        If Not boundary Is Nothing Then result.SetOffsetBoundary OffsetPath(pathID & ".Boundary", boundary, distance * source.BoundaryDirection), source.BoundaryDirection
+    End If
     result.Seal source.IsClosed
     ' Проверяем замкнутость и отсутствие недопустимых пересечений всего контура.
     ' Выбирать только один длинный участок вместо исправления ошибки нельзя.
@@ -103,8 +124,40 @@ Public Function OffsetPath(ByVal pathID As String, ByVal source As CGeometryPath
     Set OffsetPath = result
 End Function
 
-' Соединяет аналитические смещённые сегменты по их пересечениям, сохраняя допустимые линии и
-' дуги.
+' Исчезнуть может скругление между двумя касательными прямыми. Прямые после
+' смещения соединяются в углу; отдельная дуга и полный круг такой замены не имеют.
+Private Sub RequireOffsetCorner(ByVal pathID As String, ByVal source As CGeometryPath, ByVal index As Long, _
+        ByVal radius As Double, ByVal distance As Double)
+    Dim before As Long, after As Long, corner As TRegionEdge, first As TRegionEdge, last As TRegionEdge
+    before = index - 1: after = index + 1
+    If source.IsClosed Then
+        If before < 1 Then before = source.SegmentCount
+        If after > source.SegmentCount Then after = 1
+    End If
+    If before < 1 Or after > source.SegmentCount Or before = index Or after = index Then GoTo NoCorner
+    source.CopySegment index, corner: source.CopySegment before, first: source.CopySegment after, last
+    If first.Sweep <> 0# Or last.Sweep <> 0# Or Abs(corner.Sweep) >= GEOM_PI - PARAM_TOLERANCE Then GoTo NoCorner
+    Dim ax As Double, ay As Double, bx As Double, by As Double
+    modGeometryPrimitives.EdgeTangent first, 1#, ax, ay
+    modGeometryPrimitives.EdgeTangent corner, 0#, bx, by
+    If Not SameOffsetTangent(ax, ay, bx, by) Then GoTo NoCorner
+    modGeometryPrimitives.EdgeTangent corner, 1#, ax, ay
+    modGeometryPrimitives.EdgeTangent last, 0#, bx, by
+    If Not SameOffsetTangent(ax, ay, bx, by) Then GoTo NoCorner
+    Exit Sub
+NoCorner:
+    If source.IsClosed And source.SegmentCount = 1 Then source.ValidateNormalTransfer 0#, distance
+    GeometryError "После смещения дуга исчезла, а соседних касательных прямых для образования угла нет. Уменьшите расстояние смещения.", _
+        "OFFSET_DISAPPEARED", pathID, source.SegmentID(index), radius, distance
+End Sub
+
+' Сравнивает направления касательных без зависимости от длины исходных отрезков.
+Private Function SameOffsetTangent(ByVal ax As Double, ByVal ay As Double, ByVal bx As Double, ByVal by As Double) As Boolean
+    SameOffsetTangent = ax * bx + ay * by > 0# And _
+        Abs(ax * by - ay * bx) <= PARAM_TOLERANCE * Sqr((ax * ax + ay * ay) * (bx * bx + by * by))
+End Function
+
+' Стыкует смещённые отрезки по пересечению их продолжений.
 Private Sub JoinOffsetEdges(ByVal pathID As String, ByVal segmentID As String, ByRef first As TRegionEdge, ByRef second As TRegionEdge)
     If Sqr((first.X2 - second.X1) ^ 2 + (first.Y2 - second.Y1) ^ 2) <= QUERY_TOLERANCE Then Exit Sub
     If first.Sweep <> 0# Or second.Sweep <> 0# Then GeometryError "Негладкий стык с дугой: задайте согласованное скругление.", "OFFSET_JOINT", pathID, segmentID
@@ -149,6 +202,7 @@ Public Function ConstrainLine(ByVal pathID As String, ByVal source As CGeometryP
     If endNX = 0# Then edge.Y2 = endBound / endNY
     Set result = New CGeometryPath: result.Initialize pathID
     result.Append source.SegmentID(1), edge, source.SourcePathID(1), source.SourceSegmentID(1), startParameter, endParameter
+    result.SetOffsetBoundary source.OffsetBoundary, source.BoundaryDirection
     result.Seal: Set ConstrainLine = result
 End Function
 

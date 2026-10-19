@@ -155,6 +155,18 @@ Public Property Get GeometryDiagnosticsText() As String
     GeometryDiagnosticsText = mGeometryDiagnostics
 End Property
 
+' Возвращает краткие предупреждения о построении для сообщения после расчёта.
+Public Property Get GeometryWarningText() As String
+    Dim lines As Variant, line As Variant
+    lines = Split(mGeometryDiagnostics, vbCrLf)
+    For Each line In lines
+        If Left$(CStr(line), Len("Предупреждение:")) = "Предупреждение:" Then
+            If Len(GeometryWarningText) > 0 Then GeometryWarningText = GeometryWarningText & vbCrLf
+            GeometryWarningText = GeometryWarningText & CStr(line)
+        End If
+    Next line
+End Property
+
 ' Добавляет связь стержня с правилом, линией и исходной позицией.
 ' Все связи одного стержня сохраняются без изменения его площади, инерций
 ' и версии геометрии. Разделители внутри имён кодируются, чтобы различать записи.

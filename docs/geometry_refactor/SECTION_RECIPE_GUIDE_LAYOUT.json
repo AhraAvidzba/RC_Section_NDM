@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "be07d0c66053b81c44988e619eda5a7bc0a179fe8b688e215c3a89318fdd5011",
+  "bodySHA256": "5e5fa06a834ea7906d8c6a62490e8582719fc0ac9de5b5ba257c21fbb39f09bf",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "c1c70934d67a17bdb1cb8cec9f0f6abfbd97c04cfa6d6bc7a56d22943f894dab",
-    "src/Common/modSectionRecipeApiGuide.bas": "0edbbcf07cb7d83894cbe40783c68e435d758aa7735b1fa656de7a33634cb835"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "764ba8268181ed471477cc4ebf65590467f173900f853a16c76898ecdaf3749d",
+    "src/Common/modSectionRecipeApiGuide.bas": "5e0d1f74ba5e31453388ddb2391334bed55fe73176ea30c1c190970e239500dd"
   },
   "rows": [
     {
@@ -146,7 +146,7 @@
       "line": 23
     },
     {
-      "text": "5. При необходимости добавьте размеры и подписи. Anchor задаёт исходную точку, PathAnchor — точку готовой линии; Dimension с Aligned показывает истинное расстояние между ними, с Horizontal/Vertical — проекцию. Вызовите Finish, чтобы проверить контуры и ссылки и завершить описание. После него новые команды и повторный Finish запрещены. Арматурные условия и фактическое размещение проверяются общим Build до создания сетки.",
+      "text": "5. При необходимости добавьте размеры и подписи через методы аннотаций, затем вызовите Finish. Общий сборщик проверит контуры и разместит арматуру до создания сетки. Для дополнительных рядов проверяется весь смещённый контур. Исчезнувшие угловые скругления заменяются стыками прямых, а позиции вне новой линии пропускаются с предупреждением.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 24

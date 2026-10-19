@@ -2109,9 +2109,9 @@ Private Sub AppendNeutralIntersection(ByRef pointX() As Double, ByRef pointY() A
     pointY(pointCount) = y
 End Sub
 
-' Строит повернутый прямоугольник четырьмя WCS-отрезками и преобразует в Region.
-' Это сохраняет расположение элемента независимо от UCS/OCS активного чертежа;
-' временные исходные линии собираются для удаления одним собственным набором.
+' Строит прямоугольный Region по вершинам в мировых координатах.
+' Вершины задаются в WCS независимо от UCS/OCS активного чертежа;
+' временные полилинии собираются для удаления одним собственным набором.
 Private Function AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, ByVal y As Double, _
         ByVal width As Double, ByVal height As Double, ByVal rotationRad As Double, _
         ByVal layerName As String, ByVal colorIndex As Long, ByVal temporarySources As Collection) As Object
@@ -2131,28 +2131,17 @@ Private Function AddAcadRectangleRegion(ByVal ms As Object, ByVal x As Double, B
     px(2) = x + hw * c - hh * s: py(2) = y + hw * s + hh * c
     px(3) = x - hw * c - hh * s: py(3) = y - hw * s + hh * c
 
-    ' Строим Region из WCS-линий. LWPOLYLINE принимает 2D OCS-координаты и
-    ' может дать заметный перенос при нестандартной UCS/плоскости чертежа.
-    Dim sourceObjects(0 To 3) As Object
-    Set sourceObjects(0) = AddAcadSourceLine(ms, px(0), py(0), px(1), py(1))
-    temporarySources.Add sourceObjects(0)
-    Set sourceObjects(1) = AddAcadSourceLine(ms, px(1), py(1), px(2), py(2))
-    temporarySources.Add sourceObjects(1)
-    Set sourceObjects(2) = AddAcadSourceLine(ms, px(2), py(2), px(3), py(3))
-    temporarySources.Add sourceObjects(2)
-    Set sourceObjects(3) = AddAcadSourceLine(ms, px(3), py(3), px(0), py(0))
-    temporarySources.Add sourceObjects(3)
-    Set AddAcadRectangleRegion = AddAcadRegionFromCurves(ms, sourceObjects, layerName, colorIndex)
-End Function
-
-' Создает временный отрезок по WCS-точкам для последующего AddRegion.
-Private Function AddAcadSourceLine(ByVal ms As Object, ByVal x1 As Double, ByVal y1 As Double, _
-        ByVal x2 As Double, ByVal y2 As Double) As Object
-    Dim p1(0 To 2) As Double
-    Dim p2(0 To 2) As Double
-    p1(0) = x1: p1(1) = y1: p1(2) = 0#
-    p2(0) = x2: p2(1) = y2: p2(2) = 0#
-    Set AddAcadSourceLine = ms.AddLine(p1, p2)
+    ' Одна замкнутая полилиния сокращает обращения к AutoCAD. Начало справа
+    ' внизу сохраняет прежнее направление первого ребра Region при импорте.
+    Dim points(0 To 11) As Double, corner As Long, vertex As Long, source As Object
+    For corner = 0 To 3
+        vertex = (corner + 1) Mod 4
+        points(corner * 3) = px(vertex): points(corner * 3 + 1) = py(vertex)
+    Next corner
+    Set source = ms.Add3DPoly(points)
+    temporarySources.Add source
+    source.Closed = True
+    Set AddAcadRectangleRegion = AddAcadRegionFromCurve(ms, source, layerName, colorIndex)
 End Function
 
 ' Добавляет отрезок в мировых координатах с заданным слоем и цветом.

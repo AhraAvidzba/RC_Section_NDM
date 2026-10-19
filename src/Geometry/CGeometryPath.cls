@@ -27,6 +27,8 @@ Private mStations() As Double ' Накопленные длины сегмент
 Private mCollapsedIDs() As String, mCollapsedStations() As Double, mCollapsedCount As Long ' Имена и координаты привязки исчезнувших участков, число таких участков; новые отрезки вместо них не создаются.
 Private mCount As Long, mCapacity As Long ' Число аналитических сегментов и ёмкость рабочего массива.
 Private mSealed As Boolean, mClosed As Boolean ' Завершение построения и фактическая замкнутость линии.
+Private mOffsetBoundary As CGeometryPath ' Полная замкнутая линия, из которой выбран участок; ссылка только на неизменяемую геометрию.
+Private mBoundaryDirection As Double ' Направление участка относительно полной линии: 1 по её обходу, -1 против.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя ошибка построения или обращения к линии.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
@@ -172,6 +174,7 @@ Public Function WithID(ByVal pathID As String) As CGeometryPath
         result.Append mSegmentIDs(i), mEdges(i), mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceStart(i), mSourceEnd(i)
     Next i
     CopyCollapsedAnchors result, 0#, Length, 0#
+    CopyOffsetBoundary result
     result.Seal mClosed: Set WithID = result
 End Function
 
@@ -205,6 +208,7 @@ Public Function BetweenAnchors(ByVal pathID As String, ByVal startSegmentID As S
     Set result = New CGeometryPath: result.Initialize pathID
     AppendInterval result, first, mStations(mCount)
     AppendInterval result, 0#, last
+    CopyOffsetBoundary result
     result.Seal (Abs(first - last) <= PATH_TOLERANCE)
     Set BetweenAnchors = result
 End Function
@@ -239,6 +243,60 @@ Public Sub ValidateNormalTransfer(ByVal distance As Double, ByVal normalOffset A
             "Смещение ряда — " & CStr(Abs(normalOffset)) & " мм; радиус линии основного ряда — " & CStr(radius) & _
             " мм. Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.", "ROW_OFFSET_COLLAPSED", mSegmentIDs(segment), normalOffset, radius
 End Sub
+
+
+' Возвращает полную линию для совместного смещения всех её участков.
+' Независимая открытая линия не имеет такой границы и возвращает Nothing.
+Friend Function OffsetBoundary() As CGeometryPath
+    RequireSealed
+    If mClosed Then Set OffsetBoundary = Me Else Set OffsetBoundary = mOffsetBoundary
+End Function
+
+' Знак нормали участка относительно нормали полного контура.
+Friend Property Get BoundaryDirection() As Double
+    If mClosed Then BoundaryDirection = 1# Else BoundaryDirection = mBoundaryDirection
+End Property
+
+' Сохраняет связь до Seal. Полный контур уже завершён; циклических ссылок нет.
+Friend Sub SetOffsetBoundary(ByVal boundary As CGeometryPath, ByVal direction As Double)
+    RequireMutable
+    If boundary Is Nothing Then Exit Sub
+    If boundary Is Me Then PathError "Нельзя назначить линию собственной родительской границей."
+    If Not boundary.IsClosed Then PathError "Полная граница должна быть замкнутой."
+    If direction <> 1# And direction <> -1# Then PathError "Направление участка должно быть 1 или -1."
+    Set mOffsetBoundary = boundary: mBoundaryDirection = direction
+End Sub
+
+' Передаёт неизменяемую полную границу при выделении участка или смене его имени.
+Private Sub CopyOffsetBoundary(ByVal result As CGeometryPath, Optional ByVal reverse As Boolean = False)
+    Dim boundary As CGeometryPath, direction As Double
+    Set boundary = OffsetBoundary: direction = BoundaryDirection
+    If reverse Then direction = -direction
+    result.SetOffsetBoundary boundary, direction
+End Sub
+
+' Определяет, исчезнет ли при смещении хотя бы одна дуга этой линии.
+' Проверку используют до подготовки смещённой линии, а не для изменения радиуса стержня.
+Friend Function HasCollapsedNormalArc(ByVal normalOffset As Double) As Boolean
+    RequireSealed
+    Dim i As Long, radius As Double
+    For i = 1 To mCount
+        If mEdges(i).Sweep <> 0# Then
+            radius = Sqr((mEdges(i).X1 - mEdges(i).CenterX) ^ 2 + (mEdges(i).Y1 - mEdges(i).CenterY) ^ 2)
+            If radius - Sgn(mEdges(i).Sweep) * normalOffset <= GEOM_TOLERANCE Then HasCollapsedNormalArc = True: Exit Function
+        End If
+    Next i
+End Function
+
+' Проверяет попадание на любой фактический сегмент. Общий стык двух сегментов
+' тоже принадлежит линии; однозначное имя сегмента здесь не требуется.
+Friend Function ContainsPoint(ByVal x As Double, ByVal y As Double) As Boolean
+    RequireSealed
+    Dim i As Long, parameter As Double
+    For i = 1 To mCount
+        If modGeometryPrimitives.PointParameter(mEdges(i), x, y, parameter) Then ContainsPoint = True: Exit Function
+    Next i
+End Function
 
 ' Находит используемый сегмент для точки и проверки её нормального переноса одним правилом выбора стыка.
 Private Function SegmentAtDistance(ByVal distance As Double, ByVal incomingTangentAtJoint As Boolean) As Long
@@ -290,6 +348,7 @@ Public Function Slice(ByVal startDistance As Double, ByVal endDistance As Double
         End If
     Next i
     CopyCollapsedAnchors result, startDistance, endDistance, 0#
+    CopyOffsetBoundary result
     result.Seal (mClosed And startDistance = 0# And endDistance = mStations(mCount))
     Set Slice = result
 End Function
@@ -397,6 +456,7 @@ Public Function Reversed() As CGeometryPath
         result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceEnd(i), mSourceStart(i)
     Next i
     CopyCollapsedAnchors result, 0#, Length, 0#, True
+    CopyOffsetBoundary result, True
     result.Seal mClosed
     Set Reversed = result
 End Function
@@ -421,6 +481,7 @@ Public Function Transformed(ByVal shiftX As Double, ByVal shiftY As Double, _
         result.Append mSegmentIDs(i), edge, mSourcePathIDs(i), mSourceSegmentIDs(i), mSourceStart(i), mSourceEnd(i)
     Next i
     CopyCollapsedAnchors result, 0#, Length, 0#
+    If Not mOffsetBoundary Is Nothing Then result.SetOffsetBoundary mOffsetBoundary.Transformed(shiftX, shiftY, rotation, reflectX), mBoundaryDirection
     result.Seal mClosed
     Set Transformed = result
 End Function

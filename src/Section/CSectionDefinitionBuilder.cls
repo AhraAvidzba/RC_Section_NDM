@@ -122,7 +122,8 @@ Public Sub TransformAnchor(ByVal anchorID As String, ByVal sourceAnchorID As Str
 End Sub
 
 ' Создаёт смещённую линию: положительное signedLeftDistance направлено влево по обходу.
-' Прямые соединяются пересечением продолжений; стыки с дугами должны быть гладкими.
+' Прямые соединяются пересечением продолжений. Исчезнувшее скругление между
+' касательными прямыми заменяется их стыком; полный круг исчезать не может.
 Public Function Offset(ByVal pathID As String, ByVal sourcePathID As String, ByVal signedLeftDistance As Double) As CGeometryPath
     RequireOpen
     On Error GoTo Failed

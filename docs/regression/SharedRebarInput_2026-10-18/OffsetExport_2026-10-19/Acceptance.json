@@ -1,0 +1,31 @@
+{
+  "Passed": true,
+  "Scope": "Directed offset and native CAD export acceptance; not full ON/OFF acceptance",
+  "Tests": {
+    "Yes": {
+      "Suites": 10,
+      "PassedAssertions": 444,
+      "FailedAssertions": 0
+    },
+    "No": {
+      "Suites": 10,
+      "PassedAssertions": 444,
+      "FailedAssertions": 0
+    }
+  },
+  "NativeCalculationPairs": 12,
+  "NativeCalculationRuns": 24,
+  "NativeMathEquivalent": true,
+  "SavedCADRoundtripExact": true,
+  "WCSVerified": true,
+  "SourceComponents": 155,
+  "WorkbookComponents": 161,
+  "NewComponents": 0,
+  "UserDataAndResultsPreserved": true,
+  "UserExecutionReportUnchanged": true,
+  "WorkbookSHA256": "54B277B5F2DC407659EBF8AEE8F06417E942AA561135678A929AFC874878783D",
+  "AllCodeSHA256": "706EBE95CE2F57711B69EC693AE46B604622FDCE08EE38AF066210EE26D0FA04",
+  "FullOnOffRun": false,
+  "PreviousRun03StatusChanged": false,
+  "EvidenceArchiveSHA256": "A2815D9F8D67129AEEB01B4641893BE5E21DC305E8288E32FD9F94908ECCAFBE"
+}

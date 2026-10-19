@@ -21,7 +21,8 @@ Public Sub RunSectionCalculation()
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
-    If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Then
+    If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Or _
+            InStr(1, message, "Предупреждение:", vbTextCompare) > 0 Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
     ElseIf informationEnabled Then
         ShowWorkbookMessage message, vbInformation, "RC Section NDM"
@@ -823,6 +824,7 @@ Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal s
         BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.Count) & _
             ". Определяющее сочетание: " & batch.WorstCombinationID
     End If
+    If Len(section.GeometryWarningText) > 0 Then BuildCalculationMessage = BuildCalculationMessage & vbCrLf & section.GeometryWarningText
 End Function
 
 ' Определяет, построено ли сечение по параметрам или прочитано из сохранённого

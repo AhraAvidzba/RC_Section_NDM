@@ -4,7 +4,8 @@ param(
     [string]$BaselineWorkbook='docs/regression/Performance/CADBaselineV3/RC_Section_NDM.xlsm',
     [string]$CandidateWorkbook='docs/regression/Performance/CADCandidateV5/RC_Section_NDM.xlsm',
     [string]$Directory='docs/regression/Performance/NativeCADV4',
-    [ValidateRange(1,10)][int]$Repetitions=5
+    [ValidateRange(0,10)][int]$Repetitions=5,
+    [ValidateSet('Grid','Rotated','GridWithOtherEntities')][string[]]$Scenarios=@('Grid','Rotated','GridWithOtherEntities')
 )
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
@@ -53,7 +54,7 @@ try {
     [ordered]@{PID=$excelID;StartTicks=(Get-Process -Id $excelID).StartTime.ToUniversalTime().Ticks} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'ExcelIdentity.json') -Encoding UTF8
     $excel.Visible=$false;$excel.DisplayAlerts=$false;$excel.EnableEvents=$false;$excel.AutomationSecurity=1
-    foreach($scenario in @('Grid','Rotated','GridWithOtherEntities')) {
+    foreach($scenario in $Scenarios) {
         for($run=0;$run -le $Repetitions;$run++) {
             $order=@('A','B');if($run%2 -eq 1) {$order=@('B','A')}
             foreach($version in $order) {
@@ -85,7 +86,7 @@ try {
             }
         }
     }
-    [ordered]@{Passed=$true;ExactABGeometry=$true;Repetitions=$Repetitions;CompletedUTC=[DateTime]::UtcNow.ToString('o')} |
+    [ordered]@{Passed=$true;ExactABGeometry=$true;Repetitions=$Repetitions;Scenarios=$Scenarios;CompletedUTC=[DateTime]::UtcNow.ToString('o')} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'Acceptance.json') -Encoding UTF8
 }
 finally {

@@ -362,3 +362,182 @@ End Sub
 Private Sub Near(ByVal name As String, ByVal actual As Double, ByVal expected As Double)
     Check name & "; actual=" & CStr(actual) & "; expected=" & CStr(expected), Abs(actual - expected) <= 0.000000001 * (1# + Abs(expected))
 End Sub
+
+' ДЛЯ ТЕСТОВ: исчезновение угловой дуги сохраняет точный стык и имена привязок.
+Public Function RunCollapsingOffsetTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim source As CGeometryPath, result As CGeometryPath, query As CSectionGeometryQuery
+    Dim distance As Variant, x As Double, y As Double, tx As Double, ty As Double, polygon As CPolygonSpec
+    Set query = New CSectionGeometryQuery
+    Set source = New CGeometryPath: source.Initialize "RoundedCorner"
+    source.AddLine "First", 0#, 0#, 100#, 0#
+    source.AddArc "Corner", 100#, 40#, 40#, -GEOM_PI / 2#, GEOM_PI / 2#
+    source.AddLine "Last", 140#, 40#, 140#, 140#: source.Seal
+    For Each distance In Array(40#, 50#, 80#)
+        Set result = query.OffsetPath("CornerOffset", source, CDbl(distance))
+        Check "collapse.segmentCount." & CStr(distance), result.SegmentCount = 2
+        Check "collapse.anchor." & CStr(distance), result.HasCollapsedSegmentID("Corner") And Not result.HasSegmentID("Corner")
+        result.AtDistance result.AnchorStation("Corner"), x, y, tx, ty
+        Near "collapse.joint.x." & CStr(distance), x, 140# - CDbl(distance)
+        Near "collapse.joint.y." & CStr(distance), y, CDbl(distance)
+        Check "collapse.joint.belongs." & CStr(distance), result.ContainsPoint(x, y)
+        Near "collapse.length." & CStr(distance), result.Length, 280# - 2# * CDbl(distance)
+    Next distance
+    Set result = query.OffsetPath("BeforeCollapse", source, 39.99)
+    Check "collapse.before.arcKept", result.HasSegmentID("Corner") And result.SegmentCount = 3
+    Set result = query.OffsetPath("AfterCollapse", source, 50#)
+    source.AtDistance 100# + 10# * GEOM_PI, x, y, tx, ty
+    Check "collapse.inverted.point.rejected", Not result.ContainsPoint(x - 50# * ty, y + 50# * tx)
+    Check "collapse.source.unchanged", source.SegmentCount = 3 And source.HasSegmentID("Corner")
+    Set result = query.OffsetPath("ReverseOffset", source.Reversed, -50#)
+    Near "collapse.reverse.length", result.Length, 180#
+    Set source = source.Transformed(500#, -200#, GEOM_PI / 3#, True)
+    Set result = query.OffsetPath("TransformedOffset", source, -50#)
+    result.AtDistance result.AnchorStation("Corner"), x, y, tx, ty
+    tx = 90#: ty = 50#: query.TransformCoordinates tx, ty, 500#, -200#, GEOM_PI / 3#, True
+    Near "collapse.transform.x", x, tx: Near "collapse.transform.y", y, ty
+    Set polygon = New CPolygonSpec
+    polygon.AddVertex "A", 0#, 0#, 10#: polygon.AddVertex "B", 100#, 0#, 10#
+    polygon.AddVertex "C", 100#, 100#, 10#: polygon.AddVertex "D", 0#, 100#, 10#: polygon.Seal
+    Set source = query.RoundedPolygon("Closed", polygon)
+    Set result = query.OffsetPath("ClosedOffset", source, 20#)
+    Check "collapse.closed", result.IsClosed And result.SegmentCount = 4
+    Near "collapse.closed.area", query.RegionFromPath(result).Area, 3600#
+    GoTo Finished
+Failed:
+    Check "collapse.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunCollapsingOffsetTests = mReport & "TOTAL_COLLAPSING_OFFSETS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: сохранённый PointedRect при 40 мм сохраняет стержень в стыке,
+' а при большем смещении пропускает только позицию, вышедшую за новую линию.
+Public Function RunSavedPointedOffsetTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim table As Object, saved As Variant, values As Variant, value As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
+    Dim i As Long, count As Long, expected As Long, inputCell As Object
+    On Error GoTo Failed
+    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    saved = table.Formula
+    Set inputCell = FixtureInputCell(table, "Extra", "Right", "a2")
+    For Each value In Array(39.99, 40#, 50#, 80#)
+        inputCell.Value2 = CDbl(value)
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
+        count = 0
+        For i = 1 To model.RebarCount
+            If InStr(model.RebarRecipeTrace(i), "RuleId=H.Right.Row2") > 0 Then count = count + 1
+        Next i
+        expected = 5: If CDbl(value) > 40# Then expected = 4
+        Check "saved.right.created." & CStr(value), count = expected
+        Check "saved.right.warning." & CStr(value), (Len(model.GeometryWarningText) > 0) = (CDbl(value) > 40#)
+        If CDbl(value) > 40# Then Check "saved.right.warning.address." & CStr(value), InStr(model.GeometryDiagnosticsText, inputCell.Worksheet.Name & "!" & inputCell.Address(False, False)) > 0
+    Next value
+    GoTo Finished
+Failed:
+    Check "saved.offset.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not table Is Nothing Then table.Formula = saved
+    RunSavedPointedOffsetTests = mReport & "TOTAL_SAVED_POINTED_OFFSETS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: соседи прямой стороны ограничивают дополнительные ряды даже без дуг.
+' Проверяет общий контур, обращённый обход, отражение, поворот и связь третьего ряда со вторым.
+Public Function RunFullBoundaryOffsetTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim reverse As Long, reflect As Long, binding As Long, chain As Long
+    Dim facade As CSectionDefinitionBuilder, boundary As CGeometryPath, whole As CGeometryPath, side As CGeometryPath
+    Dim options As CRebarRuleOptions, query As CSectionGeometryQuery, executor As CRebarRuleExecutor, layout As CRebarLayout
+    Dim definition As CSectionDefinition, actual As CGeometryPath, i As Long, row2 As Long, row3 As Long, normal As Double
+    Dim x As Double, y As Double, prefix As String
+    For reverse = 0 To 1
+        For reflect = 0 To 1
+            For binding = 0 To 1
+                For chain = 0 To 1
+                    Set facade = New CSectionDefinitionBuilder: facade.Initialize "WholeBoundaryTest"
+                    Set boundary = facade.RectanglePath("Boundary", 0#, 0#, 1000#, 600#, "Bottom", "Right", "Top", "Left")
+                    Set query = New CSectionGeometryQuery
+                    Set whole = query.OffsetPath("Whole", boundary, 50#)
+                    Set side = whole.BetweenAnchors("Side", "Bottom", 0#, "Bottom", 1#)
+                    If reverse = 1 Then Set side = side.Reversed
+                    Set side = side.WithID("Axis").Transformed(1700#, -900#, GEOM_PI / 6#, reflect = 1)
+                    Set actual = boundary.Transformed(1700#, -900#, GEOM_PI / 6#, reflect = 1).WithID("Concrete")
+                    facade.AddPath actual: facade.Outer "Outer", actual.ID
+                    facade.AddPath side
+                    Set options = New CRebarRuleOptions
+                    options.AnnotationGroup = "Side"
+                    facade.RebarByCount "Main", side.ID, 5, 10#, options
+                    normal = (1# - 2# * reverse) * (1# - 2# * reflect)
+                    options.NormalOffset = normal * 100#: options.EverySecond = (binding = 1)
+                    options.SourceReference = "WholeBoundary[Extra,2]"
+                    facade.RebarDependent "Row2", "Main", 10#, options
+                    options.EverySecond = False: options.NormalOffset = normal * 200#
+                    If chain = 1 Then options.NormalOffset = normal * 100#
+                    options.SourceReference = "WholeBoundary[Extra,3]"
+                    facade.RebarDependent "Row3", IIf(chain = 1, "Row2", "Main"), 10#, options
+                    Set definition = facade.Finish: Set executor = New CRebarRuleExecutor
+                    Set layout = FixtureAnnotatedLayout(definition, executor)
+                    row2 = 0: row3 = 0
+                    For i = 1 To layout.Count
+                        x = layout.X(i) - 1700#: y = layout.Y(i) + 900#
+                        ' Обратный поворот и отражение дают координаты до преобразования.
+                        query.TransformCoordinates x, y, 0#, 0#, -GEOM_PI / 6#
+                        If reflect = 1 Then y = -y
+                        If Abs(y - 150#) < 0.000001 Then
+                            row2 = row2 + 1: Check "whole.row2.bounds", x >= 150# And x <= 850#
+                        ElseIf Abs(y - 250#) < 0.000001 Then
+                            row3 = row3 + 1: Check "whole.row3.bounds", x >= 250# And x <= 750#
+                        End If
+                    Next i
+                    prefix = "whole." & CStr(reverse) & CStr(reflect) & CStr(binding) & CStr(chain)
+                    Check prefix & ".row2", row2 = IIf(binding = 1, 1, 3)
+                    Check prefix & ".row3", row3 = IIf(binding = 1 And chain = 1, 1, 3)
+                    Check prefix & ".warning", InStr(executor.DiagnosticsText, "Предупреждение:") > 0
+                    Check prefix & ".address", InStr(executor.DiagnosticsText, "WholeBoundary[Extra,2]") > 0
+                    Check prefix & ".source.unchanged", whole.IsClosed And whole.SegmentCount = 4 And side.SegmentCount = 1
+                Next chain
+            Next binding
+        Next reflect
+    Next reverse
+    GoTo Finished
+Failed:
+    Check "whole.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunFullBoundaryOffsetTests = mReport & "TOTAL_FULL_BOUNDARY_OFFSETS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: обычный расчёт сохранённого примера проходит через запись Results и схему.
+' При пропуске стержня предупреждение возвращается вместе с итогом расчёта.
+Public Function RunSavedOffsetCalculationTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    On Error GoTo Failed
+    Dim area As Object, inputCell As Object, saved As Variant, value As Variant, message As String
+    Dim summary As Object, i As Long, j As Long, text As String, model As CSectionModel
+    Set area = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2"): saved = inputCell.Formula
+    For Each value In Array(40#, 50#)
+        inputCell.Value2 = value
+        message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
+        Check "saved.calculation.completed." & CStr(value), InStr(message, "завершен.") > 0 And InStr(message, "ошиб") = 0
+        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (CDbl(value) > 40#)
+        Set summary = ThisWorkbook.Names("rngBatchSummary").RefersToRange
+        text = ""
+        For i = 1 To summary.Rows.Count
+            For j = 1 To summary.Columns.Count
+                text = text & CStr(summary.Cells(i, j).Value2) & "|"
+            Next j
+        Next i
+        Check "saved.calculation.status." & CStr(value), InStr(text, "NumFail") = 0 And InStr(text, "InputErr") = 0 And InStr(text, "CalcErr") = 0
+        mReport = mReport & "OBSERVED_SAVED_CALCULATION: a2=" & CStr(value) & "; " & Replace(message, vbCrLf, " | ") & vbCrLf
+    Next value
+    GoTo Finished
+Failed:
+    Check "saved.calculation.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not inputCell Is Nothing Then inputCell.Formula = saved
+    RunSavedOffsetCalculationTests = mReport & "TOTAL_SAVED_OFFSET_CALCULATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function

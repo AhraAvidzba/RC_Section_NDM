@@ -1118,3 +1118,122 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
         Chr$(30) & "entities=" & CStr(count) & Chr$(30) & "concrete=" & CStr(section.ConcreteCount) & Chr$(30) & _
         "rebar=" & CStr(section.RebarCount) & Chr$(30) & "noise=" & CStr(noiseCount) & Chr$(30) & "signature=" & signature
 End Function
+
+' ДЛЯ ТЕСТОВ: повёрнутое прямоугольное сечение с разными главными инерциями.
+' Неравенство сторон исключает неопределённость направления осей круглого сечения.
+Public Sub PrepareNativeCADRoundoffFixture()
+    ConfigurePerformanceFixture "IMPORTED_DIRECT", 1, "Newton"
+    PerformanceSetting "Plot.Enabled", "No": PerformanceSetting "Plot.AutoUpdateAfterCalculation", "No"
+    PerformanceSetting "General.ExecutionReportEnabled", "No"
+    PerformanceSetting "AutoCAD.Export.CombinationID", "PERF_01"
+    PerformanceSetting "AutoCAD.Import.MinArea", "0"
+    Dim section As CSectionModel, i As Long, j As Long, x As Double, y As Double, c As Double, s As Double
+    Dim points As Variant, point As Variant, path As CGeometryPath, query As CSectionGeometryQuery
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter, table As Object
+    Set section = New CSectionModel: section.SourceType = "AutoCADImport"
+    c = Cos(0.37): s = Sin(0.37)
+    For i = 1 To 8
+        For j = 1 To 6
+            x = -300# + (i - 0.5) * 75#: y = -150# + (j - 0.5) * 50#
+            section.AddConcreteElement c * x - s * y, s * x + c * y, 3750#, 1, , , "Rectangle", 75#, 50#, 0.37
+        Next j
+    Next i
+    points = Array(Array(-260#, -110#), Array(0#, -110#), Array(260#, -110#), Array(260#, 0#), _
+        Array(260#, 110#), Array(0#, 110#), Array(-260#, 110#), Array(-260#, 0#))
+    For Each point In points
+        x = CDbl(point(0)): y = CDbl(point(1))
+        section.AddRebarElement c * x - s * y, s * x + c * y, 20#, 0#, "Periodic"
+    Next point
+    Set path = New CGeometryPath: path.Initialize "Rectangle"
+    path.AddLine "Bottom", -300#, -150#, 300#, -150#: path.AddLine "Right", 300#, -150#, 300#, 150#
+    path.AddLine "Top", 300#, 150#, -300#, 150#: path.AddLine "Left", -300#, 150#, -300#, -150#: path.Seal True
+    Set query = New CSectionGeometryQuery
+    section.Contours.AddMaterialRegion query.RegionFromPath(path.Transformed(0#, 0#, 0.37)), "ROUNDING_TEST", "Контур контрольного прямоугольника."
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
+    Set table = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange
+    For i = 1 To table.Rows.Count
+        If CStr(table.Cells(i, 2).Value2) = "Visualization.State" Then table.Cells(i, 3).Value2 = "StrengthState"
+    Next i
+    Dim measured As String: measured = MeasurePerformanceBatch("Staged")
+End Sub
+
+' ДЛЯ ТЕСТОВ: одна и та же рабочая математика для двух реально импортированных чертежей.
+' Проверяет прочность, трещины и устойчивость; нагрузки заданы в Н и Н*мм.
+Public Function MeasureCADRoundoffCalculation(ByVal document As Object, ByVal extension As String) As String
+    Dim areas As Variant, name As Variant, snapshots As Object, area As Object
+    Dim number As Long, owner As String, reason As String, report As String
+    Set snapshots = CreateObject("Scripting.Dictionary")
+    areas = Array("rngSystemSettings", "rngCalculationProfiles", "rngLoadCombinations", "rngStabilityDurationLoads")
+    For Each name In areas
+        snapshots.Add CStr(name), ThisWorkbook.Names(CStr(name)).RefersToRange.Formula
+    Next name
+    On Error GoTo Failed
+    ConfigurePerformanceFixture "MIXED", 6, "Newton", "Saved", "Normal", extension
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, importer As CAutoCADSectionModelImporter
+    Dim section As CSectionModel, provider As CMaterialModelProvider, profiles As CCalculationProfileCatalog
+    Dim batch As CBatchSectionCalculator, loads As Variant, load As Variant, i As Long, j As Long
+    Dim result As CCombinationResult, state As CSectionStateResult, data As Variant, inputError As String, converged As Long
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set importer = New CAutoCADSectionModelImporter
+    Set section = importer.ImportConfiguredModelSpace(document.ModelSpace, settings, units, document.Layers)
+    Set provider = New CMaterialModelProvider: provider.Initialize settings, units
+    Set profiles = New CCalculationProfileCatalog: profiles.LoadFromWorkbook ThisWorkbook
+    Set batch = New CBatchSectionCalculator: batch.Initialize section, provider
+    Set batch.ProfileCatalog = profiles: batch.ApplySettings settings, units
+    loads = Array(Array(-500000#, 0#, 0#), Array(0#, 50000000#, 0#), Array(-500000#, 50000000#, -20000000#), _
+        Array(200000#, 20000000#, 10000000#), Array(-5000000#, 500000000#, 200000000#), Array(-200000#, -30000000#, 40000000#))
+    For Each load In loads
+        i = i + 1
+        batch.AddCombination "ROUND_" & CStr(i), CDbl(load(0)), CDbl(load(1)), CDbl(load(2)), "PR1", "Контроль погрешности AutoCAD."
+        batch.AddStabilityDurationLoad "ROUND_" & CStr(i), 0#, 0#, 0#
+    Next load
+    data = ReadSP35Table721FromWorkbook(ThisWorkbook, inputError): batch.SetSP35Table721 data, inputError
+    Audit03ApplyLoadReferenceForTests section, settings, units, batch
+    batch.Execute
+    For i = 1 To batch.Count
+        Set result = batch.ResultAt(i)
+        report = report & CADRoundoffFields(CStr(i) & ".Result", result, "Status NormalCrackStatus CrackSummaryStatus GoverningUtil")
+        report = report & CADRoundoffFields(CStr(i) & ".Meta", result.OverallMeta, "InternalStatus ResultCode Applies Calculated")
+        report = report & CADRoundoffFields(CStr(i) & ".Direct", result.StrengthResult.DirectState, "Status StateAvailable StateConverged StrainReserve")
+        report = report & CADRoundoffFields(CStr(i) & ".Capacity", result.StrengthResult.Capacity, "Status LimitState LambdaCapacity UtilCapacity NUltimate MxUltimate MyUltimate CapacityStateAvailable CapacityEpsilon0 CapacityKappaX CapacityKappaY")
+        report = report & CADRoundoffFields(CStr(i) & ".Formation", result.CrackResult.Formation, "CrackFormed ConfirmedCracked ConfirmedNotCracked LambdaCrc Ncrc Mcrc Converged StopReason")
+        report = report & CADRoundoffFields(CStr(i) & ".Width", result.CrackResult.Width, "CrackWidth Utilization PsiS SigmaS SigmaSCrc CrackSpacing StopReason StandardCode")
+        report = report & CADRoundoffFields(CStr(i) & ".Longitudinal", result.CrackResult.Longitudinal, "Status MaxCompressionStress Utilization")
+        report = report & CADRoundoffFields(CStr(i) & ".Stability", result.StabilityResult, "Status SummaryReserve CriticalForce Ncr1 Ncr2 Reserve1 Reserve2 Eta1 Eta2")
+        report = report & CStr(i) & ".Repository|Count|T|" & CStr(result.StateRepository.StateCount) & vbLf
+        If result.StrengthResult.DirectState.StateConverged Then converged = converged + 1
+        For j = 1 To result.StateRepository.StateCount
+            Set state = result.StateRepository.StateAt(j)
+            report = report & CADRoundoffFields(CStr(i) & ".State." & CStr(j), state, "StateType Converged Status InternalStatus ResultCode Epsilon0 KappaX KappaY TargetN TargetMx TargetMy Nint Mxint Myint MinConcreteStrain MaxConcreteStrain MinSteelStrain MaxSteelStrain MinConcreteStress MaxConcreteStress MinSteelStress MaxSteelStress")
+        Next j
+    Next i
+    If batch.Count <> 6 Or converged < 3 Then Err.Raise 5, "CADRoundoff", "Недостаточно пригодных контрольных результатов."
+    report = report & "Control|Cases|T|6" & vbLf
+    GoTo Restore
+Failed:
+    number = Err.Number: owner = Err.Source: reason = Err.Description
+Restore:
+    For Each name In areas
+        ThisWorkbook.Names(CStr(name)).RefersToRange.Formula = snapshots.Item(CStr(name))
+    Next name
+    If number <> 0 Then Err.Raise number, owner, reason
+    MeasureCADRoundoffCalculation = report
+End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет исходные биты чисел и точные статусы без округления результатов.
+Public Function CADRoundoffFields(ByVal prefix As String, ByVal target As Object, ByVal fields As String) As String
+    If target Is Nothing Then CADRoundoffFields = prefix & "|Available|T|False" & vbLf: Exit Function
+    Dim name As Variant, value As Variant, kind As String, text As String
+    For Each name In Split(fields, " ")
+        value = CallByName(target, CStr(name), VbGet)
+        If VarType(value) = vbDouble Then
+            kind = "D": text = DoubleBits(CDbl(value))
+        Else
+            kind = "T": text = Replace(Replace(CStr(value), "|", "%7C"), vbCrLf, "%0A")
+        End If
+        CADRoundoffFields = CADRoundoffFields & prefix & "|" & CStr(name) & "|" & kind & "|" & text & vbLf
+    Next name
+End Function

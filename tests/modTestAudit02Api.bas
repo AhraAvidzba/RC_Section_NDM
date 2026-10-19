@@ -863,7 +863,7 @@ Public Function RunIndependentRowOffsetGeometryTests() As String
             End If
         Next i
     Next kind
-    Check "offset.overlap.rejected", OffsetGeometryRejected(OffsetGeometryDefinition(0, 100#, 105#), "Диски стержней")
+    Check "offset.overlap.rejected", OffsetGeometryRejected(OffsetGeometryDefinition(0, 100#, 105#), "Поперечные сечения стержней")
     Set layout = FixtureLayout(OffsetGeometryDefinition(0, 100#, 118#))
     Check "offset.touch.allowed", layout.Count = 15
     Check "offset.disk.outside", OffsetGeometryRejected(OffsetGeometryDefinition(0, 1499#, 100#), "целиком")
@@ -872,7 +872,7 @@ Public Function RunIndependentRowOffsetGeometryTests() As String
     Check "offset.arc.contact.collapse", OffsetGeometryRejected(OffsetGeometryDefinition(1, 290#, 290#), "центра")
     For kind = 0 To 1
         Check "offset.coincidence.order." & CStr(kind), OffsetGeometryRejected(OffsetGeometryDefinition(0, 100#, 200#, "EachBar", "EachBar", kind + 1), "совпал")
-        Check "offset.shared.upgrade.order." & CStr(kind), OffsetGeometryRejected(OffsetSharedJointDefinition(kind, True), "Диски стержней")
+        Check "offset.shared.upgrade.order." & CStr(kind), OffsetGeometryRejected(OffsetSharedJointDefinition(kind, True), "Поперечные сечения стержней")
         Set layout = FixtureLayout(OffsetSharedJointDefinition(kind, False))
         Check "offset.shared.joint.allowed." & CStr(kind), layout.Count = 2
     Next kind
