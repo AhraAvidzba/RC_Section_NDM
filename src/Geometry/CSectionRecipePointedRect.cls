@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "CSectionRecipeRoundedRectangle"
+Attribute VB_Name = "CSectionRecipePointedRect"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -56,14 +56,13 @@ End Type
 ' описание границы бетона, размещения стержней вдоль прямых и скруглённых сторон,
 ' а также аннотаций схемы (размеры сечения, количество и диаметры стержней).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As TRoundedInput, faces(1 To 4) As TRoundedFace, outer As CGeometryPath, polygon As CPolygonSpec
-    Set reader = context.Reader("rngRoundedRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
-    Set rebarReader = context.Reader("rngRebarInput", "RoundedRectangle.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
+    Set reader = context.Reader("rngPointedRectGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs rebarReader, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
+    ReadRebarInputs reader, faces ' Читаем параметры сторон, отступы и привязки включённых рядов.
     Set polygon = DescribePolygon(sizes) ' Общее описание вершин для бетона и всех смещённых линий.
-    Set facade = New CSectionDefinitionBuilder: facade.Initialize "RoundedRectangle" ' Создаём сборщик описания сечения.
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "PointedRect" ' Создаём сборщик описания сечения.
     Set outer = AddGeometry(facade, sizes, polygon) ' Получаем наружный контур по подготовленному многоугольнику.
     AddReinforcement facade, faces, polygon ' Создаём линии арматуры и задаём правила размещения стержней.
     AddAnnotations facade, sizes, faces, outer ' Добавляем подписи арматуры, габариты и размеры сечения.
@@ -159,7 +158,7 @@ Private Function AddGeometry(ByVal facade As CSectionDefinitionBuilder, ByRef si
     Set AddGeometry = outer
     Exit Function
 InvalidGeometry:
-    SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", sizes.GeometrySource
+    SectionRecipeGeometryError "CSectionRecipePointedRect", sizes.GeometrySource
 End Function
 
 ' Создаёт линии арматуры и задаёт ряды вдоль четырёх сторон по подготовленным параметрам.
@@ -178,7 +177,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             options.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.
             options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
             options.IncomingTangentAtJoint = True ' На стыке используем направление предыдущего участка.
-            options.Comment = "RoundedRectangle: " & .Caption & " грань, ряд 1"
+            options.Comment = "PointedRect: " & .Caption & " грань, ряд 1"
             options.SourceReference = .Source ' Адреса полей для сообщения об ошибке размещения.
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
             Select Case .ID
@@ -194,7 +193,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             For rowNumber = 2 To 3
                 If .Diameters(rowNumber) > 0# Then
                     Set options = contact.AppendRow(.Diameters(rowNumber), .Locations(rowNumber), .Bindings(rowNumber), .ExtraSources(rowNumber), .BaseOffsets(rowNumber))
-                    options.Comment = "RoundedRectangle: " & .Caption & " грань, ряд " & CStr(rowNumber)
+                    options.Comment = "PointedRect: " & .Caption & " грань, ряд " & CStr(rowNumber)
                     facade.RebarDependent .ID & ".Row" & CStr(rowNumber), .ID & ".Main", .Diameters(rowNumber), options ' Оба дополнительных ряда связаны с основным.
                 End If
             Next rowNumber
@@ -223,7 +222,7 @@ Private Function AxisPath(ByVal facade As CSectionDefinitionBuilder, ByVal polyg
     End Select
     Exit Function
 InvalidPath:
-    SectionRecipeGeometryError "CSectionRecipeRoundedRectangle", polygon.SourceReference(1) & "; " & sourceReference, rebarCaption, offset
+    SectionRecipeGeometryError "CSectionRecipePointedRect", polygon.SourceReference(1) & "; " & sourceReference, rebarCaption, offset
 End Function
 
 ' Добавляет подписи арматуры, ширину основы B, полную высоту H и размеры включённых боковых выступов.
@@ -242,8 +241,8 @@ Private Sub AddAnnotations(ByVal facade As CSectionDefinitionBuilder, ByRef size
     Next i
     outer.ProjectionBounds 1#, 0#, minX, maxX
     ' Ширина основы B до скругления углов; размер сверху.
-    facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Размер горизонтальной базы RoundedRectangle между левым и правым торцом."
-    facade.VerticalExtent "DIM_H", outer.ID, "H", minX, -1#, "Полная высота RoundedRectangle." ' Полная высота сечения H; размер вынесен влево.
+    facade.HorizontalDistance "DIM_B", "B", -sizes.B / 2#, sizes.B / 2#, sizes.H / 2#, 1#, "Размер горизонтальной базы PointedRect между левым и правым торцом."
+    facade.VerticalExtent "DIM_H", outer.ID, "H", minX, -1#, "Полная высота PointedRect." ' Полная высота сечения H; размер вынесен влево.
     ' Фактическая ширина левого выступа; подпись округляется до 1 мм.
     If sizes.SideTypes(1) = "Tapered" And -sizes.B / 2# - minX > GEOM_TOLERANCE Then facade.HorizontalDistance "DIM_W_LEFT", "W'", minX, -sizes.B / 2#, sizes.H / 2#, 1#, "Фактический вынос левого края бетона относительно левого торца базы B.", 1#
     ' Фактическая ширина правого выступа; подпись округляется до 1 мм.

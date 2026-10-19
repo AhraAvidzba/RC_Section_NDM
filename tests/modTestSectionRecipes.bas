@@ -16,16 +16,16 @@ Public Function RunWorkbookRecipeInputTests() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Set registry = New CSectionTypeRegistry
     For Each fixture In Array("Circle", "Rectangle", "RoundedMixed", "HollowOffset")
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         modTestShapeArchitecture.ConfigureShapeFixture "Circle"
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         typeID = registry.SelectedRecipeType(settings): names = registry.RecipeTableNames(typeID): rootName = CStr(names(0))
-        For Each name In Array("Circle.Diameter", "RectSet.B1", "RoundedRectangle.B", "HollowRectangle.B")
+        For Each name In Array("Circle.Diameter", "RectSet.B1", "PointedRect.B", "HollowRectangle.B")
             Check "workbook.reader.noShapeKey." & CStr(fixture) & "." & CStr(name), Not settings.HasKey(CStr(name))
         Next name
         Set changedName = ThisWorkbook.Names(IIf(rootName = "rngCircleGeometry", "rngHollowRectangleGeometry", "rngCircleGeometry"))
@@ -49,7 +49,7 @@ Public Function RunWorkbookRecipeInputTests() As String
             Near "workbook.definition.x." & CStr(fixture) & "." & CStr(i), rebuilt.RebarX(i), model.RebarX(i)
             Near "workbook.definition.y." & CStr(fixture) & "." & CStr(i), rebuilt.RebarY(i), model.RebarY(i)
         Next i
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         Set changedName = ThisWorkbook.Names(rootName): originalName = changedName.RefersTo: changedName.RefersTo = "=#REF!"
         number = 0: reason = ""
         On Error Resume Next
@@ -59,21 +59,21 @@ Public Function RunWorkbookRecipeInputTests() As String
         changedName.RefersTo = originalName: Set changedName = Nothing
         Check "workbook.activeName.reject." & CStr(fixture), number <> 0 And InStr(1, reason, rootName, vbBinaryCompare) > 0
     Next fixture
-    config.Formula = saved
+    FixtureRestoreInputs config, saved
     ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set rootRange = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
-    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units): Set table = context.Table("rngCircleGeometry")
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
     Set diameterCell = FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter")
     Set coverCell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance")
     Application.Calculation = xlCalculationManual
     diameterCell.Value2 = 300#: coverCell.Formula = "=" & diameterCell.Address & "/4": coverCell.Calculate
     diameterCell.Value2 = 320#
     Near "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
-    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units): Set table = context.Table("rngCircleGeometry")
-    Near "workbook.manual.capture.refreshed", context.Reader("rngRebarInput", "Circle.").Length("Main", "Circle", "as"), 80#
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
+    Near "workbook.manual.capture.refreshed", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
     names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
     names = registry.RecipeTableNames("Circle")
     Check "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"
@@ -91,7 +91,7 @@ Failed:
 Finished:
     On Error Resume Next
     If Not changedName Is Nothing Then changedName.RefersTo = originalName
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     On Error GoTo 0
     RunWorkbookRecipeInputTests = mReport & "TOTAL WORKBOOK RECIPE INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
@@ -630,13 +630,13 @@ Public Function RunCircleRecipeInputTests() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For scenario = 0 To 4: Check "circle.input." & CStr(scenario), CircleInputCase(scenario): Next scenario
     GoTo Finished
 Failed:
     Check "circle.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunCircleRecipeInputTests = mReport & "TOTAL CIRCLE INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -660,9 +660,9 @@ Private Function CircleInputCase(ByVal scenario As Long) As Boolean
             key = "Rebar.Diameter2": SetCircleInput key, 400# / units.InputLengthToInternal(1#)
             SetCircleInput "Rebar.Loc2row", "SideBySide"
     End Select
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
     Set table = context.Table("rngCircleGeometry")
-    If Len(key) > 0 Then expectedReference = "Config!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False)
+    If Len(key) > 0 Then expectedReference = FixtureCircleFieldCell(ThisWorkbook, key).Worksheet.Name & "!" & FixtureCircleFieldCell(ThisWorkbook, key).Address(False, False)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
     If scenario = 3 Then CircleInputCase = (definition.RuleCount = 0): Exit Function
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
@@ -672,23 +672,23 @@ Rejected:
     CircleInputCase = (Len(expectedReference) > 0 And InStr(1, Err.Description, expectedReference, vbBinaryCompare) > 0)
 End Function
 
-' ДЛЯ ТЕСТОВ: активные/неактивные поля и адресность RoundedRectangle.
+' ДЛЯ ТЕСТОВ: активные/неактивные поля и адресность PointedRect.
 Public Function RunRoundedRecipeInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim config As Object, saved As Variant, scenario As Long, events As Boolean, updating As Boolean
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For scenario = 0 To 13
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         Check "rounded.input." & CStr(scenario), RoundedInputCase(scenario)
     Next scenario
     GoTo Finished
 Failed:
     Check "rounded.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRoundedRecipeInputTests = mReport & "TOTAL ROUNDED INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -703,7 +703,7 @@ Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    Set range = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
+    Set range = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
     Select Case scenario
         Case 0: Set invalid = FixtureInputCell(range, "Main", "Left", "n"): invalid.Value2 = 1.5
         Case 1: Set invalid = FixtureInputCell(range, "Main", "Left", "d"): invalid.Value2 = -1#
@@ -729,10 +729,10 @@ Private Function RoundedInputCase(ByVal scenario As Long) As Boolean
         Case 12: valid = True: FixtureInputCell(range, "Detail", "R1", "left").Value2 = 200#: FixtureInputCell(range, "Detail", "R1", "right").Value2 = 200#
         Case 13: Set invalid = FixtureInputCell(range, "Main", "Left", "as"): invalid.Value2 = 380#
     End Select
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngRoundedRectangleGeometry", "rngRebarInput"), units)
-    Set table = context.Table("rngRoundedRectangleGeometry")
-    If Not valid Then reference = "Config!" & invalid.Address(False, False)
-    Set recipe = New CSectionRecipeRoundedRectangle: Set definition = recipe.CreateDefinition(context)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngPointedRectGeometry"), units)
+    Set table = context.Table("rngPointedRectGeometry")
+    If Not valid Then reference = invalid.Worksheet.Name & "!" & invalid.Address(False, False)
+    Set recipe = New CSectionRecipePointedRect: Set definition = recipe.CreateDefinition(context)
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
     RoundedInputCase = valid
@@ -749,16 +749,16 @@ Public Function RunHollowRecipeInputTests() As String
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For scenario = 0 To 19
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         Check "hollow.input." & CStr(scenario), HollowInputCase(scenario)
     Next scenario
     GoTo Finished
 Failed:
     Check "hollow.input.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunHollowRecipeInputTests = mReport & "TOTAL HOLLOW INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -802,9 +802,9 @@ Private Function HollowInputCase(ByVal scenario As Long) As Boolean
         Case 18: valid = True: FixtureInputCell(range, "Extra", "Top", "d2").ClearContents: FixtureInputCell(range, "Extra", "Top", "d3").ClearContents
         Case 19: valid = True: FixtureInputCell(range, "Main", "Top", "d").ClearContents
     End Select
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry", "rngRebarInput"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngHollowRectangleGeometry"), units)
     Set table = context.Table("rngHollowRectangleGeometry")
-    If Not valid Then reference = "Config!" & invalid.Address(False, False)
+    If Not valid Then reference = invalid.Worksheet.Name & "!" & invalid.Address(False, False)
     Set recipe = New CSectionRecipeHollowRectangle: Set definition = recipe.CreateDefinition(context)
     mesh.StepX = 40#: mesh.StepY = 30#: mesh.BoundarySubdivisions = 2: mesh.MaterialID = 1
     Set builder = New CSectionBuilder: Set model = builder.Build(definition, mesh)
@@ -824,7 +824,7 @@ Public Function DumpCircleRecipeMatrix() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
@@ -847,7 +847,7 @@ Public Function DumpCircleRecipeMatrix() As String
 Failed:
     result = result & "FAIL: Circle recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpCircleRecipeMatrix = result
 End Function
@@ -875,7 +875,7 @@ Public Function DumpRectSetRecipeGeometry() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
@@ -888,7 +888,7 @@ Public Function DumpRectSetRecipeGeometry() As String
 Failed:
     result = result & "FAIL: RectSet recipe geometry; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpRectSetRecipeGeometry = result
 End Function
@@ -902,10 +902,10 @@ Public Function DumpRectSetRecipeMatrix() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureRectSetScenario CStr(fixture), scenario
@@ -919,7 +919,7 @@ Public Function DumpRectSetRecipeMatrix() As String
 Failed:
     result = result & "FAIL: RectSet recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpRectSetRecipeMatrix = result
 End Function
@@ -932,16 +932,16 @@ Public Function DumpRoundedRecipeMatrix() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureRoundedScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("PointedRect", settings, units, builder)
             result = result & modTestShapeArchitecture.PreparedShapeSnapshot("RoundedMatrix." & CStr(fixture) & ".case" & CStr(scenario), model, builder.Mesh, builder.Rebars)
         Next scenario
     Next fixture
@@ -949,7 +949,7 @@ Public Function DumpRoundedRecipeMatrix() As String
 Failed:
     result = result & "FAIL: Rounded recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpRoundedRecipeMatrix = result
 End Function
@@ -971,10 +971,10 @@ Private Function HollowRecipeMatrix(ByVal firstScenario As Long, ByVal lastScena
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = firstScenario To lastScenario
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureHollowScenario scenario
@@ -988,7 +988,7 @@ Private Function HollowRecipeMatrix(ByVal firstScenario As Long, ByVal lastScena
 Failed:
     result = result & "FAIL: Hollow recipe matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     HollowRecipeMatrix = result
 End Function
@@ -1002,7 +1002,7 @@ Public Function RunRecipeAnnotationCountTests() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
@@ -1021,7 +1021,7 @@ Public Function RunRecipeAnnotationCountTests() As String
     Next number
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureRectSetScenario CStr(fixture), scenario
@@ -1032,18 +1032,18 @@ Public Function RunRecipeAnnotationCountTests() As String
     Next fixture
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureRoundedScenario scenario
             settings.LoadFromWorkbook ThisWorkbook: units.LoadFromSettings settings
-            Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
+            Set builder = New CSectionBuilder: Set model = BuildRecipe("PointedRect", settings, units, builder)
             Check "annotations.total." & CStr(fixture) & ".case" & CStr(scenario), AnnotatedBarCount(model.Annotations) = model.RebarCount
         Next scenario
     Next fixture
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = 0 To 10
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureHollowScenario scenario
@@ -1056,7 +1056,7 @@ Public Function RunRecipeAnnotationCountTests() As String
 Failed:
     Check "annotations.total.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRecipeAnnotationCountTests = mReport & "TOTAL RECIPE ANNOTATIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -1178,7 +1178,7 @@ Private Function CircleBindingInputCase(ByVal diameter2 As Double, ByVal diamete
     CircleBindingInputCase = valid
     Exit Function
 Rejected:
-    CircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngRebarInput", vbBinaryCompare) > 0
+    CircleBindingInputCase = Not valid And InStr(1, Err.Description, "rngCircleGeometry", vbBinaryCompare) > 0
 End Function
 
 ' ДЛЯ ТЕСТОВ: два реальных выпадающих списка, независимость и адрес ошибки Config.
@@ -1187,7 +1187,7 @@ Public Function RunCircleBindingWorkbookTests() As String
     Dim table As Object, saved As Variant, index As Long
     Dim keys As Variant, names As Variant, choices As Object, optionValue As Variant, cell As Object
     On Error GoTo Failed
-    Set table = ThisWorkbook.Worksheets("Config").UsedRange: saved = table.Formula
+    Set table = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(table)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     keys = Array("Rebar.Bind2row", "Rebar.Bind3row")
     names = Array(Mid$(FixtureCircleFieldCell(ThisWorkbook, CStr(keys(0))).Validation.Formula1, 2), _
@@ -1217,7 +1217,7 @@ Public Function RunCircleBindingWorkbookTests() As String
 Failed:
     Check "circle.bind.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Restore:
-    If Not table Is Nothing And Not IsEmpty(saved) Then table.Formula = saved
+    If Not table Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs table, saved
     RunCircleBindingWorkbookTests = mReport & "TOTAL CIRCLE BINDING WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
@@ -1233,7 +1233,7 @@ Private Function CircleBindingWorkbookRejected(ByVal key As String, ByVal diamet
     SetCircleInput "Rebar.Diameter2", 0#: SetCircleInput "Rebar.Diameter3", 0#
     SetCircleInput diameterKey, 12# / factor: SetCircleInput "Rebar.Loc2row", "Stacked": SetCircleInput "Rebar.Loc3row", "Stacked"
     SetCircleInput key, "bad"
-    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry", "rngRebarInput"), units)
+    Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
     Set recipe = New CSectionRecipeCircle: Set definition = recipe.CreateDefinition(context)
     Exit Function
 Rejected:
@@ -1252,12 +1252,12 @@ Public Function DumpRectSetRecipeCalculations(Optional ByVal crackCode As String
 End Function
 
 Public Function DumpRoundedRecipeCalculations(Optional ByVal crackCode As String = "SP35") As String
-    DumpRoundedRecipeCalculations = RecipeCalculations("RoundedRectangle", _
+    DumpRoundedRecipeCalculations = RecipeCalculations("PointedRect", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode)
 End Function
 
 Public Function DumpRoundedRecipeArcCalculations(Optional ByVal crackCode As String = "SP35") As String
-    DumpRoundedRecipeArcCalculations = RecipeCalculations("RoundedRectangle", _
+    DumpRoundedRecipeArcCalculations = RecipeCalculations("PointedRect", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, 1)
 End Function
 
@@ -1270,21 +1270,21 @@ Public Function RunRoundedRecipeEquilibriumTests() As String
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         modTestShapeArchitecture.ConfigureRoundedScenario 1
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set builder = New CSectionBuilder: Set model = BuildRecipe("RoundedRectangle", settings, units, builder)
+        Set builder = New CSectionBuilder: Set model = BuildRecipe("PointedRect", settings, units, builder)
         CheckModelEquilibrium CStr(fixture), model, settings, units
     Next fixture
     GoTo Finished
 Failed:
     Check "equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRoundedRecipeEquilibriumTests = mReport & "TOTAL ROUNDED EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -1369,10 +1369,10 @@ Private Function HollowRecipeEquilibrium(ByVal firstScenario As Long, ByVal last
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = firstScenario To lastScenario
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             modTestShapeArchitecture.ConfigureHollowScenario scenario
@@ -1386,7 +1386,7 @@ Private Function HollowRecipeEquilibrium(ByVal firstScenario As Long, ByVal last
 Failed:
     Check "hollow.equilibrium.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     HollowRecipeEquilibrium = mReport & "TOTAL HOLLOW EQUILIBRIUM: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -1399,7 +1399,7 @@ Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Va
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Set profiles = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange
     For i = 2 To profiles.Rows.Count
         key = CStr(profiles.Cells(i, 2).Value2)
@@ -1428,7 +1428,7 @@ Private Function RecipeCalculations(ByVal typeID As String, ByVal fixtures As Va
 Failed:
     result = result & "FAIL: recipe calculations; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     RecipeCalculations = result
 End Function
@@ -1443,12 +1443,12 @@ Public Function DumpRectSetRecipePreview(ByVal outputDirectory As String) As Str
 End Function
 
 Public Function DumpRoundedRecipePreview(ByVal outputDirectory As String) As String
-    DumpRoundedRecipePreview = RecipePreview("RoundedRectangle", _
+    DumpRoundedRecipePreview = RecipePreview("PointedRect", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory)
 End Function
 
 Public Function DumpRoundedRecipeArcPreview(ByVal outputDirectory As String) As String
-    DumpRoundedRecipeArcPreview = RecipePreview("RoundedRectangle", _
+    DumpRoundedRecipeArcPreview = RecipePreview("PointedRect", _
         Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), outputDirectory, 1)
 End Function
 
@@ -1464,7 +1464,7 @@ Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = True
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     For Each fixture In fixtures
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
@@ -1482,7 +1482,7 @@ Private Function RecipePreview(ByVal typeID As String, ByVal fixtures As Variant
 Failed:
     result = result & "FAIL: recipe preview; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     RecipePreview = result
 End Function
@@ -1507,16 +1507,16 @@ Public Function RunRecipeCaptionTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("Circle", "LSection", "RoundedSimple", "HollowCentered")
-        config.Formula = saved: modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        FixtureRestoreInputs config, saved: modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Select Case CStr(fixture)
             Case "Circle": typeID = "Circle"
             Case "LSection": typeID = "RectSet"
-            Case "RoundedSimple": typeID = "RoundedRectangle"
+            Case "RoundedSimple": typeID = "PointedRect"
             Case Else: typeID = "HollowRectangle"
         End Select
-        tableName = "rngRebarInput"
+        tableName = "rng" & typeID & "Geometry"
         Set table = ThisWorkbook.Names(tableName).RefersToRange: Set reader = FixtureInput(table.Value2)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -1545,7 +1545,7 @@ Public Function RunRecipeCaptionTests() As String
 Failed:
     Check "recipe.captions.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating
     RunRecipeCaptionTests = mReport & "TOTAL RECIPE CAPTIONS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function

@@ -168,7 +168,7 @@ def tests():
                'modTestSectionSolver.RunSectionSolverTests']
     runs.append(native_run('UnboundedFocused', focused)[0])
     # The batch suite completed successfully; the following capacity attempt used
-    # the user's RoundedRectangle instead of that test's explicit RectSet fixture.
+    # the user's PointedRect instead of that test's explicit RectSet fixture.
     # Accept only the completed batch suite from that stopped combined invocation.
     combined = receipt('CoreRegressionFinal/Run.json')
     assert combined['ProductionUnchanged'] and not combined['Passed']
@@ -179,13 +179,13 @@ def tests():
     assert not re.search(r'(?m)^FAIL:|RUNTIME ERROR:', batch_text)
     assert 'TOTAL_BATCH: passed=30982; failed=0;' in batch_text
     capacity_attempt = evidence_text(D / 'CoreRegressionFinal/modTestCapacitySolver.RunCapacitySolverTests.txt')
-    assert re.findall(r'(?m)^FAIL:[^\r\n]+', capacity_attempt) == ['FAIL: capacity.tfDefaults.geometry; actual=RoundedRectangle; expected=RectSet']
+    assert re.findall(r'(?m)^FAIL:[^\r\n]+', capacity_attempt) == ['FAIL: capacity.tfDefaults.geometry; actual=PointedRect; expected=RectSet']
     runs.append(dict(Stage='CoreRegressionFinal/BatchOnly', Assertions=30982, Seconds=combined['Runs'][0]['Seconds'],
                      CombinedInvocationPassed=False, ExcludedFollowingCapacityAttempt=True))
     capacity = evidence_text(D / 'CapacityFixture.txt')
     assert not re.search(r'(?m)^FAIL:|RUNTIME ERROR:|WATCHDOG_FAILURE:', capacity)
     assert 'WATCHDOG_COMPLETED: exit=0; source unchanged=True' in capacity
-    assert 'EXPLICIT_GEOMETRY_FIXTURE: original=RoundedRectangle; Geometry.Type=RectSet; fixture only, source unchanged' in capacity
+    assert 'EXPLICIT_GEOMETRY_FIXTURE: original=PointedRect; Geometry.Type=RectSet; fixture only, source unchanged' in capacity
     assert 'SOURCE_SHA256: ' + receipt('FinalPackage.json')['TestedWorkbookSHA256'] in capacity
     totals = re.findall(r'TOTAL_CAPACITY: passed=(\d+); failed=0; elapsedSec=([\d.]+)', capacity)
     assert len(totals) == 1

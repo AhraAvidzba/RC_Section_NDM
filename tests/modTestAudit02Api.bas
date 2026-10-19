@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestAudit02Api"
+﻿Attribute VB_Name = "modTestAudit02Api"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: описание сечения, параметры арматуры, технические имена и совместимость размеров.
@@ -477,9 +477,9 @@ Private Function CloseoutRectSetInputMatrix() As String
     Dim result As String, factor As Double, pair As Variant, number As Double, otherCode As Long, otherReason As String
     fieldKeys = Array("H1", "B1", "H2", "B2")
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each unit In Array("mm", "cm", "m")
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = CStr(unit)
         For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
@@ -488,7 +488,7 @@ Private Function CloseoutRectSetInputMatrix() As String
             Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
             Set range = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange: block = range.Formula
             Set reader = New CSectionInputSnapshotReader
-            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry", "rngRebarInput"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
+            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
             offsetRow = keyed.RowIndex("Detail", "XOffset")
             shapeRow = keyed.RowIndex("General", "Shape")
             Set definition = RectSetInputOutcome(settings, units, code, source, reason)
@@ -546,7 +546,7 @@ Private Function CloseoutRectSetInputMatrix() As String
                     Check "rect.pair.numeric.before.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(pair), _
                         code <> 0 And InStr(reason, keyed.SourceReference("General", CStr(fieldKeys(CLng(pair))))) > 0
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "pair." & CStr(pair), code, source, reason, 0#)
-                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry", "rngRebarInput"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
+                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
                     On Error Resume Next
                     number = keyed.PositiveLength("General", CStr(fieldKeys(CLng(pair) - 1)))
                     otherCode = Err.Number: otherReason = Err.Description: Err.Clear
@@ -584,7 +584,7 @@ Private Function CloseoutRectSetInputMatrix() As String
 Failed:
     Check "rect.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     CloseoutRectSetInputMatrix = result
 End Function
 
@@ -964,7 +964,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
     Dim target As Object, extra As Long, main As Long, cell As Object, bad As Variant, i As Long, inputTable As CSectionInputTable
     Dim description As String, number As Long, prefix As String, rowCount As Long
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     calculation = Application.Calculation: Application.Calculation = -4135
     offsets = Array(Array(0#, 0#), Array(100#, 0#), Array(0#, 200#), Array(100#, 200#), Array(100#, 100#))
     For Each fixture In Array("Circle", "Rectangle", "RoundedMixed", "HollowOffset")
@@ -989,7 +989,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
             Set definition = ReadOffsetWorkbookDefinition(): number = Err.Number: description = Err.Description
             Err.Clear: On Error GoTo Failed
             Check "offset.input.reject." & CStr(fixture) & "." & CStr(VarType(bad)), number <> 0
-            Check "offset.input.address." & CStr(fixture) & "." & CStr(VarType(bad)), InStr(description, cell.Address(False, False)) > 0 And InStr(description, "Config") > 0
+            Check "offset.input.address." & CStr(fixture) & "." & CStr(VarType(bad)), InStr(description, cell.Address(False, False)) > 0 And InStr(description, cell.Worksheet.Name & "!") > 0
         Next bad
         cell.ClearContents: Set definition = ReadOffsetWorkbookDefinition(): Set bars = FixtureLayout(definition)
         actual = OffsetBarsSnapshot(bars)
@@ -1005,8 +1005,8 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
     ConfigureOffsetWorkbook "Circle", "mm", 100#, 200#
     Set units = New CUnitSystem: units.InitializeDefaults
     Set target = OffsetWorkbookTable("Circle")
-    Set inputTable = New CSectionInputTable: inputTable.Initialize "rngRebarInput", ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2
-    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2).RowIndex("Extra", "Circle.Circle"), FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2).ColumnIndex("Extra", "a2"), units) = 100#
+    Set inputTable = New CSectionInputTable: inputTable.Initialize "rngCircleGeometry", target.Value2
+    Check "offset.input.direct.reader", inputTable.OptionalRowOffset(FixtureInput(target.Value2).RowIndex("Extra", "Circle"), FixtureInput(target.Value2).ColumnIndex("Extra", "a2"), units) = 100#
     Set cell = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisOffset2")
     cell.Formula = "=" & FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Address() & "/10"
     FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 1200#
@@ -1018,7 +1018,7 @@ Public Function RunIndependentRowOffsetWorkbookTests() As String
 Failed:
     Check "offset.workbook.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation
     RunIndependentRowOffsetWorkbookTests = mReport & "TOTAL INDEPENDENT ROW OFFSET WORKBOOK: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
@@ -1058,7 +1058,7 @@ Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As S
     Select Case fixture
         Case "Circle": Set keyed = FixtureInput(FixtureRecipeValues("rngCircleGeometry"))
         Case "Rectangle": Set keyed = FixtureInput(FixtureRecipeValues("rngRectSetGeometry"))
-        Case "RoundedMixed": Set keyed = FixtureInput(FixtureRecipeValues("rngRoundedRectangleGeometry"))
+        Case "RoundedMixed": Set keyed = FixtureInput(FixtureRecipeValues("rngPointedRectGeometry"))
         Case Else: Set keyed = FixtureInput(FixtureRecipeValues("rngHollowRectangleGeometry"))
     End Select
     For Each key In keyed.RowKeys("Main")
@@ -1089,7 +1089,7 @@ Private Function OffsetWorkbookTable(ByVal fixture As String) As Object
     Select Case fixture
         Case "Circle": name = "rngCircleGeometry"
         Case "Rectangle": name = "rngRectSetGeometry"
-        Case "RoundedMixed": name = "rngRoundedRectangleGeometry"
+        Case "RoundedMixed": name = "rngPointedRectGeometry"
         Case Else: name = "rngHollowRectangleGeometry"
     End Select
     Set OffsetWorkbookTable = ThisWorkbook.Names(name).RefersToRange
@@ -1101,13 +1101,11 @@ Private Sub OffsetWorkbookRows(ByVal target As Object, ByVal fixture As String, 
     Select Case fixture
         Case "Circle": typeID = "Circle": key = "Circle"
         Case "Rectangle": typeID = "RectSet": key = "R1.Top"
-        Case "RoundedMixed": typeID = "RoundedRectangle": key = "Top"
+        Case "RoundedMixed": typeID = "PointedRect": key = "Top"
         Case Else: typeID = "HollowRectangle": key = "Top"
     End Select
     FixtureSelectRecipeType ThisWorkbook, typeID
-    ThisWorkbook.Names("rngRebarInput").RefersToRange.Calculate
-    Set keyed = FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2)
-    key = typeID & "." & key
+    Set keyed = FixtureInput(target.Value2)
     main = keyed.RowIndex("Main", key): extra = keyed.RowIndex("Extra", key)
 End Sub
 
@@ -1150,7 +1148,7 @@ Public Function DumpIndependentRowOffsetExamples(ByVal outputDirectory As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = True
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     fixtures = Array("Circle", "Circle", "Rectangle", "RoundedMixed", "HollowOffset", "Rectangle", "Circle")
     titles = Array("Circle_TwoRows_100", "Circle_ThreeRows_100_100", "Rectangle_ThreeRows_100_200", _
         "Rounded_Sloped_60_100", "Hollow_Opening_100_100_SideBySide", "Rectangle_100_100_EverySecond", "Circle_Arc_ThreeRows_100_200")
@@ -1191,7 +1189,7 @@ Public Function DumpIndependentRowOffsetExamples(ByVal outputDirectory As String
 Failed:
     result = result & "FAIL: offset.examples; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpIndependentRowOffsetExamples = result
 End Function
@@ -1228,7 +1226,7 @@ Public Function RunOffsetOpeningAnnotationTests() As String
     Dim i As Long, source As Long, second As Long, third As Long, minX As Double, maxX As Double, maxY As Double
     Dim dx As Double, dy As Double, nx As Double, ny As Double, found As Boolean, annotations As CSectionAnnotations
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
     Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
     OffsetRebarCell(extra + 4, 10).Value2 = "SideBySide": OffsetRebarCell(extra + 4, 9).Value2 = "EverySecondBar"
@@ -1270,7 +1268,7 @@ Public Function RunOffsetOpeningAnnotationTests() As String
 Failed:
     Check "opening.annotation.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     RunOffsetOpeningAnnotationTests = mReport & "TOTAL OFFSET OPENING ANNOTATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
@@ -1284,7 +1282,7 @@ Public Function RunCircleSetbackTests() As String
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, x As Double, y As Double, tx As Double, ty As Double
     Dim executor As CRebarRuleExecutor, location As Variant, binding As Variant, secondCount As Long, thirdCount As Long, owner As Long
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "SliceTest"
     Set path = facade.CirclePath("Full", 0#, 0#, 100#)
     path.AtDistance 0#, x, y, tx, ty
@@ -1337,7 +1335,7 @@ Public Function RunCircleSetbackTests() As String
                 On Error Resume Next
                 Set definition = ReadOffsetWorkbookDefinition()
                 number = Err.Number: reason = Err.Description: Err.Clear: On Error GoTo Failed
-                Check "circle.setback.invalid." & CStr(column), number <> 0 And InStr(reason, "Config!") > 0
+                Check "circle.setback.invalid." & CStr(column), number <> 0 And InStr(reason, table.Worksheet.Name & "!") > 0
             Next bad
             table.Value2 = 0#
         Next column
@@ -1374,7 +1372,7 @@ Public Function RunCircleSetbackTests() As String
 Failed:
     Check "circle.setback.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     RunCircleSetbackTests = mReport & "TOTAL CIRCLE SETBACKS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
@@ -1385,7 +1383,7 @@ Public Function RunOffsetWallCollisionTests() As String
     Dim config As Object, saved As Variant, target As Object, main As Long, extra As Long
     Dim definition As CSectionDefinition, bars As CRebarLayout, scenario As Long, number As Long, reason As String
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For scenario = 0 To 2
         ConfigureOffsetWorkbook "HollowOffset", "mm", 100#, 100#
         Set target = OffsetWorkbookTable("HollowOffset"): OffsetWorkbookRows target, "HollowOffset", main, extra
@@ -1408,22 +1406,22 @@ Public Function RunOffsetWallCollisionTests() As String
                 Check "offset.wall.touch.allowed", number = 0
                 If Not bars Is Nothing Then Check "offset.wall.touch.both.families", bars.Count = 16
             Case 1
-                Check "offset.wall.overlap.rejected", number <> 0 And InStr(reason, "Поперечные сечения стержней") > 0 And InStr(reason, "Config!") > 0
+                Check "offset.wall.overlap.rejected", number <> 0 And InStr(reason, "Поперечные сечения стержней") > 0 And InStr(reason, "Сечения!") > 0
             Case 2
-                Check "offset.wall.disk.opening.rejected", number <> 0 And InStr(reason, "целиком") > 0 And InStr(reason, "Config!") > 0
+                Check "offset.wall.disk.opening.rejected", number <> 0 And InStr(reason, "целиком") > 0 And InStr(reason, "Сечения!") > 0
         End Select
     Next scenario
     GoTo Finished
 Failed:
     Check "offset.wall.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     RunOffsetWallCollisionTests = mReport & "TOTAL OFFSET WALL COLLISION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
 ' ДЛЯ ТЕСТОВ: физическая ячейка дополнительного ряда в общей таблице армирования.
 Private Function OffsetRebarCell(ByVal row As Long, ByVal column As Long) As Object
-    Set OffsetRebarCell = ThisWorkbook.Names("rngRebarInput").RefersToRange.Cells(row, column)
+    Set OffsetRebarCell = FixtureSelectedInput().Cells(row, column)
 End Function
 
 ' ДЛЯ ТЕСТОВ: адреса сообщений после переноса таблицы, числовая причина ошибки

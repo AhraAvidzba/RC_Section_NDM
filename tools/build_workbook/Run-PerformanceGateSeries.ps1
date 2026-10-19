@@ -1,4 +1,4 @@
-# Sequential performance-stage gates. No concurrent Excel jobs or old full On/Off suite.
+﻿# Sequential performance-stage gates. No concurrent Excel jobs or old full On/Off suite.
 # Every child owns its hidden Excel; timeout is preserved as a failed gate.
 param(
     [string]$BaselineWorkbook = 'docs/regression/Performance/BatchV3Baseline/RC_Section_NDM.xlsm',
@@ -24,7 +24,7 @@ $jobs = @(
     @{Name='ReverseMeasurements'; Family='CRACK_SP35'; Order='Reverse'; Count=30},
     @{Name='ShuffleMeasurements'; Family='CRACK_SP35'; Order='Shuffle'; Count=30},
     @{Name='CircleMeasurements'; Family='DIRECT'; Shape='Circle'; Count=30},
-    @{Name='RoundedMeasurements'; Family='DIRECT'; Shape='RoundedRectangle'; Count=30},
+    @{Name='RoundedMeasurements'; Family='DIRECT'; Shape='PointedRect'; Count=30},
     @{Name='OffMeasurements'; Family='DIRECT'; Extension='No'; Count=30},
     @{Name='StorageQPCMeasurements'; Group='Storage'}
 )

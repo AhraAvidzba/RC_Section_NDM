@@ -40,7 +40,7 @@ End Function
 ' ДЛЯ ТЕСТОВ: четыре показательных нагрузки для каждой встроенной формы.
 Public Function RunFocusedRepresentativeGeometry() As String
     Dim shape As Variant, loadName As Variant, body As String, one As String, count As Long, failures As Long
-    For Each shape In Array("RectSet", "Circle", "RoundedRectangle", "HollowRectangle")
+    For Each shape In Array("RectSet", "Circle", "PointedRect", "HollowRectangle")
         For Each loadName In Array("axialSmall-1", "Mx1", "mixedC1_-1", "mixedT-1_1")
             one = RunFocusedSingleLoad(CStr(shape), CStr(loadName))
             body = body & one & vbCrLf

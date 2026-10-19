@@ -21,10 +21,10 @@ Private mRecipes As Object, mRecipeTables As Object ' Рецепты по име
 Private Sub Class_Initialize()
     Set mRecipes = CreateObject("Scripting.Dictionary"): mRecipes.CompareMode = vbTextCompare
     Set mRecipeTables = CreateObject("Scripting.Dictionary"): mRecipeTables.CompareMode = vbTextCompare
-    RegisterRecipe "Circle", New CSectionRecipeCircle, Array("rngCircleGeometry", "rngRebarInput")
-    RegisterRecipe "RectSet", New CSectionRecipeRectSet, Array("rngRectSetGeometry", "rngRebarInput")
-    RegisterRecipe "RoundedRectangle", New CSectionRecipeRoundedRectangle, Array("rngRoundedRectangleGeometry", "rngRebarInput")
-    RegisterRecipe "HollowRectangle", New CSectionRecipeHollowRectangle, Array("rngHollowRectangleGeometry", "rngRebarInput")
+    RegisterRecipe "Circle", New CSectionRecipeCircle, Array("rngCircleGeometry")
+    RegisterRecipe "RectSet", New CSectionRecipeRectSet, Array("rngRectSetGeometry")
+    RegisterRecipe "PointedRect", New CSectionRecipePointedRect, Array("rngPointedRectGeometry")
+    RegisterRecipe "HollowRectangle", New CSectionRecipeHollowRectangle, Array("rngHollowRectangleGeometry")
 End Sub
 
 ' Пустой массив таблиц допустим для программно заданного рецепта.

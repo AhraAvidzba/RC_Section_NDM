@@ -2309,8 +2309,8 @@ End Sub
 Private Sub TestAxialReferenceRemovesPureCompressionEccentricity(ByRef stats As TBatchTestStats)
     CheckPureCompressionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
-    CheckPureCompressionReference stats, "rounded", RoundedRectangleGeometry(360#, 240#), _
-        RectangleRebars(RoundedRectangleGeometry(360#, 240#)), 30#, 0.00000001
+    CheckPureCompressionReference stats, "rounded", PointedRectGeometry(360#, 240#), _
+        RectangleRebars(PointedRectGeometry(360#, 240#)), 30#, 0.00000001
     CheckRectSetReferenceUsesConcreteCentroid stats
 End Sub
 
@@ -2322,8 +2322,8 @@ End Sub
 Private Sub TestAxialTensionReferenceAndEccentricity(ByRef stats As TBatchTestStats)
     CheckPureTensionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
-    CheckPureTensionReference stats, "rounded", RoundedRectangleGeometry(360#, 240#), _
-        RectangleRebars(RoundedRectangleGeometry(360#, 240#)), 30#, 0.00000001
+    CheckPureTensionReference stats, "rounded", PointedRectGeometry(360#, 240#), _
+        RectangleRebars(PointedRectGeometry(360#, 240#)), 30#, 0.00000001
 End Sub
 
 ' Прикладывает сжатие через бетонный центр симметричного fixture и проверяет нулевые кривизны.
@@ -3825,7 +3825,7 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     SetSystemSetting "Stability.Code", "SP63"
 
     Dim geom As CGeometryRegion
-    Set geom = RoundedRectangleGeometry(300#, 200#)
+    Set geom = PointedRectGeometry(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -5006,8 +5006,8 @@ Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Doubl
 End Function
 
 ' ДЛЯ ТЕСТОВ: прямоугольная область через общее ядро точных контуров.
-Private Function RoundedRectangleGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
-    Set RoundedRectangleGeometry = FixtureBox(width, height)
+Private Function PointedRectGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
+    Set PointedRectGeometry = FixtureBox(width, height)
 End Function
 
 ' ДЛЯ ТЕСТОВ: собирает два прямоугольника с общей левой гранью и без смещения.
@@ -9731,7 +9731,7 @@ Public Function RunAudit03InactiveConfigCellTests(Optional ByRef passed As Long 
     Dim errorText As String, saved As Variant, invalidIndex As Long, prefix As String
     Dim hasSavedCell As Boolean, config As Object, savedConfig As Variant
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "HollowCentered"
     For Each name In Array("rngConcreteMaterialParameters", "rngPlotAnnotationSettings")
         Set range = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
@@ -9777,7 +9777,7 @@ Failed:
     AppendLine stats, "FAIL: audit03.inactive.runtime; " & CStr(Err.Number) & "; " & Err.Description
     If hasSavedCell Then cell.Formula = saved
 Finish:
-    If Not config Is Nothing And IsArray(savedConfig) Then config.Formula = savedConfig
+    If Not config Is Nothing And IsArray(savedConfig) Then FixtureRestoreInputs config, savedConfig
     AppendLine stats, "TOTAL_AUDIT03_INACTIVE_CONFIG: fields=" & CStr(fields.Count) & "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     passed = stats.Passed: failed = stats.Failed
     RunAudit03InactiveConfigCellTests = stats.Report

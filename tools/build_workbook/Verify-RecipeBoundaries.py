@@ -149,7 +149,7 @@ def plots():
 
 
 def scope():
-    allowed={'src/Geometry/CSectionRecipeRoundedRectangle.cls','src/Geometry/CSectionRecipeHollowRectangle.cls','src/Common/modSectionRecipeApiGuide.bas'}
+    allowed={'src/Geometry/CSectionRecipePointedRect.cls','src/Geometry/CSectionRecipeHollowRectangle.cls','src/Common/modSectionRecipeApiGuide.bas'}
     files={path.relative_to(ROOT).as_posix():path for path in (ROOT/'src').rglob('*') if path.suffix in ['.bas','.cls']}
     with ZipFile(D/'BaselineSource.zip') as archive:
         old={name for name in archive.namelist() if name.startswith('src/') and name.endswith(('.bas','.cls'))}

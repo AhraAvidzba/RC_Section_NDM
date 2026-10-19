@@ -1,4 +1,4 @@
-# Directed comparisons; not the historical exhaustive settings matrix.
+﻿# Directed comparisons; not the historical exhaustive settings matrix.
 param(
     [string]$ProbeWorkbook='docs/regression/PlateauSlope_2026-10-11/ProbeV3/RC_Section_NDM.xlsm',
     [string]$ReportDirectory='docs/regression/PlateauSlope_2026-10-11/ResultsV1',
@@ -31,7 +31,7 @@ if ($Stage -eq 'ForcedAxial') {
             if ($Stage -eq 'Saved') {
                 $jobs.Add(@{Name="Saved_${mode}_${label}"; Mode=$mode; Argument="$alpha|$simple|SavedWorkbook|Saved||Auto|Auto|1"; Timeout=600})
             } elseif ($Stage -eq 'Generated') {
-                foreach ($shape in @('RectSet','Circle','RoundedRectangle','HollowRectangle')) {
+                foreach ($shape in @('RectSet','Circle','PointedRect','HollowRectangle')) {
                     $jobs.Add(@{Name="${shape}_${mode}_${label}"; Mode=$mode; Argument="$alpha|$simple|$shape|Generated||Auto|Auto|1"; Timeout=300})
                 }
             } elseif ($Stage -eq 'Paths') {

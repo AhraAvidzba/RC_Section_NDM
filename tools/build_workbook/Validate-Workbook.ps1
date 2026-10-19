@@ -132,12 +132,12 @@ try {
         $sheetNames += [string]$sheet.Name
     }
 
-    $expectedSheetOrder = @("Config", "Справка", "Расчет", "Results")
+    $expectedSheetOrder = @("Config", "Сечения", "Справка", "Расчет", "Results")
     $sheetOrderOk = $true
     for ($i = 0; $i -lt $expectedSheetOrder.Count; $i++) {
         if ($sheetNames.Count -lt ($i + 1) -or $sheetNames[$i] -ne $expectedSheetOrder[$i]) { $sheetOrderOk = $false }
     }
-    Add-Check $checks "Sheets Config/Справка/Расчет/Results" $sheetOrderOk ($sheetNames -join ", ")
+    Add-Check $checks "Sheets Config/Сечения/Справка/Расчет/Results" $sheetOrderOk ($sheetNames -join ", ")
 
     $requiredNames = @(
         "rngLoadCombinations",
@@ -146,10 +146,9 @@ try {
         "rngPlotAnnotationSettings",
         "rngSystemSettings",
         "rngCircleGeometry",
-        "rngRoundedRectangleGeometry",
+        "rngPointedRectGeometry",
         "rngHollowRectangleGeometry",
         "rngRectSetGeometry",
-        "rngRebarInput",
         "rngBatchSummary",
         "rngStrengthSummaryAnchor",
         "rngCrackSummaryAnchor",
@@ -340,7 +339,7 @@ try {
                 $solverValidationOk = (($values.Count -eq 2) -and ($values[0] -eq "Newton") -and ($values[1] -eq "Secant"))
             }
             else {
-                $values = @($formula -split "," | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+                $values = @($formula -split [regex]::Escape([string]$excel.International(5)) | ForEach-Object { $_.Trim() } | Where-Object { $_ })
                 $solverValidationDetails = "Values=" + ($values -join ", ")
                 $solverValidationOk = (($values.Count -eq 2) -and ($values[0] -eq "Newton") -and ($values[1] -eq "Secant"))
             }
@@ -364,11 +363,7 @@ try {
         "rngSteelMaterialParameters",
         "rngConcreteMaterialParameters",
         "rngCalculationProfiles",
-        "rngPlotAnnotationSettings",
-        "rngCircleGeometry",
-        "rngRectSetGeometry",
-        "rngRoundedRectangleGeometry",
-        "rngHollowRectangleGeometry"
+        "rngPlotAnnotationSettings"
     )
     $rightStackOk = $true
     $rightStackDetails = @()

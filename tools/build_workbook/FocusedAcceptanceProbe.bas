@@ -9,7 +9,7 @@ End Sub
 ' ДЛЯ ТЕСТОВ: фиксирует состав без запуска НДС, Search и записи Results.
 Public Function DescribeFocusedAcceptance(ByVal shapeName As String, ByVal groupName As String) As String
     Dim oldRebars As Variant
-    oldRebars = ThisWorkbook.Names("rngRebarInput").RefersToRange.Formula
+    oldRebars = ThisWorkbook.Worksheets("Сечения").UsedRange.Formula
     On Error GoTo Failed
     Dim oldSystem As Variant, settings As CSystemSettingsReader, units As CUnitSystem
     Dim section As CSectionModel, cases As Collection, item As Variant, output As String
@@ -31,7 +31,7 @@ Public Function DescribeFocusedAcceptance(ByVal shapeName As String, ByVal group
 Failed:
     output = output & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 Restore:
-    If IsArray(oldRebars) Then ThisWorkbook.Names("rngRebarInput").RefersToRange.Formula = oldRebars
+    If IsArray(oldRebars) Then ThisWorkbook.Worksheets("Сечения").UsedRange.Formula = oldRebars
     If IsArray(oldSystem) Then ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = oldSystem
     DescribeFocusedAcceptance = output
 End Function
@@ -41,7 +41,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
         Optional ByVal selectedLoadName As String = "") As String
     On Error GoTo Failed
     Dim oldRebars As Variant
-    oldRebars = ThisWorkbook.Names("rngRebarInput").RefersToRange.Formula
+    oldRebars = ThisWorkbook.Worksheets("Сечения").UsedRange.Formula
     Dim stats As TBatchTestStats, oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant
     Dim systemRange As Object, profileRange As Object, loadRange As Object
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
@@ -155,7 +155,7 @@ Failed:
     AppendLine stats, "FAIL: focused.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
-    If IsArray(oldRebars) Then ThisWorkbook.Names("rngRebarInput").RefersToRange.Formula = oldRebars
+    If IsArray(oldRebars) Then ThisWorkbook.Worksheets("Сечения").UsedRange.Formula = oldRebars
     If IsArray(oldSystem) Then systemRange.Formula = oldSystem
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles
     If IsArray(oldLoads) Then loadRange.Formula = oldLoads
@@ -194,7 +194,7 @@ End Function
 Private Sub FocusedSelectGeometry(ByVal shapeName As String)
     Select Case shapeName
         Case "SavedWorkbook": SetSystemSetting "Geometry.Source", "AutoCAD"
-        Case "RectSet", "Circle", "RoundedRectangle", "HollowRectangle"
+        Case "RectSet", "Circle", "PointedRect", "HollowRectangle"
             SetSystemSetting "Geometry.Source", "Generated"
             SetSystemSetting "Geometry.Type", shapeName
             ' Общая таблица не хранит четыре независимых набора армирования.

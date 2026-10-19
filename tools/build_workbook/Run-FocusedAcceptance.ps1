@@ -59,7 +59,7 @@ try {
         Invoke-Gate ('Batch15_'+$mode) 'modTestBatchCalculation.RunCoreRegressionBatch15' $mode -Reopen
         foreach($case in @('Stability','AsymmetricSteel')){Invoke-Gate ($case+'_'+$mode) 'modTestBatchCalculation.RunFocusedSpecialCase' $mode $case -Reopen}
     }
-    foreach($shape in @('RectSet','Circle','RoundedRectangle','HollowRectangle','SavedWorkbook')){
+    foreach($shape in @('RectSet','Circle','PointedRect','HollowRectangle','SavedWorkbook')){
         Invoke-Gate ('Model_'+$shape) 'modTestBatchCalculation.DumpFocusedForceBoundsExact' 'No' $shape '' 120
     }
     Invoke-Gate 'OutputPresentation' 'RunConfigPresentationTests' 'No' '' '' 180

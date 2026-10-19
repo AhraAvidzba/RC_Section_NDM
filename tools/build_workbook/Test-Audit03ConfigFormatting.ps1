@@ -68,12 +68,12 @@ function Get-ExpectedAlignment([object]$Book) {
         $expected[('Config!'+$cell.Address($false,$false))] = @{ horizontal=-4108; vertical=-4108; role='AutomaticCountMarker' }
     }
     $sections = @{
-        rngRoundedRectangleGeometry = @(@(2,3,5),@(6,10,5),@(12,16,6),@(18,22,9))
+        rngPointedRectGeometry = @(@(2,3,5),@(6,10,5),@(12,16,6),@(18,22,9))
         rngHollowRectangleGeometry = @(@(2,4,4),@(6,7,7),@(10,18,6),@(20,28,9))
         rngRectSetGeometry = @(@(2,4,4),@(7,8,5),@(10,18,8),@(20,28,9))
     }
     $names = @('rngSystemSettings','rngUnitSettings','rngSignConventionSettings',
-        'rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry',
+        'rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry',
         'rngConcreteMaterialParameters','rngSteelMaterialParameters','rngCalculationProfiles',
         'rngPlotAnnotationSettings','rngLoadCombinations','rngStabilityDurationLoads','rngSP35Table721')
     foreach ($name in $names) {

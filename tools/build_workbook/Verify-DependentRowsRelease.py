@@ -89,7 +89,7 @@ def main():
     args = parser.parse_args()
     a, b = Book(D / "Baseline.xlsm"), Book(D / args.target)
     failures, comparisons, tables = [], 0, []
-    geometry = ["rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry"]
+    geometry = ["rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry"]
     old_areas = [a.bounds(n) for n in geometry]
     for name in geometry:
         (ar, ac), (ae, ax) = a.bounds(name)

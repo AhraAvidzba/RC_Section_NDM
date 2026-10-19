@@ -1,10 +1,10 @@
 {
   "schema": 3,
   "title": "Добавление нового типа сечения",
-  "bodySHA256": "03b118e0b9e9fd9cb6aa38274334cae4f7ffb5b9c1eb82ade391730a5ea97f24",
+  "bodySHA256": "be07d0c66053b81c44988e619eda5a7bc0a179fe8b688e215c3a89318fdd5011",
   "sourceHashes": {
-    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "7c493cd4f0651d53628c3a3f737d1a7b0d0291053aa3cc898a0b242be73f7ee1",
-    "src/Common/modSectionRecipeApiGuide.bas": "4526833e691d32301273195c8bc2b2a72fdcb7ee7faecbfe6b5f18ed8e63dcf0"
+    "docs/geometry_refactor/ADDING_SECTION_TYPE.md": "c1c70934d67a17bdb1cb8cec9f0f6abfbd97c04cfa6d6bc7a56d22943f894dab",
+    "src/Common/modSectionRecipeApiGuide.bas": "0edbbcf07cb7d83894cbe40783c68e435d758aa7735b1fa656de7a33634cb835"
   },
   "rows": [
     {
@@ -158,7 +158,7 @@
       "line": 25
     },
     {
-      "text": "7. Проверьте форму, сетку, арматуру, схему, единицы, равновесие и сообщения при неверном вводе. Проверьте каждую сторону с отключённой арматурой. Примеры реализации есть в VBE этой книги: CSectionRecipeCircle и CSectionRecipeRoundedRectangle.",
+      "text": "7. Проверьте форму, сетку, арматуру, схему, единицы, равновесие и сообщения при неверном вводе. Проверьте каждую сторону с отключённой арматурой. Примеры реализации есть в VBE этой книги: CSectionRecipeCircle и CSectionRecipePointedRect.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 26
@@ -350,7 +350,7 @@
       "line": 63
     },
     {
-      "text": "Структура штатных таблиц Config рекомендуется для новых сечений: под неё готов универсальный CSectionInputReader. В General задаются все размеры, в Edges перечисляются участки с отдельным армированием. Столбец «Размер» ссылается на H, B или D из General и не задаёт длину линии центров стержней. Например, `context.Reader(\"rngMyGeometry\").PositiveLength(\"General\", \"B\")` читает ширину B и переводит её в мм. Русские подписи и порядок строк не участвуют в поиске.",
+      "text": "Каждый штатный тип имеет одну именованную таблицу на листе «Сечения» сразу после Config. В General задаются размеры, в Main — основное армирование по сторонам, в Extra — параметры второго и третьего рядов. Например, `context.Reader(\"rngMyGeometry\").PositiveLength(\"General\", \"B\")` читает ширину B и переводит её в мм. Тот же reader читает армирование по коротким ключам строк и столбцов. Русские подписи и порядок строк не участвуют в поиске.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 64
@@ -362,7 +362,7 @@
       "line": 65
     },
     {
-      "text": "Основное и дополнительное армирование находятся в общей таблице rngRebarInput. Формулы подставляют ключи вида MySection.Top из выбранного типа и его Edges. Для чтения используют `context.Reader(\"rngRebarInput\", \"MySection.\")`: после задания префикса можно обращаться к строке Top в блоках Main и Extra. В реестре рецепту указывают обе входные таблицы. При смене типа ключи обновляются, а введённые параметры армирования остаются для ручного изменения.",
+      "text": "В реестре рецепту указывают имя этой таблицы. Значения армирования каждого типа хранятся независимо: смена Geometry.Type не изменяет введённые данные других сечений.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 66
@@ -410,7 +410,7 @@
       "line": 73
     },
     {
-      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectSet (прямоугольные сечения), CSectionRecipeRoundedRectangle (скруглённые стороны) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. В рецептах чтение и проверка данных отделены от создания границ бетона, армирования и аннотаций. Подробности — в modSectionRecipeApiGuide.",
+      "text": "Как примеры нового сечения используйте штатные классы-рецепты CSectionRecipeCircle (круг), CSectionRecipeRectSet (прямоугольные сечения), CSectionRecipePointedRect (остроносое сечение со скруглениями) и CSectionRecipeHollowRectangle (сечение с отверстием). Они находятся в редакторе VBA этой книги: Alt+F11 → Ctrl+R → Class Modules. В рецептах чтение и проверка данных отделены от создания границ бетона, армирования и аннотаций. Подробности — в modSectionRecipeApiGuide.",
       "style": "paragraph",
       "source": "ADDING_SECTION_TYPE.md",
       "line": 74

@@ -26,7 +26,7 @@ def verify(before_path, after_path):
     allowed = set()
     def change(row, column, value):
         config[(row, column)] = value; allowed.add((row, column))
-    for name, count in (("rngRoundedRectangleGeometry", 4), ("rngHollowRectangleGeometry", 8), ("rngRectSetGeometry", 0)):
+    for name, count in (("rngPointedRectGeometry", 4), ("rngHollowRectangleGeometry", 8), ("rngRectSetGeometry", 0)):
         top, left, _, _ = bounds(before["names"][name])
         data = preserve.table(before, name)
         main = next(index for index, row in enumerate(data) if len(row) > 1 and row[1][1] == "as")

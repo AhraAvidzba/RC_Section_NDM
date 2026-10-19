@@ -285,7 +285,7 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
     $borderCount=0
     foreach ($name in @('rngSystemSettings','rngUnitSettings','rngSignConventionSettings','rngCalculationProfiles',
         'rngConcreteMaterialParameters','rngSteelMaterialParameters','rngPlotAnnotationSettings','rngLoadCombinations',
-        'rngCircleGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngRectSetGeometry')) {
+        'rngCircleGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry','rngRectSetGeometry')) {
         $range=$Book.Names.Item($name).RefersToRange
         for ($row=1; $row -le $range.Rows.Count; $row++) {
             $cell=$range.Cells.Item($row,$range.Columns.Count)

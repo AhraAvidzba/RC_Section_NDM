@@ -56,12 +56,11 @@ End Type
 ' бетона, размещения стержней вдоль сторон и аннотаций схемы (размеры сечения,
 ' суммарное количество стержней каждого диаметра по каждой стороне) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As TRectSetDimensions, faces() As TRectangleFace, upper As CGeometryPath, lower As CGeometryPath, outer As CGeometryPath
     Set reader = context.Reader("rngRectSetGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
-    Set rebarReader = context.Reader("rngRebarInput", "RectSet.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs rebarReader, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
+    ReadRebarInputs reader, sizes, faces ' Читаем параметры и готовим координаты линий армирования.
     Set facade = New CSectionDefinitionBuilder ' Создаём сборщик описания сечения.
     facade.Initialize "RectSet" ' Начинаем описание выбранного типа.
     AddGeometry facade, sizes, upper, lower, outer ' Добавляем подготовленные границы бетона.

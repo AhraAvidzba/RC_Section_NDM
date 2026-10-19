@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestRecipeSetbacks"
+Attribute VB_Name = "modTestRecipeSetbacks"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: реальные редактируемые отступы Config и их влияние на общий
@@ -14,7 +14,7 @@ Public Function RunRecipeSetbackUnitTests() As String
     Dim alerts As Boolean, itemColumn As Variant
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = "": alerts = Application.DisplayAlerts
-    values = FixtureRecipeValues("rngRoundedRectangleGeometry")
+    values = FixtureRecipeValues("rngPointedRectGeometry")
     FixtureSetInput values, "General", "B", "val", 800#: FixtureSetInput values, "General", "H", "val", 250#
     FixtureSetInput values, "Detail", "Type", "left", "Simple": FixtureSetInput values, "Detail", "Type", "right", "Tapered"
     FixtureSetInput values, "Detail", "W", "left", 0#: FixtureSetInput values, "Detail", "W", "right", 150#
@@ -28,8 +28,8 @@ Public Function RunRecipeSetbackUnitTests() As String
         FixtureSetInput values, "Main", CStr(key), "s0", 10#: FixtureSetInput values, "Main", CStr(key), "s1", 20#
         FixtureSetInput values, "Extra", CStr(key), "d2", 0#: FixtureSetInput values, "Extra", CStr(key), "d3", 0#
     Next key
-    Set recipe = New CSectionRecipeRoundedRectangle
-    Set expected = FixtureAnnotatedLayout(FixtureRecipeDefinition(recipe, "rngRoundedRectangleGeometry", values))
+    Set recipe = New CSectionRecipePointedRect
+    Set expected = FixtureAnnotatedLayout(FixtureRecipeDefinition(recipe, "rngPointedRectGeometry", values))
     baseline = values
     Set sheet = ThisWorkbook.Worksheets.Add: Set setting = sheet.Range("A1:C2")
     setting.Cells(1, 1).Value2 = "Key": setting.Cells(1, 2).Value2 = "Value": setting.Cells(1, 3).Value2 = "Unit"
@@ -56,7 +56,7 @@ Public Function RunRecipeSetbackUnitTests() As String
         setting.Cells(2, 2).Value2 = CStr(item(0))
         Set settings = New CSystemSettingsReader: settings.LoadFromRange setting
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set definition = FixtureRecipeDefinition(recipe, "rngRoundedRectangleGeometry", scaled, units)
+        Set definition = FixtureRecipeDefinition(recipe, "rngPointedRectGeometry", scaled, units)
         Set actual = FixtureAnnotatedLayout(definition)
         Check "setback.units.count." & CStr(item(0)), actual.Count = expected.Count
         For i = 1 To expected.Count
@@ -87,7 +87,7 @@ Public Function RunRecipeTypeListTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     calculation = Application.Calculation: events = Application.EnableEvents
     updating = Application.ScreenUpdating: alerts = Application.DisplayAlerts
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     originalList = ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo
     originalCircle = ThisWorkbook.Names("rngCircleGeometry").RefersTo
     Set list = ThisWorkbook.Names("rngSectionRecipeTypes").RefersToRange
@@ -138,7 +138,7 @@ Restore:
     On Error Resume Next
     If Len(originalList) > 0 Then ThisWorkbook.Names("rngSectionRecipeTypes").RefersTo = originalList
     If Len(originalCircle) > 0 Then ThisWorkbook.Names("rngCircleGeometry").RefersTo = originalCircle
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events
     Application.ScreenUpdating = updating: Application.DisplayAlerts = alerts
     On Error GoTo 0
@@ -172,15 +172,15 @@ Public Function RunRecipeSetbackInputTests() As String
     Dim face As Variant, faces As Variant, helper As CRebarRuleExecutor, originalHelper As CRebarRuleExecutor, parameters As Variant
     Dim geometryArea As Double, layoutCount As Long, reference As String, reason As String, number As Long
     Dim config As Object, savedConfig As Variant
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(config)
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = ""
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedMixed"
-    Set rounded = ThisWorkbook.Names("rngRebarInput").RefersToRange
-    Set hollow = ThisWorkbook.Names("rngRebarInput").RefersToRange
+    Set rounded = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set hollow = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     savedRounded = rounded.Formula: savedHollow = hollow.Formula
     Set table = FixtureInput(rounded.Value2)
-    row = table.RowIndex("Main", "RoundedRectangle.Top"): main = row - 1
+    row = table.RowIndex("Main", "PointedRect.Top"): main = row - 1
     Check "rounded.start.header", table.ColumnIndex("Main", "s0") = 6
     Check "rounded.end.header", table.ColumnIndex("Main", "s1") = 7
     Check "rounded.editable.centered", rounded.Cells(row, 6).HorizontalAlignment = xlCenter And rounded.Cells(row, 7).HorizontalAlignment = xlCenter
@@ -210,7 +210,7 @@ Public Function RunRecipeSetbackInputTests() As String
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces, True))
     number = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo Failed
-    Check "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange.Rows.Count + 1 + row) & ",6]", vbBinaryCompare) > 0
+    Check "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange.Rows.Count + 1 + row) & ",6]", vbBinaryCompare) > 0
     rounded.Cells(row, 6).Value2 = CVErr(xlErrValue)
     faces(2) = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces, True))
@@ -246,7 +246,7 @@ Restore:
     On Error Resume Next
     If Not rounded Is Nothing Then rounded.Formula = savedRounded
     If Not hollow Is Nothing Then hollow.Formula = savedHollow
-    If Not config Is Nothing Then config.Formula = savedConfig
+    If Not config Is Nothing Then FixtureRestoreInputs config, savedConfig
     On Error GoTo 0
     RunRecipeSetbackInputTests = mReport
     Exit Function

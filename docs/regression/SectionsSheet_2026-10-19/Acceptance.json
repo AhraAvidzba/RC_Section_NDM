@@ -1,0 +1,243 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASSED",
+  "Scope": "SectionsSheet and per-section reinforcement tables; PointedRect rename",
+  "FullOnOffAcceptance": false,
+  "WorkbookSHA256": "C76DE69781DD7933B0E20A49679296EEAA6E1DEF7E1D9423A1585CA491AEC80F",
+  "AllCodeSHA256": "BC2430637D2E2F8F3CA3DB76EDC7CDFC08DDFD25E71D469078DBDF5146EE23DE",
+  "SourceComponents": 155,
+  "WorkbookComponents": 161,
+  "NativeReadbackEqualToAllCode": true,
+  "InputFieldsPreserved": 294,
+  "NamesBefore": 63,
+  "NamesAfter": 27,
+  "RemovedChoiceNames": 35,
+  "HiddenHelperCellsBefore": 868,
+  "HiddenHelperCellsAfter": 39,
+  "HiddenDynamicSources": "BR:BT",
+  "PublishedDataPreservation": {
+    "Status": "PASS",
+    "BeforeSHA256": "7E73C9BADADB09C22726E10096D1482DCE821962FC25BAABE234C9BFEAB2A3A0",
+    "AfterSHA256": "C76DE69781DD7933B0E20A49679296EEAA6E1DEF7E1D9423A1585CA491AEC80F",
+    "UnchangedCells": {
+      "Config": 1604,
+      "Расчет": 0,
+      "Results": 5198
+    },
+    "UserColumnWidthsPreserved": true,
+    "CalculationMode": "auto",
+    "RemovedChoiceNames": [
+      "rngRebarInput_Extra_Row1_bind2_Choices",
+      "rngRebarInput_Extra_Row1_bind3_Choices",
+      "rngRebarInput_Extra_Row1_pos2_Choices",
+      "rngRebarInput_Extra_Row1_pos3_Choices",
+      "rngRebarInput_Extra_Row2_bind2_Choices",
+      "rngRebarInput_Extra_Row2_bind3_Choices",
+      "rngRebarInput_Extra_Row2_pos2_Choices",
+      "rngRebarInput_Extra_Row2_pos3_Choices",
+      "rngRebarInput_Extra_Row3_bind2_Choices",
+      "rngRebarInput_Extra_Row3_bind3_Choices",
+      "rngRebarInput_Extra_Row3_pos2_Choices",
+      "rngRebarInput_Extra_Row3_pos3_Choices",
+      "rngRebarInput_Extra_Row4_bind2_Choices",
+      "rngRebarInput_Extra_Row4_bind3_Choices",
+      "rngRebarInput_Extra_Row4_pos2_Choices",
+      "rngRebarInput_Extra_Row4_pos3_Choices",
+      "rngRebarInput_Extra_Row5_bind2_Choices",
+      "rngRebarInput_Extra_Row5_bind3_Choices",
+      "rngRebarInput_Extra_Row5_pos2_Choices",
+      "rngRebarInput_Extra_Row5_pos3_Choices",
+      "rngRebarInput_Extra_Row6_bind2_Choices",
+      "rngRebarInput_Extra_Row6_bind3_Choices",
+      "rngRebarInput_Extra_Row6_pos2_Choices",
+      "rngRebarInput_Extra_Row6_pos3_Choices",
+      "rngRebarInput_Extra_Row7_bind2_Choices",
+      "rngRebarInput_Extra_Row7_bind3_Choices",
+      "rngRebarInput_Extra_Row7_pos2_Choices",
+      "rngRebarInput_Extra_Row7_pos3_Choices",
+      "rngRebarInput_Extra_Row8_bind2_Choices",
+      "rngRebarInput_Extra_Row8_bind3_Choices",
+      "rngRebarInput_Extra_Row8_pos2_Choices",
+      "rngRebarInput_Extra_Row8_pos3_Choices",
+      "rngRectSetGeometry_General_Shape_val_Choices",
+      "rngRoundedRectangleGeometry_General_Left_Type_val_Choices",
+      "rngRoundedRectangleGeometry_General_Right_Type_val_Choices"
+    ],
+    "NamesBefore": 63,
+    "NamesAfter": 27,
+    "OtherNamedRangesPreserved": true,
+    "HiddenHelperCellsBefore": 868,
+    "HiddenHelperCellsAfter": 39
+  },
+  "PublishedStructure": {
+    "Status": "PASS",
+    "WorkbookSHA256": "C76DE69781DD7933B0E20A49679296EEAA6E1DEF7E1D9423A1585CA491AEC80F",
+    "SheetOrder": [
+      "Config",
+      "Сечения",
+      "Справка",
+      "Расчет",
+      "Results"
+    ],
+    "Names": 28,
+    "ChoiceNames": 0,
+    "Tables": [
+      {
+        "Name": "rngCircleGeometry",
+        "Address": "$A$3:$K$18",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 1
+      },
+      {
+        "Name": "rngRectSetGeometry",
+        "Address": "$A$22:$K$56",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 8
+      },
+      {
+        "Name": "rngPointedRectGeometry",
+        "Address": "$A$60:$K$90",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 4
+      },
+      {
+        "Name": "rngHollowRectangleGeometry",
+        "Address": "$A$94:$K$130",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 8
+      }
+    ],
+    "DefaultFieldsChecked": 0,
+    "PreservedFields": 294,
+    "ValidDropdownChoicesChecked": 175,
+    "DynamicUnitCells": 54,
+    "LengthUnits": [
+      "mm",
+      "cm",
+      "m"
+    ],
+    "IndependentInputsPreservedOnSwitch": true,
+    "ConditionalFormattingRules": 0,
+    "HiddenDynamicColumns": "BR:BT",
+    "ReadOnly": true
+  },
+  "FreshBuildDefaults": {
+    "Status": "PASS",
+    "WorkbookSHA256": "C139F1D2E4AE8480BCB1DAE02D08DC90BF6996C2F145EAB67809567A3B240A2C",
+    "SheetOrder": [
+      "Config",
+      "Сечения",
+      "Справка",
+      "Расчет",
+      "Results"
+    ],
+    "Names": 28,
+    "ChoiceNames": 0,
+    "Tables": [
+      {
+        "Name": "rngCircleGeometry",
+        "Address": "$A$3:$K$18",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 1
+      },
+      {
+        "Name": "rngRectSetGeometry",
+        "Address": "$A$22:$K$56",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 8
+      },
+      {
+        "Name": "rngPointedRectGeometry",
+        "Address": "$A$60:$K$90",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 4
+      },
+      {
+        "Name": "rngHollowRectangleGeometry",
+        "Address": "$A$94:$K$130",
+        "Blocks": [
+          "General",
+          "Main",
+          "Extra"
+        ],
+        "RebarRows": 8
+      }
+    ],
+    "DefaultFieldsChecked": 298,
+    "PreservedFields": 0,
+    "ValidDropdownChoicesChecked": 175,
+    "DynamicUnitCells": 54,
+    "LengthUnits": [
+      "mm",
+      "cm",
+      "m"
+    ],
+    "IndependentInputsPreservedOnSwitch": true,
+    "ConditionalFormattingRules": 0,
+    "HiddenDynamicColumns": "BR:BT",
+    "ReadOnly": true
+  },
+  "SuccessfulFinalLogs": {
+    "RegressionFinal.txt": [
+      "TOTAL: passed=766; failed=0",
+      "TOTAL ANALYTIC PATHS: passed=276; failed=0",
+      "TOTAL PATH ANCHORS: passed=61; failed=0",
+      "TOTAL ROUNDED POLYGONS: passed=36; failed=0",
+      "TOTAL ROUNDED OFFSET: passed=27; failed=0",
+      "TOTAL INPUT TABLES: passed=45; failed=0",
+      "TOTAL_AUDIT03_RELOCATED_INPUT: passed=868; failed=0; cases=116",
+      "TOTAL_CONFIG_PRESENTATION: passed=1313; failed=0"
+    ],
+    "GeometryFinal.txt": [
+      "TOTAL WORKBOOK RECIPE INPUT: passed=284; failed=0",
+      "TOTAL CIRCLE INPUT: passed=5; failed=0",
+      "TOTAL ROUNDED INPUT: passed=14; failed=0",
+      "TOTAL HOLLOW INPUT: passed=20; failed=0",
+      "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0",
+      "TOTAL_COLLAPSED_INPUT_ADDRESSES: passed=40; failed=0"
+    ],
+    "FieldSmoke.txt": [
+      "TOTAL_SECTION_REBAR_INPUT_SMOKE: passed=374; failed=0; cases=87"
+    ]
+  },
+  "ShapeConfigAssertions": 216,
+  "CounterAssertions": 33,
+  "EarlierSuccessfulSuites": [
+    "IndependentRowOffsetWorkbook:146",
+    "CircleSetbacks:146",
+    "RecipeAnnotations:39"
+  ],
+  "InterruptedCheck": "RunAudit03RebarFieldConfigTests was intentionally interrupted after shape/counter completion; not counted as PASS. Replaced for this change by RunSectionRebarInputSmokeTests, 87 cases / 374 checks.",
+  "NoEmbeddedGuideMarkers": true,
+  "ForeignFilesExcluded": [
+    "workbook/output/RC_Section_NDM_execution_report.txt",
+    "outputs/"
+  ]
+}

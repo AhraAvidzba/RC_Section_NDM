@@ -12,7 +12,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[2]
 D = ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RecipeResponsibilities_2026-10-16'
-RECIPES = ['CSectionRecipe'+x for x in ('Circle','RectSet','RoundedRectangle','HollowRectangle')]
+RECIPES = ['CSectionRecipe'+x for x in ('Circle','RectSet','PointedRect','HollowRectangle')]
 MATRICES = ['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in
             [('Circle','Matrix'),('RectSet','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
 CONTRACTS = ['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']

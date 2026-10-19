@@ -22,10 +22,10 @@ End Type
 Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = allConfig.Formula
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, shapeName As Variant, scenario As Long
     Dim bars As CRebarLayout, number As Long, description As String, expected As Long
-    For Each shapeName In Array("RectSet", "RoundedRectangle", "HollowRectangle")
+    For Each shapeName In Array("RectSet", "PointedRect", "HollowRectangle")
         expected = vbObjectError + 5530
         For scenario = 0 To 2
             Set bars = Nothing: number = 0: description = vbNullString
@@ -36,7 +36,7 @@ Public Function RunAudit03RebarCounterTests(Optional ByRef passed As Long = 0, _
             On Error GoTo 0
             Check stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".typed", number = expected
             Check stats, "rebarCounter." & CStr(shapeName) & "." & CStr(scenario) & ".message", _
-                InStr(1, description, "Config", vbTextCompare) > 0 And InStr(1, description, "счетчиков", vbTextCompare) > 0
+                InStr(1, description, ThisWorkbook.Names("rng" & CStr(shapeName) & "Geometry").RefersToRange.Worksheet.Name, vbTextCompare) > 0 And InStr(1, Replace(description, "ё", "е"), "счетчик", vbTextCompare) > 0
             stats.Report = stats.Report & "REBAR_COUNTER_FAILURE: shape=" & CStr(shapeName) & "; scenario=" & CStr(scenario) & _
                 "; error=" & CStr(number) & "; comment=" & description & vbCrLf
         Next scenario
@@ -58,7 +58,7 @@ FailedRun:
     stats.Report = stats.Report & "FAIL: rebarCounter.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    allConfig.Formula = savedConfig
+    FixtureRestoreInputs allConfig, savedConfig
     RunAudit03RebarCounterTests = stats.Report & "TOTAL_REBAR_COUNTER: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
@@ -86,7 +86,7 @@ Private Sub CheckRuleCounterBinding(ByRef stats As TGeometryConfigStats, ByVal c
     label = "rebarCounter.binding." & CStr(count) & ".d" & CStr(diameter)
     If overflow Then
         Check stats, label & ".typed", number = vbObjectError + 5530
-        Check stats, label & ".beforeAllocation", executor.PositionCount = 0 And InStr(reason, "счетчиков") > 0
+        Check stats, label & ".beforeAllocation", executor.PositionCount = 0 And InStr(Replace(reason, "ё", "е"), "счетчик") > 0
     Else
         Check stats, label & ".success", number = 0
         If Not bars Is Nothing Then Check stats, label & ".physical", bars.Count = expected
@@ -105,10 +105,10 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
     Dim number As Long, source As String, reason As String
     On Error GoTo Failed
     events = Application.EnableEvents: Application.EnableEvents = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Select Case shapeName
         Case "RectSet": fixture = "Rectangle"
-        Case "RoundedRectangle": fixture = "RoundedSimple"
+        Case "PointedRect": fixture = "RoundedSimple"
         Case "HollowRectangle": fixture = "HollowCentered"
     End Select
     modTestShapeArchitecture.ConfigureShapeFixture fixture
@@ -117,12 +117,12 @@ Private Function CounterFixture(ByVal shapeName As String, ByVal scenario As Lon
     Set registry = New CSectionTypeRegistry: names = registry.RecipeTableNames(shapeName)
     Set root = ThisWorkbook.Names(CStr(names(0))).RefersToRange
     Set reader = New CSectionInputSnapshotReader: Set context = reader.Capture(ThisWorkbook, names, units)
-    Set root = ThisWorkbook.Names("rngRebarInput").RefersToRange
-    Set table = context.Table("rngRebarInput")
-    Set keyed = context.Reader("rngRebarInput", shapeName & ".")
+    Set root = ThisWorkbook.Names(CStr(names(0))).RefersToRange
+    Set table = context.Table(CStr(names(0)))
+    Set keyed = context.Reader(CStr(names(0)))
     key = "Top": If shapeName = "RectSet" Then key = "R1.Top"
     main = keyed.RowIndex("Main", key) - 1: extra = keyed.RowIndex("Extra", key) - 1
-    faceCount = 8: If shapeName = "RoundedRectangle" Then faceCount = 4
+    faceCount = 8: If shapeName = "PointedRect" Then faceCount = 4
     For i = 1 To faceCount
         root.Cells(main + i, 3).Value2 = 40# / factor
         root.Cells(main + i, 4).Value2 = 0#
@@ -150,7 +150,7 @@ Failed:
     number = Err.Number: source = Err.Source: reason = Err.Description
 Finished:
     On Error Resume Next
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.EnableEvents = events
     On Error GoTo 0
     If number <> 0 Then Err.Raise number, source, reason
@@ -161,7 +161,7 @@ End Function
 Public Function RunAudit03CircleConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = allConfig.Formula
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats
     Dim systemRange As Object, circleRange As Object, unitRange As Object
     Dim savedSystem As Variant, savedCircle As Variant, savedUnits As Variant
@@ -194,7 +194,7 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: circleConfig.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    allConfig.Formula = savedConfig
+    FixtureRestoreInputs allConfig, savedConfig
     RunAudit03CircleConfigTests = stats.Report & "TOTAL_CIRCLE_CONFIG: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
@@ -204,7 +204,7 @@ End Function
 Public Function RunAudit03ShapeConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = allConfig.Formula
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats
     Dim systemRange As Object, unitRange As Object, circleRange As Object
     Dim target As Object, rangeName As Variant, shapeName As String, shapeNames As Variant
@@ -215,14 +215,14 @@ Public Function RunAudit03ShapeConfigTests(Optional ByRef passed As Long = 0, _
     Set unitRange = ThisWorkbook.Names.Item("rngUnitSettings").RefersToRange
     Set circleRange = ThisWorkbook.Names.Item("rngCircleGeometry").RefersToRange
     savedSystem = systemRange.Formula: savedUnits = unitRange.Formula: savedCircle = circleRange.Formula
-    For Each rangeName In Array("rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+    For Each rangeName In Array("rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
         Set shapeRanges(index) = ThisWorkbook.Names.Item(CStr(rangeName)).RefersToRange
         savedShapes(index) = shapeRanges(index).Formula
         index = index + 1
     Next rangeName
     unitRange.Cells(2, 2).Value2 = "mm"
     ConfigureCircle circleRange
-    shapeNames = Array("RectSet", "RoundedRectangle", "HollowRectangle")
+    shapeNames = Array("RectSet", "PointedRect", "HollowRectangle")
     For index = 0 To 2
         Set target = shapeRanges(index)
         shapeName = CStr(shapeNames(index))
@@ -259,7 +259,7 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: shapeConfig.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    allConfig.Formula = savedConfig
+    FixtureRestoreInputs allConfig, savedConfig
     RunAudit03ShapeConfigTests = stats.Report & "TOTAL_SHAPE_CONFIG: passed=" & CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
 
@@ -275,17 +275,17 @@ Private Function ShapeFields(ByVal shapeName As String) As Variant
                 Array("RectSet.B2", 8, 3, 600#, 650#, -1#), _
                 Array("RectSet.UpperOffsetX", 9, 3, -50#, -70#, 10000#), _
                 Array("RectSet.SectionType", 4, 3, "TwoRectangles", "Rectangle", "Unknown"))
-        Case "RoundedRectangle"
-            ShapeFields = Array(Array("RoundedRectangle.B", 4, 3, 600#, 650#, -1#), _
-                Array("RoundedRectangle.H", 5, 3, 400#, 450#, -1#), _
-                Array("RoundedRectangle.Left.Type", 6, 3, "Tapered", "Simple", "Unknown"), _
-                Array("RoundedRectangle.Right.Type", 10, 3, "Tapered", "Simple", "Unknown"), _
-                Array("RoundedRectangle.Left.W", 7, 3, 100#, 130#, -1#), _
-                Array("RoundedRectangle.Right.W", 11, 3, 100#, 130#, -1#), _
-                Array("RoundedRectangle.Left.R1", 8, 3, 30#, 45#, -1#), _
-                Array("RoundedRectangle.Right.R1", 12, 3, 30#, 45#, -1#), _
-                Array("RoundedRectangle.Left.R2", 9, 3, 20#, 35#, -1#), _
-                Array("RoundedRectangle.Right.R2", 13, 3, 20#, 35#, -1#))
+        Case "PointedRect"
+            ShapeFields = Array(Array("PointedRect.B", 4, 3, 600#, 650#, -1#), _
+                Array("PointedRect.H", 5, 3, 400#, 450#, -1#), _
+                Array("PointedRect.Left.Type", 6, 3, "Tapered", "Simple", "Unknown"), _
+                Array("PointedRect.Right.Type", 10, 3, "Tapered", "Simple", "Unknown"), _
+                Array("PointedRect.Left.W", 7, 3, 100#, 130#, -1#), _
+                Array("PointedRect.Right.W", 11, 3, 100#, 130#, -1#), _
+                Array("PointedRect.Left.R1", 8, 3, 30#, 45#, -1#), _
+                Array("PointedRect.Right.R1", 12, 3, 30#, 45#, -1#), _
+                Array("PointedRect.Left.R2", 9, 3, 20#, 35#, -1#), _
+                Array("PointedRect.Right.R2", 13, 3, 20#, 35#, -1#))
         Case "HollowRectangle"
             ShapeFields = Array(Array("HollowRectangle.H", 5, 3, 1200#, 1300#, -1#), _
                 Array("HollowRectangle.B", 4, 3, 1000#, 1100#, -1#), _
@@ -322,7 +322,7 @@ End Sub
 Public Function RunAudit03CircleRebarInputTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = allConfig.Formula
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, ranges(0 To 3) As Object, saved(0 To 3) As Variant
     Dim names As Variant, keys As Variant, key As Variant, bad As Variant, badValues As Variant
     Dim i As Long, cases As Long, cell As Object, savedKey As Variant, label As Object
@@ -428,7 +428,7 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: circleRebar.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    allConfig.Formula = savedConfig
+    FixtureRestoreInputs allConfig, savedConfig
     RunAudit03CircleRebarInputTests = stats.Report & "TOTAL_CIRCLE_REBAR_INPUT: passed=" & CStr(passed) & _
         "; failed=" & CStr(failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function
@@ -560,8 +560,8 @@ Private Sub CheckShapeBaseline(ByRef stats As TGeometryConfigStats, ByVal shapeN
         Near stats, "shapeConfig.HollowRectangle.oracle.cx", CDbl(actual(1)), -openingArea * 40# / area
         Near stats, "shapeConfig.HollowRectangle.oracle.cy", CDbl(actual(2)), -openingArea * 50# / area
     Else
-        Near stats, "shapeConfig.RoundedRectangle.oracle.cx", CDbl(actual(1)), 0#
-        Near stats, "shapeConfig.RoundedRectangle.oracle.cy", CDbl(actual(2)), 0#
+        Near stats, "shapeConfig.PointedRect.oracle.cx", CDbl(actual(1)), 0#
+        Near stats, "shapeConfig.PointedRect.oracle.cy", CDbl(actual(2)), 0#
     End If
 End Sub
 
@@ -583,12 +583,12 @@ Private Sub CheckShapeInactiveModes(ByRef stats As TGeometryConfigStats, ByVal t
         baseline = ShapeSnapshot(ReadShape())
         target.Cells(9, 3).Value2 = 100#
         Check stats, "shapeConfig.RectSet.LSection.inactive.offset", SameShape(baseline, ShapeSnapshot(ReadShape()))
-    ElseIf shapeName = "RoundedRectangle" Then
+    ElseIf shapeName = "PointedRect" Then
         target.Cells(6, 3).Value2 = "Simple": target.Cells(10, 3).Value2 = "Simple"
         baseline = ShapeSnapshot(ReadShape())
         For Each item In Array(Array(7, 3), Array(11, 3), Array(9, 3), Array(13, 3))
             target.Cells(CLng(item(0)), CLng(item(1))).Value2 = 70#
-            Check stats, "shapeConfig.RoundedRectangle.Simple.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
+            Check stats, "shapeConfig.PointedRect.Simple.inactive." & CStr(item(0)) & "." & CStr(item(1)), _
                 SameShape(baseline, ShapeSnapshot(ReadShape()))
         Next item
     End If
@@ -659,7 +659,7 @@ Private Sub CheckHollowCounts(ByRef stats As TGeometryConfigStats, ByVal target 
             On Error GoTo 0
             prefix = "shapeConfig.hollowCount." & face & "." & CStr(index)
             Check stats, prefix & ".reject", errorNumber <> 0
-            Check stats, prefix & ".location", InStr(1, description, "Config", vbTextCompare) > 0 And _
+            Check stats, prefix & ".location", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 And _
                 InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
             Check stats, prefix & ".parameter", InStr(1, description, CStr(sides(rowIndex)), vbBinaryCompare) > 0 And _
                 (InStr(1, description, "Число стержней", vbBinaryCompare) > 0 Or InStr(1, description, "число", vbBinaryCompare) > 0 Or InStr(1, description, "Excel", vbBinaryCompare) > 0)
@@ -893,15 +893,15 @@ End Sub
 Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = allConfig.Formula
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
     Dim names As Variant, shapes As Variant, shape As String, fields As Variant
     Dim i As Long, j As Long, item As Variant, route As Variant, bad As Variant
     Dim cell As Object, baseline As Variant, current As Variant, description As String
     Dim errorNumber As Long, prefix As String, caseIndex As Long
     names = Array("rngSystemSettings", "rngUnitSettings", "rngCircleGeometry", _
-        "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
-    shapes = Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+        "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+    shapes = Array("Circle", "RectSet", "PointedRect", "HollowRectangle")
     On Error GoTo FailedRun
     For i = 0 To 5
         Set ranges(i) = ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange
@@ -938,7 +938,7 @@ Public Function RunAudit03RequiredGeometryInputTests(Optional ByRef passed As Lo
                     On Error GoTo FailedRun
                     Check stats, prefix & ".reject", errorNumber <> 0
                     Check stats, prefix & ".namedRange", InStr(1, description, CStr(names(i + 2)), vbBinaryCompare) > 0
-                    Check stats, prefix & ".address", InStr(1, description, "Config", vbTextCompare) > 0 And _
+                    Check stats, prefix & ".address", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0 And _
                         InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
                     stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & _
                         CStr(errorNumber) & "; " & description & vbCrLf
@@ -969,7 +969,7 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: requiredGeometry.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    allConfig.Formula = savedConfig
+    FixtureRestoreInputs allConfig, savedConfig
     RunAudit03RequiredGeometryInputTests = stats.Report & "TOTAL_REQUIRED_GEOMETRY: passed=" & _
         CStr(passed) & "; failed=" & CStr(failed) & vbCrLf
 End Function
@@ -978,7 +978,7 @@ End Function
 ' тестируемые геометрические поля и не зависит от исходного армирования книги.
 Private Sub ConfigureRequiredGeometryRebars(ByVal target As Object, ByVal shape As String, Optional ByVal lengthScale As Double = 1#)
     Dim keyed As CSectionInputReader, key As Variant
-    Set keyed = FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2)
+    Set keyed = FixtureInput(target.Value2)
     For Each key In keyed.RowKeys("Main")
         FixtureInputCell(target, "Main", CStr(key), "as").Value2 = IIf(shape = "RectSet", 20#, 40#) * lengthScale
         FixtureInputCell(target, "Main", CStr(key), "d").Value2 = 16# * lengthScale
@@ -1028,7 +1028,7 @@ Private Function RequiredGeometryKeyCell(ByVal target As Object, ByVal key As St
     End If
     Dim item As Variant, shape As String, rowIndex As Long
     shape = Split(key, ".")(0)
-    If shape <> "RectSet" And shape <> "RoundedRectangle" And shape <> "HollowRectangle" Then
+    If shape <> "RectSet" And shape <> "PointedRect" And shape <> "HollowRectangle" Then
         For rowIndex = 2 To target.Rows.Count
             If CStr(target.Cells(rowIndex, 1).Value2) = key Then Set RequiredGeometryKeyCell = target.Cells(rowIndex, 2): Exit Function
         Next rowIndex
@@ -1068,17 +1068,17 @@ Private Sub CheckRequiredGeometryInactive(ByRef stats As TGeometryConfigStats, B
             rectRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = 100#
         Next item
     Next route
-    SetKey systemRange, "Geometry.Type", "RoundedRectangle"
-    ConfigureShape roundedRange, "RoundedRectangle": ConfigureRequiredGeometryRebars roundedRange, "RoundedRectangle"
+    SetKey systemRange, "Geometry.Type", "PointedRect"
+    ConfigureShape roundedRange, "PointedRect": ConfigureRequiredGeometryRebars roundedRange, "PointedRect"
     roundedRange.Cells(6, 3).Value2 = "Simple": roundedRange.Cells(10, 3).Value2 = "Simple"
     For Each route In Array("Geometry", "Rebars")
-        baseline = RequiredGeometryRouteSnapshot("RoundedRectangle", CStr(route))
+        baseline = RequiredGeometryRouteSnapshot("PointedRect", CStr(route))
         For Each item In Array(Array(7, 3), Array(11, 3), Array(9, 3), Array(13, 3))
             For Each value In Array(vbNullString, "TODO", "abc")
                 roundedRange.Cells(CLng(item(0)), CLng(item(1))).Value2 = value
                 errorNumber = 0: description = vbNullString
                 On Error Resume Next
-                current = RequiredGeometryRouteSnapshot("RoundedRectangle", CStr(route))
+                current = RequiredGeometryRouteSnapshot("PointedRect", CStr(route))
                 errorNumber = Err.Number: description = Err.Description
                 Err.Clear: On Error GoTo 0
                 prefix = "requiredGeometry.inactive.Simple." & CStr(route) & "." & CStr(item(0)) & "." & CStr(item(1)) & "." & CStr(value)
@@ -1119,7 +1119,7 @@ Private Sub CheckRequiredGeometryCommon(ByRef stats As TGeometryConfigStats, ByV
             prefix = "requiredGeometry.common." & CStr(key) & "." & CStr(caseIndex)
             Check stats, prefix & ".reject", errorNumber <> 0
             Check stats, prefix & ".key", InStr(1, description, CStr(key), vbBinaryCompare) > 0
-            Check stats, prefix & ".location", InStr(1, description, "Config", vbTextCompare) > 0
+            Check stats, prefix & ".location", InStr(1, description, cell.Worksheet.Name & "!", vbTextCompare) > 0
             If caseIndex < 5 Then Check stats, prefix & ".address", InStr(1, description, cell.Address(False, False), vbTextCompare) > 0
             stats.Report = stats.Report & "REQUIRED_GEOMETRY_ERROR: " & prefix & "; error=" & CStr(errorNumber) & "; " & description & vbCrLf
             cell.Offset(0, -1).Value2 = key: cell.Formula = savedValue
@@ -1164,13 +1164,13 @@ End Sub
 Public Function RunAudit03RebarFieldConfigTests(Optional ByRef passed As Long = 0, _
         Optional ByRef failed As Long = 0) As String
     Dim allConfig As Object, savedConfig As Variant
-    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = allConfig.Formula
+    Set allConfig = ThisWorkbook.Worksheets("Config").UsedRange: savedConfig = FixtureSaveInputs(allConfig)
     Dim stats As TGeometryConfigStats, ranges(0 To 5) As Object, saved(0 To 5) As Variant
     Dim names As Variant, shapes As Variant, shape As String, face As Variant, field As Variant
     Dim i As Long, cases As Long, target As Object
     names = Array("rngSystemSettings", "rngUnitSettings", "rngRectSetGeometry", _
-        "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngCircleGeometry")
-    shapes = Array("RectSet", "RoundedRectangle", "HollowRectangle")
+        "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngCircleGeometry")
+    shapes = Array("RectSet", "PointedRect", "HollowRectangle")
     On Error GoTo FailedRun
     For i = 0 To 5
         Set ranges(i) = ThisWorkbook.Names.Item(CStr(names(i))).RefersToRange
@@ -1208,7 +1208,7 @@ FailedRestore:
     stats.Report = stats.Report & "FAIL: rebarFields.restore.runtime; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finish:
     passed = stats.Passed: failed = stats.Failed
-    allConfig.Formula = savedConfig
+    FixtureRestoreInputs allConfig, savedConfig
     RunAudit03RebarFieldConfigTests = stats.Report & "TOTAL_REBAR_FIELD_CONFIG: passed=" & CStr(passed) & _
         "; failed=" & CStr(failed) & "; cases=" & CStr(cases) & vbCrLf
 End Function
@@ -1223,10 +1223,10 @@ Private Sub CheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, ByVal 
         ByVal hollowRange As Object, ByRef cases As Long)
     Dim shape As Variant, face As Variant, field As Variant, mode As Variant, target As Object
     Dim kind As String, rowIndex As Long, pairRow As Long
-    For Each shape In Array("RectSet", "RoundedRectangle", "HollowRectangle")
+    For Each shape In Array("RectSet", "PointedRect", "HollowRectangle")
         Select Case CStr(shape)
             Case "RectSet": Set target = rectRange
-            Case "RoundedRectangle": Set target = roundedRange
+            Case "PointedRect": Set target = roundedRange
             Case "HollowRectangle": Set target = hollowRange
         End Select
         SetKey systemRange, "Geometry.Type", CStr(shape)
@@ -1272,8 +1272,11 @@ Private Sub CheckInactiveRebarFields(ByRef stats As TGeometryConfigStats, ByVal 
                 End If
             Next field
         Next face
-        ' Значения общей таблицы используются выбранным типом. Отдельных
-        ' неактивных таблиц армирования других типов больше нет.
+        ' Ошибка в армировании невыбранного типа не влияет на круг.
+        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+        face = RebarFieldFaces(CStr(shape))(0)
+        field = RebarFaceFields(CStr(shape), face)(0)
+        CheckInactiveRebarCell stats, target, "Circle", face, field, "otherType", cases
     Next shape
 End Sub
 
@@ -1320,7 +1323,7 @@ Private Function RebarFieldFaces(ByVal shape As String) As Variant
                 Array("H2.as_2", 12, 25, -1#, 0#, 0#, -1#), _
                 Array("B2.as_1", 9, 22, 0#, -1#, 1#, 0#), _
                 Array("B2.as_2", 10, 23, 0#, 1#, -1#, 0#))
-        Case "RoundedRectangle"
+        Case "PointedRect"
             RebarFieldFaces = Array(Array("H.Left", 7, 20, 1#, 0#, 0#, 1#), _
                 Array("H.Right", 8, 21, -1#, 0#, 0#, -1#), _
                 Array("B.Top", 5, 18, 0#, -1#, 1#, 0#), _
@@ -1365,13 +1368,14 @@ End Function
 ' грани. Дополнительные ряды при необходимости имеют разные диаметры 12/10;
 ' стержни не касаются соседних линий, поэтому count-oracle не зависит от дублей.
 Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As String, ByVal extras As Boolean)
+    FixtureSelectRecipeType ThisWorkbook, shape
     ConfigureShape target, shape
     Dim face As Variant, mainRow As Long, extraRow As Long, column As Variant
     Select Case shape
         Case "RectSet"
             target.Cells(4, 3).Value2 = "TwoRectangles": FixtureInputCell(target, "General", "XOffset").Value2 = 0#
             For Each column In Array("H1", "B1", "H2", "B2"): FixtureInputCell(target, "General", CStr(column)).Value2 = 800#: Next column
-        Case "RoundedRectangle"
+        Case "PointedRect"
             target.Cells(4, 3).Value2 = 800#: target.Cells(5, 3).Value2 = 800#
             For column = 2 To 3
                 FixtureInputCell(target, "Detail", "Type", IIf(column = 2, "left", "right")).Value2 = "Simple": FixtureInputCell(target, "Detail", "W", IIf(column = 2, "left", "right")).Value2 = 0#
@@ -1517,12 +1521,40 @@ Private Sub CheckRebarFieldInvalid(ByRef stats As TGeometryConfigStats, ByVal ta
     Next bad
 End Sub
 
-' Возвращает доступную пользователю ячейку; настройки противоположных сторон независимы.
+' Находит поле по ключам; номера в контрольных наборах обозначают стороны,
+' а не физические строки текущего листа. Размеры General здесь не изменяются.
 Private Function RebarFieldCell(ByVal target As Object, ByVal rowIndex As Long, ByVal column As Long) As Object
-    Dim cell As Object
-    Set cell = ThisWorkbook.Names("rngRebarInput").RefersToRange.Cells(rowIndex, column)
-    If cell.MergeCells Then Set cell = cell.MergeArea.Cells(1, 1)
-    Set RebarFieldCell = cell
+    Dim shape As String, face As Variant, group As String, key As String, block As String, fields As Variant
+    shape = CStr(target.Name.Name)
+    shape = Mid$(shape, InStrRev(shape, "!") + 1)
+    shape = Mid$(shape, 4, Len(shape) - 11)
+    For Each face In RebarFieldFaces(shape)
+        block = ""
+        If rowIndex = CLng(face(1)) Then block = "Main"
+        If rowIndex = CLng(face(2)) Then block = "Extra"
+        If Len(block) > 0 Then
+            group = CStr(face(0))
+            If shape = "RectSet" Then
+                key = "R" & Mid$(group, 2, 1) & "."
+                If Left$(group, 1) = "H" Then
+                    key = key & IIf(Right$(group, 1) = "1", "Left", "Right")
+                Else
+                    key = key & IIf(Right$(group, 1) = "1", "Top", "Bottom")
+                End If
+            Else
+                key = Mid$(group, InStrRev(group, ".") + 1)
+                If Left$(group, 8) = "Opening." Then key = "Opening" & key
+            End If
+            If block = "Main" Then
+                fields = Array("key", "name", "as", "d", "n", "s0", "s1", "note")
+            Else
+                fields = Array("key", "name", "d2", "a2", "bind2", "pos2", "d3", "a3", "bind3", "pos3", "note")
+            End If
+            Set RebarFieldCell = FixtureInputCell(target, block, key, CStr(fields(column - 1)))
+            Exit Function
+        End If
+    Next face
+    Err.Raise 5, , "Неизвестная сторона контрольного набора: " & CStr(rowIndex)
 End Function
 
 ' Возвращает количество, средний диаметр и средние координаты стержней заданного
@@ -1586,3 +1618,40 @@ Private Sub CheckRebarRowOffsets(ByRef stats As TGeometryConfigStats, ByVal pref
     Next i
     Check stats, prefix & ".offsetsObserved", ordinal > 0
 End Sub
+
+' ДЛЯ ТЕСТОВ: короткая проверка адресов и действия полей после перестройки таблиц.
+' Проверяет основное и дополнительное армирование, отверстие и невыбранный тип;
+' полный перебор всех сторон остаётся в RunAudit03RebarFieldConfigTests.
+Public Function RunSectionRebarInputSmokeTests() As String
+    Dim stats As TGeometryConfigStats, config As Object, saved As Variant, target As Object
+    Dim shape As Variant, face As Variant, field As Variant, cases As Long, group As String
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
+    For Each shape In Array("RectSet", "PointedRect", "HollowRectangle")
+        Set target = ThisWorkbook.Names("rng" & CStr(shape) & "Geometry").RefersToRange
+        For Each face In RebarFieldFaces(CStr(shape))
+            group = CStr(face(0))
+            If group = "H1.as_1" Or group = "H.Left" Or group = "Opening.H.Left" Then
+                For Each field In RebarFaceFields(CStr(shape), face)
+                    Select Case CStr(field(0))
+                        Case "as", "n", "d2", "bind3"
+                            ConfigureRebarFieldFixture target, CStr(shape), CBool(field(3))
+                            CheckRebarFieldEffect stats, target, CStr(shape), face, field, cases
+                            CheckRebarFieldInvalid stats, target, CStr(shape), face, field, cases
+                    End Select
+                Next field
+            End If
+        Next face
+        modTestShapeArchitecture.ConfigureShapeFixture "Circle"
+        face = RebarFieldFaces(CStr(shape))(0)
+        field = RebarFaceFields(CStr(shape), face)(0)
+        CheckInactiveRebarCell stats, target, "Circle", face, field, "otherType", cases
+    Next shape
+    GoTo Finished
+Failed:
+    Check stats, "sectionInput.smoke.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
+    RunSectionRebarInputSmokeTests = stats.Report & "TOTAL_SECTION_REBAR_INPUT_SMOKE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & "; cases=" & CStr(cases) & vbCrLf
+End Function

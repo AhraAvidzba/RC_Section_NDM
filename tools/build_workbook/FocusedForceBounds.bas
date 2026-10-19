@@ -1,7 +1,7 @@
 ' ДЛЯ ТЕСТОВ: фактическая геометрия и диаграммы PR3 для независимых границ усилий.
 Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "SavedWorkbook") As String
     Dim oldRebars As Variant
-    oldRebars = ThisWorkbook.Names("rngRebarInput").RefersToRange.Formula
+    oldRebars = ThisWorkbook.Worksheets("Сечения").UsedRange.Formula
     On Error GoTo Failed
     Dim settings As CSystemSettingsReader, units As CUnitSystem, section As CSectionModel
     Dim profiles As CCalculationProfileCatalog, provider As CMaterialModelProvider, spec As CMaterialModelSpec
@@ -47,7 +47,7 @@ Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "Sav
 Failed:
     output = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 Restore:
-    If IsArray(oldRebars) Then ThisWorkbook.Names("rngRebarInput").RefersToRange.Formula = oldRebars
+    If IsArray(oldRebars) Then ThisWorkbook.Worksheets("Сечения").UsedRange.Formula = oldRebars
     If IsArray(oldSystem) Then ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula = oldSystem
     DumpFocusedForceBounds = output
 End Function

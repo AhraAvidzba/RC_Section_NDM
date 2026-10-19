@@ -4,7 +4,7 @@ Option Explicit
 ' ==========================================================================
 ' Тесты геометрии, сетки и раскладки арматуры
 ' ==========================================================================
-' Модуль защищает договоренности по Circle, RoundedRectangle, HollowRectangle и RectSet: габариты,
+' Модуль защищает договоренности по Circle, PointedRect, HollowRectangle и RectSet: габариты,
 ' дискретизацию, автоматическую арматуру и semantic-аннотации для схемы.
 
 Private Type TTestStats
@@ -22,10 +22,10 @@ Public Function RunGeometryTests() As String
     Dim stats As TTestStats
 
     TestRectangle stats
-    TestSymmetricRoundedRectangle stats
-    TestTaperedRoundedRectangle stats
-    TestRoundedRectangleContourAnnotations stats
-    TestRoundedRectangleRebarLayout stats
+    TestSymmetricPointedRect stats
+    TestTaperedPointedRect stats
+    TestPointedRectContourAnnotations stats
+    TestPointedRectRebarLayout stats
     TestHollowRectangleGeometry stats
     TestAudit03HollowContainedOpeningMesh stats
     TestHollowRectangleContourAnnotations stats
@@ -87,8 +87,8 @@ Public Function RunRetiredGeometryPrimitiveTests() As String
     On Error GoTo Failed
     TestSectionModelFromGeneratedGeometry stats
     TestRectangle stats
-    TestSymmetricRoundedRectangle stats
-    TestTaperedRoundedRectangle stats
+    TestSymmetricPointedRect stats
+    TestTaperedPointedRect stats
     TestHollowRectangleGeometry stats
     TestAudit03HollowContainedOpeningMesh stats
     TestCircleGeometry stats
@@ -110,7 +110,7 @@ End Function
 Public Function RunRetiredGeometryArcOpeningTests() As String
     Dim stats As TTestStats
     On Error GoTo Failed
-    TestTaperedRoundedRectangle stats
+    TestTaperedPointedRect stats
     TestHollowRectangleGeometry stats
     TestAudit03HollowContainedOpeningMesh stats
     AppendLine stats, "TOTAL_RETIRED_GEOMETRY_ARC_OPENING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -1676,7 +1676,7 @@ End Sub
 
 ' Сверяет сетку симметричного скругленного прямоугольника с аналитической
 ' площадью, нулевым центром/Ixy и ожидаемым направлением главных осей.
-Private Sub TestSymmetricRoundedRectangle(ByRef stats As TTestStats)
+Private Sub TestSymmetricPointedRect(ByRef stats As TTestStats)
     Dim filletPolygon As CPolygonSpec
     Dim geom As CGeometryRegion
     Set filletPolygon = New CPolygonSpec
@@ -1705,7 +1705,7 @@ End Sub
 ' Проверяет независимую коническую сторону: сходимость сеточных A/I,
 ' положение касательных и фактический габарит после скруглений.
 ' Допустимые большие радиусы различаются с действительно перекрывающимися.
-Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
+Private Sub TestTaperedPointedRect(ByRef stats As TTestStats)
     Dim filletPolygon As CPolygonSpec
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
     Dim geom As CGeometryRegion
@@ -1768,9 +1768,9 @@ Private Sub TestTaperedRoundedRectangle(ByRef stats As TTestStats)
     AssertTrue stats, "rounded.tapered.radiiOverlap.invalid", number <> 0 And Len(reason) > 0 And invalid Is Nothing
 End Sub
 
-' Проверяет semantic-аннотации RoundedRectangle: скругления должны идти дугами,
+' Проверяет semantic-аннотации PointedRect: скругления должны идти дугами,
 ' а размер tapered-части выводится как фактический W' до края бетона.
-Private Sub TestRoundedRectangleContourAnnotations(ByRef stats As TTestStats)
+Private Sub TestPointedRectContourAnnotations(ByRef stats As TTestStats)
     Dim geom As CSectionDefinition
     Dim geomParameters As Variant
     geomParameters = Array(1000#, 500#, "Simple", "Tapered", 0#, 250#, 150#, 300#, 0#, 100#)
@@ -1811,10 +1811,10 @@ Private Function RoundedDisplayLength(ByVal valueMm As Double) As Double
     End If
 End Function
 
-' Проверяет новую автоматическую раскладку RoundedRectangle: горизонтальные
+' Проверяет новую автоматическую раскладку PointedRect: горизонтальные
 ' линии B идут только по прямому участку между R1, а боковая H-линия может
 ' идти по tapered-траектории.
-Private Sub TestRoundedRectangleRebarLayout(ByRef stats As TTestStats)
+Private Sub TestPointedRectRebarLayout(ByRef stats As TTestStats)
     Dim geom As CSectionDefinition
     Dim geomParameters As Variant
     geomParameters = Array(800#, 250#, "Simple", "Tapered", 0#, 150#, 40#, 40#, 0#, 80#)
@@ -1921,7 +1921,7 @@ Private Sub TestRoundedRectangleRebarLayout(ByRef stats As TTestStats)
 End Sub
 
 ' Проверяет базовую математику HollowRectangle: бетонная область равна
-' наружному RoundedRectangle минус Opening, а точки внутри отверстия не входят
+' наружному PointedRect минус Opening, а точки внутри отверстия не входят
 ' в бетонную часть сечения.
 Private Sub TestHollowRectangleGeometry(ByRef stats As TTestStats)
     Dim polygonSpec As CPolygonSpec, polygonPoint As Variant
@@ -2656,7 +2656,7 @@ Private Sub TestAudit03CircleCountGuard(ByRef stats As TTestStats)
         On Error GoTo 0
         prefix = "audit03.circle.countGuard." & CStr(scenario)
         AssertTrue stats, prefix & ".countReason", errorNumber = vbObjectError + 5530
-        AssertTrue stats, prefix & ".table", InStr(1, errorDescription, "rngRebarInput", vbBinaryCompare) > 0
+        AssertTrue stats, prefix & ".table", InStr(1, errorDescription, "rngCircleGeometry", vbBinaryCompare) > 0
         AssertTrue stats, prefix & ".key", InStr(1, errorDescription, "количество", vbTextCompare) > 0
         AssertClose stats, prefix & ".beforeCoordinates", CDbl(builder.CreatedPositions), 0#, 0#
         AppendLine stats, "CIRCLE_COUNT_ERROR: rows=" & CStr(scenario) & "; number=" & CStr(errorNumber) & "; " & errorDescription
@@ -2683,30 +2683,26 @@ End Function
 ' Меняет только собственную временную таблицу. Исходный Name, активный лист
 ' и режим предупреждений восстанавливаются при успехе и при runtime-ошибке.
 Private Sub TestAudit03CirclePlacementAddresses(ByRef stats As TTestStats)
-    Dim geometryRef As String, rebarRef As String, previousSheet As Object, sheet As Object
+    Dim sheet As Object, previousSheet As Object, geometryRef As String
     Dim geometry As Object, rebars As Object, targetGeometry As Object, targetRebars As Object
     Dim config As Object, saved As Variant, alerts As Boolean, position As Variant, extraRow As Long, location As Variant
     Dim units As CUnitSystem, builder As CRebarRuleExecutor, layout As CRebarLayout
     Dim prefix As String, number As Long, reason As String, axis As Object, diameter As Object
     On Error GoTo FailedRun
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     geometryRef = ThisWorkbook.Names("rngCircleGeometry").RefersTo
-    rebarRef = ThisWorkbook.Names("rngRebarInput").RefersTo
     modTestShapeArchitecture.ConfigureShapeFixture "Circle"
     Set geometry = ThisWorkbook.Names("rngCircleGeometry").RefersToRange
-    Set rebars = ThisWorkbook.Names("rngRebarInput").RefersToRange
     Set previousSheet = ThisWorkbook.ActiveSheet: alerts = Application.DisplayAlerts
     Set sheet = ThisWorkbook.Worksheets.Add
     Set units = New CUnitSystem: units.InitializeDefaults
     Set builder = New CRebarRuleExecutor
     For Each position In Array("E10", "BH800")
         Set targetGeometry = sheet.Range(CStr(position)).Resize(geometry.Rows.Count, geometry.Columns.Count)
-        Set targetRebars = sheet.Range(CStr(position)).Offset(20, 0).Resize(rebars.Rows.Count, rebars.Columns.Count)
         ' Проверяем перенос адресов; ключи фиксируем уже вычисленным снимком,
         ' чтобы относительная формула Extra не ссылалась на старое место Main.
-        targetGeometry.Value2 = geometry.Value2: targetRebars.Value2 = rebars.Value2
+        targetGeometry.Value2 = geometry.Value2
         ThisWorkbook.Names("rngCircleGeometry").RefersTo = "='" & sheet.Name & "'!" & targetGeometry.Address
-        ThisWorkbook.Names("rngRebarInput").RefersTo = "='" & sheet.Name & "'!" & targetRebars.Address
         FixtureCircleFieldCell(ThisWorkbook, "Circle.Diameter").Value2 = 300#
         Set axis = FixtureCircleFieldCell(ThisWorkbook, "Rebar.AxisDistance"): axis.Value2 = 20#
         FixtureCircleFieldCell(ThisWorkbook, "Rebar.Diameter").Value2 = 20#
@@ -2745,8 +2741,7 @@ FailedRun:
 Restore:
     On Error Resume Next
     If Len(geometryRef) > 0 Then ThisWorkbook.Names("rngCircleGeometry").RefersTo = geometryRef
-    If Len(rebarRef) > 0 Then ThisWorkbook.Names("rngRebarInput").RefersTo = rebarRef
-    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
+    If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
     If Not previousSheet Is Nothing Then previousSheet.Activate
     Application.DisplayAlerts = False
     If Not sheet Is Nothing Then sheet.Delete

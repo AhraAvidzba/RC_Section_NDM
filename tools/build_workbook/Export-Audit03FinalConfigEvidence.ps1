@@ -1,4 +1,4 @@
-# Собирает текущую поадресную Config-трассировку из свежего census и уже
+﻿# Собирает текущую поадресную Config-трассировку из свежего census и уже
 # рассмотренных runtime evidence. Не редактирует книги и не превращает
 # исторический Pending в PASS только по наличию имени теста. Минимальная
 # область K02 описана отдельной содержательной итоговой ревизией.
@@ -154,7 +154,7 @@ $records = foreach ($field in $fresh.Fields) {
                 default { $contract.BlankAndErrorContract = 'Активное поле обязательно: blank/TODO/unknown/text/CVErr/missing отвергаются с текущим адресом. Неактивный параметр ряда не читается; см. Activity и RuntimeDefault.' }
             }
             $contractSource = 'docs/NDM_Audit03_Circle_Rebar_Input_Evidence.json'
-        } elseif ($field.Block -in @('rngRoundedRectangleGeometry', 'rngHollowRectangleGeometry', 'rngRectSetGeometry')) {
+        } elseif ($field.Block -in @('rngPointedRectGeometry', 'rngHollowRectangleGeometry', 'rngRectSetGeometry')) {
             $contract.BlankAndErrorContract = 'Активный геометрический параметр обязателен; blank/TODO/невалидный текст/неизвестный enum/CVErr отвергаются с текущей ячейкой, затем valid recovery. Неактивные размеры формы не участвуют.'
             $contractSource = 'tests/modTestGeometryConfig.bas: RunAudit03RequiredGeometryInputTests'
         } elseif ($field.Id -like 'Solver.*') {

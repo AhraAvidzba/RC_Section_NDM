@@ -760,7 +760,7 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
     Dim model As CSectionModel, bars As CRebarLayout, mesh As CFiberMeshBuilder, query As CSectionGeometryQuery
     Dim saved As CSectionContours, expectedArea As Double, revision As Long
     Dim bounds() As Double, openingCount As Long
-    For Each kind In Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+    For Each kind In Array("Circle", "RectSet", "PointedRect", "HollowRectangle")
         Set facade = New CSectionDefinitionBuilder: facade.Initialize CStr(kind)
         Select Case CStr(kind)
             Case "Circle"
@@ -769,7 +769,7 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
             Case "RectSet"
                 Set path = facade.RectanglePath("Boundary", 0#, 0#, 100#, 100#)
                 expectedArea = 10000#
-            Case "RoundedRectangle", "HollowRectangle"
+            Case "PointedRect", "HollowRectangle"
                 Set polygonSpec = New CPolygonSpec
                 polygonSpec.AddVertex "BL", -50#, -50#, 10#
                 polygonSpec.AddVertex "BR", 50#, -50#, 10#

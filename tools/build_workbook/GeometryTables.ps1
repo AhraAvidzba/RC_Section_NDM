@@ -5,11 +5,6 @@ function Get-GeometrySettingsCatalog {
     foreach($definition in $catalog){Write-Output $definition}
 }
 
-# Общая таблица армирования содержит только необходимый текущим типам максимум строк.
-function Get-RebarSettingsCatalog {
-    Get-Content -LiteralPath (Join-Path $PSScriptRoot 'RebarTable.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-}
-
 # Находит блоки по строкам key, без привязки к форме сечения и русским подписям.
 function Get-GeometryTableBlocks {
     param([object]$Range)
@@ -99,36 +94,6 @@ function Add-GeometrySettingsTable {
     return $count
 }
 
-# Формулы берут ключи и названия из Edges выбранной таблицы. В книге нет VBA-обработчика переключения.
-# Неожиданные ошибки исходной таблицы сохраняются; за концом короткого списка возвращается пустая строка.
-function Set-SharedRebarFormulas {
-    param([object]$Workbook,[object]$Range,[object[]]$GeometryTables)
-    $type='INDEX(rngSystemSettings,MATCH("Geometry.Type",INDEX(rngSystemSettings,0,1),0),2)'
-    $blocks=@(Get-GeometryTableBlocks $Range)
-    $main=$blocks | Where-Object Key -eq 'Main';$extra=$blocks | Where-Object Key -eq 'Extra'
-    for($index=0;$index -lt 8;$index++){
-        $row=$main.FirstRow+1+$index;$extraRow=$extra.FirstRow+1+$index
-        foreach($column in @(1,2)){
-            $formula='NA()'
-            foreach($definition in @($GeometryTables | Sort-Object Type -Descending)){
-                $source=$Workbook.Names.Item([string]$definition.RangeName).RefersToRange
-                $edge=@(Get-GeometryTableBlocks $source | Where-Object Key -eq 'Edges')[0]
-                $count=$edge.LastRow-$edge.FirstRow+1;$value='""'
-                if($index -lt $count){
-                    $key='INDEX('+$definition.RangeName+','+($edge.FirstRow+$index)+',1)'
-                    $data='INDEX('+$definition.RangeName+','+($edge.FirstRow+$index)+','+$column+')'
-                    if($column -eq 1){$data=$type+'&"."&'+$data}
-                    $value='IF('+$key+'="","",'+$data+')'
-                }
-                $formula='IF('+$type+'="'+$definition.Type+'",'+$value+','+$formula+')'
-            }
-            $Range.Cells.Item($row,$column).Formula='='+$formula
-            $address=$Range.Cells.Item($row,$column).Address($true,$true)
-            $Range.Cells.Item($extraRow,$column).Formula='='+$address+'&""'
-        }
-    }
-}
-
 # Оформляет весь диапазон, включая разделительные строки и свободные ячейки справа.
 function Format-GeometrySettingsTable {
     param([object]$Workbook,[string]$Name,[object]$Range)
@@ -160,42 +125,12 @@ function Format-GeometrySettingsTable {
     }
     $Range.Borders.Weight=2;$Range.Borders.Color=0;$Range.Borders.LineStyle=-4115
     Set-GeometryEditableCellFormat $Range
-    if($Name -eq 'rngRebarInput'){Set-RebarInputConditionalFormatting $Range}
-}
-
-# Серым отмечает ввод без соответствующего участка и количество стержней у отверстия.
-# Правила читают формульные ключи: переключение типа не требует VBA и не стирает значения.
-function Set-RebarInputConditionalFormatting {
-    param([object]$Range)
-    $Range.FormatConditions.Delete()
-    $blocks=@(Get-GeometryTableBlocks $Range)
-    foreach($block in $blocks){
-        if($block.Key -eq 'Main'){$firstColumn=[int]$block.Columns['as'];$lastColumn=[int]$block.Columns['s1']}
-        elseif($block.Key -eq 'Extra'){$firstColumn=[int]$block.Columns['d2'];$lastColumn=[int]$block.Columns['pos3']}
-        else{throw "Неизвестный блок общей таблицы армирования: $($block.Key)"}
-        $first=$block.FirstRow+1 # Первую строку с единицами не окрашиваем.
-        $key=$Range.Cells.Item($first,[int]$block.Columns['key']).Address($false,$true)
-        $inputs=$Range.Cells.Item($first,$firstColumn).Resize($block.LastRow-$first+1,$lastColumn-$firstColumn+1)
-        $rule=$inputs.FormatConditions.Add(2,1,('='+$key+'=""'))
-        $rule.Interior.Color=15132390;$rule.StopIfTrue=$true # RGB(230,230,230).
-    }
-    $main=@($blocks | Where-Object Key -eq 'Main')[0]
-    $first=$main.FirstRow+1
-    $key=$Range.Cells.Item($first,[int]$main.Columns['key']).Address($false,$true)
-    $counts=$Range.Cells.Item($first,[int]$main.Columns['n']).Resize($main.LastRow-$first+1,1)
-    $hollow=@(Get-GeometrySettingsCatalog | Where-Object Type -eq 'HollowRectangle')[0]
-    $edges=@($hollow.Blocks | Where-Object Key -eq 'Edges')[0]
-    $terms=@($edges.Rows | Where-Object {([string]$_[0]).StartsWith('Opening')} | ForEach-Object {'('+$key+'="'+$hollow.Type+'.'+$_[0]+'")'})
-    # Сравнения без имён функций принимаются Excel при любом языке интерфейса.
-    $rule=$counts.FormatConditions.Add(2,1,('='+($terms -join '+')))
-    $rule.Interior.Color=15132390;$rule.StopIfTrue=$true
 }
 
 # Отдельно выделяет только вводимые значения. Формулы, ключи, единицы и комментарии не окрашивает.
 function Set-GeometryEditableCellFormat {
     param([object]$Range)
     foreach($block in @(Get-GeometryTableBlocks $Range)){
-        if($block.Key -eq 'Edges'){continue}
         foreach($key in @($block.Columns.Keys)){
             if($key -in @('key','name','unit','note')){continue}
             for($r=$block.FirstRow;$r -le $block.LastRow;$r++){
@@ -207,7 +142,7 @@ function Set-GeometryEditableCellFormat {
     }
 }
 
-# Каждое поле выбора имеет собственный именованный источник, в том числе противоположные стороны.
+# Короткие постоянные списки записываются в проверку данных; значения сторон независимы.
 function Add-GeometryTableValidation {
     param([object]$Range)
     foreach($block in @(Get-GeometryTableBlocks $Range)){
@@ -215,7 +150,7 @@ function Add-GeometryTableValidation {
             $rowKey=[string]$Range.Cells.Item($r,1).Value2
             if(-not $rowKey -or $rowKey -eq 'Units'){continue}
             foreach($key in @($block.Columns.Keys)){
-                if($key -in @('key','name','unit','note') -or $block.Key -eq 'Edges'){continue}
+                if($key -in @('key','name','unit','note')){continue}
                 $cell=$Range.Cells.Item($r,[int]$block.Columns[$key]);$options=@()
                 if($key -like 'bind*'){$options=@('EachBar','EverySecondBar')}
                 elseif($key -like 'pos*'){$options=@('Stacked','SideBySide')}
@@ -223,10 +158,7 @@ function Add-GeometryTableValidation {
                 elseif($block.Key -eq 'General' -and $rowKey -like '*.Type'){$options=@('Simple','Tapered')}
                 $cell.Validation.Delete()
                 if($options.Count){
-                    $tableName=(([string]$Range.Name.Name) -split '!')[-1]
-                    if(-not $tableName -or $tableName.Length -gt 100){throw "Не удалось определить короткое имя таблицы: $tableName"}
-                    $name=($tableName+'_'+$block.Key+'_'+$rowKey+'_'+$key+'_Choices') -replace '[^A-Za-z0-9_]','_'
-                    $list=Get-ConfigValidationListAddress $Range.Worksheet $options $name
+                    $list=Get-ConfigValidationListAddress $Range.Worksheet $options
                     $cell.Validation.Add(3,1,1,$list);$cell.Validation.IgnoreBlank=$true;$cell.Validation.InCellDropdown=$true
                 }elseif($key -eq 'n' -and $rowKey -like 'Opening*'){
                     # Прочерк показывает, что количество определяется проекцией наружной арматуры.
@@ -239,4 +171,28 @@ function Add-GeometryTableValidation {
             }
         }
     }
+}
+
+# Создаёт лист ввода сечений сразу после Config. Каждый тип занимает одну таблицу.
+# Столбцы и строки получают стандартные размеры один раз при создании листа.
+function Add-SectionSettingsTables {
+    param([object]$Workbook,[object]$ConfigSheet)
+    $sheet=$null
+    foreach($item in $Workbook.Worksheets){if($item.Name -eq 'Сечения'){$sheet=$item;break}}
+    if($null -eq $sheet){
+        $sheet=$Workbook.Worksheets.Add([Type]::Missing,$ConfigSheet)
+        $sheet.Name='Сечения'
+        $sheet.Columns.Item('A:K').ColumnWidth=17
+        $sheet.Rows.RowHeight=15
+        $sheet.Cells.Font.Name='Arial';$sheet.Cells.Font.Size=9
+    }else{$sheet.Move([Type]::Missing,$ConfigSheet)}
+    $row=3
+    foreach($definition in @(Get-GeometrySettingsCatalog)){
+        $height=Add-GeometrySettingsTable $Workbook $sheet $definition $row 1
+        $row+=$height+3
+    }
+    $sheet.PageSetup.PrintArea='$A$1:$K$'+($row-2)
+    $sheet.PageSetup.Orientation=2
+    $sheet.PageSetup.Zoom=$false;$sheet.PageSetup.FitToPagesWide=1;$sheet.PageSetup.FitToPagesTall=$false
+    return $sheet
 }

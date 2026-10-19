@@ -422,8 +422,8 @@ End Sub
             capacity_strategies = "TestCapacitySolutionStrategyComparisons"
         }
         Add-BenchmarkEntry $book.VBProject.VBComponents.Item("modTestGeometry").CodeModule "TTestStats" @{
-            geometry_rounded = "TestSymmetricRoundedRectangle"
-            geometry_tapered = "TestTaperedRoundedRectangle"
+            geometry_rounded = "TestSymmetricPointedRect"
+            geometry_tapered = "TestTaperedPointedRect"
             geometry_hollow = "TestHollowRectangleGeometry"
             geometry_hollow_rebars = "TestHollowRectangleRebarLayout"
             geometry_hollow_mesh = "TestAudit03HollowMeshPerf"

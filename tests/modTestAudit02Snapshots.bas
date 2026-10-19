@@ -23,11 +23,11 @@ Public Function DumpAudit02BuildPerformance() As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
     Dim started As Currency, finished As Currency, frequency As Currency
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     If QueryPerformanceFrequency(frequency) = 0 Then Err.Raise vbObjectError + 5490, , "Недоступен точный таймер."
     For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", "RoundedSimple", _
             "RoundedTapered", "RoundedMixed", "RoundedMixedLeft", "HollowCentered", "HollowOffset")
-        config.Formula = saved: modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
+        FixtureRestoreInputs config, saved: modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
@@ -43,7 +43,7 @@ Public Function DumpAudit02BuildPerformance() As String
 Failed:
     result = result & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     DumpAudit02BuildPerformance = result
 End Function
 
@@ -57,9 +57,9 @@ Public Function DumpAudit02Calculations(Optional ByVal crackCode As String = "SP
     Dim catalog As CCalculationProfileCatalog, batch As CBatchSectionCalculator, item As CCombinationResult
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double, i As Long, meta As CResultMeta
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("Circle", "LSection", "RoundedTapered", "HollowOffset")
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         modTestShapeArchitecture.ConfigureShapeFixture "Circle"
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Set profiles = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange
@@ -107,7 +107,7 @@ Public Function DumpAudit02Calculations(Optional ByVal crackCode As String = "SP
 Failed:
     result = result & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     DumpAudit02Calculations = result
 End Function
 
@@ -136,11 +136,11 @@ Public Function DumpRecipeRuleContracts(Optional ByVal includePaths As Boolean =
     Dim typeID As String, first As String, second As String
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange
-    saved = config.Formula
+    saved = FixtureSaveInputs(config)
     For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", "RoundedSimple", _
             "RoundedTapered", "RoundedMixed", "RoundedMixedLeft", "HollowCentered", "HollowOffset")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             modTestShapeArchitecture.ConfigureShapeFixture "Circle"
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             Select Case CStr(fixture)
@@ -152,7 +152,7 @@ Public Function DumpRecipeRuleContracts(Optional ByVal includePaths As Boolean =
                     typeID = "RectSet"
                 Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
                     modTestShapeArchitecture.ConfigureRoundedScenario scenario
-                    typeID = "RoundedRectangle"
+                    typeID = "PointedRect"
                 Case "HollowCentered", "HollowOffset"
                     modTestShapeArchitecture.ConfigureHollowScenario scenario
                     typeID = "HollowRectangle"
@@ -177,7 +177,7 @@ Public Function DumpRecipeRuleContracts(Optional ByVal includePaths As Boolean =
 Failed:
     result = result & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     DumpRecipeRuleContracts = result
 End Function
 

@@ -72,7 +72,7 @@ def main() -> None:
         if "!" not in reference or not re.search(r"\$[A-Z]+\$\d+:\$[A-Z]+\$\d+$", reference): continue
         old, new = table(before, name), table(after, name)
         main = next((r for r, values in enumerate(old) if len(values)>1 and values[1][1] == "as"), None)
-        face_count = {"rngRoundedRectangleGeometry":4,"rngHollowRectangleGeometry":8}.get(name)
+        face_count = {"rngPointedRectGeometry":4,"rngHollowRectangleGeometry":8}.get(name)
         for r, values in enumerate(old):
             for c, value in enumerate(values):
                 expected = value

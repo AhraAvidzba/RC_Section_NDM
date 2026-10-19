@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestWorkbookInterface"
+﻿Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -347,11 +347,11 @@ Private Sub TestRebarInputValidationDoesNotUseHiddenDefaults(ByRef stats As TUiT
     AssertTrue stats, "ui.rectset.zeroCountBlankDiameter.skipsLine", rectsetSection.RebarCount = 7
     AssertTrue stats, "ui.rectset.zeroCountBlankDiameter.dimensionsRemain", rectsetSection.AnnotationCount >= 4
 
-    SetSystemSetting "Geometry.Type", "RoundedRectangle"
-    SetSystemSetting "RoundedRectangle.H.Left.n", vbNullString
-    SetSystemSetting "RoundedRectangle.H.Right.n", vbNullString
-    SetSystemSetting "RoundedRectangle.B.Top.n", vbNullString
-    SetSystemSetting "RoundedRectangle.B.Bottom.n", vbNullString
+    SetSystemSetting "Geometry.Type", "PointedRect"
+    SetSystemSetting "PointedRect.H.Left.n", vbNullString
+    SetSystemSetting "PointedRect.H.Right.n", vbNullString
+    SetSystemSetting "PointedRect.B.Top.n", vbNullString
+    SetSystemSetting "PointedRect.B.Bottom.n", vbNullString
 
     errorText = BuildCurrentWorkbookSectionError()
     AssertTrue stats, "ui.rounded.blankCounts.noHiddenDefaults", _
@@ -1599,7 +1599,7 @@ Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
-    AssertTrue stats, "ui.rectset.system.sharedRebarInput", WorkbookNameExists("rngRebarInput")
+    AssertTrue stats, "ui.rectset.system.perSectionInput", Not WorkbookNameExists("rngRebarInput")
     AssertTrue stats, "ui.rectset.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
@@ -3059,13 +3059,13 @@ Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
     If StrComp(geometryType, "RectSet", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput")
-    ElseIf StrComp(geometryType, "RoundedRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngHollowRectangleGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+    ElseIf StrComp(geometryType, "PointedRect", vbTextCompare) = 0 Then
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngPointedRectGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngHollowRectangleGeometry")
     ElseIf StrComp(geometryType, "HollowRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngRoundedRectangleGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngRebarInput")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngPointedRectGeometry", "rngCircleGeometry", "rngRectSetGeometry")
     Else
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry")
     End If
 End Function
 
@@ -3274,18 +3274,7 @@ Private Function SettingValidationHasOptionsInRange(ByVal settings As Object, By
     Dim rowIndex As Long
     For rowIndex = 2 To settings.Rows.Count
         If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), key, vbTextCompare) = 0 Then
-            Dim formulaText As String
-            formulaText = CStr(settings.Cells.Item(rowIndex, 2).Validation.Formula1)
-            If Left$(formulaText, 1) <> "=" Then Exit Function
-
-            Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
-            Dim i As Long
-            If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
-            For i = LBound(expectedOptions) To UBound(expectedOptions)
-                If CStr(listRange.Cells.Item(i - LBound(expectedOptions) + 1, 1).Value2) <> CStr(expectedOptions(i)) Then Exit Function
-            Next i
-            SettingValidationHasOptionsInRange = True
+            SettingValidationHasOptionsInRange = ValidationCellHasOptions(settings.Cells.Item(rowIndex, 2), expectedOptions)
             Exit Function
         End If
     Next rowIndex
@@ -3303,18 +3292,7 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
     Dim rowIndex As Long
     For rowIndex = 2 To settings.Rows.Count
         If StrComp(CStr(settings.Cells.Item(rowIndex, 1).Value2), rowName, vbTextCompare) = 0 Then
-            Dim formulaText As String
-            formulaText = CStr(settings.Cells.Item(rowIndex, valueColumn).Validation.Formula1)
-            If Left$(formulaText, 1) <> "=" Then Exit Function
-
-            Dim listRange As Object
-            Set listRange = ThisWorkbook.Worksheets.Item("Config").Range(Mid$(formulaText, 2))
-            Dim i As Long
-            If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
-            For i = LBound(expectedOptions) To UBound(expectedOptions)
-                If CStr(listRange.Cells.Item(i - LBound(expectedOptions) + 1, 1).Value2) <> CStr(expectedOptions(i)) Then Exit Function
-            Next i
-            PlotAnnotationValidationHasOptions = True
+            PlotAnnotationValidationHasOptions = ValidationCellHasOptions(settings.Cells.Item(rowIndex, valueColumn), expectedOptions)
             Exit Function
         End If
     Next rowIndex
@@ -3404,16 +3382,11 @@ End Function
 Private Function ValidationCellHasOptions(ByVal target As Object, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
 
-    Dim formulaText As String
-    formulaText = CStr(target.Validation.Formula1)
-    If Left$(formulaText, 1) <> "=" Then Exit Function
-
-    Dim listRange As Object
-    Set listRange = target.Worksheet.Range(Mid$(formulaText, 2))
-    Dim i As Long
-    If listRange.Cells.Count <> (UBound(expectedOptions) - LBound(expectedOptions) + 1) Then Exit Function
+    Dim actual As Variant, i As Long
+    actual = ValidationCellOptions(target)
+    If UBound(actual) - LBound(actual) <> UBound(expectedOptions) - LBound(expectedOptions) Then Exit Function
     For i = LBound(expectedOptions) To UBound(expectedOptions)
-        If CStr(listRange.Cells.Item(i - LBound(expectedOptions) + 1, 1).Value2) <> CStr(expectedOptions(i)) Then Exit Function
+        If CStr(actual(i - LBound(expectedOptions) + LBound(actual))) <> CStr(expectedOptions(i)) Then Exit Function
     Next i
     ValidationCellHasOptions = True
     Exit Function
@@ -4999,7 +4972,7 @@ Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
     Dim target As Object, cell As Object, reader As CSectionInputReader
     Dim side As Variant, field As Variant, prefix As String, config As Object, saved As Variant
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "TwoRectangles"
     Set target = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
     For Each side In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
@@ -5008,10 +4981,10 @@ Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
             prefix = "rectset.independent.layout." & CStr(side) & "." & CStr(field)
             AssertTrue stats, prefix & ".unmerged", Not cell.MergeCells
             AssertTrue stats, prefix & ".dropdown", cell.Validation.Type = 3 And cell.Validation.InCellDropdown
-            AssertTrue stats, prefix & ".rangeList", Left$(cell.Validation.Formula1, 1) = "="
+            AssertTrue stats, prefix & ".inlineList", InStr(1, cell.Validation.Formula1, Application.International(xlListSeparator), vbBinaryCompare) > 0
             AssertTrue stats, prefix & ".centered", cell.HorizontalAlignment = xlCenter And cell.VerticalAlignment = xlCenter
-            Set reader = FixtureInput(ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2)
-            AssertTextEquals stats, prefix & ".reader", reader.Text("Extra", "RectSet." & CStr(side), CStr(field)), CStr(cell.Value2)
+            Set reader = FixtureInput(target.Value2)
+            AssertTextEquals stats, prefix & ".reader", reader.Text("Extra", CStr(side), CStr(field)), CStr(cell.Value2)
         Next field
     Next side
     GoTo Finished
@@ -5019,7 +4992,7 @@ Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: rectset.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
 Finished:
-    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
+    If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 ' ДЛЯ ТЕСТОВ: меняет каждый из 32 вариантов размещения через обычное чтение
@@ -5032,7 +5005,7 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
     Dim prefix As String, alternative As String, original As String, changedBars As Long
     Dim i As Long, oppositeStart As Long, number As Long, reason As String, invalid As Variant
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Set units = New CUnitSystem: units.InitializeDefaults
     For Each pair In Array(Array("R1.Left", "R1.Right"), Array("R1.Top", "R1.Bottom"), _
             Array("R2.Left", "R2.Right"), Array("R2.Top", "R2.Bottom"))
@@ -5102,7 +5075,7 @@ Failed:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: rectset.independent.effect; " & CStr(Err.Number) & "; " & Err.Description
 Finished:
-    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
+    If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 ' ДЛЯ ТЕСТОВ: третий ряд учитывает направление и диаметр второго ряда только
@@ -5808,7 +5781,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", _
         "rngSteelMaterialParameters", "rngCircleGeometry", "rngRectSetGeometry", _
-        "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput")
+        "rngPointedRectGeometry", "rngHollowRectangleGeometry")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -5872,7 +5845,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     lengthNames = Array("mm", "cm", "m"): lengthFactors = Array(1#, 10#, 1000#)
     stressNames = Array("MPa", "Pa", "kPa", "kgf/cm2", "tf/m2")
     stressFactors = Array(1#, 0.000001, 0.001, 0.0980665, 0.00980665)
-    For Each shape In Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+    For Each shape In Array("Circle", "RectSet", "PointedRect", "HollowRectangle")
         For lengthIndex = 0 To 2
             For stressIndex = 0 To 4
                 For curvatureIndex = 0 To 1
@@ -5965,7 +5938,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
     ' Порог имеет размерность момент/длина; входные единицы момента не меняются.
     SetSystemSetting "Calculation.ZeroMomentPerDepth", CStr(0.001 * lengthFactor)
     Dim fieldReader As CSectionInputReader, fieldKey As Variant, fieldRow As Long, fieldColumn As Long
-    For Each name In Array("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
+    For Each name In Array("rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         Set fieldReader = FixtureInput(target.Value2)
         For Each fieldKey In fieldReader.RowKeys("General")
@@ -5974,25 +5947,26 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
             End If
         Next fieldKey
     Next name
-    Set target = ThisWorkbook.Names("rngRebarInput").RefersToRange
-    Set fieldReader = FixtureInput(target.Value2)
-    For Each name In Array("Main", "Extra")
-        For fieldRow = 1 To target.Rows.Count
-            If CStr(target.Cells(fieldRow, 1).Value2) = CStr(name) Then Exit For
-        Next fieldRow
-        fieldRow = fieldRow + 4
-        For row = fieldRow To fieldRow + 7
-            If CStr(name) = "Main" Then
-                For Each column In Array(3, 4, 6, 7)
-                    Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor
-                Next column
-            Else
-                For Each column In Array(3, 4, 7, 8)
-                    Audit03DivideNumericInput target.Cells(row, CLng(column)), lengthFactor
-                Next column
-            End If
-        Next row
-    Next name
+    Dim geometryName As Variant, blockName As Variant
+    For Each geometryName In Array("rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+        Set target = ThisWorkbook.Names(CStr(geometryName)).RefersToRange
+        Set fieldReader = FixtureInput(target.Value2)
+        For Each blockName In Array("Main", "Extra")
+            For Each fieldKey In fieldReader.RowKeys(CStr(blockName))
+                If CStr(fieldKey) <> "Units" Then
+                    If CStr(blockName) = "Main" Then
+                        For Each column In Array("as", "d", "s0", "s1")
+                            Audit03DivideNumericInput FixtureInputCell(target, CStr(blockName), CStr(fieldKey), CStr(column)), lengthFactor
+                        Next column
+                    Else
+                        For Each column In Array("d2", "a2", "d3", "a3")
+                            Audit03DivideNumericInput FixtureInputCell(target, CStr(blockName), CStr(fieldKey), CStr(column)), lengthFactor
+                        Next column
+                    End If
+                End If
+            Next fieldKey
+        Next blockName
+    Next geometryName
     For Each name In Array("rngConcreteMaterialParameters", "rngSteelMaterialParameters")
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To target.Rows.Count
@@ -6296,7 +6270,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", _
-        "rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput")
+        "rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -7613,7 +7587,7 @@ Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
             "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", _
-            "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRebarInput", "rngLoadCombinations")
+            "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngLoadCombinations")
         Set table = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To table.Rows.Count
             For column = 2 To table.Columns.Count
@@ -7636,7 +7610,7 @@ Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
                         If key = "привязка" Then expected = "EachBar|EverySecondBar": Exit For
                     Next headerRow
                 End If
-                If CStr(name) = "rngRebarInput" Then
+                If CStr(name) Like "rng*Geometry" Then
                     For headerRow = row - 1 To 1 Step -1
                         key = LCase$(CStr(table.Cells(headerRow, column).Value2))
                         If key = "pos2" Or key = "pos3" Then expected = "Stacked|SideBySide": Exit For
@@ -7644,13 +7618,7 @@ Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
                     Next headerRow
                 End If
                 If Len(expected) > 0 Then
-                    formula = CStr(cell.Validation.Formula1)
-                    Set source = cell.Worksheet.Range(Mid$(formula, 2))
-                    actual = vbNullString
-                    For Each cell In source.Cells
-                        If Len(actual) > 0 Then actual = actual & "|"
-                        actual = actual & CStr(cell.Value2)
-                    Next cell
+                    actual = Join(ValidationCellOptions(cell), "|")
                     AssertTextEquals stats, "config.dropdown.meaning." & CStr(name) & "." & CStr(row) & "." & CStr(column), actual, expected
                     checked = checked + 1
                 End If
@@ -7746,8 +7714,21 @@ Private Sub TestConfigDropdownChoices(ByRef stats As TUiTestStats)
             targets = targets + 1
             formula = CStr(cell.Validation.Formula1)
             prefix = "config.dropdown." & cell.Address(False, False)
-            AssertTrue stats, prefix & ".rangeSource", Left$(formula, 1) = "="
+            AssertTrue stats, prefix & ".validSource", Len(formula) > 0
             AssertTrue stats, prefix & ".visible", cell.Validation.InCellDropdown
+            If Left$(formula, 1) <> "=" And Not checked.Exists(formula) Then
+                checked.Add formula, True
+                saved = cell.Formula
+                Dim inlineOption As Variant
+                For Each inlineOption In ValidationCellOptions(cell)
+                    cell.Value2 = CStr(inlineOption)
+                    AssertTrue stats, prefix & ".accepts." & CStr(inlineOption), cell.Validation.Value
+                Next inlineOption
+                cell.Value2 = "__INVALID_DROPDOWN_OPTION__"
+                AssertTrue stats, prefix & ".rejectsUnknown", Not cell.Validation.Value
+                cell.Formula = saved
+                lists = lists + 1
+            End If
             If Left$(formula, 1) = "=" And Not checked.Exists(formula) Then
                 checked.Add formula, True
                 Set source = sheet.Range(Mid$(formula, 2))
@@ -7811,7 +7792,7 @@ End Sub
 Public Function RunSharedConfigPreflightTests() As String
     Dim stats As TUiTestStats, config As Object, saved As Variant, passed As Long, failed As Long
     On Error GoTo FailedRun
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     stats.Report = stats.Report & RunConfigComparisonContractTests(passed, failed)
     stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
     TestConfigDropdownChoices stats
@@ -7832,7 +7813,7 @@ FailedRun:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: config.preflight; " & CStr(Err.Number) & "; " & Err.Description
 Finished:
-    If Not config Is Nothing And IsArray(saved) Then config.Formula = saved
+    If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
     RunSharedConfigPreflightTests = stats.Report & "TOTAL_SHARED_CONFIG_PREFLIGHT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
 
@@ -7893,4 +7874,20 @@ Public Function RunConfigComparisonContractTests(Optional ByRef passed As Long =
     AssertTrue stats, "comparison.axis.swapNotReversed", Audit03PrincipalAxisSign(first, second) = 1#
     passed = stats.Passed: failed = stats.Failed
     RunConfigComparisonContractTests = stats.Report & "TOTAL_CONFIG_COMPARISON_CONTRACT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: читает варианты короткого списка либо значения его диапазона.
+Private Function ValidationCellOptions(ByVal cell As Object) As Variant
+    Dim formula As String, source As Object, item As Object, values() As String, i As Long
+    formula = CStr(cell.Validation.Formula1)
+    If Left$(formula, 1) <> "=" Then
+        ValidationCellOptions = Split(formula, Application.International(xlListSeparator))
+        Exit Function
+    End If
+    Set source = cell.Worksheet.Range(Mid$(formula, 2))
+    ReDim values(0 To source.Cells.Count - 1)
+    For Each item In source.Cells
+        values(i) = CStr(item.Value2): i = i + 1
+    Next item
+    ValidationCellOptions = values
 End Function

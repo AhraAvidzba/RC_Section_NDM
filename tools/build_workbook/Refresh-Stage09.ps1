@@ -199,7 +199,7 @@ function Update-CalculationSheetLayout {
     $calc = $Workbook.Worksheets.Item(1)
     $mainLabels = @(
         @("������ / �������", "", "", ""),
-        @("��� �������", "Circle", "", "RoundedRectangle ��� Circle"),
+        @("��� �������", "Circle", "", "PointedRect ��� Circle"),
         @("������", "", "��", "�� ������������ ��� Circle"),
         @("������", "", "��", "�� ������������ ��� Circle"),
         @("������ ������� �����", "", "��", "�� ������������ ��� Circle"),
@@ -225,7 +225,7 @@ function Update-CalculationSheetLayout {
         Set-CellText $calc $row 9 $mainLabels[$i][2]
         Set-CellText $calc $row 13 $mainLabels[$i][3]
     }
-    Set-ValidationList $calc.Cells.Item(7, 5) "RoundedRectangle,Circle"
+    Set-ValidationList $calc.Cells.Item(7, 5) "PointedRect,Circle"
     $axisDistanceValue = 0.0
     if (-not [double]::TryParse([string]$calc.Cells.Item(19, 5).Value2, [ref]$axisDistanceValue) -or $axisDistanceValue -lt 1) { Set-CellText $calc 19 5 "40" }
     if ([string]::IsNullOrWhiteSpace([string]$calc.Cells.Item(20, 5).Value2)) { Set-CellText $calc 20 5 "8" }
@@ -281,7 +281,7 @@ try {
         "src/Geometry/CFiberMeshBuilder.cls",
         "src/Geometry/CGeometryPath.cls",
         "src/Geometry/CSectionRecipeCircle.cls",
-        "src/Geometry/CSectionRecipeRoundedRectangle.cls",
+        "src/Geometry/CSectionRecipePointedRect.cls",
         "src/Section/CSectionDefinitionBuilder.cls",
         "src/Section/CRebarRuleExecutor.cls",
         "src/Section/CSectionPropertiesCalculator.cls",

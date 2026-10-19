@@ -21,7 +21,7 @@ function Get-SystemSettingsCatalog {
         )},
         @{ Name = "GeometrySettings"; Title = "[Геометрия и сетка]"; Rows = @(
             @("Geometry.Source", "Generated", "-", "Generated - встроенная геометрия; AutoCAD - импорт Region или генерация бетона по точным контурам при пустом слое бетона. Арматура импортируется из Region. Геометрия AutoCAD всегда в мм."),
-            @("Geometry.Type", "RectSet", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: RoundedRectangle, HollowRectangle, Circle или RectSet."),
+            @("Geometry.Type", "RectSet", "-", "Тип сечения для Geometry.Source = Generated. Поддерживается: PointedRect, HollowRectangle, Circle или RectSet."),
             @("Mesh.StepX", "50", "мм", "Шаг бетонной сетки по X для Generated и генерации по контурам AutoCAD."),
             @("Mesh.StepY", "50", "мм", "Шаг бетонной сетки по Y для Generated и генерации по контурам AutoCAD. Равные шаги дают квадратные элементы."),
             @("Mesh.BoundarySubdivisions", "1", "шт", "Подъячейки по каждой оси граничной ячейки для Generated и контуров AutoCAD; 1 - отбор по центру ячейки."),
@@ -280,9 +280,8 @@ function Get-ConfigNamedRangeNames {
         "rngSignConventionSettings",
         "rngCircleGeometry",
         "rngRectSetGeometry",
-        "rngRoundedRectangleGeometry",
+        "rngPointedRectGeometry",
         "rngHollowRectangleGeometry",
-        "rngRebarInput",
         "rngConcreteMaterialParameters",
         "rngSteelMaterialParameters",
         "rngCalculationProfiles",
@@ -307,9 +306,7 @@ function Apply-ConfigNamedRangeBorders {
             # отдельно проверит обязательные имена книги.
             continue
         }
-        if ([string]$range.Worksheet.Name -ne "Config") { continue }
-
-        if($rangeName -in @('rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngRebarInput')){
+        if($rangeName -in @('rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry')){
             Format-GeometrySettingsTable $Workbook $rangeName $range
             continue
         }
@@ -332,7 +329,7 @@ function Apply-ConfigNamedRangeBorders {
 function Reset-ConfigValidationSources {
     param([object]$Sheet)
     $script:ConfigValidationSheet = $Sheet
-    $script:ConfigValidationNextColumn = 200
+    $script:ConfigValidationNextColumn = 70
     $script:ConfigValidationLists = @{}
 }
 
@@ -354,10 +351,12 @@ function Get-NextConfigValidationColumn {
 }
 
 # Возвращает прямую ссылку на вертикальный список допустимых значений.
-# Одинаковые наборы переиспользуются; различные наборы всегда имеют разные источники.
+# Короткие постоянные наборы хранятся в проверке данных; большие и динамические используют общий источник.
 function Get-ConfigValidationListAddress {
     param([object]$Sheet, [array]$Options, [string]$IndependentName = '')
     if ($Options.Count -eq 0) { throw 'Пустой список допустимых значений Config.' }
+    $inline=@($Options | ForEach-Object {[string]$_}) -join ','
+    if (-not $IndependentName -and $inline.Length -le 255 -and -not @($Options | Where-Object {[string]$_ -match '[,;\r\n]'}).Count) { return ($Options -join [string]$Sheet.Application.International(5)) }
     $key = ConvertTo-Json -InputObject @($Options) -Compress
     if ($IndependentName) { $key = $IndependentName + ':' + $key }
     if ($script:ConfigValidationLists.ContainsKey($key)) { return $script:ConfigValidationLists[$key] }
@@ -382,8 +381,8 @@ function Get-ConfigFormattingTables {
     param([object]$Workbook)
     foreach($name in @(Get-ConfigNamedRangeNames)){
         try{$range=$Workbook.Names.Item($name).RefersToRange}catch{continue}
-        if([string]$range.Worksheet.Name -ne 'Config'){continue}
-        if($name -eq 'rngRebarInput' -or $name -in @((Get-GeometrySettingsCatalog).RangeName)){
+        if([string]$range.Worksheet.Name -notin @('Config','Сечения')){continue}
+        if($name -in @((Get-GeometrySettingsCatalog).RangeName)){
             foreach($block in @(Get-GeometryTableBlocks $range)){
                 [pscustomobject]@{Name=$name;Range=$range.Cells.Item($block.HeaderRow,1).Resize($block.LastRow-$block.HeaderRow+1,[int]$block.Columns['note']);Geometry=$true}
             }
@@ -509,7 +508,7 @@ function Apply-ConfigUserInputAlignment {
         }
     }
 
-    foreach($name in @((Get-GeometrySettingsCatalog).RangeName)+@('rngRebarInput')){
+    foreach($name in @((Get-GeometrySettingsCatalog).RangeName)){
         $range=$Workbook.Names.Item($name).RefersToRange
         Set-GeometryEditableCellFormat $range
         foreach($block in @(Get-GeometryTableBlocks $range)){
@@ -562,14 +561,14 @@ function Get-SettingInstructionLines {
         ) }
         "Geometry.Source" { return @($lead) + @(
             "Источник обязателен: выберите Generated или AutoCAD. Отсутствующая строка, пустая ячейка, TODO и неизвестное значение являются ошибкой ввода; программа не выбирает Generated вместо пользователя.",
-            "Generated - параметрическое построение бетонной сетки, арматуры и аннотаций для Circle, RoundedRectangle, HollowRectangle и RectSet.",
+            "Generated - параметрическое построение бетонной сетки, арматуры и аннотаций для Circle, PointedRect, HollowRectangle и RectSet.",
             "AutoCAD: заранее нажмите 'Импортировать геометрию из AutoCAD'. Бетон берется из Region на AutoCAD.Common.ConcreteLayer. Если этот слой пуст, сетка автоматически строится по наружному контуру и заданным отверстиям с Mesh.StepX, Mesh.StepY и Mesh.BoundarySubdivisions. Арматура в обоих вариантах импортируется из Region на AutoCAD.Common.RebarLayer. Геометрия сохраняется в Results и показывается на предварительной схеме.",
             "При последующем нажатии 'Выполнить расчет' программа не обращается к AutoCAD повторно. Она берет уже сохраненную импортированную геометрию из Results. Если Geometry.Source = AutoCAD, но предварительного импорта нет, расчет останавливается понятным сообщением.",
             "Геометрия AutoCAD считается заданной в мм: координаты и размеры - мм, площади - мм2, инерции - мм4. Чертеж для импорта нужно готовить в миллиметрах; INPUT не задает коэффициент масштаба геометрии. После импорта программа работает с этим сечением так же, как с геометрией, построенной внутри книги.",
             "У импортированной из AutoCAD сетки обычно нет сведений о смысловых гранях и группах арматуры. Поэтому программа сохраняет фактические элементы и результаты, но не пытается угадывать специальные подписи граней по координатам."
         ) }
         "Geometry.Type" { return @($lead) + @(
-            "Доступны Circle, RoundedRectangle, HollowRectangle и RectSet. Таблицы геометрии идут друг под другом, общая таблица армирования — справа. Ключи берутся формулами из Edges; ввод при смене типа сохраняется. Серым выделены строки без участка и n у отверстия HollowRectangle. Оранжевым — доступные поля ввода, включая необязательные.",
+            "Доступны Circle, PointedRect, HollowRectangle и RectSet. На листе «Сечения» каждому типу соответствует своя таблица с геометрией и армированием. При смене выбранного типа данные остальных сечений сохраняются. Оранжевым выделены доступные поля ввода, включая необязательные.",
             "При Generated тип и все активные размеры выбранной формы обязательны. Пустая ячейка, TODO, ошибка формулы, нечисловое значение или потерянная строка не заменяются размерами шаблона. Сообщение указывает настройку и ее фактическую ячейку; для отсутствующей строки указывается раздел, где ее нужно восстановить.",
             "Не используется при Geometry.Source = AutoCAD: форму задают импортированные элементы либо точные наружные контуры и отверстия.",
             "Если для выбранной формы нет специальных аннотаций, расчет все равно выполняется. На схеме будут показаны геометрия и расчетные значения без этих дополнительных подписей."
@@ -646,8 +645,8 @@ function Get-SettingInstructionLines {
             "Выбирает стержни первого ряда для третьего ряда независимо от второго: EachBar — все; EverySecondBar — первый, третий и следующие нечётные.",
             "При отключённом третьем или первом ряде настройка не используется. Положение Stacked/SideBySide выбирается отдельно."
         ) }
-        "RoundedRectangle.*" { return @($lead) + @(
-            "Эта настройка задается на Config в таблице «Скругленный прямоугольник». Геометрия выбирается через Geometry.Source = Generated и Geometry.Type = RoundedRectangle.",
+        "PointedRect.*" { return @($lead) + @(
+            "Эта настройка задается на листе «Сечения» в таблице «Скругленный прямоугольник». Геометрия выбирается через Geometry.Source = Generated и Geometry.Type = PointedRect.",
             "Размеры и названия сторон пояснены в общем разделе этой таблицы. Simple означает прямой торец со скруглениями, Tapered - наклонную сторону с закругленным носом. Неиспользуемые W/R2 стороны Simple заполнять не нужно.",
             "Активный размер обязателен. Число 0 допустимо только там, где оно означает отсутствие скругления или выноса; ошибочный ввод программа попросит исправить."
         ) }
@@ -1109,7 +1108,7 @@ function Get-SettingInstructionLines {
         ) }
         "AutoCAD.Export.ContourEnabled" { return @($lead) + @(
             "Yes выгружает сохраненную наружную границу сечения и отверстия. Формат задает AutoCAD.Export.ContourFormat. No отключает только исходные контуры сечения, не расчетную область трещин.",
-            "Для Circle, RectSet, RoundedRectangle и HollowRectangle контур приходит из генератора вместе с прямыми участками и дугами. Дуги передаются как дуговые сегменты полилинии, а не как набор коротких линий.",
+            "Для Circle, RectSet, PointedRect и HollowRectangle контур приходит из генератора вместе с прямыми участками и дугами. Дуги передаются как дуговые сегменты полилинии, а не как набор коротких линий.",
             "Исходный внешний контур и отверстия экспортируются из rngNDMSectionContours. Без отдельно импортированных точных контуров эта опция не подменяет их приблизительной границей сетки.",
             "Имена Common.SectionContourLayer и Common.OpeningContourLayer обязательны; отсутствующие слои создаются. Распределение контуров по слоям и цветам зависит от выбранного формата и описано в его справке. Это не слой рассчитанной области Ar.",
             "Каждый экспорт добавляет новые контуры без поиска совпадающих объектов и без автоматического удаления прежнего вывода. За чистоту места экспорта отвечает пользователь: заранее удалите ненужные объекты или выберите свободную область чертежа."
@@ -1397,29 +1396,29 @@ function Get-SettingsInstructionCatalog {
         "При ненулевом отступе программа проверяет оба дополнительных ряда: весь диск стержня должен находиться в бетоне, без пересечения других стержней. Недопустимое совпадение не скрывается объединением. На дуге нельзя переносить стержень до центра или через центр кривизны. Например, отдельные линии 100 и 105 мм при диаметрах 20 и 16 мм пересекаются, а 100 и 118 мм допускают касание."
     )}) | Out-Null
     $items.Add(@{ Key = "CircleGeometry"; Title = "Круглое сечение"; Lines = @(
-        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
+        "На листе «Сечения» одна таблица содержит размеры в General, основное армирование в Main и дополнительные ряды в Extra. Параметры армирования по каждой стороне задаются независимо.",
         "Выберите Geometry.Source = Generated и Geometry.Type = Circle. В общей геометрии задайте наружный диаметр бетонного круга D; строки основного и дополнительного армирования относятся ко всей окружности.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
         "Начало полного оборота — над центром, на «12 часах», обход по часовой стрелке. При s0 = 0 и s1 = 0 стержни равномерно распределяются по полному кругу без повторения начальной точки. При ненулевых отступах — по оставшейся дуге с обоими концами. Сумма отступов меньше длины окружности центров; активное n — целое не меньше 2, as больше d/2 и меньше радиуса бетона.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры».",
         "Для круга Stacked направлен к центру, SideBySide — по часовой касательной. Диаметр бетона и общая подпись всех рядов сохраняются со схемой."
     )}) | Out-Null
-    $items.Add(@{ Key = "RoundedRectangleGeometry"; Title = "Скругленный прямоугольник"; Lines = @(
-        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
-        "Выберите Geometry.Type = RoundedRectangle. В общих настройках B — ширина прямой базы, H — высота. Дополнительные настройки заданы отдельно слева и справа: Type = Simple — вертикальная сторона со скруглениями R1; Type = Tapered — выступ с наклонными сторонами. Для выступа дополнительно задаются вынос W и радиус носа R2; для Simple они не используются.",
+    $items.Add(@{ Key = "PointedRectGeometry"; Title = "Скругленный прямоугольник"; Lines = @(
+        "На листе «Сечения» одна таблица содержит размеры в General, основное армирование в Main и дополнительные ряды в Extra. Параметры армирования по каждой стороне задаются независимо.",
+        "Выберите Geometry.Type = PointedRect. В общих настройках B — ширина прямой базы, H — высота. Дополнительные настройки заданы отдельно слева и справа: Type = Simple — вертикальная сторона со скруглениями R1; Type = Tapered — выступ с наклонными сторонами. Для выступа дополнительно задаются вынос W и радиус носа R2; для Simple они не используются.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
         "Сверху и снизу стержни располагаются на прямых участках между скруглениями; слева и справа — вдоль соответствующей боковой стороны с отступом as.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры»."
     )}) | Out-Null
     $items.Add(@{ Key = "HollowRectangleGeometry"; Title = "Пустотелый скругленный прямоугольник"; Lines = @(
-        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
+        "На листе «Сечения» одна таблица содержит размеры в General, основное армирование в Main и дополнительные ряды в Extra. Параметры армирования по каждой стороне задаются независимо.",
         "Выберите Geometry.Type = HollowRectangle. B/H/R — наружные ширина, высота и радиус углов. В General Bo/Ho/Ro — размеры и радиус отверстия; Xo/Yo — смещение его центра вправо и вверх относительно центра наружного контура. Нулевой радиус означает прямой угол.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
         "Для сторон отверстия поле n выделено серым: его значение не используется, стержни проецируются с соответствующего наружного ряда. Диаметр, as и концевые отступы задаются независимо. Если наружный ряд отключён, соответствующий ряд отверстия также не создаётся. Внутренние as нужны для ограничения линий у отверстия и читаются даже при выключенных рядах.",
         "В дополнительном армировании Смещение 2 (a2) и Смещение 3 (a3) задаются независимо от основного ряда, в единицах длины ввода. Привязка EachBar — к каждому основному стержню, EverySecondBar — через один; положение Stacked — вглубь бетона, SideBySide — вдоль линии. Подробные правила приведены в разделе «Смещения дополнительных рядов арматуры»."
     )}) | Out-Null
     $items.Add(@{ Key = "RectSetGeometry"; Title = "Сечение из прямоугольников"; Lines = @(
-        "General содержит размеры сечения. Edges перечисляет участки с отдельным армированием; столбец «Размер» ссылается на H, B или D из General. Основное и дополнительное армирование задаются в общей таблице справа, в блоках Main и Extra.",
+        "На листе «Сечения» одна таблица содержит размеры в General, основное армирование в Main и дополнительные ряды в Extra. Параметры армирования по каждой стороне задаются независимо.",
         "Выберите Geometry.Type = RectSet. Форма Shape: Rectangle — один прямоугольник, LSection — Г-образное сечение, TwoRectangles — два смежных прямоугольника. H1/B1 задают высоту и ширину верхнего прямоугольника, H2/B2 — нижнего. Для Rectangle нужны только H1/B1.",
         "В General параметр XOffset задаёт смещение верхнего прямоугольника вправо относительно нижнего; используется для TwoRectangles. Прямоугольники должны иметь общий участок по X.",
         "В основном армировании До оси (as) — расстояние от края бетона до центров стержней; Диаметр (d) и Количество (n) задают основной ряд. Отступ начала (s0) и Отступ конца (s1) отмеряются вдоль линии центров стержней. Пустой или нулевой диаметр либо нулевое количество отключает ряд вместе с его дополнительными рядами.",
@@ -3323,10 +3322,9 @@ function Add-SettingsInstructions {
         "Контрольные точки диаграмм" = "MaterialDiagramControlTables"
         "Настройки оформления схемы" = "PlotAnnotationSettings"
         "Круглое сечение" = "CircleGeometry"
-        "Скругленный прямоугольник" = "RoundedRectangleGeometry"
+        "Скругленный прямоугольник" = "PointedRectGeometry"
         "Пустотелый скругленный прямоугольник" = "HollowRectangleGeometry"
         "Сечение из прямоугольников" = "RectSetGeometry"
-        "Армирование выбранного сечения" = "Geometry.Type"
     }
     for ($r = 1; $r -le ($used.Row + $used.Rows.Count + 40); $r++) {
         for ($c = 1; $c -le 40; $c++) {
@@ -3343,6 +3341,14 @@ function Add-SettingsInstructions {
                     Add-HeaderInstructionHyperlink $ConfigSheet.Cells.Item($r, $c) $caption $InstructionSheet.Name $anchors[$targetKey]
                 }
             }
+        }
+    }
+    $sections=$Workbook.Worksheets.Item('Сечения')
+    foreach($definition in @(Get-GeometrySettingsCatalog)){
+        $range=$Workbook.Names.Item($definition.RangeName).RefersToRange
+        $caption=[string]$definition.Title
+        if($headerLinks.ContainsKey($caption)){
+            Add-HeaderInstructionHyperlink $sections.Cells.Item($range.Row-1,$range.Column) $caption $InstructionSheet.Name $anchors[$headerLinks[$caption]]
         }
     }
     # Добавление Hyperlink применяет стиль Excel и сбрасывает рамки Справка.
@@ -4302,18 +4308,7 @@ function Apply-SystemSettingsLayout {
     Add-PlotAnnotationSettingsTable $Workbook $Sheet $rightRow $rightColumn
     $rightRow += (Get-PlotAnnotationSettingsCatalog).Count + 1 + $rightBlockGap
 
-    $geometryTables = Get-GeometrySettingsCatalog
-    $geometryStartRow=$rightRow
-    $geometryOrder = @("rngCircleGeometry", "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry")
-    foreach ($geometryRangeName in $geometryOrder) {
-        $geometryTable = $geometryTables | Where-Object { $_.RangeName -eq $geometryRangeName } | Select-Object -First 1
-        if ($null -eq $geometryTable) { continue }
-        $height=Add-GeometrySettingsTable $Workbook $Sheet $geometryTable $rightRow $rightColumn
-        $rightRow += $height + $rightBlockGap
-    }
-    $rebarTable=Get-RebarSettingsCatalog
-    Add-GeometrySettingsTable $Workbook $Sheet $rebarTable $geometryStartRow ($rightColumn+6) | Out-Null
-    Set-SharedRebarFormulas $Workbook $Workbook.Names.Item('rngRebarInput').RefersToRange $geometryTables
+    Add-SectionSettingsTables $Workbook $Sheet | Out-Null
 
     Add-MaterialDiagramCharts $Sheet $materialChartTopRow $materialChartColumn $materialControlHeaderRow $materialControlColumn
 
@@ -4387,7 +4382,7 @@ function Apply-SystemSettingsLayout {
     }
 
     $exportCombinationListColumn = Get-NextConfigValidationColumn $Sheet
-    $loadCasePickerHelperRows = 500
+    $loadCasePickerHelperRows = $Workbook.Names.Item("rngLoadCombinations").RefersToRange.Rows.Count - 1
     $Sheet.Cells.Item(1, $exportCombinationListColumn).Value2 = "Worst"
     for ($i = 1; $i -le $loadCasePickerHelperRows; $i++) {
         $Sheet.Cells.Item($i + 1, $exportCombinationListColumn).Formula = '=IF(ROW(A' + $i + ')>ROWS(rngLoadCombinations)-1,"",INDEX(rngLoadCombinations,ROW(A' + $i + ')+1,1))'

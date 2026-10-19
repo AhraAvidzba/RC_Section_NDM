@@ -12,7 +12,7 @@ ALLOWED = {
     'CSectionGeometryQuery': {'RoundedPolygon', 'RoundedPolygonKernel', 'OffsetRoundedPolygon',
                               'OffsetRoundedPolygonKernel', 'PolygonKernelData', 'OffsetPath'},
     'CSectionDefinitionBuilder': {'RectanglePath'},
-    'CSectionRecipeRoundedRectangle': {'DescribePolygon'},
+    'CSectionRecipePointedRect': {'DescribePolygon'},
     'CSectionRecipeHollowRectangle': {'DescribePolygon'},
 }
 

@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestGeometryFixtures"
+﻿Attribute VB_Name = "modTestGeometryFixtures"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: создаёт контрольные области общими геометрическими классами в мм.
@@ -148,7 +148,7 @@ End Function
 ' faces = [H.Left,H.Right,B.Top,B.Bottom], каждый [as,d,n,d2,d3,loc2,loc3,bind2,bind3].
 Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant, Optional ByVal readSetbacks As Boolean = False) As CSectionDefinition
     Dim values As Variant, recipe As ISectionRecipe, index As Long, fields As Variant, side As Long
-    values = FixtureRecipeValues("rngRoundedRectangleGeometry", readSetbacks)
+    values = FixtureRecipeValues("rngPointedRectGeometry", readSetbacks)
     FixtureSetInput values, "General", "B", "val", dimensions(0): FixtureSetInput values, "General", "H", "val", dimensions(1)
     fields = Array("Type", "W", "R1", "R2")
     For index = 0 To 3
@@ -160,8 +160,8 @@ Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional B
     Else
         FixtureFaceTable values, faces
     End If
-    Set recipe = New CSectionRecipeRoundedRectangle
-    Set FixtureRoundedDefinition = FixtureRecipeDefinition(recipe, "rngRoundedRectangleGeometry", values)
+    Set recipe = New CSectionRecipePointedRect
+    Set FixtureRoundedDefinition = FixtureRecipeDefinition(recipe, "rngPointedRectGeometry", values)
 End Function
 
 ' Hollow: [B,H,R,Bo,Ho,Ro,xo,yo]; faces = наружные H/H/B/B, затем внутренние H/H/B/B.
@@ -214,20 +214,10 @@ Public Function FixtureRecipeDefinition(ByVal recipe As ISectionRecipe, ByVal ta
     If units Is Nothing Then
         Set units = New CUnitSystem: units.InitializeDefaults
     End If
-    Dim context As CSectionRecipeContext, table As CSectionInputTable, common As CSectionInputTable
-    Dim reader As CSectionInputReader, block As Variant, key As Variant, rebars As Variant, typeID As String
+    Dim context As CSectionRecipeContext, table As CSectionInputTable
     Set table = New CSectionInputTable: table.Initialize tableName, values
     Set context = New CSectionRecipeContext: context.Initialize units
-    context.AddTable table
-    rebars = values: Set reader = FixtureInput(values)
-    typeID = Mid$(tableName, 4, Len(tableName) - 11)
-    For Each block In Array("Main", "Extra")
-        For Each key In reader.RowKeys(CStr(block))
-            rebars(reader.RowIndex(CStr(block), CStr(key)), 1) = typeID & "." & CStr(key)
-        Next key
-    Next block
-    Set common = New CSectionInputTable: common.Initialize "rngRebarInput", rebars
-    context.AddTable common: context.Seal
+    context.AddTable table: context.Seal
     Set FixtureRecipeDefinition = recipe.CreateDefinition(context)
 End Function
 
@@ -347,32 +337,8 @@ End Sub
 ' ДЛЯ ТЕСТОВ: возвращает настоящую ячейку поля после изменения размещения таблицы.
 Public Function FixtureInputCell(ByVal area As Object, ByVal block As String, ByVal row As String, Optional ByVal column As String = "val") As Object
     FixtureNormalizeField block, row, column
-    Dim reader As CSectionInputReader, parts As Variant, name As String, typeID As String
-    Dim inactive As Boolean, index As Long, headerRow As Long, side As String, localKey As String
-    If (block = "Main" Or block = "Extra") And area.Columns.Count = 5 Then
-        parts = Split(CStr(area.Name.Name), "!"): name = CStr(parts(UBound(parts)))
-        typeID = Mid$(name, 4, Len(name) - 11)
-        localKey = row
-        If typeID = "RectSet" And Left$(localKey, 3) = "R2." Then inactive = (CStr(FixtureInputCell(area, "General", "Shape").Value2) = "Rectangle")
-        FixtureSelectRecipeType area.Worksheet.Parent, typeID
-        area.Calculate
-        Set area = area.Worksheet.Parent.Names("rngRebarInput").RefersToRange
-        area.Calculate
-        If Left$(row, Len(typeID) + 1) <> typeID & "." Then row = typeID & "." & row
-    End If
+    Dim reader As CSectionInputReader
     Set reader = FixtureInput(area.Value2)
-    If inactive Then
-        side = Mid$(localKey, 4)
-        parts = Array("Top", "Bottom", "Left", "Right")
-        For index = 0 To 3
-            If CStr(parts(index)) = side Then Exit For
-        Next index
-        For headerRow = 1 To area.Rows.Count
-            If CStr(area.Cells(headerRow, 1).Value2) = block Then Exit For
-        Next headerRow
-        Set FixtureInputCell = area.Cells(headerRow + 8 + index, reader.ColumnIndex(block, column))
-        Exit Function
-    End If
     Set FixtureInputCell = area.Cells(reader.RowIndex(block, row), reader.ColumnIndex(block, column))
 End Function
 
@@ -395,7 +361,7 @@ Public Function FixtureConfigFieldCell(ByVal key As String) As Object
         Set FixtureConfigFieldCell = FixtureCircleFieldCell(ThisWorkbook, key): Exit Function
     End If
     parts = Split(key, "."): typeID = CStr(parts(0))
-    If typeID <> "RectSet" And typeID <> "RoundedRectangle" And typeID <> "HollowRectangle" Then Exit Function
+    If typeID <> "RectSet" And typeID <> "PointedRect" And typeID <> "HollowRectangle" Then Exit Function
     Set area = ThisWorkbook.Names("rng" & typeID & "Geometry").RefersToRange
     field = Mid$(key, Len(typeID) + 2): block = "General": columnKey = "val"
     Select Case typeID
@@ -467,43 +433,27 @@ End Sub
 ' Позиции стержней и контуры здесь не вычисляются; размеры и ключи берутся из действующей книги.
 ' Обычно s0/s1 равны нулю; readSetbacks включает их чтение из общей таблицы для проверки отступов.
 Public Function FixtureRecipeValues(ByVal tableName As String, Optional ByVal readSetbacks As Boolean = False) As Variant
-    Dim geometry As Variant, commonValues As Variant, result() As Variant, key As Variant, keys As Variant
-    Dim reader As CSectionInputReader, row As Long, column As Long, i As Long, count As Long, base As Long, block As Variant
-    geometry = ThisWorkbook.Names(tableName).RefersToRange.Value2
-    commonValues = ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2
-    Select Case tableName
-        Case "rngCircleGeometry": keys = Array("Circle")
-        Case "rngRectSetGeometry": keys = Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
-        Case "rngRoundedRectangleGeometry": keys = Array("Top", "Bottom", "Left", "Right")
-        Case Else: keys = Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
-    End Select
-    base = UBound(geometry, 1): count = UBound(keys) + 1
-    ReDim result(1 To base + UBound(commonValues, 1) + 1, 1 To 11)
-    For row = 1 To base: For column = 1 To UBound(geometry, 2): result(row, column) = geometry(row, column): Next column: Next row
-    base = base + 1
-    For row = 1 To UBound(commonValues, 1): For column = 1 To 11: result(base + row, column) = commonValues(row, column): Next column: Next row
-    For Each block In Array("Main", "Extra")
-        For row = base + 1 To UBound(result, 1)
-            If CStr(result(row, 1)) = CStr(block) Then
-                For i = 0 To 7
-                    If i < count Then result(row + 4 + i, 1) = CStr(keys(i)) Else result(row + 4 + i, 1) = Empty
-                    If CStr(block) = "Main" And Not readSetbacks Then result(row + 4 + i, 6) = 0#: result(row + 4 + i, 7) = 0#
-                Next i
-                Exit For
+    Dim values As Variant, reader As CSectionInputReader, key As Variant
+    values = ThisWorkbook.Names(tableName).RefersToRange.Value2
+    If Not readSetbacks Then
+        Set reader = FixtureInput(values)
+        For Each key In reader.RowKeys("Main")
+            If CStr(key) <> "Units" Then
+                values(reader.RowIndex("Main", CStr(key)), reader.ColumnIndex("Main", "s0")) = 0#
+                values(reader.RowIndex("Main", CStr(key)), reader.ColumnIndex("Main", "s1")) = 0#
             End If
-        Next row
-    Next block
-    FixtureRecipeValues = result
+        Next key
+    End If
+    FixtureRecipeValues = values
 End Function
 
-' ДЛЯ ТЕСТОВ: явные исходные параметры армирования, одинаковые для обеих версий таблиц.
+' ДЛЯ ТЕСТОВ: задаёт исходное армирование конкретного типа, не меняя выбранный тип.
 ' Выбор типа в рабочей книге ничего не сбрасывает; только контрольный набор готовит свои значения.
 Public Sub FixtureResetReinforcement(ByVal typeID As String)
     Dim rows As Variant, item As Variant, fields As Variant, index As Long, table As Object, value As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, factor As Double
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-    FixtureSelectRecipeType ThisWorkbook, typeID
     Select Case typeID
         Case "Circle"
             rows = Array( _
@@ -518,7 +468,7 @@ Public Sub FixtureResetReinforcement(ByVal typeID As String)
                 Array("R2.Bottom", 40#, 32#, 5#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("R2.Left", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("R2.Right", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
-        Case "RoundedRectangle"
+        Case "PointedRect"
             rows = Array( _
                 Array("Top", 40#, 32#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("Bottom", 40#, 32#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
@@ -551,3 +501,29 @@ Public Sub FixtureResetReinforcement(ByVal typeID As String)
         Next index
     Next item
 End Sub
+
+' ДЛЯ ТЕСТОВ: сохраняет изменяемый диапазон Config и независимые таблицы сечений.
+' Снимок нужен после переноса геометрии на отдельный лист.
+Public Function FixtureSaveInputs(ByVal config As Object) As Variant
+    Dim sections As Object
+    Set sections = config.Worksheet.Parent.Worksheets("Сечения").UsedRange
+    FixtureSaveInputs = Array(config.Formula, sections.Address, sections.Formula)
+End Function
+
+' ДЛЯ ТЕСТОВ: возвращает исходные формулы и значения обоих листов после сценария.
+Public Sub FixtureRestoreInputs(ByVal config As Object, ByVal saved As Variant)
+    config.Formula = saved(0)
+    config.Worksheet.Parent.Worksheets("Сечения").Range(CStr(saved(1))).Formula = saved(2)
+End Sub
+
+' ДЛЯ ТЕСТОВ: возвращает выбранный тип, не меняя исходные данные сечений.
+Public Function FixtureSelectedType() As String
+    Dim settings As CSystemSettingsReader
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    FixtureSelectedType = settings.GetRequiredString("Geometry.Type")
+End Function
+
+' ДЛЯ ТЕСТОВ: таблица текущего типа содержит и размеры, и армирование.
+Public Function FixtureSelectedInput() As Object
+    Set FixtureSelectedInput = ThisWorkbook.Names("rng" & FixtureSelectedType() & "Geometry").RefersToRange
+End Function

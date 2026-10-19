@@ -142,7 +142,7 @@ Public Function RunRecipeAnnotationSnapshotTests() As String
     On Error GoTo Failed
     events = Application.EnableEvents: updating = Application.ScreenUpdating: calculation = Application.Calculation
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Dim facade As CSectionDefinitionBuilder, builder As CSectionBuilder, definition As CSectionDefinition, model As CSectionModel
     Dim properties As CSectionPropertiesCalculator, units As CUnitSystem, settings As CSystemSettingsReader
     Dim writer As CNDMResultsWriter, reader As CSectionPlotDataReader, outputUnit As Variant, i As Long, found As Long
@@ -189,7 +189,7 @@ Failed:
     Check "snapshot.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     On Error Resume Next
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.EnableEvents = events: Application.ScreenUpdating = updating: Application.Calculation = calculation
     On Error GoTo 0
     RunRecipeAnnotationSnapshotTests = mReport & "TOTAL RECIPE ANNOTATION SNAPSHOT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf

@@ -15,9 +15,9 @@ Public Function DumpSolidPhysicalBits() As String
     Dim config As Object, saved As Variant, fixture As Variant, result As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel, i As Long
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In FixtureNames()
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -52,7 +52,7 @@ Public Function DumpSolidPhysicalBits() As String
 Failed:
     result = result & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     DumpSolidPhysicalBits = result
 End Function
 
@@ -65,9 +65,9 @@ Public Function DumpSolidDirectNdsBits() As String
     Dim concrete As Object, steel As Object, n As Double, mx As Double, my As Double, loadIndex As Long
     Dim minX As Double, maxX As Double, minY As Double, maxY As Double
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In FixtureNames()
-        config.Formula = saved
+        FixtureRestoreInputs config, saved
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
@@ -95,7 +95,7 @@ Public Function DumpSolidDirectNdsBits() As String
 Failed:
     result = result & "ERROR: " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     DumpSolidDirectNdsBits = result
 End Function
 

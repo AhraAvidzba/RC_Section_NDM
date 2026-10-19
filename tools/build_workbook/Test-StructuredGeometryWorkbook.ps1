@@ -1,204 +1,107 @@
-﻿# Проверяет готовую книгу: структуру геометрии, исходные значения и формулы единиц.
-# Книга открывается только для чтения; смена единиц проверяется без сохранения.
-param(
-    [Parameter(Mandatory=$true)][string]$WorkbookPath,
-    [Parameter(Mandatory=$true)][string]$ReportPath,
-    [switch]$CheckDefaults
-)
+﻿# Проверяет лист сечений, независимость таблиц, списки и формулы единиц в отдельном Excel.
+param([Parameter(Mandatory=$true)][string]$WorkbookPath,[Parameter(Mandatory=$true)][string]$ReportPath,[switch]$CheckDefaults,[string]$PreservedInputs='')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
 $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
-$report=[IO.Path]::GetFullPath((Join-Path $root $ReportPath))
-if(-not $report.StartsWith($root+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Report must stay inside the workspace.'}
-$beforeHash=(Get-FileHash -LiteralPath $path).Hash
-Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class StructuredGeometryWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr hWnd,out uint id);}'
-$excel=$null;$book=$null;$ownedPid=0;$ownedTicks=0
-$unitCells=New-Object 'System.Collections.Generic.List[object]'
-$tables=@();$defaultCount=0;$conditionalChecks=0
+$report=Join-Path $root $ReportPath
+$hash=(Get-FileHash -LiteralPath $path).Hash
+Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class SectionsValidationWindow{[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);}'
+$app=$null;$book=$null;$owned=0;$ticks=0;$defaults=0;$options=0;$preserved=0;$units=New-Object 'System.Collections.Generic.List[object]';$tables=@();$snapshots=@{}
 try{
-    $excel=New-Object -ComObject Excel.Application
-    $excel.Visible=$false;$excel.DisplayAlerts=$false;$excel.EnableEvents=$false;$excel.AutomationSecurity=3
-    [uint32]$identity=0;[void][StructuredGeometryWindow]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd,[ref]$identity)
-    $ownedPid=[int]$identity;$ownedTicks=(Get-Process -Id $ownedPid).StartTime.ToUniversalTime().Ticks
-    $book=$excel.Workbooks.Open($path,0,$true)
-    if(-not $book.ReadOnly){throw 'Read-only opening required.'}
-    $sheet=$book.Worksheets.Item('Config')
-    for($c=9;$c -le 24;$c++){if($sheet.Columns.Item($c).ColumnWidth -ne 17){throw "Wrong Config column width: $c"}}
-    $definitions=@(Get-GeometrySettingsCatalog)
-    foreach($definition in $definitions+@(Get-RebarSettingsCatalog)){
-        $range=$book.Names.Item($definition.RangeName).RefersToRange
-        $width=5;if($definition.RangeName -eq 'rngRebarInput'){$width=11}
-        $rules=0;if($definition.RangeName -eq 'rngRebarInput'){$rules=3}
-        if($range.Columns.Count -ne $width -or $range.FormatConditions.Count -ne $rules){throw "Wrong table: $($definition.RangeName)"}
-        foreach($edge in 7,8,9,10,11,12){if($range.Borders.Item($edge).LineStyle -ne -4115){throw 'Full dotted borders required.'}}
-        if($range.WrapText -ne $false){throw 'Input tables must not wrap text.'}
-        $blocks=@(Get-GeometryTableBlocks $range)
-        if($blocks.Count -ne $definition.Blocks.Count){throw 'Wrong block count.'}
-        for($i=0;$i -lt $blocks.Count;$i++){
-            $block=$blocks[$i];$expected=$definition.Blocks[$i]
-            if($block.Key -cne $expected.Key){throw 'Wrong block order.'}
-            for($c=0;$c -lt $expected.Keys.Count;$c++){
-                if([string]$range.Cells.Item($block.KeyRow,$c+1).Value2 -cne $expected.Keys[$c]){throw 'Wrong column key.'}
-                if([string]$range.Cells.Item($block.HeaderRow,$c+1).Value2 -cne $expected.Headers[$c]){throw 'Wrong column caption.'}
-                if($expected.Units -and $expected.Units[$c] -ceq 'мм'){$unitCells.Add($range.Cells.Item($block.FirstRow,$c+1))}
-            }
-            $first=$block.FirstRow
-            if($expected.Units){$first++}
-            for($r=0;$r -lt $expected.Rows.Count;$r++){
-                $values=$expected.Rows[$r]
-                $expectedKey=$values[0]
-                if($expectedKey -is [string] -and $definition.RangeName -ne 'rngRebarInput'){
-                    if([string]$range.Cells.Item($first+$r,1).Value2 -cne $expectedKey){throw 'Wrong row key.'}
-                }
-                if($block.Columns.ContainsKey('unit') -and $values[[int]$block.Columns['unit']-1] -ceq 'мм'){
-                    $unitCells.Add($range.Cells.Item($first+$r,[int]$block.Columns['unit']))
-                }
-                foreach($key in @($block.Columns.Keys)){
-                    if($key -in @('key','name','unit','note')){continue}
-                    $column=[int]$block.Columns[$key];$cell=$range.Cells.Item($first+$r,$column)
-                    if($block.Key -eq 'Edges'){
-                        if(-not $cell.HasFormula -or ([string]$cell.Formula).Length -gt 80){throw 'Control size must be a short Excel formula.'}
-                        if($cell.Interior.Color -eq 15135487){throw 'Computed control size is highlighted as input.'}
-                        continue
-                    }
-                    if($cell.HasFormula){if($cell.Interior.Color -eq 15135487){throw 'Formula is highlighted as input.'};continue}
-                    if([string]$cell.Value2 -notin @('-','—') -and $cell.Interior.Color -ne 15135487){throw ('Input is not orange: '+$cell.Address())}
-                    if($CheckDefaults){
-                        $value=$values[$column-1]
-                        if([string]$cell.Value2 -cne [string]$value){throw "Wrong default: $($definition.RangeName)/$($block.Key)/$($values[0])/$key"}
-                        $defaultCount++
-                    }
-                }
-            }
-        }
-        $tables+=,[ordered]@{Name=$definition.RangeName;Address=$range.Address();Blocks=$blocks.Count}
+ $app=New-Object -ComObject Excel.Application
+ $app.Visible=$false;$app.DisplayAlerts=$false;$app.EnableEvents=$false;$app.AutomationSecurity=3
+ [uint32]$id=0;[void][SectionsValidationWindow]::GetWindowThreadProcessId([IntPtr]$app.Hwnd,[ref]$id)
+ $owned=[int]$id;$ticks=(Get-Process -Id $owned).StartTime.ToUniversalTime().Ticks
+ $book=$app.Workbooks.Open($path,0,$true)
+ if(-not $book.ReadOnly){throw 'Read-only opening required.'}
+ $order=@($book.Worksheets | ForEach-Object {$_.Name})
+ if(($order -join '|') -cne 'Config|Сечения|Справка|Расчет|Results'){throw ('Sheet order: '+($order -join '|'))}
+ $names=@($book.Names | ForEach-Object {$_.Name})
+ if(@($names | Where-Object {$_ -match '_Choices$|rngRebarInput|RoundedRectangle'}).Count){throw 'Obsolete named ranges remain.'}
+ $config=$book.Worksheets.Item('Config');$sections=$book.Worksheets.Item('Сечения')
+ for($c=9;$c -le 24;$c++){if($CheckDefaults -and $config.Columns.Item($c).ColumnWidth -ne 17){throw "Config width C${c}: $($config.Columns.Item($c).ColumnWidth)"}}
+ for($c=1;$c -le 11;$c++){if($sections.Columns.Item($c).ColumnWidth -ne 17){throw 'Sections columns must be equal.'}}
+ # В скрытой области разрешены только три компактных динамических списка BR:BT.
+ $values=$config.UsedRange.Value2
+ for($r=1;$r -le $values.GetLength(0);$r++){for($c=73;$c -le $values.GetLength(1);$c++){if($null -ne $values[$r,$c]){throw "Obsolete hidden data R${r}C$c"}}}
+ $last=0
+ foreach($def in @(Get-GeometrySettingsCatalog)){
+  $range=$book.Names.Item($def.RangeName).RefersToRange
+  if($range.Worksheet.Name -cne 'Сечения' -or $range.Column -ne 1 -or $range.Row -le $last -or $range.Columns.Count -ne 11){throw ('Table placement: '+$def.RangeName)}
+  $last=$range.Row+$range.Rows.Count
+  if($range.FormatConditions.Count -ne 0 -or $range.WrapText -ne $false -or $range.RowHeight -ne 15){throw 'Static non-wrapping table formatting required.'}
+  foreach($edge in 7,8,9,10,11,12){if($range.Borders.Item($edge).LineStyle -ne -4115){throw 'Full dotted border required.'}}
+  $blocks=@(Get-GeometryTableBlocks $range)
+  if(($blocks.Key -join '|') -cne 'General|Main|Extra'){throw 'One complete General/Main/Extra table required.'}
+  for($b=0;$b -lt $blocks.Count;$b++){
+   $block=$blocks[$b];$expected=$def.Blocks[$b]
+   for($c=0;$c -lt $expected.Keys.Count;$c++){
+    if([string]$range.Cells.Item($block.KeyRow,$c+1).Value2 -cne $expected.Keys[$c]){throw 'Column key mismatch.'}
+    if([string]$range.Cells.Item($block.HeaderRow,$c+1).Value2 -cne $expected.Headers[$c]){throw 'Header mismatch.'}
+    if($expected.Units -and $expected.Units[$c] -ceq 'мм'){$units.Add($range.Cells.Item($block.FirstRow,$c+1))}
+   }
+   $first=$block.FirstRow;if($expected.Units){$first++}
+   if($block.LastRow-$first+1 -ne $expected.Rows.Count){throw 'Wrong row count.'}
+   $note=$range.Cells.Item($block.HeaderRow,[int]$block.Columns['note']).Resize($block.LastRow-$block.HeaderRow+1,1)
+   if($note.HorizontalAlignment -ne -4152 -or $note.WrapText -ne $false){throw 'Comment alignment changed.'}
+   for($r=0;$r -lt $expected.Rows.Count;$r++){
+    $row=$first+$r;$record=$expected.Rows[$r]
+    if([string]$range.Cells.Item($row,1).Value2 -cne $record[0]){throw 'Local row key mismatch.'}
+    foreach($key in $block.Columns.Keys){
+     $c=[int]$block.Columns[$key];$cell=$range.Cells.Item($row,$c)
+     if($key -eq 'unit' -and $record[$c-1] -ceq 'мм'){$units.Add($cell)}
+     if($key -in @('key','name','unit','note')){continue}
+     $editable=([string]$cell.Value2 -notin @('-','—') -and -not $cell.HasFormula)
+     if($editable -and ($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108)){throw ('Input format: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)}
+     if(-not $editable -and $cell.Interior.Color -eq 15135487){throw 'Derived field highlighted as input.'}
+     if($CheckDefaults){if([string]$cell.Value2 -cne [string]$record[$c-1]){throw ('Default mismatch: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)};$defaults++}
+     if($key -in @('bind2','bind3','pos2','pos3') -or ($key -eq 'val' -and $record[0] -match 'Shape|\.Type$')){
+      $formula=[string]$cell.Validation.Formula1
+      $expectedList='EachBar,EverySecondBar'
+      if($key -like 'pos*'){$expectedList='Stacked,SideBySide'}
+      elseif($record[0] -eq 'Shape'){$expectedList='Rectangle,LSection,TwoRectangles'}
+      elseif($key -eq 'val'){$expectedList='Simple,Tapered'}
+      if($formula.Replace(';',',') -cne $expectedList){throw ('Inline choices mismatch: '+$formula)}
+      $old=$cell.Formula
+      foreach($option in $formula.Split([string]$app.International(5))){$cell.Value2=$option;if(-not $cell.Validation.Value){throw "Valid choice rejected: $($def.RangeName)/$($block.Key)/$($record[0])/$key; option=$option; Formula1=$($cell.Validation.Formula1); Value2=$($cell.Value2); separator=$($app.International(5))"};$options++}
+      $cell.Value2='__INVALID__';if($cell.Validation.Value){throw 'Invalid choice accepted.'};$cell.Formula=$old
+     }
     }
-    $common=$book.Names.Item('rngRebarInput').RefersToRange
-    $firstGeometry=$book.Names.Item($definitions[0].RangeName).RefersToRange
-    if($firstGeometry.Row -ne 87 -or $firstGeometry.Column -ne 8 -or $common.Row -ne $firstGeometry.Row -or $common.Column -ne 14){throw 'Geometry/reinforcement layout changed.'}
-    $last=0
-    foreach($definition in $definitions){$area=$book.Names.Item($definition.RangeName).RefersToRange;if($area.Row -le $last){throw 'Geometry tables overlap.'};$last=$area.Row+$area.Rows.Count}
-    $system=$book.Names.Item('rngSystemSettings').RefersToRange;$selector=$null
-    for($r=2;$r -le $system.Rows.Count;$r++){if([string]$system.Cells.Item($r,1).Value2 -eq 'Geometry.Type'){$selector=$system.Cells.Item($r,2)}}
-    if($null -eq $selector){throw 'Geometry.Type missing.'}
-    $blocks=@(Get-GeometryTableBlocks $common);$main=$blocks | Where-Object Key -eq 'Main';$extra=$blocks | Where-Object Key -eq 'Extra'
-    if($main.LastRow-$main.FirstRow -ne 8 -or $extra.LastRow-$extra.FirstRow -ne 8){throw 'Common table must have exactly eight rows in each block.'}
-    # Проверяем фактическую заливку Excel, а не только текст условий в файле.
-    # Серые поля сохраняют значения; отключённый диаметр сам по себе не запрещает ввод.
-    function Test-RebarInputDisplay {
-        param([object]$Range,[object[]]$Blocks)
-        $checks=0
-        foreach($block in $Blocks){
-            foreach($columnKey in @($block.Columns.Keys)){
-                if($columnKey -in @('key','name','unit','note')){continue}
-                for($r=$block.FirstRow+1;$r -le $block.LastRow;$r++){
-                    $key=[string]$Range.Cells.Item($r,[int]$block.Columns['key']).Value2
-                    $cell=$Range.Cells.Item($r,[int]$block.Columns[$columnKey])
-                    $expected=15135487
-                    if(-not $key -or ($block.Key -eq 'Main' -and $columnKey -eq 'n' -and $key.StartsWith('HollowRectangle.Opening'))){$expected=15132390}
-                    if($cell.DisplayFormat.Interior.Color -ne $expected){throw ('Wrong displayed input color: '+$key+'/'+$columnKey+' '+$cell.Address())}
-                    if($cell.Interior.Color -ne 15135487){throw 'Conditional color changed the static input format.'}
-                    $checks++
-                }
-            }
-        }
-        return $checks
-    }
-    $sheet.Activate()
-    $manualBefore=$common.Formula
-    $switches=@()
-    foreach($definition in $definitions){
-        $selector.Value2=[string]$definition.Type;$sheet.Calculate()
-        $source=$book.Names.Item($definition.RangeName).RefersToRange
-        $edges=@(Get-GeometryTableBlocks $source | Where-Object Key -eq 'Edges')[0]
-        for($i=0;$i -lt 8;$i++){
-            $expectedKey='';$expectedName=''
-            if($edges.FirstRow+$i -le $edges.LastRow){
-                $short=[string]$source.Cells.Item($edges.FirstRow+$i,1).Value2
-                if($short){$expectedKey=$definition.Type+'.'+$short;$expectedName=[string]$source.Cells.Item($edges.FirstRow+$i,2).Value2}
-            }
-            foreach($block in @($main,$extra)){
-                $row=$block.FirstRow+1+$i
-                if([string]$common.Cells.Item($row,1).Value2 -cne $expectedKey -or [string]$common.Cells.Item($row,2).Value2 -cne $expectedName){throw 'Formula keys/names do not follow selected geometry.'}
-                if(-not $common.Cells.Item($row,1).HasFormula -or -not $common.Cells.Item($row,2).HasFormula){throw 'Key/name must be ordinary Excel formulas.'}
-            }
-        }
-        $conditionalChecks+=Test-RebarInputDisplay $common @($main,$extra)
-        $switches+=,[ordered]@{Type=$definition.Type;EdgeRows=$edges.LastRow-$edges.FirstRow+1}
-    }
-    $selector.Value2='RectSet';$rect=$book.Names.Item('rngRectSetGeometry').RefersToRange
-    $shape=Get-GeometryTableCell $rect 'General' 'Shape';$originalShape=$shape.Value2
-    foreach($subtype in @('Rectangle','LSection','TwoRectangles')){
-        $shape.Value2=$subtype;$sheet.Calculate()
-        for($i=0;$i -lt 8;$i++){
-            $key=[string]$common.Cells.Item($main.FirstRow+1+$i,1).Value2
-            if(($subtype -eq 'Rectangle' -and $i -ge 4) -ne ($key -eq '')){throw 'RectSet inactive lower edges are incorrect.'}
-        }
-        $conditionalChecks+=Test-RebarInputDisplay $common @($main,$extra)
-    }
-    $shape.Value2=$originalShape;$sheet.Calculate()
-    $afterSwitch=$common.Formula
-    for($r=1;$r -le $common.Rows.Count;$r++){for($c=1;$c -le $common.Columns.Count;$c++){
-        if([string]$manualBefore[$r,$c] -cne [string]$afterSwitch[$r,$c]){throw 'Type switching changed manual reinforcement data.'}
-    }}
-    $choiceNames=@{}
-    foreach($field in @('bind2','pos2','bind3','pos3')){
-        for($i=0;$i -lt 8;$i++){
-            $cell=$common.Cells.Item($extra.FirstRow+1+$i,[int]$extra.Columns[$field]);$formula=[string]$cell.Validation.Formula1
-            if($formula -notmatch '^=[A-Za-z_][A-Za-z0-9_]*$' -or $choiceNames.ContainsKey($formula)){throw 'Choice lists must have independent named sources.'}
-            $choiceNames[$formula]=$true
-            if($book.Names.Item($formula.Substring(1)).RefersToRange.Rows.Count -ne 2){throw 'Invalid choice source.'}
-        }
-    }
-    $orangeCount=0
-    $inputs=@{rngSystemSettings=@(2);rngUnitSettings=@(2,4);rngSignConventionSettings=@(2);rngSteelMaterialParameters=@(2,3);
-        rngConcreteMaterialParameters=@(2,3);rngCalculationProfiles=@(3,4,5,6);rngPlotAnnotationSettings=@(2,3);
-        rngLoadCombinations=@(1,2,3,4,5,6,7);rngStabilityDurationLoads=@(1,2,3,4);rngSP35Table721=@(1,2,3,4,5,6,7,8)}
-    foreach($name in $inputs.Keys){
-        $range=$book.Names.Item($name).RefersToRange
-        foreach($column in $inputs[$name]){for($r=2;$r -le $range.Rows.Count;$r++){
-            $cell=$range.Cells.Item($r,$column);$key=[string]$range.Cells.Item($r,1).Value2
-            $isComment=($name -eq 'rngLoadCombinations' -and $column -eq 7)
-            if($key.StartsWith('[') -or ($name -eq 'rngSystemSettings' -and -not $key.Contains('.')) -or (-not $isComment -and ($cell.HasFormula -or [string]$cell.Value2 -in @('-','—')))){continue}
-            if($cell.MergeCells -and ($cell.MergeArea.Row -ne $cell.Row -or $cell.MergeArea.Column -ne $cell.Column)){continue}
-            $alignment=-4108;if($isComment){$alignment=-4131}
-            if($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne $alignment){throw ('Input formatting: '+$name+' '+$cell.Address())}
-            $orangeCount++
-        }}
-    }
-    foreach($definition in $definitions+@(Get-RebarSettingsCatalog)){
-        $range=$book.Names.Item($definition.RangeName).RefersToRange
-        foreach($block in @(Get-GeometryTableBlocks $range)){
-            $note=$range.Cells.Item($block.HeaderRow,[int]$block.Columns['note']).Resize($block.LastRow-$block.HeaderRow+1,1)
-            if($note.HorizontalAlignment -ne -4152 -or $note.WrapText -ne $false){throw 'Comments must stay right-aligned in their own cell.'}
-        }
-    }
-    $profiles=$book.Names.Item('rngCalculationProfiles').RefersToRange
-    for($r=2;$r -le $profiles.Rows.Count;$r++){
-        $cell=$profiles.Cells.Item($r,7)
-        if(-not $cell.MergeCells -and ($cell.HorizontalAlignment -ne -4152 -or $cell.WrapText -ne $false)){throw 'Profile comments must stay right-aligned without wrapping.'}
-    }
-    $expectedFormula=Get-InputUnitFormulaForUnit 'мм'
-    foreach($cell in $unitCells){if([string]$cell.Formula -cne $expectedFormula){throw "Unit formula missing: $($cell.Address())"}}
-    $units=$book.Names.Item('rngUnitSettings').RefersToRange;$length=$null
-    for($r=2;$r -le $units.Rows.Count;$r++){if([string]$units.Cells.Item($r,1).Value2 -ceq 'Length'){$length=$units.Cells.Item($r,2);break}}
-    if($null -eq $length){throw 'Length input setting missing.'}
-    foreach($unit in @('mm','cm','m')){
-        $length.Value2=$unit;$sheet.Calculate()
-        foreach($cell in $unitCells){if([string]$cell.Value2 -cne $unit){throw "Unit caption did not follow INPUT Length: $($cell.Address())"}}
-    }
-    [ordered]@{Passed=$true;WorkbookSHA256=$beforeHash;Tables=$tables;DefaultFieldsChecked=$defaultCount;
-        DynamicLengthUnitCells=$unitCells.Count;InputLengthUnits=@('mm','cm','m');UniformConfigWidth=17;
-        MacroSecurity=3;FormulaTypeSwitches=$switches;OtherConfigInputCells=$orangeCount;InputColorRGB=@(255,242,230);
-        RectSetSubtypes=@('Rectangle','LSection','TwoRectangles');ManualInputsPreservedOnSwitch=$true;IndependentRebarChoiceLists=$choiceNames.Count;
-        RebarConditionalFormattingRules=3;DisplayedInputColorsChecked=$conditionalChecks;UnusedInputColorRGB=@(230,230,230);
-        Saved=$false} | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $report -Encoding UTF8
+   }
+  }
+  $snapshots[$def.RangeName]=$range.Formula
+  $tables+=,[ordered]@{Name=$def.RangeName;Address=$range.Address();Blocks=$blocks.Key;RebarRows=$def.Blocks[1].Rows.Count}
+ }
+ if($PreservedInputs){
+  $receipt=Get-Content -LiteralPath (Join-Path $root $PreservedInputs) -Raw -Encoding UTF8 | ConvertFrom-Json
+  foreach($field in $receipt.InputFields){
+   $range=$book.Names.Item($field.Table).RefersToRange
+   $cell=Get-GeometryTableCell $range $field.Block $field.Row $field.Column
+   if([string]$cell.Value2 -cne [string]$field.Value){throw ('Preserved input differs: '+($field|ConvertTo-Json -Compress))};$preserved++
+  }
+  if($preserved -ne 294){throw "Expected 294 preserved fields; actual=$preserved"}
+ }
+ $settings=$book.Names.Item('rngSystemSettings').RefersToRange;$selector=$null
+ for($r=2;$r -le $settings.Rows.Count;$r++){if([string]$settings.Cells.Item($r,1).Value2 -eq 'Geometry.Type'){$selector=$settings.Cells.Item($r,2)}}
+ foreach($type in @('Circle','RectSet','PointedRect','HollowRectangle')){
+  $selector.Value2=$type;$config.Calculate();$sections.Calculate()
+  foreach($name in $snapshots.Keys){$now=$book.Names.Item($name).RefersToRange.Formula;$old=$snapshots[$name];for($r=1;$r -le $old.GetLength(0);$r++){for($c=1;$c -le $old.GetLength(1);$c++){if([string]$old[$r,$c] -cne [string]$now[$r,$c]){throw 'Type switch changed stored inputs.'}}}}
+ }
+ $unitRange=$book.Names.Item('rngUnitSettings').RefersToRange;$lengthCell=$null
+ for($r=2;$r -le $unitRange.Rows.Count;$r++){if([string]$unitRange.Cells.Item($r,1).Value2 -eq 'Length'){$lengthCell=$unitRange.Cells.Item($r,2)}}
+ if($null -eq $lengthCell -or $units.Count -eq 0){throw 'Length unit coverage missing.'}
+ foreach($entry in @(@('mm','mm'),@('cm','cm'),@('m','m'))){
+  $lengthCell.Value2=$entry[0];$unitRange.Calculate();$sections.Calculate()
+  foreach($cell in $units){if(-not $cell.HasFormula -or [string]$cell.Value2 -cne $entry[1]){throw "Unit formula mismatch: $($cell.Address()); expected=$($entry[1]); actual=$($cell.Value2); formula=$($cell.Formula)"}}
+ }
+ $book.Close($false);$book=$null
+ [ordered]@{Status='PASS';WorkbookSHA256=$hash;SheetOrder=$order;Names=$names.Count;ChoiceNames=0;Tables=$tables;DefaultFieldsChecked=$defaults;PreservedFields=$preserved;ValidDropdownChoicesChecked=$options;DynamicUnitCells=$units.Count;LengthUnits=@('mm','cm','m');IndependentInputsPreservedOnSwitch=$true;ConditionalFormattingRules=0;HiddenDynamicColumns='BR:BT';ReadOnly=$true} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $report -Encoding UTF8
 }finally{
-    if($book){$book.Close($false)}
-    if($excel){$excel.Quit();[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}
-    [GC]::Collect();[GC]::WaitForPendingFinalizers()
-    if($ownedPid){$p=Get-Process -Id $ownedPid -ErrorAction SilentlyContinue;if($p -and $p.ProcessName -eq 'EXCEL' -and $p.StartTime.ToUniversalTime().Ticks -eq $ownedTicks){Stop-Process -Id $ownedPid -Force}}
+ if($book){$book.Close($false)}
+ if($app){$app.Quit();[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}
+ [GC]::Collect();[GC]::WaitForPendingFinalizers()
+ if($owned){$p=Get-Process -Id $owned -ErrorAction SilentlyContinue;if($p -and $p.ProcessName -eq 'EXCEL' -and $p.StartTime.ToUniversalTime().Ticks -eq $ticks){Stop-Process -Id $owned -Force}}
 }
-if((Get-FileHash -LiteralPath $path).Hash -cne $beforeHash){throw 'Read-only check changed the workbook.'}
-Write-Output "STRUCTURED_GEOMETRY: defaults=$defaultCount; dynamic units=$($unitCells.Count); three INPUT units; source unchanged."
+if((Get-FileHash -LiteralPath $path).Hash -cne $hash){throw 'Source changed during read-only check.'}
+Write-Output "SECTIONS_STRUCTURE_PASS: defaults=$defaults; inputs=$preserved; units=$($units.Count); choices=$options"

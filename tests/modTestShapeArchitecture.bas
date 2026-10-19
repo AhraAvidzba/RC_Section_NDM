@@ -19,7 +19,7 @@ Public Function DumpShapeArchitectureSnapshot(Optional ByVal fixtureFilter As St
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
     Set config = ThisWorkbook.Worksheets("Config").UsedRange
-    saved = config.Formula
+    saved = FixtureSaveInputs(config)
     result = "SNAPSHOT_FORMAT: 2; doubles=IEEE754-hex; units=mm,mm2,mm4,rad,N,Nmm,MPa" & vbCrLf
     For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
             "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset")
@@ -33,7 +33,7 @@ Public Function DumpShapeArchitectureSnapshot(Optional ByVal fixtureFilter As St
 Failed:
     result = result & "FAIL: snapshot; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpShapeArchitectureSnapshot = result
 End Function
@@ -122,7 +122,7 @@ Private Function InputSnapshot(ByVal fixture As String) As String
     Dim lines() As String, count As Long, capacity As Long
     For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
             "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCircleGeometry", _
-            "rngRectSetGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngCalculationProfiles")
+            "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngCalculationProfiles")
         Set table = ThisWorkbook.Names(CStr(name)).RefersToRange
         values = table.Value2: formulas = table.Formula
         capacity = capacity + table.Rows.Count * table.Columns.Count
@@ -174,7 +174,7 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
             FixtureInputCell(table, "General", "H1", "val").Value2 = 400# / factor: FixtureInputCell(table, "General", "B1", "val").Value2 = 300# / factor
             FixtureInputCell(table, "General", "H2", "val").Value2 = 200# / factor: FixtureInputCell(table, "General", "B2", "val").Value2 = 600# / factor
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
-            shapeName = "RoundedRectangle": Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
+            shapeName = "PointedRect": Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
             FixtureInputCell(table, "General", "B", "val").Value2 = 600# / factor: FixtureInputCell(table, "General", "H", "val").Value2 = 400# / factor
             FixtureInputCell(table, "Detail", "Type", "left").Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", "Tapered", "Simple")
             FixtureInputCell(table, "Detail", "Type", "right").Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", "Simple", "Tapered")
@@ -204,7 +204,7 @@ Public Function DumpCircleGeometryMatrix() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Set seed = FixtureModel("Circle")
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
@@ -227,7 +227,7 @@ Public Function DumpCircleGeometryMatrix() As String
 Failed:
     result = result & "FAIL: Circle matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpCircleGeometryMatrix = result
 End Function
@@ -283,10 +283,10 @@ Public Function DumpRectSetGeometryMatrix() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
             ConfigureRectSetScenario CStr(fixture), scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -299,7 +299,7 @@ Public Function DumpRectSetGeometryMatrix() As String
 Failed:
     result = result & "FAIL: RectSet baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpRectSetGeometryMatrix = result
 End Function
@@ -312,7 +312,7 @@ Public Sub ConfigureRoundedScenario(ByVal scenario As Long)
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     keys = Array("Left", "Right", "Top", "Bottom")
-    Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange: data = table.Value2
+    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange: data = table.Value2
     If scenario = 0 Then Exit Sub
     If scenario = 1 Then
         FixtureInputCell(table, "Detail", "R1", "left").Value2 = 80# / factor: FixtureInputCell(table, "Detail", "R1", "right").Value2 = 100# / factor
@@ -365,10 +365,10 @@ Public Function DumpRoundedGeometryMatrix() As String
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         For scenario = 0 To 5
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
             ConfigureRoundedScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -381,7 +381,7 @@ Public Function DumpRoundedGeometryMatrix() As String
 Failed:
     result = result & "FAIL: Rounded baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpRoundedGeometryMatrix = result
 End Function
@@ -459,10 +459,10 @@ Private Function HollowGeometryMatrix(ByVal firstScenario As Long, ByVal lastSce
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("HollowCentered", "HollowOffset")
         For scenario = firstScenario To lastScenario
-            config.Formula = saved
+            FixtureRestoreInputs config, saved
             ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
             ConfigureHollowScenario scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -475,7 +475,7 @@ Private Function HollowGeometryMatrix(ByVal firstScenario As Long, ByVal lastSce
 Failed:
     result = result & "FAIL: Hollow baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     HollowGeometryMatrix = result
 End Function
@@ -512,7 +512,7 @@ Public Function DumpShapeCalculationSnapshot(Optional ByVal crackCode As String 
         "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset"), crackCode)
 End Function
 
-' ДЛЯ ТЕСТОВ: исходный расчет четырех RoundedRectangle, включая точные
+' ДЛЯ ТЕСТОВ: исходный расчет четырех PointedRect, включая точные
 ' контуры и прежние позиции арматуры. Вторая проба активирует радиусные пути.
 Public Function DumpRoundedSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
     DumpRoundedSourceCalculations = SourceCalculations(Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, scenario)
@@ -530,7 +530,7 @@ Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode A
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = False
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Dim profiles As Object, i As Long, key As String
     Set profiles = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange
     For i = 2 To profiles.Rows.Count
@@ -560,7 +560,7 @@ Private Function SourceCalculations(ByVal fixtures As Variant, ByVal crackCode A
 Failed:
     result = result & "FAIL: calculation snapshot; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     SourceCalculations = result
 End Function
@@ -650,7 +650,7 @@ Public Function DumpHollowSourcePreview(ByVal outputDirectory As String, Optiona
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = True
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     ConfigureShapeFixture "Circle"
     For Each fixture In Array("HollowCentered", "HollowOffset")
         ConfigureShapeFixture CStr(fixture): ConfigureHollowScenario scenario
@@ -663,7 +663,7 @@ Public Function DumpHollowSourcePreview(ByVal outputDirectory As String, Optiona
 Failed:
     result = result & "FAIL: source Hollow preview; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpHollowSourcePreview = result
 End Function
@@ -674,7 +674,7 @@ Public Function DumpShapePreviewSnapshot(ByVal outputDirectory As String, Option
     On Error GoTo Failed
     calculation = Application.Calculation: events = Application.EnableEvents: updating = Application.ScreenUpdating
     Application.EnableEvents = False: Application.ScreenUpdating = True
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("Circle", "Rectangle", "LSection", "TwoRectangles", _
             "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset")
         If Len(fixtureFilter) = 0 Or CStr(fixture) = fixtureFilter Then result = result & PreviewSnapshot(CStr(fixture), outputDirectory)
@@ -683,7 +683,7 @@ Public Function DumpShapePreviewSnapshot(ByVal outputDirectory As String, Option
 Failed:
     result = result & "FAIL: preview snapshot; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
-    If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
     DumpShapePreviewSnapshot = result
 End Function

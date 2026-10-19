@@ -64,13 +64,12 @@ End Type
 ' и отверстия, суммарное количество стержней каждого диаметра по каждой стороне).
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
     On Error GoTo InvalidGeometry
-    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim sizes As THollowInput, faces(1 To 8) As THollowFace
     Dim outerPolygon As CPolygonSpec, openingPolygon As CPolygonSpec
     Set reader = context.Reader("rngHollowRectangleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
-    Set rebarReader = context.Reader("rngRebarInput", "HollowRectangle.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
     ReadGeometryInputs reader, sizes ' Читаем и проверяем размеры сечения.
-    ReadRebarInputs rebarReader, faces ' Читаем армирование наружных и внутренних сторон.
+    ReadRebarInputs reader, faces ' Читаем армирование наружных и внутренних сторон.
     Set outerPolygon = DescribePolygon(sizes.B, sizes.H, 0#, 0#, sizes.R, sizes.GeometrySource) ' Наружный прямоугольник с центром в начале координат.
     Set openingPolygon = DescribePolygon(sizes.Bo, sizes.Ho, sizes.Xo, sizes.Yo, sizes.Ro, sizes.GeometrySource) ' Отверстие с собственными размерами, центром и радиусом.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "HollowRectangle" ' Создаём сборщик описания сечения.

@@ -442,7 +442,7 @@ Private Sub TestSystemSettingsCatalog(ByRef stats As TSectionSolverTestStats)
     Dim rangeNames As Variant
     rangeNames = Array("rngUnitSettings", "rngSignConventionSettings", _
         "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", _
-        "rngCircleGeometry", "rngRoundedRectangleGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry", "rngRebarInput", _
+        "rngCircleGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry", _
         "rngNDMSectionProperties", "rngNDMSectionAnnotations", "rngNDMMaterialDiagrams")
     For i = LBound(rangeNames) To UBound(rangeNames)
         AssertTrue stats, "settings.range." & CStr(rangeNames(i)), NamedRangeExists(CStr(rangeNames(i)))

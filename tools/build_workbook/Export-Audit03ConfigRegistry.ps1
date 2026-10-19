@@ -1,4 +1,4 @@
-# Builds a field-by-field inventory from the saved Config census and catalog.
+﻿# Builds a field-by-field inventory from the saved Config census and catalog.
 # Unverified runtime semantics remain explicit; structural presence is not PASS.
 param(
     [string]$CensusPath = 'docs/regression/Audit03/config_census_2026-10-02.json',
@@ -162,7 +162,7 @@ for ($row=$rect.Top+1; $row -le $rect.Bottom; $row++) {
 # Composite geometry extends beyond its legacy named rectangle. Explicit blocks
 # come from the actual saved headers and the current composite-table generators.
 $geometry = @(
-    @{Name='rngRoundedRectangleGeometry'; Blocks=@(@(3,3,2,3,'Dimensions'),@(7,10,2,3,'Side'),@(13,16,2,4,'MainRebar'),@(19,22,2,7,'ExtraRebar'))},
+    @{Name='rngPointedRectGeometry'; Blocks=@(@(3,3,2,3,'Dimensions'),@(7,10,2,3,'Side'),@(13,16,2,4,'MainRebar'),@(19,22,2,7,'ExtraRebar'))},
     @{Name='rngHollowRectangleGeometry'; Blocks=@(@(3,4,2,2,'General'),@(7,7,1,6,'Dimensions'),@(11,18,2,4,'MainRebar'),@(21,28,2,7,'ExtraRebar'))},
     @{Name='rngRectSetGeometry'; Blocks=@(@(3,4,2,2,'General'),@(8,8,1,4,'Dimensions'),@(11,18,2,6,'MainRebar'),@(21,28,2,7,'ExtraRebar'))}
 )

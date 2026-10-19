@@ -1412,7 +1412,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 151,
+      "line": 156,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.PositiveLength",
       "anchor": "api-csectioninputtable-positivelength"
@@ -1449,7 +1449,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 157,
+      "line": 162,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.NonNegativeLength",
       "anchor": "api-csectioninputtable-nonnegativelength"
@@ -1486,7 +1486,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 164,
+      "line": 169,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalDiameter",
       "anchor": "api-csectioninputtable-optionaldiameter"
@@ -1523,7 +1523,7 @@
         }
       ],
       "resultType": "Double",
-      "line": 175,
+      "line": 179,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.OptionalRowOffset",
       "anchor": "api-csectioninputtable-optionalrowoffset"
@@ -1552,7 +1552,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 186,
+      "line": 190,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.ColumnByCaption",
       "anchor": "api-csectioninputtable-columnbycaption"
@@ -1597,7 +1597,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 202,
+      "line": 206,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByKey",
       "anchor": "api-csectioninputtable-rowbykey"
@@ -1642,7 +1642,7 @@
         }
       ],
       "resultType": "Long",
-      "line": 209,
+      "line": 213,
       "source": "src/Section/CSectionInputTable.cls",
       "id": "CSectionInputTable.RowByAnyKey",
       "anchor": "api-csectioninputtable-rowbyanykey"
@@ -5089,7 +5089,7 @@
         }
       ],
       "resultType": null,
-      "line": 209,
+      "line": 215,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.AtDistance",
       "anchor": "api-cgeometrypath-atdistance"
@@ -5118,7 +5118,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 267,
+      "line": 275,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Slice",
       "anchor": "api-cgeometrypath-slice"
@@ -5130,7 +5130,7 @@
       "signature": "Public Function Reversed() As CGeometryPath",
       "parameters": [],
       "resultType": "CGeometryPath",
-      "line": 381,
+      "line": 391,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Reversed",
       "anchor": "api-cgeometrypath-reversed"
@@ -5175,7 +5175,7 @@
         }
       ],
       "resultType": "CGeometryPath",
-      "line": 397,
+      "line": 407,
       "source": "src/Geometry/CGeometryPath.cls",
       "id": "CGeometryPath.Transformed",
       "anchor": "api-cgeometrypath-transformed"

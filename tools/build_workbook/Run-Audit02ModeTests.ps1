@@ -10,7 +10,7 @@ param(
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
     [ValidateSet("SP35", "SP63")][string]$CrackCode,
-    [ValidateSet("RectSet", "Circle", "RoundedRectangle", "HollowRectangle")][string]$FixtureGeometryType,
+    [ValidateSet("RectSet", "Circle", "PointedRect", "HollowRectangle")][string]$FixtureGeometryType,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [switch]$FailFast,

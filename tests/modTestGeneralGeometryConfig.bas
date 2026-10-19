@@ -120,7 +120,7 @@ End Sub
 ' subdivisions проверяется на кривой границе, где влияет на дискретизацию.
 Private Sub CheckGeometryAndMesh(ByRef stats As TGeneralConfigStats, ByVal system As Object)
     Dim shape As Variant, model As CSectionModel, firstArea As Double, prefix As String
-    For Each shape In Array("Circle", "RectSet", "RoundedRectangle", "HollowRectangle")
+    For Each shape In Array("Circle", "RectSet", "PointedRect", "HollowRectangle")
         SetValue system, "Geometry.Type", CStr(shape)
         Set model = BuildModel(stats)
         prefix = "generalGeometry.Geometry.Type." & CStr(shape)

@@ -23,7 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--report', type=Path, required=True)
     args = parser.parse_args()
     names = ['src/Geometry/CSectionRecipe' + name + '.cls'
-             for name in ('Circle', 'RectSet', 'RoundedRectangle', 'HollowRectangle')]
+             for name in ('Circle', 'RectSet', 'PointedRect', 'HollowRectangle')]
     common = 'src/Geometry/modSectionRecipeRows.bas'
     sources = {}
     for name in names + [common]:

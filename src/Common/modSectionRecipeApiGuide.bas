@@ -100,17 +100,16 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '
 '     В CSectionTypeRegistry.Class_Initialize добавьте RegisterRecipe "MySection", New
 '     CSectionRecipeMySection, Array(). Затем выполните UpdateSectionRecipeTypes. Пустой Array()
-'     подходит этому примеру с постоянными размерами; для размеров из Config укажите имена входных
-'     таблиц.
-'     Таблица каждого типа содержит General с размерами и Edges с участками армирования. Например: Set
-'     reader = context.Reader("rngRoundedRectangleGeometry"), B = reader.PositiveLength("General", "B").
-'     Общую таблицу армирования читают отдельно: Set rebar = context.Reader("rngRebarInput",
-'     "RoundedRectangle."). Префикс позволяет обращаться к строке Top по полному ключу
-'     RoundedRectangle.Top. Ридер проверяет значения и переводит длины в мм. Для своей структуры
-'     доступны context.Table и ValueAt.
+'     подходит этому примеру с постоянными размерами; для размеров с листа «Сечения» укажите имя входной
+'     таблицы.
+'     На листе «Сечения» каждому типу соответствует одна таблица: General содержит размеры, Main —
+'     основное армирование сторон, Extra — дополнительные ряды. Например: Set reader =
+'     context.Reader("rngPointedRectGeometry"), B = reader.PositiveLength("General", "B"), n =
+'     reader.Count("Main", "Top", "n"). Ридер проверяет значения и переводит длины в мм. Для своей
+'     структуры доступны context.Table и ValueAt.
 '
 '   УСТРОЙСТВО ШТАТНЫХ РЕЦЕПТОВ
-'     В Circle, RectSet, RoundedRectangle и HollowRectangle сначала читаются и проверяются размеры и
+'     В Circle, RectSet, PointedRect и HollowRectangle сначала читаются и проверяются размеры и
 '     параметры включённых рядов. Подготовленные значения, адреса исходных ячеек и соответствие названий
 '     Config внутренним именам сторон сохраняются в Private Type самого рецепта. Для одного размера
 '     отдельный метод чтения не нужен.
@@ -172,8 +171,8 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     Chain получает имя исходной линии, локальные имена начального и конечного сегментов, параметры от
 '     0 до 1 и направление обхода. Параметры задают точки начала и конца внутри этих сегментов; True
 '     выбирает обход исходной линии, False — обратный. На замкнутом контуре это два разных маршрута
-'     между теми же точками. Например, у нижнего сегмента RoundedRectangle начало справа (0), конец
-'     слева (1): Chain от 1 к 0 с False идёт напрямую слева направо, а с True — через остальные стороны
+'     между теми же точками. Например, у нижнего сегмента PointedRect начало справа (0), конец слева
+'     (1): Chain от 1 к 0 с False идёт напрямую слева направо, а с True — через остальные стороны
 '     контура. При полном обороте от середины сегмента его вторая часть получает свободное имя .Part2,
 '     .Part3 и далее. SourcePathID/SourceSegmentID и SourceStartParameter/SourceEndParameter сохраняют
 '     исходную линию, сегмент и параметры отдельно; обращаться к частям по угаданному суффиксу не

@@ -11,7 +11,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT=Path(__file__).resolve().parents[2]
 D=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/ContactResponsibilities_2026-10-17'
-SHAPES=('Circle','RectSet','RoundedRectangle','HollowRectangle')
+SHAPES=('Circle','RectSet','PointedRect','HollowRectangle')
 RECIPES={'src/Geometry/CSectionRecipe'+x+'.cls' for x in SHAPES}
 SNAPSHOTS=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('RectSet','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
 SNAPSHOTS+=['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Snapshots.DumpRecipePathContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']

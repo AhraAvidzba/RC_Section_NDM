@@ -40,12 +40,11 @@ End Type
 ' круга бетона, расположения стержней и аннотаций схемы (размер диаметра сечения,
 ' суммарное количество стержней каждого диаметра) для общего сборщика.
 Private Function ISectionRecipe_CreateDefinition(ByVal context As CSectionRecipeContext) As CSectionDefinition
-    Dim reader As CSectionInputReader, rebarReader As CSectionInputReader, facade As CSectionDefinitionBuilder
+    Dim reader As CSectionInputReader, facade As CSectionDefinitionBuilder
     Dim diameter As Double, rebar As TCircleRebar
     Set reader = context.Reader("rngCircleGeometry") ' Находим поля таблицы по ключам и используем единицы ввода.
-    Set rebarReader = context.Reader("rngRebarInput", "Circle.") ' Общая таблица; ключ строки состоит из типа сечения и участка контура.
     diameter = reader.PositiveLength("General", "D")
-    ReadRebarInputs rebarReader, diameter, rebar ' Читаем только параметры включённых рядов.
+    ReadRebarInputs reader, diameter, rebar ' Читаем только параметры включённых рядов.
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "Circle" ' Создаём сборщик описания сечения.
     AddGeometry facade, diameter ' Добавляем круговую границу бетона.
     AddReinforcement facade, diameter, rebar ' Создаём линии арматуры и задаём правила размещения стержней.

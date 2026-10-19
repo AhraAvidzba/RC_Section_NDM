@@ -1,4 +1,4 @@
-# Готовит две проверочные книги: исходные рецепты с новым снимком правил и обновлённый кандидат.
+﻿# Готовит две проверочные книги: исходные рецепты с новым снимком правил и обновлённый кандидат.
 param([Parameter(Mandatory=$true)][ValidateSet('BaselineProbe','Candidate')][string]$Stage)
 $ErrorActionPreference='Stop'
 $directory='docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16'
@@ -9,7 +9,7 @@ if(Test-Path -LiteralPath $book){throw 'Private comparison workbook already exis
 Copy-Item -LiteralPath (Join-Path $directory 'Baseline.xlsm') -Destination $book
 $modules=@('modTestAudit02Snapshots')
 if($Stage -eq 'Candidate'){
-    $modules+=@('CSectionRecipeCircle','CSectionRecipeRectSet','CSectionRecipeRoundedRectangle',
+    $modules+=@('CSectionRecipeCircle','CSectionRecipeRectSet','CSectionRecipePointedRect',
         'CSectionRecipeHollowRectangle','modSectionRecipeRows','modSectionRecipeApiGuide','modTestAudit02Api')
 }
 & (Join-Path $PSScriptRoot 'Update-PrivateWorkbookCode.ps1') -WorkbookPath $book -ModuleNames $modules

@@ -123,7 +123,7 @@ def verify(published=False):
         assert current_runtime.keys() - old_runtime.keys() == {'src/Geometry/modSectionRecipeRows.bas'}
         assert not old_runtime.keys() - current_runtime.keys()
         changed_runtime = {name for name in old_runtime if old_runtime[name] != current_runtime[name]}
-        assert changed_runtime == {'src/Geometry/CSectionRecipe'+name+'.cls' for name in ('Circle', 'RectSet', 'RoundedRectangle', 'HollowRectangle')} | {'src/Common/modSectionRecipeApiGuide.bas'}
+        assert changed_runtime == {'src/Geometry/CSectionRecipe'+name+'.cls' for name in ('Circle', 'RectSet', 'PointedRect', 'HollowRectangle')} | {'src/Common/modSectionRecipeApiGuide.bas'}
         def executable(source):
             return ''.join(part if part.startswith('"') else re.sub(r'\s+', '', part.lower())
                            for part in re.findall(r'"(?:[^"\n]|"")*"|\x27[^\n]*|[^"\x27]+', source)

@@ -67,7 +67,7 @@ Private Sub TestLabelBoundaryLayout()
     Dim config As Object, saved As Variant, table As Object, settings As CSystemSettingsReader
     Dim layout As CPlotAnnotationLayout, row As Long, placement As Variant, unit As Variant, factor As Double, expected As Double
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Set layout = New CPlotAnnotationLayout
     layout.Initialize -400#, 400#, -800#, 800#, 0#, 0#, 800#, 1600#, "mm"
     layout.AddRebarLabel -100#, 550#, 100#, 550#, 0#, 1#, "DEFAULT", 50#
@@ -97,7 +97,7 @@ Private Sub TestLabelBoundaryLayout()
 Failed:
     Check "label.layout.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 ' Каждый ряд задан собственным независимым правилом и своим as: 50/100/150.
@@ -110,7 +110,7 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
     Dim config As Object, saved As Variant, table As Object, row As Long, outputUnit As Variant, labelIndex As Long, labelCount As Long
     Dim annotations As CSectionAnnotations, labels As CRebarGroupAnnotationBuilder
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     prefix = "rows." & CStr(rows) & ".mixed" & CStr(mixedDiameter)
     Set facade = New CSectionDefinitionBuilder: facade.Initialize prefix
     Set path = facade.RectanglePath("Outer", -300#, -600#, 600#, 1200#): facade.Outer "OUTER", path.ID
@@ -165,7 +165,7 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
 Failed:
     Check prefix & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 ' ДЛЯ ТЕСТОВ: исчезновение дуг и прямых, координаты стержней, схема и штатный расчёт.
@@ -253,7 +253,7 @@ Public Function RunCollapsedInputMessageTests() As String
                 Check prefix & ".cause", InStr(message, "не осталось участка для размещения арматуры") > 0
                 Check prefix & ".side", InStr(message, CStr(captions(scenario))) > 0
                 Check prefix & ".geometrySource", InStr(message, "Geometry[") > 0
-                Check prefix & ".rebarSource", InStr(message, "rngRebarInput[") > 0
+                Check prefix & ".rebarSource", InStr(message, "Geometry[") > 0
                 Check prefix & ".action", InStr(message, "задайте диаметр 0") > 0 And InStr(message, "fullLoopIfSame") = 0
             Else
                 Check prefix & ".accepted", message = "OK"
@@ -265,7 +265,7 @@ Public Function RunCollapsedInputMessageTests() As String
     Check "collapsed.extra.row", InStr(message, "Круг: дополнительный ряд арматуры 2") > 0
     Check "collapsed.extra.cause", InStr(message, "центры стержней достигают центра дуги") > 0
     Check "collapsed.extra.values", InStr(message, "радиус линии основного ряда — 110") > 0
-    Check "collapsed.extra.source", InStr(message, "rngRebarInput[") > 0
+    Check "collapsed.extra.source", InStr(message, "Geometry[") > 0
     RunCollapsedInputMessageTests = mReport & "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
@@ -335,21 +335,17 @@ Public Function RunCollapsedInputAddressTests() As String
     Dim units As CUnitSystem, location As Long, opening As Long, key As Variant, field As Variant, message As String
     Dim expected As String, prefix As String, alerts As Boolean
     originalGeometry = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersTo
-    originalRebar = ThisWorkbook.Names("rngRebarInput").RefersTo
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     alerts = Application.DisplayAlerts
     FixtureSelectRecipeType ThisWorkbook, "HollowRectangle"
     Application.Calculate
     geometryValues = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange.Value2
-    rebarValues = ThisWorkbook.Names("rngRebarInput").RefersToRange.Value2
     Set probe = ThisWorkbook.Worksheets.Add
     Set units = New CUnitSystem: units.InitializeDefaults
     For location = 0 To 1
         Set geometry = probe.Cells(40 + 160 * location, 2 + 28 * location).Resize(UBound(geometryValues, 1), UBound(geometryValues, 2))
-        Set rebar = probe.Cells(120 + 230 * location, 12 + 28 * location).Resize(UBound(rebarValues, 1), UBound(rebarValues, 2))
-        geometry.Value2 = geometryValues: rebar.Value2 = rebarValues
+        geometry.Value2 = geometryValues
         ThisWorkbook.Names("rngHollowRectangleGeometry").RefersTo = "='" & probe.Name & "'!" & geometry.Address
-        ThisWorkbook.Names("rngRebarInput").RefersTo = "='" & probe.Name & "'!" & rebar.Address
         For Each key In Array("Top", "Bottom", "Left", "Right", "OpeningTop", "OpeningBottom", "OpeningLeft", "OpeningRight")
             FixtureInputCell(geometry, "Main", CStr(key), "as").Value2 = 40#
             For Each field In Array("d", "n", "s0", "s1")
@@ -397,8 +393,7 @@ Failed:
 Restore:
     On Error Resume Next
     ThisWorkbook.Names("rngHollowRectangleGeometry").RefersTo = originalGeometry
-    ThisWorkbook.Names("rngRebarInput").RefersTo = originalRebar
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
     Application.DisplayAlerts = False
     If Not probe Is Nothing Then probe.Delete
     Application.DisplayAlerts = alerts
@@ -422,7 +417,7 @@ Public Function RunRoundedOrdinarySnapshots() As String
     Dim config As Object, saved As Variant, fixture As Variant, settings As CSystemSettingsReader
     Dim units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel, result As String
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     For Each fixture In Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft")
         modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
@@ -435,7 +430,7 @@ Public Function RunRoundedOrdinarySnapshots() As String
 Failed:
     result = result & "FAIL: ordinary.runtime." & CStr(Err.Number) & "." & Err.Description & vbCrLf
 Restore:
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
     RunRoundedOrdinarySnapshots = result
 End Function
 
@@ -452,11 +447,11 @@ Private Sub TestRoundedEndpoints(ByVal label As String, ByVal height As Double, 
     Dim angle As Double, direction As Double, top As Double, outsideX As Double, startX As Double
     Dim passed As Long, failed As Long, result As String
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-    Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
+    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
     FixtureInputCell(table, "General", "B").Value2 = 600# / factor
     FixtureInputCell(table, "General", "H").Value2 = height / factor
     FixtureInputCell(table, "General", "Left.Type").Value2 = "Simple"
@@ -514,7 +509,7 @@ Private Sub TestRoundedEndpoints(ByVal label As String, ByVal height As Double, 
 Failed:
     Check label & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 Public Function RunGeometryReviewTests(Optional ByVal outputDirectory As String = "") As String
@@ -524,7 +519,7 @@ Public Function RunGeometryReviewTests(Optional ByVal outputDirectory As String 
     TestRoundedLimit 1000#, outputDirectory: TestRoundedLimit 600#, outputDirectory
     TestRoundedLimit 600.001, outputDirectory
     TestDisabledSides "Rectangle", "rngRectSetGeometry", Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2")
-    TestDisabledSides "RoundedSimple", "rngRoundedRectangleGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
+    TestDisabledSides "RoundedSimple", "rngPointedRectGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
     TestDisabledSides "HollowCentered", "rngHollowRectangleGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
     Dim result As String
     result = mReport & "TOTAL_GEOMETRY_REVIEW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
@@ -577,7 +572,7 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
     Dim labels As Object, counts As Object, diameters As Object, group As Variant, i As Long, key As String, factor As Double
     Dim baseDimensions As Long, dimensions As Long, label As String, keys As Variant, field As String
     On Error GoTo Failed
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "Circle": modTestShapeArchitecture.ConfigureShapeFixture fixture
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
@@ -624,7 +619,7 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
 Failed:
     Check label & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 ' Прямые B исчезают при R1=B/2; боковой аналитический путь сохраняется.
@@ -637,11 +632,11 @@ Private Sub TestRoundedLimit(ByVal height As Double, ByVal outputDirectory As St
     Dim passed As Long, failed As Long, result As String
     On Error GoTo Failed
     label = "F02.H" & CStr(height)
-    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = config.Formula
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-    Set table = ThisWorkbook.Names("rngRoundedRectangleGeometry").RefersToRange
+    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
     FixtureInputCell(table, "General", "B").Value2 = 600# / factor
     FixtureInputCell(table, "General", "H").Value2 = height / factor
     FixtureInputCell(table, "General", "Left.Type").Value2 = "Simple"
@@ -674,7 +669,7 @@ Private Sub TestRoundedLimit(ByVal height As Double, ByVal outputDirectory As St
 Failed:
     Check label & ".runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
-    If IsArray(saved) Then config.Formula = saved
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
 
 ' Выполняет штатный расчёт одного сочетания и проверяет запись НДС при заданной

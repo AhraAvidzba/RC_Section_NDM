@@ -13,7 +13,7 @@ if (-not $preparation.Compiled -or $preparation.ProbeWorkbookSHA256 -cne (Get-Fi
 $jobs=@(
     @{Shape='RectSet'; Group='Generated'; Count=8},
     @{Shape='Circle'; Group='Generated'; Count=8},
-    @{Shape='RoundedRectangle'; Group='Generated'; Count=8},
+    @{Shape='PointedRect'; Group='Generated'; Count=8},
     @{Shape='HollowRectangle'; Group='Generated'; Count=8},
     @{Shape='SavedWorkbook'; Group='Saved'; Count=23},
     @{Shape='SavedWorkbook'; Group='Paths'; Count=6}
