@@ -64,6 +64,13 @@ function Is-AllowedFormulaCell {
 }
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
+. (Join-Path $PSScriptRoot 'WorkbookLayout.ps1')
+$layout = Read-WorkbookLayout
+# Положение входных таблиц задаёт тот же сохранённый снимок, что использует сборщик.
+function Test-SavedNamedRange([object]$Range, [string]$Name) {
+    $expected = @($layout.Names | Where-Object Name -eq $Name)[0]
+    return $Range.Worksheet.Name -ceq $expected.Sheet -and $Range.Address() -ceq $expected.Address
+}
 $fullWorkbookPath = Join-Path $root $WorkbookPath
 
 if (-not (Test-Path -LiteralPath $fullWorkbookPath)) {
@@ -206,12 +213,12 @@ try {
         ) ("batch=$($batchSummaryRange.Worksheet.Name)!R$($batchSummaryRange.Row)C$($batchSummaryRange.Column):$($batchSummaryRange.Columns.Count) cols; strengthAnchor=R$($strengthSummaryAnchorRange.Row)C$($strengthSummaryAnchorRange.Column); crackAnchor=R$($crackSummaryAnchorRange.Row)C$($crackSummaryAnchorRange.Column); stabilityAnchor=R$($stabilitySummaryAnchorRange.Row)C$($stabilitySummaryAnchorRange.Column); elements=R$($elementResultsRange.Row)C$($elementResultsRange.Column); geometry=R$($geometryResultsRange.Row)C$($geometryResultsRange.Column); properties=R$($sectionPropertiesRange.Row)C$($sectionPropertiesRange.Column); annotations=R$($sectionAnnotationsRange.Row)C$($sectionAnnotationsRange.Column); materialDiagrams=R$($materialDiagramsRange.Row)C$($materialDiagramsRange.Column)")
         Add-Check $checks "Stability duration loads range" (
             ($stabilityLoadsRange.Worksheet.Name -eq "Config") -and
-            ($stabilityLoadsRange.Row -eq 37) -and ($stabilityLoadsRange.Column -eq 16) -and
+            (Test-SavedNamedRange $stabilityLoadsRange "rngStabilityDurationLoads") -and
             ($stabilityLoadsRange.Rows.Count -eq 31) -and ($stabilityLoadsRange.Columns.Count -eq 4)
         ) ("Address=$($stabilityLoadsRange.Address())")
         Add-Check $checks "SP35 table 7.21 range" (
             ($sp35TableRange.Worksheet.Name -eq "Config") -and
-            ($sp35TableRange.Row -eq 60) -and ($sp35TableRange.Column -eq 35) -and
+            (Test-SavedNamedRange $sp35TableRange "rngSP35Table721") -and
             ($sp35TableRange.Columns.Count -eq 8) -and ($sp35TableRange.Rows.Count -ge 2)
         ) ("Address=$($sp35TableRange.Address()); Rows=$($sp35TableRange.Rows.Count); Columns=$($sp35TableRange.Columns.Count)")
     }
@@ -248,8 +255,8 @@ try {
     Add-Check $checks "Vertical page breaks" $hasBreaks ("Columns: " + ($breakColumns -join ", "))
 
     $loadsRangeForLayout = $workbook.Names.Item("rngLoadCombinations").RefersToRange
-    $loadCombinationsOnConfig = (($loadsRangeForLayout.Worksheet.Name -eq "Config") -and ($loadsRangeForLayout.Row -eq 3) -and ($loadsRangeForLayout.Column -eq 15))
-    Add-Check $checks "Load combinations table on Config O3" $loadCombinationsOnConfig ("Sheet=$($loadsRangeForLayout.Worksheet.Name); Row=$($loadsRangeForLayout.Row); Column=$($loadsRangeForLayout.Column)")
+    $loadCombinationsOnConfig = (Test-SavedNamedRange $loadsRangeForLayout "rngLoadCombinations")
+    Add-Check $checks "Load combinations table at saved position" $loadCombinationsOnConfig ("Sheet=$($loadsRangeForLayout.Worksheet.Name); Row=$($loadsRangeForLayout.Row); Column=$($loadsRangeForLayout.Column)")
 
     $settings = $workbook.Names.Item("rngSystemSettings").RefersToRange
     $expectedSettingsHeaders = @("Параметр", "Значение", "Ед.", "Комментарий", "Справка")

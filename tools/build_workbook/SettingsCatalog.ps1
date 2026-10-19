@@ -1,5 +1,7 @@
 ﻿# скрипт описывает каталог настроек Config и строит таблицы настроек, единиц, геометрии и валидации.
 
+. (Join-Path $PSScriptRoot 'WorkbookLayout.ps1')
+
 $script:FormulaImageCounter = 0
 $script:FormulaImageRows = New-Object System.Collections.Generic.List[object]
 $script:FormulaImageDir = Join-Path (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")) "workbook/output/formula_images"
@@ -330,21 +332,22 @@ function Reset-ConfigValidationSources {
     param([object]$Sheet)
     $script:ConfigValidationSheet = $Sheet
     $script:ConfigValidationNextColumn = 70
+    if($null -ne $script:WorkbookLayout){$last=($script:WorkbookLayout.HelperColumns.PSObject.Properties.Value | Measure-Object -Maximum).Maximum;$script:ConfigValidationNextColumn=[int]$last+1}
     $script:ConfigValidationLists = @{}
 }
 
 # Выделяет отдельную скрытую колонку для статического или динамического
 # списка. Очищается только выделяемый служебный диапазон, не пользовательские таблицы.
 function Get-NextConfigValidationColumn {
-    param([object]$Sheet)
+    param([object]$Sheet,[string]$SourceKey='')
     if ($null -eq $script:ConfigValidationSheet -or
         $script:ConfigValidationSheet.Parent.Name -ne $Sheet.Parent.Name -or
         $script:ConfigValidationSheet.Name -ne $Sheet.Name) {
         throw 'Служебные списки Config не инициализированы для этой книги.'
     }
-    $column = $script:ConfigValidationNextColumn
+    $column = Get-WorkbookLayoutHelperColumn $SourceKey
+    if($column -eq 0){$column=$script:ConfigValidationNextColumn;$script:ConfigValidationNextColumn++}
     if ($column -gt $Sheet.Columns.Count) { throw 'Недостаточно колонок для служебных списков Config.' }
-    $script:ConfigValidationNextColumn++
     $Sheet.Range($Sheet.Cells.Item(1, $column), $Sheet.Cells.Item(501, $column)).ClearContents() | Out-Null
     $Sheet.Columns.Item($column).Hidden = $true
     return $column
@@ -360,7 +363,7 @@ function Get-ConfigValidationListAddress {
     $key = ConvertTo-Json -InputObject @($Options) -Compress
     if ($IndependentName) { $key = $IndependentName + ':' + $key }
     if ($script:ConfigValidationLists.ContainsKey($key)) { return $script:ConfigValidationLists[$key] }
-    $column = Get-NextConfigValidationColumn $Sheet
+    $column = Get-NextConfigValidationColumn $Sheet $IndependentName
     for ($i = 0; $i -lt $Options.Count; $i++) {
         $Sheet.Cells.Item($i + 1, $column).Value2 = [string]$Options[$i]
     }
@@ -3427,7 +3430,7 @@ function Add-LoadProfileValidation {
     $profileCount = [Math]::Max(0, $profilesRange.Columns.Count - 3)
     if ($profileCount -le 0) { return }
 
-    $ListColumn = Get-NextConfigValidationColumn $Sheet
+    $ListColumn = Get-NextConfigValidationColumn $Sheet 'LoadProfiles'
     for ($i = 0; $i -lt $profileCount; $i++) {
         $sourceCell = $profilesRange.Cells.Item($displayRow, 3 + $i)
         $Sheet.Cells.Item($i + 1, $ListColumn).Formula = "=" + $sourceCell.Address($true, $true)
@@ -4381,7 +4384,7 @@ function Apply-SystemSettingsLayout {
         }
     }
 
-    $exportCombinationListColumn = Get-NextConfigValidationColumn $Sheet
+    $exportCombinationListColumn = Get-NextConfigValidationColumn $Sheet 'LoadCases'
     $loadCasePickerHelperRows = $Workbook.Names.Item("rngLoadCombinations").RefersToRange.Rows.Count - 1
     $Sheet.Cells.Item(1, $exportCombinationListColumn).Value2 = "Worst"
     for ($i = 1; $i -le $loadCasePickerHelperRows; $i++) {

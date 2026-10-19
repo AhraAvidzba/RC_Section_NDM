@@ -398,6 +398,7 @@ function Add-CalculationButtons {
 
 $root = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "../..")
 . (Join-Path $PSScriptRoot "SettingsCatalog.ps1")
+$script:WorkbookLayout = Read-WorkbookLayout
 . (Join-Path $PSScriptRoot "SectionRecipeGuide.ps1")
 if (-not [string]::IsNullOrWhiteSpace($FormulaImageDirectory)) {
     $script:FormulaImageDir = [IO.Path]::GetFullPath((Join-Path $root $FormulaImageDirectory))
@@ -524,6 +525,7 @@ try {
     Get-ConfigValidationListAddress $system $recipeTypes 'rngSectionRecipeTypes' | Out-Null
     $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeTypes")
 
+    Apply-WorkbookLayout $workbook $script:WorkbookLayout
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"
 }

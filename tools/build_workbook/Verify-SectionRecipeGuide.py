@@ -62,7 +62,13 @@ def read(path: Path):
                     attrs.pop("s", None); attrs.pop("t", None)
                     cells[address] = {"formula": canonical(formula), "value": text,
                                       "style": style(int(cell.attrib.get("s", "0"))), "attrs": attrs}
-            sheets[item.attrib["name"]] = {"cells": cells, "rows": rows, "document": document}
+            columns = []
+            for column in document.findall(S + "cols/" + S + "col"):
+                attributes = dict(column.attrib)
+                if "style" in attributes:
+                    attributes["style"] = style(int(attributes["style"]))
+                columns.append(attributes)
+            sheets[item.attrib["name"]] = {"cells": cells, "rows": rows, "columns": columns, "document": document}
         names = {item.attrib["name"]: item.text for item in book.find(S + "definedNames")}
         drawings = {name: canonical(ET.fromstring(archive.read(name))) for name in archive.namelist()
                     if name.startswith("xl/drawings/") and name.endswith(".xml")}

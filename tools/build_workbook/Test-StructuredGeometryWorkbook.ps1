@@ -3,6 +3,7 @@ param([Parameter(Mandatory=$true)][string]$WorkbookPath,[Parameter(Mandatory=$tr
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 . (Join-Path $PSScriptRoot 'SettingsCatalog.ps1')
+$layout=Read-WorkbookLayout
 $path=(Resolve-Path -LiteralPath (Join-Path $root $WorkbookPath)).Path
 $report=Join-Path $root $ReportPath
 $hash=(Get-FileHash -LiteralPath $path).Hash
@@ -20,11 +21,13 @@ try{
  $names=@($book.Names | ForEach-Object {$_.Name})
  if(@($names | Where-Object {$_ -match '_Choices$|rngRebarInput|RoundedRectangle'}).Count){throw 'Obsolete named ranges remain.'}
  $config=$book.Worksheets.Item('Config');$sections=$book.Worksheets.Item('Сечения')
- for($c=9;$c -le 24;$c++){if($CheckDefaults -and $config.Columns.Item($c).ColumnWidth -ne 17){throw "Config width C${c}: $($config.Columns.Item($c).ColumnWidth)"}}
- for($c=1;$c -le 11;$c++){if($sections.Columns.Item($c).ColumnWidth -ne 17){throw 'Sections columns must be equal.'}}
- # В скрытой области разрешены только три компактных динамических списка BR:BT.
+ # Точные ширины и высоты всей книги проверяет Test-WorkbookLayout.ps1.
+ # Они сохраняются из текущей книги, а не восстанавливаются по старым номерам столбцов.
+ # После последнего динамического списка не должно оставаться старых копий.
+ $helperColumns=@($layout.HelperColumns.PSObject.Properties | ForEach-Object {[int]$_.Value})
+ $lastHelper=[int]($helperColumns | Measure-Object -Maximum).Maximum
  $values=$config.UsedRange.Value2
- for($r=1;$r -le $values.GetLength(0);$r++){for($c=73;$c -le $values.GetLength(1);$c++){if($null -ne $values[$r,$c]){throw "Obsolete hidden data R${r}C$c"}}}
+ for($r=1;$r -le $values.GetLength(0);$r++){for($c=$lastHelper+1;$c -le $values.GetLength(1);$c++){if($null -ne $values[$r,$c]){throw "Obsolete hidden data R${r}C$c"}}}
  $last=0
  foreach($def in @(Get-GeometrySettingsCatalog)){
   $range=$book.Names.Item($def.RangeName).RefersToRange
@@ -96,7 +99,7 @@ try{
   foreach($cell in $units){if(-not $cell.HasFormula -or [string]$cell.Value2 -cne $entry[1]){throw "Unit formula mismatch: $($cell.Address()); expected=$($entry[1]); actual=$($cell.Value2); formula=$($cell.Formula)"}}
  }
  $book.Close($false);$book=$null
- [ordered]@{Status='PASS';WorkbookSHA256=$hash;SheetOrder=$order;Names=$names.Count;ChoiceNames=0;Tables=$tables;DefaultFieldsChecked=$defaults;PreservedFields=$preserved;ValidDropdownChoicesChecked=$options;DynamicUnitCells=$units.Count;LengthUnits=@('mm','cm','m');IndependentInputsPreservedOnSwitch=$true;ConditionalFormattingRules=0;HiddenDynamicColumns='BR:BT';ReadOnly=$true} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $report -Encoding UTF8
+ [ordered]@{Status='PASS';WorkbookSHA256=$hash;SheetOrder=$order;Names=$names.Count;ChoiceNames=0;Tables=$tables;DefaultFieldsChecked=$defaults;PreservedFields=$preserved;ValidDropdownChoicesChecked=$options;DynamicUnitCells=$units.Count;LengthUnits=@('mm','cm','m');IndependentInputsPreservedOnSwitch=$true;ConditionalFormattingRules=0;HiddenDynamicColumns=$helperColumns;ReadOnly=$true} | ConvertTo-Json -Depth 7 | Set-Content -LiteralPath $report -Encoding UTF8
 }finally{
  if($book){$book.Close($false)}
  if($app){$app.Quit();[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($app)}

@@ -1,0 +1,66 @@
+{
+  "Status": "PASS",
+  "Scope": "saved layout, fresh build, cell formatting outside Results during calculation and plot refresh",
+  "WorkbookSHA256": "B72C94A6BA354FA0ED122445826C575A2A989A60CB1427C934010F7F9CAFB798",
+  "AllCodeSHA256": "8C1F8F6593C901BEF0C9469B9C180E67947606EFEC1F4A299F3B1F89D98E56CA",
+  "UserSavedSourceSHA256": "4E3B99A3615408BFE6ECB3FE659EEF744B88B7ADA15EC001B0CF7EF97794BE5B",
+  "FreshWorkbookSHA256": "8EBCAFA44AC884636F4C3F17D40C96E8F7DCD1791203A4E96C8F9FD4030BDAA2",
+  "CurrentLayoutChecks": 1716,
+  "FreshLayoutChecks": 1720,
+  "NamedRanges": 26,
+  "OtherTables": 1,
+  "Objects": 84,
+  "SectionHeaderBands": 4,
+  "PreservedCells": 60095,
+  "RuntimeStages": [
+    {
+      "Stage": "AfterCalculation1",
+      "Checks": 48712,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterPlot1",
+      "Checks": 48712,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterCalculation2",
+      "Checks": 48712,
+      "Failures": []
+    },
+    {
+      "Stage": "AfterPlot2",
+      "Checks": 48712,
+      "Failures": []
+    }
+  ],
+  "RuntimeCalculations": [
+    {
+      "Stage": "Calculation1",
+      "Seconds": 3.8727137999999997,
+      "Message": "Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: PERF_01\r\nПошаговый отчет сохранен: C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\WorkbookLayout_2026-10-19\\Runtime\\RC_Section_NDM_execution_report.txt",
+      "PlotSeries": 0
+    },
+    {
+      "Stage": "Calculation2",
+      "Seconds": 1.1818032,
+      "Message": "Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: PERF_01\r\nПошаговый отчет сохранен: C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\WorkbookLayout_2026-10-19\\Runtime\\RC_Section_NDM_execution_report.txt",
+      "PlotSeries": 0
+    }
+  ],
+  "DefaultFields": 298,
+  "DynamicUnitCells": 54,
+  "DropdownChoices": 175,
+  "LoadTableAssertions": 5,
+  "NativeVbaEquality": {
+    "Production": true,
+    "Fresh": true,
+    "SourceComponents": 155,
+    "DocumentComponents": 6
+  },
+  "ProductionRuntimeVbaChanged": false,
+  "FullOnOffPerformed": false,
+  "UserExecutionReportUnchanged": true,
+  "ForeignOutputsIncluded": false,
+  "Failures": []
+}

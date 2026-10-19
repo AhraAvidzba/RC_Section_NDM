@@ -271,10 +271,10 @@ Private Sub TestLoadCombinationsOnConfig(ByRef stats As TUiTestStats)
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
 
     AssertTrue stats, "ui.loads.layout.sheet", loads.Worksheet.Name = "Config"
-    AssertTrue stats, "ui.loads.layout.position", loads.Row = 3 And loads.Column = 15
+    AssertTrue stats, "ui.loads.layout.titleRowExists", loads.Row > 1
     AssertTrue stats, "ui.loads.layout.defaultRows30", loads.Rows.Count = 31
     AssertTrue stats, "ui.loads.layout.title", _
-        InStr(1, CStr(loads.Worksheet.Cells.Item(2, 15).Value2), "Сочетания нагрузок", vbTextCompare) > 0
+        InStr(1, CStr(loads.Worksheet.Cells.Item(loads.Row - 1, loads.Column).Value2), "Сочетания нагрузок", vbTextCompare) > 0
     Dim pathOptions As Variant
     pathOptions = Array("Auto", ChrW$(&H3BB) & "*Mx", ChrW$(&H3BB) & "*My", _
         ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy")
@@ -7890,4 +7890,11 @@ Private Function ValidationCellOptions(ByVal cell As Object) As Variant
         values(i) = CStr(item.Value2): i = i + 1
     Next item
     ValidationCellOptions = values
+End Function
+
+' ДЛЯ ТЕСТОВ: проверяет таблицу сочетаний после переноса, не меняя её данных.
+Public Function RunSavedLoadTableLayoutTests() As String
+    Dim stats As TUiTestStats
+    TestLoadCombinationsOnConfig stats
+    RunSavedLoadTableLayoutTests = stats.Report & "TOTAL_LOAD_TABLE_LAYOUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
