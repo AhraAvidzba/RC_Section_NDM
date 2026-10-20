@@ -1,0 +1,32 @@
+[
+  {
+    "Id": 184936,
+    "ProcessName": "powershell",
+    "StartTicks": 639281156103028117,
+    "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File docs/regression/SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/RunNight.ps1"
+  },
+  {
+    "Id": 144744,
+    "ProcessName": "powershell",
+    "StartTicks": 639281163166962533,
+    "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File tools/build_workbook/Run-FullOnOffAcceptance.ps1 -SourceWorkbook workbook/output/RC_Section_NDM.xlsm -EvidenceDirectory docs/regression/FullOnOff_2026-10-20_Run01 -Deadline 2026-10-21T10:00:00+03:00 -ForecastHours 6 -Python C:\\Users\\avidzba\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe"
+  },
+  {
+    "Id": 208444,
+    "ProcessName": "powershell",
+    "StartTicks": 639281163186965501,
+    "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit03Watchdog.ps1 -SourceWorkbook C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-20_Run01\\Source\\RC_Section_NDM.xlsm -ReportPath docs/regression/FullOnOff_2026-10-20_Run01/Full_Off.txt -Mode No -TimeoutSeconds 12600 -FixtureGeometryType Rectangles"
+  },
+  {
+    "Id": 176568,
+    "ProcessName": "powershell",
+    "StartTicks": 639281163192880466,
+    "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\tools\\build_workbook\\Run-Audit02ModeTests.ps1\" -SourceWorkbook \"C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-20_Run01\\Source\\RC_Section_NDM.xlsm\" -ReportPath \"docs/regression/FullOnOff_2026-10-20_Run01/Full_Off.txt\" -Mode No -FixtureGeometryType \"Rectangles\" "
+  },
+  {
+    "Id": 176168,
+    "ProcessName": "EXCEL",
+    "StartTicks": 639281163209353891,
+    "CommandLine": "\"C:\\Program Files (x86)\\Microsoft Office\\Root\\Office16\\EXCEL.EXE\" /automation -Embedding"
+  }
+]

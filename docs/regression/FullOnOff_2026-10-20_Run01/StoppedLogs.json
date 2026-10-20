@@ -1,0 +1,73 @@
+{
+  "Archive": "StoppedLogs.zip",
+  "SHA256": "7760B20F84C6FF8432D4AD4A6AA838C0E9F84021E94D21D9E37A7BBF2E77780D",
+  "Bytes": 475597,
+  "Files": [
+    {
+      "Name": "FinalizeStopped.txt",
+      "Bytes": 1023,
+      "SHA256": "744098773DFA58A563AFB7B23F16B759A72342A26CA9C96A7B96DCCC8813F0DB"
+    },
+    {
+      "Name": "Fixture_Audit03_Search_Progress.txt",
+      "Bytes": 16702,
+      "SHA256": "409B5C82221AB80D9F6ACAF38D2C26626DAE7E90222A293C45E0AE028CAB12FA"
+    },
+    {
+      "Name": "Fixture_RC_Section_NDM_execution_report.txt",
+      "Bytes": 13432,
+      "SHA256": "5C237496375194543E6259A176BC756F14F4DB968E695EDB002760024AA8C5A7"
+    },
+    {
+      "Name": "Full_Off.txt",
+      "Bytes": 9822731,
+      "SHA256": "4B6DF90C21F29E0EFF56AA6BF7E3AC012E97C4B090126B5CE1B7764DC6372DA3"
+    },
+    {
+      "Name": "Full_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": "Full_Off.txt.stdout.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": "FullRunner.ps1",
+      "Bytes": 11171,
+      "SHA256": "2984DBB976241C2F8F6952FA6E01D63E2BC35F2B07C82B36E1EB7F3066CD2866"
+    },
+    {
+      "Name": "LaunchRequest.BeforeUserStop.json",
+      "Bytes": 914,
+      "SHA256": "D5C10A9494A9C19CA2C7912EF5A492FA2F05A3223DDB488684FE29C6B490D04B"
+    },
+    {
+      "Name": "ModeRunner.ps1",
+      "Bytes": 21673,
+      "SHA256": "3BE86C2EC61006AB8DEAE5B1A2E5DB376B0ABFB010FF9641C64ED53AD3E600AC"
+    },
+    {
+      "Name": "NightDriverResult.BeforeUserStop.json",
+      "Bytes": 626,
+      "SHA256": "A55E9E482FE1B4E9E3EEF005F279E2582F68BD4B4FA9CED5B183E9D410527C1A"
+    },
+    {
+      "Name": "PreflightSummary.BeforeUserStop.json",
+      "Bytes": 6765,
+      "SHA256": "A234A3B49520E0BD6604B9C984E2C53CC311016DBED705872B5CFAB0A42B4200"
+    },
+    {
+      "Name": "Run.BeforeUserStop.json",
+      "Bytes": 15745,
+      "SHA256": "C491C349658373E7A76D939F4AE97CB190888F4D8458E5389BD0508E7D29D081"
+    },
+    {
+      "Name": "SummarizeStopped.txt",
+      "Bytes": 1114,
+      "SHA256": "025C9F20467119CB2B9F29062C3404190FA4D4F8C439B6494E18082BE6E91E23"
+    }
+  ],
+  "RoundTripVerified": true
+}

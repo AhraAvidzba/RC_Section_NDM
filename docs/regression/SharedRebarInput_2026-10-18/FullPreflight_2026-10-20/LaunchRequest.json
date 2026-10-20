@@ -1,6 +1,6 @@
 {
   "Requested": "2026-10-20T20:54:08.5776716+03:00",
-  "Status": "FULL_RUNNING",
+  "Status": "STOPPED_BY_USER",
   "DriverPID": 184936,
   "DriverStartTicks": 639281156103028117,
   "DriverScriptSHA256": "F819277A10C1BDDC7A51E8B8C9376A263DDCB107A73C19C5068108EF96604CB8",
@@ -19,5 +19,8 @@
   "IncludesIndependentNDS": true,
   "AutomaticRestart": false,
   "ActualStartedUTC": "2026-10-20T18:05:18.5956755+00:00",
-  "FullDriverPID": 144744
+  "FullDriverPID": 144744,
+  "StoppedUTC": "2026-10-20T18:25:42.2100555Z",
+  "StopReason": "User requested nearest logical completion within 10 minutes, then forced stop. Batch completed; workbook interface suite interrupted.",
+  "GlobalAcceptance": "NOT_PASSED"
 }

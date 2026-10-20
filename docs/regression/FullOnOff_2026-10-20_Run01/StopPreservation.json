@@ -1,0 +1,28 @@
+{
+  "StoppedUTC": "2026-10-20T18:25:42.2100555Z",
+  "SourceWorkbookSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "FrozenWorkbookSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "VBAAllCodeSHA256": "7503AAE16CEAF73362FFD3D38256741CB87269CE32301B472CE31D212398A044",
+  "UserExecutionReportSHA256": "A98E8983BCBC2777E860EAD9BFE98549C041E2B86065F023827741C504180544",
+  "RunnerChanged": false,
+  "SourceChanged": false,
+  "CopiedFixtureLogs": [
+    {
+      "Name": "Fixture_Audit03_Search_Progress.txt",
+      "Bytes": 16702,
+      "SHA256": "409B5C82221AB80D9F6ACAF38D2C26626DAE7E90222A293C45E0AE028CAB12FA"
+    },
+    {
+      "Name": "Fixture_RC_Section_NDM_execution_report.txt",
+      "Bytes": 13432,
+      "SHA256": "5C237496375194543E6259A176BC756F14F4DB968E695EDB002760024AA8C5A7"
+    }
+  ],
+  "CompletedSuites": 6,
+  "ObservedFailedAssertions": [
+    "FAIL: universalPath.constantAlreadyCracked.detailComment",
+    "FAIL: universalPath.constantAlreadyCracked.summaryComment",
+    "FAIL: generalGeometry.runtime; -2147217005; Не найден ключ Config Circle.Diameter"
+  ],
+  "SourceAndBookEditedDuringRun": false
+}

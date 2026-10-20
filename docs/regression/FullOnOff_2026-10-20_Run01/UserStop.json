@@ -1,0 +1,15 @@
+{
+  "StoppedUTC": "2026-10-20T18:25:42.2100555Z",
+  "Status": "STOPPED_BY_USER",
+  "StoppedProcessIds": [
+    184936,
+    144744,
+    208444,
+    176568,
+    176168
+  ],
+  "RemainingTestProcesses": [],
+  "UserAutoCADPreserved": true,
+  "UserAutoCADStart": "2026-10-19T18:48:19.989515+03:00",
+  "Reason": "User requested nearest logical completion within 10 minutes, then forced stop. Batch completed; workbook interface suite interrupted."
+}

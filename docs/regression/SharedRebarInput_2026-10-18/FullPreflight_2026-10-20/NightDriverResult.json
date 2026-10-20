@@ -1,0 +1,23 @@
+{
+  "Status": "STOPPED_BY_USER",
+  "DriverPID": 184936,
+  "DriverStartTicks": 639281156103028117,
+  "Started": "2026-10-20T20:53:30.7209858+03:00",
+  "Deadline": "2026-10-21T10:00:00+03:00",
+  "EvidenceDirectory": "docs/regression/FullOnOff_2026-10-20_Run01",
+  "SourceSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "ConfigPID": 209872,
+  "ConfigStartTicks": 639281142568628275,
+  "DriverExit": null,
+  "SummaryExit": 1,
+  "CombinedExit": 1,
+  "ConfigPassedAssertions": 10419,
+  "PreflightFinished": "2026-10-20T21:05:16.6815265+03:00",
+  "StoppedUTC": "2026-10-20T18:25:42.2100555Z",
+  "StopReason": "User requested nearest logical completion within 10 minutes, then forced stop. Batch completed; workbook interface suite interrupted.",
+  "AutomaticRestart": false,
+  "GlobalAcceptance": "NOT_PASSED",
+  "DriverTerminatedByUser": true,
+  "SummaryStatus": "INCOMPLETE_OR_FAILED",
+  "ValidationMeaning": "Read-only log analysis after user-requested stop; tests were not resumed."
+}

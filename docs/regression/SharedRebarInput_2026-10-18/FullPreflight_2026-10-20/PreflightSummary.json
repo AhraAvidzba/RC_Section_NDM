@@ -246,5 +246,6 @@
   "ConfigCodeProvenance": "SharedContextEquality.json",
   "FullRunDirectory": "docs/regression/FullOnOff_2026-10-20_Run01",
   "FullRunStartedUTC": "2026-10-20T18:05:18.5956755+00:00",
-  "FullRunAcceptance": "RUNNING_NOT_YET_ACCEPTED"
+  "FullRunAcceptance": "STOPPED_BY_USER_NOT_ACCEPTED",
+  "FullRunStoppedUTC": "2026-10-20T18:25:42.2100555Z"
 }
