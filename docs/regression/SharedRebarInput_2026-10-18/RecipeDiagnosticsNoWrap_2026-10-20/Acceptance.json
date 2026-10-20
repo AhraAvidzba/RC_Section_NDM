@@ -1,0 +1,61 @@
+{
+  "Passed": true,
+  "Scope": "Results formatting only",
+  "FullRunsStarted": false,
+  "ChangedCodeComponents": [
+    "CNDMResultsWriter"
+  ],
+  "CodeLinesChanged": 1,
+  "SavedCellWrapText": false,
+  "AfterPreviewWrapText": false,
+  "RowHeight": 15,
+  "FullDiagnosticTextPreserved": true,
+  "AnnotationSnapshotAssertions": 24,
+  "InputAndResultValuesPreserved": true,
+  "PendingPreflightTestEditsPublished": false,
+  "WorkbookSHA256": "3D3EEBCFE195CB521CAA4F4DAA677D368333E8CBBB765F2BC7E5FD80286D5AE7",
+  "AllCodeSHA256": "3DC8F5AE6D45CC507B78EE7A2AEFE00749FFB04A3402E5641EEF993C00FDDD5B",
+  "EvidenceSHA256": "0B5FE23E58E5F969BB8571383F2518BE9CF7D8DF642BDE908EE338AA021964DD",
+  "Files": [
+    {
+      "Path": "Package.json",
+      "SHA256": "8EC43E6A4B9778F89274A7DF7E21234C19E59F81157A1F4A4504F5EB367CBF5B"
+    },
+    {
+      "Path": "ComponentPreservation.json",
+      "SHA256": "76B560CCBF3EF4E2EAC744B43164F9A0ED09CB14E3A7833180106AA13F5F7DE6"
+    },
+    {
+      "Path": "FormattingVerification.json",
+      "SHA256": "0F485E5F37DFA7A39162FAD358434DA07086747BE47479199A0EAC512B874619"
+    },
+    {
+      "Path": "Publication.json",
+      "SHA256": "F2C481791A7DF45CDD763718B436BD82FA056AF788C3C2C03321B9EBC1191296"
+    },
+    {
+      "Path": "NativeSnapshot.txt",
+      "SHA256": "7FBB480FCA62346DDE217B3F0905E8C18BAA7DEB4B2C363CC6C063379986ECA9"
+    },
+    {
+      "Path": "AnnotationSnapshot.txt",
+      "SHA256": "419CC6207180637297EFB210B0EF03EB18EF8043FCEB5169C873B6E244034832"
+    },
+    {
+      "Path": "CodeUpdate.json",
+      "SHA256": "C64FA00A8ABE96809D71FAC16AAFACD1D976A9B123F05FC84DAC1A040B308D3C"
+    },
+    {
+      "Path": "Verify-RecipeDiagnosticsNoWrap.ps1",
+      "SHA256": "1C966BFC052C4A30C284D30AC1FCBA5A1ED72E6854A2BD1FE71DB66BCA8CC735"
+    },
+    {
+      "Path": "Package-RecipeDiagnosticsNoWrap.py",
+      "SHA256": "6E856A234BA90CC3475D70A4A5BEFA6161919676DA26264C4EA0CFA9440D23B0"
+    },
+    {
+      "Path": "Compare-NoWrapComponents.ps1",
+      "SHA256": "EE946F71FC0CD7C6CE15E8F8ECD381E341471C494C514E276B4A8ABC8AE9E080"
+    }
+  ]
+}

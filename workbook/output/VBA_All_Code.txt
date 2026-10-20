@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-19 19:54:25
+Date: 2026-10-20 10:10:09
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -45317,7 +45317,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CNDMResultsWriter
 TYPE: 2
-LINES: 1578
+LINES: 1580
 ====================================================================================================
 Option Explicit
 
@@ -45382,7 +45382,7 @@ End Function
 ' ------------------------------
 ' Очищает прежние расчётные данные и записывает согласованные таблицы:
 ' геометрию, результаты элементов, свойства сечения, диаграммы материалов и аннотации.
-Public Sub writeResults(ByVal Workbook As Object, ByVal section As CSectionModel, _
+Public Sub WriteResults(ByVal Workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
         Optional ByVal units As CUnitSystem = Nothing)
     If Workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
@@ -46392,6 +46392,7 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     tableRange.VerticalAlignment = -4108
     tableRange.font.name = "Arial"
     tableRange.font.size = 9
+    If rowCount > 1 Then tableRange.Offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
     tableRange.rows.RowHeight = 15
     tableRange.Borders.LineStyle = 1
     tableRange.Borders.color = RGB(200, 200, 200)
@@ -46896,6 +46897,7 @@ End Function
 Private Function MinDouble(ByVal a As Double, ByVal b As Double) As Double
     If a < b Then MinDouble = a Else MinDouble = b
 End Function
+
 
 
 ====================================================================================================
@@ -57057,7 +57059,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     report.AddStep "Начата запись результатов расчёта, геометрии и диаграмм в Results."
-    ndmWriter.writeResults Workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units
+    ndmWriter.WriteResults Workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
     report.AddSection "Схема"
@@ -61588,7 +61590,7 @@ Private Sub PrepareResults(ByRef stats As TCadStats, ByVal system As Object, ByV
     ' Определяющее сочетание Worst должно относиться к текущим тестовым результатам,
     ' а не к прежнему пользовательскому расчёту или другому тесту.
     Set summaryWriter = New CBatchResultWriter: summaryWriter.WriteSummary ThisWorkbook, batch
-    Set writer = New CNDMResultsWriter: writer.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
 End Sub
 
 ' Сравнивает фактические подписи и выбор цвета/слоя всех физических состояний,
@@ -62516,7 +62518,7 @@ Private Sub PrepareNativeImportedSnapshot(ByRef stats As TCadStats, ByVal system
     Check stats, prefix & ".snapshot.state", batch.ResultAt(1).DirectStateMeta.InternalStatus = rsSuccess
     If batch.ResultAt(1).DirectStateMeta.InternalStatus <> rsSuccess Then _
         Err.Raise vbObjectError + 4499, "PrepareNativeImportedSnapshot", "Не получено допустимое НДС импортированной формы: " & batch.ResultAt(1).DirectStateMeta.resultComment
-    Set writer = New CNDMResultsWriter: writer.writeResults ThisWorkbook, model, PrepareSectionSnapshot(model, provider), batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, model, PrepareSectionSnapshot(model, provider), batch, units
 End Sub
 
 ' Создает фактический замкнутый polygon Region в WCS-плоскости собственного
@@ -65427,7 +65429,7 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
         fixture.names.Add CStr(names(i)), "=Results!" & sheet.cells(20, CLng(columns(i))).address
     Next i
     sheet.columns(1).ColumnWidth = 7#: sheet.columns(12).ColumnWidth = 13#
-    Set writer = New CNDMResultsWriter: writer.writeResults fixture, section, props, batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults fixture, section, props, batch, units
     Set saved = New Collection
     For Each name In names
         data = PostAudit03ReadSnapshotTable(fixture, CStr(name)): saved.Add data
@@ -65436,7 +65438,7 @@ Public Function RunPostAudit03SnapshotRepeatTests() As String
     SetSystemSetting "Solver.MaxIterations", "1"
     unitRange.cells(2, 2).value2 = "cm": unitRange.cells(2, 4).value2 = "m"
     For i = 1 To 2
-        writer.writeResults fixture, section, props, batch, units
+        writer.WriteResults fixture, section, props, batch, units
         For col = 0 To UBound(names)
             data = PostAudit03ReadSnapshotTable(fixture, CStr(names(col))): before = saved.item(col + 1)
             AssertTrue stats, "postAudit03.repeat.shape." & CStr(i) & "." & CStr(col), _
@@ -65517,7 +65519,7 @@ Public Function RunPlateauResultsDiagramTests() As String
             Else
                 SetSystemSetting "General.PlateauSlopeFactor", "0.001"
             End If
-            writer.writeResults fixture, section, props, batch, units
+            writer.WriteResults fixture, section, props, batch, units
             data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
             AssertTrue stats, prefix & ".pointRows", UBound(data, 1) > 1
             For row = 2 To UBound(data, 1)
@@ -65602,7 +65604,7 @@ Public Function RunUnboundedDiagramResultsTests() As String
     Next i
     Set writer = New CNDMResultsWriter: Set props = PrepareSectionSnapshot(section, materials)
     solves = SectionEquilibriumSolveCount()
-    writer.writeResults fixture, section, props, batch, units
+    writer.WriteResults fixture, section, props, batch, units
     AssertTrue stats, "unbounded.results.noNewSolve", SectionEquilibriumSolveCount() = solves
     data = PostAudit03ReadSnapshotTable(fixture, "rngNDMMaterialDiagrams")
     AssertTrue stats, "unbounded.results.noDuplicateDiagrams", UBound(data, 1) = 1 + concrete.pointCount + steel.pointCount
@@ -82532,7 +82534,7 @@ Private Sub CheckBatchPair(ByVal first As CSectionModel, ByVal second As CSectio
     Check "batch.SP35", b.ResultAt(2).crackResult.width.StandardCode = "SP35"
     Near "batch.actualRegionArea", b.ResultAt(2).crackResult.width.Abt, b.ResultAt(2).crackResult.width.InteractionRegion.area, 0.00000001
     Set writer = New CNDMResultsWriter
-    writer.writeResults ThisWorkbook, second, PrepareSectionSnapshot(second, provider), b, units
+    writer.WriteResults ThisWorkbook, second, PrepareSectionSnapshot(second, provider), b, units
     Dim restored As CSectionModel
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
     Check "batch.fullWriterSource", restored.ConcreteMeshSource = "AutoCADContours"
@@ -94288,7 +94290,7 @@ Public Function RunAudit03SummaryWriterDiagnosticTests(Optional ByVal writerName
                 stability.WriteSummary ThisWorkbook, batch, units
             Case "Snapshot"
                 snapshot.ClearResults ThisWorkbook
-                snapshot.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
+                snapshot.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
             Case "Preview"
                 snapshot.ClearResults ThisWorkbook
                 snapshot.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section), units
@@ -96498,7 +96500,7 @@ Public Function MeasurePerformanceBatch(ByVal mode As String) As String
         Set summaryWriter = New CBatchResultWriter: Set ndm = New CNDMResultsWriter
         t = PerformanceNow(): Set props = PrepareSectionSnapshot(section, provider): packing = SecondsSince(t)
         t = PerformanceNow(): summaryWriter.WriteSummary ThisWorkbook, batch, units, section: summary = SecondsSince(t)
-        t = PerformanceNow(): ndm.writeResults ThisWorkbook, section, props, batch, units: snapshot = SecondsSince(t)
+        t = PerformanceNow(): ndm.WriteResults ThisWorkbook, section, props, batch, units: snapshot = SecondsSince(t)
         t = PerformanceNow()
         If settings.GetRequiredBoolean("Plot.Enabled") And settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation") Then
             If batch.StateAvailableCount > 0 Then UpdateSectionPlotForWorkbook ThisWorkbook, False
@@ -99789,7 +99791,7 @@ Private Sub TestVisualization(ByRef stats As TProfileStats, ByVal source As Obje
         EnableChecks source, profile, "Yes", "Yes", "Yes", "No"
         SetLoad loads, profile, 200000#, 0#, 0#, "LambdaN"
         Set batch = ExecuteFixture(section, provider, settings, units)
-        Set writer = New CNDMResultsWriter: writer.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
+        Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
         before = ThisWorkbook.names.item("rngNDMElementResults").RefersToRange.CurrentRegion.value2
         solves = SectionEquilibriumSolveCount()
         SetTableValue system, "Plot.LoadCase", "PROFILE_CONFIG", 2
@@ -100591,7 +100593,7 @@ Public Function RunAudit03PresentationConfigTests(Optional ByRef passed As Long 
     section.annotations.AddRebarLabel "AuditRebar", -80#, -60#, 80#, -60#, 0#, -1#, "AUDIT_REBAR"
     SetLoad loads, 1, -50000#, 1000000#, 2000000#, "Auto"
     Set batch = ExecuteFixture(section, provider, settings, units)
-    Set writer = New CNDMResultsWriter: writer.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
     Set reader = New CSectionPlotDataReader: reader.LoadFromWorkbook ThisWorkbook, settings
     before = ThisWorkbook.names.item("rngNDMElementResults").RefersToRange.CurrentRegion.value2
     solves = SectionEquilibriumSolveCount()
@@ -107811,7 +107813,7 @@ Public Function RunSP35WorkbookTests(Optional ByVal ownedApplication As Object =
     Check "SP35.writer.inactiveSP63", anchor.Offset(0, 66).value2 = "N/A"
     Check "SP35.writer.failureColor", anchor.Offset(1, 43).Interior.color <> anchor.Offset(0, 43).Interior.color
     Check "SP35.writer.emptySeparators", Len(CStr(anchor.Offset(0, 29).value2)) = 0 And Len(CStr(anchor.Offset(0, 44).value2)) = 0
-    Set writer = New CNDMResultsWriter: writer.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
+    Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
     Set annotations = ThisWorkbook.names.item("rngNDMSectionAnnotations").RefersToRange
     Check "SP35.annotation.ownerHeader", annotations.Offset(0, 13).value2 = "CombinationID"
     Check "SP35.annotation.roleHeader", annotations.Offset(0, 17).value2 = "LoopRole"
@@ -108883,7 +108885,7 @@ Public Function RunSP35EndToEndTests() As String
         Set presentationUnits = New CUnitSystem: presentationUnits.LoadFromSettings settings
         Set summary = New CCrackSummaryWriter: summary.WriteSummary ThisWorkbook, batch, presentationUnits
         Set batchWriter = New CBatchResultWriter: batchWriter.WriteSummary ThisWorkbook, batch, presentationUnits
-        Set writer = New CNDMResultsWriter: writer.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, presentationUnits
+        Set writer = New CNDMResultsWriter: writer.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, presentationUnits
         Set anchor = ThisWorkbook.names.item("rngCrackSummaryAnchor").RefersToRange
         For i = 1 To 6
             Check "E2E.writer." & CStr(standard) & "." & CStr(i) & ".comment", CStr(anchor.Offset(i - 1, 1).value2) = CalculationResultMessage(batch, i, batch.ResultAt(i).CrackSummaryMeta)
@@ -112862,7 +112864,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ
 ' Общая подготовка независимого диагностического сценария без основного UI.
-Private Function RunAudit02WorkbookPhases(ByVal writeResults As Boolean) As String
+Private Function RunAudit02WorkbookPhases(ByVal WriteResults As Boolean) As String
     On Error GoTo Failed
     PrepareCircleInput
     SetSystemSetting "General.ExecutionReportEnabled", "No"
@@ -112897,7 +112899,7 @@ Private Function RunAudit02WorkbookPhases(ByVal writeResults As Boolean) As Stri
     batch.Execute
     RunAudit02WorkbookPhases = "INFO: batchOnly; status=" & batch.ResultAt(1).status & _
         "; elapsedSec=" & FormatNumberInvariant(Timer - started) & "; solves=" & CStr(batch.SolverCallCount)
-    If writeResults Then
+    If WriteResults Then
         Dim stats As TUiTestStats
         AppendLine stats, "RUN: batch " & Audit02ExcelMemory()
         Dim strengthWriter As CStrengthSummaryWriter
@@ -112918,7 +112920,7 @@ Private Function RunAudit02WorkbookPhases(ByVal writeResults As Boolean) As Stri
         AppendLine stats, "RUN: summary " & Audit02ExcelMemory()
         Dim ndmWriter As CNDMResultsWriter
         Set ndmWriter = New CNDMResultsWriter
-        ndmWriter.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, materials), batch, units
+        ndmWriter.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, materials), batch, units
         AppendLine stats, "RUN: NDM " & Audit02ExcelMemory()
         RunAudit02WorkbookPhases = RunAudit02WorkbookPhases & vbCrLf & stats.report
     End If
@@ -114399,7 +114401,7 @@ Private Sub TestAudit03UnitSignEquivalence(ByRef stats As TUiTestStats, Optional
                 curvatureFactor = IIf((caseIndex Mod 2) = 0, 1#, 0.001)
                 Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
                 units.LoadFromSettings settings
-                snapshot.writeResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
+                snapshot.WriteResults ThisWorkbook, section, PrepareSectionSnapshot(section, provider), batch, units
                 If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".snapshot.done; " & Audit02ExcelMemory()
                 summary.WriteSummary ThisWorkbook, batch, units, section
                 If stopAfterCases > 0 Then AppendLine stats, "RUN: " & prefix & ".summary.done; " & Audit02ExcelMemory()

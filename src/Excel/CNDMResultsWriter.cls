@@ -1080,6 +1080,7 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     tableRange.VerticalAlignment = -4108
     tableRange.Font.Name = "Arial"
     tableRange.Font.Size = 9
+    If rowCount > 1 Then tableRange.Offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
     tableRange.Rows.RowHeight = 15
     tableRange.Borders.LineStyle = 1
     tableRange.Borders.Color = RGB(200, 200, 200)
