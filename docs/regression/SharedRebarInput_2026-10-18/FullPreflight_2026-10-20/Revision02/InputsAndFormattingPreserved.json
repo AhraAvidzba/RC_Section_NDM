@@ -1,0 +1,12 @@
+{
+  "Passed": true,
+  "BeforeSHA256": "4A7AA472D46D0C2FBCAC9FACEBE526360F2D4B8F3785F1C7E55FC728B001DBFD",
+  "AfterSHA256": "C0C90E0CE773ACBDA37CD95F7BBE2EA15A9F86D52F82E8801E280B0DD66B48C2",
+  "AllWorksheetDataAndFormattingPreserved": true,
+  "ChangedPackageParts": [
+    "xl/workbook.xml",
+    "xl/vbaProject.bin",
+    "docProps/core.xml"
+  ],
+  "AllowedNormalization": "Style numbering, merge order, save path, revision ID and modified time only"
+}

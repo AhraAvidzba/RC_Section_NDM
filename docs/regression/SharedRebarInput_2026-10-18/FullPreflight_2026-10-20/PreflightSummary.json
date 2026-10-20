@@ -1,5 +1,5 @@
 {
-  "Status": "DIRECTED_PASS_CONFIG_RUNNING",
+  "Status": "PASSED_AFTER_TARGETED_CORRECTIONS",
   "ProductionWorkbookSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
   "OriginalExpectationsSuites": 58,
   "OriginalResults": [
@@ -240,6 +240,11 @@
   ],
   "CorrectedRepeat": "ReleaseFinal/CorrectedExpectations.txt",
   "ConfigPending": "Revision02/SharedConfig.txt",
-  "FullRunStarted": false,
-  "GlobalAcceptance": "NOT_CLAIMED"
+  "FullRunStarted": true,
+  "GlobalAcceptance": "NOT_CLAIMED",
+  "ConfigPassedAssertions": 10419,
+  "ConfigCodeProvenance": "SharedContextEquality.json",
+  "FullRunDirectory": "docs/regression/FullOnOff_2026-10-20_Run01",
+  "FullRunStartedUTC": "2026-10-20T18:05:18.5956755+00:00",
+  "FullRunAcceptance": "RUNNING_NOT_YET_ACCEPTED"
 }

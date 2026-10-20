@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "SharedBookSHA256": "C0C90E0CE773ACBDA37CD95F7BBE2EA15A9F86D52F82E8801E280B0DD66B48C2",
+  "PublishedBookSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "DifferentComponents": [
+    "modTestGeometryReview",
+    "modTestRecipeOperations"
+  ],
+  "ProductionCodeUnchanged": true,
+  "SharedEntryAndGeometryConfigModulesEquivalent": true,
+  "SharedPreflightDoesNotCallChangedProcedures": true,
+  "Normalization": "VBA identifier case outside string literals and comments only; all other characters exact",
+  "Note": "The only changed procedures are the corrected message test, saved-offset tests and their private helpers; Shared Config does not call them.",
+  "SharedModuleSHA256": {
+    "modTestGeometryConfig": "091BC0EEABACE043715E60E19A6C5FB695DC02DBD07A66CCACB468D5C102B207",
+    "modTestWorkbookInterface": "3DDF4CA624895F8CE4E737F8EE260FD6D83B74D06779ABC79B0E86D15F811599"
+  }
+}

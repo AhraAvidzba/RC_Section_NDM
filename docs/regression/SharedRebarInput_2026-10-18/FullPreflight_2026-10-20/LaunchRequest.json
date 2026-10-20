@@ -1,0 +1,23 @@
+{
+  "Requested": "2026-10-20T20:54:08.5776716+03:00",
+  "Status": "FULL_RUNNING",
+  "DriverPID": 184936,
+  "DriverStartTicks": 639281156103028117,
+  "DriverScriptSHA256": "F819277A10C1BDDC7A51E8B8C9376A263DDCB107A73C19C5068108EF96604CB8",
+  "ConfigPID": 209872,
+  "ConfigStartTicks": 639281142568628275,
+  "SourceSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "SourceCommit": "d3e8e414a73064f4d3e0510b3febcda0fe082429",
+  "EvidenceDirectory": "docs/regression/FullOnOff_2026-10-20_Run01",
+  "Deadline": "2026-10-21T10:00:00+03:00",
+  "ForecastHours": 6,
+  "CoreSuites": 144,
+  "FocusedSingleCases": 122,
+  "IncludesBatch15": true,
+  "IncludesStabilityAndAsymmetricSteel": true,
+  "IncludesRealAutoCAD": true,
+  "IncludesIndependentNDS": true,
+  "AutomaticRestart": false,
+  "ActualStartedUTC": "2026-10-20T18:05:18.5956755+00:00",
+  "FullDriverPID": 144744
+}

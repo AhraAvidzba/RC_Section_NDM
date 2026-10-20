@@ -1,0 +1,50 @@
+{
+  "ArchiveSHA256": "EF34022A9AEEB1ABD6BFB186747A76F53B611F410642AC5B1E5260407F696D04",
+  "Files": [
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/NativeVBA.txt",
+      "Bytes": 7534815,
+      "SHA256": "3931402B35DF377D2159A57FB2F35BB4582521FFEA6FA9E9BC5E984231A44BE0"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/CodeUpdate.json",
+      "Bytes": 681,
+      "SHA256": "9838041A7A83EE56F65D58787996E4D6B0F07BA4F7CAF7B9277ABFA87C41D891"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/SharedConfig.txt",
+      "Bytes": 1108756,
+      "SHA256": "5BE521D090488A91743A421F81FE2C73456095AF524DB230300BB8413BDC23B5"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/SharedConfig.txt.progress.txt",
+      "Bytes": 1841736,
+      "SHA256": "14D5D05B7565D0B33C5BF0BDCC7E2E35422B471C28DA1DEE0933999C18D30656"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/SharedConfig.txt.Config_Preflight_Progress.txt",
+      "Bytes": 2077088,
+      "SHA256": "D6DABC142FE82F26A230E64B1D59F03275B181BE96C22FF793B94E1B4D48E7BE"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/SharedConfig.txt.Config_Preflight_Timeline.txt",
+      "Bytes": 1772,
+      "SHA256": "E1502943D9C416752A6E568BF253D0C63BC94E787AE5A048AB02060747938D22"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Revision02/InputsAndFormattingPreserved.json",
+      "Bytes": 463,
+      "SHA256": "E8DAD44675E920EF6C3F01565DB030A608E79EAEED58445933EF7319E42E1F4C"
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/SharedContextEquality.json",
+      "Bytes": 952,
+      "SHA256": "D5EF6700B955F59C01131A9B1A848347B5E5C451DA7619CA8A7524C02E6E7939"
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/CheckPreservation.py",
+      "Bytes": 3370,
+      "SHA256": "A80055A7AF1171510DB710B55428440BBF8996745CA70EB459F9D3AA7828A23B"
+    }
+  ]
+}
