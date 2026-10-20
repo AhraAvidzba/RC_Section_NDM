@@ -1,0 +1,25 @@
+{
+  "StartedUTC": "2026-10-20T21:04:07.2974556+00:00",
+  "PID": 98468,
+  "StartTicks": 639281270472578815,
+  "SourceCommit": "8d07b082ccdbbeb6a1b02ab05cb33ec4888f275f",
+  "SourceSHA256": "8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911",
+  "Deadline": "2026-10-21T10:00:00+03:00",
+  "ForecastHours": 6,
+  "ForecastCompletionMSK": "2026-10-21T06:04:07.3910862+03:00",
+  "EvidenceDirectory": "docs/regression/FullOnOff_2026-10-21_Run01",
+  "CoverageVersion": 3,
+  "ExpectedOnOffSuites": 156,
+  "IncludesFocusedAcceptance": true,
+  "StatusAtConfirmation": "RUNNING",
+  "CurrentJobAtConfirmation": "Full_Off",
+  "MonitorId": "ndm",
+  "MonitorStatus": "ACTIVE",
+  "UserProcessesPreserved": [
+    {
+      "ProcessId": 111536,
+      "Name": "acad.exe",
+      "CreationDate": "2026-10-19T18:48:19.989515+03:00"
+    }
+  ]
+}
