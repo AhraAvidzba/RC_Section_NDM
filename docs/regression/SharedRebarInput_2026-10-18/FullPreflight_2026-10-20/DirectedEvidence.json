@@ -1,0 +1,91 @@
+{
+  "ArchiveSHA256": "8A3AA5317ACFF28DF782B822CF967C8839B3F91AF9D0EE4DC25987D23CDAD55F",
+  "Files": [
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Expectations.txt",
+      "SHA256": "9A0A2C2A2C3505200E74BEBEACA0D3CD462068BC326CA6894AEF225BD790F84A",
+      "Bytes": 4537214
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/ExpectationPlan.json",
+      "SHA256": "AD7A3E5A8355817E699FA3C7E6887717D14819AEA37B954B2A1E51E1F8EC9BC1",
+      "Bytes": 3448
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/NativeVBA.txt",
+      "SHA256": "2DB99A2F739ABD2247411946A89A68849F4C340B7F479FD87FD48708E633D8FE",
+      "Bytes": 7534713
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/SourceEquality.json",
+      "SHA256": "7F23AD4891CA7B171DDC760B23418C0D78EEA055F21A0C972ABF7FAA62F6F954",
+      "Bytes": 74991
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/PublishedNativeVBA.txt",
+      "SHA256": "7503AAE16CEAF73362FFD3D38256741CB87269CE32301B472CE31D212398A044",
+      "Bytes": 7537159
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/PublishedSourceEquality.json",
+      "SHA256": "476B6CF93EE421C67C3FF029A00727CFA09EAC6B14B71A36365E8C16D58373F6",
+      "Bytes": 74991
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/Release/SavedOffsets.txt",
+      "SHA256": "4311DB5FC6AFAFE40B8C7104C3F94ED6C2DF0AAA0FE017B692818FC595FF7845",
+      "Bytes": 4184
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/ReleaseFinal/NativeVBA.txt",
+      "SHA256": "46AE2EF416A00B7A47D025635CA5C6C6926E6CD5B0621F61D47CD18663A7F4F9",
+      "Bytes": 7537159
+    },
+    {
+      "Path": "SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/ReleaseFinal/SourceEquality.json",
+      "SHA256": "A36611FFB547D81375C2B989E251C01BD81A31F3B6A765AF5C694E78694519DD",
+      "Bytes": 74991
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/SharedConfig.txt",
+      "SHA256": "7EBF3C891B3F7E1C3CCD2AF38006B370A5F34D803F5F888449C3F68EA8224A9C",
+      "Bytes": 885
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/SharedConfig.txt.progress.txt",
+      "SHA256": "32731E69943FEBE13C6822BAFFBA95CE74FBA3FE6DF984C96EF9B9716E2BC1C9",
+      "Bytes": 1254028
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/SharedConfig.txt.Config_Preflight_Progress.txt",
+      "SHA256": "0221A973D608B5DCBCF83D23ED6DFFB22BFAECD69A2C99CDBA71B0C6900CD8B1",
+      "Bytes": 234322
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/SharedConfig.txt.Config_Preflight_Timeline.txt",
+      "SHA256": "FD9B132B543E3A640E26C45A663E332D4ED89A42C54307615A51AC1B76307277",
+      "Bytes": 1534
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/CodeUpdate.json",
+      "SHA256": "C788EBAACFB1F7EEA91966586AD42340E6CCC13D935726F038BCB4303E504DEB",
+      "Bytes": 654
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/Preservation.json",
+      "SHA256": "A3BB107DC91E6E18DFB899E897FDA2B1A2E1A51CDB4DDE6A31399FA4474D2EDB",
+      "Bytes": 584
+    },
+    {
+      "Path": "FullOnOff_2026-10-20_ConfigPreflight01/MacroCoverage.json",
+      "SHA256": "09CCC82F69F106685213F0D1FD33A4EBF9EC48988B2C8EABE371A3B52EA722A0",
+      "Bytes": 198
+    },
+    {
+      "Path": "PreviousVBA_All_Code.txt",
+      "SHA256": "20EFDD5C8C7FDECD0582AEE1A9E142281DE515A620ACDF61ACA9FD24FA157146",
+      "Bytes": 7532824
+    }
+  ],
+  "ContainsFailedExploratoryAttempts": true
+}

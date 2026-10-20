@@ -262,10 +262,11 @@ Public Function RunCollapsedInputMessageTests() As String
     Next scenario
     message = CollapsedExtraRowMessage()
     Check "collapsed.extra.inputError", Left$(message, 11) = "INPUT_ERROR"
-    Check "collapsed.extra.row", InStr(message, "Круг: дополнительный ряд арматуры 2") > 0
+    Check "collapsed.extra.row", InStr(message, "Круг:" & vbCrLf & "Дополнительный ряд арматуры 2") > 0
     Check "collapsed.extra.cause", InStr(message, "центры стержней достигают центра дуги") > 0
     Check "collapsed.extra.values", InStr(message, "радиус линии основного ряда — 110") > 0
     Check "collapsed.extra.source", InStr(message, "Geometry[") > 0
+    mReport = mReport & "OBSERVED_COLLAPSED_EXTRA: " & Replace(message, vbCrLf, " | ") & vbCrLf
     RunCollapsedInputMessageTests = mReport & "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 

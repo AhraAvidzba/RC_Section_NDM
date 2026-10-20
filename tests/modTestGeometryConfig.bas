@@ -1365,8 +1365,9 @@ Private Function RebarFaceFields(ByVal shape As String, ByVal face As Variant) A
 End Function
 
 ' Задает достаточно просторные прямые контуры и пять базовых стержней каждой
-' грани. Дополнительные ряды при необходимости имеют разные диаметры 12/10;
-' стержни не касаются соседних линий, поэтому count-oracle не зависит от дублей.
+' грани. Дополнительные ряды при необходимости имеют разные диаметры 12/10.
+' Концевые отступы 100 мм оставляют запас для контактного смещения до 35 мм:
+' здесь проверяем поля ввода, а пропуски у углов — в RunFullBoundaryOffsetTests.
 Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As String, ByVal extras As Boolean)
     FixtureSelectRecipeType ThisWorkbook, shape
     ConfigureShape target, shape
@@ -1391,8 +1392,8 @@ Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As St
         mainRow = CLng(face(1)): extraRow = CLng(face(2))
         RebarFieldCell(target, extraRow, 4).Value2 = 0#: RebarFieldCell(target, extraRow, 8).Value2 = 0#
         RebarFieldCell(target, mainRow, 3).Value2 = 50#: RebarFieldCell(target, mainRow, 4).Value2 = 16#
-        If Left$(CStr(face(0)), 8) <> "Opening." Then RebarFieldCell(target, mainRow, 5).Value2 = 5
-        If shape = "Rectangles" Then
+        If Left$(CStr(face(0)), 8) <> "Opening." Then
+            RebarFieldCell(target, mainRow, 5).Value2 = 5
             RebarFieldCell(target, mainRow, 6).Value2 = 100#: RebarFieldCell(target, mainRow, 7).Value2 = 100#
         End If
         If extras Then

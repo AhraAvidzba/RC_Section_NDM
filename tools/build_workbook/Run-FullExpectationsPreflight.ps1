@@ -1,6 +1,7 @@
 ﻿# Проверяет геометрические ожидания и подготовку нагрузок до долгой полной приёмки.
 param([Parameter(Mandatory=$true)][string]$EvidenceDirectory,
-      [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm')
+      [string]$SourceWorkbook='workbook/output/RC_Section_NDM.xlsm',
+      [string]$SharedConfigReport='')
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $directory=[IO.Path]::GetFullPath((Join-Path $root $EvidenceDirectory))
@@ -17,16 +18,37 @@ foreach($group in @('geometry','sp35','recipes')){
     if(-not $section.Success){throw "Missing full group: $group"}
     $macros+=@([regex]::Matches($section.Groups[1].Value,"'([^']+)'" ) | ForEach-Object {$_.Groups[1].Value})
 }
-$macros+=@('modTestWorkbookInterface.RunSharedConfigPreflightTests','modTestWorkbookInterface.RunConfigPresentationTests',
+$macros+=@('modTestWorkbookInterface.RunConfigPresentationTests',
     'modTestGeometryReview.RunGeometryReviewTests','modTestRecipeOperations.RunCollapsingOffsetTests','modTestRecipeOperations.RunFullBoundaryOffsetTests')
 $macros=@($macros | Select-Object -Unique)
-$plan=[ordered]@{SourceSHA256=$hash;SourceWorkbook=$source;Started=(Get-Date).ToString('o');Macros=$macros;Status='RUNNING';Results=@()}
+$plan=[ordered]@{SourceSHA256=$hash;SourceWorkbook=$source;Started=(Get-Date).ToString('o');Macros=(@('modTestWorkbookInterface.RunSharedConfigPreflightTests')+$macros);Status='RUNNING';Results=@()}
 function Save-Plan{$plan | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $directory 'Preflight.json') -Encoding UTF8}
 Save-Plan
-foreach($job in @(
-    @{ID='Expectations';Mode='No';Geometry='Rectangles';Macros=$macros;Seconds=1800},
+$sharedMacro='modTestWorkbookInterface.RunSharedConfigPreflightTests'
+$jobs=@()
+if($SharedConfigReport){
+    # Повтор не нужен, если отдельный завершённый тест проверял те же байты книги.
+    $sharedPath=(Resolve-Path -LiteralPath (Join-Path $root $SharedConfigReport)).Path
+    if(-not $sharedPath.StartsWith((Join-Path $root 'docs/regression')+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Config evidence must stay inside docs/regression.'}
+    $body=[IO.File]::ReadAllText($sharedPath,[Text.Encoding]::UTF8)
+    if($body -notmatch ('(?m)^SOURCE_SHA256: '+$hash+'\r?$') -or
+        -not $body.Contains('GLOBAL_MODE: General.DiagramExtension=No;') -or
+        ([regex]::Matches($body,'(?m)^SUITE_STARTED: ')).Count -ne 1 -or
+        $body -notmatch ('(?m)^SUITE_FINISHED: '+[regex]::Escape($sharedMacro)+';') -or
+        $body -notmatch '(?m)^TOTAL_SHARED_CONFIG_PREFLIGHT: passed=[1-9][0-9]*; failed=0\r?$' -or
+        $body -notmatch '(?m)^WATCHDOG_COMPLETED: exit=0; source unchanged=True\r?$' -or
+        $body -match '(?m)^(FAIL:|RUNTIME ERROR|SCRIPT ERROR|WATCHDOG_FAILURE|CLEANUP ERROR)'){throw 'The separate Config check is incomplete, failed, or used another workbook.'}
+    Copy-Item -LiteralPath $sharedPath -Destination (Join-Path $directory 'SharedConfig.txt')
+    $plan.Results+=@{ID='SharedConfig';ExitCode=0;Passed=$true;Report=($EvidenceDirectory+'/SharedConfig.txt');Macros=@($sharedMacro);ReusedFrom=$SharedConfigReport;ReportSHA256=(Get-FileHash -LiteralPath $sharedPath).Hash}
+    Save-Plan
+}else{
+    $jobs+=@{ID='SharedConfig';Mode='No';Geometry='Rectangles';Macros=@($sharedMacro);Seconds=3600}
+}
+$jobs+=@(
+    @{ID='Expectations';Mode='No';Geometry='Rectangles';Macros=$macros;Seconds=3600},
     @{ID='SavedOffsets';Mode='No';Geometry='PointedSection';Macros=@('modTestRecipeOperations.RunSavedPointedOffsetTests','modTestRecipeOperations.RunSavedOffsetCalculationTests');Seconds=180}
-)){
+)
+foreach($job in $jobs){
     $report=$EvidenceDirectory+'/'+$job.ID+'.txt'
     & (Join-Path $PSHOME 'powershell.exe') -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1') -SourceWorkbook $frozen -ReportPath $report -Macro ($job.Macros -join ',') -Mode $job.Mode -FixtureGeometryType $job.Geometry -TimeoutSeconds $job.Seconds
     $exit=$LASTEXITCODE

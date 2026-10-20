@@ -2,3 +2,4 @@
 workbook/output/VBA_All_Code.txt -text -diff
 # Нативные журналы сверяются по SHA256: сохраняем исходные переводы строк и пробелы.
 docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/*.txt -text -diff
+docs/regression/SharedRebarInput_2026-10-18/FullPreflight_2026-10-20/**/*.txt -text -diff

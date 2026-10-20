@@ -1,0 +1,900 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SharedRebarInput_2026-10-18\FullPreflight_2026-10-20\ReleaseFinal\RC_Section_NDM.xlsm
+SOURCE_SHA256: 02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9adc928cbfa47b9b9b258bf8a8cbe46\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=128948; startTicks=639281148143247561
+EXPLICIT_GEOMETRY_FIXTURE: original=HollowRectangle; Geometry.Type=PointedSection; fixture only, source unchanged
+===== modTestGeometryReview.RunGeometryReviewTests =====
+SUITE_STARTED: modTestGeometryReview.RunGeometryReviewTests; 2026-10-20T20:40:19
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=128948; workingSet=176001024; privateBytes=125095936; cpu=43.609375
+EXCEL_AFTER_SUITE: pid=174988; workingSet=159965184; privateBytes=112803840; cpu=598.953125
+OK: F01.n3.reverseFalse.unique.1
+OK: F01.n3.reverseFalse.unique.2
+OK: F01.n3.reverseFalse.unique.3
+OK: F01.n3.reverseFalse.unique.4
+OK: F01.n3.reverseFalse.unique.5
+OK: F01.n3.reverseFalse.unique.6
+OK: F01.n3.reverseFalse.unique.7
+OK: F01.n3.reverseFalse.unique.8
+OK: F01.n3.reverseFalse.unique.9
+OK: F01.n3.reverseFalse.unique.10
+OK: F01.n3.reverseFalse.P1
+OK: F01.n3.reverseFalse.P2
+OK: F01.n3.reverseFalse.physical
+PER_PATH: F01.n3.reverseFalse; extra=2+2; physical=10
+OK: F01.n3.reverseTrue.unique.1
+OK: F01.n3.reverseTrue.unique.2
+OK: F01.n3.reverseTrue.unique.3
+OK: F01.n3.reverseTrue.unique.4
+OK: F01.n3.reverseTrue.unique.5
+OK: F01.n3.reverseTrue.unique.6
+OK: F01.n3.reverseTrue.unique.7
+OK: F01.n3.reverseTrue.unique.8
+OK: F01.n3.reverseTrue.unique.9
+OK: F01.n3.reverseTrue.unique.10
+OK: F01.n3.reverseTrue.P1
+OK: F01.n3.reverseTrue.P2
+OK: F01.n3.reverseTrue.physical
+PER_PATH: F01.n3.reverseTrue; extra=2+2; physical=10
+OK: F01.n15.reverseFalse.unique.1
+OK: F01.n15.reverseFalse.unique.2
+OK: F01.n15.reverseFalse.unique.3
+OK: F01.n15.reverseFalse.unique.4
+OK: F01.n15.reverseFalse.unique.5
+OK: F01.n15.reverseFalse.unique.6
+OK: F01.n15.reverseFalse.unique.7
+OK: F01.n15.reverseFalse.unique.8
+OK: F01.n15.reverseFalse.unique.9
+OK: F01.n15.reverseFalse.unique.10
+OK: F01.n15.reverseFalse.unique.11
+OK: F01.n15.reverseFalse.unique.12
+OK: F01.n15.reverseFalse.unique.13
+OK: F01.n15.reverseFalse.unique.14
+OK: F01.n15.reverseFalse.unique.15
+OK: F01.n15.reverseFalse.unique.16
+OK: F01.n15.reverseFalse.unique.17
+OK: F01.n15.reverseFalse.unique.18
+OK: F01.n15.reverseFalse.unique.19
+OK: F01.n15.reverseFalse.unique.20
+OK: F01.n15.reverseFalse.unique.21
+OK: F01.n15.reverseFalse.unique.22
+OK: F01.n15.reverseFalse.unique.23
+OK: F01.n15.reverseFalse.unique.24
+OK: F01.n15.reverseFalse.unique.25
+OK: F01.n15.reverseFalse.unique.26
+OK: F01.n15.reverseFalse.unique.27
+OK: F01.n15.reverseFalse.unique.28
+OK: F01.n15.reverseFalse.unique.29
+OK: F01.n15.reverseFalse.unique.30
+OK: F01.n15.reverseFalse.unique.31
+OK: F01.n15.reverseFalse.unique.32
+OK: F01.n15.reverseFalse.unique.33
+OK: F01.n15.reverseFalse.unique.34
+OK: F01.n15.reverseFalse.unique.35
+OK: F01.n15.reverseFalse.unique.36
+OK: F01.n15.reverseFalse.unique.37
+OK: F01.n15.reverseFalse.unique.38
+OK: F01.n15.reverseFalse.unique.39
+OK: F01.n15.reverseFalse.unique.40
+OK: F01.n15.reverseFalse.unique.41
+OK: F01.n15.reverseFalse.unique.42
+OK: F01.n15.reverseFalse.unique.43
+OK: F01.n15.reverseFalse.unique.44
+OK: F01.n15.reverseFalse.unique.45
+OK: F01.n15.reverseFalse.unique.46
+OK: F01.n15.reverseFalse.P1
+OK: F01.n15.reverseFalse.P2
+OK: F01.n15.reverseFalse.physical
+PER_PATH: F01.n15.reverseFalse; extra=8+8; physical=46
+OK: F01.n15.reverseTrue.unique.1
+OK: F01.n15.reverseTrue.unique.2
+OK: F01.n15.reverseTrue.unique.3
+OK: F01.n15.reverseTrue.unique.4
+OK: F01.n15.reverseTrue.unique.5
+OK: F01.n15.reverseTrue.unique.6
+OK: F01.n15.reverseTrue.unique.7
+OK: F01.n15.reverseTrue.unique.8
+OK: F01.n15.reverseTrue.unique.9
+OK: F01.n15.reverseTrue.unique.10
+OK: F01.n15.reverseTrue.unique.11
+OK: F01.n15.reverseTrue.unique.12
+OK: F01.n15.reverseTrue.unique.13
+OK: F01.n15.reverseTrue.unique.14
+OK: F01.n15.reverseTrue.unique.15
+OK: F01.n15.reverseTrue.unique.16
+OK: F01.n15.reverseTrue.unique.17
+OK: F01.n15.reverseTrue.unique.18
+OK: F01.n15.reverseTrue.unique.19
+OK: F01.n15.reverseTrue.unique.20
+OK: F01.n15.reverseTrue.unique.21
+OK: F01.n15.reverseTrue.unique.22
+OK: F01.n15.reverseTrue.unique.23
+OK: F01.n15.reverseTrue.unique.24
+OK: F01.n15.reverseTrue.unique.25
+OK: F01.n15.reverseTrue.unique.26
+OK: F01.n15.reverseTrue.unique.27
+OK: F01.n15.reverseTrue.unique.28
+OK: F01.n15.reverseTrue.unique.29
+OK: F01.n15.reverseTrue.unique.30
+OK: F01.n15.reverseTrue.unique.31
+OK: F01.n15.reverseTrue.unique.32
+OK: F01.n15.reverseTrue.unique.33
+OK: F01.n15.reverseTrue.unique.34
+OK: F01.n15.reverseTrue.unique.35
+OK: F01.n15.reverseTrue.unique.36
+OK: F01.n15.reverseTrue.unique.37
+OK: F01.n15.reverseTrue.unique.38
+OK: F01.n15.reverseTrue.unique.39
+OK: F01.n15.reverseTrue.unique.40
+OK: F01.n15.reverseTrue.unique.41
+OK: F01.n15.reverseTrue.unique.42
+OK: F01.n15.reverseTrue.unique.43
+OK: F01.n15.reverseTrue.unique.44
+OK: F01.n15.reverseTrue.unique.45
+OK: F01.n15.reverseTrue.unique.46
+OK: F01.n15.reverseTrue.P1
+OK: F01.n15.reverseTrue.P2
+OK: F01.n15.reverseTrue.physical
+PER_PATH: F01.n15.reverseTrue; extra=8+8; physical=46
+OK: F02.H1000.length.H.Left
+OK: F02.H1000.length.H.Right
+OK: F02.H1000.tenBars
+OK: F02.H1000.contour
+OK: F02.H1000.noDisabledLabel.1
+OK: F02.H1000.noDisabledLabel.2
+OK: F02.H1000.noDisabledLabel.3
+OK: F02.H1000.noDisabledLabel.4
+PASS: equilibrium.F02.H1000.1.0.converged
+PASS: equilibrium.F02.H1000.1.0.sum.N
+PASS: equilibrium.F02.H1000.1.0.sum.Mx
+PASS: equilibrium.F02.H1000.1.0.sum.My
+PASS: equilibrium.F02.H1000.1.0.residual.N; actual=-1.62981450557709E-09; expected=-1.62981450557709E-09
+PASS: equilibrium.F02.H1000.1.0.residual.Mx; actual=9.19913873076439E-07; expected=9.19913873076439E-07
+PASS: equilibrium.F02.H1000.1.0.residual.My; actual=2.11662154470105E-09; expected=2.11662154470105E-09
+PASS: equilibrium.F02.H1000.1.1.converged
+PASS: equilibrium.F02.H1000.1.1.sum.N
+PASS: equilibrium.F02.H1000.1.1.sum.Mx
+PASS: equilibrium.F02.H1000.1.1.sum.My
+PASS: equilibrium.F02.H1000.1.1.residual.N; actual=-1.28056854009628E-09; expected=-1.28056854009628E-09
+PASS: equilibrium.F02.H1000.1.1.residual.Mx; actual=6.10947608947754E-07; expected=6.10947608947754E-07
+PASS: equilibrium.F02.H1000.1.1.residual.My; actual=7.48059392208233E-10; expected=7.48059392208233E-10
+PASS: equilibrium.F02.H1000.1.2.converged
+PASS: equilibrium.F02.H1000.1.2.sum.N
+PASS: equilibrium.F02.H1000.1.2.sum.Mx
+PASS: equilibrium.F02.H1000.1.2.sum.My
+PASS: equilibrium.F02.H1000.1.2.residual.N; actual=-1.39698386192322E-09; expected=-1.39698386192322E-09
+PASS: equilibrium.F02.H1000.1.2.residual.Mx; actual=4.11411747336388E-07; expected=4.11411747336388E-07
+PASS: equilibrium.F02.H1000.1.2.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.H1000.1.3.converged
+PASS: equilibrium.F02.H1000.1.3.sum.N
+PASS: equilibrium.F02.H1000.1.3.sum.Mx
+PASS: equilibrium.F02.H1000.1.3.sum.My
+PASS: equilibrium.F02.H1000.1.3.residual.N; actual=-1.74622982740402E-09; expected=-1.74622982740402E-09
+PASS: equilibrium.F02.H1000.1.3.residual.Mx; actual=5.21540641784668E-07; expected=5.21540641784668E-07
+PASS: equilibrium.F02.H1000.1.3.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.F02.H1000.2.0.converged
+PASS: equilibrium.F02.H1000.2.0.sum.N
+PASS: equilibrium.F02.H1000.2.0.sum.Mx
+PASS: equilibrium.F02.H1000.2.0.sum.My
+PASS: equilibrium.F02.H1000.2.0.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.F02.H1000.2.0.residual.Mx; actual=-9.79984179139137E-07; expected=-9.79984179139137E-07
+PASS: equilibrium.F02.H1000.2.0.residual.My; actual=-9.16713815968251E-10; expected=-9.16713815968251E-10
+PASS: equilibrium.F02.H1000.2.1.converged
+PASS: equilibrium.F02.H1000.2.1.sum.N
+PASS: equilibrium.F02.H1000.2.1.sum.Mx
+PASS: equilibrium.F02.H1000.2.1.sum.My
+PASS: equilibrium.F02.H1000.2.1.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.H1000.2.1.residual.Mx; actual=-8.49366188049316E-07; expected=-8.49366188049316E-07
+PASS: equilibrium.F02.H1000.2.1.residual.My; actual=6.76209310768172E-10; expected=6.76209310768172E-10
+PASS: equilibrium.F02.H1000.2.2.converged
+PASS: equilibrium.F02.H1000.2.2.sum.N
+PASS: equilibrium.F02.H1000.2.2.sum.Mx
+PASS: equilibrium.F02.H1000.2.2.sum.My
+PASS: equilibrium.F02.H1000.2.2.residual.N; actual=-4.65661287307739E-10; expected=-4.65661287307739E-10
+PASS: equilibrium.F02.H1000.2.2.residual.Mx; actual=-1.06729567050934E-06; expected=-1.06729567050934E-06
+PASS: equilibrium.F02.H1000.2.2.residual.My; actual=3.72529029846191E-08; expected=3.72529029846191E-08
+PASS: equilibrium.F02.H1000.2.3.converged
+PASS: equilibrium.F02.H1000.2.3.sum.N
+PASS: equilibrium.F02.H1000.2.3.sum.Mx
+PASS: equilibrium.F02.H1000.2.3.sum.My
+PASS: equilibrium.F02.H1000.2.3.residual.N; actual=1.04773789644241E-09; expected=1.04773789644241E-09
+PASS: equilibrium.F02.H1000.2.3.residual.Mx; actual=-9.38773155212402E-07; expected=-9.38773155212402E-07
+PASS: equilibrium.F02.H1000.2.3.residual.My; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H1000.3.0.converged
+PASS: equilibrium.F02.H1000.3.0.sum.N
+PASS: equilibrium.F02.H1000.3.0.sum.Mx
+PASS: equilibrium.F02.H1000.3.0.sum.My
+PASS: equilibrium.F02.H1000.3.0.residual.N; actual=-2.91038304567337E-09; expected=-2.91038304567337E-09
+PASS: equilibrium.F02.H1000.3.0.residual.Mx; actual=-7.60424882173538E-07; expected=-7.60424882173538E-07
+PASS: equilibrium.F02.H1000.3.0.residual.My; actual=-2.02248884306755E-09; expected=-2.02248884306755E-09
+PASS: equilibrium.F02.H1000.3.1.converged
+PASS: equilibrium.F02.H1000.3.1.sum.N
+PASS: equilibrium.F02.H1000.3.1.sum.Mx
+PASS: equilibrium.F02.H1000.3.1.sum.My
+PASS: equilibrium.F02.H1000.3.1.residual.N; actual=1.16415321826935E-09; expected=1.16415321826935E-09
+PASS: equilibrium.F02.H1000.3.1.residual.Mx; actual=-9.08970832824707E-07; expected=-9.08970832824707E-07
+PASS: equilibrium.F02.H1000.3.1.residual.My; actual=-7.6397554948926E-10; expected=-7.6397554948926E-10
+PASS: equilibrium.F02.H1000.3.2.converged
+PASS: equilibrium.F02.H1000.3.2.sum.N
+PASS: equilibrium.F02.H1000.3.2.sum.Mx
+PASS: equilibrium.F02.H1000.3.2.sum.My
+PASS: equilibrium.F02.H1000.3.2.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.H1000.3.2.residual.Mx; actual=-8.13277438282967E-07; expected=-8.13277438282967E-07
+PASS: equilibrium.F02.H1000.3.2.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.H1000.3.3.converged
+PASS: equilibrium.F02.H1000.3.3.sum.N
+PASS: equilibrium.F02.H1000.3.3.sum.Mx
+PASS: equilibrium.F02.H1000.3.3.sum.My
+PASS: equilibrium.F02.H1000.3.3.residual.N; actual=8.14907252788544E-10; expected=8.14907252788544E-10
+PASS: equilibrium.F02.H1000.3.3.residual.Mx; actual=-7.15255737304688E-07; expected=-7.15255737304688E-07
+PASS: equilibrium.F02.H1000.3.3.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+OK: F02.H1000.workbook.run
+OK: F02.H1000.workbook.state
+WORKBOOK_RUN: F02.H1000; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.H1000
+OK: F02.H600.length.H.Left
+OK: F02.H600.length.H.Right
+OK: F02.H600.tenBars
+OK: F02.H600.contour
+OK: F02.H600.noDisabledLabel.1
+OK: F02.H600.noDisabledLabel.2
+OK: F02.H600.noDisabledLabel.3
+OK: F02.H600.noDisabledLabel.4
+PASS: equilibrium.F02.H600.1.0.converged
+PASS: equilibrium.F02.H600.1.0.sum.N
+PASS: equilibrium.F02.H600.1.0.sum.Mx
+PASS: equilibrium.F02.H600.1.0.sum.My
+PASS: equilibrium.F02.H600.1.0.residual.N; actual=1.97906047105789E-09; expected=1.97906047105789E-09
+PASS: equilibrium.F02.H600.1.0.residual.Mx; actual=1.78351911017671E-09; expected=1.78351911017671E-09
+PASS: equilibrium.F02.H600.1.0.residual.My; actual=-8.17408363218419E-10; expected=-8.17408363218419E-10
+PASS: equilibrium.F02.H600.1.1.converged
+PASS: equilibrium.F02.H600.1.1.sum.N
+PASS: equilibrium.F02.H600.1.1.sum.Mx
+PASS: equilibrium.F02.H600.1.1.sum.My
+PASS: equilibrium.F02.H600.1.1.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.H600.1.1.residual.Mx; actual=1.11758708953857E-07; expected=1.11758708953857E-07
+PASS: equilibrium.F02.H600.1.1.residual.My; actual=2.05216110771289E-09; expected=2.05216110771289E-09
+PASS: equilibrium.F02.H600.1.2.converged
+PASS: equilibrium.F02.H600.1.2.sum.N
+PASS: equilibrium.F02.H600.1.2.sum.Mx
+PASS: equilibrium.F02.H600.1.2.sum.My
+PASS: equilibrium.F02.H600.1.2.residual.N; actual=-1.16415321826935E-10; expected=-1.16415321826935E-10
+PASS: equilibrium.F02.H600.1.2.residual.Mx; actual=3.84261511499062E-10; expected=3.84261511499062E-10
+PASS: equilibrium.F02.H600.1.2.residual.My; actual=-4.4703483581543E-08; expected=-4.4703483581543E-08
+PASS: equilibrium.F02.H600.1.3.converged
+PASS: equilibrium.F02.H600.1.3.sum.N
+PASS: equilibrium.F02.H600.1.3.sum.Mx
+PASS: equilibrium.F02.H600.1.3.sum.My
+PASS: equilibrium.F02.H600.1.3.residual.N; actual=-2.3283064365387E-10; expected=-2.3283064365387E-10
+PASS: equilibrium.F02.H600.1.3.residual.Mx; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.H600.1.3.residual.My; actual=-1.11758708953857E-08; expected=-1.11758708953857E-08
+PASS: equilibrium.F02.H600.2.0.converged
+PASS: equilibrium.F02.H600.2.0.sum.N
+PASS: equilibrium.F02.H600.2.0.sum.Mx
+PASS: equilibrium.F02.H600.2.0.sum.My
+PASS: equilibrium.F02.H600.2.0.residual.N; actual=-5.82076609134674E-10; expected=-5.82076609134674E-10
+PASS: equilibrium.F02.H600.2.0.residual.Mx; actual=2.09644213100546E-09; expected=2.09644213100546E-09
+PASS: equilibrium.F02.H600.2.0.residual.My; actual=-1.12487441583653E-09; expected=-1.12487441583653E-09
+PASS: equilibrium.F02.H600.2.1.converged
+PASS: equilibrium.F02.H600.2.1.sum.N
+PASS: equilibrium.F02.H600.2.1.sum.Mx
+PASS: equilibrium.F02.H600.2.1.sum.My
+PASS: equilibrium.F02.H600.2.1.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.H600.2.1.residual.Mx; actual=5.96046447753906E-08; expected=5.96046447753906E-08
+PASS: equilibrium.F02.H600.2.1.residual.My; actual=9.46045020100428E-10; expected=9.46045020100428E-10
+PASS: equilibrium.F02.H600.2.2.converged
+PASS: equilibrium.F02.H600.2.2.sum.N
+PASS: equilibrium.F02.H600.2.2.sum.Mx
+PASS: equilibrium.F02.H600.2.2.sum.My
+PASS: equilibrium.F02.H600.2.2.residual.N; actual=-1.04773789644241E-09; expected=-1.04773789644241E-09
+PASS: equilibrium.F02.H600.2.2.residual.Mx; actual=5.64864421903621E-09; expected=5.64864421903621E-09
+PASS: equilibrium.F02.H600.2.2.residual.My; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.F02.H600.2.3.converged
+PASS: equilibrium.F02.H600.2.3.sum.N
+PASS: equilibrium.F02.H600.2.3.sum.Mx
+PASS: equilibrium.F02.H600.2.3.sum.My
+PASS: equilibrium.F02.H600.2.3.residual.N; actual=6.98491930961609E-10; expected=6.98491930961609E-10
+PASS: equilibrium.F02.H600.2.3.residual.Mx; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.H600.2.3.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+PASS: equilibrium.F02.H600.3.0.converged
+PASS: equilibrium.F02.H600.3.0.sum.N
+PASS: equilibrium.F02.H600.3.0.sum.Mx
+PASS: equilibrium.F02.H600.3.0.sum.My
+PASS: equilibrium.F02.H600.3.0.residual.N; actual=5.82076609134674E-10; expected=5.82076609134674E-10
+PASS: equilibrium.F02.H600.3.0.residual.Mx; actual=2.18960849451832E-10; expected=2.18960849451832E-10
+PASS: equilibrium.F02.H600.3.0.residual.My; actual=-1.31421984406188E-10; expected=-1.31421984406188E-10
+PASS: equilibrium.F02.H600.3.1.converged
+PASS: equilibrium.F02.H600.3.1.sum.N
+PASS: equilibrium.F02.H600.3.1.sum.Mx
+PASS: equilibrium.F02.H600.3.1.sum.My
+PASS: equilibrium.F02.H600.3.1.residual.N; actual=5.82076609134674E-10; expected=5.82076609134674E-10
+PASS: equilibrium.F02.H600.3.1.residual.Mx; actual=-1.11758708953857E-07; expected=-1.11758708953857E-07
+PASS: equilibrium.F02.H600.3.1.residual.My; actual=1.52488155436004E-09; expected=1.52488155436004E-09
+PASS: equilibrium.F02.H600.3.2.converged
+PASS: equilibrium.F02.H600.3.2.sum.N
+PASS: equilibrium.F02.H600.3.2.sum.Mx
+PASS: equilibrium.F02.H600.3.2.sum.My
+PASS: equilibrium.F02.H600.3.2.residual.N; actual=4.65661287307739E-10; expected=4.65661287307739E-10
+PASS: equilibrium.F02.H600.3.2.residual.Mx; actual=2.29124452744145E-09; expected=2.29124452744145E-09
+PASS: equilibrium.F02.H600.3.2.residual.My; actual=1.49011611938477E-08; expected=1.49011611938477E-08
+PASS: equilibrium.F02.H600.3.3.converged
+PASS: equilibrium.F02.H600.3.3.sum.N
+PASS: equilibrium.F02.H600.3.3.sum.Mx
+PASS: equilibrium.F02.H600.3.3.sum.My
+PASS: equilibrium.F02.H600.3.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.H600.3.3.residual.Mx; actual=1.49011611938477E-08; expected=1.49011611938477E-08
+PASS: equilibrium.F02.H600.3.3.residual.My; actual=0; expected=0
+OK: F02.H600.workbook.run
+OK: F02.H600.workbook.state
+WORKBOOK_RUN: F02.H600; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.H600
+OK: F02.H600.001.length.H.Left
+OK: F02.H600.001.length.H.Right
+OK: F02.H600.001.tenBars
+OK: F02.H600.001.contour
+OK: F02.H600.001.noDisabledLabel.1
+OK: F02.H600.001.noDisabledLabel.2
+OK: F02.H600.001.noDisabledLabel.3
+OK: F02.H600.001.noDisabledLabel.4
+PASS: equilibrium.F02.H600.001.1.0.converged
+PASS: equilibrium.F02.H600.001.1.0.sum.N
+PASS: equilibrium.F02.H600.001.1.0.sum.Mx
+PASS: equilibrium.F02.H600.001.1.0.sum.My
+PASS: equilibrium.F02.H600.001.1.0.residual.N; actual=1.62981450557709E-09; expected=1.62981450557709E-09
+PASS: equilibrium.F02.H600.001.1.0.residual.Mx; actual=-4.53565007774159E-08; expected=-4.53565007774159E-08
+PASS: equilibrium.F02.H600.001.1.0.residual.My; actual=5.07725417264737E-10; expected=5.07725417264737E-10
+PASS: equilibrium.F02.H600.001.1.1.converged
+PASS: equilibrium.F02.H600.001.1.1.sum.N
+PASS: equilibrium.F02.H600.001.1.1.sum.Mx
+PASS: equilibrium.F02.H600.001.1.1.sum.My
+PASS: equilibrium.F02.H600.001.1.1.residual.N; actual=-1.28056854009628E-09; expected=-1.28056854009628E-09
+PASS: equilibrium.F02.H600.001.1.1.residual.Mx; actual=1.63912773132324E-07; expected=1.63912773132324E-07
+PASS: equilibrium.F02.H600.001.1.1.residual.My; actual=-6.30393515166361E-10; expected=-6.30393515166361E-10
+PASS: equilibrium.F02.H600.001.1.2.converged
+PASS: equilibrium.F02.H600.001.1.2.sum.N
+PASS: equilibrium.F02.H600.001.1.2.sum.Mx
+PASS: equilibrium.F02.H600.001.1.2.sum.My
+PASS: equilibrium.F02.H600.001.1.2.residual.N; actual=0; expected=0
+PASS: equilibrium.F02.H600.001.1.2.residual.Mx; actual=-4.94151208840776E-09; expected=-4.94151208840776E-09
+PASS: equilibrium.F02.H600.001.1.2.residual.My; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.H600.001.1.3.converged
+PASS: equilibrium.F02.H600.001.1.3.sum.N
+PASS: equilibrium.F02.H600.001.1.3.sum.Mx
+PASS: equilibrium.F02.H600.001.1.3.sum.My
+PASS: equilibrium.F02.H600.001.1.3.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.H600.001.1.3.residual.Mx; actual=-7.45058059692383E-09; expected=-7.45058059692383E-09
+PASS: equilibrium.F02.H600.001.1.3.residual.My; actual=0; expected=0
+PASS: equilibrium.F02.H600.001.2.0.converged
+PASS: equilibrium.F02.H600.001.2.0.sum.N
+PASS: equilibrium.F02.H600.001.2.0.sum.Mx
+PASS: equilibrium.F02.H600.001.2.0.sum.My
+PASS: equilibrium.F02.H600.001.2.0.residual.N; actual=-1.28056854009628E-09; expected=-1.28056854009628E-09
+PASS: equilibrium.F02.H600.001.2.0.residual.Mx; actual=-4.95077756568207E-09; expected=-4.95077756568207E-09
+PASS: equilibrium.F02.H600.001.2.0.residual.My; actual=-6.6972916101804E-10; expected=-6.6972916101804E-10
+PASS: equilibrium.F02.H600.001.2.1.converged
+PASS: equilibrium.F02.H600.001.2.1.sum.N
+PASS: equilibrium.F02.H600.001.2.1.sum.Mx
+PASS: equilibrium.F02.H600.001.2.1.sum.My
+PASS: equilibrium.F02.H600.001.2.1.residual.N; actual=1.16415321826935E-10; expected=1.16415321826935E-10
+PASS: equilibrium.F02.H600.001.2.1.residual.Mx; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.H600.001.2.1.residual.My; actual=-1.13806208901224E-09; expected=-1.13806208901224E-09
+PASS: equilibrium.F02.H600.001.2.2.converged
+PASS: equilibrium.F02.H600.001.2.2.sum.N
+PASS: equilibrium.F02.H600.001.2.2.sum.Mx
+PASS: equilibrium.F02.H600.001.2.2.sum.My
+PASS: equilibrium.F02.H600.001.2.2.residual.N; actual=-5.82076609134674E-10; expected=-5.82076609134674E-10
+PASS: equilibrium.F02.H600.001.2.2.residual.Mx; actual=-1.20354570753989E-08; expected=-1.20354570753989E-08
+PASS: equilibrium.F02.H600.001.2.2.residual.My; actual=3.72529029846191E-09; expected=3.72529029846191E-09
+PASS: equilibrium.F02.H600.001.2.3.converged
+PASS: equilibrium.F02.H600.001.2.3.sum.N
+PASS: equilibrium.F02.H600.001.2.3.sum.Mx
+PASS: equilibrium.F02.H600.001.2.3.sum.My
+PASS: equilibrium.F02.H600.001.2.3.residual.N; actual=5.82076609134674E-10; expected=5.82076609134674E-10
+PASS: equilibrium.F02.H600.001.2.3.residual.Mx; actual=-3.72529029846191E-08; expected=-3.72529029846191E-08
+PASS: equilibrium.F02.H600.001.2.3.residual.My; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H600.001.3.0.converged
+PASS: equilibrium.F02.H600.001.3.0.sum.N
+PASS: equilibrium.F02.H600.001.3.0.sum.Mx
+PASS: equilibrium.F02.H600.001.3.0.sum.My
+PASS: equilibrium.F02.H600.001.3.0.residual.N; actual=1.04773789644241E-09; expected=1.04773789644241E-09
+PASS: equilibrium.F02.H600.001.3.0.residual.Mx; actual=5.48898810848186E-08; expected=5.48898810848186E-08
+PASS: equilibrium.F02.H600.001.3.0.residual.My; actual=7.33848537493031E-11; expected=7.33848537493031E-11
+PASS: equilibrium.F02.H600.001.3.1.converged
+PASS: equilibrium.F02.H600.001.3.1.sum.N
+PASS: equilibrium.F02.H600.001.3.1.sum.Mx
+PASS: equilibrium.F02.H600.001.3.1.sum.My
+PASS: equilibrium.F02.H600.001.3.1.residual.N; actual=1.16415321826935E-10; expected=1.16415321826935E-10
+PASS: equilibrium.F02.H600.001.3.1.residual.Mx; actual=-2.98023223876953E-08; expected=-2.98023223876953E-08
+PASS: equilibrium.F02.H600.001.3.1.residual.My; actual=8.02856447990052E-10; expected=8.02856447990052E-10
+PASS: equilibrium.F02.H600.001.3.2.converged
+PASS: equilibrium.F02.H600.001.3.2.sum.N
+PASS: equilibrium.F02.H600.001.3.2.sum.Mx
+PASS: equilibrium.F02.H600.001.3.2.sum.My
+PASS: equilibrium.F02.H600.001.3.2.residual.N; actual=2.3283064365387E-10; expected=2.3283064365387E-10
+PASS: equilibrium.F02.H600.001.3.2.residual.Mx; actual=-1.88310878002085E-08; expected=-1.88310878002085E-08
+PASS: equilibrium.F02.H600.001.3.2.residual.My; actual=7.45058059692383E-09; expected=7.45058059692383E-09
+PASS: equilibrium.F02.H600.001.3.3.converged
+PASS: equilibrium.F02.H600.001.3.3.sum.N
+PASS: equilibrium.F02.H600.001.3.3.sum.Mx
+PASS: equilibrium.F02.H600.001.3.3.sum.My
+PASS: equilibrium.F02.H600.001.3.3.residual.N; actual=3.49245965480804E-10; expected=3.49245965480804E-10
+PASS: equilibrium.F02.H600.001.3.3.residual.Mx; actual=-1.49011611938477E-08; expected=-1.49011611938477E-08
+PASS: equilibrium.F02.H600.001.3.3.residual.My; actual=-3.72529029846191E-09; expected=-3.72529029846191E-09
+OK: F02.H600.001.workbook.run
+OK: F02.H600.001.workbook.state
+WORKBOOK_RUN: F02.H600.001; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: F02.H600.001
+OK: disabledSide.Rectangle.H1.as_1.column3.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column3.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.off
+OK: disabledSide.Rectangle.H1.as_1.column3.dimensions
+OK: disabledSide.Rectangle.H1.as_1.column3.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.quantity.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column3.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column3.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column3.quantity.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column4.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.off
+OK: disabledSide.Rectangle.H1.as_1.column4.dimensions
+OK: disabledSide.Rectangle.H1.as_1.column4.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.quantity.H1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column4.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_1.column4.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_1.column4.quantity.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column3.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column3.off
+OK: disabledSide.Rectangle.H1.as_2.column3.dimensions
+OK: disabledSide.Rectangle.H1.as_2.column3.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.quantity.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column3.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column3.quantity.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column4.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column4.off
+OK: disabledSide.Rectangle.H1.as_2.column4.dimensions
+OK: disabledSide.Rectangle.H1.as_2.column4.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.quantity.H1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.quantity.B1.as_1
+OK: disabledSide.Rectangle.H1.as_2.column4.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.H1.as_2.column4.quantity.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column3.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.off
+OK: disabledSide.Rectangle.B1.as_1.column3.dimensions
+OK: disabledSide.Rectangle.B1.as_1.column3.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column3.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column3.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column3.quantity.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column4.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.noEmptyLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.off
+OK: disabledSide.Rectangle.B1.as_1.column4.dimensions
+OK: disabledSide.Rectangle.B1.as_1.column4.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column4.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_1.column4.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.otherLabel.B1.as_2
+OK: disabledSide.Rectangle.B1.as_1.column4.quantity.B1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.off
+OK: disabledSide.Rectangle.B1.as_2.column3.dimensions
+OK: disabledSide.Rectangle.B1.as_2.column3.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column3.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column3.quantity.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.noEmptyLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.noEmptyLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column4.noEmptyLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.off
+OK: disabledSide.Rectangle.B1.as_2.column4.dimensions
+OK: disabledSide.Rectangle.B1.as_2.column4.otherLabel.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.quantity.H1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.otherLabel.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column4.quantity.H1.as_2
+OK: disabledSide.Rectangle.B1.as_2.column4.otherLabel.B1.as_1
+OK: disabledSide.Rectangle.B1.as_2.column4.quantity.B1.as_1
+OK: disabledSide.RoundedSimple.H.Left.column3.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column3.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column3.off
+OK: disabledSide.RoundedSimple.H.Left.column3.dimensions
+OK: disabledSide.RoundedSimple.H.Left.column3.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column3.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column3.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column3.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column3.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column3.quantity.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column4.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column4.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column4.off
+OK: disabledSide.RoundedSimple.H.Left.column4.dimensions
+OK: disabledSide.RoundedSimple.H.Left.column4.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column4.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Left.column4.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column4.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Left.column4.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.H.Left.column4.quantity.H.Right
+OK: disabledSide.RoundedSimple.H.Right.column3.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column3.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column3.off
+OK: disabledSide.RoundedSimple.H.Right.column3.dimensions
+OK: disabledSide.RoundedSimple.H.Right.column3.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column3.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column3.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column3.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column3.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column3.quantity.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column4.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column4.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column4.off
+OK: disabledSide.RoundedSimple.H.Right.column4.dimensions
+OK: disabledSide.RoundedSimple.H.Right.column4.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column4.quantity.B.Top
+OK: disabledSide.RoundedSimple.H.Right.column4.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column4.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.H.Right.column4.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.H.Right.column4.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column3.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column3.off
+OK: disabledSide.RoundedSimple.B.Top.column3.dimensions
+OK: disabledSide.RoundedSimple.B.Top.column3.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column3.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column3.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column3.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column3.quantity.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column4.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column4.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column4.off
+OK: disabledSide.RoundedSimple.B.Top.column4.dimensions
+OK: disabledSide.RoundedSimple.B.Top.column4.otherLabel.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column4.quantity.B.Bottom
+OK: disabledSide.RoundedSimple.B.Top.column4.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column4.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Top.column4.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Top.column4.quantity.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column3.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column3.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column3.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column3.off
+OK: disabledSide.RoundedSimple.B.Bottom.column3.dimensions
+OK: disabledSide.RoundedSimple.B.Bottom.column3.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column3.quantity.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column3.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column3.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column3.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column3.quantity.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column4.noEmptyLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column4.noEmptyLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column4.noEmptyLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column4.off
+OK: disabledSide.RoundedSimple.B.Bottom.column4.dimensions
+OK: disabledSide.RoundedSimple.B.Bottom.column4.otherLabel.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column4.quantity.B.Top
+OK: disabledSide.RoundedSimple.B.Bottom.column4.otherLabel.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column4.quantity.H.Left
+OK: disabledSide.RoundedSimple.B.Bottom.column4.otherLabel.H.Right
+OK: disabledSide.RoundedSimple.B.Bottom.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.off
+OK: disabledSide.HollowCentered.H.Left.column3.dimensions
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column3.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column3.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.off
+OK: disabledSide.HollowCentered.H.Left.column4.dimensions
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Left.column4.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Left.column4.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.off
+OK: disabledSide.HollowCentered.H.Right.column3.dimensions
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column3.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column3.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.off
+OK: disabledSide.HollowCentered.H.Right.column4.dimensions
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.H.Right.column4.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.H.Right.column4.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.off
+OK: disabledSide.HollowCentered.B.Top.column3.dimensions
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column3.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column3.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.off
+OK: disabledSide.HollowCentered.B.Top.column4.dimensions
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.Opening.B.Bottom
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Top.column4.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Top.column4.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.off
+OK: disabledSide.HollowCentered.B.Bottom.column3.dimensions
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column3.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column3.quantity.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.noEmptyLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.off
+OK: disabledSide.HollowCentered.B.Bottom.column4.dimensions
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.Opening.B.Top
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.Opening.H.Left
+OK: disabledSide.HollowCentered.B.Bottom.column4.otherLabel.Opening.H.Right
+OK: disabledSide.HollowCentered.B.Bottom.column4.quantity.Opening.H.Right
+TOTAL_GEOMETRY_REVIEW: passed=742; failed=0
+OK: collapsed.0.0.inputError
+OK: collapsed.0.0.cause
+OK: collapsed.0.0.side
+OK: collapsed.0.0.geometrySource
+OK: collapsed.0.0.rebarSource
+OK: collapsed.0.0.action
+OK: collapsed.0.1.accepted
+OK: collapsed.0.2.accepted
+OK: collapsed.0.3.accepted
+OK: collapsed.0.4.accepted
+OK: collapsed.1.0.inputError
+OK: collapsed.1.0.cause
+OK: collapsed.1.0.side
+OK: collapsed.1.0.geometrySource
+OK: collapsed.1.0.rebarSource
+OK: collapsed.1.0.action
+OK: collapsed.1.1.accepted
+OK: collapsed.1.2.accepted
+OK: collapsed.1.3.accepted
+OK: collapsed.1.4.accepted
+OK: collapsed.2.0.inputError
+OK: collapsed.2.0.cause
+OK: collapsed.2.0.side
+OK: collapsed.2.0.geometrySource
+OK: collapsed.2.0.rebarSource
+OK: collapsed.2.0.action
+OK: collapsed.2.1.accepted
+OK: collapsed.2.2.accepted
+OK: collapsed.2.3.accepted
+OK: collapsed.2.4.accepted
+OK: collapsed.3.0.inputError
+OK: collapsed.3.0.cause
+OK: collapsed.3.0.side
+OK: collapsed.3.0.geometrySource
+OK: collapsed.3.0.rebarSource
+OK: collapsed.3.0.action
+OK: collapsed.3.1.accepted
+OK: collapsed.3.2.accepted
+OK: collapsed.3.3.accepted
+OK: collapsed.3.4.accepted
+OK: collapsed.4.0.inputError
+OK: collapsed.4.0.cause
+OK: collapsed.4.0.side
+OK: collapsed.4.0.geometrySource
+OK: collapsed.4.0.rebarSource
+OK: collapsed.4.0.action
+OK: collapsed.4.1.accepted
+OK: collapsed.4.2.accepted
+OK: collapsed.4.3.accepted
+OK: collapsed.4.4.accepted
+OK: collapsed.5.0.inputError
+OK: collapsed.5.0.cause
+OK: collapsed.5.0.side
+OK: collapsed.5.0.geometrySource
+OK: collapsed.5.0.rebarSource
+OK: collapsed.5.0.action
+OK: collapsed.5.1.accepted
+OK: collapsed.5.2.accepted
+OK: collapsed.5.3.accepted
+OK: collapsed.5.4.accepted
+OK: collapsed.extra.inputError
+OK: collapsed.extra.row
+OK: collapsed.extra.cause
+OK: collapsed.extra.values
+OK: collapsed.extra.source
+OBSERVED_COLLAPSED_EXTRA: INPUT_ERROR: Источник данных: | rngCircleGeometry[16,3]; rngCircleGeometry[16,4]; rngCircleGeometry[16,5]; rngCircleGeometry[16,6] |  | Круг: | Дополнительный ряд арматуры 2 |  | Геометрическая линия 'Circle.Axis': |  | После смещения дополнительного ряда центры стержней достигают центра дуги или переходят на её другую сторону. Смещение ряда — 200 мм; радиус линии основного ряда — 110 мм. |  | Возможное решение: | Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.
+TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0
+OK: collapsed.address.0.0.inputError
+OK: collapsed.address.0.0.cause
+OK: collapsed.address.0.0.included.as
+OK: collapsed.address.0.0.included.d
+OK: collapsed.address.0.0.excluded.s0
+OK: collapsed.address.0.0.excluded.s1
+OK: collapsed.address.0.0.included.n
+OK: collapsed.address.0.0.geometry.B
+OK: collapsed.address.0.0.geometry.H
+OK: collapsed.address.0.0.geometry.R
+OK: collapsed.address.0.1.inputError
+OK: collapsed.address.0.1.cause
+OK: collapsed.address.0.1.included.as
+OK: collapsed.address.0.1.included.d
+OK: collapsed.address.0.1.excluded.s0
+OK: collapsed.address.0.1.excluded.s1
+OK: collapsed.address.0.1.excluded.n
+OK: collapsed.address.0.1.geometry.Bo
+OK: collapsed.address.0.1.geometry.Ho
+OK: collapsed.address.0.1.geometry.Ro
+OK: collapsed.address.1.0.inputError
+OK: collapsed.address.1.0.cause
+OK: collapsed.address.1.0.included.as
+OK: collapsed.address.1.0.included.d
+OK: collapsed.address.1.0.excluded.s0
+OK: collapsed.address.1.0.excluded.s1
+OK: collapsed.address.1.0.included.n
+OK: collapsed.address.1.0.geometry.B
+OK: collapsed.address.1.0.geometry.H
+OK: collapsed.address.1.0.geometry.R
+OK: collapsed.address.1.1.inputError
+OK: collapsed.address.1.1.cause
+OK: collapsed.address.1.1.included.as
+OK: collapsed.address.1.1.included.d
+OK: collapsed.address.1.1.excluded.s0
+OK: collapsed.address.1.1.excluded.s1
+OK: collapsed.address.1.1.excluded.n
+OK: collapsed.address.1.1.geometry.Bo
+OK: collapsed.address.1.1.geometry.Ho
+OK: collapsed.address.1.1.geometry.Ro
+TOTAL_COLLAPSED_INPUT_ADDRESSES: passed=40; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9adc928cbfa47b9b9b258bf8a8cbe46\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryReview.RunGeometryReviewTests; 2026-10-20T20:40:59
+===== modTestRecipeOperations.RunSavedPointedOffsetTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-20T20:40:59
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=128948; workingSet=177127424; privateBytes=125005824; cpu=45.40625
+EXCEL_AFTER_SUITE: pid=174988; workingSet=161386496; privateBytes=114089984; cpu=600.609375
+TOTAL_SAVED_POINTED_OFFSETS: passed=14; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9adc928cbfa47b9b9b258bf8a8cbe46\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-20T20:41:01
+===== modTestRecipeOperations.RunSavedOffsetCalculationTests =====
+SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-20T20:41:01
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=128948; workingSet=180482048; privateBytes=128380928; cpu=48.734375
+EXCEL_AFTER_SUITE: pid=174988; workingSet=161947648; privateBytes=114847744; cpu=604.03125
+OBSERVED_SAVED_CALCULATION: a2=40; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1 | Предупреждение: после смещения не размещено дополнительных стержней: 6. Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results. | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9adc928cbfa47b9b9b258bf8a8cbe46\RC_Section_NDM_execution_report.txt
+OBSERVED_SAVED_CALCULATION: a2=50; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1 | Предупреждение: после смещения не размещено дополнительных стержней: 7. Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results. | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9adc928cbfa47b9b9b258bf8a8cbe46\RC_Section_NDM_execution_report.txt
+TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_b9adc928cbfa47b9b9b258bf8a8cbe46\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-20T20:41:04
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

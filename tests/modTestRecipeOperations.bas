@@ -433,7 +433,8 @@ Public Function RunSavedPointedOffsetTests() As String
         Next i
         expected = 5: If CDbl(value) > 40# Then expected = 4
         Check "saved.right.created." & CStr(value), count = expected
-        Check "saved.right.warning." & CStr(value), (Len(model.GeometryWarningText) > 0) = (CDbl(value) > 40#)
+        Check "saved.right.warning." & CStr(value), SavedRuleSkipped(model.GeometryDiagnosticsText, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
+        Check "saved.warning.summary." & CStr(value), (Len(model.GeometryWarningText) > 0) = (InStr(model.GeometryDiagnosticsText, "Предупреждение:") > 0)
         If CDbl(value) > 40# Then Check "saved.right.warning.address." & CStr(value), InStr(model.GeometryDiagnosticsText, inputCell.Worksheet.Name & "!" & inputCell.Address(False, False)) > 0
     Next value
     GoTo Finished
@@ -516,14 +517,16 @@ Public Function RunSavedOffsetCalculationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Dim area As Object, inputCell As Object, saved As Variant, value As Variant, message As String
-    Dim summary As Object, i As Long, j As Long, text As String, model As CSectionModel
+    Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String
     Set area = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2"): saved = inputCell.Formula
     For Each value In Array(40#, 50#)
         inputCell.Value2 = value
         message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
         Check "saved.calculation.completed." & CStr(value), InStr(message, "завершен.") > 0 And InStr(message, "ошиб") = 0
-        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (CDbl(value) > 40#)
+        diagnostics = SavedRecipeDiagnostics()
+        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)
+        Check "saved.calculation.rowWarning." & CStr(value), SavedRuleSkipped(diagnostics, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
         Set summary = ThisWorkbook.Names("rngBatchSummary").RefersToRange
         text = ""
         For i = 1 To summary.Rows.Count
@@ -540,4 +543,35 @@ Failed:
 Finished:
     If Not inputCell Is Nothing Then inputCell.Formula = saved
     RunSavedOffsetCalculationTests = mReport & "TOTAL_SAVED_OFFSET_CALCULATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: читает полный счётчик пропусков конкретного правила.
+' Предупреждение другого ряда не означает, что проверяемый ряд потерял стержень.
+Private Function SavedRuleSkipped(ByVal diagnostics As String, ByVal ruleID As String) As Long
+    Dim line As Variant, prefix As String, marker As String, position As Long
+    prefix = "Rule=" & ruleID & ";": marker = "; Skipped="
+    For Each line In Split(diagnostics, vbCrLf)
+        If Left$(CStr(line), Len(prefix)) = prefix Then
+            position = InStr(CStr(line), marker)
+            If position > 0 Then
+                SavedRuleSkipped = CLng(Split(Mid$(CStr(line), position + Len(marker)), ";")(0))
+                Exit Function
+            End If
+        End If
+    Next line
+    Err.Raise 5, "modTestRecipeOperations", "В диагностике отсутствует счётчик пропусков ряда " & ruleID
+End Function
+
+' ДЛЯ ТЕСТОВ: берёт диагностику из записанного Results после штатного расчёта.
+Private Function SavedRecipeDiagnostics() As String
+    Dim anchor As Object, row As Long
+    Set anchor = ThisWorkbook.Names("rngNDMSectionProperties").RefersToRange
+    row = 2
+    Do While Len(CStr(anchor.Cells(row, 1).Value2)) > 0
+        If CStr(anchor.Cells(row, 3).Value2) = "Geometry.RecipeDiagnostics" Then
+            SavedRecipeDiagnostics = CStr(anchor.Cells(row, 4).Value2): Exit Function
+        End If
+        row = row + 1
+    Loop
+    Err.Raise 5, "modTestRecipeOperations", "В Results отсутствует сохранённая диагностика геометрии."
 End Function

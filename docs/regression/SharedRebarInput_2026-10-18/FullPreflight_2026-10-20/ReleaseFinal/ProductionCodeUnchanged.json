@@ -1,0 +1,13 @@
+{
+  "Passed": true,
+  "Components": 161,
+  "ChangedComponents": [
+    "modTestGeometryConfig",
+    "modTestGeometryReview",
+    "modTestRecipeOperations",
+    "modTestWorkbookInterface"
+  ],
+  "ProductionAndDocumentModulesUnchanged": true,
+  "OldExportSHA256": "20EFDD5C8C7FDECD0582AEE1A9E142281DE515A620ACDF61ACA9FD24FA157146",
+  "NewExportSHA256": "46AE2EF416A00B7A47D025635CA5C6C6926E6CD5B0621F61D47CD18663A7F4F9"
+}

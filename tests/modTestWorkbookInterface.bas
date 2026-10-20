@@ -7792,20 +7792,32 @@ End Sub
 Public Function RunSharedConfigPreflightTests() As String
     Dim stats As TUiTestStats, config As Object, saved As Variant, passed As Long, failed As Long
     On Error GoTo FailedRun
+    SharedConfigProgress "START", stats
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    SharedConfigProgress "ComparisonContract", stats
     stats.Report = stats.Report & RunConfigComparisonContractTests(passed, failed)
     stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    SharedConfigProgress "DropdownChoices", stats
     TestConfigDropdownChoices stats
+    SharedConfigProgress "DropdownMeaning", stats
     TestConfigDropdownMeaning stats
+    SharedConfigProgress "SettingsRightBorder", stats
     TestConfigSettingsRightBorder stats
+    SharedConfigProgress "IndependentSelectors", stats
     TestRectanglesIndependentSelectors stats
+    SharedConfigProgress "IndependentSelectorLayout", stats
     TestRectanglesIndependentSelectorLayout stats
+    SharedConfigProgress "IndependentSelectorEffects", stats
     TestRectanglesIndependentSelectorEffects stats
+    SharedConfigProgress "IndependentThirdRows", stats
     TestRectanglesIndependentThirdRows stats
+    SharedConfigProgress "ShapeConfig", stats
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03ShapeConfigTests(passed, failed)
     stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    SharedConfigProgress "RebarCounter", stats
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarCounterTests(passed, failed)
     stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
+    SharedConfigProgress "RebarFieldConfig", stats
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarFieldConfigTests(passed, failed)
     stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
     GoTo Finished
@@ -7813,9 +7825,31 @@ FailedRun:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: config.preflight; " & CStr(Err.Number) & "; " & Err.Description
 Finished:
+    SharedConfigProgress "RestoreInputs", stats
     If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
+    SharedConfigProgress "FINISHED", stats
     RunSharedConfigPreflightTests = stats.Report & "TOTAL_SHARED_CONFIG_PREFLIGHT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет завершённые проверки и начало следующего этапа.
+' Журнал помогает отличить долгую проверку от остановки; отметка этапа не означает PASS.
+Private Sub SharedConfigProgress(ByVal stage As String, ByRef stats As TUiTestStats)
+    On Error Resume Next
+    Dim fso As Object, stream As Object, line As String, timeline As String
+    line = Format$(Now, "yyyy-mm-dd hh:nn:ss") & " | " & stage & _
+        " | passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set stream = fso.CreateTextFile(ThisWorkbook.Path & "\Config_Preflight_Progress.txt", True, True)
+    stream.Write stats.Report & line & vbCrLf: stream.Close
+    timeline = ThisWorkbook.Path & "\Config_Preflight_Timeline.txt"
+    If stage = "START" Then
+        Set stream = fso.CreateTextFile(timeline, True, True)
+    Else
+        Set stream = fso.OpenTextFile(timeline, 8, True, -1)
+    End If
+    stream.WriteLine line: stream.Close
+    On Error GoTo 0
+End Sub
 
 ' ДЛЯ ТЕСТОВ: противоположные направления одной главной оси меняют знак её проекций.
 Private Function Audit03PrincipalAxisSign(ByRef baseline As Variant, ByRef actual As Variant, Optional ByVal sectionPrefix As String = "Transformed") As Double

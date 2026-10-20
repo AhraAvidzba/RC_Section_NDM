@@ -1,0 +1,245 @@
+{
+  "Status": "DIRECTED_PASS_CONFIG_RUNNING",
+  "ProductionWorkbookSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "OriginalExpectationsSuites": 58,
+  "OriginalResults": [
+    {
+      "Macro": "modTestGeometry.RunGeometryTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestDeclarativeGeometry.RunCoreGeometryTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestPolygonSpec.RunPolygonSpecTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeRuleTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunAnnotationIsolationTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunRecipeContextFreezeTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunPublishedBuildTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestGeometryPublication.RunDefinitionLifecycleTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunRecipeOperationTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunResolveAnchorTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestGeometryQuery.RunGeometryQueryTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAutoCADContours.RunImportedDimensionTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestContourMesh.RunContourMeshTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02PolygonApiTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02OptionsTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02InputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02AnnotationTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02GuideExamplesTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutContactTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestGeometryReview.RunGeometryReviewTests",
+      "Failures": [
+        "FAIL: collapsed.extra.row"
+      ]
+    },
+    {
+      "Macro": "modTestGeometryReview.RunPointedWidthInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunCollapsingOffsetTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSP35CrackWidth.RunSP35FormulaTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSP35CrackWidth.RunSP35PreparationTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSP35CrackWidth.RunSP35PipelineTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSP35CrackWidth.RunSP35EndToEndTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunRebarContactBuilderTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleRecipeInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunHollowRecipeInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeCaptionTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestSectionInputReader.RunSectionInputReaderTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunCircleSetbackTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestAudit02Api.RunOffsetWallCollisionTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestWorkbookInterface.RunConfigComparisonContractTests",
+      "Failures": []
+    },
+    {
+      "Macro": "modTestWorkbookInterface.RunConfigPresentationTests",
+      "Failures": []
+    }
+  ],
+  "CorrectedRepeat": "ReleaseFinal/CorrectedExpectations.txt",
+  "ConfigPending": "Revision02/SharedConfig.txt",
+  "FullRunStarted": false,
+  "GlobalAcceptance": "NOT_CLAIMED"
+}

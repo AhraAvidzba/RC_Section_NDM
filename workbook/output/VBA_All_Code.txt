@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-20 19:31:09
+Date: 2026-10-20 20:43:36
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -89314,7 +89314,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestGeometryConfig
 TYPE: 1
-LINES: 1658
+LINES: 1659
 ====================================================================================================
 Option Explicit
 
@@ -90682,8 +90682,9 @@ Private Function RebarFaceFields(ByVal shape As String, ByVal face As Variant) A
 End Function
 
 ' Задает достаточно просторные прямые контуры и пять базовых стержней каждой
-' грани. Дополнительные ряды при необходимости имеют разные диаметры 12/10;
-' стержни не касаются соседних линий, поэтому count-oracle не зависит от дублей.
+' грани. Дополнительные ряды при необходимости имеют разные диаметры 12/10.
+' Концевые отступы 100 мм оставляют запас для контактного смещения до 35 мм:
+' здесь проверяем поля ввода, а пропуски у углов — в RunFullBoundaryOffsetTests.
 Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As String, ByVal extras As Boolean)
     FixtureSelectRecipeType ThisWorkbook, shape
     ConfigureShape target, shape
@@ -90708,8 +90709,8 @@ Private Sub ConfigureRebarFieldFixture(ByVal target As Object, ByVal shape As St
         mainRow = CLng(face(1)): extraRow = CLng(face(2))
         RebarFieldCell(target, extraRow, 4).value2 = 0#: RebarFieldCell(target, extraRow, 8).value2 = 0#
         RebarFieldCell(target, mainRow, 3).value2 = 50#: RebarFieldCell(target, mainRow, 4).value2 = 16#
-        If left$(CStr(face(0)), 8) <> "Opening." Then RebarFieldCell(target, mainRow, 5).value2 = 5
-        If shape = "Rectangles" Then
+        If left$(CStr(face(0)), 8) <> "Opening." Then
+            RebarFieldCell(target, mainRow, 5).value2 = 5
             RebarFieldCell(target, mainRow, 6).value2 = 100#: RebarFieldCell(target, mainRow, 7).value2 = 100#
         End If
         If extras Then
@@ -92725,7 +92726,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestGeometryReview
 TYPE: 1
-LINES: 827
+LINES: 828
 ====================================================================================================
 Option Explicit
 ' ДЛЯ ТЕСТОВ: воспроизведение F01/F02 и проверка подписей отключённых граней.
@@ -92990,10 +92991,11 @@ Public Function RunCollapsedInputMessageTests() As String
     Next scenario
     message = CollapsedExtraRowMessage()
     Check "collapsed.extra.inputError", left$(message, 11) = "INPUT_ERROR"
-    Check "collapsed.extra.row", InStr(message, "Круг: дополнительный ряд арматуры 2") > 0
+    Check "collapsed.extra.row", InStr(message, "Круг:" & vbCrLf & "Дополнительный ряд арматуры 2") > 0
     Check "collapsed.extra.cause", InStr(message, "центры стержней достигают центра дуги") > 0
     Check "collapsed.extra.values", InStr(message, "радиус линии основного ряда — 110") > 0
     Check "collapsed.extra.source", InStr(message, "Geometry[") > 0
+    mReport = mReport & "OBSERVED_COLLAPSED_EXTRA: " & Replace(message, vbCrLf, " | ") & vbCrLf
     RunCollapsedInputMessageTests = mReport & "TOTAL_COLLAPSED_INPUT_MESSAGES: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
@@ -101833,7 +101835,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestRecipeOperations
 TYPE: 1
-LINES: 542
+LINES: 577
 ====================================================================================================
 Option Explicit
 
@@ -102269,7 +102271,8 @@ Public Function RunSavedPointedOffsetTests() As String
         Next i
         expected = 5: If CDbl(value) > 40# Then expected = 4
         Check "saved.right.created." & CStr(value), count = expected
-        Check "saved.right.warning." & CStr(value), (Len(model.GeometryWarningText) > 0) = (CDbl(value) > 40#)
+        Check "saved.right.warning." & CStr(value), SavedRuleSkipped(model.GeometryDiagnosticsText, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
+        Check "saved.warning.summary." & CStr(value), (Len(model.GeometryWarningText) > 0) = (InStr(model.GeometryDiagnosticsText, "Предупреждение:") > 0)
         If CDbl(value) > 40# Then Check "saved.right.warning.address." & CStr(value), InStr(model.GeometryDiagnosticsText, inputCell.Worksheet.name & "!" & inputCell.address(False, False)) > 0
     Next value
     GoTo Finished
@@ -102352,14 +102355,16 @@ Public Function RunSavedOffsetCalculationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Dim area As Object, inputCell As Object, saved As Variant, value As Variant, message As String
-    Dim summary As Object, i As Long, j As Long, text As String, model As CSectionModel
+    Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String
     Set area = ThisWorkbook.names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2"): saved = inputCell.formula
     For Each value In Array(40#, 50#)
         inputCell.value2 = value
         message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
         Check "saved.calculation.completed." & CStr(value), InStr(message, "завершен.") > 0 And InStr(message, "ошиб") = 0
-        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (CDbl(value) > 40#)
+        diagnostics = SavedRecipeDiagnostics()
+        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)
+        Check "saved.calculation.rowWarning." & CStr(value), SavedRuleSkipped(diagnostics, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
         Set summary = ThisWorkbook.names("rngBatchSummary").RefersToRange
         text = ""
         For i = 1 To summary.rows.count
@@ -102377,6 +102382,38 @@ Finished:
     If Not inputCell Is Nothing Then inputCell.formula = saved
     RunSavedOffsetCalculationTests = mReport & "TOTAL_SAVED_OFFSET_CALCULATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+' ДЛЯ ТЕСТОВ: читает полный счётчик пропусков конкретного правила.
+' Предупреждение другого ряда не означает, что проверяемый ряд потерял стержень.
+Private Function SavedRuleSkipped(ByVal diagnostics As String, ByVal ruleID As String) As Long
+    Dim line As Variant, prefix As String, marker As String, position As Long
+    prefix = "Rule=" & ruleID & ";": marker = "; Skipped="
+    For Each line In split(diagnostics, vbCrLf)
+        If left$(CStr(line), Len(prefix)) = prefix Then
+            position = InStr(CStr(line), marker)
+            If position > 0 Then
+                SavedRuleSkipped = CLng(split(mid$(CStr(line), position + Len(marker)), ";")(0))
+                Exit Function
+            End If
+        End If
+    Next line
+    Err.Raise 5, "modTestRecipeOperations", "В диагностике отсутствует счётчик пропусков ряда " & ruleID
+End Function
+
+' ДЛЯ ТЕСТОВ: берёт диагностику из записанного Results после штатного расчёта.
+Private Function SavedRecipeDiagnostics() As String
+    Dim anchor As Object, row As Long
+    Set anchor = ThisWorkbook.names("rngNDMSectionProperties").RefersToRange
+    row = 2
+    Do While Len(CStr(anchor.cells(row, 1).value2)) > 0
+        If CStr(anchor.cells(row, 3).value2) = "Geometry.RecipeDiagnostics" Then
+            SavedRecipeDiagnostics = CStr(anchor.cells(row, 4).value2): Exit Function
+        End If
+        row = row + 1
+    Loop
+    Err.Raise 5, "modTestRecipeOperations", "В Results отсутствует сохранённая диагностика геометрии."
+End Function
+
 
 ====================================================================================================
 COMPONENT: modTestRecipeSetbacks
@@ -109071,7 +109108,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 7900
+LINES: 7935
 ====================================================================================================
 Option Explicit
 
@@ -116866,20 +116903,32 @@ End Sub
 Public Function RunSharedConfigPreflightTests() As String
     Dim stats As TUiTestStats, config As Object, saved As Variant, passed As Long, Failed As Long
     On Error GoTo FailedRun
+    SharedConfigProgress "START", stats
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    SharedConfigProgress "ComparisonContract", stats
     stats.report = stats.report & RunConfigComparisonContractTests(passed, Failed)
     stats.passed = stats.passed + passed: stats.Failed = stats.Failed + Failed
+    SharedConfigProgress "DropdownChoices", stats
     TestConfigDropdownChoices stats
+    SharedConfigProgress "DropdownMeaning", stats
     TestConfigDropdownMeaning stats
+    SharedConfigProgress "SettingsRightBorder", stats
     TestConfigSettingsRightBorder stats
+    SharedConfigProgress "IndependentSelectors", stats
     TestRectanglesIndependentSelectors stats
+    SharedConfigProgress "IndependentSelectorLayout", stats
     TestRectanglesIndependentSelectorLayout stats
+    SharedConfigProgress "IndependentSelectorEffects", stats
     TestRectanglesIndependentSelectorEffects stats
+    SharedConfigProgress "IndependentThirdRows", stats
     TestRectanglesIndependentThirdRows stats
+    SharedConfigProgress "ShapeConfig", stats
     stats.report = stats.report & modTestGeometryConfig.RunAudit03ShapeConfigTests(passed, Failed)
     stats.passed = stats.passed + passed: stats.Failed = stats.Failed + Failed
+    SharedConfigProgress "RebarCounter", stats
     stats.report = stats.report & modTestGeometryConfig.RunAudit03RebarCounterTests(passed, Failed)
     stats.passed = stats.passed + passed: stats.Failed = stats.Failed + Failed
+    SharedConfigProgress "RebarFieldConfig", stats
     stats.report = stats.report & modTestGeometryConfig.RunAudit03RebarFieldConfigTests(passed, Failed)
     stats.passed = stats.passed + passed: stats.Failed = stats.Failed + Failed
     GoTo Finished
@@ -116887,9 +116936,31 @@ FailedRun:
     stats.Failed = stats.Failed + 1
     AppendLine stats, "FAIL: config.preflight; " & CStr(Err.number) & "; " & Err.description
 Finished:
+    SharedConfigProgress "RestoreInputs", stats
     If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
+    SharedConfigProgress "FINISHED", stats
     RunSharedConfigPreflightTests = stats.report & "TOTAL_SHARED_CONFIG_PREFLIGHT: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
+
+' ДЛЯ ТЕСТОВ: сохраняет завершённые проверки и начало следующего этапа.
+' Журнал помогает отличить долгую проверку от остановки; отметка этапа не означает PASS.
+Private Sub SharedConfigProgress(ByVal stage As String, ByRef stats As TUiTestStats)
+    On Error Resume Next
+    Dim fso As Object, stream As Object, line As String, timeline As String
+    line = format$(Now, "yyyy-mm-dd hh:nn:ss") & " | " & stage & _
+        " | passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set stream = fso.CreateTextFile(ThisWorkbook.path & "\Config_Preflight_Progress.txt", True, True)
+    stream.Write stats.report & line & vbCrLf: stream.Close
+    timeline = ThisWorkbook.path & "\Config_Preflight_Timeline.txt"
+    If stage = "START" Then
+        Set stream = fso.CreateTextFile(timeline, True, True)
+    Else
+        Set stream = fso.OpenTextFile(timeline, 8, True, -1)
+    End If
+    stream.WriteLine line: stream.Close
+    On Error GoTo 0
+End Sub
 
 ' ДЛЯ ТЕСТОВ: противоположные направления одной главной оси меняют знак её проекций.
 Private Function Audit03PrincipalAxisSign(ByRef baseline As Variant, ByRef actual As Variant, Optional ByVal sectionPrefix As String = "Transformed") As Double
@@ -116972,5 +117043,6 @@ Public Function RunSavedLoadTableLayoutTests() As String
     TestLoadCombinationsOnConfig stats
     RunSavedLoadTableLayoutTests = stats.report & "TOTAL_LOAD_TABLE_LAYOUT: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function
+
 
 

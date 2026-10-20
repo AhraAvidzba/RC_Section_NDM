@@ -39,6 +39,12 @@ function Save-ProbeProgress {
     if (Test-Path -LiteralPath $progress) {
         Copy-Item -LiteralPath $progress -Destination ($report + '.progress.txt') -Force
     }
+    foreach ($name in @('Config_Preflight_Progress','Config_Preflight_Timeline')) {
+        $progress = Join-Path (Split-Path -Parent $fixture) ($name + '.txt')
+        if (Test-Path -LiteralPath $progress) {
+            Copy-Item -LiteralPath $progress -Destination ($report + '.' + $name + '.txt') -Force
+        }
+    }
 }
 
 $arguments = @(
