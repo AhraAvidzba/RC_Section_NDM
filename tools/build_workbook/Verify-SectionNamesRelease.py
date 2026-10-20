@@ -20,7 +20,8 @@ def run():
     assert read('SourceEquality.json')['Passed'] and read('PublishedSourceEquality.json')['Passed']
     assert read('PublishedSourceEquality.json')['SourceComponents']==155
     published=D/'PublishedNativeVBA.txt';code=ROOT/'workbook/output/VBA_All_Code.txt'
-    assert code.read_bytes()==published.read_bytes()
+    # ALL CODE is the shipped native export; a second local copy is optional.
+    if published.exists():assert code.read_bytes()==published.read_bytes()
     assert sha(code)==read('PublishedSourceEquality.json')['ExportSHA256']
     assert not re.search(r'NDM\.RECIPE\.GUIDE|[0-9a-fA-F]{64}',code.read_text(encoding='utf-8-sig'))
     before=read('Before.json')
@@ -55,8 +56,14 @@ def run():
     assert geometry['Passed'] and rect['Passed']
     files=['BeforeGeometry.txt','AfterGeometry.txt','BeforeRectangles.txt','AfterRectangles.txt',
            'Directed01.txt','Directed02.txt','Directed03.txt','Directed04.txt','DirectedFinalInputs.txt']
-    with ZipFile(D/'NativeSnapshotsAndReview.zip','w',ZIP_DEFLATED,compresslevel=9) as archive:
-        for name in files:archive.write(D/name,name)
+    archive_path=D/'NativeSnapshotsAndReview.zip'
+    if not archive_path.exists():
+        with ZipFile(archive_path,'w',ZIP_DEFLATED,compresslevel=9) as archive:
+            for name in files:archive.write(D/name,name)
+    with ZipFile(archive_path) as archive:
+        assert set(archive.namelist())==set(files) and archive.testzip() is None
+    previous=D/'Acceptance.json'
+    if previous.exists():assert sha(archive_path)==read('Acceptance.json')['EvidenceArchiveSHA256']
     result={'Passed':True,'Scope':'Focused acceptance; complete ON/OFF acceptance is deferred by the user.',
             'PublishedSHA256':digest,'AllCodeSHA256':sha(code),'NativeSourceComponents':155,'NativeExportComponents':161,
             'DirectedAssertions':sum(x['Passed'] for x in unique.values()),'Suites':list(unique.values()),
