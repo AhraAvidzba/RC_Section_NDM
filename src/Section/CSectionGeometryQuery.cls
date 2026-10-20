@@ -861,6 +861,13 @@ Public Function ContainsPoint(ByVal region As CConcreteRegion, ByVal x As Double
     ContainsPoint = ContainsRaw(edges, count, x, y, includeBoundary)
 End Function
 
+' Проверяет точку по заранее подготовленным границам; область уже проверена при создании массива.
+' В отличие от сеточной проверки позволяет включать границы отверстий в проверочную область ряда.
+Friend Function ContainsPreparedPoint(ByRef edges() As TRegionEdge, ByVal count As Long, ByVal x As Double, ByVal y As Double, _
+        Optional ByVal includeBoundary As Boolean = True) As Boolean
+    If count > 0 Then ContainsPreparedPoint = ContainsRaw(edges, count, x, y, includeBoundary)
+End Function
+
 ' Опорную точку подписи переносим до бетонной границы по заданной нормали.
 ' Из бетона ищется выход вперёд, из внешней точки — ближайшая граница в обе стороны.
 ' Метод использует точные отрезки/дуги; сетка и расчётное сечение не меняются.

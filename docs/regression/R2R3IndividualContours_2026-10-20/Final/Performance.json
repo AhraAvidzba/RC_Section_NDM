@@ -1,0 +1,64 @@
+{
+  "Passed": true,
+  "BitwiseComparedBars": 18300,
+  "PayloadSHA256": "239A3CA21087E5371FA3C3673E9FC6AB1B4110F563EDD9D5F823220860D74BAA",
+  "Scope": "Geometry and reinforcement assembly; no mesh or solver",
+  "Before": {
+    "100": {
+      "Seconds": [
+        0.0625,
+        0.0625,
+        0.0546875
+      ],
+      "MedianSeconds": 0.0625,
+      "PhysicalBars": 300
+    },
+    "1000": {
+      "Seconds": [
+        0.40625,
+        0.4296875,
+        0.390625
+      ],
+      "MedianSeconds": 0.40625,
+      "PhysicalBars": 3000
+    },
+    "5000": {
+      "Seconds": [
+        1.9375,
+        2.0390625,
+        2.109375
+      ],
+      "MedianSeconds": 2.0390625,
+      "PhysicalBars": 15000
+    }
+  },
+  "After": {
+    "100": {
+      "Seconds": [
+        0.0859375,
+        0.0703125,
+        0.0625
+      ],
+      "MedianSeconds": 0.0703125,
+      "PhysicalBars": 300
+    },
+    "1000": {
+      "Seconds": [
+        0.4375,
+        0.4453125,
+        0.390625
+      ],
+      "MedianSeconds": 0.4375,
+      "PhysicalBars": 3000
+    },
+    "5000": {
+      "Seconds": [
+        2.171875,
+        2.0703125,
+        1.9453125
+      ],
+      "MedianSeconds": 2.0703125,
+      "PhysicalBars": 15000
+    }
+  }
+}

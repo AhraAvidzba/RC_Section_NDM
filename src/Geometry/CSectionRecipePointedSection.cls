@@ -181,6 +181,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
                 Case "B.Top", "H.Right": normalSign = -1#
                 Case "B.Bottom", "H.Left": normalSign = 1#
             End Select
+            facade.RebarContour .ID & ".Main", "OUTER", "Boundary", .AxisDistance, .ID & ".Row2", .ID & ".Row3", normalSign:=normalSign ' Связь семейства с исходным контуром и направлением в бетон.
             Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
             extraOptions.AnnotationGroup = .ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.
             extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.

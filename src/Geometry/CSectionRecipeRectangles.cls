@@ -36,6 +36,8 @@ Private Type TRectangleFace
     Caption As String ' Название стороны из утверждённой таблицы Config.
     Count As Long ' Число стержней основного ряда.
     Diameter As Double ' Диаметр стержней основного ряда, мм.
+    AxisDistance As Double ' Заданный as для явной связи линии арматуры с исходным прямоугольником, мм.
+    ContourSource As String ' Исходный верхний или нижний прямоугольник, относительно которого задан as.
     X1 As Double ' Начальная координата X линии центров арматуры, мм.
     Y1 As Double ' Начальная координата Y линии центров арматуры, мм.
     X2 As Double ' Конечная координата X линии центров арматуры, мм.
@@ -114,6 +116,8 @@ Private Sub ReadRectangleFaces(ByVal reader As CSectionInputReader, _
             .Diameter = reader.OptionalDiameter("Main", key, "d")
             If .Count = 0 Or .Diameter = 0# Then GoTo NextSide
             axisDistance = reader.Length("Main", key, "as")
+            .AxisDistance = axisDistance
+            If base = 0 Then .ContourSource = "Upper" Else .ContourSource = "Lower"
             reader.Require "Main", key, "as", axisDistance > .Diameter / 2#, "Расстояние до оси должно быть больше половины диаметра стержня."
             .StartSetback = reader.Length("Main", key, "s0")
             .EndSetback = reader.Length("Main", key, "s1")
@@ -181,6 +185,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef fa
             options.Coincidence = KeepPublishedOwner ' При совпадении центров сохраняем стержень, который был добавлен раньше.
             options.Comment = "Набор прямоугольников: " & .Caption & ", ряд 1"
             facade.RebarByCount .ID & ".Main", path.ID, .Count, .Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+            facade.RebarContour .ID & ".Main", "OUTER", .ContourSource, .AxisDistance, .ID & ".Row2", .ID & ".Row3", normalSign:=-1# ' Связь с исходным прямоугольником и известным направлением в бетон.
             Select Case (i - 1) Mod 4 + 1
                 Case 1, 4: tangentSign = -1#
                 Case 2, 3: tangentSign = 1#

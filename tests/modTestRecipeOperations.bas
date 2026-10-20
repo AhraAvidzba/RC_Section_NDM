@@ -415,12 +415,13 @@ End Function
 ' а при большем смещении пропускает только позицию, вышедшую за новую линию.
 Public Function RunSavedPointedOffsetTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
-    Dim table As Object, saved As Variant, values As Variant, value As Variant
+    Dim table As Object, config As Object, saved As Variant, values As Variant, value As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim i As Long, count As Long, expected As Long, inputCell As Object
     On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    PrepareSavedOffsetCase
     Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
-    saved = table.Formula
     Set inputCell = FixtureInputCell(table, "Extra", "Right", "a2")
     For Each value In Array(39.99, 40#, 50#, 80#)
         inputCell.Value2 = CDbl(value)
@@ -441,7 +442,7 @@ Public Function RunSavedPointedOffsetTests() As String
 Failed:
     Check "saved.offset.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not table Is Nothing Then table.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     RunSavedPointedOffsetTests = mReport & "TOTAL_SAVED_POINTED_OFFSETS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
@@ -516,10 +517,12 @@ End Function
 Public Function RunSavedOffsetCalculationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
-    Dim area As Object, inputCell As Object, saved As Variant, value As Variant, message As String
+    Dim area As Object, config As Object, inputCell As Object, saved As Variant, value As Variant, message As String
     Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    PrepareSavedOffsetCase
     Set area = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
-    Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2"): saved = inputCell.Formula
+    Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2")
     For Each value In Array(40#, 50#)
         inputCell.Value2 = value
         message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
@@ -541,9 +544,32 @@ Public Function RunSavedOffsetCalculationTests() As String
 Failed:
     Check "saved.calculation.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
-    If Not inputCell Is Nothing Then inputCell.Formula = saved
+    If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     RunSavedOffsetCalculationTests = mReport & "TOTAL_SAVED_OFFSET_CALCULATION: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
+
+' ДЛЯ ТЕСТОВ: воспроизводит пример R80/as40 без дополнительных рядов на соседних сторонах.
+' Их независимые отступы не относятся к проверке исчезновения правого скругления.
+Private Sub PrepareSavedOffsetCase()
+    Dim table As Object, key As Variant
+    ThisWorkbook.Names("rngUnitSettings").RefersToRange.Cells(2, 2).Value2 = "mm"
+    modTestShapeArchitecture.ConfigureShapeFixture "RoundedMixed"
+    Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
+    FixtureInputCell(table, "General", "B").Value2 = 1000#: FixtureInputCell(table, "General", "H").Value2 = 500#
+    FixtureInputCell(table, "General", "Left.W").Value2 = 0#: FixtureInputCell(table, "General", "Left.R1").Value2 = 0#
+    FixtureInputCell(table, "General", "Left.R2").Value2 = 0#: FixtureInputCell(table, "General", "Right.W").Value2 = 150#
+    FixtureInputCell(table, "General", "Right.R1").Value2 = 0#: FixtureInputCell(table, "General", "Right.R2").Value2 = 80#
+    For Each key In Array("Top", "Bottom", "Left", "Right")
+        FixtureInputCell(table, "Main", CStr(key), "as").Value2 = 40#
+        FixtureInputCell(table, "Main", CStr(key), "d").Value2 = 25#
+        FixtureInputCell(table, "Main", CStr(key), "n").Value2 = IIf(CStr(key) = "Top" Or CStr(key) = "Bottom", 10, 5)
+        FixtureInputCell(table, "Main", CStr(key), "s0").Value2 = 0#: FixtureInputCell(table, "Main", CStr(key), "s1").Value2 = 0#
+        FixtureInputCell(table, "Extra", CStr(key), "d2").Value2 = IIf(CStr(key) = "Right", 16#, 0#)
+        FixtureInputCell(table, "Extra", CStr(key), "d3").Value2 = 0#
+    Next key
+    FixtureInputCell(table, "Extra", "Right", "pos2").Value2 = "Stacked"
+    FixtureInputCell(table, "Extra", "Right", "bind2").Value2 = "EachBar"
+End Sub
 
 ' ДЛЯ ТЕСТОВ: читает полный счётчик пропусков конкретного правила.
 ' Предупреждение другого ряда не означает, что проверяемый ряд потерял стержень.

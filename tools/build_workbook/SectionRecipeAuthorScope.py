@@ -23,7 +23,7 @@ SECTIONS = [
         ('CSectionDefinitionBuilder', 'Offset OffsetRoundedPolygon ConstrainLine Chain Slice Transform PathGroup'),
     ]),
     ('05', 'Размещение арматуры', [
-        ('CSectionDefinitionBuilder', 'RebarByCount RebarByMaxStep RebarByFixedStep RebarAtStations RebarDependent RebarProjected'),
+        ('CSectionDefinitionBuilder', 'RebarByCount RebarByMaxStep RebarByFixedStep RebarAtStations RebarDependent RebarProjected RebarContour RebarContourBaseline'),
     ]),
     ('06', 'Условия размещения стержней', [
         ('CRebarRuleOptions', '*'),

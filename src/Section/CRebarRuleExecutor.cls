@@ -27,7 +27,9 @@ Private mDefinition As CSectionDefinition ' Готовое описание се
 Private mRules() As TRebarRule, mState() As Long, mStart() As Long, mCount() As Long ' Правила, стадия их выполнения, первый индекс и число позиций каждого правила.
 Private mPositions() As TRebarPosition, mPositionCount As Long, mCapacity As Long ' Места установки стержней до объединения дублей, их количество и вместимость массива.
 Private mTotalNormalOffset() As Double ' Суммарное нормальное смещение зависимого ряда от его независимой или спроецированной линии.
+Private mOffsetContours As CRebarOffsetContours ' Общие индивидуальные контуры только семейств с ненулевым пользовательским отступом.
 Private mSkippedOffsets As Long ' Дополнительные позиции вне полного смещённого контура.
+Private mMergedOffsetNeighbors As Long ' Пересекающиеся дополнительные стержни соседних граней, заменённые первым физическим стержнем.
 Private mSkippedProjections As Long ' Проекции без пересечения, пропуск которых явно разрешён.
 Private mMergedPositions As Long, mConflicts As Long ' Объединённые позиции и отклонённые конфликты.
 Private mCreatedPhysical As Long ' Количество действительно созданных стержней; совпавшие позиции не считаются повторно.
@@ -159,6 +161,13 @@ Public Function DiagnosticsText() As String
                 diagnostic.EntityID & "; " & diagnostic.RelatedEntityID & ". " & diagnostic.Reason & vbCrLf
         Next diagnostic
     End If
+    If mMergedOffsetNeighbors > 0 Then
+        DiagnosticsText = DiagnosticsText & "Предупреждение: объединено дополнительных стержней соседних граней: " & CStr(mMergedOffsetNeighbors) & _
+            ". В расчёте и подписях учтён только первый добавленный стержень с его координатами и диаметром." & vbCrLf
+        For Each diagnostic In mDiagnostics
+            If diagnostic.Code = "OFFSET_NEIGHBOR_MERGED" Then DiagnosticsText = DiagnosticsText & diagnostic.SourceReference & ": " & diagnostic.Reason & vbCrLf
+        Next diagnostic
+    End If
     If Not mDefinition Is Nothing Then
         For i = 1 To mDefinition.RuleCount: DiagnosticsText = DiagnosticsText & RuleTrace(mRules(i).RuleID) & vbCrLf: Next i
     End If
@@ -173,7 +182,9 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
     ' предыдущего успешного запуска того же исполнителя.
     Set mDefinition = Nothing
     mPositionCount = 0: mCapacity = 0: mSkippedProjections = 0: mSkippedOffsets = 0: Erase mPositions
+    mMergedOffsetNeighbors = 0
     Erase mTotalNormalOffset
+    Set mOffsetContours = Nothing
     mMergedPositions = 0: mConflicts = 0: mBarOverlaps = 0: mPhysicalCapacity = 0: mCreatedPhysical = 0
     mDiagnosticRecordsOmitted = 0
     Set mDiagnostic = Nothing: Set mDiagnostics = New Collection
@@ -198,6 +209,13 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
         If mRules(i).Enabled Then mBarBinSize = GeomMax(mBarBinSize, mRules(i).Diameter)
     Next i
     Preflight
+    For i = 1 To ruleCount
+        If mRules(i).Enabled And mRules(i).ValidateRowOffset Then
+            Set mOffsetContours = New CRebarOffsetContours
+            mOffsetContours.Initialize definition, mRules
+            Exit For
+        End If
+    Next i
     For i = 1 To ruleCount: PrepareRule i: Next i
     If mPositionCount > 0 Then ReDim mPhysicalOwner(1 To mPositionCount) Else Erase mPhysicalOwner
     Dim order() As Long, scratch() As Long, index As Long, position As TRebarPosition
@@ -209,6 +227,12 @@ Public Function Build(ByVal definition As CSectionDefinition, ByVal geometry As 
         SortOrder order, scratch, 1, mPositionCount
         For i = 1 To mPositionCount
             position = mPositions(order(i)): index = position.RuleIndex
+            owner = OffsetNeighborOwner(index, position, result)
+            If owner > 0 Then
+                ValidatePlacement OffsetCheckRule(index, owner), result.X(owner), result.Y(owner), result.Diameter(owner), result.BarID(owner), geometry, region, query
+                MergeOffsetNeighbor index, owner, order(i), result
+                GoTo NextPosition
+            End If
             owner = result.FindBarAt(position.X, position.Y)
             If owner > 0 Then
                 If mRules(index).ValidateRowOffset Or mPhysicalOffsetRule(owner) > 0 Then
@@ -250,6 +274,53 @@ NextPosition:
     mBuilt = True
     Set Build = result
 End Function
+
+' Выбирает самый ранний физический стержень среди пересекающихся дополнительных рядов соседних граней.
+' Основные стержни, разные бетонные границы и ряды одного семейства сюда не относятся.
+Private Function OffsetNeighborOwner(ByVal index As Long, ByRef position As TRebarPosition, ByVal result As CRebarLayout) As Long
+    Dim bx As Double, by As Double, dx As Long, dy As Long, key As String, bucket As Collection, candidate As Variant
+    Dim other As Long, otherRule As Long, distanceSquared As Double, radiusSum As Double
+    If mOffsetContours Is Nothing Or mRules(index).Mode <> DependentOffset Then Exit Function
+    bx = Int(position.X / mBarBinSize): by = Int(position.Y / mBarBinSize)
+    For dx = -1 To 1
+        For dy = -1 To 1
+            key = Format$(bx + dx, "0") & "|" & Format$(by + dy, "0")
+            If mBarBuckets.Exists(key) Then
+                Set bucket = mBarBuckets(key)
+                For Each candidate In bucket
+                    other = CLng(candidate): otherRule = mPhysicalRule(other)
+                    If mRules(otherRule).Mode = DependentOffset Then
+                        If mRules(index).ValidateRowOffset Or mRules(otherRule).ValidateRowOffset Then
+                            radiusSum = (mRules(index).Diameter + result.Diameter(other)) / 2#
+                            distanceSquared = (position.X - result.X(other)) ^ 2 + (position.Y - result.Y(other)) ^ 2
+                            If radiusSum > GEOM_TOLERANCE And distanceSquared < (radiusSum - GEOM_TOLERANCE) ^ 2 Then
+                                If mOffsetContours.AreAdjacent(index, otherRule) Then
+                                    If OffsetNeighborOwner = 0 Or other < OffsetNeighborOwner Then OffsetNeighborOwner = other
+                                End If
+                            End If
+                        End If
+                    End If
+                Next candidate
+            End If
+        Next dy
+    Next dx
+End Function
+
+' Сохраняет только первого владельца: площадь, материал, диаметр и группа подписи не увеличиваются.
+' Связь второй позиции остаётся в трассировке; пользователь получает предупреждение с обоими рядами.
+Private Sub MergeOffsetNeighbor(ByVal index As Long, ByVal owner As Long, ByVal positionIndex As Long, ByVal result As CRebarLayout)
+    Dim firstRule As Long, reason As String
+    firstRule = mPhysicalRule(owner)
+    mMergedPositions = mMergedPositions + 1: mMergedByRule(index) = mMergedByRule(index) + 1
+    mMergedOffsetNeighbors = mMergedOffsetNeighbors + 1: mPhysicalOwner(positionIndex) = owner
+    If mRules(index).ValidateRowOffset Then mPhysicalOffsetRule(owner) = index
+    result.AddMembership owner, mRules(index).AnnotationGroup
+    reason = "Ряд '" & mRules(index).RuleID & "': пересекающийся стержень диаметром " & CStr(mRules(index).Diameter) & _
+        " мм объединён с первым стержнем '" & result.BarID(owner) & "' ряда '" & mRules(firstRule).RuleID & _
+        "'. Сохранены координаты (" & CStr(result.X(owner)) & "; " & CStr(result.Y(owner)) & ") мм и диаметр " & _
+        CStr(result.Diameter(owner)) & " мм; вторая площадь не добавлена. Поля первого ряда: " & mRules(firstRule).SourceReference
+    AddDiagnostic index, "OFFSET_NEIGHBOR_MERGED", result.BarID(owner), reason, result.Diameter(owner), mRules(index).Diameter
+End Sub
 
 ' Включает проверки обоих дополнительных рядов только у семейства с активным ненулевым базовым отступом.
 Private Sub EnableRowOffsetChecks()
@@ -584,7 +655,17 @@ Private Sub PrepareDependent(ByVal index As Long, ByVal source As Long)
         ordinal = ordinal + 1
         position = mPositions(i)
         If Not mRules(index).EverySecond Or position.SourceOrdinal Mod 2 = 1 Then
-            If Abs(mTotalNormalOffset(index)) > GEOM_TOLERANCE Then
+            If mRules(index).ValidateRowOffset Then
+                Set path = mDefinition.Path(position.PathID)
+                x = position.X - mRules(index).NormalOffset * position.TangentY
+                y = position.Y + mRules(index).NormalOffset * position.TangentX
+                If Not mOffsetContours.Accepts(index, x, y) Then
+                    mSkippedOffsets = mSkippedOffsets + 1: mSkippedByRule(index) = mSkippedByRule(index) + 1
+                    AddDiagnostic index, "OFFSET_POSITION_SKIPPED", position.SourcePositionID, _
+                        "Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.", x, y
+                    GoTo NextPosition
+                End If
+            ElseIf Abs(mTotalNormalOffset(index)) > GEOM_TOLERANCE Then
                 Set path = mDefinition.Path(position.PathID)
                 Set boundary = path.OffsetBoundary
                 If Not boundary Is Nothing Or path.HasCollapsedNormalArc(mTotalNormalOffset(index)) Then
@@ -916,3 +997,12 @@ End Sub
 Public Property Get IsReadOnly() As Boolean
     IsReadOnly = mReadOnly
 End Property
+
+' ==========================================================================
+' ДЛЯ ТЕСТОВ
+' ==========================================================================
+' Копирует исходную позицию и правило для независимого пересчёта прежней формулы смещения.
+Friend Sub TestCopyTransfer(ByVal positionIndex As Long, ByRef source As TRebarPosition, ByRef rule As TRebarRule)
+    source = mPositions(mPositions(positionIndex).SourcePositionIndex)
+    rule = mRules(mPositions(positionIndex).RuleIndex)
+End Sub

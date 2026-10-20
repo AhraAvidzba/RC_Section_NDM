@@ -102,4 +102,14 @@ class FullScopeChecks(unittest.TestCase):
         plan=self.expanded_plan();plan['CoverageVersion']=999
         self.assertTrue(full.coverage_errors(plan))
 
+    def test_individual_rows_require_all_new_suites(self):
+        plan=self.expanded_plan();plan['CoverageVersion']=3
+        for job in plan['Jobs']:
+            if job['Group']=='Geometry':
+                job['ExpectedSuites']=36;job['Macro']=[f'Baseline.{i}' for i in range(30)]+list(full.INDIVIDUAL_ROW_MACROS)
+        self.assertEqual(full.coverage_errors(plan),[])
+        for job in plan['Jobs']:
+            if job['Group']=='Geometry':job['Macro'].pop()
+        self.assertTrue(full.coverage_errors(plan))
+
 if __name__=='__main__':unittest.main(verbosity=2)

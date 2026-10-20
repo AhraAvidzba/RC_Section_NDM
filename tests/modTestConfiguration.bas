@@ -611,8 +611,9 @@ Public Function RunAudit03UniversalLoadPathTests(Optional ByRef passed As Long =
     writer.WriteSummary ThisWorkbook, batch, units
     detailedComment = CStr(ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Offset(0, 1).Value2)
     summaryComment = CStr(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 2).Value2)
-    Check stats, "universalPath.constantAlreadyCracked.detailComment", detailedComment = result.CrackResult.ResultMeta.ResultComment
-    Check stats, "universalPath.constantAlreadyCracked.summaryComment", summaryComment = result.OverallMeta.ResultComment
+    ' На лист выводится пояснение с номером сочетания и адресами, а не только внутренняя причина.
+    Check stats, "universalPath.constantAlreadyCracked.detailComment", detailedComment = CalculationResultMessage(batch, 1, result.CrackSummaryMeta)
+    Check stats, "universalPath.constantAlreadyCracked.summaryComment", summaryComment = CalculationResultMessage(batch, 1, result.OverallMeta)
     Check stats, "universalPath.constantAlreadyCracked.detailWarning", InStr(1, detailedComment, "Предупреждение", vbTextCompare) > 0
     Check stats, "universalPath.constantAlreadyCracked.summaryWarning", InStr(1, summaryComment, "Предупреждение", vbTextCompare) > 0
     Dim crackAnchor As Object

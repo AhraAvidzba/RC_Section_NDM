@@ -1,0 +1,31 @@
+{
+  "Passed": true,
+  "CandidateSHA256": "02229B6DB247557290730493775BB443DDAF25252ACBDB6D9EC397A42AF0ED32",
+  "DirectedSuites": 44,
+  "AssertionsByMode": {
+    "Off": 3473,
+    "SavedOff": 22,
+    "On": 3473,
+    "SavedOn": 22
+  },
+  "AssertionsPassed": 6990,
+  "AssertionsFailed": 0,
+  "FullOnOffPerformed": false,
+  "ZeroOffsetCases": 20,
+  "ConcreteElementsCompared": 7832,
+  "RebarsCompared": 560,
+  "BitwiseZeroPayloadSHA256": "72AC4FD9A921CC61C97157DB5F9EAD5CEB064539D0AB536124A846A275AE5950",
+  "LogsSHA256": {
+    "Directed_Off.txt": "E0998FC9AE80A1CC7262C65B1AD1B66C3568208128C9F128DF1F5E2EB09908A1",
+    "Saved_Off.txt": "ECD4218FA4AEC924D2EEF7D28F1294402069F8105EE2B64D3DEA64B2C2E5CA1C",
+    "Directed_On.txt": "F7A13A2EBC7C37D5EFE68477679A41415B2690A66CE74E61680D9875F8F34CA0",
+    "Saved_On.txt": "4F3F50083246FE66CF77BDE4CCE84BC69D689D9F5CCAE87AF43BAC6151AC7B1B"
+  },
+  "CornerRule": "Exact concentric arcs; explicit straight connectors; no coordinate correction",
+  "PublishedWorkbookSHA256": "8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911",
+  "SourceComponents": 159,
+  "WorkbookComponents": 165,
+  "PreservedNonVBAParts": 106,
+  "AllCodeSHA256": "C219788013461C2EBE5E0CA3354BCDE1ED019F3F06021165BBF0F139E7EF28BE",
+  "Published": true
+}

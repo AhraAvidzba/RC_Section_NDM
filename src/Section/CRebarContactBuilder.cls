@@ -90,7 +90,7 @@ Public Function AppendRow(ByVal diameter As Double, ByVal location As String, By
         options.NormalOffset = 0#: options.TangentOffset = 0#: options.EverySecond = everySecond
     End If
     options.NormalOffset = options.NormalOffset + mNormalSign * groupOffset
-    options.ValidateRowOffset = (baseOffset > GEOM_TOLERANCE)
+    options.ValidateRowOffset = (baseOffset > 0#)
     ' Сначала завершаем все вычисления и проверки. Только затем меняем накопители.
     If group = 0 Then
         ReDim Preserve mGroups(1 To mGroupCount + 1)

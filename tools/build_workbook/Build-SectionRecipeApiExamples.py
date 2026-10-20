@@ -39,7 +39,8 @@ def evidence():
     # Не принимаем отдельный успешный фрагмент незавершённого/ошибочного запуска.
     structured = ROOT / "docs/regression/StructuredGeometryTables_2026-10-17"
     section_names = ROOT / "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20"
-    for path in list(structured.glob("*.txt")) + list(section_names.glob("Directed*.txt")):
+    individual = ROOT / "docs/regression/R2R3IndividualContours_2026-10-20/Final"
+    for path in list(structured.glob("*.txt")) + list(section_names.glob("Directed*.txt")) + list(individual.glob("Directed*.txt")):
         text = path.read_text(encoding="utf-8-sig", errors="replace")
         if not re.search(r"(?m)^WATCHDOG_COMPLETED: exit=0; source unchanged=True\s*$", text):
             continue

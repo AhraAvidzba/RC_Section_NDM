@@ -21,6 +21,15 @@ FULL = (
 )
 GROUP_COUNTS = {'Full': 8, 'Geometry': 26, 'SP35': 6, 'Recipes': 26}
 CURRENT_GROUP_COUNTS = {**GROUP_COUNTS, 'Geometry': 30, 'SavedOffsets': 2}
+INDIVIDUAL_ROW_GROUP_COUNTS = {**CURRENT_GROUP_COUNTS, 'Geometry': 36}
+INDIVIDUAL_ROW_MACROS = {
+    'modTestIndividualContours.RunIndividualContourTests',
+    'modTestIndividualContours.RunIndividualContourFailureTests',
+    'modTestIndividualContours.RunIndividualContourWorkbookTests',
+    'modTestIndividualContours.RunUserRoundedContourTests',
+    'modTestIndividualContours.RunOffsetNeighborMergeTests',
+    'modTestIndividualContours.RunIndividualContourPerformanceTests',
+}
 
 
 def coverage_errors(manifest):
@@ -29,9 +38,9 @@ def coverage_errors(manifest):
         return []
     errors=[]
     version=manifest.get('CoverageVersion',1)
-    if version not in (1,2):
+    if version not in (1,2,3):
         errors.append('Unsupported full coverage version')
-    counts=CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
+    counts=INDIVIDUAL_ROW_GROUP_COUNTS if version==3 else CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
     expected={(group,mode) for group in counts for mode in ('No','Yes')}
@@ -42,6 +51,10 @@ def coverage_errors(manifest):
     for job in jobs:
         if job.get('ExpectedSuites')!=counts.get(job['Group']):
             errors.append('Canonical suite coverage differs: '+job['Group'])
+        if version == 3 and job['Group'] == 'Geometry':
+            macros = job.get('Macro', [])
+            if len(macros) != counts['Geometry'] or len(macros) != len(set(macros)) or not INDIVIDUAL_ROW_MACROS <= set(macros):
+                errors.append('Individual row coverage is incomplete or duplicated')
     return errors
 
 def load_logs():

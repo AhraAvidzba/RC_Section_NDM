@@ -859,9 +859,10 @@ Public Function RunIndependentRowOffsetGeometryTests() As String
     Set layout = FixtureLayout(OffsetGeometryDefinition(0, 100#, 118#))
     Check "offset.touch.allowed", layout.Count = 15
     Check "offset.disk.outside", OffsetGeometryRejected(OffsetGeometryDefinition(0, 1499#, 100#), "целиком")
-    Check "offset.arc.center", OffsetGeometryRejected(OffsetGeometryDefinition(1, 300#, 0#), "центра")
-    Check "offset.arc.inversion", OffsetGeometryRejected(OffsetGeometryDefinition(1, 301#, 0#), "центра")
-    Check "offset.arc.contact.collapse", OffsetGeometryRejected(OffsetGeometryDefinition(1, 290#, 290#), "центра")
+    ' У полной окружности после исчезновения радиуса не остаётся сторон для замыкания.
+    Check "offset.arc.center", OffsetGeometryRejected(OffsetGeometryDefinition(1, 300#, 0#), "контур исчез целиком")
+    Check "offset.arc.inversion", OffsetGeometryRejected(OffsetGeometryDefinition(1, 301#, 0#), "контур исчез целиком")
+    Check "offset.arc.contact.collapse", OffsetGeometryRejected(OffsetGeometryDefinition(1, 290#, 290#), "контур исчез целиком")
     For kind = 0 To 1
         Check "offset.coincidence.order." & CStr(kind), OffsetGeometryRejected(OffsetGeometryDefinition(0, 100#, 200#, "EachBar", "EachBar", kind + 1), "совпал")
         Check "offset.shared.upgrade.order." & CStr(kind), OffsetGeometryRejected(OffsetSharedJointDefinition(kind, True), "Поперечные сечения стержней")
@@ -889,6 +890,7 @@ Private Function OffsetGeometryDefinition(ByVal kind As Long, ByVal a2 As Double
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
     If kind = 1 Then options.EndMode = ClosedUniform
     facade.RebarByCount "Main", path.ID, 5, 32#, options
+    facade.RebarContour "Main", "OUTER", "Boundary", IIf(kind = 0, 500#, 200#), "Row2", "Row3"
     Set options = New CRebarRuleOptions: options.SourceReference = "OffsetTest[2,3]": options.Coincidence = KeepPublishedOwner
     Set contact = New CRebarContactBuilder: contact.Initialize 32#, 1#, 1#, options
     Set options = contact.AppendRow(20#, "Stacked", b2, "OffsetTest[2,3]", a2)
@@ -911,16 +913,18 @@ End Sub
 Private Function OffsetSharedJointDefinition(ByVal reversed As Long, ByVal neighbor As Boolean) As CSectionDefinition
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Set facade = New CSectionDefinitionBuilder: facade.Initialize "SharedOffsetJoint"
-    Set path = facade.RectanglePath("Boundary", -500#, -500#, 1000#, 1000#): facade.Outer "OUTER", path.ID
+    Set path = facade.RectanglePath("Boundary", -500#, -500#, 1000#, 1000#, "Bottom", "Right", "Top", "Left"): facade.Outer "OUTER", path.ID
     If neighbor And reversed = 1 Then AddOffsetJointNeighbor facade
     Set path = facade.LinePath("FirstPath", 0#, 0#, 400#, 0#)
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
     facade.RebarAtStations "FirstMain", path.ID, Array(0#), 32#, options
+    facade.RebarContour "FirstMain", "OUTER", "Boundary", 500#, "LegacyJoint", "", Array("Bottom")
     options.NormalOffset = 100#: options.SourceReference = "LegacyJoint[2,3]"
     facade.RebarDependent "LegacyJoint", "FirstMain", 20#, options
     Set path = facade.LinePath("SecondPath", -400#, 0#, 0#, 0#)
     Set options = New CRebarRuleOptions: options.Coincidence = KeepPublishedOwner
     facade.RebarAtStations "SecondMain", path.ID, Array(400#), 32#, options
+    facade.RebarContour "SecondMain", "OUTER", "Boundary", 500#, "OffsetJoint", "", Array("Bottom")
     options.NormalOffset = 100#: options.ValidateRowOffset = True: options.SourceReference = "OffsetJoint[2,3]"
     facade.RebarDependent "OffsetJoint", "SecondMain", 20#, options
     If neighbor And reversed = 0 Then AddOffsetJointNeighbor facade

@@ -57,7 +57,13 @@ $geometry=@(
     'modTestGeometryReview.RunGeometryReviewTests',
     'modTestGeometryReview.RunPointedWidthInputTests',
     'modTestRecipeOperations.RunCollapsingOffsetTests',
-    'modTestRecipeOperations.RunFullBoundaryOffsetTests'
+    'modTestRecipeOperations.RunFullBoundaryOffsetTests',
+    'modTestIndividualContours.RunIndividualContourTests',
+    'modTestIndividualContours.RunIndividualContourFailureTests',
+    'modTestIndividualContours.RunIndividualContourWorkbookTests',
+    'modTestIndividualContours.RunUserRoundedContourTests',
+    'modTestIndividualContours.RunOffsetNeighborMergeTests',
+    'modTestIndividualContours.RunIndividualContourPerformanceTests'
 )
 $sp35=@(
     'modTestSP35CrackWidth.RunSP35FormulaTests',
@@ -110,7 +116,7 @@ $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToStri
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
     ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
     GeometryTypeInTestCopies='Rectangles';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
-    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=2;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
+    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=3;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
 Save-Run

@@ -24,6 +24,9 @@ Private mRules() As TRebarRule, mRuleCount As Long ' Копии правил а�
 Private mAnnotations() As TSectionAnnotation, mAnnotationCount As Long ' Описания размеров и подписей, их количество; сами стержни хранятся отдельно.
 Private mRegion As CConcreteRegion ' Бетонная область, проверенная при Seal; при чтении возвращается её независимая копия.
 Private mDiagnostic As CGeometryDiagnostic ' Последняя адресная ошибка проверки определения.
+Private mRebarContours() As TRebarContourLink, mRebarContourCount As Long ' Явные связи Main/R2/R3 с исходными контурами и число этих связей.
+Private mRebarContourCapacity As Long ' Выделенная ёмкость связей, увеличивается с удвоением без копирования на каждую запись.
+Private mRebarContourMains As Object ' Точные ID основных рядов с уже объявленной связью; повтор проверяется без прохода по массиву.
 
 ' Последняя машинная диагностика; Nothing при отсутствии записанного события.
 Public Property Get LastDiagnostic() As CGeometryDiagnostic
@@ -40,6 +43,7 @@ Friend Sub Initialize(ByVal typeID As String, ByVal version As Long)
     Set mGroups = CreateObject("Scripting.Dictionary"): mGroups.CompareMode = vbBinaryCompare
     Set mAnchors = CreateObject("Scripting.Dictionary"): mAnchors.CompareMode = vbBinaryCompare
     Set mSources = CreateObject("Scripting.Dictionary"): mSources.CompareMode = vbBinaryCompare
+    Set mRebarContourMains = CreateObject("Scripting.Dictionary"): mRebarContourMains.CompareMode = vbBinaryCompare
 End Sub
 
 ' Добавляет именованную точку привязки; повторный ID отклоняется.
@@ -209,6 +213,36 @@ Friend Sub AddAnnotation(ByRef value As TSectionAnnotation)
     Next i
     mAnnotationCount = mAnnotationCount + 1: ReDim Preserve mAnnotations(1 To mAnnotationCount)
     mAnnotations(mAnnotationCount) = value
+End Sub
+
+' Сохраняет явную связь семейства арматуры с исходной фигурой и бетонной границей.
+Friend Sub AddRebarContour(ByRef value As TRebarContourLink)
+    RequireMutable
+    If Len(value.MainRuleID) > 0 Then
+        If mRebarContourMains.Exists(value.MainRuleID) Then DefinitionError "Повторная связь основного ряда с контуром.", value.MainRuleID
+        mRebarContourMains.Add value.MainRuleID, True
+    End If
+    If mRebarContourCount = mRebarContourCapacity Then
+        mRebarContourCapacity = CLng(GeomMax(8#, 2# * mRebarContourCapacity))
+        ReDim Preserve mRebarContours(1 To mRebarContourCapacity)
+    End If
+    mRebarContourCount = mRebarContourCount + 1
+    mRebarContours(mRebarContourCount) = value
+End Sub
+
+' Число явно объявленных связей семейств арматуры с контурами.
+Friend Property Get RebarContourCount() As Long: RebarContourCount = mRebarContourCount: End Property
+
+' Копирует связь с контуром; готовое определение при чтении не меняется.
+Friend Sub CopyRebarContour(ByVal index As Long, ByRef value As TRebarContourLink)
+    If index < 1 Or index > mRebarContourCount Then DefinitionError "Номер связи арматуры с контуром вне определения."
+    value = mRebarContours(index)
+End Sub
+
+' Копирует роль и принадлежность бетонной границы для общей проверки рядов.
+Friend Sub CopyLoop(ByVal index As Long, ByRef value As TSectionLoop)
+    If index < 1 Or index > mLoopCount Then DefinitionError "Номер бетонного контура вне определения."
+    value = mLoops(index)
 End Sub
 
 ' Возвращает отдельную копию правила; изменение этой копии не меняет готовое описание сечения.

@@ -1,0 +1,87 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
+SOURCE_SHA256: 8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=80996; startTicks=639281264775467348
+===== modTestIndividualContours.RunOffsetNeighborMergeTests =====
+SUITE_STARTED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-20T23:54:42
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=80996; workingSet=134029312; privateBytes=89370624; cpu=4.671875
+NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=1; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=1; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=1; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=1; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=False; mainLabels=False; physical=4; top=1Ø16; right=1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=False; mainLabels=True; physical=4; top=1Ø10 + 1Ø16; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=True; mainLabels=False; physical=4; top=1Ø16; right=1Ø20
+NEIGHBOR_MERGE: kind=2; rightFirst=True; mainLabels=True; physical=4; top=1Ø10 + 1Ø16; right=1Ø10 + 1Ø20
+NEIGHBOR_MERGE: kind=3; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
+NEIGHBOR_MERGE: kind=3; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
+NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
+NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
+TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-20T23:54:43
+===== modTestIndividualContours.RunUserRoundedContourTests =====
+SUITE_STARTED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-20T23:54:43
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=80996; workingSet=138256384; privateBytes=94011392; cpu=5.953125
+USER_CONNECTOR: (280,400) -> (240,400)
+USER_CONNECTOR: (60,400) -> (20,400)
+USER_CASE: reverse=False; top.R2=5; R=40; connectors=40
+USER_CONNECTOR: (280,400) -> (240,400)
+USER_CONNECTOR: (60,400) -> (20,400)
+USER_CASE: reverse=True; top.R2=5; R=40; connectors=40
+COLLAPSED_CORNERS: top=100; reverse=False; top=(20,400)..(280,400); arcs=2
+COLLAPSED_CORNERS: top=120; reverse=False; top=(20,380)..(280,380); arcs=2
+COLLAPSED_CORNERS: top=100; reverse=True; top=(20,400)..(280,400); arcs=2
+COLLAPSED_CORNERS: top=120; reverse=True; top=(20,380)..(280,380); arcs=2
+TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-20T23:54:44
+===== modTestIndividualContours.RunIndividualContourFailureTests =====
+SUITE_STARTED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-20T23:54:44
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=80996; workingSet=142245888; privateBytes=98066432; cpu=7.046875
+REJECTED: Источник данных:
+IndividualRectangle[Extra,Side1,2]
+
+Для проверки дополнительного ряда нужна явная связь Main с исходным контуром. Добавьте её через CSectionDefinitionBuilder.RebarContour; as и принадлежность ряда по имени не определяются.
+
+Возможное решение:
+Исправьте значение в указанной ячейке.
+REJECTED: Источник данных:
+IndividualFailure[Main,Side1]
+
+Нельзя однозначно связать линию Main с исходной фигурой при заданном as.
+
+Возможное решение:
+Проверьте исходный контур, переданное расстояние и связь RebarContour.
+REJECTED: Источник данных:
+IndividualFailure[Main,Side1]; IndividualRectangle[Extra,Side1,2]; IndividualRectangle[Extra,Side1,3]; IndividualFailure[Main,Side2]; IndividualRectangle[Extra,Side2,2]; IndividualRectangle[Extra,Side2,3]; IndividualFailure[Main,Side3]; IndividualRectangle[Extra,Side3,2]; IndividualRectangle[Extra,Side3,3]; IndividualFailure[Main,Side4]; IndividualRectangle[Extra,Side4,2]; IndividualRectangle[Extra,Side4,3]; 
+
+Не удалось построить проверочную область ряда 2: Источник данных:
+IndividualFailure[Main,Side1]; IndividualRectangle[Extra,Side1,2]; IndividualRectangle[Extra,Side1,3]; IndividualFailure[Main,Side2]; IndividualRectangle[Extra,Side2,2]; IndividualRectangle[Extra,Side2,3]; IndividualFailure[Main,Side3]; IndividualRectangle[Extra,Side3,2]; IndividualRectangle[Extra,Side3,3]; IndividualFailure[Main,Side4]; IndividualRectangle[Extra,Side4,2]; IndividualRectangle[Extra,Side4,3]; 
+
+При заданных отступах прямой участок проверочного контура исчез или изменил направление.
+
+Возможное решение:
+Уменьшите отступы рядов.
+TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-20T23:54:45
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

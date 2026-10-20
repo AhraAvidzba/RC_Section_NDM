@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
-  "members": 322,
+  "members": 325,
   "examples": {
     "ISectionRecipe.CreateDefinition": {
       "source": "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas",
@@ -37,7 +37,7 @@
     },
     "CSectionDefinitionBuilder.CirclePath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1279,
+      "line": 1283,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.CirclePath(\"Full\", 0#, 0#, 100#)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -47,14 +47,15 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
     },
     "CSectionDefinitionBuilder.LinePath": {
       "source": "tests/modTestGeometryReview.bas",
-      "line": 540,
+      "line": 541,
       "routine": "TestPerPath",
       "code": "    Set path = facade.LinePath(\"P1\", 0#, 0#, 100#, 0#)",
       "context": "В теле modTestGeometryReview.TestPerPath с его подготовленными локальными объектами/входом.",
@@ -87,6 +88,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -278,6 +280,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeOperationTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -316,6 +319,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -341,7 +345,7 @@
     },
     "CSectionDefinitionBuilder.Slice": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1282,
+      "line": 1286,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.Slice(\"Half\", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -351,7 +355,8 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -368,6 +373,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -472,6 +478,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -523,6 +530,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -562,6 +570,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -606,9 +615,39 @@
         }
       ]
     },
+    "CSectionDefinitionBuilder.RebarContour": {
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 698,
+      "routine": "TestContactVariants",
+      "code": "    facade.RebarContour \"LeftMain\", \"Outer\", \"Boundary\", 50#, \"\", \"\"",
+      "context": "В теле modTestIndividualContours.TestContactVariants с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        }
+      ]
+    },
+    "CSectionDefinitionBuilder.RebarContourBaseline": {
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 691,
+      "routine": "TestContactVariants",
+      "code": "    facade.RebarContourBaseline \"Outer\", \"Boundary\", Array(\"Left\", \"Right\"), 50#, \"IndividualContact[SideLimits]\"",
+      "context": "В теле modTestIndividualContours.TestContactVariants с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        }
+      ]
+    },
     "CSectionDefinitionBuilder.RebarDependent": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 895,
+      "line": 897,
       "routine": "OffsetGeometryDefinition",
       "code": "    facade.RebarDependent \"Row2\", \"Main\", 20#, options",
       "context": "В теле modTestAudit02Api.OffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -618,7 +657,8 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -703,6 +743,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -907,6 +948,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -982,6 +1024,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -1050,6 +1093,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1092,6 +1136,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1128,6 +1173,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1229,6 +1275,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1281,6 +1328,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1305,17 +1353,16 @@
       ]
     },
     "CGeometryPath.SourceSegmentID": {
-      "source": "tests/modTestPolygonSpec.bas",
-      "line": 329,
-      "routine": "TestNamedPublication",
-      "code": "        Check \"publication.mixed.local.unchanged\", a.SourceSegmentID(i) = a.SegmentID(i)",
-      "context": "В теле modTestPolygonSpec.TestNamedPublication с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 662,
+      "routine": "TestCollapsedUserCorners",
+      "code": "        segmentID = path.SourceSegmentID(i)",
+      "context": "В теле modTestIndividualContours.TestCollapsedUserCorners с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestPolygonSpec.RunNamedSegmentTests",
+          "entryPoint": "modTestIndividualContours.RunUserRoundedContourTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestPolygonSpec.RunNamedSegmentTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SegmentNaming_2026-10-16/DirectedAccepted/modTestPolygonSpec.RunNamedSegmentTests.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -1332,6 +1379,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1367,6 +1415,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1470,7 +1519,7 @@
     },
     "CGeometryPath.AtDistance": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1280,
+      "line": 1284,
       "routine": "RunCircleSetbackTests",
       "code": "    path.AtDistance 0#, x, y, tx, ty",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -1480,14 +1529,15 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
     },
     "CGeometryPath.ValidateNormalTransfer": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 888,
+      "line": 889,
       "routine": "OffsetGeometryDefinition",
       "code": "    If kind = 1 Then path.ValidateNormalTransfer 0#, 10#",
       "context": "В теле modTestAudit02Api.OffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -1497,7 +1547,8 @@
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -1514,6 +1565,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1580,6 +1632,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1616,6 +1669,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -1655,7 +1709,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt"
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -1708,7 +1763,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt"
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -1776,7 +1832,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt"
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2130,6 +2187,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -2157,6 +2215,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2196,6 +2255,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2235,6 +2295,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2331,18 +2392,16 @@
       ]
     },
     "CRebarRuleOptions.ValidateRowOffset": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 924,
-      "routine": "OffsetSharedJointDefinition",
-      "code": "    options.NormalOffset = 100#: options.ValidateRowOffset = True: options.SourceReference = \"OffsetJoint[2,3]\"",
-      "context": "В теле modTestAudit02Api.OffsetSharedJointDefinition с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 635,
+      "routine": "TestNonAdjacentRows",
+      "code": "        Set options = New CRebarRuleOptions: options.ValidateRowOffset = True",
+      "context": "В теле modTestIndividualContours.TestNonAdjacentRows с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+          "entryPoint": "modTestIndividualContours.RunOffsetNeighborMergeTests",
           "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2360,7 +2419,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2397,7 +2457,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2421,6 +2482,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2460,6 +2522,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2553,6 +2616,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2609,6 +2673,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2642,7 +2707,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2690,6 +2756,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2729,6 +2796,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -2782,7 +2850,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2800,7 +2869,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2835,23 +2905,35 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
     },
     "CGeometryDiagnostic.Code": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 327,
-      "routine": "ExpectAnchorError",
-      "code": "        Check path.ID & \".error.code\", diagnostic.Code = code And diagnostic.EntityID = path.ID",
-      "context": "В теле modTestRecipeOperations.ExpectAnchorError с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 753,
+      "routine": "HasOffsetSkip",
+      "code": "        If diagnostic.Code = \"OFFSET_POSITION_SKIPPED\" Then",
+      "context": "В теле modTestIndividualContours.HasOffsetSkip с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunResolveAnchorTests",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunResolveAnchorTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunResolveAnchorTests.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestIndividualContours.RunUserRoundedContourTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestIndividualContours.RunIndividualContourFailureTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2947,25 +3029,16 @@
       ]
     },
     "CGeometryDiagnostic.SourceReference": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 113,
-      "routine": "RunRecipeDiagnosticTests",
-      "code": "            Check \"overlap.source\", diagnostic.EntityID = \"Bars\" And diagnostic.SourceReference = \"ProgramInputs.Spacing\"",
-      "context": "В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 584,
+      "routine": "TestOffsetNeighborMerge",
+      "code": "                Check \"neighbor.warning.source\", InStr(diagnostic.SourceReference, \"NeighborMerge[Extra,\") > 0",
+      "context": "В теле modTestIndividualContours.TestOffsetNeighborMerge с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "entryPoint": "modTestIndividualContours.RunOffsetNeighborMergeTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -2982,6 +3055,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3050,6 +3124,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3085,6 +3160,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3142,6 +3218,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3194,6 +3271,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3229,6 +3307,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3264,6 +3343,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3299,6 +3379,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3368,6 +3449,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3393,7 +3475,7 @@
     },
     "CSectionInputTable.OptionalRowOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1001,
+      "line": 1005,
       "routine": "RunIndependentRowOffsetWorkbookTests",
       "code": "    Check \"offset.input.direct.reader\", inputTable.OptionalRowOffset(FixtureInput(target.Value2).RowIndex(\"Extra\", \"Circle\"), FixtureInput(target.Value2).ColumnIndex(\"Extra\", \"a2\"), units) = 100#",
       "context": "В теле modTestAudit02Api.RunIndependentRowOffsetWorkbookTests с его подготовленными локальными объектами/входом.",
@@ -3404,7 +3486,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/OffsetWorkbook02/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunIndependentRowOffsetWorkbookTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -3421,6 +3504,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3456,6 +3540,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3491,6 +3576,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -3891,6 +3977,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3912,6 +3999,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3941,25 +4029,16 @@
       ]
     },
     "CRebarRuleExecutor.MergedPositions": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 165,
-      "routine": "RunRecipeDiagnosticTests",
-      "code": "    Check \"merge.counts\", rules.RequestedPositions = 2 And rules.CreatedPositions = 1 And rules.MergedPositions = 1",
-      "context": "В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 645,
+      "routine": "TestNonAdjacentRows",
+      "code": "    Check \"neighbor.nonadjacent.no.merge\", executor.MergedPositions = 0",
+      "context": "В теле modTestIndividualContours.TestNonAdjacentRows с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "entryPoint": "modTestIndividualContours.RunOffsetNeighborMergeTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -3989,25 +4068,16 @@
       ]
     },
     "CRebarRuleExecutor.BarOverlaps": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 119,
-      "routine": "RunRecipeDiagnosticTests",
-      "code": "            Check \"overlap.report.\" & CStr(mode), rules.BarOverlaps = 1",
-      "context": "В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 562,
+      "routine": "TestOffsetNeighborMerge",
+      "code": "    Check \"neighbor.actual.overlaps\", executor.BarOverlaps = 0",
+      "context": "В теле modTestIndividualContours.TestOffsetNeighborMerge с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "entryPoint": "modTestIndividualContours.RunOffsetNeighborMergeTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -4061,83 +4131,85 @@
       ]
     },
     "CRebarRuleExecutor.DiagnosticCount": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 159,
-      "routine": "RunRecipeDiagnosticTests",
-      "code": "    Check \"diagnostics.bounded.records\", rules.DiagnosticCount = 128 And rules.DiagnosticRecordsOmitted = 1582",
-      "context": "В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 751,
+      "routine": "HasOffsetSkip",
+      "code": "    For i = 1 To executor.DiagnosticCount",
+      "context": "В теле modTestIndividualContours.HasOffsetSkip с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestIndividualContours.RunUserRoundedContourTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestIndividualContours.RunIndividualContourFailureTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
     },
     "CRebarRuleExecutor.DiagnosticAt": {
-      "source": "tests/modTestRecipeOperations.bas",
-      "line": 120,
-      "routine": "RunRecipeDiagnosticTests",
-      "code": "            Check \"overlap.machine.\" & CStr(mode), rules.DiagnosticAt(1).Code = \"BAR_OVERLAP\"",
-      "context": "В теле modTestRecipeOperations.RunRecipeDiagnosticTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 752,
+      "routine": "HasOffsetSkip",
+      "code": "        Set diagnostic = executor.DiagnosticAt(i)",
+      "context": "В теле modTestIndividualContours.HasOffsetSkip с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
-            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/FinalCandidate/CoreSmoke.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestIndividualContours.RunUserRoundedContourTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        },
+        {
+          "entryPoint": "modTestIndividualContours.RunIndividualContourFailureTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
     },
     "CRebarRuleExecutor.PositionCount": {
-      "source": "tests/modTestSectionRecipes.bas",
-      "line": 1167,
-      "routine": "CircleSourcePosition",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 325,
+      "routine": "TestRectangle",
       "code": "    For i = 1 To executor.PositionCount",
-      "context": "В теле modTestSectionRecipes.CircleSourcePosition с его подготовленными локальными объектами/входом.",
+      "context": "В теле modTestIndividualContours.TestRectangle с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestSectionRecipes.RunCircleBindingTests",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestSectionRecipes.RunCircleBindingTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestSectionRecipes.RunCircleBindingTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestSectionRecipes.RunCircleBindingTests.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
     },
     "CRebarRuleExecutor.PositionRuleID": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 850,
-      "routine": "RunIndependentRowOffsetGeometryTests",
-      "code": "                If executor.PositionRuleID(i) = \"Row2\" Then",
-      "context": "В теле modTestAudit02Api.RunIndependentRowOffsetGeometryTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 393,
+      "routine": "TestRoundedCorners",
+      "code": "        ruleID = executor.PositionRuleID(i)",
+      "context": "В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/FinalOffsetDirected05/modTestAudit02Api.RunIndependentRowOffsetGeometryTests.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -4184,18 +4256,16 @@
       ]
     },
     "CRebarRuleExecutor.PositionPhysicalOwner": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 1346,
-      "routine": "RunCircleSetbackTests",
-      "code": "                    owner = executor.PositionPhysicalOwner(i)",
-      "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 326,
+      "routine": "TestRectangle",
+      "code": "        owner = executor.PositionPhysicalOwner(i)",
+      "context": "В теле modTestIndividualContours.TestRectangle с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunCircleSetbackTests",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunCircleSetbackTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -5098,6 +5168,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -5253,6 +5324,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeOperationTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -5262,19 +5334,16 @@
       ]
     },
     "CSectionGeometryQuery.TransformCoordinates": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 139,
-      "routine": "RunApiGeometryReadExamples",
-      "code": "    x = 1#: y = 2#: query.TransformCoordinates x, y, 10#, 20#, GEOM_PI / 2#, True",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiGeometryReadExamples с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestRecipeOperations.bas",
+      "line": 490,
+      "routine": "RunFullBoundaryOffsetTests",
+      "code": "                        query.TransformCoordinates x, y, 0#, 0#, -GEOM_PI / 6#",
+      "context": "В теле modTestRecipeOperations.RunFullBoundaryOffsetTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiGeometryReadExamples",
+          "entryPoint": "modTestRecipeOperations.RunFullBoundaryOffsetTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeApiCatalogue.RunApiGeometryReadExamples.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeApiCatalogue.RunApiGeometryReadExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.unit-label-probe.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -5294,6 +5363,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeOperationTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -5317,6 +5387,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeOperationTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeOperationTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -5650,6 +5721,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -5689,6 +5761,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -5738,6 +5811,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestDeclarativeGeometry.RunCoreGeometryTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CorePaths/CoreGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/CoreTests.txt",
@@ -5797,6 +5871,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -5868,6 +5943,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -5986,6 +6062,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -6007,18 +6084,16 @@
       ]
     },
     "modSectionRecipeTypes.ERebarDistribution": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 240,
-      "routine": "RunApiInputAndDataExamples",
-      "code": "    Check \"raw.rule\", ruleValue.RuleID = \"Bars\" And ruleValue.Mode = ByCount",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 253,
+      "routine": "RunIndividualContourWorkbookTests",
+      "code": "            If rule.Mode = DependentOffset Then",
+      "context": "В теле modTestIndividualContours.RunIndividualContourWorkbookTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiInputAndDataExamples",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourWorkbookTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeApiCatalogue.RunApiInputAndDataExamples.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeApiCatalogue.RunApiInputAndDataExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6080,6 +6155,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -6135,6 +6211,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -6168,7 +6245,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6214,19 +6292,32 @@
         }
       ]
     },
-    "modSectionRecipeTypes.TRebarRule": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 234,
-      "routine": "RunApiInputAndDataExamples",
-      "code": "    Dim loopValue As TSectionLoop, ruleValue As TRebarRule, annotationValue As TSectionAnnotation, positionValue As TRebarPosition",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.",
+    "modSectionRecipeTypes.TRebarContourLink": {
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 144,
+      "routine": "RunIndividualContourFailureTests",
+      "code": "    Dim options As CRebarRuleOptions, i As Long, id As String, definition As CSectionDefinition, link As TRebarContourLink",
+      "context": "В теле modTestIndividualContours.RunIndividualContourFailureTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiInputAndDataExamples",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourFailureTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeApiCatalogue.RunApiInputAndDataExamples.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeApiCatalogue.RunApiInputAndDataExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
+          ]
+        }
+      ]
+    },
+    "modSectionRecipeTypes.TRebarRule": {
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 353,
+      "routine": "TestRoundedCorners",
+      "code": "    Dim parent As TRebarPosition, transfer As TRebarRule, segment As String, parameter As Double, expectedSegment As String",
+      "context": "В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
+          "reports": [
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6250,6 +6341,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeRuleTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleFinal.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/HollowRecipe/RuleTests1.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/RuleTests.txt",
@@ -6301,18 +6393,16 @@
       ]
     },
     "modSectionRecipeTypes.TRebarPosition": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 234,
-      "routine": "RunApiInputAndDataExamples",
-      "code": "    Dim loopValue As TSectionLoop, ruleValue As TRebarRule, annotationValue As TSectionAnnotation, positionValue As TRebarPosition",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiInputAndDataExamples с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestIndividualContours.bas",
+      "line": 353,
+      "routine": "TestRoundedCorners",
+      "code": "    Dim parent As TRebarPosition, transfer As TRebarRule, segment As String, parameter As Double, expectedSegment As String",
+      "context": "В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiInputAndDataExamples",
+          "entryPoint": "modTestIndividualContours.RunIndividualContourTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeApiCatalogue.RunApiInputAndDataExamples.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeApiCatalogue.RunApiInputAndDataExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt"
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6336,7 +6426,7 @@
     },
     "modSectionRecipeTypes.SectionRecipeErrorText": {
       "source": "tests/modTestGeometryReview.bas",
-      "line": 813,
+      "line": 814,
       "routine": "TestRecipeErrorParagraphs",
       "code": "    wrapped = SectionRecipeErrorText(text)",
       "context": "В теле modTestGeometryReview.TestRecipeErrorParagraphs с его подготовленными локальными объектами/входом.",
@@ -6381,6 +6471,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6402,6 +6493,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6496,7 +6588,7 @@
     },
     "modGeometryTypes.GeomMax": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1237,
+      "line": 1241,
       "routine": "RunOffsetOpeningAnnotationTests",
       "code": "            maxY = GeomMax(maxY, model.RebarY(i))",
       "context": "В теле modTestAudit02Api.RunOffsetOpeningAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -6505,7 +6597,8 @@
           "entryPoint": "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
           "reports": [
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt",
-            "docs/regression/DependentRowOffsets_2026-10-17/OpeningCenter01/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt"
+            "docs/regression/DependentRowOffsets_2026-10-17/OpeningCenter01/modTestAudit02Api.RunOffsetOpeningAnnotationTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6557,6 +6650,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6578,7 +6672,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6596,7 +6691,8 @@
             "docs/regression/DependentRowOffsets_2026-10-17/ProfileFinal/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/GeometryDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
             "docs/regression/DependentRowOffsets_2026-10-17/ContactDirected/modTestAudit02Api.RunRebarContactBuilderTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt",
+            "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt"
           ]
         }
       ]
@@ -6932,21 +7028,22 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "f6a35be1e38936529b2882b9fdad6b7b1b086f44de31dc9313809ddcb6415fd8",
-    "tests/modTestAudit02Api.bas": "1bc6b40fd6cce7dfaf0650372f5e7a003ad79756753240873d41b3efafcc19c6",
+    "tests/modTestAudit02Api.bas": "c51b53f3078d12664d4ec6eb005d8ee129a961f65b5a99b212959a2bf6928183",
     "tests/modTestAutoCADContours.bas": "5edfd1631f415a361b235512f71db4d3bc528a35a68ea043793cc1bc56ec5aae",
     "tests/modTestContourMesh.bas": "3729da3521911350d2b755e304ae3284e053b236630ee4413f7386ac8d1b8133",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
     "tests/modTestDeclarativeGeometry.bas": "32137f46e96aea1eb0c7d18e6a8a9042c35497892c8ae112b3d4b0b3cdff2ee7",
     "tests/modTestGeometry.bas": "28f0c1be54174d31a2f9c292350759cea32e3933788c48b97a15acbfe3fe2b0b",
-    "tests/modTestGeometryConfig.bas": "5976c8117718a28a5166a3a24d9d8181dceed6e0cd31aefe22077542d6ad16a2",
+    "tests/modTestGeometryConfig.bas": "c6eea8d313fc3ebc6d777243059d2395357199356078c40d8a20c06ef6e94b8f",
     "tests/modTestGeometryPublication.bas": "941a487082d2924eb9776b015ac588697af4c86266dfde65d316432872386eca",
     "tests/modTestGeometryQuery.bas": "fe4fb926782bf35f2155d86d966e63a9851c4d0704c7b84fd3d1fbc8202f1ebf",
-    "tests/modTestGeometryReview.bas": "f021a286e0565dcb51a8df24d668290e5afaa95409316f7f60a51a0e679bbbb1",
+    "tests/modTestGeometryReview.bas": "82b8804202439c2c064f3ffa046a496e031c6f64ae15a83a48331f13fa9568a7",
+    "tests/modTestIndividualContours.bas": "604720eb1a950f75ccaa31fc7f8ff77602e65a2a6ebd80c35f7ffd72079af052",
     "tests/modTestMaterialDiagrams.bas": "f64c3d9f69355fc47cea39981d53175edba10faeb5b7a7b725dadad6d2454b71",
     "tests/modTestPolygonSpec.bas": "cd50f71c9bea2bc14a7ac33a97c35f3f3e4aea511fad4107fad01614106751ee",
     "tests/modTestRecipeAnnotations.bas": "c2ba62a9221853f39aca922dfe7ec91facc26af4df63c9adf385f8cb656c95d0",
     "tests/modTestRecipeApiCatalogue.bas": "c124966801f6f0efdeea86843a580618df7d4b46f57452428eef5105e177c863",
-    "tests/modTestRecipeOperations.bas": "aa7eadc1fec9b7d62f0b6564348bf6c33f739f779ef4ce04ffd1f303b702e4e8",
+    "tests/modTestRecipeOperations.bas": "2f7d5bb1f2545d5b3d358327338a398fd3639624e1338e3e05fb606ecbb992f1",
     "tests/modTestRecipeSetbacks.bas": "0f4b1d7daa1de0855b5862fdb0ecd1e648d629860ec2eff24296813b6f590b83",
     "tests/modTestSectionInputReader.bas": "170add03409db8afc8a8d9c619180c483f183ed155fc60929ee1a30aef5f7b65",
     "tests/modTestSectionRecipes.bas": "d35e2d01754a94a43931a4c9a95c4a0e261adb65e54def338eb98c144c5a93ab",
@@ -7163,6 +7260,7 @@
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt": "7b887fe724d8e88f020cec956de823f1bf3073871acbfbe9c6b242b8b4a94841",
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt": "5a366129218f79ec78d4781882a2d92c51573d40bffbcfa4c714ba97470b0ae4",
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed",
+    "docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt": "e0998fc9ae80a1cc7262c65b1ad1b66c3568208128c9f128df1f5e2eb09908a1",
     "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt": "156aa5aac193499fa7073ea38d7a9593937b9e4ae25148abe82b535d3192ba3e",
     "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedMessages.txt": "75943ebe14ec8c84c5bb34dcf9f28635713e9062a6810090a8939b3fdb7e63a9",
     "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt": "7342409242d4003bad4b85c24c6669738788791b0e5c5dc522a881ceef76bb93",

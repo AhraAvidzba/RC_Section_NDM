@@ -307,6 +307,31 @@ Public Sub RebarAtStations(ByVal ruleID As String, ByVal target As String, ByVal
     value.ExplicitStations = stations: mDefinition.AddRule value
 End Sub
 
+' Связывает Main и имена R2/R3 с исходной фигурой и её бетонной границей.
+' Передаёт только метаданные; смещение контура и проверку стержней выполняют общие классы.
+Public Sub RebarContour(ByVal mainRuleID As String, ByVal loopID As String, ByVal sourcePathID As String, _
+        ByVal axisDistance As Double, ByVal row2RuleID As String, ByVal row3RuleID As String, Optional ByVal sourceSegments As Variant, _
+        Optional ByVal normalSign As Double = 0#)
+    RequireOpen
+    Dim value As TRebarContourLink
+    value.MainRuleID = mainRuleID: value.LoopID = loopID: value.SourcePathID = sourcePathID
+    value.AxisDistance = axisDistance: value.Row2RuleID = row2RuleID: value.Row3RuleID = row3RuleID
+    If Not IsMissing(sourceSegments) Then value.SourceSegments = sourceSegments
+    value.NormalSign = normalSign
+    mDefinition.AddRebarContour value
+End Sub
+
+' Сохраняет явно заданный as ограничителя, используемого также при выключенном ряде.
+' Не создаёт арматуру; активный Main на том же участке добавит свой NormalOffset поверх этого as.
+Public Sub RebarContourBaseline(ByVal loopID As String, ByVal sourcePathID As String, ByVal sourceSegments As Variant, _
+        ByVal axisDistance As Double, ByVal sourceReference As String)
+    RequireOpen
+    Dim value As TRebarContourLink
+    value.LoopID = loopID: value.SourcePathID = sourcePathID: value.SourceSegments = sourceSegments
+    value.AxisDistance = axisDistance: value.SourceReference = sourceReference
+    mDefinition.AddRebarContour value
+End Sub
+
 ' Задаёт зависимый ряд смещениями TangentOffset и NormalOffset от исходных стержней.
 ' Зависимые стержни сохраняют связь с исходными, без новой равномерной расстановки.
 Public Sub RebarDependent(ByVal ruleID As String, ByVal sourceRuleID As String, ByVal diameter As Double, _

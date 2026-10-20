@@ -107,7 +107,9 @@
         "CSectionDefinitionBuilder.RebarByFixedStep",
         "CSectionDefinitionBuilder.RebarAtStations",
         "CSectionDefinitionBuilder.RebarDependent",
-        "CSectionDefinitionBuilder.RebarProjected"
+        "CSectionDefinitionBuilder.RebarProjected",
+        "CSectionDefinitionBuilder.RebarContour",
+        "CSectionDefinitionBuilder.RebarContourBaseline"
       ]
     },
     {
@@ -278,7 +280,7 @@
       "signature": "Public Function Finish() As CSectionDefinition",
       "parameters": [],
       "resultType": "CSectionDefinition",
-      "line": 485,
+      "line": 510,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Finish",
       "anchor": "api-csectiondefinitionbuilder-finish"
@@ -3079,7 +3081,7 @@
         }
       ],
       "resultType": null,
-      "line": 312,
+      "line": 337,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarDependent",
       "anchor": "api-csectiondefinitionbuilder-rebardependent"
@@ -3140,10 +3142,140 @@
         }
       ],
       "resultType": null,
-      "line": 321,
+      "line": 346,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarProjected",
       "anchor": "api-csectiondefinitionbuilder-rebarprojected"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarContour",
+      "kind": "Sub",
+      "signature": "Public Sub RebarContour(ByVal mainRuleID As String, ByVal loopID As String, ByVal sourcePathID As String, ByVal axisDistance As Double, ByVal row2RuleID As String, ByVal row3RuleID As String, Optional ByVal sourceSegments As Variant, Optional ByVal normalSign As Double = 0#)",
+      "parameters": [
+        {
+          "name": "mainRuleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal mainRuleID As String"
+        },
+        {
+          "name": "loopID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal loopID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "axisDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal axisDistance As Double"
+        },
+        {
+          "name": "row2RuleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row2RuleID As String"
+        },
+        {
+          "name": "row3RuleID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal row3RuleID As String"
+        },
+        {
+          "name": "sourceSegments",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": true,
+          "default": null,
+          "signature": "Optional ByVal sourceSegments As Variant"
+        },
+        {
+          "name": "normalSign",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": true,
+          "default": "0#",
+          "signature": "Optional ByVal normalSign As Double = 0#"
+        }
+      ],
+      "resultType": null,
+      "line": 312,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarContour",
+      "anchor": "api-csectiondefinitionbuilder-rebarcontour"
+    },
+    {
+      "owner": "CSectionDefinitionBuilder",
+      "name": "RebarContourBaseline",
+      "kind": "Sub",
+      "signature": "Public Sub RebarContourBaseline(ByVal loopID As String, ByVal sourcePathID As String, ByVal sourceSegments As Variant, ByVal axisDistance As Double, ByVal sourceReference As String)",
+      "parameters": [
+        {
+          "name": "loopID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal loopID As String"
+        },
+        {
+          "name": "sourcePathID",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourcePathID As String"
+        },
+        {
+          "name": "sourceSegments",
+          "type": "Variant",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourceSegments As Variant"
+        },
+        {
+          "name": "axisDistance",
+          "type": "Double",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal axisDistance As Double"
+        },
+        {
+          "name": "sourceReference",
+          "type": "String",
+          "passing": "ByVal",
+          "optional": false,
+          "default": null,
+          "signature": "ByVal sourceReference As String"
+        }
+      ],
+      "resultType": null,
+      "line": 326,
+      "source": "src/Section/CSectionDefinitionBuilder.cls",
+      "id": "CSectionDefinitionBuilder.RebarContourBaseline",
+      "anchor": "api-csectiondefinitionbuilder-rebarcontourbaseline"
     },
     {
       "owner": "CRebarRuleOptions",
@@ -3931,7 +4063,7 @@
         }
       ],
       "resultType": null,
-      "line": 342,
+      "line": 367,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalExtent",
       "anchor": "api-csectiondefinitionbuilder-verticalextent"
@@ -3992,7 +4124,7 @@
         }
       ],
       "resultType": null,
-      "line": 353,
+      "line": 378,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalExtent",
       "anchor": "api-csectiondefinitionbuilder-horizontalextent"
@@ -4069,7 +4201,7 @@
         }
       ],
       "resultType": null,
-      "line": 364,
+      "line": 389,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.HorizontalDistance",
       "anchor": "api-csectiondefinitionbuilder-horizontaldistance"
@@ -4138,7 +4270,7 @@
         }
       ],
       "resultType": null,
-      "line": 378,
+      "line": 403,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.VerticalDistance",
       "anchor": "api-csectiondefinitionbuilder-verticaldistance"
@@ -4215,7 +4347,7 @@
         }
       ],
       "resultType": null,
-      "line": 391,
+      "line": 416,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Dimension",
       "anchor": "api-csectiondefinitionbuilder-dimension"
@@ -4268,7 +4400,7 @@
         }
       ],
       "resultType": null,
-      "line": 406,
+      "line": 431,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.PathLength",
       "anchor": "api-csectiondefinitionbuilder-pathlength"
@@ -4329,7 +4461,7 @@
         }
       ],
       "resultType": null,
-      "line": 417,
+      "line": 442,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Radius",
       "anchor": "api-csectiondefinitionbuilder-radius"
@@ -4390,7 +4522,7 @@
         }
       ],
       "resultType": null,
-      "line": 424,
+      "line": 449,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Diameter",
       "anchor": "api-csectiondefinitionbuilder-diameter"
@@ -4435,7 +4567,7 @@
         }
       ],
       "resultType": null,
-      "line": 443,
+      "line": 468,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.Text",
       "anchor": "api-csectiondefinitionbuilder-text"
@@ -4480,7 +4612,7 @@
         }
       ],
       "resultType": null,
-      "line": 454,
+      "line": 479,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarlabel"
@@ -4525,7 +4657,7 @@
         }
       ],
       "resultType": null,
-      "line": 463,
+      "line": 488,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowlabel"
@@ -4578,7 +4710,7 @@
         }
       ],
       "resultType": null,
-      "line": 473,
+      "line": 498,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtentLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextentlabel"
@@ -4639,7 +4771,7 @@
         }
       ],
       "resultType": null,
-      "line": 495,
+      "line": 520,
       "source": "src/Section/CSectionDefinitionBuilder.cls",
       "id": "CSectionDefinitionBuilder.RebarRowExtremeLabel",
       "anchor": "api-csectiondefinitionbuilder-rebarrowextremelabel"

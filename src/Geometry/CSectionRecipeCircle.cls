@@ -106,6 +106,7 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByVal di
     options.Comment = "Круг: основной ряд арматуры"
     options.SourceReference = rebar.Source ' Адреса полей для сообщения об ошибке размещения.
     facade.RebarByCount "Circle.Main", path.ID, rebar.Count, rebar.Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+    facade.RebarContour "Circle.Main", "OUTER", "CONTOUR_CIRCLE", rebar.AxisDistance, "Circle.Row2", "Circle.Row3", normalSign:=-1# ' Связь трёх рядов с окружностью и известным направлением в бетон.
     Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов.
     extraOptions.AnnotationGroup = "Circle" ' Подпись объединяет стержни всех рядов этой окружности.
     extraOptions.Publication = PublishPerSourcePosition ' Нумеруем R1, R2, ...: за каждым основным стержнем идут связанные с ним стержни дополнительных рядов.

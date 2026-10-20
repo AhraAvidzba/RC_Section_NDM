@@ -190,6 +190,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         ByVal outerPolygon As CPolygonSpec, ByVal openingPolygon As CPolygonSpec)
     Dim contact As CRebarContactBuilder, extraOptions As CRebarRuleOptions
     Dim normalSign As Double, i As Long, base As Long, path As CGeometryPath, options As CRebarRuleOptions, rowNumber As Long
+    If sizes.Ro = 0# Then
+        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.TL"), faces(5).AxisDistance, faces(5).Source ' Верхний as ограничивает линии у отверстия даже без верхнего ряда.
+        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.BR"), faces(6).AxisDistance, faces(6).Source ' Нижний as сохраняется как исходное ограничение.
+        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.BL"), faces(7).AxisDistance, faces(7).Source ' Левый as сохраняется как исходное ограничение.
+        facade.RebarContourBaseline "OPENING", "OPENING.Boundary", Array("Edge.TR"), faces(8).AxisDistance, faces(8).Source ' Правый as сохраняется как исходное ограничение.
+    End If
     For i = 1 To 8
         base = (i - 1) Mod 4 + 1
         If Not faces(i).Active Then GoTo NextFace
@@ -207,10 +213,12 @@ Private Sub AddReinforcement(ByVal facade As CSectionDefinitionBuilder, ByRef si
         If i <= 4 Then
             If base <= 2 Then options.EndMode = ExcludeBoth ' Не ставим стержни на концах участка после концевых отступов.
             facade.RebarByCount faces(i).ID & ".Main", path.ID, faces(i).Count, faces(i).Diameter, options ' Задаём основной ряд по числу стержней и диаметру.
+            facade.RebarContour faces(i).ID & ".Main", "OUTER", "OUTER.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", normalSign:=normalSign ' Связь наружного семейства с контуром и направлением в бетон.
         Else
             options.SourceNormalSign = -normalSign: options.SkipMissingProjection = True ' Проекция идёт к отверстию; пропускаем лучи без пересечения.
             options.SuccessfulProjectionOrdinal = True: options.NewPublicationRoot = True ' Нумеруем только найденные проекции как самостоятельный ряд.
             facade.RebarProjected faces(i).ID & ".Main", path.ID, faces(base).ID & ".Main", faces(i).Diameter, options ' Проецируем стержни наружного ряда на линию у отверстия.
+            facade.RebarContour faces(i).ID & ".Main", "OPENING", "OPENING.Boundary", faces(i).AxisDistance, faces(i).ID & ".Row2", faces(i).ID & ".Row3", normalSign:=normalSign ' Связь семейства с отверстием и направлением в бетон.
         End If
         Set extraOptions = New CRebarRuleOptions ' Общие настройки только дополнительных рядов этой стороны.
         extraOptions.AnnotationGroup = faces(i).ID ' В одной подписи указываем суммарное количество стержней каждого диаметра во всех рядах этой стороны.

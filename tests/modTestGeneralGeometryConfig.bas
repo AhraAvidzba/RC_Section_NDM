@@ -104,6 +104,7 @@ Private Sub ConfigureGeneralFixture(ByVal system As Object, ByVal unitsRange As 
     SetValue circleRange, "Circle.Diameter", 300#
     SetValue circleRange, "Rebar.AxisDistance", 30#: SetValue circleRange, "Rebar.Count", 12
     SetValue circleRange, "Rebar.Diameter", 16#
+    SetValue circleRange, "Rebar.StartSetback", 0#: SetValue circleRange, "Rebar.EndSetback", 0#
     SetValue circleRange, "Rebar.Diameter2", 0#: SetValue circleRange, "Rebar.Diameter3", 0#
     SetProfile profiles, "Calculation.Stability.Enabled", "No", "PR1"
     SetProfile profiles, "Calculation.Strength.DirectState", "Yes", "PR1"
@@ -527,7 +528,11 @@ End Function
 
 ' Меняет только значение найденного поля; восстановление сохраняет Formula.
 Private Sub SetValue(ByVal table As Object, ByVal key As String, ByVal value As Variant)
-    CellForKey(table, key, 2).Value2 = value
+    If Left$(key, 7) = "Circle." Or Left$(key, 6) = "Rebar." Then
+        FixtureCircleFieldCell(ThisWorkbook, key, table).Value2 = value
+    Else
+        CellForKey(table, key, 2).Value2 = value
+    End If
 End Sub
 
 ' Выбирает столбец профиля по ID и строку по ключу во втором столбце.
