@@ -1,0 +1,7 @@
+{
+  "Status": "START_FAILED_BEFORE_CHILD_CREATION",
+  "LauncherPSHome": "C:\\Users\\avidzba\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell",
+  "LauncherVersion": "7.6.5",
+  "Reason": "Watchdog was invoked under a PowerShell runtime without powershell.exe in PSHOME; no VBA suite started.",
+  "Correction": "Invoke Windows PowerShell 5.1 explicitly."
+}

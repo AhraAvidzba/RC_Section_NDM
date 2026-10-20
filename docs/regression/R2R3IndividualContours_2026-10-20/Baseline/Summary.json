@@ -1,0 +1,57 @@
+{
+  "Status": "BASELINE_PASS_ONLY",
+  "SourceCommit": "e75ba9b728193bd4bdb379e8d576b2659fcb7558",
+  "SourceSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "Passed": 1356,
+  "Failed": 0,
+  "Suites": 18,
+  "Runs": [
+    {
+      "Mode": "No",
+      "Report": "Before_Off.txt",
+      "Passed": 678,
+      "Failed": 0,
+      "Suites": 9,
+      "SHA256": "B268249DF1C4C38FEE4DA7EB071E2A0ADF6FD8EE20372E00F666D18B1CBAF42B"
+    },
+    {
+      "Mode": "Yes",
+      "Report": "Before_On.txt",
+      "Passed": 678,
+      "Failed": 0,
+      "Suites": 9,
+      "SHA256": "92795DFB78ABE68F4B2A22C75B57AAA93177AD59B739C5CE5B402BA55E614B6B"
+    }
+  ],
+  "SourceAndAllCodeUnchanged": true,
+  "UserExecutionReportUnchanged": true,
+  "ImplementationAccepted": false,
+  "ApprovedCornerRule": "Preserve coordinates; allow explicit non-tangent joins of exact lines and arcs.",
+  "ArchiveSHA256": "F69267A8E88DFCB79D14946B1F3CF10A277897B70DDC7324EA45C8540FA55B8E",
+  "ArchiveFiles": [
+    {
+      "Name": "Before_Off.txt",
+      "SHA256": "B268249DF1C4C38FEE4DA7EB071E2A0ADF6FD8EE20372E00F666D18B1CBAF42B"
+    },
+    {
+      "Name": "Before_Off.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": "Before_Off.txt.stdout.log",
+      "SHA256": "BA7708E08D627A7A2410E6D19CA990BD27053FFFCEFD624F98DD95031A05E599"
+    },
+    {
+      "Name": "Before_On.txt",
+      "SHA256": "92795DFB78ABE68F4B2A22C75B57AAA93177AD59B739C5CE5B402BA55E614B6B"
+    },
+    {
+      "Name": "Before_On.txt.stderr.log",
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Name": "Before_On.txt.stdout.log",
+      "SHA256": "C132C2A888CDA08DDD51D764D871F1485DED1222BA7F3286DADEBC33D9927455"
+    }
+  ]
+}

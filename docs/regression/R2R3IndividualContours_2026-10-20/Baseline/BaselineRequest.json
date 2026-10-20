@@ -1,0 +1,26 @@
+{
+  "Purpose": "BASELINE_ONLY_BEFORE_IMPLEMENTATION",
+  "StartedUTC": "2026-10-20T18:49:12.9078037Z",
+  "SourceCommit": "e75ba9b728193bd4bdb379e8d576b2659fcb7558",
+  "SourceSHA256": "02088CA93F43461192606083C5A160B0716822406AF91C1C1E6F87C03439AEEA",
+  "AllCodeSHA256": "7503AAE16CEAF73362FFD3D38256741CB87269CE32301B472CE31D212398A044",
+  "UserExecutionReportSHA256": "A98E8983BCBC2777E860EAD9BFE98549C041E2B86065F023827741C504180544",
+  "SafetyTag": "ndm-before-r2r3-individual-contours-20261020",
+  "Macros": [
+    "modTestAudit02Api.RunRebarContactBuilderTests",
+    "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+    "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+    "modTestRecipeOperations.RunRecipeOperationTests",
+    "modTestRecipeOperations.RunCollapsingOffsetTests",
+    "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+    "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+    "modTestAudit02Api.RunCircleSetbackTests",
+    "modTestAudit02Api.RunOffsetWallCollisionTests"
+  ],
+  "RequestedModes": [
+    "No",
+    "Yes"
+  ],
+  "PendingGeometryDecision": true,
+  "ImplementationStarted": false
+}
