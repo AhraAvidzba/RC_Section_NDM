@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestShapeArchitecture"
+﻿Attribute VB_Name = "modTestShapeArchitecture"
 Option Explicit
 
 ' Сохраняем все биты Double, а не 15 разрядов отображения CStr.
@@ -122,7 +122,7 @@ Private Function InputSnapshot(ByVal fixture As String) As String
     Dim lines() As String, count As Long, capacity As Long
     For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
             "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCircleGeometry", _
-            "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngCalculationProfiles")
+            "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngCalculationProfiles")
         Set table = ThisWorkbook.Names(CStr(name)).RefersToRange
         values = table.Value2: formulas = table.Formula
         capacity = capacity + table.Rows.Count * table.Columns.Count
@@ -169,16 +169,16 @@ Public Sub ConfigureShapeFixture(ByVal fixture As String)
             SetSetting "Rebar.Diameter2", 16# / factor: SetSetting "Rebar.Diameter3", 12# / factor
             SetSetting "Rebar.Loc2row", "Stacked": SetSetting "Rebar.Loc3row", "SideBySide"
         Case "Rectangle", "LSection", "TwoRectangles"
-            shapeName = "RectSet": Set table = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
-            FixtureInputCell(table, "General", "Shape", "val").Value2 = fixture: FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = -50# / factor
+            shapeName = "Rectangles": Set table = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange
+            FixtureInputCell(table, "General", "Shape", "val").Value2 = IIf(fixture = "Rectangle", "OneRect", "TwoRect")
+            FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = IIf(fixture = "LSection", 0#, -50#) / factor
             FixtureInputCell(table, "General", "H1", "val").Value2 = 400# / factor: FixtureInputCell(table, "General", "B1", "val").Value2 = 300# / factor
             FixtureInputCell(table, "General", "H2", "val").Value2 = 200# / factor: FixtureInputCell(table, "General", "B2", "val").Value2 = 600# / factor
         Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
-            shapeName = "PointedRect": Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+            shapeName = "PointedSection": Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
             FixtureInputCell(table, "General", "B", "val").Value2 = 600# / factor: FixtureInputCell(table, "General", "H", "val").Value2 = 400# / factor
-            FixtureInputCell(table, "Detail", "Type", "left").Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", "Tapered", "Simple")
-            FixtureInputCell(table, "Detail", "Type", "right").Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", "Simple", "Tapered")
-            FixtureInputCell(table, "Detail", "W", "left").Value2 = 100# / factor: FixtureInputCell(table, "Detail", "W", "right").Value2 = 130# / factor
+            FixtureInputCell(table, "Detail", "W", "left").Value2 = IIf(fixture = "RoundedTapered" Or fixture = "RoundedMixedLeft", 100#, 0#) / factor
+            FixtureInputCell(table, "Detail", "W", "right").Value2 = IIf(fixture = "RoundedSimple" Or fixture = "RoundedMixedLeft", 0#, 130#) / factor
             FixtureInputCell(table, "Detail", "R1", "left").Value2 = 30# / factor: FixtureInputCell(table, "Detail", "R1", "right").Value2 = 40# / factor
             FixtureInputCell(table, "Detail", "R2", "left").Value2 = 20# / factor: FixtureInputCell(table, "Detail", "R2", "right").Value2 = 25# / factor
         Case "HollowCentered", "HollowOffset"
@@ -232,8 +232,8 @@ Finished:
     DumpCircleGeometryMatrix = result
 End Function
 
-' ДЛЯ ТЕСТОВ: ввод расширенной RectSet-матрицы без сборки формы.
-Public Sub ConfigureRectSetScenario(ByVal fixture As String, ByVal scenario As Long)
+' ДЛЯ ТЕСТОВ: ввод расширенной Rectangles-матрицы без сборки формы.
+Public Sub ConfigureRectanglesScenario(ByVal fixture As String, ByVal scenario As Long)
     Dim keys As Variant
     Dim table As Object, settings As CSystemSettingsReader, units As CUnitSystem, factor As Double
     Dim i As Long, row As Long, extra As Long, count As Long
@@ -241,7 +241,7 @@ Public Sub ConfigureRectSetScenario(ByVal fixture As String, ByVal scenario As L
     Set units = New CUnitSystem: units.LoadFromSettings settings
     factor = units.InputLengthToInternal(1#)
     keys = Array("R1.Left", "R1.Right", "R1.Top", "R1.Bottom", "R2.Left", "R2.Right", "R2.Top", "R2.Bottom")
-    Set table = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+    Set table = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange
     If scenario = 0 Then Exit Sub
     For i = 1 To 8
         FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a2").Value2 = 0#: FixtureInputCell(table, "Extra", CStr(keys(i - 1)), "a3").Value2 = 0#
@@ -270,13 +270,13 @@ InactiveSide:
             FixtureInputCell(table, "General", "H2", "val").Value2 = "inactive value": FixtureInputCell(table, "General", "B2", "val").Value2 = "inactive value"
             For i = 15 To 18: FixtureInputCell(table, "Main", CStr(keys(i - 11)), "d").Value2 = "inactive value": Next i
         End If
-        If fixture <> "TwoRectangles" Then FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = "inactive value"
+        If fixture = "Rectangle" Then FixtureInputCell(table, "Detail", "XOffset", "val").Value2 = "inactive value"
     End If
     ThisWorkbook.Worksheets("Config").Calculate
 End Sub
 
 ' ДЛЯ ТЕСТОВ: выполняет прежнюю сборку сечения в отдельной эталонной книге.
-Public Function DumpRectSetGeometryMatrix() As String
+Public Function DumpRectanglesGeometryMatrix() As String
     Dim config As Object, saved As Variant, result As String, fixture As Variant, scenario As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim calculation As Long, events As Boolean, updating As Boolean
@@ -288,7 +288,7 @@ Public Function DumpRectSetGeometryMatrix() As String
         For scenario = 0 To 5
             FixtureRestoreInputs config, saved
             ConfigureShapeFixture "Circle": ConfigureShapeFixture CStr(fixture)
-            ConfigureRectSetScenario CStr(fixture), scenario
+            ConfigureRectanglesScenario CStr(fixture), scenario
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings
             Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
@@ -297,11 +297,11 @@ Public Function DumpRectSetGeometryMatrix() As String
     Next fixture
     GoTo Finished
 Failed:
-    result = result & "FAIL: RectSet baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
+    result = result & "FAIL: Rectangles baseline matrix; " & CStr(Err.Number) & "; " & Err.Description & vbCrLf
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     Application.Calculation = calculation: Application.EnableEvents = events: Application.ScreenUpdating = updating
-    DumpRectSetGeometryMatrix = result
+    DumpRectanglesGeometryMatrix = result
 End Function
 
 ' ДЛЯ ТЕСТОВ: одинаковая матрица двух независимых сторон и активных дуг.
@@ -312,7 +312,7 @@ Public Sub ConfigureRoundedScenario(ByVal scenario As Long)
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     keys = Array("Left", "Right", "Top", "Bottom")
-    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange: data = table.Value2
+    Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange: data = table.Value2
     If scenario = 0 Then Exit Sub
     If scenario = 1 Then
         FixtureInputCell(table, "Detail", "R1", "left").Value2 = 80# / factor: FixtureInputCell(table, "Detail", "R1", "right").Value2 = 100# / factor
@@ -341,8 +341,8 @@ Public Sub ConfigureRoundedScenario(ByVal scenario As Long)
         FixtureInputCell(table, "Main", "Top", "as").Value2 = "inactive value"
         FixtureInputCell(table, "Extra", "Top", "d2").Value2 = "inactive value"
         For i = 2 To 3
-            If CStr(FixtureInputCell(table, "Detail", "Type", IIf(i = 2, "left", "right")).Value2) = "Simple" Then
-                FixtureInputCell(table, "Detail", "W", IIf(i = 2, "left", "right")).Value2 = "inactive value": FixtureInputCell(table, "Detail", "R2", IIf(i = 2, "left", "right")).Value2 = "inactive value"
+            If CDbl(FixtureInputCell(table, "Detail", "W", IIf(i = 2, "left", "right")).Value2) = 0# Then
+                FixtureInputCell(table, "Detail", "R2", IIf(i = 2, "left", "right")).Value2 = "inactive value"
             End If
         Next i
     End If
@@ -512,7 +512,7 @@ Public Function DumpShapeCalculationSnapshot(Optional ByVal crackCode As String 
         "RoundedSimple", "RoundedTapered", "RoundedMixed", "HollowCentered", "HollowOffset"), crackCode)
 End Function
 
-' ДЛЯ ТЕСТОВ: исходный расчет четырех PointedRect, включая точные
+' ДЛЯ ТЕСТОВ: исходный расчет четырех PointedSection, включая точные
 ' контуры и прежние позиции арматуры. Вторая проба активирует радиусные пути.
 Public Function DumpRoundedSourceCalculations(Optional ByVal crackCode As String = "SP35", Optional ByVal scenario As Long = 0) As String
     DumpRoundedSourceCalculations = SourceCalculations(Array("RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"), crackCode, scenario)

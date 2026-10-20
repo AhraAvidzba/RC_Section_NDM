@@ -11,9 +11,9 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT=Path(__file__).resolve().parents[2]
 D=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/ContactResponsibilities_2026-10-17'
-SHAPES=('Circle','RectSet','PointedRect','HollowRectangle')
+SHAPES=('Circle','Rectangles','PointedSection','HollowRectangle')
 RECIPES={'src/Geometry/CSectionRecipe'+x+'.cls' for x in SHAPES}
-SNAPSHOTS=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('RectSet','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
+SNAPSHOTS=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('Rectangles','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
 SNAPSHOTS+=['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Snapshots.DumpRecipePathContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']
 spec=importlib.util.spec_from_file_location('previous',Path(__file__).with_name('Verify-RebarContactBuilder.py'))
 previous=importlib.util.module_from_spec(spec);spec.loader.exec_module(previous)

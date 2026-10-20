@@ -42,7 +42,7 @@ def finalize(core,focused):
             if 'GLOBAL_MODE: General.DiagramExtension='+item['Mode']+';' not in body or 'WATCHDOG_COMPLETED: exit=0;' not in body:
                 raise ValueError('Recipe mode or completion differs')
             suites+=len(report['suites']);assertions+=report['passed']
-    expected = 116 if main.get('coverageDefinition') == 'HistoricalCoreSuitesOnly' else 132
+    expected = 116 if main.get('coverageDefinition') == 'HistoricalCoreSuitesOnly' else main['expectedSuites']
     if suites!=expected:raise ValueError(f'All {expected} core suites are required')
     independent=read(focused/'Independent.json')
     return {'Status':'PASS','SourceSHA256':source,'CoreSuites':suites,'CorePassedAssertions':assertions,

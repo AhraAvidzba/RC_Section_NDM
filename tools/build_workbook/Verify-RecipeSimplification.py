@@ -52,19 +52,19 @@ def verify(published=False):
         runs[stage] = record
 
     matrices = ['modTestSectionRecipes.Dump'+name+'Recipe'+suffix for name, suffix in
-                [('Circle', 'Matrix'), ('RectSet', 'Matrix'), ('Rounded', 'Matrix'),
+                [('Circle', 'Matrix'), ('Rectangles', 'Matrix'), ('Rounded', 'Matrix'),
                  ('Hollow', 'Matrix'), ('Hollow', 'EdgeMatrix')]]
     contract = 'modTestAudit02Api.DumpAudit02CloseoutInputContract'
     rules = 'modTestAudit02Snapshots.DumpRecipeRuleContracts'
     calculations = 'modTestAudit02Snapshots.DumpAudit02Calculations'
-    plots = ['modTestSectionRecipes.Dump'+name+'RecipePreview' for name in ('Circle', 'RectSet', 'Rounded', 'Hollow')]
-    states = ['modTestSectionRecipes.Dump'+name+'RecipeCalculations' for name in ('Circle', 'RectSet', 'Rounded', 'Hollow')]
+    plots = ['modTestSectionRecipes.Dump'+name+'RecipePreview' for name in ('Circle', 'Rectangles', 'Rounded', 'Hollow')]
+    states = ['modTestSectionRecipes.Dump'+name+'RecipeCalculations' for name in ('Circle', 'Rectangles', 'Rounded', 'Hollow')]
     directed = ['modTestSectionRecipes.'+name for name in ('RunWorkbookRecipeInputTests', 'RunRecipeDefinitionTests',
                 'RunCircleRecipeInputTests', 'RunRoundedRecipeInputTests', 'RunHollowRecipeInputTests',
                 'RunCircleBindingTests', 'RunCircleBindingWorkbookTests', 'RunRecipeAnnotationCountTests', 'RunRecipeRuleTests')]
     directed += ['modTestRecipeSetbacks.RunRecipeSetbackUnitTests', 'modTestRecipeSetbacks.RunRecipeSetbackInputTests',
                  'modTestRecipeOperations.RunRecipeOperationTests', 'modTestRecipeOperations.RunRecipeDiagnosticTests',
-                 'modTestAudit02Api.RunAudit02CloseoutRectSetInputTests', 'modTestAudit02Api.RunAudit02CloseoutContactTests',
+                 'modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests', 'modTestAudit02Api.RunAudit02CloseoutContactTests',
                  'modTestAudit02Api.RunRecipeContactOptionsContract', 'modTestRecipeApiCatalogue.RunAdvancedGuideExamples']
     run('BaselineMatricesNative', matrices+[contract])
     run('CandidateMatrices', matrices+[contract, rules])
@@ -123,7 +123,7 @@ def verify(published=False):
         assert current_runtime.keys() - old_runtime.keys() == {'src/Geometry/modSectionRecipeRows.bas'}
         assert not old_runtime.keys() - current_runtime.keys()
         changed_runtime = {name for name in old_runtime if old_runtime[name] != current_runtime[name]}
-        assert changed_runtime == {'src/Geometry/CSectionRecipe'+name+'.cls' for name in ('Circle', 'RectSet', 'PointedRect', 'HollowRectangle')} | {'src/Common/modSectionRecipeApiGuide.bas'}
+        assert changed_runtime == {'src/Geometry/CSectionRecipe'+name+'.cls' for name in ('Circle', 'Rectangles', 'PointedSection', 'HollowRectangle')} | {'src/Common/modSectionRecipeApiGuide.bas'}
         def executable(source):
             return ''.join(part if part.startswith('"') else re.sub(r'\s+', '', part.lower())
                            for part in re.findall(r'"(?:[^"\n]|"")*"|\x27[^\n]*|[^"\x27]+', source)

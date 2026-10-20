@@ -54,14 +54,15 @@ try{
   Check-Layout ($item.Name+'.ExcelTables') (($found.Tables | ConvertTo-Json -Compress) -ceq ($item.Tables | ConvertTo-Json -Compress)) $found.Tables $item.Tables
  }
  $headers=@()
- foreach($name in @('rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry')){
+ foreach($name in @('rngCircleGeometry','rngRectanglesGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry')){
   $table=$book.Names.Item($name).RefersToRange;$cell=$table.Worksheet.Cells.Item($table.Row-1,$table.Column)
   $text=[string]$cell.Value2;$start=$text.IndexOf('(Подробнее)')+1
   $ok=($cell.Interior.Color -eq $layout.SectionHeaders.Color -and $cell.RowHeight -eq $layout.SectionHeaders.Height -and $cell.Characters(1,1).Font.Size -eq $layout.SectionHeaders.FontSize -and $cell.Characters(1,1).Font.Bold)
   $ok=$ok -and $cell.Worksheet.Cells.Item($cell.Row,16384).Interior.Color -eq $layout.SectionHeaders.Color
   Check-Layout ('Header.'+$name) $ok @($cell.Interior.Color,$cell.RowHeight,$cell.Characters(1,1).Font.Size) @($layout.SectionHeaders.Color,$layout.SectionHeaders.Height,$layout.SectionHeaders.FontSize)
-  Check-Layout ('HeaderLink.'+$name) ($start -gt 0 -and $cell.Hyperlinks.Count -eq 1 -and $cell.Characters($start,11).Font.Color -eq 16711680) $cell.Hyperlinks.Count 1
-  $headers+=,[ordered]@{Name=$name;Row=[int]$cell.Row;Caption=$text}
+  $linkSize=[double]$cell.Characters($start,11).Font.Size
+  Check-Layout ('HeaderLink.'+$name) ($start -gt 0 -and $cell.Hyperlinks.Count -eq 1 -and $cell.Characters($start,11).Font.Color -eq 16711680 -and $linkSize -eq $layout.SectionHeaders.LinkSize) @($cell.Hyperlinks.Count,$linkSize) @(1,$layout.SectionHeaders.LinkSize)
+  $headers+=,[ordered]@{Name=$name;Row=[int]$cell.Row;Caption=$text;LinkSize=$linkSize}
  }
  $failed=@($checks | Where-Object {-not $_.Passed})
  [ordered]@{Status=if($failed.Count){'FAIL'}else{'PASS'};WorkbookSHA256=$hash;NamedRanges=$layout.Names.Count;OtherTables=$layout.OtherTables.Count;Objects=(($layout.Sheets | ForEach-Object {$_.Objects.Count} | Measure-Object -Sum).Sum);Checks=$checks.Count;Headers=$headers;Failures=$failed;Details=$checks} | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $root $ReportPath) -Encoding UTF8

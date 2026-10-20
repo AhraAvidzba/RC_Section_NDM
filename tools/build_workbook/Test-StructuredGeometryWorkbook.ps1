@@ -59,12 +59,11 @@ try{
      if($editable -and ($cell.Interior.Color -ne 15135487 -or $cell.HorizontalAlignment -ne -4108)){throw ('Input format: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)}
      if(-not $editable -and $cell.Interior.Color -eq 15135487){throw 'Derived field highlighted as input.'}
      if($CheckDefaults){if([string]$cell.Value2 -cne [string]$record[$c-1]){throw ('Default mismatch: '+$def.RangeName+'/'+$block.Key+'/'+$record[0]+'/'+$key)};$defaults++}
-     if($key -in @('bind2','bind3','pos2','pos3') -or ($key -eq 'val' -and $record[0] -match 'Shape|\.Type$')){
+     if($key -in @('bind2','bind3','pos2','pos3') -or ($key -eq 'val' -and $record[0] -eq 'Shape')){
       $formula=[string]$cell.Validation.Formula1
       $expectedList='EachBar,EverySecondBar'
       if($key -like 'pos*'){$expectedList='Stacked,SideBySide'}
-      elseif($record[0] -eq 'Shape'){$expectedList='Rectangle,LSection,TwoRectangles'}
-      elseif($key -eq 'val'){$expectedList='Simple,Tapered'}
+      elseif($record[0] -eq 'Shape'){$expectedList='TwoRect,OneRect'}
       if($formula.Replace(';',',') -cne $expectedList){throw ('Inline choices mismatch: '+$formula)}
       $old=$cell.Formula
       foreach($option in $formula.Split([string]$app.International(5))){$cell.Value2=$option;if(-not $cell.Validation.Value){throw "Valid choice rejected: $($def.RangeName)/$($block.Key)/$($record[0])/$key; option=$option; Formula1=$($cell.Validation.Formula1); Value2=$($cell.Value2); separator=$($app.International(5))"};$options++}
@@ -83,11 +82,11 @@ try{
    $cell=Get-GeometryTableCell $range $field.Block $field.Row $field.Column
    if([string]$cell.Value2 -cne [string]$field.Value){throw ('Preserved input differs: '+($field|ConvertTo-Json -Compress))};$preserved++
   }
-  if($preserved -ne 294){throw "Expected 294 preserved fields; actual=$preserved"}
+  if($preserved -ne 292){throw "Expected 292 preserved fields; actual=$preserved"}
  }
  $settings=$book.Names.Item('rngSystemSettings').RefersToRange;$selector=$null
  for($r=2;$r -le $settings.Rows.Count;$r++){if([string]$settings.Cells.Item($r,1).Value2 -eq 'Geometry.Type'){$selector=$settings.Cells.Item($r,2)}}
- foreach($type in @('Circle','RectSet','PointedRect','HollowRectangle')){
+ foreach($type in @('Circle','Rectangles','PointedSection','HollowRectangle')){
   $selector.Value2=$type;$config.Calculate();$sections.Calculate()
   foreach($name in $snapshots.Keys){$now=$book.Names.Item($name).RefersToRange.Formula;$old=$snapshots[$name];for($r=1;$r -le $old.GetLength(0);$r++){for($c=1;$c -le $old.GetLength(1);$c++){if([string]$old[$r,$c] -cne [string]$now[$r,$c]){throw 'Type switch changed stored inputs.'}}}}
  }

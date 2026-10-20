@@ -7,7 +7,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 S = ROOT / "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14"
-RECIPES = ["src/Geometry/CSectionRecipe" + name + ".cls" for name in ("Circle", "RectSet", "PointedRect", "HollowRectangle")]
+RECIPES = ["src/Geometry/CSectionRecipe" + name + ".cls" for name in ("Circle", "Rectangles", "PointedSection", "HollowRectangle")]
 RECIPES += ["docs/geometry_refactor/examples/CSectionRecipeRoundedTrapezoid.cls"]
 COMMON = ["src/Geometry/CPolygonSpec.cls", "src/Section/CSectionDefinitionBuilder.cls", "src/Section/CSectionDefinition.cls",
           "src/Section/CSectionGeometryQuery.cls", "src/Section/CRebarRuleOptions.cls", "src/Section/CSectionInputTable.cls", "src/Common/modSectionRecipeTypes.bas"]

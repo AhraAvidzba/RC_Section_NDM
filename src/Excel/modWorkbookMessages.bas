@@ -69,12 +69,30 @@ End Function
 ' При пустом системном описании пользователь всё равно получает код и место остановки.
 Public Function WorkbookErrorMessage(ByVal operation As String, ByVal number As Long, _
         ByVal source As String, ByVal reason As String) As String
-    WorkbookErrorMessage = operation & ": "
+    WorkbookErrorMessage = operation & ":" & vbCrLf & vbCrLf
     If Len(Trim$(reason)) > 0 Then
-        WorkbookErrorMessage = WorkbookErrorMessage & reason
+        WorkbookErrorMessage = WorkbookErrorMessage & ErrorReasonParagraphs(reason)
     Else
         WorkbookErrorMessage = WorkbookErrorMessage & "Программа остановилась без описания причины."
     End If
-    If Len(source) > 0 Then WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Источник ошибки: " & source & "."
+    If Len(source) > 0 Then WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & vbCrLf & "Источник ошибки: " & source & "."
     WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Код ошибки: " & CStr(number) & "."
+End Function
+
+' Оформляет обычные сообщения reader-а так же, как геометрические ошибки.
+' Адрес берётся из уже сохранённого места ввода; для утраченного ключа остаётся название раздела.
+Private Function ErrorReasonParagraphs(ByVal reason As String) As String
+    ErrorReasonParagraphs = reason
+    If Left$(reason, Len("Настройка ")) <> "Настройка " Then Exit Function
+    Dim first As Long, last As Long, location As String, details As String, position As Long
+    first = InStr(1, reason, " (лист ", vbBinaryCompare)
+    If first = 0 Then Exit Function
+    last = InStr(first + 2, reason, ")", vbBinaryCompare)
+    If last = 0 Then Exit Function
+    location = Mid$(reason, first + 2, last - first - 2)
+    position = InStr(1, location, ", ячейка ", vbBinaryCompare)
+    If position > 0 Then location = Mid$(location, Len("лист ") + 1, position - Len("лист ") - 1) & "!" & Mid$(location, position + Len(", ячейка "))
+    details = Trim$(Mid$(reason, last + 1))
+    If Left$(details, 1) = ":" Then details = Trim$(Mid$(details, 2))
+    ErrorReasonParagraphs = SectionRecipeErrorText(details, location, Left$(reason, first - 1))
 End Function

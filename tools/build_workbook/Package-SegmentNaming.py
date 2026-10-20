@@ -35,7 +35,7 @@ def package():
     assert all(before[name][0] == candidate[name][0] for name in before)
     changed = {name for name in before if normalize(before[name][2]) != normalize(candidate[name][2])}
     expected = {'CGeometryPath', 'CPolygonSpec', 'CSectionDefinitionBuilder', 'CSectionGeometryQuery',
-                'CSectionRecipePointedRect', 'CSectionRecipeHollowRectangle', 'modSectionRecipeApiGuide',
+                'CSectionRecipePointedSection', 'CSectionRecipeHollowRectangle', 'modSectionRecipeApiGuide',
                 'modTestPolygonSpec', 'modTestAudit02Api', 'modTestAudit02Snapshots'}
     assert changed == expected, changed
     assert all(normalize(candidate[name][2]) == normalize(tested[name][2]) for name in candidate), 'Tested code differs'

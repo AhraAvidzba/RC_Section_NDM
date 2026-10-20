@@ -1,4 +1,4 @@
-"""Independent line/arc oracle for the migrated PointedRect fixtures.
+"""Independent line/arc oracle for the migrated PointedSection fixtures.
 
 Only the proven analytic rebar coordinates and their row extents replace
 baseline fields. Every other snapshot field retains the original tolerance.
@@ -149,7 +149,7 @@ def expected_geometry(records):
     factor = {"mm": 1.0, "cm": 10.0, "m": 1000.0}[inputs["rngUnitSettings.2.2"]]
 
     def cell(row, column):
-        return inputs.get(f"rngPointedRectGeometry.{row}.{column}")
+        return inputs.get(f"rngPointedSectionGeometry.{row}.{column}")
 
     def length(row, column):
         return float(cell(row, column) or 0) * factor

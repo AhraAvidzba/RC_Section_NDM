@@ -41,7 +41,7 @@ def run(before,after):
  oldnames,old,oldcalc=read(before);newnames,new,newcalc=read(after)
  assert list(new)==['Config','Сечения','Справка','Расчет','Results']
  assert oldcalc==newcalc,(oldcalc,newcalc)
- excluded=[bounds(oldnames[k]) for k in ('rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngRebarInput')]
+ excluded=[bounds(oldnames[k]) for k in ('rngCircleGeometry','rngRectanglesGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngRebarInput')]
  # Включаем заголовок каждой переносимой таблицы и её исходные данные.
  excluded=[((a[0]-1,a[1]),b) for a,b in excluded]
  checked={}
@@ -56,16 +56,16 @@ def run(before,after):
    if name=='Config' and (c>=70 or any(a[0]<=r<=b[0] and a[1]<=c<=b[1] for a,b in excluded)):continue
    a=old[name]['cells'].get(ref);b=new[name]['cells'].get(ref)
    if a!=b:
-    assert a and b and a[0]==b[0]=='value' and a[1].replace('RoundedRectangle','PointedRect')==b[1],(name,ref,a,b)
+    assert a and b and a[0]==b[0]=='value' and a[1].replace('RoundedRectangle','PointedSection')==b[1],(name,ref,a,b)
    count+=1
   checked[name]=count
  removed=sorted(k for k in oldnames if k.endswith('_Choices'))
  assert len(removed)==35 and not any(k.endswith('_Choices') for k in newnames)
  assert 'rngRebarInput' not in newnames and 'rngRoundedRectangleGeometry' not in newnames
- assert all(k in newnames for k in ('rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry'))
+ assert all(k in newnames for k in ('rngCircleGeometry','rngRectanglesGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry'))
  # Все остальные именованные диапазоны сохраняют свои назначения.
  for key,value in oldnames.items():
-  if key.startswith('_xlnm.') or key in removed or key in ('rngRebarInput','rngCircleGeometry','rngRectSetGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngSectionRecipeTypes'):continue
+  if key.startswith('_xlnm.') or key in removed or key in ('rngRebarInput','rngCircleGeometry','rngRectanglesGeometry','rngRoundedRectangleGeometry','rngHollowRectangleGeometry','rngSectionRecipeTypes'):continue
   assert newnames.get(key)==value,(key,value,newnames.get(key))
  return {'Status':'PASS','BeforeSHA256':hashlib.sha256(Path(before).read_bytes()).hexdigest().upper(),'AfterSHA256':hashlib.sha256(Path(after).read_bytes()).hexdigest().upper(),'UnchangedCells':checked,'UserColumnWidthsPreserved':True,'CalculationMode':newcalc,'RemovedChoiceNames':removed,'NamesBefore':len(oldnames),'NamesAfter':len(newnames),'OtherNamedRangesPreserved':True,'HiddenHelperCellsBefore':sum(coord(k)[1]>=70 for k in old['Config']['cells']),'HiddenHelperCellsAfter':sum(coord(k)[1]>=70 for k in new['Config']['cells'])}
 

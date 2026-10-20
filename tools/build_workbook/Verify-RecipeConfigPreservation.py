@@ -72,7 +72,7 @@ def main() -> None:
         if "!" not in reference or not re.search(r"\$[A-Z]+\$\d+:\$[A-Z]+\$\d+$", reference): continue
         old, new = table(before, name), table(after, name)
         main = next((r for r, values in enumerate(old) if len(values)>1 and values[1][1] == "as"), None)
-        face_count = {"rngPointedRectGeometry":4,"rngHollowRectangleGeometry":8}.get(name)
+        face_count = {"rngPointedSectionGeometry":4,"rngHollowRectangleGeometry":8}.get(name)
         for r, values in enumerate(old):
             for c, value in enumerate(values):
                 expected = value
@@ -80,7 +80,7 @@ def main() -> None:
                     expected = (None, ["StartSetback","EndSetback","Ед.","Комментарий"][c-4])
                 elif face_count and main < r <= main+face_count and 4 <= c <= 7:
                     expected = (None,"0") if c < 6 else old[r][c-2]
-                elif name == "rngRectSetGeometry" and r == main and c in [4,5]:
+                elif name == "rngRectanglesGeometry" and r == main and c in [4,5]:
                     expected = (None, ["StartSetback","EndSetback"][c-4])
                 elif name == "rngCircleGeometry" and values[0][1] == "Rebar.Count" and c == 3:
                     checks += 1

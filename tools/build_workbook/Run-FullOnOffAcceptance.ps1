@@ -53,7 +53,11 @@ $geometry=@(
     'modTestAudit02Api.RunAudit02AnnotationTests',
     'modTestAudit02Api.RunAudit02GuideExamplesTests',
     'modTestAudit02Api.RunAudit02CloseoutContactTests',
-    'modTestAudit02Api.RunAudit02CloseoutRectSetInputTests'
+    'modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests',
+    'modTestGeometryReview.RunGeometryReviewTests',
+    'modTestGeometryReview.RunPointedWidthInputTests',
+    'modTestRecipeOperations.RunCollapsingOffsetTests',
+    'modTestRecipeOperations.RunFullBoundaryOffsetTests'
 )
 $sp35=@(
     'modTestSP35CrackWidth.RunSP35FormulaTests',
@@ -79,7 +83,7 @@ $recipes=@(
     'modTestRecipeSetbacks.RunRecipeSetbackInputTests',
     'modTestRecipeOperations.RunRecipeOperationTests',
     'modTestRecipeOperations.RunRecipeDiagnosticTests',
-    'modTestAudit02Api.RunAudit02CloseoutRectSetInputTests',
+    'modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests',
     'modTestAudit02Api.RunAudit02CloseoutContactTests',
     'modTestRecipeApiCatalogue.RunAdvancedGuideExamples',
     'modTestSectionInputReader.RunSectionInputReaderTests',
@@ -91,6 +95,7 @@ $recipes=@(
     'modTestAudit02Api.RunOffsetWallCollisionTests',
     'modTestWorkbookInterface.RunConfigComparisonContractTests'
 )
+$savedOffsets=@('modTestRecipeOperations.RunSavedPointedOffsetTests','modTestRecipeOperations.RunSavedOffsetCalculationTests')
 $jobs=@()
 foreach ($mode in @('No','Yes')) {
     $label=if($mode -eq 'No') {'Off'} else {'On'}
@@ -98,13 +103,14 @@ foreach ($mode in @('No','Yes')) {
     $jobs+=@{Group='Geometry';Mode=$mode;Label=$label;Macro=$geometry;ExpectedSuites=$geometry.Count;MaximumSeconds=3600}
     $jobs+=@{Group='SP35';Mode=$mode;Label=$label;Macro=$sp35;ExpectedSuites=$sp35.Count;MaximumSeconds=3600}
     $jobs+=@{Group='Recipes';Mode=$mode;Label=$label;Macro=$recipes;ExpectedSuites=$recipes.Count;MaximumSeconds=3600}
+    $jobs+=@{Group='SavedOffsets';Mode=$mode;Label=$label;Macro=$savedOffsets;ExpectedSuites=$savedOffsets.Count;MaximumSeconds=600;FixtureGeometryType='PointedSection'}
 }
 $manifest=[ordered]@{Status='RUNNING';StartedUTC=[DateTimeOffset]::UtcNow.ToString('o');Deadline=$limit.ToString('o');ForecastHours=$ForecastHours;
     SourceCommit=(& git -C $root rev-parse HEAD);SourceWorkbook=$source;SourceSHA256=$sourceHash;FrozenWorkbook=$frozen;
     RunnerSHA256=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash;
     ModeRunnerSHA256=(Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Run-Audit02ModeTests.ps1') -Algorithm SHA256).Hash;
-    GeometryTypeInTestCopies='RectSet';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
-    CoverageDefinition='AllActiveAcceptanceIncludingFocused';IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
+    GeometryTypeInTestCopies='Rectangles';Jobs=$jobs;CompletedJobs=@();SourceChanged=$false;
+    CoverageDefinition='AllActiveAcceptanceIncludingFocused';CoverageVersion=2;IncludesFocusedAcceptance=$true;FocusedAcceptance=$null}
 $manifestPath=Join-Path $directory 'Run.json'
 function Save-Run {$manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8}
 Save-Run
@@ -118,9 +124,10 @@ foreach ($job in $jobs) {
     $manifest['CurrentJob']=$job.Group+'_'+$job.Label
     Save-Run
     Write-Output ('START: '+$manifest.CurrentJob+'; '+[DateTimeOffset]::Now.ToString('o'))
+    $fixtureType=if($job.FixtureGeometryType){$job.FixtureGeometryType}else{'Rectangles'}
     $arguments=@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $PSScriptRoot 'Run-Audit03Watchdog.ps1'),
         '-SourceWorkbook',$frozen,'-ReportPath',$relative,'-Mode',$job.Mode,
-        '-TimeoutSeconds',[string]$timeout,'-FixtureGeometryType','RectSet')
+        '-TimeoutSeconds',[string]$timeout,'-FixtureGeometryType',$fixtureType)
     if ($job.Macro.Count) {$arguments+=@('-Macro',($job.Macro -join ','))}
     $started=[DateTimeOffset]::UtcNow
     & (Join-Path $PSHOME 'powershell.exe') @arguments

@@ -19,12 +19,12 @@ $jobs = @(
     @{Name='Stability35Measurements'; Family='STABILITY_SP35'},
     @{Name='Stability63Measurements'; Family='STABILITY_SP63'},
     @{Name='CapacityAutoMeasurements'; Family='CAPACITY'; Method='Newton'},
-    @{Name='CapacityMultiplierMeasurements'; Family='CAPACITY_MULTIPLIER'; Method='Secant'; Shape='RectSet'},
+    @{Name='CapacityMultiplierMeasurements'; Family='CAPACITY_MULTIPLIER'; Method='Secant'; Shape='Rectangles'},
     @{Name='MixedMeasurements'; Family='MIXED'},
     @{Name='ReverseMeasurements'; Family='CRACK_SP35'; Order='Reverse'; Count=30},
     @{Name='ShuffleMeasurements'; Family='CRACK_SP35'; Order='Shuffle'; Count=30},
     @{Name='CircleMeasurements'; Family='DIRECT'; Shape='Circle'; Count=30},
-    @{Name='RoundedMeasurements'; Family='DIRECT'; Shape='PointedRect'; Count=30},
+    @{Name='RoundedMeasurements'; Family='DIRECT'; Shape='PointedSection'; Count=30},
     @{Name='OffMeasurements'; Family='DIRECT'; Extension='No'; Count=30},
     @{Name='StorageQPCMeasurements'; Group='Storage'}
 )

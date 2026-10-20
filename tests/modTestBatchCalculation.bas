@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestBatchCalculation"
+﻿Attribute VB_Name = "modTestBatchCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -114,8 +114,8 @@ Public Function RunBatchCalculationTests() As String
     TestBatchPureAxialCapacityUsesNult stats
     AppendLine stats, "RUN: TestBatchEccentricAxialCapacityTriesUltimateStrain"
     TestBatchEccentricAxialCapacityTriesUltimateStrain stats
-    AppendLine stats, "RUN: TestBatchRectSetN200CapacityPathNDoesNotNumFail"
-    TestBatchRectSetN200CapacityPathNDoesNotNumFail stats
+    AppendLine stats, "RUN: TestBatchRectanglesN200CapacityPathNDoesNotNumFail"
+    TestBatchRectanglesN200CapacityPathNDoesNotNumFail stats
     AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesMxy"
     TestBatchExplicitCapacityLoadPathScalesMxy stats
     AppendLine stats, "RUN: TestBatchExplicitCapacityLoadPathScalesNWithMoments"
@@ -150,8 +150,8 @@ Public Function RunBatchCalculationTests() As String
     TestAxialTensionReferenceAndEccentricity stats
     AppendLine stats, "RUN: TestDirectStateReportsSectionStatus"
     TestDirectStateReportsSectionStatus stats
-    AppendLine stats, "RUN: TestPR1RectSetSmallTensionMomentDirectStateDoesNotNumFail"
-    TestPR1RectSetSmallTensionMomentDirectStateDoesNotNumFail stats
+    AppendLine stats, "RUN: TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail"
+    TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail stats
     AppendLine stats, "RUN: TestLongitudinalCrackCheckUsesDirectStateStress"
     TestLongitudinalCrackCheckUsesDirectStateStress stats
     AppendLine stats, "RUN: TestLongitudinalCrackSkippedForPR1"
@@ -220,12 +220,12 @@ Public Function RunBatchCalculationTests() As String
     TestPR2AutoCrackStoresPreAndPostCrackStates stats
     AppendLine stats, "RUN: TestPR2AutoCrackPureBendingStoresMcrcStates"
     TestPR2AutoCrackPureBendingStoresMcrcStates stats
-    AppendLine stats, "RUN: TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail"
-    TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail stats
+    AppendLine stats, "RUN: TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail"
+    TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail stats
     AppendLine stats, "RUN: TestCrackInitiationLoadPathsWriteFormationSummary"
     TestCrackInitiationLoadPathsWriteFormationSummary stats
-    AppendLine stats, "RUN: TestCrackAutoFormationPathSwitchesForRectSet"
-    TestCrackAutoFormationPathSwitchesForRectSet stats
+    AppendLine stats, "RUN: TestCrackAutoFormationPathSwitchesForRectangles"
+    TestCrackAutoFormationPathSwitchesForRectangles stats
     AppendLine stats, "RUN: TestPR1AxialTensionBeyondPhysicalLimitUsesExtension"
     TestPR1AxialTensionBeyondPhysicalLimitUsesExtension stats
     AppendLine stats, "RUN: TestPR1AxialTensionNearLimitDoesNotJumpToNumFail"
@@ -836,7 +836,7 @@ End Sub
 ' и путь LoadPath = lambda*N. Точка приложения проходит через бетонный
 ' центр тяжести, поэтому внутри solver-а вместе с N масштабируются и моменты
 ' переноса, но пользовательская постановка остается чистым Nult.
-Private Sub TestBatchRectSetN200CapacityPathNDoesNotNumFail(ByRef stats As TBatchTestStats)
+Private Sub TestBatchRectanglesN200CapacityPathNDoesNotNumFail(ByRef stats As TBatchTestStats)
     Dim oldMode As String
     Dim oldMethod As String
     Dim oldScope As String
@@ -850,12 +850,12 @@ Private Sub TestBatchRectSetN200CapacityPathNDoesNotNumFail(ByRef stats As TBatc
     SetSystemSetting "Capacity.BaseLoadSteps", "1"
     SetSystemSetting "Capacity.MaxRetries", "0"
 
-    CheckBatchRectSetN200CapacitySolutionStrategy stats, "Auto"
-    CheckBatchRectSetN200CapacitySolutionStrategy stats, "UltimateStrain"
-    CheckBatchRectSetN200CapacitySolutionStrategy stats, "LoadMultiplier"
-    CheckBatchRectSetN200CapacitySolutionStrategy stats, "Auto", True
-    CheckBatchRectSetN200CapacitySolutionStrategy stats, "UltimateStrain", True
-    CheckBatchRectSetN200CapacitySolutionStrategy stats, "LoadMultiplier", True
+    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "Auto"
+    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "UltimateStrain"
+    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier"
+    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "Auto", True
+    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "UltimateStrain", True
+    CheckBatchRectanglesN200CapacitySolutionStrategy stats, "LoadMultiplier", True
 
 Restore:
     SetSystemSetting "Capacity.SolutionStrategy", oldMethod
@@ -865,14 +865,14 @@ Restore:
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.rectset.n200.capacityPathN; " & Err.Description
+    AppendLine stats, "FAIL: batch.rectangles.n200.capacityPathN; " & Err.Description
     Resume Restore
 End Sub
 
 ' При N=-200 tf пользователя проверяет оба центра приложения силы.
 ' Только приведенный центр означает чисто осевую ветку LoadMultiplier;
 ' относительно бетонного центра арматура создает физический эксцентриситет.
-Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String, _
+Private Sub CheckBatchRectanglesN200CapacitySolutionStrategy(ByRef stats As TBatchTestStats, ByVal methodName As String, _
         Optional ByVal transformedReference As Boolean = False)
     SetSystemSetting "Capacity.SolutionStrategy", methodName
 
@@ -891,7 +891,7 @@ Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchT
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider, transformedReference)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider, transformedReference)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_N200_" & methodName, 200# * 9806.65, 0#, 0#, _
         "PR1", "user N=-200 tf, lambda*N", ChrW$(&H3BB) & "*N"
@@ -899,7 +899,7 @@ Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchT
     batch.Execute
 
     Dim prefix As String, capacity As CCapacityResult, point As CSectionStateResult
-    prefix = "batch.rectset.n200." & methodName
+    prefix = "batch.rectangles.n200." & methodName
     If transformedReference Then prefix = prefix & ".transformedCenter"
     Set capacity = batch.ResultAt(1).StrengthResult.Capacity
     AppendLine stats, "INFO: " & prefix & _
@@ -942,11 +942,11 @@ Private Sub CheckBatchRectSetN200CapacitySolutionStrategy(ByRef stats As TBatchT
 End Sub
 
 ' ДЛЯ ТЕСТОВ: отдельно проверяет осевую классификацию несимметричного сечения.
-Public Function RunRectSetAxialMethodTests() As String
+Public Function RunRectanglesAxialMethodTests() As String
     Dim stats As TBatchTestStats
-    TestBatchRectSetN200CapacityPathNDoesNotNumFail stats
-    AppendLine stats, "TOTAL_RECTSET_AXIAL_METHOD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
-    RunRectSetAxialMethodTests = stats.Report
+    TestBatchRectanglesN200CapacityPathNDoesNotNumFail stats
+    AppendLine stats, "TOTAL_RECTANGLES_AXIAL_METHOD: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRectanglesAxialMethodTests = stats.Report
 End Function
 
 ' Проверяет, что явный выбор lambda*Mxy масштабирует оба пользовательских
@@ -1081,7 +1081,7 @@ Private Sub TestBatchNMxyWithoutMomentsUsesStableForcePath(ByRef stats As TBatch
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "NMXY_ZERO_M", 100# * 9806.65, 0#, 0#, _
         "PR1", "lambda NMxy with zero moments", ChrW$(&H3BB) & "*NMxy"
@@ -1440,7 +1440,7 @@ End Sub
 ' Проверяет пользовательский случай Г-сечения: при сжатии 100 тс и сравнительно
 ' небольшом моменте Mx поиск стадии образования трещины должен завершаться
 ' расчетным статусом, а не падать в NumFail из-за неудачного стартового НДС.
-Private Sub TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail(ByRef stats As TBatchTestStats)
+Private Sub TestPR2RectanglesCompressionSmallMomentCrackDoesNotNumFail(ByRef stats As TBatchTestStats)
     Dim oldPsiMode As String
     oldPsiMode = GetSystemSetting("SLS.Crack.PsiMode")
 
@@ -1454,18 +1454,18 @@ Private Sub TestPR2RectSetCompressionSmallMomentCrackDoesNotNumFail(ByRef stats 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.AddCombination "G2_L_SMALL_M", -100# * 9806.65, 30# * TEST_TF_M_IN_NMM, 0#, _
-        "PR2", "rectset compression small moment crack"
+        "PR2", "rectangles compression small moment crack"
     batch.Execute
 
-    AppendLine stats, "INFO: batch.group2.rectsetSmallMoment crack=" & batch.ResultAt(1).NormalCrackStatus & _
+    AppendLine stats, "INFO: batch.group2.rectanglesSmallMoment crack=" & batch.ResultAt(1).NormalCrackStatus & _
         "; formed=" & CStr(batch.ResultAt(1).CrackResult.Formation.CrackFormed) & "; lambda=" & FormatNumberInvariant(batch.ResultAt(1).CrackResult.Formation.LambdaCrc)
-    AssertTrue stats, "batch.group2.rectsetSmallMoment.notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
-    AssertTrue stats, "batch.group2.rectsetSmallMoment.finished", _
+    AssertTrue stats, "batch.group2.rectanglesSmallMoment.notNumFail", batch.ResultAt(1).NormalCrackStatus <> "NumFail"
+    AssertTrue stats, "batch.group2.rectanglesSmallMoment.finished", _
         batch.ResultAt(1).NormalCrackStatus = "OK" Or batch.ResultAt(1).NormalCrackStatus = "FAIL"
-    AssertTrue stats, "batch.group2.rectsetSmallMoment.solverCallsIncludeCrack", batch.SolverCallCount > 1
+    AssertTrue stats, "batch.group2.rectanglesSmallMoment.solverCallsIncludeCrack", batch.SolverCallCount > 1
 
 Restore:
     SetSystemSetting "SLS.Crack.PsiMode", oldPsiMode
@@ -1473,7 +1473,7 @@ Restore:
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.group2.rectsetSmallMoment; " & Err.Description
+    AppendLine stats, "FAIL: batch.group2.rectanglesSmallMoment; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1521,7 +1521,7 @@ End Sub
 ' Г-сечении: чистая N должна выбрать lambda*N, чистый момент - lambda*Mxy,
 ' а сочетание, где N и M по отдельности уже дают трещину, должно дойти до
 ' пропорционального пути lambda*NMxy вместо fallback psi_s=1.
-Private Sub TestCrackAutoFormationPathSwitchesForRectSet(ByRef stats As TBatchTestStats)
+Private Sub TestCrackAutoFormationPathSwitchesForRectangles(ByRef stats As TBatchTestStats)
     Dim oldPath As String
     Dim oldStrategy As String
     Dim oldPsiMode As String
@@ -1535,11 +1535,11 @@ Private Sub TestCrackAutoFormationPathSwitchesForRectSet(ByRef stats As TBatchTe
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.0001"
 
-    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectset.nOnly", _
+    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.nOnly", _
         100# * 9806.65, 0#, 0#, ChrW$(&H3BB) & "*N", True, False
-    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectset.mOnly", _
+    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.mOnly", _
         0#, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*Mx", False, True
-    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectset.nAndM", _
+    CheckCrackAutoFormationCase stats, "batch.crack.auto.rectangles.nAndM", _
         100# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, ChrW$(&H3BB) & "*NMxy", True, True
 
 Restore:
@@ -1550,7 +1550,7 @@ Restore:
 
 RestoreAndFail:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: batch.crack.auto.rectset; " & Err.Description
+    AppendLine stats, "FAIL: batch.crack.auto.rectangles; " & Err.Description
     Resume Restore
 End Sub
 
@@ -1567,7 +1567,7 @@ Private Sub CheckCrackAutoFormationCase(ByRef stats As TBatchTestStats, _
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
     batch.AddCombination UCase$(Replace$(Replace$(expectedMethod, ChrW$(&H3BB) & "*", vbNullString), "*", vbNullString)), _
@@ -1605,7 +1605,7 @@ Private Sub CheckCrackFormationSummaryForPath(ByRef stats As TBatchTestStats, _
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     batch.AddCombination UCase$(Replace$(Replace$(pathText, "lambda*", vbNullString), "*", vbNullString)), _
         nValue, mxValue, myValue, "PR2", "crack formation path", pathText
@@ -1731,7 +1731,7 @@ Private Sub TestPR2AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G2_TENSION_EXT", 900# * 9806.65, 0#, 0#, "PR2", "tension over SLS yield"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
@@ -1786,7 +1786,7 @@ Private Sub TestPR1AxialTensionBeyondPhysicalLimitUsesExtension(ByRef stats As T
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_TENSION_EXT", 900# * 9806.65, 0#, 0#, "PR1", "tension over ULS diagram"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
@@ -1843,7 +1843,7 @@ Private Sub TestPR1AxialTensionNearLimitDoesNotJumpToNumFail(ByRef stats As TBat
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
 
     Dim loads As Variant
@@ -1918,7 +1918,7 @@ Private Sub TestPR1AxialCompressionNearLimitDoesNotJumpToNumFail(ByRef stats As 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
 
     Dim loads As Variant
@@ -2014,7 +2014,7 @@ Private Sub RunAxialProgressionAfterLimit(ByRef stats As TBatchTestStats, ByVal 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
 
     Dim i As Long
@@ -2105,7 +2105,7 @@ Private Sub TestPR2AxialCompressionBeyondPhysicalLimitUsesExtension(ByRef stats 
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G2_COMPRESSION_EXT", -2000# * 9806.65, 0#, 0#, "PR2", "compression over SLS diagram"
     batch.ApplyLoadReference referenceX, referenceY, referenceX, referenceY
@@ -2173,7 +2173,7 @@ Private Sub TestPR2BendingBeyondPhysicalLimitUsesExtension(ByRef stats As TBatch
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G2_BENDING_EXT", -120# * 9806.65, 420# * 9806.65 * 1000#, _
         -180# * 9806.65 * 1000#, "PR2", "bending over SLS diagram"
@@ -2309,9 +2309,9 @@ End Sub
 Private Sub TestAxialReferenceRemovesPureCompressionEccentricity(ByRef stats As TBatchTestStats)
     CheckPureCompressionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
-    CheckPureCompressionReference stats, "rounded", PointedRectGeometry(360#, 240#), _
-        RectangleRebars(PointedRectGeometry(360#, 240#)), 30#, 0.00000001
-    CheckRectSetReferenceUsesConcreteCentroid stats
+    CheckPureCompressionReference stats, "rounded", PointedSectionGeometry(360#, 240#), _
+        RectangleRebars(PointedSectionGeometry(360#, 240#)), 30#, 0.00000001
+    CheckRectanglesReferenceUsesConcreteCentroid stats
 End Sub
 
 ' Проверяет осевое растяжение как отдельный физический сценарий:
@@ -2322,8 +2322,8 @@ End Sub
 Private Sub TestAxialTensionReferenceAndEccentricity(ByRef stats As TBatchTestStats)
     CheckPureTensionReference stats, "circle", CircleGeometry(300#, 125#, -75#), _
         CircleRebars(300#, 125#, -75#, 40#, 12, 20#), 25#, 0.00000001
-    CheckPureTensionReference stats, "rounded", PointedRectGeometry(360#, 240#), _
-        RectangleRebars(PointedRectGeometry(360#, 240#)), 30#, 0.00000001
+    CheckPureTensionReference stats, "rounded", PointedSectionGeometry(360#, 240#), _
+        RectangleRebars(PointedSectionGeometry(360#, 240#)), 30#, 0.00000001
 End Sub
 
 ' Прикладывает сжатие через бетонный центр симметричного fixture и проверяет нулевые кривизны.
@@ -2364,14 +2364,14 @@ End Sub
 ' Проверяет, что для несимметричного Г-сечения reference point берется
 ' от бетонной части. Это важнее, чем требовать нулевую кривизну: при
 ' несимметричной арматуре бетонный и приведенный центры могут не совпадать.
-Private Sub CheckRectSetReferenceUsesConcreteCentroid(ByRef stats As TBatchTestStats)
+Private Sub CheckRectanglesReferenceUsesConcreteCentroid(ByRef stats As TBatchTestStats)
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
-    mesh.BuildMesh RectSetGeometry(250#, 550#, 600#, 250#), 50#, 50#, 1, 1
+    mesh.BuildMesh RectanglesGeometry(250#, 550#, 600#, 250#), 50#, 50#, 1, 1
 
     Dim section As CSectionModel
     Set section = BuildGeneratedSectionModel(mesh, _
-        RectSetRebars(250#, 550#, 600#, 250#, 40#, 50, 32#))
+        RectanglesRebars(250#, 550#, 600#, 250#, 40#, 50, 32#))
 
     Dim concreteX As Double
     Dim concreteY As Double
@@ -2381,8 +2381,8 @@ Private Sub CheckRectSetReferenceUsesConcreteCentroid(ByRef stats As TBatchTestS
     Dim transformedY As Double
     CalculateTransformedSectionCentroid section, ProvisionalConcrete(), ProvisionalSteel(), transformedX, transformedY
 
-    AssertTrue stats, "batch.reference.rectset.concreteCenter.exists", Abs(concreteX) + Abs(concreteY) > 0.000001
-    AssertTrue stats, "batch.reference.rectset.centerDifference", _
+    AssertTrue stats, "batch.reference.rectangles.concreteCenter.exists", Abs(concreteX) + Abs(concreteY) > 0.000001
+    AssertTrue stats, "batch.reference.rectangles.centerDifference", _
         Abs(concreteX - transformedX) > 0.000001 Or Abs(concreteY - transformedY) > 0.000001
 End Sub
 
@@ -2474,7 +2474,7 @@ End Sub
 ' регрессирует численную дырку прямого StrengthState: при N=-9 тс и Mx=50 тс*м
 ' capacity находил предельное состояние, а прямой solve от заданных усилий мог
 ' остановиться как NumFail из-за неудачного стартового приближения.
-Private Sub TestPR1RectSetSmallTensionMomentDirectStateDoesNotNumFail(ByRef stats As TBatchTestStats)
+Private Sub TestPR1RectanglesSmallTensionMomentDirectStateDoesNotNumFail(ByRef stats As TBatchTestStats)
     Dim oldDirect As String
     Dim oldCapacity As String
     Dim oldCrack As String
@@ -2505,7 +2505,7 @@ Private Sub TestPR1RectSetSmallTensionMomentDirectStateDoesNotNumFail(ByRef stat
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     batch.AddCombination "G1_T9_MX50", 9# * 9806.65, 50# * TEST_TF_M_IN_NMM, 0#, _
         "PR1", "user N=-9 tf and Mx=50 tf*m"
@@ -3571,7 +3571,7 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     SetSystemSetting "Stability.Code", "SP63"
 
     Dim geom As CGeometryRegion
-    Set geom = RectSetGeometry(250#, 550#, 600#, 250#)
+    Set geom = RectanglesGeometry(250#, 550#, 600#, 250#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -3583,7 +3583,7 @@ Private Sub TestStabilityUsesTransformedCentroidForEccentricity(ByRef stats As T
     rebars.AddBar "RSHIFT2", 560#, 150#, 120#, 0#, "A400", "shift transformed centroid", geom
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "RectSetStabilityCentroid")
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "RectanglesStabilityCentroid")
 
     Dim concreteProps As CSectionPropertiesCalculator
     Set concreteProps = New CSectionPropertiesCalculator
@@ -3825,7 +3825,7 @@ Private Sub TestStabilityDepthUsesConcreteContourOnly(ByRef stats As TBatchTestS
     SetSystemSetting "Stability.Code", "SP63"
 
     Dim geom As CGeometryRegion
-    Set geom = PointedRectGeometry(300#, 200#)
+    Set geom = PointedSectionGeometry(300#, 200#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
@@ -4747,21 +4747,21 @@ End Function
 ' Собирает Г-сечение из пользовательского примера: H1/B1/H2/B2 = 550/250/250/600,
 ' арматура диаметром 32 мм по всем внешним и внутренним граням. Этот сценарий нужен именно
 ' для проверки StateSolution при почти предельном осевом растяжении PR2.
-Private Function BuildUserRectSetTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
+Private Function BuildUserRectanglesTensionBatch(ByRef referenceX As Double, ByRef referenceY As Double, _
         Optional ByVal providerOverride As CMaterialModelProvider = Nothing, _
         Optional ByVal transformedReference As Boolean = False) As CBatchSectionCalculator
     Dim geom As CGeometryRegion
-    Set geom = RectSetGeometry(250#, 550#, 600#, 250#)
+    Set geom = RectanglesGeometry(250#, 550#, 600#, 250#)
 
     Dim mesh As CFiberMeshBuilder
     Set mesh = New CFiberMeshBuilder
     mesh.BuildMesh geom, 50#, 50#, 1
 
     Dim rebars As CRebarLayout
-    Set rebars = UserRectSetTensionRebars()
+    Set rebars = UserRectanglesTensionRebars()
 
     Dim section As CSectionModel
-    Set section = BuildGeneratedSectionModel(mesh, rebars, "UserRectSetTension")
+    Set section = BuildGeneratedSectionModel(mesh, rebars, "UserRectanglesTension")
 
     Dim provider As CMaterialModelProvider
     If providerOverride Is Nothing Then
@@ -4785,13 +4785,13 @@ Private Function BuildUserRectSetTensionBatch(ByRef referenceX As Double, ByRef 
     Set batch = New CBatchSectionCalculator
     batch.Initialize section, provider
     Set batch.ProfileCatalog = profiles
-    Set BuildUserRectSetTensionBatch = batch
+    Set BuildUserRectanglesTensionBatch = batch
 End Function
 
-' Создает арматуру воспроизводимого RectSet из принятого пользовательского примера.
+' Создает арматуру воспроизводимого Rectangles из принятого пользовательского примера.
 ' Восемь прямых рядов заданы явно; дополнительные ряды отключены.
-Private Function UserRectSetTensionRebars() As CRebarLayout
-    Set UserRectSetTensionRebars = FixtureStraightRows(Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)), _
+Private Function UserRectanglesTensionRebars() As CRebarLayout
+    Set UserRectanglesTensionRebars = FixtureStraightRows(Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)), _
         Array(Array("H1.as_1", 40#, 250#, 40#, 800#, 5, 32#, 80#, 80#), _
               Array("H1.as_2", 210#, 800#, 210#, 250#, 5, 32#, 80#, 80#), _
               Array("B1.as_1", 0#, 760#, 250#, 760#, 2, 32#, 80#, 80#), _
@@ -5006,14 +5006,14 @@ Private Function CircleGeometry(ByVal diameter As Double, ByVal centerX As Doubl
 End Function
 
 ' ДЛЯ ТЕСТОВ: прямоугольная область через общее ядро точных контуров.
-Private Function PointedRectGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
-    Set PointedRectGeometry = FixtureBox(width, height)
+Private Function PointedSectionGeometry(ByVal width As Double, ByVal height As Double) As CGeometryRegion
+    Set PointedSectionGeometry = FixtureBox(width, height)
 End Function
 
 ' ДЛЯ ТЕСТОВ: собирает два прямоугольника с общей левой гранью и без смещения.
 ' Размеры заданы явно; функция не читает и не меняет Config.
-Private Function RectSetGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As CGeometryRegion
-    Set RectSetGeometry = FixtureBoxes(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)))
+Private Function RectanglesGeometry(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double) As CGeometryRegion
+    Set RectanglesGeometry = FixtureBoxes(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)))
 End Function
 
 ' ДЛЯ ТЕСТОВ: создает один круговой ряд A400 с заданным осевым отступом.
@@ -5034,12 +5034,12 @@ Private Function CircleRebars(ByVal diameter As Double, ByVal centerX As Double,
     Set CircleRebars = layout
 End Function
 
-' ДЛЯ ТЕСТОВ: воспроизводит фиксированную многогранную раскладку RectSet.
+' ДЛЯ ТЕСТОВ: воспроизводит фиксированную многогранную раскладку Rectangles.
 ' Отступ и диаметр варьируются, числа стержней граней заданы самой fixture.
-Private Function RectSetRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
+Private Function RectanglesRebars(ByVal b1 As Double, ByVal h1 As Double, ByVal b2 As Double, ByVal h2 As Double, _
         ByVal axisDistance As Double, ByVal barCount As Long, ByVal barDiameter As Double) As CRebarLayout
     Dim a As Double, d As Double: a = axisDistance: d = barDiameter
-    Set RectSetRebars = FixtureStraightRows(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)), _
+    Set RectanglesRebars = FixtureStraightRows(Array(Array(0#, 0#, b2, h2), Array(0#, h2, b1, h1)), _
         Array(Array("H1.as_1", a, h2, a, h2 + h1, 13, d, a, a), _
               Array("H1.as_2", b1 - a, h2 + h1, b1 - a, h2, 12, d, a, a), _
               Array("B1.as_1", 0#, h2 + h1 - a, b1, h2 + h1 - a, 6, d, a, a), _
@@ -6117,7 +6117,7 @@ End Function
 
 ' ============================== ДЛЯ ТЕСТОВ ==============================
 
-' Воспроизводит осевой RectSet-маршрут Off с полным численным журналом.
+' Воспроизводит осевой Rectangles-маршрут Off с полным численным журналом.
 ' Возвращает диагностику без изменения ожидаемых значений штатных тестов;
 ' все временные настройки восстанавливаются до выхода, в том числе при ошибке.
 Public Function RunAudit02OffAxialDiagnostic() As String
@@ -6147,7 +6147,7 @@ Public Function RunAudit02OffAxialDiagnostic() As String
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY, provider)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY, provider)
     batch.ApplySettings settings, units
     Dim report As CExecutionReport
     Set report = New CExecutionReport
@@ -6184,7 +6184,7 @@ Public Function RunAudit02FormationDiagnostic() As String
     Dim referenceX As Double
     Dim referenceY As Double
     Dim batch As CBatchSectionCalculator
-    Set batch = BuildUserRectSetTensionBatch(referenceX, referenceY)
+    Set batch = BuildUserRectanglesTensionBatch(referenceX, referenceY)
     batch.ApplySettings settings
     Dim report As CExecutionReport
     Set report = New CExecutionReport

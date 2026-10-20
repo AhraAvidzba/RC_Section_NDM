@@ -1,14 +1,14 @@
-' ДЛЯ ТЕСТОВ: добавляется только в modTestSectionRecipes отдельной копии.
-Public Function DumpRectSetOffsetBefore() As String
-    DumpRectSetOffsetBefore = CheckRectSetOffsetCases(False)
+﻿' ДЛЯ ТЕСТОВ: добавляется только в modTestSectionRecipes отдельной копии.
+Public Function DumpRectanglesOffsetBefore() As String
+    DumpRectanglesOffsetBefore = CheckRectanglesOffsetCases(False)
 End Function
 
-Public Function RunRectSetOffsetDimensionTests() As String
-    RunRectSetOffsetDimensionTests = CheckRectSetOffsetCases(True)
+Public Function RunRectanglesOffsetDimensionTests() As String
+    RunRectanglesOffsetDimensionTests = CheckRectanglesOffsetCases(True)
 End Function
 
 ' Проверяет величину размера и его реальные привязки, сохраняет всю расчётную геометрию для A/B.
-Private Function CheckRectSetOffsetCases(ByVal positiveDimension As Boolean) As String
+Private Function CheckRectanglesOffsetCases(ByVal positiveDimension As Boolean) As String
     Dim config As Object, saved As Variant, inputRange As Object, offsetRow As Long
     Dim settings As CSystemSettingsReader, units As CUnitSystem, reader As CSectionInputSnapshotReader
     Dim context As CSectionRecipeContext, builder As CSectionBuilder, model As CSectionModel
@@ -24,13 +24,13 @@ Private Function CheckRectSetOffsetCases(ByVal positiveDimension As Boolean) As 
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set reader = New CSectionInputSnapshotReader
-        Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units)
-        offsetRow = context.Table("rngRectSetGeometry").RowByKey("RectSet.UpperOffsetX")
-        Set inputRange = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+        Set context = reader.Capture(ThisWorkbook, Array("rngRectanglesGeometry"), units)
+        offsetRow = context.Table("rngRectanglesGeometry").RowByKey("Rectangles.UpperOffsetX")
+        Set inputRange = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange
         inputRange.Cells(offsetRow, 2).Value2 = CDbl(offset) / units.InputLengthToInternal(1#)
         ThisWorkbook.Worksheets("Config").Calculate
         settings.LoadFromWorkbook ThisWorkbook
-        Set builder = New CSectionBuilder: Set model = BuildRecipe("RectSet", settings, units, builder)
+        Set builder = New CSectionBuilder: Set model = BuildRecipe("Rectangles", settings, units, builder)
         Near "offset.input.preserved." & CStr(offset), units.InputLengthToInternal(CDbl(inputRange.Cells(offsetRow, 2).Value2)), CDbl(offset)
         found = 0
         For i = 1 To model.Annotations.Count
@@ -54,5 +54,5 @@ Failed:
     Check "offset.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then config.Formula = saved
-    CheckRectSetOffsetCases = output & mReport & "TOTAL_RECTSET_OFFSET: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    CheckRectanglesOffsetCases = output & mReport & "TOTAL_RECTANGLES_OFFSET: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function

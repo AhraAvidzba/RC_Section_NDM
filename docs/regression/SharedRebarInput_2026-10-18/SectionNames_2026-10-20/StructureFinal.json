@@ -1,0 +1,72 @@
+﻿{
+    "Status":  "PASS",
+    "WorkbookSHA256":  "4A7AA472D46D0C2FBCAC9FACEBE526360F2D4B8F3785F1C7E55FC728B001DBFD",
+    "SheetOrder":  [
+                       "Config",
+                       "Сечения",
+                       "Справка",
+                       "Расчет",
+                       "Results"
+                   ],
+    "Names":  28,
+    "ChoiceNames":  0,
+    "Tables":  [
+                   {
+                       "Name":  "rngCircleGeometry",
+                       "Address":  "$A$3:$K$18",
+                       "Blocks":  [
+                                      "General",
+                                      "Main",
+                                      "Extra"
+                                  ],
+                       "RebarRows":  1
+                   },
+                   {
+                       "Name":  "rngRectanglesGeometry",
+                       "Address":  "$A$22:$K$56",
+                       "Blocks":  [
+                                      "General",
+                                      "Main",
+                                      "Extra"
+                                  ],
+                       "RebarRows":  8
+                   },
+                   {
+                       "Name":  "rngPointedSectionGeometry",
+                       "Address":  "$A$60:$K$88",
+                       "Blocks":  [
+                                      "General",
+                                      "Main",
+                                      "Extra"
+                                  ],
+                       "RebarRows":  4
+                   },
+                   {
+                       "Name":  "rngHollowRectangleGeometry",
+                       "Address":  "$A$92:$K$128",
+                       "Blocks":  [
+                                      "General",
+                                      "Main",
+                                      "Extra"
+                                  ],
+                       "RebarRows":  8
+                   }
+               ],
+    "DefaultFieldsChecked":  0,
+    "PreservedFields":  292,
+    "ValidDropdownChoicesChecked":  170,
+    "DynamicUnitCells":  54,
+    "LengthUnits":  [
+                        "mm",
+                        "cm",
+                        "m"
+                    ],
+    "IndependentInputsPreservedOnSwitch":  true,
+    "ConditionalFormattingRules":  0,
+    "HiddenDynamicColumns":  [
+                                 69,
+                                 70,
+                                 71
+                             ],
+    "ReadOnly":  true
+}

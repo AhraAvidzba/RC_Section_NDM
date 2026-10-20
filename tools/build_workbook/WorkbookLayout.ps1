@@ -19,7 +19,7 @@ function Get-WorkbookLayoutHelperColumn {
 # Единое оформление заголовков типов по образцу сохранённой книги.
 function Format-SectionTypeHeaders {
     param([object]$Workbook,[object]$Style)
-    foreach($name in @('rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry')){
+    foreach($name in @('rngCircleGeometry','rngRectanglesGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry')){
         $table=$Workbook.Names.Item($name).RefersToRange;$row=[int]$table.Row-1
         $band=$table.Worksheet.Rows.Item($row)
         $band.Interior.Color=[int]$Style.Color;$band.RowHeight=[double]$Style.Height
@@ -102,7 +102,7 @@ function Get-WorkbookLayoutSnapshot {
     $controlBlock=$controls.CurrentRegion
     $circle=$Workbook.Names.Item('rngCircleGeometry').RefersToRange
     $reference=$circle.Worksheet.Cells.Item($circle.Row-1,$circle.Column)
-    $sectionStyle=[ordered]@{Color=[int]$reference.Interior.Color;Height=[double]$reference.RowHeight;FontName=[string]$reference.Characters(1,1).Font.Name;FontSize=[double]$reference.Characters(1,1).Font.Size;LinkSize=9}
+    $sectionStyle=[ordered]@{Color=[int]$reference.Interior.Color;Height=[double]$reference.RowHeight;FontName=[string]$reference.Characters(1,1).Font.Name;FontSize=[double]$reference.Characters(1,1).Font.Size;LinkSize=[double]$reference.Characters(([string]$reference.Value2).IndexOf('(Подробнее)')+1,11).Font.Size}
     return [pscustomobject][ordered]@{Schema=1;Names=$names;Sheets=$sheets;HelperColumns=[ordered]@{rngSectionRecipeTypes=[int]$Workbook.Names.Item('rngSectionRecipeTypes').RefersToRange.Column;LoadProfiles=[int]$config.Range($profiles.Substring(1)).Column;LoadCases=$caseColumn};OtherTables=@([ordered]@{Key='MaterialDiagramControls';Sheet='Config';Caption='Контрольные точки диаграмм';Address=$controlBlock.Address()});SectionHeaders=$sectionStyle}
 }
 

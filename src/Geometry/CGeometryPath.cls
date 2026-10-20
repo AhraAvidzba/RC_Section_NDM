@@ -591,5 +591,5 @@ Private Sub PathError(ByVal description As String, Optional ByVal code As String
         Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
     Set mDiagnostic = New CGeometryDiagnostic
     mDiagnostic.Initialize code, mID, relatedEntityID, description, detail1, detail2
-    Err.Raise vbObjectError + 5520, "CGeometryPath", "Геометрическая линия '" & mID & "': " & description
+    Err.Raise vbObjectError + 5520, "CGeometryPath", SectionRecipeErrorText(description, context:="Геометрическая линия '" & mID & "':")
 End Sub

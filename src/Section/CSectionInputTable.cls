@@ -278,7 +278,7 @@ Private Sub InputError(ByVal row As Long, ByVal column As Long, ByVal reason As 
         ElseIf Not IsObject(value) And Not IsArray(value) Then
             valueText = """" & CStr(value) & """"
         End If
-        If Len(valueText) > 0 Then reason = reason & " Прочитано: " & valueText & "."
+        If Len(valueText) > 0 Then reason = "Прочитано: " & valueText & "." & vbCrLf & reason
     End If
-    Err.Raise vbObjectError + 5525, "CSectionInputTable", location & ": " & reason
+    Err.Raise vbObjectError + 5525, "CSectionInputTable", SectionRecipeErrorText(reason, location)
 End Sub

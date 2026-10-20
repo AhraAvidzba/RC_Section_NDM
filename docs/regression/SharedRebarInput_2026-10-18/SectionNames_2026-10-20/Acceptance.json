@@ -1,0 +1,92 @@
+{
+  "Passed": true,
+  "Scope": "Focused acceptance; complete ON/OFF acceptance is deferred by the user.",
+  "PublishedSHA256": "4A7AA472D46D0C2FBCAC9FACEBE526360F2D4B8F3785F1C7E55FC728B001DBFD",
+  "AllCodeSHA256": "20EFDD5C8C7FDECD0582AEE1A9E142281DE515A620ACDF61ACA9FD24FA157146",
+  "NativeSourceComponents": 155,
+  "NativeExportComponents": 161,
+  "DirectedAssertions": 33992,
+  "Suites": [
+    {
+      "Macro": "modTestGeometry.RunGeometryTests",
+      "Passed": 766,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestGeometryReview.RunPointedWidthInputTests",
+      "Passed": 64,
+      "Report": "DirectedRelease.txt"
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRecipeDefinitionTests",
+      "Passed": 15,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+      "Passed": 14,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+      "Passed": 19,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+      "Passed": 20,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+      "Passed": 35,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestGeometryQuery.RunGeometryQueryTests",
+      "Passed": 1319,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestPolygonSpec.RunPolygonSpecTests",
+      "Passed": 52,
+      "Report": "DirectedFinalCore.txt"
+    },
+    {
+      "Macro": "modTestGeometryConfig.RunAudit03RequiredGeometryInputTests",
+      "Passed": 922,
+      "Report": "DirectedRelease.txt"
+    },
+    {
+      "Macro": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+      "Passed": 309,
+      "Report": "DirectedRelease.txt"
+    },
+    {
+      "Macro": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+      "Passed": 30457,
+      "Report": "DirectedRelease.txt"
+    }
+  ],
+  "LayoutChecks": 1720,
+  "GeometryCases": 42,
+  "BitIdenticalNumericFields": 203790,
+  "PreservedConfigAndCalculationInputs": 707,
+  "PreservedGeometryInputs": 292,
+  "ApiMembers": 322,
+  "UserReportUnchanged": true,
+  "FullOnOffRun": false,
+  "PendingChecks": [
+    {
+      "Macro": "modTestWorkbookInterface.RunSharedConfigPreflightTests",
+      "Reason": "420-second timeout in Directed04; remains to repeat with the deferred complete acceptance."
+    }
+  ],
+  "ReviewedFailures": [
+    "Two incorrect manually specified entrypoint names in early exploratory drivers; corrected in final runs.",
+    "Eight circle caption expectations updated for the required newline.",
+    "Twenty-five common-setting location checks now accept the reader actual sheet/cell wording; exact address checks are retained.",
+    "Directed03 final watchdog hash read collided with preparation of its source; final acceptance uses frozen source files."
+  ],
+  "EvidenceArchiveSHA256": "F8CB92B743B3B6C46F6902CE39414CF9F6B6300F84D79EF015CDDB67F529FEF0"
+}

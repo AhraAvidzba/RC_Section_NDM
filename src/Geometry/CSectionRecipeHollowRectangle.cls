@@ -108,7 +108,7 @@ Private Sub ReadRebarInputs(ByVal reader As CSectionInputReader, ByRef faces() A
     For i = 1 To 8
         With faces(i)
             .ID = CStr(ids(i - 1)): .Caption = CStr(captions(i - 1))
-            .RowComment = "Прямоугольник с отверстием: арматура " & .Caption & ", ряд "
+            .RowComment = "Пустотелый прямоугольник: арматура " & .Caption & ", ряд "
             key = CStr(keys(i - 1))
             .Source = reader.SourceReference("Main", key, "as")
             If i <= 4 Then .Count = reader.Count("Main", key, "n")

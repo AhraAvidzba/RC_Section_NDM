@@ -67,10 +67,10 @@ Registry/reader/layout потребители пока прежние; retiremen
 Старый test SourceSnapshot удален из актуального harness; его прежний код
 сохраняется только в неизменяемых baseline-артефактах.
 
-Сквозной development-маршрут RectSet:
-- Одна регистрация CSectionRecipeRectSet; одна таблица rngRectSetGeometry.
+Сквозной development-маршрут Rectangles:
+- Одна регистрация CSectionRecipeRectangles; одна таблица rngRectanglesGeometry.
 - Рецепт описывает Rectangle/LSection/TwoRectangles и восемь граней, без
-  CGeometryRectSet/CRectSetRebarLayoutBuilder/CRectSetAnnotationBuilder.
+  CGeometryRectangles/CRectanglesRebarLayoutBuilder/CRectanglesAnnotationBuilder.
 - Общий query.AdjacentRectangles -> NormalizeBoundary/BoundaryRegion;
   только смежные неперекрывающиеся прямоугольники, без нового Boolean engine.
 - CRebarRuleExecutor -> отдельные ordinal/publication rank, явные coincidence

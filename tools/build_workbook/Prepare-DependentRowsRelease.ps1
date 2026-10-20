@@ -31,7 +31,7 @@ try{
     $book=$excel.Workbooks.Open($path,0,$false);$excel.Calculation=-4135
     $sheet=$book.Worksheets.Item('Config')
     if(-not $CaptureOnly){
-    foreach($name in @('rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry')){
+    foreach($name in @('rngCircleGeometry','rngRectanglesGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry')){
         $range=$book.Names.Item($name).RefersToRange
         if($range.Columns.Count -ne 11){throw "Already updated schema required: $name"}
     }
@@ -59,7 +59,7 @@ try{
     $guide=Get-Content -LiteralPath (Join-Path $guideDirectory 'NativeMap.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     }else{$book.Close($false);$book=$null}
     $book=$excel.Workbooks.Open($path,0,$true);$excel.ScreenUpdating=$true
-    foreach($name in @('rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry')){
+    foreach($name in @('rngCircleGeometry','rngRectanglesGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry')){
         $range=$book.Names.Item($name).RefersToRange
         Picture $book ($range.Offset(-1,0).Resize($range.Rows.Count+1,11)) (Join-Path $directory ($Stage+'_'+$name+'.png'))
         $records+=,[ordered]@{Name=$name;Address=$range.Address();Rows=$range.Rows.Count;Columns=$range.Columns.Count}

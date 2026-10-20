@@ -47,7 +47,7 @@ for name in old.sheets:
     if name in ('Config','Справка'):continue
     assert old.sheets[name]==new.sheets[name],f'Unrelated sheet changed: {name}'
     unchanged.append(name)
-geometry=['rngCircleGeometry','rngRectSetGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry']
+geometry=['rngCircleGeometry','rngRectanglesGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry']
 preserved_tables=['rngSystemSettings','rngUnitSettings','rngSignConventionSettings','rngSteelMaterialParameters',
     'rngConcreteMaterialParameters','rngCalculationProfiles','rngPlotAnnotationSettings','rngLoadCombinations',
     'rngStabilityDurationLoads','rngSP35Table721']

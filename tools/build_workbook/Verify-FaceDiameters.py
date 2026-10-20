@@ -393,10 +393,10 @@ def main():
         assert hashlib.sha256(native_bytes).hexdigest().upper() == manifest["Logs"][log.relative_to(directory).as_posix()]
     cases, maps = parse(native_bytes.decode("utf-8-sig"))
     # Фактические подписи строк Config связываются с физическими сторонами.
-    assert maps["rngPointedRectGeometry"] == ["H - левая", "H - правая", "B - верхняя", "B - нижняя"]
+    assert maps["rngPointedSectionGeometry"] == ["H - левая", "H - правая", "B - верхняя", "B - нижняя"]
     assert maps["rngHollowRectangleGeometry"] == ["H - левая", "H - правая", "B - верхняя", "B - нижняя",
         "H_o - левая", "H_o - правая", "B_o - верхняя", "B_o - нижняя"]
-    assert maps["rngRectSetGeometry"] == ["H1 - левая", "H1 - правая", "B1 - верхняя", "B1 - нижняя",
+    assert maps["rngRectanglesGeometry"] == ["H1 - левая", "H1 - правая", "B1 - верхняя", "B1 - нижняя",
         "H2 - левая", "H2 - правая", "B2 - верхняя", "B2 - нижняя"]
     kinds = ("Rectangle", "LSection", "TwoRectangles", "RoundedSimple", "RoundedTapered", "RoundedMixed",
              "RoundedMixedLeft", "HollowCentered", "HollowOffset", "HollowSharp")

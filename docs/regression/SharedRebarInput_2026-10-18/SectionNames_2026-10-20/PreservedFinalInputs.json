@@ -1,0 +1,2646 @@
+﻿{
+    "Passed":  true,
+    "BeforeSHA256":  "F0F0CC7BCD74DB62987E03C0749ED249A39603F4F749A871495CAB6600F6DC99",
+    "RebuiltSHA256":  "8FFB7AEB706A3BED04C4EA2215CAF90B0F5156128767DED9C121A914227B4D3E",
+    "ConfigAndCalculationCells":  707,
+    "InputFields":  [
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "General",
+                            "Row":  "D",
+                            "Column":  "val",
+                            "Value":  300,
+                            "Formula":  "300",
+                            "Address":  "Сечения!C6"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Circle",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C12"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Circle",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D12"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Circle",
+                            "Column":  "n",
+                            "Value":  8,
+                            "Formula":  "8",
+                            "Address":  "Сечения!E12"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Circle",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F12"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Circle",
+                            "Column":  "s1",
+                            "Value":  100,
+                            "Formula":  "100",
+                            "Address":  "Сечения!G12"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "a2",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!D18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I18"
+                        },
+                        {
+                            "Table":  "rngCircleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Circle",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J18"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "General",
+                            "Row":  "Shape",
+                            "Column":  "val",
+                            "Value":  "TwoRect",
+                            "Formula":  "TwoRect",
+                            "Address":  "Сечения!C25"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "General",
+                            "Row":  "H1",
+                            "Column":  "val",
+                            "Value":  550,
+                            "Formula":  "550",
+                            "Address":  "Сечения!C26"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "General",
+                            "Row":  "B1",
+                            "Column":  "val",
+                            "Value":  250,
+                            "Formula":  "250",
+                            "Address":  "Сечения!C27"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "General",
+                            "Row":  "H2",
+                            "Column":  "val",
+                            "Value":  250,
+                            "Formula":  "250",
+                            "Address":  "Сечения!C28"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "General",
+                            "Row":  "B2",
+                            "Column":  "val",
+                            "Value":  600,
+                            "Formula":  "600",
+                            "Address":  "Сечения!C29"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "General",
+                            "Row":  "XOffset",
+                            "Column":  "val",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!C30"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Top",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C36"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Top",
+                            "Column":  "d",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D36"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Top",
+                            "Column":  "n",
+                            "Value":  2,
+                            "Formula":  "2",
+                            "Address":  "Сечения!E36"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Top",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F36"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Top",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G36"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Bottom",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C37"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Bottom",
+                            "Column":  "d",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D37"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Bottom",
+                            "Column":  "n",
+                            "Value":  2,
+                            "Formula":  "2",
+                            "Address":  "Сечения!E37"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Bottom",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F37"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Bottom",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G37"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Left",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C38"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Left",
+                            "Column":  "d",
+                            "Value":  32,
+                            "Formula":  "32",
+                            "Address":  "Сечения!D38"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Left",
+                            "Column":  "n",
+                            "Value":  5,
+                            "Formula":  "5",
+                            "Address":  "Сечения!E38"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Left",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F38"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Left",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G38"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Right",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C39"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Right",
+                            "Column":  "d",
+                            "Value":  32,
+                            "Formula":  "32",
+                            "Address":  "Сечения!D39"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Right",
+                            "Column":  "n",
+                            "Value":  5,
+                            "Formula":  "5",
+                            "Address":  "Сечения!E39"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Right",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F39"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R1.Right",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G39"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Top",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C40"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Top",
+                            "Column":  "d",
+                            "Value":  32,
+                            "Formula":  "32",
+                            "Address":  "Сечения!D40"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Top",
+                            "Column":  "n",
+                            "Value":  5,
+                            "Formula":  "5",
+                            "Address":  "Сечения!E40"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Top",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F40"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Top",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G40"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Bottom",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C41"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Bottom",
+                            "Column":  "d",
+                            "Value":  32,
+                            "Formula":  "32",
+                            "Address":  "Сечения!D41"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Bottom",
+                            "Column":  "n",
+                            "Value":  5,
+                            "Formula":  "5",
+                            "Address":  "Сечения!E41"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Bottom",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F41"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Bottom",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G41"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Left",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C42"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Left",
+                            "Column":  "d",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D42"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Left",
+                            "Column":  "n",
+                            "Value":  2,
+                            "Formula":  "2",
+                            "Address":  "Сечения!E42"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Left",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F42"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Left",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G42"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Right",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C43"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Right",
+                            "Column":  "d",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D43"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Right",
+                            "Column":  "n",
+                            "Value":  2,
+                            "Formula":  "2",
+                            "Address":  "Сечения!E43"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Right",
+                            "Column":  "s0",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!F43"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Main",
+                            "Row":  "R2.Right",
+                            "Column":  "s1",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!G43"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Top",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J49"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Bottom",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J50"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Left",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J51"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R1.Right",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J52"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Top",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J53"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Bottom",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J54"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Left",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J55"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "a2",
+                            "Value":  50,
+                            "Formula":  "50",
+                            "Address":  "Сечения!D56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I56"
+                        },
+                        {
+                            "Table":  "rngRectanglesGeometry",
+                            "Block":  "Extra",
+                            "Row":  "R2.Right",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J56"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "B",
+                            "Column":  "val",
+                            "Value":  1000,
+                            "Formula":  "1000",
+                            "Address":  "Сечения!C63"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "H",
+                            "Column":  "val",
+                            "Value":  500,
+                            "Formula":  "500",
+                            "Address":  "Сечения!C64"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "Left.W",
+                            "Column":  "val",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!C65"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "Left.R1",
+                            "Column":  "val",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C66"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "Left.R2",
+                            "Column":  "val",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!C67"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "Right.W",
+                            "Column":  "val",
+                            "Value":  150,
+                            "Formula":  "150",
+                            "Address":  "Сечения!C68"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "Right.R1",
+                            "Column":  "val",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!C69"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "General",
+                            "Row":  "Right.R2",
+                            "Column":  "val",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!C70"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C76"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "d",
+                            "Value":  25,
+                            "Formula":  "25",
+                            "Address":  "Сечения!D76"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "n",
+                            "Value":  10,
+                            "Formula":  "10",
+                            "Address":  "Сечения!E76"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F76"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G76"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C77"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "d",
+                            "Value":  25,
+                            "Formula":  "25",
+                            "Address":  "Сечения!D77"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "n",
+                            "Value":  10,
+                            "Formula":  "10",
+                            "Address":  "Сечения!E77"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F77"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G77"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C78"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "d",
+                            "Value":  25,
+                            "Formula":  "25",
+                            "Address":  "Сечения!D78"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "n",
+                            "Value":  5,
+                            "Formula":  "5",
+                            "Address":  "Сечения!E78"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F78"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G78"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C79"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "d",
+                            "Value":  25,
+                            "Formula":  "25",
+                            "Address":  "Сечения!D79"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "n",
+                            "Value":  5,
+                            "Formula":  "5",
+                            "Address":  "Сечения!E79"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F79"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G79"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "a2",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!D85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "a3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!H85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "pos3",
+                            "Value":  "SideBySide",
+                            "Formula":  "SideBySide",
+                            "Address":  "Сечения!J85"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "a2",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!D86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "a3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!H86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "pos3",
+                            "Value":  "SideBySide",
+                            "Formula":  "SideBySide",
+                            "Address":  "Сечения!J86"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "a2",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!D87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "a3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!H87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "pos3",
+                            "Value":  "SideBySide",
+                            "Formula":  "SideBySide",
+                            "Address":  "Сечения!J87"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "d2",
+                            "Value":  16,
+                            "Formula":  "16",
+                            "Address":  "Сечения!C88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "a2",
+                            "Value":  80,
+                            "Formula":  "80",
+                            "Address":  "Сечения!D88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "a3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!H88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I88"
+                        },
+                        {
+                            "Table":  "rngPointedSectionGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "pos3",
+                            "Value":  "SideBySide",
+                            "Formula":  "SideBySide",
+                            "Address":  "Сечения!J88"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "B",
+                            "Column":  "val",
+                            "Value":  500,
+                            "Formula":  "500",
+                            "Address":  "Сечения!C95"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "H",
+                            "Column":  "val",
+                            "Value":  500,
+                            "Formula":  "500",
+                            "Address":  "Сечения!C96"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "R",
+                            "Column":  "val",
+                            "Value":  100,
+                            "Formula":  "100",
+                            "Address":  "Сечения!C97"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "Bo",
+                            "Column":  "val",
+                            "Value":  150,
+                            "Formula":  "150",
+                            "Address":  "Сечения!C98"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "Ho",
+                            "Column":  "val",
+                            "Value":  150,
+                            "Formula":  "150",
+                            "Address":  "Сечения!C99"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "Ro",
+                            "Column":  "val",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C100"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "Xo",
+                            "Column":  "val",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!C101"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "General",
+                            "Row":  "Yo",
+                            "Column":  "val",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!C102"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C108"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D108"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "n",
+                            "Value":  8,
+                            "Formula":  "8",
+                            "Address":  "Сечения!E108"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F108"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Top",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G108"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C109"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D109"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "n",
+                            "Value":  8,
+                            "Formula":  "8",
+                            "Address":  "Сечения!E109"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F109"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Bottom",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G109"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C110"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D110"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "n",
+                            "Value":  6,
+                            "Formula":  "6",
+                            "Address":  "Сечения!E110"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F110"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Left",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G110"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C111"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D111"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "n",
+                            "Value":  6,
+                            "Formula":  "6",
+                            "Address":  "Сечения!E111"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F111"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "Right",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G111"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningTop",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C112"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningTop",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D112"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningTop",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F112"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningTop",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G112"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningBottom",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C113"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningBottom",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D113"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningBottom",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F113"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningBottom",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G113"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningLeft",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C114"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningLeft",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D114"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningLeft",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F114"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningLeft",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G114"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningRight",
+                            "Column":  "as",
+                            "Value":  40,
+                            "Formula":  "40",
+                            "Address":  "Сечения!C115"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningRight",
+                            "Column":  "d",
+                            "Value":  20,
+                            "Formula":  "20",
+                            "Address":  "Сечения!D115"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningRight",
+                            "Column":  "s0",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!F115"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Main",
+                            "Row":  "OpeningRight",
+                            "Column":  "s1",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!G115"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Top",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J121"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Bottom",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J122"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Left",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J123"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "Right",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J124"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningTop",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J125"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningBottom",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J126"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningLeft",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J127"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "d2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!C128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "a2",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!D128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "bind2",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!E128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "pos2",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!F128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "d3",
+                            "Value":  null,
+                            "Formula":  "",
+                            "Address":  "Сечения!G128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "a3",
+                            "Value":  0,
+                            "Formula":  "0",
+                            "Address":  "Сечения!H128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "bind3",
+                            "Value":  "EachBar",
+                            "Formula":  "EachBar",
+                            "Address":  "Сечения!I128"
+                        },
+                        {
+                            "Table":  "rngHollowRectangleGeometry",
+                            "Block":  "Extra",
+                            "Row":  "OpeningRight",
+                            "Column":  "pos3",
+                            "Value":  "Stacked",
+                            "Formula":  "Stacked",
+                            "Address":  "Сечения!J128"
+                        }
+                    ],
+    "RemovedInputs":  [
+                          "Left.Type",
+                          "Right.Type"
+                      ],
+    "InactiveWidthsNormalizedToZero":  true,
+    "RectanglesChoices":  [
+                              "TwoRect",
+                              "OneRect"
+                          ],
+    "FormerLSectionOffsetNormalizedToZero":  true
+}

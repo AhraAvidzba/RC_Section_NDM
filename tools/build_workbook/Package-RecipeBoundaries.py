@@ -21,7 +21,7 @@ def package():
     before=presentation.components(D/'BaselineNativeVBA.txt');after=presentation.components(D/'CandidateNativeVBA.txt')
     assert before.keys()==after.keys() and len(before)==158
     changed={name for name in before if normalized(before[name][2])!=normalized(after[name][2])}
-    assert changed=={'CSectionRecipePointedRect','CSectionRecipeHollowRectangle','modTestAudit02Api','modSectionRecipeApiGuide'},changed
+    assert changed=={'CSectionRecipePointedSection','CSectionRecipeHollowRectangle','modTestAudit02Api','modSectionRecipeApiGuide'},changed
     assert json.loads((D/'CandidateSourceEquality.json').read_text(encoding='utf-8-sig'))['Passed']
     assert json.loads((D/'Acceptance.json').read_text(encoding='utf-8'))['Status']=='RECIPE_BOUNDARIES_PASS'
     accepted=D/'Accepted.xlsm';assert not accepted.exists()

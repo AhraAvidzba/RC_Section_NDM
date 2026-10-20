@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestGeometryReview"
+﻿Attribute VB_Name = "modTestGeometryReview"
 Option Explicit
 ' ДЛЯ ТЕСТОВ: воспроизведение F01/F02 и проверка подписей отключённых граней.
 Private mPassed As Long, mFailed As Long, mReport As String
@@ -313,7 +313,7 @@ Private Function CollapsedInputMessage(ByVal scenario As Long, ByVal mode As Lon
         End If
     Else
         faces = Array(Empty, Empty, Empty, Empty): faces(scenario - 2) = selected
-        Set definition = FixtureRoundedDefinition(Array(400#, 1000#, "Simple", "Simple", 0#, 0#, radius, radius, 0#, 0#), faces)
+        Set definition = FixtureRoundedDefinition(Array(400#, 1000#, 0#, 0#, radius, radius, 0#, 0#), faces)
     End If
     CollapsedInputMessage = "OK"
     Exit Function
@@ -412,7 +412,7 @@ Failed:
     NativeCollapsedInputMessage = CStr(Err.Number) & ": " & Err.Description
 End Function
 
-' ДЛЯ ТЕСТОВ: точные снимки обычных Simple/Tapered/смешанных сечений до и после правки.
+' ДЛЯ ТЕСТОВ: точные снимки сечений без выступов, с двумя выступами и с одним выступом до и после правки.
 Public Function RunRoundedOrdinarySnapshots() As String
     Dim config As Object, saved As Variant, fixture As Variant, settings As CSystemSettingsReader
     Dim units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel, result As String
@@ -434,7 +434,7 @@ Restore:
     RunRoundedOrdinarySnapshots = result
 End Function
 
-' Для Simple независимый эталон — две четверти окружности и вертикаль.
+' Для стороны без выступа независимый эталон — две четверти окружности и вертикаль.
 ' Проверяются реальные центры стержней, а не только число и длина пути.
 Private Sub TestRoundedEndpoints(ByVal label As String, ByVal height As Double, ByVal leftRadius As Double, _
         ByVal rightRadius As Double, ByVal cover As Double, ByVal outputDirectory As String)
@@ -451,11 +451,11 @@ Private Sub TestRoundedEndpoints(ByVal label As String, ByVal height As Double, 
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     FixtureInputCell(table, "General", "B").Value2 = 600# / factor
     FixtureInputCell(table, "General", "H").Value2 = height / factor
-    FixtureInputCell(table, "General", "Left.Type").Value2 = "Simple"
-    FixtureInputCell(table, "General", "Right.Type").Value2 = "Simple"
+    FixtureInputCell(table, "General", "Left.W").Value2 = 0#
+    FixtureInputCell(table, "General", "Right.W").Value2 = 0#
     FixtureInputCell(table, "General", "Left.R1").Value2 = leftRadius / factor
     FixtureInputCell(table, "General", "Right.R1").Value2 = rightRadius / factor
     ConfigureReviewRebar table, Array("Left", "Right", "Top", "Bottom"), cover, factor, True
@@ -518,8 +518,8 @@ Public Function RunGeometryReviewTests(Optional ByVal outputDirectory As String 
     TestPerPath 15, False: TestPerPath 15, True
     TestRoundedLimit 1000#, outputDirectory: TestRoundedLimit 600#, outputDirectory
     TestRoundedLimit 600.001, outputDirectory
-    TestDisabledSides "Rectangle", "rngRectSetGeometry", Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2")
-    TestDisabledSides "RoundedSimple", "rngPointedRectGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
+    TestDisabledSides "Rectangle", "rngRectanglesGeometry", Array("H1.as_1", "H1.as_2", "B1.as_1", "B1.as_2")
+    TestDisabledSides "RoundedSimple", "rngPointedSectionGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
     TestDisabledSides "HollowCentered", "rngHollowRectangleGeometry", Array("H.Left", "H.Right", "B.Top", "B.Bottom")
     Dim result As String
     result = mReport & "TOTAL_GEOMETRY_REVIEW: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
@@ -577,7 +577,7 @@ Private Sub TestDisabledSides(ByVal fixture As String, ByVal tableName As String
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
     Set table = ThisWorkbook.Names(tableName).RefersToRange
-    If tableName = "rngRectSetGeometry" Then keys = Array("R1.Left", "R1.Right", "R1.Top", "R1.Bottom") Else keys = Array("Left", "Right", "Top", "Bottom")
+    If tableName = "rngRectanglesGeometry" Then keys = Array("R1.Left", "R1.Right", "R1.Top", "R1.Bottom") Else keys = Array("Left", "Right", "Top", "Bottom")
     ConfigureReviewRebar table, keys, 50#, factor, False
     Set builder = New CSectionBuilder: Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units, builder)
     For i = 1 To model.AnnotationCount
@@ -636,11 +636,11 @@ Private Sub TestRoundedLimit(ByVal height As Double, ByVal outputDirectory As St
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     FixtureInputCell(table, "General", "B").Value2 = 600# / factor
     FixtureInputCell(table, "General", "H").Value2 = height / factor
-    FixtureInputCell(table, "General", "Left.Type").Value2 = "Simple"
-    FixtureInputCell(table, "General", "Right.Type").Value2 = "Simple"
+    FixtureInputCell(table, "General", "Left.W").Value2 = 0#
+    FixtureInputCell(table, "General", "Right.W").Value2 = 0#
     FixtureInputCell(table, "General", "Left.R1").Value2 = 300# / factor
     FixtureInputCell(table, "General", "Right.R1").Value2 = 300# / factor
     ConfigureReviewRebar table, Array("Left", "Right", "Top", "Bottom"), 50#, factor, True
@@ -730,4 +730,97 @@ End Sub
 
 Private Sub Check(ByVal name As String, ByVal success As Boolean)
     If success Then mPassed = mPassed + 1: mReport = mReport & "OK: " & name & vbCrLf Else mFailed = mFailed + 1: mReport = mReport & "FAIL: " & name & vbCrLf
+End Sub
+
+
+' ДЛЯ ТЕСТОВ: форма стороны определяется только W; единицы и зеркальное отражение
+' не меняют допустимость размеров. Ошибки скруглений дают адреса, причину и действие.
+Public Function RunPointedWidthInputTests() As String
+    mPassed = 0: mFailed = 0: mReport = ""
+    Dim config As Object, saved As Variant, unitTable As Object, lengthCell As Object
+    Dim unitName As Variant, side As Variant, item As Variant, factor As Double, label As String
+    On Error GoTo Failed
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    Set unitTable = ThisWorkbook.Names("rngUnitSettings").RefersToRange
+    Set lengthCell = unitTable.Cells(HeaderRow(unitTable, "Length", 1), 2)
+    For Each unitName In Array("mm", "cm", "m")
+        lengthCell.Value2 = unitName
+        Select Case CStr(unitName)
+            Case "mm": factor = 1#
+            Case "cm": factor = 10#
+            Case "m": factor = 1000#
+        End Select
+        For Each side In Array("Left", "Right")
+            For Each item In Array(Array(0#, 40#, "inactive", True), Array(150#, 40#, 80#, True), _
+                    Array(0.001, 0#, 80#, True), Array(0.000000000001, 40#, 80#, False), _
+                    Array(0.000001, 0#, 0.000000000001, False), Array(1#, 1000#, 1000#, False), _
+                    Array(-1#, 40#, 80#, False), Array("", 40#, 80#, False), Array("bad", 40#, 80#, False))
+                label = "pointed.W." & CStr(unitName) & "." & CStr(side) & "." & CStr(item(0)) & ".R2=" & CStr(item(2))
+                Check label, PointedWidthCase(CStr(side), item, factor, label)
+            Next item
+        Next side
+    Next unitName
+    TestRecipeErrorParagraphs
+    GoTo Restore
+Failed:
+    Check "pointed.W.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Restore:
+    If IsArray(saved) Then FixtureRestoreInputs config, saved
+    RunPointedWidthInputTests = mReport & "TOTAL_POINTED_WIDTH_INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+End Function
+
+' Проверяет штатное чтение таблицы и построение контура, не решая НДС.
+Private Function PointedWidthCase(ByVal side As String, ByVal item As Variant, ByVal factor As Double, ByVal label As String) As Boolean
+    Dim table As Object, key As Variant, widthCell As Object, widthValue As Variant, radiusValue As Variant
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
+    Dim reason As String, reference As String, valid As Boolean
+    On Error GoTo Rejected
+    valid = CBool(item(3))
+    modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
+    Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
+    For Each key In Array("Top", "Bottom", "Left", "Right")
+        FixtureInputCell(table, "Main", CStr(key), "n").Value2 = 0
+    Next key
+    Set widthCell = FixtureInputCell(table, "General", side & ".W")
+    reference = widthCell.Worksheet.Name & "!" & widthCell.Address(False, False)
+    widthValue = item(0): If IsNumeric(widthValue) Then widthValue = CDbl(widthValue) / factor
+    widthCell.Value2 = widthValue
+    FixtureInputCell(table, "General", side & ".R1").Value2 = CDbl(item(1)) / factor
+    radiusValue = item(2): If IsNumeric(radiusValue) Then radiusValue = CDbl(radiusValue) / factor
+    FixtureInputCell(table, "General", side & ".R2").Value2 = radiusValue
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Set definition = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    PointedWidthCase = valid And definition.ConcreteDomain.Area > 0#
+    If Not PointedWidthCase Then mReport = mReport & "UNEXPECTED_ACCEPT: " & label & vbCrLf
+    Exit Function
+Rejected:
+    reason = Err.Description
+    PointedWidthCase = Not valid And InStr(1, reason, reference, vbBinaryCompare) > 0 And _
+        Left$(reason, Len("Адреса ячеек:")) = "Адреса ячеек:" And InStr(1, reason, "Возможное решение:", vbBinaryCompare) > 0
+    mReport = mReport & "WIDTH_DIAGNOSTIC: " & label & vbCrLf & reason & vbCrLf
+End Function
+
+' Смысловые абзацы сохраняют исходные координаты, идентификаторы и точные адреса.
+Private Sub TestRecipeErrorParagraphs()
+    Dim text As String, wrapped As String
+    text = SectionRecipeErrorText("Ось стержня 'B.Top.Row2.4' вне бетона. Уменьшите смещение или измените положение ряда.", _
+        "Сечения!C123; Сечения!D123", "Пустотелый прямоугольник: арматура у верхней наружной стороны, ряд 2.", "Ряд 'B.Top.Row2':")
+    Check "message.addresses.first", Left$(text, Len("Адреса ячеек:" & vbCrLf & "Сечения!C123; Сечения!D123")) = "Адреса ячеек:" & vbCrLf & "Сечения!C123; Сечения!D123"
+    Check "message.section.newline", InStr(text, vbCrLf & vbCrLf & "Пустотелый прямоугольник:" & vbCrLf & "Арматура") > 0
+    Check "message.bar.newline", InStr(text, "Ряд 'B.Top.Row2':" & vbCrLf & "Ось стержня 'B.Top.Row2.4'") > 0
+    Check "message.solution.paragraph", InStr(text, vbCrLf & vbCrLf & "Возможное решение:" & vbCrLf & "Уменьшите смещение") > 0
+    wrapped = SectionRecipeErrorText(text)
+    Check "message.nested.stable", wrapped = text
+    text = WorkbookErrorMessage("Расчёт не выполнен", -2147215974, "CRebarRuleExecutor", text)
+    Check "message.operation.paragraph", Left$(text, Len("Расчёт не выполнен:" & vbCrLf & vbCrLf & "Адреса ячеек:")) = "Расчёт не выполнен:" & vbCrLf & vbCrLf & "Адреса ячеек:"
+    Check "message.technical.paragraph", InStr(text, vbCrLf & vbCrLf & "Источник ошибки: CRebarRuleExecutor." & vbCrLf & "Код ошибки: -2147215974.") > 0
+    mReport = mReport & "MESSAGE_EXAMPLE:" & vbCrLf & text & vbCrLf
+    text = WorkbookErrorMessage("Расчёт не выполнен", -2147217194, "CSystemSettingsReader", _
+        "Настройка Mesh.StepX (лист Config, ячейка B15): Числовое значение не задано. Введите положительное число.")
+    Check "message.setting.address.first", InStr(text, "Адреса ячеек:" & vbCrLf & "Config!B15" & vbCrLf & vbCrLf & "Настройка Mesh.StepX") > 0
+    Check "message.setting.solution", InStr(text, "Возможное решение:" & vbCrLf & "Введите положительное число.") > 0
+    text = WorkbookErrorMessage("Расчёт не выполнен", -2147217194, "CSystemSettingsReader", _
+        "Настройка Mesh.StepX (лист Config, раздел ""геометрия и расчетная сетка""): Строка не найдена. Восстановите строку настройки.")
+    Check "message.missing.setting.no.fake.address", InStr(text, "Источник данных:" & vbCrLf & "лист Config, раздел") > 0 And InStr(text, "Адреса ячеек:") = 0
 End Sub

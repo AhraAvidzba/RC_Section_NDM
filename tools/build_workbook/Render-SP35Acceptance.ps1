@@ -48,8 +48,8 @@ try {
     if ($PostAudit03Checks) {
         $settings=$book.Names.Item('rngSystemSettings').RefersToRange
         Export-Range $settings.Worksheet $settings.Resize(12,$settings.Columns.Count) 'Config_General_HelpBorder' $true
-        $rect=$book.Names.Item('rngRectSetGeometry').RefersToRange
-        Export-Range $rect.Worksheet $rect.Offset(18,0).Resize(10,$rect.Columns.Count) 'Config_RectSet_Selectors' $true
+        $rect=$book.Names.Item('rngRectanglesGeometry').RefersToRange
+        Export-Range $rect.Worksheet $rect.Offset(18,0).Resize(10,$rect.Columns.Count) 'Config_Rectangles_Selectors' $true
         $contours=$book.Names.Item('rngNDMSectionContours').RefersToRange
         Export-Range $contours.Worksheet $contours.Offset(-2,0).Resize(10,17) 'Results_Contours_v1' $true
     }

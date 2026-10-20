@@ -440,33 +440,33 @@ Finished:
     RunAudit02CloseoutContactTests = mReport & "TOTAL AUDIT02 CLOSEOUT CONTACT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: адресная матрица размеров, неактивных полей, знаков и порядка диагностик RectSet.
-Public Function RunAudit02CloseoutRectSetInputTests() As String
+' ДЛЯ ТЕСТОВ: адресная матрица размеров, неактивных полей, знаков и порядка диагностик Rectangles.
+Public Function RunAudit02CloseoutRectanglesInputTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     Dim records As String
-    records = CloseoutRectSetInputMatrix()
-    RunAudit02CloseoutRectSetInputTests = mReport & "TOTAL AUDIT02 CLOSEOUT RECTSET INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
+    records = CloseoutRectanglesInputMatrix()
+    RunAudit02CloseoutRectanglesInputTests = mReport & "TOTAL AUDIT02 CLOSEOUT RECTANGLES INPUT: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
 ' ДЛЯ ТЕСТОВ: полный снимок значений/ошибок той же матрицы для побайтной сверки baseline/candidate.
 Public Function DumpAudit02CloseoutInputContract() As String
     mPassed = 0: mFailed = 0: mReport = ""
-    DumpAudit02CloseoutInputContract = CloseoutRectSetInputMatrix()
+    DumpAudit02CloseoutInputContract = CloseoutRectanglesInputMatrix()
     If mFailed > 0 Then Err.Raise vbObjectError + 5491, "modTestAudit02Api", mReport
 End Function
 
-' ДЛЯ ТЕСТОВ: только три схемы RectSet, без полного набора UI/ON-OFF.
-Public Function DumpAudit02CloseoutRectSetPreview(ByVal outputDirectory As String) As String
+' ДЛЯ ТЕСТОВ: только три схемы Rectangles, без полного набора UI/ON-OFF.
+Public Function DumpAudit02CloseoutRectanglesPreview(ByVal outputDirectory As String) As String
     Dim fixture As Variant
     For Each fixture In Array("Rectangle", "LSection", "TwoRectangles")
-        DumpAudit02CloseoutRectSetPreview = DumpAudit02CloseoutRectSetPreview & _
+        DumpAudit02CloseoutRectanglesPreview = DumpAudit02CloseoutRectanglesPreview & _
             modTestShapeArchitecture.DumpShapePreviewSnapshot(outputDirectory, CStr(fixture))
     Next fixture
 End Function
 
 ' Записываем номер ошибки, её источник и полный текст с фактическим адресом ячейки.
 ' Сравнение должно выявлять любое различие.
-Private Function CloseoutRectSetInputMatrix() As String
+Private Function CloseoutRectanglesInputMatrix() As String
     Dim keyed As CSectionInputReader, fieldKeys As Variant
     Dim config As Object, saved As Variant, range As Object, block As Variant
     Dim settings As CSystemSettingsReader, units As CUnitSystem, definition As CSectionDefinition
@@ -486,12 +486,12 @@ Private Function CloseoutRectSetInputMatrix() As String
             modTestShapeArchitecture.ConfigureShapeFixture CStr(fixture)
             Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
             Set units = New CUnitSystem: units.LoadFromSettings settings: factor = units.InputLengthToInternal(1#)
-            Set range = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange: block = range.Formula
+            Set range = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange: block = range.Formula
             Set reader = New CSectionInputSnapshotReader
-            Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
-            offsetRow = keyed.RowIndex("Detail", "XOffset")
+            Set context = reader.Capture(ThisWorkbook, Array("rngRectanglesGeometry"), units): Set table = context.Table("rngRectanglesGeometry"): Set keyed = context.Reader("rngRectanglesGeometry")
+            offsetRow = keyed.RowIndex("General", "XOffset")
             shapeRow = keyed.RowIndex("General", "Shape")
-            Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+            Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
             Check "rect.valid." & CStr(unit) & "." & CStr(fixture), code = 0
             If code <> 0 Then GoTo Failed
             area = definition.ConcreteDomain.Area
@@ -507,7 +507,7 @@ Private Function CloseoutRectSetInputMatrix() As String
                         Case "empty": FixtureInputCell(range, "General", CStr(fieldKeys(column - 1))).ClearContents
                         Case "text": FixtureInputCell(range, "General", CStr(fieldKeys(column - 1))).Value2 = "bad dimension"
                     End Select
-                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
                     If CStr(valueKind) = "positive" Then
                         Check "rect.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(column), code = 0
                         Check "rect.unit.once", definition.ConcreteDomain.Area = area
@@ -518,20 +518,20 @@ Private Function CloseoutRectSetInputMatrix() As String
                     result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(column) & "." & CStr(valueKind), code, source, reason, 0#)
                 Next valueKind
             Next column
-            ' Для Rectangle нижние размеры и смещение не читаются; для LSection смещение также неактивно.
+            ' У OneRect нижние размеры и смещение не используются; у обоих вариантов TwoRect смещение активно.
             range.Formula = block
             If CStr(fixture) = "Rectangle" Then
                 FixtureInputCell(range, "General", "H2").Value2 = "inactive H2": FixtureInputCell(range, "General", "B2").Value2 = CVErr(xlErrValue)
             End If
-            If CStr(fixture) <> "TwoRectangles" Then
+            If CStr(fixture) = "Rectangle" Then
                 range.Cells(offsetRow, 3).Value2 = "inactive offset"
-                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
                 Check "rect.inactive.fields." & CStr(unit) & "." & CStr(fixture), code = 0 And definition.ConcreteDomain.Area = area
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "inactive", code, source, reason, 0#)
             Else
                 For Each pair In Array(-100#, 0#, 100#)
                     range.Formula = block: range.Cells(offsetRow, 3).Value2 = CDbl(pair) / factor
-                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
                     Check "rect.signed.offset." & CStr(unit) & "." & CStr(pair), code = 0
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "offset." & CStr(pair), code, source, reason, 0#)
                 Next pair
@@ -542,11 +542,11 @@ Private Function CloseoutRectSetInputMatrix() As String
                 If CLng(pair) <= maxColumn Then
                     range.Formula = block: FixtureInputCell(range, "General", CStr(fieldKeys(CLng(pair) - 1))).Value2 = 0#
                     FixtureInputCell(range, "General", CStr(fieldKeys(CLng(pair)))).Value2 = "bad dimension"
-                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                    Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
                     Check "rect.pair.numeric.before.positive." & CStr(unit) & "." & CStr(fixture) & "." & CStr(pair), _
                         code <> 0 And InStr(reason, keyed.SourceReference("General", CStr(fieldKeys(CLng(pair))))) > 0
                     result = result & InputContractRow(CStr(unit), CStr(fixture), "pair." & CStr(pair), code, source, reason, 0#)
-                    Set context = reader.Capture(ThisWorkbook, Array("rngRectSetGeometry"), units): Set table = context.Table("rngRectSetGeometry"): Set keyed = context.Reader("rngRectSetGeometry")
+                    Set context = reader.Capture(ThisWorkbook, Array("rngRectanglesGeometry"), units): Set table = context.Table("rngRectanglesGeometry"): Set keyed = context.Reader("rngRectanglesGeometry")
                     On Error Resume Next
                     number = keyed.PositiveLength("General", CStr(fieldKeys(CLng(pair) - 1)))
                     otherCode = Err.Number: otherReason = Err.Description: Err.Clear
@@ -557,25 +557,17 @@ Private Function CloseoutRectSetInputMatrix() As String
             Next pair
             range.Formula = block
             ' Составные условия остаются у рецепта и указывают соответствующее поле.
-            If CStr(fixture) = "LSection" Then
-                FixtureInputCell(range, "General", "B1").Value2 = FixtureInputCell(range, "General", "B2").Value2
-                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
-                Check "rect.LSection.B1.less.B2", code <> 0 And InStr(reason, keyed.SourceReference("General", "B1")) > 0
-                result = result & InputContractRow(CStr(unit), CStr(fixture), "incompatible.widths", code, source, reason, 0#)
-            ElseIf CStr(fixture) = "TwoRectangles" Then
+            If CStr(fixture) <> "Rectangle" Then
                 range.Cells(offsetRow, 3).Value2 = FixtureInputCell(range, "General", "B2").Value2
-                Set definition = RectSetInputOutcome(settings, units, code, source, reason)
+                Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
                 Check "rect.adjacency.address", code <> 0 And InStr(reason, table.SourceReference(offsetRow, 3)) > 0
                 result = result & InputContractRow(CStr(unit), CStr(fixture), "nonadjacent", code, source, reason, 0#)
             End If
-            For Each aliasName In Array("RectSet", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles")
-                If (CStr(fixture) = "LSection" And CStr(aliasName) = "RectSet") Or _
-                        (CStr(fixture) = "TwoRectangles" And CStr(aliasName) <> "RectSet") Then
-                    range.Formula = block: range.Cells(shapeRow, 3).Value2 = CStr(aliasName)
-                    Set definition = RectSetInputOutcome(settings, units, code, source, reason)
-                    Check "rect.alias." & CStr(unit) & "." & CStr(aliasName), code = 0 And definition.ConcreteDomain.Area = area
-                    result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(aliasName), code, source, reason, 0#)
-                End If
+            For Each aliasName In Array("Rectangle", "LSection", "TwoRectangles", "Rectangles", "TwoRectangle", "TwoRectanglesOffset", "OffsetTwoRectangles")
+                range.Formula = block: range.Cells(shapeRow, 3).Value2 = CStr(aliasName)
+                Set definition = RectanglesInputOutcome(settings, units, code, source, reason)
+                Check "rect.removed.choice." & CStr(unit) & "." & CStr(aliasName), code <> 0 And InStr(reason, keyed.SourceReference("General", "Shape")) > 0
+                result = result & InputContractRow(CStr(unit), CStr(fixture), CStr(aliasName), code, source, reason, 0#)
             Next aliasName
             range.Formula = block
         Next fixture
@@ -585,16 +577,16 @@ Failed:
     Check "rect.runtime: " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
-    CloseoutRectSetInputMatrix = result
+    CloseoutRectanglesInputMatrix = result
 End Function
 
 ' Вызывает обычное чтение описания сечения и возвращает полученную ошибку.
 ' Ожидаемый номер и текст проверяет вызывающий тест.
-Private Function RectSetInputOutcome(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
+Private Function RectanglesInputOutcome(ByVal settings As CSystemSettingsReader, ByVal units As CUnitSystem, _
         ByRef code As Long, ByRef source As String, ByRef reason As String) As CSectionDefinition
     code = 0: source = "": reason = ""
     On Error GoTo Invalid
-    Set RectSetInputOutcome = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
+    Set RectanglesInputOutcome = ReadWorkbookSectionDefinition(ThisWorkbook, settings, units)
     Exit Function
 Invalid:
     code = Err.Number: source = Err.Source: reason = Err.Description
@@ -1057,8 +1049,8 @@ Private Sub ConfigureOffsetWorkbook(ByVal fixture As String, ByVal unitName As S
     End Select
     Select Case fixture
         Case "Circle": Set keyed = FixtureInput(FixtureRecipeValues("rngCircleGeometry"))
-        Case "Rectangle": Set keyed = FixtureInput(FixtureRecipeValues("rngRectSetGeometry"))
-        Case "RoundedMixed": Set keyed = FixtureInput(FixtureRecipeValues("rngPointedRectGeometry"))
+        Case "Rectangle": Set keyed = FixtureInput(FixtureRecipeValues("rngRectanglesGeometry"))
+        Case "RoundedMixed": Set keyed = FixtureInput(FixtureRecipeValues("rngPointedSectionGeometry"))
         Case Else: Set keyed = FixtureInput(FixtureRecipeValues("rngHollowRectangleGeometry"))
     End Select
     For Each key In keyed.RowKeys("Main")
@@ -1088,8 +1080,8 @@ Private Function OffsetWorkbookTable(ByVal fixture As String) As Object
     Dim name As String
     Select Case fixture
         Case "Circle": name = "rngCircleGeometry"
-        Case "Rectangle": name = "rngRectSetGeometry"
-        Case "RoundedMixed": name = "rngPointedRectGeometry"
+        Case "Rectangle": name = "rngRectanglesGeometry"
+        Case "RoundedMixed": name = "rngPointedSectionGeometry"
         Case Else: name = "rngHollowRectangleGeometry"
     End Select
     Set OffsetWorkbookTable = ThisWorkbook.Names(name).RefersToRange
@@ -1100,8 +1092,8 @@ Private Sub OffsetWorkbookRows(ByVal target As Object, ByVal fixture As String, 
     Dim keyed As CSectionInputReader, key As String, typeID As String
     Select Case fixture
         Case "Circle": typeID = "Circle": key = "Circle"
-        Case "Rectangle": typeID = "RectSet": key = "R1.Top"
-        Case "RoundedMixed": typeID = "PointedRect": key = "Top"
+        Case "Rectangle": typeID = "Rectangles": key = "R1.Top"
+        Case "RoundedMixed": typeID = "PointedSection": key = "Top"
         Case Else: typeID = "HollowRectangle": key = "Top"
     End Select
     FixtureSelectRecipeType ThisWorkbook, typeID

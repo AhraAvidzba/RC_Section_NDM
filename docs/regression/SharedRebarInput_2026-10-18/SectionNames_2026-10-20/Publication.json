@@ -1,0 +1,12 @@
+{
+  "PublishedWorkbook": true,
+  "AcceptedSHA256": "4A7AA472D46D0C2FBCAC9FACEBE526360F2D4B8F3785F1C7E55FC728B001DBFD",
+  "BeforeSHA256": "F0F0CC7BCD74DB62987E03C0749ED249A39603F4F749A871495CAB6600F6DC99",
+  "UserInputsPreserved": true,
+  "UserReportUnchanged": true,
+  "FreshFullBuild": true,
+  "SourceComponents": 155,
+  "ExportComponents": 161,
+  "FullOnOffRun": false,
+  "PendingLongCheck": "RunSharedConfigPreflightTests timed out after 420 seconds; repeat with the deferred full acceptance."
+}

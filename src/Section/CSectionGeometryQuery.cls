@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -957,8 +957,11 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
         turns(i) = modGeometryPrimitives.AngleOf(dot, cross)
         If radius(i) > 0# Then
             If Abs(turns(i)) <= PARAM_TOLERANCE Or Abs(Abs(turns(i)) - GEOM_PI) <= PARAM_TOLERANCE Then _
-                GeometryError pathID & ": угол вершины '" & names(i) & "' не допускает скругления."
+                GeometryError "Скругление у вершины '" & names(i) & "' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу. Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.", "FILLET_ANGLE", pathID, CStr(cornerIDs(i - 1))
             distances(i) = radius(i) * Tan(Abs(turns(i)) / 2#)
+            ' Концы очень короткой дуги нельзя надёжно различить с точностью геометрического ядра.
+            If 2# * radius(i) * Abs(Sin(turns(i) / 2#)) <= QUERY_TOLERANCE Then _
+                GeometryError "Скругление у вершины '" & names(i) & "' слишком мало для надёжного построения: концы дуги практически совпадают. Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.", "FILLET_TOO_SHORT", pathID, CStr(cornerIDs(i - 1))
         End If
         first(i).X = points(i).X - directions(previous).X * distances(i)
         first(i).Y = points(i).Y - directions(previous).Y * distances(i)
@@ -971,7 +974,7 @@ Private Function RoundedPolygonKernel(ByVal pathID As String, ByVal vertices As 
     For i = 1 To count
         following = i Mod count + 1
         If distances(i) + distances(following) > lengths(i) + GEOM_TOLERANCE Then _
-            GeometryError pathID & ": скругления пересекаются на грани '" & edgeIDs(i - 1) & "'; уменьшите назначенные радиусы.", "FILLET_OVERLAP", pathID, CStr(edgeIDs(i - 1)), radius(i), radius(following)
+            GeometryError "Скругления соседних вершин пересекаются на участке '" & edgeIDs(i - 1) & "': для заданных размеров не хватает длины прямого участка. Уменьшите радиусы или увеличьте размеры сечения.", "FILLET_OVERLAP", pathID, CStr(edgeIDs(i - 1)), radius(i), radius(following)
     Next i
     Dim result As CGeometryPath, edge As TRegionEdge
     Set result = New CGeometryPath: result.Initialize pathID

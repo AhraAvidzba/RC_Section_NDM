@@ -4,7 +4,7 @@ import argparse,json,re
 
 p=argparse.ArgumentParser();p.add_argument('--before',required=True);p.add_argument('--after',required=True);p.add_argument('--report',required=True)
 a=p.parse_args();before=Path(a.before);after=Path(a.after);result=[]
-for name in ('DumpCircleRecipeMatrix','DumpRectSetRecipeMatrix','DumpRoundedRecipeMatrix','DumpHollowRecipeMatrix','DumpHollowRecipeEdgeMatrix'):
+for name in ('DumpCircleRecipeMatrix','DumpRectanglesRecipeMatrix','DumpRoundedRecipeMatrix','DumpHollowRecipeMatrix','DumpHollowRecipeEdgeMatrix'):
     def records(directory):
         rows=(directory/(name+'.txt')).read_text(encoding='utf-8-sig').splitlines()
         assert not any(row.startswith('FAIL:') for row in rows),name

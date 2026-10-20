@@ -1262,7 +1262,8 @@ Private Sub TestAudit03MaterialControlUnits(ByRef stats As TMaterialTestStats)
     Set units = New CUnitSystem: units.LoadFromSettings settings
     baselineFactor = units.InputStressToInternal(1#)
     Set pattern = CreateObject("VBScript.RegExp")
-    pattern.Pattern = "^=(\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|IF|""Yes""|[,+\-*/()=]|\s)+$"
+    ' После перемещения таблиц Excel сохраняет имя листа в прямых ссылках.
+    pattern.Pattern = "^=((('Config'|Config)!)?\$?[A-Z]+\$?[1-9][0-9]*|[0-9]+(\.[0-9]+)?|IF|""Yes""|[,+\-*/()=]|\s)+$"
     For Each slopeMode In Array(0#, 0.0001, 0.001)
     slopeCell.Value2 = CDbl(slopeMode)
     For Each unitName In Array("MPa", "kPa", "Pa", "kgf/cm2", "tf/m2")

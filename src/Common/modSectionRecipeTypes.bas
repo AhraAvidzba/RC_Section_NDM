@@ -175,17 +175,92 @@ Public Type TRebarPosition
     PathID As String
 End Type
 
-' Дополняет адресную ошибку действием пользователя, сохраняя её причину и код.
-Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Optional ByVal sourceReference As String = "")
-    If Len(sourceReference) > 0 Then
-        If InStr(1, reason, "Введите", vbTextCompare) = 0 And InStr(1, reason, "Выберите", vbTextCompare) = 0 And _
-                InStr(1, reason, "Исправ", vbTextCompare) = 0 And InStr(1, reason, "Восстанов", vbTextCompare) = 0 Then
-            reason = reason & " Исправьте значение в указанной ячейке."
-        End If
-        reason = sourceReference & ": " & reason
-    End If
-    Err.Raise vbObjectError + 5530, owner, reason
+' Выдаёт ошибку ввода, отделяя адреса, место ошибки, причину и действие пользователя.
+Public Sub SectionRecipeError(ByVal owner As String, ByVal reason As String, Optional ByVal sourceReference As String = "", _
+        Optional ByVal context As String = "", Optional ByVal entityCaption As String = "")
+    Err.Raise vbObjectError + 5530, owner, SectionRecipeErrorText(reason, sourceReference, context, entityCaption)
 End Sub
+
+' Оформляет готовую причину без изменения адресов, чисел или расчётного смысла.
+' Источник данных без ссылки на лист не называется адресом ячейки Excel.
+Public Function SectionRecipeErrorText(ByVal reason As String, Optional ByVal sourceReference As String = "", _
+        Optional ByVal context As String = "", Optional ByVal entityCaption As String = "") As String
+    Dim body As String, action As String, position As Long, text As String
+    body = Replace$(Replace$(reason, vbCrLf, vbLf), vbCr, vbLf)
+    position = InStr(1, body, "Возможное решение:", vbBinaryCompare)
+    If position > 0 Then
+        action = TrimMessagePart(Mid$(body, position + Len("Возможное решение:")))
+        body = TrimMessagePart(Left$(body, position - 1))
+    Else
+        position = FirstActionSentence(body)
+        If position > 0 Then
+            action = TrimMessagePart(Mid$(body, position))
+            body = TrimMessagePart(Left$(body, position - 1))
+        ElseIf Len(sourceReference) > 0 Then
+            action = "Исправьте значение в указанной ячейке."
+        End If
+    End If
+    If Len(sourceReference) > 0 Then
+        If InStr(1, sourceReference, "!", vbBinaryCompare) > 0 Then text = "Адреса ячеек:" Else text = "Источник данных:"
+        text = text & vbCrLf & sourceReference
+    End If
+    If Len(context) > 0 Then text = MessageParagraph(text, ContextParagraph(context))
+    If Len(entityCaption) > 0 Then body = entityCaption & vbLf & body
+    If Len(body) > 0 Then text = MessageParagraph(text, Replace$(body, vbLf, vbCrLf))
+    If Len(action) > 0 Then text = MessageParagraph(text, "Возможное решение:" & vbCrLf & Replace$(action, vbLf, vbCrLf))
+    SectionRecipeErrorText = text
+End Function
+
+' Находит первое действие в начале предложения; условие перед запятой не отрывается от него.
+Private Function FirstActionSentence(ByVal text As String) As Long
+    Dim verb As Variant, position As Long, prefix As String, lastCharacter As String
+    For Each verb In Array("Введите ", "Выберите ", "Исправьте ", "Восстановите ", "Уменьшите ", "Увеличьте ", _
+            "Измените ", "Проверьте ", "Укажите ", "Задайте ", "Удалите ", "Заполните ", "Повторите ", _
+            "Сохраните ", "Закройте ", "Откройте ", "Обновите ", "Отключите ", "Перезапустите ")
+        position = InStr(1, text, CStr(verb), vbTextCompare)
+        Do While position > 0
+            prefix = RTrim$(Left$(text, position - 1)): lastCharacter = Right$(prefix, 1)
+            If position = 1 Or lastCharacter = "." Or lastCharacter = vbLf Then
+                If FirstActionSentence = 0 Or position < FirstActionSentence Then FirstActionSentence = position
+                Exit Do
+            End If
+            position = InStr(position + Len(CStr(verb)), text, CStr(verb), vbTextCompare)
+        Loop
+    Next verb
+End Function
+
+' Название сечения и описание стороны выводятся отдельными строками одного абзаца.
+Private Function ContextParagraph(ByVal context As String) As String
+    Dim position As Long, detail As String
+    position = InStr(1, context, ": ", vbBinaryCompare)
+    If position > 0 Then
+        detail = Mid$(context, position + 2)
+        If Len(detail) > 0 Then detail = UCase$(Left$(detail, 1)) & Mid$(detail, 2)
+        ContextParagraph = Left$(context, position) & vbCrLf & detail
+    Else
+        ContextParagraph = context
+    End If
+End Function
+
+' Добавляет смысловой абзац, оставляя между соседними абзацами пустую строку.
+Private Function MessageParagraph(ByVal text As String, ByVal paragraph As String) As String
+    MessageParagraph = paragraph
+    If Len(text) > 0 Then MessageParagraph = text & vbCrLf & vbCrLf & paragraph
+End Function
+
+' Удаляет только пробелы и переводы строк по краям смыслового фрагмента.
+Private Function TrimMessagePart(ByVal text As String) As String
+    text = Trim$(text)
+    Do While Len(text) > 0
+        If Left$(text, 1) <> vbLf Then Exit Do
+        text = Trim$(Mid$(text, 2))
+    Loop
+    Do While Len(text) > 0
+        If Right$(text, 1) <> vbLf Then Exit Do
+        text = Trim$(Left$(text, Len(text) - 1))
+    Loop
+    TrimMessagePart = text
+End Function
 
 ' Добавляет название стороны и адреса исходных параметров к геометрической ошибке.
 ' Исчезнувший участок объясняет как невозможность разместить заданную арматуру;
@@ -204,9 +279,8 @@ Public Sub SectionRecipeGeometryError(ByVal owner As String, ByVal sourceReferen
                     "Измените размеры сечения, радиусы скругления или расстояние as от края бетона до осей стержней. " & _
                     "Если арматура на этой стороне не требуется, отключите её: задайте диаметр 0 либо оставьте диаметр пустым."
             End If
-            reason = rebarCaption & ". " & reason
         End If
-        SectionRecipeError owner, reason, sourceReference
+        SectionRecipeError owner, reason, sourceReference, rebarCaption
     End If
     Err.Raise number, source, reason
 End Sub

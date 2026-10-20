@@ -35,7 +35,7 @@ foreach($item in @(@{Report='FullOn';Mode='Yes'},@{Report='FullOff';Mode='No'}))
     if($text -match '(?m)^FAIL:|^SCRIPT ERROR:|^RUNTIME ERROR|^WATCHDOG_FAILURE:' -or
         -not $text.Contains('SOURCE_SHA256: '+$publication.WorkbookSHA256) -or
         -not $text.Contains('GLOBAL_MODE: General.DiagramExtension='+$item.Mode+';') -or
-        -not $text.Contains('Geometry.Type=RectSet; fixture only, source unchanged') -or
+        -not $text.Contains('Geometry.Type=Rectangles; fixture only, source unchanged') -or
         -not $text.Contains('SOURCE_UNCHANGED: True') -or
         -not $text.Contains('WATCHDOG_COMPLETED: exit=0; source unchanged=True')) {throw "Invalid full report: $($item.Report)"}
     $matches=[regex]::Matches($text,'(?ms)^SUITE_STARTED: (?<suite>[^;\r\n]+); (?<start>[^\r\n]+)\r?\n(?<body>.*?)^SUITE_FINISHED: \k<suite>; (?<finish>[^\r\n]+)\r?$')
@@ -59,6 +59,6 @@ $publication.FullOnOffCompleted=$true
 $publication | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $publicationPath -Encoding UTF8
 [ordered]@{Passed=$true;CompletedUTC=[datetime]::UtcNow.ToString('o');WorkbookSHA256=$publication.WorkbookSHA256;
     ExportSHA256=$publication.ExportSHA256;UserReportPreserved=$true;SourceComponents=121;GeneratedComponents=5;
-    ProductionClasses=88;Modes=$modes;FixtureGeometryType='RectSet';HistoricalExplicitOnSetupsUnchanged=$true} |
+    ProductionClasses=88;Modes=$modes;FixtureGeometryType='Rectangles';HistoricalExplicitOnSetupsUnchanged=$true} |
     ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $folder 'Acceptance.json') -Encoding UTF8
 Write-Output 'FINAL ACCEPTANCE: 16 complete suites, no failures, source and published artifacts unchanged.'

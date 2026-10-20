@@ -1,5 +1,5 @@
 ﻿# Обновляет только согласованные блоки Config в изолированной сохраненной
-# книге: LoadPath, контрольные формулы, независимые селекторы граней RectSet,
+# книге: LoadPath, контрольные формулы, независимые селекторы граней Rectangles,
 # проектные комментарии и актуальные списки выбора из проверенного каталога.
 # Не удаляет строки листа и не подставляет defaults вместо пользовательских
 # нагрузок. Все остальные значения/формулы проверяются до save и после reopen.
@@ -226,22 +226,22 @@ function Set-MigrationCellProperty([object]$Cell, [string]$Property, [object]$Va
         $Cell, [object[]]@($Value)) | Out-Null
 }
 
-# Обновляет только существующий блок справки RectSet по его заголовку.
+# Обновляет только существующий блок справки Rectangles по его заголовку.
 # Число строк сверяется до записи: соседние инструкции и ссылки не сдвигаются.
-function Update-RectSetSettingsGuide {
-    $item = @(Get-SettingsInstructionCatalog | Where-Object Key -eq 'RectSetGeometry')
-    if ($item.Count -ne 1) { throw 'Не найден единственный раздел справки RectSet.' }
+function Update-RectanglesSettingsGuide {
+    $item = @(Get-SettingsInstructionCatalog | Where-Object Key -eq 'RectanglesGeometry')
+    if ($item.Count -ne 1) { throw 'Не найден единственный раздел справки Rectangles.' }
     $guide = $book.Worksheets.Item('Справка')
     $title = $guide.Cells.Find($item[0].Title, $guide.Cells.Item(1, 1), -4163, 1, 1, 1, $false, $false, $false)
-    if ($null -eq $title -or $title.Column -ne 1) { throw 'Не найден заголовок справки RectSet.' }
+    if ($null -eq $title -or $title.Column -ne 1) { throw 'Не найден заголовок справки Rectangles.' }
     $count = $item[0].Lines.Count
     if ([string]$guide.Cells.Item($title.Row + $count, 1).Value2 -ne [string]$count) {
-        throw 'Размер существующего раздела справки RectSet не соответствует каталогу.'
+        throw 'Размер существующего раздела справки Rectangles не соответствует каталогу.'
     }
     for ($i = 0; $i -lt $count; $i++) {
         $guide.Cells.Item($title.Row + 1 + $i, 2).Value2 = $item[0].Lines[$i]
     }
-    $lines.Add("RECTSET_GUIDE_UPDATED: row=$($title.Row); paragraphs=$count")
+    $lines.Add("RECTANGLES_GUIDE_UPDATED: row=$($title.Row); paragraphs=$count")
 }
 
 # Проверяет смысл всех перенесенных списков после записи и reopen. Для
@@ -310,7 +310,7 @@ try {
     $title = $config.Cells.Find('Контрольные точки диаграмм*', $config.Cells.Item(1, 1), -4163, 1, 1, 1, $false, $false, $false)
     if ($null -eq $title) { throw 'Не найдена контрольная таблица диаграмм.' }
     Add-MigrationRange $title.Resize(54, 6)
-    $rect = $book.Names.Item('rngRectSetGeometry').RefersToRange
+    $rect = $book.Names.Item('rngRectanglesGeometry').RefersToRange
     foreach ($r in @(21, 23, 25, 27)) {
         foreach ($c in @(3, 4, 6, 7)) { Add-MigrationRange $rect.Cells.Item(($r + 1), $c) }
     }
@@ -334,18 +334,18 @@ try {
 
     # Прежние объединения разделяем без потери общего выбора; независимый
     # ввод сохраняется отдельно для каждой физической грани.
-    foreach ($record in @(Set-RectSetIndependentSelectorLayout $rect)) {
+    foreach ($record in @(Set-RectanglesIndependentSelectorLayout $rect)) {
         $first = $config.Range($record.SharedAddress)
         $second = $config.Range($record.Address)
-        if ([string]$first.Formula -cne [string]$record.SharedFormula) { throw 'Изменился прежний ввод первой грани RectSet.' }
+        if ([string]$first.Formula -cne [string]$record.SharedFormula) { throw 'Изменился прежний ввод первой грани Rectangles.' }
         $expectedSecond = $record.PreviousFormula
         if ($record.WasMerged) { $expectedSecond = $record.SharedFormula }
         if ([string]$second.Formula -cne [string]$expectedSecond -or $first.MergeCells -or $second.MergeCells) {
-            throw 'Разделение селекторов RectSet изменило настройку или сохранило объединение.'
+            throw 'Разделение селекторов Rectangles изменило настройку или сохранило объединение.'
         }
-        $lines.Add('RECTSET_INDEPENDENT_SELECTOR: ' + (ConvertTo-Json $record -Compress))
+        $lines.Add('RECTANGLES_INDEPENDENT_SELECTOR: ' + (ConvertTo-Json $record -Compress))
     }
-    Update-RectSetSettingsGuide
+    Update-RectanglesSettingsGuide
     if ($null -ne $obsolete) { $obsolete.Validation.Delete(); $obsolete.ClearContents() }
     $loads.Cells.Item(1, 6).Value2 = 'LoadPath'
     for ($r = 1; $r -le $options.Count; $r++) { $list.Cells.Item($r, 1).Value2 = $options[$r - 1] }

@@ -99,15 +99,15 @@ Public Function FixtureCircleDefinition(ByVal parameters As Variant) As CSection
     Set FixtureCircleDefinition = FixtureRecipeDefinition(recipe, "rngCircleGeometry", values)
 End Function
 
-' RectSet: [B1, H1, B2, H2, offset, subtype]; faces = [H1, H2, B1, B2].
+' Rectangles: [B1, H1, B2, H2, offset, subtype]; faces = [H1, H2, B1, B2].
 ' Каждая пара: [as1,as2,d1,d2,n1,n2,Start1,End1,Start2,End2,
 ' row2d1,row2d2,row3d1,row3d2,loc2,loc3,bind2,bind3,loc2right,loc3right,bind2right,bind3right].
-Public Function FixtureRectSetDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
+Public Function FixtureRectanglesDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant) As CSectionDefinition
     Dim values As Variant, pair As Variant, keys As Variant, fields As Variant, index As Long, side As Long
     Dim key As String, recipe As ISectionRecipe, reader As CSectionInputReader, row As Long, extra As Long
-    values = FixtureRecipeValues("rngRectSetGeometry")
+    values = FixtureRecipeValues("rngRectanglesGeometry")
     Set reader = FixtureInput(values)
-    FixtureSetInput values, "General", "Shape", "val", "LSection"
+    FixtureSetInput values, "General", "Shape", "val", "TwoRect"
     FixtureSetInput values, "Detail", "XOffset", "val", 0#
     If UBound(dimensions) >= 4 Then FixtureSetInput values, "Detail", "XOffset", "val", dimensions(4)
     If UBound(dimensions) >= 5 Then FixtureSetInput values, "General", "Shape", "val", dimensions(5)
@@ -140,18 +140,18 @@ Public Function FixtureRectSetDefinition(ByVal dimensions As Variant, Optional B
             End If
         Next side
     Next index
-    Set recipe = New CSectionRecipeRectSet
-    Set FixtureRectSetDefinition = FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values)
+    Set recipe = New CSectionRecipeRectangles
+    Set FixtureRectanglesDefinition = FixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values)
 End Function
 
-' Rounded: [B,H,leftType,rightType,Wleft,Wright,R1left,R1right,R2left,R2right].
+' Rounded: [B,H,Wleft,Wright,R1left,R1right,R2left,R2right].
 ' faces = [H.Left,H.Right,B.Top,B.Bottom], каждый [as,d,n,d2,d3,loc2,loc3,bind2,bind3].
 Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional ByVal faces As Variant, Optional ByVal readSetbacks As Boolean = False) As CSectionDefinition
     Dim values As Variant, recipe As ISectionRecipe, index As Long, fields As Variant, side As Long
-    values = FixtureRecipeValues("rngPointedRectGeometry", readSetbacks)
+    values = FixtureRecipeValues("rngPointedSectionGeometry", readSetbacks)
     FixtureSetInput values, "General", "B", "val", dimensions(0): FixtureSetInput values, "General", "H", "val", dimensions(1)
-    fields = Array("Type", "W", "R1", "R2")
-    For index = 0 To 3
+    fields = Array("W", "R1", "R2")
+    For index = 0 To 2
         FixtureSetInput values, "Detail", CStr(fields(index)), "left", dimensions(2 + index * 2)
         FixtureSetInput values, "Detail", CStr(fields(index)), "right", dimensions(3 + index * 2)
     Next index
@@ -160,8 +160,8 @@ Public Function FixtureRoundedDefinition(ByVal dimensions As Variant, Optional B
     Else
         FixtureFaceTable values, faces
     End If
-    Set recipe = New CSectionRecipePointedRect
-    Set FixtureRoundedDefinition = FixtureRecipeDefinition(recipe, "rngPointedRectGeometry", values)
+    Set recipe = New CSectionRecipePointedSection
+    Set FixtureRoundedDefinition = FixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", values)
 End Function
 
 ' Hollow: [B,H,R,Bo,Ho,Ro,xo,yo]; faces = наружные H/H/B/B, затем внутренние H/H/B/B.
@@ -361,11 +361,11 @@ Public Function FixtureConfigFieldCell(ByVal key As String) As Object
         Set FixtureConfigFieldCell = FixtureCircleFieldCell(ThisWorkbook, key): Exit Function
     End If
     parts = Split(key, "."): typeID = CStr(parts(0))
-    If typeID <> "RectSet" And typeID <> "PointedRect" And typeID <> "HollowRectangle" Then Exit Function
+    If typeID <> "Rectangles" And typeID <> "PointedSection" And typeID <> "HollowRectangle" Then Exit Function
     Set area = ThisWorkbook.Names("rng" & typeID & "Geometry").RefersToRange
     field = Mid$(key, Len(typeID) + 2): block = "General": columnKey = "val"
     Select Case typeID
-        Case "RectSet"
+        Case "Rectangles"
             Select Case field
                 Case "SectionType": rowKey = "Shape"
                 Case "UpperOffsetX": rowKey = "XOffset"
@@ -403,7 +403,7 @@ Public Function FixtureConfigFieldCell(ByVal key As String) As Object
                 Case "OpeningH": rowKey = "Ho"
                 Case "OpeningR": rowKey = "Ro"
                 Case "B", "H", "R": rowKey = field
-                Case "Left.Type", "Left.W", "Left.R1", "Left.R2", "Right.Type", "Right.W", "Right.R1", "Right.R2": rowKey = field
+                Case "Left.W", "Left.R1", "Left.R2", "Right.W", "Right.R1", "Right.R2": rowKey = field
                 Case Else
                     index = UBound(parts): field = CStr(parts(index)): side = CStr(parts(index - 1))
                     rowKey = side: If CStr(parts(1)) = "Opening" Then rowKey = "Opening" & side
@@ -458,7 +458,7 @@ Public Sub FixtureResetReinforcement(ByVal typeID As String)
         Case "Circle"
             rows = Array( _
                 Array("Circle", 40#, 20#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
-        Case "RectSet"
+        Case "Rectangles"
             rows = Array( _
                 Array("R1.Top", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("R1.Bottom", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
@@ -468,7 +468,7 @@ Public Sub FixtureResetReinforcement(ByVal typeID As String)
                 Array("R2.Bottom", 40#, 32#, 5#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("R2.Left", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("R2.Right", 40#, 32#, 2#, 80#, 80#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"))
-        Case "PointedRect"
+        Case "PointedSection"
             rows = Array( _
                 Array("Top", 40#, 32#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _
                 Array("Bottom", 40#, 32#, 8#, 0#, 0#, Empty, 0#, "EachBar", "Stacked", Empty, 0#, "EachBar", "Stacked"), _

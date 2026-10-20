@@ -26,7 +26,7 @@ try {
     }
     # Повторное обновление сохраняет геометрические таблицы и выбранные параметры.
     $first=@{}
-    foreach ($name in @('rngPointedRectGeometry','rngHollowRectangleGeometry','rngRectSetGeometry','rngCircleGeometry')) {$first[$name]=$book.Names.Item($name).RefersToRange.Formula}
+    foreach ($name in @('rngPointedSectionGeometry','rngHollowRectangleGeometry','rngRectanglesGeometry','rngCircleGeometry')) {$first[$name]=$book.Names.Item($name).RefersToRange.Formula}
     $excel.Run($macro)
     foreach ($name in $first.Keys) {
         if ((ConvertTo-Json -InputObject $first[$name] -Compress -Depth 4) -cne (ConvertTo-Json -InputObject $book.Names.Item($name).RefersToRange.Formula -Compress -Depth 4)) {throw ('Update is not idempotent: '+$name)}

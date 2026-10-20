@@ -10,7 +10,7 @@ param(
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
     [ValidateSet("SP35", "SP63")][string]$CrackCode,
-    [ValidateSet("RectSet", "Circle", "PointedRect", "HollowRectangle")][string]$FixtureGeometryType,
+    [ValidateSet("Rectangles", "Circle", "PointedSection", "HollowRectangle")][string]$FixtureGeometryType,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [switch]$FailFast,
@@ -214,7 +214,7 @@ try {
         $lines.Add("EXPLICIT_CRACK_CODE: $CrackCode; fixture only, source unchanged")
     }
     if ($FixtureGeometryType) {
-        # Историческая tf-проверка использует стандартную RectSet-геометрию.
+        # Историческая tf-проверка использует стандартную Rectangles-геометрию.
         # Явно готовим только независимую копию, не подменяя пользовательский ввод.
         $geometryCell = Get-ModeSettingCell $workbook 'Geometry.Type'
         $originalGeometryType = [string]$geometryCell.Value2

@@ -35,7 +35,7 @@ def package():
     assert baseline.keys() == probe.keys()
     assert [name for name in baseline if normalize(baseline[name][2]) != normalize(probe[name][2])] == ['modTestAudit02Snapshots']
     changed = {name for name in baseline if normalize(baseline[name][2]) != normalize(candidate[name][2])}
-    assert changed == {'CSectionRecipeCircle', 'CSectionRecipeRectSet', 'CSectionRecipePointedRect',
+    assert changed == {'CSectionRecipeCircle', 'CSectionRecipeRectangles', 'CSectionRecipePointedSection',
                        'CSectionRecipeHollowRectangle', 'modSectionRecipeApiGuide', 'modTestAudit02Api', 'modTestAudit02Snapshots'}, changed
     equality = json.loads((D / 'CandidateSourceEquality.json').read_text(encoding='utf-8-sig'))
     assert equality['Passed']

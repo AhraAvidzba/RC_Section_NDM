@@ -1,4 +1,4 @@
-"""Собирает итоговые доказательства и матрицу требований из выполненных логов."""
+﻿"""Собирает итоговые доказательства и матрицу требований из выполненных логов."""
 from __future__ import annotations
 import hashlib
 import importlib.util
@@ -124,7 +124,7 @@ def main():
     manifest = read(DOC / "TEST_MANIFEST.json")
     groups = {
         "G": ["RETIREMENT_EVIDENCE.json", "DECLARATIVE_API_EVIDENCE.json", "ANALYTIC_PATH_EVIDENCE.json"],
-        "R": ["DECLARATIVE_API_EVIDENCE.json", "CONFIG_SETBACK_EVIDENCE.json", "RECTSET_EVIDENCE.json", "HOLLOW_RECIPE_EVIDENCE.json"],
+        "R": ["DECLARATIVE_API_EVIDENCE.json", "CONFIG_SETBACK_EVIDENCE.json", "RECTANGLES_EVIDENCE.json", "HOLLOW_RECIPE_EVIDENCE.json"],
         "A": ["DECLARATIVE_API_EVIDENCE.json", "NATIVE_GUIDE_EVIDENCE.json", "FINAL_ACCEPTANCE_EVIDENCE.json"],
         "I": ["DECLARATIVE_API_EVIDENCE.json", "FINAL_ACCEPTANCE_EVIDENCE.json"],
         "E": ["ONE_CLASS_EVIDENCE.json", "NATIVE_GUIDE_EVIDENCE.json", "CONFIG_SETBACK_EVIDENCE.json", "FINAL_ACCEPTANCE_EVIDENCE.json"],

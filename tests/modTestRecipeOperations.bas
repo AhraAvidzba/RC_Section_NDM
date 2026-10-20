@@ -411,7 +411,7 @@ Finished:
     RunCollapsingOffsetTests = mReport & "TOTAL_COLLAPSING_OFFSETS: passed=" & CStr(mPassed) & "; failed=" & CStr(mFailed) & vbCrLf
 End Function
 
-' ДЛЯ ТЕСТОВ: сохранённый PointedRect при 40 мм сохраняет стержень в стыке,
+' ДЛЯ ТЕСТОВ: сохранённый PointedSection при 40 мм сохраняет стержень в стыке,
 ' а при большем смещении пропускает только позицию, вышедшую за новую линию.
 Public Function RunSavedPointedOffsetTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
@@ -419,7 +419,7 @@ Public Function RunSavedPointedOffsetTests() As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, builder As CSectionBuilder, model As CSectionModel
     Dim i As Long, count As Long, expected As Long, inputCell As Object
     On Error GoTo Failed
-    Set table = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set table = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     saved = table.Formula
     Set inputCell = FixtureInputCell(table, "Extra", "Right", "a2")
     For Each value In Array(39.99, 40#, 50#, 80#)
@@ -517,7 +517,7 @@ Public Function RunSavedOffsetCalculationTests() As String
     On Error GoTo Failed
     Dim area As Object, inputCell As Object, saved As Variant, value As Variant, message As String
     Dim summary As Object, i As Long, j As Long, text As String, model As CSectionModel
-    Set area = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set area = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2"): saved = inputCell.Formula
     For Each value In Array(40#, 50#)
         inputCell.Value2 = value

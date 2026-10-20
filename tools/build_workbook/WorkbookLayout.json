@@ -43,9 +43,9 @@
     },
     {
       "Name": "rngHollowRectangleGeometry",
-      "RefersTo": "=Сечения!$A$94:$K$130",
+      "RefersTo": "=Сечения!$A$92:$K$128",
       "Sheet": "Сечения",
-      "Address": "$A$94:$K$130",
+      "Address": "$A$92:$K$128",
       "Rows": 37,
       "Columns": 11
     },
@@ -114,15 +114,15 @@
       "Columns": 6
     },
     {
-      "Name": "rngPointedRectGeometry",
-      "RefersTo": "=Сечения!$A$60:$K$90",
+      "Name": "rngPointedSectionGeometry",
+      "RefersTo": "=Сечения!$A$60:$K$88",
       "Sheet": "Сечения",
-      "Address": "$A$60:$K$90",
-      "Rows": 31,
+      "Address": "$A$60:$K$88",
+      "Rows": 29,
       "Columns": 11
     },
     {
-      "Name": "rngRectSetGeometry",
+      "Name": "rngRectanglesGeometry",
       "RefersTo": "=Сечения!$A$22:$K$56",
       "Sheet": "Сечения",
       "Address": "$A$22:$K$56",
@@ -350,7 +350,7 @@
           "Hidden": false
         },
         {
-          "Row": 93,
+          "Row": 91,
           "Height": 21,
           "Hidden": false
         }
@@ -7497,7 +7497,7 @@
     "Height": 21,
     "FontName": "Calibri",
     "FontSize": 16,
-    "LinkSize": 9
+    "LinkSize": 12
   },
   "Provenance": {
     "Workbook": "Saved.xlsm",

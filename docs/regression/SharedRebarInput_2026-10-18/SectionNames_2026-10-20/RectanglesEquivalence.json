@@ -1,0 +1,23 @@
+{
+  "Passed": true,
+  "Cases": 18,
+  "Records": 9931,
+  "Fields": 99587,
+  "BitIdenticalNumericFields": 76074,
+  "ChangedSectionNameComments": 2068,
+  "RecordsByKind": {
+    "MODEL": 18,
+    "PROPS": 18,
+    "BOUNDS": 18,
+    "CONCRETE": 3786,
+    "CONTOUR": 114,
+    "BAR": 1001,
+    "ANNOTATION": 189,
+    "FIBER": 3786,
+    "LAYOUT": 1001
+  },
+  "GeometryAndBarsUnchanged": true,
+  "InputRecordsBefore": 29592,
+  "InputRecordsAfter": 29556,
+  "FullOnOffRun": false
+}

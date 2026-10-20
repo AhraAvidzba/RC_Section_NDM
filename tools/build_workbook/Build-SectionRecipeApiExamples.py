@@ -38,7 +38,8 @@ def evidence():
     # Завершённые направленные batch-журналы новой структуры таблиц.
     # Не принимаем отдельный успешный фрагмент незавершённого/ошибочного запуска.
     structured = ROOT / "docs/regression/StructuredGeometryTables_2026-10-17"
-    for path in structured.glob("*.txt"):
+    section_names = ROOT / "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20"
+    for path in list(structured.glob("*.txt")) + list(section_names.glob("Directed*.txt")):
         text = path.read_text(encoding="utf-8-sig", errors="replace")
         if not re.search(r"(?m)^WATCHDOG_COMPLETED: exit=0; source unchanged=True\s*$", text):
             continue

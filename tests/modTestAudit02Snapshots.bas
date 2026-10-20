@@ -148,11 +148,11 @@ Public Function DumpRecipeRuleContracts(Optional ByVal includePaths As Boolean =
                     ConfigureCircleRuleContract scenario
                     typeID = "Circle"
                 Case "Rectangle", "LSection", "TwoRectangles"
-                    modTestShapeArchitecture.ConfigureRectSetScenario CStr(fixture), scenario
-                    typeID = "RectSet"
+                    modTestShapeArchitecture.ConfigureRectanglesScenario CStr(fixture), scenario
+                    typeID = "Rectangles"
                 Case "RoundedSimple", "RoundedTapered", "RoundedMixed", "RoundedMixedLeft"
                     modTestShapeArchitecture.ConfigureRoundedScenario scenario
-                    typeID = "PointedRect"
+                    typeID = "PointedSection"
                 Case "HollowCentered", "HollowOffset"
                     modTestShapeArchitecture.ConfigureHollowScenario scenario
                     typeID = "HollowRectangle"

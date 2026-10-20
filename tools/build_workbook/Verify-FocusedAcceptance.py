@@ -241,8 +241,8 @@ def verify(directory, run):
         errors.append('Frozen probe workbook changed')
     for file,key in [('FocusedAcceptanceProbe.bas','HelperSHA256'),('Combined.bas','ExtraHelperSHA256'),('SavedSectionFixture.json','SavedFixtureSHA256')]:
         if digest(directory/file)!=preparation[key]:errors.append('Executed helper/fixture snapshot differs: '+file)
-    expected = {(shape,group,mode) for shape,group in [('RectSet','Generated'),('Circle','Generated'),
-                ('PointedRect','Generated'),('HollowRectangle','Generated'),('SavedWorkbook','Saved'),
+    expected = {(shape,group,mode) for shape,group in [('Rectangles','Generated'),('Circle','Generated'),
+                ('PointedSection','Generated'),('HollowRectangle','Generated'),('SavedWorkbook','Saved'),
                 ('SavedWorkbook','Paths')] for mode in ('No','Yes')}
     seen=set()
     for item, lines in reports(directory,run):

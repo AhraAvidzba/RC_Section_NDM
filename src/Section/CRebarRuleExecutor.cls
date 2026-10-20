@@ -896,13 +896,13 @@ Private Sub RuleError(ByVal index As Long, ByVal reason As String, Optional ByVa
         Optional ByVal relatedEntityID As String = "", Optional ByVal detail1 As Double = 0#, Optional ByVal detail2 As Double = 0#)
     If code = "COINCIDENCE" Or code = "COINCIDENCE_CONFLICT" Or code = "BAR_OVERLAP" Or code = "ROW_OFFSET_COINCIDENCE" Then mConflicts = mConflicts + 1
     AddDiagnostic index, code, relatedEntityID, reason, detail1, detail2
-    Dim reference As String
+    Dim reference As String, context As String, entityCaption As String
     If index > 0 Then
         reference = mDiagnostic.SourceReference
-        reason = "Ряд '" & mRules(index).RuleID & "': " & reason
-        If Len(mRules(index).Comment) > 0 Then reason = mRules(index).Comment & ". " & reason
+        entityCaption = "Ряд '" & mRules(index).RuleID & "':"
+        context = mRules(index).Comment
     End If
-    SectionRecipeError "CRebarRuleExecutor", reason, reference
+    SectionRecipeError "CRebarRuleExecutor", reason, reference, context, entityCaption
 End Sub
 
 ' Запрещает дальнейшую расстановку и изменение результатов после успешной сборки.

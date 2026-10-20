@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestRecipeSetbacks"
+﻿Attribute VB_Name = "modTestRecipeSetbacks"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: реальные редактируемые отступы Config и их влияние на общий
@@ -14,9 +14,8 @@ Public Function RunRecipeSetbackUnitTests() As String
     Dim alerts As Boolean, itemColumn As Variant
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = "": alerts = Application.DisplayAlerts
-    values = FixtureRecipeValues("rngPointedRectGeometry")
+    values = FixtureRecipeValues("rngPointedSectionGeometry")
     FixtureSetInput values, "General", "B", "val", 800#: FixtureSetInput values, "General", "H", "val", 250#
-    FixtureSetInput values, "Detail", "Type", "left", "Simple": FixtureSetInput values, "Detail", "Type", "right", "Tapered"
     FixtureSetInput values, "Detail", "W", "left", 0#: FixtureSetInput values, "Detail", "W", "right", 150#
     FixtureSetInput values, "Detail", "R1", "left", 40#: FixtureSetInput values, "Detail", "R1", "right", 40#
     FixtureSetInput values, "Detail", "R2", "left", 0#: FixtureSetInput values, "Detail", "R2", "right", 80#
@@ -28,8 +27,8 @@ Public Function RunRecipeSetbackUnitTests() As String
         FixtureSetInput values, "Main", CStr(key), "s0", 10#: FixtureSetInput values, "Main", CStr(key), "s1", 20#
         FixtureSetInput values, "Extra", CStr(key), "d2", 0#: FixtureSetInput values, "Extra", CStr(key), "d3", 0#
     Next key
-    Set recipe = New CSectionRecipePointedRect
-    Set expected = FixtureAnnotatedLayout(FixtureRecipeDefinition(recipe, "rngPointedRectGeometry", values))
+    Set recipe = New CSectionRecipePointedSection
+    Set expected = FixtureAnnotatedLayout(FixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", values))
     baseline = values
     Set sheet = ThisWorkbook.Worksheets.Add: Set setting = sheet.Range("A1:C2")
     setting.Cells(1, 1).Value2 = "Key": setting.Cells(1, 2).Value2 = "Value": setting.Cells(1, 3).Value2 = "Unit"
@@ -56,7 +55,7 @@ Public Function RunRecipeSetbackUnitTests() As String
         setting.Cells(2, 2).Value2 = CStr(item(0))
         Set settings = New CSystemSettingsReader: settings.LoadFromRange setting
         Set units = New CUnitSystem: units.LoadFromSettings settings
-        Set definition = FixtureRecipeDefinition(recipe, "rngPointedRectGeometry", scaled, units)
+        Set definition = FixtureRecipeDefinition(recipe, "rngPointedSectionGeometry", scaled, units)
         Set actual = FixtureAnnotatedLayout(definition)
         Check "setback.units.count." & CStr(item(0)), actual.Count = expected.Count
         For i = 1 To expected.Count
@@ -176,17 +175,17 @@ Public Function RunRecipeSetbackInputTests() As String
     On Error GoTo Failed
     mPassed = 0: mFailed = 0: mReport = ""
     modTestShapeArchitecture.ConfigureShapeFixture "RoundedMixed"
-    Set rounded = ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange
+    Set rounded = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     Set hollow = ThisWorkbook.Names("rngHollowRectangleGeometry").RefersToRange
     savedRounded = rounded.Formula: savedHollow = hollow.Formula
     Set table = FixtureInput(rounded.Value2)
-    row = table.RowIndex("Main", "PointedRect.Top"): main = row - 1
+    row = table.RowIndex("Main", "Top"): main = row - 1
     Check "rounded.start.header", table.ColumnIndex("Main", "s0") = 6
     Check "rounded.end.header", table.ColumnIndex("Main", "s1") = 7
     Check "rounded.editable.centered", rounded.Cells(row, 6).HorizontalAlignment = xlCenter And rounded.Cells(row, 7).HorizontalAlignment = xlCenter
     face = Array(40#, 20#, 3, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
     faces = Array(face, face, Array(40#, 20#, 5, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar"), face)
-    parameters = Array(800#, 250#, "Simple", "Tapered", 0#, 150#, 40#, 40#, 0#, 80#)
+    parameters = Array(800#, 250#, 0#, 150#, 40#, 40#, 0#, 80#)
     rounded.Cells(main + 1, 6).Resize(4, 2).Value2 = 0#
     Set def = FixtureRoundedDefinition(parameters, faces, True): Set original = FixtureAnnotatedLayout(def)
     geometryArea = def.ConcreteDomain.Area: layoutCount = original.Count
@@ -210,7 +209,7 @@ Public Function RunRecipeSetbackInputTests() As String
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces, True))
     number = Err.Number: reason = Err.Description: Err.Clear
     On Error GoTo Failed
-    Check "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(ThisWorkbook.Names("rngPointedRectGeometry").RefersToRange.Rows.Count + 1 + row) & ",6]", vbBinaryCompare) > 0
+    Check "rounded.active.negative.rejected", number <> 0 And InStr(1, reason, "[" & CStr(row) & ",6]", vbBinaryCompare) > 0
     rounded.Cells(row, 6).Value2 = CVErr(xlErrValue)
     faces(2) = Array(40#, 0#, 0, 0#, 0#, "Stacked", "Stacked", "EachBar", "EachBar")
     Set changed = FixtureAnnotatedLayout(FixtureRoundedDefinition(parameters, faces, True))
@@ -219,8 +218,8 @@ Public Function RunRecipeSetbackInputTests() As String
 
     modTestShapeArchitecture.ConfigureShapeFixture "HollowCentered"
     Set table = FixtureInput(hollow.Value2)
-    main = table.RowIndex("Main", "HollowRectangle.Top") - 1
-    row = table.RowIndex("Main", "HollowRectangle.OpeningTop")
+    main = table.RowIndex("Main", "Top") - 1
+    row = table.RowIndex("Main", "OpeningTop")
     Check "hollow.start.header", table.ColumnIndex("Main", "s0") = 6
     Check "hollow.end.header", table.ColumnIndex("Main", "s1") = 7
     hollow.Cells(main + 1, 6).Resize(8, 2).Value2 = 0#

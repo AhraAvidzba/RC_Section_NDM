@@ -7,7 +7,7 @@ param(
     [string]$Macro = "",
     [string]$MacroArgument1 = "",
     [string]$MacroArgument2 = "",
-    [ValidateSet("RectSet", "Circle", "PointedRect", "HollowRectangle")][string]$FixtureGeometryType,
+    [ValidateSet("Rectangles", "Circle", "PointedSection", "HollowRectangle")][string]$FixtureGeometryType,
     [switch]$VerifyResultsReopen,
     [switch]$VerifyStatusReopen,
     [switch]$FailFast,

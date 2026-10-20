@@ -285,7 +285,7 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
     $borderCount=0
     foreach ($name in @('rngSystemSettings','rngUnitSettings','rngSignConventionSettings','rngCalculationProfiles',
         'rngConcreteMaterialParameters','rngSteelMaterialParameters','rngPlotAnnotationSettings','rngLoadCombinations',
-        'rngCircleGeometry','rngPointedRectGeometry','rngHollowRectangleGeometry','rngRectSetGeometry')) {
+        'rngCircleGeometry','rngPointedSectionGeometry','rngHollowRectangleGeometry','rngRectanglesGeometry')) {
         $range=$Book.Names.Item($name).RefersToRange
         for ($row=1; $row -le $range.Rows.Count; $row++) {
             $cell=$range.Cells.Item($row,$range.Columns.Count)
@@ -296,16 +296,16 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
         }
     }
     Assert-Help "$Stage.borderCoverage" ($borderCount -gt 250) $borderCount
-    $rect=$Book.Names.Item('rngRectSetGeometry').RefersToRange
+    $rect=$Book.Names.Item('rngRectanglesGeometry').RefersToRange
     foreach ($row in 21..28) {
         foreach ($column in @(3,4,6,7)) {
             $cell=$rect.Cells.Item($row,$column)
-            Assert-Help "$Stage.rectset.$row.$column" (-not $cell.MergeCells -and $cell.Validation.Type -eq 3 -and $cell.Validation.InCellDropdown) $cell.Validation.Formula1
+            Assert-Help "$Stage.rectangles.$row.$column" (-not $cell.MergeCells -and $cell.Validation.Type -eq 3 -and $cell.Validation.InCellDropdown) $cell.Validation.Formula1
             $source=$cell.Worksheet.Range(([string]$cell.Validation.Formula1).Substring(1)).Value2
             $options=(@($source) | ForEach-Object { [string]$_ }) -join '|'
             $expected='Stacked|SideBySide'
             if ($column -in @(4,7)) { $expected='EachBar|EverySecondBar' }
-            Assert-Help "$Stage.rectsetOptions.$row.$column" ($options -eq $expected) $options
+            Assert-Help "$Stage.rectanglesOptions.$row.$column" ($options -eq $expected) $options
         }
     }
     Assert-Help "$Stage.formulaPictures" ($guide.Shapes.Count -gt 50) $guide.Shapes.Count

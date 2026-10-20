@@ -6,8 +6,8 @@
 HEADERS = {
  'CSectionRecipeRoundedTrapezoid': 'Учебный рецепт скруглённой трапеции через общий декларативный фасад',
  'CSectionRecipeCircle': 'Декларативный рецепт круглого сечения и трёх арматурных рядов',
- 'CSectionRecipeRectSet': 'Декларативный рецепт Rectangle, LSection и TwoRectangles',
- 'CSectionRecipePointedRect': 'Декларативный рецепт прямоугольника с независимыми скруглёнными сторонами',
+ 'CSectionRecipeRectangles': 'Декларативный рецепт Rectangle, LSection и TwoRectangles',
+ 'CSectionRecipePointedSection': 'Декларативный рецепт прямоугольника с независимыми скруглёнными сторонами',
  'CSectionRecipeHollowRectangle': 'Декларативный рецепт полого прямоугольника с конечными проекциями арматуры',
  'CRebarRuleExecutor': 'Общий исполнитель арматурных правил: позиции, зависимости, проекции и публикация',
  'CSectionAnnotationBuilder': 'Построение размеров и привязок подписей по аналитической геометрии',

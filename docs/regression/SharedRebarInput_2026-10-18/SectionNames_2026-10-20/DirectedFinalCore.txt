@@ -1,0 +1,2955 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\SharedRebarInput_2026-10-18\SectionNames_2026-10-20\Rebuilt02.xlsm
+SOURCE_SHA256: 77F51015C337F26B3C8E0958C54ADD09F1183F26F1A5B2C5C1EE1C187D2C3081
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=202344; startTicks=639281099389558088
+===== modTestGeometry.RunGeometryTests =====
+SUITE_STARTED: modTestGeometry.RunGeometryTests; 2026-10-20T19:19:03
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=172640; workingSet=136876032; privateBytes=94851072; cpu=26.21875
+EXCEL_AFTER_SUITE: pid=182024; workingSet=144592896; privateBytes=102178816; cpu=27.0625
+EXCEL_AFTER_SUITE: pid=202344; workingSet=155258880; privateBytes=111751168; cpu=26.453125
+OK: rect.area; actual=20000.; expected=20000.; absDiff=0.
+OK: rect.cx; actual=0.; expected=0.; absDiff=0.
+OK: rect.cy; actual=0.; expected=0.; absDiff=0.
+OK: rect.Ix; actual=16666666.666667; expected=16666666.6666667; relDiff=0.
+OK: rect.Iy; actual=66666666.6666698; expected=66666666.6666667; relDiff=0.
+OK: rect.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: sym.area.available
+OK: sym.area; actual=47475.; expected=47463.4954084936; relDiff=0.000242388206
+OK: sym.cx; actual=0.; expected=0.; absDiff=0.
+OK: sym.cy; actual=0.; expected=0.; absDiff=0.
+OK: sym.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: sym.principal.angle; actual=1.570796326795; expected=1.570796326795; absDiff=0.
+OK: rounded.tapered.area.positive
+OK: rounded.tapered.centroid.inside
+OK: rounded.tapered.rightExtension
+OK: rounded.tapered.height; actual=180.; expected=180.; absDiff=0.
+OK: rounded.tapered.area.convergence; actual=59218.75; expected=59375.; relDiff=0.002631578947
+OK: rounded.tapered.Ix.convergence; actual=143398803.603575; expected=144005276.864035; relDiff=0.004211465536
+OK: rounded.tapered.variableAngle.topTangent; actual=375.735931288071; expected=375.735931288071; absDiff=0.
+OK: rounded.tapered.variableAngle.maxX; actual=708.57864376269; expected=708.57864376269; absDiff=0.
+OK: rounded.tapered.variableAngle.maxLessThanRawApex
+OK: rounded.tapered.r1GreaterThanHalfHeight.valid
+OK: rounded.tapered.radiiOverlap.invalid
+OK: rounded.annotation.hasArcs
+OK: rounded.annotation.hasLines
+OK: rounded.annotation.wRight.exists
+OK: rounded.annotation.wRight.label
+OK: rounded.annotation.wRight.value; actual=209.; expected=209.; absDiff=0.
+OK: rounded.rebar.count
+OK: rounded.rebar.requested
+OK: rounded.rebar.top.firstX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.top.firstY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.top.lastX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.top.lastX.followsTaperAngle
+OK: rounded.rebar.bottom.firstY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hLeft.pathStartX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.pathStartY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.hLeft.pathEndX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.pathEndY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hLeft.firstAtOneStepX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.firstAtOneStepY; actual=42.5; expected=42.5; absDiff=0.
+OK: rounded.rebar.hLeft.lastAtOneStepX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.hLeft.lastAtOneStepY; actual=-42.5; expected=-42.5; absDiff=0.
+OK: rounded.rebar.hRight.pathStartX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.hRight.pathStartY; actual=85.; expected=85.; absDiff=0.
+OK: rounded.rebar.hRight.pathEndX; actual=385.518002592747; expected=385.518002592747; absDiff=0.
+OK: rounded.rebar.hRight.pathEndY; actual=-85.; expected=-85.; absDiff=0.
+OK: rounded.rebar.hRight.firstAtOneStepX; actual=431.540820615052; expected=431.540820615052; absDiff=0.
+OK: rounded.rebar.hRight.firstAtOneStepY; actual=46.647651648079; expected=46.647651648079; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathStartX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathStartY; actual=105.; expected=105.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathEndX; actual=-360.; expected=-360.; absDiff=0.
+OK: rounded.rebar.simpleLeft.pathEndY; actual=-105.; expected=-105.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathStartX; actual=360.; expected=360.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathStartY; actual=105.; expected=105.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathEndX; actual=360.; expected=360.; absDiff=0.
+OK: rounded.rebar.simpleRight.pathEndY; actual=-105.; expected=-105.; absDiff=0.
+OK: rounded.rebar.inside.1
+OK: rounded.rebar.inside.2
+OK: rounded.rebar.inside.3
+OK: rounded.rebar.inside.4
+OK: rounded.rebar.inside.5
+OK: rounded.rebar.inside.6
+OK: rounded.rebar.inside.7
+OK: rounded.rebar.inside.8
+OK: rounded.rebar.inside.9
+OK: rounded.rebar.inside.10
+OK: rounded.rebar.inside.11
+OK: rounded.rebar.inside.12
+OK: rounded.rebar.inside.13
+OK: rounded.rebar.inside.14
+OK: rounded.rebar.inside.15
+OK: rounded.rebar.inside.16
+OK: hollow.geometry.valid
+OK: hollow.geometry.areaAvailable
+OK: hollow.geometry.area; actual=300000.; expected=300000.; absDiff=0.
+OK: hollow.geometry.cx; actual=0.; expected=0.; absDiff=0.
+OK: hollow.geometry.cy; actual=0.; expected=0.; absDiff=0.
+OK: hollow.geometry.outerConcrete
+OK: hollow.geometry.openingExcluded
+OK: hollow.geometry.outsideExcluded
+OK: hollow.geometry.offset.valid
+OK: hollow.geometry.offset.cxOppositeOpening
+OK: hollow.geometry.offset.cyOppositeOpening
+OK: audit03.hollow.containedOpening.0.area; actual=158400.; expected=158400.; absDiff=0.
+OK: audit03.hollow.containedOpening.0.centroidX; actual=-0.505050505051; expected=-0.505050505051; absDiff=0.
+OK: audit03.hollow.containedOpening.0.centroidY; actual=-0.505050505051; expected=-0.505050505051; absDiff=0.
+OK: audit03.hollow.containedOpening.0.Ix; actual=2129079595.9596; expected=2129079595.9596; absDiff=0.
+OK: audit03.hollow.containedOpening.0.Iy; actual=2129079595.9596; expected=2129079595.9596; absDiff=0.
+OK: audit03.hollow.containedOpening.0.Ixy; actual=-4040404.04040404; expected=-4040404.04040404; absDiff=0.
+OK: audit03.hollow.containedOpening.0.allCentersInConcrete
+HOLLOW_CELL_MESH: audit03.hollow.containedOpening.0; fibers=99; area=158400; invalidCenters=0
+OK: audit03.hollow.containedOpening.1.area; actual=159200.; expected=159200.; absDiff=0.
+OK: audit03.hollow.containedOpening.1.centroidX; actual=-0.35175879397; expected=-0.35175879397; absDiff=0.
+OK: audit03.hollow.containedOpening.1.centroidY; actual=-0.150753768844; expected=-0.150753768844; absDiff=0.
+OK: audit03.hollow.containedOpening.1.Ix; actual=2132503048.57621; expected=2132503048.57621; absDiff=0.
+OK: audit03.hollow.containedOpening.1.Iy; actual=2129366968.1742; expected=2129366968.1742; absDiff=0.
+OK: audit03.hollow.containedOpening.1.Ixy; actual=-1688442.21105528; expected=-1688442.21105528; absDiff=0.
+OK: audit03.hollow.containedOpening.1.allCentersInConcrete
+HOLLOW_CELL_MESH: audit03.hollow.containedOpening.1; fibers=107; area=159200; invalidCenters=0
+OK: audit03.hollow.containedOpening.2.area; actual=158400.; expected=158400.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.centroidX; actual=0.; expected=0.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.centroidY; actual=0.; expected=0.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.Ix; actual=2133120000.; expected=2133120000.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.Iy; actual=2133120000.; expected=2133120000.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: audit03.hollow.containedOpening.2.allCentersInConcrete
+HOLLOW_CELL_MESH: audit03.hollow.containedOpening.2; fibers=396; area=158400; invalidCenters=0
+OK: audit03.hollow.containedOpening.convexFastPath
+OK: hollow.annotation.outerLoop
+OK: hollow.annotation.openingLoop
+OK: hollow.annotation.arcs
+OK: hollow.annotation.dimB
+OK: hollow.annotation.dimOpeningB
+OK: hollow.rebar.external.top
+OK: hollow.rebar.external.bottom
+OK: hollow.rebar.external.left
+OK: hollow.rebar.external.right
+OK: hollow.rebar.hLeft.firstX; actual=-210.; expected=-210.; absDiff=0.
+OK: hollow.rebar.hLeft.firstY; actual=-220.; expected=-220.; absDiff=0.
+OK: hollow.rebar.hLeft.lastX; actual=-210.; expected=-210.; absDiff=0.
+OK: hollow.rebar.hLeft.lastY; actual=220.; expected=220.; absDiff=0.
+OK: hollow.rebar.bTop.anchorStartY; actual=360.; expected=360.; absDiff=0.
+OK: hollow.rebar.bTop.anchorEndY; actual=360.; expected=360.; absDiff=0.
+OK: hollow.rebar.bBottom.anchorStartY; actual=-360.; expected=-360.; absDiff=0.
+OK: hollow.rebar.bBottom.anchorEndY; actual=-360.; expected=-360.; absDiff=0.
+OK: hollow.rebar.openingBTop.anchorStartY; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.openingBTop.anchorEndY; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.openingBBottom.anchorStartY; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.openingBBottom.anchorEndY; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.opening.topProjected
+OK: hollow.rebar.opening.bottomProjected
+OK: hollow.rebar.opening.leftProjected
+OK: hollow.rebar.opening.rightProjected
+OK: hollow.rebar.inside.1
+OK: hollow.rebar.inside.2
+OK: hollow.rebar.inside.3
+OK: hollow.rebar.inside.4
+OK: hollow.rebar.inside.5
+OK: hollow.rebar.inside.6
+OK: hollow.rebar.inside.7
+OK: hollow.rebar.inside.8
+OK: hollow.rebar.inside.9
+OK: hollow.rebar.inside.10
+OK: hollow.rebar.inside.11
+OK: hollow.rebar.inside.12
+OK: hollow.rebar.inside.13
+OK: hollow.rebar.inside.14
+OK: hollow.rebar.inside.15
+OK: hollow.rebar.inside.16
+OK: hollow.rebar.inside.17
+OK: hollow.rebar.inside.18
+OK: hollow.rebar.inside.19
+OK: hollow.rebar.inside.20
+OK: hollow.rebar.inside.21
+OK: hollow.rebar.inside.22
+OK: hollow.rebar.inside.23
+OK: hollow.rebar.inside.24
+OK: hollow.rebar.inside.25
+OK: hollow.rebar.inside.26
+OK: hollow.rebar.inside.27
+OK: hollow.rebar.inside.28
+OK: hollow.rebar.inside.29
+OK: hollow.rebar.inside.30
+OK: hollow.rebar.inside.31
+OK: hollow.rebar.inside.32
+OK: hollow.rebar.inside.33
+OK: hollow.rebar.inside.34
+OK: hollow.rebar.inside.35
+OK: hollow.rebar.inside.36
+OK: hollow.rebar.inside.37
+OK: hollow.rebar.inside.38
+OK: hollow.rebar.inside.39
+OK: hollow.rebar.inside.40
+OK: hollow.rebar.inside.41
+OK: hollow.rebar.inside.42
+OK: hollow.rebar.inside.43
+OK: hollow.rebar.inside.44
+OK: hollow.rebar.inside.45
+OK: hollow.rebar.inside.46
+OK: hollow.rebar.inside.47
+OK: hollow.rebar.inside.48
+OK: hollow.rebar.inside.49
+OK: hollow.rebar.inside.50
+OK: hollow.rebar.inside.51
+OK: hollow.rebar.inside.52
+OK: hollow.rebar.inside.53
+OK: hollow.rebar.inside.54
+OK: hollow.rebar.inside.55
+OK: hollow.rebar.inside.56
+OK: hollow.rebar.sharp.openingTop.count
+OK: hollow.rebar.sharp.openingBottom.count
+OK: hollow.rebar.sharp.openingLeft.count
+OK: hollow.rebar.sharp.openingRight.count
+OK: hollow.rebar.sharp.openingTop.barY.29; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.30; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.31; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.32; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.33; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.barY.34; actual=290.; expected=290.; absDiff=0.
+OK: hollow.rebar.sharp.openingTop.hasBars
+OK: hollow.rebar.sharp.openingBottom.barY.35; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.36; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.37; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.38; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.39; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.barY.40; actual=-290.; expected=-290.; absDiff=0.
+OK: hollow.rebar.sharp.openingBottom.hasBars
+OK: hollow.rebar.sharp.openingLeft.barX.41; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.barX.42; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.barX.43; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.barX.44; actual=-140.; expected=-140.; absDiff=0.
+OK: hollow.rebar.sharp.openingLeft.hasBars
+OK: hollow.rebar.sharp.openingRight.barX.45; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.barX.46; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.barX.47; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.barX.48; actual=140.; expected=140.; absDiff=0.
+OK: hollow.rebar.sharp.openingRight.hasBars
+OK: circle.area.available
+OK: circle.area; actual=70650.; expected=70685.8347057704; relDiff=0.000506957383
+OK: circle.cx; actual=10.; expected=10.; absDiff=0.
+OK: circle.cy; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.Ix; actual=397237187.499859; expected=397607820.219958; relDiff=0.000932156515
+OK: circle.Iy; actual=397237187.499938; expected=397607820.219958; relDiff=0.000932156515
+OK: circle.Ixy; actual=0.; expected=0.; absDiff=0.
+OK: circle.principal.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.core.xPositive; actual=37.484046945029; expected=37.5; relDiff=0.000425414799
+OK: circle.core.yNegative; actual=37.484046945039; expected=37.5; relDiff=0.000425414799
+OK: core.asymmetric.expectedDifferent
+OK: core.asymmetric.xPlus.oppositeFiber; actual=44.69696969697; expected=44.69696969697; absDiff=0.
+OK: core.asymmetric.xMinus.oppositeFiber; actual=37.820512820513; expected=37.820512820513; absDiff=0.
+OK: core.general.xPlus.inside
+OK: core.general.xPlus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.xPlus.outside
+OK: core.general.xMinus.inside
+OK: core.general.xMinus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.xMinus.outside
+OK: core.general.yPlus.inside
+OK: core.general.yPlus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.yPlus.outside
+OK: core.general.yMinus.inside
+OK: core.general.yMinus.edge; actual=0.; expected=0.; absDiff=0.
+OK: core.general.yMinus.outside
+OK: principal.core.axis1.matchesX; actual=33.333333333333; expected=33.333333333333; absDiff=0.
+OK: principal.core.axis2.matchesY; actual=100.; expected=100.; absDiff=0.
+OK: principal.core.plane1.normalIsAxis2; actual=100.; expected=100.; absDiff=0.
+OK: circle.coarse.principal.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.coarse.IxIy.nearlyEqual
+OK: circle.invalid.zeroRadius
+OK: circle.invalid.negativeDiameter
+OK: circle.rebar.count
+OK: circle.rebar.angleStep; actual=0.785398163397; expected=0.785398163397; absDiff=0.
+OK: circle.rebar.clockwise.firstQuadrant
+OK: circle.rebar.axisRadius; actual=110.; expected=110.; absDiff=0.
+OK: circle.rebar.firstX; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.firstY; actual=90.; expected=90.; absDiff=0.
+OK: circle.rebar.centroidX; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.centroidY; actual=-20.; expected=-20.; absDiff=0.
+OK: circle.rebar.area; actual=314.159265358979; expected=314.159265358979; relDiff=0.
+OK: circle.rebar.rows.stacked.count
+OK: circle.rebar.rows.stacked.row2.x; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.rows.stacked.row2.y; actual=67.5; expected=67.5; absDiff=0.
+OK: circle.rebar.rows.stacked.row3.x; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.rows.stacked.row3.y; actual=40.; expected=40.; absDiff=0.
+OK: circle.rebar.rows.side.count
+OK: circle.rebar.rows.side.row2.x; actual=32.5; expected=32.5; absDiff=0.
+OK: circle.rebar.rows.side.row2.y; actual=90.; expected=90.; absDiff=0.
+OK: circle.rebar.rows.side.row3.x; actual=60.; expected=60.; absDiff=0.
+OK: circle.rebar.rows.side.row3.y; actual=90.; expected=90.; absDiff=0.
+OK: circle.rebar.rows.mixed.count
+OK: circle.rebar.rows.mixed.row2.y; actual=90.; expected=90.; absDiff=0.
+OK: circle.rebar.rows.mixed.row3.x; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.rows.mixed.row3.y; actual=62.5; expected=62.5; absDiff=0.
+OK: circle.rebar.rows.thirdOnly.count
+OK: circle.rebar.rows.thirdOnly.row3.x; actual=10.; expected=10.; absDiff=0.
+OK: circle.rebar.rows.thirdOnly.row3.y; actual=62.5; expected=62.5; absDiff=0.
+OK: circle.rebar.rows.noFirstByCount.ignored
+OK: circle.rebar.rows.noFirstByCount.angle; actual=0.; expected=0.; absDiff=0.
+OK: circle.rebar.rows.noFirstByDiameter.ignored
+OK: circle.rebar.invalid.D
+OK: circle.rebar.invalid.n
+OK: circle.rebar.invalid.ds
+OK: circle.rebar.invalid.as.small
+OK: circle.rebar.invalid.as.large
+OK: circle.rebar.invalid.loc2
+OK: circle.rebar.invalid.row2.outside
+OK: rectangles.area.available
+OK: rectangles.area.analytical; actual=287500.; expected=287500.; absDiff=0.
+OK: rectangles.cx.analytical; actual=226.304347826087; expected=226.304347826087; absDiff=0.
+OK: rectangles.cy.analytical; actual=296.304347826087; expected=296.304347826087; absDiff=0.
+OK: rectangles.contains.lower
+OK: rectangles.contains.vertical
+OK: rectangles.excludes.cutout
+OK: rectangles.boundary.subcell.fibers.more
+OK: rectangles.boundary.subcell.has.small.fibers
+OK: rectangles.boundary.subcell.area; actual=296400.; expected=287500.; relDiff=0.030956521739
+OK: rectangles.rectangle.area; actual=137500.; expected=137500.; absDiff=0.
+OK: rectangles.rectangle.area.available
+OK: rectangles.rectangle.cx; actual=125.; expected=125.; absDiff=0.
+OK: rectangles.rectangle.cy; actual=275.; expected=275.; absDiff=0.
+OK: rectangles.rectangle.hasNoLower
+OK: rectangles.rectangle.containsUpper
+OK: rectangles.rectangle.excludesOldLower
+OK: rectangles.twoZero.areaEqualsL; actual=287500.; expected=287500.; absDiff=0.
+OK: rectangles.twoZero.minX; actual=0.; expected=0.; absDiff=0.
+OK: rectangles.twoZero.maxX; actual=600.; expected=600.; absDiff=0.
+OK: rectangles.twoZero.cutout
+OK: rectangles.tshape.valid
+OK: rectangles.tshape.minX; actual=-175.; expected=-175.; absDiff=0.
+OK: rectangles.tshape.maxX; actual=425.; expected=425.; absDiff=0.
+OK: rectangles.tshape.containsFlange
+OK: rectangles.tshape.containsWeb
+OK: rectangles.shifted.upperMinX; actual=150.; expected=150.; absDiff=0.
+OK: rectangles.shifted.cx; actual=288.04347826087; expected=288.04347826087; absDiff=0.
+OK: rectangles.shifted.cy; actual=316.304347826087; expected=316.304347826087; absDiff=0.
+OK: rectangles.shifted.containsUpper
+OK: rectangles.shifted.excludesOldUpper
+OK: rectangles.shifted.rebarX; actual=200.; expected=200.; absDiff=0.
+OK: rectangles.rectangle.rebarSkipsLower
+OK: rectangles.concrete.axis1.inertia; actual=18088016827.5064; expected=18088016827.5064; relDiff=0.
+OK: rectangles.concrete.axis2.inertia; actual=5050796578.29071; expected=5050796578.29052; relDiff=0.
+OK: rectangles.concrete.principal.I12.zero
+OK: rectangles.concrete.core.plane1.plus; actual=139.951813359855; expected=139.951813359855; absDiff=0.
+OK: rectangles.concrete.core.plane1.minus; actual=118.761032231126; expected=118.761032231126; absDiff=0.
+OK: rectangles.concrete.core.plane2.plus; actual=53.176383544528; expected=53.176383544528; absDiff=0.
+OK: rectangles.concrete.core.plane2.minus; actual=55.076837222433; expected=55.076837222433; absDiff=0.
+OK: rectangles.transformed.axis1.inertia; actual=25742590097.4048; expected=25742590097.4048; relDiff=0.
+OK: rectangles.transformed.axis2.inertia; actual=7443135031.93637; expected=7443135031.93628; relDiff=0.
+OK: rectangles.transformed.principal.I12.zero
+OK: rectangles.transformed.core.plane1.plus; actual=141.00121678544; expected=141.00121678544; absDiff=0.
+OK: rectangles.transformed.core.plane1.minus; actual=121.03572048568; expected=121.03572048568; absDiff=0.
+OK: rectangles.transformed.core.plane2.plus; actual=55.795082953887; expected=55.795082953887; absDiff=0.
+OK: rectangles.transformed.core.plane2.minus; actual=57.859913993707; expected=57.859913993707; absDiff=0.
+OK: geometry.cover.localContour; actual=40.; expected=40.; absDiff=0.
+OK: geometry.cover.globalWouldBeWrong; actual=340.; expected=340.; absDiff=0.
+OK: geometry.cover.localLessThanGlobal
+OK: rectangles.rebar.count
+OK: rectangles.rebar.requested
+OK: rectangles.rebar.perimeter; actual=3300.; expected=3300.; absDiff=0.
+OK: rectangles.rebar.outerPerimeter; actual=2800.; expected=2800.; absDiff=0.
+OK: rectangles.rebar.step; actual=200.; expected=200.; absDiff=0.
+OK: rectangles.rebar.firstX; actual=50.; expected=50.; absDiff=0.
+OK: rectangles.rebar.firstY; actual=525.; expected=525.; absDiff=0.
+OK: rectangles.rebar.zeroFaceSkipped
+OK: rectangles.rebar.zeroCountSkipped
+OK: rectangles.rebar.zeroDiameterSkipped
+OK: rectangles.rebar.allZeroCounts.builderEmpty
+OK: rectangles.rebar.inside.1
+OK: rectangles.rebar.inside.2
+OK: rectangles.rebar.inside.3
+OK: rectangles.rebar.inside.4
+OK: rectangles.rebar.inside.5
+OK: rectangles.rebar.inside.6
+OK: rectangles.rebar.inside.7
+OK: rectangles.rebar.inside.8
+OK: rectangles.rebar.invalid.n
+OK: rectangles.rebar.invalid.as.small
+OK: rectangles.rebar.invalid.offsets
+OK: rectangles.offsets.separate.count
+OK: rectangles.offsets.as_1.firstY; actual=680.; expected=680.; absDiff=0.
+OK: rectangles.offsets.as_1.edgeY; actual=330.; expected=330.; absDiff=0.
+OK: rectangles.offsets.as_2.firstY; actual=320.; expected=320.; absDiff=0.
+OK: rectangles.offsets.as_2.edgeY; actual=770.; expected=770.; absDiff=0.
+OK: rectangles.rows.stacked.count
+OK: rectangles.rows.stacked.row1.x; actual=50.; expected=50.; absDiff=0.
+OK: rectangles.rows.stacked.row2.x; actual=72.5; expected=72.5; absDiff=0.
+OK: rectangles.rows.stacked.row3.x; actual=100.; expected=100.; absDiff=0.
+OK: rectangles.rows.stacked.sameY; actual=525.; expected=525.; absDiff=0.
+OK: rectangles.rows.side.vertical.count
+OK: rectangles.rows.side.vertical.sameX; actual=50.; expected=50.; absDiff=0.
+OK: rectangles.rows.side.vertical.row2.y; actual=502.5; expected=502.5; absDiff=0.
+OK: rectangles.rows.side.vertical.row3.y; actual=475.; expected=475.; absDiff=0.
+OK: rectangles.rows.side.horizontal.count
+OK: rectangles.rows.side.horizontal.row2.x; actual=147.5; expected=147.5; absDiff=0.
+OK: rectangles.rows.side.horizontal.row3.x; actual=175.; expected=175.; absDiff=0.
+OK: rectangles.rows.side.horizontal.sameY; actual=750.; expected=750.; absDiff=0.
+OK: rectangles.rows.thirdOnly.count
+OK: rectangles.rows.thirdOnly.row3.x; actual=77.5; expected=77.5; absDiff=0.
+OK: rectangles.rows.thirdOnly.sameY; actual=525.; expected=525.; absDiff=0.
+OK: rectangles.rows.noFirstRow.ignored
+OK: rectangles.rows.noFirstRow.source
+OK: rectangles.rows.mixed.count
+OK: rectangles.rows.mixed.row2.y; actual=502.5; expected=502.5; absDiff=0.
+OK: rectangles.rows.mixed.row3.x; actual=77.5; expected=77.5; absDiff=0.
+OK: rectangles.rows.mixed.row3.y; actual=525.; expected=525.; absDiff=0.
+OK: rectangles.rows.separateLineDiameters.count
+OK: rectangles.rows.separateLineDiameters.row2_1.d; actual=18.; expected=18.; absDiff=0.
+OK: rectangles.rows.separateLineDiameters.row3_1.d; actual=28.; expected=28.; absDiff=0.
+OK: rectangles.rows.separateLineDiameters.row2_2.d; actual=22.; expected=22.; absDiff=0.
+OK: rectangles.rows.separateLineDiameters.row3_2.d; actual=34.; expected=34.; absDiff=0.
+OK: rectangles.rows.everySecond.count
+OK: rectangles.rows.everySecond.row2.partial
+OK: rectangles.rows.everySecond.row3.each
+OK: rectangles.rows.invalid.location
+OK: model.concrete.count
+OK: model.rebar.count
+OK: model.concrete.id
+OK: model.rebar.id
+OK: model.rebar.sourceName
+OK: model.rebar.area; actual=314.159265358979; expected=314.159265358979; absDiff=0.
+OK: meshCenter.0.weightedX; actual=30.; expected=30.; absDiff=0.
+OK: meshCenter.0.weightedY; actual=60.; expected=60.; absDiff=0.
+OK: meshCenter.0.area; actual=400.; expected=400.; absDiff=0.
+OK: meshCenter.0.repeatX; actual=30.; expected=30.; absDiff=0.
+OK: meshCenter.0.repeatY; actual=60.; expected=60.; absDiff=0.
+OK: meshCenter.0.radius; actual=67.082039324994; expected=67.082039324994; absDiff=0.
+OK: meshCenter.0.radiusRepeat; actual=67.082039324994; expected=67.082039324994; absDiff=0.
+OK: meshCenter.0.rebarExcludedX; actual=30.; expected=30.; absDiff=0.
+OK: meshCenter.0.rebarExcludedY; actual=60.; expected=60.; absDiff=0.
+OK: meshCenter.0.rebarExcludedArea; actual=400.; expected=400.; absDiff=0.
+OK: meshCenter.0.frameX; actual=30.; expected=30.; absDiff=0.
+OK: meshCenter.0.frameY; actual=60.; expected=60.; absDiff=0.
+OK: meshCenter.0.radiusRebarInvalidation; actual=657.647321898295; expected=657.647321898295; absDiff=0.
+OK: meshCenter.0.propertiesX; actual=30.; expected=30.; absDiff=0.
+OK: meshCenter.0.propertiesY; actual=60.; expected=60.; absDiff=0.
+OK: meshCenter.0.loadReferenceX; actual=30.; expected=30.; absDiff=0.
+OK: meshCenter.0.loadReferenceY; actual=60.; expected=60.; absDiff=0.
+OK: meshCenter.0.originalX; actual=0.; expected=0.; absDiff=0.
+OK: meshCenter.0.originalY; actual=80.; expected=80.; absDiff=0.
+OK: meshCenter.0.changedX; actual=5.; expected=5.; absDiff=0.
+OK: meshCenter.0.changedY; actual=10.; expected=10.; absDiff=0.
+OK: meshCenter.0.changedArea; actual=800.; expected=800.; absDiff=0.
+OK: meshCenter.0.changedFrameX; actual=5.; expected=5.; absDiff=0.
+OK: meshCenter.0.radiusConcreteInvalidation; actual=642.748006609122; expected=642.748006609122; absDiff=0.
+OK: meshCenter.0.changedPropertiesY; actual=10.; expected=10.; absDiff=0.
+OK: meshCenter.0.clearRejectsEmpty
+OK: meshCenter.0.rebuiltX; actual=7.; expected=7.; absDiff=0.
+OK: meshCenter.0.rebuiltY; actual=-9.; expected=-9.; absDiff=0.
+OK: meshCenter.0.rebuiltArea; actual=25.; expected=25.; absDiff=0.
+OK: meshCenter.0.rebuiltFrameX; actual=7.; expected=7.; absDiff=0.
+OK: meshCenter.0.rebuiltRadius; actual=1.; expected=1.; absDiff=0.
+OK: meshCenter.0.rebuiltPropertiesY; actual=-9.; expected=-9.; absDiff=0.
+OK: meshCenter.1000000.weightedX; actual=1000030.; expected=1000030.; absDiff=0.
+OK: meshCenter.1000000.weightedY; actual=-999940.; expected=-999940.; absDiff=0.
+OK: meshCenter.1000000.area; actual=400.; expected=400.; absDiff=0.
+OK: meshCenter.1000000.repeatX; actual=1000030.; expected=1000030.; absDiff=0.
+OK: meshCenter.1000000.repeatY; actual=-999940.; expected=-999940.; absDiff=0.
+OK: meshCenter.1000000.radius; actual=67.082039324994; expected=67.082039324994; absDiff=0.
+OK: meshCenter.1000000.radiusRepeat; actual=67.082039324994; expected=67.082039324994; absDiff=0.
+OK: meshCenter.1000000.rebarExcludedX; actual=1000030.; expected=1000030.; absDiff=0.
+OK: meshCenter.1000000.rebarExcludedY; actual=-999940.; expected=-999940.; absDiff=0.
+OK: meshCenter.1000000.rebarExcludedArea; actual=400.; expected=400.; absDiff=0.
+OK: meshCenter.1000000.frameX; actual=1000030.; expected=1000030.; absDiff=0.
+OK: meshCenter.1000000.frameY; actual=-999940.; expected=-999940.; absDiff=0.
+OK: meshCenter.1000000.radiusRebarInvalidation; actual=657.647321898295; expected=657.647321898295; absDiff=0.
+OK: meshCenter.1000000.propertiesX; actual=1000030.; expected=1000030.; absDiff=0.
+OK: meshCenter.1000000.propertiesY; actual=-999940.; expected=-999940.; absDiff=0.
+OK: meshCenter.1000000.loadReferenceX; actual=1000030.; expected=1000030.; absDiff=0.
+OK: meshCenter.1000000.loadReferenceY; actual=-999940.; expected=-999940.; absDiff=0.
+OK: meshCenter.1000000.originalX; actual=1000000.; expected=1000000.; absDiff=0.
+OK: meshCenter.1000000.originalY; actual=-999920.; expected=-999920.; absDiff=0.
+OK: meshCenter.1000000.changedX; actual=1000005.; expected=1000005.; absDiff=0.
+OK: meshCenter.1000000.changedY; actual=-999990.; expected=-999990.; absDiff=0.
+OK: meshCenter.1000000.changedArea; actual=800.; expected=800.; absDiff=0.
+OK: meshCenter.1000000.changedFrameX; actual=1000005.; expected=1000005.; absDiff=0.
+OK: meshCenter.1000000.radiusConcreteInvalidation; actual=642.748006609122; expected=642.748006609122; absDiff=0.
+OK: meshCenter.1000000.changedPropertiesY; actual=-999990.; expected=-999990.; absDiff=0.
+OK: meshCenter.1000000.clearRejectsEmpty
+OK: meshCenter.1000000.rebuiltX; actual=1000007.; expected=1000007.; absDiff=0.
+OK: meshCenter.1000000.rebuiltY; actual=-1000009.; expected=-1000009.; absDiff=0.
+OK: meshCenter.1000000.rebuiltArea; actual=25.; expected=25.; absDiff=0.
+OK: meshCenter.1000000.rebuiltFrameX; actual=1000007.; expected=1000007.; absDiff=0.
+OK: meshCenter.1000000.rebuiltRadius; actual=1.; expected=1.; absDiff=0.
+OK: meshCenter.1000000.rebuiltPropertiesY; actual=-1000009.; expected=-1000009.; absDiff=0.
+OK: meshCenter.-1000000.weightedX; actual=-999970.; expected=-999970.; absDiff=0.
+OK: meshCenter.-1000000.weightedY; actual=1000060.; expected=1000060.; absDiff=0.
+OK: meshCenter.-1000000.area; actual=400.; expected=400.; absDiff=0.
+OK: meshCenter.-1000000.repeatX; actual=-999970.; expected=-999970.; absDiff=0.
+OK: meshCenter.-1000000.repeatY; actual=1000060.; expected=1000060.; absDiff=0.
+OK: meshCenter.-1000000.radius; actual=67.082039324994; expected=67.082039324994; absDiff=0.
+OK: meshCenter.-1000000.radiusRepeat; actual=67.082039324994; expected=67.082039324994; absDiff=0.
+OK: meshCenter.-1000000.rebarExcludedX; actual=-999970.; expected=-999970.; absDiff=0.
+OK: meshCenter.-1000000.rebarExcludedY; actual=1000060.; expected=1000060.; absDiff=0.
+OK: meshCenter.-1000000.rebarExcludedArea; actual=400.; expected=400.; absDiff=0.
+OK: meshCenter.-1000000.frameX; actual=-999970.; expected=-999970.; absDiff=0.
+OK: meshCenter.-1000000.frameY; actual=1000060.; expected=1000060.; absDiff=0.
+OK: meshCenter.-1000000.radiusRebarInvalidation; actual=657.647321898295; expected=657.647321898295; absDiff=0.
+OK: meshCenter.-1000000.propertiesX; actual=-999970.; expected=-999970.; absDiff=0.
+OK: meshCenter.-1000000.propertiesY; actual=1000060.; expected=1000060.; absDiff=0.
+OK: meshCenter.-1000000.loadReferenceX; actual=-999970.; expected=-999970.; absDiff=0.
+OK: meshCenter.-1000000.loadReferenceY; actual=1000060.; expected=1000060.; absDiff=0.
+OK: meshCenter.-1000000.originalX; actual=-1000000.; expected=-1000000.; absDiff=0.
+OK: meshCenter.-1000000.originalY; actual=1000080.; expected=1000080.; absDiff=0.
+OK: meshCenter.-1000000.changedX; actual=-999995.; expected=-999995.; absDiff=0.
+OK: meshCenter.-1000000.changedY; actual=1000010.; expected=1000010.; absDiff=0.
+OK: meshCenter.-1000000.changedArea; actual=800.; expected=800.; absDiff=0.
+OK: meshCenter.-1000000.changedFrameX; actual=-999995.; expected=-999995.; absDiff=0.
+OK: meshCenter.-1000000.radiusConcreteInvalidation; actual=642.748006609122; expected=642.748006609122; absDiff=0.
+OK: meshCenter.-1000000.changedPropertiesY; actual=1000010.; expected=1000010.; absDiff=0.
+OK: meshCenter.-1000000.clearRejectsEmpty
+OK: meshCenter.-1000000.rebuiltX; actual=-999993.; expected=-999993.; absDiff=0.
+OK: meshCenter.-1000000.rebuiltY; actual=999991.; expected=999991.; absDiff=0.
+OK: meshCenter.-1000000.rebuiltArea; actual=25.; expected=25.; absDiff=0.
+OK: meshCenter.-1000000.rebuiltFrameX; actual=-999993.; expected=-999993.; absDiff=0.
+OK: meshCenter.-1000000.rebuiltRadius; actual=1.; expected=1.; absDiff=0.
+OK: meshCenter.-1000000.rebuiltPropertiesY; actual=999991.; expected=999991.; absDiff=0.
+OK: annotation.circle.count
+OK: annotation.circle.group
+OK: annotation.circle.startX; actual=-100.; expected=-100.; absDiff=0.
+OK: annotation.circle.endX; actual=120.; expected=120.; absDiff=0.
+OK: annotation.circle.normalY; actual=1.; expected=1.; absDiff=0.
+OK: annotation.circle.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: annotation.rectangles.count
+OK: annotation.rectangles.group
+OK: annotation.rectangles.startY; actual=300.; expected=300.; absDiff=0.
+OK: annotation.rectangles.endY; actual=730.; expected=730.; absDiff=0.
+OK: annotation.rectangles.normalX; actual=-1.; expected=-1.; absDiff=0.
+OK: annotation.rectangles.axisDistance; actual=40.; expected=40.; absDiff=0.
+OK: annotation.manual.noPhysicalLabel
+OK: annotation.zeroFace.hasOtherBars
+OK: annotation.zeroFace.noAnchor
+OK: annotation.zeroFace.otherAnchor
+OK: annotation.circle.zeroCount.noBars
+OK: annotation.circle.zeroCount.noAnchor
+OK: annotation.model.count
+OK: annotation.model.rebarLabel
+OK: autocad.import.source
+OK: autocad.import.concrete.count
+OK: autocad.import.rebar.count
+OK: autocad.import.concrete.id
+OK: autocad.import.concrete.x; actual=10.; expected=10.; absDiff=0.
+OK: autocad.import.concrete.y; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.concrete.width; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.height; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.concrete.rotation; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.concrete.localIx; actual=13.5; expected=13.5; absDiff=0.
+OK: autocad.import.concrete.localIy; actual=54.; expected=54.; absDiff=0.
+OK: autocad.import.rebar.diameter; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.rebar.marker
+OK: autocad.import.rebar.comment
+OK: autocad.import.concrete.xDepth; actual=6.; expected=6.; absDiff=0.
+OK: autocad.import.concrete.yDepth; actual=3.; expected=3.; absDiff=0.
+OK: autocad.import.rotated.shape
+OK: autocad.import.rotated.width; actual=80.; expected=80.; absDiff=0.
+OK: autocad.import.rotated.height; actual=30.; expected=30.; absDiff=0.
+OK: autocad.import.rotated.rotation; actual=0.785398163397; expected=0.785398163397; absDiff=0.
+OK: autocad.import.rotated.localIx; actual=730000.; expected=730000.; absDiff=0.
+OK: autocad.import.rotated.localIy; actual=730000.; expected=730000.; absDiff=0.
+OK: autocad.import.rotated.localIxy; actual=550000.; expected=550000.; absDiff=0.
+OK: autocad.import.rotated.uDepth; actual=80.; expected=80.; absDiff=0.
+OK: autocad.import.rotated.vDepth; actual=30.; expected=30.; absDiff=0.
+OK: autocad.import.principal.shape
+OK: autocad.import.principal.localIx; actual=466666.666666667; expected=466666.666666667; absDiff=0.
+OK: autocad.import.principal.localIy; actual=1266666.66666667; expected=1266666.66666667; absDiff=0.
+OK: autocad.import.principal.localIxy; actual=692820.323027551; expected=692820.323027551; absDiff=0.
+OK: autocad.import.principal.areaShell; actual=2000.; expected=2000.; absDiff=0.
+OK: autocad.import.principal.noExplode; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.principal.uDepth; actual=100.; expected=100.; absDiff=0.
+OK: autocad.import.principal.vDepth; actual=20.; expected=20.; absDiff=0.
+OK: autocad.import.translated.noExplode; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.translated.nearShape
+OK: autocad.import.translated.farShape
+OK: autocad.import.translated.localIx; actual=281139.167602539; expected=281139.167595529; absDiff=0.000007010414
+OK: autocad.import.translated.localIy; actual=1354798.33239746; expected=1354798.33240447; absDiff=0.000007010531
+OK: autocad.import.translated.localIxy; actual=-450453.504608154; expected=-450453.504600645; absDiff=0.000007509138
+OK: autocad.import.translated.width; actual=25.000000000058; expected=25.; absDiff=0.000000000058
+OK: autocad.import.translated.height; actual=89.999999999984; expected=90.; absDiff=0.000000000016
+OK: autocad.import.translated.rotation; actual=1.221730476389; expected=1.221730476396; absDiff=0.000000000007
+OK: autocad.import.translated.i1; actual=1518749.99999946; expected=1518750.; absDiff=0.000000543427
+OK: autocad.import.translated.i2; actual=117187.500000543; expected=117187.5; absDiff=0.000000543543
+OK: audit03.autocad.smallTranslation.-1.0.area; actual=7200.; expected=7200.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.0.x; actual=0.; expected=0.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.0.y; actual=0.; expected=0.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.0.Ix; actual=3780000.; expected=3780000.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.0.Iy; actual=7020000.; expected=7020000.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.0.Ixy; actual=-2805922.30826158; expected=-2805922.30826158; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.1.area; actual=7200.; expected=7200.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.1.x; actual=20.; expected=20.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.1.y; actual=-10.; expected=-10.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.1.Ix; actual=3780000.; expected=3780000.; absDiff=0.000000000466
+OK: audit03.autocad.smallTranslation.-1.1.Iy; actual=7020000.; expected=7020000.; absDiff=0.000000000931
+OK: audit03.autocad.smallTranslation.-1.1.Ixy; actual=-2805922.30826158; expected=-2805922.30826158; absDiff=0.000000000466
+OK: audit03.autocad.smallTranslation.-1.2.area; actual=7200.; expected=7200.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.2.x; actual=20.; expected=20.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.2.y; actual=10.; expected=10.; absDiff=0.
+OK: audit03.autocad.smallTranslation.-1.2.Ix; actual=3780000.; expected=3780000.; absDiff=0.000000000466
+OK: audit03.autocad.smallTranslation.-1.2.Iy; actual=7020000.; expected=7020000.; absDiff=0.000000000931
+OK: audit03.autocad.smallTranslation.-1.2.Ixy; actual=-2805922.30826158; expected=-2805922.30826158; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.0.area; actual=7200.; expected=7200.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.0.x; actual=0.; expected=0.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.0.y; actual=0.; expected=0.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.0.Ix; actual=3780000.; expected=3780000.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.0.Iy; actual=7020000.; expected=7020000.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.0.Ixy; actual=2805922.30826158; expected=2805922.30826158; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.1.area; actual=7200.; expected=7200.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.1.x; actual=20.; expected=20.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.1.y; actual=-10.; expected=-10.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.1.Ix; actual=3780000.; expected=3780000.; absDiff=0.000000000466
+OK: audit03.autocad.smallTranslation.1.1.Iy; actual=7020000.; expected=7020000.; absDiff=0.000000000931
+OK: audit03.autocad.smallTranslation.1.1.Ixy; actual=2805922.30826158; expected=2805922.30826158; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.2.area; actual=7200.; expected=7200.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.2.x; actual=20.; expected=20.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.2.y; actual=10.; expected=10.; absDiff=0.
+OK: audit03.autocad.smallTranslation.1.2.Ix; actual=3780000.; expected=3780000.; absDiff=0.000000000466
+OK: audit03.autocad.smallTranslation.1.2.Iy; actual=7020000.; expected=7020000.; absDiff=0.000000000931
+OK: audit03.autocad.smallTranslation.1.2.Ixy; actual=2805922.30826158; expected=2805922.30826158; absDiff=0.000000000466
+OK: autocad.import.edgeProbe.rect.shape
+OK: autocad.import.edgeProbe.rect.noExplode; actual=1.; expected=1.; absDiff=0.
+OK: autocad.import.edgeProbe.square.shape
+OK: autocad.import.edgeProbe.square.width; actual=50.; expected=50.; absDiff=0.
+OK: autocad.import.edgeProbe.square.height; actual=50.; expected=50.; absDiff=0.
+OK: autocad.import.edgeProbe.square.rotation; actual=0.628318530718; expected=0.628318530718; absDiff=0.
+OK: autocad.import.zeroEdge.square; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.zeroEdge.mean; actual=0.261799387799; expected=0.261799387799; absDiff=0.
+OK: autocad.import.zeroEdge.circle; actual=0.261799387799; expected=0.261799387799; absDiff=0.
+OK: autocad.import.zeroEdge.repeated.square; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.zeroEdge.repeated.circle; actual=0.261799387799; expected=0.261799387799; absDiff=0.
+OK: autocad.import.zeroEdge.repeated.mean; actual=0.261799387799; expected=0.261799387799; absDiff=0.
+OK: autocad.import.zeroEdge.changed.square; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.zeroEdge.changed.circle; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.zeroEdge.changed.mean; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.zeroEdge.changed.circleIx; actual=125663.706143592; expected=125663.706143592; absDiff=0.
+OK: autocad.import.squareFallback.shape
+OK: autocad.import.squareFallback.width; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.height; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.localIx; actual=321276.184931294; expected=321276.184931294; absDiff=0.
+OK: autocad.import.squareFallback.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: autocad.import.squareFallback.diagonalDepth; actual=62.665706865775; expected=62.665706865775; absDiff=0.
+OK: autocad.import.squareFallbackRotation.shape
+OK: autocad.import.squareFallbackRotation.angle; actual=0.523598775598; expected=0.523598775598; absDiff=0.
+OK: autocad.import.squareFallbackRotation.projectedSide; actual=238.205080756888; expected=238.205080756888; absDiff=0.
+OK: model.squareEdgeAverage.source.shape
+OK: model.squareEdgeAverage.target.shape
+OK: model.squareEdgeAverage.target.rotation; actual=0.448798950513; expected=0.448798950513; absDiff=0.
+OK: autocad.import.badInertia.shape
+OK: autocad.import.badInertia.localIxy; actual=0.; expected=0.; absDiff=0.
+OK: autocad.import.badInertia.xDepth; actual=44.311346272638; expected=44.311346272638; absDiff=0.
+OK: model.boundary.equivalentRectangle.status
+OK: model.boundary.equivalentRectangle.area; actual=2500.; expected=2500.; absDiff=0.
+OK: model.boundary.equivalentRectangle.ratio; actual=6.; expected=6.; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIx; actual=259834.957055045; expected=259834.957055045; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIy; actual=790165.042944955; expected=790165.042944955; absDiff=0.
+OK: model.boundary.equivalentRectangle.realIxy; actual=265165.042944955; expected=265165.042944955; absDiff=0.
+OK: model.boundary.realIx.priorityA; actual=111111.; expected=111111.; absDiff=0.
+OK: model.boundary.realIy.priorityA; actual=222222.; expected=222222.; absDiff=0.
+OK: model.boundary.realIxy.priorityA; actual=12345.; expected=12345.; absDiff=0.
+OK: model.boundary.realIx.independent; actual=111111.; expected=111111.; absDiff=0.
+OK: model.boundary.realIy.independent; actual=222222.; expected=222222.; absDiff=0.
+OK: model.boundary.realIxy.independent; actual=12345.; expected=12345.; absDiff=0.
+OK: model.fallback.square.status
+OK: model.fallback.square.width; actual=60.; expected=60.; absDiff=0.
+OK: model.fallback.square.localIx; actual=1080000.; expected=1080000.; absDiff=0.
+OK: model.fallback.square.localIy; actual=1080000.; expected=1080000.; absDiff=0.
+OK: model.fallback.square.localIxy; actual=0.; expected=0.; absDiff=0.
+OK: invalid.width
+OK: invalid.height
+OK: invalid.negative.radius
+OK: invalid.large.radius
+OK: invalid.neighbor.radii
+OK: invalid.step.zero
+OK: invalid.step.negative
+OK: boundary.subcell.fibers.more
+OK: boundary.subcell.area.better
+OK: boundary.subcell.has.small.fibers
+OK: boundary.subcell.small.width; actual=10.; expected=10.; absDiff=0.
+OK: mesh.rectangularSteps.hasFibers
+OK: mesh.rectangularSteps.width; actual=25.; expected=25.; absDiff=0.
+OK: mesh.rectangularSteps.height; actual=15.; expected=15.; absDiff=0.
+OK: mesh.rectangularSteps.area; actual=375.; expected=375.; absDiff=0.
+OK: mesh.rectangularSteps.modelWidth; actual=25.; expected=25.; absDiff=0.
+OK: mesh.rectangularSteps.modelHeight; actual=15.; expected=15.; absDiff=0.
+CONVERGENCE: step=50 area=80000.; cx=0.; cy=-10.; Ix=266666666.666667; Iy=1066666666.66667; Ixy=0.; I1=1066666666.66667; I2=266666666.666667
+CONVERGENCE: step=25 area=88750.; cx=0.; cy=1.091549295775; Ix=366946339.495306; Iy=1155989583.33333; Ixy=0.; I1=1155989583.33333; I2=366946339.495306
+CONVERGENCE: step=12.5 area=88750.; cx=0.; cy=1.795774647887; Ix=366297131.748829; Iy=1154524739.58334; Ixy=0.; I1=1154524739.58334; I2=366297131.748829
+OK: conv.area.25.12; actual=88750.; expected=88750.; relDiff=0.
+OK: conv.Ix.25.12; actual=366297131.748829; expected=366946339.495306; relDiff=0.001769217121
+OK: conv.Iy.25.12; actual=1154524739.58334; expected=1155989583.33333; relDiff=0.001267177292
+PERFORMANCE: section=800x500; step=10; fibers=3988; buildSec=0.0546875; propsSec=0.015625; area=398800.
+OK: perf.fibers.positive
+OK: audit03.geometry.rounded.uninitialized
+OK: audit03.geometry.rounded.uninitializedPreparation
+OK: audit03.geometry.hollow.uninitialized
+OK: audit03.geometry.hollow.uninitializedPreparation
+OK: audit03.geometry.rounded.firstValid
+OK: audit03.geometry.rounded.firstCenter
+OK: audit03.geometry.rounded.invalid
+OK: audit03.geometry.rounded.invalidPreparation
+OK: audit03.geometry.rounded.repeatInvalid
+OK: audit03.geometry.rounded.stableReason
+OK: audit03.geometry.rounded.revalidated
+OK: audit03.geometry.hollow.firstValid
+OK: audit03.geometry.hollow.opening
+OK: audit03.geometry.hollow.invalid
+OK: audit03.geometry.hollow.invalidPreparation
+OK: audit03.geometry.hollow.repeatInvalid
+OK: audit03.geometry.hollow.stableReason
+OK: audit03.geometry.hollow.revalidated
+OK: audit03.geometry.hollow.newOpening
+GRID: Rounded; y=-360; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-360; 0000000000000000000000000000000000000000000000000
+GRID: Rounded; y=-340; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-340; 0000000000000000000000000000000000000000000000000
+GRID: Rounded; y=-320; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-320; 0000000000011111111111111111111111111100000000000
+GRID: Rounded; y=-300; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-300; 0000000000111111111111111111111111111110000000000
+GRID: Rounded; y=-280; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-280; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-260; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-260; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-240; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-240; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-220; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-220; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-200; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-200; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-180; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-180; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-160; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-160; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-140; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=-140; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=-120; 0000000000000000111111111111111111111111000000000
+GRID: Hollow; y=-120; 0000000001111111100000000000111111111111000000000
+GRID: Rounded; y=-100; 0000000000000011111111111111111111111111110000000
+GRID: Hollow; y=-100; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=-80; 0000000000000011111111111111111111111111111000000
+GRID: Hollow; y=-80; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=-60; 0000000000000011111111111111111111111111111100000
+GRID: Hollow; y=-60; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=-40; 0000000000000011111111111111111111111111111110000
+GRID: Hollow; y=-40; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=-20; 0000000000000011111111111111111111111111111110000
+GRID: Hollow; y=-20; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=0; 0000000000000011111111111111111111111111111100000
+GRID: Hollow; y=0; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=20; 0000000000000011111111111111111111111111111000000
+GRID: Hollow; y=20; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=40; 0000000000000011111111111111111111111111110000000
+GRID: Hollow; y=40; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=60; 0000000000000000111111111111111111111111000000000
+GRID: Hollow; y=60; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=80; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=80; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=100; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=100; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=120; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=120; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=140; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=140; 0000000001111111000000000000011111111111000000000
+GRID: Rounded; y=160; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=160; 0000000001111111100000000000111111111111000000000
+GRID: Rounded; y=180; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=180; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=200; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=200; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=220; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=220; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=240; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=240; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=260; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=260; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=280; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=280; 0000000001111111111111111111111111111111000000000
+GRID: Rounded; y=300; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=300; 0000000000111111111111111111111111111110000000000
+GRID: Rounded; y=320; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=320; 0000000000011111111111111111111111111100000000000
+GRID: Rounded; y=340; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=340; 0000000000000000000000000000000000000000000000000
+GRID: Rounded; y=360; 0000000000000000000000000000000000000000000000000
+GRID: Hollow; y=360; 0000000000000000000000000000000000000000000000000
+OK: audit03.geometry.rounded.reinitGrid
+OK: audit03.geometry.hollow.reinitGrid
+OK: audit03.geometry.hollow.outerBoundary
+OK: audit03.geometry.hollow.openingBoundary
+OK: audit03.geometry.rounded.reinitArea; actual=78073.8860364583; expected=78073.8860364583; absDiff=0.
+OK: audit03.geometry.rounded.areaAvailable
+OK: audit03.geometry.hollow.reinitArea; actual=237469.911184308; expected=237469.911184308; absDiff=0.
+OK: audit03.geometry.hollow.areaAvailable
+CONST: GEOM_PI deltaFrom3x1e15=141592653589793
+OK: audit03.geometry.piFullPrecision; actual=3.14159265359; expected=3.14159265359; absDiff=0.
+OK: audit03.circle.countGuard.2.countReason
+OK: audit03.circle.countGuard.2.table
+OK: audit03.circle.countGuard.2.key
+OK: audit03.circle.countGuard.2.beforeCoordinates; actual=0.; expected=0.; absDiff=0.
+CIRCLE_COUNT_ERROR: rows=2; number=-2147215974; Источник данных:
+rngCircleGeometry[16,3]; rngCircleGeometry[16,4]; rngCircleGeometry[16,5]; rngCircleGeometry[16,6]
+
+Круг:
+Дополнительный ряд арматуры 2
+
+Ряд 'Circle.Row2':
+Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+
+Возможное решение:
+Исправьте значение в указанной ячейке.
+OK: audit03.circle.countGuard.3.countReason
+OK: audit03.circle.countGuard.3.table
+OK: audit03.circle.countGuard.3.key
+OK: audit03.circle.countGuard.3.beforeCoordinates; actual=0.; expected=0.; absDiff=0.
+CIRCLE_COUNT_ERROR: rows=3; number=-2147215974; Источник данных:
+rngCircleGeometry[16,7]; rngCircleGeometry[16,8]; rngCircleGeometry[16,9]; rngCircleGeometry[16,10]
+
+Круг:
+Дополнительный ряд арматуры 3
+
+Ряд 'Circle.Row3':
+Суммарное число запрошенных позиций превышает диапазон счетчиков; уменьшите количество или число активных рядов.
+
+Возможное решение:
+Исправьте значение в указанной ячейке.
+OK: audit03.circle.countGuard.twoRowsRecovery
+OK: audit03.circle.countGuard.threeRowsRecovery
+OK: audit03.circle.countGuard.disabledBase
+OK: audit03.circle.countGuard.disabledRadius; actual=0.; expected=0.; absDiff=0.
+OK: audit03.circle.placementAddress.E10.2.Stacked.sameCode
+OK: audit03.circle.placementAddress.E10.2.Stacked.noLayout
+OK: audit03.circle.placementAddress.E10.2.Stacked.sheet
+OK: audit03.circle.placementAddress.E10.2.Stacked.activeDiameter
+OK: audit03.circle.placementAddress.E10.2.Stacked.rowCaption
+OK: audit03.circle.placementAddress.E10.2.Stacked.axisUnchanged
+OK: audit03.circle.placementAddress.E10.2.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.2.Stacked; Адреса ячеек:
+Лист1!G25; Лист1!H25; Лист1!I25; Лист1!J25
+
+Круг:
+Дополнительный ряд арматуры 2
+
+Геометрическая линия 'Circle.Axis':
+
+После смещения дополнительного ряда центры стержней достигают центра дуги или переходят на её другую сторону. Смещение ряда — 512.5 мм; радиус линии основного ряда — 130 мм.
+
+Возможное решение:
+Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.
+OK: audit03.circle.placementAddress.E10.2.Stacked.recovery
+OK: audit03.circle.placementAddress.E10.2.SideBySide.sameCode
+OK: audit03.circle.placementAddress.E10.2.SideBySide.noLayout
+OK: audit03.circle.placementAddress.E10.2.SideBySide.sheet
+OK: audit03.circle.placementAddress.E10.2.SideBySide.activeDiameter
+OK: audit03.circle.placementAddress.E10.2.SideBySide.rowCaption
+OK: audit03.circle.placementAddress.E10.2.SideBySide.axisUnchanged
+OK: audit03.circle.placementAddress.E10.2.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.2.SideBySide; Адреса ячеек:
+Лист1!G25; Лист1!H25; Лист1!I25; Лист1!J25
+
+Круг:
+Дополнительный ряд арматуры 2
+
+Ряд 'Circle.Row2':
+Ось стержня 'B1_R2' вне бетона.
+
+Возможное решение:
+Уменьшите смещение или измените положение ряда.
+OK: audit03.circle.placementAddress.E10.2.SideBySide.recovery
+OK: audit03.circle.placementAddress.E10.3.Stacked.sameCode
+OK: audit03.circle.placementAddress.E10.3.Stacked.noLayout
+OK: audit03.circle.placementAddress.E10.3.Stacked.sheet
+OK: audit03.circle.placementAddress.E10.3.Stacked.activeDiameter
+OK: audit03.circle.placementAddress.E10.3.Stacked.rowCaption
+OK: audit03.circle.placementAddress.E10.3.Stacked.axisUnchanged
+OK: audit03.circle.placementAddress.E10.3.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.3.Stacked; Адреса ячеек:
+Лист1!K25; Лист1!L25; Лист1!M25; Лист1!N25
+
+Круг:
+Дополнительный ряд арматуры 3
+
+Геометрическая линия 'Circle.Axis':
+
+После смещения дополнительного ряда центры стержней достигают центра дуги или переходят на её другую сторону. Смещение ряда — 525 мм; радиус линии основного ряда — 130 мм.
+
+Возможное решение:
+Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.
+OK: audit03.circle.placementAddress.E10.3.Stacked.recovery
+OK: audit03.circle.placementAddress.E10.3.SideBySide.sameCode
+OK: audit03.circle.placementAddress.E10.3.SideBySide.noLayout
+OK: audit03.circle.placementAddress.E10.3.SideBySide.sheet
+OK: audit03.circle.placementAddress.E10.3.SideBySide.activeDiameter
+OK: audit03.circle.placementAddress.E10.3.SideBySide.rowCaption
+OK: audit03.circle.placementAddress.E10.3.SideBySide.axisUnchanged
+OK: audit03.circle.placementAddress.E10.3.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.E10.3.SideBySide; Адреса ячеек:
+Лист1!K25; Лист1!L25; Лист1!M25; Лист1!N25
+
+Круг:
+Дополнительный ряд арматуры 3
+
+Ряд 'Circle.Row3':
+Ось стержня 'B1_R3' вне бетона.
+
+Возможное решение:
+Уменьшите смещение или измените положение ряда.
+OK: audit03.circle.placementAddress.E10.3.SideBySide.recovery
+OK: audit03.circle.placementAddress.BH800.2.Stacked.sameCode
+OK: audit03.circle.placementAddress.BH800.2.Stacked.noLayout
+OK: audit03.circle.placementAddress.BH800.2.Stacked.sheet
+OK: audit03.circle.placementAddress.BH800.2.Stacked.activeDiameter
+OK: audit03.circle.placementAddress.BH800.2.Stacked.rowCaption
+OK: audit03.circle.placementAddress.BH800.2.Stacked.axisUnchanged
+OK: audit03.circle.placementAddress.BH800.2.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.2.Stacked; Адреса ячеек:
+Лист1!BJ815; Лист1!BK815; Лист1!BL815; Лист1!BM815
+
+Круг:
+Дополнительный ряд арматуры 2
+
+Геометрическая линия 'Circle.Axis':
+
+После смещения дополнительного ряда центры стержней достигают центра дуги или переходят на её другую сторону. Смещение ряда — 512.5 мм; радиус линии основного ряда — 130 мм.
+
+Возможное решение:
+Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.
+OK: audit03.circle.placementAddress.BH800.2.Stacked.recovery
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.sameCode
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.noLayout
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.sheet
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.activeDiameter
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.rowCaption
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.axisUnchanged
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.2.SideBySide; Адреса ячеек:
+Лист1!BJ815; Лист1!BK815; Лист1!BL815; Лист1!BM815
+
+Круг:
+Дополнительный ряд арматуры 2
+
+Ряд 'Circle.Row2':
+Ось стержня 'B1_R2' вне бетона.
+
+Возможное решение:
+Уменьшите смещение или измените положение ряда.
+OK: audit03.circle.placementAddress.BH800.2.SideBySide.recovery
+OK: audit03.circle.placementAddress.BH800.3.Stacked.sameCode
+OK: audit03.circle.placementAddress.BH800.3.Stacked.noLayout
+OK: audit03.circle.placementAddress.BH800.3.Stacked.sheet
+OK: audit03.circle.placementAddress.BH800.3.Stacked.activeDiameter
+OK: audit03.circle.placementAddress.BH800.3.Stacked.rowCaption
+OK: audit03.circle.placementAddress.BH800.3.Stacked.axisUnchanged
+OK: audit03.circle.placementAddress.BH800.3.Stacked.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.3.Stacked; Адреса ячеек:
+Лист1!BN815; Лист1!BO815; Лист1!BP815; Лист1!BQ815
+
+Круг:
+Дополнительный ряд арматуры 3
+
+Геометрическая линия 'Circle.Axis':
+
+После смещения дополнительного ряда центры стержней достигают центра дуги или переходят на её другую сторону. Смещение ряда — 525 мм; радиус линии основного ряда — 130 мм.
+
+Возможное решение:
+Уменьшите смещение дополнительного ряда или диаметры стержней либо увеличьте радиус участка размещения.
+OK: audit03.circle.placementAddress.BH800.3.Stacked.recovery
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.sameCode
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.noLayout
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.sheet
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.activeDiameter
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.rowCaption
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.axisUnchanged
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.action
+CIRCLE_PLACEMENT_ERROR: audit03.circle.placementAddress.BH800.3.SideBySide; Адреса ячеек:
+Лист1!BN815; Лист1!BO815; Лист1!BP815; Лист1!BQ815
+
+Круг:
+Дополнительный ряд арматуры 3
+
+Ряд 'Circle.Row3':
+Ось стержня 'B1_R3' вне бетона.
+
+Возможное решение:
+Уменьшите смещение или измените положение ряда.
+OK: audit03.circle.placementAddress.BH800.3.SideBySide.recovery
+TOTAL: passed=766; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometry.RunGeometryTests; 2026-10-20T19:19:26
+===== modTestGeometryReview.RunPointedWidthInputTests =====
+SUITE_STARTED: modTestGeometryReview.RunPointedWidthInputTests; 2026-10-20T19:19:26
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=145600512; privateBytes=98832384; cpu=32.359375
+EXCEL_AFTER_SUITE: pid=172640; workingSet=149815296; privateBytes=107601920; cpu=65
+EXCEL_AFTER_SUITE: pid=202344; workingSet=153722880; privateBytes=110751744; cpu=65.296875
+OK: pointed.W.mm.Left.0.R2=inactive
+OK: pointed.W.mm.Left.150.R2=80
+OK: pointed.W.mm.Left.0.001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Left.0.000000000001.R2=80
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'LeftNose' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.
+OK: pointed.W.mm.Left.0.000000000001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Left.0.000001.R2=0.000000000001
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'LeftNose' слишком мало для надёжного построения: концы дуги практически совпадают.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.
+OK: pointed.W.mm.Left.0.000001.R2=0.000000000001
+WIDTH_DIAGNOSTIC: pointed.W.mm.Left.1.R2=1000
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругления соседних вершин пересекаются на участке 'Edge.TL': для заданных размеров не хватает длины прямого участка.
+
+Возможное решение:
+Уменьшите радиусы или увеличьте размеры сечения.
+OK: pointed.W.mm.Left.1.R2=1000
+WIDTH_DIAGNOSTIC: pointed.W.mm.Left.-1.R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: "-1".
+Длина не может быть отрицательной.
+
+Возможное решение:
+Введите значение не меньше нуля.
+OK: pointed.W.mm.Left.-1.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Left..R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: пустая ячейка.
+Обязательное числовое поле не заполнено.
+
+Возможное решение:
+Введите число.
+OK: pointed.W.mm.Left..R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Left.bad.R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: "bad".
+Ожидается число.
+
+Возможное решение:
+Введите числовое значение.
+OK: pointed.W.mm.Left.bad.R2=80
+OK: pointed.W.mm.Right.0.R2=inactive
+OK: pointed.W.mm.Right.150.R2=80
+OK: pointed.W.mm.Right.0.001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Right.0.000000000001.R2=80
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'RightNose' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.
+OK: pointed.W.mm.Right.0.000000000001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Right.0.000001.R2=0.000000000001
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'RightNose' слишком мало для надёжного построения: концы дуги практически совпадают.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.
+OK: pointed.W.mm.Right.0.000001.R2=0.000000000001
+WIDTH_DIAGNOSTIC: pointed.W.mm.Right.1.R2=1000
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругления соседних вершин пересекаются на участке 'Edge.TL': для заданных размеров не хватает длины прямого участка.
+
+Возможное решение:
+Уменьшите радиусы или увеличьте размеры сечения.
+OK: pointed.W.mm.Right.1.R2=1000
+WIDTH_DIAGNOSTIC: pointed.W.mm.Right.-1.R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: "-1".
+Длина не может быть отрицательной.
+
+Возможное решение:
+Введите значение не меньше нуля.
+OK: pointed.W.mm.Right.-1.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Right..R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: пустая ячейка.
+Обязательное числовое поле не заполнено.
+
+Возможное решение:
+Введите число.
+OK: pointed.W.mm.Right..R2=80
+WIDTH_DIAGNOSTIC: pointed.W.mm.Right.bad.R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: "bad".
+Ожидается число.
+
+Возможное решение:
+Введите числовое значение.
+OK: pointed.W.mm.Right.bad.R2=80
+OK: pointed.W.cm.Left.0.R2=inactive
+OK: pointed.W.cm.Left.150.R2=80
+OK: pointed.W.cm.Left.0.001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Left.0.000000000001.R2=80
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'LeftNose' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.
+OK: pointed.W.cm.Left.0.000000000001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Left.0.000001.R2=0.000000000001
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'LeftNose' слишком мало для надёжного построения: концы дуги практически совпадают.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.
+OK: pointed.W.cm.Left.0.000001.R2=0.000000000001
+WIDTH_DIAGNOSTIC: pointed.W.cm.Left.1.R2=1000
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругления соседних вершин пересекаются на участке 'Edge.TL': для заданных размеров не хватает длины прямого участка.
+
+Возможное решение:
+Уменьшите радиусы или увеличьте размеры сечения.
+OK: pointed.W.cm.Left.1.R2=1000
+WIDTH_DIAGNOSTIC: pointed.W.cm.Left.-1.R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: "-0.1".
+Длина не может быть отрицательной.
+
+Возможное решение:
+Введите значение не меньше нуля.
+OK: pointed.W.cm.Left.-1.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Left..R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: пустая ячейка.
+Обязательное числовое поле не заполнено.
+
+Возможное решение:
+Введите число.
+OK: pointed.W.cm.Left..R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Left.bad.R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: "bad".
+Ожидается число.
+
+Возможное решение:
+Введите числовое значение.
+OK: pointed.W.cm.Left.bad.R2=80
+OK: pointed.W.cm.Right.0.R2=inactive
+OK: pointed.W.cm.Right.150.R2=80
+OK: pointed.W.cm.Right.0.001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Right.0.000000000001.R2=80
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'RightNose' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.
+OK: pointed.W.cm.Right.0.000000000001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Right.0.000001.R2=0.000000000001
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'RightNose' слишком мало для надёжного построения: концы дуги практически совпадают.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.
+OK: pointed.W.cm.Right.0.000001.R2=0.000000000001
+WIDTH_DIAGNOSTIC: pointed.W.cm.Right.1.R2=1000
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругления соседних вершин пересекаются на участке 'Edge.TL': для заданных размеров не хватает длины прямого участка.
+
+Возможное решение:
+Уменьшите радиусы или увеличьте размеры сечения.
+OK: pointed.W.cm.Right.1.R2=1000
+WIDTH_DIAGNOSTIC: pointed.W.cm.Right.-1.R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: "-0.1".
+Длина не может быть отрицательной.
+
+Возможное решение:
+Введите значение не меньше нуля.
+OK: pointed.W.cm.Right.-1.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Right..R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: пустая ячейка.
+Обязательное числовое поле не заполнено.
+
+Возможное решение:
+Введите число.
+OK: pointed.W.cm.Right..R2=80
+WIDTH_DIAGNOSTIC: pointed.W.cm.Right.bad.R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: "bad".
+Ожидается число.
+
+Возможное решение:
+Введите числовое значение.
+OK: pointed.W.cm.Right.bad.R2=80
+OK: pointed.W.m.Left.0.R2=inactive
+OK: pointed.W.m.Left.150.R2=80
+OK: pointed.W.m.Left.0.001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Left.0.000000000001.R2=80
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'LeftNose' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.
+OK: pointed.W.m.Left.0.000000000001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Left.0.000001.R2=0.000000000001
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'LeftNose' слишком мало для надёжного построения: концы дуги практически совпадают.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.
+OK: pointed.W.m.Left.0.000001.R2=0.000000000001
+WIDTH_DIAGNOSTIC: pointed.W.m.Left.1.R2=1000
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C67; Сечения!C68; Сечения!C69
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругления соседних вершин пересекаются на участке 'Edge.TL': для заданных размеров не хватает длины прямого участка.
+
+Возможное решение:
+Уменьшите радиусы или увеличьте размеры сечения.
+OK: pointed.W.m.Left.1.R2=1000
+WIDTH_DIAGNOSTIC: pointed.W.m.Left.-1.R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: "-0.001".
+Длина не может быть отрицательной.
+
+Возможное решение:
+Введите значение не меньше нуля.
+OK: pointed.W.m.Left.-1.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Left..R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: пустая ячейка.
+Обязательное числовое поле не заполнено.
+
+Возможное решение:
+Введите число.
+OK: pointed.W.m.Left..R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Left.bad.R2=80
+Адреса ячеек:
+Сечения!C65 (rngPointedSectionGeometry); Left.W
+
+Прочитано: "bad".
+Ожидается число.
+
+Возможное решение:
+Введите числовое значение.
+OK: pointed.W.m.Left.bad.R2=80
+OK: pointed.W.m.Right.0.R2=inactive
+OK: pointed.W.m.Right.150.R2=80
+OK: pointed.W.m.Right.0.001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Right.0.000000000001.R2=80
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'RightNose' невозможно: соседние участки почти лежат на одной прямой или развёрнуты навстречу друг другу.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой или задайте её радиус равным 0.
+OK: pointed.W.m.Right.0.000000000001.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Right.0.000001.R2=0.000000000001
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругление у вершины 'RightNose' слишком мало для надёжного построения: концы дуги практически совпадают.
+
+Возможное решение:
+Увеличьте отклонение вершины от прямой, измените радиус или задайте его равным 0.
+OK: pointed.W.m.Right.0.000001.R2=0.000000000001
+WIDTH_DIAGNOSTIC: pointed.W.m.Right.1.R2=1000
+Адреса ячеек:
+Сечения!C63; Сечения!C64; Сечения!C65; Сечения!C66; Сечения!C68; Сечения!C69; Сечения!C70
+
+Клиновидное сечение:
+Наружный контур.
+
+Скругления соседних вершин пересекаются на участке 'Edge.TL': для заданных размеров не хватает длины прямого участка.
+
+Возможное решение:
+Уменьшите радиусы или увеличьте размеры сечения.
+OK: pointed.W.m.Right.1.R2=1000
+WIDTH_DIAGNOSTIC: pointed.W.m.Right.-1.R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: "-0.001".
+Длина не может быть отрицательной.
+
+Возможное решение:
+Введите значение не меньше нуля.
+OK: pointed.W.m.Right.-1.R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Right..R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: пустая ячейка.
+Обязательное числовое поле не заполнено.
+
+Возможное решение:
+Введите число.
+OK: pointed.W.m.Right..R2=80
+WIDTH_DIAGNOSTIC: pointed.W.m.Right.bad.R2=80
+Адреса ячеек:
+Сечения!C68 (rngPointedSectionGeometry); Right.W
+
+Прочитано: "bad".
+Ожидается число.
+
+Возможное решение:
+Введите числовое значение.
+OK: pointed.W.m.Right.bad.R2=80
+OK: message.addresses.first
+OK: message.section.newline
+OK: message.bar.newline
+OK: message.solution.paragraph
+OK: message.nested.stable
+OK: message.operation.paragraph
+OK: message.technical.paragraph
+MESSAGE_EXAMPLE:
+Расчёт не выполнен:
+
+Адреса ячеек:
+Сечения!C123; Сечения!D123
+
+Пустотелый прямоугольник:
+Арматура у верхней наружной стороны, ряд 2.
+
+Ряд 'B.Top.Row2':
+Ось стержня 'B.Top.Row2.4' вне бетона.
+
+Возможное решение:
+Уменьшите смещение или измените положение ряда.
+
+Источник ошибки: CRebarRuleExecutor.
+Код ошибки: -2147215974.
+TOTAL_POINTED_WIDTH_INPUT: passed=61; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryReview.RunPointedWidthInputTests; 2026-10-20T19:20:05
+===== modTestSectionRecipes.RunRecipeDefinitionTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRecipeDefinitionTests; 2026-10-20T19:20:05
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=146202624; privateBytes=99250176; cpu=33.5625
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150360064; privateBytes=108298240; cpu=66.203125
+EXCEL_AFTER_SUITE: pid=202344; workingSet=150532096; privateBytes=106962944; cpu=66.40625
+PASS: definition.sealed
+PASS: definition.loops
+PASS: definition.area
+PASS: definition.concrete
+PASS: definition.hole.a
+PASS: definition.hole.b
+PASS: definition.roles
+PASS: definition.ids
+PASS: definition.contours.copy
+PASS: definition.region.copy
+PASS: definition.invalid.0
+PASS: definition.invalid.1
+PASS: definition.invalid.2
+PASS: definition.invalid.3
+PASS: definition.invalid.4
+TOTAL RECIPE DEFINITION: passed=15; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRecipeDefinitionTests; 2026-10-20T19:20:06
+===== modTestSectionRecipes.RunRoundedRecipeInputTests =====
+SUITE_STARTED: modTestSectionRecipes.RunRoundedRecipeInputTests; 2026-10-20T19:20:06
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=146210816; privateBytes=99553280; cpu=48.328125
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150622208; privateBytes=108453888; cpu=79.953125
+EXCEL_AFTER_SUITE: pid=202344; workingSet=183554048; privateBytes=140124160; cpu=80.1875
+PASS: rounded.input.0
+PASS: rounded.input.1
+PASS: rounded.input.2
+PASS: rounded.input.3
+PASS: rounded.input.4
+PASS: rounded.input.5
+PASS: rounded.input.6
+PASS: rounded.input.7
+PASS: rounded.input.8
+PASS: rounded.input.9
+PASS: rounded.input.10
+PASS: rounded.input.11
+PASS: rounded.input.12
+PASS: rounded.input.13
+TOTAL ROUNDED INPUT: passed=14; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunRoundedRecipeInputTests; 2026-10-20T19:20:20
+===== modTestSectionRecipes.RunCircleBindingWorkbookTests =====
+SUITE_STARTED: modTestSectionRecipes.RunCircleBindingWorkbookTests; 2026-10-20T19:20:20
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=148312064; privateBytes=100048896; cpu=52.578125
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150638592; privateBytes=108453888; cpu=84.25
+EXCEL_AFTER_SUITE: pid=202344; workingSet=169746432; privateBytes=124923904; cpu=84.46875
+PASS: circle.bind.cells.independent
+PASS: circle.bind.list.inline.0
+PASS: circle.bind.list.size.0
+PASS: circle.bind.list.values.0
+PASS: circle.bind.list.center.0
+PASS: circle.bind.list.accept.0.EachBar
+PASS: circle.bind.list.accept.0.EverySecondBar
+PASS: circle.bind.list.reject.0
+PASS: circle.bind.list.inline.1
+PASS: circle.bind.list.size.1
+PASS: circle.bind.list.values.1
+PASS: circle.bind.list.center.1
+PASS: circle.bind.list.accept.1.EachBar
+PASS: circle.bind.list.accept.1.EverySecondBar
+PASS: circle.bind.list.reject.1
+PASS: circle.bind.update.preserves2
+PASS: circle.bind.update.preserves3
+PASS: circle.bind.workbook.address2
+PASS: circle.bind.workbook.address3
+TOTAL CIRCLE BINDING WORKBOOK: passed=19; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestSectionRecipes.RunCircleBindingWorkbookTests; 2026-10-20T19:20:24
+===== modTestRecipeSetbacks.RunRecipeSetbackInputTests =====
+SUITE_STARTED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-20T19:20:25
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=139935744; privateBytes=90456064; cpu=59.109375
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150642688; privateBytes=108453888; cpu=90.5
+EXCEL_AFTER_SUITE: pid=202344; workingSet=165138432; privateBytes=119218176; cpu=90.765625
+OK: rounded.start.header
+OK: rounded.end.header
+OK: rounded.editable.centered
+OK: rounded.zero.first; actual=-360; expected=-360
+OK: rounded.start.actual; actual=-350; expected=-350
+OK: rounded.end.actual; actual=365.518002592747; expected=365.518002592747
+OK: rounded.concrete.unchanged; actual=215943.067096035; expected=215943.067096035
+OK: rounded.count.unchanged
+OK: rounded.opposite.row.unchanged; actual=-85; expected=-85
+OK: rounded.active.empty.rejected
+OK: rounded.active.negative.rejected
+OK: rounded.inactive.error.ignored
+OK: hollow.start.header
+OK: hollow.end.header
+OK: hollow.zero.projected.count
+OK: hollow.projection.filtered
+OK: hollow.skips.diagnostic
+OK: hollow.positions.not.redistributed
+OK: hollow.other.projections.unchanged
+OK: hollow.concrete.unchanged; actual=300000; expected=300000
+TOTAL_RECIPE_SETBACK_INPUT: passed=20; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeSetbacks.RunRecipeSetbackInputTests; 2026-10-20T19:20:30
+===== modTestRecipeOperations.RunRecipeDiagnosticTests =====
+SUITE_STARTED: modTestRecipeOperations.RunRecipeDiagnosticTests; 2026-10-20T19:20:31
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=140468224; privateBytes=91160576; cpu=60.59375
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150642688; privateBytes=108453888; cpu=91.96875
+EXCEL_AFTER_SUITE: pid=202344; workingSet=165474304; privateBytes=119595008; cpu=92.28125
+TOTAL RECIPE DIAGNOSTICS: passed=35; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestRecipeOperations.RunRecipeDiagnosticTests; 2026-10-20T19:20:32
+===== modTestGeometryQuery.RunGeometryQueryTests =====
+SUITE_STARTED: modTestGeometryQuery.RunGeometryQueryTests; 2026-10-20T19:20:32
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=141201408; privateBytes=92090368; cpu=62.015625
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150642688; privateBytes=108453888; cpu=93.375
+EXCEL_AFTER_SUITE: pid=202344; workingSet=177664000; privateBytes=131993600; cpu=93.734375
+OK: rectangle.area; actual=8000; expected=8000
+OK: regionEquality.same
+OK: regionEquality.sameAreaDifferentPosition
+OK: regionEquality.sameAreaDifferentShape
+OK: rectangle.window; actual=3500; expected=3500
+OK: rectangle.window.joinedX; actual=10; expected=10
+OK: rectangle.window.joinedY; actual=70; expected=70
+OK: rectangle.window.joinedX; actual=10; expected=10
+OK: rectangle.window.joinedY; actual=20; expected=20
+OK: rectangle.window.joinedX; actual=80; expected=80
+OK: rectangle.window.joinedY; actual=20; expected=20
+OK: rectangle.window.lastEndX; actual=80; expected=80
+OK: rectangle.window.lastEndY; actual=70; expected=70
+OK: rectangle.diagonal; actual=3200; expected=3200
+OK: rectangle.tangent.empty; actual=0; expected=0
+OK: rectangle.tangent.noLoop
+OK: rectangle.outside.empty; actual=0; expected=0
+OK: rectangle.inside.unchanged; actual=8000; expected=8000
+OK: circle.area; actual=31415.9265358979; expected=31415.9265358979
+OK: circle.half.analytic; actual=15707.963267949; expected=15707.963267949
+OK: circle.half.joinedX; actual=31; expected=31
+OK: circle.half.joinedY; actual=83; expected=83
+OK: circle.half.joinedX; actual=31; expected=31
+OK: circle.half.joinedY; actual=-117; expected=-117
+OK: circle.half.lastEndX; actual=131; expected=131
+OK: circle.half.lastEndY; actual=-17; expected=-17
+OK: circle.segment.analytic; actual=6141.84849304378; expected=6141.84849304378
+OK: circle.segment.joinedX; actual=81; expected=81
+OK: circle.segment.joinedY; actual=69.6025403784439; expected=69.6025403784439
+OK: circle.segment.joinedX; actual=81; expected=81
+OK: circle.segment.joinedY; actual=-103.602540378444; expected=-103.602540378444
+OK: circle.segment.lastEndX; actual=131; expected=131
+OK: circle.segment.lastEndY; actual=-17; expected=-17
+OK: copy.sameArea; actual=6141.84849304378; expected=6141.84849304378
+OK: copy.sameSegments
+OK: copy.owner
+OK: prepared.holes.area; actual=7607.30091830128; expected=7607.30091830128
+OK: prepared.centroid.available
+OK: prepared.holes.cx; actual=1000051.03242684; expected=1000051.03242684
+OK: prepared.holes.cy; actual=-1999960.10324268; expected=-1999960.10324268
+OK: prepared.outerEdge.material
+OK: prepared.openingEdge.excluded
+OK: prepared.firstHole.excluded
+OK: prepared.secondHole.excluded
+OK: prepared.snapshot.area; actual=7607.30091830128; expected=7607.30091830128
+OK: prepared.snapshot.material
+OK: prepared.circle.cx; actual=31; expected=31
+OK: prepared.circle.cy; actual=-17; expected=-17
+OK: prepared.semicircle.cx; actual=73.4413181578388; expected=73.4413181578388
+OK: prepared.semicircle.cy; actual=-17; expected=-17
+OK: prepared.quarter.cx; actual=73.4413181578388; expected=73.4413181578388
+OK: prepared.quarter.cy; actual=25.4413181578388; expected=25.4413181578388
+OK: hollow.original.junction.concrete.-1.-0.00001
+OK: hollow.original.junction.opening.-1.-0.00001
+OK: hollow.original.junction.concrete.-1.-0.00000001
+OK: hollow.original.junction.opening.-1.-0.00000001
+OK: hollow.original.junction.concrete.-1.0
+OK: hollow.original.junction.opening.-1.0
+OK: hollow.original.junction.concrete.-1.0.00000001
+OK: hollow.original.junction.opening.-1.0.00000001
+OK: hollow.original.junction.concrete.-1.0.00001
+OK: hollow.original.junction.opening.-1.0.00001
+OK: hollow.original.junction.concrete.1.-0.00001
+OK: hollow.original.junction.opening.1.-0.00001
+OK: hollow.original.junction.concrete.1.-0.00000001
+OK: hollow.original.junction.opening.1.-0.00000001
+OK: hollow.original.junction.concrete.1.0
+OK: hollow.original.junction.opening.1.0
+OK: hollow.original.junction.concrete.1.0.00000001
+OK: hollow.original.junction.opening.1.0.00000001
+OK: hollow.original.junction.concrete.1.0.00001
+OK: hollow.original.junction.opening.1.0.00001
+OK: hollow.junction.concrete.0.-1.-0.00001
+OK: hollow.junction.outside.0.-1.-0.00001
+OK: hollow.junction.opening.0.-1.-0.00001
+OK: hollow.junction.concrete.0.-1.0
+OK: hollow.junction.outside.0.-1.0
+OK: hollow.junction.opening.0.-1.0
+OK: hollow.junction.concrete.0.-1.0.00001
+OK: hollow.junction.outside.0.-1.0.00001
+OK: hollow.junction.opening.0.-1.0.00001
+OK: hollow.junction.concrete.0.1.-0.00001
+OK: hollow.junction.outside.0.1.-0.00001
+OK: hollow.junction.opening.0.1.-0.00001
+OK: hollow.junction.concrete.0.1.0
+OK: hollow.junction.outside.0.1.0
+OK: hollow.junction.opening.0.1.0
+OK: hollow.junction.concrete.0.1.0.00001
+OK: hollow.junction.outside.0.1.0.00001
+OK: hollow.junction.opening.0.1.0.00001
+OK: hollow.junction.concrete.0.47.-1.-0.00001
+OK: hollow.junction.outside.0.47.-1.-0.00001
+OK: hollow.junction.opening.0.47.-1.-0.00001
+OK: hollow.junction.concrete.0.47.-1.0
+OK: hollow.junction.outside.0.47.-1.0
+OK: hollow.junction.opening.0.47.-1.0
+OK: hollow.junction.concrete.0.47.-1.0.00001
+OK: hollow.junction.outside.0.47.-1.0.00001
+OK: hollow.junction.opening.0.47.-1.0.00001
+OK: hollow.junction.concrete.0.47.1.-0.00001
+OK: hollow.junction.outside.0.47.1.-0.00001
+OK: hollow.junction.opening.0.47.1.-0.00001
+OK: hollow.junction.concrete.0.47.1.0
+OK: hollow.junction.outside.0.47.1.0
+OK: hollow.junction.opening.0.47.1.0
+OK: hollow.junction.concrete.0.47.1.0.00001
+OK: hollow.junction.outside.0.47.1.0.00001
+OK: hollow.junction.opening.0.47.1.0.00001
+OK: hollow.junction.concrete.1.5707963267949.-1.-0.00001
+OK: hollow.junction.outside.1.5707963267949.-1.-0.00001
+OK: hollow.junction.opening.1.5707963267949.-1.-0.00001
+OK: hollow.junction.concrete.1.5707963267949.-1.0
+OK: hollow.junction.outside.1.5707963267949.-1.0
+OK: hollow.junction.opening.1.5707963267949.-1.0
+OK: hollow.junction.concrete.1.5707963267949.-1.0.00001
+OK: hollow.junction.outside.1.5707963267949.-1.0.00001
+OK: hollow.junction.opening.1.5707963267949.-1.0.00001
+OK: hollow.junction.concrete.1.5707963267949.1.-0.00001
+OK: hollow.junction.outside.1.5707963267949.1.-0.00001
+OK: hollow.junction.opening.1.5707963267949.1.-0.00001
+OK: hollow.junction.concrete.1.5707963267949.1.0
+OK: hollow.junction.outside.1.5707963267949.1.0
+OK: hollow.junction.opening.1.5707963267949.1.0
+OK: hollow.junction.concrete.1.5707963267949.1.0.00001
+OK: hollow.junction.outside.1.5707963267949.1.0.00001
+OK: hollow.junction.opening.1.5707963267949.1.0.00001
+OK: hole.area; actual=8400; expected=8400
+OK: hole.twoLoops
+OK: hole.insideExcluded
+OK: hole.edgeIncluded
+OK: hole.materialIncluded
+OK: hole.joinedX; actual=100; expected=100
+OK: hole.joinedY; actual=0; expected=0
+OK: hole.joinedX; actual=100; expected=100
+OK: hole.joinedY; actual=100; expected=100
+OK: hole.joinedX; actual=0; expected=0
+OK: hole.joinedY; actual=100; expected=100
+OK: hole.loopEndX; actual=0; expected=0
+OK: hole.loopEndY; actual=0; expected=0
+OK: hole.joinedX; actual=20; expected=20
+OK: hole.joinedY; actual=30; expected=30
+OK: hole.joinedX; actual=20; expected=20
+OK: hole.joinedY; actual=70; expected=70
+OK: hole.joinedX; actual=60; expected=60
+OK: hole.joinedY; actual=70; expected=70
+OK: hole.lastEndX; actual=60; expected=60
+OK: hole.lastEndY; actual=30; expected=30
+OK: notch.area; actual=4200; expected=4200
+OK: notch.oneLoop
+OK: notch.joinedX; actual=100; expected=100
+OK: notch.joinedY; actual=100; expected=100
+OK: notch.joinedX; actual=0; expected=0
+OK: notch.joinedY; actual=100; expected=100
+OK: notch.joinedX; actual=0; expected=0
+OK: notch.joinedY; actual=50; expected=50
+OK: notch.joinedX; actual=20; expected=20
+OK: notch.joinedY; actual=50; expected=50
+OK: notch.joinedX; actual=20; expected=20
+OK: notch.joinedY; actual=70; expected=70
+OK: notch.joinedX; actual=60; expected=60
+OK: notch.joinedY; actual=70; expected=70
+OK: notch.joinedX; actual=60; expected=60
+OK: notch.joinedY; actual=50; expected=50
+OK: notch.lastEndX; actual=100; expected=100
+OK: notch.lastEndY; actual=50; expected=50
+OK: hole.noDoubleSubtract; actual=8400; expected=8400
+OK: circleHole.area; actual=9685.84073464102; expected=9685.84073464102
+OK: circleHole.centerExcluded
+OK: circleHole.leftMaterial
+OK: circleHole.rightMaterial
+OK: circleHole.leftOutside
+OK: circleNotch.area; actual=5842.92036732051; expected=5842.92036732051
+OK: circleNotch.oneLoop
+OK: circleNotch.joinedX; actual=100; expected=100
+OK: circleNotch.joinedY; actual=0; expected=0
+OK: circleNotch.joinedX; actual=100; expected=100
+OK: circleNotch.joinedY; actual=100; expected=100
+OK: circleNotch.joinedX; actual=40; expected=40
+OK: circleNotch.joinedY; actual=100; expected=100
+OK: circleNotch.joinedX; actual=40; expected=40
+OK: circleNotch.joinedY; actual=60; expected=60
+OK: circleNotch.joinedX; actual=50; expected=50
+OK: circleNotch.joinedY; actual=50; expected=50
+OK: circleNotch.joinedX; actual=40; expected=40
+OK: circleNotch.joinedY; actual=40; expected=40
+OK: circleNotch.lastEndX; actual=40; expected=40
+OK: circleNotch.lastEndY; actual=0; expected=0
+OK: line.twoIntervals
+OK: line.leftStart; actual=-10; expected=-10
+OK: line.leftEnd; actual=10; expected=10
+OK: line.rightStart; actual=50; expected=50
+OK: line.rightEnd; actual=90; expected=90
+OK: ray.startZero; actual=0; expected=0
+OK: ray.firstOpening; actual=10; expected=10
+OK: segment.oneInterval
+OK: segment.cut; actual=5; expected=5
+OK: reverse.firstExit; actual=10; expected=10
+OK: line.outside.empty
+OK: mesh.tJoint.area; actual=400; expected=400
+OK: mesh.tJoint.oneLoop
+OK: mesh.tJoint.joinedX; actual=10; expected=10
+OK: mesh.tJoint.joinedY; actual=0; expected=0
+OK: mesh.tJoint.joinedX; actual=20; expected=20
+OK: mesh.tJoint.joinedY; actual=0; expected=0
+OK: mesh.tJoint.joinedX; actual=20; expected=20
+OK: mesh.tJoint.joinedY; actual=10; expected=10
+OK: mesh.tJoint.joinedX; actual=20; expected=20
+OK: mesh.tJoint.joinedY; actual=20; expected=20
+OK: mesh.tJoint.joinedX; actual=10; expected=10
+OK: mesh.tJoint.joinedY; actual=20; expected=20
+OK: mesh.tJoint.joinedX; actual=0; expected=0
+OK: mesh.tJoint.joinedY; actual=20; expected=20
+OK: mesh.tJoint.lastEndX; actual=0; expected=0
+OK: mesh.tJoint.lastEndY; actual=0; expected=0
+OK: mesh.cover; actual=15; expected=15
+OK: mesh.revision.area; actual=500; expected=500
+OK: mesh.revision.cover; actual=25; expected=25
+OK: mesh.opening.area; actual=800; expected=800
+OK: mesh.opening.twoLoops
+OK: mesh.opening.firstWall; actual=5; expected=5
+OK: mesh.outside.noSeed; actual=-1; expected=-1
+OK: mesh.opening.joinedX; actual=10; expected=10
+OK: mesh.opening.joinedY; actual=0; expected=0
+OK: mesh.opening.joinedX; actual=20; expected=20
+OK: mesh.opening.joinedY; actual=0; expected=0
+OK: mesh.opening.joinedX; actual=30; expected=30
+OK: mesh.opening.joinedY; actual=0; expected=0
+OK: mesh.opening.joinedX; actual=30; expected=30
+OK: mesh.opening.joinedY; actual=10; expected=10
+OK: mesh.opening.joinedX; actual=30; expected=30
+OK: mesh.opening.joinedY; actual=20; expected=20
+OK: mesh.opening.joinedX; actual=30; expected=30
+OK: mesh.opening.joinedY; actual=30; expected=30
+OK: mesh.opening.joinedX; actual=20; expected=20
+OK: mesh.opening.joinedY; actual=30; expected=30
+OK: mesh.opening.joinedX; actual=10; expected=10
+OK: mesh.opening.joinedY; actual=30; expected=30
+OK: mesh.opening.joinedX; actual=0; expected=0
+OK: mesh.opening.joinedY; actual=30; expected=30
+OK: mesh.opening.joinedX; actual=0; expected=0
+OK: mesh.opening.joinedY; actual=20; expected=20
+OK: mesh.opening.joinedX; actual=0; expected=0
+OK: mesh.opening.joinedY; actual=10; expected=10
+OK: mesh.opening.loopEndX; actual=0; expected=0
+OK: mesh.opening.loopEndY; actual=0; expected=0
+OK: mesh.opening.joinedX; actual=10; expected=10
+OK: mesh.opening.joinedY; actual=20; expected=20
+OK: mesh.opening.joinedX; actual=20; expected=20
+OK: mesh.opening.joinedY; actual=20; expected=20
+OK: mesh.opening.joinedX; actual=20; expected=20
+OK: mesh.opening.joinedY; actual=10; expected=10
+OK: mesh.opening.lastEndX; actual=10; expected=10
+OK: mesh.opening.lastEndY; actual=10; expected=10
+OK: sp63.mesh.fullArea; actual=160000; expected=160000
+OK: sp63.mesh.cut.-197.analytic; actual=158800; expected=158800
+OK: sp63.mesh.cut.-197.boundaryBound
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-180; expected=-180
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-160; expected=-160
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-140; expected=-140
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-120; expected=-120
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-100; expected=-100
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-80; expected=-80
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-60; expected=-60
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-40; expected=-40
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=-20; expected=-20
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=0; expected=0
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.-197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=180; expected=180
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=160; expected=160
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=140; expected=140
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=120; expected=120
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=100; expected=100
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=80; expected=80
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=60; expected=60
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=40; expected=40
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=20; expected=20
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=0; expected=0
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-20; expected=-20
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-40; expected=-40
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-60; expected=-60
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-80; expected=-80
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-100; expected=-100
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-120; expected=-120
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-140; expected=-140
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-160; expected=-160
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-180; expected=-180
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=0; expected=0
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-20; expected=-20
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-40; expected=-40
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-60; expected=-60
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-80; expected=-80
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-100; expected=-100
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-120; expected=-120
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-140; expected=-140
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-160; expected=-160
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-180; expected=-180
+OK: sp63.mesh.cut.-197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-197.joinedY; actual=-197; expected=-197
+OK: sp63.mesh.cut.-197.lastEndX; actual=200; expected=200
+OK: sp63.mesh.cut.-197.lastEndY; actual=-197; expected=-197
+OK: sp63.mesh.cut.-3.analytic; actual=81200; expected=81200
+OK: sp63.mesh.cut.-3.boundaryBound
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=0; expected=0
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.-3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=180; expected=180
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=160; expected=160
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=140; expected=140
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=120; expected=120
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=100; expected=100
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=80; expected=80
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=60; expected=60
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=40; expected=40
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=20; expected=20
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=0; expected=0
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-20; expected=-20
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-40; expected=-40
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-60; expected=-60
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-80; expected=-80
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-100; expected=-100
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-120; expected=-120
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-140; expected=-140
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-160; expected=-160
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-180; expected=-180
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=0; expected=0
+OK: sp63.mesh.cut.-3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.-3.joinedY; actual=-3; expected=-3
+OK: sp63.mesh.cut.-3.lastEndX; actual=200; expected=200
+OK: sp63.mesh.cut.-3.lastEndY; actual=-3; expected=-3
+OK: sp63.mesh.cut.0.analytic; actual=80000; expected=80000
+OK: sp63.mesh.cut.0.boundaryBound
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.0.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=180; expected=180
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=160; expected=160
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=140; expected=140
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=120; expected=120
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=100; expected=100
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=80; expected=80
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=60; expected=60
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=40; expected=40
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=20; expected=20
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=0; expected=0
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-20; expected=-20
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-40; expected=-40
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-60; expected=-60
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-80; expected=-80
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-100; expected=-100
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-120; expected=-120
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-140; expected=-140
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-160; expected=-160
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-180; expected=-180
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.0.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.0.joinedY; actual=0; expected=0
+OK: sp63.mesh.cut.0.lastEndX; actual=200; expected=200
+OK: sp63.mesh.cut.0.lastEndY; actual=0; expected=0
+OK: sp63.mesh.cut.3.analytic; actual=78800; expected=78800
+OK: sp63.mesh.cut.3.boundaryBound
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.3.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=180; expected=180
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=160; expected=160
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=140; expected=140
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=120; expected=120
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=100; expected=100
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=80; expected=80
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=60; expected=60
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=40; expected=40
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=20; expected=20
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=0; expected=0
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-20; expected=-20
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-40; expected=-40
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-60; expected=-60
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-80; expected=-80
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-100; expected=-100
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-120; expected=-120
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-140; expected=-140
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-160; expected=-160
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-180; expected=-180
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=180; expected=180
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=160; expected=160
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=140; expected=140
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=120; expected=120
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=100; expected=100
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=80; expected=80
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=60; expected=60
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=40; expected=40
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=20; expected=20
+OK: sp63.mesh.cut.3.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.3.joinedY; actual=3; expected=3
+OK: sp63.mesh.cut.3.lastEndX; actual=200; expected=200
+OK: sp63.mesh.cut.3.lastEndY; actual=3; expected=3
+OK: sp63.mesh.cut.197.analytic; actual=1200; expected=1200
+OK: sp63.mesh.cut.197.boundaryBound
+OK: sp63.mesh.cut.197.joinedX; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=180; expected=180
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=160; expected=160
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=140; expected=140
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=120; expected=120
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=100; expected=100
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=80; expected=80
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=60; expected=60
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=40; expected=40
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=20; expected=20
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=0; expected=0
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-20; expected=-20
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-40; expected=-40
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-60; expected=-60
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-80; expected=-80
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-100; expected=-100
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-120; expected=-120
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-140; expected=-140
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-160; expected=-160
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-180; expected=-180
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.197.joinedY; actual=200; expected=200
+OK: sp63.mesh.cut.197.joinedX; actual=-200; expected=-200
+OK: sp63.mesh.cut.197.joinedY; actual=197; expected=197
+OK: sp63.mesh.cut.197.lastEndX; actual=200; expected=200
+OK: sp63.mesh.cut.197.lastEndY; actual=197; expected=197
+OK: knownOuter.noOpening.area; actual=900; expected=900
+OK: knownOuter.noOpening.loops
+OK: knownOuter.noOpening.solid
+OK: knownOuter.noOpening.authoritative
+OK: knownOuter.noOpening.clippedArea; actual=450; expected=450
+OK: knownOuter.noOpening.joinedX; actual=30; expected=30
+OK: knownOuter.noOpening.joinedY; actual=0; expected=0
+OK: knownOuter.noOpening.joinedX; actual=30; expected=30
+OK: knownOuter.noOpening.joinedY; actual=30; expected=30
+OK: knownOuter.noOpening.joinedX; actual=0; expected=0
+OK: knownOuter.noOpening.joinedY; actual=30; expected=30
+OK: knownOuter.noOpening.lastEndX; actual=0; expected=0
+OK: knownOuter.noOpening.lastEndY; actual=0; expected=0
+OK: knownOuter.explicitOpening.area; actual=887.433629385641; expected=887.433629385641
+OK: knownOuter.explicitOpening.loops
+OK: knownOuter.explicitOpening.empty
+OK: knownOuter.explicitOpening.noMeshVoid
+OK: knownOuter.explicitOpening.joinedX; actual=30; expected=30
+OK: knownOuter.explicitOpening.joinedY; actual=0; expected=0
+OK: knownOuter.explicitOpening.joinedX; actual=30; expected=30
+OK: knownOuter.explicitOpening.joinedY; actual=30; expected=30
+OK: knownOuter.explicitOpening.joinedX; actual=0; expected=0
+OK: knownOuter.explicitOpening.joinedY; actual=30; expected=30
+OK: knownOuter.explicitOpening.loopEndX; actual=0; expected=0
+OK: knownOuter.explicitOpening.loopEndY; actual=0; expected=0
+OK: knownOuter.explicitOpening.joinedX; actual=15; expected=15
+OK: knownOuter.explicitOpening.joinedY; actual=13; expected=13
+OK: knownOuter.explicitOpening.joinedX; actual=13; expected=13
+OK: knownOuter.explicitOpening.joinedY; actual=15; expected=15
+OK: knownOuter.explicitOpening.joinedX; actual=15; expected=15
+OK: knownOuter.explicitOpening.joinedY; actual=17; expected=17
+OK: knownOuter.explicitOpening.lastEndX; actual=17; expected=17
+OK: knownOuter.explicitOpening.lastEndY; actual=15; expected=15
+OK: resultAnnotation.noInvalidation
+OK: openingAnnotation.invalidates
+OK: unknownOuter.knownOpening.area; actual=8400; expected=8400
+OK: unknownOuter.knownOpening.loops
+OK: unknownOuter.knownOpening.empty
+OK: unknownOuter.knownOpening.joinedX; actual=100; expected=100
+OK: unknownOuter.knownOpening.joinedY; actual=0; expected=0
+OK: unknownOuter.knownOpening.joinedX; actual=100; expected=100
+OK: unknownOuter.knownOpening.joinedY; actual=100; expected=100
+OK: unknownOuter.knownOpening.joinedX; actual=0; expected=0
+OK: unknownOuter.knownOpening.joinedY; actual=100; expected=100
+OK: unknownOuter.knownOpening.loopEndX; actual=0; expected=0
+OK: unknownOuter.knownOpening.loopEndY; actual=0; expected=0
+OK: unknownOuter.knownOpening.joinedX; actual=20; expected=20
+OK: unknownOuter.knownOpening.joinedY; actual=30; expected=30
+OK: unknownOuter.knownOpening.joinedX; actual=20; expected=20
+OK: unknownOuter.knownOpening.joinedY; actual=70; expected=70
+OK: unknownOuter.knownOpening.joinedX; actual=60; expected=60
+OK: unknownOuter.knownOpening.joinedY; actual=70; expected=70
+OK: unknownOuter.knownOpening.lastEndX; actual=60; expected=60
+OK: unknownOuter.knownOpening.lastEndY; actual=30; expected=30
+OK: removedContour.rebuilt; actual=10000; expected=10000
+OK: contourSources.0.area; actual=800; expected=800
+OK: contourSources.0.loops
+OK: contourSources.0.meshVoidOnlyWithoutContours
+OK: contourSources.0.secondHole
+OK: contourSources.0.outside
+OK: contourSources.0.neutralLineClip; actual=400; expected=400
+OK: contourSources.0.firstIntersection; actual=10; expected=10
+OK: contourSources.0.lastIntersection; actual=30; expected=30
+OK: contourSources.0.secondIntersection; actual=20; expected=20
+OK: contourSources.0.mechanicalMeshUnchanged
+OK: contourSources.0.joinedX; actual=10; expected=10
+OK: contourSources.0.joinedY; actual=0; expected=0
+OK: contourSources.0.joinedX; actual=20; expected=20
+OK: contourSources.0.joinedY; actual=0; expected=0
+OK: contourSources.0.joinedX; actual=30; expected=30
+OK: contourSources.0.joinedY; actual=0; expected=0
+OK: contourSources.0.joinedX; actual=30; expected=30
+OK: contourSources.0.joinedY; actual=10; expected=10
+OK: contourSources.0.joinedX; actual=30; expected=30
+OK: contourSources.0.joinedY; actual=20; expected=20
+OK: contourSources.0.joinedX; actual=30; expected=30
+OK: contourSources.0.joinedY; actual=30; expected=30
+OK: contourSources.0.joinedX; actual=20; expected=20
+OK: contourSources.0.joinedY; actual=30; expected=30
+OK: contourSources.0.joinedX; actual=10; expected=10
+OK: contourSources.0.joinedY; actual=30; expected=30
+OK: contourSources.0.joinedX; actual=0; expected=0
+OK: contourSources.0.joinedY; actual=30; expected=30
+OK: contourSources.0.joinedX; actual=0; expected=0
+OK: contourSources.0.joinedY; actual=20; expected=20
+OK: contourSources.0.joinedX; actual=0; expected=0
+OK: contourSources.0.joinedY; actual=10; expected=10
+OK: contourSources.0.loopEndX; actual=0; expected=0
+OK: contourSources.0.loopEndY; actual=0; expected=0
+OK: contourSources.0.joinedX; actual=10; expected=10
+OK: contourSources.0.joinedY; actual=20; expected=20
+OK: contourSources.0.joinedX; actual=20; expected=20
+OK: contourSources.0.joinedY; actual=20; expected=20
+OK: contourSources.0.joinedX; actual=20; expected=20
+OK: contourSources.0.joinedY; actual=10; expected=10
+OK: contourSources.0.lastEndX; actual=10; expected=10
+OK: contourSources.0.lastEndY; actual=10; expected=10
+OK: contourSources.1.area; actual=884.292036732051; expected=884.292036732051
+OK: contourSources.1.loops
+OK: contourSources.1.meshVoidOnlyWithoutContours
+OK: contourSources.1.secondHole
+OK: contourSources.1.outside
+OK: contourSources.1.neutralLineClip; actual=443.71681469282; expected=443.71681469282
+OK: contourSources.1.firstIntersection; actual=13; expected=13
+OK: contourSources.1.lastIntersection; actual=30; expected=30
+OK: contourSources.1.secondIntersection; actual=17; expected=17
+OK: contourSources.1.mechanicalMeshUnchanged
+OK: contourSources.1.joinedX; actual=10; expected=10
+OK: contourSources.1.joinedY; actual=0; expected=0
+OK: contourSources.1.joinedX; actual=20; expected=20
+OK: contourSources.1.joinedY; actual=0; expected=0
+OK: contourSources.1.joinedX; actual=30; expected=30
+OK: contourSources.1.joinedY; actual=0; expected=0
+OK: contourSources.1.joinedX; actual=30; expected=30
+OK: contourSources.1.joinedY; actual=10; expected=10
+OK: contourSources.1.joinedX; actual=30; expected=30
+OK: contourSources.1.joinedY; actual=20; expected=20
+OK: contourSources.1.joinedX; actual=30; expected=30
+OK: contourSources.1.joinedY; actual=30; expected=30
+OK: contourSources.1.joinedX; actual=20; expected=20
+OK: contourSources.1.joinedY; actual=30; expected=30
+OK: contourSources.1.joinedX; actual=10; expected=10
+OK: contourSources.1.joinedY; actual=30; expected=30
+OK: contourSources.1.joinedX; actual=0; expected=0
+OK: contourSources.1.joinedY; actual=30; expected=30
+OK: contourSources.1.joinedX; actual=0; expected=0
+OK: contourSources.1.joinedY; actual=20; expected=20
+OK: contourSources.1.joinedX; actual=0; expected=0
+OK: contourSources.1.joinedY; actual=10; expected=10
+OK: contourSources.1.loopEndX; actual=0; expected=0
+OK: contourSources.1.loopEndY; actual=0; expected=0
+OK: contourSources.1.joinedX; actual=15; expected=15
+OK: contourSources.1.joinedY; actual=13; expected=13
+OK: contourSources.1.joinedX; actual=13; expected=13
+OK: contourSources.1.joinedY; actual=15; expected=15
+OK: contourSources.1.joinedX; actual=15; expected=15
+OK: contourSources.1.joinedY; actual=17; expected=17
+OK: contourSources.1.loopEndX; actual=17; expected=17
+OK: contourSources.1.loopEndY; actual=15; expected=15
+OK: contourSources.1.joinedX; actual=12; expected=12
+OK: contourSources.1.joinedY; actual=11; expected=11
+OK: contourSources.1.joinedX; actual=11; expected=11
+OK: contourSources.1.joinedY; actual=12; expected=12
+OK: contourSources.1.joinedX; actual=12; expected=12
+OK: contourSources.1.joinedY; actual=13; expected=13
+OK: contourSources.1.lastEndX; actual=13; expected=13
+OK: contourSources.1.lastEndY; actual=12; expected=12
+OK: contourSources.2.area; actual=1600; expected=1600
+OK: contourSources.2.loops
+OK: contourSources.2.meshVoidOnlyWithoutContours
+OK: contourSources.2.secondHole
+OK: contourSources.2.outside
+OK: contourSources.2.neutralLineClip; actual=1000; expected=1000
+OK: contourSources.2.firstIntersection; actual=40; expected=40
+OK: contourSources.2.lastIntersection; actual=40; expected=40
+OK: contourSources.2.mechanicalMeshUnchanged
+OK: contourSources.2.joinedX; actual=40; expected=40
+OK: contourSources.2.joinedY; actual=0; expected=0
+OK: contourSources.2.joinedX; actual=40; expected=40
+OK: contourSources.2.joinedY; actual=40; expected=40
+OK: contourSources.2.joinedX; actual=0; expected=0
+OK: contourSources.2.joinedY; actual=40; expected=40
+OK: contourSources.2.lastEndX; actual=0; expected=0
+OK: contourSources.2.lastEndY; actual=0; expected=0
+OK: contourSources.3.area; actual=1584.29203673205; expected=1584.29203673205
+OK: contourSources.3.loops
+OK: contourSources.3.meshVoidOnlyWithoutContours
+OK: contourSources.3.secondHole
+OK: contourSources.3.outside
+OK: contourSources.3.neutralLineClip; actual=993.71681469282; expected=993.71681469282
+OK: contourSources.3.firstIntersection; actual=13; expected=13
+OK: contourSources.3.lastIntersection; actual=40; expected=40
+OK: contourSources.3.secondIntersection; actual=17; expected=17
+OK: contourSources.3.mechanicalMeshUnchanged
+OK: contourSources.3.joinedX; actual=40; expected=40
+OK: contourSources.3.joinedY; actual=0; expected=0
+OK: contourSources.3.joinedX; actual=40; expected=40
+OK: contourSources.3.joinedY; actual=40; expected=40
+OK: contourSources.3.joinedX; actual=0; expected=0
+OK: contourSources.3.joinedY; actual=40; expected=40
+OK: contourSources.3.loopEndX; actual=0; expected=0
+OK: contourSources.3.loopEndY; actual=0; expected=0
+OK: contourSources.3.joinedX; actual=15; expected=15
+OK: contourSources.3.joinedY; actual=13; expected=13
+OK: contourSources.3.joinedX; actual=13; expected=13
+OK: contourSources.3.joinedY; actual=15; expected=15
+OK: contourSources.3.joinedX; actual=15; expected=15
+OK: contourSources.3.joinedY; actual=17; expected=17
+OK: contourSources.3.loopEndX; actual=17; expected=17
+OK: contourSources.3.loopEndY; actual=15; expected=15
+OK: contourSources.3.joinedX; actual=12; expected=12
+OK: contourSources.3.joinedY; actual=11; expected=11
+OK: contourSources.3.joinedX; actual=11; expected=11
+OK: contourSources.3.joinedY; actual=12; expected=12
+OK: contourSources.3.joinedX; actual=12; expected=12
+OK: contourSources.3.joinedY; actual=13; expected=13
+OK: contourSources.3.lastEndX; actual=13; expected=13
+OK: contourSources.3.lastEndY; actual=12; expected=12
+OK: openingMeshOuterTopology.area; actual=2787.43362938564; expected=2787.43362938564
+OK: openingMeshOuterTopology.components
+OK: openingMeshOuterTopology.concaveBoundary
+OK: openingMeshOuterTopology.noInventedBridge
+OK: openingMeshOuterTopology.separateComponent
+OK: openingMeshOuterTopology.onlyExactHole
+OK: openingMeshOuterTopology.joinedX; actual=10; expected=10
+OK: openingMeshOuterTopology.joinedY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=20; expected=20
+OK: openingMeshOuterTopology.joinedY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=30; expected=30
+OK: openingMeshOuterTopology.joinedY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=40; expected=40
+OK: openingMeshOuterTopology.joinedY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedY; actual=10; expected=10
+OK: openingMeshOuterTopology.joinedX; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedY; actual=20; expected=20
+OK: openingMeshOuterTopology.joinedX; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedY; actual=30; expected=30
+OK: openingMeshOuterTopology.joinedX; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedY; actual=40; expected=40
+OK: openingMeshOuterTopology.joinedX; actual=40; expected=40
+OK: openingMeshOuterTopology.joinedY; actual=40; expected=40
+OK: openingMeshOuterTopology.joinedX; actual=40; expected=40
+OK: openingMeshOuterTopology.joinedY; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedX; actual=30; expected=30
+OK: openingMeshOuterTopology.joinedY; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedX; actual=20; expected=20
+OK: openingMeshOuterTopology.joinedY; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedX; actual=10; expected=10
+OK: openingMeshOuterTopology.joinedY; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedX; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedY; actual=50; expected=50
+OK: openingMeshOuterTopology.joinedX; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedY; actual=40; expected=40
+OK: openingMeshOuterTopology.joinedX; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedY; actual=30; expected=30
+OK: openingMeshOuterTopology.joinedX; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedY; actual=20; expected=20
+OK: openingMeshOuterTopology.joinedX; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedY; actual=10; expected=10
+OK: openingMeshOuterTopology.loopEndX; actual=0; expected=0
+OK: openingMeshOuterTopology.loopEndY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=120; expected=120
+OK: openingMeshOuterTopology.joinedY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=120; expected=120
+OK: openingMeshOuterTopology.joinedY; actual=20; expected=20
+OK: openingMeshOuterTopology.joinedX; actual=100; expected=100
+OK: openingMeshOuterTopology.joinedY; actual=20; expected=20
+OK: openingMeshOuterTopology.loopEndX; actual=100; expected=100
+OK: openingMeshOuterTopology.loopEndY; actual=0; expected=0
+OK: openingMeshOuterTopology.joinedX; actual=25; expected=25
+OK: openingMeshOuterTopology.joinedY; actual=23; expected=23
+OK: openingMeshOuterTopology.joinedX; actual=23; expected=23
+OK: openingMeshOuterTopology.joinedY; actual=25; expected=25
+OK: openingMeshOuterTopology.joinedX; actual=25; expected=25
+OK: openingMeshOuterTopology.joinedY; actual=27; expected=27
+OK: openingMeshOuterTopology.lastEndX; actual=27; expected=27
+OK: openingMeshOuterTopology.lastEndY; actual=25; expected=25
+OK: rotated.translated.area; actual=9600.00000000118; expected=9600
+OK: rotated.translated.half; actual=4800.00000000059; expected=4800
+OK: rotated.translated.half.joinedX; actual=100035.378645877; expected=100035.378645877
+OK: rotated.translated.half.joinedY; actual=-199937.164091349; expected=-199937.164091349
+OK: rotated.translated.half.joinedX; actual=99928.3904512931; expected=99928.3904512931
+OK: rotated.translated.half.joinedY; actual=-199991.510445595; expected=-199991.510445595
+OK: rotated.translated.half.joinedX; actual=99946.5059027083; expected=99946.5059027083
+OK: rotated.translated.half.joinedY; actual=-200027.173177123; expected=-200027.173177123
+OK: rotated.translated.half.lastEndX; actual=100053.494097292; expected=100053.494097292
+OK: rotated.translated.half.lastEndY; actual=-199972.826822877; expected=-199972.826822877
+OK: arc.projection.minimum; actual=-80.060449917389; expected=-80.060449917389
+OK: arc.projection.maximum; actual=119.939550082611; expected=119.939550082611
+OK: touching.vertex.area; actual=200; expected=200
+OK: touching.vertex.twoLoops
+OK: touching.vertex.joinedX; actual=10; expected=10
+OK: touching.vertex.joinedY; actual=0; expected=0
+OK: touching.vertex.joinedX; actual=10; expected=10
+OK: touching.vertex.joinedY; actual=10; expected=10
+OK: touching.vertex.joinedX; actual=0; expected=0
+OK: touching.vertex.joinedY; actual=10; expected=10
+OK: touching.vertex.loopEndX; actual=0; expected=0
+OK: touching.vertex.loopEndY; actual=0; expected=0
+OK: touching.vertex.joinedX; actual=20; expected=20
+OK: touching.vertex.joinedY; actual=10; expected=10
+OK: touching.vertex.joinedX; actual=20; expected=20
+OK: touching.vertex.joinedY; actual=20; expected=20
+OK: touching.vertex.joinedX; actual=10; expected=10
+OK: touching.vertex.joinedY; actual=20; expected=20
+OK: touching.vertex.lastEndX; actual=10; expected=10
+OK: touching.vertex.lastEndY; actual=10; expected=10
+OK: wall.rectangular.area; actual=7200; expected=7200
+OK: wall.rectangular.nearIncluded
+OK: wall.rectangular.farExcluded
+OK: wall.rectangular.sideAccessible
+OK: wall.rectangular.joinedX; actual=20; expected=20
+OK: wall.rectangular.joinedY; actual=0; expected=0
+OK: wall.rectangular.joinedX; actual=20; expected=20
+OK: wall.rectangular.joinedY; actual=30; expected=30
+OK: wall.rectangular.joinedX; actual=20; expected=20
+OK: wall.rectangular.joinedY; actual=70; expected=70
+OK: wall.rectangular.joinedX; actual=60; expected=60
+OK: wall.rectangular.joinedY; actual=70; expected=70
+OK: wall.rectangular.joinedX; actual=60; expected=60
+OK: wall.rectangular.joinedY; actual=30; expected=30
+OK: wall.rectangular.joinedX; actual=60; expected=60
+OK: wall.rectangular.joinedY; actual=0; expected=0
+OK: wall.rectangular.joinedX; actual=100; expected=100
+OK: wall.rectangular.joinedY; actual=0; expected=0
+OK: wall.rectangular.joinedX; actual=100; expected=100
+OK: wall.rectangular.joinedY; actual=100; expected=100
+OK: wall.rectangular.joinedX; actual=60; expected=60
+OK: wall.rectangular.joinedY; actual=100; expected=100
+OK: wall.rectangular.joinedX; actual=20; expected=20
+OK: wall.rectangular.joinedY; actual=100; expected=100
+OK: wall.rectangular.joinedX; actual=0; expected=0
+OK: wall.rectangular.joinedY; actual=100; expected=100
+OK: wall.rectangular.lastEndX; actual=0; expected=0
+OK: wall.rectangular.lastEndY; actual=0; expected=0
+OK: wall.rectangular.localStrip; actual=600; expected=600
+OK: wall.rectangular.localStrip.joinedX; actual=50; expected=50
+OK: wall.rectangular.localStrip.joinedY; actual=70; expected=70
+OK: wall.rectangular.localStrip.joinedX; actual=50; expected=50
+OK: wall.rectangular.localStrip.joinedY; actual=100; expected=100
+OK: wall.rectangular.localStrip.joinedX; actual=30; expected=30
+OK: wall.rectangular.localStrip.joinedY; actual=100; expected=100
+OK: wall.rectangular.localStrip.lastEndX; actual=30; expected=30
+OK: wall.rectangular.localStrip.lastEndY; actual=70; expected=70
+OK: wall.missingSeed.empty; actual=0; expected=0
+OK: wall.circular.area; actual=8842.92036732051; expected=8842.92036732051
+OK: wall.circular.farExcluded
+OK: wall.circular.nearIncluded
+OK: wall.circular.joinedX; actual=40; expected=40
+OK: wall.circular.joinedY; actual=0; expected=0
+OK: wall.circular.joinedX; actual=40; expected=40
+OK: wall.circular.joinedY; actual=50; expected=50
+OK: wall.circular.joinedX; actual=50; expected=50
+OK: wall.circular.joinedY; actual=60; expected=60
+OK: wall.circular.joinedX; actual=60; expected=60
+OK: wall.circular.joinedY; actual=50; expected=50
+OK: wall.circular.joinedX; actual=60; expected=60
+OK: wall.circular.joinedY; actual=0; expected=0
+OK: wall.circular.joinedX; actual=100; expected=100
+OK: wall.circular.joinedY; actual=0; expected=0
+OK: wall.circular.joinedX; actual=100; expected=100
+OK: wall.circular.joinedY; actual=100; expected=100
+OK: wall.circular.joinedX; actual=60; expected=60
+OK: wall.circular.joinedY; actual=100; expected=100
+OK: wall.circular.joinedX; actual=50; expected=50
+OK: wall.circular.joinedY; actual=100; expected=100
+OK: wall.circular.joinedX; actual=40; expected=40
+OK: wall.circular.joinedY; actual=100; expected=100
+OK: wall.circular.joinedX; actual=0; expected=0
+OK: wall.circular.joinedY; actual=100; expected=100
+OK: wall.circular.lastEndX; actual=0; expected=0
+OK: wall.circular.lastEndY; actual=0; expected=0
+OK: wall.rotated.0.13.rectangle.area; actual=7200.00000000001; expected=7200
+OK: wall.rotated.0.13.rectangle.joinedX; actual=519.831237874296; expected=519.831237874296
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-797.407317147606; expected=-797.407317147606
+OK: wall.rotated.0.13.rectangle.joinedX; actual=515.942213595705; expected=515.942213595705
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-767.660460336162; expected=-767.660460336163
+OK: wall.rotated.0.13.rectangle.joinedX; actual=510.756847890917; expected=510.756847890917
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-727.997984587571; expected=-727.997984587571
+OK: wall.rotated.0.13.rectangle.joinedX; actual=550.419323639509; expected=550.419323639509
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-722.812618882783; expected=-722.812618882783
+OK: wall.rotated.0.13.rectangle.joinedX; actual=555.604689344297; expected=555.604689344297
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-762.475094631375; expected=-762.475094631375
+OK: wall.rotated.0.13.rectangle.joinedX; actual=559.493713622887; expected=559.493713622887
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-792.221951442818; expected=-792.221951442818
+OK: wall.rotated.0.13.rectangle.joinedX; actual=599.156189371479; expected=599.156189371479
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-787.036585738031; expected=-787.036585738031
+OK: wall.rotated.0.13.rectangle.joinedX; actual=586.192775109509; expected=586.192775109509
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-687.880396366552; expected=-687.880396366552
+OK: wall.rotated.0.13.rectangle.joinedX; actual=546.530299360918; expected=546.530299360918
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-693.065762071339; expected=-693.065762071339
+OK: wall.rotated.0.13.rectangle.joinedX; actual=506.867823612326; expected=506.867823612326
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-698.251127776127; expected=-698.251127776127
+OK: wall.rotated.0.13.rectangle.joinedX; actual=487.036585738031; expected=487.036585738031
+OK: wall.rotated.0.13.rectangle.joinedY; actual=-700.843810628521; expected=-700.843810628521
+OK: wall.rotated.0.13.rectangle.lastEndX; actual=500; expected=500
+OK: wall.rotated.0.13.rectangle.lastEndY; actual=-800; expected=-800
+OK: wall.rotated.0.13.circle.area; actual=8842.92036732051; expected=8842.92036732051
+OK: wall.rotated.0.13.circle.joinedX; actual=539.662475748592; expected=539.662475748592
+OK: wall.rotated.0.13.circle.joinedY; actual=-794.814634295212; expected=-794.814634295212
+OK: wall.rotated.0.13.circle.joinedX; actual=533.180768617607; expected=533.180768617607
+OK: wall.rotated.0.13.circle.joinedY; actual=-745.236539609473; expected=-745.236539609473
+OK: wall.rotated.0.13.circle.joinedX; actual=533.096387554755; expected=533.096387554755
+OK: wall.rotated.0.13.circle.joinedY; actual=-743.940198183276; expected=-743.940198183276
+OK: wall.rotated.0.13.circle.joinedX; actual=540.525582035833; expected=540.525582035833
+OK: wall.rotated.0.13.circle.joinedY; actual=-734.276298401931; expected=-734.276298401931
+OK: wall.rotated.0.13.circle.joinedX; actual=543.096387554755; expected=543.096387554755
+OK: wall.rotated.0.13.circle.joinedY; actual=-733.940198183276; expected=-733.940198183276
+OK: wall.rotated.0.13.circle.joinedX; actual=552.7602873361; expected=552.7602873361
+OK: wall.rotated.0.13.circle.joinedY; actual=-741.369392664354; expected=-741.369392664354
+OK: wall.rotated.0.13.circle.joinedX; actual=553.012006491903; expected=553.012006491903
+OK: wall.rotated.0.13.circle.joinedY; actual=-742.643856757079; expected=-742.643856757079
+OK: wall.rotated.0.13.circle.joinedX; actual=559.493713622887; expected=559.493713622887
+OK: wall.rotated.0.13.circle.joinedY; actual=-792.221951442818; expected=-792.221951442818
+OK: wall.rotated.0.13.circle.joinedX; actual=599.156189371479; expected=599.156189371479
+OK: wall.rotated.0.13.circle.joinedY; actual=-787.036585738031; expected=-787.036585738031
+OK: wall.rotated.0.13.circle.joinedX; actual=586.192775109509; expected=586.192775109509
+OK: wall.rotated.0.13.circle.joinedY; actual=-687.880396366552; expected=-687.880396366552
+OK: wall.rotated.0.13.circle.joinedX; actual=546.530299360918; expected=546.530299360918
+OK: wall.rotated.0.13.circle.joinedY; actual=-693.065762071339; expected=-693.065762071339
+OK: wall.rotated.0.13.circle.joinedX; actual=546.446630314442; expected=546.446630314442
+OK: wall.rotated.0.13.circle.joinedY; actual=-693.076700738076; expected=-693.076700738076
+OK: wall.rotated.0.13.circle.joinedX; actual=537.900083183231; expected=537.900083183231
+OK: wall.rotated.0.13.circle.joinedY; actual=-694.194053388209; expected=-694.194053388209
+OK: wall.rotated.0.13.circle.joinedX; actual=535.329277664309; expected=535.329277664309
+OK: wall.rotated.0.13.circle.joinedY; actual=-694.530153606864; expected=-694.530153606864
+OK: wall.rotated.0.13.circle.joinedX; actual=526.782730533097; expected=526.782730533097
+OK: wall.rotated.0.13.circle.joinedY; actual=-695.647506256997; expected=-695.647506256997
+OK: wall.rotated.0.13.circle.joinedX; actual=526.699061486622; expected=526.699061486622
+OK: wall.rotated.0.13.circle.joinedY; actual=-695.658444923733; expected=-695.658444923733
+OK: wall.rotated.0.13.circle.joinedX; actual=487.036585738031; expected=487.036585738031
+OK: wall.rotated.0.13.circle.joinedY; actual=-700.843810628521; expected=-700.843810628521
+OK: wall.rotated.0.13.circle.lastEndX; actual=500; expected=500
+OK: wall.rotated.0.13.circle.lastEndY; actual=-800; expected=-800
+OK: wall.rotated.0.47.rectangle.area; actual=7199.99999999999; expected=7200
+OK: wall.rotated.0.47.rectangle.joinedX; actual=517.831365763907; expected=517.831365763907
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-790.942274292419; expected=-790.942274292419
+OK: wall.rotated.0.47.rectangle.joinedX; actual=504.244777202535; expected=504.244777202535
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-764.195225646559; expected=-764.195225646559
+OK: wall.rotated.0.47.rectangle.joinedX; actual=486.129325787372; expected=486.129325787372
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-728.532494118746; expected=-728.532494118746
+OK: wall.rotated.0.47.rectangle.joinedX; actual=521.792057315185; expected=521.792057315185
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-710.417042703583; expected=-710.417042703583
+OK: wall.rotated.0.47.rectangle.joinedX; actual=539.907508730348; expected=539.907508730348
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-746.079774231396; expected=-746.079774231396
+OK: wall.rotated.0.47.rectangle.joinedX; actual=553.49409729172; expected=553.49409729172
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-772.826822877256; expected=-772.826822877256
+OK: wall.rotated.0.47.rectangle.joinedX; actual=589.156828819533; expected=589.156828819533
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-754.711371462093; expected=-754.711371462093
+OK: wall.rotated.0.47.rectangle.joinedX; actual=543.868200281626; expected=543.868200281626
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-665.55454264256; expected=-665.55454264256
+OK: wall.rotated.0.47.rectangle.joinedX; actual=508.205468753813; expected=508.205468753813
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-683.669994057723; expected=-683.669994057723
+OK: wall.rotated.0.47.rectangle.joinedX; actual=472.542737226; expected=472.542737226
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-701.785445472886; expected=-701.785445472886
+OK: wall.rotated.0.47.rectangle.joinedX; actual=454.711371462093; expected=454.711371462093
+OK: wall.rotated.0.47.rectangle.joinedY; actual=-710.843171180467; expected=-710.843171180467
+OK: wall.rotated.0.47.rectangle.lastEndX; actual=500; expected=500
+OK: wall.rotated.0.47.rectangle.lastEndY; actual=-800; expected=-800
+OK: wall.rotated.0.47.circle.area; actual=8842.9203673205; expected=8842.92036732051
+OK: wall.rotated.0.47.circle.joinedX; actual=535.662731527813; expected=535.662731527813
+OK: wall.rotated.0.47.circle.joinedY; actual=-781.884548584837; expected=-781.884548584837
+OK: wall.rotated.0.47.circle.joinedX; actual=513.01841725886; expected=513.01841725886
+OK: wall.rotated.0.47.circle.joinedY; actual=-737.306134175071; expected=-737.306134175071
+OK: wall.rotated.0.47.circle.joinedX; actual=511.934100140813; expected=511.934100140813
+OK: wall.rotated.0.47.circle.joinedY; actual=-732.77727132128; expected=-732.77727132128
+OK: wall.rotated.0.47.circle.joinedX; actual=513.858519136762; expected=513.858519136762
+OK: wall.rotated.0.47.circle.joinedY; actual=-726.879391070969; expected=-726.879391070969
+OK: wall.rotated.0.47.circle.joinedX; actual=521.934100140813; expected=521.934100140813
+OK: wall.rotated.0.47.circle.joinedY; actual=-722.77727132128; expected=-722.77727132128
+OK: wall.rotated.0.47.circle.joinedX; actual=527.831980391124; expected=527.831980391124
+OK: wall.rotated.0.47.circle.joinedY; actual=-724.701690317229; expected=-724.701690317229
+OK: wall.rotated.0.47.circle.joinedX; actual=530.849783022766; expected=530.849783022766
+OK: wall.rotated.0.47.circle.joinedY; actual=-728.24840846749; expected=-728.24840846749
+OK: wall.rotated.0.47.circle.joinedX; actual=553.49409729172; expected=553.49409729172
+OK: wall.rotated.0.47.circle.joinedY; actual=-772.826822877256; expected=-772.826822877256
+OK: wall.rotated.0.47.circle.joinedX; actual=589.156828819533; expected=589.156828819533
+OK: wall.rotated.0.47.circle.joinedY; actual=-754.711371462093; expected=-754.711371462093
+OK: wall.rotated.0.47.circle.joinedX; actual=543.868200281626; expected=543.868200281626
+OK: wall.rotated.0.47.circle.joinedY; actual=-665.55454264256; expected=-665.55454264256
+OK: wall.rotated.0.47.circle.joinedX; actual=508.205468753813; expected=508.205468753813
+OK: wall.rotated.0.47.circle.joinedY; actual=-683.669994057723; expected=-683.669994057723
+OK: wall.rotated.0.47.circle.joinedX; actual=507.238725997015; expected=507.238725997015
+OK: wall.rotated.0.47.circle.joinedY; actual=-684.161066409488; expected=-684.161066409488
+OK: wall.rotated.0.47.circle.joinedX; actual=503.327576373885; expected=503.327576373885
+OK: wall.rotated.0.47.circle.joinedY; actual=-686.147797036669; expected=-686.147797036669
+OK: wall.rotated.0.47.circle.joinedX; actual=495.251995369834; expected=495.251995369834
+OK: wall.rotated.0.47.circle.joinedY; actual=-690.249916786358; expected=-690.249916786358
+OK: wall.rotated.0.47.circle.joinedX; actual=491.340845746704; expected=491.340845746704
+OK: wall.rotated.0.47.circle.joinedY; actual=-692.236647413539; expected=-692.236647413539
+OK: wall.rotated.0.47.circle.joinedX; actual=490.374102989906; expected=490.374102989906
+OK: wall.rotated.0.47.circle.joinedY; actual=-692.727719765304; expected=-692.727719765304
+OK: wall.rotated.0.47.circle.joinedX; actual=454.711371462093; expected=454.711371462093
+OK: wall.rotated.0.47.circle.joinedY; actual=-710.843171180467; expected=-710.843171180467
+OK: wall.rotated.0.47.circle.lastEndX; actual=500; expected=500
+OK: wall.rotated.0.47.circle.lastEndY; actual=-800; expected=-800
+OK: wall.rotated.1.22.rectangle.area; actual=7200.00000000001; expected=7200
+OK: wall.rotated.1.22.rectangle.joinedX; actual=506.872914926321; expected=506.872914926321
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-781.218012873619; expected=-781.218012873619
+OK: wall.rotated.1.22.rectangle.joinedX; actual=478.699934236749; expected=478.699934236749
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-770.908640484137; expected=-770.908640484137
+OK: wall.rotated.1.22.rectangle.joinedX; actual=441.135959983986; expected=441.135959983986
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-757.162810631495; expected=-757.162810631495
+OK: wall.rotated.1.22.rectangle.joinedX; actual=454.881789836628; expected=454.881789836628
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-719.598836378733; expected=-719.598836378733
+OK: wall.rotated.1.22.rectangle.joinedX; actual=492.445764089391; expected=492.445764089391
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-733.344666231375; expected=-733.344666231375
+OK: wall.rotated.1.22.rectangle.joinedX; actual=520.618744778963; expected=520.618744778963
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-743.654038620856; expected=-743.654038620856
+OK: wall.rotated.1.22.rectangle.joinedX; actual=534.364574631605; expected=534.364574631605
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-706.090064368093; expected=-706.090064368093
+OK: wall.rotated.1.22.rectangle.joinedX; actual=440.454638999698; expected=440.454638999698
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-671.725489736489; expected=-671.725489736489
+OK: wall.rotated.1.22.rectangle.joinedX; actual=426.708809147056; expected=426.708809147056
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-709.289463989251; expected=-709.289463989251
+OK: wall.rotated.1.22.rectangle.joinedX; actual=412.962979294414; expected=412.962979294414
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-746.853438242014; expected=-746.853438242014
+OK: wall.rotated.1.22.rectangle.joinedX; actual=406.090064368093; expected=406.090064368093
+OK: wall.rotated.1.22.rectangle.joinedY; actual=-765.635425368395; expected=-765.635425368395
+OK: wall.rotated.1.22.rectangle.lastEndX; actual=500; expected=500
+OK: wall.rotated.1.22.rectangle.lastEndY; actual=-800; expected=-800
+OK: wall.rotated.1.22.circle.area; actual=8842.92036732051; expected=8842.92036732051
+OK: wall.rotated.1.22.circle.joinedX; actual=513.745829852642; expected=513.745829852642
+OK: wall.rotated.1.22.circle.joinedY; actual=-762.436025747237; expected=-762.436025747237
+OK: wall.rotated.1.22.circle.joinedX; actual=466.790862036689; expected=466.790862036689
+OK: wall.rotated.1.22.circle.joinedY; actual=-745.253738431435; expected=-745.253738431435
+OK: wall.rotated.1.22.circle.joinedX; actual=463.772969516505; expected=463.772969516505
+OK: wall.rotated.1.22.circle.joinedY; actual=-743.500896889022; expected=-743.500896889022
+OK: wall.rotated.1.22.circle.joinedX; actual=460.227319499849; expected=460.227319499849
+OK: wall.rotated.1.22.circle.joinedY; actual=-735.862744868244; expected=-735.862744868244
+OK: wall.rotated.1.22.circle.joinedX; actual=462.589167479071; expected=462.589167479071
+OK: wall.rotated.1.22.circle.joinedY; actual=-729.408394884901; expected=-729.408394884901
+OK: wall.rotated.1.22.circle.joinedX; actual=470.227319499849; expected=470.227319499849
+OK: wall.rotated.1.22.circle.joinedY; actual=-725.862744868244; expected=-725.862744868244
+OK: wall.rotated.1.22.circle.joinedX; actual=473.663776963009; expected=473.663776963009
+OK: wall.rotated.1.22.circle.joinedY; actual=-726.471751305054; expected=-726.471751305054
+OK: wall.rotated.1.22.circle.joinedX; actual=520.618744778963; expected=520.618744778963
+OK: wall.rotated.1.22.circle.joinedY; actual=-743.654038620856; expected=-743.654038620856
+OK: wall.rotated.1.22.circle.joinedX; actual=534.364574631605; expected=534.364574631605
+OK: wall.rotated.1.22.circle.joinedY; actual=-706.090064368093; expected=-706.090064368093
+OK: wall.rotated.1.22.circle.joinedX; actual=440.454638999698; expected=440.454638999698
+OK: wall.rotated.1.22.circle.joinedY; actual=-671.725489736489; expected=-671.725489736489
+OK: wall.rotated.1.22.circle.joinedX; actual=426.708809147056; expected=426.708809147056
+OK: wall.rotated.1.22.circle.joinedY; actual=-709.289463989251; expected=-709.289463989251
+OK: wall.rotated.1.22.circle.joinedX; actual=426.499526675567; expected=426.499526675567
+OK: wall.rotated.1.22.circle.joinedY; actual=-709.861381542053; expected=-709.861381542053
+OK: wall.rotated.1.22.circle.joinedX; actual=424.453275673507; expected=424.453275673507
+OK: wall.rotated.1.22.circle.joinedY; actual=-715.45328256077; expected=-715.45328256077
+OK: wall.rotated.1.22.circle.joinedX; actual=422.091427694284; expected=422.091427694284
+OK: wall.rotated.1.22.circle.joinedY; actual=-721.907632544114; expected=-721.907632544114
+OK: wall.rotated.1.22.circle.joinedX; actual=420.045176692224; expected=420.045176692224
+OK: wall.rotated.1.22.circle.joinedY; actual=-727.499533562831; expected=-727.499533562831
+OK: wall.rotated.1.22.circle.joinedX; actual=419.835894220735; expected=419.835894220735
+OK: wall.rotated.1.22.circle.joinedY; actual=-728.071451115633; expected=-728.071451115633
+OK: wall.rotated.1.22.circle.joinedX; actual=406.090064368093; expected=406.090064368093
+OK: wall.rotated.1.22.circle.joinedY; actual=-765.635425368395; expected=-765.635425368395
+OK: wall.rotated.1.22.circle.lastEndX; actual=500; expected=500
+OK: wall.rotated.1.22.circle.lastEndY; actual=-800; expected=-800
+OK: connected.outer.area; actual=6400; expected=6400
+OK: connected.outer.onlyOwnOpening
+OK: connected.outer.noIsland
+OK: connected.outer.noSeparate
+OK: connected.metadata
+OK: connected.outer.joinedX; actual=100; expected=100
+OK: connected.outer.joinedY; actual=0; expected=0
+OK: connected.outer.joinedX; actual=100; expected=100
+OK: connected.outer.joinedY; actual=100; expected=100
+OK: connected.outer.joinedX; actual=0; expected=0
+OK: connected.outer.joinedY; actual=100; expected=100
+OK: connected.outer.loopEndX; actual=0; expected=0
+OK: connected.outer.loopEndY; actual=0; expected=0
+OK: connected.outer.joinedX; actual=20; expected=20
+OK: connected.outer.joinedY; actual=20; expected=20
+OK: connected.outer.joinedX; actual=20; expected=20
+OK: connected.outer.joinedY; actual=80; expected=80
+OK: connected.outer.joinedX; actual=80; expected=80
+OK: connected.outer.joinedY; actual=80; expected=80
+OK: connected.outer.lastEndX; actual=80; expected=80
+OK: connected.outer.lastEndY; actual=20; expected=20
+OK: connected.island.area; actual=1200; expected=1200
+OK: connected.island.onlyOwnOpening
+OK: connected.island.noSurrounding
+OK: connected.island.hole
+OK: connected.island.joinedX; actual=70; expected=70
+OK: connected.island.joinedY; actual=30; expected=30
+OK: connected.island.joinedX; actual=70; expected=70
+OK: connected.island.joinedY; actual=70; expected=70
+OK: connected.island.joinedX; actual=30; expected=30
+OK: connected.island.joinedY; actual=70; expected=70
+OK: connected.island.loopEndX; actual=30; expected=30
+OK: connected.island.loopEndY; actual=30; expected=30
+OK: connected.island.joinedX; actual=40; expected=40
+OK: connected.island.joinedY; actual=40; expected=40
+OK: connected.island.joinedX; actual=40; expected=40
+OK: connected.island.joinedY; actual=60; expected=60
+OK: connected.island.joinedX; actual=60; expected=60
+OK: connected.island.joinedY; actual=60; expected=60
+OK: connected.island.lastEndX; actual=60; expected=60
+OK: connected.island.lastEndY; actual=40; expected=40
+OK: connected.emptyAtOpening
+OK: connected.emptyInput
+OK: connected.onBoundary; actual=400; expected=400
+OK: connected.strip.separatedWall; actual=600; expected=600
+OK: connected.strip.noOppositeWall
+OK: connected.strip.joinedX; actual=60; expected=60
+OK: connected.strip.joinedY; actual=70; expected=70
+OK: connected.strip.joinedX; actual=60; expected=60
+OK: connected.strip.joinedY; actual=100; expected=100
+OK: connected.strip.joinedX; actual=40; expected=40
+OK: connected.strip.joinedY; actual=100; expected=100
+OK: connected.strip.lastEndX; actual=40; expected=40
+OK: connected.strip.lastEndY; actual=70; expected=70
+OK: connected.notch.localArea; actual=1600; expected=1600
+OK: connected.notch.concreteBelow
+OK: connected.notch.holeStillExcluded
+OK: connected.notch.joinedX; actual=30; expected=30
+OK: connected.notch.joinedY; actual=0; expected=0
+OK: connected.notch.joinedX; actual=30; expected=30
+OK: connected.notch.joinedY; actual=30; expected=30
+OK: connected.notch.joinedX; actual=20; expected=20
+OK: connected.notch.joinedY; actual=30; expected=30
+OK: connected.notch.joinedX; actual=20; expected=20
+OK: connected.notch.joinedY; actual=70; expected=70
+OK: connected.notch.joinedX; actual=30; expected=30
+OK: connected.notch.joinedY; actual=70; expected=70
+OK: connected.notch.joinedX; actual=30; expected=30
+OK: connected.notch.joinedY; actual=100; expected=100
+OK: connected.notch.joinedX; actual=10; expected=10
+OK: connected.notch.joinedY; actual=100; expected=100
+OK: connected.notch.lastEndX; actual=10; expected=10
+OK: connected.notch.lastEndY; actual=0; expected=0
+OK: postAudit03.clone.multiLoop
+OK: postAudit03.clone.area; actual=33601.767270539; expected=33601.767270539
+OK: postAudit03.clone.context
+OK: postAudit03.clone.owner
+OK: postAudit03.clone.segmentCount
+OK: postAudit03.clone.edge.1
+OK: postAudit03.clone.edge.2
+OK: postAudit03.clone.edge.3
+OK: postAudit03.clone.edge.4
+OK: postAudit03.clone.edge.5
+OK: postAudit03.clone.edge.6
+OK: postAudit03.clone.edge.7
+OK: postAudit03.clone.edge.8
+OK: postAudit03.clone.edge.9
+OK: postAudit03.clone.edge.10
+OK: postAudit03.clone.edge.11
+OK: postAudit03.clone.edge.12
+OK: postAudit03.clone.role.1
+OK: postAudit03.clone.role.2
+OK: postAudit03.clone.role.3
+OK: postAudit03.clone.probesIndependent
+OK: postAudit03.clone.ownerIndependent
+OK: postAudit03.clone.edgesIndependent
+POSTAUDIT03_CLONE_1000_SECONDS=0.03125
+TOTAL: passed=1319; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryQuery.RunGeometryQueryTests; 2026-10-20T19:20:33
+===== modTestPolygonSpec.RunPolygonSpecTests =====
+SUITE_STARTED: modTestPolygonSpec.RunPolygonSpecTests; 2026-10-20T19:20:34
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=136652; workingSet=142045184; privateBytes=92913664; cpu=63.1875
+EXCEL_AFTER_SUITE: pid=172640; workingSet=150638592; privateBytes=108453888; cpu=94.5625
+EXCEL_AFTER_SUITE: pid=202344; workingSet=167755776; privateBytes=123392000; cpu=94.96875
+PASS: new.open.4
+PASS: count.before.seal.4
+PASS: sealed.4
+PASS: record.4.1
+PASS: record.4.2
+PASS: record.4.3
+PASS: record.4.4
+PASS: kernel.copy.independent.4
+PASS: reject.after.seal.4
+PASS: new.open.5
+PASS: count.before.seal.5
+PASS: sealed.5
+PASS: record.5.1
+PASS: record.5.2
+PASS: record.5.3
+PASS: record.5.4
+PASS: record.5.5
+PASS: kernel.copy.independent.5
+PASS: reject.after.seal.5
+PASS: new.open.6
+PASS: count.before.seal.6
+PASS: sealed.6
+PASS: record.6.1
+PASS: record.6.2
+PASS: record.6.3
+PASS: record.6.4
+PASS: record.6.5
+PASS: record.6.6
+PASS: kernel.copy.independent.6
+PASS: reject.after.seal.6
+PASS: new.open.9
+PASS: count.before.seal.9
+PASS: sealed.9
+PASS: record.9.1
+PASS: record.9.2
+PASS: record.9.3
+PASS: record.9.4
+PASS: record.9.5
+PASS: record.9.6
+PASS: record.9.7
+PASS: record.9.8
+PASS: record.9.9
+PASS: kernel.copy.independent.9
+PASS: reject.after.seal.9
+PASS: ids.binary.case
+PASS: reject.duplicate
+PASS: reject.empty.id
+PASS: reject.negative.radius
+PASS: reject.incomplete
+PASS: reject.infinity
+PASS: reject.nan
+PASS: recover.after.failed.seal
+TOTAL POLYGON SPEC: passed=52; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8f8ab10e70444ff58f8555d7be530c3c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestPolygonSpec.RunPolygonSpecTests; 2026-10-20T19:20:34
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

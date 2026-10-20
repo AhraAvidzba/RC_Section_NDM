@@ -11,7 +11,7 @@ $jobs=@(
     @{Name='Batch15_No'; Source=$batch; Macro='RunFocusedBatch15'; Mode='No'; A=''; B=''},
     @{Name='Batch15_Yes'; Source=$batch; Macro='RunFocusedBatch15'; Mode='Yes'; A=''; B=''},
     @{Name='Saved_Yes'; Source=$probe; Macro='RunFocusedAcceptanceCases'; Mode='Yes'; A='SavedWorkbook'; B='Saved'},
-    @{Name='RoundedMx1_Yes'; Source=$probe; Macro='RunFocusedSingleLoad'; Mode='Yes'; A='PointedRect'; B='Mx1'}
+    @{Name='RoundedMx1_Yes'; Source=$probe; Macro='RunFocusedSingleLoad'; Mode='Yes'; A='PointedSection'; B='Mx1'}
 )
 $records=@(); $reason=''
 try {

@@ -11,9 +11,9 @@ if (-not $preparation.Compiled -or $preparation.ProbeWorkbookSHA256 -cne (Get-Fi
     throw 'Probe source or helper changed after compilation.'
 }
 $jobs=@(
-    @{Shape='RectSet'; Group='Generated'; Count=8},
+    @{Shape='Rectangles'; Group='Generated'; Count=8},
     @{Shape='Circle'; Group='Generated'; Count=8},
-    @{Shape='PointedRect'; Group='Generated'; Count=8},
+    @{Shape='PointedSection'; Group='Generated'; Count=8},
     @{Shape='HollowRectangle'; Group='Generated'; Count=8},
     @{Shape='SavedWorkbook'; Group='Saved'; Count=23},
     @{Shape='SavedWorkbook'; Group='Paths'; Count=6}

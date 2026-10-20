@@ -29,7 +29,7 @@ def verify():
         checks['contact.'+name+'.strict']= '>0' in meaning and 'ошибку' in meaning and 'до вызова' in meaning and 'выключает' not in meaning
     normal=parameter_meaning({'owner':'CSectionDefinitionBuilder','name':'RebarByCount'}, {'name':'diameter','passing':'ByVal'})
     checks['row.diameter.zero.disables']= 'ноль выключает ряд' in normal
-    source=(ROOT/'src/Geometry/CSectionRecipePointedRect.cls').read_text(encoding='utf-8-sig')
+    source=(ROOT/'src/Geometry/CSectionRecipePointedSection.cls').read_text(encoding='utf-8-sig')
     call=re.search(r'(?m)^    facade.Outer[^\n]+\n[^\n]+',source)[0]
     sig=signatures((ROOT/'src/Section/CSectionDefinitionBuilder.cls').read_text(encoding='utf-8-sig'))
     description,args=argument_comment(call.strip(),'Rounded',sig,{},'')
@@ -38,7 +38,7 @@ def verify():
     try:call_args('facade.Outer "OUTER", path.ID, "comment", _','Outer','facade.')
     except ValueError:checks['unfinished.command.rejected']=True
     else:checks['unfinished.command.rejected']=False
-    for name in ('CSectionRecipePointedRect','CSectionRecipeHollowRectangle'):
+    for name in ('CSectionRecipePointedSection','CSectionRecipeHollowRectangle'):
         text=(ROOT/'src/Geometry'/(name+'.cls')).read_text(encoding='utf-8-sig')
         checks[name+'.no.stale.comment']=not re.search(r'_ —|sizes — размеры, вершины',text)
     guide=(ROOT/'src/Common/modSectionRecipeApiGuide.bas').read_text(encoding='utf-8-sig')

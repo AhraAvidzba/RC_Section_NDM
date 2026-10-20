@@ -9,7 +9,7 @@ if(Test-Path -LiteralPath $book){throw 'Private comparison workbook already exis
 Copy-Item -LiteralPath (Join-Path $directory 'Baseline.xlsm') -Destination $book
 $modules=@('modTestAudit02Snapshots')
 if($Stage -eq 'Candidate'){
-    $modules+=@('CSectionRecipeCircle','CSectionRecipeRectSet','CSectionRecipePointedRect',
+    $modules+=@('CSectionRecipeCircle','CSectionRecipeRectangles','CSectionRecipePointedSection',
         'CSectionRecipeHollowRectangle','modSectionRecipeRows','modSectionRecipeApiGuide','modTestAudit02Api')
 }
 & (Join-Path $PSScriptRoot 'Update-PrivateWorkbookCode.ps1') -WorkbookPath $book -ModuleNames $modules

@@ -22,8 +22,8 @@ Private Sub Class_Initialize()
     Set mRecipes = CreateObject("Scripting.Dictionary"): mRecipes.CompareMode = vbTextCompare
     Set mRecipeTables = CreateObject("Scripting.Dictionary"): mRecipeTables.CompareMode = vbTextCompare
     RegisterRecipe "Circle", New CSectionRecipeCircle, Array("rngCircleGeometry")
-    RegisterRecipe "RectSet", New CSectionRecipeRectSet, Array("rngRectSetGeometry")
-    RegisterRecipe "PointedRect", New CSectionRecipePointedRect, Array("rngPointedRectGeometry")
+    RegisterRecipe "Rectangles", New CSectionRecipeRectangles, Array("rngRectanglesGeometry")
+    RegisterRecipe "PointedSection", New CSectionRecipePointedSection, Array("rngPointedSectionGeometry")
     RegisterRecipe "HollowRectangle", New CSectionRecipeHollowRectangle, Array("rngHollowRectangleGeometry")
 End Sub
 

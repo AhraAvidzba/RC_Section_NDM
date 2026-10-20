@@ -21,7 +21,7 @@ try{
     $excel.Visible=$false;$excel.DisplayAlerts=$false;$excel.EnableEvents=$false;$excel.AutomationSecurity=1
     $book=$excel.Workbooks.Open($path,0,$true)
     $compile=$excel.VBE.CommandBars.FindControl(1,578);if($compile -and $compile.Enabled){$compile.Execute()}
-    $macros=@('modTestSectionRecipes.DumpCircleRecipeMatrix','modTestSectionRecipes.DumpRectSetRecipeMatrix',
+    $macros=@('modTestSectionRecipes.DumpCircleRecipeMatrix','modTestSectionRecipes.DumpRectanglesRecipeMatrix',
         'modTestSectionRecipes.DumpRoundedRecipeMatrix','modTestSectionRecipes.DumpHollowRecipeMatrix',
         'modTestSectionRecipes.DumpHollowRecipeEdgeMatrix','modTestAudit02Snapshots.DumpRecipePathContracts')
     if($InputTests){$macros+=@('modTestSectionInputReader.RunSectionInputReaderTests','modTestSectionRecipes.RunRecipeDefinitionTests',

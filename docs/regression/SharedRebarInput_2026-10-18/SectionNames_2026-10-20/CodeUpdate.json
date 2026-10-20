@@ -1,0 +1,19 @@
+﻿{
+    "Workbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\SharedRebarInput_2026-10-18\\SectionNames_2026-10-20\\Accepted02.xlsm",
+    "WorkbookSHA256":  "4A7AA472D46D0C2FBCAC9FACEBE526360F2D4B8F3785F1C7E55FC728B001DBFD",
+    "ProductionSHA256":  "F0F0CC7BCD74DB62987E03C0749ED249A39603F4F749A871495CAB6600F6DC99",
+    "Compiled":  true,
+    "Modules":  [
+                    "modWorkbookMessages",
+                    "modTestGeometryConfig",
+                    "modTestGeometryReview"
+                ],
+    "RetiredModules":  [
+
+                       ],
+    "EntryPointNames":  [
+
+                        ],
+    "TraceGeometry":  false,
+    "ProductionChanged":  false
+}

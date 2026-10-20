@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "SOURCE_CALLS_AND_NATIVE_ROOTS_MATCH",
-  "members": 321,
+  "members": 322,
   "examples": {
     "ISectionRecipe.CreateDefinition": {
       "source": "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas",
@@ -37,7 +37,7 @@
     },
     "CSectionDefinitionBuilder.CirclePath": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1276,
+      "line": 1279,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.CirclePath(\"Full\", 0#, 0#, 100#)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -54,7 +54,7 @@
     },
     "CSectionDefinitionBuilder.LinePath": {
       "source": "tests/modTestGeometryReview.bas",
-      "line": 365,
+      "line": 540,
       "routine": "TestPerPath",
       "code": "    Set path = facade.LinePath(\"P1\", 0#, 0#, 100#, 0#)",
       "context": "В теле modTestGeometryReview.TestPerPath с его подготовленными локальными объектами/входом.",
@@ -341,7 +341,7 @@
     },
     "CSectionDefinitionBuilder.Slice": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1279,
+      "line": 1282,
       "routine": "RunCircleSetbackTests",
       "code": "    Set path = facade.Slice(\"Half\", path.ID, 50# * GEOM_PI, 150# * GEOM_PI)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -461,7 +461,7 @@
     },
     "CSectionDefinitionBuilder.Opening": {
       "source": "tests/modTestGeometry.bas",
-      "line": 1967,
+      "line": 1970,
       "routine": "TestHollowRectangleGeometry",
       "code": "    facade.Opening \"VOID\", path.ID, \"OUTER\"",
       "context": "В теле modTestGeometry.TestHollowRectangleGeometry с его подготовленными локальными объектами/входом.",
@@ -471,6 +471,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -494,6 +495,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -595,6 +597,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -605,7 +608,7 @@
     },
     "CSectionDefinitionBuilder.RebarDependent": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 903,
+      "line": 895,
       "routine": "OffsetGeometryDefinition",
       "code": "    facade.RebarDependent \"Row2\", \"Main\", 20#, options",
       "context": "В теле modTestAudit02Api.OffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -635,6 +638,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -1466,7 +1470,7 @@
     },
     "CGeometryPath.AtDistance": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1277,
+      "line": 1280,
       "routine": "RunCircleSetbackTests",
       "code": "    path.AtDistance 0#, x, y, tx, ty",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -1483,7 +1487,7 @@
     },
     "CGeometryPath.ValidateNormalTransfer": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 896,
+      "line": 888,
       "routine": "OffsetGeometryDefinition",
       "code": "    If kind = 1 Then path.ValidateNormalTransfer 0#, 10#",
       "context": "В теле modTestAudit02Api.OffsetGeometryDefinition с его подготовленными локальными объектами/входом.",
@@ -1650,7 +1654,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestPolygonSpec.RunPolygonSpecTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt"
           ]
         }
       ]
@@ -1673,7 +1678,7 @@
     },
     "CPolygonSpec.Count": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 620,
+      "line": 612,
       "routine": "SpecSnapshot",
       "code": "    For i = 1 To polygon.Count",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1702,7 +1707,8 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestPolygonSpec.RunPolygonSpecTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt"
           ]
         }
       ]
@@ -1769,14 +1775,15 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestPolygonSpec.RunPolygonSpecTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestPolygonSpec.RunPolygonSpecTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/PolygonSpecTests/modTestPolygonSpec.RunPolygonSpecTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt"
           ]
         }
       ]
     },
     "CPolygonSpec.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 621,
+      "line": 613,
       "routine": "SpecSnapshot",
       "code": "        SpecSnapshot = SpecSnapshot & polygon.VertexID(i) & \"|\" & CStr(polygon.X(i)) & \"|\" & CStr(polygon.Y(i)) & _\n            \"|\" & CStr(polygon.FilletRadius(i)) & \"|\" & polygon.SourceReference(i) & vbCrLf",
       "context": "В теле modTestAudit02Api.SpecSnapshot с его подготовленными локальными объектами/входом.",
@@ -1931,6 +1938,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
@@ -1975,6 +1983,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
@@ -2059,7 +2068,7 @@
     },
     "CSectionDefinition.ConcreteDomain": {
       "source": "tests/modTestRecipeSetbacks.bas",
-      "line": 233,
+      "line": 232,
       "routine": "RunRecipeSetbackInputTests",
       "code": "    geometryArea = def.ConcreteDomain.Area",
       "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
@@ -2072,6 +2081,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
@@ -2096,6 +2106,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestSectionRecipes.RunRecipeDefinitionTests.txt",
             "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/RecipeCircle/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/DefinitionTests.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Annotations.txt",
@@ -2108,16 +2119,17 @@
     },
     "CSectionDefinition.WriteContours": {
       "source": "tests/modTestGeometry.bas",
-      "line": 1783,
-      "routine": "TestRoundedRectangleContourAnnotations",
+      "line": 1786,
+      "routine": "TestPointedSectionContourAnnotations",
       "code": "    geom.WriteContours model.Contours",
-      "context": "В теле modTestGeometry.TestRoundedRectangleContourAnnotations с его подготовленными локальными объектами/входом.",
+      "context": "В теле modTestGeometry.TestPointedSectionContourAnnotations с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
           "entryPoint": "modTestGeometry.RunGeometryTests",
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -2320,7 +2332,7 @@
     },
     "CRebarRuleOptions.ValidateRowOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 932,
+      "line": 924,
       "routine": "OffsetSharedJointDefinition",
       "code": "    options.NormalOffset = 100#: options.ValidateRowOffset = True: options.SourceReference = \"OffsetJoint[2,3]\"",
       "context": "В теле modTestAudit02Api.OffsetSharedJointDefinition с его подготовленными локальными объектами/входом.",
@@ -2337,7 +2349,7 @@
     },
     "CRebarRuleOptions.EverySecond": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 656,
+      "line": 648,
       "routine": "TestContactSequence",
       "code": "    Check \"contactBuilder.example.binding\", row.EverySecond",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -2374,7 +2386,7 @@
     },
     "CRebarRuleOptions.DirectionX": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 692,
+      "line": 684,
       "routine": "TestContactDefaults",
       "code": "    Check \"contactBuilder.clone.DirectionX\", copy.DirectionX = defaults.DirectionX",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2619,7 +2631,7 @@
     },
     "CRebarRuleOptions.PlacementCheck": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 723,
+      "line": 715,
       "routine": "TestContactDefaults",
       "code": "    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2650,6 +2662,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -2758,7 +2771,7 @@
     },
     "CRebarRuleOptions.Comment": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 706,
+      "line": 698,
       "routine": "TestContactDefaults",
       "code": "    Check \"contactBuilder.clone.Comment\", copy.Comment = defaults.Comment",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2776,7 +2789,7 @@
     },
     "CRebarRuleOptions.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 714,
+      "line": 706,
       "routine": "TestContactDefaults",
       "code": "    defaults.SourceReference = \"ChangedDefaults\"",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2811,7 +2824,7 @@
     },
     "CRebarRuleOptions.Clone": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 682,
+      "line": 674,
       "routine": "TestContactDefaults",
       "code": "    Set copy = defaults.Clone",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -2908,6 +2921,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -2947,6 +2961,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3378,7 +3393,7 @@
     },
     "CSectionInputTable.OptionalRowOffset": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1009,
+      "line": 1001,
       "routine": "RunIndependentRowOffsetWorkbookTests",
       "code": "    Check \"offset.input.direct.reader\", inputTable.OptionalRowOffset(FixtureInput(target.Value2).RowIndex(\"Extra\", \"Circle\"), FixtureInput(target.Value2).ColumnIndex(\"Extra\", \"a2\"), units) = 100#",
       "context": "В теле modTestAudit02Api.RunIndependentRowOffsetWorkbookTests с его подготовленными локальными объектами/входом.",
@@ -3552,7 +3567,7 @@
     },
     "CSectionRecipeContext.Table": {
       "source": "tests/modTestGeometryConfig.bas",
-      "line": 120,
+      "line": 121,
       "routine": "CounterFixture",
       "code": "    Set table = context.Table(CStr(names(0)))",
       "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
@@ -3570,7 +3585,7 @@
     },
     "CSectionRecipeContext.Reader": {
       "source": "tests/modTestGeometryConfig.bas",
-      "line": 121,
+      "line": 122,
       "routine": "CounterFixture",
       "code": "    Set keyed = context.Reader(CStr(names(0)))",
       "context": "В теле modTestGeometryConfig.CounterFixture с его подготовленными локальными объектами/входом.",
@@ -3865,16 +3880,17 @@
     },
     "CRebarRuleExecutor.RequestedPositions": {
       "source": "tests/modTestGeometry.bas",
-      "line": 1218,
-      "routine": "TestRectSetAutoRebarLayout",
-      "code": "    AssertTrue stats, \"rectset.rebar.requested\", builder.RequestedPositions = 8",
-      "context": "В теле modTestGeometry.TestRectSetAutoRebarLayout с его подготовленными локальными объектами/входом.",
+      "line": 1832,
+      "routine": "TestPointedSectionRebarLayout",
+      "code": "    AssertTrue stats, \"rounded.rebar.requested\", builder.RequestedPositions = 16",
+      "context": "В теле modTestGeometry.TestPointedSectionRebarLayout с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
           "entryPoint": "modTestGeometry.RunGeometryTests",
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3885,7 +3901,7 @@
     },
     "CRebarRuleExecutor.CreatedPositions": {
       "source": "tests/modTestGeometry.bas",
-      "line": 2658,
+      "line": 2661,
       "routine": "TestAudit03CircleCountGuard",
       "code": "        AssertClose stats, prefix & \".beforeCoordinates\", CDbl(builder.CreatedPositions), 0#, 0#",
       "context": "В теле modTestGeometry.TestAudit03CircleCountGuard с его подготовленными локальными объектами/входом.",
@@ -3895,6 +3911,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3938,6 +3955,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3961,6 +3979,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -3984,6 +4003,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4007,6 +4027,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4030,6 +4051,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4053,6 +4075,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4076,6 +4099,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4103,7 +4127,7 @@
     },
     "CRebarRuleExecutor.PositionRuleID": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 858,
+      "line": 850,
       "routine": "RunIndependentRowOffsetGeometryTests",
       "code": "                If executor.PositionRuleID(i) = \"Row2\" Then",
       "context": "В теле modTestAudit02Api.RunIndependentRowOffsetGeometryTests с его подготовленными локальными объектами/входом.",
@@ -4133,6 +4157,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4160,7 +4185,7 @@
     },
     "CRebarRuleExecutor.PositionPhysicalOwner": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1343,
+      "line": 1346,
       "routine": "RunCircleSetbackTests",
       "code": "                    owner = executor.PositionPhysicalOwner(i)",
       "context": "В теле modTestAudit02Api.RunCircleSetbackTests с его подготовленными локальными объектами/входом.",
@@ -4190,6 +4215,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4213,6 +4239,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4253,6 +4280,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -4302,6 +4330,12 @@
       "code": "    units.LoadFromSettings settings",
       "context": "В теле modTestMaterialDiagrams.Audit03MaterialConfigProvider с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
+        {
+          "entryPoint": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+          "reports": [
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt"
+          ]
+        },
         {
           "entryPoint": "modTestMaterialDiagrams.RunAudit03MaterialConfigBehaviorTests",
           "reports": [
@@ -4633,17 +4667,16 @@
       ]
     },
     "CUnitSystem.InputStressToInternal": {
-      "source": "tests/modTestRecipeApiCatalogue.bas",
-      "line": 192,
-      "routine": "RunApiUnitExamples",
-      "code": "    Near \"units.stress.input\", units.InputStressToInternal(12#), 12#",
-      "context": "В теле modTestRecipeApiCatalogue.RunApiUnitExamples с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestMaterialDiagrams.bas",
+      "line": 1274,
+      "routine": "TestAudit03MaterialControlUnits",
+      "code": "        factor = units.InputStressToInternal(1#)",
+      "context": "В теле modTestMaterialDiagrams.TestAudit03MaterialControlUnits с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestRecipeApiCatalogue.RunApiUnitExamples",
+          "entryPoint": "modTestMaterialDiagrams.RunMaterialDiagramTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeApiCatalogue.RunApiUnitExamples.txt",
-            "docs/regression/GeometryDeclarative_2026-10-12/NativeGuide/ApiCallExamples.txt"
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt"
           ]
         }
       ]
@@ -4917,6 +4950,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -4954,6 +4988,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -4981,6 +5016,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5000,6 +5036,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5035,6 +5072,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5093,6 +5131,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5112,6 +5151,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5131,6 +5171,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5150,6 +5191,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5169,6 +5211,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5188,6 +5231,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5294,6 +5338,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5313,6 +5358,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5332,6 +5378,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5368,6 +5415,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5387,6 +5435,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5440,6 +5489,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5459,6 +5509,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5493,6 +5544,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5512,6 +5564,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5531,6 +5584,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5550,6 +5604,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5569,6 +5624,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5774,6 +5830,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5810,6 +5867,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -5831,6 +5889,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -5850,6 +5909,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/FinalApiAcceptance/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometryQuery.RunGeometryQueryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Consumers.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt"
           ]
@@ -6097,7 +6157,7 @@
     },
     "modSectionRecipeTypes.ERebarPlacementCheck": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 723,
+      "line": 715,
       "routine": "TestContactDefaults",
       "code": "    first.NormalOffset = -1000#: first.PlacementCheck = CheckCenter",
       "context": "В теле modTestAudit02Api.TestContactDefaults с его подготовленными локальными объектами/входом.",
@@ -6128,6 +6188,7 @@
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/DirectedFinal/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/ResolveAnchor_2026-10-15/Directed01/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestRecipeOperations.RunRecipeDiagnosticTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/ApiCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalOperations.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6273,6 +6334,23 @@
         }
       ]
     },
+    "modSectionRecipeTypes.SectionRecipeErrorText": {
+      "source": "tests/modTestGeometryReview.bas",
+      "line": 813,
+      "routine": "TestRecipeErrorParagraphs",
+      "code": "    wrapped = SectionRecipeErrorText(text)",
+      "context": "В теле modTestGeometryReview.TestRecipeErrorParagraphs с его подготовленными локальными объектами/входом.",
+      "nativeRoots": [
+        {
+          "entryPoint": "modTestGeometryReview.RunPointedWidthInputTests",
+          "reports": [
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedMessages.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt"
+          ]
+        }
+      ]
+    },
     "modSectionRecipeTypes.SectionRecipeGeometryError": {
       "source": "tests/modTestRecipeApiCatalogue.bas",
       "line": 255,
@@ -6302,6 +6380,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6312,7 +6391,7 @@
     },
     "modGeometryTypes.GEOM_TOLERANCE": {
       "source": "tests/modTestGeometry.bas",
-      "line": 2576,
+      "line": 2579,
       "routine": "AssertRelative",
       "code": "    If Abs(expected) <= GEOM_TOLERANCE Then",
       "context": "В теле modTestGeometry.AssertRelative с его подготовленными локальными объектами/входом.",
@@ -6322,6 +6401,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6416,7 +6496,7 @@
     },
     "modGeometryTypes.GeomMax": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 1234,
+      "line": 1237,
       "routine": "RunOffsetOpeningAnnotationTests",
       "code": "            maxY = GeomMax(maxY, model.RebarY(i))",
       "context": "В теле modTestAudit02Api.RunOffsetOpeningAnnotationTests с его подготовленными локальными объектами/входом.",
@@ -6466,7 +6546,7 @@
     },
     "modGeometryTypes.BuildGeneratedSectionModel": {
       "source": "tests/modTestGeometry.bas",
-      "line": 1388,
+      "line": 1391,
       "routine": "TestRectangularMeshSteps",
       "code": "    Set model = BuildGeneratedSectionModel(mesh, Nothing)",
       "context": "В теле modTestGeometry.TestRectangularMeshSteps с его подготовленными локальными объектами/входом.",
@@ -6476,6 +6556,7 @@
           "reports": [
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometry.RunGeometryTests.txt",
             "docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/PrimitiveTests/modTestGeometry.RunGeometryTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ZeroOffsetsGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt",
             "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/Operations.txt",
@@ -6486,7 +6567,7 @@
     },
     "CRebarContactBuilder.Initialize": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 653,
+      "line": 645,
       "routine": "TestContactSequence",
       "code": "    contact.Initialize 32#, 1#, 1#, defaults",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -6504,7 +6585,7 @@
     },
     "CRebarContactBuilder.AppendRow": {
       "source": "tests/modTestAudit02Api.bas",
-      "line": 658,
+      "line": 650,
       "routine": "TestContactSequence",
       "code": "    Set row = contact.AppendRow(16#, \"Stacked\", \"EachBar\", \"ContactTest[2,2]\")",
       "context": "В теле modTestAudit02Api.TestContactSequence с его подготовленными локальными объектами/входом.",
@@ -6575,20 +6656,24 @@
       ]
     },
     "CSectionInputReader.RowIndex": {
-      "source": "tests/modTestAudit02Api.bas",
-      "line": 493,
-      "routine": "CloseoutRectSetInputMatrix",
-      "code": "            shapeRow = keyed.RowIndex(\"General\", \"Shape\")",
-      "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
+      "source": "tests/modTestRecipeSetbacks.bas",
+      "line": 221,
+      "routine": "RunRecipeSetbackInputTests",
+      "code": "    main = table.RowIndex(\"Main\", \"Top\") - 1",
+      "context": "В теле modTestRecipeSetbacks.RunRecipeSetbackInputTests с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+          "entryPoint": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/UnifiedTestsCorrected/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt",
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/ConfigMigration.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/ConfigSetbacks/SetbackInput.txt",
+            "docs/regression/GeometryDeclarative_2026-10-12/DeclarativeApi/FinalGeometry.txt"
           ]
         }
       ]
@@ -6794,18 +6879,14 @@
     "CSectionInputReader.SourceReference": {
       "source": "tests/modTestAudit02Api.bas",
       "line": 501,
-      "routine": "CloseoutRectSetInputMatrix",
+      "routine": "CloseoutRectanglesInputMatrix",
       "code": "                expectedAddress = keyed.SourceReference(\"General\", CStr(fieldKeys(column - 1)))",
-      "context": "В теле modTestAudit02Api.CloseoutRectSetInputMatrix с его подготовленными локальными объектами/входом.",
+      "context": "В теле modTestAudit02Api.CloseoutRectanglesInputMatrix с его подготовленными локальными объектами/входом.",
       "nativeRoots": [
         {
-          "entryPoint": "modTestAudit02Api.RunAudit02CloseoutRectSetInputTests",
+          "entryPoint": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
           "reports": [
-            "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt",
-            "docs/regression/StructuredGeometryTables_2026-10-17/TargetedChecks02.txt"
+            "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt"
           ]
         }
       ]
@@ -6851,25 +6932,25 @@
   "missingNativeRoots": [],
   "sourceHashes": {
     "docs/geometry_refactor/examples/modTestRoundedTrapezoidExample.bas": "f6a35be1e38936529b2882b9fdad6b7b1b086f44de31dc9313809ddcb6415fd8",
-    "tests/modTestAudit02Api.bas": "941b13358873b0daebfe9c46f231e7f41d67ac000d5aa1453982595564761b09",
+    "tests/modTestAudit02Api.bas": "1bc6b40fd6cce7dfaf0650372f5e7a003ad79756753240873d41b3efafcc19c6",
     "tests/modTestAutoCADContours.bas": "5edfd1631f415a361b235512f71db4d3bc528a35a68ea043793cc1bc56ec5aae",
     "tests/modTestContourMesh.bas": "3729da3521911350d2b755e304ae3284e053b236630ee4413f7386ac8d1b8133",
     "tests/modTestDeclarativeExamples.bas": "6702d4bef8672cb5f6e12dc0a93c2a1232e91e26e8aab034b82212a728b55450",
     "tests/modTestDeclarativeGeometry.bas": "32137f46e96aea1eb0c7d18e6a8a9042c35497892c8ae112b3d4b0b3cdff2ee7",
-    "tests/modTestGeometry.bas": "f99b0d6538081433dba9ee27a5b20e459609ccdc061803c5c4d27e1526bdb42d",
-    "tests/modTestGeometryConfig.bas": "b8e439e703805957d6227a50f3890b85172fa2266a6bdd52375f293cf929c384",
-    "tests/modTestGeometryPublication.bas": "48b16c90e96c9e4c3ee5168b4857f99109ce2cd9e04ce1349f6e13137cfc7ce6",
-    "tests/modTestGeometryQuery.bas": "461ea2b13a582da6d256925a730bdfb0a3027ebddf18b2f95bebe14e6a7f4b01",
-    "tests/modTestGeometryReview.bas": "82cc69d3bd4b5c0b587334b29a0e6bda44e298ed344f2090d0e5c3f016a30dd3",
-    "tests/modTestMaterialDiagrams.bas": "087f88c86f4b8ebd8d2f0395a903a4f4bf3d6276ef5383e057713d1227b56b4b",
-    "tests/modTestPolygonSpec.bas": "ed5a5ef469aeab55de91c42540adb7d44f44695704b316e8d88efd7d2681dc1e",
-    "tests/modTestRecipeAnnotations.bas": "3847af00d93a63a520806dbadff9870160da53ed7a714dd14b1d149bfa569845",
+    "tests/modTestGeometry.bas": "28f0c1be54174d31a2f9c292350759cea32e3933788c48b97a15acbfe3fe2b0b",
+    "tests/modTestGeometryConfig.bas": "5976c8117718a28a5166a3a24d9d8181dceed6e0cd31aefe22077542d6ad16a2",
+    "tests/modTestGeometryPublication.bas": "941a487082d2924eb9776b015ac588697af4c86266dfde65d316432872386eca",
+    "tests/modTestGeometryQuery.bas": "fe4fb926782bf35f2155d86d966e63a9851c4d0704c7b84fd3d1fbc8202f1ebf",
+    "tests/modTestGeometryReview.bas": "f021a286e0565dcb51a8df24d668290e5afaa95409316f7f60a51a0e679bbbb1",
+    "tests/modTestMaterialDiagrams.bas": "f64c3d9f69355fc47cea39981d53175edba10faeb5b7a7b725dadad6d2454b71",
+    "tests/modTestPolygonSpec.bas": "cd50f71c9bea2bc14a7ac33a97c35f3f3e4aea511fad4107fad01614106751ee",
+    "tests/modTestRecipeAnnotations.bas": "c2ba62a9221853f39aca922dfe7ec91facc26af4df63c9adf385f8cb656c95d0",
     "tests/modTestRecipeApiCatalogue.bas": "c124966801f6f0efdeea86843a580618df7d4b46f57452428eef5105e177c863",
-    "tests/modTestRecipeOperations.bas": "a200b0fdc4c41673f1469949e5e1324ee7813d7266a9a70a77e439ef6f9244f9",
-    "tests/modTestRecipeSetbacks.bas": "c586f58b6363ef6a6c1b3e9afa07a5a87dd80e961679f718aaa80650fe5341d0",
+    "tests/modTestRecipeOperations.bas": "aa7eadc1fec9b7d62f0b6564348bf6c33f739f779ef4ce04ffd1f303b702e4e8",
+    "tests/modTestRecipeSetbacks.bas": "0f4b1d7daa1de0855b5862fdb0ecd1e648d629860ec2eff24296813b6f590b83",
     "tests/modTestSectionInputReader.bas": "170add03409db8afc8a8d9c619180c483f183ed155fc60929ee1a30aef5f7b65",
-    "tests/modTestSectionRecipes.bas": "a74e544064089fc54184ff5056a4c5418b19b347b99a0c60f4a8523b824453dc",
-    "tests/modTestSectionSolver.bas": "8a6320e735c1ab212ddf30e744d90b0de5822c89f9b49605b6c2cf6b33bc54c7"
+    "tests/modTestSectionRecipes.bas": "d35e2d01754a94a43931a4c9a95c4a0e261adb65e54def338eb98c144c5a93ab",
+    "tests/modTestSectionSolver.bas": "1bf03d4e540ea124f1d1f2973e38f4df04b1f6b290c81629c2021f0d7e011dbe"
   },
   "reportHashes": {
     "docs/regression/DependentRowOffsets_2026-10-17/CircleClockwiseTests/modTestAudit02Api.RunCircleSetbackTests.txt": "cd4b2010d9f5ecd137cc293e021f3aac77228406dd938c730ce9663e5ef68f04",
@@ -6896,8 +6977,6 @@
     "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt": "9b03394155c6a89785dfee87bdbccc5e47bd9d2f21f5438dcf9fc1561f9e6bde",
     "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestSectionRecipes.RunRecipeRuleTests.txt": "8aea8ef20fad8e47dd326c65a8030430fbce09100e97c7b8ffe35466fd365b47",
     "docs/regression/DependentRowOffsets_2026-10-17/UnifiedDirected03/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt": "05bd7f6e331a9c48b4653fa763454ae8224949f2694ba74f21e2200f0934292f",
-    "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/BaselineDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt": "d447d1c999d3410bd5e5af4792dc86af62f286b418260814793feee58f464947",
-    "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt": "d447d1c999d3410bd5e5af4792dc86af62f286b418260814793feee58f464947",
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02Closeout_2026-10-14/CandidateDirectedTests/modTestAudit02Api.RunAudit02OptionsTests.txt": "718a91c0d1b17a403d49605665cd22525fcf8e3e879b6ff3626e8c1524c186ca",
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02AnnotationTests.txt": "19cd4ecd208dd7f785bf714f650ce301d0355904f1a31c465aad69c45bd38251",
     "docs/regression/ExcelGuardGuide_2026-10-13/Audit02_2026-10-14/Audit02ContractTests/modTestAudit02Api.RunAudit02InputTests.txt": "aace1b8a4d546479534b5dea48afab5154e4f003d38776242e1101c0a6ed3291",
@@ -6932,7 +7011,6 @@
     "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/Directed04/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b",
     "docs/regression/ExcelGuardGuide_2026-10-13/NoMigrations_2026-10-15/FinalSettings/modTestRecipeSetbacks.RunRecipeSetbackInputTests.txt": "da744c96676be268694b1a0c1d0ba833c9bc11418dac813051f19f382264304b",
     "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/CandidateUnit/modTestAudit02Api.RunRebarContactBuilderTests.txt": "079daf22a1a77e41892b89b0e8df0abd9c628dd0ffd63b16adff7cceba3b60ae",
-    "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt": "5bee9dfc554572ed421c23d6760cec5b12076939fcbf6def5180bd008a90171a",
     "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeApiCatalogue.RunAdvancedGuideExamples.txt": "50933e8e48122c1eabac0d9fc7d10ece1804490b0f77e44e9d2a91325324a394",
     "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeDiagnosticTests.txt": "c5f73dd0e311a9dc6b7a413f0501219441112355324f8b974916c8fbe30d07e7",
     "docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17/Directed/modTestRecipeOperations.RunRecipeOperationTests.txt": "02189b2e03ae1ec0ac5205acf67256bf330577ba73c6c90ca2617bc012919693",
@@ -6949,7 +7027,6 @@
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeAnnotationCountTests.txt": "a0d3e03ad8f65c98a86fd467d7ac7e9b5a1c960e770d863399cf26f3db0e1c08",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunRecipeDefinitionTests.txt": "e41406128dd458e3e2ec29fddd1d37595c9dfc2e67187c797b2c812d5202d038",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeBoundaries_2026-10-16/Directed/modTestSectionRecipes.RunWorkbookRecipeInputTests.txt": "af41df968cfd50c760eea980c2179a08867fcab1302612242bfe02c68ec09253",
-    "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestAudit02Api.RunAudit02CloseoutRectSetInputTests.txt": "5bee9dfc554572ed421c23d6760cec5b12076939fcbf6def5180bd008a90171a",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeApiCatalogue.RunAdvancedGuideExamples.txt": "50933e8e48122c1eabac0d9fc7d10ece1804490b0f77e44e9d2a91325324a394",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeDiagnosticTests.txt": "c5f73dd0e311a9dc6b7a413f0501219441112355324f8b974916c8fbe30d07e7",
     "docs/regression/ExcelGuardGuide_2026-10-13/RecipeSimplification_2026-10-16/CandidateDirected/modTestRecipeOperations.RunRecipeOperationTests.txt": "02189b2e03ae1ec0ac5205acf67256bf330577ba73c6c90ca2617bc012919693",
@@ -7086,6 +7163,9 @@
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/GeometryCore.txt": "7b887fe724d8e88f020cec956de823f1bf3073871acbfbe9c6b242b8b4a94841",
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/NumericalRegression.txt": "5a366129218f79ec78d4781882a2d92c51573d40bffbcfa4c714ba97470b0ae4",
     "docs/regression/GeometryDeclarative_2026-10-12/RetiredArchitecture/QueriesAndContours.txt": "7f07790c8aa6f8ac5af4c4d5474b224de6186c8c72aa209361a170f0c73aceed",
+    "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedFinalCore.txt": "156aa5aac193499fa7073ea38d7a9593937b9e4ae25148abe82b535d3192ba3e",
+    "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedMessages.txt": "75943ebe14ec8c84c5bb34dcf9f28635713e9062a6810090a8939b3fdb7e63a9",
+    "docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt": "7342409242d4003bad4b85c24c6669738788791b0e5c5dc522a881ceef76bb93",
     "docs/regression/StructuredGeometryTables_2026-10-17/FreshDirectedChecks02.txt": "0f6a85ca0084b2a793382d3c14b69e3b321aff4a9d570fa01ecbceb5b3f9f2a0",
     "docs/regression/StructuredGeometryTables_2026-10-17/ReaderTests.txt": "66631e5044888e066f5ca4c04ea7495baaa54bae1c2c0c933f65e056a912c392",
     "docs/regression/StructuredGeometryTables_2026-10-17/RequiredAndCircleFinal.txt": "32b305f42b66465bee6baeff77c747d0722067cbb5c3333b48a744389e39107c",

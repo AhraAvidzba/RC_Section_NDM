@@ -83,4 +83,23 @@ class FullScopeChecks(unittest.TestCase):
     def test_lowered_suite_count_is_rejected(self):
         self.plan['Jobs'][0]['ExpectedSuites']-=1;self.assertTrue(full.coverage_errors(self.plan))
 
+    def expanded_plan(self):
+        return {'CoverageDefinition':'AllActiveAcceptanceIncludingFocused','CoverageVersion':2,'IncludesFocusedAcceptance':True,
+                'Jobs':[{'Group':g,'Mode':m,'ExpectedSuites':n} for g,n in full.CURRENT_GROUP_COUNTS.items() for m in ('No','Yes')]}
+
+    def test_expanded_scope_requires_recent_offset_tests(self):
+        plan=self.expanded_plan();self.assertEqual(full.coverage_errors(plan),[])
+        plan['Jobs']=[j for j in plan['Jobs'] if j['Group']!='SavedOffsets']
+        self.assertTrue(full.coverage_errors(plan))
+
+    def test_expanded_geometry_cannot_use_old_count(self):
+        plan=self.expanded_plan()
+        for job in plan['Jobs']:
+            if job['Group']=='Geometry':job['ExpectedSuites']=26
+        self.assertTrue(full.coverage_errors(plan))
+
+    def test_unknown_coverage_version_is_rejected(self):
+        plan=self.expanded_plan();plan['CoverageVersion']=999
+        self.assertTrue(full.coverage_errors(plan))
+
 if __name__=='__main__':unittest.main(verbosity=2)

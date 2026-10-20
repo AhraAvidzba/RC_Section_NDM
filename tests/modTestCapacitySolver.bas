@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestCapacitySolver"
+﻿Attribute VB_Name = "modTestCapacitySolver"
 Option Explicit
 
 ' ==========================================================================
@@ -101,8 +101,8 @@ Public Function RunCapacitySolverTests() As String
     TestCapacityLoadPathMethodMatrix stats
     AppendLine stats, "RUN: TestCapacityLoadPathZeroComponentMatrix"
     TestCapacityLoadPathZeroComponentMatrix stats
-    AppendLine stats, "RUN: TestRectSetCapacityLoadPathSmoke"
-    TestRectSetCapacityLoadPathSmoke stats
+    AppendLine stats, "RUN: TestRectanglesCapacityLoadPathSmoke"
+    TestRectanglesCapacityLoadPathSmoke stats
     AppendLine stats, "RUN: TestNultBaseLoadStepsSensitivity"
     TestNultBaseLoadStepsSensitivity stats
     AppendLine stats, "RUN: TestSearchMethodInputErrors"
@@ -1510,7 +1510,7 @@ Private Sub TestAsymmetricCoupledCurvatures(ByRef stats As TCapacityTestStats)
     AssertEquilibrium stats, "capacity.asym", cap.LastSolver, -260000#, cap.MxUltimate, 0#
 End Sub
 
-' Решает косой изгиб несимметричного RectSet и проверяет обе кривизны,
+' Решает косой изгиб несимметричного Rectangles и проверяет обе кривизны,
 ' отношение предельных моментов и равновесие относительно исходных осей.
 Private Sub TestAsymmetricMxy(ByRef stats As TCapacityTestStats)
     Dim geom As CGeometryRegion
@@ -1771,7 +1771,7 @@ Private Sub TestLoadMultiplierWithWorkbookTfDefaults(ByRef stats As TCapacityTes
     Set units = New CUnitSystem
     units.LoadFromSettings settings
 
-    AssertEquals stats, "capacity.tfDefaults.geometry", settings.GetString("Geometry.Type", ""), "RectSet"
+    AssertEquals stats, "capacity.tfDefaults.geometry", settings.GetString("Geometry.Type", ""), "Rectangles"
     AssertEquals stats, "capacity.tfDefaults.forceUnit", settings.GetString("Units.Force.Input", ""), "tf"
     AssertEquals stats, "capacity.tfDefaults.momentUnit", settings.GetString("Units.Moment.Input", ""), "tf*m"
 
@@ -2034,7 +2034,7 @@ Public Function RunLimitSearchFailureRegressionTests() As String
     TestLimitSearchNumericalZeroIsNotRoot stats
     TestLimitSearchInitialRecoveryBudget stats
     TestAudit03RealCapacityPrecision stats
-    TestRectSetCapacityLoadPathSmoke stats
+    TestRectanglesCapacityLoadPathSmoke stats
     TestUltimateMomentTranslationInvariant stats
     TestUltimateStrainToleranceNoHiddenFloor stats
     TestUltimateNumericalContextCache stats
@@ -2081,9 +2081,9 @@ End Sub
 ' В этой задаче важно, что N приложена в бетонном центре тяжести: после
 ' переноса к координатам расчетных элементов внутри solver-а появляются
 ' связанные Mx/My, хотя пользователь масштабирует только продольную силу.
-Private Sub TestRectSetCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
+Private Sub TestRectanglesCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
     Dim section As CSectionModel
-    Set section = RectSetCapacitySection()
+    Set section = RectanglesCapacitySection()
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -2092,24 +2092,24 @@ Private Sub TestRectSetCapacityLoadPathSmoke(ByRef stats As TCapacityTestStats)
     Dim tensionLoad As CSectionLoadState
     Set tensionLoad = New CSectionLoadState
     tensionLoad.Initialize 200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
-    CheckRectSetCapacityPathMethods stats, "rectset.n.tension", section, 0#, tensionLoad.N, _
+    CheckRectanglesCapacityPathMethods stats, "rectangles.n.tension", section, 0#, tensionLoad.N, _
         0#, tensionLoad.AxialMxAboutPoint(0#), 0#, tensionLoad.AxialMyAboutPoint(0#), True
 
     Dim compressionLoad As CSectionLoadState
     Set compressionLoad = New CSectionLoadState
     compressionLoad.Initialize -200# * 9806.65, 0#, 0#, props.CentroidX, props.CentroidY
-    CheckRectSetCapacityPathMethods stats, "rectset.n.compression", section, 0#, compressionLoad.N, _
+    CheckRectanglesCapacityPathMethods stats, "rectangles.n.compression", section, 0#, compressionLoad.N, _
         0#, compressionLoad.AxialMxAboutPoint(0#), 0#, compressionLoad.AxialMyAboutPoint(0#), True
 
     ' Пользовательский сценарий из книги: Г-сечение, N задана относительно
     ' бетонного центра тяжести, а предельная способность ищется по lambda*Mx.
     ' Здесь обязана включаться быстрая моментная постановка
     ' UltimateStrain: N постоянна, направление Mx/My сохраняется.
-    CheckRectSetMomentUltimatePath stats, "rectset.moment.mx.userCase", section, _
+    CheckRectanglesMomentUltimatePath stats, "rectangles.moment.mx.userCase", section, _
         -200# * 9806.65, 50# * 9806.65 * 1000#, 0#, props.CentroidX, props.CentroidY
-    CheckRectSetMomentUltimatePath stats, "rectset.moment.my.userCase", section, _
+    CheckRectanglesMomentUltimatePath stats, "rectangles.moment.my.userCase", section, _
         -200# * 9806.65, 0#, 50# * 9806.65 * 1000#, props.CentroidX, props.CentroidY
-    CheckRectSetMomentUltimatePath stats, "rectset.moment.mxy.userCase", section, _
+    CheckRectanglesMomentUltimatePath stats, "rectangles.moment.mxy.userCase", section, _
         -200# * 9806.65, 50# * 9806.65 * 1000#, 25# * 9806.65 * 1000#, props.CentroidX, props.CentroidY
 End Sub
 
@@ -2117,7 +2117,7 @@ End Sub
 ' Внутри solver-а момент от N добавляется как постоянный offset, а
 ' пользовательский момент масштабируется через lambda. Такой тест защищает
 ' рабочую моментную постановку от случайного ухода в общий load-path residual.
-Private Sub CheckRectSetMomentUltimatePath(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CheckRectanglesMomentUltimatePath(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nValue As Double, _
         ByVal userMxBase As Double, ByVal userMyBase As Double, _
         ByVal referenceX As Double, ByVal referenceY As Double)
@@ -2154,28 +2154,28 @@ Private Sub CheckRectSetMomentUltimatePath(ByRef stats As TCapacityTestStats, By
     AssertClose stats, prefix & ".myUltimate.user", cap.MyUltimate, cap.LambdaUltimate * userMyBase, 20000#
 End Sub
 
-' Запускает одинаковый RectSet load path всеми разрешенными стратегиями поиска.
+' Запускает одинаковый Rectangles load path всеми разрешенными стратегиями поиска.
 ' Для силовой траектории явно передает принятый переход к LoadMultiplier.
-Private Sub CheckRectSetCapacityPathMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CheckRectanglesCapacityPathMethods(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal section As CSectionModel, ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
         ByVal myOffset As Double, ByVal myBase As Double, _
         Optional ByVal allowForcePathFallback As Boolean = False)
-    CheckRectSetCapacityPathMethod stats, prefix & ".auto", "Auto", "", section, _
+    CheckRectanglesCapacityPathMethod stats, prefix & ".auto", "Auto", "", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckRectSetCapacityPathMethod stats, prefix & ".ultimate", "UltimateStrain", "", section, _
+    CheckRectanglesCapacityPathMethod stats, prefix & ".ultimate", "UltimateStrain", "", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckRectSetCapacityPathMethod stats, prefix & ".bisection", "LoadMultiplier", "Bisection", section, _
+    CheckRectanglesCapacityPathMethod stats, prefix & ".bisection", "LoadMultiplier", "Bisection", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckRectSetCapacityPathMethod stats, prefix & ".brent", "LoadMultiplier", "Brent", section, _
+    CheckRectanglesCapacityPathMethod stats, prefix & ".brent", "LoadMultiplier", "Brent", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
-    CheckRectSetCapacityPathMethod stats, prefix & ".secant", "LoadMultiplier", "Secant", section, _
+    CheckRectanglesCapacityPathMethod stats, prefix & ".secant", "LoadMultiplier", "Secant", section, _
         nOffset, nBase, mxOffset, mxBase, myOffset, myBase, allowForcePathFallback
 End Sub
 
-' Выполняет выбранный поиск на готовом сечении RectSet и проверяет физический
+' Выполняет выбранный поиск на готовом сечении Rectangles и проверяет физический
 ' предел. Усилия итогового НДС отдельно проверяются на заданной траектории нагрузки.
-Private Sub CheckRectSetCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
+Private Sub CheckRectanglesCapacityPathMethod(ByRef stats As TCapacityTestStats, ByVal prefix As String, _
         ByVal methodName As String, ByVal searchMethod As String, ByVal section As CSectionModel, _
         ByVal nOffset As Double, ByVal nBase As Double, _
         ByVal mxOffset As Double, ByVal mxBase As Double, _
@@ -2224,7 +2224,7 @@ End Sub
 ' она может заметно влиять на устойчивость отдельных probe-точек.
 Private Sub TestNultBaseLoadStepsSensitivity(ByRef stats As TCapacityTestStats)
     Dim section As CSectionModel
-    Set section = RectSetCapacitySection()
+    Set section = RectanglesCapacitySection()
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -2336,10 +2336,10 @@ End Sub
 
 ' Строит фиксированное двухпрямоугольное сечение с арматурой по четырем граням.
 ' Геометрия, шаг сетки и диаметры независимы от пользовательского Config.
-Private Function RectSetCapacitySection() As CSectionModel
+Private Function RectanglesCapacitySection() As CSectionModel
     Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
     Dim row As Variant, rows As Variant, mesh As TSectionMeshOptions, builder As CSectionBuilder
-    Set facade = New CSectionDefinitionBuilder: facade.Initialize "RectSetCapacityTest"
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "RectanglesCapacityTest"
     Set path = facade.AdjacentRectangles("Boundary", Array(Array(0#, 0#, 600#, 250#), Array(0#, 250#, 250#, 550#)))
     facade.Outer "OUTER", path.ID
     rows = Array(Array("H1.Left", 40#, 250#, 40#, 800#, 5), Array("H1.Right", 210#, 800#, 210#, 250#, 5), _
@@ -2355,7 +2355,7 @@ Private Function RectSetCapacitySection() As CSectionModel
         facade.RebarByCount CStr(row(0)) & ".Main", path.ID, CLng(row(5)), 32#, options, "A400"
     Next row
     mesh.StepX = 50#: mesh.StepY = 50#: mesh.BoundarySubdivisions = 1: mesh.MaterialID = 1
-    Set builder = New CSectionBuilder: Set RectSetCapacitySection = builder.Build(facade.Finish, mesh)
+    Set builder = New CSectionBuilder: Set RectanglesCapacitySection = builder.Build(facade.Finish, mesh)
 End Function
 
 ' Выводится название выбранного метода UltimateStrain или LoadMultiplier.

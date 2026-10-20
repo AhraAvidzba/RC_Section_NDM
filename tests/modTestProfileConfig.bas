@@ -107,7 +107,7 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
     modTestShapeArchitecture.ConfigureShapeFixture "TwoRectangles"
     names = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCircleGeometry", _
-        "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry", _
+        "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngRectanglesGeometry", _
         "rngPlotAnnotationSettings", "rngCalculationProfiles", "rngLoadCombinations")
     ReDim refs(0 To UBound(names))
     For index = 0 To UBound(names): refs(index) = ThisWorkbook.Names.Item(CStr(names(index))).RefersTo: Next index
@@ -186,7 +186,7 @@ Public Function RunAudit03RelocatedInputTests(Optional ByRef passed As Long = 0,
                 End If
                 stats.Cases = stats.Cases + 1
             Next field
-            If CStr(names(index)) = "rngRectSetGeometry" Then TestRelocatedRectSetSelectors stats, target, position
+            If CStr(names(index)) = "rngRectanglesGeometry" Then TestRelocatedRectanglesSelectors stats, target, position
             ThisWorkbook.Names.Item(CStr(names(index))).RefersTo = refs(index)
         Next position
     Next index
@@ -219,7 +219,7 @@ End Function
 ' Проверяет независимые выборы и ошибки формул обеих физических граней.
 ' Адрес ввода берется из перемещенной таблицы; другая грань не подменяет
 ' ошибочное значение, а исходные настройки восстанавливаются после пробы.
-Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal source As Object, ByVal position As Long)
+Private Sub TestRelocatedRectanglesSelectors(ByRef stats As TProfileStats, ByVal source As Object, ByVal position As Long)
     Dim reader As CSectionInputReader, pair As Variant, field As Variant, rowKey As Variant
     Dim first As Object, second As Object, cell As Object, column As Long, row As Long
     Dim savedFirst As Variant, savedSecond As Variant, choices As Variant, code As Long, reason As String
@@ -236,14 +236,14 @@ Private Sub TestRelocatedRectSetSelectors(ByRef stats As TProfileStats, ByVal so
             choices = Array("EachBar", "EverySecondBar")
             If Left$(CStr(field), 3) = "pos" Then choices = Array("Stacked", "SideBySide")
             first.Value2 = choices(0): second.Value2 = choices(1)
-            prefix = "relocated.rectset.p" & CStr(position) & "." & CStr(pair(0)) & "." & CStr(field)
-            Set inputTable = RelocatedRecipeTable("rngRectSetGeometry", units)
+            prefix = "relocated.rectangles.p" & CStr(position) & "." & CStr(pair(0)) & "." & CStr(field)
+            Set inputTable = RelocatedRecipeTable("rngRectanglesGeometry", units)
             Check stats, prefix & ".firstIndependent", inputTable.Choice(first.Row - source.Row + 1, column, choices) = choices(0)
             Check stats, prefix & ".secondIndependent", inputTable.Choice(second.Row - source.Row + 1, column, choices) = choices(1)
             For Each rowKey In pair
                 row = reader.RowIndex("Extra", CStr(rowKey)): Set cell = source.Cells(row, column)
                 cell.Value2 = CVErr(xlErrDiv0)
-                Set inputTable = RelocatedRecipeTable("rngRectSetGeometry", units)
+                Set inputTable = RelocatedRecipeTable("rngRectanglesGeometry", units)
                 code = 0: reason = ""
                 On Error Resume Next
                 value = inputTable.Choice(row, column, choices)
@@ -277,9 +277,9 @@ Private Function RelocatedRecipeError(ByVal rangeName As String, ByRef reason As
     On Error GoTo Failed
     Select Case rangeName
         Case "rngCircleGeometry": typeID = "Circle"
-        Case "rngPointedRectGeometry": typeID = "PointedRect"
+        Case "rngPointedSectionGeometry": typeID = "PointedSection"
         Case "rngHollowRectangleGeometry": typeID = "HollowRectangle"
-        Case "rngRectSetGeometry": typeID = "RectSet"
+        Case "rngRectanglesGeometry": typeID = "Rectangles"
     End Select
     Set system = ThisWorkbook.Names("rngSystemSettings").RefersToRange
     For row = 2 To system.Rows.Count
@@ -319,12 +319,12 @@ Private Function RelocatedFields(ByVal source As Object, ByVal rangeName As Stri
         Case "rngSteelMaterialParameters"
             fields.Add Array(CaptionRow(source, "Steel.E", 1), 2, "Steel.Esc")
             fields.Add Array(CaptionRow(source, "Steel.E", 1), 3, "Steel.Es")
-        Case "rngCircleGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry"
+        Case "rngCircleGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngRectanglesGeometry"
             Dim reader As CSectionInputReader, key As Variant, selected As Variant
             Set reader = FixtureInput(source.Value2)
             Select Case rangeName
                 Case "rngCircleGeometry": selected = Array("D")
-                Case "rngPointedRectGeometry": selected = Array("B", "H", "Left.R1")
+                Case "rngPointedSectionGeometry": selected = Array("B", "H", "Left.R1")
                 Case "rngHollowRectangleGeometry": selected = Array("B", "H", "Xo")
                 Case Else: selected = Array("Shape", "H1", "B1")
             End Select
@@ -333,7 +333,7 @@ Private Function RelocatedFields(ByVal source As Object, ByVal rangeName As Stri
             Next key
             Select Case rangeName
                 Case "rngCircleGeometry": key = "Circle"
-                Case "rngRectSetGeometry": key = "R1.Left"
+                Case "rngRectanglesGeometry": key = "R1.Left"
                 Case Else: key = "Left"
             End Select
             Dim rebarField As Variant

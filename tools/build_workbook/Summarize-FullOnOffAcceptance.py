@@ -20,6 +20,7 @@ FULL = (
     'modTestRegressionBaseline.RunRegressionBaselineTests',
 )
 GROUP_COUNTS = {'Full': 8, 'Geometry': 26, 'SP35': 6, 'Recipes': 26}
+CURRENT_GROUP_COUNTS = {**GROUP_COUNTS, 'Geometry': 30, 'SavedOffsets': 2}
 
 
 def coverage_errors(manifest):
@@ -27,15 +28,19 @@ def coverage_errors(manifest):
     if manifest.get('CoverageDefinition') != 'AllActiveAcceptanceIncludingFocused':
         return []
     errors=[]
+    version=manifest.get('CoverageVersion',1)
+    if version not in (1,2):
+        errors.append('Unsupported full coverage version')
+    counts=CURRENT_GROUP_COUNTS if version==2 else GROUP_COUNTS
     if manifest.get('IncludesFocusedAcceptance') is not True:
         errors.append('The current full definition requires focused acceptance')
-    expected={(group,mode) for group in GROUP_COUNTS for mode in ('No','Yes')}
+    expected={(group,mode) for group in counts for mode in ('No','Yes')}
     jobs=manifest.get('Jobs',[])
     actual=[(job['Group'],job['Mode']) for job in jobs]
     if set(actual)!=expected or len(actual)!=len(expected):
-        errors.append('The current full plan requires all eight ON/OFF groups')
+        errors.append('The full plan requires every declared canonical ON/OFF group')
     for job in jobs:
-        if job.get('ExpectedSuites')!=GROUP_COUNTS.get(job['Group']):
+        if job.get('ExpectedSuites')!=counts.get(job['Group']):
             errors.append('Canonical suite coverage differs: '+job['Group'])
     return errors
 

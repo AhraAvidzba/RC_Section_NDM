@@ -13,7 +13,7 @@ from zipfile import ZipFile,ZIP_DEFLATED
 ROOT=Path(__file__).resolve().parents[2]
 D=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RecipeComments_2026-10-16'
 PREVIOUS=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RecipeResponsibilities_2026-10-16'
-RECIPES=['src/Geometry/CSectionRecipe'+name+'.cls' for name in ('Circle','RectSet','PointedRect','HollowRectangle')]
+RECIPES=['src/Geometry/CSectionRecipe'+name+'.cls' for name in ('Circle','Rectangles','PointedSection','HollowRectangle')]
 EXAMPLES=['docs/geometry_refactor/examples/CSectionRecipe'+name+'.cls' for name in ('MySection','RoundedTrapezoid')]
 RELATED=['src/Section/ISectionRecipe.cls','src/Section/CSectionRecipeContext.cls','src/Geometry/modSectionRecipeRows.bas','src/Section/CRebarRuleOptions.cls']
 CHANGED=set(RECIPES+['src/Section/CRebarRuleOptions.cls','src/Common/modSectionRecipeApiGuide.bas',EXAMPLES[1]])
@@ -33,7 +33,7 @@ def write(name,value):(D/name).write_text(json.dumps(value,ensure_ascii=False,in
 
 
 def format_cases(source,name):
-    if name not in ('CSectionRecipePointedRect','CSectionRecipeHollowRectangle'):return source,0
+    if name not in ('CSectionRecipePointedSection','CSectionRecipeHollowRectangle'):return source,0
     pattern=r'(?m)^( +)Case ("B.Top"|"B.Bottom"|3|4): (Set AxisPath = facade\.Chain[^\n]*)$'
     return re.subn(pattern,lambda m:m[1]+'Case '+m[2]+'\n'+m[1]+'    '+m[3],source)
 

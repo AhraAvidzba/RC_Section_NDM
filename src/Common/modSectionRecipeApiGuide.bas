@@ -104,12 +104,12 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     таблицы.
 '     На листе «Сечения» каждому типу соответствует одна таблица: General содержит размеры, Main —
 '     основное армирование сторон, Extra — дополнительные ряды. Например: Set reader =
-'     context.Reader("rngPointedRectGeometry"), B = reader.PositiveLength("General", "B"), n =
+'     context.Reader("rngPointedSectionGeometry"), B = reader.PositiveLength("General", "B"), n =
 '     reader.Count("Main", "Top", "n"). Ридер проверяет значения и переводит длины в мм. Для своей
 '     структуры доступны context.Table и ValueAt.
 '
 '   УСТРОЙСТВО ШТАТНЫХ РЕЦЕПТОВ
-'     В Circle, RectSet, PointedRect и HollowRectangle сначала читаются и проверяются размеры и
+'     В Circle, Rectangles, PointedSection и HollowRectangle сначала читаются и проверяются размеры и
 '     параметры включённых рядов. Подготовленные значения, адреса исходных ячеек и соответствие названий
 '     Config внутренним именам сторон сохраняются в Private Type самого рецепта. Для одного размера
 '     отдельный метод чтения не нужен.
@@ -171,7 +171,7 @@ Attribute VB_Name = "modSectionRecipeApiGuide"
 '     Chain получает имя исходной линии, локальные имена начального и конечного сегментов, параметры от
 '     0 до 1 и направление обхода. Параметры задают точки начала и конца внутри этих сегментов; True
 '     выбирает обход исходной линии, False — обратный. На замкнутом контуре это два разных маршрута
-'     между теми же точками. Например, у нижнего сегмента PointedRect начало справа (0), конец слева
+'     между теми же точками. Например, у нижнего сегмента PointedSection начало справа (0), конец слева
 '     (1): Chain от 1 к 0 с False идёт напрямую слева направо, а с True — через остальные стороны
 '     контура. При полном обороте от середины сегмента его вторая часть получает свободное имя .Part2,
 '     .Part3 и далее. SourcePathID/SourceSegmentID и SourceStartParameter/SourceEndParameter сохраняют

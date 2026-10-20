@@ -1,5 +1,5 @@
 ﻿# ДЛЯ ТЕСТОВ: три знака смещения на отдельных книгах, без расчёта НДС.
-param([string]$Directory='docs/regression/ExcelGuardGuide_2026-10-13/RectSetOffset_2026-10-15')
+param([string]$Directory='docs/regression/ExcelGuardGuide_2026-10-13/RectanglesOffset_2026-10-15')
 $ErrorActionPreference='Stop'
 $root=(Get-Location).Path
 $evidence=[IO.Path]::GetFullPath((Join-Path $root $Directory))
@@ -28,7 +28,7 @@ $candidateDirectory=Join-Path $evidence 'Candidate'
 New-Item -ItemType Directory -Path $candidateDirectory | Out-Null
 $candidate=Join-Path $candidateDirectory 'RC_Section_NDM.xlsm'
 Copy-Item -LiteralPath $baseline -Destination $candidate
-Invoke-Driver 'Update-PrivateWorkbookCode.ps1' @('-WorkbookPath',($Directory+'/Candidate/RC_Section_NDM.xlsm'),'-ModuleNames','CSectionRecipeRectSet')
+Invoke-Driver 'Update-PrivateWorkbookCode.ps1' @('-WorkbookPath',($Directory+'/Candidate/RC_Section_NDM.xlsm'),'-ModuleNames','CSectionRecipeRectangles')
 Invoke-Driver 'Export-Audit03VbaSnapshot.ps1' @('-WorkbookPath',($Directory+'/Baseline.xlsm'),'-OutputPath',($Directory+'/BaselineNativeVBA.txt'))
 Invoke-Driver 'Export-Audit03VbaSnapshot.ps1' @('-WorkbookPath',($Directory+'/Candidate/RC_Section_NDM.xlsm'),'-OutputPath',($Directory+'/CandidateNativeVBA.txt'))
 Invoke-Driver 'Verify-PostAudit03VbaEquality.ps1' @('-ExportPath',($Directory+'/CandidateNativeVBA.txt'),'-ReportPath',($Directory+'/CandidateSourceEquality.json'))
@@ -46,7 +46,7 @@ foreach($version in @('Before','After')){
         $ownedId=[int]$windowId;$ownedTicks=(Get-Process -Id $ownedId).StartTime.ToUniversalTime().Ticks
         $book=$excel.Workbooks.Open($path,0,$false)
         if($book.ReadOnly){throw 'Probe is read-only.'}
-        $book.VBProject.VBComponents.Item('modTestSectionRecipes').CodeModule.AddFromString([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'RectSetOffsetProbe.bas'),[Text.Encoding]::UTF8))
+        $book.VBProject.VBComponents.Item('modTestSectionRecipes').CodeModule.AddFromString([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'RectanglesOffsetProbe.bas'),[Text.Encoding]::UTF8))
         $excel.VBE.ActiveVBProject=$book.VBProject
         $compile=$excel.VBE.CommandBars.FindControl(1,578)
         if($compile.Enabled){$compile.Execute()}
@@ -58,7 +58,7 @@ foreach($version in @('Before','After')){
         [GC]::Collect();[GC]::WaitForPendingFinalizers()
         if($ownedId){$owned=Get-Process -Id $ownedId -ErrorAction SilentlyContinue;if($owned -and $owned.ProcessName -eq 'EXCEL' -and $owned.StartTime.ToUniversalTime().Ticks -eq $ownedTicks){Stop-Process -Id $ownedId -Force}}
     }
-    $macro=if($version -eq 'Before'){'DumpRectSetOffsetBefore'}else{'RunRectSetOffsetDimensionTests'}
+    $macro=if($version -eq 'Before'){'DumpRectanglesOffsetBefore'}else{'RunRectanglesOffsetDimensionTests'}
     Invoke-Driver 'Run-Audit03Watchdog.ps1' @('-SourceWorkbook',($Directory+'/'+$version+'/RC_Section_NDM.xlsm'),'-ReportPath',($Directory+'/'+$version+'.txt'),'-Macro',('modTestSectionRecipes.'+$macro),'-Mode','No','-TimeoutSeconds','120')
 }
-Write-Output 'RECTSET_OFFSET_NATIVE_CHECKS_FINISHED'
+Write-Output 'RECTANGLES_OFFSET_NATIVE_CHECKS_FINISHED'

@@ -194,7 +194,7 @@ End Function
 Private Sub FocusedSelectGeometry(ByVal shapeName As String)
     Select Case shapeName
         Case "SavedWorkbook": SetSystemSetting "Geometry.Source", "AutoCAD"
-        Case "RectSet", "Circle", "PointedRect", "HollowRectangle"
+        Case "Rectangles", "Circle", "PointedSection", "HollowRectangle"
             SetSystemSetting "Geometry.Source", "Generated"
             SetSystemSetting "Geometry.Type", shapeName
             ' Общая таблица не хранит четыре независимых набора армирования.

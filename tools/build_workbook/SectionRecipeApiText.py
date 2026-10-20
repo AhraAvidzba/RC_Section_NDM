@@ -274,7 +274,8 @@ METHODS = {
     "CSectionInputSnapshotReader": {"Capture": "На внешней Excel-границе вычисляет и копирует только выбранные именованные блоки с адресами, затем Seal context."},
     "ISectionRecipe": {"CreateDefinition": "Интерфейс единственного класса типа. Возвращает опубликованное definition через общий фасад, без сетки/баров/Shapes в рецепте."},
     "modSectionRecipeTypes": {
-        "SectionRecipeError": "Выдаёт общий код 5530 с owner/причиной/строкой источника; не назначает нормативный статус.",
+        "SectionRecipeError": "Выдаёт код 5530 с адресами, контекстом, причиной и возможным решением в отдельных абзацах; не назначает расчётный статус.",
+        "SectionRecipeErrorText": "Возвращает текст ошибки: адреса, название сечения и стороны, место ошибки, причина и возможное решение. Не меняет факты и не выдаёт исключение.",
         "SectionRecipeGeometryError": "В обработчике добавляет SourceReference к query/path отказу; неожиданные ошибки сохраняют исходный Err.Number/Source.",
     },
     "modGeometryTypes": {
@@ -467,7 +468,9 @@ def purpose(member):
 def parameter_meaning(member, parameter):
     import re
     name, passing = parameter["name"], parameter["passing"]
-    if name == 'rowPrefix' and member['owner'] in ('CSectionInputReader','CSectionRecipeContext'):
+    if member['owner'] == 'modSectionRecipeTypes' and name in ('context', 'entityCaption', 'rebarCaption'):
+        meaning = {'context': 'Название сечения и описание стороны или ряда; выводится отдельным абзацем.', 'entityCaption': 'Название конкретного ряда или элемента; выводится перед причиной на отдельной строке.', 'rebarCaption': 'Понятное название стороны и арматуры либо контура, для которого выполнялось построение.'}[name]
+    elif name == 'rowPrefix' and member['owner'] in ('CSectionInputReader','CSectionRecipeContext'):
         meaning = 'Начальная часть ключей строк общей таблицы, например Circle.; пустая строка означает чтение полных ключей. Префикс добавляется при поиске строки и удаляется из результата RowKeys.'
     elif member['owner'] == 'CSectionInputReader' and name in ('blockKey', 'rowKey', 'columnKey', 'columnKeys', 'condition', 'reason'):
         meaning = {'blockKey':'Короткий ключ блока, например General, Edges, Main или Extra.', 'rowKey':'Ключ строки внутри выбранного блока, например B или Top.', 'columnKey':'Ключ столбца внутри выбранного блока; val означает значение скалярного параметра.', 'columnKeys':'Массив ключей полей, чьи адреса нужно включить в пояснение об ошибке.', 'condition':'Проверяемое рецептом инженерное условие; при False выдаётся ошибка ввода.', 'reason':'Понятная причина нарушения условия, без заранее заданного адреса ячейки.'}[name]

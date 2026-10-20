@@ -83,11 +83,11 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAudit03UnitSignEquivalence stats
     AppendLine stats, "RUN: TestAudit03InputUnitConsumers; " & Audit02ExcelMemory()
     TestAudit03InputUnitConsumers stats
-    AppendLine stats, "RUN: Audit03 RectSet selectors; " & Audit02ExcelMemory()
-    TestRectSetIndependentSelectors stats
-    TestRectSetIndependentSelectorLayout stats
-    TestRectSetIndependentSelectorEffects stats
-    TestRectSetIndependentThirdRows stats
+    AppendLine stats, "RUN: Audit03 Rectangles selectors; " & Audit02ExcelMemory()
+    TestRectanglesIndependentSelectors stats
+    TestRectanglesIndependentSelectorLayout stats
+    TestRectanglesIndependentSelectorEffects stats
+    TestRectanglesIndependentThirdRows stats
     Dim circleConfigPassed As Long, circleConfigFailed As Long
     AppendLine stats, "RUN: Audit03 Circle Config; " & Audit02ExcelMemory()
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03CircleConfigTests(circleConfigPassed, circleConfigFailed)
@@ -195,17 +195,17 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestExecutionReportFile"
     TestExecutionReportFile stats
     TestExcelApplicationStateGuardRestoresSettings stats
-    AppendLine stats, "RUN: TestRectSetWorkbookRunWritesResults"
-    TestRectSetWorkbookRunWritesResults stats
-    AppendLine stats, "RUN: TestRectSetMomentUltimateStrainWorkbookPath"
-    TestRectSetMomentUltimateStrainWorkbookPath stats
+    AppendLine stats, "RUN: TestRectanglesWorkbookRunWritesResults"
+    TestRectanglesWorkbookRunWritesResults stats
+    AppendLine stats, "RUN: TestRectanglesMomentUltimateStrainWorkbookPath"
+    TestRectanglesMomentUltimateStrainWorkbookPath stats
     TestStrengthSummaryUsesOutputCurvatureUnit stats
-    AppendLine stats, "RUN: TestRectSetPureBendingUltimateStrainWorkbookPath"
-    TestRectSetPureBendingUltimateStrainWorkbookPath stats
-    AppendLine stats, "RUN: TestRectSetPureBendingDirectStateWorkbookPath"
-    TestRectSetPureBendingDirectStateWorkbookPath stats
-    AppendLine stats, "RUN: TestRectSetAxialTensionExtensionFromWorkbookSettings"
-    TestRectSetAxialTensionExtensionFromWorkbookSettings stats
+    AppendLine stats, "RUN: TestRectanglesPureBendingUltimateStrainWorkbookPath"
+    TestRectanglesPureBendingUltimateStrainWorkbookPath stats
+    AppendLine stats, "RUN: TestRectanglesPureBendingDirectStateWorkbookPath"
+    TestRectanglesPureBendingDirectStateWorkbookPath stats
+    AppendLine stats, "RUN: TestRectanglesAxialTensionExtensionFromWorkbookSettings"
+    TestRectanglesAxialTensionExtensionFromWorkbookSettings stats
     TestAutoCADExportUsesSharedLoadReference stats
     AppendLine stats, "RUN: TestGoverningCombinationWritesDetailedResults"
     TestGoverningCombinationWritesDetailedResults stats
@@ -331,27 +331,27 @@ Private Sub TestRebarInputValidationDoesNotUseHiddenDefaults(ByRef stats As TUiT
     AssertTrue stats, "ui.circle.blankDiameter.noHiddenDefaults", _
         InStr(1, errorText, "не задан ни один стержень", vbTextCompare) > 0
 
-    PrepareRectSetInput
-    SetSystemSetting "RectSet.H1.d_1", vbNullString
+    PrepareRectanglesInput
+    SetSystemSetting "Rectangles.H1.d_1", vbNullString
 
-    Dim rectsetSection As CSectionModel
-    Set rectsetSection = BuildCurrentWorkbookSection()
-    AssertTrue stats, "ui.rectset.blankDiameterWithCount.skipsLine", rectsetSection.RebarCount = 7
-    AssertTrue stats, "ui.rectset.blankDiameterWithCount.dimensionsRemain", rectsetSection.AnnotationCount >= 4
+    Dim rectanglesSection As CSectionModel
+    Set rectanglesSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.rectangles.blankDiameterWithCount.skipsLine", rectanglesSection.RebarCount = 7
+    AssertTrue stats, "ui.rectangles.blankDiameterWithCount.dimensionsRemain", rectanglesSection.AnnotationCount >= 4
 
-    PrepareRectSetInput
-    SetSystemSetting "RectSet.H1.n_1", "0"
-    SetSystemSetting "RectSet.H1.d_1", vbNullString
+    PrepareRectanglesInput
+    SetSystemSetting "Rectangles.H1.n_1", "0"
+    SetSystemSetting "Rectangles.H1.d_1", vbNullString
 
-    Set rectsetSection = BuildCurrentWorkbookSection()
-    AssertTrue stats, "ui.rectset.zeroCountBlankDiameter.skipsLine", rectsetSection.RebarCount = 7
-    AssertTrue stats, "ui.rectset.zeroCountBlankDiameter.dimensionsRemain", rectsetSection.AnnotationCount >= 4
+    Set rectanglesSection = BuildCurrentWorkbookSection()
+    AssertTrue stats, "ui.rectangles.zeroCountBlankDiameter.skipsLine", rectanglesSection.RebarCount = 7
+    AssertTrue stats, "ui.rectangles.zeroCountBlankDiameter.dimensionsRemain", rectanglesSection.AnnotationCount >= 4
 
-    SetSystemSetting "Geometry.Type", "PointedRect"
-    SetSystemSetting "PointedRect.H.Left.n", vbNullString
-    SetSystemSetting "PointedRect.H.Right.n", vbNullString
-    SetSystemSetting "PointedRect.B.Top.n", vbNullString
-    SetSystemSetting "PointedRect.B.Bottom.n", vbNullString
+    SetSystemSetting "Geometry.Type", "PointedSection"
+    SetSystemSetting "PointedSection.H.Left.n", vbNullString
+    SetSystemSetting "PointedSection.H.Right.n", vbNullString
+    SetSystemSetting "PointedSection.B.Top.n", vbNullString
+    SetSystemSetting "PointedSection.B.Bottom.n", vbNullString
 
     errorText = BuildCurrentWorkbookSectionError()
     AssertTrue stats, "ui.rounded.blankCounts.noHiddenDefaults", _
@@ -542,7 +542,7 @@ End Sub
 ' Проверяет общий перенос нагрузки к бетонному центру, используемый batch
 ' и export-данными. AutoCAD COM здесь не вызывается, DWG не создается.
 Private Sub TestAutoCADExportUsesSharedLoadReference(ByRef stats As TUiTestStats)
-    PrepareRectSetInput
+    PrepareRectanglesInput
     SetSystemSetting "Load.ReferenceOffsetX", "0"
     SetSystemSetting "Load.ReferenceOffsetY", "0"
 
@@ -930,7 +930,7 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     oldAxisLabelsEnabled = GetSystemSetting("Plot.AxisLabelsEnabled")
     oldAxisLabelsFontSize = GetSystemSetting("Plot.AxisLabelsFontSize")
 
-    PrepareUserRectSetMomentUltimateInput
+    PrepareUserRectanglesMomentUltimateInput
     SetSystemSetting "Plot.PrincipalAxesMode", "Transformed"
     SetSystemSetting "Plot.LoadApplicationPointEnabled", "Yes"
     SetSystemSetting "Plot.AxisLabelsEnabled", "Yes"
@@ -1360,7 +1360,7 @@ End Sub
 ' используется чистый изгиб: сжатие может подавить образование нормальной
 ' трещины и тогда эти состояния физически не обязаны появляться.
 Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUiTestStats)
-    PrepareUserRectSetMomentUltimateInput
+    PrepareUserRectanglesMomentUltimateInput
     PrepareFullStateProfile "PR3"
     SetSystemSetting "SLS.Crack.PsiMode", "Auto"
     SetSystemSetting "SLS.Crack.Allowable", "0.000001"
@@ -1531,7 +1531,7 @@ End Sub
 ' а plotter обязан рисовать элементы поэлементно Shape-ами до безопасного
 ' предела и не раздувать число Excel Chart series.
 Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
-    PrepareUserRectSetMomentUltimateInput
+    PrepareUserRectanglesMomentUltimateInput
     PrepareFullStateProfile "PR3"
     SetSystemSetting "Mesh.StepX", "10"
     SetSystemSetting "Mesh.StepY", "10"
@@ -1585,22 +1585,22 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.largeSnapshot.plotSeriesLimit", seriesCount < 256
 End Sub
 
-' Запускает RectSet через пользовательский workbook-entrypoint и проверяет
+' Запускает Rectangles через пользовательский workbook-entrypoint и проверяет
 ' фактический Results, блок диаграмм и общую таблицу армирования.
-Private Sub TestRectSetWorkbookRunWritesResults(ByRef stats As TUiTestStats)
-    PrepareRectSetInput
+Private Sub TestRectanglesWorkbookRunWritesResults(ByRef stats As TUiTestStats)
+    PrepareRectanglesInput
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
 
-    AssertTrue stats, "ui.rectset.message", InStr(1, message, "завершен", vbTextCompare) > 0
+    AssertTrue stats, "ui.rectangles.message", InStr(1, message, "завершен", vbTextCompare) > 0
     Dim summary As Object
     Set summary = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
-    AssertTrue stats, "ui.rectset.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 12, 1).Value2)) > 0
+    AssertTrue stats, "ui.rectangles.result.status", Len(CStr(summary.Worksheet.Cells.Item(BatchSummaryStartRow() + 12, 1).Value2)) > 0
 
     Dim sys As Object
     Set sys = ThisWorkbook.Worksheets.Item("Config")
-    AssertTrue stats, "ui.rectset.system.perSectionInput", Not WorkbookNameExists("rngRebarInput")
-    AssertTrue stats, "ui.rectset.system.materialDiagramControls", _
+    AssertTrue stats, "ui.rectangles.system.perSectionInput", Not WorkbookNameExists("rngRebarInput")
+    AssertTrue stats, "ui.rectangles.system.materialDiagramControls", _
         InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
 End Sub
 
@@ -1608,8 +1608,8 @@ End Sub
 ' траекторией lambda*Mx через полный путь книги. Этот тест защищает быстрый
 ' UltimateStrain-путь для обычного изгибного расчета: после универсализации
 ' LoadPath он не должен уходить в тяжелую общую residual-систему.
-Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
-    PrepareUserRectSetMomentUltimateInput
+Private Sub TestRectanglesMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserRectanglesMomentUltimateInput
 
     Dim message As String
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
@@ -1625,16 +1625,16 @@ Private Sub TestRectSetMomentUltimateStrainWorkbookPath(ByRef stats As TUiTestSt
     capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 49).Value2)
     solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
 
-    AppendLine stats, "INFO: ui.rectset.momentUltimate capacityStatus=" & capacityStatus & _
+    AppendLine stats, "INFO: ui.rectangles.momentUltimate capacityStatus=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
         "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 38).Value2)
 
-    AssertTrue stats, "ui.rectset.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.rectset.momentUltimate.capacityOk", capacityStatus, "OK"
-    AssertTextEquals stats, "ui.rectset.momentUltimate.method", solutionMethod, "UltimateStrain"
-    AssertTrue stats, "ui.rectset.momentUltimate.lambda", _
+    AssertTrue stats, "ui.rectangles.momentUltimate.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectangles.momentUltimate.capacityOk", capacityStatus, "OK"
+    AssertTextEquals stats, "ui.rectangles.momentUltimate.method", solutionMethod, "UltimateStrain"
+    AssertTrue stats, "ui.rectangles.momentUltimate.lambda", _
         CDbl(resultsSheet.Cells.Item(firstRow, 38).Value2) > 0#
-    AssertTrue stats, "ui.rectset.momentUltimate.mxult", _
+    AssertTrue stats, "ui.rectangles.momentUltimate.mxult", _
         Abs(CDbl(resultsSheet.Cells.Item(firstRow, 40).Value2)) > 0#
 End Sub
 
@@ -1645,7 +1645,7 @@ Private Sub TestStrengthSummaryUsesOutputCurvatureUnit(ByRef stats As TUiTestSta
     oldOutputCurvature = GetSystemSetting("Units.Curvature.Output")
 
     On Error GoTo RestoreAndFail
-    PrepareUserRectSetMomentUltimateInput
+    PrepareUserRectanglesMomentUltimateInput
     SetSystemSetting "Units.Curvature.Output", "1/m"
 
     Dim message As String
@@ -1692,8 +1692,8 @@ End Sub
 ' Проверяет чистый изгиб Г-сечения по полному Excel-пути.
 ' Здесь N намеренно равен нулю: программа должна найти прямое НДС и
 ' предельный момент без перехода в осевую или аварийную ветку.
-Private Sub TestRectSetPureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
-    PrepareUserRectSetMomentUltimateInput
+Private Sub TestRectanglesPureBendingUltimateStrainWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserRectanglesMomentUltimateInput
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1716,24 +1716,24 @@ Private Sub TestRectSetPureBendingUltimateStrainWorkbookPath(ByRef stats As TUiT
     capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 49).Value2)
     solutionMethod = CStr(resultsSheet.Cells.Item(firstRow, 37).Value2)
 
-    AppendLine stats, "INFO: ui.rectset.pureBending direct=" & directStatus & _
+    AppendLine stats, "INFO: ui.rectangles.pureBending direct=" & directStatus & _
         "; capacity=" & capacityStatus & _
         "; solutionMethod=" & solutionMethod & _
         "; lambda=" & CStr(resultsSheet.Cells.Item(firstRow, 38).Value2)
 
-    AssertTrue stats, "ui.rectset.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.rectset.pureBending.directOk", directStatus, "OK"
-    AssertTextEquals stats, "ui.rectset.pureBending.capacityOk", capacityStatus, "OK"
-    AssertTextEquals stats, "ui.rectset.pureBending.method", solutionMethod, "UltimateStrain"
-    AssertTrue stats, "ui.rectset.pureBending.lambda", _
+    AssertTrue stats, "ui.rectangles.pureBending.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectangles.pureBending.directOk", directStatus, "OK"
+    AssertTextEquals stats, "ui.rectangles.pureBending.capacityOk", capacityStatus, "OK"
+    AssertTextEquals stats, "ui.rectangles.pureBending.method", solutionMethod, "UltimateStrain"
+    AssertTrue stats, "ui.rectangles.pureBending.lambda", _
         CDbl(resultsSheet.Cells.Item(firstRow, 38).Value2) > 0#
 End Sub
 
 ' Проверяет чистый изгиб Г-сечения по профилю PR1. Такой профиль запрашивает
 ' и прямое НДС, и несущую способность, поэтому обе ветви должны проходить
 ' через полный workbook-path без специальных обходов.
-Private Sub TestRectSetPureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
-    PrepareUserRectSetMomentUltimateInput
+Private Sub TestRectanglesPureBendingDirectStateWorkbookPath(ByRef stats As TUiTestStats)
+    PrepareUserRectanglesMomentUltimateInput
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -1754,20 +1754,20 @@ Private Sub TestRectSetPureBendingDirectStateWorkbookPath(ByRef stats As TUiTest
     directStatus = CStr(resultsSheet.Cells.Item(firstRow, 30).Value2)
     capacityStatus = CStr(resultsSheet.Cells.Item(firstRow, 49).Value2)
 
-    AppendLine stats, "INFO: ui.rectset.pureBendingDirect direct=" & directStatus & _
+    AppendLine stats, "INFO: ui.rectangles.pureBendingDirect direct=" & directStatus & _
         "; capacity=" & capacityStatus
 
-    AssertTrue stats, "ui.rectset.pureBendingDirect.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.rectset.pureBendingDirect.directOk", directStatus, "OK"
-    AssertTextEquals stats, "ui.rectset.pureBendingDirect.capacityOk", capacityStatus, "OK"
+    AssertTrue stats, "ui.rectangles.pureBendingDirect.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectangles.pureBendingDirect.directOk", directStatus, "OK"
+    AssertTextEquals stats, "ui.rectangles.pureBendingDirect.capacityOk", capacityStatus, "OK"
 End Sub
 
 ' Проверяет пользовательский сценарий с сильным осевым растяжением Г-сечения
 ' через настоящий workbook-path: Config -> CUnitSystem -> batch -> Results.
 ' Это важно, потому что знак N и единицы tf здесь проходят ровно тем же путем,
 ' что и при нажатии кнопки "Расчет" в книге.
-Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As TUiTestStats)
-    PrepareUserRectSetAxialTensionInput
+Private Sub TestRectanglesAxialTensionExtensionFromWorkbookSettings(ByRef stats As TUiTestStats)
+    PrepareUserRectanglesAxialTensionInput
 
     Dim reportPath As String
     reportPath = ThisWorkbook.Path & "\RC_Section_NDM_execution_report.txt"
@@ -1804,34 +1804,34 @@ Private Sub TestRectSetAxialTensionExtensionFromWorkbookSettings(ByRef stats As 
     overLongitudinal = CStr(resultsSheet.Cells.Item(overCrackRow, 72).Value2)
     overExtension = ResultsPropertyValue("LC_OVER", "ExtensionUsed")
 
-    AppendLine stats, "INFO: ui.rectset.axial795 overall=" & safeOverall & _
+    AppendLine stats, "INFO: ui.rectangles.axial795 overall=" & safeOverall & _
         "; crack=" & safeCrack
-    AppendLine stats, "INFO: ui.rectset.axial900 overall=" & overOverall & _
+    AppendLine stats, "INFO: ui.rectangles.axial900 overall=" & overOverall & _
         "; crack=" & overCrack & _
         "; extensionUsed=" & overExtension
 
-    AssertTrue stats, "ui.rectset.axial795.overallCalculated", _
+    AssertTrue stats, "ui.rectangles.axial795.overallCalculated", _
         safeOverall = "OK" Or safeOverall = "FAIL"
-    AssertTrue stats, "ui.rectset.axial795.crackCalculated", _
+    AssertTrue stats, "ui.rectangles.axial795.crackCalculated", _
         safeCrack = "OK" Or safeCrack = "FAIL"
 
-    AssertTrue stats, "ui.rectset.axial900.finishedWithoutExtension", _
+    AssertTrue stats, "ui.rectangles.axial900.finishedWithoutExtension", _
         overOverall = "FAIL" Or overOverall = "NumFail"
-    AssertTrue stats, "ui.rectset.axial900.crackNoNumFail", _
+    AssertTrue stats, "ui.rectangles.axial900.crackNoNumFail", _
         overCrack <> "NumFail" And overCrack <> "InputErr"
-    AssertTextEquals stats, "ui.rectset.axial900.crackedStateExtUsed", _
+    AssertTextEquals stats, "ui.rectangles.axial900.crackedStateExtUsed", _
         overCrackExtUsed, "yes"
-    AssertTextEquals stats, "ui.rectset.axial900.crackedStateEquilibrium", _
+    AssertTextEquals stats, "ui.rectangles.axial900.crackedStateEquilibrium", _
         overCrackEquilibrium, "FAIL"
-    AssertTextEquals stats, "ui.rectset.axial900.crackWidthSkipped", _
+    AssertTextEquals stats, "ui.rectangles.axial900.crackWidthSkipped", _
         overCrack, "N/A"
-    AssertTextEquals stats, "ui.rectset.axial900.longitudinalSkipped", _
+    AssertTextEquals stats, "ui.rectangles.axial900.longitudinalSkipped", _
         overLongitudinal, "N/A"
-    AssertTrue stats, "ui.rectset.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
-    AssertTextEquals stats, "ui.rectset.axial900.extensionSnapshot", overExtension, "True"
-    AssertTrue stats, "ui.rectset.axial900.crackedStateExtensionDiagram", _
+    AssertTrue stats, "ui.rectangles.axial900.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
+    AssertTextEquals stats, "ui.rectangles.axial900.extensionSnapshot", overExtension, "True"
+    AssertTrue stats, "ui.rectangles.axial900.crackedStateExtensionDiagram", _
         MaterialDiagramHasMode("CrackedState", "StateExtension")
-    AssertTrue stats, "ui.rectset.axial900.reportCreated", FileExists(reportPath)
+    AssertTrue stats, "ui.rectangles.axial900.reportCreated", FileExists(reportPath)
 
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 End Sub
@@ -2204,13 +2204,13 @@ Private Sub TestCapacitySearchMethodValidation(ByRef stats As TUiTestStats)
         AnySettingValidationHasOptions("Rebar.Loc2row", Array("Stacked", "SideBySide"))
     AssertTrue stats, "ui.validation.circleLoc3row", _
         AnySettingValidationHasOptions("Rebar.Loc3row", Array("Stacked", "SideBySide"))
-    SetSystemSetting "Geometry.Type", "RectSet"
-    AssertTrue stats, "ui.validation.rectSetSectionType", _
-        RectSetParameterValidationHasOptions("RectSet.SectionType", Array("Rectangle", "LSection", "TwoRectangles"))
-    AssertTrue stats, "ui.validation.rectsetLoc2row", _
-        RectSetExtraValidationHasOptions("H1 - левая", "положение", 1, Array("Stacked", "SideBySide"))
-    AssertTrue stats, "ui.validation.rectsetBind2row", _
-        RectSetExtraValidationHasOptions("H1 - левая", "привязка", 1, Array("EachBar", "EverySecondBar"))
+    SetSystemSetting "Geometry.Type", "Rectangles"
+    AssertTrue stats, "ui.validation.RectanglesSectionType", _
+        RectanglesParameterValidationHasOptions("Rectangles.SectionType", Array("TwoRect", "OneRect"))
+    AssertTrue stats, "ui.validation.rectanglesLoc2row", _
+        RectanglesExtraValidationHasOptions("H1 - левая", "положение", 1, Array("Stacked", "SideBySide"))
+    AssertTrue stats, "ui.validation.rectanglesBind2row", _
+        RectanglesExtraValidationHasOptions("H1 - левая", "привязка", 1, Array("EachBar", "EverySecondBar"))
     Dim reader As CSystemSettingsReader
     Set reader = New CSystemSettingsReader
     SetSystemSetting "Geometry.Type", "Circle"
@@ -3058,14 +3058,14 @@ End Function
 Private Function SettingsRangeSearchOrder() As Variant
     Dim geometryType As String
     geometryType = SystemGeometryType()
-    If StrComp(geometryType, "RectSet", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectSetGeometry", "rngCircleGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
-    ElseIf StrComp(geometryType, "PointedRect", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngPointedRectGeometry", "rngCircleGeometry", "rngRectSetGeometry", "rngHollowRectangleGeometry")
+    If StrComp(geometryType, "Rectangles", vbTextCompare) = 0 Then
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngRectanglesGeometry", "rngCircleGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
+    ElseIf StrComp(geometryType, "PointedSection", vbTextCompare) = 0 Then
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngPointedSectionGeometry", "rngCircleGeometry", "rngRectanglesGeometry", "rngHollowRectangleGeometry")
     ElseIf StrComp(geometryType, "HollowRectangle", vbTextCompare) = 0 Then
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngPointedRectGeometry", "rngCircleGeometry", "rngRectSetGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngHollowRectangleGeometry", "rngPointedSectionGeometry", "rngCircleGeometry", "rngRectanglesGeometry")
     Else
-        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngRectSetGeometry")
+        SettingsRangeSearchOrder = Array("rngUnitSettings", "rngSignConventionSettings", "rngSystemSettings", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngRectanglesGeometry")
     End If
 End Function
 
@@ -3299,25 +3299,25 @@ Private Function PlotAnnotationValidationHasOptions(ByVal rowName As String, ByV
 Failed:
 End Function
 
-' Находит строку параметра RectSet и проверяет validation ее ячейки значения.
-Private Function RectSetParameterValidationHasOptions(ByVal parameterName As String, ByVal expectedOptions As Variant) As Boolean
+' Находит строку параметра Rectangles и проверяет validation ее ячейки значения.
+Private Function RectanglesParameterValidationHasOptions(ByVal parameterName As String, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
-    RectSetParameterValidationHasOptions = ValidationCellHasOptions(FixtureConfigFieldCell(parameterName), expectedOptions)
+    RectanglesParameterValidationHasOptions = ValidationCellHasOptions(FixtureConfigFieldCell(parameterName), expectedOptions)
 Failed:
 End Function
 
-' Проверяет выпадающие списки в табличной части дополнительных рядов RectSet.
+' Проверяет выпадающие списки в табличной части дополнительных рядов Rectangles.
 ' Helper ищет строку грани и нужный заголовок, поэтому вставка строк выше
 ' блока геометрии не меняет предмет проверки.
-Private Function RectSetExtraValidationHasOptions(ByVal faceCaption As String, ByVal headerCaption As String, _
+Private Function RectanglesExtraValidationHasOptions(ByVal faceCaption As String, ByVal headerCaption As String, _
         ByVal occurrenceIndex As Long, ByVal expectedOptions As Variant) As Boolean
     On Error GoTo Failed
     Dim field As String, face As String, side As Long, key As String
     face = Left$(faceCaption, 2): side = 1
     If InStr(faceCaption, "правая") Or InStr(faceCaption, "нижняя") Then side = 2
     field = "bind_": If InStr(1, headerCaption, "Положение", vbTextCompare) Then field = "loc_"
-    key = "RectSet." & face & "." & field & CStr(occurrenceIndex + 1) & "row_" & CStr(side)
-    RectSetExtraValidationHasOptions = ValidationCellHasOptions(FixtureConfigFieldCell(key), expectedOptions)
+    key = "Rectangles." & face & "." & field & CStr(occurrenceIndex + 1) & "row_" & CStr(side)
+    RectanglesExtraValidationHasOptions = ValidationCellHasOptions(FixtureConfigFieldCell(key), expectedOptions)
 Failed:
 End Function
 
@@ -3459,9 +3459,9 @@ Private Sub PrepareCircleInput()
     loads.Cells.Item(2, 7).Value2 = "ui test"
 End Sub
 
-' Готовит RectSet fixture, активные грани и нагрузку через обычные таблицы Config.
+' Готовит Rectangles fixture, активные грани и нагрузку через обычные таблицы Config.
 ' Неактивные грани отключаются явно, чтобы не зависеть от прежних пользовательских данных.
-Private Sub PrepareRectSetInput()
+Private Sub PrepareRectanglesInput()
     SetSystemSetting "Units.Force.Input", "N"
     SetSystemSetting "Units.Moment.Input", "N*mm"
     SetSystemSetting "Units.Length.Input", "mm"
@@ -3472,55 +3472,55 @@ Private Sub PrepareRectSetInput()
     SetSystemSetting "Sign.Mx.User", "+Y tension"
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Geometry.Type", "RectSet"
+    SetSystemSetting "Geometry.Type", "Rectangles"
     SetSystemSetting "Plot.LoadCase", "LC_L"
     SetSystemSetting "Mesh.StepX", "40"
     SetSystemSetting "Mesh.StepY", "40"
     SetSystemSetting "Mesh.BoundarySubdivisions", "2"
-    SetSystemSetting "RectSet.B1", "160"
-    SetSystemSetting "RectSet.H1", "280"
-    SetSystemSetting "RectSet.B2", "360"
-    SetSystemSetting "RectSet.H2", "140"
-    SetSystemSetting "RectSet.H1.as_1", "40"
-    SetSystemSetting "RectSet.H1.as_2", "40"
-    SetSystemSetting "RectSet.H1.d_1", "16"
-    SetSystemSetting "RectSet.H1.d_2", "16"
-    SetSystemSetting "RectSet.H1.n_1", "3"
-    SetSystemSetting "RectSet.H1.n_2", "2"
-    SetSystemSetting "RectSet.H1.StartOffset1", "40"
-    SetSystemSetting "RectSet.H1.EndOffset1", "40"
-    SetSystemSetting "RectSet.H1.StartOffset2", "40"
-    SetSystemSetting "RectSet.H1.EndOffset2", "40"
-    SetSystemSetting "RectSet.H2.as_1", "40"
-    SetSystemSetting "RectSet.H2.as_2", "40"
-    SetSystemSetting "RectSet.H2.d_1", "16"
-    SetSystemSetting "RectSet.H2.d_2", "16"
-    SetSystemSetting "RectSet.H2.n_1", "0"
-    SetSystemSetting "RectSet.H2.n_2", "0"
-    SetSystemSetting "RectSet.H2.StartOffset1", "40"
-    SetSystemSetting "RectSet.H2.EndOffset1", "40"
-    SetSystemSetting "RectSet.H2.StartOffset2", "40"
-    SetSystemSetting "RectSet.H2.EndOffset2", "40"
-    SetSystemSetting "RectSet.B1.as_1", "40"
-    SetSystemSetting "RectSet.B1.as_2", "40"
-    SetSystemSetting "RectSet.B1.d_1", "16"
-    SetSystemSetting "RectSet.B1.d_2", "16"
-    SetSystemSetting "RectSet.B1.n_1", "2"
-    SetSystemSetting "RectSet.B1.n_2", "1"
-    SetSystemSetting "RectSet.B1.StartOffset1", "20"
-    SetSystemSetting "RectSet.B1.EndOffset1", "20"
-    SetSystemSetting "RectSet.B1.StartOffset2", "20"
-    SetSystemSetting "RectSet.B1.EndOffset2", "20"
-    SetSystemSetting "RectSet.B2.as_1", "40"
-    SetSystemSetting "RectSet.B2.as_2", "40"
-    SetSystemSetting "RectSet.B2.d_1", "16"
-    SetSystemSetting "RectSet.B2.d_2", "16"
-    SetSystemSetting "RectSet.B2.n_1", "2"
-    SetSystemSetting "RectSet.B2.n_2", "0"
-    SetSystemSetting "RectSet.B2.StartOffset1", "60"
-    SetSystemSetting "RectSet.B2.EndOffset1", "60"
-    SetSystemSetting "RectSet.B2.StartOffset2", "60"
-    SetSystemSetting "RectSet.B2.EndOffset2", "60"
+    SetSystemSetting "Rectangles.B1", "160"
+    SetSystemSetting "Rectangles.H1", "280"
+    SetSystemSetting "Rectangles.B2", "360"
+    SetSystemSetting "Rectangles.H2", "140"
+    SetSystemSetting "Rectangles.H1.as_1", "40"
+    SetSystemSetting "Rectangles.H1.as_2", "40"
+    SetSystemSetting "Rectangles.H1.d_1", "16"
+    SetSystemSetting "Rectangles.H1.d_2", "16"
+    SetSystemSetting "Rectangles.H1.n_1", "3"
+    SetSystemSetting "Rectangles.H1.n_2", "2"
+    SetSystemSetting "Rectangles.H1.StartOffset1", "40"
+    SetSystemSetting "Rectangles.H1.EndOffset1", "40"
+    SetSystemSetting "Rectangles.H1.StartOffset2", "40"
+    SetSystemSetting "Rectangles.H1.EndOffset2", "40"
+    SetSystemSetting "Rectangles.H2.as_1", "40"
+    SetSystemSetting "Rectangles.H2.as_2", "40"
+    SetSystemSetting "Rectangles.H2.d_1", "16"
+    SetSystemSetting "Rectangles.H2.d_2", "16"
+    SetSystemSetting "Rectangles.H2.n_1", "0"
+    SetSystemSetting "Rectangles.H2.n_2", "0"
+    SetSystemSetting "Rectangles.H2.StartOffset1", "40"
+    SetSystemSetting "Rectangles.H2.EndOffset1", "40"
+    SetSystemSetting "Rectangles.H2.StartOffset2", "40"
+    SetSystemSetting "Rectangles.H2.EndOffset2", "40"
+    SetSystemSetting "Rectangles.B1.as_1", "40"
+    SetSystemSetting "Rectangles.B1.as_2", "40"
+    SetSystemSetting "Rectangles.B1.d_1", "16"
+    SetSystemSetting "Rectangles.B1.d_2", "16"
+    SetSystemSetting "Rectangles.B1.n_1", "2"
+    SetSystemSetting "Rectangles.B1.n_2", "1"
+    SetSystemSetting "Rectangles.B1.StartOffset1", "20"
+    SetSystemSetting "Rectangles.B1.EndOffset1", "20"
+    SetSystemSetting "Rectangles.B1.StartOffset2", "20"
+    SetSystemSetting "Rectangles.B1.EndOffset2", "20"
+    SetSystemSetting "Rectangles.B2.as_1", "40"
+    SetSystemSetting "Rectangles.B2.as_2", "40"
+    SetSystemSetting "Rectangles.B2.d_1", "16"
+    SetSystemSetting "Rectangles.B2.d_2", "16"
+    SetSystemSetting "Rectangles.B2.n_1", "2"
+    SetSystemSetting "Rectangles.B2.n_2", "0"
+    SetSystemSetting "Rectangles.B2.StartOffset1", "60"
+    SetSystemSetting "Rectangles.B2.EndOffset1", "60"
+    SetSystemSetting "Rectangles.B2.StartOffset2", "60"
+    SetSystemSetting "Rectangles.B2.EndOffset2", "60"
     SetSystemSetting "SLS.Crack.Allowable", "0.3"
 
     Dim loads As Object
@@ -3532,14 +3532,14 @@ Private Sub PrepareRectSetInput()
     loads.Cells.Item(2, 4).Value2 = -1000000#
     loads.Cells.Item(2, 5).Value2 = "PR2"
     loads.Cells.Item(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
-    loads.Cells.Item(2, 7).Value2 = "rectset ui test"
+    loads.Cells.Item(2, 7).Value2 = "rectangles ui test"
 End Sub
 
 ' Настраивает книгу под типовой прочностной расчет Г-сечения:
 ' пользователь задает N и Mx, а несущая способность ищется увеличением Mx.
 ' Здесь специально выбран Capacity.SolutionStrategy = UltimateStrain, чтобы проверить,
 ' что быстрый изгибный путь работает без fallback на LoadMultiplier.
-Private Sub PrepareUserRectSetMomentUltimateInput()
+Private Sub PrepareUserRectanglesMomentUltimateInput()
     SetSystemSetting "Units.Force.Input", "tf"
     SetSystemSetting "Units.Moment.Input", "tf*m"
     SetSystemSetting "Units.Length.Input", "mm"
@@ -3550,7 +3550,7 @@ Private Sub PrepareUserRectSetMomentUltimateInput()
     SetSystemSetting "Sign.Mx.User", "+Y tension"
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Geometry.Type", "RectSet"
+    SetSystemSetting "Geometry.Type", "Rectangles"
     SetSystemSetting "Capacity.SolutionStrategy", "UltimateStrain"
     SetSystemSetting "Capacity.MaxLambda", "64"
     SetSystemSetting "Capacity.ToleranceStrain", "0.00001"
@@ -3567,16 +3567,16 @@ Private Sub PrepareUserRectSetMomentUltimateInput()
     SetSystemSetting "Plot.LoadCase", "LC_MX"
     SetSystemSetting "General.ExecutionReportEnabled", "No"
 
-    SetSystemSetting "RectSet.H1", "550"
-    SetSystemSetting "RectSet.B1", "250"
-    SetSystemSetting "RectSet.H2", "250"
-    SetSystemSetting "RectSet.B2", "600"
+    SetSystemSetting "Rectangles.H1", "550"
+    SetSystemSetting "Rectangles.B1", "250"
+    SetSystemSetting "Rectangles.H2", "250"
+    SetSystemSetting "Rectangles.B2", "600"
 
-    SetUserRectSetMainRow "H1", 5, 5
-    SetUserRectSetMainRow "B1", 2, 2
-    SetUserRectSetMainRow "H2", 2, 2
-    SetUserRectSetMainRow "B2", 5, 5
-    ClearUserRectSetExtraRows
+    SetUserRectanglesMainRow "H1", 5, 5
+    SetUserRectanglesMainRow "B1", 2, 2
+    SetUserRectanglesMainRow "H2", 2, 2
+    SetUserRectanglesMainRow "B2", 5, 5
+    ClearUserRectanglesExtraRows
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -3593,7 +3593,7 @@ End Sub
 ' Настраивает книгу ровно под пользовательский пример с Г-сечением и осевым
 ' растяжением в tf. Это дополняет unit-тест batch-слоя проверкой полного
 ' Excel-пути: пользовательский знак N, единицы, чтение Config и запись Results.
-Private Sub PrepareUserRectSetAxialTensionInput()
+Private Sub PrepareUserRectanglesAxialTensionInput()
     SetSystemSetting "Units.Force.Input", "tf"
     SetSystemSetting "Units.Moment.Input", "tf*m"
     SetSystemSetting "Units.Length.Input", "mm"
@@ -3604,7 +3604,7 @@ Private Sub PrepareUserRectSetAxialTensionInput()
     SetSystemSetting "Sign.Mx.User", "+Y tension"
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
-    SetSystemSetting "Geometry.Type", "RectSet"
+    SetSystemSetting "Geometry.Type", "Rectangles"
     SetSystemSetting "Solver.Method", "Newton"
     SetSystemSetting "General.DiagramExtension", "Yes"
     SetSystemSetting "Solver.MaxIterations", "80"
@@ -3617,16 +3617,16 @@ Private Sub PrepareUserRectSetAxialTensionInput()
     SetSystemSetting "Plot.LoadCase", "LC_OVER"
     SetSystemSetting "General.ExecutionReportEnabled", "Yes"
 
-    SetSystemSetting "RectSet.H1", "550"
-    SetSystemSetting "RectSet.B1", "250"
-    SetSystemSetting "RectSet.H2", "250"
-    SetSystemSetting "RectSet.B2", "600"
+    SetSystemSetting "Rectangles.H1", "550"
+    SetSystemSetting "Rectangles.B1", "250"
+    SetSystemSetting "Rectangles.H2", "250"
+    SetSystemSetting "Rectangles.B2", "600"
 
-    SetUserRectSetMainRow "H1", 5, 5
-    SetUserRectSetMainRow "B1", 2, 2
-    SetUserRectSetMainRow "H2", 2, 2
-    SetUserRectSetMainRow "B2", 5, 5
-    ClearUserRectSetExtraRows
+    SetUserRectanglesMainRow "H1", 5, 5
+    SetUserRectanglesMainRow "B1", 2, 2
+    SetUserRectanglesMainRow "H2", 2, 2
+    SetUserRectanglesMainRow "B2", 5, 5
+    ClearUserRectanglesExtraRows
 
     Dim loads As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
@@ -3672,40 +3672,40 @@ Private Sub PrepareFullStateProfile(ByVal profileId As String)
     SetProfileSetting profileId, "Visualization.Quantity", "Stress"
 End Sub
 
-' Заполняет обе стороны грани RectSet фиксированными диаметрами и отступами.
+' Заполняет обе стороны грани Rectangles фиксированными диаметрами и отступами.
 ' Количество первых рядов задается входами; дополнительные ряды очищаются отдельно.
-Private Sub SetUserRectSetMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)
-    SetSystemSetting "RectSet." & faceName & ".as_1", "40"
-    SetSystemSetting "RectSet." & faceName & ".as_2", "40"
-    SetSystemSetting "RectSet." & faceName & ".d_1", "32"
-    SetSystemSetting "RectSet." & faceName & ".d_2", "32"
-    SetSystemSetting "RectSet." & faceName & ".n_1", CStr(count1)
-    SetSystemSetting "RectSet." & faceName & ".n_2", CStr(count2)
-    SetSystemSetting "RectSet." & faceName & ".StartOffset1", "80"
-    SetSystemSetting "RectSet." & faceName & ".EndOffset1", "80"
-    SetSystemSetting "RectSet." & faceName & ".StartOffset2", "80"
-    SetSystemSetting "RectSet." & faceName & ".EndOffset2", "80"
+Private Sub SetUserRectanglesMainRow(ByVal faceName As String, ByVal count1 As Long, ByVal count2 As Long)
+    SetSystemSetting "Rectangles." & faceName & ".as_1", "40"
+    SetSystemSetting "Rectangles." & faceName & ".as_2", "40"
+    SetSystemSetting "Rectangles." & faceName & ".d_1", "32"
+    SetSystemSetting "Rectangles." & faceName & ".d_2", "32"
+    SetSystemSetting "Rectangles." & faceName & ".n_1", CStr(count1)
+    SetSystemSetting "Rectangles." & faceName & ".n_2", CStr(count2)
+    SetSystemSetting "Rectangles." & faceName & ".StartOffset1", "80"
+    SetSystemSetting "Rectangles." & faceName & ".EndOffset1", "80"
+    SetSystemSetting "Rectangles." & faceName & ".StartOffset2", "80"
+    SetSystemSetting "Rectangles." & faceName & ".EndOffset2", "80"
 End Sub
 
 ' Отключает дополнительные ряды всех сторон пустыми диаметрами.
 ' Расположение и привязку задаёт явно для воспроизводимости следующих проверок.
-Private Sub ClearUserRectSetExtraRows()
+Private Sub ClearUserRectanglesExtraRows()
     Dim faces As Variant
     faces = Array("H1", "B1", "H2", "B2")
     Dim i As Long
     For i = LBound(faces) To UBound(faces)
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_2row_1", vbNullString
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_2row_2", vbNullString
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_3row_1", vbNullString
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".d_3row_2", vbNullString
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_2row_1", "Stacked"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_3row_1", "Stacked"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_2row_1", "EachBar"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_3row_1", "EachBar"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_2row_2", "Stacked"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".loc_3row_2", "Stacked"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_2row_2", "EachBar"
-        SetSystemSetting "RectSet." & CStr(faces(i)) & ".bind_3row_2", "EachBar"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".d_2row_1", vbNullString
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".d_2row_2", vbNullString
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".d_3row_1", vbNullString
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".d_3row_2", vbNullString
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".loc_2row_1", "Stacked"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".loc_3row_1", "Stacked"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".bind_2row_1", "EachBar"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".bind_3row_1", "EachBar"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".loc_2row_2", "Stacked"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".loc_3row_2", "Stacked"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".bind_2row_2", "EachBar"
+        SetSystemSetting "Rectangles." & CStr(faces(i)) & ".bind_3row_2", "EachBar"
     Next i
 End Sub
 
@@ -4924,25 +4924,25 @@ Failed:
     AppendLine stats, "FAIL: " & prefix & ".runtime; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
-' ДЛЯ ТЕСТОВ: адресный gate независимых настроек дополнительных рядов RectSet.
+' ДЛЯ ТЕСТОВ: адресный gate независимых настроек дополнительных рядов Rectangles.
 ' Проверяет чтение, списки, влияние на одну грань и ошибки активного ввода.
-Public Function RunRectSetIndependentSelectorTests() As String
+Public Function RunRectanglesIndependentSelectorTests() As String
     Dim stats As TUiTestStats
-    TestRectSetIndependentSelectors stats
-    TestRectSetIndependentSelectorLayout stats
-    TestRectSetIndependentSelectorEffects stats
-    TestRectSetIndependentThirdRows stats
-    AppendLine stats, "TOTAL_RECTSET_INDEPENDENT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
-    RunRectSetIndependentSelectorTests = stats.Report
+    TestRectanglesIndependentSelectors stats
+    TestRectanglesIndependentSelectorLayout stats
+    TestRectanglesIndependentSelectorEffects stats
+    TestRectanglesIndependentThirdRows stats
+    AppendLine stats, "TOTAL_RECTANGLES_INDEPENDENT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunRectanglesIndependentSelectorTests = stats.Report
 End Function
 
 ' ДЛЯ ТЕСТОВ: разные значения противоположных граней сохраняются в своих
 ' ячейках снимка. Чтение первой строки не подменяет значение второй строки.
-Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
+Private Sub TestRectanglesIndependentSelectors(ByRef stats As TUiTestStats)
     Dim values As Variant, reader As CSectionInputReader, side As Variant, field As Variant
     Dim firstValue As String, secondValue As String, pair As Variant
     On Error GoTo Failed
-    values = FixtureRecipeValues("rngRectSetGeometry")
+    values = FixtureRecipeValues("rngRectanglesGeometry")
     For Each pair In Array(Array("R1.Left", "R1.Right"), Array("R1.Top", "R1.Bottom"), _
             Array("R2.Left", "R2.Right"), Array("R2.Top", "R2.Bottom"))
         For Each field In Array("pos2", "bind2", "pos3", "bind3")
@@ -4963,22 +4963,22 @@ Private Sub TestRectSetIndependentSelectors(ByRef stats As TUiTestStats)
     Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: rectset.independent.reader; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectangles.independent.reader; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
 ' ДЛЯ ТЕСТОВ: все 32 селектора фактического Config не объединены, имеют
 ' вертикальный список выбора и читаются по адресу своей физической грани.
-Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
+Private Sub TestRectanglesIndependentSelectorLayout(ByRef stats As TUiTestStats)
     Dim target As Object, cell As Object, reader As CSectionInputReader
     Dim side As Variant, field As Variant, prefix As String, config As Object, saved As Variant
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     modTestShapeArchitecture.ConfigureShapeFixture "TwoRectangles"
-    Set target = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+    Set target = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange
     For Each side In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
         For Each field In Array("pos2", "bind2", "pos3", "bind3")
             Set cell = FixtureInputCell(target, "Extra", CStr(side), CStr(field))
-            prefix = "rectset.independent.layout." & CStr(side) & "." & CStr(field)
+            prefix = "rectangles.independent.layout." & CStr(side) & "." & CStr(field)
             AssertTrue stats, prefix & ".unmerged", Not cell.MergeCells
             AssertTrue stats, prefix & ".dropdown", cell.Validation.Type = 3 And cell.Validation.InCellDropdown
             AssertTrue stats, prefix & ".inlineList", InStr(1, cell.Validation.Formula1, Application.International(xlListSeparator), vbBinaryCompare) > 0
@@ -4990,7 +4990,7 @@ Private Sub TestRectSetIndependentSelectorLayout(ByRef stats As TUiTestStats)
     GoTo Finished
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: rectset.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectangles.independent.layout; " & CStr(Err.Number) & "; " & Err.Description
 Finished:
     If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
@@ -4998,7 +4998,7 @@ End Sub
 ' ДЛЯ ТЕСТОВ: меняет каждый из 32 вариантов размещения через обычное чтение
 ' таблиц и рецепт. Меняются только три дополнительных стержня выбранной стороны;
 ' шесть стержней противоположной стороны сохраняются.
-Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
+Private Sub TestRectanglesIndependentSelectorEffects(ByRef stats As TUiTestStats)
     Dim target As Object, config As Object, saved As Variant, cell As Object, units As CUnitSystem
     Dim baseline As CRebarLayout, changed As CRebarLayout, inactive As CRebarLayout
     Dim pair As Variant, field As Variant, side As Long, rowKey As Variant, diameter As String
@@ -5012,7 +5012,7 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
         For Each field In Array("pos2", "bind2", "pos3", "bind3")
             For side = 0 To 1
                 modTestShapeArchitecture.ConfigureShapeFixture "LSection"
-                Set target = ThisWorkbook.Names("rngRectSetGeometry").RefersToRange
+                Set target = ThisWorkbook.Names("rngRectanglesGeometry").RefersToRange
                 FixtureInputCell(target, "General", "H1").Value2 = 300#: FixtureInputCell(target, "General", "B1").Value2 = 200#
                 FixtureInputCell(target, "General", "H2").Value2 = 200#: FixtureInputCell(target, "General", "B2").Value2 = 500#
                 For Each rowKey In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
@@ -5033,11 +5033,11 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                 original = "EachBar": alternative = "EverySecondBar"
                 If Left$(CStr(field), 3) = "pos" Then original = "Stacked": alternative = "SideBySide"
                 Set cell = FixtureInputCell(target, "Extra", CStr(pair(side)), CStr(field))
-                prefix = "rectset.independent.effect." & CStr(pair(side)) & "." & CStr(field)
-                Set baseline = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
+                prefix = "rectangles.independent.effect." & CStr(pair(side)) & "." & CStr(field)
+                Set baseline = FixtureLayout(FixtureWorkbookDefinition("Rectangles", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".baseline", baseline.Count = 12
                 cell.Value2 = alternative
-                Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
+                Set changed = FixtureLayout(FixtureWorkbookDefinition("Rectangles", ThisWorkbook, units))
                 If Left$(CStr(field), 3) = "pos" Then
                     changedBars = 0
                     For i = 1 To baseline.Count
@@ -5049,23 +5049,23 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
                 End If
                 oppositeStart = 1: If side = 0 Then oppositeStart = 7
                 For i = oppositeStart To oppositeStart + 5
-                    AssertTrue stats, prefix & ".opposite" & CStr(i), RectSetLayoutContainsBar(changed, baseline, i)
+                    AssertTrue stats, prefix & ".opposite" & CStr(i), RectanglesLayoutContainsBar(changed, baseline, i)
                 Next i
                 For Each invalid In Array(vbNullString, "InvalidChoice", CVErr(xlErrDiv0))
                     cell.Value2 = invalid
                     number = 0: reason = ""
                     On Error Resume Next
-                    Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
+                    Set changed = FixtureLayout(FixtureWorkbookDefinition("Rectangles", ThisWorkbook, units))
                     number = Err.Number: reason = Err.Description: Err.Clear
                     On Error GoTo Failed
                     AssertTrue stats, prefix & ".invalidRejected." & TypeName(invalid), number <> 0
                     AssertTrue stats, prefix & ".invalidAddress." & TypeName(invalid), InStr(1, reason, cell.Worksheet.Name & "!" & cell.Address(False, False), vbBinaryCompare) > 0
                 Next invalid
                 FixtureInputCell(target, "Extra", CStr(pair(side)), diameter).Value2 = 0#
-                Set inactive = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
+                Set inactive = FixtureLayout(FixtureWorkbookDefinition("Rectangles", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".inactiveIgnored", inactive.Count = 9
                 cell.Value2 = original
-                Set changed = FixtureLayout(FixtureWorkbookDefinition("RectSet", ThisWorkbook, units))
+                Set changed = FixtureLayout(FixtureWorkbookDefinition("Rectangles", ThisWorkbook, units))
                 AssertTrue stats, prefix & ".inactiveSameCount", changed.Count = inactive.Count
             Next side
         Next field
@@ -5073,7 +5073,7 @@ Private Sub TestRectSetIndependentSelectorEffects(ByRef stats As TUiTestStats)
     GoTo Finished
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: rectset.independent.effect; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectangles.independent.effect; " & CStr(Err.Number) & "; " & Err.Description
 Finished:
     If Not config Is Nothing And IsArray(saved) Then FixtureRestoreInputs config, saved
 End Sub
@@ -5081,13 +5081,13 @@ End Sub
 ' ДЛЯ ТЕСТОВ: третий ряд учитывает направление и диаметр второго ряда только
 ' собственной стороны. Совпадение направлений справа не вызывает перескок
 ' слева, где направления различаются; последующее изменение слева изолировано.
-Private Sub TestRectSetIndependentThirdRows(ByRef stats As TUiTestStats)
+Private Sub TestRectanglesIndependentThirdRows(ByRef stats As TUiTestStats)
     Dim recipe As ISectionRecipe, layout As CRebarLayout, changed As CRebarLayout
     Dim values As Variant, rowKey As Variant, field As Variant
     On Error GoTo Failed
-    Set recipe = New CSectionRecipeRectSet
-    values = FixtureRecipeValues("rngRectSetGeometry")
-    FixtureSetInput values, "General", "Shape", "val", "Rectangle"
+    Set recipe = New CSectionRecipeRectangles
+    values = FixtureRecipeValues("rngRectanglesGeometry")
+    FixtureSetInput values, "General", "Shape", "val", "OneRect"
     FixtureSetInput values, "General", "H1", "val", 300#: FixtureSetInput values, "General", "B1", "val", 200#
     For Each rowKey In Array("R1.Top", "R1.Bottom", "R1.Left", "R1.Right", "R2.Top", "R2.Bottom", "R2.Left", "R2.Right")
         FixtureSetInput values, "Main", CStr(rowKey), "as", 50#: FixtureSetInput values, "Main", CStr(rowKey), "d", 20#
@@ -5101,39 +5101,39 @@ Private Sub TestRectSetIndependentThirdRows(ByRef stats As TUiTestStats)
     FixtureSetInput values, "Extra", "R1.Left", "d2", 18#: FixtureSetInput values, "Extra", "R1.Left", "d3", 28#
     FixtureSetInput values, "Extra", "R1.Left", "pos2", "SideBySide"
     FixtureSetInput values, "Extra", "R1.Right", "d2", 22#: FixtureSetInput values, "Extra", "R1.Right", "d3", 34#
-    Set layout = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
-    AssertTrue stats, "rectset.thirdRows.count", layout.Count = 6
+    Set layout = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values))
+    AssertTrue stats, "rectangles.thirdRows.count", layout.Count = 6
     ' К каждой приставленной паре добавляются 2,5 мм для арматуры периодического профиля.
-    AssertTrue stats, "rectset.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - ((20# + 28#) / 2# + 2.5)) < 0.00000001
-    AssertTrue stats, "rectset.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - ((20# + 22#) / 2# + 2.5 + (22# + 34#) / 2# + 2.5)) < 0.00000001
+    AssertTrue stats, "rectangles.thirdRows.leftNoSkip", Abs(layout.X(3) - layout.X(1) - ((20# + 28#) / 2# + 2.5)) < 0.00000001
+    AssertTrue stats, "rectangles.thirdRows.rightSkip", Abs(layout.X(4) - layout.X(6) - ((20# + 22#) / 2# + 2.5 + (22# + 34#) / 2# + 2.5)) < 0.00000001
     FixtureSetInput values, "Extra", "R1.Left", "pos3", "SideBySide"
-    Set changed = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectSetGeometry", values))
-    AssertTrue stats, "rectset.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - ((20# + 18#) / 2# + 2.5 + (18# + 28#) / 2# + 2.5)) < 0.00000001
-    AssertTrue stats, "rectset.thirdRows.rightUnchanged", RectSetLayoutContainsBar(changed, layout, 6)
+    Set changed = FixtureLayout(FixtureRecipeDefinition(recipe, "rngRectanglesGeometry", values))
+    AssertTrue stats, "rectangles.thirdRows.leftSkip", Abs(Abs(changed.Y(3) - changed.Y(1)) - ((20# + 18#) / 2# + 2.5 + (18# + 28#) / 2# + 2.5)) < 0.00000001
+    AssertTrue stats, "rectangles.thirdRows.rightUnchanged", RectanglesLayoutContainsBar(changed, layout, 6)
     Exit Sub
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: rectset.thirdRows; " & CStr(Err.Number) & "; " & Err.Description
+    AppendLine stats, "FAIL: rectangles.thirdRows; " & CStr(Err.Number) & "; " & Err.Description
 End Sub
 
 ' ДЛЯ ТЕСТОВ: связывает столбец пользовательской таблицы с независимым ключом.
-Private Function RectSetSelectorTail(ByVal column As Long) As String
+Private Function RectanglesSelectorTail(ByVal column As Long) As String
     Select Case column
-        Case 5: RectSetSelectorTail = "loc_2row"
-        Case 4: RectSetSelectorTail = "bind_2row"
-        Case 9: RectSetSelectorTail = "loc_3row"
-        Case 8: RectSetSelectorTail = "bind_3row"
+        Case 5: RectanglesSelectorTail = "loc_2row"
+        Case 4: RectanglesSelectorTail = "bind_2row"
+        Case 9: RectanglesSelectorTail = "loc_3row"
+        Case 8: RectanglesSelectorTail = "bind_3row"
     End Select
 End Function
 
 ' ДЛЯ ТЕСТОВ: ищет исходный стержень в новой раскладке без зависимости от
 ' перенумерации после изменения привязки дополнительных рядов.
-Private Function RectSetLayoutContainsBar(ByVal actual As CRebarLayout, ByVal original As CRebarLayout, ByVal index As Long) As Boolean
+Private Function RectanglesLayoutContainsBar(ByVal actual As CRebarLayout, ByVal original As CRebarLayout, ByVal index As Long) As Boolean
     Dim i As Long
     For i = 1 To actual.Count
         If Abs(actual.X(i) - original.X(index)) + Abs(actual.Y(i) - original.Y(index)) + _
                 Abs(actual.Diameter(i) - original.Diameter(index)) < 0.00000001 Then
-            RectSetLayoutContainsBar = True
+            RectanglesLayoutContainsBar = True
             Exit Function
         End If
     Next i
@@ -5780,8 +5780,8 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     ThisWorkbook.Worksheets.Item("Config").Activate
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", _
-        "rngSteelMaterialParameters", "rngCircleGeometry", "rngRectSetGeometry", _
-        "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+        "rngSteelMaterialParameters", "rngCircleGeometry", "rngRectanglesGeometry", _
+        "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -5845,7 +5845,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
     lengthNames = Array("mm", "cm", "m"): lengthFactors = Array(1#, 10#, 1000#)
     stressNames = Array("MPa", "Pa", "kPa", "kgf/cm2", "tf/m2")
     stressFactors = Array(1#, 0.000001, 0.001, 0.0980665, 0.00980665)
-    For Each shape In Array("Circle", "RectSet", "PointedRect", "HollowRectangle")
+    For Each shape In Array("Circle", "Rectangles", "PointedSection", "HollowRectangle")
         For lengthIndex = 0 To 2
             For stressIndex = 0 To 4
                 For curvatureIndex = 0 To 1
@@ -5938,7 +5938,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
     ' Порог имеет размерность момент/длина; входные единицы момента не меняются.
     SetSystemSetting "Calculation.ZeroMomentPerDepth", CStr(0.001 * lengthFactor)
     Dim fieldReader As CSectionInputReader, fieldKey As Variant, fieldRow As Long, fieldColumn As Long
-    For Each name In Array("rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+    For Each name In Array("rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
         Set target = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         Set fieldReader = FixtureInput(target.Value2)
         For Each fieldKey In fieldReader.RowKeys("General")
@@ -5948,7 +5948,7 @@ Private Sub Audit03RescaleInputTables(ByVal lengthFactor As Double, ByVal stress
         Next fieldKey
     Next name
     Dim geometryName As Variant, blockName As Variant
-    For Each geometryName In Array("rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+    For Each geometryName In Array("rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
         Set target = ThisWorkbook.Names(CStr(geometryName)).RefersToRange
         Set fieldReader = FixtureInput(target.Value2)
         For Each blockName In Array("Main", "Extra")
@@ -6270,7 +6270,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     rangeNames = Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
         "rngCalculationProfiles", "rngLoadCombinations", "rngConcreteMaterialParameters", "rngSteelMaterialParameters", _
-        "rngCircleGeometry", "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry")
+        "rngCircleGeometry", "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry")
     Set original = New Collection
     For Each name In rangeNames
         original.Add ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Formula
@@ -7486,7 +7486,7 @@ Public Function RunConfigPresentationTests() As String
     TestConfigDropdownChoices stats
     TestConfigDropdownMeaning stats
     TestConfigSettingsRightBorder stats
-    TestRectSetIndependentSelectorLayout stats
+    TestRectanglesIndependentSelectorLayout stats
     TestAutoCADCommonSettingsLayout stats
     TestAutoCADGeometryContourWarning stats
     RunConfigPresentationTests = stats.Report & "TOTAL_CONFIG_PRESENTATION: passed=" & _
@@ -7587,7 +7587,7 @@ Private Sub TestConfigDropdownMeaning(ByRef stats As TUiTestStats)
     On Error GoTo Failed
     For Each name In Array("rngSystemSettings", "rngUnitSettings", "rngSignConventionSettings", _
             "rngCalculationProfiles", "rngPlotAnnotationSettings", "rngCircleGeometry", _
-            "rngRectSetGeometry", "rngPointedRectGeometry", "rngHollowRectangleGeometry", "rngLoadCombinations")
+            "rngRectanglesGeometry", "rngPointedSectionGeometry", "rngHollowRectangleGeometry", "rngLoadCombinations")
         Set table = ThisWorkbook.Names.Item(CStr(name)).RefersToRange
         For row = 2 To table.Rows.Count
             For column = 2 To table.Columns.Count
@@ -7691,7 +7691,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "ArrowSize": ExpectedConfigDropdownOptions = "Small|Medium|Wide"
         Case "Rebar.Loc2row", "Rebar.Loc3row": ExpectedConfigDropdownOptions = "Stacked|SideBySide"
         Case "Rebar.Bind2row", "Rebar.Bind3row": ExpectedConfigDropdownOptions = "EachBar|EverySecondBar"
-        Case "RectSet.SectionType": ExpectedConfigDropdownOptions = "Rectangle|LSection|TwoRectangles"
+        Case "Rectangles.SectionType": ExpectedConfigDropdownOptions = "TwoRect|OneRect"
     End Select
 End Function
 
@@ -7798,10 +7798,10 @@ Public Function RunSharedConfigPreflightTests() As String
     TestConfigDropdownChoices stats
     TestConfigDropdownMeaning stats
     TestConfigSettingsRightBorder stats
-    TestRectSetIndependentSelectors stats
-    TestRectSetIndependentSelectorLayout stats
-    TestRectSetIndependentSelectorEffects stats
-    TestRectSetIndependentThirdRows stats
+    TestRectanglesIndependentSelectors stats
+    TestRectanglesIndependentSelectorLayout stats
+    TestRectanglesIndependentSelectorEffects stats
+    TestRectanglesIndependentThirdRows stats
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03ShapeConfigTests(passed, failed)
     stats.Passed = stats.Passed + passed: stats.Failed = stats.Failed + failed
     stats.Report = stats.Report & modTestGeometryConfig.RunAudit03RebarCounterTests(passed, failed)

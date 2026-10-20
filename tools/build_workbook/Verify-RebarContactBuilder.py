@@ -11,9 +11,9 @@ from zipfile import ZipFile,ZIP_DEFLATED
 
 ROOT=Path(__file__).resolve().parents[2]
 D=ROOT/'docs/regression/ExcelGuardGuide_2026-10-13/RebarContactBuilder_2026-10-17'
-RECIPES={'src/Geometry/CSectionRecipe'+x+'.cls' for x in ('Circle','RectSet','PointedRect','HollowRectangle')}
+RECIPES={'src/Geometry/CSectionRecipe'+x+'.cls' for x in ('Circle','Rectangles','PointedSection','HollowRectangle')}
 NEW='src/Section/CRebarContactBuilder.cls';RETIRED='src/Geometry/modSectionRecipeRows.bas'
-MATRICES=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('RectSet','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
+MATRICES=['modTestSectionRecipes.Dump'+x+'Recipe'+suffix for x,suffix in [('Circle','Matrix'),('Rectangles','Matrix'),('Rounded','Matrix'),('Hollow','Matrix'),('Hollow','EdgeMatrix')]]
 SNAPSHOTS=MATRICES+['modTestAudit02Snapshots.DumpRecipeRuleContracts','modTestAudit02Snapshots.DumpRecipePathContracts','modTestAudit02Api.DumpAudit02CloseoutInputContract']
 spec=importlib.util.spec_from_file_location('guide',Path(__file__).with_name('Verify-SectionRecipeGuide.py'))
 guide=importlib.util.module_from_spec(spec);spec.loader.exec_module(guide)
@@ -109,7 +109,7 @@ def tests():
     before=components(subprocess.check_output(['git','show',receipt('Before.json')['Head']+':workbook/output/VBA_All_Code.txt'],cwd=ROOT).decode('utf-8-sig').replace('\r\n','\n'))
     assert b.keys()-before.keys()=={'CRebarContactBuilder'} and before.keys()-b.keys()=={'modSectionRecipeRows'}
     changed={name for name in before.keys()&b.keys() if executable(before[name])!=executable(b[name])}
-    assert changed=={'CSectionRecipe'+x for x in ('Circle','RectSet','PointedRect','HollowRectangle')}|{'CRebarRuleOptions','modTestAudit02Api'},changed
+    assert changed=={'CSectionRecipe'+x for x in ('Circle','Rectangles','PointedSection','HollowRectangle')}|{'CRebarRuleOptions','modTestAudit02Api'},changed
     assert receipt('CompiledSourceEquality.json')['Passed']
     return {'Runs':runs,'DirectedAssertions':runs[2]['Assertions']+runs[3]['Assertions'],'SmokeAssertions':runs[4]['Assertions'],'Comparisons':comparisons,'RecipeCases':60,
             'Components':158,'LegacyModuleAbsent':True,'OtherExecutableComponentsUnchanged':151,'RecipesDoNotRoundDimensions':True,'DisplayRoundingPreservesCoordinates':True}
