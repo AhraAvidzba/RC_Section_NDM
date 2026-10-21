@@ -1,0 +1,134 @@
+' ДЛЯ ТЕСТОВ: полный штатный конвейер с временно отключаемыми слоями вывода.
+' Подготовка входов и проверка чисел выполняются вне измеряемого интервала.
+Public Function RunTradeoffExperiment(ByVal fixture As String, Optional ByVal plan As String = "Full") As String
+    On Error GoTo Failed
+    PrepareCircleInput
+    SetSystemSetting "General.NonCriticalMessagesEnabled", "No"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    SetSystemSetting "Mesh.StepX", "10": SetSystemSetting "Mesh.StepY", "10"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "2"
+    SetSystemSetting "Plot.Enabled", "Yes"
+    If fixture = "Dense" Then SetSystemSetting "Circle.Diameter", "1000"
+    If fixture = "Checks" Or fixture = "Batch" Or fixture = "Loaded" Then
+        ConfigurePerformanceFixture "MIXED", IIf(fixture = "Batch", 6, 1), "Newton"
+        SetSystemSetting "Plot.LoadCase", "PERF_01"
+        SetProfileSetting "PR1", "Visualization.State", "StrengthState"
+    End If
+    If fixture = "Loaded" Then
+        With ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+            .Cells(2, 2).Value2 = -30000#: .Cells(2, 3).Value2 = 160000000#: .Cells(2, 4).Value2 = -30000000#
+        End With
+    End If
+    Dim variants As Variant, variantName As Variant, repetition As Long, repetitions As Long
+    variants = Array("Full", "NoPlot", "Outline", "Grouped", "Plain", "NoPlotPlain", "NoJson", "Minimum", "Memory", "NoReport", "FullEnd")
+    repetitions = 3
+    If fixture = "Dense" Or fixture = "Batch" Then repetitions = 2
+    If plan = "Quick" Then variants = Array("Full", "Memory"): repetitions = 1
+    If plan = "Core" Then variants = Array("Full", "NoPlot", "Minimum", "Memory"): repetitions = 2
+    If plan = "Confirm" Then variants = Array("Full", "NoPlotPlain", "Minimum", "Memory", "FullEnd")
+    If Left$(plan, 4) = "JSON" Then variants = Array("Full", "Json", "JsonNoPlot", "NoPlot", "FullEnd")
+    If plan = "JSONSmoke" Then variants = Array("Full", "Json"): repetitions = 0
+    If plan = "JSONExact" Then variants = Array("Full", "JsonExact", "JsonExactNoPlot", "NoPlot", "FullEnd")
+    Set ProbeBaseline = CreateObject("Scripting.Dictionary")
+    Dim formTime As Double, calcTime As Double, t As Double, message As String, flag As Boolean
+    Dim line As String, failedChecks As Long, filename As String, stages As Variant, pair As Variant
+    filename = fixture & "_" & plan & ".csv"
+    ProbeLog filename, "variant,repetition,cells,bars,combinations,formation,calculation,guardForm,model,properties,writeForm,plotForm,restoreForm,guardCalc,readModel,prepareCalc,solve,writeCalc,plotCalc,finishCalc,compared,mismatch,maxDifference"
+    For Each variantName In variants
+        ProbeVariant = CStr(variantName)
+        SetSystemSetting "Plot.Enabled", IIf(ProbeVariant = "NoPlot" Or ProbeVariant = "NoPlotPlain" Or ProbeVariant = "JsonNoPlot" Or ProbeVariant = "JsonExactNoPlot" Or ProbeMinimum, "No", "Yes")
+        SetSystemSetting "General.ExecutionReportEnabled", IIf(ProbeVariant = "NoReport", "No", "Yes")
+        For repetition = 0 To repetitions
+            Set ProbeTimes = CreateObject("Scripting.Dictionary")
+            t = ProbeNow()
+            flag = NonCriticalMessagesEnabled(ThisWorkbook)
+            message = FormSectionForWorkbook(ThisWorkbook)
+            formTime = ProbeNow() - t
+            If InStr(message, "Предупреждение:") > 0 Then Err.Raise 5, , message
+            t = ProbeNow()
+            flag = NonCriticalMessagesEnabled(ThisWorkbook)
+            message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            calcTime = ProbeNow() - t
+            If InStr(message, "Схема не обновлена") > 0 Then Err.Raise 5, , message
+            ProbeRecording = (ProbeBaseline.Count = 0)
+            ProbeCheck
+            If ProbeJsonEnabled And repetition = 1 Then ProbeExportJson ThisWorkbook, fixture
+            If repetition = 1 Then ProbeLog fixture & "_" & plan & "_messages.txt", ProbeVariant & vbCrLf & message & vbCrLf
+            failedChecks = failedChecks + ProbeMismatch
+            line = ProbeVariant & "," & CStr(repetition) & "," & CStr(ProbeFormed.ConcreteCount) & "," & CStr(ProbeFormed.RebarCount) & "," & CStr(ProbeBatch.Count) & "," & ProbeNumber(formTime) & "," & ProbeNumber(calcTime)
+            stages = Array("form.guard.begin|form.inputs.begin", "form.model.begin|form.properties.begin", "form.properties.begin|form.output.begin", "form.output.begin|form.plot.begin", "form.plot.begin|form.restore.begin", "form.restore.begin|form.end", "calc.guard.begin|calc.inputs.begin", "calc.read.begin|calc.prepare.begin", "calc.prepare.begin|calc.solve.begin", "calc.solve.begin|calc.output.begin", "calc.output.begin|calc.plot.begin", "calc.plot.begin|calc.finish.begin", "calc.finish.begin|calc.end")
+            For Each pair In stages
+                line = line & "," & ProbeNumber(ProbeSpan(Split(CStr(pair), "|")(0), Split(CStr(pair), "|")(1)))
+            Next pair
+            line = line & "," & CStr(ProbeCompared) & "," & CStr(ProbeMismatch) & "," & ProbeNumber(ProbeMaxDifference)
+            ProbeLog filename, line
+            If ProbeMismatch > 0 Then ProbeLog fixture & "_" & plan & "_differences.txt", ProbeVariant & " " & CStr(repetition) & vbCrLf & ProbeDifferences
+        Next repetition
+    Next variantName
+    RunTradeoffExperiment = "EXPERIMENT_COMPLETE: " & filename & vbCrLf & "MISMATCH: " & CStr(failedChecks)
+    Exit Function
+Failed:
+    RunTradeoffExperiment = "FAIL: " & fixture & " / " & ProbeVariant & " / " & CStr(repetition) & " / " & CStr(Err.Number) & " / " & Err.Source & " / " & Err.Description
+End Function
+
+' ДЛЯ ТЕСТОВ: здесь намеренно меняется точность сетки либо состав проверок.
+' Такие варианты не являются эквивалентной заменой штатного расчёта.
+Public Function RunAccuracyTradeoff(ByVal fixture As String) As String
+    On Error GoTo Failed
+    Dim choices As Variant, choice As Variant, repetition As Long, stepValue As String
+    Dim t As Double, formTime As Double, calcTime As Double, message As String, flag As Boolean
+    Dim line As String, result As CCombinationResult, state As CSectionStateResult, props As CSectionPropertiesCalculator
+    Dim key As Variant, filename As String
+    choices = Array("Full", "Mesh20", "Mesh40", "NoCapacity", "NoCracks", "NoStability", "DirectOnly", "FullEnd")
+    filename = "Accuracy_" & fixture & ".csv"
+    ProbeLog filename, "variant,repetition,cells,formation,calculation,solve,area,ix,lambdaCapacity,crackWidth,overall,capacity,cracks,stability,stateCount"
+    ProbeVariant = "Full"
+    For Each choice In choices
+        PrepareCircleInput
+        SetSystemSetting "General.NonCriticalMessagesEnabled", "No"
+        SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+        SetSystemSetting "Plot.Enabled", "Yes"
+        SetSystemSetting "Mesh.BoundarySubdivisions", "2"
+        stepValue = "10"
+        If choice = "Mesh20" Then stepValue = "20"
+        If choice = "Mesh40" Then stepValue = "40"
+        SetSystemSetting "Mesh.StepX", stepValue: SetSystemSetting "Mesh.StepY", stepValue
+        ConfigurePerformanceFixture "MIXED", 1, "Newton"
+        SetSystemSetting "Plot.LoadCase", "PERF_01"
+        SetProfileSetting "PR1", "Visualization.State", "StrengthState"
+        If fixture = "Loaded" Then
+            With ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
+                .Cells(2, 2).Value2 = -30000#: .Cells(2, 3).Value2 = 160000000#: .Cells(2, 4).Value2 = -30000000#
+            End With
+        End If
+        If choice = "NoCapacity" Or choice = "DirectOnly" Then SetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
+        If choice = "NoCracks" Or choice = "DirectOnly" Then SetProfileSetting "PR1", "Calculation.Crack.Width", "No"
+        If choice = "NoStability" Or choice = "DirectOnly" Then SetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
+        For repetition = 0 To 3
+            Set ProbeTimes = CreateObject("Scripting.Dictionary")
+            t = ProbeNow(): flag = NonCriticalMessagesEnabled(ThisWorkbook)
+            message = FormSectionForWorkbook(ThisWorkbook)
+            formTime = ProbeNow() - t
+            t = ProbeNow(): flag = NonCriticalMessagesEnabled(ThisWorkbook)
+            message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            calcTime = ProbeNow() - t
+            Set result = ProbeBatch.ResultAt(1)
+            Set props = New CSectionPropertiesCalculator: props.CalculateConcrete ProbeCalculated
+            line = CStr(choice) & "," & CStr(repetition) & "," & CStr(ProbeCalculated.ConcreteCount) & "," & ProbeNumber(formTime) & "," & ProbeNumber(calcTime) & "," & ProbeNumber(ProbeSpan("calc.solve.begin", "calc.output.begin"))
+            line = line & "," & ProbeNumber(props.Area) & "," & ProbeNumber(props.Ix) & "," & ProbeNumber(result.StrengthResult.Capacity.LambdaCapacity) & "," & ProbeNumber(result.CrackResult.Width.CrackWidth)
+            line = line & "," & result.Status & "," & result.StrengthResult.Capacity.Status & "," & result.NormalCrackStatus & "," & result.StabilityResult.Status & "," & CStr(result.StateRepository.StateCount)
+            ProbeLog filename, line
+            If repetition = 1 Then
+                Set ProbeBaseline = CreateObject("Scripting.Dictionary"): ProbeRecording = True
+                ProbeObject result, "CCombinationResult", "LC1"
+                For Each key In ProbeBaseline.Keys
+                    If VarType(ProbeBaseline(key)) <> vbString Then ProbeLog "Metrics_" & fixture & "_" & CStr(choice) & ".tsv", CStr(key) & vbTab & CStr(ProbeBaseline(key))
+                Next key
+            End If
+        Next repetition
+    Next choice
+    RunAccuracyTradeoff = "EXPERIMENT_COMPLETE: " & filename & vbCrLf & "INTENTIONAL_CHANGES: mesh or requested checks; not an equivalence test"
+    Exit Function
+Failed:
+    RunAccuracyTradeoff = "FAIL: " & CStr(choice) & " / " & CStr(repetition) & " / " & CStr(Err.Number) & " / " & Err.Description
+End Function

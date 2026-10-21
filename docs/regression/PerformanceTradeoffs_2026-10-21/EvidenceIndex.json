@@ -1,0 +1,543 @@
+{
+  "scope": "Performance tradeoffs in isolated copies; not production acceptance or a full ON/OFF run",
+  "baseCommit": "4ccfe9c7336d4c49e665dee42a4e5d24c200c1ff",
+  "branch": "codex/linked-rebar-row-offsets",
+  "productionUnchanged": {
+    "workbook/output/RC_Section_NDM.xlsm": "7B4C769D3813CE0057FFA93026281CD8ED7D3DC23F60159A2655882AB37D2772",
+    "workbook/output/VBA_All_Code.txt": "F88F3868FF9C3FF0D14DB981D6F90CC1467D4CB0E426A462497EF86FC158950E",
+    "workbook/output/RC_Section_NDM_execution_report.txt": "A973C4D3FBA2E2042E1BE25E62B27462C6C44A4749CB0D749B646C48E2252377"
+  },
+  "verifiedCompletedPlans": {
+    "Light_Full": {
+      "measuredRepetitions": 3,
+      "variants": [
+        "Full",
+        "NoPlot",
+        "Outline",
+        "Grouped",
+        "Plain",
+        "NoPlotPlain",
+        "NoJson",
+        "Minimum",
+        "Memory",
+        "NoReport"
+      ],
+      "rowsIncludingWarmups": 40
+    },
+    "Dense_Full": {
+      "measuredRepetitions": 2,
+      "variants": [
+        "Full",
+        "NoPlot",
+        "Outline",
+        "Grouped",
+        "Plain",
+        "NoPlotPlain",
+        "NoJson",
+        "Minimum",
+        "Memory",
+        "NoReport",
+        "FullEnd"
+      ],
+      "rowsIncludingWarmups": 33
+    },
+    "Light_JSONExact": {
+      "measuredRepetitions": 3,
+      "variants": [
+        "Full",
+        "JsonExact",
+        "JsonExactNoPlot",
+        "NoPlot",
+        "FullEnd"
+      ],
+      "rowsIncludingWarmups": 20
+    },
+    "Dense_JSONExact": {
+      "measuredRepetitions": 2,
+      "variants": [
+        "Full",
+        "JsonExact",
+        "JsonExactNoPlot",
+        "NoPlot",
+        "FullEnd"
+      ],
+      "rowsIncludingWarmups": 15
+    },
+    "Batch_Core": {
+      "measuredRepetitions": 2,
+      "variants": [
+        "Full",
+        "NoPlot",
+        "Minimum",
+        "Memory"
+      ],
+      "rowsIncludingWarmups": 12
+    },
+    "Accuracy_Checks": {
+      "measuredRepetitions": 3,
+      "variants": [
+        "Full",
+        "Mesh20",
+        "Mesh40",
+        "NoCapacity",
+        "NoCracks",
+        "NoStability",
+        "DirectOnly",
+        "FullEnd"
+      ],
+      "rowsIncludingWarmups": 32
+    }
+  },
+  "exceptions": [
+    "NoReport: one diagnostic LastResidualNorm changes; not full equivalence",
+    "Decimal JSON Val/CDbl: 16 residual-field mismatches per measured sample; not full equivalence",
+    "JSON 30000-character chunks: failed Out of memory; not a timing result",
+    "Accuracy_Checks intentionally changes mesh or requested checks; not an equivalence test",
+    "Candidate01 and Candidate02 did not compile; only successful later candidates were measured"
+  ],
+  "archive": {
+    "path": "Evidence.zip",
+    "bytes": 234447,
+    "sha256": "F47ECC5E738FE23B3DC72C6098B5F32C7573DA15D905A1E6924F104E6F5A52DB"
+  },
+  "files": [
+    {
+      "path": "Accuracy_Checks.csv",
+      "bytes": 4181,
+      "sha256": "B2F826F43291A5D7CF64711EC5B21368640F3EC935358BEFBB1E83C61B387A2E"
+    },
+    {
+      "path": "Accuracy_Checks.txt",
+      "bytes": 1253,
+      "sha256": "9E3E9922F41BA492F7D674B1A3E1C9B4AF03844AEBC355884BFBE068B603763E"
+    },
+    {
+      "path": "Batch_Core.csv",
+      "bytes": 2844,
+      "sha256": "E47ACC45D0CAB08E14D9A4079BA56CF0DA17044122D87D188A938A3A639A55C9"
+    },
+    {
+      "path": "Batch_Core.txt",
+      "bytes": 1195,
+      "sha256": "EAFFE72F16B983DD54E3E53E9CF2E3C7ED2417CE73E78104A1187BA8452BC5D5"
+    },
+    {
+      "path": "Batch_Core_messages.txt",
+      "bytes": 1039,
+      "sha256": "46ACA9229C82E17872217308EBAC8D2F2BAD6037F22F5EC66047EB275AFA96D5",
+      "encoding": "Windows-1251 (original VBA Print output)"
+    },
+    {
+      "path": "Candidate01/Preparation.json",
+      "bytes": 230,
+      "sha256": "39A10153E272837F6CB8993378264335B169CD16989ACBA097FF3D8D93028035"
+    },
+    {
+      "path": "Candidate02/Preparation.json",
+      "bytes": 245,
+      "sha256": "65507C36863C41FCE6755B549893BF3C11FC690CBD58D8971E08BBD11CE76EDC"
+    },
+    {
+      "path": "Candidate03/Preparation.json",
+      "bytes": 1346,
+      "sha256": "9FA3B787978C5721D7D54EE5EFEC3D14028DAC7E338FEF43FBCC725FB7A4ABE7"
+    },
+    {
+      "path": "Candidate04/Preparation.json",
+      "bytes": 1346,
+      "sha256": "0C8465A85A04DBF7448693F38BCAEC9F3A64C3D340C8E7F6D2CC4A83EFC41BA5"
+    },
+    {
+      "path": "Candidate05/Preparation.json",
+      "bytes": 1693,
+      "sha256": "8FF6DA7D06C688AA98DFDDD59EF93C2B1DD29B9030872A0480A69FA4FE97744E"
+    },
+    {
+      "path": "Candidate06/Preparation.json",
+      "bytes": 1693,
+      "sha256": "C8FD1AA243292CFAB7687B08ACC2320D7C8DA8313E568E5CA5E3FC4F47478FAF"
+    },
+    {
+      "path": "Candidate07/Preparation.json",
+      "bytes": 1693,
+      "sha256": "C39C8C5E7111A60E259D7EDD20C2D556B1BC387C58AB2329C5EC51CB02674253"
+    },
+    {
+      "path": "Candidate08/Preparation.json",
+      "bytes": 1693,
+      "sha256": "B6C297F84AB76F235B2F6C3E4FA8C9C548E1961455E0AEB3C95B3363B7190A4A"
+    },
+    {
+      "path": "Candidate09/Preparation.json",
+      "bytes": 1693,
+      "sha256": "466C4C63291F8BB96200D566E74C659B9311A77398A68C21B0299556EADE5673"
+    },
+    {
+      "path": "Candidate10/Preparation.json",
+      "bytes": 1693,
+      "sha256": "6C4F560B5F6E88B2DF28EC2711D209348FDA910915E9B63B34F6AEF28CCC26C3"
+    },
+    {
+      "path": "Checks_Quick.csv",
+      "bytes": 1088,
+      "sha256": "0A8C21BF28383A94DE18659CA3C86C0BC5AA5E2E05AE60B00C371C56716A7088"
+    },
+    {
+      "path": "Checks_Quick.txt",
+      "bytes": 1194,
+      "sha256": "213930E70CEC77CBA626C8A63ACE9E1FF07B50C7D1B2767FD4A5C988AAAD117F"
+    },
+    {
+      "path": "Dense_Full.csv",
+      "bytes": 7503,
+      "sha256": "7BCEAC8DD595BFC1F73DF962FD6E72D1626927F702630C17AD0670BD29452D5B"
+    },
+    {
+      "path": "Dense_Full.txt",
+      "bytes": 1199,
+      "sha256": "DD8C0E67156E7ACE7BC347B45AE5AA743EE77FCA7470150A73F526F801AB7B23"
+    },
+    {
+      "path": "Dense_Full_differences.txt",
+      "bytes": 252,
+      "sha256": "001E84983062D93175D6155A144245457C5A99891FB28C94AF0A2DF9C9DC6692"
+    },
+    {
+      "path": "Dense_JSONExact.csv",
+      "bytes": 3552,
+      "sha256": "344A5F759E608081B5916CC30361DCECF10B69C6DF06141EA2F3C14A1C54D285"
+    },
+    {
+      "path": "Dense_JSONExact.txt",
+      "bytes": 1201,
+      "sha256": "623BC1175B43DFA426610A95D17A8C653725A71D7E4A5066B91E13AF5E029BCC"
+    },
+    {
+      "path": "Dense_JSONExact_messages.txt",
+      "bytes": 1291,
+      "sha256": "564375D0CDC9B5D301941FE1EC408FF4B1E03F22BC0EF0A9B51314D6CB2434E0",
+      "encoding": "Windows-1251 (original VBA Print output)"
+    },
+    {
+      "path": "Dense_JsonExactNoPlot_rngNDMMaterialDiagrams.json",
+      "bytes": 5780,
+      "sha256": "1FFC56C52730DD32435C872BFD2383D9EB673D65A478BB8A897C32BF6DA1E33B"
+    },
+    {
+      "path": "Dense_JsonExactNoPlot_rngNDMSectionAnnotations.json",
+      "bytes": 1485,
+      "sha256": "DC0BC6997F95ADFD17480E079A3F6CA2B2779EA6FD328501A212C8A5D706FDE5"
+    },
+    {
+      "path": "Dense_JsonExactNoPlot_rngNDMSectionContours.json",
+      "bytes": 456,
+      "sha256": "6D41123FDEB8A7837D394CDB9CE2E37BE0CC74209577B988A62D726B0ED188FB"
+    },
+    {
+      "path": "Dense_JsonExactNoPlot_rngNDMSectionGeometry.json",
+      "bytes": 2991561,
+      "sha256": "7A3FB3D88F6501AA70A754B0EBD74A15AF6908EE832F80D8123645148A27873E"
+    },
+    {
+      "path": "Dense_JsonExact_rngNDMMaterialDiagrams.json",
+      "bytes": 5780,
+      "sha256": "B6B13140E38AA47BE3FB678C1C23F1131928564C7A8ED91E7ED449360B378327"
+    },
+    {
+      "path": "Dense_JsonExact_rngNDMSectionAnnotations.json",
+      "bytes": 1485,
+      "sha256": "0526C1181F58FDA21A252957AA7D1494279F0D17C640C7E2FCF75B665D7ABACC"
+    },
+    {
+      "path": "Dense_JsonExact_rngNDMSectionContours.json",
+      "bytes": 456,
+      "sha256": "A84553C3DC46EFC3C5638F593FF029C1A3BF7748AB9B98C301552EC3F3DDFDFB"
+    },
+    {
+      "path": "Dense_JsonExact_rngNDMSectionGeometry.json",
+      "bytes": 2991561,
+      "sha256": "A0E2F931041E6DA94877DD4CBFE59DABF5D1C48D451BF3E00DBD80E531985E09"
+    },
+    {
+      "path": "Dense_JsonSize.csv",
+      "bytes": 304,
+      "sha256": "1CE964185281ECC8CD39F6B5EBCA9CB0713ACC501E083E281E1FB4BD8097D86C"
+    },
+    {
+      "path": "JsonVerification.json",
+      "bytes": 1952,
+      "sha256": "E87C68723E0F1410D0392BA9247A65FAC5C7CAB5F1A70D0D72CFABC7ED065B9B"
+    },
+    {
+      "path": "Light_Full.csv",
+      "bytes": 8968,
+      "sha256": "020F6349DF3DB9B98104EF85281235676286ACF56B3EB5A6A99DCFB26C2F9141"
+    },
+    {
+      "path": "Light_Full.txt",
+      "bytes": 1196,
+      "sha256": "4BF2215E33439E3983573BC4815C5912C49A7CE753062FFAF6FD21A6ED36150C"
+    },
+    {
+      "path": "Light_Full_differences.txt",
+      "bytes": 336,
+      "sha256": "A43DCDDA4D94F0A65496F7E3F99E5988AEDF80D1429040D41C8C563F30650E31"
+    },
+    {
+      "path": "Light_JSON.csv",
+      "bytes": 1084,
+      "sha256": "8997E152C56E59B2EFCE62537002E11777E83A58D8B320916B196458AEF2E9C2"
+    },
+    {
+      "path": "Light_JSON.txt",
+      "bytes": 1589,
+      "sha256": "932CE853148B66C2D4CE44BA871A39BD1A601316E9B1EC808A9E874B73CAA003"
+    },
+    {
+      "path": "Light_JSON2.csv",
+      "bytes": 4592,
+      "sha256": "D377D045A67CBAAA5454AE9DF7C3A4152863DC39673A2D35720FF75B713A9CEE"
+    },
+    {
+      "path": "Light_JSON2.txt",
+      "bytes": 1201,
+      "sha256": "E5E4EC53020957E6F01D2CED4D5BD144DA9831A7606A03BF45D10BB4B2D2001F"
+    },
+    {
+      "path": "Light_JSON2_differences.txt",
+      "bytes": 10008,
+      "sha256": "5ABC36EBE0737A3E1A6B9D6E7009FAEDE226F1464390B38D7D74A66188285949"
+    },
+    {
+      "path": "Light_JSON3.csv",
+      "bytes": 4592,
+      "sha256": "D86A6287827FE2C43CDA1A862059F1B840BD204638F2C158865D014BE2D77C01"
+    },
+    {
+      "path": "Light_JSON3.txt",
+      "bytes": 1201,
+      "sha256": "969FD4FC09560BC74223C485F063F537976E67BF2DE204C3993807EAC0D26E84"
+    },
+    {
+      "path": "Light_JSON3_differences.txt",
+      "bytes": 10008,
+      "sha256": "5ABC36EBE0737A3E1A6B9D6E7009FAEDE226F1464390B38D7D74A66188285949"
+    },
+    {
+      "path": "Light_JSONExact.csv",
+      "bytes": 4624,
+      "sha256": "7D00304F8F480A4F17AB98D7AD784CA01EF356BB42B4A8F3CCDB66EA7A8F72C2"
+    },
+    {
+      "path": "Light_JSONExact.txt",
+      "bytes": 1203,
+      "sha256": "E9B4443DD47DDB86D92FCC0E714435D7F4F4483AC2A21BEDF0E2A3758DDF7CE4"
+    },
+    {
+      "path": "Light_JSONExact_messages.txt",
+      "bytes": 1291,
+      "sha256": "C6FB1FD447C626BAC742DA6C8393545374EBCF8D77D9F3D4E178EE9F3C198250",
+      "encoding": "Windows-1251 (original VBA Print output)"
+    },
+    {
+      "path": "Light_JSONSmoke.csv",
+      "bytes": 436,
+      "sha256": "9C3D8387EA73216451C62A0833BFBF7ECB2DDECA09E658D31E4EE662EDA345EE"
+    },
+    {
+      "path": "Light_JSONSmoke.txt",
+      "bytes": 1630,
+      "sha256": "14BEBF190027C4D7EB59327843B04340CB73C6EE67719F0BD438A3D3FD8EF9B7"
+    },
+    {
+      "path": "Light_JsonExactNoPlot_rngNDMMaterialDiagrams.json",
+      "bytes": 5780,
+      "sha256": "505770332C99E61787EF2654FE9872E8370E7F4370CB376877F56C6BDB2DB301"
+    },
+    {
+      "path": "Light_JsonExactNoPlot_rngNDMSectionAnnotations.json",
+      "bytes": 1506,
+      "sha256": "2FEADC36224518AB40F3DEA0FCB09601E77320A8DBC4A670F47F65B3D8A4D1C8"
+    },
+    {
+      "path": "Light_JsonExactNoPlot_rngNDMSectionContours.json",
+      "bytes": 456,
+      "sha256": "2563ACD86203065DC80744B00C67D80A96B4F9AB24BA453CB4EF4BBCD1124D2D"
+    },
+    {
+      "path": "Light_JsonExactNoPlot_rngNDMSectionGeometry.json",
+      "bytes": 312366,
+      "sha256": "B840B137FEB6D84DED482D1A8E560D2F01224FC0D399E274004BE402E3227F42"
+    },
+    {
+      "path": "Light_JsonExact_rngNDMMaterialDiagrams.json",
+      "bytes": 5780,
+      "sha256": "E6A872E979A741362FDA239F8158C701B57A4E4977852059D40C8EFC0138D6F2"
+    },
+    {
+      "path": "Light_JsonExact_rngNDMSectionAnnotations.json",
+      "bytes": 1506,
+      "sha256": "1A3E48981B40E9904B598D0A7F308FD102D3AB9BD9327B3A41DFE87767045F5F"
+    },
+    {
+      "path": "Light_JsonExact_rngNDMSectionContours.json",
+      "bytes": 456,
+      "sha256": "91B67D32C6B4D2D227DF451C39B863AE22484723ECB9E59398FB282C3FAF99FD"
+    },
+    {
+      "path": "Light_JsonExact_rngNDMSectionGeometry.json",
+      "bytes": 312366,
+      "sha256": "07DBDD007F7E0A44CD8EC88521D61D395412672AF220486320FC9BABBB4377D5"
+    },
+    {
+      "path": "Light_JsonNoPlot_rngNDMMaterialDiagrams.json",
+      "bytes": 5884,
+      "sha256": "54C15B7BC7DEDBCB08E27D40DA426BD055E5516DE4FB5BC32B56CEEADB94CBA3"
+    },
+    {
+      "path": "Light_JsonNoPlot_rngNDMSectionAnnotations.json",
+      "bytes": 1530,
+      "sha256": "0F1BDE49A7B8F54DCA539B5492AC85D13EBFBB1B24B499A264E2B6968B99FA31"
+    },
+    {
+      "path": "Light_JsonNoPlot_rngNDMSectionContours.json",
+      "bytes": 460,
+      "sha256": "E199BD7D806DAF996E1856CEE57D6CFBA8D5BD2B6FE910B7A37DBD5BEEC4DF44"
+    },
+    {
+      "path": "Light_JsonNoPlot_rngNDMSectionGeometry.json",
+      "bytes": 325697,
+      "sha256": "9FBEBF334C4B653A44FD433034FCD9403F5F6960143016513D09E8DF45262ACB"
+    },
+    {
+      "path": "Light_JsonSize.csv",
+      "bytes": 596,
+      "sha256": "B0D3F4865D4F73AF9AEB07EAEEC796E98A69A82BA9DC147E8B57A562D9812385"
+    },
+    {
+      "path": "Light_Json_rngNDMMaterialDiagrams.json",
+      "bytes": 5884,
+      "sha256": "ED08720DD757B0DBB90C11B38D0F8A21D6742AD6CF41B0D1D3105D4D0714F8CF"
+    },
+    {
+      "path": "Light_Json_rngNDMSectionAnnotations.json",
+      "bytes": 1530,
+      "sha256": "39EB8214622963E537B9AB3FB912287D1F6842C995A71F7EE710B53E105E4FEE"
+    },
+    {
+      "path": "Light_Json_rngNDMSectionContours.json",
+      "bytes": 460,
+      "sha256": "6EF849C6C17784875284379F4F64C77AC13CD947A8DEAFA64E78F62176CCC25A"
+    },
+    {
+      "path": "Light_Json_rngNDMSectionGeometry.json",
+      "bytes": 325697,
+      "sha256": "8E03E58165F2AD051159E6E7977288C5B3BE9B4B92F6F0DE27258666AA9822D6"
+    },
+    {
+      "path": "Light_Quick.csv",
+      "bytes": 1088,
+      "sha256": "6E7600E2908223F0D3E05E851405300BDBD674B99B44FD35A5BD6984CADFC68B"
+    },
+    {
+      "path": "Light_Quick.txt",
+      "bytes": 1194,
+      "sha256": "0A3BBD1BECDC8DDA8C52FDC51F656BE78AA690B07F2BA02BC00F2142D55BE9C0"
+    },
+    {
+      "path": "Metrics_Checks_DirectOnly.tsv",
+      "bytes": 13024,
+      "sha256": "C56ECA1B833D292709ED64D48926B6D69601D7219C6D0B609F69722C0AF8D05A"
+    },
+    {
+      "path": "Metrics_Checks_Full.tsv",
+      "bytes": 30831,
+      "sha256": "44DDAD30E27FEF17CB9C22171E899C50BB2281E4D3647C223149E2702F897E04"
+    },
+    {
+      "path": "Metrics_Checks_FullEnd.tsv",
+      "bytes": 30831,
+      "sha256": "44DDAD30E27FEF17CB9C22171E899C50BB2281E4D3647C223149E2702F897E04"
+    },
+    {
+      "path": "Metrics_Checks_Mesh20.tsv",
+      "bytes": 30572,
+      "sha256": "D5661FC9D7E16CF4A947487AD6B7FCEA3280EA095A616E61879FF64B61CA6DBD"
+    },
+    {
+      "path": "Metrics_Checks_Mesh40.tsv",
+      "bytes": 30862,
+      "sha256": "89A9E8F306A3A18DFC89C3ED29FC232B44495FD015C9C7B7333E0B8AD0F4C9E1"
+    },
+    {
+      "path": "Metrics_Checks_NoCapacity.tsv",
+      "bytes": 23543,
+      "sha256": "F85A611A969D20C83AB6CEE9E5BDE2178F829849FDE28BDE157829560FBA46FC"
+    },
+    {
+      "path": "Metrics_Checks_NoCracks.tsv",
+      "bytes": 20813,
+      "sha256": "D18CA896FDB0D6C3986486B197C5F46C8567AD901E4D6E95FFA2BD75A8D48629"
+    },
+    {
+      "path": "Metrics_Checks_NoStability.tsv",
+      "bytes": 27296,
+      "sha256": "1B6BF49E4E79208D56FB0749E3C186825C532EF8B91C95F22E2FA06765BB15BD"
+    },
+    {
+      "path": "Summary.json",
+      "bytes": 63492,
+      "sha256": "6B980EF0DBA64AD86B80F376D81F606FB27796F395304BBF04C4F4289280FEC1"
+    }
+  ],
+  "finalGeneratedModules": [
+    {
+      "name": "CBatchResultWriter.cls",
+      "sha256": "E7ABA46C07E085E570A1D23F8E6197761BE7E8C5AF8A358D6CEEFABDFB2D899E"
+    },
+    {
+      "name": "CCrackSummaryWriter.cls",
+      "sha256": "4B8E583FC5F32532CF5008D0AEB558E6A2B0602794250BF26B174EE461615477"
+    },
+    {
+      "name": "CNDMResultsWriter.cls",
+      "sha256": "2F7EFA210D0098A9A1EEE08E0B7BC4F59E5B65E391CD53916D9964E78527C60A"
+    },
+    {
+      "name": "CSectionPlotDataReader.cls",
+      "sha256": "C62E6D7CD3AF27FC2A03F66A6AE0EC1ECB764A697388E9840BC2C41BBE01B83B"
+    },
+    {
+      "name": "CSectionPlotter.cls",
+      "sha256": "0BFBFEF692E41EC349C9ED38E40046E27774EE7F49E84247C32A5571F0570A55"
+    },
+    {
+      "name": "CStabilitySummaryWriter.cls",
+      "sha256": "4F59744FCA6599A76A790E10BA373FEADC88623C1092A8834B386DE80E04291C"
+    },
+    {
+      "name": "CStrengthSummaryWriter.cls",
+      "sha256": "9FCBD9DD5640554C956301C2EE138BCD27399E93997B3F4B3135E5DAE3BED9F3"
+    },
+    {
+      "name": "modCompactJsonProbe.bas",
+      "sha256": "686C79DEF95B28F97E9A1BC00CEF4881B0833CCBB97C54039B02E9F3309C4A01"
+    },
+    {
+      "name": "modSectionSnapshot.bas",
+      "sha256": "EB8FE8A8779AFCBFBCFE51BD0FE1B970990F205A10FEA7D2AEA8A41F489AE1E1"
+    },
+    {
+      "name": "modSpeedTradeoffProbe.bas",
+      "sha256": "0631BB47A7C982A99197CDCD8A6FD8FD77E50EB2828A1A52F057A9B528E6F6E1"
+    },
+    {
+      "name": "modTestWorkbookInterface.bas",
+      "sha256": "DB95E832BFD230D06C4C4FEA4C0D851F982F209213971AC9C8600D0733BAE7E4"
+    },
+    {
+      "name": "modWorkbookCalculation.bas",
+      "sha256": "A7BA89B22B5403B928AA7A7EFE0CD69CE4CEF226F0AE84CB1A4F21071A7BBCFF"
+    }
+  ]
+}

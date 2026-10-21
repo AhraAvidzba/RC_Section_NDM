@@ -1,0 +1,133 @@
+Attribute VB_Name = "modSpeedTradeoffProbe"
+Option Explicit
+' ДЛЯ ТЕСТОВ: только изолированная копия. Упрощения нельзя переносить в рабочую книгу.
+#If VBA7 Then
+Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
+Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
+#Else
+Private Declare Function QueryPerformanceCounter Lib "kernel32" (ByRef value As Currency) As Long
+Private Declare Function QueryPerformanceFrequency Lib "kernel32" (ByRef value As Currency) As Long
+#End If
+Public ProbeVariant As String
+Public ProbeFormed As CSectionModel
+Public ProbeCalculated As CSectionModel
+Public ProbeBatch As CBatchSectionCalculator
+Public ProbeTimes As Object
+Public ProbeBaseline As Object
+Public ProbeRecording As Boolean
+Public ProbeMismatch As Long
+Public ProbeCompared As Long
+Public ProbeMaxDifference As Double
+Public ProbeDifferences As String
+Public Const ProbeDirectory As String = "@ROOT@"
+
+Public Function ProbeNow() As Double
+    Dim counter As Currency, frequency As Currency
+    QueryPerformanceCounter counter: QueryPerformanceFrequency frequency
+    ProbeNow = counter / frequency
+End Function
+Public Sub ProbeMark(ByVal key As String)
+    If ProbeTimes Is Nothing Then Set ProbeTimes = CreateObject("Scripting.Dictionary")
+    ProbeTimes(key) = ProbeNow()
+End Sub
+Public Function ProbeSpan(ByVal a As String, ByVal b As String) As Double
+    ProbeSpan = ProbeTimes(b) - ProbeTimes(a)
+End Function
+Public Function ProbePlain() As Boolean
+    ProbePlain = (ProbeVariant = "Plain" Or ProbeVariant = "NoPlotPlain" Or ProbeMinimum)
+End Function
+Public Function ProbeMinimum() As Boolean
+    ProbeMinimum = (ProbeVariant = "Minimum" Or ProbeMemory)
+End Function
+Public Function ProbeMemory() As Boolean
+    ProbeMemory = (ProbeVariant = "Memory")
+End Function
+Public Function ProbeNoJson() As Boolean
+    ProbeNoJson = (ProbeVariant = "NoJson" Or ProbeMinimum)
+End Function
+Public Function ProbeNumber(ByVal value As Double) As String
+    ProbeNumber = Replace$(Format$(value, "0.000000000"), ",", ".")
+End Function
+Public Sub ProbeLog(ByVal filename As String, ByVal line As String)
+    Dim handle As Integer: handle = FreeFile
+    Open ProbeDirectory & "\" & filename For Append As #handle
+    Print #handle, line
+    Close #handle
+End Sub
+Public Sub ProbeValue(ByVal key As String, ByVal value As Variant)
+    If ProbeRecording Then
+        ProbeBaseline(key) = value
+        Exit Sub
+    End If
+    ProbeCompared = ProbeCompared + 1
+    Dim same As Boolean, old As Variant, comparisonScale As Double, difference As Double
+    If ProbeBaseline.Exists(key) Then
+        old = ProbeBaseline(key)
+        If VarType(value) <> vbString And VarType(value) <> vbBoolean And IsNumeric(value) And IsNumeric(old) Then
+            difference = Abs(CDbl(value) - CDbl(old))
+            comparisonScale = Abs(CDbl(value)): If Abs(CDbl(old)) > comparisonScale Then comparisonScale = Abs(CDbl(old))
+            same = difference <= 0.00000000000001 + 0.0000000001 * comparisonScale
+            If comparisonScale < 1# Then comparisonScale = 1#
+            If difference / comparisonScale > ProbeMaxDifference Then ProbeMaxDifference = difference / comparisonScale
+        Else
+            same = (CStr(value) = CStr(old))
+        End If
+    End If
+    If Not same Then
+        ProbeMismatch = ProbeMismatch + 1
+        If ProbeMismatch <= 100 Then ProbeDifferences = ProbeDifferences & key & ": expected=" & CStr(old) & "; actual=" & CStr(value) & vbCrLf
+    End If
+End Sub
+Public Sub ProbeObject(ByVal obj As Object, ByVal kind As String, ByVal prefix As String)
+    If obj Is Nothing Then ProbeValue prefix & ".Nothing", True: Exit Sub
+    Dim child As Object
+    Select Case kind
+@CASES@
+    End Select
+End Sub
+Public Sub ProbeCheck()
+    Dim i As Long, j As Long, row As Long, col As Long, result As CCombinationResult
+    Dim state As CSectionStateResult, data As Variant, prefix As String, section As CSectionModel
+    ProbeMismatch = 0: ProbeCompared = 0: ProbeMaxDifference = 0#: ProbeDifferences = ""
+    Set section = ProbeCalculated
+    ProbeValue "ConcreteCount", section.ConcreteCount
+    ProbeValue "RebarCount", section.RebarCount
+    For i = 1 To section.ConcreteCount
+        prefix = "C" & CStr(i)
+        ProbeValue prefix & ".X", section.ConcreteX(i)
+        ProbeValue prefix & ".Y", section.ConcreteY(i)
+        ProbeValue prefix & ".Area", section.ConcreteArea(i)
+        ProbeValue prefix & ".Ix", section.ConcreteLocalIx(i)
+        ProbeValue prefix & ".Iy", section.ConcreteLocalIy(i)
+        ProbeValue prefix & ".Ixy", section.ConcreteLocalIxy(i)
+    Next i
+    For i = 1 To section.RebarCount
+        prefix = "R" & CStr(i)
+        ProbeValue prefix & ".X", section.RebarX(i)
+        ProbeValue prefix & ".Y", section.RebarY(i)
+        ProbeValue prefix & ".Area", section.RebarArea(i)
+        ProbeValue prefix & ".Diameter", section.RebarDiameter(i)
+    Next i
+    ProbeValue "Batch.Count", ProbeBatch.Count
+    For i = 1 To ProbeBatch.Count
+        prefix = "LC" & CStr(i)
+        Set result = ProbeBatch.ResultAt(i)
+        ProbeObject result, "CCombinationResult", prefix
+        ProbeValue prefix & ".StateCount", result.StateRepository.StateCount
+        For j = 1 To result.StateRepository.StateCount
+            Set state = result.StateRepository.StateAt(j)
+            ProbeObject state, "CSectionStateResult", prefix & ".State" & CStr(j)
+            data = state.PrepareElementSnapshot(section)
+            If IsArray(data) Then
+                For row = 1 To UBound(data, 1)
+                    For col = 1 To UBound(data, 2)
+                        ProbeValue prefix & ".S" & CStr(j) & ".E" & CStr(row) & ".F" & CStr(col), data(row, col)
+                    Next col
+                Next row
+            End If
+        Next j
+    Next i
+    If Not ProbeRecording Then
+        If ProbeCompared <> ProbeBaseline.Count Then ProbeMismatch = ProbeMismatch + 1: ProbeDifferences = ProbeDifferences & "Different comparison count" & vbCrLf
+    End If
+End Sub
