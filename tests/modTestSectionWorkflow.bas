@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestSectionWorkflow"
+﻿Attribute VB_Name = "modTestSectionWorkflow"
 Option Explicit
 
 ' ==========================================================================
@@ -83,8 +83,8 @@ Private Sub TestCompleteModel(ByRef stats As TWorkflowStats)
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set expected = ExampleModel(): Set writer = New CNDMResultsWriter
         writer.WriteGeometryPreview ThisWorkbook, expected, PrepareSectionSnapshot(expected), units
-        Set actual = ReadFormedSectionFromResults(ThisWorkbook)
-        Check stats, "snapshot." & unit & ".bulkReads", SectionSnapshotReadDiagnostics() = "tables=5;released=True"
+        Set actual = ReadFormedSectionFromResults(ThisWorkbook, True)
+        Check stats, "snapshot." & unit & ".bulkReads", SectionSnapshotReadDiagnostics() = "tables=4;released=True"
         Check stats, "snapshot." & unit & ".counts", actual.ConcreteCount = 2 And actual.RebarCount = 2 And actual.AnnotationCount = 5
         Check stats, "snapshot." & unit & ".source", actual.SourceType = expected.SourceType And actual.ConcreteMeshSource = expected.ConcreteMeshSource
         Check stats, "snapshot." & unit & ".diagnostics", actual.GeometryDiagnosticsText = expected.GeometryDiagnosticsText
@@ -141,21 +141,19 @@ Private Sub TestSnapshotValidation(ByRef stats As TWorkflowStats)
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set writer = New CNDMResultsWriter: Set model = ExampleModel()
     writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model), units
-    Set table = ThisWorkbook.Names("rngNDMSectionModelMetadata").RefersToRange
+    Set table = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange
     Set annotations = ThisWorkbook.Names("rngNDMSectionAnnotations").RefersToRange
-    original = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionModelMetadata")
+    original = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionGeometry")
     annotationData = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
     For mode = 0 To 5
         changed = original
         Select Case mode
             Case 0: changed(2, 6) = 0
-            Case 1: changed(3, 3) = changed(2, 3)
+            Case 1: changed(3, 2) = changed(2, 2)
             Case 2: changed(2, 1) = "OTHER_SNAPSHOT"
-            Case 3
-                table.Offset(1, 12).NumberFormat = "@"
-                changed(2, 13) = "False"
-            Case 4: changed(1, 14) = "WrongHeader"
-            Case 5: annotations.Offset(1, 0).Value2 = "OTHER_SNAPSHOT"
+            Case 3: changed(2, 8) = False
+            Case 4: changed(2, 14) = "not a number"
+            Case 5: changed(4, 10) = -10#
         End Select
         table.Resize(UBound(changed, 1), UBound(changed, 2)).Value2 = changed
         Set model = Nothing
@@ -166,20 +164,19 @@ Private Sub TestSnapshotValidation(ByRef stats As TWorkflowStats)
         Check stats, "validation." & mode & ".reject", code <> 0 And model Is Nothing
         Check stats, "validation." & mode & ".action", InStr(reason, "Сформировать сечение") > 0
         Check stats, "validation." & mode & ".released", InStr(SectionSnapshotReadDiagnostics(), "released=True") > 0
-        table.Offset(1, 12).NumberFormat = "General"
         annotations.Resize(UBound(annotationData, 1), UBound(annotationData, 2)).Value2 = annotationData
     Next mode
     table.Resize(UBound(original, 1), UBound(original, 2)).Value2 = original
-    oldReference = ThisWorkbook.Names("rngNDMSectionModelMetadata").RefersTo
+    oldReference = ThisWorkbook.Names("rngNDMSectionGeometry").RefersTo
     Dim moved As Object: Set moved = table.Worksheet.Range("QZ156")
     moved.Resize(UBound(original, 1), UBound(original, 2)).Value2 = original
-    ThisWorkbook.Names("rngNDMSectionModelMetadata").RefersTo = "=Results!" & moved.Address
+    ThisWorkbook.Names("rngNDMSectionGeometry").RefersTo = "=Results!" & moved.Address
     On Error GoTo RestoreName
     Set model = ReadFormedSectionFromResults(ThisWorkbook)
-    Check stats, "validation.moved.metadata", model.ConcreteCount = 2 And model.RebarCount = 2
+    Check stats, "validation.moved.geometry", model.ConcreteCount = 2 And model.RebarCount = 2
 RestoreName:
     code = Err.Number: reason = Err.Description
-    ThisWorkbook.Names("rngNDMSectionModelMetadata").RefersTo = oldReference
+    ThisWorkbook.Names("rngNDMSectionGeometry").RefersTo = oldReference
     moved.Resize(UBound(original, 1), UBound(original, 2)).ClearContents
     If code <> 0 Then Err.Raise code, "TestSnapshotValidation", reason
 End Sub
@@ -246,7 +243,7 @@ Public Function RunWorkflowReadPerformanceTests() As String
             Set actual = ReadFormedSectionFromResults(ThisWorkbook)
             elapsed = Timer - start: If elapsed < 0# Then elapsed = elapsed + 86400#
             Check stats, "read." & count & "." & pass & ".count", actual.RebarCount = CLng(count)
-            Check stats, "read." & count & "." & pass & ".tables", SectionSnapshotReadDiagnostics() = "tables=5;released=True"
+            Check stats, "read." & count & "." & pass & ".tables", SectionSnapshotReadDiagnostics() = "tables=3;released=True"
             Near stats, "read." & count & "." & pass & ".lastX", actual.RebarX(CLng(count)), model.RebarX(CLng(count))
             stats.Report = stats.Report & "WORKFLOW_READ: rebars=" & count & "; seconds=" & _
                 Replace$(CStr(elapsed), ",", ".") & "; " & SectionSnapshotReadDiagnostics() & vbCrLf
@@ -260,4 +257,213 @@ Done:
 Failed:
     Check stats, "unexpected.read." & Err.Number & "." & Err.Description, False
     Resume Done
+End Function
+
+' Проверяет минимальное и полное восстановление, независимость JSON и
+' аннотаций от расчётной геометрии и верхнюю привязку импортированной ALL.
+Public Function RunCompactSnapshotTests() As String
+    Dim stats As TWorkflowStats, saved As Variant, unit As Variant
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter
+    Dim expected As CSectionModel, actual As CSectionModel, full As CSectionModel
+    Dim expectedProperties As CSectionPropertiesCalculator, actualProperties As CSectionPropertiesCalculator
+    Dim geometry As Object, annotations As Object, original As Variant, changed As Variant, mode As Long, code As Long, reason As String
+    For Each unit In Array("mm", "cm", "m")
+        OutputUnit "Length", CStr(unit): OutputUnit "Area", "cm2"
+        Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+        Set units = New CUnitSystem: units.LoadFromSettings settings
+        Set expected = ExampleModel(): Set writer = New CNDMResultsWriter
+        writer.WriteGeometryPreview ThisWorkbook, expected, PrepareSectionSnapshot(expected), units
+        Set actual = ReadFormedSectionFromResults(ThisWorkbook)
+        Check stats, "compact." & unit & ".minimumTables", SectionSnapshotReadDiagnostics() = "tables=3;released=True"
+        Check stats, "compact." & unit & ".noPresentation", actual.AnnotationCount = 0 And Len(actual.GeometryDiagnosticsText) = 0 And Len(actual.RebarRecipeTrace(1)) = 0
+        Set full = ReadFormedSectionFromResults(ThisWorkbook, True)
+        Check stats, "compact." & unit & ".fullTables", SectionSnapshotReadDiagnostics() = "tables=4;released=True"
+        Check stats, "compact." & unit & ".trace", full.RebarRecipeTrace(1) = expected.RebarRecipeTrace(1)
+        Check stats, "compact." & unit & ".source", full.ConcreteSourceName(1) = "00123" And full.ConcreteSourceHandle(1) = "1E2"
+        Check stats, "compact." & unit & ".annotation", full.Annotations.Text(1) = "B" And full.Annotations.Unit(1) = "Length"
+        Near stats, "compact." & unit & ".rawDimension", full.Annotations.Value(1), 123.456789
+        Set expectedProperties = PrepareSectionSnapshot(expected)
+        Set actualProperties = PrepareSectionSnapshot(actual)
+        Near stats, "compact." & unit & ".area", actualProperties.Area, expectedProperties.Area
+        Near stats, "compact." & unit & ".Ix", actualProperties.Ix, expectedProperties.Ix
+        Near stats, "compact." & unit & ".Iy", actualProperties.Iy, expectedProperties.Iy
+        Near stats, "compact." & unit & ".Ixy", actualProperties.Ixy, expectedProperties.Ixy
+        Near stats, "compact." & unit & ".cellWidth", actual.ConcreteWidth(2), expected.ConcreteWidth(2)
+        Near stats, "compact." & unit & ".cellAngle", actual.ConcreteRotation(2), expected.ConcreteRotation(2)
+        Dim savedAnnotations As Variant, readyDimension As String
+        savedAnnotations = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
+        readyDimension = CStr(savedAnnotations(2, 10))
+        ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange.Offset(1, 15).Resize(4, 1).ClearContents
+        ThisWorkbook.Names("rngNDMSectionAnnotations").RefersToRange.Offset(1, 23).Resize(expected.AnnotationCount, 1).ClearContents
+        Set full = ReadFormedSectionFromResults(ThisWorkbook, True)
+        writer.WriteGeometryPreview ThisWorkbook, full, PrepareSectionSnapshot(full), units
+        savedAnnotations = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
+        Check stats, "compact." & unit & ".readyTextWithoutJson", CStr(savedAnnotations(2, 10)) = readyDimension
+        ' Следующая проверка начинает с исходной записи со всеми дополнениями.
+        writer.WriteGeometryPreview ThisWorkbook, expected, PrepareSectionSnapshot(expected), units
+        Set geometry = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange
+        Set annotations = ThisWorkbook.Names("rngNDMSectionAnnotations").RefersToRange
+        original = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionGeometry")
+        geometry.Offset(0, 14).Resize(1, 2).ClearContents
+        Set actual = ReadFormedSectionFromResults(ThisWorkbook)
+        Check stats, "compact." & unit & ".mandatoryColumnsOnly", actual.ConcreteCount = 2 And actual.RebarCount = 2
+        Set full = ReadFormedSectionFromResults(ThisWorkbook, True)
+        Check stats, "compact." & unit & ".fullWithoutOptionalColumns", full.ConcreteCount = 2 And full.RebarCount = 2
+        geometry.Resize(UBound(original, 1), UBound(original, 2)).Value2 = original
+        annotations.Resize(1 + expected.AnnotationCount, 24).ClearContents
+        geometry.Offset(1, 15).Resize(4, 1).Value2 = "не JSON"
+        geometry.Offset(1, 14).Resize(4, 1).Value2 = CVErr(xlErrValue)
+        Set actual = ReadFormedSectionFromResults(ThisWorkbook)
+        Check stats, "compact." & unit & ".optionalErrorsIgnored", actual.ConcreteCount = 2 And actual.RebarCount = 2 And actual.AnnotationCount = 0
+        Set actualProperties = PrepareSectionSnapshot(actual)
+        Near stats, "compact." & unit & ".optionalIx", actualProperties.Ix, expectedProperties.Ix
+        geometry.Resize(UBound(original, 1), UBound(original, 2)).Value2 = original
+        For mode = 0 To 4
+            changed = original
+            Select Case mode
+                Case 0: changed(2, 4) = ""
+                Case 1: changed(2, 6) = -1#
+                Case 2: changed(2, 12) = 0#
+                Case 3: changed(2, 14) = 1E+30
+                Case 4: changed(3, 2) = "C1"
+            End Select
+            geometry.Resize(UBound(changed, 1), UBound(changed, 2)).Value2 = changed
+            Set actual = Nothing
+            On Error Resume Next
+            Set actual = ReadFormedSectionFromResults(ThisWorkbook)
+            code = Err.Number: reason = Err.Description: Err.Clear
+            On Error GoTo Failed
+            Check stats, "compact." & unit & ".invalid." & mode, code <> 0 And actual Is Nothing
+            Check stats, "compact." & unit & ".address." & mode, InStr(reason, "Results!") > 0 And InStr(reason, "Сформировать сечение") > 0
+        Next mode
+        geometry.Resize(UBound(original, 1), UBound(original, 2)).Value2 = original
+    Next unit
+    Dim text As String, info As Object
+    text = "Кавычки "" и обратная черта \" & vbCrLf & ChrW$(&H2205) & "20" & vbTab & "конец"
+    Set info = ReadSectionOptionalJson(SectionOptionalJson("Text", text))
+    Check stats, "compact.json.unicode", SectionOptionalText(info, "Text") = text
+    For Each unit In Array("{", "{""schema"":""1"",""a"":""x"",""a"":""y""}", "{""schema"":""2""}", "{""schema"":""1""} trailing")
+        code = 0
+        On Error Resume Next
+        Set info = ReadSectionOptionalJson(CStr(unit), "Results!AA157")
+        code = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        Check stats, "compact.json.reject." & CStr(unit), code <> 0 And InStr(reason, "Results!AA157") > 0
+    Next unit
+    OutputUnit "Length", "mm"
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set units = New CUnitSystem: units.LoadFromSettings settings
+    Dim withContour As Long, i As Long, px(1 To 4) As Double, py(1 To 4) As Double, x As Double, y As Double
+    Dim reader As CSectionPlotDataReader, found As Boolean, peak As Double
+    For withContour = 0 To 1
+        Set expected = New CSectionModel: expected.SourceType = "AutoCADImport"
+        expected.AddConcreteElement 0#, 0#, 180000#, 1, , , "Rectangle", 600#, 300#, 0.35
+        expected.AddRebarElement 0#, 0#, 20#, 0#, "A500"
+        If withContour = 1 Then
+            For i = 1 To 4
+                Select Case i
+                    Case 1: x = -300#: y = -150#
+                    Case 2: x = 300#: y = -150#
+                    Case 3: x = 300#: y = 150#
+                    Case 4: x = -300#: y = 150#
+                End Select
+                px(i) = x * Cos(0.35) - y * Sin(0.35): py(i) = x * Sin(0.35) + y * Cos(0.35)
+            Next i
+            For i = 1 To 4
+                expected.Contours.AddContourLine "E" & i, px(i), py(i), px(i Mod 4 + 1), py(i Mod 4 + 1), , "OUTER", "Outer"
+            Next i
+        End If
+        writer.WriteGeometryPreview ThisWorkbook, expected, PrepareSectionSnapshot(expected), units
+        Set reader = New CSectionPlotDataReader: reader.LoadGeometryPreviewFromWorkbook ThisWorkbook, settings
+        peak = 300# * Sin(0.35) + 150# * Cos(0.35): found = False
+        For i = 1 To reader.AnnotationCount
+            If reader.AnnotationType(i) = "REBAR_GLOBAL_ANNOTATION" Then
+                found = True
+                Near stats, "compact.ALL.peak." & withContour, reader.AnnotationStartY(i), peak
+                Near stats, "compact.ALL.noLocalShift." & withContour, reader.AnnotationBoundaryDistance(i), 0#
+            End If
+        Next i
+        Check stats, "compact.ALL.present." & withContour, found
+    Next withContour
+Done:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    RunCompactSnapshotTests = stats.Report & "TOTAL_COMPACT_SNAPSHOT: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
+    Exit Function
+Failed:
+    Check stats, "unexpected.compact." & Err.Number & "." & Err.Description, False
+    Resume Done
+End Function
+
+' Доказывает ранний выход очистки без ModelSpace и сохранение ошибок
+' недоступного документа вместо ложного сообщения об отсутствии слоёв.
+Public Function RunCleanupLayerPreflightTests() As String
+    Dim stats As TWorkflowStats, document As CFakeAcadDocument, layers As Object, settings As CSystemSettingsReader
+    On Error GoTo Failed
+    Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
+    Set layers = CreateObject("Scripting.Dictionary")
+    Set document = New CFakeAcadDocument: document.InitializeCleanupLayers layers
+    Check stats, "cleanup.noLayers.zeroDeleted", Audit03CleanupAutoCADDocumentForTests(document, settings) = 0
+    Check stats, "cleanup.noLayers.noModelSpace", document.ModelSpaceReads = 0
+    Check stats, "cleanup.noLayers.oneLayerTableRead", document.GeometryReads = 1
+    Dim code As Long
+    document.Initialize True
+    On Error Resume Next
+    Audit03CleanupAutoCADDocumentForTests document, settings
+    code = Err.Number: Err.Clear
+    On Error GoTo Failed
+    Check stats, "cleanup.inaccessibleDocument.error", code <> 0 And document.ModelSpaceReads = 0
+Done:
+    RunCleanupLayerPreflightTests = stats.Report & "TOTAL_CLEANUP_LAYER_PREFLIGHT: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
+    Exit Function
+Failed:
+    Check stats, "unexpected.cleanup." & Err.Number & "." & Err.Description, False
+    Resume Done
+End Function
+
+' При исчезнувшем прямом участке указываются только он и два соседа,
+' определяющие его концы. Адрес противоположной грани не добавляется.
+Public Function RunOffsetAddressTests() As String
+    Dim stats As TWorkflowStats, edges(1 To 4) As TRegionEdge, distances(1 To 4) As Double
+    Dim references(1 To 4) As String, values As Variant, i As Long, code As Long, reason As String
+    Dim offset As CGeometryVariableOffset, region As CConcreteRegion
+    edges(1).X1 = 0#: edges(1).Y1 = 0#: edges(1).X2 = 300#: edges(1).Y2 = 0#
+    edges(2).X1 = 300#: edges(2).Y1 = 0#: edges(2).X2 = 300#: edges(2).Y2 = 500#
+    edges(3).X1 = 300#: edges(3).Y1 = 500#: edges(3).X2 = 0#: edges(3).Y2 = 500#
+    edges(4).X1 = 0#: edges(4).Y1 = 500#: edges(4).X2 = 0#: edges(4).Y2 = 0#
+    distances(1) = 300#: distances(2) = 20#: distances(3) = 300#: distances(4) = 20#
+    For i = 1 To 4: references(i) = "Сечения!D" & CStr(70 + i): Next i
+    values = references: Set offset = New CGeometryVariableOffset
+    On Error Resume Next
+    Set region = offset.Build(edges, distances, 4, Join(references, "; "), values)
+    code = Err.Number: reason = Err.Description: Err.Clear
+    On Error GoTo Failed
+    Check stats, "offsetAddress.failure", code <> 0 And region Is Nothing
+    Check stats, "offsetAddress.reason", InStr(reason, "прямой участок") > 0
+    Check stats, "offsetAddress.localNeighbours", InStr(reason, references(1)) > 0 And InStr(reason, references(2)) > 0 And InStr(reason, references(3)) > 0
+    Check stats, "offsetAddress.noOpposite", InStr(reason, references(4)) = 0
+    Check stats, "offsetAddress.noDuplicateParagraph", UBound(Split(reason, "Адреса ячеек:")) = 1
+Done:
+    RunOffsetAddressTests = stats.Report & "TOTAL_OFFSET_ADDRESSES: passed=" & stats.Passed & "; failed=" & stats.Failed & vbCrLf
+    Exit Function
+Failed:
+    Check stats, "unexpected.offsetAddress." & Err.Number & "." & Err.Description, False
+    Resume Done
+End Function
+
+' Адресная приёмка компактного снимка и затронутых пользовательских команд.
+' Полный ON/OFF и обязательный часовой план этим набором не заменяются.
+Public Function RunCompactAcceptanceTests() As String
+    Dim report As String
+    report = RunCompactSnapshotTests()
+    report = report & RunWorkflowSnapshotTests()
+    report = report & RunCleanupLayerPreflightTests()
+    report = report & RunOffsetAddressTests()
+    report = report & RunSectionWorkflowCalculationTests()
+    report = report & RunFormationPreviewTests()
+    report = report & RunRecipeAnnotationSnapshotTests()
+    report = report & RunImportedDimensionTests()
+    report = report & RunAnnotationSectionScaleTests()
+    RunCompactAcceptanceTests = report
 End Function

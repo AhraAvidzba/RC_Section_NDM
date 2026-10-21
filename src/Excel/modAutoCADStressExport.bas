@@ -134,9 +134,15 @@ Public Sub ClearAutoCADDrawing()
     Dim doc As Object
     Set doc = ActiveAutoCADDocument(acad)
 
-    Dim deletedCount As Long
-    deletedCount = DeleteAutoCADEntitiesOnLayers(doc.ModelSpace, AutoCADCleanupLayerSet(exportSettings))
-    doc.Regen 1
+    Dim layers As Object: Set layers = AutoCADCleanupLayerSet(exportSettings)
+    Dim hadLayers As Boolean, deletedCount As Long
+    deletedCount = DeleteAutoCADDocumentAnnotations(doc, layers, hadLayers)
+    If Not hadLayers Then
+        If informationEnabled Then ShowWorkbookMessage _
+            "В активном чертеже AutoCAD нет слоёв с подписями и оформлением RC Section NDM." & vbCrLf & vbCrLf & _
+            "Очистка не требуется.", vbInformation, "RC Section NDM"
+        Exit Sub
+    End If
 
     If informationEnabled Then
         ShowWorkbookMessage "Чертеж AutoCAD очищен от объектов оформления RC Section NDM." & vbCrLf & _
@@ -148,6 +154,31 @@ Public Sub ClearAutoCADDrawing()
 Failed:
     ShowWorkbookMessage WorkbookErrorMessage("Очистка чертежа AutoCAD не выполнена", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
+
+' Проверяет только таблицу слоёв активного чертежа, не перебирая его объекты.
+' Защищённые контурные слои не считаются основанием для очистки.
+Private Function HasAutoCADCleanupLayers(ByVal doc As Object, ByVal layers As Object) As Boolean
+    Dim name As Variant, layer As Object, available As Object
+    Set available = doc.Layers
+    For Each name In layers.Keys
+        If CBool(layers.Item(name)) Then
+            Set layer = Nothing
+            On Error Resume Next
+            Set layer = available.Item(CStr(name))
+            On Error GoTo 0
+            If Not layer Is Nothing Then HasAutoCADCleanupLayers = True: Exit Function
+        End If
+    Next name
+End Function
+
+' Проверяет наличие слоёв до первого доступа к ModelSpace. Перестроение
+' чертежа требуется только после фактического удаления объектов оформления.
+Private Function DeleteAutoCADDocumentAnnotations(ByVal doc As Object, ByVal layers As Object, ByRef hadLayers As Boolean) As Long
+    hadLayers = HasAutoCADCleanupLayers(doc, layers)
+    If Not hadLayers Then Exit Function
+    DeleteAutoCADDocumentAnnotations = DeleteAutoCADEntitiesOnLayers(doc.ModelSpace, layers)
+    If DeleteAutoCADDocumentAnnotations > 0 Then doc.Regen 1
+End Function
 
 ' Собирает перечень слоев, которые относятся к оформлению, а не к геометрии.
 ' Слои подписей берутся из Config, а технические слои осей/точки/нейтральной
@@ -2071,6 +2102,14 @@ Public Function Audit03CleanupAutoCADModelSpaceForTests(ByVal modelSpace As Obje
     Dim options As TAutoCADExportSettings
     options = ReadAutoCADExportSettings(settings, True)
     Audit03CleanupAutoCADModelSpaceForTests = DeleteAutoCADEntitiesOnLayers(modelSpace, AutoCADCleanupLayerSet(options))
+End Function
+
+' ДЛЯ ТЕСТОВ: вызывает тот же ранний выход, что и кнопка очистки подписей.
+' Подставной документ запрещает доступ к ModelSpace при отсутствии слоёв.
+Public Function Audit03CleanupAutoCADDocumentForTests(ByVal document As Object, ByVal settings As CSystemSettingsReader) As Long
+    Dim options As TAutoCADExportSettings, present As Boolean
+    options = ReadAutoCADExportSettings(settings, True)
+    Audit03CleanupAutoCADDocumentForTests = DeleteAutoCADDocumentAnnotations(document, AutoCADCleanupLayerSet(options), present)
 End Function
 
 ' ДЛЯ ТЕСТОВ: выполняет обычный экспорт в переданный собственный тестовый чертёж.

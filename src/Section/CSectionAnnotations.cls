@@ -100,9 +100,12 @@ End Sub
 ' Добавляет групповую подпись арматуры; пустой текст означает, что подпись выводить не нужно.
 Public Sub AddRebarLabel(ByVal annotationID As String, ByVal startX As Double, ByVal startY As Double, _
         ByVal endX As Double, ByVal endY As Double, ByVal normalX As Double, ByVal normalY As Double, _
-        ByVal labelText As String, Optional ByVal commentValue As String = "Подпись общего количества и диаметров арматуры у выбранного участка контура.")
+        ByVal labelText As String, Optional ByVal commentValue As String = "Подпись общего количества и диаметров арматуры у выбранного участка контура.", _
+        Optional ByVal boundaryIsGlobal As Boolean = False)
     If Len(Trim$(labelText)) = 0 Then Exit Sub
-    AddAnnotation "REBAR_ANNOTATION", annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
+    Dim kind As String: kind = "REBAR_ANNOTATION"
+    If boundaryIsGlobal Then kind = "REBAR_GLOBAL_ANNOTATION"
+    AddAnnotation kind, annotationID, startX, startY, endX, endY, normalX, normalY, labelText, 0#, vbNullString, commentValue
 End Sub
 
 ' Возвращает количество сохранённых записей.

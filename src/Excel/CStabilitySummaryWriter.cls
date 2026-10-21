@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -152,7 +152,6 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     Dim titleRow As Long
     titleRow = target.Row - 1
     target.Worksheet.Cells(titleRow, target.Column).Resize(1, TOTAL_COLUMNS).Interior.Color = RGB(189, 215, 238)
-    target.Worksheet.Rows.Item(titleRow).RowHeight = 15
     With target.Worksheet.Cells(titleRow, target.Column)
         .Value2 = titleText
         .Font.Name = "Arial"
@@ -170,7 +169,6 @@ End Sub
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
-    target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
 ' Формирует многоуровневую шапку таблицы. Разделительные столбцы остаются пустыми.
@@ -531,7 +529,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.HorizontalAlignment = -4108
     target.VerticalAlignment = -4108
     target.WrapText = False
-    target.Rows.RowHeight = 15
 
     FormatBlock target, COL_SUMMARY_FIRST, COL_SUMMARY_LAST
     FormatBlock target, COL_COMMON_FIRST, COL_COMMON_LAST
@@ -562,7 +559,6 @@ Private Sub FormatHeaderNotes(ByVal target As Object)
         .VerticalAlignment = -4108
         .WrapText = False
     End With
-    target.Worksheet.Rows.Item(target.Row + 3).RowHeight = 15
 End Sub
 
 ' Оформляет один раздел таблицы, сохраняя пустой столбец между разделами.
@@ -580,21 +576,17 @@ End Sub
 ' Красит блоки строки LC по итоговому статусу расчета устойчивости.
 Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Exit Sub
-
-    Dim i As Long
+    If batch.Count <= 0 Then Exit Sub
+    Dim dataRows As Long: dataRows = target.Rows.Count - HEADER_ROWS
+    Dim rows() As Long, i As Long
+    ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
-        Dim rowOffset As Long
-        rowOffset = OutputDataOffset(batch, i, target.Rows.Count - HEADER_ROWS)
-        If HEADER_ROWS + rowOffset > target.Rows.Count Then Exit For
-
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, 3
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE1_FIRST + 8
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE1_FIRST + 14
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE2_FIRST + 8
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP35_PLANE2_FIRST + 14
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP63_PLANE1_FIRST + 11
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, SP63_PLANE2_FIRST + 11
+        rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
+    ApplyTableStatusFills target, rows, Array( _
+        3, SP35_PLANE1_FIRST + 8, SP35_PLANE1_FIRST + 14, _
+        SP35_PLANE2_FIRST + 8, SP35_PLANE2_FIRST + 14, SP63_PLANE1_FIRST + 11, _
+        SP63_PLANE2_FIRST + 11)
 End Sub
 
 ' Заполняет все статусные колонки нормативных ветвей значением N/A до записи выбранной методики.
@@ -607,12 +599,6 @@ Private Sub PutDefaultStatusCells(ByRef data() As Variant, ByVal rowIndex As Lon
     data(rowIndex, SP63_PLANE2_FIRST + 11) = statusText
 End Sub
 
-' Задаёт цвет ячейки статуса устойчивости по общей палитре Results.
-Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
-    Dim cell As Object
-    Set cell = target.Cells(rowIndex, columnIndex)
-    ApplyStatusFill cell, CStr(cell.Value2)
-End Sub
 
 ' Объединяет ячейки шапки и записывает текст.
 Private Sub MergeCells(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long, _
@@ -633,38 +619,41 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
     Dim labels As Object
     Set labels = target.Offset(4, 0).Resize(1, TOTAL_COLUMNS)
 
-    Dim cell As Object
-    For Each cell In labels.Cells
-        ApplySubscriptToken cell, "ec,sl", 2, 4
-        ApplySubscriptToken cell, "ec", 2, 1
-        ApplySubscriptToken cell, "ea", 2, 1
-        ApplySubscriptToken cell, "e0", 2, 1
-        ApplySubscriptToken cell, "l01", 2, 2
-        ApplySubscriptToken cell, "l02", 2, 2
-        ApplySubscriptToken cell, "l0/i", 2, 1
-        ApplySubscriptToken cell, "Ncr", 2, 2
-        ApplySubscriptToken cell, "Nult", 2, 3
-        ApplySubscriptToken cell, "M1", 2, 1
-        ApplySubscriptToken cell, "M2", 2, 1
-        ApplySubscriptToken cell, ChrW$(&H3C6) & "p", 2, 1
-        ApplySubscriptToken cell, ChrW$(&H3C6) & "l", 2, 1
-        ApplySubscriptToken cell, ChrW$(&H3C6) & "m", 2, 1
-        ApplySubscriptToken cell, ChrW$(&H3B4) & "e", 2, 1
-        ApplySubscriptToken cell, "kb", 2, 1
-        ApplySubscriptToken cell, "ks", 2, 1
-    Next cell
+    Dim headers As Variant: headers = labels.Value2
+    Dim column As Long
+    For column = 1 To UBound(headers, 2)
+        ApplySubscriptToken labels, headers, column, "ec,sl", 2, 4
+        ApplySubscriptToken labels, headers, column, "ec", 2, 1
+        ApplySubscriptToken labels, headers, column, "ea", 2, 1
+        ApplySubscriptToken labels, headers, column, "e0", 2, 1
+        ApplySubscriptToken labels, headers, column, "l01", 2, 2
+        ApplySubscriptToken labels, headers, column, "l02", 2, 2
+        ApplySubscriptToken labels, headers, column, "l0/i", 2, 1
+        ApplySubscriptToken labels, headers, column, "Ncr", 2, 2
+        ApplySubscriptToken labels, headers, column, "Nult", 2, 3
+        ApplySubscriptToken labels, headers, column, "M1", 2, 1
+        ApplySubscriptToken labels, headers, column, "M2", 2, 1
+        ApplySubscriptToken labels, headers, column, ChrW$(&H3C6) & "p", 2, 1
+        ApplySubscriptToken labels, headers, column, ChrW$(&H3C6) & "l", 2, 1
+        ApplySubscriptToken labels, headers, column, ChrW$(&H3C6) & "m", 2, 1
+        ApplySubscriptToken labels, headers, column, ChrW$(&H3B4) & "e", 2, 1
+        ApplySubscriptToken labels, headers, column, "kb", 2, 1
+        ApplySubscriptToken labels, headers, column, "ks", 2, 1
+    Next column
 End Sub
 
 ' Применяет нижний индекс к найденному техническому обозначению.
-Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String, ByVal subStart As Long, ByVal subLength As Long)
+Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal columnIndex As Long, _
+        ByVal token As String, ByVal subStart As Long, ByVal subLength As Long)
     Dim valueText As String
-    valueText = CStr(cell.Value2)
+    valueText = CStr(headers(1, columnIndex))
     If Len(valueText) = 0 Then Exit Sub
 
     Dim position As Long
     position = InStr(1, valueText, token, vbBinaryCompare)
     If position <= 0 Then Exit Sub
 
+    Dim cell As Object: Set cell = labels.Cells(1, columnIndex)
     On Error Resume Next
     cell.Characters(position + subStart - 1, subLength).Font.Subscript = True
     On Error GoTo 0

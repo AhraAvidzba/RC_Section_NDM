@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -129,7 +129,7 @@ Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCa
     summaryRows = RequiredSummaryRowsForWorkbook(workbook, batch.Count)
 
     stage = "PrepareSummaryTarget"
-    PrepareSummaryTarget SummaryClearRange(workbook)
+    PrepareSummaryTarget SummaryClearRange(workbook), summaryRows
 
     stage = "SummaryTargetRange"
     Dim target As Object
@@ -232,7 +232,8 @@ End Function
 ' Это важно при повторном расчете: предыдущий запуск объединяет строки
 ' заголовков, и Excel не позволяет записывать двумерный массив поверх
 ' частично объединенного диапазона.
-Private Sub PrepareSummaryTarget(ByVal target As Object)
+Private Sub PrepareSummaryTarget(ByVal target As Object, ByVal requiredRows As Long)
+    If target.Rows.Count < requiredRows Then Set target = target.Resize(requiredRows, target.Columns.Count)
     ClearSummaryBody target
 End Sub
 
@@ -614,18 +615,12 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     On Error GoTo Failed
 
     Dim stage As String
-    stage = "ResetRange"
-    target.UnMerge
-    target.Interior.ColorIndex = -4142
-    target.Borders.LineStyle = -4142
-
     stage = "BaseFont"
     target.HorizontalAlignment = -4131
     target.VerticalAlignment = -4108
     target.WrapText = False
     target.Font.Name = "Arial"
     target.Font.Size = 9
-    target.Rows.RowHeight = 15
     ' Ширина столбцов задана при сборке книги и сохраняет правки пользователя.
 
     stage = "HeaderStyle"
@@ -800,32 +795,18 @@ End Sub
 Private Sub FormatStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
     If batch Is Nothing Then Exit Sub
     If batch.Count <= 0 Then Exit Sub
-
-    Dim i As Long
+    Dim rows() As Long, i As Long
+    ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
-        Dim rowNumber As Long
-        rowNumber = FIRST_DATA_ROW + OutputDataOffset(batch, i, target.Rows.Count - FIRST_DATA_ROW + 1) - 2
-        ApplyStatusCell target, rowNumber, SUM_COL_OVERALL_STATUS
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_STRAIN
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_CAPACITY
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_CRACK
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_LONG_CRACK
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P1_ETA
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P1_TABLE
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P2_ETA
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP35_P2_TABLE
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP63_P1
-        ApplyStatusCell target, rowNumber, SUM_COL_STATUS_SP63_P2
+        rows(i) = FIRST_DATA_ROW + OutputDataOffset(batch, i, target.Rows.Count - FIRST_DATA_ROW + 1) - 1
     Next i
+    ApplyTableStatusFills target, rows, Array( _
+        SUM_COL_OVERALL_STATUS, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY, _
+        SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK, SUM_COL_STATUS_SP35_P1_ETA, _
+        SUM_COL_STATUS_SP35_P1_TABLE, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE, _
+        SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2), True
 End Sub
 
-' Красит одну статусную ячейку строки LC, не затрагивая соседние коэффициенты запаса.
-Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowNumber As Long, ByVal columnIndex As Long)
-    Dim cell As Object
-    Set cell = target.Offset(rowNumber, columnIndex - 1).Resize(1, 1)
-    If Len(Trim$(CStr(cell.Value2))) = 0 Then Exit Sub
-    ApplyStatusFill cell, CStr(cell.Value2)
-End Sub
 
 ' Возвращает общие правила вывода статусов для записи результатов.
 Private Function StatusPolicy() As CResultStatusPolicy

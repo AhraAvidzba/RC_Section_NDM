@@ -538,49 +538,85 @@ Private Sub AddElementShapes(ByVal data As CSectionPlotDataReader)
     Dim fallbackSquareRotation As Double
     fallbackSquareRotation = AverageKnownConcreteElementRotation(data)
 
-    Dim itemIndex As Long
+    Dim groups As Object: Set groups = CreateObject("Scripting.Dictionary")
+    Dim itemIndex As Long, colorValue As Long, key As String, shapeObject As Object, indexes As Collection
+    Dim shapeIndex As Long: shapeIndex = mChart.Shapes.Count
     For itemIndex = 1 To data.Count
+        Set shapeObject = Nothing
+        colorValue = ElementColor(data, itemIndex)
         If StrComp(data.MaterialType(itemIndex), "Rebar", vbTextCompare) = 0 Then
-            AddRebarElementShape data, itemIndex
+            Set shapeObject = AddRebarElementShape(data, itemIndex, colorValue)
+            key = "R:" & CStr(colorValue)
         Else
-            AddConcreteElementShape data, itemIndex, fallbackSquareRotation
+            Set shapeObject = AddConcreteElementShape(data, itemIndex, fallbackSquareRotation, colorValue)
+            key = "C:" & CStr(colorValue)
+        End If
+        If Not shapeObject Is Nothing Then
+            shapeIndex = shapeIndex + 1
+            If groups.Exists(key) Then
+                Set indexes = groups.Item(key)
+            Else
+                Set indexes = New Collection: groups.Add key, indexes
+            End If
+            indexes.Add shapeIndex
         End If
     Next itemIndex
+
+    ' Координаты и порядок фигур индивидуальны; одинаковое оформление
+    ' применяем сразу ко всему набору, сокращая обращения к Excel.
+    Dim groupKey As Variant, lineColor As Long, weight As Double
+    For Each groupKey In groups.Keys
+        colorValue = CLng(Mid$(CStr(groupKey), 3))
+        If Left$(CStr(groupKey), 1) = "R" Then
+            lineColor = RGB(0, 0, 0): weight = 0.55
+        Else
+            lineColor = colorValue: weight = 0.15
+        End If
+        FormatElementShapes groups.Item(groupKey), colorValue, lineColor, weight
+    Next groupKey
+End Sub
+
+' Применяет прежние заливку и обводку ко всем фигурам одного оформления.
+' ShapeRange не объединяет фигуры и не меняет их имена, геометрию или порядок.
+Private Sub FormatElementShapes(ByVal indexes As Collection, ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double)
+    Dim values() As Variant, i As Long, shapes As Object
+    ReDim values(1 To indexes.Count)
+    For i = 1 To indexes.Count: values(i) = CLng(indexes(i)): Next i
+    Set shapes = mChart.Shapes.Range(values)
+    shapes.Fill.ForeColor.RGB = fillColor
+    shapes.Line.ForeColor.RGB = lineColor
+    shapes.Line.Weight = weight
 End Sub
 
 ' Рисует бетонный элемент по сохранённым ширине, высоте и углу.
 ' Если при импорте известна только площадь, использует эквивалентный квадрат
 ' с сохранённой средней ориентацией сетки.
-Private Sub AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
-        ByVal fallbackSquareRotation As Double)
+Private Function AddConcreteElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, _
+        ByVal fallbackSquareRotation As Double, ByVal colorValue As Long) As Object
     Dim widthValue As Double
     Dim heightValue As Double
     widthValue = ConcreteElementWidth(data, index) * CONCRETE_SHAPE_FILL_RATIO
     heightValue = ConcreteElementHeight(data, index) * CONCRETE_SHAPE_FILL_RATIO
-    If widthValue <= 0# Or heightValue <= 0# Then Exit Sub
+    If widthValue <= 0# Or heightValue <= 0# Then Exit Function
 
-    Dim colorValue As Long
     Dim rotationValue As Double
-    colorValue = ElementColor(data, index)
     rotationValue = ConcreteElementVisualRotation(data, index, fallbackSquareRotation)
-    DrawModelRectangleCentered data.X(index), data.Y(index), widthValue, heightValue, _
-        rotationValue, colorValue, colorValue, 0.15, "ElementConcrete"
-End Sub
+    Set AddConcreteElementShape = DrawModelRectangleCentered(data.X(index), data.Y(index), widthValue, heightValue, _
+        rotationValue, colorValue, colorValue, 0.15, "ElementConcrete", True)
+End Function
 
 ' Рисует арматурный стержень по диаметру из Results; если диаметр не сохранен,
 ' используется эквивалентный круг по площади.
-Private Sub AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long)
+Private Function AddRebarElementShape(ByVal data As CSectionPlotDataReader, ByVal index As Long, ByVal colorValue As Long) As Object
     Dim diameterValue As Double
     diameterValue = data.Diameter(index)
     If diameterValue <= 0# Then diameterValue = EquivalentLengthFromArea(data.Area(index), data.AreaUnit, data.LengthUnit)
-    If diameterValue <= 0# Then Exit Sub
+    If diameterValue <= 0# Then Exit Function
 
-    Dim colorValue As Long
-    colorValue = ElementColor(data, index)
-    DrawModelOval data.X(index) - diameterValue / 2#, data.Y(index) - diameterValue / 2#, _
+    Set AddRebarElementShape = DrawModelOval(data.X(index) - diameterValue / 2#, data.Y(index) - diameterValue / 2#, _
         data.X(index) + diameterValue / 2#, data.Y(index) + diameterValue / 2#, _
-        RGB(0, 0, 0), 0.55, "ElementRebar", True, colorValue
-End Sub
+        RGB(0, 0, 0), 0.55, "ElementRebar", True, colorValue, True)
+End Function
 
 ' Формирует ключ группировки точек диаграммы: элементы с одинаковым маркером,
 ' размером, цветом, материалом и физическим состоянием можно рисовать одной
@@ -1254,7 +1290,8 @@ Private Sub DrawShapeAnnotations(ByVal data As CSectionPlotDataReader, _
     Dim i As Long
     If rebarLabelsEnabled Then
         For i = 1 To data.AnnotationCount
-            If StrComp(data.AnnotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Then
+            If StrComp(data.AnnotationType(i), "REBAR_ANNOTATION", vbTextCompare) = 0 Or _
+                    StrComp(data.AnnotationType(i), "REBAR_GLOBAL_ANNOTATION", vbTextCompare) = 0 Then
                 layout.AddRebarLabel data.AnnotationStartX(i), data.AnnotationStartY(i), _
                     data.AnnotationEndX(i), data.AnnotationEndY(i), data.AnnotationNormalX(i), _
                     data.AnnotationNormalY(i), data.AnnotationText(i), data.AnnotationBoundaryDistance(i)
@@ -1655,7 +1692,7 @@ End Sub
 Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal centerY As Double, _
         ByVal widthModel As Double, ByVal heightModel As Double, ByVal rotationRad As Double, _
         ByVal fillColor As Long, ByVal lineColor As Long, ByVal weight As Double, _
-        ByVal suffix As String) As Object
+        ByVal suffix As String, Optional ByVal deferFormatting As Boolean = False) As Object
     Dim centerChartX As Double
     Dim centerChartY As Double
     Dim widthValue As Double
@@ -1670,9 +1707,11 @@ Private Function DrawModelRectangleCentered(ByVal centerX As Double, ByVal cente
     Set rectShape = mChart.Shapes.AddShape(MSO_SHAPE_RECTANGLE, centerChartX - widthValue / 2#, _
         centerChartY - heightValue / 2#, widthValue, heightValue)
     rectShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
-    rectShape.Fill.ForeColor.RGB = fillColor
-    rectShape.Line.ForeColor.RGB = lineColor
-    rectShape.Line.Weight = weight
+    If Not deferFormatting Then
+        rectShape.Fill.ForeColor.RGB = fillColor
+        rectShape.Line.ForeColor.RGB = lineColor
+        rectShape.Line.Weight = weight
+    End If
     If Abs(rotationRad) > 0.000000000001 Then
         rectShape.Rotation = -rotationRad * 180# / GEOM_PI
         SetShapeCenter rectShape, centerChartX, centerChartY
@@ -1684,7 +1723,7 @@ End Function
 ' Нужен для кругового контура и для стержней в поэлементном Shape-режиме.
 Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal colorValue As Long, ByVal weight As Double, ByVal suffix As String, ByVal filled As Boolean, _
-        Optional ByVal fillColor As Long = -1) As Object
+        Optional ByVal fillColor As Long = -1, Optional ByVal deferFormatting As Boolean = False) As Object
     Dim leftPos As Double, topPos As Double, widthValue As Double, heightValue As Double
     leftPos = ModelToChartX(MinDouble(x1, x2))
     topPos = ModelToChartY(MaxDouble(y1, y2))
@@ -1695,13 +1734,15 @@ Private Function DrawModelOval(ByVal x1 As Double, ByVal y1 As Double, ByVal x2 
     Dim ovalShape As Object
     Set ovalShape = mChart.Shapes.AddShape(MSO_SHAPE_OVAL, leftPos, topPos, widthValue, heightValue)
     ovalShape.Name = SHAPE_PREFIX & suffix & CStr(mChart.Shapes.Count)
-    ovalShape.Line.ForeColor.RGB = colorValue
-    ovalShape.Line.Weight = weight
-    If filled Then
-        If fillColor = -1 Then fillColor = colorValue
-        ovalShape.Fill.ForeColor.RGB = fillColor
-    Else
-        ovalShape.Fill.Visible = False
+    If Not deferFormatting Then
+        ovalShape.Line.ForeColor.RGB = colorValue
+        ovalShape.Line.Weight = weight
+        If filled Then
+            If fillColor = -1 Then fillColor = colorValue
+            ovalShape.Fill.ForeColor.RGB = fillColor
+        Else
+            ovalShape.Fill.Visible = False
+        End If
     End If
     Set DrawModelOval = ovalShape
 End Function
@@ -1895,12 +1936,19 @@ End Function
 ' Удаляет внутри графика только Shape-объекты с префиксом этого plotter-а
 ' перед перерисовкой; пользовательские фигуры с другими именами сохраняет.
 Private Sub ClearGeneratedShapes()
-    Dim i As Long
-    For i = mChart.Shapes.Count To 1 Step -1
-        If Left$(mChart.Shapes.Item(i).Name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
-            mChart.Shapes.Item(i).Delete
+    Dim i As Long, count As Long, indexes() As Variant, name As String
+    count = mChart.Shapes.Count
+    If count = 0 Then Exit Sub
+    ReDim indexes(1 To count): count = 0
+    For i = 1 To mChart.Shapes.Count
+        name = mChart.Shapes.Item(i).Name
+        If Left$(name, Len(SHAPE_PREFIX)) = SHAPE_PREFIX Then
+            count = count + 1: indexes(count) = i
         End If
     Next i
+    If count = 0 Then Exit Sub
+    ReDim Preserve indexes(1 To count)
+    mChart.Shapes.Range(indexes).Delete
 End Sub
 
 

@@ -58,7 +58,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: реальные прямые решения трёх назначений материалов при N, N+Mx, N+My и N+Mx+My.
 ' Выход Double записывается без округления; NumFail и ошибки остаются видимыми в снимке.
-Public Function DumpSolidDirectNdsBits() As String
+Public Function DumpSolidDirectNdsBits(Optional ByVal restoreSaved As Boolean = False) As String
     Dim config As Object, saved As Variant, fixture As Variant, purpose As Variant, result As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, model As CSectionModel
     Dim props As CSectionPropertiesCalculator, provider As CMaterialModelProvider, solver As CSectionSolver
@@ -72,6 +72,11 @@ Public Function DumpSolidDirectNdsBits() As String
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
+        If restoreSaved Then
+            Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+            writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model), units
+            Set model = ReadFormedSectionFromResults(ThisWorkbook)
+        End If
         Set props = New CSectionPropertiesCalculator: props.CalculateConcrete model
         props.CalculateProjection model, 1#, 0#, False, minX, maxX
         props.CalculateProjection model, 0#, 1#, False, minY, maxY
@@ -97,6 +102,13 @@ Failed:
 Finished:
     If Not config Is Nothing And Not IsEmpty(saved) Then FixtureRestoreInputs config, saved
     DumpSolidDirectNdsBits = result
+End Function
+
+' ДЛЯ ТЕСТОВ: те же 120 НДС после сохранения и минимального восстановления.
+' Сравнение с DumpSolidDirectNdsBits проверяет физический результат без JSON
+' и исходных аннотаций, а не только совпадение записанных координат.
+Public Function DumpRestoredDirectNdsBits() As String
+    DumpRestoredDirectNdsBits = DumpSolidDirectNdsBits(True)
 End Function
 
 Private Function FixtureNames() As Variant

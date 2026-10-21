@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestRecipeAnnotations"
+﻿Attribute VB_Name = "modTestRecipeAnnotations"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: измерения общего API и сохраненные подписи без повторной сборки.
@@ -155,8 +155,8 @@ Public Function RunRecipeAnnotationSnapshotTests() As String
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, model, properties, units
         Dim geometryTable As Variant, propertyTable As Variant, row As Long, foundDiagnostics As Boolean
-        geometryTable = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange.Resize(1 + model.ConcreteCount + model.RebarCount, 15).Value2
-        Check "snapshot.provenance." & CStr(outputUnit), InStr(CStr(geometryTable(UBound(geometryTable, 1), 15)), "RecipeTrace:RuleId=TopBars|PathId=Row|SourcePositionId=TopBars.2") > 0
+        geometryTable = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange.Resize(1 + model.ConcreteCount + model.RebarCount, 16).Value2
+        Check "snapshot.provenance." & CStr(outputUnit), InStr(SectionOptionalText(ReadSectionOptionalJson(CStr(geometryTable(UBound(geometryTable, 1), 16))), "RecipeTrace"), "RuleId=TopBars|PathId=Row|SourcePositionId=TopBars.2") > 0
         propertyTable = ThisWorkbook.Names("rngNDMSectionProperties").RefersToRange.Resize(46, 6).Value2: foundDiagnostics = False
         For row = 2 To UBound(propertyTable, 1)
             If CStr(propertyTable(row, 3)) = "Geometry.RecipeDiagnostics" Then

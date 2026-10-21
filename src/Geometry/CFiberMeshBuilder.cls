@@ -83,7 +83,9 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     Dim cellMinX As Double
     Dim cellMinY As Double
     Dim allCornersInside As Boolean
-    Dim anyCornerInside As Boolean
+    Dim lowerLeft As Boolean, lowerRight As Boolean, upperLeft As Boolean, upperRight As Boolean
+    Dim topLeft() As Boolean, topRight() As Boolean
+    Dim previousRightX As Double, previousTopY As Double, sameX As Boolean, sameY As Boolean
     Dim openingBounds() As Double, openingCount As Long, openingIndex As Long
     Dim contours As CSectionContours, query As CSectionGeometryQuery
     Dim outerEdges() As TRegionEdge, outerEdgeCount As Long
@@ -91,6 +93,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     ' Один раз получаем габариты всех отверстий и уточняем такие ячейки
     ' проверкой принадлежности точек бетону через ContainsPoint.
     If boundarySubdivisions > 1 Then
+        ReDim topLeft(0 To nx - 1): ReDim topRight(0 To nx - 1)
         Set contours = New CSectionContours: geometry.BuildContours contours
         Set query = New CSectionGeometryQuery
         query.OpeningBounds contours, openingBounds, openingCount
@@ -100,6 +103,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     For iy = 0 To ny - 1
         cellMinY = minY + iy * stepY
         y = cellMinY + stepY / 2#
+        sameY = (iy > 0 And cellMinY = previousTopY)
         For ix = 0 To nx - 1
             cellMinX = minX + ix * stepX
             x = cellMinX + stepX / 2#
@@ -109,7 +113,20 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
             If boundarySubdivisions = 1 Then
                 If geometry.ContainsPoint(x, y) Then AddFiber x, y, stepX, stepY, materialID
             Else
-                GetCornerStatus geometry, cellMinX, cellMinY, stepX, stepY, allCornersInside, anyCornerInside
+                ' У соседних ячеек общие углы. Повторно используем проверку только
+                ' при точном совпадении координат, без округления и изменения допуска.
+                sameX = (ix > 0 And cellMinX = previousRightX)
+                If sameY Then
+                    lowerLeft = topLeft(ix): lowerRight = topRight(ix)
+                Else
+                    If sameX Then lowerLeft = lowerRight Else lowerLeft = geometry.ContainsPoint(cellMinX, cellMinY)
+                    lowerRight = geometry.ContainsPoint(cellMinX + stepX, cellMinY)
+                End If
+                If sameX Then upperLeft = upperRight Else upperLeft = geometry.ContainsPoint(cellMinX, cellMinY + stepY)
+                upperRight = geometry.ContainsPoint(cellMinX + stepX, cellMinY + stepY)
+                topLeft(ix) = upperLeft: topRight(ix) = upperRight
+                previousRightX = cellMinX + stepX
+                allCornersInside = lowerLeft And lowerRight And upperLeft And upperRight
                 If allCornersInside Then
                     For openingIndex = 1 To openingCount
                         ' Касание габарита без пересечения площади не требует дробления ячейки.
@@ -132,6 +149,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
                 End If
             End If
         Next ix
+        previousTopY = cellMinY + stepY
     Next iy
 
     If mFiberCount <= 0 Then
@@ -170,22 +188,6 @@ Private Sub AddSubcellFibers(ByVal geometry As CGeometryRegion, ByVal cellMinX A
             If geometry.ContainsPoint(x, y) Then AddFiber x, y, subX, subY, materialID
         Next ix
     Next iy
-End Sub
-
-' Проверяет четыре угла расчетной ячейки. Это быстрый способ понять, можно ли
-' взять всю ячейку целиком или нужно уточнять границу подъячеечным разбиением.
-Private Sub GetCornerStatus(ByVal geometry As CGeometryRegion, ByVal cellMinX As Double, ByVal cellMinY As Double, _
-        ByVal width As Double, ByVal height As Double, ByRef allInside As Boolean, ByRef anyInside As Boolean)
-    Dim p1 As Boolean
-    Dim p2 As Boolean
-    Dim p3 As Boolean
-    Dim p4 As Boolean
-    p1 = geometry.ContainsPoint(cellMinX, cellMinY)
-    p2 = geometry.ContainsPoint(cellMinX + width, cellMinY)
-    p3 = geometry.ContainsPoint(cellMinX + width, cellMinY + height)
-    p4 = geometry.ContainsPoint(cellMinX, cellMinY + height)
-    allInside = p1 And p2 And p3 And p4
-    anyInside = p1 Or p2 Or p3 Or p4
 End Sub
 
 ' Добавляет прямоугольный бетонный элемент в подготовленную сетку.

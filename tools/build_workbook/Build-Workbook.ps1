@@ -364,7 +364,7 @@ function Add-CalculationButtons {
 
     $clearButton = $Sheet.Shapes.AddShape(1, $left, $top + 4 * $buttonStep, $buttonWidth, $buttonHeight)
     $clearButton.Name = "btnClearAutoCADDrawing"
-    $clearButton.TextFrame.Characters().Text = "Очистить схему"
+    $clearButton.TextFrame.Characters().Text = "Очистить подписи в AutoCAD"
     $clearButton.OnAction = "ClearAutoCADDrawing"
     $clearButton.Fill.ForeColor.RGB = 8355711
     $clearButton.Line.ForeColor.RGB = 8355711
@@ -490,17 +490,18 @@ try {
     Add-WorkbookName $workbook "rngStabilitySummaryAnchor" $results '$A$122'
     Add-WorkbookName $workbook "rngNDMElementResults" $results '$A$156'
     Add-WorkbookName $workbook "rngNDMSectionGeometry" $results '$L$156'
-    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AC$156'
-    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AV$156'
-    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BD$156'
-    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BQ$156'
-    Add-WorkbookName $workbook "rngNDMSectionModelMetadata" $results '$CO$156'
+    Add-WorkbookName $workbook "rngNDMSectionContours" $results '$AD$156'
+    Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AW$156'
+    Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BE$156'
+    Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BR$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
-    for ($i = 0; $i -lt $contourHeaders.Count; $i++) { $results.Cells.Item(156, 29 + $i).Value2 = $contourHeaders[$i] }
-    $results.Range('AC155:AS155').Merge()
-    $results.Cells.Item(155, 29).Value2 = 'Достоверные контуры и отверстия сечения'
-    $results.Range('AC155:AS156').Font.Bold = $true
-    Set-Border $results.Range('AC156:AS156')
+    $contourHeaderValues = New-Object 'object[,]' 1,$contourHeaders.Count
+    for ($i = 0; $i -lt $contourHeaders.Count; $i++) { $contourHeaderValues[0,$i] = $contourHeaders[$i] }
+    $results.Range('AD156:AT156').Value2 = $contourHeaderValues
+    $results.Range('AD155:AT155').Merge()
+    $results.Cells.Item(155, 30).Value2 = 'Достоверные контуры и отверстия сечения'
+    $results.Range('AD155:AT156').Font.Bold = $true
+    Set-Border $results.Range('AD156:AT156')
 
     $calc.PageSetup.PaperSize = 9
     $calc.PageSetup.Orientation = 1

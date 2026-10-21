@@ -16,7 +16,6 @@ Option Explicit
 ' и привязки подписей. Результат сохраняется в CSectionAnnotations
 ' в координатах модели; оформление диаграммы выполняется отдельно.
 
-Private Const AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM As Double = 5# ' Расстояние сводной подписи арматуры над верхней границей бетонной сетки.
 
 ' По описанию сечения вычисляет размеры и привязки подписей в координатах модели.
 ' Шрифт и положение на диаграмме задаются при отрисовке. Каждый вызов готовит
@@ -269,9 +268,9 @@ Public Sub PrepareImportedSection(ByVal section As CSectionModel, ByVal bounds A
         labelText = AutoCADRebarSummaryText(section)
         If Len(labelText) > 0 Then
             Dim labelY As Double
-            labelY = maxY + AUTOCAD_REBAR_LABEL_EXTRA_OFFSET_MM
+            labelY = maxY
             annotations.AddRebarLabel "REBAR_AUTO_ALL", minX, labelY, maxX, labelY, 0#, 1#, _
-                labelText, "Сводная подпись всей арматуры, распознанной при импорте AutoCAD."
+                labelText, "Сводная подпись всей арматуры над крайней верхней точкой импортированного бетона.", True
         End If
     End If
 End Sub

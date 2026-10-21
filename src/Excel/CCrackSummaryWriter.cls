@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -220,7 +220,6 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     Dim titleRow As Long
     titleRow = target.Row - 1
     target.Worksheet.Cells(titleRow, target.Column).Resize(1, TOTAL_COLUMNS).Interior.Color = RGB(189, 215, 238)
-    target.Worksheet.Rows.Item(titleRow).RowHeight = 15
     With target.Worksheet.Cells(titleRow, target.Column)
         .Value2 = titleText
         .Font.Name = "Arial"
@@ -238,7 +237,6 @@ End Sub
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
-    target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
 ' Записывает многоуровневую шапку таблицы.
@@ -693,7 +691,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.HorizontalAlignment = -4108
     target.VerticalAlignment = -4108
     target.WrapText = False
-    target.Rows.RowHeight = 15
 
     FormatBlock target, COL_LEFT_FIRST, COL_LEFT_LAST
     FormatBlock target, COL_MAIN_FIRST, COL_CRACK_STATE_STATUS
@@ -777,20 +774,16 @@ End Sub
 ' Красит блоки строки по статусу общей проверки, нормальных и продольных трещин.
 Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
     If batch Is Nothing Then Exit Sub
-
-    Dim i As Long
+    If batch.Count <= 0 Then Exit Sub
+    Dim rows() As Long, i As Long
+    ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
-        Dim rowOffset As Long
-        rowOffset = OutputDataOffset(batch, i, dataRows)
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_PRE_CRACK_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_POST_CRACK_STATUS
-        ApplyFormationStatusCell target, HEADER_ROWS + rowOffset
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_CRACK_STATE_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_ACRC_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_SP35_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_LONG_STATUS
+        rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
+    ApplyTableStatusFills target, rows, Array( _
+        COL_STATUS, COL_PRE_CRACK_STATUS, COL_POST_CRACK_STATUS, _
+        COL_FORMATION_STATE, COL_CRACK_STATE_STATUS, COL_ACRC_STATUS, _
+        COL_SP35_STATUS, COL_LONG_STATUS), False, COL_FORMATION_STATE
 End Sub
 
 ' Записывает данные выполненной формулы СП 35: выбранную опорную группу,
@@ -856,87 +849,77 @@ Private Function FormatRowNumber(ByVal value As Double) As String
     If Right$(FormatRowNumber, 1) = "." Then FormatRowNumber = Left$(FormatRowNumber, Len(FormatRowNumber) - 1)
 End Function
 
-' Применяет общую палитру к исходу поиска трещинообразования. Cracked и
-' NotCracked описывают наличие трещины, а не успешность проверки; они не
-' передаются в нормализатор внешних статусов и остаются без статусной заливки.
-Private Sub ApplyFormationStatusCell(ByVal target As Object, ByVal rowIndex As Long)
-    Dim text As String
-    text = CStr(target.Cells(rowIndex, COL_FORMATION_STATE).Value2)
-    If text = "Cracked" Or text = "NotCracked" Then Exit Sub
-    ApplyStatusCell target, rowIndex, COL_FORMATION_STATE
-End Sub
 
-' Красит одну статусную ячейку detailed-блока, оставляя числовые поля без статусной заливки.
-Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
-    Dim cell As Object
-    Set cell = target.Cells(rowIndex, columnIndex)
-    ApplyStatusFill cell, CStr(cell.Value2)
-End Sub
 
 ' Выставляет нижние индексы в обозначениях нижнего яруса заголовков.
 Private Sub ApplyHeaderSubscripts(ByVal target As Object)
     Dim labels As Object
     Set labels = target.Rows(HEADER_LABEL_ROW)
+    Dim headers As Variant: headers = labels.Value2
     Dim column As Variant
-    For Each column In Array(COL_PRE_EBC, COL_POST_EBC, COL_CURRENT_EBC): ApplySubscriptToken labels.Cells(1, CLng(column)), "bc": Next column
-    For Each column In Array(COL_PRE_EBT, COL_POST_EBT, COL_CURRENT_EBT): ApplySubscriptToken labels.Cells(1, CLng(column)), "bt": Next column
-    ApplySubscriptToken labels.Cells(1, COL_SP35_AR), "r"
-    ApplySubscriptToken labels.Cells(1, COL_SP35_RR), "r"
-    ApplySubscriptToken labels.Cells(1, COL_SP35_SIGMA), "s"
-    ApplySubscriptToken labels.Cells(1, COL_SP35_ES), "s"
-    ApplySubscriptToken labels.Cells(1, COL_SP35_NREBARS), "rebars"
-    For Each column In Array(COL_SP35_ACRC, COL_SP35_ALLOWABLE, COL_SP35_RATIO): ApplySubscriptToken labels.Cells(1, CLng(column)), "crc": Next column
-    ApplySubscriptToken labels.Cells(1, COL_SP35_ALLOWABLE), "ult"
-    ApplySubscriptToken labels.Cells(1, COL_SP35_RATIO), "ult"
+    For Each column In Array(COL_PRE_EBC, COL_POST_EBC, COL_CURRENT_EBC): ApplySubscriptToken labels, headers, CLng(column), "bc": Next column
+    For Each column In Array(COL_PRE_EBT, COL_POST_EBT, COL_CURRENT_EBT): ApplySubscriptToken labels, headers, CLng(column), "bt": Next column
+    ApplySubscriptToken labels, headers, COL_SP35_AR, "r"
+    ApplySubscriptToken labels, headers, COL_SP35_RR, "r"
+    ApplySubscriptToken labels, headers, COL_SP35_SIGMA, "s"
+    ApplySubscriptToken labels, headers, COL_SP35_ES, "s"
+    ApplySubscriptToken labels, headers, COL_SP35_NREBARS, "rebars"
+    For Each column In Array(COL_SP35_ACRC, COL_SP35_ALLOWABLE, COL_SP35_RATIO): ApplySubscriptToken labels, headers, CLng(column), "crc": Next column
+    ApplySubscriptToken labels, headers, COL_SP35_ALLOWABLE, "ult"
+    ApplySubscriptToken labels, headers, COL_SP35_RATIO, "ult"
 
-    ApplySubscriptToken target.Cells(2, COL_DS_EQ), "s"
+    Dim unitLabels As Object, unitHeaders As Variant
+    Set unitLabels = target.Rows(2): unitHeaders = unitLabels.Value2
+    ApplySubscriptToken unitLabels, unitHeaders, COL_DS_EQ, "s"
 
-    ApplySubscriptToken labels.Cells(1, COL_ARED), "red"
-    ApplySubscriptToken labels.Cells(1, COL_RBT_SER), "bt"
-    ApplySubscriptToken labels.Cells(1, COL_RBT_SER), "ser"
-    ApplySubscriptToken labels.Cells(1, COL_NCRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_LAMBDA_NCRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_FORMATION_NCRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_MCRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_LAMBDA_MCRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_XT), "t"
-    ApplySubscriptToken labels.Cells(1, COL_AS_COVER), "s"
-    ApplySubscriptToken labels.Cells(1, COL_HBT), "bt"
-    ApplySubscriptToken labels.Cells(1, COL_ABT), "bt"
-    ApplySubscriptToken labels.Cells(1, COL_AS), "s"
-    ApplySubscriptToken labels.Cells(1, COL_DS_EQ), "s"
-    ApplySubscriptToken labels.Cells(1, COL_DS_EQ), "eq"
-    ApplySubscriptToken labels.Cells(1, COL_LS0), "s"
-    ApplySubscriptToken labels.Cells(1, COL_LS0), "0"
-    ApplySubscriptToken labels.Cells(1, COL_LS), "s"
-    ApplySubscriptToken labels.Cells(1, COL_PHI1), "1"
-    ApplySubscriptToken labels.Cells(1, COL_PHI2), "2"
-    ApplySubscriptToken labels.Cells(1, COL_PHI3), "3"
-    ApplySubscriptToken labels.Cells(1, COL_PSI_S), "s"
-    ApplySubscriptToken labels.Cells(1, COL_NREBARS), "rebars"
-    ApplySubscriptToken labels.Cells(1, COL_SIGMA_S_CRC), "s"
-    ApplySubscriptToken labels.Cells(1, COL_SIGMA_S_CRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_SIGMA_S), "s"
-    ApplySubscriptToken labels.Cells(1, COL_ES), "s"
-    ApplySubscriptToken labels.Cells(1, COL_ACRC), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_ACRC_ULT), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_ACRC_ULT), "ult"
-    ApplySubscriptToken labels.Cells(1, COL_ACRC_RATIO), "crc"
-    ApplySubscriptToken labels.Cells(1, COL_ACRC_RATIO), "ult"
-    ApplySubscriptToken labels.Cells(1, COL_SIGMA_B_MAX), "b"
-    ApplySubscriptToken labels.Cells(1, COL_SIGMA_B_MAX), "max"
-    ApplySubscriptToken labels.Cells(1, COL_RB_MC2), "b"
-    ApplySubscriptToken labels.Cells(1, COL_RB_MC2), "mc2"
-    ApplySubscriptToken labels.Cells(1, COL_LONG_RATIO), "b"
-    ApplySubscriptToken labels.Cells(1, COL_LONG_RATIO), "mc2"
+    ApplySubscriptToken labels, headers, COL_ARED, "red"
+    ApplySubscriptToken labels, headers, COL_RBT_SER, "bt"
+    ApplySubscriptToken labels, headers, COL_RBT_SER, "ser"
+    ApplySubscriptToken labels, headers, COL_NCRC, "crc"
+    ApplySubscriptToken labels, headers, COL_LAMBDA_NCRC, "crc"
+    ApplySubscriptToken labels, headers, COL_FORMATION_NCRC, "crc"
+    ApplySubscriptToken labels, headers, COL_MCRC, "crc"
+    ApplySubscriptToken labels, headers, COL_LAMBDA_MCRC, "crc"
+    ApplySubscriptToken labels, headers, COL_XT, "t"
+    ApplySubscriptToken labels, headers, COL_AS_COVER, "s"
+    ApplySubscriptToken labels, headers, COL_HBT, "bt"
+    ApplySubscriptToken labels, headers, COL_ABT, "bt"
+    ApplySubscriptToken labels, headers, COL_AS, "s"
+    ApplySubscriptToken labels, headers, COL_DS_EQ, "s"
+    ApplySubscriptToken labels, headers, COL_DS_EQ, "eq"
+    ApplySubscriptToken labels, headers, COL_LS0, "s"
+    ApplySubscriptToken labels, headers, COL_LS0, "0"
+    ApplySubscriptToken labels, headers, COL_LS, "s"
+    ApplySubscriptToken labels, headers, COL_PHI1, "1"
+    ApplySubscriptToken labels, headers, COL_PHI2, "2"
+    ApplySubscriptToken labels, headers, COL_PHI3, "3"
+    ApplySubscriptToken labels, headers, COL_PSI_S, "s"
+    ApplySubscriptToken labels, headers, COL_NREBARS, "rebars"
+    ApplySubscriptToken labels, headers, COL_SIGMA_S_CRC, "s"
+    ApplySubscriptToken labels, headers, COL_SIGMA_S_CRC, "crc"
+    ApplySubscriptToken labels, headers, COL_SIGMA_S, "s"
+    ApplySubscriptToken labels, headers, COL_ES, "s"
+    ApplySubscriptToken labels, headers, COL_ACRC, "crc"
+    ApplySubscriptToken labels, headers, COL_ACRC_ULT, "crc"
+    ApplySubscriptToken labels, headers, COL_ACRC_ULT, "ult"
+    ApplySubscriptToken labels, headers, COL_ACRC_RATIO, "crc"
+    ApplySubscriptToken labels, headers, COL_ACRC_RATIO, "ult"
+    ApplySubscriptToken labels, headers, COL_SIGMA_B_MAX, "b"
+    ApplySubscriptToken labels, headers, COL_SIGMA_B_MAX, "max"
+    ApplySubscriptToken labels, headers, COL_RB_MC2, "b"
+    ApplySubscriptToken labels, headers, COL_RB_MC2, "mc2"
+    ApplySubscriptToken labels, headers, COL_LONG_RATIO, "b"
+    ApplySubscriptToken labels, headers, COL_LONG_RATIO, "mc2"
 End Sub
 
 ' Ставит нижний индекс найденному текстовому токену внутри одной ячейки.
-Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String)
+Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal columnIndex As Long, ByVal token As String)
     Dim textValue As String
-    textValue = CStr(cell.Value2)
+    textValue = CStr(headers(1, columnIndex))
     Dim startPos As Long
     startPos = InStr(1, textValue, token, vbBinaryCompare)
+    If startPos = 0 Then Exit Sub
+    Dim cell As Object: Set cell = labels.Cells(1, columnIndex)
     Do While startPos > 0
         cell.Characters(startPos, Len(token)).Font.Subscript = True
         startPos = InStr(startPos + Len(token), textValue, token, vbBinaryCompare)

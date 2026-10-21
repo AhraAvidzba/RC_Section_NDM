@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -201,7 +201,6 @@ Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     Dim titleRow As Long
     titleRow = target.Row - 1
     target.Worksheet.Cells(titleRow, target.Column).Resize(1, TOTAL_COLUMNS).Interior.Color = RGB(189, 215, 238)
-    target.Worksheet.Rows.Item(titleRow).RowHeight = 15
     With target.Worksheet.Cells(titleRow, target.Column)
         .Value2 = titleText
         .Font.Name = "Arial"
@@ -219,7 +218,6 @@ End Sub
 Private Sub ClearBlockTitleRow(ByVal target As Object)
     If target.Row <= 1 Then Exit Sub
     target.Worksheet.Cells(target.Row - 1, target.Column).Resize(1, TOTAL_COLUMNS).Clear
-    target.Worksheet.Rows.Item(target.Row - 1).RowHeight = 15
 End Sub
 
 ' Формирует многоуровневую шапку таблицы.
@@ -564,7 +562,6 @@ Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalc
     target.HorizontalAlignment = -4108
     target.VerticalAlignment = -4108
     target.WrapText = False
-    target.Rows.RowHeight = 15
 
     FormatBlock target, COL_LEFT_FIRST, COL_LEFT_LAST
     FormatBlock target, COL_STATE_FIRST, COL_STATE_LAST
@@ -622,28 +619,22 @@ End Sub
 ' Красит строковые блоки подробной таблицы по фактическому статусу каждой проверки.
 Private Sub ApplyStatusCells(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal dataRows As Long)
     If batch Is Nothing Then Exit Sub
-
-    Dim i As Long
+    If batch.Count <= 0 Then Exit Sub
+    Dim rows() As Long, i As Long
+    ReDim rows(1 To batch.Count)
     For i = 1 To batch.Count
-        Dim rowOffset As Long
-        rowOffset = OutputDataOffset(batch, i, dataRows)
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_STATE_STATUS
-        ApplyStatusCell target, HEADER_ROWS + rowOffset, COL_CAP_STATUS
+        rows(i) = HEADER_ROWS + OutputDataOffset(batch, i, dataRows)
     Next i
+    ApplyTableStatusFills target, rows, Array( _
+        COL_STATUS, COL_STATE_STATUS, COL_CAP_STATUS)
 End Sub
 
-' Красит одну статусную ячейку detailed-блока, не затрагивая соседние расчетные значения строки.
-Private Sub ApplyStatusCell(ByVal target As Object, ByVal rowIndex As Long, ByVal columnIndex As Long)
-    Dim cell As Object
-    Set cell = target.Cells(rowIndex, columnIndex)
-    ApplyStatusFill cell, CStr(cell.Value2)
-End Sub
 
 ' Проставляет нижние индексы в обозначениях нижнего яруса шапки.
 Private Sub ApplyHeaderSubscripts(ByVal target As Object)
     Dim labels As Object
     Set labels = target.Rows(HEADER_LABEL_ROW)
+    Dim headers As Variant: headers = labels.Value2
 
     Dim cols As Variant
     cols = Array(COL_LIM_EBC, COL_LIM_EBT, COL_LIM_ESC, COL_LIM_EST, _
@@ -656,27 +647,29 @@ Private Sub ApplyHeaderSubscripts(ByVal target As Object)
 
     Dim i As Long
     For i = LBound(cols) To UBound(cols)
-        ApplySubscriptToken labels.Cells(1, CLng(cols(i))), "bc"
-        ApplySubscriptToken labels.Cells(1, CLng(cols(i))), "bt"
-        ApplySubscriptToken labels.Cells(1, CLng(cols(i))), "sc"
-        ApplySubscriptToken labels.Cells(1, CLng(cols(i))), "st"
-        ApplySubscriptToken labels.Cells(1, CLng(cols(i))), "ult"
+        ApplySubscriptToken labels, headers, CLng(cols(i)), "bc"
+        ApplySubscriptToken labels, headers, CLng(cols(i)), "bt"
+        ApplySubscriptToken labels, headers, CLng(cols(i)), "sc"
+        ApplySubscriptToken labels, headers, CLng(cols(i)), "st"
+        ApplySubscriptToken labels, headers, CLng(cols(i)), "ult"
     Next i
-    ApplySubscriptToken labels.Cells(1, COL_CAP_LAMBDA), "ult"
-    ApplySubscriptToken labels.Cells(1, COL_STATE_EPS0), "0"
-    ApplySubscriptToken labels.Cells(1, COL_STATE_KX), "x"
-    ApplySubscriptToken labels.Cells(1, COL_STATE_KY), "y"
-    ApplySubscriptToken labels.Cells(1, COL_CAP_EPS0), "0"
-    ApplySubscriptToken labels.Cells(1, COL_CAP_KX), "x"
-    ApplySubscriptToken labels.Cells(1, COL_CAP_KY), "y"
+    ApplySubscriptToken labels, headers, COL_CAP_LAMBDA, "ult"
+    ApplySubscriptToken labels, headers, COL_STATE_EPS0, "0"
+    ApplySubscriptToken labels, headers, COL_STATE_KX, "x"
+    ApplySubscriptToken labels, headers, COL_STATE_KY, "y"
+    ApplySubscriptToken labels, headers, COL_CAP_EPS0, "0"
+    ApplySubscriptToken labels, headers, COL_CAP_KX, "x"
+    ApplySubscriptToken labels, headers, COL_CAP_KY, "y"
 End Sub
 
 ' Ставит нижний индекс найденному текстовому токену внутри одной ячейки.
-Private Sub ApplySubscriptToken(ByVal cell As Object, ByVal token As String)
+Private Sub ApplySubscriptToken(ByVal labels As Object, ByRef headers As Variant, ByVal columnIndex As Long, ByVal token As String)
     Dim textValue As String
-    textValue = CStr(cell.Value2)
+    textValue = CStr(headers(1, columnIndex))
     Dim startPos As Long
     startPos = InStr(1, textValue, token, vbTextCompare)
+    If startPos = 0 Then Exit Sub
+    Dim cell As Object: Set cell = labels.Cells(1, columnIndex)
     Do While startPos > 0
         cell.Characters(startPos, Len(token)).Font.Subscript = True
         startPos = InStr(startPos + Len(token), textValue, token, vbTextCompare)

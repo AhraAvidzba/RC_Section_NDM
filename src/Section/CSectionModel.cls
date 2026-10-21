@@ -56,7 +56,7 @@ Private mRebarDiameter() As Double ' Диаметр стержня, мм.
 Private mRebarSteelClass() As String ' Название материала, переданное при добавлении стержня.
 Private mRebarMaterialID() As Long ' Номер материала стержня; в текущем НДС используется одна подготовленная диаграмма арматуры.
 Private mRebarComment() As String ' Диагностическая заметка о грани, ряде или источнике стержня.
-Private mRebarRecipeTrace() As String ' Происхождение всех позиций физического стержня; metadata, не геометрия.
+Private mRebarRecipeTrace() As String ' Необязательные сведения о правилах и исходных позициях, из которых получен стержень.
 Private mGeometryDiagnostics As String ' Пояснения и предупреждения, полученные при подготовке геометрии.
 Private mRebarCount As Long ' Фактическое число стержней в модели.
 Private mRebarCapacity As Long ' Резерв арматуры живет только вместе с этой моделью.
@@ -188,24 +188,6 @@ End Property
 Friend Sub RestoreRebarRecipeTrace(ByVal index As Long, ByVal value As String)
     CheckRebarIndex index
     mRebarRecipeTrace(index) = value
-End Sub
-
-' Передаёт исходные сведения об оболочке для сохранения снимка. Они отличаются
-' от эквивалентного прямоугольника, который может использоваться на схеме.
-Friend Sub ConcreteSnapshotHints(ByVal index As Long, ByRef shape As String, _
-        ByRef width As Double, ByRef height As Double, ByRef rotation As Double, _
-        ByRef rotationKnown As Boolean)
-    CheckConcreteIndex index
-    shape = mConcreteShapeType(index)
-    width = mConcreteWidth(index): height = mConcreteHeight(index)
-    rotation = mConcreteRotation(index): rotationKnown = mConcreteRotationKnown(index)
-End Sub
-
-' Восстанавливает сохранённую достоверность угла источника. Сам угол,
-' координаты и инерции не меняются; это сведения о происхождении данных.
-Friend Sub RestoreConcreteRotationKnowledge(ByVal index As Long, ByVal value As Boolean)
-    CheckConcreteIndex index
-    mConcreteRotationKnown(index) = value
 End Sub
 
 ' Заменяет служебные разделители в сведениях о происхождении стержня, чтобы отличать их от текста данных.

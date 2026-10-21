@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestAutoCADContours"
+﻿Attribute VB_Name = "modTestAutoCADContours"
 Option Explicit
 
 ' ==========================================================================
@@ -149,7 +149,7 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     On Error GoTo Failed
     fixture.Names.Item("rngNDMSectionContours").RefersTo = "=Results!$GR$20"
     Check "postAudit03.contours.brokenNameRejected", number = vbObjectError + 4376 And _
-        fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
+        fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 49
     Set readBack = New CSectionContours
     readBack.AddContourCircle "ONLY_HOLE", 5#, 5#, 2#, "Только отверстие", "ONLY_HOLE", "Opening"
     writer.WriteSectionContours fixture, readBack, sheet.Cells(21, 12).Value2
@@ -165,7 +165,7 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     On Error GoTo Failed
     Check "postAudit03.contours.missingTableRejected", number = vbObjectError + 4376
     Check "postAudit03.contours.missingTableDoesNotInsert", fixture.Names.Count = 6 And _
-        fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
+        fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 49
     sheet.Cells(20, 27).Value2 = "EndX, mm"
     On Error Resume Next
     Set restored = ReadSectionGeometryFromResults(fixture): number = Err.Number: Err.Clear
@@ -186,12 +186,12 @@ End Function
 ' Создает только тестовые якоря нижнего ряда; ширины не переназначаются.
 Private Sub CreatePostAudit03SnapshotAnchors(ByVal workbook As Object, ByVal sheet As Object)
     Dim names As Variant, columns As Variant, i As Long
-    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionModelMetadata")
-    columns = Array(1, 12, 48, 56, 69, 93)
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+    columns = Array(1, 12, 49, 57, 70)
     For i = 0 To UBound(names)
         workbook.Names.Add CStr(names(i)), "='" & sheet.Name & "'!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i
-    workbook.Names.Add "rngNDMSectionContours", "='" & sheet.Name & "'!$AC$20"
+    workbook.Names.Add "rngNDMSectionContours", "='" & sheet.Name & "'!$AD$20"
 End Sub
 
 ' Поля проверяются по собственным ID и аналитической геометрии, не по площади одной фигуры.

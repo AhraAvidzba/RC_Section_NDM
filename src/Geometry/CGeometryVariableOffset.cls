@@ -23,13 +23,15 @@ Private Const TOL As Double = GEOM_BOUNDARY_TOLERANCE ' Геометрическ
 ' Строит один замкнутый контур и проверяет его до использования при фильтрации.
 ' distances задаёт расстояние влево по обходу каждого исходного сегмента, мм.
 Friend Function Build(ByRef original() As TRegionEdge, ByRef distances() As Double, ByVal count As Long, _
-        ByVal sourceReference As String) As CConcreteRegion
+        ByVal sourceReference As String, Optional ByVal segmentSources As Variant) As CConcreteRegion
     Dim shifted() As TRegionEdge, result() As TRegionEdge, sourceIndex() As Long, kept As Long, radius As Double
     Dim i As Long, following As Long, resultCount As Long
+    Dim allReferences As String: allReferences = sourceReference
     Dim edge As TRegionEdge, region As CConcreteRegion, query As CSectionGeometryQuery, before As Double, after As Double
     If count < 1 Then Fail "Проверочный контур не содержит участков.", sourceReference
     ReDim shifted(1 To count): ReDim result(1 To 2 * count): ReDim sourceIndex(1 To count)
     For i = 1 To count
+        If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, i, i, i)
         before = before + EdgeArea(original(i))
         If original(i).Sweep <> 0# Then
             radius = Sqr((original(i).X1 - original(i).CenterX) ^ 2 + (original(i).Y1 - original(i).CenterY) ^ 2)
@@ -48,10 +50,13 @@ NextSource:
     End If
     For i = 1 To kept
         following = i Mod kept + 1
+        If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, sourceIndex(i), sourceIndex(following), sourceIndex(i))
         If shifted(i).Sweep = 0# And shifted(following).Sweep = 0# Then JoinLines shifted(i), shifted(following)
     Next i
     For i = 1 To kept
         following = i Mod kept + 1
+        If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, _
+            sourceIndex((i + kept - 2) Mod kept + 1), sourceIndex(i), sourceIndex(following))
         If shifted(i).Sweep = 0# Then
             If (shifted(i).X2 - shifted(i).X1) * (original(sourceIndex(i)).X2 - original(sourceIndex(i)).X1) + _
                     (shifted(i).Y2 - shifted(i).Y1) * (original(sourceIndex(i)).Y2 - original(sourceIndex(i)).Y1) <= TOL * TOL Then _
@@ -65,6 +70,7 @@ NextSource:
             resultCount = resultCount + 1: result(resultCount) = edge
         End If
     Next i
+    sourceReference = allReferences
     For i = 1 To resultCount: after = after + EdgeArea(result(i)): Next i
     If Abs(after) <= TOL Or before * after <= 0# Then _
         Fail "Проверочный контур выродился или изменил направление обхода. Уменьшите отступы дополнительных рядов.", sourceReference
@@ -80,6 +86,22 @@ InvalidContour:
     reason = Err.Description
     Fail "Не удалось построить единый проверочный контур дополнительных рядов: " & reason & _
         " Уменьшите отступы или измените армирование соседних участков.", sourceReference
+End Function
+
+' Оставляет адреса проблемного участка и соседей, определяющих точки стыка.
+' Каждый адрес выводится один раз, даже если связан с несколькими участками.
+Private Function OffsetSourceReferences(ByVal sources As Variant, ByVal first As Long, ByVal middle As Long, ByVal last As Long) As String
+    Dim unique As Object, index As Variant, address As Variant, token As String
+    Set unique = CreateObject("Scripting.Dictionary")
+    For Each index In Array(first, middle, last)
+        For Each address In Split(CStr(sources(CLng(index))), ";")
+            token = Trim$(CStr(address))
+            If Len(token) > 0 Then
+                If Not unique.Exists(token) Then unique.Add token, True
+            End If
+        Next address
+    Next index
+    If unique.Count > 0 Then OffsetSourceReferences = Join(unique.Keys, "; ")
 End Function
 
 ' Переносит прямую или дугу точно, без разбиения дуги на короткие отрезки.

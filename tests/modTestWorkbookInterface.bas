@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestWorkbookInterface"
+﻿Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -1288,10 +1288,10 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.results.crack.anchor", ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Row = 85 And ThisWorkbook.Names.Item("rngCrackSummaryAnchor").RefersToRange.Column = 1
     AssertTrue stats, "ui.results.stability.anchor", ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Row = 122 And ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange.Column = 1
     AssertTrue stats, "ui.results.geometry.position", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Column = 12
-    AssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 29
-    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
-    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 56
-    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 69
+    AssertTrue stats, "ui.results.contours.position", ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionContours").RefersToRange.Column = 30
+    AssertTrue stats, "ui.results.properties.position", ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 49
+    AssertTrue stats, "ui.results.materialDiagrams.position", ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange.Column = 57
+    AssertTrue stats, "ui.results.annotations.position", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Row = 156 And ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Column = 70
     AssertTrue stats, "ui.results.geometry.noSource", ResultHeaderColumn(geometryResults, "SourceName") = 0
     AssertTrue stats, "ui.results.geometry.noMaterialClass", ResultHeaderColumn(geometryResults, "MaterialClass") = 0
     AssertTrue stats, "ui.results.properties.header", CStr(ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange.Value2) = "RunID"
@@ -8024,6 +8024,14 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     message = FormSectionForWorkbook(ThisWorkbook)
     AssertTrue stats, "workflow.form.noSolver", SectionEquilibriumSolveCount() = solves
     AssertTrue stats, "workflow.form.autoPreview", PlotVisibleTitleContains("Сформированное сечение")
+    AssertTrue stats, "workflow.form.elapsedMessage", InStr(message, "Время формирования сечения:") > 0
+    Dim properties As Variant, propertyRow As Long, storedWarning As String
+    properties = ResultTable("rngNDMSectionProperties")
+    storedWarning = "Предупреждение: контрольное сообщение формирования."
+    For propertyRow = 2 To UBound(properties, 1)
+        If CStr(properties(propertyRow, 3)) = "Geometry.RecipeDiagnostics" Then properties(propertyRow, 4) = storedWarning
+    Next propertyRow
+    ThisWorkbook.Names("rngNDMSectionProperties").RefersToRange.Resize(UBound(properties, 1), UBound(properties, 2)).Value2 = properties
     Dim geometry As Variant, contours As Variant
     geometry = ResultTable("rngNDMSectionGeometry"): contours = ResultTable("rngNDMSectionContours")
     UpdateSectionPlotForWorkbook ThisWorkbook
@@ -8031,7 +8039,15 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     SetSystemSetting "Geometry.Source", "AutoCAD"
     SetSystemSetting "Geometry.Type", "Invalid.Unused.Geometry"
     SetSystemSetting "Circle.Diameter", "INVALID"
+    Dim calculationStarted As Double, actualElapsed As Double, savedElapsed As Double
+    calculationStarted = Timer
     message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    actualElapsed = Timer - calculationStarted: If actualElapsed < 0# Then actualElapsed = actualElapsed + 86400#
+    savedElapsed = CDbl(ThisWorkbook.Names("rngBatchSummary").RefersToRange.Offset(3, 0).Value2)
+    AssertClose stats, "workflow.calculate.elapsed", savedElapsed, actualElapsed, 0.1
+    AssertTrue stats, "workflow.calculate.elapsedMessage", InStr(message, "Время расчёта:") > 0
+    AssertTrue stats, "workflow.calculate.noFormationMessages", InStr(message, storedWarning) = 0
+    AssertTrue stats, "workflow.calculate.savedFormationDiagnostic", CStr(ResultsPropertyValue("ALL", "Geometry.RecipeDiagnostics")) = storedWarning
     AssertTrue stats, "workflow.calculate.frozenSource", InStr(message, "Расчет завершен") > 0 And ResultsGeometrySource(ThisWorkbook) = "Generated"
     AssertTrue stats, "workflow.calculate.geometryExact", WorkflowSameTable(geometry, ResultTable("rngNDMSectionGeometry"))
     AssertTrue stats, "workflow.calculate.contoursExact", WorkflowSameTable(contours, ResultTable("rngNDMSectionContours"))
@@ -8078,6 +8094,36 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     AssertTrue stats, "workflow.reform.previewOnly", SectionEquilibriumSolveCount() = solves
 End Sub
 
+' Доказывает независимость численных состояний от JSON и исходных подписей.
+' Удаление необязательного столбца не должно прерывать запись готового НДС.
+Private Sub TestWorkflowOptionalAnnotations(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Circle.Diameter", "300"
+    FixtureResetReinforcement "Circle"
+    SetSystemSetting "Plot.Enabled", "Yes"
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    Dim message As String, states As Variant, annotations As Variant, geometry As Object, target As Object
+    message = FormSectionForWorkbook(ThisWorkbook)
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    states = ResultTable("rngNDMElementResults")
+    Set geometry = ThisWorkbook.Names("rngNDMSectionGeometry").RefersToRange
+    Dim data As Variant: data = ResultTable("rngNDMSectionGeometry")
+    geometry.Offset(1, 15).Resize(UBound(data, 1) - 1, 1).Value2 = CVErr(xlErrValue)
+    geometry.Offset(1, 14).Resize(UBound(data, 1) - 1, 1).Value2 = CVErr(xlErrValue)
+    geometry.Offset(0, 15).ClearContents
+    Set target = ThisWorkbook.Names("rngNDMSectionAnnotations").RefersToRange
+    target.Offset(0, 23).ClearContents
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "workflow.optional.completed", InStr(message, "Расчет завершен") > 0
+    AssertTrue stats, "workflow.optional.statesExact", WorkflowSameTable(states, ResultTable("rngNDMElementResults"))
+    AssertTrue stats, "workflow.optional.plotAvailable", InStr(message, "Схема не обновлена") = 0
+    annotations = ResultTable("rngNDMSectionAnnotations")
+    target.Resize(UBound(annotations, 1), UBound(annotations, 2)).ClearContents
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "workflow.noAnnotations.completed", InStr(message, "Расчет завершен") > 0
+    AssertTrue stats, "workflow.noAnnotations.statesExact", WorkflowSameTable(states, ResultTable("rngNDMElementResults"))
+End Sub
+
 ' ДЛЯ ТЕСТОВ
 ' Проверяет расчёт Circle/Rectangles и неизменность снимка между командами.
 Public Function RunSectionWorkflowCalculationTests() As String
@@ -8087,6 +8133,7 @@ Public Function RunSectionWorkflowCalculationTests() As String
     TestCircleWorkbookRunWritesResults stats
     TestRectanglesWorkbookRunWritesResults stats
     TestWorkflowFrozenGeometry stats
+    TestWorkflowOptionalAnnotations stats
 Done:
     FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
     AppendLine stats, "TOTAL_WORKFLOW_CALCULATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
@@ -8133,4 +8180,63 @@ Done:
 Failed:
     AssertTrue stats, "unexpected.formPreview." & Err.Number & "." & Err.Description, False
     Resume Done
+End Function
+
+
+' ДЛЯ ТЕСТОВ: групповая палитра и сохранение высоты строк Results.
+Public Function RunResultBlockOutputTests() As String
+    Dim stats As TUiTestStats, fixture As Object, sheet As Object, target As Object
+    Dim values(1 To 120, 1 To 11) As Variant, rows(1 To 120) As Long
+    Dim statuses As Variant, row As Long, column As Variant, expected As Long, message As String
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
+    Set target = sheet.Range("AZ10:BJ129")
+    target.Interior.Color = RGB(210, 220, 230): target.Font.Bold = True
+    target.RowHeight = 18.25: sheet.Range("AY10").Value2 = "KEEP"
+    statuses = Array("OK", "Fail", "BaseFail", "NumFail", "InputErr", "CalcErr", "N/A", "", "Cracked", "NotCracked")
+    For row = 1 To 120
+        rows(row) = row
+        For Each column In Array(2, 4, 11)
+            values(row, CLng(column)) = statuses((row + CLng(column)) Mod 10)
+        Next column
+        values(row, 1) = row
+    Next row
+    target.Value2 = values
+    ApplyTableStatusFills target, rows, Array(2, 4, 11), True, 4
+    For row = 1 To 120
+        For Each column In Array(2, 4, 11)
+            expected = RGB(210, 220, 230)
+            If Len(CStr(values(row, CLng(column)))) > 0 Then
+                If CLng(column) <> 4 Or (values(row, 4) <> "Cracked" And values(row, 4) <> "NotCracked") Then
+                    expected = StatusFillColor(CStr(values(row, CLng(column))))
+                End If
+            End If
+            AssertTrue stats, "block.color." & row & "." & column, target.Cells(row, CLng(column)).Interior.Color = expected
+        Next column
+    Next row
+    AssertTrue stats, "block.unrelatedColumn", target.Columns(1).Interior.Color = RGB(210, 220, 230)
+    AssertTrue stats, "block.fontUnchanged", target.Font.Bold = True
+    AssertTrue stats, "block.heightUnchanged", target.RowHeight = 18.25
+    AssertTrue stats, "block.outsideUnchanged", sheet.Range("AY10").Value2 = "KEEP"
+    fixture.Close False: Set fixture = Nothing
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    ThisWorkbook.Worksheets("Results").Rows.RowHeight = 17.25
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "block.formed", InStr(message, "Сечение сформировано") > 0
+    AssertTrue stats, "block.formationKeepsHeight", ThisWorkbook.Worksheets("Results").Rows.RowHeight = 17.25
+    AssertTrue stats, "block.geometryJsonRightAligned", ThisWorkbook.Names.Item("rngNDMSectionGeometry").RefersToRange.Offset(1, 15).HorizontalAlignment = -4152
+    AssertTrue stats, "block.annotationJsonRightAligned", ThisWorkbook.Names.Item("rngNDMSectionAnnotations").RefersToRange.Offset(1, 23).HorizontalAlignment = -4152
+    message = RunSectionCalculationForWorkbook(ThisWorkbook)
+    AssertTrue stats, "block.calculated", InStr(message, "Расчет завершен") > 0
+    AssertTrue stats, "block.calculationKeepsHeight", ThisWorkbook.Worksheets("Results").Rows.RowHeight = 17.25
+    GoTo Finished
+Failed:
+    AssertTrue stats, "block.runtime." & Err.Number & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    If Not fixture Is Nothing Then fixture.Close False
+    ThisWorkbook.Worksheets("Results").Rows.RowHeight = 15
+    On Error GoTo 0
+    RunResultBlockOutputTests = stats.Report & "TOTAL_BLOCK_OUTPUT: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

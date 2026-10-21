@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -19,11 +19,10 @@ Option Explicit
 ' Текущие Inputs не перечитываются: сохраняется именно рассчитанное состояние.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
-Private Const MODEL_METADATA_COLUMNS As Long = 17 ' Исходные свойства элементов и аннотаций для восстановления модели без повторного построения.
-Private Const GEOMETRY_COLUMNS As Long = 15 ' Только расчетные бетонные элементы и арматура.
+Private Const GEOMETRY_COLUMNS As Long = 16 ' Только расчетные бетонные элементы и арматура.
 Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
-Private Const ANNOTATION_COLUMNS As Long = 22 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
+Private Const ANNOTATION_COLUMNS As Long = 24 ' Аннотации и принадлежность готовой области трещин; старые поля 1..13 сохранены.
 Private Const MATERIAL_DIAGRAM_COLUMNS As Long = 11 ' Список точек всех различных диаграмм, фактически использованных в расчётах.
 Private Const COMMON_SECTION_PROPERTY_ROWS As Long = 72 ' Строки общих свойств сечения до LC-зависимых блоков.
 Private Const LC_SECTION_PROPERTY_ROWS As Long = 23 ' Число строк общих свойств одного сочетания без дополнительных данных отдельных НДС.
@@ -35,8 +34,6 @@ Public Function OutputColumnCount(ByVal rangeName As String) As Long
     Select Case LCase$(Trim$(rangeName))
         Case "rngndmelementresults"
             OutputColumnCount = ELEMENT_RESULT_COLUMNS
-        Case "rngndmsectionmodelmetadata"
-            OutputColumnCount = MODEL_METADATA_COLUMNS
         Case "rngndmsectiongeometry"
             OutputColumnCount = GEOMETRY_COLUMNS
         Case "rngndmsectioncontours"
@@ -82,10 +79,15 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
     snapshot.ValidateSnapshot section, True
+    Dim previousAnnotations As Variant, previousDiagnostics As String
+    If preserveGeometry Then
+        previousAnnotations = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
+        previousDiagnostics = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
+    End If
     If preserveGeometry Then
         ClearCalculationData workbook
     Else
-        ClearResults workbook
+        ClearSnapshotData workbook
     End If
 
     Dim runID As Date
@@ -99,10 +101,9 @@ Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel
         WriteSectionContours workbook, section.Contours, runID, units
     End If
     WriteElementResults workbook, section, batch, runID, units
-    WriteSectionProperties workbook, section, snapshot, batch, runID, units
+    WriteSectionProperties workbook, section, snapshot, batch, runID, units, previousDiagnostics
     WriteMaterialDiagrams workbook, batch, runID, units
-    WriteSectionAnnotations workbook, section, runID, units, batch
-    WriteModelMetadata workbook, section, runID
+    WriteSectionAnnotations workbook, section, runID, units, batch, previousAnnotations
 End Sub
 
 ' После импорта AutoCAD записывает геометрию без расчёта сочетаний.
@@ -116,7 +117,7 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Для предварительной схемы не переданы подготовленные характеристики сечения."
     snapshot.ValidateSnapshot section
 
-    ClearResults workbook
+    ClearSnapshotData workbook
 
     Dim runID As Date
     runID = Now
@@ -127,7 +128,6 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     WriteEmptyElementResults workbook, runID, units
     WriteSectionPropertiesPreview workbook, section, snapshot, runID, units
     WriteSectionAnnotations workbook, section, runID, units
-    WriteModelMetadata workbook, section, runID
 End Sub
 
 
@@ -139,7 +139,6 @@ Private Sub ClearCalculationData(ByVal workbook As Object)
     ClearNamedRegion workbook, "rngNDMSectionProperties"
     ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
     ClearNamedRegion workbook, "rngNDMSectionAnnotations"
-    ClearNamedRegion workbook, "rngNDMSectionModelMetadata"
 End Sub
 
 ' Связывает неизменённые координаты снимка с новым расчётом; меняется только
@@ -153,63 +152,23 @@ Private Sub UpdateGeometrySnapshotRunID(ByVal workbook As Object, ByVal runID As
     Next name
 End Sub
 
-' Сохраняет исходные сведения, которых нет в таблице изображения элементов.
-' Координаты и контуры здесь не дублируются. Все строки записываются одним блоком.
-Private Sub WriteModelMetadata(ByVal workbook As Object, ByVal section As CSectionModel, ByVal runID As Variant)
-    Dim anchor As Object, data() As Variant, headers As Variant
-    Set anchor = workbook.Names.Item("rngNDMSectionModelMetadata").RefersToRange
-    ReDim data(1 To 1 + section.ConcreteCount + section.RebarCount + section.AnnotationCount, 1 To MODEL_METADATA_COLUMNS)
-    headers = Array("RunID", "RecordType", "ItemID", "SourceName", "SourceHandle", "MaterialID", _
-        "SteelClass", "RecipeTrace", "SourceShapeType", "SourceWidth_mm", "SourceHeight_mm", _
-        "SourceRotation_rad", "SourceRotationKnown", "OriginalText", "OriginalValue", "OriginalUnit", "OriginalComment")
-    Dim i As Long, row As Long, shape As String, width As Double, height As Double, angle As Double, known As Boolean
-    For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
-    row = 2
-    For i = 1 To section.ConcreteCount
-        section.ConcreteSnapshotHints i, shape, width, height, angle, known
-        data(row, 1) = runID: data(row, 2) = "Concrete": data(row, 3) = section.ConcreteID(i)
-        data(row, 4) = section.ConcreteSourceName(i): data(row, 5) = section.ConcreteSourceHandle(i)
-        data(row, 6) = section.ConcreteMaterialID(i): data(row, 9) = shape
-        data(row, 10) = width: data(row, 11) = height: data(row, 12) = angle: data(row, 13) = known
-        data(row, 17) = section.ConcreteComment(i)
-        row = row + 1
-    Next i
-    For i = 1 To section.RebarCount
-        data(row, 1) = runID: data(row, 2) = "Rebar": data(row, 3) = section.RebarID(i)
-        data(row, 4) = section.RebarSourceName(i): data(row, 5) = section.RebarSourceHandle(i)
-        data(row, 6) = section.RebarMaterialID(i): data(row, 7) = section.RebarSteelClass(i)
-        data(row, 8) = section.RebarRecipeTrace(i): data(row, 17) = section.RebarComment(i)
-        row = row + 1
-    Next i
-    Dim annotations As CSectionAnnotations: Set annotations = section.Annotations
-    For i = 1 To annotations.Count
-        data(row, 1) = runID: data(row, 2) = "Annotation": data(row, 3) = annotations.AnnotationID(i)
-        data(row, 14) = annotations.Text(i): data(row, 15) = annotations.Value(i)
-        data(row, 16) = annotations.Unit(i): data(row, 17) = annotations.Comment(i)
-        row = row + 1
-    Next i
-    Dim column As Variant
-    For Each column In Array(2, 3, 4, 5, 7, 8, 9, 14, 16, 17)
-        anchor.Resize(UBound(data, 1), MODEL_METADATA_COLUMNS).Columns.Item(CLng(column)).NumberFormat = "@"
-    Next column
-    anchor.Resize(UBound(data, 1), MODEL_METADATA_COLUMNS).Value2 = data
-    FormatResultsBlock anchor, UBound(data, 1), MODEL_METADATA_COLUMNS, "Исходные сведения сохранённого сечения"
-End Sub
-
 ' Очищает только таблицы сохранённых расчётных данных перед новой записью.
 Public Sub ClearResults(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4455, "CNDMResultsWriter", "Книга Excel не передана."
 
+    ClearSnapshotData workbook
+    Dim emptyContours As CSectionContours: Set emptyContours = New CSectionContours
+    WriteSectionContours workbook, emptyContours, Empty
+End Sub
+
+' Контуры очищает их собственный писатель: новый набор заменяет старый один раз.
+Private Sub ClearSnapshotData(ByVal workbook As Object)
     ClearSnapshotTitle workbook
     ClearNamedRegion workbook, "rngNDMElementResults"
     ClearNamedRegion workbook, "rngNDMSectionGeometry"
-    ClearNamedRegion workbook, "rngNDMSectionContours"
     ClearNamedRegion workbook, "rngNDMSectionProperties"
     ClearNamedRegion workbook, "rngNDMSectionAnnotations"
-    ClearNamedRegion workbook, "rngNDMSectionModelMetadata"
     ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
-    Dim emptyContours As CSectionContours: Set emptyContours = New CSectionContours
-    WriteSectionContours workbook, emptyContours, Empty
 End Sub
 
 ' Очищает прямоугольник одной таблицы результатов. Ширину берёт из её структуры,
@@ -256,7 +215,6 @@ Private Sub WriteSnapshotTitle(ByVal workbook As Object)
     Set title = SnapshotTitleRange(workbook)
     If title Is Nothing Then Exit Sub
     title.Interior.Color = RGB(189, 215, 238)
-    title.RowHeight = 15
     With title.Resize(1, 1)
         .Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
         .Font.Name = "Arial"
@@ -278,7 +236,6 @@ Private Sub ClearSnapshotTitle(ByVal workbook As Object)
     Set title = SnapshotTitleRange(workbook)
     If title Is Nothing Then Exit Sub
     title.Clear
-    title.RowHeight = 15
 MissingRange:
 End Sub
 
@@ -292,7 +249,7 @@ Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim rightColumn As Long, blockRightColumn As Long
     rightColumn = anchor.Column
     For Each name In Array("rngNDMElementResults", "rngNDMSectionGeometry", _
-            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionModelMetadata")
+            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
         Set block = workbook.Names.Item(CStr(name)).RefersToRange
         blockRightColumn = block.Column + OutputColumnCount(CStr(name)) - 1
         If blockRightColumn > rightColumn Then rightColumn = blockRightColumn
@@ -386,6 +343,8 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         data(rowIndex, 13) = OutputFourthPowerLength(section.ConcreteLocalIy(i), units)
         data(rowIndex, 14) = OutputFourthPowerLength(section.ConcreteLocalIxy(i), units)
         data(rowIndex, 15) = section.ConcreteComment(i)
+        data(rowIndex, 16) = SectionOptionalJson("SourceName", section.ConcreteSourceName(i), _
+            "SourceHandle", section.ConcreteSourceHandle(i), "MaterialID", section.ConcreteMaterialID(i))
         rowIndex = rowIndex + 1
     Next i
 
@@ -407,10 +366,13 @@ Private Sub WriteSectionGeometry(ByVal workbook As Object, ByVal section As CSec
         data(rowIndex, 13) = 0#
         data(rowIndex, 14) = 0#
         data(rowIndex, 15) = section.RebarComment(i)
-        If Len(section.RebarRecipeTrace(i)) > 0 Then data(rowIndex, 15) = data(rowIndex, 15) & vbLf & "RecipeTrace:" & section.RebarRecipeTrace(i)
+        data(rowIndex, 16) = SectionOptionalJson("SourceName", section.RebarSourceName(i), _
+            "SourceHandle", section.RebarSourceHandle(i), "MaterialID", section.RebarMaterialID(i), _
+            "SteelClass", section.RebarSteelClass(i), "RecipeTrace", section.RebarRecipeTrace(i))
         rowIndex = rowIndex + 1
     Next i
 
+    target.Offset(0, 14).Resize(rowCount, 2).NumberFormat = "@"
     target.Resize(rowCount, GEOMETRY_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, GEOMETRY_COLUMNS, "Геометрия расчетных элементов сечения"
 End Sub
@@ -460,7 +422,7 @@ End Sub
 ' по сохранённым приведённым характеристикам Transformed.*.
 Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
-        ByVal runID As Variant, ByVal units As CUnitSystem)
+        ByVal runID As Variant, ByVal units As CUnitSystem, Optional ByVal previousDiagnostics As String = "")
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionProperties").RefersToRange
 
@@ -495,7 +457,7 @@ Private Sub WriteSectionProperties(ByVal workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.SourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.ConcreteMeshSource", section.ConcreteMeshSource, "-", "Источник бетонной сетки: Generated, AutoCADRegions или AutoCADContours."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии, к которой относятся состояния и расчетные области этого снимка."
-    PutProperty data, rowIndex, runID, "ALL", "Geometry.RecipeDiagnostics", section.GeometryDiagnosticsText, "-", "Запрошенные/созданные позиции, совпадения, пропуски и конфликты. StationStep и CenterStep в мм; для связанного ряда StationStep относится к исходному пути."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.RecipeDiagnostics", previousDiagnostics & section.GeometryDiagnosticsText, "-", "Запрошенные/созданные позиции, совпадения, пропуски и конфликты. StationStep и CenterStep в мм; для связанного ряда StationStep относится к исходному пути."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.LoadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetX."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.LoadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetY."
     PutProperty data, rowIndex, runID, "ALL", "ConcreteCount", section.ConcreteCount, "шт", "Количество бетонных элементов расчетной модели."
@@ -1078,7 +1040,7 @@ End Sub
 ' Записывает аннотации сечения и готовые области трещин по сочетаниям.
 ' Исходные наружные контуры и отверстия сохраняются отдельно как геометрия.
 Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As CSectionModel, _
-        ByVal runID As Variant, ByVal units As CUnitSystem, Optional ByVal batch As CBatchSectionCalculator = Nothing)
+        ByVal runID As Variant, ByVal units As CUnitSystem, Optional ByVal batch As CBatchSectionCalculator = Nothing, Optional ByVal previous As Variant)
     Dim target As Object
     Set target = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
 
@@ -1087,6 +1049,20 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
 
     Dim rowCount As Long
     rowCount = 1 + annotations.Count
+    Dim previousCount As Long, savedRow As Long, savedColumn As Long, savedKind As String
+    Dim previousColumns As Long
+    If IsArray(previous) Then
+        previousColumns = UBound(previous, 2)
+        If previousColumns > ANNOTATION_COLUMNS Then previousColumns = ANNOTATION_COLUMNS
+        For savedRow = 2 To UBound(previous, 1)
+            savedKind = vbNullString
+            If previousColumns >= 2 Then
+                If Not IsError(previous(savedRow, 2)) Then savedKind = CStr(previous(savedRow, 2))
+            End If
+            If Left$(savedKind, 6) <> "CRACK_" Then previousCount = previousCount + 1
+        Next savedRow
+        rowCount = rowCount + previousCount
+    End If
     Dim regions As Collection, region As CConcreteRegion, combination As CCombinationResult, i As Long
     Set regions = New Collection
     If Not batch Is Nothing Then
@@ -1108,6 +1084,20 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
     Dim rowIndex As Long
     rowIndex = 2
 
+    If IsArray(previous) Then
+        For savedRow = 2 To UBound(previous, 1)
+            savedKind = vbNullString
+            If previousColumns >= 2 Then
+                If Not IsError(previous(savedRow, 2)) Then savedKind = CStr(previous(savedRow, 2))
+            End If
+            If Left$(savedKind, 6) <> "CRACK_" Then
+                For savedColumn = 1 To previousColumns
+                    data(rowIndex, savedColumn) = previous(savedRow, savedColumn)
+                Next savedColumn
+                data(rowIndex, 1) = runID: rowIndex = rowIndex + 1
+            End If
+        Next savedRow
+    End If
     For i = 1 To annotations.Count
         PutAnnotationRow data, rowIndex, runID, annotations, i, units
     Next i
@@ -1117,6 +1107,10 @@ Private Sub WriteSectionAnnotations(ByVal workbook As Object, ByVal section As C
         PutCrackBoundaryProbeRows data, rowIndex, runID, region, units
     Next region
 
+    Dim textColumn As Variant
+    For Each textColumn In Array(2, 3, 10, 12, 13, 23, 24)
+        target.Resize(rowCount, ANNOTATION_COLUMNS).Columns.Item(CLng(textColumn)).NumberFormat = "@"
+    Next textColumn
     target.Resize(rowCount, ANNOTATION_COLUMNS).Value2 = data
     FormatResultsBlock target, rowCount, ANNOTATION_COLUMNS, "Аннотации схемы"
 End Sub
@@ -1161,7 +1155,6 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     tableRange.Font.Name = "Arial"
     tableRange.Font.Size = 9
     If rowCount > 1 Then tableRange.Offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
-    tableRange.Rows.RowHeight = 15
     tableRange.Borders.LineStyle = 1
     tableRange.Borders.Color = RGB(200, 200, 200)
     tableRange.Rows.Item(1).Interior.Color = RGB(217, 217, 217)
@@ -1169,8 +1162,9 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
     tableRange.Rows.Item(1).HorizontalAlignment = -4131
     tableRange.Columns.Item(1).NumberFormat = "dd.mm.yy"
 
-    AlignCommentColumns tableRange
-    ApplyResultNumberFormats tableRange
+    Dim headers As Variant: headers = tableRange.Rows.Item(1).Value2
+    AlignCommentColumns tableRange, headers
+    ApplyResultNumberFormats tableRange, headers
 
     If target.Row > 2 Then
         Dim titleRange As Object
@@ -1185,14 +1179,11 @@ Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, By
         titleRange.HorizontalAlignment = -4108
         titleRange.VerticalAlignment = -4108
         titleRange.Interior.Color = RGB(217, 217, 217)
-        titleRange.Rows.RowHeight = 15
     End If
 End Sub
 
 ' Задаёт одинаковую точность отображения общих численных столбцов во всех таблицах результатов.
-Private Sub ApplyResultNumberFormats(ByVal tableRange As Object)
-    Dim headers As Variant
-    headers = tableRange.Rows.Item(1).Value2
+Private Sub ApplyResultNumberFormats(ByVal tableRange As Object, ByRef headers As Variant)
 
     Dim colIndex As Long
     For colIndex = 1 To tableRange.Columns.Count
@@ -1203,11 +1194,9 @@ Private Sub ApplyResultNumberFormats(ByVal tableRange As Object)
 End Sub
 
 ' Ищет текстовые диагностические столбцы и выравнивает их вправо.
-' Comment и PhysicalState читаются удобнее как текстовые признаки, поэтому
-' они не центрируются вместе с числовыми данными таблиц Results.
-Private Sub AlignCommentColumns(ByVal tableRange As Object)
-    Dim headers As Variant
-    headers = tableRange.Rows.Item(1).Value2
+' Комментарии, состояния и последний столбец JSON удерживаются внутри
+' правой границы ячейки; выравнивание задаётся всему столбцу данных сразу.
+Private Sub AlignCommentColumns(ByVal tableRange As Object, ByRef headers As Variant)
 
     Dim colIndex As Long
     For colIndex = 1 To tableRange.Columns.Count
@@ -1220,12 +1209,12 @@ Private Sub AlignCommentColumns(ByVal tableRange As Object)
 End Sub
 
 ' Определяет текстовые столбцы Results, которые должны читаться как подпись,
-' а не как числовой параметр. Пока это комментарии и физическое состояние
-' элемента в rngNDMElementResults.
+' а не как числовой параметр. ExtraData — последний столбец необязательного JSON.
 Private Function ShouldRightAlignResultColumn(ByVal headerBase As String) As Boolean
     ShouldRightAlignResultColumn = _
         (StrComp(headerBase, "Comment", vbTextCompare) = 0 Or _
-         StrComp(headerBase, "PhysicalState", vbTextCompare) = 0)
+         StrComp(headerBase, "PhysicalState", vbTextCompare) = 0 Or _
+         StrComp(headerBase, "ExtraData", vbTextCompare) = 0)
 End Function
 
 ' Возвращает имя столбца без единицы измерения.
@@ -1306,6 +1295,7 @@ Private Sub PutGeometryHeaders(ByRef data() As Variant, ByVal units As CUnitSyst
     data(1, 13) = "LocalIy, " & OutputLengthUnit(units) & "4"
     data(1, 14) = "LocalIxy, " & OutputLengthUnit(units) & "4"
     data(1, 15) = "Comment"
+    data(1, 16) = "ExtraData"
 End Sub
 
 ' Формирует заголовки таблицы общих и LC-зависимых свойств сечения.
@@ -1342,6 +1332,8 @@ Private Sub PutAnnotationHeaders(ByRef data() As Variant)
     data(1, 20) = "RegionArea"
     data(1, 21) = "AreaUnit"
     data(1, 22) = "GeometrySource"
+    data(1, 23) = "CoordinateUnit"
+    data(1, 24) = "ExtraData"
 End Sub
 
 ' Записывает готовую расчётную область без нового построения или отбора арматуры.
@@ -1435,6 +1427,10 @@ Private Sub PutAnnotationRow(ByRef data() As Variant, ByRef rowIndex As Long, By
     data(rowIndex, 11) = OutputAnnotationValue(annotations, annotationIndex, units)
     data(rowIndex, 12) = OutputAnnotationUnit(annotations, annotationIndex, units)
     data(rowIndex, 13) = OutputAnnotationComment(annotations, annotationIndex)
+    data(rowIndex, 23) = OutputLengthUnit(units)
+    data(rowIndex, 24) = SectionOptionalJson("OriginalText", annotations.Text(annotationIndex), _
+        "OriginalValue", SectionOptionalNumber(annotations.Value(annotationIndex)), _
+        "OriginalUnit", annotations.Unit(annotationIndex), "OriginalComment", annotations.Comment(annotationIndex))
     rowIndex = rowIndex + 1
 End Sub
 
@@ -1469,6 +1465,12 @@ Private Function OutputAnnotationText(ByVal annotations As CSectionAnnotations, 
     Dim annotationType As String
     annotationType = annotations.AnnotationType(annotationIndex)
     If StrComp(annotationType, "DIMENSION", vbTextCompare) <> 0 And StrComp(annotationType, "MEASUREMENT_LABEL", vbTextCompare) <> 0 Then
+        OutputAnnotationText = annotations.Text(annotationIndex)
+        Exit Function
+    End If
+    ' Без необязательного исходного обозначения сохраняем готовую подпись
+    ' с её собственной единицей. Текст вида B=0.3 m не разбирается как ввод.
+    If StrComp(annotations.Unit(annotationIndex), "Length", vbTextCompare) <> 0 Then
         OutputAnnotationText = annotations.Text(annotationIndex)
         Exit Function
     End If

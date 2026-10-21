@@ -1,4 +1,4 @@
-Attribute VB_Name = "modWorkbookCalculation"
+﻿Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -15,12 +15,13 @@ Private Const RESULTS_TABLE_GAP_ROWS As Long = 2 ' Минимум пустых �
 ' независимо от настройки необязательных информационных сообщений.
 Public Sub RunSectionCalculation()
     On Error GoTo Failed
+    Dim startedAt As Double: startedAt = Timer
     ' Проверяем оформление сообщения до расчета, чтобы ошибка Config не
     ' обнаруживалась лишь после успешной записи нового Results.
     Dim informationEnabled As Boolean
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, True, startedAt)
     If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Or _
             InStr(1, message, "Предупреждение:", vbTextCompare) > 0 Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
@@ -70,10 +71,11 @@ End Sub
 ' Кнопка не запускает решение НДС; ошибки и предупреждения показываются всегда.
 Public Sub FormSection()
     On Error GoTo Failed
+    Dim startedAt As Double: startedAt = Timer
     Dim informationEnabled As Boolean
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
-    message = FormSectionForWorkbook(ThisWorkbook)
+    message = FormSectionForWorkbook(ThisWorkbook, startedAt)
     If InStr(1, message, "Предупреждени", vbTextCompare) > 0 Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
     ElseIf informationEnabled Then
@@ -198,8 +200,9 @@ End Sub
 ' Формирует сечение выбранным способом и публикует полный снимок в Results.
 ' Не читает сочетания и не выполняет расчёт; прежний снимок сохраняется,
 ' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
-Public Function FormSectionForWorkbook(ByVal workbook As Object) As String
+Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#) As String
     On Error GoTo Failed
+    If startedAt < 0# Then startedAt = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     guard.Enter workbook.Application
@@ -252,6 +255,8 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object) As String
             "После исправления настроек оформления нажмите «Обновить схему»."
     End If
     guard.Restore True
+    FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
+        "Время формирования сечения: " & Format$(ElapsedSecondsFrom(startedAt), "0.00") & " с."
     Exit Function
 Failed:
     Dim number As Long, origin As String, description As String
@@ -279,16 +284,17 @@ End Function
 ' Читает сформированное сечение из Results и текущие расчётные настройки.
 ' Подготавливает материалы один раз, рассчитывает сочетания и записывает Results.
 ' Возвращает итоговое сообщение; временные настройки Excel сохраняет CExcelAppStateGuard.
-Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
+Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
+        Optional ByVal startedAt As Double = -1#) As String
     On Error GoTo Failed
+    Dim runStart As Double
+    runStart = startedAt
+    If runStart < 0# Then runStart = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4100, "RunSectionCalculationForWorkbook", "Книга Excel не передана."
 
     Dim excelGuard As CExcelAppStateGuard
     Set excelGuard = New CExcelAppStateGuard
     excelGuard.Enter workbook.Application
-
-    Dim runStart As Double
-    runStart = Timer
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
@@ -332,7 +338,6 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddValue "Происхождение бетонной сетки", section.ConcreteMeshSource
     report.AddValue "Бетонных элементов", CStr(section.ConcreteCount)
     report.AddValue "Стержней арматуры", CStr(section.RebarCount)
-    report.AddValue "Semantic-аннотаций", CStr(section.AnnotationCount)
 
     Dim materialProvider As CMaterialModelProvider
     Set materialProvider = New CMaterialModelProvider
@@ -409,7 +414,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
     summaryWriter.UpdateElapsedSeconds workbook, totalElapsedSeconds
-    report.AddValue "Полное время выполнения макроса", FormatReportNumber(totalElapsedSeconds) & " с"
+    report.AddValue "Время до записи итогового отчёта", FormatReportNumber(totalElapsedSeconds) & " с"
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
@@ -424,6 +429,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     End If
     CalculateResultsSheet workbook
     excelGuard.Restore True
+    summaryWriter.UpdateElapsedSeconds workbook, ElapsedSecondsFrom(runStart)
+    RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & _
+        "Время расчёта: " & Format$(ElapsedSecondsFrom(runStart), "0.00") & " с."
     Exit Function
 
 Failed:
@@ -661,16 +669,15 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
         ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long)
-    Dim names(1 To 7) As String
-    Dim rows(1 To 7) As Long
-    Dim cols(1 To 7) As Long
+    Dim names(1 To 6) As String
+    Dim rows(1 To 6) As Long
+    Dim cols(1 To 6) As Long
     names(1) = "rngNDMElementResults"
     names(2) = "rngNDMSectionGeometry"
     names(3) = "rngNDMSectionContours"
     names(4) = "rngNDMSectionProperties"
     names(5) = "rngNDMMaterialDiagrams"
     names(6) = "rngNDMSectionAnnotations"
-    names(7) = "rngNDMSectionModelMetadata"
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
     rows(2) = 1 + elementCount
@@ -678,12 +685,11 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
     rows(4) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
     rows(5) = 1 + MaxLong(1, estimatedStateCount) * 14
     rows(6) = 1 + MaxLong(2, annotationCount)
-    rows(7) = 1 + elementCount + annotationCount
 
     Dim index As Long
     Dim previousRightColumn As Long
     previousRightColumn = 0
-    For index = 1 To 7
+    For index = 1 To 6
         cols(index) = ndmWriter.OutputColumnCount(names(index))
 
         Dim anchor As Object
@@ -860,7 +866,6 @@ Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal b
         BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.Count) & _
             ". Определяющее сочетание: " & batch.WorstCombinationID
     End If
-    If Len(section.GeometryWarningText) > 0 Then BuildCalculationMessage = BuildCalculationMessage & vbCrLf & section.GeometryWarningText
 End Function
 
 ' Формирует список всех сочетаний, принятых для расчёта.

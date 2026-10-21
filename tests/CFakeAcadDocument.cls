@@ -20,11 +20,14 @@ Private mWorldUCS As Variant ' Подставное значение призн�
 Private mReadFails As Boolean ' Нужно ли имитировать ошибку чтения документа.
 Private mGeometryReads As Long ' Число чтений геометрии тестового документа.
 Private mVariableReads As Long ' Число обращений к переменным тестового документа.
+Private mCleanupLayers As Object ' Подставная таблица слоёв для проверки раннего выхода очистки.
+Private mModelSpaceReads As Long ' Отдельный счётчик обращений к объектам чертежа.
 
 ' ДЛЯ ТЕСТОВ: задает ответ машинного признака и сбрасывает счетчики чтений.
 Public Sub Initialize(ByVal worldUCS As Variant, Optional ByVal readFails As Boolean = False)
     mWorldUCS = worldUCS: mReadFails = readFails
-    mGeometryReads = 0: mVariableReads = 0
+    mGeometryReads = 0: mVariableReads = 0: mModelSpaceReads = 0
+    Set mCleanupLayers = Nothing
 End Sub
 
 ' ДЛЯ ТЕСТОВ: запрос другого системного параметра выявляет неверный вызов проверки мировой
@@ -37,6 +40,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: импорт не должен доходить сюда при локальной ПСК.
 Public Property Get ModelSpace() As Object
+    mModelSpaceReads = mModelSpaceReads + 1
     mGeometryReads = mGeometryReads + 1
     Err.Raise vbObjectError + 9106, "CFakeAcadDocument", "ModelSpace accessed."
 End Property
@@ -44,7 +48,19 @@ End Property
 ' ДЛЯ ТЕСТОВ: даже чтение слоев запрещено до успешной проверки МСК.
 Public Property Get Layers() As Object
     mGeometryReads = mGeometryReads + 1
+    If Not mCleanupLayers Is Nothing Then Set Layers = mCleanupLayers: Exit Property
     Err.Raise vbObjectError + 9106, "CFakeAcadDocument", "Layers accessed."
+End Property
+
+' ДЛЯ ТЕСТОВ: разрешает чтение только заданных слоёв; ModelSpace остаётся запрещённым.
+Public Sub InitializeCleanupLayers(ByVal layers As Object)
+    Initialize True
+    Set mCleanupLayers = layers
+End Sub
+
+' ДЛЯ ТЕСТОВ: отсутствие ModelSpace-чтений доказывает ранний выход очистки.
+Public Property Get ModelSpaceReads() As Long
+    ModelSpaceReads = mModelSpaceReads
 End Property
 
 ' ДЛЯ ТЕСТОВ: счетчики отделяют отказ проверки от отказа чтения геометрии.

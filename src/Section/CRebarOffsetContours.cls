@@ -282,7 +282,11 @@ Private Function BuildDomain(ByVal row As Long, ByVal outer As Long) As CConcret
     Exit Function
 InvalidDomain:
     reason = Err.Description
-    Fail "Не удалось построить проверочную область ряда " & CStr(row) & ": " & reason, mReferences
+    ' Построитель уже указал адреса конкретных участков; общая обёртка
+    ' со всеми семействами повторяла их и скрывала место ошибки.
+    If Err.Source = "CGeometryVariableOffset" Then Err.Raise Err.Number, Err.Source, _
+        "Не удалось построить допустимый контур для " & CStr(row) & "-го ряда арматуры." & vbCrLf & vbCrLf & reason
+    Fail "Не удалось построить допустимый контур для " & CStr(row) & "-го ряда арматуры: " & reason, mReferences
 End Function
 
 ' Разделяет только прямые по границам исходных фигур. Это позволяет задавать
@@ -290,6 +294,7 @@ End Function
 Private Function BuildLoop(ByVal row As Long, ByVal loopIndexValue As Long) As CConcreteRegion
     Dim path As CGeometryPath, edge As TRegionEdge, part As TRegionEdge, edges() As TRegionEdge, distances() As Double
     Dim cuts() As Double, cutCount As Long, i As Long, j As Variant, k As Long, count As Long, parameter As Double, capacity As Long
+    Dim references() As String, reference As String, sourceValues As Variant
     Dim parts As Collection
     Set parts = New Collection
     If mPartsByLoop.Exists(mLoops(loopIndexValue).LoopID) Then Set parts = mPartsByLoop(mLoops(loopIndexValue).LoopID)
@@ -307,18 +312,21 @@ Private Function BuildLoop(ByVal row As Long, ByVal loopIndexValue As Long) As C
             modGeometryPrimitives.SubEdge edge, cuts(k), cuts(k + 1), part
             If count = capacity Then
                 capacity = CLng(GeomMax(16#, 2# * capacity))
-                ReDim Preserve edges(1 To capacity): ReDim Preserve distances(1 To capacity)
+                ReDim Preserve edges(1 To capacity): ReDim Preserve distances(1 To capacity): ReDim Preserve references(1 To capacity)
             End If
             count = count + 1
-            edges(count) = part: distances(count) = PartDistance(part, row, mLoops(loopIndexValue).LoopID)
+            reference = vbNullString
+            edges(count) = part: distances(count) = PartDistance(part, row, mLoops(loopIndexValue).LoopID, reference)
+            references(count) = reference
         Next k
     Next i
-    Set BuildLoop = mOffset.Build(edges, distances, count, mReferences)
+    sourceValues = references
+    Set BuildLoop = mOffset.Build(edges, distances, count, mReferences, sourceValues)
 End Function
 
 ' Для участка без семейства сохраняет бетонную границу, не придумывая несуществующий as.
 ' У семейства без дополнительного ряда остаётся только явно заданный as Main.
-Private Function PartDistance(ByRef edge As TRegionEdge, ByVal row As Long, ByVal loopID As String) As Double
+Private Function PartDistance(ByRef edge As TRegionEdge, ByVal row As Long, ByVal loopID As String, ByRef sourceReference As String) As Double
     Dim i As Variant, link As Long, rule As Long, value As Double, found As Boolean, direction As Double
     Dim baseline As Double, hasBaseline As Boolean, mainBase As Double, thisBase As Double
     Dim tx As Double, ty As Double, sx As Double, sy As Double
@@ -327,11 +335,15 @@ Private Function PartDistance(ByRef edge As TRegionEdge, ByVal row As Long, ByVa
         link = mParts(i).LinkIndex
         If mLinks(link).LoopID = loopID And SameSupport(edge, mParts(i).Edge) Then
             If MidpointOn(edge, mParts(i).Edge) Then
+                sourceReference = sourceReference & mLinks(link).SourceReference & "; "
                 value = mParts(i).Distance
                 If Not mParts(i).Baseline Then
                     rule = mRowRules(link, row)
                     If rule > 0 Then
-                        If mRules(rule).Enabled Then value = value + mRules(rule).NormalOffset * mParts(i).Direction
+                        If mRules(rule).Enabled Then
+                            value = value + mRules(rule).NormalOffset * mParts(i).Direction
+                            sourceReference = sourceReference & mRules(rule).SourceReference & "; "
+                        End If
                     End If
                 End If
                 modGeometryPrimitives.EdgeTangent edge, 0.5, tx, ty

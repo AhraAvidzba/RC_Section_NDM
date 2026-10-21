@@ -1,0 +1,306 @@
+{
+  "Passed": true,
+  "WorkbookSHA256": "7B4C769D3813CE0057FFA93026281CD8ED7D3DC23F60159A2655882AB37D2772",
+  "AllCodeSHA256": "F88F3868FF9C3FF0D14DB981D6F90CC1467D4CB0E426A462497EF86FC158950E",
+  "ArchiveSHA256": "05F600C64A0CF8828862BB3BEC0F6190EF6801937F05D829C0C7CD1BCFFD9FF7",
+  "ArchiveBytes": 1106255,
+  "CompleteNightlySuiteRun": false,
+  "AcceptancePerMode": 425,
+  "WriterDiagnosticChecks": 186,
+  "BlockOutputChecks": 370,
+  "DirectNdsCases": 120,
+  "DirectNdsNumbersExactlyEqual": 1080,
+  "MeshesExactlyEqual": 30,
+  "MeshFieldsBitwiseEqual": 915964,
+  "PixelIdenticalImages": 6,
+  "ShapeRecordsExactlyEqual": 4395,
+  "ResultsCellsExactlyEqual": 37173,
+  "RichTextCellsExactlyEqual": 115,
+  "Files": [
+    {
+      "Path": "Acceptance15_No.txt",
+      "Bytes": 14698,
+      "SHA256": "64C80F6319D606F756680B336655A575F6E86CFC949C02907F84412BC1A77F3C"
+    },
+    {
+      "Path": "Acceptance15_Yes.txt",
+      "Bytes": 14699,
+      "SHA256": "B2C15B24C81211FCE0AB9D0D740DA43A9EB4CF1725CBBDD0837184E76AAF4FBA"
+    },
+    {
+      "Path": "WriterThirtyRows15.txt",
+      "Bytes": 9106,
+      "SHA256": "EAE3695E80424E6E9EC99F66F475B53DCBC62E9F471C88C0B0459111BE7664E7"
+    },
+    {
+      "Path": "BlockOutput15.txt",
+      "Bytes": 9563,
+      "SHA256": "3C66237F8CBB1C05D78246C637F87FC118E0AAB8543032B0EDF21B0827C4DE51"
+    },
+    {
+      "Path": "MeshExact.txt",
+      "Bytes": 676,
+      "SHA256": "D96D3EC1A4F956621D4F969993D5F1A3A5AA3780AFEB222F4B34124CBAC70230"
+    },
+    {
+      "Path": "MeshExact02.txt",
+      "Bytes": 2619,
+      "SHA256": "10934573B9F6B77FC0DE87D8ECBFC75731B462C45AFF80EA3FFDB1D2E50C8E57"
+    },
+    {
+      "Path": "MeshEqualityProbe.py",
+      "Bytes": 4593,
+      "SHA256": "6BD87D17668CA8739932142C1C47A483650A4D9D68C02848F547604F787523CE"
+    },
+    {
+      "Path": "NdsOriginal07.txt",
+      "Bytes": 22235,
+      "SHA256": "64A4E20996FFE3F764D353D95084733C8CA69464E806F62DD9661276CC07761A"
+    },
+    {
+      "Path": "NdsRestored07.txt",
+      "Bytes": 22244,
+      "SHA256": "362E71206447C3DACF2B71DFEEBD95EBF37B662BADB7C061C7329F3B92B473BA"
+    },
+    {
+      "Path": "NdsRestored09.txt",
+      "Bytes": 22245,
+      "SHA256": "7351D7F29E09BD3F004126B190FE1D71843021B18143E94A687EE9AEC8102F2B"
+    },
+    {
+      "Path": "NdsRestored09_Comparison.json",
+      "Bytes": 530,
+      "SHA256": "AC19C19064D142F30B6C660845A536DD2AC9DF219364B14DE383A91A40F6659C"
+    },
+    {
+      "Path": "CompareNds.py",
+      "Bytes": 2355,
+      "SHA256": "AD5C196A2AC7F971571E1FCAA7CC0538C51DCB846BA17C5385B2683B4A05BB50"
+    },
+    {
+      "Path": "ProfileDetail.txt",
+      "Bytes": 6108,
+      "SHA256": "BDCC20942E2C848541226659F65E077097910865171455680FAA3C3F913AC844"
+    },
+    {
+      "Path": "ProfileAfter.txt",
+      "Bytes": 6110,
+      "SHA256": "9238A87045F7A7242ED89F4AF28014329F7633D63585755382AC201B3AAB1E57"
+    },
+    {
+      "Path": "ProfileCalculation.txt",
+      "Bytes": 2910,
+      "SHA256": "D3835C05EB97896F66F87F218A68A44BAC23DC5DCB4AC105D064E30ADDDB55A5"
+    },
+    {
+      "Path": "Performance.json",
+      "Bytes": 5110,
+      "SHA256": "DEBACAB7BB992D8629117308A9B647ACAD99C66C51B4EB24B8FE98F0ECE6C01E"
+    },
+    {
+      "Path": "OutputBefore.txt",
+      "Bytes": 8283,
+      "SHA256": "E4CD01E9FF21F5955F4BAAD4CBC3A6A0396BAF1818362FFF98F523F8C165E89A"
+    },
+    {
+      "Path": "OutputAfter10.txt",
+      "Bytes": 8282,
+      "SHA256": "65CD4B20220BA7E1F16913804B65596E1048513FBE33380018FA8B0E5244FEA0"
+    },
+    {
+      "Path": "OutputAfter13.txt",
+      "Bytes": 8284,
+      "SHA256": "29CCB8058412E602F6C04AA7EC4ADB0F040C3CF128738B00D1D2BED36940EE38"
+    },
+    {
+      "Path": "OutputAfter14.txt",
+      "Bytes": 8282,
+      "SHA256": "489C7CFD4FB456A3BED448997212671574B670E4454C80C93F9F205528ABBBA1"
+    },
+    {
+      "Path": "OutputAfter15.txt",
+      "Bytes": 8282,
+      "SHA256": "484145C0A0006AFE9F099A9E30CE4DE4710E77BD54B72C6A7AA0AFDF9BCA9F75"
+    },
+    {
+      "Path": "OutputPerformance.json",
+      "Bytes": 1985,
+      "SHA256": "637D2E2AFE19C3FC13CB449308D28E34EE19F3CC7F47475147C6AFD33B79248C"
+    },
+    {
+      "Path": "FormationFormatting.txt",
+      "Bytes": 3535,
+      "SHA256": "F24C0FD6678DADAA06C69775C061D244E807CDAE3353D2799959AFD94502ECDB"
+    },
+    {
+      "Path": "BlockOutput14.txt",
+      "Bytes": 9487,
+      "SHA256": "748BCD68A1BA945EC184190104EF87BEB9E4A9A89CAD717434025C37572AC13C"
+    },
+    {
+      "Path": "VisualBefore.txt",
+      "Bytes": 548550,
+      "SHA256": "DB72EA4AC251D4BB5E7F898B9CE1D1DAB709AF8DE202370F4AE45C024FD29137"
+    },
+    {
+      "Path": "VisualAfter15.txt",
+      "Bytes": 548547,
+      "SHA256": "229D70EFC1FAC2991ED7B36DA86338E51D20C32832F0717BF6F69F8E53EF146C"
+    },
+    {
+      "Path": "RenderEquality.json",
+      "Bytes": 1968,
+      "SHA256": "89EAC0E015AC069C0C191EE69D1F0397FEBBDFF6562ED100DE5F7C54EAC9F60C"
+    },
+    {
+      "Path": "OutputEquality.json",
+      "Bytes": 262,
+      "SHA256": "F6184C24CA395385D7ED279DDCAC3D41DC9C4AC2D47278341FBF73F821A67038"
+    },
+    {
+      "Path": "Preservation.json",
+      "Bytes": 546,
+      "SHA256": "21A8B26F45AA7FB1930D2C349BC7EE20C16C72C7101E0B374D7E9FE304270CC2"
+    },
+    {
+      "Path": "WorkbookValidation.json",
+      "Bytes": 4430,
+      "SHA256": "519B266B2FEB82F863BB4C26492046217AA75E2F5A49CBBD9E051AAAE288F66A"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 579,
+      "SHA256": "1E054220A4F7B7086081E12E7808E2DF92D6BA7D6105EB6D5821B7E77185E6C0"
+    },
+    {
+      "Path": "PublishedOutput.json",
+      "Bytes": 344,
+      "SHA256": "47EC7817C836E2FD078DBA4CF0B367A5FE3CBB3663D47ACF5ACDAF729DC6F363"
+    },
+    {
+      "Path": "ClassComments15.json",
+      "Bytes": 2317930,
+      "SHA256": "E57FA8097BF3D8017DE6B5A1A15CB1D3C1BA3243EA5C5A03ADF26E7AF4C84314"
+    },
+    {
+      "Path": "VerifyPublishedOutput.py",
+      "Bytes": 1620,
+      "SHA256": "AC9997401CA3F22E87B3C3C5D9F0678B81ABDE2918488B7B07D1BFE813E3F455"
+    },
+    {
+      "Path": "CompareRender.py",
+      "Bytes": 2127,
+      "SHA256": "3E122B510A0FCA9C6FE8596B2EAFFBF1819099DB8872496B0EF7BD76D18DFA32"
+    },
+    {
+      "Path": "CompareOutputBook.py",
+      "Bytes": 3079,
+      "SHA256": "2771405D9FB9D4137995C021882A690CBFDA084F3AF293380D364B300DD53238"
+    },
+    {
+      "Path": "VerifyPreservation.py",
+      "Bytes": 6699,
+      "SHA256": "D32ADC13332C7301D43F676BE821FD934D70B78B776DC81B243F8430C5C38962"
+    },
+    {
+      "Path": "SummarizePerformance.py",
+      "Bytes": 2840,
+      "SHA256": "0CE8217EAEC4D03B2833D96EE8B04FE6874DAE650A919F916774BEB6B294B37C"
+    },
+    {
+      "Path": "SummarizeOutputPerformance.py",
+      "Bytes": 2193,
+      "SHA256": "8AE6096FB14D3F68B9FD94084A692E1D69743AA5A10D2E991D111C1C279EAFB4"
+    },
+    {
+      "Path": "ProfileFormation.py",
+      "Bytes": 9979,
+      "SHA256": "AA5758BF962295665A5D3454ACCB6FB66CC91ED4C5503E7F0B828F6B293C5888"
+    },
+    {
+      "Path": "RenderProbe.vba",
+      "Bytes": 4285,
+      "SHA256": "535D50E6AF174013024414A7EF836157109B64E37D166C544022CA7F6E0CBA93"
+    },
+    {
+      "Path": "NativeEquality.json",
+      "Bytes": 78344,
+      "SHA256": "FFCF0EF9BC94524CFE92BF0FF161F4EB7DBD5D2739AA65F766C89F15BD55F563"
+    },
+    {
+      "Path": "Finalization.json",
+      "Bytes": 9845,
+      "SHA256": "88887ECA0608C2EF96F811B094C3B79FDF0F352E37B74B4CA72A74ECA0370597"
+    },
+    {
+      "Path": "BlockOutputCompilation.json",
+      "Bytes": 761,
+      "SHA256": "BB316F7CD4EF564D142BB6947BFEB846AF8629768A5637D954D15B64B5946B27"
+    },
+    {
+      "Path": "FinalCompilation.json",
+      "Bytes": 430,
+      "SHA256": "5F2FDE13D03A6219EF369890CC2B841D92053CA48E32FCE441C18B32497B141F"
+    },
+    {
+      "Path": "ImagesBefore/CircleCalc.png",
+      "Bytes": 79879,
+      "SHA256": "829D8E5BE22B30E1222A341D9E993B8B5A2CCA978834BA49237779E4FD344A21"
+    },
+    {
+      "Path": "ImagesBefore/CircleDiscrete.png",
+      "Bytes": 59346,
+      "SHA256": "CAAF9AE500A50A39FEFE13E461FD3B39D564A2D3A83F4B7134B6066CEB2AE2CA"
+    },
+    {
+      "Path": "ImagesBefore/CircleForm.png",
+      "Bytes": 48130,
+      "SHA256": "8750C737EB19B25B49EBD1DAA5F0478700BCA81F4F15F19CC69091E3F5B6EE58"
+    },
+    {
+      "Path": "ImagesBefore/HollowForm.png",
+      "Bytes": 64694,
+      "SHA256": "6587F69E9978EABD3810999C8025A40CB780EE6B5A2BA428830ACB9D8964B3B4"
+    },
+    {
+      "Path": "ImagesBefore/PointedForm.png",
+      "Bytes": 60241,
+      "SHA256": "63747D69D83F225E1CEB846D0A968D5951122175D4E075BC5F93EAC08F0AE15D"
+    },
+    {
+      "Path": "ImagesBefore/SavedImport.png",
+      "Bytes": 83544,
+      "SHA256": "E9FB1F527BC901F0C1D74AE72BBA21D1AE4650361E3F517C1761BF370ECAE5A3"
+    },
+    {
+      "Path": "ImagesAfter15/CircleCalc.png",
+      "Bytes": 79879,
+      "SHA256": "829D8E5BE22B30E1222A341D9E993B8B5A2CCA978834BA49237779E4FD344A21"
+    },
+    {
+      "Path": "ImagesAfter15/CircleDiscrete.png",
+      "Bytes": 59346,
+      "SHA256": "CAAF9AE500A50A39FEFE13E461FD3B39D564A2D3A83F4B7134B6066CEB2AE2CA"
+    },
+    {
+      "Path": "ImagesAfter15/CircleForm.png",
+      "Bytes": 48130,
+      "SHA256": "8750C737EB19B25B49EBD1DAA5F0478700BCA81F4F15F19CC69091E3F5B6EE58"
+    },
+    {
+      "Path": "ImagesAfter15/HollowForm.png",
+      "Bytes": 64694,
+      "SHA256": "6587F69E9978EABD3810999C8025A40CB780EE6B5A2BA428830ACB9D8964B3B4"
+    },
+    {
+      "Path": "ImagesAfter15/PointedForm.png",
+      "Bytes": 60241,
+      "SHA256": "63747D69D83F225E1CEB846D0A968D5951122175D4E075BC5F93EAC08F0AE15D"
+    },
+    {
+      "Path": "ImagesAfter15/SavedImport.png",
+      "Bytes": 83544,
+      "SHA256": "E9FB1F527BC901F0C1D74AE72BBA21D1AE4650361E3F517C1761BF370ECAE5A3"
+    }
+  ]
+}

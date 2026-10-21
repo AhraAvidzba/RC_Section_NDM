@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestPlotConfig"
+﻿Attribute VB_Name = "modTestPlotConfig"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: настройки схемы Excel и расположение размеров и подписей.
@@ -70,7 +70,7 @@ Private Sub TestCrackAnnotationsDoNotRequirePlotNormals(ByRef stats As TUiTestSt
     props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
     sheet.Range("AB5").Resize(2, 4).Value2 = props
     fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$AB$5"
-    headers = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    headers = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
     For i = 0 To UBound(headers): annotations(1, i + 1) = headers(i): Next i
     For i = 2 To 3
         For j = 2 To 7: annotations(i, j) = 0#: Next j
@@ -572,7 +572,7 @@ Private Sub TestAudit03NamedAnnotationSettings(ByRef stats As TUiTestStats)
     props(2, 1) = "ALL": props(2, 2) = "Output.LengthUnit": props(2, 3) = "mm": props(2, 4) = "-"
     sheet.Range("R5").Resize(2, 4).Value2 = props
     fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="=Results!$R$5"
-    keys = Array("AnnotationType", "AnnotationID", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    keys = Array("AnnotationType", "AnnotationID", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
     annotations(2, 1) = "DIMENSION": annotations(2, 2) = "BRIDGE_DIM": annotations(2, 3) = -50#: annotations(2, 4) = 0#
     annotations(2, 5) = 50#: annotations(2, 6) = 0#: annotations(2, 7) = 0#: annotations(2, 8) = 1#: annotations(2, 9) = "DIM": annotations(2, 10) = "mm"
@@ -857,7 +857,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     Next row
     elements(2, 4) = "C1": elements(3, 4) = "R1"
     sheet.Range("R35").Resize(3, 7).Value2 = elements
-    keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
     annotations(2, 1) = "DIMENSION": annotations(2, 2) = -5#: annotations(2, 3) = 0#
     annotations(2, 4) = 5#: annotations(2, 5) = 0#: annotations(2, 6) = 0#: annotations(2, 7) = 1#
@@ -1081,7 +1081,7 @@ Private Sub TestAudit03GeneralPlotContracts(ByRef stats As TUiTestStats)
     elements(5, 5) = -0.0003: elements(5, 6) = -7.25: elements(5, 7) = "Compression"
     sheet.Range("R35").Resize(5, 7).Value2 = elements
     fixture.Names.Add Name:="rngNDMElementResults", RefersTo:="=Results!$R$35"
-    keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Unit")
+    keys = Array("AnnotationType", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "CoordinateUnit")
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
     For row = 2 To 3
         For index = 2 To 7: annotations(row, index) = 0#: Next index

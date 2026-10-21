@@ -1,4 +1,4 @@
-Attribute VB_Name = "modSectionSnapshot"
+﻿Attribute VB_Name = "modSectionSnapshot"
 Option Explicit
 
 ' ==========================================================================
@@ -17,17 +17,13 @@ Private mSnapshotTableReadCount As Long ' ДЛЯ ТЕСТОВ: число заг
 ' Площадь и моменты инерции импортированных элементов сохраняются отдельно
 ' от их изображения. Если сохранённой геометрии нет, выдаёт ошибку.
 Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optional ByVal sourceType As String = "Results", _
-        Optional ByVal metadata As Object = Nothing) As CSectionModel
-    Dim anchor As Object
-    Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
-
-    Dim data As Variant
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
+        Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
+    Dim anchor As Object: Set anchor = workbook.Names.Item("rngNDMSectionGeometry").RefersToRange
+    Dim data As Variant: data = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasResultTableRows(data) Then Err.Raise vbObjectError + 4350, "ReadSectionGeometryFromResults", _
-        "На листе Results нет таблицы расчетной геометрии. Нажмите «Сформировать сечение»."
-    If UBound(data, 2) <> 15 Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
-        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Нажмите «Сформировать сечение»."
-
+        "На листе Results нет сформированной геометрии. Нажмите «Сформировать сечение»."
+    If UBound(data, 2) < 14 Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
+        "Неверная структура rngNDMSectionGeometry. Нажмите «Сформировать сечение»."
     Dim colID As Long: colID = ResultColumn(data, "ElementID")
     Dim colType As Long: colType = ResultColumn(data, "MaterialType")
     Dim colX As Long: colX = ResultColumn(data, "X")
@@ -41,79 +37,107 @@ Public Function ReadSectionGeometryFromResults(ByVal workbook As Object, Optiona
     Dim colLocalIx As Long: colLocalIx = ResultColumn(data, "LocalIx")
     Dim colLocalIy As Long: colLocalIy = ResultColumn(data, "LocalIy")
     Dim colLocalIxy As Long: colLocalIxy = ResultColumn(data, "LocalIxy")
-    Dim colComment As Long: colComment = ResultColumn(data, "Comment")
+    Dim colComment As Long
     Dim lengthUnit As String: lengthUnit = ResultHeaderUnit(data, colX, "mm")
     Dim areaUnit As String: areaUnit = ResultHeaderUnit(data, colArea, "mm2")
     Dim fourthUnit As String: fourthUnit = ResultHeaderUnit(data, colLocalIx, lengthUnit & "4")
-
-    Dim model As CSectionModel
-    Set model = New CSectionModel
+    Dim model As CSectionModel: Set model = New CSectionModel
     model.SourceType = sourceType
     model.ConcreteMeshSource = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.ConcreteMeshSource")
-
-    Dim rowIndex As Long, info As Variant, elementType As String, elementID As String
-    For rowIndex = 2 To UBound(data, 1)
-        elementID = ReadSavedAnnotationText(data, anchor, rowIndex, colID)
-        If Len(Trim$(elementID)) > 0 Then
-            elementType = ReadSavedAnnotationText(data, anchor, rowIndex, colType)
-            If Not metadata Is Nothing Then
-                If IsError(data(rowIndex, 1)) Or IsNull(data(rowIndex, 1)) Then GoTo InvalidElementID
-                If CStr(data(rowIndex, 1)) <> CStr(data(2, 1)) Then GoTo InvalidElementID
-                info = RequiredSnapshotMetadata(metadata, elementType, elementID, anchor, rowIndex, colID)
-                If elementType = "Concrete" Then
-                    model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), _
-                        OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
-                        OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), CLng(info(6)), CStr(info(4)), CStr(info(5)), _
-                        CStr(info(9)), CDbl(info(10)), CDbl(info(11)), CDbl(info(12)), CStr(info(17)), _
-                        OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIx), fourthUnit), _
-                        OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIy), fourthUnit), _
-                        OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIxy), fourthUnit), CBool(info(13))
-                    If model.ConcreteID(model.ConcreteCount) <> elementID Then GoTo InvalidElementID
-                    model.RestoreConcreteRotationKnowledge model.ConcreteCount, CBool(info(13))
-                ElseIf elementType = "Rebar" Then
-                    model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), _
-                        OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
-                        OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colDiameter), lengthUnit), _
-                        OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), CStr(info(7)), CLng(info(6)), _
-                        CStr(info(4)), CStr(info(5)), CStr(info(17))
-                    If model.RebarID(model.RebarCount) <> elementID Then GoTo InvalidElementID
-                    model.RestoreRebarRecipeTrace model.RebarCount, CStr(info(8))
-                Else
-                    GoTo InvalidElementID
-                End If
-            ElseIf StrComp(elementType, "Concrete", vbTextCompare) = 0 Then
-                ' В Results уже записан окончательный угол изображения элемента.
-                ' Повторный экспорт сохраняет его, в том числе нулевой угол горизонтальной
-                ' грани.
-                model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
-                    OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), 1, vbNullString, vbNullString, _
-                    CStr(data(rowIndex, colShape)), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colWidth, True), lengthUnit), _
-                    OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colHeight, True), lengthUnit), ReadGeometryNumber(data, anchor, rowIndex, colRotation, True), _
-                    CStr(data(rowIndex, colComment)), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIx, True), fourthUnit), _
-                    OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIy, True), fourthUnit), OutputFourthPowerLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colLocalIxy, True), fourthUnit), True
-            ElseIf StrComp(CStr(data(rowIndex, colType)), "Rebar", vbTextCompare) = 0 Then
-                model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colX), lengthUnit), OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colY), lengthUnit), _
-                    OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colDiameter), lengthUnit), OutputAreaToInternalByUnit(ReadGeometryNumber(data, anchor, rowIndex, colArea), areaUnit), _
-                    vbNullString, 1, vbNullString, _
-                    vbNullString, CStr(data(rowIndex, colComment))
+    Dim row As Long, kind As String, id As String, info As Object, sourceName As String, handle As String
+    Dim comment As String, steelClass As String, materialID As Long, extraColumn As Long
+    If includeOptionalData Then
+        extraColumn = ResultColumn(data, "ExtraData", False)
+        colComment = ResultColumn(data, "Comment", False)
+        Set info = ReadSectionOptionalJson(vbNullString)
+    End If
+    For row = 2 To UBound(data, 1)
+        id = ReadSavedAnnotationText(data, anchor, row, colID)
+        If Len(Trim$(id)) > 0 Then
+            If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then GoTo InvalidElementID
+            If CStr(data(row, 1)) <> CStr(data(2, 1)) Then GoTo InvalidElementID
+            kind = ReadSavedAnnotationText(data, anchor, row, colType)
+            sourceName = vbNullString: handle = vbNullString: comment = vbNullString: steelClass = vbNullString: materialID = 1
+            If includeOptionalData Then
+                If extraColumn > 0 Then Set info = ReadSnapshotOptionalRecord(data, anchor, row, extraColumn)
+                sourceName = SectionOptionalText(info, "SourceName"): handle = SectionOptionalText(info, "SourceHandle")
+                steelClass = SectionOptionalText(info, "SteelClass")
+                If info.Exists("MaterialID") Then materialID = CLng(SectionOptionalText(info, "MaterialID"))
+                If colComment > 0 Then comment = ReadSavedAnnotationText(data, anchor, row, colComment)
+            End If
+            If StrComp(kind, "Concrete", vbTextCompare) = 0 Then
+                Dim localIx As Double, localIy As Double, localIxy As Double
+                localIx = ReadPositiveGeometryNumber(data, anchor, row, colLocalIx)
+                localIy = ReadPositiveGeometryNumber(data, anchor, row, colLocalIy)
+                localIxy = ReadGeometryNumber(data, anchor, row, colLocalIxy)
+                If Abs(localIxy) / Sqr(localIx) / Sqr(localIy) >= 1# Then Err.Raise vbObjectError + 4355, _
+                    "ReadSectionGeometryFromResults", "Несогласованные собственные моменты инерции бетонного элемента: " & _
+                    anchor.Parent.Name & "!" & anchor.Offset(row - 1, colLocalIxy - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+                ' Это готовая расчётная граница ячейки. Угол уже определён при
+                ' формировании; повторное усреднение направлений не требуется.
+                model.AddConcreteElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY), lengthUnit), _
+                    OutputAreaToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colArea), areaUnit), materialID, sourceName, handle, _
+                    ReadSavedAnnotationText(data, anchor, row, colShape), _
+                    OutputLengthToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colWidth), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colHeight), lengthUnit), _
+                    ReadGeometryNumber(data, anchor, row, colRotation), comment, _
+                    OutputFourthPowerLengthToInternalByUnit(localIx, fourthUnit), _
+                    OutputFourthPowerLengthToInternalByUnit(localIy, fourthUnit), _
+                    OutputFourthPowerLengthToInternalByUnit(localIxy, fourthUnit), True
+                If model.ConcreteID(model.ConcreteCount) <> id Then GoTo InvalidElementID
+            ElseIf StrComp(kind, "Rebar", vbTextCompare) = 0 Then
+                model.AddRebarElement OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colX), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, colY), lengthUnit), _
+                    OutputLengthToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colDiameter), lengthUnit), _
+                    OutputAreaToInternalByUnit(ReadPositiveGeometryNumber(data, anchor, row, colArea), areaUnit), steelClass, materialID, sourceName, handle, comment
+                If model.RebarID(model.RebarCount) <> id Then GoTo InvalidElementID
+                If includeOptionalData Then model.RestoreRebarRecipeTrace model.RebarCount, SectionOptionalText(info, "RecipeTrace")
             Else
-                Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
-                    "В таблице расчетных элементов Results допустимы только Concrete и Rebar: " & _
-                    anchor.Parent.Name & "!" & anchor.Offset(rowIndex - 1, colType - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+                GoTo InvalidElementID
             End If
         End If
-    Next rowIndex
-
-    If metadata Is Nothing Then model.ApplyAverageRotationToEquivalentAreaFallbacks
-    If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4351, "ReadSectionGeometryFromResults", _
-        "В таблице Results нет бетонных элементов."
+    Next row
+    If model.ConcreteCount <= 0 Then Err.Raise vbObjectError + 4351, "ReadSectionGeometryFromResults", "В Results нет бетонных элементов."
     ReadSavedSectionContours workbook, model.Contours
     Set ReadSectionGeometryFromResults = model
     Exit Function
 InvalidElementID:
     Err.Raise vbObjectError + 4381, "ReadSectionGeometryFromResults", _
-        "Нарушены тип, порядок или имя расчётного элемента: " & anchor.Parent.Name & "!" & _
-        anchor.Offset(rowIndex - 1, colID - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+        "Нарушены тип, порядок или имя элемента: " & anchor.Parent.Name & "!" & _
+        anchor.Offset(row - 1, colID - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
+End Function
+
+' Разбирает JSON из уже прочитанного массива. Адрес ячейки запрашивается
+' только после ошибки, а не для каждого элемента полного восстановления.
+Private Function ReadSnapshotOptionalRecord(ByRef data As Variant, ByVal anchor As Object, ByVal row As Long, ByVal column As Long) As Object
+    Dim text As String: text = ReadSavedAnnotationText(data, anchor, row, column)
+    On Error GoTo InvalidJson
+    Set ReadSnapshotOptionalRecord = ReadSectionOptionalJson(text)
+    Exit Function
+InvalidJson:
+    Set ReadSnapshotOptionalRecord = ReadSectionOptionalJson(text, _
+        anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False))
+End Function
+
+' Число оформления читается без обращения к отдельной ячейке Excel.
+' При неверном тексте добавляется адрес содержащего его JSON.
+Private Function ReadSnapshotOptionalNumber(ByVal text As String, ByVal anchor As Object, ByVal row As Long, ByVal column As Long) As Double
+    On Error GoTo InvalidNumber
+    ReadSnapshotOptionalNumber = ReadSectionOptionalNumber(text, vbNullString)
+    Exit Function
+InvalidNumber:
+    ReadSnapshotOptionalNumber = ReadSectionOptionalNumber(text, _
+        anchor.Parent.Name & "!" & anchor.Offset(row - 1, column - 1).Address(False, False))
+End Function
+
+' Проверяет положительную физическую величину. Адрес запрашивается у Excel
+' только при ошибке, поэтому чтение сетки остаётся блочным.
+Private Function ReadPositiveGeometryNumber(ByRef data As Variant, ByVal anchor As Object, ByVal row As Long, ByVal column As Long) As Double
+    ReadPositiveGeometryNumber = ReadGeometryNumber(data, anchor, row, column)
+    If ReadPositiveGeometryNumber <= 0# Then Err.Raise vbObjectError + 4355, "ReadSectionGeometryFromResults", _
+        "Значение " & CStr(data(1, column)) & " должно быть положительным: " & anchor.Parent.Name & "!" & _
+        anchor.Offset(row - 1, column - 1).Address(False, False) & ". Нажмите «Сформировать сечение»."
 End Function
 
 ' Читает единственный 17-колоночный формат достоверных контуров.
@@ -305,7 +329,7 @@ InvalidNumber:
         "В сохраненной геометрии Results поле " & ResultHeaderBase(CStr(data(1, column))) & _
         " содержит нечисловое значение: " & anchor.Worksheet.Name & "!" & _
         anchor.Offset(row - 1, column - 1).Address(False, False) & _
-        ". Повторите импорт геометрии или расчет, чтобы восстановить корректный снимок."
+        ". Нажмите «Сформировать сечение», чтобы восстановить корректную геометрию."
 End Function
 
 ' Проверяет, есть ли в Variant-таблице заголовок и строка данных. Локальный
@@ -319,8 +343,9 @@ Failed:
 End Function
 
 ' Находит обязательный столбец по названию без единиц измерения.
-' Если столбца нет, сообщает об ошибке структуры Results до чтения данных.
-Public Function ResultColumn(ByRef data As Variant, ByVal headerName As String) As Long
+' Для обязательного поля отсутствие столбца является ошибкой структуры.
+' Необязательное поле возвращает ноль, поэтому расчёт не требует JSON и комментариев.
+Public Function ResultColumn(ByRef data As Variant, ByVal headerName As String, Optional ByVal isRequired As Boolean = True) As Long
     Dim colIndex As Long
     For colIndex = 1 To UBound(data, 2)
         If StrComp(ResultHeaderBase(CStr(data(1, colIndex))), headerName, vbTextCompare) = 0 Then
@@ -328,7 +353,7 @@ Public Function ResultColumn(ByRef data As Variant, ByVal headerName As String) 
             Exit Function
         End If
     Next colIndex
-    Err.Raise vbObjectError + 4355, "ResultColumn", "В Results не найден столбец: " & headerName
+    If isRequired Then Err.Raise vbObjectError + 4355, "ResultColumn", "В Results не найден столбец: " & headerName
 End Function
 
 ' Отделяет название столбца от единиц после запятой.
@@ -492,21 +517,19 @@ Public Sub EndSectionSnapshotRead()
 End Sub
 
 
-' Читает полный снимок для расчёта, включая класс стали, исходные оболочки,
-' связи стержней и аннотации. Config, генератор и AutoCAD не вызываются.
-Public Function ReadFormedSectionFromResults(ByVal workbook As Object) As CSectionModel
+' Читает обязательную геометрию для расчёта. Необязательные сведения и
+' аннотации добавляются только по запросу; генератор и AutoCAD не вызываются.
+Public Function ReadFormedSectionFromResults(ByVal workbook As Object, Optional ByVal includeOptionalData As Boolean = False) As CSectionModel
     On Error GoTo Failed
     BeginSectionSnapshotRead workbook
     Dim source As String: source = ResultsGeometrySource(workbook)
     If Len(source) = 0 Then Err.Raise vbObjectError + 4380, "ReadFormedSectionFromResults", _
         "В Results нет сформированного сечения. Сначала нажмите «Сформировать сечение»."
-    Dim metadata As Object: Set metadata = ReadModelMetadata(workbook)
-    Dim model As CSectionModel: Set model = ReadSectionGeometryFromResults(workbook, source, metadata)
-    model.GeometryDiagnosticsText = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
-    RestoreModelAnnotations workbook, model, metadata
-    If metadata.Count <> model.ConcreteCount + model.RebarCount + model.AnnotationCount Then _
-        Err.Raise vbObjectError + 4381, "ReadFormedSectionFromResults", _
-            "Таблицы геометрии, аннотаций и rngNDMSectionModelMetadata не согласованы. Нажмите «Сформировать сечение»."
+    Dim model As CSectionModel: Set model = ReadSectionGeometryFromResults(workbook, source, includeOptionalData)
+    If includeOptionalData Then
+        model.GeometryDiagnosticsText = ReadLoadCasePropertyText(workbook, "ALL", "Geometry.RecipeDiagnostics")
+        RestoreModelAnnotations workbook, model
+    End If
     EndSectionSnapshotRead
     Set ReadFormedSectionFromResults = model
     Exit Function
@@ -517,112 +540,37 @@ Failed:
     Err.Raise number, origin, description
 End Function
 
-' Проверяет структуру и идентификатор снимка один раз; точные ключи строк
-' позволяют восстановить все элементы без повторного поиска по таблице.
-Private Function ReadModelMetadata(ByVal workbook As Object) As Object
-    Dim anchor As Object, data As Variant, geometry As Variant, headers As Variant
-    Set anchor = workbook.Names.Item("rngNDMSectionModelMetadata").RefersToRange
-    data = ReadAnchoredResultTable(workbook, "rngNDMSectionModelMetadata")
-    headers = Array("RunID", "RecordType", "ItemID", "SourceName", "SourceHandle", "MaterialID", _
-        "SteelClass", "RecipeTrace", "SourceShapeType", "SourceWidth_mm", "SourceHeight_mm", _
-        "SourceRotation_rad", "SourceRotationKnown", "OriginalText", "OriginalValue", "OriginalUnit", "OriginalComment")
-    If Not HasResultTableRows(data) Then GoTo InvalidMetadata
-    If UBound(data, 2) <> 17 Then GoTo InvalidMetadata
-    Dim row As Long, column As Long, kind As String, key As String, record(1 To 17) As Variant
-    For column = 1 To 17
-        If ReadSavedAnnotationText(data, anchor, 1, column) <> CStr(headers(column - 1)) Then GoTo InvalidMetadata
-    Next column
-    geometry = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
-    If Not HasResultTableRows(geometry) Then GoTo InvalidMetadata
-    Dim result As Object: Set result = CreateObject("Scripting.Dictionary")
-    For row = 2 To UBound(data, 1)
-        If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then GoTo InvalidMetadata
-        If CStr(data(row, 1)) <> CStr(geometry(2, 1)) Then GoTo InvalidMetadata
-        kind = ReadSavedAnnotationText(data, anchor, row, 2)
-        If kind <> "Concrete" And kind <> "Rebar" And kind <> "Annotation" Then GoTo InvalidMetadata
-        key = kind & "|" & ReadSavedAnnotationText(data, anchor, row, 3)
-        If result.Exists(key) Then GoTo InvalidMetadata
-        For column = 1 To 17
-            If IsError(data(row, column)) Or IsNull(data(row, column)) Then GoTo InvalidMetadata
-            record(column) = data(row, column)
-        Next column
-        If kind <> "Annotation" Then
-            record(6) = ReadGeometryNumber(data, anchor, row, 6)
-            If CDbl(record(6)) < 1# Or CDbl(record(6)) > 2147483647# Or CDbl(record(6)) <> Fix(CDbl(record(6))) Then GoTo InvalidMetadata
-        End If
-        If kind = "Concrete" Then
-            For column = 10 To 12: record(column) = ReadGeometryNumber(data, anchor, row, column): Next column
-            If VarType(record(13)) <> vbBoolean Then GoTo InvalidMetadata
-        ElseIf kind = "Annotation" Then
-            record(15) = ReadGeometryNumber(data, anchor, row, 15)
-        End If
-        result.Add key, record
-    Next row
-    Set ReadModelMetadata = result
-    Exit Function
-InvalidMetadata:
-    If row < 1 Then row = 1
-    Err.Raise vbObjectError + 4381, "ReadModelMetadata", _
-        "Повреждены исходные сведения снимка: " & anchor.Parent.Name & "!" & anchor.Offset(row - 1, 0).Address(False, False) & _
-        ". Нажмите «Сформировать сечение»."
-End Function
-
-' Получает сведения только по точному типу и имени; отсутствующая строка
-' не заменяется материалом или аннотацией по умолчанию.
-Private Function RequiredSnapshotMetadata(ByVal metadata As Object, ByVal kind As String, _
-        ByVal id As String, ByVal anchor As Object, ByVal row As Long, ByVal column As Long) As Variant
-    Dim key As String: key = kind & "|" & id
-    If Not metadata.Exists(key) Then Err.Raise vbObjectError + 4381, "RequiredSnapshotMetadata", _
-        "Для " & id & " нет исходных сведений снимка: " & anchor.Parent.Name & "!" & _
-        anchor.Offset(row - 1, column - 1).Address(False, False) & _
-        ". Нажмите «Сформировать сечение»."
-    RequiredSnapshotMetadata = metadata.Item(key)
-End Function
-
 ' Восстанавливает исходные аннотации с числовыми значениями в мм и исходным
 ' обозначением размера; готовый округлённый текст не используется как ввод.
-Private Sub RestoreModelAnnotations(ByVal workbook As Object, ByVal model As CSectionModel, ByVal metadata As Object)
-    Dim anchor As Object, data As Variant, row As Long, record As Variant, kind As String, id As String
+Private Sub RestoreModelAnnotations(ByVal workbook As Object, ByVal model As CSectionModel)
+    Dim anchor As Object, data As Variant, row As Long, info As Object, kind As String, id As String, unit As String
     Set anchor = workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
     data = ReadAnchoredResultTable(workbook, "rngNDMSectionAnnotations")
     If Not HasResultTableRows(data) Then Exit Sub
-    Dim seen As Object: Set seen = CreateObject("Scripting.Dictionary")
-    If UBound(data, 2) <> 22 Then Err.Raise vbObjectError + 4381, "RestoreModelAnnotations", _
-        "Неверная структура rngNDMSectionAnnotations. Нажмите «Сформировать сечение»."
-    Dim headers As Variant, column As Long
-    headers = Array("RunID", "AnnotationType", "AnnotationID", "StartX", "StartY", "EndX", "EndY", _
-        "OutsideNormalX", "OutsideNormalY", "Text", "Value", "Unit", "Comment")
-    For column = 1 To 13
-        If ReadSavedAnnotationText(data, anchor, 1, column) <> CStr(headers(column - 1)) Then _
-            Err.Raise vbObjectError + 4381, "RestoreModelAnnotations", _
-                "Неверный заголовок аннотации: " & anchor.Parent.Name & "!" & anchor.Offset(0, column - 1).Address(False, False) & _
-                ". Нажмите «Сформировать сечение»."
-    Next column
-    Dim unit As String: unit = ReadLoadCasePropertyText(workbook, "ALL", "Output.LengthUnit")
+    If UBound(data, 2) <> 24 Then Err.Raise vbObjectError + 4381, "RestoreModelAnnotations", "Неверная структура rngNDMSectionAnnotations."
+    Dim text As String, value As Double, valueUnit As String, comment As String
     For row = 2 To UBound(data, 1)
         kind = ReadSavedAnnotationText(data, anchor, row, 2)
         If Left$(kind, 6) <> "CRACK_" Then
             id = ReadSavedAnnotationText(data, anchor, row, 3)
-            If seen.Exists(id) Then Err.Raise vbObjectError + 4381, "RestoreModelAnnotations", _
-                "Повторяется аннотация " & id & ". Нажмите «Сформировать сечение»."
-            seen.Add id, True
-            record = RequiredSnapshotMetadata(metadata, "Annotation", id, anchor, row, 3)
-            If IsError(data(row, 1)) Or IsNull(data(row, 1)) Then GoTo InvalidAnnotationRun
-            If CStr(data(row, 1)) <> CStr(record(1)) Then GoTo InvalidAnnotationRun
+            unit = ReadSavedAnnotationText(data, anchor, row, 23)
+            Set info = ReadSnapshotOptionalRecord(data, anchor, row, 24)
+            text = ReadSavedAnnotationText(data, anchor, row, 10)
+            value = ReadGeometryNumber(data, anchor, row, 11, True)
+            valueUnit = ReadSavedAnnotationText(data, anchor, row, 12)
+            comment = ReadSavedAnnotationText(data, anchor, row, 13)
+            If info.Exists("OriginalText") Then text = SectionOptionalText(info, "OriginalText")
+            If info.Exists("OriginalValue") Then value = ReadSnapshotOptionalNumber(SectionOptionalText(info, "OriginalValue"), anchor, row, 24)
+            If info.Exists("OriginalUnit") Then valueUnit = SectionOptionalText(info, "OriginalUnit")
+            If info.Exists("OriginalComment") Then comment = SectionOptionalText(info, "OriginalComment")
             model.Annotations.AddAnnotation kind, id, _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 4), unit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 5), unit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 6), unit), _
                 OutputLengthToInternalByUnit(ReadGeometryNumber(data, anchor, row, 7), unit), _
-                ReadGeometryNumber(data, anchor, row, 8), ReadGeometryNumber(data, anchor, row, 9), _
-                CStr(record(14)), CDbl(record(15)), CStr(record(16)), CStr(record(17))
+                ReadGeometryNumber(data, anchor, row, 8), ReadGeometryNumber(data, anchor, row, 9), text, value, valueUnit, comment
         End If
     Next row
-    Exit Sub
-InvalidAnnotationRun:
-    Err.Raise vbObjectError + 4381, "RestoreModelAnnotations", _
-        "Аннотация относится к другому снимку: " & anchor.Parent.Name & "!" & anchor.Offset(row - 1, 0).Address(False, False) & _
-        ". Нажмите «Сформировать сечение»."
 End Sub
 
 ' ДЛЯ ТЕСТОВ

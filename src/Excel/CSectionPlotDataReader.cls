@@ -515,8 +515,8 @@ Private Sub ReadGeometryAndResults(ByVal workbook As Object)
         MissingStateMessage(mLoadCase, mStateType)
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
-    If UBound(geom, 2) <> 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
-        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
+    If UBound(geom, 2) < 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "В rngNDMSectionGeometry не хватает столбцов геометрии. Заново сформируйте сечение."
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
     Dim colX As Long: colX = ResultColumn(geom, "X")
     Dim colY As Long: colY = ResultColumn(geom, "Y")
@@ -556,8 +556,8 @@ Private Sub ReadGeometryPreview(ByVal workbook As Object)
     geom = ReadAnchoredResultTable(workbook, "rngNDMSectionGeometry")
     If Not HasRows(geom) Then Err.Raise vbObjectError + 4704, "CSectionPlotDataReader", _
         "На листе Results нет расчетной геометрии."
-    If UBound(geom, 2) <> 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
-        "Таблица расчетной геометрии Results должна содержать 15 столбцов. Повторите расчет или импорт геометрии."
+    If UBound(geom, 2) < 15 Then Err.Raise vbObjectError + 4708, "CSectionPlotDataReader", _
+        "В rngNDMSectionGeometry не хватает столбцов геометрии. Заново сформируйте сечение."
 
     Dim colID As Long: colID = ResultColumn(geom, "ElementID")
     Dim colType As Long: colType = ResultColumn(geom, "MaterialType")
@@ -703,7 +703,7 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
     Dim colNormalX As Long: colNormalX = ResultColumn(data, "OutsideNormalX")
     Dim colNormalY As Long: colNormalY = ResultColumn(data, "OutsideNormalY")
     Dim colText As Long: colText = ResultColumn(data, "Text")
-    Dim colUnit As Long: colUnit = ResultColumn(data, "Unit")
+    Dim colCoordinateUnit As Long: colCoordinateUnit = ResultColumn(data, "CoordinateUnit")
 
     Dim rowIndex As Long
     For rowIndex = 2 To UBound(data, 1)
@@ -711,7 +711,8 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
         annotationType = Trim$(ReadAnnotationText(data(rowIndex, colType), anchor, rowIndex, colType, "AnnotationType"))
         If IsPlotLabelAnnotation(annotationType) Then
             Dim lengthUnit As String
-            lengthUnit = ReadSnapshotUnit(data(rowIndex, colUnit), "Length", mSnapshotLengthUnit, "mm", anchor, rowIndex, colUnit, "Unit", True)
+            lengthUnit = ReadSnapshotUnit(data(rowIndex, colCoordinateUnit), "Length", vbNullString, vbNullString, _
+                anchor, rowIndex, colCoordinateUnit, "CoordinateUnit")
             Dim startX As Double, startY As Double, endX As Double, endY As Double
             Dim normalX As Double, normalY As Double, textValue As String
             startX = ReadAnnotationNumber(data(rowIndex, colStartX), anchor, rowIndex, colStartX, "StartX")
@@ -749,7 +750,7 @@ End Sub
 ' нормали или координат неуспешной пробы не является повреждением подписи.
 Private Function IsPlotLabelAnnotation(ByVal annotationType As String) As Boolean
     Select Case UCase$(Trim$(annotationType))
-        Case "DIMENSION", "REBAR_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
+        Case "DIMENSION", "REBAR_ANNOTATION", "REBAR_GLOBAL_ANNOTATION", "MEASUREMENT_LABEL", "TEXT_ANNOTATION"
             IsPlotLabelAnnotation = True
     End Select
 End Function
@@ -1253,6 +1254,9 @@ Public Property Get AnnotationCount() As Long: AnnotationCount = mAnnotationCoun
 ' это добавляет as; на дуге определяется действительное расстояние по нормали.
 ' Старые Results также читаются без нового расчёта или обращения к геометрии Config.
 Public Function AnnotationBoundaryDistance(ByVal index As Long) As Double
+    ' Общая подпись уже привязана к крайней точке бетона. Пересечение
+    ' по нормали в середине повёрнутого сечения опустило бы её на контур.
+    If mAnnotationType(index) = "REBAR_GLOBAL_ANNOTATION" Then Exit Function
     If mLabelContours Is Nothing Then Exit Function
     Dim query As CSectionGeometryQuery, i As Long, hasOuter As Boolean
     Dim nx As Double, ny As Double, norm As Double, distance As Double
