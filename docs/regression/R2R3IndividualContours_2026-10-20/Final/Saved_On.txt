@@ -1,30 +1,30 @@
-﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\R2R3IndividualContours_2026-10-20\Preflight21\RC_Section_NDM.xlsm
-SOURCE_SHA256: 02229B6DB247557290730493775BB443DDAF25252ACBDB6D9EC397A42AF0ED32
-FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88ec9e2f02964b9b9e1f1946e4ec7516\RC_Section_NDM.xlsm
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\R2R3IndividualContours_2026-10-20\PostFullReview02\RC_Section_NDM.xlsm
+SOURCE_SHA256: 3AE9DBC02F3971631A62B7157DB7645D4CD59320C05C68B0B38379D07A55F9D4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2fe813d288f241f08130cbd82e5025b2\RC_Section_NDM.xlsm
 GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
-TEST_EXCEL_PROCESS: id=185768; startTicks=639281263639043354
+TEST_EXCEL_PROCESS: id=199380; startTicks=639281397389831557
 EXPLICIT_GEOMETRY_FIXTURE: original=HollowRectangle; Geometry.Type=PointedSection; fixture only, source unchanged
 ===== modTestRecipeOperations.RunSavedPointedOffsetTests =====
-SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-20T23:52:49
+SUITE_STARTED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-21T03:35:44
 TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
 TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
-EXCEL_AFTER_SUITE: pid=185768; workingSet=162455552; privateBytes=117047296; cpu=6.15625
+EXCEL_AFTER_SUITE: pid=199380; workingSet=162611200; privateBytes=117129216; cpu=6.25
 TOTAL_SAVED_POINTED_OFFSETS: passed=14; failed=0
 
-COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88ec9e2f02964b9b9e1f1946e4ec7516\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2fe813d288f241f08130cbd82e5025b2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
 MODE_AFTER_SUITE: Yes
-SUITE_FINISHED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-20T23:52:51
+SUITE_FINISHED: modTestRecipeOperations.RunSavedPointedOffsetTests; 2026-10-21T03:35:46
 ===== modTestRecipeOperations.RunSavedOffsetCalculationTests =====
-SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-20T23:52:51
+SUITE_STARTED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-21T03:35:46
 TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
 TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
-EXCEL_AFTER_SUITE: pid=185768; workingSet=188293120; privateBytes=137555968; cpu=13.15625
-OBSERVED_SAVED_CALCULATION: a2=40; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1 | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88ec9e2f02964b9b9e1f1946e4ec7516\RC_Section_NDM_execution_report.txt
-OBSERVED_SAVED_CALCULATION: a2=50; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1 | Предупреждение: после смещения не размещено дополнительных стержней: 1. Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results. | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88ec9e2f02964b9b9e1f1946e4ec7516\RC_Section_NDM_execution_report.txt
+EXCEL_AFTER_SUITE: pid=199380; workingSet=187531264; privateBytes=136593408; cpu=13.03125
+OBSERVED_SAVED_CALCULATION: a2=40; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1 | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2fe813d288f241f08130cbd82e5025b2\RC_Section_NDM_execution_report.txt
+OBSERVED_SAVED_CALCULATION: a2=50; Расчет завершен. Обработано сочетаний: 1. Определяющее сочетание: 1 | Предупреждение: после смещения не размещено дополнительных стержней: 1. Их положения по нормали оказались вне полного смещённого контура. Подробности и адреса полей приведены в Geometry.RecipeDiagnostics на Results. | Пошаговый отчет сохранен: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2fe813d288f241f08130cbd82e5025b2\RC_Section_NDM_execution_report.txt
 TOTAL_SAVED_OFFSET_CALCULATION: passed=8; failed=0
 
-COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_88ec9e2f02964b9b9e1f1946e4ec7516\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_2fe813d288f241f08130cbd82e5025b2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
 MODE_AFTER_SUITE: Yes
-SUITE_FINISHED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-20T23:52:58
+SUITE_FINISHED: modTestRecipeOperations.RunSavedOffsetCalculationTests; 2026-10-21T03:35:53
 SOURCE_UNCHANGED: True
 WATCHDOG_COMPLETED: exit=0; source unchanged=True

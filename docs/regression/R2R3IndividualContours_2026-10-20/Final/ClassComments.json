@@ -26579,7 +26579,7 @@
           "testOnly": false
         },
         {
-          "line": 80,
+          "line": 86,
           "name": "ShiftEdge",
           "kind": "Sub",
           "commented": true,
@@ -26589,7 +26589,7 @@
           "testOnly": false
         },
         {
-          "line": 105,
+          "line": 111,
           "name": "JoinLines",
           "kind": "Sub",
           "commented": true,
@@ -26600,7 +26600,7 @@
           "testOnly": false
         },
         {
-          "line": 117,
+          "line": 123,
           "name": "EdgeArea",
           "kind": "Function",
           "commented": true,
@@ -26610,7 +26610,7 @@
           "testOnly": false
         },
         {
-          "line": 127,
+          "line": 133,
           "name": "Fail",
           "kind": "Sub",
           "commented": true,

@@ -175,7 +175,7 @@
                                      "Лист2",
                                      "ЭтаКнига"
                                  ],
-    "ExportSHA256":  "C219788013461C2EBE5E0CA3354BCDE1ED019F3F06021165BBF0F139E7EF28BE",
+    "ExportSHA256":  "C82C480C74EE2D11815E3314DE3E5B8C162031A6C591147C71AF9FC9448E48C6",
     "Normalization":  "VBE code case; Double G15 formatting; CP1251 comments; line endings/module tail; exact strings/whitespace/integer types",
     "VerifierSelfChecks":  {
                                "CodeCase":  true,
@@ -667,7 +667,7 @@
                            "Name":  "CGeometryVariableOffset",
                            "Equal":  true,
                            "ExpectedType":  2,
-                           "SourceSHA256":  "CF8E8E3DB679E4B7EE3CC4864C7BA85E15F31FC6541CD4CD26FE26827D81BEB0",
+                           "SourceSHA256":  "3D82623EED4C33DECDE7DE1733AD06A0874A95B42C3DDF509EF6002044BBD07A",
                            "ComponentType":  2
                        },
                        {
@@ -1299,7 +1299,7 @@
                            "Name":  "modTestGeometryReview",
                            "Equal":  true,
                            "ExpectedType":  1,
-                           "SourceSHA256":  "82B8804202439C2C064F3FFA046A496E031C6F64AE15A83A48331F13FA9568A7",
+                           "SourceSHA256":  "CEB406539BA7491E011AE7456AC11558D8A9E20B1A82A7AD8068F5163C9E6BBD",
                            "ComponentType":  1
                        },
                        {
@@ -1315,7 +1315,7 @@
                            "Name":  "modTestIndividualContours",
                            "Equal":  true,
                            "ExpectedType":  1,
-                           "SourceSHA256":  "604720EB1A950F75CCAA31FC7F8FF77602E65A2A6EBD80C35F7FFD72079AF052",
+                           "SourceSHA256":  "982365297E6365EDDC16BCE4088F9EA0180866FF2BAF83028BBA3E24AD84D7BA",
                            "ComponentType":  1
                        },
                        {
@@ -1451,7 +1451,7 @@
                            "Name":  "modTestWorkbookInterface",
                            "Equal":  true,
                            "ExpectedType":  1,
-                           "SourceSHA256":  "4B9284F9435738F63C2DB8FC376259E38C3E0800837194B0A5D8E0FBBAC3264A",
+                           "SourceSHA256":  "4C7C41EAB0F92804ADB98DF6DB01388930B2A016DDBF7B70F2F58AD250D5CE9C",
                            "ComponentType":  1
                        },
                        {

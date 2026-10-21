@@ -107,7 +107,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:34
 
 Полный контекст: tests/modTestAudit02Api.bas:1283.
 
-Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiondefinitionbuilder-linepath"></a>
 ### CSectionDefinitionBuilder.LinePath
@@ -140,7 +140,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:44
     Set path = facade.LinePath("P1", 0#, 0#, 100#, 0#)
 ```
 
-Полный контекст: tests/modTestGeometryReview.bas:541.
+Полный контекст: tests/modTestGeometryReview.bas:542.
 
 Native entrypoint: modTestGeometryReview.RunGeometryReviewTests; журнал: docs/regression/ExcelGuardGuide_2026-10-13/SolidFinal_2026-10-14/SolidTests/modTestGeometryReview.RunGeometryReviewTests.txt.
 
@@ -573,7 +573,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:178
 
 Полный контекст: tests/modTestAudit02Api.bas:1286.
 
-Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiondefinitionbuilder-transform"></a>
 ### CSectionDefinitionBuilder.Transform
@@ -953,9 +953,9 @@ Source: src/Section/CSectionDefinitionBuilder.cls:312
     facade.RebarContour "LeftMain", "Outer", "Boundary", 50#, "", ""
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:698.
+Полный контекст: tests/modTestIndividualContours.bas:767.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiondefinitionbuilder-rebarcontourbaseline"></a>
 ### CSectionDefinitionBuilder.RebarContourBaseline
@@ -986,9 +986,9 @@ Source: src/Section/CSectionDefinitionBuilder.cls:326
     facade.RebarContourBaseline "Outer", "Boundary", Array("Left", "Right"), 50#, "IndividualContact[SideLimits]"
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:691.
+Полный контекст: tests/modTestIndividualContours.bas:760.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiondefinitionbuilder-rebardependent"></a>
 ### CSectionDefinitionBuilder.RebarDependent
@@ -1021,7 +1021,7 @@ Source: src/Section/CSectionDefinitionBuilder.cls:337
 
 Полный контекст: tests/modTestAudit02Api.bas:897.
 
-Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetGeometryTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetGeometryTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiondefinitionbuilder-rebarprojected"></a>
 ### CSectionDefinitionBuilder.RebarProjected
@@ -1921,9 +1921,9 @@ Source: src/Geometry/CGeometryPath.cls:108
         segmentID = path.SourceSegmentID(i)
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:662.
+Полный контекст: tests/modTestIndividualContours.bas:731.
 
-Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cgeometrypath-sourcestartparameter"></a>
 ### CGeometryPath.SourceStartParameter
@@ -2186,7 +2186,7 @@ Source: src/Geometry/CGeometryPath.cls:219
 
 Полный контекст: tests/modTestAudit02Api.bas:1284.
 
-Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunCircleSetbackTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cgeometrypath-validatenormaltransfer"></a>
 ### CGeometryPath.ValidateNormalTransfer
@@ -2217,7 +2217,7 @@ Source: src/Geometry/CGeometryPath.cls:235
 
 Полный контекст: tests/modTestAudit02Api.bas:889.
 
-Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetGeometryTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetGeometryTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cgeometrypath-projectionbounds"></a>
 ### CGeometryPath.ProjectionBounds
@@ -2423,7 +2423,7 @@ Source: src/Geometry/CPolygonSpec.cls:44
 
 Полный контекст: tests/modTestPolygonSpec.bas:44.
 
-Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cpolygonspec-seal"></a>
 ### CPolygonSpec.Seal
@@ -2502,7 +2502,7 @@ Source: src/Geometry/CPolygonSpec.cls:91
 
 Полный контекст: tests/modTestPolygonSpec.bas:28.
 
-Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cpolygonspec-vertexid"></a>
 ### CPolygonSpec.VertexID
@@ -2626,7 +2626,7 @@ Source: src/Geometry/CPolygonSpec.cls:106
 
 Полный контекст: tests/modTestPolygonSpec.bas:36.
 
-Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestPolygonSpec.RunPolygonSpecTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cpolygonspec-sourcereference"></a>
 ### CPolygonSpec.SourceReference
@@ -2967,15 +2967,15 @@ Public Property Get RuleCount() As Long
 
 Source: src/Section/CSectionDefinition.cls:87
 
-Минимальный вызов; требуемый контекст: В теле modTestSectionRecipes.CircleInputCase с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestIndividualContours.TestIndependentContourDomains с его подготовленными локальными объектами/входом.
 
 ```vb
-    If scenario = 3 Then CircleInputCase = (definition.RuleCount = 0): Exit Function
+    ReDim rules(1 To definition.RuleCount)
 ```
 
-Полный контекст: tests/modTestSectionRecipes.bas:667.
+Полный контекст: tests/modTestIndividualContours.bas:483.
 
-Native entrypoint: modTestSectionRecipes.RunCircleRecipeInputTests; журнал: docs/regression/GeometryDeclarative_2026-10-11/CircleEvidencePack/Actual/InputTests.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiondefinition-annotationcount"></a>
 ### CSectionDefinition.AnnotationCount
@@ -3381,9 +3381,9 @@ Source: src/Section/CRebarRuleOptions.cls:26
         Set options = New CRebarRuleOptions: options.ValidateRowOffset = True
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:635.
+Полный контекст: tests/modTestIndividualContours.bas:704.
 
-Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleoptions-everysecond"></a>
 ### CRebarRuleOptions.EverySecond
@@ -3412,7 +3412,7 @@ Source: src/Section/CRebarRuleOptions.cls:27
 
 Полный контекст: tests/modTestAudit02Api.bas:648.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleoptions-incomingtangentatjoint"></a>
 ### CRebarRuleOptions.IncomingTangentAtJoint
@@ -3470,7 +3470,7 @@ Source: src/Section/CRebarRuleOptions.cls:29
 
 Полный контекст: tests/modTestAudit02Api.bas:684.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleoptions-directiony"></a>
 ### CRebarRuleOptions.DirectionY
@@ -3731,7 +3731,7 @@ Source: src/Section/CRebarRuleOptions.cls:38
 
 Полный контекст: tests/modTestAudit02Api.bas:715.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleoptions-overlappolicy"></a>
 ### CRebarRuleOptions.OverlapPolicy
@@ -3876,7 +3876,7 @@ Source: src/Section/CRebarRuleOptions.cls:43
 
 Полный контекст: tests/modTestAudit02Api.bas:698.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleoptions-sourcereference"></a>
 ### CRebarRuleOptions.SourceReference
@@ -3905,7 +3905,7 @@ Source: src/Section/CRebarRuleOptions.cls:44
 
 Полный контекст: tests/modTestAudit02Api.bas:706.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleoptions-configuredependentcontact"></a>
 ### CRebarRuleOptions.ConfigureDependentContact
@@ -3966,7 +3966,7 @@ Source: src/Section/CRebarRuleOptions.cls:78
 
 Полный контекст: tests/modTestAudit02Api.bas:674.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 ## CGeometryDiagnostic
 
@@ -3995,13 +3995,13 @@ Source: src/Geometry/CGeometryDiagnostic.cls:31
         If diagnostic.Code = "OFFSET_POSITION_SKIPPED" Then
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:753.
+Полный контекст: tests/modTestIndividualContours.bas:822.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
-Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-cgeometrydiagnostic-entityid"></a>
 ### CGeometryDiagnostic.EntityID
@@ -4161,9 +4161,9 @@ Source: src/Geometry/CGeometryDiagnostic.cls:43
                 Check "neighbor.warning.source", InStr(diagnostic.SourceReference, "NeighborMerge[Extra,") > 0
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:584.
+Полный контекст: tests/modTestIndividualContours.bas:653.
 
-Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 ## CSectionInputTable
 
@@ -4691,7 +4691,7 @@ Source: src/Section/CSectionInputTable.cls:179
 
 Полный контекст: tests/modTestAudit02Api.bas:1005.
 
-Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunIndependentRowOffsetWorkbookTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectioninputtable-columnbycaption"></a>
 ### CSectionInputTable.ColumnByCaption
@@ -5433,9 +5433,9 @@ Source: src/Section/CRebarRuleExecutor.cls:52
     Check "neighbor.nonadjacent.no.merge", executor.MergedPositions = 0
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:645.
+Полный контекст: tests/modTestIndividualContours.bas:714.
 
-Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-conflicts"></a>
 ### CRebarRuleExecutor.Conflicts
@@ -5487,9 +5487,9 @@ Source: src/Section/CRebarRuleExecutor.cls:57
     Check "neighbor.actual.overlaps", executor.BarOverlaps = 0
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:562.
+Полный контекст: tests/modTestIndividualContours.bas:631.
 
-Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunOffsetNeighborMergeTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-diagnosticrecordsomitted"></a>
 ### CRebarRuleExecutor.DiagnosticRecordsOmitted
@@ -5568,13 +5568,13 @@ Source: src/Section/CRebarRuleExecutor.cls:63
     For i = 1 To executor.DiagnosticCount
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:751.
+Полный контекст: tests/modTestIndividualContours.bas:820.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
-Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-diagnosticat"></a>
 ### CRebarRuleExecutor.DiagnosticAt
@@ -5603,13 +5603,13 @@ Source: src/Section/CRebarRuleExecutor.cls:69
         Set diagnostic = executor.DiagnosticAt(i)
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:752.
+Полный контекст: tests/modTestIndividualContours.bas:821.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
-Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunUserRoundedContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-positioncount"></a>
 ### CRebarRuleExecutor.PositionCount
@@ -5634,9 +5634,9 @@ Source: src/Section/CRebarRuleExecutor.cls:75
     For i = 1 To executor.PositionCount
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:325.
+Полный контекст: tests/modTestIndividualContours.bas:326.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-positionruleid"></a>
 ### CRebarRuleExecutor.PositionRuleID
@@ -5665,9 +5665,9 @@ Source: src/Section/CRebarRuleExecutor.cls:77
         ruleID = executor.PositionRuleID(i)
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:393.
+Полный контекст: tests/modTestIndividualContours.bas:394.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-positionpathid"></a>
 ### CRebarRuleExecutor.PositionPathID
@@ -5758,9 +5758,9 @@ Source: src/Section/CRebarRuleExecutor.cls:86
         owner = executor.PositionPhysicalOwner(i)
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:326.
+Полный контекст: tests/modTestIndividualContours.bas:327.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarruleexecutor-ruletrace"></a>
 ### CRebarRuleExecutor.RuleTrace
@@ -7539,7 +7539,7 @@ Source: src/Section/CSectionGeometryQuery.cls:36
 
 Полный контекст: tests/modTestRecipeOperations.bas:490.
 
-Native entrypoint: modTestRecipeOperations.RunFullBoundaryOffsetTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestRecipeOperations.RunFullBoundaryOffsetTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-csectiongeometryquery-offsetpath"></a>
 ### CSectionGeometryQuery.OffsetPath
@@ -8660,9 +8660,9 @@ Source: src/Common/modSectionRecipeTypes.bas:32
             If rule.Mode = DependentOffset Then
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:253.
+Полный контекст: tests/modTestIndividualContours.bas:254.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourWorkbookTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourWorkbookTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-modsectionrecipetypes-erebardistributionscope"></a>
 ### modSectionRecipeTypes.ERebarDistributionScope
@@ -8855,7 +8855,7 @@ Source: src/Common/modSectionRecipeTypes.bas:68
 
 Полный контекст: tests/modTestAudit02Api.bas:715.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-modsectionrecipetypes-erebaroverlappolicy"></a>
 ### modSectionRecipeTypes.ERebarOverlapPolicy
@@ -8963,9 +8963,9 @@ Source: src/Common/modSectionRecipeTypes.bas:94
     Dim options As CRebarRuleOptions, i As Long, id As String, definition As CSectionDefinition, link As TRebarContourLink
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:144.
+Полный контекст: tests/modTestIndividualContours.bas:145.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourFailureTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-modsectionrecipetypes-trebarrule"></a>
 ### modSectionRecipeTypes.TRebarRule
@@ -9023,15 +9023,15 @@ ExplicitStations As Variant
 
 Source: src/Common/modSectionRecipeTypes.bas:106
 
-Минимальный вызов; требуемый контекст: В теле modTestIndividualContours.TestRoundedCorners с его подготовленными локальными объектами/входом.
+Минимальный вызов; требуемый контекст: В теле modTestIndividualContours.TestIndependentContourDomains с его подготовленными локальными объектами/входом.
 
 ```vb
-    Dim parent As TRebarPosition, transfer As TRebarRule, segment As String, parameter As Double, expectedSegment As String
+    Dim definition As CSectionDefinition, contours As CRebarOffsetContours, rules() As TRebarRule
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:353.
+Полный контекст: tests/modTestIndividualContours.bas:445.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-modsectionrecipetypes-tsectionannotation"></a>
 ### modSectionRecipeTypes.TSectionAnnotation
@@ -9159,9 +9159,9 @@ Source: src/Common/modSectionRecipeTypes.bas:175
     Dim parent As TRebarPosition, transfer As TRebarRule, segment As String, parameter As Double, expectedSegment As String
 ```
 
-Полный контекст: tests/modTestIndividualContours.bas:353.
+Полный контекст: tests/modTestIndividualContours.bas:354.
 
-Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestIndividualContours.RunIndividualContourTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-modsectionrecipetypes-sectionrecipeerror"></a>
 ### modSectionRecipeTypes.SectionRecipeError
@@ -9226,7 +9226,7 @@ Source: src/Common/modSectionRecipeTypes.bas:200
     wrapped = SectionRecipeErrorText(text)
 ```
 
-Полный контекст: tests/modTestGeometryReview.bas:814.
+Полный контекст: tests/modTestGeometryReview.bas:815.
 
 Native entrypoint: modTestGeometryReview.RunPointedWidthInputTests; журнал: docs/regression/SharedRebarInput_2026-10-18/SectionNames_2026-10-20/DirectedRelease.txt.
 
@@ -9532,7 +9532,7 @@ Source: src/Common/modGeometryTypes.bas:70
 
 Полный контекст: tests/modTestAudit02Api.bas:1241.
 
-Native entrypoint: modTestAudit02Api.RunOffsetOpeningAnnotationTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunOffsetOpeningAnnotationTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-modgeometrytypes-geommin"></a>
 ### modGeometryTypes.GeomMin
@@ -9665,7 +9665,7 @@ Source: src/Section/CRebarContactBuilder.cls:38
 
 Полный контекст: tests/modTestAudit02Api.bas:645.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 <a id="api-crebarcontactbuilder-appendrow"></a>
 ### CRebarContactBuilder.AppendRow
@@ -9700,7 +9700,7 @@ Source: src/Section/CRebarContactBuilder.cls:57
 
 Полный контекст: tests/modTestAudit02Api.bas:650.
 
-Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_Off.txt.
+Native entrypoint: modTestAudit02Api.RunRebarContactBuilderTests; журнал: docs/regression/R2R3IndividualContours_2026-10-20/Final/Directed_On.txt.
 
 ## CSectionInputReader
 

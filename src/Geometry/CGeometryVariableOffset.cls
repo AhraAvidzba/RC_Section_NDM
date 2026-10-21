@@ -39,7 +39,13 @@ Friend Function Build(ByRef original() As TRegionEdge, ByRef distances() As Doub
         ShiftEdge original(i), distances(i), shifted(kept), sourceReference
 NextSource:
     Next i
-    If kept = 0 Then Fail "При заданных отступах проверочный контур исчез целиком. Уменьшите отступы рядов.", sourceReference
+    If kept = 0 Then
+        ' Здесь исчезли все дуги; параметры первой поясняют, почему контур построить нельзя.
+        radius = Sqr((original(1).X1 - original(1).CenterX) ^ 2 + (original(1).Y1 - original(1).CenterY) ^ 2)
+        Fail "При заданных отступах проверочный контур исчез целиком. " & _
+            "Исходный радиус первой дуги: " & CStr(radius) & " мм; полный нормальный отступ внутрь этой дуги: " & _
+            CStr(Sgn(original(1).Sweep) * distances(1)) & " мм. Уменьшите отступы рядов.", sourceReference
+    End If
     For i = 1 To kept
         following = i Mod kept + 1
         If shifted(i).Sweep = 0# And shifted(following).Sweep = 0# Then JoinLines shifted(i), shifted(following)

@@ -329,7 +329,7 @@ Private Sub TestRebarInputValidationDoesNotUseHiddenDefaults(ByRef stats As TUiT
     Dim errorText As String
     errorText = BuildCurrentWorkbookSectionError()
     AssertTrue stats, "ui.circle.blankDiameter.noHiddenDefaults", _
-        InStr(1, errorText, "не задан ни один стержень", vbTextCompare) > 0
+        InStr(1, errorText, "не получен ни один стержень", vbTextCompare) > 0
 
     PrepareRectanglesInput
     SetSystemSetting "Rectangles.H1.d_1", vbNullString
@@ -355,7 +355,7 @@ Private Sub TestRebarInputValidationDoesNotUseHiddenDefaults(ByRef stats As TUiT
 
     errorText = BuildCurrentWorkbookSectionError()
     AssertTrue stats, "ui.rounded.blankCounts.noHiddenDefaults", _
-        InStr(1, errorText, "не задан ни один стержень", vbTextCompare) > 0
+        InStr(1, errorText, "не получен ни один стержень", vbTextCompare) > 0
 
     PrepareCircleInput
 End Sub
@@ -1262,7 +1262,7 @@ Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.run.system.noLegacyMainInput", Not WorkbookNameExists("rngMainInput")
     AssertTrue stats, "ui.run.system.materialDiagramControls", _
-        InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
+        MaterialDiagramControlsHeadingExists(sys)
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
     AssertTrue stats, "ui.strengthSummary.currentDepths", IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 26).Value2) And IsNumeric(resultsSheet.Cells.Item(strengthAnchor.Row, 27).Value2)
@@ -1601,7 +1601,7 @@ Private Sub TestRectanglesWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     Set sys = ThisWorkbook.Worksheets.Item("Config")
     AssertTrue stats, "ui.rectangles.system.perSectionInput", Not WorkbookNameExists("rngRebarInput")
     AssertTrue stats, "ui.rectangles.system.materialDiagramControls", _
-        InStr(1, CStr(sys.Cells.Item(1, 35).Value2), "Контрольные точки диаграмм", vbTextCompare) > 0
+        MaterialDiagramControlsHeadingExists(sys)
 End Sub
 
 ' Проверяет пользовательский сценарий Г-сечения с N + Mx и выбранной
@@ -3097,20 +3097,15 @@ End Function
 ' Пустой ввод разрешен; удаленная отдельная настройка Formation не используется.
 Private Function UniversalLoadPathValidationHasOptions() As Boolean
     On Error GoTo Failed
-    Dim loads As Object, cell As Object, options As Object, item As Variant
+    Dim loads As Object, cell As Object
     Set loads = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     If CStr(loads.Cells(1, 6).Value2) <> "LoadPath" Then Exit Function
     Set cell = loads.Cells(2, 6)
     If cell.Validation.Type <> xlValidateList Or Not cell.Validation.IgnoreBlank Then Exit Function
-    Set options = loads.Worksheet.Range(Mid$(CStr(cell.Validation.Formula1), 2))
-    Dim expected As Variant, index As Long
+    Dim expected As Variant
     expected = Array("Auto", ChrW$(&H3BB) & "*Mx", ChrW$(&H3BB) & "*My", _
         ChrW$(&H3BB) & "*Mxy", ChrW$(&H3BB) & "*N", ChrW$(&H3BB) & "*NMxy")
-    If options.Cells.Count <> UBound(expected) + 1 Then Exit Function
-    For index = 0 To UBound(expected)
-        If CStr(options.Cells(index + 1, 1).Value2) <> CStr(expected(index)) Then Exit Function
-    Next index
-    UniversalLoadPathValidationHasOptions = True
+    UniversalLoadPathValidationHasOptions = ValidationCellHasOptions(cell, expected)
 Failed:
 End Function
 
@@ -7931,4 +7926,40 @@ Public Function RunSavedLoadTableLayoutTests() As String
     Dim stats As TUiTestStats
     TestLoadCombinationsOnConfig stats
     RunSavedLoadTableLayoutTests = stats.Report & "TOTAL_LOAD_TABLE_LAYOUT: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ: находит шапку контрольных диаграмм независимо от положения таблицы.
+Private Function MaterialDiagramControlsHeadingExists(ByVal sheet As Object) As Boolean
+    Dim heading As Object
+    Set heading = sheet.UsedRange.Find(What:="Контрольные точки диаграмм", LookIn:=xlValues, _
+        LookAt:=xlPart, SearchOrder:=xlByRows, SearchDirection:=xlNext, MatchCase:=False, SearchFormat:=False)
+    MaterialDiagramControlsHeadingExists = Not heading Is Nothing
+End Function
+
+' ДЛЯ ТЕСТОВ: повторяет сценарии восьми устаревших проверок после изменения таблиц и сообщений.
+' В этом модуле находятся пять проверок; оставшиеся три выполняет GeometryReview.
+Public Function RunCorrectedUiExpectationsTests() As String
+    Dim stats As TUiTestStats, config As Object, saved As Variant
+    Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
+    On Error GoTo Failed
+    ' Готовим геометрию и ряды явно, независимо от сохранённых пользовательских значений.
+    modTestShapeArchitecture.ConfigureShapeFixture "LSection"
+    modTestShapeArchitecture.ConfigureShapeFixture "RoundedSimple"
+    FixtureResetReinforcement "Circle"
+    SetSystemSetting "Circle.Diameter", "300"
+    TestCircleWorkbookRunWritesResults stats
+    TestRectanglesWorkbookRunWritesResults stats
+    TestCapacitySearchMethodValidation stats
+    TestRebarInputValidationDoesNotUseHiddenDefaults stats
+    GoTo Restore
+Failed:
+    AssertTrue stats, "ui.corrected.runtime; " & CStr(Err.Number) & "; " & Err.Description, False
+Restore:
+    On Error GoTo FailedRestore
+    FixtureRestoreInputs config, saved
+    GoTo Finished
+FailedRestore:
+    AssertTrue stats, "ui.corrected.restore; " & CStr(Err.Number) & "; " & Err.Description, False
+Finished:
+    RunCorrectedUiExpectationsTests = stats.Report & "TOTAL_CORRECTED_UI_EXPECTATIONS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
 End Function

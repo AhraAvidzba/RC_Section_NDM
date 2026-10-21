@@ -1,0 +1,337 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\R2R3IndividualContours_2026-10-20\PostFullReview02\RC_Section_NDM.xlsm
+SOURCE_SHA256: 3AE9DBC02F3971631A62B7157DB7645D4CD59320C05C68B0B38379D07A55F9D4
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d7719db3a9c9415782d60efb03cbf550\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=139920; startTicks=639281392146383946
+===== modTestWorkbookInterface.RunCorrectedUiExpectationsTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunCorrectedUiExpectationsTests; 2026-10-21T03:26:59
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=139920; workingSet=153513984; privateBytes=102535168; cpu=11.546875
+OK: ui.run.message
+OK: ui.run.capacity.na
+OK: ui.run.direct.status
+OK: ui.run.strainPlane
+OK: ui.run.crack
+OK: ui.run.system.noLegacyMainInput
+OK: ui.run.system.materialDiagramControls
+OK: ui.strengthSummary.currentDepths
+OK: ui.strengthSummary.direct.noCapacityDepths
+OK: ui.results.elements.header
+OK: ui.results.elements.rows
+OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.materialType
+OK: ui.results.elements.units
+OK: ui.results.elements.noGeometryDup
+OK: ui.results.elements.noPlaneDup
+OK: ui.results.elements.physicalStateAlign
+OK: ui.results.geometry.header
+OK: ui.results.geometry.rows
+OK: ui.results.strength.anchor
+OK: ui.results.crack.anchor
+OK: ui.results.stability.anchor
+OK: ui.results.geometry.position
+OK: ui.results.contours.position
+OK: ui.results.properties.position
+OK: ui.results.materialDiagrams.position
+OK: ui.results.annotations.position
+OK: ui.results.geometry.noSource
+OK: ui.results.geometry.noMaterialClass
+OK: ui.results.properties.header
+OK: ui.results.properties.hasStateEpsilon0
+OK: ui.results.properties.hasStateNeutralLine
+OK: ui.results.properties.noLegacyPlane
+OK: ui.results.properties.hasBounds
+OK: ui.results.properties.commonLoadReference
+OK: ui.results.properties.hasTransformedAxes
+OK: ui.results.properties.noLegacyTransformedAliases
+OK: ui.results.properties.noLcLoadReference
+OK: ui.results.properties.transformedArea.moduli; actual=0.083753028172; expected=0.083753028172
+OK: ui.results.properties.transformedCoreDistance.positive
+OK: ui.results.properties.transformedCoreDistance.axis1Sym; actual=0.037526973168; expected=0.037526973168
+OK: ui.results.properties.transformedCoreDistance.axis2Sym; actual=0.038775087244; expected=0.038775087244
+OK: ui.results.properties.transformedCoreDistanceXY.positive
+OK: ui.results.properties.concreteCoreDistanceXY.exists
+OK: ui.results.annotations.header
+OK: ui.results.annotations.rows
+OK: ui.results.materialDiagrams.header
+OK: ui.results.materialDiagrams.rows
+OK: ui.results.materialDiagrams.stateType
+OK: ui.results.materialDiagrams.role
+OK: ui.results.materialDiagrams.diagramId
+OK: ui.results.materialDiagrams.spec
+OK: ui.results.materialDiagrams.mode
+OK: ui.results.materialDiagrams.noPurpose
+OK: ui.results.materialDiagrams.noLoadCase
+OK: ui.results.materialDiagrams.usedStates
+OK: ui.plot.chart.created
+OK: ui.plot.title.comment
+OK: ui.plot.title.overlay
+OK: ui.profiles.topHeader.noDuplicateParameter
+OK: ui.profiles.lowerHeader.parameter
+OK: ui.profiles.pr3.default
+OK: ui.profiles.pr4.default
+OK: ui.profiles.visualizationStressPrecision.default
+OK: ui.rectangles.message
+OK: ui.rectangles.result.status
+OK: ui.rectangles.system.perSectionInput
+OK: ui.rectangles.system.materialDiagramControls
+OK: ui.validation.CapacitySolutionStrategy
+OK: ui.validation.nonCriticalMessages
+OK: ui.validation.capacitySearchMethod
+OK: ui.validation.crackCoverDistanceMode
+OK: ui.validation.universalLoadPath
+OK: ui.validation.autocadLabelMode
+OK: ui.validation.autocadNeutralLine
+OK: ui.validation.autocadPrincipalAxes
+OK: ui.validation.autocadLoadPoint
+OK: ui.validation.autocadContour
+OK: ui.validation.autocadCombination
+OK: ui.validation.plotLoadCase
+OK: ui.validation.loadProfileId
+OK: ui.validation.loadProfileId.noFormula
+OK: ui.validation.plotLabels
+OK: ui.validation.plotPrincipalAxes
+OK: ui.validation.plotAxisLabels
+OK: ui.validation.plotAxisLabelsFontSize.default; actual=7.5; expected=7.5
+OK: ui.validation.plotContour
+OK: ui.validation.plotRebarAnnotationEnabled
+OK: ui.validation.plotDimensionEnabled
+OK: ui.validation.plotRebarPlacement
+OK: ui.validation.plotDimensionPlacement
+OK: ui.validation.plotRebarTextUnits
+OK: ui.validation.plotDimensionTextUnits
+OK: ui.validation.plotTextHeightUnitDynamic
+OK: ui.validation.plotTextGapUnitDynamic
+OK: ui.validation.plotTextHeight.defaultRebar; actual=13.; expected=13.
+OK: ui.validation.plotTextHeight.defaultDimension; actual=13.; expected=13.
+OK: ui.validation.plotTextGap.defaultRebar; actual=9.; expected=9.
+OK: ui.validation.plotTextGap.defaultDimension; actual=9.; expected=9.
+OK: ui.validation.plotRebarLineEnabled
+OK: ui.validation.plotDimensionArrowType
+OK: ui.validation.plotDimensionArrowSize
+OK: ui.validation.geometrySource
+OK: ui.validation.units.forceInput
+OK: ui.validation.units.momentOutput
+OK: ui.validation.sign.n
+OK: ui.validation.circleLoc2row
+OK: ui.validation.circleLoc3row
+OK: ui.validation.RectanglesSectionType
+OK: ui.validation.rectanglesLoc2row
+OK: ui.validation.rectanglesBind2row
+OK: ui.circle.key.rebarDiameter2.recipeOwned
+OK: ui.circle.key.rebarDiameter3.recipeOwned
+OK: ui.circle.key.rebarLoc2row.recipeOwned
+OK: ui.circle.key.rebarLoc3row.recipeOwned
+OK: ui.circle.blankDiameter.noHiddenDefaults
+OK: ui.rectangles.blankDiameterWithCount.skipsLine
+OK: ui.rectangles.blankDiameterWithCount.dimensionsRemain
+OK: ui.rectangles.zeroCountBlankDiameter.skipsLine
+OK: ui.rectangles.zeroCountBlankDiameter.dimensionsRemain
+OK: ui.rounded.blankCounts.noHiddenDefaults
+TOTAL_CORRECTED_UI_EXPECTATIONS: passed=121; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d7719db3a9c9415782d60efb03cbf550\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunCorrectedUiExpectationsTests; 2026-10-21T03:27:07
+===== modTestGeometryReview.RunCollapsedInputMessageTests =====
+SUITE_STARTED: modTestGeometryReview.RunCollapsedInputMessageTests; 2026-10-21T03:27:08
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=139920; workingSet=155844608; privateBytes=104972288; cpu=32.28125
+OK: collapsed.0.0.inputError
+OK: collapsed.0.0.cause
+OK: collapsed.0.0.side
+OK: collapsed.0.0.geometrySource
+OK: collapsed.0.0.rebarSource
+OK: collapsed.0.0.action
+OK: collapsed.0.1.accepted
+OK: collapsed.0.2.accepted
+OK: collapsed.0.3.accepted
+OK: collapsed.0.4.accepted
+OK: collapsed.1.0.inputError
+OK: collapsed.1.0.cause
+OK: collapsed.1.0.side
+OK: collapsed.1.0.geometrySource
+OK: collapsed.1.0.rebarSource
+OK: collapsed.1.0.action
+OK: collapsed.1.1.accepted
+OK: collapsed.1.2.accepted
+OK: collapsed.1.3.accepted
+OK: collapsed.1.4.accepted
+OK: collapsed.2.0.inputError
+OK: collapsed.2.0.cause
+OK: collapsed.2.0.side
+OK: collapsed.2.0.geometrySource
+OK: collapsed.2.0.rebarSource
+OK: collapsed.2.0.action
+OK: collapsed.2.1.accepted
+OK: collapsed.2.2.accepted
+OK: collapsed.2.3.accepted
+OK: collapsed.2.4.accepted
+OK: collapsed.3.0.inputError
+OK: collapsed.3.0.cause
+OK: collapsed.3.0.side
+OK: collapsed.3.0.geometrySource
+OK: collapsed.3.0.rebarSource
+OK: collapsed.3.0.action
+OK: collapsed.3.1.accepted
+OK: collapsed.3.2.accepted
+OK: collapsed.3.3.accepted
+OK: collapsed.3.4.accepted
+OK: collapsed.4.0.inputError
+OK: collapsed.4.0.cause
+OK: collapsed.4.0.side
+OK: collapsed.4.0.geometrySource
+OK: collapsed.4.0.rebarSource
+OK: collapsed.4.0.action
+OK: collapsed.4.1.accepted
+OK: collapsed.4.2.accepted
+OK: collapsed.4.3.accepted
+OK: collapsed.4.4.accepted
+OK: collapsed.5.0.inputError
+OK: collapsed.5.0.cause
+OK: collapsed.5.0.side
+OK: collapsed.5.0.geometrySource
+OK: collapsed.5.0.rebarSource
+OK: collapsed.5.0.action
+OK: collapsed.5.1.accepted
+OK: collapsed.5.2.accepted
+OK: collapsed.5.3.accepted
+OK: collapsed.5.4.accepted
+OK: collapsed.extra.inputError
+OK: collapsed.extra.row
+OK: collapsed.extra.cause
+OK: collapsed.extra.values
+OK: collapsed.extra.source
+OBSERVED_COLLAPSED_EXTRA: INPUT_ERROR: Источник данных: | rngCircleGeometry[10,3]; rngCircleGeometry[10,4]; rngCircleGeometry[10,5]; rngCircleGeometry[10,6]; rngCircleGeometry[10,7]; rngCircleGeometry[16,3]; rngCircleGeometry[16,4]; rngCircleGeometry[16,5]; rngCircleGeometry[16,6];  |  | Не удалось построить проверочную область ряда 2: Источник данных: | rngCircleGeometry[10,3]; rngCircleGeometry[10,4]; rngCircleGeometry[10,5]; rngCircleGeometry[10,6]; rngCircleGeometry[10,7]; rngCircleGeometry[16,3]; rngCircleGeometry[16,4]; rngCircleGeometry[16,5]; rngCircleGeometry[16,6];  |  | При заданных отступах проверочный контур исчез целиком. Исходный радиус первой дуги: 150 мм; полный нормальный отступ внутрь этой дуги: 240 мм. |  | Возможное решение: | Уменьшите отступы рядов.
+TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d7719db3a9c9415782d60efb03cbf550\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestGeometryReview.RunCollapsedInputMessageTests; 2026-10-21T03:27:28
+===== modTestIndividualContours.RunIndividualContourTests =====
+SUITE_STARTED: modTestIndividualContours.RunIndividualContourTests; 2026-10-21T03:27:28
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=139920; workingSet=161456128; privateBytes=110137344; cpu=33.828125
+SKIP: Side1.Second; source=Side1.Main.1; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.2; x=750; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.4; x=750; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.2; x=250; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.4; x=250; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side1.Second; source=Side1.Main.1; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side1.Second; source=Side1.Main.1; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.2; x=750; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.4; x=750; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.2; x=250; y=575; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.4; x=250; y=225; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side1.Second; source=Side1.Main.1; x=950; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Second; source=Side1.Main.5; x=50; y=600; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,2]
+SKIP: Side1.Third; source=Side1.Main.1; x=950; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side1.Third; source=Side1.Main.5; x=50; y=550; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side1,3]
+SKIP: Side2.Second; source=Side2.Main.1; x=800; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Second; source=Side2.Main.5; x=800; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,2]
+SKIP: Side2.Third; source=Side2.Main.1; x=750; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side2.Third; source=Side2.Main.5; x=750; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side2,3]
+SKIP: Side3.Second; source=Side3.Main.1; x=50; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Second; source=Side3.Main.5; x=950; y=200; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,2]
+SKIP: Side3.Third; source=Side3.Main.1; x=50; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side3.Third; source=Side3.Main.5; x=950; y=250; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side3,3]
+SKIP: Side4.Second; source=Side4.Main.1; x=200; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Second; source=Side4.Main.5; x=200; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,2]
+SKIP: Side4.Third; source=Side4.Main.1; x=250; y=750; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+SKIP: Side4.Third; source=Side4.Main.5; x=250; y=50; Дополнительный стержень пропущен: его положение после нормального смещения находится вне общего проверочного контура этого ряда.; IndividualRectangle[Extra,Side4,3]
+CORNER: False; Face1.Second; source=1; segment=Corner.TR; x=910; y=620
+CORNER: False; Face1.Second; source=2; segment=Corner.TR; x=883.639610306789; y=683.639610306789
+CORNER: False; Face1.Second; source=3; segment=Edge.TR; x=505.707963267949; y=710
+CORNER: False; Face1.Second; source=4; segment=Corner.TL; x=110.502525316942; y=689.497474683058
+CORNER: False; Face1.Second; source=5; segment=Corner.TL; x=90; y=640
+CORNER: False; Face1.Third; source=1; segment=Corner.TR; x=880; y=620
+CORNER: False; Face1.Third; source=2; segment=Corner.TR; x=862.426406871193; y=662.426406871193
+CORNER: False; Face1.Third; source=3; segment=Edge.TR; x=505.707963267949; y=680
+CORNER: False; Face1.Third; source=4; segment=Corner.TL; x=131.715728752538; y=668.284271247462
+CORNER: False; Face1.Third; source=5; segment=Corner.TL; x=120; y=640
+CORNER: True; Face1.Second; source=1; segment=Corner.TL; x=90; y=640
+CORNER: True; Face1.Second; source=2; segment=Corner.TL; x=110.502525316942; y=689.497474683058
+CORNER: True; Face1.Second; source=3; segment=Edge.TR; x=505.707963267949; y=710
+CORNER: True; Face1.Second; source=4; segment=Corner.TR; x=883.639610306789; y=683.639610306789
+CORNER: True; Face1.Second; source=5; segment=Corner.TR; x=910; y=620
+CORNER: True; Face1.Third; source=1; segment=Corner.TL; x=120; y=640
+CORNER: True; Face1.Third; source=2; segment=Corner.TL; x=131.715728752538; y=668.284271247462
+CORNER: True; Face1.Third; source=3; segment=Edge.TR; x=505.707963267949; y=680
+CORNER: True; Face1.Third; source=4; segment=Corner.TR; x=862.426406871193; y=662.426406871193
+CORNER: True; Face1.Third; source=5; segment=Corner.TR; x=880; y=620
+DOMAIN_SCOPE: outers=2; openings=2; rows=2,3; independent=True
+TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d7719db3a9c9415782d60efb03cbf550\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunIndividualContourTests; 2026-10-21T03:27:29
+===== modTestIndividualContours.RunUserRoundedContourTests =====
+SUITE_STARTED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-21T03:27:30
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=139920; workingSet=158478336; privateBytes=107257856; cpu=35.171875
+USER_CONNECTOR: (280,400) -> (240,400)
+USER_CONNECTOR: (60,400) -> (20,400)
+USER_CASE: reverse=False; top.R2=5; R=40; connectors=40
+USER_CONNECTOR: (280,400) -> (240,400)
+USER_CONNECTOR: (60,400) -> (20,400)
+USER_CASE: reverse=True; top.R2=5; R=40; connectors=40
+COLLAPSED_CORNERS: top=100; reverse=False; top=(20,400)..(280,400); arcs=2
+COLLAPSED_CORNERS: top=120; reverse=False; top=(20,380)..(280,380); arcs=2
+COLLAPSED_CORNERS: top=100; reverse=True; top=(20,400)..(280,400); arcs=2
+COLLAPSED_CORNERS: top=120; reverse=True; top=(20,380)..(280,380); arcs=2
+TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d7719db3a9c9415782d60efb03cbf550\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-21T03:27:30
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

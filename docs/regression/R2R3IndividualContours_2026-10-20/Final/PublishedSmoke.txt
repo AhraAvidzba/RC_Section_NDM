@@ -1,13 +1,13 @@
 ﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\workbook\output\RC_Section_NDM.xlsm
-SOURCE_SHA256: 8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911
-FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm
+SOURCE_SHA256: BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d89c1b2bdc254da9b6405c2d085d1fbf\RC_Section_NDM.xlsm
 GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
-TEST_EXCEL_PROCESS: id=80996; startTicks=639281264775467348
+TEST_EXCEL_PROCESS: id=125840; startTicks=639281401949648788
 ===== modTestIndividualContours.RunOffsetNeighborMergeTests =====
-SUITE_STARTED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-20T23:54:42
+SUITE_STARTED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-21T03:43:19
 TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
 TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
-EXCEL_AFTER_SUITE: pid=80996; workingSet=134029312; privateBytes=89370624; cpu=4.671875
+EXCEL_AFTER_SUITE: pid=125840; workingSet=134983680; privateBytes=90894336; cpu=4.96875
 NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=False; physical=3; top=1Ø16; right=
 NEIGHBOR_MERGE: kind=0; rightFirst=False; mainLabels=True; physical=3; top=1Ø10 + 1Ø16; right=1Ø10
 NEIGHBOR_MERGE: kind=0; rightFirst=True; mainLabels=False; physical=3; top=; right=1Ø20
@@ -26,14 +26,14 @@ NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=False; physical=3; top=; rig
 NEIGHBOR_MERGE: kind=3; rightFirst=True; mainLabels=True; physical=3; top=1Ø10; right=1Ø10 + 1Ø20
 TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0
 
-COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d89c1b2bdc254da9b6405c2d085d1fbf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
 MODE_AFTER_SUITE: No
-SUITE_FINISHED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-20T23:54:43
+SUITE_FINISHED: modTestIndividualContours.RunOffsetNeighborMergeTests; 2026-10-21T03:43:20
 ===== modTestIndividualContours.RunUserRoundedContourTests =====
-SUITE_STARTED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-20T23:54:43
+SUITE_STARTED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-21T03:43:21
 TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
 TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
-EXCEL_AFTER_SUITE: pid=80996; workingSet=138256384; privateBytes=94011392; cpu=5.953125
+EXCEL_AFTER_SUITE: pid=125840; workingSet=139112448; privateBytes=93851648; cpu=6.15625
 USER_CONNECTOR: (280,400) -> (240,400)
 USER_CONNECTOR: (60,400) -> (20,400)
 USER_CASE: reverse=False; top.R2=5; R=40; connectors=40
@@ -46,14 +46,14 @@ COLLAPSED_CORNERS: top=100; reverse=True; top=(20,400)..(280,400); arcs=2
 COLLAPSED_CORNERS: top=120; reverse=True; top=(20,380)..(280,380); arcs=2
 TOTAL_USER_ROUNDED_CONTOUR: passed=68; failed=0
 
-COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d89c1b2bdc254da9b6405c2d085d1fbf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
 MODE_AFTER_SUITE: No
-SUITE_FINISHED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-20T23:54:44
+SUITE_FINISHED: modTestIndividualContours.RunUserRoundedContourTests; 2026-10-21T03:43:21
 ===== modTestIndividualContours.RunIndividualContourFailureTests =====
-SUITE_STARTED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-20T23:54:44
+SUITE_STARTED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-21T03:43:22
 TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
 TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
-EXCEL_AFTER_SUITE: pid=80996; workingSet=142245888; privateBytes=98066432; cpu=7.046875
+EXCEL_AFTER_SUITE: pid=125840; workingSet=142958592; privateBytes=98041856; cpu=7.296875
 REJECTED: Источник данных:
 IndividualRectangle[Extra,Side1,2]
 
@@ -80,8 +80,8 @@ IndividualFailure[Main,Side1]; IndividualRectangle[Extra,Side1,2]; IndividualRec
 Уменьшите отступы рядов.
 TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0
 
-COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_e2ba903132324a96814027a35896b3d2\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_d89c1b2bdc254da9b6405c2d085d1fbf\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
 MODE_AFTER_SUITE: No
-SUITE_FINISHED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-20T23:54:45
+SUITE_FINISHED: modTestIndividualContours.RunIndividualContourFailureTests; 2026-10-21T03:43:23
 SOURCE_UNCHANGED: True
 WATCHDOG_COMPLETED: exit=0; source unchanged=True

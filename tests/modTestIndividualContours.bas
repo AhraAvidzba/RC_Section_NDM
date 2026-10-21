@@ -29,6 +29,7 @@ Public Function RunIndividualContourTests() As String
     TestRoundedCorners True
     TestMidplaneMetadata -1#
     TestMidplaneMetadata 1#
+    TestIndependentContourDomains
     For location = 0 To 1
         For everySecond = 0 To 1
             For disabled = 0 To 1
@@ -435,6 +436,74 @@ Private Sub TestMidplaneMetadata(ByVal sign As Double)
     Next i
     Check "midplane.explicit.normal.count", count = 3
     Check "midplane.no.false.skip", Not HasOffsetSkip(executor)
+End Sub
+
+' Проверяет отдельные области двух наружных границ, двух отверстий и обоих дополнительных рядов.
+' У первого отверстия верх смещён дополнительно, у второго остаётся только известный as.
+Private Sub TestIndependentContourDomains()
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, options As CRebarRuleOptions
+    Dim definition As CSectionDefinition, contours As CRebarOffsetContours, rules() As TRebarRule
+    Dim i As Long, row As Long, loopID As String, mainID As String, offsetX As Double
+    Dim a2 As Long, a3 As Long, b2 As Long, b3 As Long, hole2 As Long, hole3 As Long
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "IndependentContourDomains"
+    For i = 1 To 2
+        loopID = "Outer" & CStr(i): offsetX = CDbl(i - 1) * 2000#
+        Set path = facade.RectanglePath(loopID & ".Boundary", offsetX, 0#, 1000#, 800#)
+        facade.Outer loopID, path.ID
+    Next i
+    For i = 1 To 2
+        loopID = "Opening" & CStr(i)
+        Set path = facade.RectanglePath(loopID & ".Boundary", 150# + CDbl(i - 1) * 500#, 250#, 200#, 200#, "Bottom", "Right", "Top", "Left")
+        facade.Opening loopID, path.ID, "Outer1"
+        facade.RebarContourBaseline loopID, path.ID, Array("Bottom", "Right", "Top", "Left"), 20#, "DomainScope[Opening.as]"
+    Next i
+    For i = 1 To 2
+        loopID = "Outer" & CStr(i): mainID = loopID & ".Main": offsetX = CDbl(i - 1) * 2000#
+        Set path = facade.LinePath(loopID & ".Axis", offsetX + 100#, 750#, offsetX + 900#, 750#)
+        Set options = New CRebarRuleOptions: options.SourceReference = "DomainScope[" & mainID & "]"
+        facade.RebarByCount mainID, path.ID, 3, 10#, options
+        facade.RebarContour mainID, loopID, loopID & ".Boundary", 50#, loopID & ".R2", loopID & ".R3", normalSign:=-1#
+        For row = 2 To 3
+            Set options = New CRebarRuleOptions: options.ValidateRowOffset = True
+            options.NormalOffset = -CDbl(IIf(i = 1, 150#, 50#)) - CDbl(row - 2) * 50#
+            options.SourceReference = "DomainScope[" & loopID & ".R" & CStr(row) & "]"
+            facade.RebarDependent loopID & ".R" & CStr(row), mainID, 8#, options
+        Next row
+    Next i
+    Set path = facade.LinePath("Opening1.Axis", 175#, 470#, 325#, 470#)
+    Set options = New CRebarRuleOptions: options.SourceReference = "DomainScope[Opening1.Main]"
+    facade.RebarByCount "Opening1.Main", path.ID, 3, 10#, options
+    facade.RebarContour "Opening1.Main", "Opening1", "Opening1.Boundary", 20#, "Opening1.R2", "Opening1.R3", Array("Top"), 1#
+    For row = 2 To 3
+        Set options = New CRebarRuleOptions: options.ValidateRowOffset = True: options.NormalOffset = CDbl(row - 1) * 30#
+        options.SourceReference = "DomainScope[Opening1.R" & CStr(row) & "]"
+        facade.RebarDependent "Opening1.R" & CStr(row), "Opening1.Main", 8#, options
+    Next row
+    Set definition = facade.Finish
+    ReDim rules(1 To definition.RuleCount)
+    For i = 1 To definition.RuleCount: definition.CopyRule i, rules(i): Next i
+    Set contours = New CRebarOffsetContours: contours.Initialize definition, rules
+    a2 = definition.RuleIndex("Outer1.R2"): a3 = definition.RuleIndex("Outer1.R3")
+    b2 = definition.RuleIndex("Outer2.R2"): b3 = definition.RuleIndex("Outer2.R3")
+    hole2 = definition.RuleIndex("Opening1.R2"): hole3 = definition.RuleIndex("Opening1.R3")
+    Check "domain.first.outer.boundary", contours.Accepts(a2, 500#, 600#)
+    Check "domain.first.outer.above", Not contours.Accepts(a2, 500#, 650#)
+    Check "domain.second.outer.inside", contours.Accepts(b2, 2500#, 650#)
+    Check "domain.second.outer.above", Not contours.Accepts(b2, 2500#, 750#)
+    Check "domain.first.not.second", Not contours.Accepts(a2, 2500#, 650#)
+    Check "domain.second.not.first", Not contours.Accepts(b2, 500#, 550#)
+    Check "domain.first.opening.center", Not contours.Accepts(a2, 250#, 350#)
+    Check "domain.second.opening.center", Not contours.Accepts(a2, 750#, 350#)
+    Check "domain.first.opening.extra.offset", Not contours.Accepts(a2, 250#, 480#)
+    Check "domain.second.opening.only.as", contours.Accepts(a2, 750#, 480#)
+    Check "domain.opening.shares.outer.limit", Not contours.Accepts(hole2, 500#, 650#)
+    Check "domain.opening.own.boundary", contours.Accepts(hole2, 250#, 500#)
+    Check "domain.opening.sees.other.hole", Not contours.Accepts(hole2, 750#, 350#)
+    Check "domain.first.rows.independent", contours.Accepts(a2, 500#, 575#) And Not contours.Accepts(a3, 500#, 575#)
+    Check "domain.second.rows.independent", contours.Accepts(b2, 2500#, 675#) And Not contours.Accepts(b3, 2500#, 675#)
+    Check "domain.opening.third.boundary", contours.Accepts(hole3, 250#, 530#)
+    Check "domain.opening.rows.independent", contours.Accepts(hole2, 250#, 515#) And Not contours.Accepts(hole3, 250#, 515#)
+    mReport = mReport & "DOMAIN_SCOPE: outers=2; openings=2; rows=2,3; independent=True" & vbCrLf
 End Sub
 
 ' Проверяет точные дуги и прямые перемычки, затем сохранение пяти стержней верхнего ряда.

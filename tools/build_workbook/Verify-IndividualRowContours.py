@@ -35,6 +35,10 @@ EXPECTED = [
 ]
 SAVED = ['modTestRecipeOperations.RunSavedPointedOffsetTests',
          'modTestRecipeOperations.RunSavedOffsetCalculationTests']
+CORRECTED = ['modTestWorkbookInterface.RunCorrectedUiExpectationsTests',
+             'modTestGeometryReview.RunCollapsedInputMessageTests',
+             'modTestIndividualContours.RunIndividualContourTests',
+             'modTestIndividualContours.RunUserRoundedContourTests']
 
 
 def digest(data):
@@ -85,7 +89,8 @@ def verify(published):
             assert f'RECIPE_CASE: {case};' in text, (mode, case)
         for reverse in ('False', 'True'):
             assert f'USER_CASE: reverse={reverse}; top.R2=5; R=40; connectors=40' in text
-        assert 'TOTAL_INDIVIDUAL_CONTOURS: passed=252; failed=0' in text
+        assert 'TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0' in text
+        assert 'DOMAIN_SCOPE: outers=2; openings=2; rows=2,3; independent=True' in text
         assert 'TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0' in text
         assert 'TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0' in text
         assert 'TOTAL_INDIVIDUAL_CONTOUR_WORKBOOK: passed=604; failed=0' in text
@@ -94,6 +99,13 @@ def verify(published):
         _, candidate, count = inspect_log(path, SAVED)
         hashes.add(candidate)
         counts[f'Saved{mode}'] = count
+        log_hashes[path.name] = digest(path.read_bytes())
+        path = FINAL / f'Corrected_{mode}.txt'
+        corrected, candidate, count = inspect_log(path, CORRECTED)
+        assert 'TOTAL_CORRECTED_UI_EXPECTATIONS: passed=121; failed=0' in corrected
+        assert 'TOTAL_COLLAPSED_INPUT_MESSAGES: passed=65; failed=0' in corrected
+        hashes.add(candidate)
+        counts[f'Corrected{mode}'] = count
         log_hashes[path.name] = digest(path.read_bytes())
     assert len(hashes) == 1, hashes
     # Общая проверка не подменяет и не редактирует прежние операции offset.
@@ -107,7 +119,7 @@ def verify(published):
         assert old_source.decode('utf-8-sig').replace('\r\n', '\n') == current, name
     audit = receipt('ClassComments.json')
     assert audit['status'] == 'PASS' and audit['missingFieldCount'] == 0
-    result = dict(Passed=True, CandidateSHA256=hashes.pop(), DirectedSuites=2 * (len(EXPECTED) + len(SAVED)),
+    result = dict(Passed=True, CandidateSHA256=hashes.pop(), DirectedSuites=2 * (len(EXPECTED) + len(SAVED) + len(CORRECTED)),
                   AssertionsByMode=counts, AssertionsPassed=sum(counts.values()), AssertionsFailed=0,
                   FullOnOffPerformed=False, ZeroOffsetCases=20, ConcreteElementsCompared=7832,
                   RebarsCompared=560, BitwiseZeroPayloadSHA256=digest(old_payload), LogsSHA256=log_hashes,

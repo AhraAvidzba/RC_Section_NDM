@@ -1,7 +1,6 @@
 {
-  "Status": "DIRECTED_VERIFIED_FULL_REGRESSION_RUNNING",
-  "SourceCommit": "8d07b082ccdbbeb6a1b02ab05cb33ec4888f275f",
-  "PublishedWorkbookSHA256": "8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911",
+  "Status": "DIRECTED_VERIFIED_FULL_REPEAT_PENDING",
+  "PublishedWorkbookSHA256": "BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434",
   "Requirements": [
     {
       "Requirement": "metadata",
@@ -30,7 +29,7 @@
       "Meaning": "Верх 150/200, все стороны, обратный обход, EverySecond.",
       "Source": "TestRectangle",
       "DirectedStatus": "VERIFIED",
-      "Evidence": "TOTAL_INDIVIDUAL_CONTOURS: passed=252; failed=0",
+      "Evidence": "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0",
       "Occurrences": {
         "Off": 1,
         "On": 1
@@ -52,7 +51,7 @@
       "Meaning": "Независимость от Main, Stacked/SideBySide, 2.5 мм, отключённый R2.",
       "Source": "TestContactVariants",
       "DirectedStatus": "VERIFIED",
-      "Evidence": "TOTAL_INDIVIDUAL_CONTOURS: passed=252; failed=0",
+      "Evidence": "TOTAL_INDIVIDUAL_CONTOURS: passed=269; failed=0",
       "Occurrences": {
         "Off": 1,
         "On": 1
@@ -67,7 +66,8 @@
       "Occurrences": {
         "Off": 8,
         "On": 8
-      }
+      },
+      "AdditionalDomainProof": "DOMAIN_SCOPE: outers=2; openings=2; rows=2,3; independent=True; 17 independent checks"
     },
     {
       "Requirement": "userCorners",
@@ -137,5 +137,7 @@
   "Architecture": "В новых рецептах только связи; смещение и отбор в общих компонентах. OffsetPath и OffsetRoundedPolygon не изменены, что отдельно проверено по исходному коммиту.",
   "Performance": "Индексы правил, границ, частей, смежности; массивы растут с удвоением; принадлежность по подготовленным массивам; поиск пересечений стержней по координатным ячейкам.",
   "RemainingComplexity": "Однократные попарные проверки рёбер оставлены для простоты; новый проход не перебирает все ранее добавленные стержни.",
-  "Pending": "Полные 156 наборов и обязательный часовой план ещё выполняются. Общий PASS не заявляется."
+  "Pending": "Fresh full acceptance for the corrected workbook; Run01 completed all parts but retained 16 stale expectation failures.",
+  "OriginalImplementationCommit": "8d07b082ccdbbeb6a1b02ab05cb33ec4888f275f",
+  "DirectedAssertions": 8070
 }
