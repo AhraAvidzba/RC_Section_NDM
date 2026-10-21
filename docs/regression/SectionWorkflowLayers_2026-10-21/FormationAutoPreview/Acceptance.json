@@ -1,0 +1,12 @@
+{
+  "Passed": true,
+  "Scope": "Targeted automatic formation preview; no full ON/OFF run",
+  "PreviewChecks": 11,
+  "WorkflowChecks": 90,
+  "NoSolverDuringFormation": true,
+  "PlotEnabledRespected": true,
+  "PlotFailureKeepsSnapshot": true,
+  "SourceAndWorkbookEqual": true,
+  "AllInputAndResultCellsPreserved": true,
+  "AcceptedSHA256": "3DC4DC17E5C8A629DB5E33F79C9619BD40DB0AC803B07DFB518A7BFF68777459"
+}

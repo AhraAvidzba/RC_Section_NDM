@@ -225,7 +225,7 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object) As String
     If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
     summary.ClearSummary workbook
     writer.WriteGeometryPreview workbook, section, snapshot, units
-    ClearSectionPlotForNoData workbook, "Сечение сформировано. Обновите схему или выполните расчёт."
+    ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена."
     If importer Is Nothing Then
         FormSectionForWorkbook = "Сечение сформировано и сохранено в Results." & vbCrLf & vbCrLf & _
             "Бетонных элементов: " & CStr(section.ConcreteCount) & "." & vbCrLf & _
@@ -236,6 +236,21 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object) As String
     End If
     If Len(section.GeometryWarningText) > 0 Then FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & section.GeometryWarningText
     CalculateResultsSheet workbook
+    ' Оформление использует уже сохранённый снимок и не запускает расчёт.
+    ' Ошибка схемы не отменяет успешное формирование сечения.
+    Dim plotErrorNumber As Long, plotError As String
+    On Error Resume Next
+    Err.Clear
+    UpdateSectionGeometryPreviewForWorkbook workbook
+    plotErrorNumber = Err.Number: plotError = Err.Description
+    Err.Clear
+    On Error GoTo Failed
+    If plotErrorNumber <> 0 Then
+        FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
+            "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено в Results." & vbCrLf & vbCrLf & _
+            SectionRecipeErrorText(plotError) & vbCrLf & vbCrLf & _
+            "После исправления настроек оформления нажмите «Обновить схему»."
+    End If
     guard.Restore True
     Exit Function
 Failed:

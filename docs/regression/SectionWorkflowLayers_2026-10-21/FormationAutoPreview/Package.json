@@ -1,0 +1,14 @@
+{
+  "Passed": true,
+  "AllInputAndResultCellsPreserved": true,
+  "OriginalSHA256": "D894BBB470C1CEAA07B5CD5203A46C8462BEB4512E69ABF605184172C536C031",
+  "AcceptedSHA256": "3DC4DC17E5C8A629DB5E33F79C9619BD40DB0AC803B07DFB518A7BFF68777459",
+  "ChangedParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin"
+  ],
+  "UserExecutionReportSHA256": "A98E8983BCBC2777E860EAD9BFE98549C041E2B86065F023827741C504180544",
+  "HelpCell": "B836",
+  "HelpBefore": "Для любого источника сначала нажмите «Сформировать сечение». В режиме AutoCAD используется активный чертёж. Бетон берется из Region на AutoCAD.Common.ConcreteLayer. Если этот слой пуст, сетка автоматически строится по наружному контуру и заданным отверстиям с Mesh.StepX, Mesh.StepY и Mesh.BoundarySubdivisions. Арматура в обоих вариантах импортируется из Region на AutoCAD.Common.RebarLayer. Полный снимок сохраняется в Results. До расчёта его можно показать кнопкой «Обновить схему».",
+  "HelpAfter": "Для любого источника сначала нажмите «Сформировать сечение». В режиме AutoCAD используется активный чертёж. Бетон берется из Region на AutoCAD.Common.ConcreteLayer. Если этот слой пуст, сетка автоматически строится по наружному контуру и заданным отверстиям с Mesh.StepX, Mesh.StepY и Mesh.BoundarySubdivisions. Арматура в обоих вариантах импортируется из Region на AutoCAD.Common.RebarLayer. Полный снимок сохраняется в Results. Схема обновляется автоматически, если Plot.Enabled = Yes."
+}

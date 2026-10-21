@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-21 10:17:42
+Date: 2026-10-21 13:30:53
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -57947,7 +57947,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1271
+LINES: 1286
 ====================================================================================================
 Option Explicit
 
@@ -58175,7 +58175,7 @@ Public Function FormSectionForWorkbook(ByVal Workbook As Object) As String
     If issues.count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
     summary.ClearSummary Workbook
     writer.WriteGeometryPreview Workbook, section, snapshot, units
-    ClearSectionPlotForNoData Workbook, "Сечение сформировано. Обновите схему или выполните расчёт."
+    ClearSectionPlotForNoData Workbook, "Сечение сформировано. Схема не обновлена."
     If importer Is Nothing Then
         FormSectionForWorkbook = "Сечение сформировано и сохранено в Results." & vbCrLf & vbCrLf & _
             "Бетонных элементов: " & CStr(section.ConcreteCount) & "." & vbCrLf & _
@@ -58186,6 +58186,21 @@ Public Function FormSectionForWorkbook(ByVal Workbook As Object) As String
     End If
     If Len(section.GeometryWarningText) > 0 Then FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & section.GeometryWarningText
     CalculateResultsSheet Workbook
+    ' Оформление использует уже сохранённый снимок и не запускает расчёт.
+    ' Ошибка схемы не отменяет успешное формирование сечения.
+    Dim plotErrorNumber As Long, plotError As String
+    On Error Resume Next
+    Err.clear
+    UpdateSectionGeometryPreviewForWorkbook Workbook
+    plotErrorNumber = Err.number: plotError = Err.description
+    Err.clear
+    On Error GoTo Failed
+    If plotErrorNumber <> 0 Then
+        FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & vbCrLf & _
+            "Предупреждение:" & vbCrLf & "Схема не обновлена. Сечение сохранено в Results." & vbCrLf & vbCrLf & _
+            SectionRecipeErrorText(plotError) & vbCrLf & vbCrLf & _
+            "После исправления настроек оформления нажмите «Обновить схему»."
+    End If
     guard.Restore True
     Exit Function
 Failed:
@@ -111492,7 +111507,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 8098
+LINES: 8137
 ====================================================================================================
 Option Explicit
 
@@ -119518,6 +119533,7 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     solves = SectionEquilibriumSolveCount()
     message = FormSectionForWorkbook(ThisWorkbook)
     AssertTrue stats, "workflow.form.noSolver", SectionEquilibriumSolveCount() = solves
+    AssertTrue stats, "workflow.form.autoPreview", PlotVisibleTitleContains("Сформированное сечение")
     Dim geometry As Variant, contours As Variant
     geometry = ResultTable("rngNDMSectionGeometry"): contours = ResultTable("rngNDMSectionContours")
     UpdateSectionPlotForWorkbook ThisWorkbook
@@ -119588,6 +119604,44 @@ Done:
     Exit Function
 Failed:
     AssertTrue stats, "unexpected.workflowCalculation." & Err.number & "." & Err.description, False
+    Resume Done
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Проверяет автоматическую схему после формирования и независимость от НДС.
+Public Function RunFormationPreviewTests() As String
+    Dim stats As TUiTestStats, saved As Variant, message As String, solves As Long
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    SetSystemSetting "Plot.Enabled", "Yes"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    solves = SectionEquilibriumSolveCount()
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "formPreview.saved", InStr(message, "Сечение сформировано") > 0
+    AssertTrue stats, "formPreview.drawn", PlotVisibleTitleContains("Сформированное сечение")
+    AssertTrue stats, "formPreview.annotations", CountPlotShapes("AnnotationLine") > 0
+    AssertTrue stats, "formPreview.noSolver", SectionEquilibriumSolveCount() = solves
+    SetSystemSetting "Plot.LegendMode", "INVALID"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "formPreview.error.warning", InStr(message, "Сечение сформировано") > 0 And InStr(message, "Схема не обновлена") > 0
+    AssertTrue stats, "formPreview.error.reason", InStr(message, "Plot.LegendMode") > 0
+    Dim section As CSectionModel: Set section = ReadFormedSectionFromResults(ThisWorkbook)
+    AssertTrue stats, "formPreview.error.snapshot", section.ConcreteCount > 0 And section.RebarCount = 8
+    AssertTrue stats, "formPreview.error.noSolver", SectionEquilibriumSolveCount() = solves
+    SetSystemSetting "Plot.Enabled", "No"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "formPreview.disabled.saved", InStr(message, "Сечение сформировано") > 0 And InStr(message, "Схема не обновлена") = 0
+    AssertTrue stats, "formPreview.disabled.noDrawing", Not PlotVisibleTitleContains("Сформированное сечение")
+    AssertTrue stats, "formPreview.disabled.noSolver", SectionEquilibriumSolveCount() = solves
+Done:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    AppendLine stats, "TOTAL_FORMATION_PREVIEW: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
+    RunFormationPreviewTests = stats.report
+    Exit Function
+Failed:
+    AssertTrue stats, "unexpected.formPreview." & Err.number & "." & Err.description, False
     Resume Done
 End Function
 

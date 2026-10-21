@@ -8023,6 +8023,7 @@ Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
     solves = SectionEquilibriumSolveCount()
     message = FormSectionForWorkbook(ThisWorkbook)
     AssertTrue stats, "workflow.form.noSolver", SectionEquilibriumSolveCount() = solves
+    AssertTrue stats, "workflow.form.autoPreview", PlotVisibleTitleContains("Сформированное сечение")
     Dim geometry As Variant, contours As Variant
     geometry = ResultTable("rngNDMSectionGeometry"): contours = ResultTable("rngNDMSectionContours")
     UpdateSectionPlotForWorkbook ThisWorkbook
@@ -8093,5 +8094,43 @@ Done:
     Exit Function
 Failed:
     AssertTrue stats, "unexpected.workflowCalculation." & Err.Number & "." & Err.Description, False
+    Resume Done
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Проверяет автоматическую схему после формирования и независимость от НДС.
+Public Function RunFormationPreviewTests() As String
+    Dim stats As TUiTestStats, saved As Variant, message As String, solves As Long
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    PrepareCircleInput
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    SetSystemSetting "Plot.Enabled", "Yes"
+    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
+    solves = SectionEquilibriumSolveCount()
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "formPreview.saved", InStr(message, "Сечение сформировано") > 0
+    AssertTrue stats, "formPreview.drawn", PlotVisibleTitleContains("Сформированное сечение")
+    AssertTrue stats, "formPreview.annotations", CountPlotShapes("AnnotationLine") > 0
+    AssertTrue stats, "formPreview.noSolver", SectionEquilibriumSolveCount() = solves
+    SetSystemSetting "Plot.LegendMode", "INVALID"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "formPreview.error.warning", InStr(message, "Сечение сформировано") > 0 And InStr(message, "Схема не обновлена") > 0
+    AssertTrue stats, "formPreview.error.reason", InStr(message, "Plot.LegendMode") > 0
+    Dim section As CSectionModel: Set section = ReadFormedSectionFromResults(ThisWorkbook)
+    AssertTrue stats, "formPreview.error.snapshot", section.ConcreteCount > 0 And section.RebarCount = 8
+    AssertTrue stats, "formPreview.error.noSolver", SectionEquilibriumSolveCount() = solves
+    SetSystemSetting "Plot.Enabled", "No"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "formPreview.disabled.saved", InStr(message, "Сечение сформировано") > 0 And InStr(message, "Схема не обновлена") = 0
+    AssertTrue stats, "formPreview.disabled.noDrawing", Not PlotVisibleTitleContains("Сформированное сечение")
+    AssertTrue stats, "formPreview.disabled.noSolver", SectionEquilibriumSolveCount() = solves
+Done:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    AppendLine stats, "TOTAL_FORMATION_PREVIEW: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunFormationPreviewTests = stats.Report
+    Exit Function
+Failed:
+    AssertTrue stats, "unexpected.formPreview." & Err.Number & "." & Err.Description, False
     Resume Done
 End Function
