@@ -162,6 +162,7 @@ Public Function RunWorkbookInterfaceTests() As String
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
     TestCalculationRequiresFormedSection stats
+    TestResultsFormatting stats
     TestFormButtonBuildsGeneratedSection stats
     TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
     TestAudit03InputAreaImportFilter stats
@@ -7663,7 +7664,7 @@ Private Function ExpectedConfigDropdownOptions(ByVal key As String) As String
         Case "AutoCAD.Export.ContourFormat": ExpectedConfigDropdownOptions = "Region|Polyline"
         Case "AutoCAD.Export.PrincipalAxesMode", "Plot.PrincipalAxesMode": ExpectedConfigDropdownOptions = "Transformed|Concrete|None"
         Case "Plot.LegendMode": ExpectedConfigDropdownOptions = "Separate|Common"
-        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.DiagramExtension", _
+        Case "General.ExecutionReportEnabled", "General.NonCriticalMessagesEnabled", "General.ReformatResultsEnabled", "General.DiagramExtension", _
                 "AutoCAD.Export.NeutralLineEnabled", "AutoCAD.Export.LoadPointEnabled", "AutoCAD.Export.ContourEnabled", _
                 "AutoCAD.Export.ExportCrackInteractionContour", "Plot.Enabled", "Plot.AutoUpdateAfterCalculation", _
                 "Plot.ResultGradient", "Plot.ResultLabelsEnabled", "Plot.NeutralLineEnabled", "Plot.LoadApplicationPointEnabled", _
@@ -8240,3 +8241,112 @@ Finished:
     On Error GoTo 0
     RunResultBlockOutputTests = stats.Report & "TOTAL_BLOCK_OUTPUT: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function
+
+
+' ДЛЯ ТЕСТОВ
+' Проверяет быстрый вывод, изменение единиц и статусов, восстановление шапок
+' и очистку старых сочетаний без изменения численных результатов.
+Public Function RunResultsFormattingTests() As String
+    Dim stats As TUiTestStats
+    TestResultsFormatting stats
+    AppendLine stats, "TOTAL_RESULTS_FORMATTING: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunResultsFormattingTests = stats.Report
+End Function
+
+' Меняет единицы, число сочетаний и заголовки только в отдельной тестовой книге.
+Private Sub TestResultsFormatting(ByRef stats As TUiTestStats)
+    Dim saved As Variant, message As String
+    Dim states As Variant, properties As Variant, target As Object, section As CSectionModel
+    Dim solves As Long, number As Long, row As Long, values As Variant
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook ThisWorkbook
+    Dim extension As String: extension = settings.GetRequiredString("General.DiagramExtension")
+    PrepareCircleInput
+    SetSystemSetting "Mesh.StepX", "30": SetSystemSetting "Mesh.StepY", "30"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "2"
+    SetSystemSetting "Plot.Enabled", "No"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    SetSystemSetting "General.ReformatResultsEnabled", "Yes"
+    ConfigurePerformanceFixture "MIXED", 6, "Newton", extension:=extension
+    AssertTrue stats, "formatting.dropdown", SystemSettingValidationHasOptions("General.ReformatResultsEnabled", Array("Yes", "No"))
+    message = FormSectionForWorkbook(ThisWorkbook)
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    states = ResultTable("rngNDMElementResults")
+    properties = ResultTable("rngNDMSectionProperties")
+    Dim name As Variant
+    For Each name In Array("rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+        ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Font.Size = 11.25
+    Next name
+    ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 1).Font.Size = 11.25
+    SetSystemSetting "General.ReformatResultsEnabled", "No"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "formatting.completed", InStr(message, "Расчет завершен") > 0
+    For Each name In Array("rngStrengthSummaryAnchor", "rngCrackSummaryAnchor", "rngStabilitySummaryAnchor")
+        AssertTrue stats, "formatting.reusesBody." & CStr(name), CDbl(ThisWorkbook.Names.Item(CStr(name)).RefersToRange.Font.Size) = 11.25
+    Next name
+    AssertTrue stats, "formatting.reusesSummary", CDbl(ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 1).Font.Size) = 11.25
+    AssertTrue stats, "formatting.elementStatesExact", WorkflowSameTable(states, ResultTable("rngNDMElementResults"))
+    AssertTrue stats, "formatting.propertiesExact", WorkflowSameTable(properties, ResultTable("rngNDMSectionProperties"))
+    Set target = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    AssertTrue stats, "formatting.strengthTitle", Len(CStr(target.Offset(-5, 0).Value2)) > 0
+    AssertTrue stats, "formatting.strengthMergedHeader", target.Offset(-4, 0).MergeCells
+    AssertTrue stats, "formatting.strengthDataText", CStr(target.NumberFormat) = "@"
+    SetSystemSetting "Units.Force.Output", "kN"
+    SetSystemSetting "Units.Length.Output", "mm"
+    SetSystemSetting "Units.Stress.Output", "kPa"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "formatting.strengthForceUnit", InStr(CStr(target.Offset(-1, 3).Value2), "kN") > 0
+    Set target = ThisWorkbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
+    AssertTrue stats, "formatting.stabilityForceUnit", InStr(CStr(target.Offset(-1, 5).Value2), "kN") > 0
+    Set target = ThisWorkbook.Names.Item("rngNDMElementResults").RefersToRange
+    AssertTrue stats, "formatting.elementStressUnit", CStr(target.Offset(0, 7).Value2) = "Stress, kPa"
+    SetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    Set target = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange.Offset(12, 6)
+    AssertTrue stats, "formatting.changedStatus", CStr(target.Value2) = "N/A"
+    AssertTrue stats, "formatting.changedStatusColor", CLng(target.Interior.Color) = StatusFillColor("N/A")
+    ConfigurePerformanceFixture "MIXED", 1, "Newton", extension:=extension
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    Set target = ThisWorkbook.Names.Item("rngBatchSummary").RefersToRange
+    AssertTrue stats, "formatting.oldCombinationsCleared", Len(CStr(target.Offset(13, 0).Value2)) = 0
+    AssertTrue stats, "formatting.oldStatusColorCleared", CLng(target.Offset(13, 3).Interior.ColorIndex) = -4142
+    Set target = ThisWorkbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
+    Dim strengthWriter As CStrengthSummaryWriter: Set strengthWriter = New CStrengthSummaryWriter
+    Dim lastDataRow As Long: lastDataRow = strengthWriter.RequiredDataRowsForWorkbook(ThisWorkbook, 1)
+    target.Offset(lastDataRow - 1, 0).NumberFormat = "General"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "formatting.newRowsFormatted", CStr(target.Offset(lastDataRow - 1, 0).NumberFormat) = "@"
+    target.Offset(-4, 0).Resize(4, strengthWriter.RequiredColumns).UnMerge
+    target.Offset(-4, 0).Resize(4, strengthWriter.RequiredColumns).ClearContents
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "formatting.missingHeaderRestored", CStr(target.Offset(-4, 0).Value2) = "Combination ID"
+    AssertTrue stats, "formatting.headerMergesRestored", target.Offset(-4, 0).MergeCells
+    states = ResultTable("rngNDMElementResults")
+    solves = SectionEquilibriumSolveCount()
+    SetSystemSetting "General.ReformatResultsEnabled", "INVALID"
+    On Error Resume Next
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    AssertTrue stats, "formatting.invalidRejected", number <> 0
+    AssertTrue stats, "formatting.invalidNoSolve", SectionEquilibriumSolveCount() = solves
+    AssertTrue stats, "formatting.invalidPreservesResults", WorkflowSameTable(states, ResultTable("rngNDMElementResults"))
+    SetSystemSetting "General.ReformatResultsEnabled", "No"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    Set section = ReadFormedSectionFromResults(ThisWorkbook)
+    AssertTrue stats, "formatting.formationModel", section.ConcreteCount > 0 And section.RebarCount = 8
+    AssertTrue stats, "formatting.formationClearsStates", UBound(ResultTable("rngNDMElementResults"), 1) = 1
+    values = ResultTable("rngNDMSectionProperties")
+    Set target = ThisWorkbook.Names.Item("rngNDMSectionProperties").RefersToRange
+    For row = 2 To UBound(values, 1)
+        AssertTrue stats, "formatting.propertyNoWrap." & row, Not CBool(target.Offset(row - 1, 3).WrapText)
+    Next row
+Done:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    Exit Sub
+Failed:
+    AssertTrue stats, "unexpected.resultsFormatting." & Err.Number & "." & Err.Description, False
+    Resume Done
+End Sub

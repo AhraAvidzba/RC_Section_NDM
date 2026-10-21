@@ -210,6 +210,7 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     settings.LoadFromWorkbook workbook
     Dim units As CUnitSystem: Set units = New CUnitSystem
     units.LoadFromSettings settings
+    Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
     Dim section As CSectionModel, importer As CAutoCADSectionModelImporter
     Dim source As String: source = settings.GetRequiredChoice("Geometry.Source", Array("Generated", "AutoCAD"))
     If StrComp(source, "Generated", vbTextCompare) = 0 Then
@@ -226,8 +227,8 @@ Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal 
     ValidateSnapshotOutputLayout issues, workbook, workbook.Worksheets.Item("Results"), writer, _
         section.ConcreteCount + section.RebarCount, 0, 0, section.AnnotationCount, section.Contours.Count, 2
     If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
-    summary.ClearSummary workbook
-    writer.WriteGeometryPreview workbook, section, snapshot, units
+    summary.ClearSummary workbook, fullFormatting
+    writer.WriteGeometryPreview workbook, section, snapshot, units, fullFormatting
     ClearSectionPlotForNoData workbook, "Сечение сформировано. Схема не обновлена."
     If importer Is Nothing Then
         FormSectionForWorkbook = "Сечение сформировано и сохранено в Results." & vbCrLf & vbCrLf & _
@@ -299,6 +300,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
+    Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
 
     Dim report As CExecutionReport
     Set report = New CExecutionReport
@@ -399,13 +401,13 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Set summaryWriter = New CBatchResultWriter
     report.AddSection "Запись результатов"
     report.AddStep "Начата запись batch summary."
-    summaryWriter.WriteSummary workbook, batch, units, section
+    summaryWriter.WriteSummary workbook, batch, units, section, fullFormatting
     report.AddStep "Сводка batch summary записана на лист Results."
 
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
     report.AddStep "Начата запись расчётных состояний и диаграмм в Results; координаты сформированного сечения сохраняются."
-    ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True
+    ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True, fullFormatting
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
     Dim plotWarning As String

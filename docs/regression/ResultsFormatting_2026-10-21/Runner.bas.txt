@@ -1,0 +1,58 @@
+' ДЛЯ ТЕСТОВ: измеряет полный повторный расчёт при неизменных настройках вывода.
+' Формирование модели, подготовка оформления, сохранение копий и сверка вне таймера.
+Public Function RunFormattingExperiment(ByVal fixture As String, Optional ByVal plotMode As String = "Yes") As String
+    On Error GoTo Failed
+    PrepareCircleInput
+    SetSystemSetting "General.NonCriticalMessagesEnabled", "No"
+    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    SetSystemSetting "Mesh.StepX", "10": SetSystemSetting "Mesh.StepY", "10"
+    SetSystemSetting "Mesh.BoundarySubdivisions", "2"
+    SetSystemSetting "Plot.Enabled", plotMode
+    If fixture = "Dense" Then SetSystemSetting "Circle.Diameter", "1000"
+    If fixture = "Batch" Then
+        ConfigurePerformanceFixture "MIXED", 6, "Newton"
+        SetSystemSetting "Plot.LoadCase", "PERF_01"
+        SetProfileSetting "PR1", "Visualization.State", "StrengthState"
+    End If
+    Dim message As String, flag As Boolean, t As Double, elapsed As Double
+    ProbeVariant = "Full"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    Dim variants As Variant, choice As Variant, repetition As Long, repetitions As Long
+    variants = Array("Full", "Reuse", "FullEnd")
+    repetitions = 5
+    If fixture = "Dense" Then repetitions = 3
+    Set ProbeBaseline = CreateObject("Scripting.Dictionary")
+    Dim filename As String, line As String, failures As Long
+    filename = fixture & "_Plot" & plotMode
+    ProbeLog filename & ".csv", "variant,repetition,cells,combinations,total,readModel,solve,output,plot,compared,mismatch,maxDifference"
+    For Each choice In variants
+        ' Каждый вариант начинает с полного свежего оформления той же структуры.
+        ProbeVariant = "Full"
+        message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+        ProbeVariant = CStr(choice)
+        For repetition = 0 To repetitions
+            Set ProbeTimes = CreateObject("Scripting.Dictionary")
+            t = ProbeNow()
+            flag = NonCriticalMessagesEnabled(ThisWorkbook)
+            message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            elapsed = ProbeNow() - t
+            If InStr(message, "Схема не обновлена") > 0 Then Err.Raise 5, , message
+            ProbeRecording = (ProbeBaseline.Count = 0)
+            ProbeCheck
+            failures = failures + ProbeMismatch
+            line = ProbeVariant & "," & CStr(repetition) & "," & CStr(ProbeCalculated.ConcreteCount) & "," & CStr(ProbeBatch.Count) & "," & ProbeNumber(elapsed)
+            line = line & "," & ProbeNumber(ProbeSpan("calc.read.begin", "calc.prepare.begin"))
+            line = line & "," & ProbeNumber(ProbeSpan("calc.solve.begin", "calc.output.begin"))
+            line = line & "," & ProbeNumber(ProbeSpan("calc.output.begin", "calc.plot.begin"))
+            line = line & "," & ProbeNumber(ProbeSpan("calc.plot.begin", "calc.finish.begin"))
+            line = line & "," & CStr(ProbeCompared) & "," & CStr(ProbeMismatch) & "," & ProbeNumber(ProbeMaxDifference)
+            ProbeLog filename & ".csv", line
+            If ProbeMismatch > 0 Then ProbeLog filename & "_differences.txt", ProbeVariant & vbCrLf & ProbeDifferences
+            If repetition = 1 Then ThisWorkbook.SaveCopyAs ProbeDirectory & "\" & filename & "_" & ProbeVariant & ".xlsm"
+        Next repetition
+    Next choice
+    RunFormattingExperiment = "FORMATTING_COMPLETE: " & filename & vbCrLf & "MISMATCH: " & CStr(failures)
+    Exit Function
+Failed:
+    RunFormattingExperiment = "FAIL: " & fixture & " / " & ProbeVariant & " / " & CStr(repetition) & " / " & CStr(Err.Number) & " / " & Err.Source & " / " & Err.Description
+End Function

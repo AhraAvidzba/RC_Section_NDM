@@ -17,6 +17,8 @@ Option Explicit
 ' Переводит величины в пользовательские единицы и оформляет таблицу.
 ' Пустой столбец между частями таблицы сохраняется без рамок и заливки.
 
+Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
+
 Private Const HEADER_ROWS As Long = 4 ' Число строк шапки над первой строкой сочетаний.
 Private Const TOTAL_COLUMNS As Long = 72 ' Ширины разделов таблицы: образование трещины, СП 35, СП 63 и продольные трещины вместе с разделителями.
 
@@ -145,16 +147,20 @@ End Function
 
 ' Записывает детальную таблицу трещин от rngCrackSummaryAnchor.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
-        Optional ByVal units As CUnitSystem = Nothing)
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     On Error GoTo Failed
     If workbook Is Nothing Then Err.Raise vbObjectError + 3988, "CCrackSummaryWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3989, "CCrackSummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
     Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.Count))
+    If mMinimalFormatting Then
+        mMinimalFormatting = (CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@")
+    End If
     PrepareTarget target
-    WriteBlockTitle target, "Расчет нормальных и продольных трещин"
     WriteHeaders target, units
+    WriteBlockTitle target, "Расчет нормальных и продольных трещин"
     WriteData target, batch, units
     FormatTable target, batch, units
     Exit Sub
@@ -164,7 +170,8 @@ Failed:
 End Sub
 
 ' Полностью очищает старый блок трещин вместе с объединениями и форматами.
-Public Sub ClearSummary(ByVal workbook As Object)
+Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3990, "CCrackSummaryWriter", "Книга Excel не передана."
     PrepareTarget ClearTargetRange(workbook)
 End Sub
@@ -199,7 +206,10 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     Set stabilityAnchor = workbook.Names.Item("rngStabilitySummaryAnchor").RefersToRange
     Dim stabilityTopRow As Long
     stabilityTopRow = stabilityAnchor.Row - stabilityWriter.HeaderRowsAboveAnchor
-    If stabilityTopRow > topRow Then rowsToClear = stabilityTopRow - topRow
+    If stabilityTopRow > topRow Then
+        rowsToClear = stabilityTopRow - topRow
+        If mMinimalFormatting Then rowsToClear = rowsToClear - 1
+    End If
 
 UseDefaultHeight:
     If topRow + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then rowsToClear = anchor.Worksheet.Rows.Count - topRow + 1
@@ -208,6 +218,15 @@ End Function
 
 ' Снимает старые объединения и очищает значения/форматы перед новой записью.
 Private Sub PrepareTarget(ByVal target As Object)
+    If mMinimalFormatting Then
+        If target.Rows.Count > HEADER_ROWS Then
+            With target.Offset(HEADER_ROWS, 0).Resize(target.Rows.Count - HEADER_ROWS, TOTAL_COLUMNS)
+                .ClearContents
+                .Interior.ColorIndex = -4142
+            End With
+        End If
+        Exit Sub
+    End If
     ClearBlockTitleRow target
     target.UnMerge
     target.Clear
@@ -216,6 +235,10 @@ End Sub
 ' Записывает отдельную строку-название над detailed-блоком трещин.
 Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     If target.Row <= 1 Then Exit Sub
+    If mMinimalFormatting Then
+        target.Worksheet.Cells(target.Row - 1, target.Column).Value2 = titleText
+        Exit Sub
+    End If
 
     Dim titleRow As Long
     titleRow = target.Row - 1
@@ -270,6 +293,11 @@ Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem)
 
     PutHeaderNotes headers, units
     PutColumnLabels headers, units
+    If mMinimalFormatting Then
+        If ResultHeaderMatches(target, headers, merges:=HeaderMergeBlocks()) Then Exit Sub
+        mMinimalFormatting = False
+        target.Resize(HEADER_ROWS, TOTAL_COLUMNS).UnMerge
+    End If
     target.Resize(HEADER_ROWS, TOTAL_COLUMNS).Value2 = headers
     MergeHeaders target
 End Sub
@@ -415,29 +443,39 @@ End Sub
 
 ' Объединяет ячейки многоуровневой шапки.
 Private Sub MergeHeaders(ByVal target As Object)
-    MergeRange target, 1, COL_ID, HEADER_LABEL_ROW, COL_ID
-    MergeRange target, 1, COL_RESULT_COMMENT, HEADER_LABEL_ROW, COL_RESULT_COMMENT
-    MergeRange target, 1, COL_STATUS, HEADER_LABEL_ROW, COL_STATUS
-    MergeRange target, 1, COL_REF_N, 2, COL_REF_MY
-    MergeRange target, 1, COL_LOAD_N, 2, COL_LOAD_MY
-    MergeRange target, 1, COL_ARED, 1, COL_FORMATION_STATE
-    MergeRange target, 2, COL_ARED, 2, COL_LAMBDA_NCRC
-    MergeRange target, 2, COL_FORMATION_METHOD, 2, COL_LAMBDA_MCRC
-    MergeRange target, 2, COL_PRE_EBC, 2, COL_PRE_CRACK_STATUS
-    MergeRange target, 2, COL_POST_EBC, 2, COL_POST_CRACK_STATUS
-    MergeRange target, 1, COL_CURRENT_EBC, 2, COL_CRACK_STATE_STATUS
-    MergeRange target, 1, COL_SP35_AR, 1, COL_SP35_STATUS
-    MergeRange target, 2, COL_SP35_AR, 2, COL_SP35_PSI
-    MergeRange target, 2, COL_SP35_REBARS, 2, COL_SP35_ES
-    MergeRange target, 2, COL_SP35_ACRC, 2, COL_SP35_STATUS
-    MergeRange target, 1, COL_XT, 1, COL_ACRC_STATUS
-    MergeRange target, 2, COL_XT, 2, COL_AS
-    MergeRange target, 2, COL_DS_EQ, 2, COL_LS
-    MergeRange target, 2, COL_PHI1, 2, COL_PSI_S
-    MergeRange target, 2, COL_REBARS, 2, COL_SIGMA_S
-    MergeRange target, 2, COL_ACRC, 2, COL_ACRC_STATUS
-    MergeRange target, 1, COL_SIGMA_B_MAX, 2, COL_LONG_STATUS
+    Dim block As Variant
+    For Each block In HeaderMergeBlocks()
+        MergeRange target, CLng(block(0)), CLng(block(2)), CLng(block(1)), CLng(block(3))
+    Next block
 End Sub
+
+' Использует одно описание объединений для проверки и построения шапки.
+Private Function HeaderMergeBlocks() As Collection
+    Dim blocks As Collection: Set blocks = New Collection
+    blocks.Add Array(1, HEADER_LABEL_ROW, COL_ID, COL_ID)
+    blocks.Add Array(1, HEADER_LABEL_ROW, COL_RESULT_COMMENT, COL_RESULT_COMMENT)
+    blocks.Add Array(1, HEADER_LABEL_ROW, COL_STATUS, COL_STATUS)
+    blocks.Add Array(1, 2, COL_REF_N, COL_REF_MY)
+    blocks.Add Array(1, 2, COL_LOAD_N, COL_LOAD_MY)
+    blocks.Add Array(1, 1, COL_ARED, COL_FORMATION_STATE)
+    blocks.Add Array(2, 2, COL_ARED, COL_LAMBDA_NCRC)
+    blocks.Add Array(2, 2, COL_FORMATION_METHOD, COL_LAMBDA_MCRC)
+    blocks.Add Array(2, 2, COL_PRE_EBC, COL_PRE_CRACK_STATUS)
+    blocks.Add Array(2, 2, COL_POST_EBC, COL_POST_CRACK_STATUS)
+    blocks.Add Array(1, 2, COL_CURRENT_EBC, COL_CRACK_STATE_STATUS)
+    blocks.Add Array(1, 1, COL_SP35_AR, COL_SP35_STATUS)
+    blocks.Add Array(2, 2, COL_SP35_AR, COL_SP35_PSI)
+    blocks.Add Array(2, 2, COL_SP35_REBARS, COL_SP35_ES)
+    blocks.Add Array(2, 2, COL_SP35_ACRC, COL_SP35_STATUS)
+    blocks.Add Array(1, 1, COL_XT, COL_ACRC_STATUS)
+    blocks.Add Array(2, 2, COL_XT, COL_AS)
+    blocks.Add Array(2, 2, COL_DS_EQ, COL_LS)
+    blocks.Add Array(2, 2, COL_PHI1, COL_PSI_S)
+    blocks.Add Array(2, 2, COL_REBARS, COL_SIGMA_S)
+    blocks.Add Array(2, 2, COL_ACRC, COL_ACRC_STATUS)
+    blocks.Add Array(1, 2, COL_SIGMA_B_MAX, COL_LONG_STATUS)
+    Set HeaderMergeBlocks = blocks
+End Function
 
 ' Записывает строки сочетаний одним массивом.
 Private Sub WriteData(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
@@ -686,6 +724,10 @@ End Sub
 
 ' Оформляет шапки, границы, числовые форматы и подсветку статусов.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
+    If mMinimalFormatting Then
+        ApplyStatusCells target, batch, target.Rows.Count - HEADER_ROWS
+        Exit Sub
+    End If
     target.Font.Name = "Arial"
     target.Font.Size = 9
     target.HorizontalAlignment = -4108

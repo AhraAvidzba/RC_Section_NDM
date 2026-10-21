@@ -1,0 +1,25 @@
+Attribute VB_Name = "modResultsFormattingProbe"
+Option Explicit
+' ДЛЯ ТЕСТОВ: повторный расчёт по уже оформленному Results; настройки неизменны.
+' Эти переключатели существуют только в отдельной диагностической копии.
+
+Public Function FormattingReuse() As Boolean
+    FormattingReuse = (ProbeVariant = "Reuse" Or ProbeVariant = "ReuseNoStatus")
+End Function
+
+Public Function FormattingStatuses() As Boolean
+    FormattingStatuses = (ProbeVariant <> "ReuseNoStatus")
+End Function
+
+' Сохраняет объединённые шапки; записывает только изменяемые прямоугольники сводки.
+Public Sub FormattingWriteSlice(ByVal target As Object, ByRef data() As Variant, _
+        ByVal firstRow As Long, ByVal firstColumn As Long, ByVal rows As Long, ByVal columns As Long)
+    Dim output() As Variant, r As Long, c As Long
+    ReDim output(1 To rows, 1 To columns)
+    For r = 1 To rows
+        For c = 1 To columns
+            output(r, c) = data(firstRow + r - 1, firstColumn + c - 1)
+        Next c
+    Next r
+    target.Offset(firstRow - 1, firstColumn - 1).Resize(rows, columns).Value2 = output
+End Sub

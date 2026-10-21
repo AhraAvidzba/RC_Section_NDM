@@ -495,9 +495,11 @@ try {
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BE$156'
     Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BR$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
-    $contourHeaderValues = New-Object 'object[,]' 1,$contourHeaders.Count
-    for ($i = 0; $i -lt $contourHeaders.Count; $i++) { $contourHeaderValues[0,$i] = $contourHeaders[$i] }
-    $results.Range('AD156:AT156').Value2 = $contourHeaderValues
+    # Постоянные подписи создаются один раз при сборке шаблона.
+    # Поэлементная запись обходит ограничение COM-адаптера PowerShell для этой шапки.
+    for ($i = 0; $i -lt $contourHeaders.Count; $i++) {
+        $results.Cells.Item(156, 30 + $i).Value2 = [string]$contourHeaders[$i]
+    }
     $results.Range('AD155:AT155').Merge()
     $results.Cells.Item(155, 30).Value2 = 'Достоверные контуры и отверстия сечения'
     $results.Range('AD155:AT156').Font.Bold = $true

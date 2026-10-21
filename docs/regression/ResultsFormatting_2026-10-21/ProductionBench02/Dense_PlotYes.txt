@@ -1,0 +1,17 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ResultsFormatting_2026-10-21\Bench02\RC_Section_NDM.xlsm
+SOURCE_SHA256: 572733CCA494049F9697C38F873FB85D4EAE6EF2159DE97023E6E66303268884
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4127219fa98f4c8f854382316e79109b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=209252; startTicks=639282110102753380
+===== RunFormattingFlagBenchmark =====
+SUITE_STARTED: RunFormattingFlagBenchmark; 2026-10-21T23:23:35
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=209252; workingSet=217583616; privateBytes=168198144; cpu=94.03125
+FORMATTING_COMPLETE: Dense_PlotYes
+MISMATCH: 0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_4127219fa98f4c8f854382316e79109b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: RunFormattingFlagBenchmark; 2026-10-21T23:25:05
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

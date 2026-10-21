@@ -195,10 +195,10 @@
     },
     {
       "Name": "rngSystemSettings",
-      "RefersTo": "=Config!$A$3:$E$138",
+      "RefersTo": "=Config!$A$3:$E$139",
       "Sheet": "Config",
-      "Address": "$A$3:$E$138",
-      "Rows": 136,
+      "Address": "$A$3:$E$139",
+      "Rows": 137,
       "Columns": 5
     },
     {
@@ -272,8 +272,14 @@
           "Hidden": false
         },
         {
-          "First": 34,
-          "Last": 39,
+          "First": 24,
+          "Last": 24,
+          "Width": 8.43,
+          "Hidden": false
+        },
+        {
+          "First": 35,
+          "Last": 40,
           "Width": 8.43,
           "Hidden": false
         },
@@ -282,6 +288,12 @@
           "Last": 135,
           "Width": 8.43,
           "Hidden": true
+        },
+        {
+          "First": 136,
+          "Last": 136,
+          "Width": 8.43,
+          "Hidden": false
         }
       ],
       "Rows": [],
@@ -302,7 +314,7 @@
           "Name": "chMaterialSteelDiagram",
           "Type": 3,
           "ChartType": 74,
-          "Left": 1421.7352294921875,
+          "Left": 1421.735107421875,
           "Top": 280.23529052734375,
           "Width": 587.4812622070312,
           "Height": 255,
@@ -3619,7 +3631,7 @@
         },
         {
           "Row": 657,
-          "Height": 25.5,
+          "Height": 51,
           "Hidden": false
         },
         {
@@ -6181,6 +6193,46 @@
           "Row": 1714,
           "Height": 25.5,
           "Hidden": false
+        },
+        {
+          "Row": 1716,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1717,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1718,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1719,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1720,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1721,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1722,
+          "Height": 15,
+          "Hidden": false
+        },
+        {
+          "Row": 1723,
+          "Height": 15,
+          "Hidden": false
         }
       ],
       "Objects": [
@@ -7471,6 +7523,36 @@
           "Last": 90,
           "Width": 10,
           "Hidden": false
+        },
+        {
+          "First": 93,
+          "Last": 93,
+          "Width": 8.57,
+          "Hidden": false
+        },
+        {
+          "First": 98,
+          "Last": 98,
+          "Width": 8.57,
+          "Hidden": false
+        },
+        {
+          "First": 102,
+          "Last": 104,
+          "Width": 8.57,
+          "Hidden": false
+        },
+        {
+          "First": 105,
+          "Last": 105,
+          "Width": 9,
+          "Hidden": false
+        },
+        {
+          "First": 107,
+          "Last": 107,
+          "Width": 8.57,
+          "Hidden": false
         }
       ],
       "Rows": [],
@@ -7500,8 +7582,8 @@
     "LinkSize": 12
   },
   "Provenance": {
-    "Workbook": "Saved.xlsm",
-    "SHA256": "4E3B99A3615408BFE6ECB3FE659EEF744B88B7ADA15EC001B0CF7EF97794BE5B",
-    "Captured": "2026-10-19T15:55:51"
+    "Workbook": "RC_Section_NDM.xlsm",
+    "SHA256": "5440EAAA85B71CB19DCF6EA62C954482159B0ADD7C25EA05A8143B955F1F599C",
+    "Captured": "2026-10-21T23:31:55"
   }
 }

@@ -17,6 +17,8 @@ Option Explicit
 ' статусы проверок и минимальные коэффициенты запаса.
 ' Подробные таблицы прочности, трещин и устойчивости заполняются отдельными классами.
 
+Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
+
 Private Const TARGET_COLUMNS As Long = 26 ' Ширина верхней сводки с разложением устойчивости по СП, плоскостям и ветвям.
 Private Const META_ROWS As Long = 4 ' Верхние строки с общими сведениями о запуске.
 Private Const GROUP_HEADER_ROW As Long = 6 ' Первая строка шестистрочной шапки основной таблицы.
@@ -117,7 +119,8 @@ End Function
 ' таблице прочности для геометрических величин текущего и предельного НДС;
 ' сама сводка не выполняет инженерные расчёты.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
-        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing)
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal section As CSectionModel = Nothing, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     On Error GoTo Failed
 
     Dim stage As String
@@ -173,7 +176,8 @@ Failed:
 End Sub
 
 ' Очищает текущую сводку перед новым расчетом или ручной очисткой Results.
-Public Sub ClearSummary(ByVal workbook As Object)
+Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3972, "CBatchResultWriter", "Книга Excel не передана."
     ClearSummaryBody SummaryClearRange(workbook)
     ClearStrengthSummary workbook
@@ -221,7 +225,11 @@ Private Function SummaryClearRange(ByVal workbook As Object) As Object
     Set strengthAnchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange
     Dim strengthTopRow As Long
     strengthTopRow = strengthAnchor.Row - strengthWriter.HeaderRowsAboveAnchor
-    If strengthTopRow > anchor.Row Then rowsToClear = MaxLong(rowsToClear, strengthTopRow - anchor.Row)
+    If strengthTopRow > anchor.Row Then
+        Dim gap As Long: gap = strengthTopRow - anchor.Row
+        If mMinimalFormatting Then gap = gap - 1
+        rowsToClear = MaxLong(rowsToClear, gap)
+    End If
 
 UseDefaultHeight:
     If anchor.Row + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then rowsToClear = anchor.Worksheet.Rows.Count - anchor.Row + 1
@@ -239,12 +247,30 @@ End Sub
 
 ' Полностью очищает область общей сводки, включая старые объединения и форматы.
 Private Sub ClearSummaryBody(ByVal target As Object)
+    If mMinimalFormatting Then
+        target.Cells(1, 1).Resize(META_ROWS, 1).ClearContents
+        target.Cells(1, 7).Resize(3, 1).ClearContents
+        target.Offset(WORST_HEADER_ROW - 1, 0).Resize(target.Rows.Count - WORST_HEADER_ROW + 1, TARGET_COLUMNS).ClearContents
+        If target.Rows.Count >= FIRST_DATA_ROW Then target.Offset(FIRST_DATA_ROW - 1, 0).Resize(target.Rows.Count - FIRST_DATA_ROW + 1, TARGET_COLUMNS).Interior.ColorIndex = -4142
+        Exit Sub
+    End If
     target.UnMerge
     target.Clear
 End Sub
 
 ' Записывает уже подготовленный двумерный массив в Excel одним присваиванием.
 Private Sub WriteSummaryBody(ByVal target As Object, ByRef data() As Variant)
+    If mMinimalFormatting Then
+        If ResultHeaderMatches(target, data, GROUP_HEADER_ROW, COMMENT_HEADER_ROW, merges:=SummaryHeaderBlocks()) And _
+                CStr(target.Cells(target.Rows.Count, SUM_COL_RESERVE_STRAIN).NumberFormat) = "0.000" Then
+            WriteResultDataSlice target, data, 1, 1, META_ROWS, 1
+            WriteResultDataSlice target, data, 1, 7, 3, 1
+            WriteResultDataSlice target, data, WORST_HEADER_ROW, 1, UBound(data, 1) - WORST_HEADER_ROW + 1, TARGET_COLUMNS
+            Exit Sub
+        End If
+        mMinimalFormatting = False
+        target.UnMerge
+    End If
     target.Resize(UBound(data, 1), TARGET_COLUMNS).Value2 = data
 End Sub
 
@@ -252,7 +278,7 @@ End Sub
 Private Sub WriteStabilitySummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CStabilitySummaryWriter
     Set writer = New CStabilitySummaryWriter
-    writer.WriteSummary workbook, batch, units
+    writer.WriteSummary workbook, batch, units, Not mMinimalFormatting
 End Sub
 
 ' Обновляет подробную таблицу НДС по прочности и несущей способности.
@@ -260,35 +286,35 @@ Private Sub WriteStrengthSummary(ByVal workbook As Object, ByVal batch As CBatch
         ByVal units As CUnitSystem, ByVal section As CSectionModel)
     Dim writer As CStrengthSummaryWriter
     Set writer = New CStrengthSummaryWriter
-    writer.WriteSummary workbook, batch, units, section
+    writer.WriteSummary workbook, batch, units, section, Not mMinimalFormatting
 End Sub
 
 ' Обновляет отдельную детальную таблицу нормальных и продольных трещин.
 Private Sub WriteCrackSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, ByVal units As CUnitSystem)
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
-    writer.WriteSummary workbook, batch, units
+    writer.WriteSummary workbook, batch, units, Not mMinimalFormatting
 End Sub
 
 ' Очищает отдельный блок прочности при общей очистке Results.
 Private Sub ClearStrengthSummary(ByVal workbook As Object)
     Dim writer As CStrengthSummaryWriter
     Set writer = New CStrengthSummaryWriter
-    writer.ClearSummary workbook
+    writer.ClearSummary workbook, Not mMinimalFormatting
 End Sub
 
 ' Очищает отдельный блок устойчивости при общей очистке Results.
 Private Sub ClearStabilitySummary(ByVal workbook As Object)
     Dim writer As CStabilitySummaryWriter
     Set writer = New CStabilitySummaryWriter
-    writer.ClearSummary workbook
+    writer.ClearSummary workbook, Not mMinimalFormatting
 End Sub
 
 ' Очищает отдельный блок трещин при общей очистке Results.
 Private Sub ClearCrackSummary(ByVal workbook As Object)
     Dim writer As CCrackSummaryWriter
     Set writer = New CCrackSummaryWriter
-    writer.ClearSummary workbook
+    writer.ClearSummary workbook, Not mMinimalFormatting
 End Sub
 
 ' Заполняет четыре верхние строки общей сводки: определяющее сочетание, комментарий,
@@ -612,6 +638,10 @@ End Sub
 ' Оформляет общую сводку: объединения, серые заголовки,
 ' статусную палитру, единые шрифты и рамки.
 Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    If mMinimalFormatting Then
+        FormatStatusCells target, batch
+        Exit Sub
+    End If
     On Error GoTo Failed
 
     Dim stage As String
@@ -634,37 +664,10 @@ Private Sub FormatSummary(ByVal workbook As Object, ByVal target As Object, ByVa
     target.Rows.Item(WORST_HEADER_ROW).Font.Bold = True
 
     stage = "MergeHeaders"
-    MergeSummaryBlock target, 1, 1, 2, 5
-    MergeSummaryBlock target, 2, 2, 2, 5
-    MergeSummaryBlock target, 3, 3, 2, 5
-    MergeSummaryBlock target, 4, 4, 2, 5
-    MergeSummaryBlock target, 1, 1, 8, 13
-    MergeSummaryBlock target, 2, 2, 8, 13
-    MergeSummaryBlock target, 3, 3, 8, 13
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_ID, SUM_COL_ID
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESULT_COMMENT, SUM_COL_RESULT_COMMENT
-    MergeSummaryBlock target, GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS
-    MergeSummaryHeader target, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_SP63_P2
-    MergeSummaryHeader target, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_SP63_P2
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P2_TABLE
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_CAPACITY
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_CRACK, SUM_COL_RESERVE_LONG_CRACK
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P2_TABLE
-    MergeSummaryHeader target, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_SP63_P1, SUM_COL_RESERVE_SP63_P2
-    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY
-    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK
-    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_CAPACITY
-    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESERVE_CRACK, SUM_COL_RESERVE_LONG_CRACK
-    MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P1_TABLE
-    MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE
-    MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P1_TABLE
-    MergeSummaryHeader target, COLUMN_HEADER_ROW, SUM_COL_RESERVE_SP35_P2_ETA, SUM_COL_RESERVE_SP35_P2_TABLE
-    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2
-    MergeColumnLabels target, COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, SUM_COL_RESERVE_SP63_P1, SUM_COL_RESERVE_SP63_P2
+    Dim block As Variant
+    For Each block In SummaryHeaderBlocks()
+        MergeSummaryBlock target, CLng(block(0)), CLng(block(1)), CLng(block(2)), CLng(block(3))
+    Next block
 
     stage = "Alignment"
     target.Offset(GROUP_HEADER_ROW - 1, 0).Resize(WORST_HEADER_ROW - GROUP_HEADER_ROW + 1, TARGET_COLUMNS).HorizontalAlignment = -4108
@@ -758,6 +761,56 @@ Private Sub WriteStatusLegend(ByVal target As Object)
     ApplySummaryBorders legend
 End Sub
 
+' Описывает объединения один раз для проверки готовой шапки и её построения.
+Private Function SummaryHeaderBlocks() As Collection
+    Dim blocks As Collection: Set blocks = New Collection
+    Dim column As Long
+    blocks.Add Array(1, 1, 2, 5)
+    blocks.Add Array(2, 2, 2, 5)
+    blocks.Add Array(3, 3, 2, 5)
+    blocks.Add Array(4, 4, 2, 5)
+    blocks.Add Array(1, 1, 8, 13)
+    blocks.Add Array(2, 2, 8, 13)
+    blocks.Add Array(3, 3, 8, 13)
+    blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_ID, SUM_COL_ID)
+    blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_COMMENT, SUM_COL_COMMENT)
+    blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_RESULT_COMMENT, SUM_COL_RESULT_COMMENT)
+    blocks.Add Array(GROUP_HEADER_ROW, COLUMN_HEADER_LAST_ROW, SUM_COL_OVERALL_STATUS, SUM_COL_OVERALL_STATUS)
+    blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_SP63_P2)
+    blocks.Add Array(GROUP_HEADER_ROW, GROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_SP63_P2)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_STRAIN, SUM_COL_STATUS_CAPACITY)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_CRACK, SUM_COL_STATUS_LONG_CRACK)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P2_TABLE)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_STATUS_SP63_P1, SUM_COL_STATUS_SP63_P2)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_STRAIN, SUM_COL_RESERVE_CAPACITY)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_CRACK, SUM_COL_RESERVE_LONG_CRACK)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P2_TABLE)
+    blocks.Add Array(SUBGROUP_HEADER_ROW, SUBGROUP_HEADER_ROW, SUM_COL_RESERVE_SP63_P1, SUM_COL_RESERVE_SP63_P2)
+    For column = SUM_COL_STATUS_STRAIN To SUM_COL_STATUS_CAPACITY
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, column, column)
+    Next column
+    For column = SUM_COL_STATUS_CRACK To SUM_COL_STATUS_LONG_CRACK
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, column, column)
+    Next column
+    For column = SUM_COL_RESERVE_STRAIN To SUM_COL_RESERVE_CAPACITY
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, column, column)
+    Next column
+    For column = SUM_COL_RESERVE_CRACK To SUM_COL_RESERVE_LONG_CRACK
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_LAST_ROW, column, column)
+    Next column
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_STATUS_SP35_P1_ETA, SUM_COL_STATUS_SP35_P1_TABLE)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_STATUS_SP35_P2_ETA, SUM_COL_STATUS_SP35_P2_TABLE)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_RESERVE_SP35_P1_ETA, SUM_COL_RESERVE_SP35_P1_TABLE)
+    blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW, SUM_COL_RESERVE_SP35_P2_ETA, SUM_COL_RESERVE_SP35_P2_TABLE)
+    For column = SUM_COL_STATUS_SP63_P1 To SUM_COL_STATUS_SP63_P2
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, column, column)
+    Next column
+    For column = SUM_COL_RESERVE_SP63_P1 To SUM_COL_RESERVE_SP63_P2
+        blocks.Add Array(COLUMN_HEADER_ROW, COLUMN_HEADER_ROW + 1, column, column)
+    Next column
+    Set SummaryHeaderBlocks = blocks
+End Function
+
 ' Объединяет горизонтальный заголовок одной строки.
 Private Sub MergeSummaryHeader(ByVal target As Object, ByVal rowIndex As Long, ByVal firstColumn As Long, ByVal lastColumn As Long)
     Dim area As Object
@@ -775,14 +828,7 @@ Private Sub MergeSummaryBlock(ByVal target As Object, ByVal firstRow As Long, By
     area.Merge
 End Sub
 
-' Объединяет вертикальные ячейки обозначений в шапке для группы соседних столбцов.
-Private Sub MergeColumnLabels(ByVal target As Object, ByVal firstRow As Long, ByVal lastRow As Long, _
-        ByVal firstColumn As Long, ByVal lastColumn As Long)
-    Dim columnIndex As Long
-    For columnIndex = firstColumn To lastColumn
-        MergeSummaryBlock target, firstRow, lastRow, columnIndex, columnIndex
-    Next columnIndex
-End Sub
+
 
 ' Наносит стандартные черные рамки для компактных блоков Results.
 Private Sub ApplySummaryBorders(ByVal area As Object)

@@ -18,6 +18,8 @@ Option Explicit
 ' и другие. Подробную таблицу прочности оформляет CStrengthSummaryWriter.
 ' Текущие Inputs не перечитываются: сохраняется именно рассчитанное состояние.
 
+Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
+
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
 Private Const GEOMETRY_COLUMNS As Long = 16 ' Только расчетные бетонные элементы и арматура.
 Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
@@ -72,7 +74,8 @@ End Function
 ' геометрию, результаты элементов, свойства сечения, диаграммы материалов и аннотации.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
-        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal preserveGeometry As Boolean = False)
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal preserveGeometry As Boolean = False, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики снимка не переданы."
@@ -111,7 +114,8 @@ End Sub
 ' использует ту же сохранённую геометрию Results.
 Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, _
-        Optional ByVal units As CUnitSystem = Nothing)
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Для предварительной схемы не переданы подготовленные характеристики сечения."
@@ -175,6 +179,13 @@ End Sub
 ' высоту — по заполненному первому столбцу. CurrentRegion не используется,
 ' поскольку из-за форматирования может захватить соседние таблицы.
 Private Sub ClearNamedRegion(ByVal workbook As Object, ByVal rangeName As String)
+    If mMinimalFormatting Then
+        Dim existingAnchor As Object, existingRows As Long
+        Set existingAnchor = workbook.Names.Item(rangeName).RefersToRange
+        existingRows = ExistingAnchoredRowCount(existingAnchor)
+        If existingRows > 1 Then existingAnchor.Offset(1, 0).Resize(existingRows - 1, OutputColumnCount(rangeName)).ClearContents
+        Exit Sub
+    End If
     On Error GoTo MissingRange
     Dim anchor As Object
     Set anchor = workbook.Names.Item(rangeName).RefersToRange
@@ -214,6 +225,9 @@ Private Sub WriteSnapshotTitle(ByVal workbook As Object)
     Dim title As Object
     Set title = SnapshotTitleRange(workbook)
     If title Is Nothing Then Exit Sub
+    If mMinimalFormatting Then
+        If Len(CStr(title.Resize(1, 1).Value2)) > 0 Then Exit Sub
+    End If
     title.Interior.Color = RGB(189, 215, 238)
     With title.Resize(1, 1)
         .Value2 = "Расчетный снимок Results: элементы, геометрия, свойства сечения, диаграммы материалов и аннотации"
@@ -231,6 +245,7 @@ End Sub
 ' Очищает общий заголовок расчётных таблиц, сохраняя пользовательские данные
 ' и оформление справа от них.
 Private Sub ClearSnapshotTitle(ByVal workbook As Object)
+    If mMinimalFormatting Then Exit Sub
     On Error GoTo MissingRange
     Dim title As Object
     Set title = SnapshotTitleRange(workbook)
@@ -1147,6 +1162,13 @@ End Sub
 ' Дальнейшее чтение использует это имя и размеры таблицы,
 ' а не область CurrentRegion соседних заполненных ячеек.
 Friend Sub FormatResultsBlock(ByVal target As Object, ByVal rowCount As Long, ByVal columnCount As Long, ByVal titleText As String)
+    If mMinimalFormatting Then
+        If CStr(target.Cells(rowCount, 1).NumberFormat) = "dd.mm.yy" And CBool(target.Cells(1, 1).Font.Bold) Then
+            If rowCount > 1 Then target.Offset(1, 0).Resize(rowCount - 1, columnCount).WrapText = False
+            If target.Row > 2 Then target.Offset(-1, 0).Resize(1, 1).Value2 = titleText
+            Exit Sub
+        End If
+    End If
     Dim tableRange As Object
     Set tableRange = target.Resize(rowCount, columnCount)
 

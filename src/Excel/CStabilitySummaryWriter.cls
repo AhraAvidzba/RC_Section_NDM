@@ -16,6 +16,8 @@ Option Explicit
 ' плоскостям и выбранному нормативу СП 35 или СП 63. Переводит величины
 ' в пользовательские единицы и оформляет таблицу без повторного расчёта.
 
+Private mMinimalFormatting As Boolean ' Сохраняет готовое оформление; обновляет данные, шапки при изменении и цвета статусов.
+
 Private Const HEADER_ROWS As Long = 5 ' Число строк шапки над первой строкой данных.
 Private Const TOTAL_COLUMNS As Long = 84 ' Ширина таблицы с пустыми разделителями между блоками.
 
@@ -78,16 +80,20 @@ End Function
 
 ' Записывает подробную таблицу устойчивости от именованной ячейки rngStabilitySummaryAnchor.
 Public Sub WriteSummary(ByVal workbook As Object, ByVal batch As CBatchSectionCalculator, _
-        Optional ByVal units As CUnitSystem = Nothing)
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     On Error GoTo Failed
     If workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CStabilitySummaryWriter", "Книга Excel не передана."
     If batch Is Nothing Then Err.Raise vbObjectError + 3981, "CStabilitySummaryWriter", "Пакетный расчетчик не передан."
 
     Dim target As Object
     Set target = TargetRange(workbook, RequiredDataRowsForWorkbook(workbook, batch.Count))
+    If mMinimalFormatting Then
+        mMinimalFormatting = (CStr(target.Cells(target.Rows.Count, 1).NumberFormat) = "@")
+    End If
     PrepareTarget target
-    WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     WriteHeaders target, units, batch
+    WriteBlockTitle target, "Расчет продольного изгиба и устойчивости"
     WriteData target, batch, units
     FormatTable target, batch
     Exit Sub
@@ -97,7 +103,8 @@ Failed:
 End Sub
 
 ' Полностью очищает старый блок устойчивости вместе с объединениями и форматами.
-Public Sub ClearSummary(ByVal workbook As Object)
+Public Sub ClearSummary(ByVal workbook As Object, Optional ByVal fullFormatting As Boolean = True)
+    mMinimalFormatting = Not fullFormatting
     If workbook Is Nothing Then Err.Raise vbObjectError + 3982, "CStabilitySummaryWriter", "Книга Excel не передана."
     PrepareTarget ClearTargetRange(workbook)
 End Sub
@@ -129,7 +136,10 @@ Private Function ClearTargetRange(ByVal workbook As Object) As Object
     On Error GoTo UseDefaultHeight
     Dim nextAnchor As Object
     Set nextAnchor = workbook.Names.Item("rngNDMElementResults").RefersToRange
-    If nextAnchor.Row > topRow Then rowsToClear = nextAnchor.Row - topRow
+    If nextAnchor.Row > topRow Then
+        rowsToClear = nextAnchor.Row - topRow
+        If mMinimalFormatting Then rowsToClear = rowsToClear - 1
+    End If
 
 UseDefaultHeight:
     If topRow + rowsToClear - 1 > anchor.Worksheet.Rows.Count Then _
@@ -140,6 +150,15 @@ End Function
 ' Снимает прежние объединения и очищает область, чтобы после переноса таблицы не осталось
 ' старого оформления.
 Private Sub PrepareTarget(ByVal target As Object)
+    If mMinimalFormatting Then
+        If target.Rows.Count > HEADER_ROWS Then
+            With target.Offset(HEADER_ROWS, 0).Resize(target.Rows.Count - HEADER_ROWS, TOTAL_COLUMNS)
+                .ClearContents
+                .Interior.ColorIndex = -4142
+            End With
+        End If
+        Exit Sub
+    End If
     ClearBlockTitleRow target
     target.UnMerge
     target.Clear
@@ -148,6 +167,10 @@ End Sub
 ' Записывает отдельную строку-название над detailed-блоком устойчивости.
 Private Sub WriteBlockTitle(ByVal target As Object, ByVal titleText As String)
     If target.Row <= 1 Then Exit Sub
+    If mMinimalFormatting Then
+        target.Worksheet.Cells(target.Row - 1, target.Column).Value2 = titleText
+        Exit Sub
+    End If
 
     Dim titleRow As Long
     titleRow = target.Row - 1
@@ -174,6 +197,14 @@ End Sub
 ' Формирует многоуровневую шапку таблицы. Разделительные столбцы остаются пустыми.
 Private Sub WriteHeaders(ByVal target As Object, ByVal units As CUnitSystem, _
         ByVal batch As CBatchSectionCalculator)
+    If mMinimalFormatting Then
+        Dim expectedLabels As Variant: expectedLabels = HeaderRowLabels(units, batch)
+        If CStr(target.Cells(2, 1).Value2) = "Combination ID" Then
+            If ResultHeaderMatches(target.Offset(4, 0), expectedLabels, firstColumn:=4) Then Exit Sub
+        End If
+        mMinimalFormatting = False
+        target.Resize(HEADER_ROWS, TOTAL_COLUMNS).UnMerge
+    End If
     MergeCells target, 1, COL_SUMMARY_FIRST, 1, BlockWidth(COL_SUMMARY_FIRST, COL_SUMMARY_LAST), _
         "Итог по расчету (с учетом " & ChrW$(&H3B7) & ")"
     MergeCells target, 2, 1, 4, 1, "Combination ID"
@@ -291,8 +322,7 @@ Private Sub PutSP63PlaneNotes(ByRef notes() As Variant, ByVal firstColumn As Lon
 End Sub
 
 ' Заполняет строку обозначений под многоуровневой шапкой.
-Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSystem, _
-        ByVal batch As CBatchSectionCalculator)
+Private Function HeaderRowLabels(ByVal units As CUnitSystem, ByVal batch As CBatchSectionCalculator) As Variant
     Dim labels(1 To 1, 1 To TOTAL_COLUMNS) As Variant
     labels(1, 1) = "Combination ID"
     labels(1, 2) = "ResultComment"
@@ -328,7 +358,13 @@ Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSyste
     PutSP63PlaneLabels labels, SP63_PLANE1_FIRST, units
     PutSP63PlaneLabels labels, SP63_PLANE2_FIRST, units
 
-    target.Offset(4, 0).Resize(1, TOTAL_COLUMNS).Value2 = labels
+    HeaderRowLabels = labels
+End Function
+
+' Записывает изменившиеся обозначения и восстанавливает их индексы.
+Private Sub PutHeaderRowLabels(ByVal target As Object, ByVal units As CUnitSystem, _
+        ByVal batch As CBatchSectionCalculator)
+    target.Offset(4, 0).Resize(1, TOTAL_COLUMNS).Value2 = HeaderRowLabels(units, batch)
     ApplyHeaderSubscripts target
 End Sub
 
@@ -524,6 +560,10 @@ End Sub
 
 ' Применяет общее оформление, границы блоков и независимую красную подсветку.
 Private Sub FormatTable(ByVal target As Object, ByVal batch As CBatchSectionCalculator)
+    If mMinimalFormatting Then
+        FormatStatusCells target, batch
+        Exit Sub
+    End If
     target.Font.Name = "Arial"
     target.Font.Size = 9
     target.HorizontalAlignment = -4108

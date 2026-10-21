@@ -1,0 +1,25 @@
+{
+  "Passed": true,
+  "PreservedCells": 51464,
+  "PreservedValidationCells": 471,
+  "GraphicPartsByteExact": 86,
+  "Setting": "General.ReformatResultsEnabled",
+  "Default": "Yes",
+  "ConfigRow": 7,
+  "HelpRows": [
+    1716,
+    1723
+  ],
+  "SourceComponents": 163,
+  "NativeComponents": 169,
+  "DocumentComponentsUnchanged": [
+    "Лист1",
+    "Лист2",
+    "Лист3",
+    "Лист4",
+    "Лист5",
+    "ЭтаКнига"
+  ],
+  "WorkbookSHA256": "0002E910E28AD95B03362296315839C245AAACAD80011B2ACA158115A69F0845",
+  "AllCodeSHA256": "9FC2F3145FA3DB6FBF3A9A91BAC9D9ECD69BC060C2B41871CD88F6CB654C9904"
+}

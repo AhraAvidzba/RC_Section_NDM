@@ -1,0 +1,227 @@
+{
+  "Batch_PlotYes": {
+    "variants": {
+      "Full": {
+        "samples": 5,
+        "total": 3.1959403,
+        "readModel": 0.0898766,
+        "solve": 0.715512,
+        "output": 1.7425029,
+        "plot": 0.5101083,
+        "compared": 117620.0,
+        "range": [
+          2.9486962,
+          3.3895373
+        ],
+        "speedup": 1.0,
+        "savedPercent": 0.0
+      },
+      "Minimal": {
+        "samples": 5,
+        "total": 2.3611454,
+        "readModel": 0.0698049,
+        "solve": 0.7419569,
+        "output": 0.8885264,
+        "plot": 0.516175,
+        "compared": 117620.0,
+        "range": [
+          2.3028392,
+          2.4547142
+        ],
+        "speedup": 1.353555058489833,
+        "savedPercent": 26.120478533344325
+      },
+      "FullEnd": {
+        "samples": 5,
+        "total": 3.3630422,
+        "readModel": 0.0731608,
+        "solve": 0.7371444,
+        "output": 1.7888072,
+        "plot": 0.5409879,
+        "compared": 117620.0,
+        "range": [
+          3.1564249,
+          3.3943006
+        ],
+        "speedup": 0.9503122797567036,
+        "savedPercent": -5.228567630002345
+      }
+    },
+    "outputComparison": {
+      "Minimal": {
+        "cells": 220077,
+        "richTextCells": 115,
+        "ignoredVolatileCells": 22932,
+        "differences": {
+          "values": 0,
+          "styles": 0,
+          "richText": 0,
+          "structure": 0
+        },
+        "examples": {}
+      },
+      "FullEnd": {
+        "cells": 220077,
+        "richTextCells": 115,
+        "ignoredVolatileCells": 22932,
+        "differences": {
+          "values": 0,
+          "styles": 0,
+          "richText": 0,
+          "structure": 0
+        },
+        "examples": {}
+      }
+    }
+  },
+  "Dense_PlotYes": {
+    "variants": {
+      "Full": {
+        "samples": 3,
+        "total": 4.8130412,
+        "readModel": 0.7469019,
+        "solve": 0.5035242,
+        "output": 1.8562656,
+        "plot": 1.4535347,
+        "compared": 136653.0,
+        "range": [
+          4.5289142,
+          4.8623664
+        ],
+        "speedup": 1.0,
+        "savedPercent": 0.0
+      },
+      "Minimal": {
+        "samples": 3,
+        "total": 3.9619386,
+        "readModel": 0.7853408,
+        "solve": 0.6157726,
+        "output": 1.0353022,
+        "plot": 1.2855217,
+        "compared": 136653.0,
+        "range": [
+          3.9609954,
+          4.0053808
+        ],
+        "speedup": 1.2148197349651002,
+        "savedPercent": 17.68326022224783
+      },
+      "FullEnd": {
+        "samples": 3,
+        "total": 4.8267862,
+        "readModel": 0.7385374,
+        "solve": 0.517427,
+        "output": 2.0694863,
+        "plot": 1.3814473,
+        "compared": 136653.0,
+        "range": [
+          4.6748472,
+          5.225487
+        ],
+        "speedup": 0.9971523495281395,
+        "savedPercent": -0.2855782742936075
+      }
+    },
+    "outputComparison": {
+      "Minimal": {
+        "cells": 298877,
+        "richTextCells": 115,
+        "ignoredVolatileCells": 25664,
+        "differences": {
+          "values": 0,
+          "styles": 0,
+          "richText": 0,
+          "structure": 0
+        },
+        "examples": {}
+      },
+      "FullEnd": {
+        "cells": 298877,
+        "richTextCells": 115,
+        "ignoredVolatileCells": 25664,
+        "differences": {
+          "values": 0,
+          "styles": 0,
+          "richText": 0,
+          "structure": 0
+        },
+        "examples": {}
+      }
+    }
+  },
+  "Light_PlotYes": {
+    "variants": {
+      "Full": {
+        "samples": 5,
+        "total": 1.3963806,
+        "readModel": 0.1111388,
+        "solve": 0.0575149,
+        "output": 0.5632162,
+        "plot": 0.4469096,
+        "compared": 14861.0,
+        "range": [
+          1.1664635,
+          1.8413558
+        ],
+        "speedup": 1.0,
+        "savedPercent": 0.0
+      },
+      "Minimal": {
+        "samples": 5,
+        "total": 0.9004953,
+        "readModel": 0.0714347,
+        "solve": 0.0508382,
+        "output": 0.1662184,
+        "plot": 0.462054,
+        "compared": 14861.0,
+        "range": [
+          0.8624712,
+          1.2105868
+        ],
+        "speedup": 1.5506806087716394,
+        "savedPercent": 35.512187723031964
+      },
+      "FullEnd": {
+        "samples": 5,
+        "total": 1.3116429,
+        "readModel": 0.0765607,
+        "solve": 0.0544452,
+        "output": 0.5683981,
+        "plot": 0.4525236,
+        "compared": 14861.0,
+        "range": [
+          1.2462933,
+          1.4126666
+        ],
+        "speedup": 1.064604245561044,
+        "savedPercent": 6.068381356773367
+      }
+    },
+    "outputComparison": {
+      "Minimal": {
+        "cells": 40069,
+        "richTextCells": 115,
+        "ignoredVolatileCells": 2828,
+        "differences": {
+          "values": 0,
+          "styles": 0,
+          "richText": 0,
+          "structure": 0
+        },
+        "examples": {}
+      },
+      "FullEnd": {
+        "cells": 40069,
+        "richTextCells": 115,
+        "ignoredVolatileCells": 2828,
+        "differences": {
+          "values": 0,
+          "styles": 0,
+          "richText": 0,
+          "structure": 0
+        },
+        "examples": {}
+      }
+    }
+  }
+}

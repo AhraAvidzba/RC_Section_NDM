@@ -1,0 +1,565 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ResultsFormatting_2026-10-21\Release\RC_Section_NDM.xlsm
+SOURCE_SHA256: 0002E910E28AD95B03362296315839C245AAACAD80011B2ACA158115A69F0845
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5cd2b401c252466ca0a4be0467f31c05\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=Yes; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=179312; startTicks=639282123644360519
+===== modTestWorkbookInterface.RunSectionWorkflowUiTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunSectionWorkflowUiTests; 2026-10-21T23:46:09
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=179312; workingSet=153563136; privateBytes=101523456; cpu=8.046875
+EXCEL_AFTER_SUITE: pid=182452; workingSet=152936448; privateBytes=102449152; cpu=135.53125
+OK: ui.buttons.run.exists
+OK: ui.buttons.import.exists
+OK: ui.buttons.clear.exists
+OK: ui.buttons.autocad.exists
+OK: ui.buttons.plot.exists
+OK: ui.buttons.order
+OK: ui.buttons.form.caption
+OK: ui.buttons.run.macro
+OK: ui.buttons.import.macro
+OK: ui.buttons.clear.macro
+OK: ui.buttons.autocad.macro
+OK: ui.buttons.plot.macro
+OK: ui.buttons.outsidePrint
+OK: ui.buttons.textCentered
+OK: ui.autocad.manualImport.required
+OK: ui.form.generated.completed
+OK: ui.form.generated.snapshot
+TOTAL_WORKFLOW_UI: passed=17; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5cd2b401c252466ca0a4be0467f31c05\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunSectionWorkflowUiTests; 2026-10-21T23:46:14
+===== modTestWorkbookInterface.RunSectionWorkflowCalculationTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunSectionWorkflowCalculationTests; 2026-10-21T23:46:14
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=179312; workingSet=162455552; privateBytes=109809664; cpu=18
+EXCEL_AFTER_SUITE: pid=182452; workingSet=153141248; privateBytes=102617088; cpu=140.53125
+OK: ui.run.message
+OK: ui.run.capacity.na
+OK: ui.run.direct.status
+OK: ui.run.strainPlane
+OK: ui.run.crack
+OK: ui.run.system.noLegacyMainInput
+OK: ui.run.system.materialDiagramControls
+OK: ui.strengthSummary.currentDepths
+OK: ui.strengthSummary.direct.noCapacityDepths
+OK: ui.results.elements.header
+OK: ui.results.elements.rows
+OK: ui.results.elements.noCombinationIndex
+OK: ui.results.elements.materialType
+OK: ui.results.elements.units
+OK: ui.results.elements.noGeometryDup
+OK: ui.results.elements.noPlaneDup
+OK: ui.results.elements.physicalStateAlign
+OK: ui.results.geometry.header
+OK: ui.results.geometry.rows
+OK: ui.results.strength.anchor
+OK: ui.results.crack.anchor
+OK: ui.results.stability.anchor
+OK: ui.results.geometry.position
+OK: ui.results.contours.position
+OK: ui.results.properties.position
+OK: ui.results.materialDiagrams.position
+OK: ui.results.annotations.position
+OK: ui.results.geometry.noSource
+OK: ui.results.geometry.noMaterialClass
+OK: ui.results.properties.header
+OK: ui.results.properties.hasStateEpsilon0
+OK: ui.results.properties.hasStateNeutralLine
+OK: ui.results.properties.noLegacyPlane
+OK: ui.results.properties.hasBounds
+OK: ui.results.properties.commonLoadReference
+OK: ui.results.properties.hasTransformedAxes
+OK: ui.results.properties.noLegacyTransformedAliases
+OK: ui.results.properties.noLcLoadReference
+OK: ui.results.properties.transformedArea.moduli; actual=0.082953028172; expected=0.082953028172
+OK: ui.results.properties.transformedCoreDistance.positive
+OK: ui.results.properties.transformedCoreDistance.axis1Sym; actual=0.037884731465; expected=0.037884731465
+OK: ui.results.properties.transformedCoreDistance.axis2Sym; actual=0.037884731465; expected=0.037884731465
+OK: ui.results.properties.transformedCoreDistanceXY.positive
+OK: ui.results.properties.concreteCoreDistanceXY.exists
+OK: ui.results.annotations.header
+OK: ui.results.annotations.rows
+OK: ui.results.materialDiagrams.header
+OK: ui.results.materialDiagrams.rows
+OK: ui.results.materialDiagrams.stateType
+OK: ui.results.materialDiagrams.role
+OK: ui.results.materialDiagrams.diagramId
+OK: ui.results.materialDiagrams.spec
+OK: ui.results.materialDiagrams.mode
+OK: ui.results.materialDiagrams.noPurpose
+OK: ui.results.materialDiagrams.noLoadCase
+OK: ui.results.materialDiagrams.usedStates
+OK: ui.plot.chart.created
+OK: ui.plot.title.comment
+OK: ui.plot.title.overlay
+OK: ui.profiles.topHeader.noDuplicateParameter
+OK: ui.profiles.lowerHeader.parameter
+OK: ui.profiles.pr3.default
+OK: ui.profiles.pr4.default
+OK: ui.profiles.visualizationStressPrecision.default
+OK: ui.rectangles.message
+OK: ui.rectangles.result.status
+OK: ui.rectangles.system.perSectionInput
+OK: ui.rectangles.system.materialDiagramControls
+OK: workflow.form.noSolver
+OK: workflow.form.autoPreview
+OK: workflow.form.elapsedMessage
+OK: workflow.preview.noSolver
+OK: workflow.calculate.elapsed; actual=0.609375; expected=0.609375
+OK: workflow.calculate.elapsedMessage
+OK: workflow.calculate.noFormationMessages
+OK: workflow.calculate.savedFormationDiagnostic
+OK: workflow.calculate.frozenSource
+OK: workflow.calculate.geometryExact
+OK: workflow.calculate.contoursExact
+OK: workflow.calculate.eightBars
+OK: workflow.repeat.completed
+OK: workflow.repeat.geometryExact
+OK: workflow.repeat.contoursExact
+OK: workflow.repeat.force; actual=-10.197162129779; expected=-10.197162129779
+OK: workflow.plotError.warning
+OK: workflow.plotError.force; actual=-10.197162129779; expected=-10.197162129779
+OK: workflow.visualizationError.warning
+OK: workflow.visualizationError.force; actual=-10.197162129779; expected=-10.197162129779
+OK: workflow.failedForm.reason
+OK: workflow.failedForm.geometryPreserved
+OK: workflow.failedForm.contoursPreserved
+OK: workflow.reform.independentLoads
+OK: workflow.reform.changed
+OK: workflow.reform.clearsStates
+OK: workflow.reform.previewOnly
+OK: workflow.optional.completed
+OK: workflow.optional.statesExact
+OK: workflow.optional.plotAvailable
+OK: workflow.noAnnotations.completed
+OK: workflow.noAnnotations.statesExact
+TOTAL_WORKFLOW_CALCULATION: passed=100; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5cd2b401c252466ca0a4be0467f31c05\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunSectionWorkflowCalculationTests; 2026-10-21T23:46:25
+===== modTestWorkbookInterface.RunFormationPreviewTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunFormationPreviewTests; 2026-10-21T23:46:25
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=179312; workingSet=173957120; privateBytes=131526656; cpu=20.390625
+EXCEL_AFTER_SUITE: pid=182452; workingSet=153260032; privateBytes=102641664; cpu=142.421875
+OK: formPreview.saved
+OK: formPreview.drawn
+OK: formPreview.annotations
+OK: formPreview.noSolver
+OK: formPreview.error.warning
+OK: formPreview.error.reason
+OK: formPreview.error.snapshot
+OK: formPreview.error.noSolver
+OK: formPreview.disabled.saved
+OK: formPreview.disabled.noDrawing
+OK: formPreview.disabled.noSolver
+TOTAL_FORMATION_PREVIEW: passed=11; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5cd2b401c252466ca0a4be0467f31c05\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunFormationPreviewTests; 2026-10-21T23:46:27
+===== modTestWorkbookInterface.RunResultBlockOutputTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunResultBlockOutputTests; 2026-10-21T23:46:28
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=179312; workingSet=179036160; privateBytes=128151552; cpu=22.828125
+EXCEL_AFTER_SUITE: pid=182452; workingSet=153493504; privateBytes=102883328; cpu=144.046875
+OK: block.color.1.2
+OK: block.color.1.4
+OK: block.color.1.11
+OK: block.color.2.2
+OK: block.color.2.4
+OK: block.color.2.11
+OK: block.color.3.2
+OK: block.color.3.4
+OK: block.color.3.11
+OK: block.color.4.2
+OK: block.color.4.4
+OK: block.color.4.11
+OK: block.color.5.2
+OK: block.color.5.4
+OK: block.color.5.11
+OK: block.color.6.2
+OK: block.color.6.4
+OK: block.color.6.11
+OK: block.color.7.2
+OK: block.color.7.4
+OK: block.color.7.11
+OK: block.color.8.2
+OK: block.color.8.4
+OK: block.color.8.11
+OK: block.color.9.2
+OK: block.color.9.4
+OK: block.color.9.11
+OK: block.color.10.2
+OK: block.color.10.4
+OK: block.color.10.11
+OK: block.color.11.2
+OK: block.color.11.4
+OK: block.color.11.11
+OK: block.color.12.2
+OK: block.color.12.4
+OK: block.color.12.11
+OK: block.color.13.2
+OK: block.color.13.4
+OK: block.color.13.11
+OK: block.color.14.2
+OK: block.color.14.4
+OK: block.color.14.11
+OK: block.color.15.2
+OK: block.color.15.4
+OK: block.color.15.11
+OK: block.color.16.2
+OK: block.color.16.4
+OK: block.color.16.11
+OK: block.color.17.2
+OK: block.color.17.4
+OK: block.color.17.11
+OK: block.color.18.2
+OK: block.color.18.4
+OK: block.color.18.11
+OK: block.color.19.2
+OK: block.color.19.4
+OK: block.color.19.11
+OK: block.color.20.2
+OK: block.color.20.4
+OK: block.color.20.11
+OK: block.color.21.2
+OK: block.color.21.4
+OK: block.color.21.11
+OK: block.color.22.2
+OK: block.color.22.4
+OK: block.color.22.11
+OK: block.color.23.2
+OK: block.color.23.4
+OK: block.color.23.11
+OK: block.color.24.2
+OK: block.color.24.4
+OK: block.color.24.11
+OK: block.color.25.2
+OK: block.color.25.4
+OK: block.color.25.11
+OK: block.color.26.2
+OK: block.color.26.4
+OK: block.color.26.11
+OK: block.color.27.2
+OK: block.color.27.4
+OK: block.color.27.11
+OK: block.color.28.2
+OK: block.color.28.4
+OK: block.color.28.11
+OK: block.color.29.2
+OK: block.color.29.4
+OK: block.color.29.11
+OK: block.color.30.2
+OK: block.color.30.4
+OK: block.color.30.11
+OK: block.color.31.2
+OK: block.color.31.4
+OK: block.color.31.11
+OK: block.color.32.2
+OK: block.color.32.4
+OK: block.color.32.11
+OK: block.color.33.2
+OK: block.color.33.4
+OK: block.color.33.11
+OK: block.color.34.2
+OK: block.color.34.4
+OK: block.color.34.11
+OK: block.color.35.2
+OK: block.color.35.4
+OK: block.color.35.11
+OK: block.color.36.2
+OK: block.color.36.4
+OK: block.color.36.11
+OK: block.color.37.2
+OK: block.color.37.4
+OK: block.color.37.11
+OK: block.color.38.2
+OK: block.color.38.4
+OK: block.color.38.11
+OK: block.color.39.2
+OK: block.color.39.4
+OK: block.color.39.11
+OK: block.color.40.2
+OK: block.color.40.4
+OK: block.color.40.11
+OK: block.color.41.2
+OK: block.color.41.4
+OK: block.color.41.11
+OK: block.color.42.2
+OK: block.color.42.4
+OK: block.color.42.11
+OK: block.color.43.2
+OK: block.color.43.4
+OK: block.color.43.11
+OK: block.color.44.2
+OK: block.color.44.4
+OK: block.color.44.11
+OK: block.color.45.2
+OK: block.color.45.4
+OK: block.color.45.11
+OK: block.color.46.2
+OK: block.color.46.4
+OK: block.color.46.11
+OK: block.color.47.2
+OK: block.color.47.4
+OK: block.color.47.11
+OK: block.color.48.2
+OK: block.color.48.4
+OK: block.color.48.11
+OK: block.color.49.2
+OK: block.color.49.4
+OK: block.color.49.11
+OK: block.color.50.2
+OK: block.color.50.4
+OK: block.color.50.11
+OK: block.color.51.2
+OK: block.color.51.4
+OK: block.color.51.11
+OK: block.color.52.2
+OK: block.color.52.4
+OK: block.color.52.11
+OK: block.color.53.2
+OK: block.color.53.4
+OK: block.color.53.11
+OK: block.color.54.2
+OK: block.color.54.4
+OK: block.color.54.11
+OK: block.color.55.2
+OK: block.color.55.4
+OK: block.color.55.11
+OK: block.color.56.2
+OK: block.color.56.4
+OK: block.color.56.11
+OK: block.color.57.2
+OK: block.color.57.4
+OK: block.color.57.11
+OK: block.color.58.2
+OK: block.color.58.4
+OK: block.color.58.11
+OK: block.color.59.2
+OK: block.color.59.4
+OK: block.color.59.11
+OK: block.color.60.2
+OK: block.color.60.4
+OK: block.color.60.11
+OK: block.color.61.2
+OK: block.color.61.4
+OK: block.color.61.11
+OK: block.color.62.2
+OK: block.color.62.4
+OK: block.color.62.11
+OK: block.color.63.2
+OK: block.color.63.4
+OK: block.color.63.11
+OK: block.color.64.2
+OK: block.color.64.4
+OK: block.color.64.11
+OK: block.color.65.2
+OK: block.color.65.4
+OK: block.color.65.11
+OK: block.color.66.2
+OK: block.color.66.4
+OK: block.color.66.11
+OK: block.color.67.2
+OK: block.color.67.4
+OK: block.color.67.11
+OK: block.color.68.2
+OK: block.color.68.4
+OK: block.color.68.11
+OK: block.color.69.2
+OK: block.color.69.4
+OK: block.color.69.11
+OK: block.color.70.2
+OK: block.color.70.4
+OK: block.color.70.11
+OK: block.color.71.2
+OK: block.color.71.4
+OK: block.color.71.11
+OK: block.color.72.2
+OK: block.color.72.4
+OK: block.color.72.11
+OK: block.color.73.2
+OK: block.color.73.4
+OK: block.color.73.11
+OK: block.color.74.2
+OK: block.color.74.4
+OK: block.color.74.11
+OK: block.color.75.2
+OK: block.color.75.4
+OK: block.color.75.11
+OK: block.color.76.2
+OK: block.color.76.4
+OK: block.color.76.11
+OK: block.color.77.2
+OK: block.color.77.4
+OK: block.color.77.11
+OK: block.color.78.2
+OK: block.color.78.4
+OK: block.color.78.11
+OK: block.color.79.2
+OK: block.color.79.4
+OK: block.color.79.11
+OK: block.color.80.2
+OK: block.color.80.4
+OK: block.color.80.11
+OK: block.color.81.2
+OK: block.color.81.4
+OK: block.color.81.11
+OK: block.color.82.2
+OK: block.color.82.4
+OK: block.color.82.11
+OK: block.color.83.2
+OK: block.color.83.4
+OK: block.color.83.11
+OK: block.color.84.2
+OK: block.color.84.4
+OK: block.color.84.11
+OK: block.color.85.2
+OK: block.color.85.4
+OK: block.color.85.11
+OK: block.color.86.2
+OK: block.color.86.4
+OK: block.color.86.11
+OK: block.color.87.2
+OK: block.color.87.4
+OK: block.color.87.11
+OK: block.color.88.2
+OK: block.color.88.4
+OK: block.color.88.11
+OK: block.color.89.2
+OK: block.color.89.4
+OK: block.color.89.11
+OK: block.color.90.2
+OK: block.color.90.4
+OK: block.color.90.11
+OK: block.color.91.2
+OK: block.color.91.4
+OK: block.color.91.11
+OK: block.color.92.2
+OK: block.color.92.4
+OK: block.color.92.11
+OK: block.color.93.2
+OK: block.color.93.4
+OK: block.color.93.11
+OK: block.color.94.2
+OK: block.color.94.4
+OK: block.color.94.11
+OK: block.color.95.2
+OK: block.color.95.4
+OK: block.color.95.11
+OK: block.color.96.2
+OK: block.color.96.4
+OK: block.color.96.11
+OK: block.color.97.2
+OK: block.color.97.4
+OK: block.color.97.11
+OK: block.color.98.2
+OK: block.color.98.4
+OK: block.color.98.11
+OK: block.color.99.2
+OK: block.color.99.4
+OK: block.color.99.11
+OK: block.color.100.2
+OK: block.color.100.4
+OK: block.color.100.11
+OK: block.color.101.2
+OK: block.color.101.4
+OK: block.color.101.11
+OK: block.color.102.2
+OK: block.color.102.4
+OK: block.color.102.11
+OK: block.color.103.2
+OK: block.color.103.4
+OK: block.color.103.11
+OK: block.color.104.2
+OK: block.color.104.4
+OK: block.color.104.11
+OK: block.color.105.2
+OK: block.color.105.4
+OK: block.color.105.11
+OK: block.color.106.2
+OK: block.color.106.4
+OK: block.color.106.11
+OK: block.color.107.2
+OK: block.color.107.4
+OK: block.color.107.11
+OK: block.color.108.2
+OK: block.color.108.4
+OK: block.color.108.11
+OK: block.color.109.2
+OK: block.color.109.4
+OK: block.color.109.11
+OK: block.color.110.2
+OK: block.color.110.4
+OK: block.color.110.11
+OK: block.color.111.2
+OK: block.color.111.4
+OK: block.color.111.11
+OK: block.color.112.2
+OK: block.color.112.4
+OK: block.color.112.11
+OK: block.color.113.2
+OK: block.color.113.4
+OK: block.color.113.11
+OK: block.color.114.2
+OK: block.color.114.4
+OK: block.color.114.11
+OK: block.color.115.2
+OK: block.color.115.4
+OK: block.color.115.11
+OK: block.color.116.2
+OK: block.color.116.4
+OK: block.color.116.11
+OK: block.color.117.2
+OK: block.color.117.4
+OK: block.color.117.11
+OK: block.color.118.2
+OK: block.color.118.4
+OK: block.color.118.11
+OK: block.color.119.2
+OK: block.color.119.4
+OK: block.color.119.11
+OK: block.color.120.2
+OK: block.color.120.4
+OK: block.color.120.11
+OK: block.unrelatedColumn
+OK: block.fontUnchanged
+OK: block.heightUnchanged
+OK: block.outsideUnchanged
+OK: block.formed
+OK: block.formationKeepsHeight
+OK: block.geometryJsonRightAligned
+OK: block.annotationJsonRightAligned
+OK: block.calculated
+OK: block.calculationKeepsHeight
+TOTAL_BLOCK_OUTPUT: passed=370; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5cd2b401c252466ca0a4be0467f31c05\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunResultBlockOutputTests; 2026-10-21T23:46:30
+===== modTestWorkbookInterface.RunConfigComparisonContractTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunConfigComparisonContractTests; 2026-10-21T23:46:31
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=179312; workingSet=168484864; privateBytes=116547584; cpu=24.296875
+EXCEL_AFTER_SUITE: pid=182452; workingSet=153591808; privateBytes=102981632; cpu=145.078125
+OK: comparison.comment.roundoff
+OK: comparison.comment.numberChange
+OK: comparison.comment.reasonChange
+OK: comparison.comment.status
+OK: comparison.axis.opposite
+OK: comparison.axis.swapNotReversed
+TOTAL_CONFIG_COMPARISON_CONTRACT: passed=6; failed=0
+
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_5cd2b401c252466ca0a4be0467f31c05\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: Yes
+SUITE_FINISHED: modTestWorkbookInterface.RunConfigComparisonContractTests; 2026-10-21T23:46:32
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

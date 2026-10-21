@@ -1,0 +1,8 @@
+{
+  "Status": "PASS",
+  "WorkbookSHA256": "7F07EE6012F6F4FFA2D1F7D24EF1A13841AD9EA187FC68AFDC05E1CFDD6F3FFA",
+  "SettingCell": "A7",
+  "Default": "Yes",
+  "ValidationFormula": "\"Yes,No\"",
+  "ConfigHyperlink": "'Справка'!A798"
+}
