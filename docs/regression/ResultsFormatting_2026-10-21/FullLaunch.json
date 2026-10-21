@@ -1,0 +1,13 @@
+{
+  "Started": "2026-10-21T23:50:38.3443036+03:00",
+  "PID": 104592,
+  "ProcessStartTicks": 639282126383357682,
+  "EvidenceDirectory": "docs/regression/FullOnOff_2026-10-22_ResultsFormatting_Run01",
+  "SourceSHA256": "0002E910E28AD95B03362296315839C245AAACAD80011B2ACA158115A69F0845",
+  "SourceCommit": "113ac7a0fb189ce71fe44e84511d0105c8598257",
+  "Deadline": "2026-10-22T10:00:00+03:00",
+  "ForecastHours": 5,
+  "Python": "C:\\Users\\avidzba\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+  "Stdout": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultsFormatting_2026-10-21\\FullLaunch.stdout.log",
+  "Stderr": "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\ResultsFormatting_2026-10-21\\FullLaunch.stderr.log"
+}
