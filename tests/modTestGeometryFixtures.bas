@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestGeometryFixtures"
+Attribute VB_Name = "modTestGeometryFixtures"
 Option Explicit
 
 ' ДЛЯ ТЕСТОВ: создаёт контрольные области общими геометрическими классами в мм.
@@ -526,4 +526,16 @@ End Function
 ' ДЛЯ ТЕСТОВ: таблица текущего типа содержит и размеры, и армирование.
 Public Function FixtureSelectedInput() As Object
     Set FixtureSelectedInput = ThisWorkbook.Names("rng" & FixtureSelectedType() & "Geometry").RefersToRange
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Повторяет две пользовательские команды для сценариев, проверяющих новый
+' ввод генератора. Сохранённый импорт AutoCAD повторно не получает.
+Public Function FixtureRunSectionWorkflow(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
+    settings.LoadFromWorkbook workbook
+    If StrComp(settings.GetRawString("Geometry.Source", ""), "AutoCAD", vbTextCompare) <> 0 Then
+        Dim formation As String: formation = FormSectionForWorkbook(workbook)
+    End If
+    FixtureRunSectionWorkflow = RunSectionCalculationForWorkbook(workbook, showMessages)
 End Function

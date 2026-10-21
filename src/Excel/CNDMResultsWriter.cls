@@ -19,6 +19,7 @@ Option Explicit
 ' Текущие Inputs не перечитываются: сохраняется именно рассчитанное состояние.
 
 Private Const ELEMENT_RESULT_COLUMNS As Long = 9 ' Столбцы результата каждого элемента: запуск, сочетание, профиль, вид НДС, имя элемента, материал, деформация, напряжение и состояние работы.
+Private Const MODEL_METADATA_COLUMNS As Long = 17 ' Исходные свойства элементов и аннотаций для восстановления модели без повторного построения.
 Private Const GEOMETRY_COLUMNS As Long = 15 ' Только расчетные бетонные элементы и арматура.
 Private Const CONTOUR_COLUMNS As Long = 17 ' Компактные аналитические исходные границы, формат v1.
 Private Const SECTION_PROPERTY_COLUMNS As Long = 6 ' Общие свойства сечения и LC-свойства уровня всего сечения.
@@ -34,6 +35,8 @@ Public Function OutputColumnCount(ByVal rangeName As String) As Long
     Select Case LCase$(Trim$(rangeName))
         Case "rngndmelementresults"
             OutputColumnCount = ELEMENT_RESULT_COLUMNS
+        Case "rngndmsectionmodelmetadata"
+            OutputColumnCount = MODEL_METADATA_COLUMNS
         Case "rngndmsectiongeometry"
             OutputColumnCount = GEOMETRY_COLUMNS
         Case "rngndmsectioncontours"
@@ -72,25 +75,34 @@ End Function
 ' геометрию, результаты элементов, свойства сечения, диаграммы материалов и аннотации.
 Public Sub WriteResults(ByVal workbook As Object, ByVal section As CSectionModel, _
         ByVal snapshot As CSectionPropertiesCalculator, ByVal batch As CBatchSectionCalculator, _
-        Optional ByVal units As CUnitSystem = Nothing)
+        Optional ByVal units As CUnitSystem = Nothing, Optional ByVal preserveGeometry As Boolean = False)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4450, "CNDMResultsWriter", "Книга Excel не передана."
     If section Is Nothing Then Err.Raise vbObjectError + 4451, "CNDMResultsWriter", "Модель сечения не передана."
     If snapshot Is Nothing Then Err.Raise vbObjectError + 4452, "CNDMResultsWriter", "Готовые характеристики снимка не переданы."
     If batch Is Nothing Then Err.Raise vbObjectError + 4454, "CNDMResultsWriter", "Пакетный расчетчик не передан."
 
     snapshot.ValidateSnapshot section, True
-    ClearResults workbook
+    If preserveGeometry Then
+        ClearCalculationData workbook
+    Else
+        ClearResults workbook
+    End If
 
     Dim runID As Date
     runID = Now
 
     WriteSnapshotTitle workbook
-    WriteSectionGeometry workbook, section, runID, units
-    WriteSectionContours workbook, section.Contours, runID, units
+    If preserveGeometry Then
+        UpdateGeometrySnapshotRunID workbook, runID
+    Else
+        WriteSectionGeometry workbook, section, runID, units
+        WriteSectionContours workbook, section.Contours, runID, units
+    End If
     WriteElementResults workbook, section, batch, runID, units
     WriteSectionProperties workbook, section, snapshot, batch, runID, units
     WriteMaterialDiagrams workbook, batch, runID, units
     WriteSectionAnnotations workbook, section, runID, units, batch
+    WriteModelMetadata workbook, section, runID
 End Sub
 
 ' После импорта AutoCAD записывает геометрию без расчёта сочетаний.
@@ -115,6 +127,73 @@ Public Sub WriteGeometryPreview(ByVal workbook As Object, ByVal section As CSect
     WriteEmptyElementResults workbook, runID, units
     WriteSectionPropertiesPreview workbook, section, snapshot, runID, units
     WriteSectionAnnotations workbook, section, runID, units
+    WriteModelMetadata workbook, section, runID
+End Sub
+
+
+
+' Удаляет только вычисленные данные. Исходная геометрия и её единицы остаются
+' прежними, поэтому повторные расчёты не накапливают погрешности пересохранения.
+Private Sub ClearCalculationData(ByVal workbook As Object)
+    ClearNamedRegion workbook, "rngNDMElementResults"
+    ClearNamedRegion workbook, "rngNDMSectionProperties"
+    ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
+    ClearNamedRegion workbook, "rngNDMSectionAnnotations"
+    ClearNamedRegion workbook, "rngNDMSectionModelMetadata"
+End Sub
+
+' Связывает неизменённые координаты снимка с новым расчётом; меняется только
+' служебная дата строк, а не координаты, инерции, контуры или единицы таблиц.
+Private Sub UpdateGeometrySnapshotRunID(ByVal workbook As Object, ByVal runID As Date)
+    Dim name As Variant, anchor As Object, count As Long
+    For Each name In Array("rngNDMSectionGeometry", "rngNDMSectionContours")
+        Set anchor = workbook.Names.Item(CStr(name)).RefersToRange
+        count = ExistingAnchoredRowCount(anchor) - 1
+        If count > 0 Then anchor.Offset(1, 0).Resize(count, 1).Value2 = CDbl(runID)
+    Next name
+End Sub
+
+' Сохраняет исходные сведения, которых нет в таблице изображения элементов.
+' Координаты и контуры здесь не дублируются. Все строки записываются одним блоком.
+Private Sub WriteModelMetadata(ByVal workbook As Object, ByVal section As CSectionModel, ByVal runID As Variant)
+    Dim anchor As Object, data() As Variant, headers As Variant
+    Set anchor = workbook.Names.Item("rngNDMSectionModelMetadata").RefersToRange
+    ReDim data(1 To 1 + section.ConcreteCount + section.RebarCount + section.AnnotationCount, 1 To MODEL_METADATA_COLUMNS)
+    headers = Array("RunID", "RecordType", "ItemID", "SourceName", "SourceHandle", "MaterialID", _
+        "SteelClass", "RecipeTrace", "SourceShapeType", "SourceWidth_mm", "SourceHeight_mm", _
+        "SourceRotation_rad", "SourceRotationKnown", "OriginalText", "OriginalValue", "OriginalUnit", "OriginalComment")
+    Dim i As Long, row As Long, shape As String, width As Double, height As Double, angle As Double, known As Boolean
+    For i = 0 To UBound(headers): data(1, i + 1) = headers(i): Next i
+    row = 2
+    For i = 1 To section.ConcreteCount
+        section.ConcreteSnapshotHints i, shape, width, height, angle, known
+        data(row, 1) = runID: data(row, 2) = "Concrete": data(row, 3) = section.ConcreteID(i)
+        data(row, 4) = section.ConcreteSourceName(i): data(row, 5) = section.ConcreteSourceHandle(i)
+        data(row, 6) = section.ConcreteMaterialID(i): data(row, 9) = shape
+        data(row, 10) = width: data(row, 11) = height: data(row, 12) = angle: data(row, 13) = known
+        data(row, 17) = section.ConcreteComment(i)
+        row = row + 1
+    Next i
+    For i = 1 To section.RebarCount
+        data(row, 1) = runID: data(row, 2) = "Rebar": data(row, 3) = section.RebarID(i)
+        data(row, 4) = section.RebarSourceName(i): data(row, 5) = section.RebarSourceHandle(i)
+        data(row, 6) = section.RebarMaterialID(i): data(row, 7) = section.RebarSteelClass(i)
+        data(row, 8) = section.RebarRecipeTrace(i): data(row, 17) = section.RebarComment(i)
+        row = row + 1
+    Next i
+    Dim annotations As CSectionAnnotations: Set annotations = section.Annotations
+    For i = 1 To annotations.Count
+        data(row, 1) = runID: data(row, 2) = "Annotation": data(row, 3) = annotations.AnnotationID(i)
+        data(row, 14) = annotations.Text(i): data(row, 15) = annotations.Value(i)
+        data(row, 16) = annotations.Unit(i): data(row, 17) = annotations.Comment(i)
+        row = row + 1
+    Next i
+    Dim column As Variant
+    For Each column In Array(2, 3, 4, 5, 7, 8, 9, 14, 16, 17)
+        anchor.Resize(UBound(data, 1), MODEL_METADATA_COLUMNS).Columns.Item(CLng(column)).NumberFormat = "@"
+    Next column
+    anchor.Resize(UBound(data, 1), MODEL_METADATA_COLUMNS).Value2 = data
+    FormatResultsBlock anchor, UBound(data, 1), MODEL_METADATA_COLUMNS, "Исходные сведения сохранённого сечения"
 End Sub
 
 ' Очищает только таблицы сохранённых расчётных данных перед новой записью.
@@ -127,6 +206,7 @@ Public Sub ClearResults(ByVal workbook As Object)
     ClearNamedRegion workbook, "rngNDMSectionContours"
     ClearNamedRegion workbook, "rngNDMSectionProperties"
     ClearNamedRegion workbook, "rngNDMSectionAnnotations"
+    ClearNamedRegion workbook, "rngNDMSectionModelMetadata"
     ClearNamedRegion workbook, "rngNDMMaterialDiagrams"
     Dim emptyContours As CSectionContours: Set emptyContours = New CSectionContours
     WriteSectionContours workbook, emptyContours, Empty
@@ -212,7 +292,7 @@ Private Function SnapshotTitleRange(ByVal workbook As Object) As Object
     Dim rightColumn As Long, blockRightColumn As Long
     rightColumn = anchor.Column
     For Each name In Array("rngNDMElementResults", "rngNDMSectionGeometry", _
-            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
+            "rngNDMSectionContours", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionModelMetadata")
         Set block = workbook.Names.Item(CStr(name)).RefersToRange
         blockRightColumn = block.Column + OutputColumnCount(CStr(name)) - 1
         If blockRightColumn > rightColumn Then rightColumn = blockRightColumn

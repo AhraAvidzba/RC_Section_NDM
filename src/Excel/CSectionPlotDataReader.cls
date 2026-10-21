@@ -126,9 +126,9 @@ Public Sub LoadGeometryPreviewFromWorkbook(ByVal workbook As Object, ByVal setti
     ResetReaderState
     Set mReadTables = CreateObject("Scripting.Dictionary")
     mGeometryOnly = True
-    mGeometryOnlyTitle = "Импортированная геометрия AutoCAD"
+    mGeometryOnlyTitle = "Сформированное сечение: " & ResultsGeometrySource(workbook)
     mVisualizationQuantity = "Stress"
-    mLoadCase = "AutoCAD import"
+    mLoadCase = "Сформированное сечение"
 
     ReadSectionProperties workbook
     mResultCaption = "Геометрия"

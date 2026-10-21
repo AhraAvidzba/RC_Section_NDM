@@ -66,23 +66,27 @@ Failed:
     ShowWorkbookMessage WorkbookErrorMessage("Схема не обновлена", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
-' Импортирует геометрию из активного чертежа AutoCAD и сохраняет её в Results.
-' Показывает причину отказа; расчёт прочности или трещин не выполняет.
-Public Sub ImportGeometryFromAutoCAD()
+' Формирует сечение по настройке Geometry.Source и сохраняет его для расчёта.
+' Кнопка не запускает решение НДС; ошибки и предупреждения показываются всегда.
+Public Sub FormSection()
     On Error GoTo Failed
     Dim informationEnabled As Boolean
     informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
-    message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
-    If informationEnabled Then ShowWorkbookMessage message, vbInformation, "RC Section NDM"
+    message = FormSectionForWorkbook(ThisWorkbook)
+    If InStr(1, message, "Предупреждени", vbTextCompare) > 0 Then
+        ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
+    ElseIf informationEnabled Then
+        ShowWorkbookMessage message, vbInformation, "RC Section NDM"
+    End If
     Exit Sub
 
 Failed:
-    ShowWorkbookMessage WorkbookErrorMessage("Импорт геометрии из AutoCAD не выполнен", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
+    ShowWorkbookMessage WorkbookErrorMessage("Сечение не сформировано", Err.Number, Err.Source, Err.Description), vbExclamation, "RC Section NDM"
 End Sub
 
 ' Читает выбранное НДС из Results и перерисовывает схему указанной книги.
-' Если расчётных результатов ещё нет, может показать сохранённую импортированную
+' Если расчётных результатов ещё нет, может показать сформированную
 ' геометрию. НДС и таблицы Results при этом не меняются.
 Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal raiseIfNoData As Boolean = True)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4140, "UpdateSectionPlotForWorkbook", "Книга Excel не передана."
@@ -123,7 +127,7 @@ Public Sub UpdateSectionPlotForWorkbook(ByVal workbook As Object, Optional ByVal
 End Sub
 
 ' Пытается прочитать данные обычной схемы с результатами расчёта.
-' Если сохранена только импортированная геометрия, возвращает False:
+' Если сечение сформировано, но ещё не рассчитано, возвращает False:
 ' вызывающий код покажет её с текущими настройками аннотаций без расчёта НДС.
 Private Function TryLoadFullPlotReader(ByVal reader As CSectionPlotDataReader, _
         ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
@@ -146,17 +150,14 @@ Failed:
     End If
 End Function
 
-' Проверяет, можно ли вместо полноценной расчетной схемы показать preview
-' импортированной AutoCAD-геометрии. Generated-сценарий сюда не допускается:
-' иначе AutoCAD-preview может остаться на листе после переключения
-' настроек на автоматическую генерацию сечения.
+' Разрешает показать сформированное сечение, пока результатов НДС ещё нет.
+' Источник берётся из снимка: переключение Config само по себе его не заменяет.
 Private Function CanUseGeometryPreview(ByVal workbook As Object, ByVal settings As CSystemSettingsReader) As Boolean
     On Error GoTo Failed
     If workbook Is Nothing Then Exit Function
     If settings Is Nothing Then Exit Function
-    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then Exit Function
-
-    CanUseGeometryPreview = (StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) = 0)
+    CanUseGeometryPreview = (Len(ResultsGeometrySource(workbook)) > 0 And _
+        Len(ReadLoadCasePropertyText(workbook, "ALL", "LoadReferenceX")) = 0)
     Exit Function
 Failed:
 End Function
@@ -173,7 +174,7 @@ Private Sub ClearSectionPlotForNoData(ByVal workbook As Object, ByVal titleText 
 Done:
 End Sub
 
-' Показывает сохранённую импортированную геометрию до расчёта НДС.
+' Показывает сформированное сечение до расчёта НДС.
 ' Оформление читает из Config, координаты и характеристики — из Results.
 Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     If workbook Is Nothing Then Err.Raise vbObjectError + 4141, "UpdateSectionGeometryPreviewForWorkbook", "Книга Excel не передана."
@@ -193,42 +194,56 @@ Public Sub UpdateSectionGeometryPreviewForWorkbook(ByVal workbook As Object)
     plotter.Draw workbook, reader, settings
 End Sub
 
-' Импортирует геометрию AutoCAD в CSectionModel и сохраняет её в Results без НДС.
-' Последующий расчёт с Geometry.Source = AutoCAD читает эти данные
-' без нового обращения к чертежу.
-Public Function ImportGeometryFromAutoCADForWorkbook(ByVal workbook As Object) As String
-    If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "ImportGeometryFromAutoCADForWorkbook", "Книга Excel не передана."
 
-    Dim settings As CSystemSettingsReader
-    Set settings = New CSystemSettingsReader
+' Формирует сечение выбранным способом и публикует полный снимок в Results.
+' Не читает сочетания и не выполняет расчёт; прежний снимок сохраняется,
+' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
+Public Function FormSectionForWorkbook(ByVal workbook As Object) As String
+    On Error GoTo Failed
+    If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
+    Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
+    guard.Enter workbook.Application
+    Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
-
-    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then
-        Err.Raise vbObjectError + 4143, "ImportGeometryFromAutoCADForWorkbook", _
-            "Для импорта выберите Geometry.Source = AutoCAD на листе Config."
-    End If
-
-    Dim units As CUnitSystem
-    Set units = New CUnitSystem
+    Dim units As CUnitSystem: Set units = New CUnitSystem
     units.LoadFromSettings settings
-
-    Dim importer As CAutoCADSectionModelImporter
-    Set importer = New CAutoCADSectionModelImporter
-
-    Dim section As CSectionModel
-    Set section = importer.ImportFromActiveDocument(settings, units)
-    ' Для элементов Region без собственного направления назначаем средний угол
-    ' распознанной сетки до сохранения геометрии. То же правило применяется
-    ' при чтении Results для расчёта.
-    section.ApplyAverageRotationToEquivalentAreaFallbacks
-
-    Dim writer As CNDMResultsWriter
-    Set writer = New CNDMResultsWriter
-    writer.WriteGeometryPreview workbook, section, PrepareSectionSnapshot(section), units
-
-    UpdateSectionGeometryPreviewForWorkbook workbook
-
-    ImportGeometryFromAutoCADForWorkbook = importer.ResultMessage(section)
+    Dim section As CSectionModel, importer As CAutoCADSectionModelImporter
+    Dim source As String: source = settings.GetRequiredChoice("Geometry.Source", Array("Generated", "AutoCAD"))
+    If StrComp(source, "Generated", vbTextCompare) = 0 Then
+        Set section = BuildWorkbookSectionModel(workbook, settings, units)
+    Else
+        Set importer = New CAutoCADSectionModelImporter
+        Set section = importer.ImportFromActiveDocument(settings, units)
+        section.ApplyAverageRotationToEquivalentAreaFallbacks
+    End If
+    Dim snapshot As CSectionPropertiesCalculator: Set snapshot = PrepareSectionSnapshot(section)
+    Dim summary As CBatchResultWriter: Set summary = New CBatchResultWriter
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
+    Dim issues As Collection: Set issues = New Collection
+    ValidateSnapshotOutputLayout issues, workbook, workbook.Worksheets.Item("Results"), writer, _
+        section.ConcreteCount + section.RebarCount, 0, 0, section.AnnotationCount, section.Contours.Count, 2
+    If issues.Count > 0 Then Err.Raise vbObjectError + 4163, "FormSectionForWorkbook", ResultsOutputLayoutMessage(0, issues)
+    summary.ClearSummary workbook
+    writer.WriteGeometryPreview workbook, section, snapshot, units
+    ClearSectionPlotForNoData workbook, "Сечение сформировано. Обновите схему или выполните расчёт."
+    If importer Is Nothing Then
+        FormSectionForWorkbook = "Сечение сформировано и сохранено в Results." & vbCrLf & vbCrLf & _
+            "Бетонных элементов: " & CStr(section.ConcreteCount) & "." & vbCrLf & _
+            "Стержней арматуры: " & CStr(section.RebarCount) & "."
+    Else
+        FormSectionForWorkbook = importer.ResultMessage(section) & vbCrLf & vbCrLf & _
+            "Сечение сформировано и сохранено в Results. Для расчёта нажмите «Выполнить расчёт»."
+    End If
+    If Len(section.GeometryWarningText) > 0 Then FormSectionForWorkbook = FormSectionForWorkbook & vbCrLf & section.GeometryWarningText
+    CalculateResultsSheet workbook
+    guard.Restore True
+    Exit Function
+Failed:
+    Dim number As Long, origin As String, description As String
+    number = Err.Number: origin = Err.Source: description = Err.Description
+    If Not guard Is Nothing Then guard.Restore
+    description = SectionFormationFailureText(description, source, settings)
+    Err.Raise number, origin, description
 End Function
 
 ' Возвращает пользовательское решение о показе обычных информационных окон.
@@ -246,8 +261,8 @@ Public Function NonCriticalMessagesEnabled(ByVal workbook As Object) As Boolean
     NonCriticalMessagesEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled")
 End Function
 
-' Выполняет расчёт в указанной книге: один раз читает Config, подготавливает
-' сечение и материалы, рассчитывает сочетания и записывает Results.
+' Читает сформированное сечение из Results и текущие расчётные настройки.
+' Подготавливает материалы один раз, рассчитывает сочетания и записывает Results.
 ' Возвращает итоговое сообщение; временные настройки Excel сохраняет CExcelAppStateGuard.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False) As String
     On Error GoTo Failed
@@ -272,16 +287,9 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Лист Config прочитан."
     report.AddValue "Загружено настроек", CStr(settings.KeyCount)
     report.AddValue "Дубликатов настроек", CStr(settings.DuplicateCount)
-    report.AddValue "Источник геометрии", settings.GetRawString("Geometry.Source", "Generated")
-    report.AddValue "Тип геометрии", settings.GetRawString("Geometry.Type", "-")
+    report.AddValue "Геометрия", "Сформированное сечение из Results"
     report.AddValue "Профили расчета", "rngCalculationProfiles"
 
-    ' Проверяем включённые настройки схемы до построения модели и очистки Results.
-    ' Если схема отключена целиком, параметры её автоматического обновления не нужны.
-    Dim plotEnabled As Boolean, autoUpdatePlot As Boolean
-    plotEnabled = settings.GetRequiredBoolean("Plot.Enabled")
-    If plotEnabled Then autoUpdatePlot = settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation")
-    
     Dim units As CUnitSystem
     Set units = New CUnitSystem
     report.AddSection "Единицы и знаки"
@@ -302,14 +310,11 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim section As CSectionModel
     report.AddSection "Геометрия и материалы"
-    report.AddStep "Начато построение CSectionModel."
-    report.AddValue "Geometry.Source", settings.GetRawString("Geometry.Source", "Generated")
-    report.AddValue "Geometry.Type", settings.GetRawString("Geometry.Type", "-")
-    report.AddValue "Mesh.StepX", settings.GetRawString("Mesh.StepX", settings.GetRawString("Mesh.Step", "-"))
-    report.AddValue "Mesh.StepY", settings.GetRawString("Mesh.StepY", settings.GetRawString("Mesh.StepX", settings.GetRawString("Mesh.Step", "-")))
-    report.AddValue "Mesh.BoundarySubdivisions", settings.GetRawString("Mesh.BoundarySubdivisions", "-")
-    Set section = BuildWorkbookSectionModel(workbook, settings, units)
-    report.AddStep "CSectionModel построен."
+    report.AddStep "Начато чтение сформированного сечения из Results."
+    Set section = ReadFormedSectionFromResults(workbook)
+    report.AddStep "CSectionModel прочитан из сохранённого снимка Results без генерации и импорта."
+    report.AddValue "Источник сохранённого сечения", section.SourceType
+    report.AddValue "Происхождение бетонной сетки", section.ConcreteMeshSource
     report.AddValue "Бетонных элементов", CStr(section.ConcreteCount)
     report.AddValue "Стержней арматуры", CStr(section.RebarCount)
     report.AddValue "Semantic-аннотаций", CStr(section.AnnotationCount)
@@ -322,7 +327,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim profiles As CCalculationProfileCatalog
     Set profiles = New CCalculationProfileCatalog
-    profiles.LoadFromWorkbook workbook
+    profiles.LoadFromWorkbook workbook, False
     report.AddStep "Загружен каталог расчетных профилей."
     report.AddValue "Профилей в rngCalculationProfiles", CStr(profiles.Count)
 
@@ -361,9 +366,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     report.AddStep "Проверена раскладка Results для " & CStr(batch.Count) & " сочетаний."
 
     report.AddSection "Подготовка книги"
-    report.AddStep "Начата очистка старых результатов."
-    ClearSectionResultsForWorkbook workbook
-    report.AddStep "Очищены rngBatchSummary и таблицы расчетного снимка Results."
+    report.AddStep "Сформированное сечение и прежние результаты сохраняются до завершения вычислений."
 
     report.AddSection "Расчет сочетаний"
     batch.Execute
@@ -381,24 +384,12 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     Dim ndmWriter As CNDMResultsWriter
     Set ndmWriter = New CNDMResultsWriter
-    report.AddStep "Начата запись результатов расчёта, геометрии и диаграмм в Results."
-    ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units
+    report.AddStep "Начата запись расчётных состояний и диаграмм в Results; координаты сформированного сечения сохраняются."
+    ndmWriter.WriteResults workbook, section, PrepareSectionSnapshot(section, materialProvider), batch, units, True
     report.AddStep "Расчетный снимок NDM записан на лист Results."
 
-    report.AddSection "Схема"
-    If Not plotEnabled Then
-        report.AddStep "Обновление схемы пропущено: Plot.Enabled = No. Существующая схема сохранена."
-    ElseIf Not autoUpdatePlot Then
-        report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
-    ElseIf batch.StateAvailableCount > 0 Then
-        report.AddStep "Начато обновление схемы сечения по Results."
-        UpdateSectionPlotForWorkbook workbook, False
-        report.AddStep "Схема сечения обновлена по сохраненному снимку Results."
-    Else
-        ClearSectionPlotForNoData workbook, _
-            "Схема не обновлена: нет доступных расчетных состояний LC."
-        report.AddStep "Схема очищена: в Results нет доступных именованных расчетных состояний."
-    End If
+    Dim plotWarning As String
+    plotWarning = UpdateCalculatedSectionPlot(workbook, settings, batch.StateAvailableCount, report)
 
     Dim totalElapsedSeconds As Double
     totalElapsedSeconds = ElapsedSecondsFrom(runStart)
@@ -407,7 +398,8 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
-    RunSectionCalculationForWorkbook = BuildCalculationMessage(section, settings, batch)
+    RunSectionCalculationForWorkbook = BuildCalculationMessage(section, batch)
+    If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
         report.Save RunSectionCalculationForWorkbook
@@ -436,6 +428,34 @@ Failed:
     End If
     On Error GoTo 0
     Err.Raise errorNumber, errorSource, errorDescription
+End Function
+
+
+' Выполняет отдельный этап оформления после успешной записи расчёта.
+' Ошибка схемы возвращается предупреждением и не отменяет готовое НДС.
+Private Function UpdateCalculatedSectionPlot(ByVal workbook As Object, ByVal settings As CSystemSettingsReader, _
+        ByVal stateCount As Long, ByVal report As CExecutionReport) As String
+    On Error GoTo Failed
+    report.AddSection "Схема"
+    If Not settings.GetRequiredBoolean("Plot.Enabled") Then
+        report.AddStep "Обновление схемы пропущено: Plot.Enabled = No."
+    ElseIf Not settings.GetRequiredBoolean("Plot.AutoUpdateAfterCalculation") Then
+        report.AddStep "Автообновление схемы пропущено: Plot.AutoUpdateAfterCalculation = No."
+    ElseIf stateCount > 0 Then
+        UpdateSectionPlotForWorkbook workbook, False
+        report.AddStep "Схема обновлена по сохранённым Results."
+    Else
+        ClearSectionPlotForNoData workbook, "Схема не обновлена: нет доступных расчётных состояний LC."
+        report.AddStep "Нет доступных расчётных состояний для схемы."
+    End If
+    Exit Function
+Failed:
+    Dim reason As String: reason = Err.Description
+    report.AddError "Схема не обновлена; результаты расчёта сохранены", reason
+    UpdateCalculatedSectionPlot = "Предупреждение:" & vbCrLf & _
+        "Схема не обновлена. Результаты расчёта сохранены в Results." & vbCrLf & vbCrLf & _
+        SectionRecipeErrorText(reason) & vbCrLf & vbCrLf & _
+        "После исправления настроек оформления нажмите «Обновить схему». Повторный расчёт не требуется."
 End Function
 
 ' До расчёта проверяет, хватает ли места таблицам Results. Учитывает заголовки,
@@ -626,15 +646,16 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
         ByVal ws As Object, ByVal ndmWriter As CNDMResultsWriter, ByVal elementCount As Long, _
         ByVal estimatedStateCount As Long, ByVal combinationCount As Long, _
         ByVal annotationCount As Long, ByVal contourCount As Long, ByVal requiredGapColumns As Long)
-    Dim names(1 To 6) As String
-    Dim rows(1 To 6) As Long
-    Dim cols(1 To 6) As Long
+    Dim names(1 To 7) As String
+    Dim rows(1 To 7) As Long
+    Dim cols(1 To 7) As Long
     names(1) = "rngNDMElementResults"
     names(2) = "rngNDMSectionGeometry"
     names(3) = "rngNDMSectionContours"
     names(4) = "rngNDMSectionProperties"
     names(5) = "rngNDMMaterialDiagrams"
     names(6) = "rngNDMSectionAnnotations"
+    names(7) = "rngNDMSectionModelMetadata"
 
     rows(1) = ndmWriter.EstimatedElementResultRows(elementCount, estimatedStateCount)
     rows(2) = 1 + elementCount
@@ -642,11 +663,12 @@ Private Sub ValidateSnapshotOutputLayout(ByVal issues As Collection, ByVal workb
     rows(4) = ndmWriter.EstimatedSectionPropertyRows(combinationCount, estimatedStateCount)
     rows(5) = 1 + MaxLong(1, estimatedStateCount) * 14
     rows(6) = 1 + MaxLong(2, annotationCount)
+    rows(7) = 1 + elementCount + annotationCount
 
     Dim index As Long
     Dim previousRightColumn As Long
     previousRightColumn = 0
-    For index = 1 To 6
+    For index = 1 To 7
         cols(index) = ndmWriter.OutputColumnCount(names(index))
 
         Dim anchor As Object
@@ -807,11 +829,10 @@ End Sub
 
 ' Готовит итоговое сообщение о запуске, отдельно выделяя ошибки входных строк.
 ' Берёт инженерные статусы из готовых результатов расчёта сочетаний.
-Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader, _
-        ByVal batch As CBatchSectionCalculator) As String
+Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator) As String
     Dim calculationCaption As String
     calculationCaption = "Расчет"
-    If IsAutoCADSnapshotCalculation(section, settings) Then
+    If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) = 0 Then
         calculationCaption = "Расчет импортированной из AutoCAD геометрии"
     End If
 
@@ -825,17 +846,6 @@ Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal s
             ". Определяющее сочетание: " & batch.WorstCombinationID
     End If
     If Len(section.GeometryWarningText) > 0 Then BuildCalculationMessage = BuildCalculationMessage & vbCrLf & section.GeometryWarningText
-End Function
-
-' Определяет, построено ли сечение по параметрам или прочитано из сохранённого
-' импорта AutoCAD. Нужно только для итогового сообщения; геометрию
-' уже подготовил BuildWorkbookSectionModel.
-Private Function IsAutoCADSnapshotCalculation(ByVal section As CSectionModel, ByVal settings As CSystemSettingsReader) As Boolean
-    If section Is Nothing Then Exit Function
-    If settings Is Nothing Then Exit Function
-    If StrComp(settings.GetRawString("Geometry.Source", "Generated"), "AutoCAD", vbTextCompare) <> 0 Then Exit Function
-
-    IsAutoCADSnapshotCalculation = (StrComp(section.SourceType, "AutoCADImport", vbTextCompare) = 0)
 End Function
 
 ' Формирует список всех сочетаний, принятых для расчёта.
@@ -1198,7 +1208,7 @@ Public Function BuildWorkbookSectionModel(ByVal workbook As Object, ByVal settin
         If StrComp(ResultsGeometrySource(workbook), "AutoCADImport", vbTextCompare) <> 0 Then
             Err.Raise vbObjectError + 4134, "BuildWorkbookSectionModel", _
                 "Выбрано Geometry.Source = AutoCAD, но на листе Results нет предварительно импортированной AutoCAD-геометрии. " & _
-                "Сначала нажмите кнопку ""Импортировать геометрию из AutoCAD""."
+                "Сначала нажмите кнопку ""Сформировать сечение""."
         End If
         Set BuildWorkbookSectionModel = ReadSectionGeometryFromResults(workbook, "AutoCADImport")
     Else
@@ -1230,44 +1240,6 @@ Private Function ElapsedSecondsFrom(ByVal startTimer As Double) As Double
     Else
         ElapsedSecondsFrom = 86400# - startTimer + nowTimer
     End If
-End Function
-
-' Считает заполненные ячейки строки или столбца от заданного начала таблицы.
-' Читает небольшими блоками Value2 до первой пустой ячейки, пустого текста
-' или одних пробелов. Ошибка Excel вызывает ошибку чтения, а не завершает таблицу.
-' Соседние ячейки за концом таблицы не включаются в результат.
-Public Function SnapshotAnchoredExtent(ByVal anchor As Object, ByVal columns As Boolean, _
-        Optional ByVal maxCount As Long = 0) As Long
-    Const BLOCK_SIZE As Long = 1024
-    Dim available As Long, offset As Long, count As Long, i As Long
-    If columns Then
-        available = anchor.Worksheet.Columns.Count - anchor.Column + 1
-    Else
-        available = anchor.Worksheet.Rows.Count - anchor.Row + 1
-    End If
-    If maxCount > 0 And maxCount < available Then available = maxCount
-    Dim block As Variant, value As Variant
-    Do While offset < available
-        count = available - offset
-        If count > BLOCK_SIZE Then count = BLOCK_SIZE
-        If columns Then
-            block = anchor.Offset(0, offset).Resize(1, count).Value2
-        Else
-            block = anchor.Offset(offset, 0).Resize(count, 1).Value2
-        End If
-        For i = 1 To count
-            If count = 1 Then
-                value = block
-            ElseIf columns Then
-                value = block(1, i)
-            Else
-                value = block(i, 1)
-            End If
-            If Len(Trim$(CStr(value))) = 0 Then Exit Function
-            SnapshotAnchoredExtent = SnapshotAnchoredExtent + 1
-        Next i
-        offset = offset + count
-    Loop
 End Function
 
 ' Подготавливает характеристики сечения и аннотации до записи результатов.

@@ -79,6 +79,40 @@ Public Function WorkbookErrorMessage(ByVal operation As String, ByVal number As 
     WorkbookErrorMessage = WorkbookErrorMessage & vbCrLf & "Код ошибки: " & CStr(number) & "."
 End Function
 
+
+' Дополняет причину отказа формирования понятными действиями. Причина, слои
+' и альтернативный способ задания сечения отделены пустыми строками.
+Public Function SectionFormationFailureText(ByVal reason As String, ByVal source As String, _
+        ByVal settings As CSystemSettingsReader) As String
+    SectionFormationFailureText = SectionRecipeErrorText(reason)
+    If StrComp(source, "AutoCAD", vbTextCompare) = 0 Then
+        Dim solutionTitle As String
+        solutionTitle = "Возможное решение:"
+        If InStr(1, SectionFormationFailureText, solutionTitle, vbTextCompare) > 0 Then solutionTitle = "Проверьте также:"
+        If Not settings Is Nothing Then
+            SectionFormationFailureText = SectionFormationFailureText & vbCrLf & vbCrLf & _
+                "Слои, указанные на Config:" & vbCrLf & _
+                "Бетон: «" & settings.GetRawString("AutoCAD.Common.ConcreteLayer", "не задан") & "»." & vbCrLf & _
+                "Арматура: «" & settings.GetRawString("AutoCAD.Common.RebarLayer", "не задан") & "»." & vbCrLf & _
+                "Наружный контур: «" & settings.GetRawString("AutoCAD.Common.SectionContourLayer", "не задан") & "»."
+        End If
+        SectionFormationFailureText = SectionFormationFailureText & vbCrLf & vbCrLf & _
+            solutionTitle & vbCrLf & _
+            "Проверьте активный чертёж и наличие подходящей геометрии на этих слоях." & vbCrLf & vbCrLf & _
+            "Другой вариант — сформировать сечение автоматически:" & vbCrLf & _
+            "1. На Config выберите Geometry.Source = Generated и нужный Geometry.Type." & vbCrLf & _
+            "2. На листе «Сечения» задайте размеры и армирование выбранного типа." & vbCrLf & _
+            "3. Нажмите «Сформировать сечение»."
+    ElseIf InStr(1, SectionFormationFailureText, "Возможное решение:", vbTextCompare) = 0 Then
+        SectionFormationFailureText = SectionFormationFailureText & vbCrLf & vbCrLf & _
+            "Возможное решение:" & vbCrLf & _
+            "Проверьте поля, указанные в сообщении." & vbCrLf & _
+            "Размеры и армирование задаются на листе «Сечения»." & vbCrLf & _
+            "Источник, тип сечения и сетка задаются на Config." & vbCrLf & _
+            "После исправления нажмите «Сформировать сечение»."
+    End If
+End Function
+
 ' Оформляет обычные сообщения reader-а так же, как геометрические ошибки.
 ' Адрес берётся из уже сохранённого места ввода; для утраченного ключа остаётся название раздела.
 Private Function ErrorReasonParagraphs(ByVal reason As String) As String

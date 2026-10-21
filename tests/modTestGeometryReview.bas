@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestGeometryReview"
+Attribute VB_Name = "modTestGeometryReview"
 Option Explicit
 ' ДЛЯ ТЕСТОВ: воспроизведение F01/F02 и проверка подписей отключённых граней.
 Private mPassed As Long, mFailed As Long, mReport As String
@@ -697,7 +697,7 @@ Private Sub CheckRoundedWorkbookRun(ByVal label As String, ByVal units As CUnitS
     loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
     loads.Cells(2, 1).Value2 = label: loads.Cells(2, 2).Value2 = -2# * properties.Area / units.InputForceToInternal(1#)
     loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#: loads.Cells(2, 5).Value2 = "PR1"
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     Check label & ".workbook.run", InStr(1, message, "ошиб", vbTextCompare) = 0 And InStr(1, message, "InputErr", vbTextCompare) = 0
     Check label & ".workbook.state", SnapshotAnchoredExtent(ThisWorkbook.Names("rngNDMElementResults").RefersToRange, False) > 1
     mReport = mReport & "WORKBOOK_RUN: " & label & "; " & message & vbCrLf

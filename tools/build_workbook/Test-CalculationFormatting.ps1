@@ -36,6 +36,9 @@ try{
   $sheet.Rows.Item(1).RowHeight=26.25;$sheet.Columns.Item(2).ColumnWidth=23.5
   $sheet.Range('A1').Font.Color=8388736;$sheet.Range('A1').Interior.Color=16777164
  }
+ $book.SaveCopyAs((Join-Path $directory 'BeforeFormation.xlsm'))
+ $formation=[string]$app.Run($prefix+'modWorkbookCalculation.FormSectionForWorkbook',$book)
+ if($formation -notmatch 'Сечение сформировано'){throw ('Formation failed: '+$formation)}
  $book.SaveCopyAs((Join-Path $directory 'BeforeCalculation.xlsm'))
  foreach($iteration in 1,2){
   $watch=[Diagnostics.Stopwatch]::StartNew()
@@ -57,5 +60,5 @@ try{
  if($owned){$p=Get-Process -Id $owned -ErrorAction SilentlyContinue;if($p -and $p.ProcessName -eq 'EXCEL' -and $p.StartTime.ToUniversalTime().Ticks -eq $ticks){Stop-Process -Id $owned -Force}}
 }
 if((Get-FileHash -LiteralPath $source).Hash -cne $hash){throw 'Source changed during formatting check.'}
-foreach($name in @('BeforeCalculation','AfterCalculation1','AfterCalculation2','AfterPlot1','AfterPlot2')){Restore-WorkbookPrintAreas (Join-Path $directory ($name+'.xlsm')) $areas}
+foreach($name in @('BeforeFormation','BeforeCalculation','AfterCalculation1','AfterCalculation2','AfterPlot1','AfterPlot2')){Restore-WorkbookPrintAreas (Join-Path $directory ($name+'.xlsm')) $areas}
 Write-Output 'RUNTIME_COMPLETED: compare saved formatting snapshots before accepting.'

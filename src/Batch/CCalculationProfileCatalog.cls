@@ -23,16 +23,28 @@ Private mProfiles() As CCalculationProfile ' Прочитанные профил
 Private mProfileIds() As String ' Стабильные ID профилей.
 Private mCount As Long ' Количество столбцов профилей в таблице.
 
-' Загружает каталог из именованного диапазона книги.
-Public Sub LoadFromWorkbook(ByVal workbook As Object)
+' Загружает каталог из именованного диапазона книги. Расчёт передаёт False,
+' чтобы настройки оформления проверялись только схемой и экспортом.
+Public Sub LoadFromWorkbook(ByVal workbook As Object, Optional ByVal includeVisualization As Boolean = True)
     If workbook Is Nothing Then Err.Raise vbObjectError + 3980, "CCalculationProfileCatalog", "Книга Excel не передана."
-    LoadFromRange workbook.Names.Item("rngCalculationProfiles").RefersToRange
+    LoadFromRange workbook.Names.Item("rngCalculationProfiles").RefersToRange, includeVisualization
 End Sub
 
-' Читает вертикальную таблицу профилей. Структурные строки в квадратных
+
+' Вычисляет буквы столбца один раз на профиль, без обращения к каждой ячейке.
+Private Function ProfileColumnName(ByVal column As Long) As String
+    Do While column > 0
+        column = column - 1
+        ProfileColumnName = Chr$(65 + column Mod 26) & ProfileColumnName
+        column = column \ 26
+    Loop
+End Function
+
+' Читает вертикальную таблицу профилей; includeVisualization=False исключает
+' только поля оформления. Структурные строки в квадратных
 ' скобках пропускаются. Каталог доступен только после успешного чтения всех
 ' столбцов; при отказе частичные данные удаляются, исходная ошибка сохраняется.
-Public Sub LoadFromRange(ByVal source As Object)
+Public Sub LoadFromRange(ByVal source As Object, Optional ByVal includeVisualization As Boolean = True)
     If source Is Nothing Then Err.Raise vbObjectError + 3981, "CCalculationProfileCatalog", "Диапазон rngCalculationProfiles не найден."
     Clear
     On Error GoTo Failed
@@ -60,7 +72,7 @@ Public Sub LoadFromRange(ByVal source As Object)
     Dim profileIndex As Long
     For profileIndex = 1 To profileCount
         mProfileIds(profileIndex) = profileIds(profileIndex)
-        Set mProfiles(profileIndex) = BuildProfile(source, data, profileColumns(profileIndex), profileIds(profileIndex))
+        Set mProfiles(profileIndex) = BuildProfile(source, data, profileColumns(profileIndex), profileIds(profileIndex), includeVisualization)
     Next profileIndex
     mCount = profileCount
     Exit Sub
@@ -74,7 +86,7 @@ End Sub
 ' Создает профиль по одному столбцу PR и сохраняет адреса его параметров
 ' для понятной ошибки ввода. Адреса не передаются в расчетное ядро.
 Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
-        ByVal profileColumn As Long, ByVal profileId As String) As CCalculationProfile
+        ByVal profileColumn As Long, ByVal profileId As String, ByVal includeVisualization As Boolean) As CCalculationProfile
     On Error GoTo InvalidValue
     Dim values As Object
     Dim locations As Object
@@ -84,13 +96,17 @@ Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
     values.CompareMode = 1
     locations.CompareMode = 1
 
-    Dim rowIndex As Long
+    Dim rowIndex As Long, firstRow As Long, columnName As String, sheetName As String
+    firstRow = source.Row: sheetName = source.Worksheet.Name
+    columnName = ProfileColumnName(source.Column + profileColumn - 1)
     For rowIndex = 1 To UBound(data, 1)
         Dim keyText As String
         keyText = Trim$(CStr(data(rowIndex, 2)))
         If Len(keyText) > 0 Then
-            locations(keyText) = source.Worksheet.Name & "!" & source.Cells(rowIndex, profileColumn).Address(False, False)
-            values(keyText) = ProfileCellText(data(rowIndex, profileColumn), keyText, profileId, locations)
+            If includeVisualization Or StrComp(Left$(keyText, Len("Visualization.")), "Visualization.", vbTextCompare) <> 0 Then
+                locations(keyText) = sheetName & "!" & columnName & CStr(firstRow + rowIndex - 1)
+                values(keyText) = ProfileCellText(data(rowIndex, profileColumn), keyText, profileId, locations)
+            End If
         End If
     Next rowIndex
 
@@ -118,18 +134,20 @@ Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
     If profile.StabilityEnabled Then RequireProfileValue values, activeKey
     profile.SetStabilityValueSet ProfileValue(values, activeKey)
 
-    activeKey = "Visualization.State"
-    RequireProfileValue values, activeKey
-    profile.SetVisualization ProfileValue(values, activeKey), vbNullString
-    activeKey = "Visualization.Quantity"
-    RequireProfileValue values, activeKey
-    profile.SetVisualization vbNullString, ProfileValue(values, activeKey)
-    activeKey = "Visualization.StressPrecision"
-    RequireProfileValue values, activeKey
-    profile.SetVisualization vbNullString, vbNullString, ProfileValue(values, activeKey)
-    activeKey = "Visualization.StrainPrecision"
-    RequireProfileValue values, activeKey
-    profile.SetVisualization vbNullString, vbNullString, vbNullString, ProfileValue(values, activeKey)
+    If includeVisualization Then
+        activeKey = "Visualization.State"
+        RequireProfileValue values, activeKey
+        profile.SetVisualization ProfileValue(values, activeKey), vbNullString
+        activeKey = "Visualization.Quantity"
+        RequireProfileValue values, activeKey
+        profile.SetVisualization vbNullString, ProfileValue(values, activeKey)
+        activeKey = "Visualization.StressPrecision"
+        RequireProfileValue values, activeKey
+        profile.SetVisualization vbNullString, vbNullString, ProfileValue(values, activeKey)
+        activeKey = "Visualization.StrainPrecision"
+        RequireProfileValue values, activeKey
+        profile.SetVisualization vbNullString, vbNullString, vbNullString, ProfileValue(values, activeKey)
+    End If
 
     Set BuildProfile = profile
     Exit Function

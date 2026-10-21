@@ -170,6 +170,7 @@ try {
         "rngNDMSectionContours",
         "rngNDMSectionProperties",
         "rngNDMSectionAnnotations",
+        "rngNDMSectionModelMetadata",
         "rngNDMMaterialDiagrams"
     )
 
@@ -191,6 +192,11 @@ try {
         $sectionContoursRange = $workbook.Names.Item("rngNDMSectionContours").RefersToRange
         $sectionPropertiesRange = $workbook.Names.Item("rngNDMSectionProperties").RefersToRange
         $sectionAnnotationsRange = $workbook.Names.Item("rngNDMSectionAnnotations").RefersToRange
+        $modelMetadataRange = $workbook.Names.Item("rngNDMSectionModelMetadata").RefersToRange
+        Add-Check $checks "Results model metadata anchor" (
+            $modelMetadataRange.Worksheet.Name -eq 'Results' -and
+            $modelMetadataRange.Rows.Count -eq 1 -and $modelMetadataRange.Columns.Count -eq 1
+        ) $modelMetadataRange.Address()
         $materialDiagramsRange = $workbook.Names.Item("rngNDMMaterialDiagrams").RefersToRange
         $stabilityLoadsRange = $workbook.Names.Item("rngStabilityDurationLoads").RefersToRange
         $sp35TableRange = $workbook.Names.Item("rngSP35Table721").RefersToRange

@@ -32,7 +32,7 @@ Public Function RunOverloadTimingCase(ByVal specification As String) As String
     loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).Value2 = values
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     started = Timer
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
     If mFocusedBatch Is Nothing Then Err.Raise 5, , "Calculation did not reach batch completion: " & message
     Set result = mFocusedBatch.ResultAt(1)

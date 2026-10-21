@@ -36,7 +36,7 @@ Public Function RunOpenIssuesReproduction() As String
         loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).Value2 = values
         Set mFocusedBatch = Nothing
         Dim message As String
-        message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+        message = FixtureRunSectionWorkflow(ThisWorkbook, False)
         If mFocusedBatch Is Nothing Then Err.Raise 5, , "Batch not captured."
         output = output & "MY_REPRO|factor=" & CStr(factor) & "|" & mFocusedBatch.ResultAt(1).CrackWidthMeta.ResultComment & vbCrLf
         AssertTrue stats, "my." & CStr(factor) & ".widthCalculated", mFocusedBatch.ResultAt(1).CrackWidthMeta.Calculated

@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestWorkbookInterface"
+Attribute VB_Name = "modTestWorkbookInterface"
 Option Explicit
 
 ' ==========================================================================
@@ -161,8 +161,8 @@ Public Function RunWorkbookInterfaceTests() As String
     AppendLine stats, "RUN: TestPartialCombinationIsInvalid"
     TestPartialCombinationIsInvalid stats
     TestInvalidProfileIdDoesNotRunPlot stats
-    TestAutoCADSourceRequiresManualImport stats
-    TestAutoCADImportButtonRejectsGeneratedSource stats
+    TestCalculationRequiresFormedSection stats
+    TestFormButtonBuildsGeneratedSection stats
     TestAutoCADImporterTreatsDrawingUnitsAsMillimeters stats
     TestAudit03InputAreaImportFilter stats
     TestAudit03ImportedSnapshotUnitChanges stats
@@ -304,8 +304,11 @@ Private Sub TestButtons(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.buttons.clear.exists", Not clearButton Is Nothing
     AssertTrue stats, "ui.buttons.autocad.exists", Not acadButton Is Nothing
     AssertTrue stats, "ui.buttons.plot.exists", Not plotButton Is Nothing
+    AssertTrue stats, "ui.buttons.order", importButton.Top < runButton.Top And runButton.Top < plotButton.Top And _
+        plotButton.Top < acadButton.Top And acadButton.Top < clearButton.Top
+    AssertTrue stats, "ui.buttons.form.caption", importButton.TextFrame.Characters.Text = "Сформировать сечение"
     AssertTrue stats, "ui.buttons.run.macro", InStr(1, runButton.OnAction, "RunSectionCalculation", vbTextCompare) > 0
-    AssertTrue stats, "ui.buttons.import.macro", InStr(1, importButton.OnAction, "ImportGeometryFromAutoCAD", vbTextCompare) > 0
+    AssertTrue stats, "ui.buttons.import.macro", InStr(1, importButton.OnAction, "FormSection", vbTextCompare) > 0
     AssertTrue stats, "ui.buttons.clear.macro", InStr(1, clearButton.OnAction, "ClearAutoCADDrawing", vbTextCompare) > 0
     AssertTrue stats, "ui.buttons.autocad.macro", InStr(1, acadButton.OnAction, "ExportSectionStressToAutoCAD", vbTextCompare) > 0
     AssertTrue stats, "ui.buttons.plot.macro", InStr(1, plotButton.OnAction, "UpdateSectionPlot", vbTextCompare) > 0
@@ -406,7 +409,7 @@ Private Sub TestExecutionReportFile(ByRef stats As TUiTestStats)
     DeleteFileIfExists reportPath
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.executionReport.message", InStr(1, message, "Пошаговый отчет сохранен", vbTextCompare) > 0
     AssertTrue stats, "ui.executionReport.fileExists", FileExists(reportPath)
@@ -530,7 +533,7 @@ Private Sub TestExcelApplicationStateGuardRestoresSettings(ByRef stats As TUiTes
     oldDisplayAlerts = app.DisplayAlerts
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.excelGuard.run", InStr(1, message, "Расчет", vbTextCompare) > 0
     AssertTrue stats, "ui.excelGuard.calculation", app.Calculation = oldCalculation
@@ -691,7 +694,7 @@ Private Sub TestPartialCombinationIsInvalid(ByRef stats As TUiTestStats)
     AssertTrue stats, "ui.loads.partial.invalid", batch.ResultAt(1).Status = "InputErr"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertTrue stats, "ui.loads.partial.message", InStr(1, message, "ошиб", vbTextCompare) > 0 And _
         InStr(1, message, "InputErr", vbTextCompare) > 0
 End Sub
@@ -707,7 +710,7 @@ Private Sub TestInvalidProfileIdDoesNotRunPlot(ByRef stats As TUiTestStats)
     loads.Cells.Item(2, 5).ClearContents
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.loads.invalidProfileId.message", _
         InStr(1, message, "InputErr", vbTextCompare) > 0 And _
@@ -719,7 +722,7 @@ End Sub
 ' Проверяет, что расчет в режиме AutoCAD не запускает скрытый импорт.
 ' Пользователь должен сначала явно нажать отдельную кнопку импорта; иначе
 ' расчет останавливается до очистки старых Results и до обращения к AutoCAD.
-Private Sub TestAutoCADSourceRequiresManualImport(ByRef stats As TUiTestStats)
+Private Sub TestCalculationRequiresFormedSection(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Geometry.Source", "AutoCAD"
     ClearSectionResultsForWorkbook ThisWorkbook
@@ -733,27 +736,26 @@ Private Sub TestAutoCADSourceRequiresManualImport(ByRef stats As TUiTestStats)
     On Error GoTo 0
 
     AssertTrue stats, "ui.autocad.manualImport.required", _
-        InStr(1, description, "предварительно импортированной", vbTextCompare) > 0 And _
-        InStr(1, description, "Импортировать геометрию", vbTextCompare) > 0
+        InStr(1, description, "нет сформированного сечения", vbTextCompare) > 0 And _
+        InStr(1, description, "Сформировать сечение", vbTextCompare) > 0
 End Sub
 
-' Проверяет защиту отдельной кнопки импорта: если пользователь оставил
-' Geometry.Source = Generated, макрос должен объяснить, что импорт недоступен
-' в этом режиме, и не должен пытаться подключаться к AutoCAD.
-Private Sub TestAutoCADImportButtonRejectsGeneratedSource(ByRef stats As TUiTestStats)
+' При Generated первая кнопка строит сечение по таблице на листе «Сечения».
+' Доступ к AutoCAD и расчёт НДС для этого не требуются.
+Private Sub TestFormButtonBuildsGeneratedSection(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Geometry.Source", "Generated"
 
     Dim message As String
     On Error Resume Next
-    message = ImportGeometryFromAutoCADForWorkbook(ThisWorkbook)
+    message = FormSectionForWorkbook(ThisWorkbook)
     Dim description As String
     description = Err.Description
     Err.Clear
     On Error GoTo 0
 
-    AssertTrue stats, "ui.autocad.import.generatedRejected", _
-        InStr(1, description, "Geometry.Source = AutoCAD", vbTextCompare) > 0
+    AssertTrue stats, "ui.form.generated.completed", Len(description) = 0 And InStr(message, "Сечение сформировано") > 0
+    AssertTrue stats, "ui.form.generated.snapshot", ResultsGeometrySource(ThisWorkbook) = "Generated"
 End Sub
 
 ' Проверяет, что live AutoCAD-import не масштабирует координаты DWG через
@@ -939,7 +941,7 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertTrue stats, "ui.plot.overlay.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
 
     Dim loadX As Double
@@ -1078,7 +1080,7 @@ Private Sub TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC(ByRef stats
     SetSystemSetting "Plot.LoadCase", "Worst"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.plot.generatedWorst.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTrue stats, "ui.plot.generatedWorst.drawsCalculatedLc", PlotVisibleTitleContains("LC1")
@@ -1094,7 +1096,7 @@ Private Sub TestProfileDrivenPlotUsesSnapshotState(ByRef stats As TUiTestStats)
     SetSystemSetting "Plot.LoadCase", "Worst"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.profilePlot.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTrue stats, "ui.profilePlot.hasElementStateRows", ResultTableRowCount("rngNDMElementResults") > 1
@@ -1115,7 +1117,7 @@ Private Sub TestMissingProfileStateDrawsGeometryOnly(ByRef stats As TUiTestStats
     SetSystemSetting "Plot.LoadCase", "LC1"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertTrue stats, "ui.plot.missingState.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
 
     SetProfileSetting "PR2", "Visualization.State", "CapacityState"
@@ -1186,7 +1188,7 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     loads.Cells.Item(2, 7).Value2 = "saved geometry"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.autocad.run.savedGeometry.message", _
         InStr(1, message, "Расчет импортированной из AutoCAD геометрии завершен", vbTextCompare) > 0
@@ -1240,7 +1242,7 @@ End Sub
 Private Sub TestCircleWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareCircleInput
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.run.message", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     Dim summary As Object
@@ -1383,7 +1385,7 @@ Private Sub TestThirtyCombinationsWithFiveStatesWriteSnapshot(ByRef stats As TUi
     Next rowIndex
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.results.fullSnapshot.message", _
         InStr(1, message, "Расчет завершен", vbTextCompare) > 0
@@ -1458,7 +1460,7 @@ Private Sub TestDynamicLoadCombinationRangeAndLayoutGuard(ByRef stats As TUiTest
     Dim errorText As String
     On Error Resume Next
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     errorNumber = Err.Number
     errorText = Err.Description
     Err.Clear
@@ -1557,7 +1559,7 @@ Private Sub TestLargeSnapshotPlotStress(ByRef stats As TUiTestStats)
     Next rowIndex
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     Dim geometryRowCount As Long
     geometryRowCount = ResultTableRowCount("rngNDMSectionGeometry") - 1
@@ -1590,7 +1592,7 @@ End Sub
 Private Sub TestRectanglesWorkbookRunWritesResults(ByRef stats As TUiTestStats)
     PrepareRectanglesInput
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.rectangles.message", InStr(1, message, "завершен", vbTextCompare) > 0
     Dim summary As Object
@@ -1612,7 +1614,7 @@ Private Sub TestRectanglesMomentUltimateStrainWorkbookPath(ByRef stats As TUiTes
     PrepareUserRectanglesMomentUltimateInput
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     ThisWorkbook.Application.CalculateFull
 
     Dim resultsSheet As Object
@@ -1649,7 +1651,7 @@ Private Sub TestStrengthSummaryUsesOutputCurvatureUnit(ByRef stats As TUiTestSta
     SetSystemSetting "Units.Curvature.Output", "1/m"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     ThisWorkbook.Application.CalculateFull
 
     Dim resultsSheet As Object
@@ -1701,7 +1703,7 @@ Private Sub TestRectanglesPureBendingUltimateStrainWorkbookPath(ByRef stats As T
     loads.Cells.Item(2, 7).Value2 = "pure bending ultimate regression"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     ThisWorkbook.Application.CalculateFull
 
     Dim resultsSheet As Object
@@ -1741,7 +1743,7 @@ Private Sub TestRectanglesPureBendingDirectStateWorkbookPath(ByRef stats As TUiT
     loads.Cells.Item(2, 7).Value2 = "pure bending direct regression"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     ThisWorkbook.Application.CalculateFull
 
     Dim resultsSheet As Object
@@ -1774,7 +1776,7 @@ Private Sub TestRectanglesAxialTensionExtensionFromWorkbookSettings(ByRef stats 
     DeleteFileIfExists reportPath
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     Dim resultsSheet As Object
     Set resultsSheet = ThisWorkbook.Worksheets.Item("Results")
@@ -1868,7 +1870,7 @@ Private Sub TestGoverningCombinationWritesDetailedResults(ByRef stats As TUiTest
     loads.Cells.Item(3, 7).Value2 = "governing"
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     ThisWorkbook.Application.CalculateFull
 
     Dim resultsSheet As Object
@@ -3434,6 +3436,8 @@ Private Sub PrepareCircleInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "Circle"
+    FixtureResetReinforcement "Circle"
+    SetSystemSetting "Circle.Diameter", "300"
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
     SetSystemSetting "Plot.LoadCase", "LC1"
     SetSystemSetting "Rebar.AxisDistance", "40"
@@ -3468,6 +3472,9 @@ Private Sub PrepareRectanglesInput()
     SetSystemSetting "Sign.My.User", "+X tension"
     SetSystemSetting "Geometry.Source", "Generated"
     SetSystemSetting "Geometry.Type", "Rectangles"
+    FixtureResetReinforcement "Rectangles"
+    SetSystemSetting "Rectangles.SectionType", "TwoRect"
+    SetSystemSetting "Rectangles.UpperOffsetX", "0"
     SetSystemSetting "Plot.LoadCase", "LC_L"
     SetSystemSetting "Mesh.StepX", "40"
     SetSystemSetting "Mesh.StepY", "40"
@@ -4049,7 +4056,7 @@ Public Function RunAudit02NoPlotDiagnostic() As String
     PrepareCircleInput
     SetSystemSetting "General.ExecutionReportEnabled", "No"
     SetSystemSetting "Plot.AutoUpdateAfterCalculation", "No"
-    RunAudit02NoPlotDiagnostic = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    RunAudit02NoPlotDiagnostic = FixtureRunSectionWorkflow(ThisWorkbook, False)
     Exit Function
 Failed:
     RunAudit02NoPlotDiagnostic = "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
@@ -4089,7 +4096,7 @@ Private Sub TestAudit02SavedResultsIgnoreMaterialChanges(ByRef stats As TUiTestS
     On Error GoTo RestoreFailed
 
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertTrue stats, "audit02.saved.run", InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     Dim tables As Variant
     tables = Array("rngNDMSectionGeometry", "rngNDMSectionContours", "rngNDMElementResults", "rngNDMSectionProperties", _
@@ -5856,7 +5863,7 @@ Private Sub TestAudit03InputUnitConsumers(ByRef stats As TUiTestStats)
                         ".s" & CStr(stressIndex) & ".k" & CStr(curvatureIndex)
                     AppendLine stats, "RUN: " & prefix
                     caseFailures = stats.Failed
-                    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+                    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
                     AssertTrue stats, prefix & ".completed", Len(message) > 0
                     AssertTrue stats, prefix & ".strengthState", ResultsPropertyExists("INPUT1", "State.StrengthState.Epsilon0")
                     AssertTrue stats, prefix & ".capacityState", ResultsPropertyExists("INPUT1", "State.CapacityState.Epsilon0")
@@ -6362,7 +6369,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             loads.Cells(2, 3).Value2 = 1000000# / momentFactor * signMx
             loads.Cells(2, 4).Value2 = -750000# / momentFactor * signMy
             loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 6).Value2 = ChrW$(&H3BB) & "*Mxy"
-            message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            message = FixtureRunSectionWorkflow(ThisWorkbook, False)
             AssertTrue stats, prefix & ".run", InStr(1, message, "Расчет импортированной", vbTextCompare) > 0
             AssertTrue stats, prefix & ".hasState", ResultTableRowCount("rngNDMElementResults") > 1
             AssertClose stats, prefix & ".loadN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * forceFactor * signN, -100000#, 0.001
@@ -6396,7 +6403,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     loads.Cells(2, 2).Value2 = -100#: loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#
     SetSystemSetting "Units.Force.Input", "N"
     SetSystemSetting "Solver.ToleranceN", "0.001"
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertClose stats, "audit03.importUnits.rawUnchanged.oldN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * 9806.65, -100#, 0.001
     smallStrain = CDbl(ResultsPropertyValue("LC_IMPORT", "State.StrengthState.Epsilon0"))
     AppendLine stats, "IMPORTED_RAW_LOAD: stage=N; epsilon0=" & CStr(smallStrain) & _
@@ -6405,7 +6412,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
         "; Nint=" & ResultsPropertyValue("LC_IMPORT", "Nint")
     SetSystemSetting "Units.Force.Input", "kN"
     SetSystemSetting "Solver.ToleranceN", "0.000001"
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertClose stats, "audit03.importUnits.rawUnchanged.number", CDbl(loads.Cells(2, 2).Value2), -100#, 0#
     AssertClose stats, "audit03.importUnits.rawUnchanged.newN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * 9806.65, -100000#, 0.001
     AssertClose stats, "audit03.importUnits.rawUnchanged.equilibrium", CDbl(ResultsPropertyValue("LC_IMPORT", "Nint")) * 9806.65, -100000#, 0.001
@@ -6422,7 +6429,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     solveCount = SectionEquilibriumSolveCount()
     SetSystemSetting "Units.Length.Output", "ft"
     On Error Resume Next
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     errorNumber = Err.Number: description = Err.Description
     Err.Clear
     On Error GoTo Failed
@@ -6432,7 +6439,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
     actual = ResultTable("rngNDMSectionGeometry")
     Audit03ComparePlainSnapshot stats, "audit03.importUnits.invalidOutput.snapshotPreserved", preview, actual, 1
     SetSystemSetting "Units.Length.Output", "m"
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertTrue stats, "audit03.importUnits.invalidOutput.recovery", InStr(1, message, "Расчет импортированной", vbTextCompare) > 0
     Audit03AssertAutoCADMmGeometry stats, "audit03.importUnits.invalidOutput.recoveredGeometry", section
     GoTo Restore
@@ -6601,7 +6608,7 @@ Private Sub TestAudit03SettingErrorMessages(ByRef stats As TUiTestStats)
     loads.Offset(1, 0).Resize(loads.Rows.Count - 1, loads.Columns.Count).ClearContents
     loads.Cells(2, 1).Value2 = "INPUT_MESSAGE": loads.Cells(2, 2).Value2 = 1#
     loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#: loads.Cells(2, 5).Value2 = "PR2"
-    text = RunSectionCalculationForWorkbook(ThisWorkbook)
+    text = FixtureRunSectionWorkflow(ThisWorkbook)
     For row = 2 To systemRange.Rows.Count
         If CStr(systemRange.Cells(row, 1).Value2) = "SLS.Crack.Allowable" Then Set cell = systemRange.Cells(row, 2): Exit For
     Next row
@@ -7457,7 +7464,7 @@ Public Function RunExcelGuardWorkflowTests() As String
     oldAlerts = app.DisplayAlerts: oldCalculation = app.Calculation
     SetSystemSetting "Geometry.Type", "Invalid.Guard.Test"
     On Error Resume Next
-    Err.Clear: message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    Err.Clear: message = FormSectionForWorkbook(ThisWorkbook)
     code = Err.Number
     On Error GoTo Failed
     AssertTrue stats, "guard.workflow.invalidInput", code <> 0
@@ -7962,4 +7969,129 @@ FailedRestore:
     AssertTrue stats, "ui.corrected.restore; " & CStr(Err.Number) & "; " & Err.Description, False
 Finished:
     RunCorrectedUiExpectationsTests = stats.Report & "TOTAL_CORRECTED_UI_EXPECTATIONS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & vbCrLf
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Направленная проверка пяти команд без длительного перебора всех полей Config.
+Public Function RunSectionWorkflowUiTests() As String
+    Dim stats As TUiTestStats, saved As Variant
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    TestButtons stats
+    TestCalculationRequiresFormedSection stats
+    TestFormButtonBuildsGeneratedSection stats
+Done:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    AppendLine stats, "TOTAL_WORKFLOW_UI: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunSectionWorkflowUiTests = stats.Report
+    Exit Function
+Failed:
+    AssertTrue stats, "unexpected.workflow." & Err.Number & "." & Err.Description, False
+    Resume Done
+End Function
+
+
+' Сравнивает весь блок без служебной даты запуска. Читает уже готовые массивы,
+' поэтому размер сечения не увеличивает число обращений к Excel.
+Private Function WorkflowSameTable(ByVal before As Variant, ByVal after As Variant) As Boolean
+    On Error GoTo Different
+    If UBound(before, 1) <> UBound(after, 1) Or UBound(before, 2) <> UBound(after, 2) Then Exit Function
+    Dim row As Long, column As Long
+    For row = 1 To UBound(before, 1)
+        For column = 2 To UBound(before, 2)
+            If IsError(before(row, column)) Or IsError(after(row, column)) Then Exit Function
+            If IsNumeric(before(row, column)) And IsNumeric(after(row, column)) Then
+                If CDbl(before(row, column)) <> CDbl(after(row, column)) Then Exit Function
+            ElseIf CStr(before(row, column)) <> CStr(after(row, column)) Then
+                Exit Function
+            End If
+        Next column
+    Next row
+    WorkflowSameTable = True
+Different:
+End Function
+
+' Доказывает, что расчёт использует снимок, а не изменённые настройки генератора
+' или чертёж; повторные расчёты и смена OUTPUT не перезаписывают координаты.
+Private Sub TestWorkflowFrozenGeometry(ByRef stats As TUiTestStats)
+    PrepareCircleInput
+    SetSystemSetting "Circle.Diameter", "300"
+    FixtureResetReinforcement "Circle"
+    SetSystemSetting "Plot.Enabled", "Yes"
+    SetSystemSetting "General.ExecutionReportEnabled", "No"
+    Dim message As String, solves As Long
+    solves = SectionEquilibriumSolveCount()
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "workflow.form.noSolver", SectionEquilibriumSolveCount() = solves
+    Dim geometry As Variant, contours As Variant
+    geometry = ResultTable("rngNDMSectionGeometry"): contours = ResultTable("rngNDMSectionContours")
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    AssertTrue stats, "workflow.preview.noSolver", SectionEquilibriumSolveCount() = solves
+    SetSystemSetting "Geometry.Source", "AutoCAD"
+    SetSystemSetting "Geometry.Type", "Invalid.Unused.Geometry"
+    SetSystemSetting "Circle.Diameter", "INVALID"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "workflow.calculate.frozenSource", InStr(message, "Расчет завершен") > 0 And ResultsGeometrySource(ThisWorkbook) = "Generated"
+    AssertTrue stats, "workflow.calculate.geometryExact", WorkflowSameTable(geometry, ResultTable("rngNDMSectionGeometry"))
+    AssertTrue stats, "workflow.calculate.contoursExact", WorkflowSameTable(contours, ResultTable("rngNDMSectionContours"))
+    Dim model As CSectionModel: Set model = ReadFormedSectionFromResults(ThisWorkbook)
+    AssertTrue stats, "workflow.calculate.eightBars", model.RebarCount = 8
+    Dim n As Double: n = CDbl(ResultsPropertyValue("LC1", "N"))
+    SetSystemSetting "Units.Length.Output", "m"
+    SetSystemSetting "Units.Area.Output", "m2"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "workflow.repeat.completed", InStr(message, "Расчет завершен") > 0
+    AssertTrue stats, "workflow.repeat.geometryExact", WorkflowSameTable(geometry, ResultTable("rngNDMSectionGeometry"))
+    AssertTrue stats, "workflow.repeat.contoursExact", WorkflowSameTable(contours, ResultTable("rngNDMSectionContours"))
+    AssertClose stats, "workflow.repeat.force", CDbl(ResultsPropertyValue("LC1", "N")), n, 0#
+    SetSystemSetting "Plot.LegendMode", "INVALID"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "workflow.plotError.warning", InStr(message, "Расчет завершен") > 0 And InStr(message, "Схема не обновлена") > 0
+    AssertClose stats, "workflow.plotError.force", CDbl(ResultsPropertyValue("LC1", "N")), n, 0#
+    SetSystemSetting "Plot.LegendMode", "Separate"
+    SetProfileSetting "PR2", "Visualization.State", "INVALID"
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    AssertTrue stats, "workflow.visualizationError.warning", InStr(message, "Расчет завершен") > 0 And InStr(message, "Схема не обновлена") > 0
+    AssertClose stats, "workflow.visualizationError.force", CDbl(ResultsPropertyValue("LC1", "N")), n, 0#
+    SetProfileSetting "PR2", "Visualization.State", "CrackedState"
+    SetSystemSetting "Geometry.Source", "Generated"
+    Dim code As Long, reason As String
+    On Error Resume Next
+    message = FormSectionForWorkbook(ThisWorkbook)
+    code = Err.Number: reason = Err.Description
+    On Error GoTo 0
+    AssertTrue stats, "workflow.failedForm.reason", code <> 0 And InStr(reason, "Возможное решение:") > 0
+    AssertTrue stats, "workflow.failedForm.geometryPreserved", WorkflowSameTable(geometry, ResultTable("rngNDMSectionGeometry"))
+    AssertTrue stats, "workflow.failedForm.contoursPreserved", WorkflowSameTable(contours, ResultTable("rngNDMSectionContours"))
+    SetSystemSetting "Geometry.Type", "Circle"
+    SetSystemSetting "Circle.Diameter", "400"
+    Dim loads As Object: Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
+    loads.Cells(2, 2).Value2 = "INVALID_UNUSED_LOAD"
+    solves = SectionEquilibriumSolveCount()
+    message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "workflow.reform.independentLoads", InStr(message, "Сечение сформировано") > 0 And SectionEquilibriumSolveCount() = solves
+    AssertTrue stats, "workflow.reform.changed", Not WorkflowSameTable(geometry, ResultTable("rngNDMSectionGeometry"))
+    Dim results As Variant: results = ResultTable("rngNDMElementResults")
+    AssertTrue stats, "workflow.reform.clearsStates", UBound(results, 1) = 1
+    UpdateSectionPlotForWorkbook ThisWorkbook
+    AssertTrue stats, "workflow.reform.previewOnly", SectionEquilibriumSolveCount() = solves
+End Sub
+
+' ДЛЯ ТЕСТОВ
+' Проверяет расчёт Circle/Rectangles и неизменность снимка между командами.
+Public Function RunSectionWorkflowCalculationTests() As String
+    Dim stats As TUiTestStats, saved As Variant
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    TestCircleWorkbookRunWritesResults stats
+    TestRectanglesWorkbookRunWritesResults stats
+    TestWorkflowFrozenGeometry stats
+Done:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    AppendLine stats, "TOTAL_WORKFLOW_CALCULATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunSectionWorkflowCalculationTests = stats.Report
+    Exit Function
+Failed:
+    AssertTrue stats, "unexpected.workflowCalculation." & Err.Number & "." & Err.Description, False
+    Resume Done
 End Function

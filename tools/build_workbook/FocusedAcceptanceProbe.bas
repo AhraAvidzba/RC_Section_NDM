@@ -100,7 +100,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
         If CDbl(item(1)) = 0# And CDbl(item(2)) = 0# And CDbl(item(3)) = 0# Then
             FocusedCheckZeroInput stats, prefix
         Else
-            message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+            message = FixtureRunSectionWorkflow(ThisWorkbook, False)
         End If
         elapsed = Timer - start: If elapsed < 0# Then elapsed = elapsed + 86400#
         If elapsed > maxSeconds Then maxSeconds = elapsed
@@ -255,7 +255,7 @@ End Function
 Private Sub FocusedCheckZeroInput(ByRef stats As TBatchTestStats, ByVal prefix As String)
     On Error GoTo Rejected
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     AssertTrue stats, prefix & ".zeroRejected", False
     Exit Sub
 Rejected:

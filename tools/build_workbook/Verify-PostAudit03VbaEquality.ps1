@@ -12,8 +12,9 @@ $guardGuideAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/Exce
 $dependentRowsAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/DependentRowOffsets_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
 $structuredTablesAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/StructuredGeometryTables_2026-10-17"))+[IO.Path]::DirectorySeparatorChar
 $sharedRebarAllowed=[IO.Path]::GetFullPath((Join-Path $root "docs/regression/SharedRebarInput_2026-10-18"))+[IO.Path]::DirectorySeparatorChar
+$workflowAllowed=[IO.Path]::GetFullPath((Join-Path $root 'docs/regression/SectionWorkflowLayers_2026-10-21'))+[IO.Path]::DirectorySeparatorChar
 foreach ($path in @($export,$report)) {
-    if (-not $path.StartsWith($sharedRebarAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
+    if (-not $path.StartsWith($workflowAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($sharedRebarAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($structuredTablesAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($dependentRowsAllowed,[StringComparison]::OrdinalIgnoreCase) -and -not $path.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($openIssuesAllowed,[StringComparison]::OrdinalIgnoreCase) -and
         -not $path.StartsWith($guardGuideAllowed,[StringComparison]::OrdinalIgnoreCase)) {throw 'Verification evidence must remain inside its regression directory.'}
 }

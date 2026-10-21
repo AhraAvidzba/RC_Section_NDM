@@ -164,7 +164,7 @@ Public Function RunPostAudit03ContourSnapshotTests() As String
     Set readBack = ReadSavedSectionContours(fixture): number = Err.Number: Err.Clear
     On Error GoTo Failed
     Check "postAudit03.contours.missingTableRejected", number = vbObjectError + 4376
-    Check "postAudit03.contours.missingTableDoesNotInsert", fixture.Names.Count = 5 And _
+    Check "postAudit03.contours.missingTableDoesNotInsert", fixture.Names.Count = 6 And _
         fixture.Names.Item("rngNDMSectionProperties").RefersToRange.Column = 48
     sheet.Cells(20, 27).Value2 = "EndX, mm"
     On Error Resume Next
@@ -186,8 +186,8 @@ End Function
 ' Создает только тестовые якоря нижнего ряда; ширины не переназначаются.
 Private Sub CreatePostAudit03SnapshotAnchors(ByVal workbook As Object, ByVal sheet As Object)
     Dim names As Variant, columns As Variant, i As Long
-    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations")
-    columns = Array(1, 12, 48, 56, 69)
+    names = Array("rngNDMElementResults", "rngNDMSectionGeometry", "rngNDMSectionProperties", "rngNDMMaterialDiagrams", "rngNDMSectionAnnotations", "rngNDMSectionModelMetadata")
+    columns = Array(1, 12, 48, 56, 69, 93)
     For i = 0 To UBound(names)
         workbook.Names.Add CStr(names(i)), "='" & sheet.Name & "'!" & sheet.Cells(20, CLng(columns(i))).Address
     Next i

@@ -92,7 +92,7 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
         "|Mx=" & FormatNumberInvariant(mx) & "|My=" & FormatNumberInvariant(my)
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     ResetSectionEquilibriumSolveCount: started = Timer
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
     AssertTrue stats, "special.within10Seconds", elapsed <= 10#
     AssertTrue stats, "special.capture", Not mFocusedBatch Is Nothing

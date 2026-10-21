@@ -1,0 +1,82 @@
+{
+  "Passed": true,
+  "Scope": "Directed section workflow acceptance; not full ON/OFF acceptance",
+  "AcceptedSHA256": "D894BBB470C1CEAA07B5CD5203A46C8462BEB4512E69ABF605184172C536C031",
+  "NoAutomaticGenerationOrImportDuringCalculation": true,
+  "SnapshotTests": 151,
+  "CommandTests": 17,
+  "CalculationTestsEachMode": 89,
+  "AutoPlotTests": 86,
+  "SaveReopenEqual": true,
+  "SourceAndWorkbookEqual": true,
+  "NumericalEquivalence": {
+    "No": {
+      "Passed": true,
+      "Records": 244403,
+      "Numeric": 71188,
+      "MaximumScaledDifference": 1.0164304371195652e-20,
+      "Differences": []
+    },
+    "Yes": {
+      "Passed": true,
+      "Records": 245053,
+      "Numeric": 71383,
+      "MaximumScaledDifference": 1.0164304371195652e-20,
+      "Differences": []
+    }
+  },
+  "NativeAutoCAD": {
+    "Passed": true,
+    "ElapsedSeconds": 53.8064069,
+    "LimitSeconds": 300,
+    "Results": [
+      {
+        "ReportSHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A",
+        "Macro": "RunRealAutoCADFarOriginTests",
+        "Passed": true
+      },
+      {
+        "ReportSHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3",
+        "Macro": "RunRealAutoCADFarCapacityTests",
+        "Passed": true
+      }
+    ],
+    "UserDocumentsUsed": false,
+    "RunnerSHA256": "1D7D0715C114BF2DB56EA111CAAEFD80D9CF4073CDB98FD0F51F6B18AF1AE183"
+  },
+  "Formatting": {
+    "Passed": true,
+    "Stages": [
+      {
+        "Stage": "BeforeCalculation",
+        "Checks": 50479,
+        "Failures": []
+      },
+      {
+        "Stage": "AfterCalculation1",
+        "Checks": 50479,
+        "Failures": []
+      },
+      {
+        "Stage": "AfterCalculation2",
+        "Checks": 50479,
+        "Failures": []
+      },
+      {
+        "Stage": "AfterPlot1",
+        "Checks": 50479,
+        "Failures": []
+      },
+      {
+        "Stage": "AfterPlot2",
+        "Checks": 50479,
+        "Failures": []
+      }
+    ]
+  },
+  "ReadPerformanceEvidence": "Directed_Off_08.txt; 1000 bars median 0.0625 s; 5000 bars median 0.296875 s",
+  "PayloadTablesPerRead": 5,
+  "BoundsScan": "Blocks of up to 1024 values, not individual cells",
+  "FullOnOffRunPerformed": false,
+  "CodeChangesAfterEquivalenceAndNativeCAD": "Execution report labels and diagnostic comment only; test inputs explicitly reset"
+}

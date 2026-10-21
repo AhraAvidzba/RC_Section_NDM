@@ -1,4 +1,4 @@
-﻿' ДЛЯ ТЕСТОВ: один штатный batch из 15 разных сочетаний, включая N, M и N+Mx+My.
+' ДЛЯ ТЕСТОВ: один штатный batch из 15 разных сочетаний, включая N, M и N+Mx+My.
 Public Function RunCoreRegressionBatch15() As String
     On Error GoTo Failed
     Dim stats As TBatchTestStats, oldSystem As Variant, oldProfiles As Variant, oldLoads As Variant
@@ -52,7 +52,7 @@ Public Function RunCoreRegressionBatch15() As String
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     ResetSectionEquilibriumSolveCount
     started = Timer
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
     AssertTrue stats, "plateau.batch15.capture", Not mFocusedBatch Is Nothing
     If Not mFocusedBatch Is Nothing Then

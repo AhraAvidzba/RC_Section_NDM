@@ -52,7 +52,7 @@ Public Function RunPlateauBatch15() As String
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     modPlateauSlopeProbe.ResetCounters
     started = Timer
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
     AssertTrue stats, "plateau.batch15.capture", Not mFocusedBatch Is Nothing
     If Not mFocusedBatch Is Nothing Then

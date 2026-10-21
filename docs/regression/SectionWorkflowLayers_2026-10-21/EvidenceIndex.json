@@ -1,0 +1,236 @@
+{
+  "ZipSHA256": "1BCB5DC22C492167C82A49516E256BB04B015A0BFF0E87E9ECF77BE48CD6FDCF",
+  "ZipBytes": 5593495,
+  "Files": [
+    {
+      "Path": "Acceptance21.json",
+      "Bytes": 2413,
+      "SHA256": "5C0D7ADA735E7EBB393DBBD5154A8F6611F1364D824DE4BC823CB17ACAB71F98"
+    },
+    {
+      "Path": "Accepted21Equality.json",
+      "Bytes": 77865,
+      "SHA256": "329A25522D578E42F67446B7DF1E2D2AAD4B2729595CE04B1A364BA3766D0E58"
+    },
+    {
+      "Path": "Candidate11/Preparation.json",
+      "Bytes": 1445,
+      "SHA256": "3275C733AC23E7B361A5B1737190CFF2DEFF30E08B0A0F7FFF32719994342B88"
+    },
+    {
+      "Path": "ClassComments.json",
+      "Bytes": 2320194,
+      "SHA256": "F7D673DA873AD475B82A7A7F66F4D234CB93355F9D07A1D9234A37A56353685E"
+    },
+    {
+      "Path": "Contracts_Off_09.txt",
+      "Bytes": 145825,
+      "SHA256": "67F1159486C10BC801EFB6FCA56E7298210843C6C5C777DE235C7EB3B97CBE05"
+    },
+    {
+      "Path": "Directed_Off_08.txt",
+      "Bytes": 12749,
+      "SHA256": "CC6D927EC2991E67E99078361CC7274FE43D17332712479F9BDE8D1758CDA1FD"
+    },
+    {
+      "Path": "Directed_Yes_11.txt",
+      "Bytes": 22042,
+      "SHA256": "A7D47C56A224918C121B247F4E3A2D513F0F8FEEE4137B5FEA4F25E4888E62F7"
+    },
+    {
+      "Path": "EquivalenceBaseline03/Preparation.json",
+      "Bytes": 410,
+      "SHA256": "67511120EAB7D5A66B574E72088F3A369D1B0CEDD72434B4C23F56AA0B246C20"
+    },
+    {
+      "Path": "Equivalence_Baseline_No.txt",
+      "Bytes": 791,
+      "SHA256": "734967B874AA8896AC8F94C76BE70647AF216E02733EB0E02B9A01FCCD43F5EF"
+    },
+    {
+      "Path": "Equivalence_Baseline_No_03.txt",
+      "Bytes": 13831700,
+      "SHA256": "45DA1DB47F22F464124E71A13FA4DD9ED909DF22B6708C9D0106D889A44CBAB5"
+    },
+    {
+      "Path": "Equivalence_Baseline_No_03.txt.progress.txt",
+      "Bytes": 426,
+      "SHA256": "06F7BC3AEBCFC4BF00913D6E8777951139B1EA901EE8FA291C4871FF4E6EBC2A"
+    },
+    {
+      "Path": "Equivalence_Baseline_Yes_03.txt",
+      "Bytes": 13876750,
+      "SHA256": "95DEFD37BD89A1AE823F6C884BE68099849E502E7B5A5DB6DE07DAAD8F95AE8A"
+    },
+    {
+      "Path": "Equivalence_Baseline_Yes_03.txt.progress.txt",
+      "Bytes": 426,
+      "SHA256": "CF3283DFEF211B1CF47FF0CCFC5229E853ECF88CE3A67646E8165383320B2FCF"
+    },
+    {
+      "Path": "Equivalence_New_No_11.txt",
+      "Bytes": 13831690,
+      "SHA256": "964F24B7DD9E9687A8AEB77C270C89D45099EE89ED1189BA73E1E64E8498F89D"
+    },
+    {
+      "Path": "Equivalence_New_Yes_11.txt",
+      "Bytes": 13876648,
+      "SHA256": "707CF67AA22B26C6C52A3C2E976D4DE45C3605FEDA68724843642E513E74BCD7"
+    },
+    {
+      "Path": "Equivalence_No.json",
+      "Bytes": 143,
+      "SHA256": "0435E987CC3D4D6532731C0CE53720B021B053773A7DEBC9838FDE5FFB437AF3"
+    },
+    {
+      "Path": "Equivalence_Yes.json",
+      "Bytes": 143,
+      "SHA256": "62BF51E640945890D93ED81DB8397434F48BA343A8972631B6AE0F7739E4E4AF"
+    },
+    {
+      "Path": "FinalClassComments.json",
+      "Bytes": 2320194,
+      "SHA256": "F7D673DA873AD475B82A7A7F66F4D234CB93355F9D07A1D9234A37A56353685E"
+    },
+    {
+      "Path": "Final_No14.txt",
+      "Bytes": 33064,
+      "SHA256": "07CD37CC766F7F8894E307ABB4413DE387444669A020551AD4894E6A83A1B1CD"
+    },
+    {
+      "Path": "Final_No16.txt",
+      "Bytes": 32267,
+      "SHA256": "32A5AB80FCCBDC151F63E91E8DA2D9B0DD8B04BFA4AAFE7BED2AB1E0B3B3E14E"
+    },
+    {
+      "Path": "Final_No21.txt",
+      "Bytes": 32806,
+      "SHA256": "9D5FDBCF1BEF88027157BB1B0BCB2774045179C6337FEB3ABB1A4098716ABA2E"
+    },
+    {
+      "Path": "Final_Yes16.txt",
+      "Bytes": 5441,
+      "SHA256": "D7D4F3B803CAB4269F621E5738AAD6DAB3A232CB1CEE2CD7BC65FF0C09D3F203"
+    },
+    {
+      "Path": "Final_Yes21.txt",
+      "Bytes": 5528,
+      "SHA256": "2AFD898249A169E98CB2E8F5F4BE8DD9D9DEEF8C8549FB6F61D28AE245A7D992"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "Bytes": 26609,
+      "SHA256": "4F7CAE2910A40CD33BA601F4FDFA95EE473CA7FBBB91C00FDB32AEE6FB41CACD"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Bytes": 29560,
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "Bytes": 229,
+      "SHA256": "40EEBE09A96A9ACD3D5FB5D71FC2F1B374503AA8EE8B6149205E0BA9ECCB55AF"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "Bytes": 265,
+      "SHA256": "6FA660C134891614908630DFB52A60E341D9474529CEBCBA033F6CC3C2AB2021"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "Bytes": 103,
+      "SHA256": "1E8783D7C4EDCC94FCEC92D071BB3085BF9D03D28BCEB6FA179A67CE66A6046D"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "Bytes": 591,
+      "SHA256": "723BDACA652EDFEC99781EDE21CD15C88EF195811678DCA2AF3E866DFFA13A49"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "Bytes": 21084,
+      "SHA256": "44868738DA44EFE13A1A583478A0BB0F4AF0591683768BB4AA7517AAC490FA3D"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Bytes": 20600,
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "6D166392B19B64B06D96C40E69CBFAABA85AC2C5ACC635A40B9814013E6553C3"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "Bytes": 264,
+      "SHA256": "52293569D5DE01C0DEC3AF675B67FCA183CCCDD5D7E630C79FAB953C293E1AD3"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "Bytes": 104,
+      "SHA256": "B691E75F3B6E98340C0F399C3B8C4C40DFDF36472762A0BCC21580C7DB3F6FB0"
+    },
+    {
+      "Path": "NativeCAD11/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "Bytes": 588,
+      "SHA256": "3C4D8E1E2FDD9923002779B34CC478D3D662B9F00067804B6F0151F40D121554"
+    },
+    {
+      "Path": "NativeCAD11/Stage.json",
+      "Bytes": 787,
+      "SHA256": "5EA5DEAEC3ED134D9AC6946801CAA332A7473C5ED2F945DB267749A11C472CDE"
+    },
+    {
+      "Path": "Package21.json",
+      "Bytes": 16351,
+      "SHA256": "B8E92FB56448C341AD5A714239F6CBF371CD6532B389725438AD4E8DD9FCC58C"
+    },
+    {
+      "Path": "Publication.json",
+      "Bytes": 339,
+      "SHA256": "977FE22A5FA415D170BE275E3D775E4C4F94FF5D8EAA9FFEF9912CE13FBA0F3D"
+    },
+    {
+      "Path": "PublishedEquality.json",
+      "Bytes": 77865,
+      "SHA256": "B55FB731FC6F25D5CF0707A85F925F5F7BD591095394A38CC4AC7B0CE6A06234"
+    },
+    {
+      "Path": "Release20/Preparation.json",
+      "Bytes": 365,
+      "SHA256": "3D1A9C3719E9385277A7BDA77D0195D7F7E0A9F7716D251B89BABF0156A81A18"
+    },
+    {
+      "Path": "Runtime14/Formatting.json",
+      "Bytes": 520,
+      "SHA256": "B65BD43376922D26E30FC1D0B026FF8C922C19B47E6E337066AE67043C3EE3C1"
+    },
+    {
+      "Path": "Runtime14/Run.json",
+      "Bytes": 1763,
+      "SHA256": "AEE14F0B9B056153CCC0D858E24D295629BCDDA6465C5863DA28D48B0CE944E0"
+    },
+    {
+      "Path": "Snapshot_Off_05.txt",
+      "Bytes": 767,
+      "SHA256": "BD3164E3FC9362A8C1CECFF7F8F33602FFAC8E77522DEC87BDC8D3A598914FEC"
+    },
+    {
+      "Path": "Snapshot_Off_05_Diagnostic.txt",
+      "Bytes": 766,
+      "SHA256": "5DFF39517E5378C59C094BBED12AB2C6B3839945DBF86C24895275AD77844D5E"
+    },
+    {
+      "Path": "Snapshot_Off_06.txt",
+      "Bytes": 4840,
+      "SHA256": "E30B0A4F3C468A1384A6B6A59FCE4CE9F9E8E9220968F459A3548670A953CF10"
+    },
+    {
+      "Path": "Structure21.json",
+      "Bytes": 4554,
+      "SHA256": "B347B01D1F581F602BBCBA4761C7C7EF96D97D3A532A5AA0C35B6F8820CDF4C8"
+    }
+  ]
+}

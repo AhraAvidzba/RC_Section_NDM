@@ -525,7 +525,7 @@ Public Function RunSavedOffsetCalculationTests() As String
     Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2")
     For Each value In Array(40#, 50#)
         inputCell.Value2 = value
-        message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
+        message = FixtureRunSectionWorkflow(ThisWorkbook, True)
         Check "saved.calculation.completed." & CStr(value), InStr(message, "завершен.") > 0 And InStr(message, "ошиб") = 0
         diagnostics = SavedRecipeDiagnostics()
         Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)

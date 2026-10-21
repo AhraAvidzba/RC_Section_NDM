@@ -673,9 +673,9 @@ Public Function RunAudit03AutoPlotTests() As String
     RunAudit03AutoPlotTests = stats.Report
 End Function
 
-' Неверный активный выбор AutoUpdate отвергается до построения модели и
-' очистки Results. Общий Plot.Enabled=No не потребляет AutoUpdate и сохраняет
-' прежний Chart, в том числе если после запуска нет ни одного named-state.
+' Проверяет независимость расчёта от настроек автообновления схемы.
+' Ошибки оформления возвращаются с адресом после сохранения результатов;
+' отключённая схема не читает неактивный AutoUpdate и сохраняет прежний Chart.
 Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Dim fixture As Object, config As Object, table As Object, cell As Object, profiles As Object, loads As Object, durationLoads As Object
     Dim chart As Object, marker As Object, baseline As Variant, bad As Variant, key As Variant
@@ -689,47 +689,9 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     Set config = fixture.Worksheets.Item("Config")
     Set table = fixture.Names.Item("rngSystemSettings").RefersToRange
     Audit03SetPlotSetting table, "General.ExecutionReportEnabled", "No"
-    ' ДЛЯ ТЕСТОВ: ошибка Generated-типа должна проверяться независимо от
-    ' выбранного пользователем источника. У AutoCAD Geometry.Type неактивен.
     Audit03SetPlotSetting table, "Geometry.Source", "Generated"
-    Audit03SetPlotSetting table, "Geometry.Type", "INVALID"
-    baseline = table.Value2
-    On Error Resume Next
-    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
-    On Error GoTo Failed
-    If chart Is Nothing Then Set chart = fixture.Worksheets.Item("Расчет").ChartObjects.Add(41#, 53#, 700#, 480#)
-    chart.Name = "chtNDMSectionPlot"
-    Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_Audit03Sentinel"
-    fixture.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2 = "AUDIT03_PRESERVE"
-    For position = 0 To 1
-        If position = 1 Then Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
-        table.NumberFormat = "@": table.Value2 = baseline
-        fixture.Names.Item("rngSystemSettings").RefersTo = "=Config!" & table.Address
-        For Each key In Array("Plot.Enabled", "Plot.AutoUpdateAfterCalculation")
-            For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
-                cases = cases + 1: table.Value2 = baseline
-                Audit03SetPlotSetting table, "Plot.Enabled", "Yes"
-                Set cell = Audit03PlotSettingCell(table, CStr(key)): cell.Value2 = bad
-                Audit03CaptureCalculation fixture, code, reason, result
-                prefix = "audit03.autoPlot.invalid.p" & CStr(position) & "." & CStr(key) & ".v" & CStr(cases)
-                AssertTrue stats, prefix & ".rejected", code <> 0 And InStr(1, reason, CStr(key), vbTextCompare) > 0
-                AssertTrue stats, prefix & ".address", InStr(1, reason, "Config", vbTextCompare) > 0 And InStr(1, reason, cell.Address(False, False), vbTextCompare) > 0
-                AssertTrue stats, prefix & ".snapshot", CStr(fixture.Names.Item("rngBatchSummary").RefersToRange.Cells(1, 1).Value2) = "AUDIT03_PRESERVE"
-                AssertTrue stats, prefix & ".chart", Audit03PlotShapeExists(chart, "Audit03Sentinel")
-                AppendLine stats, "AUTO_PLOT_ERROR: " & prefix & "|" & reason
-            Next bad
-        Next key
-        table.Value2 = baseline: Audit03SetPlotSetting table, "Plot.Enabled", "Yes"
-        Set cell = Audit03PlotSettingCell(table, "Plot.AutoUpdateAfterCalculation"): cell.Value2 = "Yes": cell.Offset(0, -1).Value2 = "Audit03.RemovedAutoUpdate"
-        Audit03CaptureCalculation fixture, code, reason, result
-        AssertTrue stats, "audit03.autoPlot.missing.p" & CStr(position), code <> 0 And InStr(1, reason, "Plot.AutoUpdateAfterCalculation", vbTextCompare) > 0
-        table.Value2 = baseline: Audit03SetPlotSetting table, "Plot.Enabled", "No"
-        Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", CVErr(2015)
-        Audit03CaptureCalculation fixture, code, reason, result
-        AssertTrue stats, "audit03.autoPlot.inactive.p" & CStr(position), code <> 0 And InStr(1, reason, "Geometry.Type", vbTextCompare) > 0 And InStr(1, reason, "Plot.AutoUpdateAfterCalculation", vbTextCompare) = 0
-    Next position
+    Audit03SetPlotSetting table, "Geometry.Type", "Circle"
     ' Выполняем действительный stability-only запуск без НДС-состояний.
-    table.Value2 = baseline
     Audit03SetPlotSetting table, "Geometry.Source", "Generated": Audit03SetPlotSetting table, "Geometry.Type", "Circle"
     Audit03SetPlotSetting table, "Mesh.StepX", "100": Audit03SetPlotSetting table, "Mesh.StepY", "100"
     Set profiles = fixture.Names.Item("rngCalculationProfiles").RefersToRange
@@ -762,6 +724,42 @@ Private Sub TestAudit03AutoPlotContracts(ByRef stats As TUiTestStats)
     ' Задаем сжатие явно: исходная система знаков книги не должна превращать
     ' stability-only fixture в неприменимую проверку растянутого элемента.
     Audit03SetPlotSetting fixture.Names.Item("rngSignConventionSettings").RefersToRange, "+N", "Compression"
+    result = FormSectionForWorkbook(fixture)
+    Audit03SetPlotSetting table, "Geometry.Type", "INVALID_UNUSED_GEOMETRY"
+    baseline = table.Value2
+    On Error Resume Next
+    Set chart = fixture.Worksheets.Item("Расчет").ChartObjects("chtNDMSectionPlot")
+    On Error GoTo Failed
+    If chart Is Nothing Then Set chart = fixture.Worksheets.Item("Расчет").ChartObjects.Add(41#, 53#, 700#, 480#)
+    chart.Name = "chtNDMSectionPlot"
+    Set marker = chart.Chart.Shapes.AddShape(1, 11#, 17#, 20#, 20#): marker.Name = "NDMPlot_Audit03Sentinel"
+    For position = 0 To 1
+        If position = 1 Then Set table = config.Range("CH800").Resize(UBound(baseline, 1), UBound(baseline, 2))
+        table.NumberFormat = "@": table.Value2 = baseline
+        fixture.Names.Item("rngSystemSettings").RefersTo = "=Config!" & table.Address
+        For Each key In Array("Plot.Enabled", "Plot.AutoUpdateAfterCalculation")
+            For Each bad In Array("", "TODO", "INVALID", CVErr(2015))
+                cases = cases + 1: table.Value2 = baseline
+                Audit03SetPlotSetting table, "Plot.Enabled", "Yes"
+                Set cell = Audit03PlotSettingCell(table, CStr(key)): cell.Value2 = bad
+                Audit03CaptureCalculation fixture, code, reason, result
+                prefix = "audit03.autoPlot.invalid.p" & CStr(position) & "." & CStr(key) & ".v" & CStr(cases)
+                AssertTrue stats, prefix & ".warning", code = 0 And InStr(1, result, "Схема не обновлена", vbTextCompare) > 0 And InStr(1, result, CStr(key), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".address", InStr(1, result, "Config", vbTextCompare) > 0 And InStr(1, result, cell.Address(False, False), vbTextCompare) > 0
+                AssertTrue stats, prefix & ".snapshot", ResultsGeometrySource(fixture) = "Generated" And SectionEquilibriumSolveCount() = 0
+                AssertTrue stats, prefix & ".chart", Audit03PlotShapeExists(chart, "Audit03Sentinel")
+                AppendLine stats, "AUTO_PLOT_WARNING: " & prefix & "|" & result
+            Next bad
+        Next key
+        table.Value2 = baseline: Audit03SetPlotSetting table, "Plot.Enabled", "Yes"
+        Set cell = Audit03PlotSettingCell(table, "Plot.AutoUpdateAfterCalculation"): cell.Value2 = "Yes": cell.Offset(0, -1).Value2 = "Audit03.RemovedAutoUpdate"
+        Audit03CaptureCalculation fixture, code, reason, result
+        AssertTrue stats, "audit03.autoPlot.missing.p" & CStr(position), code = 0 And InStr(1, result, "Plot.AutoUpdateAfterCalculation", vbTextCompare) > 0 And InStr(1, result, "Схема не обновлена", vbTextCompare) > 0
+        table.Value2 = baseline: Audit03SetPlotSetting table, "Plot.Enabled", "No"
+        Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", CVErr(2015)
+        Audit03CaptureCalculation fixture, code, reason, result
+        AssertTrue stats, "audit03.autoPlot.inactive.p" & CStr(position), code = 0 And InStr(1, result, "Plot.AutoUpdateAfterCalculation", vbTextCompare) = 0 And Audit03PlotShapeExists(chart, "Audit03Sentinel")
+    Next position
     For mode = 0 To 3
         Audit03SetPlotSetting table, "Plot.Enabled", "Yes": Audit03SetPlotSetting table, "Plot.AutoUpdateAfterCalculation", "Yes"
         Select Case mode

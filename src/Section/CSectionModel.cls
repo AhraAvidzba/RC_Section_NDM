@@ -183,6 +183,31 @@ Public Property Get RebarRecipeTrace(ByVal index As Long) As String
     RebarRecipeTrace = mRebarRecipeTrace(index)
 End Property
 
+' Восстанавливает уже сохранённые связи физического стержня без повторного
+' выполнения рецепта и без изменения его координат или площади.
+Friend Sub RestoreRebarRecipeTrace(ByVal index As Long, ByVal value As String)
+    CheckRebarIndex index
+    mRebarRecipeTrace(index) = value
+End Sub
+
+' Передаёт исходные сведения об оболочке для сохранения снимка. Они отличаются
+' от эквивалентного прямоугольника, который может использоваться на схеме.
+Friend Sub ConcreteSnapshotHints(ByVal index As Long, ByRef shape As String, _
+        ByRef width As Double, ByRef height As Double, ByRef rotation As Double, _
+        ByRef rotationKnown As Boolean)
+    CheckConcreteIndex index
+    shape = mConcreteShapeType(index)
+    width = mConcreteWidth(index): height = mConcreteHeight(index)
+    rotation = mConcreteRotation(index): rotationKnown = mConcreteRotationKnown(index)
+End Sub
+
+' Восстанавливает сохранённую достоверность угла источника. Сам угол,
+' координаты и инерции не меняются; это сведения о происхождении данных.
+Friend Sub RestoreConcreteRotationKnowledge(ByVal index As Long, ByVal value As Boolean)
+    CheckConcreteIndex index
+    mConcreteRotationKnown(index) = value
+End Sub
+
 ' Заменяет служебные разделители в сведениях о происхождении стержня, чтобы отличать их от текста данных.
 Private Function TraceToken(ByVal value As String) As String
     value = Replace$(value, "%", "%25"): value = Replace$(value, "|", "%7C"): value = Replace$(value, ";", "%3B")

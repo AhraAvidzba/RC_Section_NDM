@@ -1,5 +1,17 @@
 # Проверки
 
+При изменениях независимых этапов формирования и расчёта использовать
+`modTestSectionWorkflow.RunWorkflowSnapshotTests`,
+`modTestWorkbookInterface.RunSectionWorkflowUiTests` и
+`RunSectionWorkflowCalculationTests` в обоих режимах продолжения диаграмм.
+`RunWorkflowReadPerformanceTests` проверяет блочное чтение 100, 1000 и 5000
+стержней. Для повторного открытия применять `Run-Audit03Watchdog.ps1`
+с одним расчётным entrypoint и `-VerifyResultsReopen`.
+Старые сценарии, меняющие геометрию, явно выполняют два действия через
+тестовый `FixtureRunSectionWorkflow`; рабочий расчёт этого не делает.
+`Test-CalculationFormatting.ps1` отдельно сохраняет оформление до формирования,
+после него, после расчётов и обновлений схемы.
+
 Для изменений смещённых контуров и CAD-экспорта использовать направленные
 `RunCollapsingOffsetTests`, `RunFullBoundaryOffsetTests`,
 `RunSavedPointedOffsetTests`, `RunSavedOffsetCalculationTests` из

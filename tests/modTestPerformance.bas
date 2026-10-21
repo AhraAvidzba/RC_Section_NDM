@@ -613,7 +613,7 @@ Public Function MeasurePerformanceBatch(ByVal mode As String) As String
     On Error GoTo Failed
     t = PerformanceNow(): total = t
     If mode = "Full" Then
-        message = RunSectionCalculationForWorkbook(ThisWorkbook, False)
+        message = FixtureRunSectionWorkflow(ThisWorkbook, False)
         total = SecondsSince(total)
     Else
         Set guard = New CExcelAppStateGuard: guard.Enter Application

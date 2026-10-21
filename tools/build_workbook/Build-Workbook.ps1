@@ -340,7 +340,7 @@ function Add-CalculationButtons {
     $buttonHeight = 32
     $buttonStep = 40
 
-    $runButton = $Sheet.Shapes.AddShape(1, $left, $top, $buttonWidth, $buttonHeight)
+    $runButton = $Sheet.Shapes.AddShape(1, $left, $top + $buttonStep, $buttonWidth, $buttonHeight)
     $runButton.Name = "btnRunSectionCalculation"
     $runButton.TextFrame.Characters().Text = "Выполнить расчет"
     $runButton.OnAction = "RunSectionCalculation"
@@ -351,10 +351,10 @@ function Add-CalculationButtons {
     $runButton.TextFrame.Characters().Font.Size = 9
     Center-ShapeButtonText $runButton
 
-    $importButton = $Sheet.Shapes.AddShape(1, $left, $top + $buttonStep, $buttonWidth, $buttonHeight)
+    $importButton = $Sheet.Shapes.AddShape(1, $left, $top, $buttonWidth, $buttonHeight)
     $importButton.Name = "btnImportGeometryFromAutoCAD"
-    $importButton.TextFrame.Characters().Text = "Импортировать геометрию из AutoCAD"
-    $importButton.OnAction = "ImportGeometryFromAutoCAD"
+    $importButton.TextFrame.Characters().Text = "Сформировать сечение"
+    $importButton.OnAction = "FormSection"
     $importButton.Fill.ForeColor.RGB = 10053171
     $importButton.Line.ForeColor.RGB = 10053171
     $importButton.TextFrame.Characters().Font.Color = 16777215
@@ -362,9 +362,9 @@ function Add-CalculationButtons {
     $importButton.TextFrame.Characters().Font.Size = 9
     Center-ShapeButtonText $importButton
 
-    $clearButton = $Sheet.Shapes.AddShape(1, $left, $top + 2 * $buttonStep, $buttonWidth, $buttonHeight)
+    $clearButton = $Sheet.Shapes.AddShape(1, $left, $top + 4 * $buttonStep, $buttonWidth, $buttonHeight)
     $clearButton.Name = "btnClearAutoCADDrawing"
-    $clearButton.TextFrame.Characters().Text = "Очистить чертеж AutoCAD"
+    $clearButton.TextFrame.Characters().Text = "Очистить схему"
     $clearButton.OnAction = "ClearAutoCADDrawing"
     $clearButton.Fill.ForeColor.RGB = 8355711
     $clearButton.Line.ForeColor.RGB = 8355711
@@ -384,7 +384,7 @@ function Add-CalculationButtons {
     $acadButton.TextFrame.Characters().Font.Size = 9
     Center-ShapeButtonText $acadButton
 
-    $plotButton = $Sheet.Shapes.AddShape(1, $left, $top + 4 * $buttonStep, $buttonWidth, $buttonHeight)
+    $plotButton = $Sheet.Shapes.AddShape(1, $left, $top + 2 * $buttonStep, $buttonWidth, $buttonHeight)
     $plotButton.Name = "btnUpdateSectionPlot"
     $plotButton.TextFrame.Characters().Text = "Обновить схему"
     $plotButton.OnAction = "UpdateSectionPlot"
@@ -494,6 +494,7 @@ try {
     Add-WorkbookName $workbook "rngNDMSectionProperties" $results '$AV$156'
     Add-WorkbookName $workbook "rngNDMMaterialDiagrams" $results '$BD$156'
     Add-WorkbookName $workbook "rngNDMSectionAnnotations" $results '$BQ$156'
+    Add-WorkbookName $workbook "rngNDMSectionModelMetadata" $results '$CO$156'
     $contourHeaders = @('RunID', 'LoopID', 'SegmentID', 'Sequence', 'LoopRole', 'SegmentType', 'StartX', 'StartY', 'EndX', 'EndY', 'CenterX', 'CenterY', 'Radius', 'SweepAngle, rad', 'SourceID', 'Comment', 'LengthUnit (SectionXY)')
     for ($i = 0; $i -lt $contourHeaders.Count; $i++) { $results.Cells.Item(156, 29 + $i).Value2 = $contourHeaders[$i] }
     $results.Range('AC155:AS155').Merge()
