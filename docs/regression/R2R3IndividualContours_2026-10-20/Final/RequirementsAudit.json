@@ -1,0 +1,141 @@
+{
+  "Status": "DIRECTED_VERIFIED_FULL_REGRESSION_RUNNING",
+  "SourceCommit": "8d07b082ccdbbeb6a1b02ab05cb33ec4888f275f",
+  "PublishedWorkbookSHA256": "8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911",
+  "Requirements": [
+    {
+      "Requirement": "metadata",
+      "Meaning": "Явная исходная геометрия и as, адресные отказы вместо догадок.",
+      "Source": "RegisterAxis / BindRow / SelectedSource",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "TOTAL_INDIVIDUAL_CONTOUR_FAILURES: passed=11; failed=0",
+      "Occurrences": {
+        "Off": 1,
+        "On": 1
+      }
+    },
+    {
+      "Requirement": "zero",
+      "Meaning": "Нулевые отступы: строгая совместимость без округления.",
+      "Source": "Verify-IndividualRowContours.py / zero_payload",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "ZERO_PARITY_CASES: 20",
+      "Occurrences": {
+        "Off": 1,
+        "On": 1
+      }
+    },
+    {
+      "Requirement": "rectangle",
+      "Meaning": "Верх 150/200, все стороны, обратный обход, EverySecond.",
+      "Source": "TestRectangle",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "TOTAL_INDIVIDUAL_CONTOURS: passed=252; failed=0",
+      "Occurrences": {
+        "Off": 1,
+        "On": 1
+      }
+    },
+    {
+      "Requirement": "rounded",
+      "Meaning": "Разные радиусы/as, 40/60, оба конца и середины дуг R2/R3.",
+      "Source": "TestRoundedCorners",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "CORNER: ",
+      "Occurrences": {
+        "Off": 20,
+        "On": 20
+      }
+    },
+    {
+      "Requirement": "contact",
+      "Meaning": "Независимость от Main, Stacked/SideBySide, 2.5 мм, отключённый R2.",
+      "Source": "TestContactVariants",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "TOTAL_INDIVIDUAL_CONTOURS: passed=252; failed=0",
+      "Occurrences": {
+        "Off": 1,
+        "On": 1
+      }
+    },
+    {
+      "Requirement": "matrix",
+      "Meaning": "OneRect, TwoRect, PointedSection, Hollow outer/opening/R0, Circle.",
+      "Source": "RunIndividualContourWorkbookTests",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "RECIPE_CASE: ",
+      "Occurrences": {
+        "Off": 8,
+        "On": 8
+      }
+    },
+    {
+      "Requirement": "userCorners",
+      "Meaning": "Пример 300x500/R100: верх60/бок20, оба обхода.",
+      "Source": "TestUserRoundedContour",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "USER_CASE: ",
+      "Occurrences": {
+        "Off": 2,
+        "On": 2
+      }
+    },
+    {
+      "Requirement": "collapse",
+      "Meaning": "Исчезновение дуги: продолжение граней при 100/120, оба обхода.",
+      "Source": "TestCollapsedUserCorners",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "COLLAPSED_CORNERS: ",
+      "Occurrences": {
+        "Off": 4,
+        "On": 4
+      }
+    },
+    {
+      "Requirement": "mergeLabels",
+      "Meaning": "Любое пересечение соседних дополнительных рядов: первый владелец и фактические подписи.",
+      "Source": "TestOffsetNeighborMerge / TestNonAdjacentRows",
+      "DirectedStatus": "VERIFIED",
+      "Evidence": "TOTAL_OFFSET_NEIGHBOR_MERGE: passed=264; failed=0",
+      "Occurrences": {
+        "Off": 1,
+        "On": 1
+      }
+    }
+  ],
+  "ChangedSourcePaths": [
+    "src/Common/modSectionRecipeApiGuide.bas",
+    "src/Common/modSectionRecipeTypes.bas",
+    "src/Geometry/CGeometryVariableOffset.cls",
+    "src/Geometry/CSectionRecipeCircle.cls",
+    "src/Geometry/CSectionRecipeHollowRectangle.cls",
+    "src/Geometry/CSectionRecipePointedSection.cls",
+    "src/Geometry/CSectionRecipeRectangles.cls",
+    "src/Section/CRebarContactBuilder.cls",
+    "src/Section/CRebarOffsetContours.cls",
+    "src/Section/CRebarRuleExecutor.cls",
+    "src/Section/CSectionDefinition.cls",
+    "src/Section/CSectionDefinitionBuilder.cls",
+    "src/Section/CSectionGeometryQuery.cls"
+  ],
+  "ZeroParity": {
+    "Cases": 20,
+    "Concrete": 7832,
+    "Rebar": 560,
+    "PayloadSHA256": "72AC4FD9A921CC61C97157DB5F9EAD5CEB064539D0AB536124A846A275AE5950"
+  },
+  "CornerPositions": {
+    "Total": 20,
+    "PerRowPerDirection": 5,
+    "UnexpectedSkip": false
+  },
+  "UserOverrides": [
+    "Координаты сохраняются; негладкие стыки соединяются прямыми перемычками.",
+    "Исчезнувшая дуга удаляется; оставшиеся прямые пересекаются.",
+    "Любое пересечение дополнительных стержней соседних граней: первый физический владелец с предупреждением."
+  ],
+  "Architecture": "В новых рецептах только связи; смещение и отбор в общих компонентах. OffsetPath и OffsetRoundedPolygon не изменены, что отдельно проверено по исходному коммиту.",
+  "Performance": "Индексы правил, границ, частей, смежности; массивы растут с удвоением; принадлежность по подготовленным массивам; поиск пересечений стержней по координатным ячейкам.",
+  "RemainingComplexity": "Однократные попарные проверки рёбер оставлены для простоты; новый проход не перебирает все ранее добавленные стержни.",
+  "Pending": "Полные 156 наборов и обязательный часовой план ещё выполняются. Общий PASS не заявляется."
+}

@@ -1,0 +1,105 @@
+{
+  "Status": "NOT_ACCEPTED_REVIEW_PENDING",
+  "Mode": "Off",
+  "CompletedSuites": 78,
+  "FailedAssertions": 8,
+  "FailedSuites": 2,
+  "SourceSHA256": "8B4A70A6188C4E041F8C4C036B9BD9ACBAF0A1B644C8A9CDB5285184B980B911",
+  "Jobs": [
+    {
+      "Group": "Full",
+      "Suites": 8,
+      "ExpectedSuites": 8,
+      "ExitCode": 1,
+      "Failures": [
+        "ui.run.system.materialDiagramControls",
+        "ui.rectangles.system.materialDiagramControls",
+        "ui.validation.universalLoadPath",
+        "ui.circle.blankDiameter.noHiddenDefaults",
+        "ui.rounded.blankCounts.noHiddenDefaults"
+      ],
+      "SHA256": "148491DAFE73F15EC5BEB1420DB442BFBA66B9B8A3D93714DD2A705F75C959CD"
+    },
+    {
+      "Group": "Geometry",
+      "Suites": 36,
+      "ExpectedSuites": 36,
+      "ExitCode": 1,
+      "Failures": [
+        "collapsed.extra.row",
+        "collapsed.extra.cause",
+        "collapsed.extra.values"
+      ],
+      "SHA256": "CBB5A144F6BFA3B7488B78D8E921BCA157E65684CD2939D22D0E40DA6A291D88"
+    },
+    {
+      "Group": "SP35",
+      "Suites": 6,
+      "ExpectedSuites": 6,
+      "ExitCode": 0,
+      "Failures": [],
+      "SHA256": "911A2EFD9DE8E22505586C137095DFEEA03C493C5260DE43A9B17E8679984D80"
+    },
+    {
+      "Group": "Recipes",
+      "Suites": 26,
+      "ExpectedSuites": 26,
+      "ExitCode": 0,
+      "Failures": [],
+      "SHA256": "F9F0DEC4E39050F3315BA3C5455ADB0BB49DE8501497DDB04A2DAB2314F56403"
+    },
+    {
+      "Group": "SavedOffsets",
+      "Suites": 2,
+      "ExpectedSuites": 2,
+      "ExitCode": 0,
+      "Failures": [],
+      "SHA256": "27B4601D8805BFB363CFB72D4BB0299FEE9BBCAC96A755A345F93D19F9283907"
+    }
+  ],
+  "Findings": [
+    {
+      "Assertions": [
+        "ui.run.system.materialDiagramControls",
+        "ui.rectangles.system.materialDiagramControls"
+      ],
+      "Expected": "Config!AI1 contains control heading",
+      "ActualWorkbookXML": "Config!X1 contains the same heading",
+      "Cause": "Test retained the old fixed address after approved layout changes.",
+      "RuntimeRecheckPending": true
+    },
+    {
+      "Assertions": [
+        "ui.validation.universalLoadPath"
+      ],
+      "Expected": "Validation Formula1 is a range reference",
+      "ActualWorkbookXML": "M71:M100 uses inline Auto,λ*Mx,λ*My,λ*Mxy,λ*N,λ*NMxy",
+      "Cause": "Test only accepts a range; approved short lists are inline.",
+      "RuntimeRecheckPending": true
+    },
+    {
+      "Assertions": [
+        "ui.circle.blankDiameter.noHiddenDefaults",
+        "ui.rounded.blankCounts.noHiddenDefaults"
+      ],
+      "Expected": "не задан ни один стержень",
+      "CurrentBuilderError": "После построения сечения не получен ни один стержень. Проверьте количества и диаметры в исходной таблице выбранного сечения.",
+      "Cause": "Text expectation predates program message cleanup; exact runtime cause must be captured in targeted follow-up.",
+      "RuntimeRecheckPending": true
+    },
+    {
+      "Assertions": [
+        "collapsed.extra.row",
+        "collapsed.extra.cause",
+        "collapsed.extra.values"
+      ],
+      "Expected": "Old per-circle center-crossing message and radius 110",
+      "Actual": "INPUT_ERROR, row 2, source fields and whole contour disappearance",
+      "Cause": "A collapsed full circle is now diagnosed by the common contour builder under the approved disappearing-fillet rule.",
+      "RuntimeRecheckPending": true
+    }
+  ],
+  "ProductionAlgorithmDefectEstablished": false,
+  "FullAcceptance": "RUNNING: Full_On and mandatory focused plan remain; no overall PASS.",
+  "ExecutableChangesDuringRun": false
+}
