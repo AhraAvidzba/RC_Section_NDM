@@ -1,0 +1,329 @@
+﻿{
+    "Schema":  "NDM.FocusedAcceptance/1",
+    "Status":  "COMPLETED_PENDING_REVIEW",
+    "SourceWorkbook":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-21_Run02\\Source\\RC_Section_NDM.xlsm",
+    "SourceSHA256":  "BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434",
+    "SourceCommit":  "420c397080094b9a26c43eb35517e85655b54124",
+    "StartedUTC":  "2026-10-21T03:43:25.1058092+00:00",
+    "DeadlineUTC":  "2026-10-21T04:43:25.1058092+00:00",
+    "MaxSeconds":  3600,
+    "Records":  [
+                    {
+                        "Mode":  "No",
+                        "ID":  "Rectangles_Generated_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Rectangles_Generated_No.txt",
+                        "Argument1":  "Rectangles",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "1C814CD195C74E9A533EC1D2D9050185706B6A81014A4317C942C610515A093A",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "Rectangles_Generated_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Rectangles_Generated_Yes.txt",
+                        "Argument1":  "Rectangles",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "8766655A394813FEC65A63FA9C8B082579C8DF65FFD8E989F2C722CD2586089E",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Circle_Generated_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Circle_Generated_No.txt",
+                        "Argument1":  "Circle",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "215DEFA7091E8A62D7FB4D5C2A42C1B0314F13A479C2BD354AA4AA17B398C980",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "Circle_Generated_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Circle_Generated_Yes.txt",
+                        "Argument1":  "Circle",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "1143BEAA20EB0E293E61F8AD1A4495F2ABBA13D2988C27477A4AA72E71EF8DD7",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "PointedSection_Generated_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/PointedSection_Generated_No.txt",
+                        "Argument1":  "PointedSection",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "5AAEBDBC3FE95ACE55CBC0851D404E3B5D6A6FF6DF592A38655FE9D6341C4259",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "PointedSection_Generated_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/PointedSection_Generated_Yes.txt",
+                        "Argument1":  "PointedSection",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "4F46F48844B0DA01B206500487000A08A2C437DB4C359276751DFA87B253068B",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "HollowRectangle_Generated_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/HollowRectangle_Generated_No.txt",
+                        "Argument1":  "HollowRectangle",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "66158469903B671B2E7DAC717D7FFC1CF31FF270C1C52A084087C0336298E597",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "HollowRectangle_Generated_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/HollowRectangle_Generated_Yes.txt",
+                        "Argument1":  "HollowRectangle",
+                        "Argument2":  "Generated",
+                        "ReportSHA256":  "CA9DB9555584260A4BD6945B574CEAD14C5BD316E22713A63000F94B735CE005",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "SavedWorkbook_Saved_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/SavedWorkbook_Saved_No.txt",
+                        "Argument1":  "SavedWorkbook",
+                        "Argument2":  "Saved",
+                        "ReportSHA256":  "B874701F785AC9EB17EB9451AB9AE35E3188A489538DC4A66383A7EE10378F51",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "SavedWorkbook_Saved_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/SavedWorkbook_Saved_Yes.txt",
+                        "Argument1":  "SavedWorkbook",
+                        "Argument2":  "Saved",
+                        "ReportSHA256":  "A2425075DD20EEECD92FF29F9741974CE5665E60AD0FCF8DC62C0C65C98834F7",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "SavedWorkbook_Paths_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/SavedWorkbook_Paths_No.txt",
+                        "Argument1":  "SavedWorkbook",
+                        "Argument2":  "Paths",
+                        "ReportSHA256":  "8769B1471D6D99F79CC34B2BC264A1CC3F80D9CFFFD1469FA5A0068CDAC73174",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "SavedWorkbook_Paths_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedAcceptanceCases",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/SavedWorkbook_Paths_Yes.txt",
+                        "Argument1":  "SavedWorkbook",
+                        "Argument2":  "Paths",
+                        "ReportSHA256":  "19BEDC672D5BD5EA2467D8BB57E7DE100744E672D90B0BCE2EBEDB62C391EB76",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Batch15_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunCoreRegressionBatch15",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Batch15_No.txt",
+                        "Argument1":  "",
+                        "Argument2":  "",
+                        "ReportSHA256":  "BFD64D266C83E714F92CBEA389DC3C5E644DAB02DBEADB3EA5BF5AA937E4C952",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Stability_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedSpecialCase",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Stability_No.txt",
+                        "Argument1":  "Stability",
+                        "Argument2":  "",
+                        "ReportSHA256":  "BC292679BE36559C57027A658C71675AE48980E173DAF6C2647C5F7A9BB3AD16",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "AsymmetricSteel_No",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedSpecialCase",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/AsymmetricSteel_No.txt",
+                        "Argument1":  "AsymmetricSteel",
+                        "Argument2":  "",
+                        "ReportSHA256":  "70A111A51C98AB85B7ECDD4E517E6B1DE4B12CF8485927645B8B77633886CACC",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "Batch15_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunCoreRegressionBatch15",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Batch15_Yes.txt",
+                        "Argument1":  "",
+                        "Argument2":  "",
+                        "ReportSHA256":  "5E511039C865EB224CDD51F1266246B591BE8479BB4F3FF47C0C8F6DBA49111E",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "Stability_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedSpecialCase",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Stability_Yes.txt",
+                        "Argument1":  "Stability",
+                        "Argument2":  "",
+                        "ReportSHA256":  "6D7A5EDB8B456DE6EB91204358D7AD2C2A6EF942E1DA626D8053B67AC9694292",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "Yes",
+                        "ID":  "AsymmetricSteel_Yes",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.RunFocusedSpecialCase",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/AsymmetricSteel_Yes.txt",
+                        "Argument1":  "AsymmetricSteel",
+                        "Argument2":  "",
+                        "ReportSHA256":  "1F83FE93FE0CDF0053D9AEBCE55ABAE93B79D750E54A29111C5ADDD8874B3566",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Model_Rectangles",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.DumpFocusedForceBoundsExact",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Model_Rectangles.txt",
+                        "Argument1":  "Rectangles",
+                        "Argument2":  "",
+                        "ReportSHA256":  "2D87F46FCD0B06D57F113662ECF64AB799A087E7C2FD75A224B9E34FD4512186",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Model_Circle",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.DumpFocusedForceBoundsExact",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Model_Circle.txt",
+                        "Argument1":  "Circle",
+                        "Argument2":  "",
+                        "ReportSHA256":  "461AC8539233CF8559D545BF6679203776D5C52F343C7C347CCC4F61E4906E3F",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Model_PointedSection",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.DumpFocusedForceBoundsExact",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Model_PointedSection.txt",
+                        "Argument1":  "PointedSection",
+                        "Argument2":  "",
+                        "ReportSHA256":  "5DD776596D01620925A430505E582FDF1B9CFF776B6BF748BC3FA24108E9E6AE",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Model_HollowRectangle",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.DumpFocusedForceBoundsExact",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Model_HollowRectangle.txt",
+                        "Argument1":  "HollowRectangle",
+                        "Argument2":  "",
+                        "ReportSHA256":  "34BA5CB828CFE90D96C901D80818168A98ACAF6BEF7B4FA2BA418B8546E676CA",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "Model_SavedWorkbook",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "modTestBatchCalculation.DumpFocusedForceBoundsExact",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Model_SavedWorkbook.txt",
+                        "Argument1":  "SavedWorkbook",
+                        "Argument2":  "",
+                        "ReportSHA256":  "991DC294E2573A41B7B306266184358660C8163C984C9E55A6ED29A4FC0D3938",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Mode":  "No",
+                        "ID":  "OutputPresentation",
+                        "Kind":  "VBA",
+                        "Passed":  true,
+                        "Macro":  "RunConfigPresentationTests",
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/OutputPresentation.txt",
+                        "Argument1":  "",
+                        "Argument2":  "",
+                        "ReportSHA256":  "BFF103793B4B25270A8C28E74616C47D066FE0B50239C1655BECB8DE24641847",
+                        "ExitCode":  0
+                    },
+                    {
+                        "Passed":  true,
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/NativeCAD/Stage.json",
+                        "ID":  "NativeCAD",
+                        "Kind":  "NativeCAD"
+                    },
+                    {
+                        "Passed":  true,
+                        "Report":  "docs/regression/FullOnOff_2026-10-21_Run02/Focused/Independent.json",
+                        "ID":  "Independent",
+                        "Kind":  "Python"
+                    }
+                ],
+    "ProtectedInputs":  [
+                            {
+                                "SHA256":  "BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434",
+                                "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\docs\\regression\\FullOnOff_2026-10-21_Run02\\Source\\RC_Section_NDM.xlsm"
+                            },
+                            {
+                                "SHA256":  "C82C480C74EE2D11815E3314DE3E5B8C162031A6C591147C71AF9FC9448E48C6",
+                                "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\VBA_All_Code.txt"
+                            },
+                            {
+                                "SHA256":  "A98E8983BCBC2777E860EAD9BFE98549C041E2B86065F023827741C504180544",
+                                "Path":  "C:\\Users\\avidzba\\Desktop\\программы\\В_РАБОТЕ!\\RC_Section_NDM\\workbook\\output\\RC_Section_NDM_execution_report.txt"
+                            }
+                        ],
+    "FinishedUTC":  "2026-10-21T03:57:00.8178669+00:00",
+    "ElapsedSeconds":  815.7160465,
+    "ProtectedInputsUnchanged":  true
+}

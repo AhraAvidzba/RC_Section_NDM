@@ -1,0 +1,827 @@
+{
+  "Status": "PASS",
+  "SourceCommit": "50eee183b255026805cb4bdf2f9c09790fe1d3f0",
+  "SourceWorkbookSHA256": "BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434",
+  "Archive": "Evidence.zip",
+  "ArchiveSHA256": "6049F9FCB25B74F6052A4E40EA336759D2737946A444C3E4B5708C527ED13601",
+  "ArchiveBytes": 2741871,
+  "Files": [
+    {
+      "Path": "Driver.stderr.log",
+      "Bytes": 3894,
+      "SHA256": "1B5A6E3C7EF929854CD132CAC55935EF0C6D8099FEAD69C6DF63A9A317D4CE8F"
+    },
+    {
+      "Path": "Driver.stdout.log",
+      "Bytes": 11855,
+      "SHA256": "788687527FE1512F0FA2FE93BD48A9F636F9C2106F46493F1E6B35DDA344341E"
+    },
+    {
+      "Path": "FinalVerification.json",
+      "Bytes": 1340,
+      "SHA256": "5A957760F1091E06307CCE19FD41C7939D5C41161678DCE8D919F75ECCF50024"
+    },
+    {
+      "Path": "Focused/Acceptance.json",
+      "Bytes": 1656,
+      "SHA256": "E8E98C39057D54A564D9D837DC7521DE10DB13029C21A6120677242DE55D40BF"
+    },
+    {
+      "Path": "Focused/AsymmetricSteel_No.txt",
+      "Bytes": 11486,
+      "SHA256": "70A111A51C98AB85B7ECDD4E517E6B1DE4B12CF8485927645B8B77633886CACC"
+    },
+    {
+      "Path": "Focused/AsymmetricSteel_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/AsymmetricSteel_No.txt.stdout.log",
+      "Bytes": 558,
+      "SHA256": "C95A2505725F70A775A669F326A4D71AEF637DF5AB0A3689E2B123228B960642"
+    },
+    {
+      "Path": "Focused/AsymmetricSteel_Yes.txt",
+      "Bytes": 11246,
+      "SHA256": "1F83FE93FE0CDF0053D9AEBCE55ABAE93B79D750E54A29111C5ADDD8874B3566"
+    },
+    {
+      "Path": "Focused/AsymmetricSteel_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/AsymmetricSteel_Yes.txt.stdout.log",
+      "Bytes": 558,
+      "SHA256": "45F7A376A7FF8032D2BFF99FD125951EF9AF7B108872FFDD211670384D4359DF"
+    },
+    {
+      "Path": "Focused/Batch15_No.txt",
+      "Bytes": 116226,
+      "SHA256": "BFD64D266C83E714F92CBEA389DC3C5E644DAB02DBEADB3EA5BF5AA937E4C952"
+    },
+    {
+      "Path": "Focused/Batch15_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Batch15_No.txt.stdout.log",
+      "Bytes": 532,
+      "SHA256": "8D9B3FD4F713A94AFC24369F434146D0A0BA01934810EECD6752758254E3D8CB"
+    },
+    {
+      "Path": "Focused/Batch15_Yes.txt",
+      "Bytes": 114520,
+      "SHA256": "5E511039C865EB224CDD51F1266246B591BE8479BB4F3FF47C0C8F6DBA49111E"
+    },
+    {
+      "Path": "Focused/Batch15_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Batch15_Yes.txt.stdout.log",
+      "Bytes": 532,
+      "SHA256": "65A19AB2CDED3C79FB3DAE86F95249C0452A837F49FAB3A788159D74F9DE98CA"
+    },
+    {
+      "Path": "Focused/Circle_Generated_No.txt",
+      "Bytes": 75645,
+      "SHA256": "215DEFA7091E8A62D7FB4D5C2A42C1B0314F13A479C2BD354AA4AA17B398C980"
+    },
+    {
+      "Path": "Focused/Circle_Generated_No.txt.progress.txt",
+      "Bytes": 140038,
+      "SHA256": "E12633642CF18E755402EAFC1DA95850B064BE07AE22393B9AA3EE7CAAF38E8D"
+    },
+    {
+      "Path": "Focused/Circle_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Circle_Generated_No.txt.stdout.log",
+      "Bytes": 578,
+      "SHA256": "98A5ECDD0572BBA8BE464C5EE1CAB9BE0DB68FD226938F73C31B15560E983AFC"
+    },
+    {
+      "Path": "Focused/Circle_Generated_Yes.txt",
+      "Bytes": 74219,
+      "SHA256": "1143BEAA20EB0E293E61F8AD1A4495F2ABBA13D2988C27477A4AA72E71EF8DD7"
+    },
+    {
+      "Path": "Focused/Circle_Generated_Yes.txt.progress.txt",
+      "Bytes": 137176,
+      "SHA256": "B883BFD61553B72B2CCD4647C601D2F3F1CB327477A50DECEB17DBBB3F7F2179"
+    },
+    {
+      "Path": "Focused/Circle_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Circle_Generated_Yes.txt.stdout.log",
+      "Bytes": 583,
+      "SHA256": "2596356751219BB343CD59455004397DE18881C0C62C07287D6CC2EE04FB9266"
+    },
+    {
+      "Path": "Focused/Combined.bas",
+      "Bytes": 21529,
+      "SHA256": "88A13FAE7B521E9A0CD40217C67FC0E1917E895973208D4241DA3C525B756A71"
+    },
+    {
+      "Path": "Focused/CombinedAcceptance.json",
+      "Bytes": 823,
+      "SHA256": "0BD324DEB74F4023B29C1EB47BF576935010E585DB00FC5A4F08CDF3259DFE0E"
+    },
+    {
+      "Path": "Focused/CoreRegressionBatchProbe.bas",
+      "Bytes": 5407,
+      "SHA256": "58739787EFAD5EB0ECF9C1F7E4D94CF27EBA4A86D6E1A3A2C0D7FA9F5A891F22"
+    },
+    {
+      "Path": "Focused/FocusedAcceptanceProbe.bas",
+      "Bytes": 21729,
+      "SHA256": "CA27094EF502945FDC3FDC83AEF66F549D21AA1B9E46E13A67CBFF74907CD973"
+    },
+    {
+      "Path": "Focused/FocusedForceBounds.bas",
+      "Bytes": 5271,
+      "SHA256": "0D3362BF2A4C8D2464F6A762E8EDE3D5B0072ED92DF024B4CFAEEBF9C402FFA8"
+    },
+    {
+      "Path": "Focused/FocusedRunner.ps1",
+      "Bytes": 7283,
+      "SHA256": "EF77CB821FCDE74D93C36BFD069C0852CCF35A27CE89E2D75A629941327BCA90"
+    },
+    {
+      "Path": "Focused/FocusedSpecialProbe.bas",
+      "Bytes": 10847,
+      "SHA256": "580F34D2B05ECA176F75F28097B6E9DBBE176ABC5F9BD3B7710724654751EA51"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_No.txt",
+      "Bytes": 80743,
+      "SHA256": "66158469903B671B2E7DAC717D7FFC1CF31FF270C1C52A084087C0336298E597"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_No.txt.progress.txt",
+      "Bytes": 150208,
+      "SHA256": "64C2D822AE760FEE0BE61E4F3A738BB9D25E8B1B9CC78835E7FD160EC49E8259"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_No.txt.stdout.log",
+      "Bytes": 589,
+      "SHA256": "773F08B9FDC7BED6E6B3694B50294DADCC494DBC12ACA11040CC72B78A501E6B"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_Yes.txt",
+      "Bytes": 78965,
+      "SHA256": "CA9DB9555584260A4BD6945B574CEAD14C5BD316E22713A63000F94B735CE005"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_Yes.txt.progress.txt",
+      "Bytes": 146646,
+      "SHA256": "0E5CA180313A76BF0E59E8CE3415F049497277151D84838CF505936EE2ECB3D9"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/HollowRectangle_Generated_Yes.txt.stdout.log",
+      "Bytes": 592,
+      "SHA256": "6E59EEA9C40B03B4B6E4A29E6E480DA3882768A1C5A959451CC31743670ECA4A"
+    },
+    {
+      "Path": "Focused/Independent.json",
+      "Bytes": 192936,
+      "SHA256": "30167DB46DC3303E786CED6F2BBA386643602FE25DE7DB22669E4983E2CEB9CD"
+    },
+    {
+      "Path": "Focused/Model_Circle.txt",
+      "Bytes": 15910,
+      "SHA256": "461AC8539233CF8559D545BF6679203776D5C52F343C7C347CCC4F61E4906E3F"
+    },
+    {
+      "Path": "Focused/Model_Circle.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Model_Circle.txt.stdout.log",
+      "Bytes": 469,
+      "SHA256": "AA44DCC926092D40F166059FAFB25E89854AEA89D334ED17CA8CDFED06996F3A"
+    },
+    {
+      "Path": "Focused/Model_HollowRectangle.txt",
+      "Bytes": 25198,
+      "SHA256": "34BA5CB828CFE90D96C901D80818168A98ACAF6BEF7B4FA2BA418B8546E676CA"
+    },
+    {
+      "Path": "Focused/Model_HollowRectangle.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Model_HollowRectangle.txt.stdout.log",
+      "Bytes": 469,
+      "SHA256": "7078965DAB8AA59DA8DDB18B4A53E87C6E0DB104AF45B2286C95E3D0D69D62FC"
+    },
+    {
+      "Path": "Focused/Model_PointedSection.txt",
+      "Bytes": 32766,
+      "SHA256": "5DD776596D01620925A430505E582FDF1B9CFF776B6BF748BC3FA24108E9E6AE"
+    },
+    {
+      "Path": "Focused/Model_PointedSection.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Model_PointedSection.txt.stdout.log",
+      "Bytes": 469,
+      "SHA256": "CBC4A2F6FBE84A59920993308043FBBD50E5158F26836D5427BA2FBF6F8665D0"
+    },
+    {
+      "Path": "Focused/Model_Rectangles.txt",
+      "Bytes": 22014,
+      "SHA256": "2D87F46FCD0B06D57F113662ECF64AB799A087E7C2FD75A224B9E34FD4512186"
+    },
+    {
+      "Path": "Focused/Model_Rectangles.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Model_Rectangles.txt.stdout.log",
+      "Bytes": 469,
+      "SHA256": "D3384794D6B8BC31E34B25AA98871DA9AFC015E5FDF8026980DB468C1A4DE5FE"
+    },
+    {
+      "Path": "Focused/Model_SavedWorkbook.txt",
+      "Bytes": 15306,
+      "SHA256": "991DC294E2573A41B7B306266184358660C8163C984C9E55A6ED29A4FC0D3938"
+    },
+    {
+      "Path": "Focused/Model_SavedWorkbook.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Model_SavedWorkbook.txt.stdout.log",
+      "Bytes": 469,
+      "SHA256": "63ED7175876AE26C0FA2C92AF1B12AE2F7467F344A1A8D17876A26D947C9FAD7"
+    },
+    {
+      "Path": "Focused/NativeCAD/NativeRunner.ps1",
+      "Bytes": 11741,
+      "SHA256": "1D7D0715C114BF2DB56EA111CAAEFD80D9CF4073CDB98FD0F51F6B18AF1AE183"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.progress.txt",
+      "Bytes": 26609,
+      "SHA256": "D6354F3E7FE817F2404E484A938E06B725AA38836C4E712C62765F38498C7451"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCAD.txt",
+      "Bytes": 29560,
+      "SHA256": "E48878E728A647116AB4500B5B29E7F50C1EDB4726656260F6356AEA265944E3"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADIdentity.json",
+      "Bytes": 228,
+      "SHA256": "28AD8779364BC152B6FABEEB09915F9E77A29129D2FECF8C862B6EBE2AE07ECA"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeCADOwnership.json",
+      "Bytes": 264,
+      "SHA256": "2D786BC4A1B76DD6DB3B06BB8AFE27218FB0CAEB6715DADECB565A117A6F6DAD"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeExcelOwnership.json",
+      "Bytes": 104,
+      "SHA256": "A0FB65E921444EBCC720ABC43B19D4A0E88E20BABBC48322E11DE284F1A2D8EF"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/NativeInvocation.json",
+      "Bytes": 579,
+      "SHA256": "496E3B60131ABF996B32D0557AC2AC4D8F909DFF484D6DD026389EB93A11A7B1"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/stdout.log",
+      "Bytes": 247,
+      "SHA256": "B901F51D39D3C82FF538F45EFF5676497DB6D71AD02D067E11357DF853BC93FE"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.progress.txt",
+      "Bytes": 21084,
+      "SHA256": "DEB8A378BF21993C40A765E50BCE7857B5255EFCD947BA29B3367437A4CF9F08"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCAD.txt",
+      "Bytes": 20600,
+      "SHA256": "74E98C00262D0194C4FB0F0DE83EC98B2EB2753078D71043AD6FD590ABD7167A"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADIdentity.json",
+      "Bytes": 229,
+      "SHA256": "9013F8B613842A8CB3CE1A7F6C4B0EC83EDB04D49AC7DE55033C5EC0537ADF08"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeCADOwnership.json",
+      "Bytes": 265,
+      "SHA256": "4E588E632872E1F1BD042632A051EFB164E2029D81F256FE462707448877F259"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeExcelOwnership.json",
+      "Bytes": 104,
+      "SHA256": "B8B73F6BC69BCCA2A8E6D0C0BFAED21130DF5F31BF860528FF377BA21E90C517"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/NativeInvocation.json",
+      "Bytes": 578,
+      "SHA256": "B6EA25E638D2639FFA8D9973495A835416D58E3D7C2FEAC660E532F12A090416"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/NativeCAD/RunRealAutoCADFarOriginTests/stdout.log",
+      "Bytes": 305,
+      "SHA256": "C9CC407069D415C23229EFC6EE7A6FD778BF8281499A3856032B6AB158307137"
+    },
+    {
+      "Path": "Focused/NativeCAD/Stage.json",
+      "Bytes": 787,
+      "SHA256": "26ACACB09F8CDC320B17A4DA2B3E9231F82D389D6C93123AEE2CBED477C23A33"
+    },
+    {
+      "Path": "Focused/OutputPresentation.txt",
+      "Bytes": 65332,
+      "SHA256": "BFF103793B4B25270A8C28E74616C47D066FE0B50239C1655BECB8DE24641847"
+    },
+    {
+      "Path": "Focused/OutputPresentation.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/OutputPresentation.txt.stdout.log",
+      "Bytes": 519,
+      "SHA256": "8353743E6DDCA2736B69C1B21001457DE079130C375E675C30C66BD48AAA7195"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_No.txt",
+      "Bytes": 80130,
+      "SHA256": "5AAEBDBC3FE95ACE55CBC0851D404E3B5D6A6FF6DF592A38655FE9D6341C4259"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_No.txt.progress.txt",
+      "Bytes": 148982,
+      "SHA256": "E8D0C75FE9D3FA161F1B10493DA055E3BF08FF2B82B3FF38F3B04262D00E1EA8"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_No.txt.stdout.log",
+      "Bytes": 589,
+      "SHA256": "358A4A33044DFF5C2CE7FD842FD45C92470397C2B7C49B83904710430670AF25"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_Yes.txt",
+      "Bytes": 78428,
+      "SHA256": "4F46F48844B0DA01B206500487000A08A2C437DB4C359276751DFA87B253068B"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_Yes.txt.progress.txt",
+      "Bytes": 145584,
+      "SHA256": "48A26AD2483372F4EF74472C3159D3D7E52917C76BF08A6708E33D6D3B5912BF"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/PointedSection_Generated_Yes.txt.stdout.log",
+      "Bytes": 591,
+      "SHA256": "00E5D3E6877392A1A11CB4647F424DEC462103D6E9E2907C972871C809302795"
+    },
+    {
+      "Path": "Focused/Probe/Circle_Generated_Manifest.txt",
+      "Bytes": 730,
+      "SHA256": "22AEB03C34C5067895D40B07C2C6C81C5777FF39FF0A9BEE7B105C53FE777247"
+    },
+    {
+      "Path": "Focused/Probe/HollowRectangle_Generated_Manifest.txt",
+      "Bytes": 741,
+      "SHA256": "B16B7355816A7A5900E1027C3C1A5156AAB8BC30DB176DE59FFD95A9BDCE7EEF"
+    },
+    {
+      "Path": "Focused/Probe/InputManifest.json",
+      "Bytes": 3494,
+      "SHA256": "286153D9AEDAD80D1C56C4073307BD75CBF33A06165B6E26904931282B19EC58"
+    },
+    {
+      "Path": "Focused/Probe/PointedSection_Generated_Manifest.txt",
+      "Bytes": 738,
+      "SHA256": "5DB6A66DF9C14E48C708B91518FA13815BED5631EE65A721F0EFD1B7FC95E009"
+    },
+    {
+      "Path": "Focused/Probe/Preparation.json",
+      "Bytes": 985,
+      "SHA256": "3F5456324E7EBE2AA180C2536A676FBF1C936F25BA5F76748496F000183CD0BF"
+    },
+    {
+      "Path": "Focused/Probe/Rectangles_Generated_Manifest.txt",
+      "Bytes": 736,
+      "SHA256": "A6311F1AC6BB2BFBED5A4160B19EC7CAE1CEE20735E5EAA8D801E469D233D7CE"
+    },
+    {
+      "Path": "Focused/Probe/SavedWorkbook_Paths_Manifest.txt",
+      "Bytes": 707,
+      "SHA256": "0EADAD9DB94C2486155DC761EE4B8DEF2909E57F5989E674137D7F879EF03E70"
+    },
+    {
+      "Path": "Focused/Probe/SavedWorkbook_Saved_Manifest.txt",
+      "Bytes": 1867,
+      "SHA256": "E6B23ECB4A8F505E2BC6AEDFC863D35142537C7EC0D26CA461C50D0B157FEE23"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_No.txt",
+      "Bytes": 77934,
+      "SHA256": "1C814CD195C74E9A533EC1D2D9050185706B6A81014A4317C942C610515A093A"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_No.txt.progress.txt",
+      "Bytes": 144602,
+      "SHA256": "0B6407B06380555387A15BD2A49888828BCD01C6D69A1E87F00635896CE8C8A6"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_No.txt.stdout.log",
+      "Bytes": 584,
+      "SHA256": "08E4CC810D3EFD43747ABDFA39F3A8E3E1522902EC1D0D7A0752535C515C611C"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_Yes.txt",
+      "Bytes": 76332,
+      "SHA256": "8766655A394813FEC65A63FA9C8B082579C8DF65FFD8E989F2C722CD2586089E"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_Yes.txt.progress.txt",
+      "Bytes": 141394,
+      "SHA256": "0C7A1187D23F314E251F3D34D4703A6889CDD2ADE06598FDD0A880E556E94582"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Rectangles_Generated_Yes.txt.stdout.log",
+      "Bytes": 585,
+      "SHA256": "EE4DB3F20B088692C2F4ECAA1956CB11BE015D35778EFAE0B03FB80ED65C25CF"
+    },
+    {
+      "Path": "Focused/Run.json",
+      "Bytes": 18721,
+      "SHA256": "FEFA67F02B5D268F21F8D15AF84114CB74C1DED0C7CF337C7C8E145595F8048F"
+    },
+    {
+      "Path": "Focused/SavedSectionFixture.json",
+      "Bytes": 90873,
+      "SHA256": "5EC4E4812E36BB35D6978441EB60A7B80C5EDF3EC35AAC1FE3B2C5627E05632F"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_No.txt",
+      "Bytes": 61339,
+      "SHA256": "8769B1471D6D99F79CC34B2BC264A1CC3F80D9CFFFD1469FA5A0068CDAC73174"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_No.txt.progress.txt",
+      "Bytes": 112856,
+      "SHA256": "C2AF9978C9207C43027DC97256FB931B5DD264BBE1FA89BB2135A6D1724DB081"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_No.txt.stdout.log",
+      "Bytes": 584,
+      "SHA256": "597677FBABC4926F6A3065E0FF1AD5B7736305F97538E0E98C2492EF4AD14AC6"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_Yes.txt",
+      "Bytes": 60094,
+      "SHA256": "19BEDC672D5BD5EA2467D8BB57E7DE100744E672D90B0BCE2EBEDB62C391EB76"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_Yes.txt.progress.txt",
+      "Bytes": 110358,
+      "SHA256": "F19F5828E62CD86F495421098E2A9DF2EB886565DFC44F44D72FBA105F994F1B"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Paths_Yes.txt.stdout.log",
+      "Bytes": 585,
+      "SHA256": "9DF553A0CC4B8316A8331AAB5C56EFDE839BE2ABF4E9C6CCD71D5BB4CA22C67C"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_No.txt",
+      "Bytes": 265086,
+      "SHA256": "B874701F785AC9EB17EB9451AB9AE35E3188A489538DC4A66383A7EE10378F51"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_No.txt.progress.txt",
+      "Bytes": 466606,
+      "SHA256": "B6508E0F3D763EAEC058486C4A48FCE2FEB650F975ADA3DD6A28EE01E3939D5E"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_No.txt.stdout.log",
+      "Bytes": 585,
+      "SHA256": "D284FC136F97E3140AD268F5BBCABD20357F67E80618AD5A3967B7B0EE37C905"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_Yes.txt",
+      "Bytes": 255079,
+      "SHA256": "A2425075DD20EEECD92FF29F9741974CE5665E60AD0FCF8DC62C0C65C98834F7"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_Yes.txt.progress.txt",
+      "Bytes": 455496,
+      "SHA256": "12D06EEBEBAB6B260D3357DED1BCADC67F21AEC4B3821D75F93E18D4F85C8489"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/SavedWorkbook_Saved_Yes.txt.stdout.log",
+      "Bytes": 586,
+      "SHA256": "5380168136CE10084E357E90CC7B1A5D627EC6CF19963CA9445E22A0231F79D6"
+    },
+    {
+      "Path": "Focused/Stability_No.txt",
+      "Bytes": 11027,
+      "SHA256": "BC292679BE36559C57027A658C71675AE48980E173DAF6C2647C5F7A9BB3AD16"
+    },
+    {
+      "Path": "Focused/Stability_No.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Stability_No.txt.stdout.log",
+      "Bytes": 553,
+      "SHA256": "051CC2625BECF4BFC69BBBD5170009799A0A24A345E2F4AB237C55A450A68B96"
+    },
+    {
+      "Path": "Focused/Stability_Yes.txt",
+      "Bytes": 10817,
+      "SHA256": "6D7A5EDB8B456DE6EB91204358D7AD2C2A6EF942E1DA626D8053B67AC9694292"
+    },
+    {
+      "Path": "Focused/Stability_Yes.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Focused/Stability_Yes.txt.stdout.log",
+      "Bytes": 554,
+      "SHA256": "8F629E3AAC13B4B4A58284A43249858399CFB5BB3DB28C953BABF391BD728B6C"
+    },
+    {
+      "Path": "Full_Off.txt",
+      "Bytes": 16401614,
+      "SHA256": "4D065764DB56FAB8571C8D1B64EC4B0308AC1CAB4004572E5BF5E018502E802A"
+    },
+    {
+      "Path": "Full_Off.txt.progress.txt",
+      "Bytes": 1841736,
+      "SHA256": "14D5D05B7565D0B33C5BF0BDCC7E2E35422B471C28DA1DEE0933999C18D30656"
+    },
+    {
+      "Path": "Full_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Full_Off.txt.stdout.log",
+      "Bytes": 3010,
+      "SHA256": "7FFD931CA459E6BB936D2D5C6B5599CEFCB77183F5E61FF77021F903DFD44EE8"
+    },
+    {
+      "Path": "Full_On.txt",
+      "Bytes": 16401472,
+      "SHA256": "61610D0440D9E5815422D949B63E81D4A9F61201BD330FAA90FADC5686764402"
+    },
+    {
+      "Path": "Full_On.txt.progress.txt",
+      "Bytes": 1841736,
+      "SHA256": "14D5D05B7565D0B33C5BF0BDCC7E2E35422B471C28DA1DEE0933999C18D30656"
+    },
+    {
+      "Path": "Full_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Full_On.txt.stdout.log",
+      "Bytes": 3013,
+      "SHA256": "FFC0D8CBDDF1E74FCE65FB07C8E0CA83EE918D460FB10F9E9922DC1A0657BA95"
+    },
+    {
+      "Path": "FullRunner.ps1",
+      "Bytes": 11560,
+      "SHA256": "85393AD087E64727FE748D3D0BE72C9BB1D5537AF38D29FD98467F6C3DA28907"
+    },
+    {
+      "Path": "Geometry_Off.txt",
+      "Bytes": 1704201,
+      "SHA256": "0C33194D99057A754DC1714741501D5F1566F106645A1B4E5E0CEED2DDFACFF1"
+    },
+    {
+      "Path": "Geometry_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Geometry_Off.txt.stdout.log",
+      "Bytes": 3253,
+      "SHA256": "11FE981865235AACA13375EB7B56135AF1048E099CECBF1C2AD0A5217E0A1600"
+    },
+    {
+      "Path": "Geometry_On.txt",
+      "Bytes": 1704401,
+      "SHA256": "A8DBA5FEB03783F95D83DE59E8F87ADB2D89D74E7AEB65B014066F5D2D50F591"
+    },
+    {
+      "Path": "Geometry_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Geometry_On.txt.stdout.log",
+      "Bytes": 3290,
+      "SHA256": "0F5E9A14AE914C32FA2E33E8D9F058CF9DCF0145A13F705A2F380808C3CABF27"
+    },
+    {
+      "Path": "Launch.json",
+      "Bytes": 755,
+      "SHA256": "2EC9738A5E2F68C596148CE19824AA85A9ED925BB960023E99EF39B637918F03"
+    },
+    {
+      "Path": "LaunchSummary.json",
+      "Bytes": 978,
+      "SHA256": "3BE9A4D8CFB4F71F0BFD8D0A53AF64E8E508D7E5E051AC8A389244EE3FBB54C6"
+    },
+    {
+      "Path": "ModeRunner.ps1",
+      "Bytes": 21673,
+      "SHA256": "3BE86C2EC61006AB8DEAE5B1A2E5DB376B0ABFB010FF9641C64ED53AD3E600AC"
+    },
+    {
+      "Path": "Recipes_Off.txt",
+      "Bytes": 553375,
+      "SHA256": "7BE3712E69D6AA0FAB9CD77F1DF3EECC9708775613288B3D6482E00FC33F2824"
+    },
+    {
+      "Path": "Recipes_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Recipes_Off.txt.stdout.log",
+      "Bytes": 2305,
+      "SHA256": "6F2D393006A7983A7577F364B90B37D06C3696329DD00B8FF5343FB2E0BA92CC"
+    },
+    {
+      "Path": "Recipes_On.txt",
+      "Bytes": 553377,
+      "SHA256": "D8535AE6CB830F1BE299DA48E6F3857B709ED9FD6F2E9FE0704FE4874E929D97"
+    },
+    {
+      "Path": "Recipes_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "Recipes_On.txt.stdout.log",
+      "Bytes": 2332,
+      "SHA256": "595ABD5C3ADFFEA02A09BB74DF44F2CD68C0A0F15BA77D16869F50DD6D1435E3"
+    },
+    {
+      "Path": "Run.json",
+      "Bytes": 23096,
+      "SHA256": "35275B15013A5A71A020EC368B61E9D3AA210C9CB5B2C99930AA927E648B33CE"
+    },
+    {
+      "Path": "SavedOffsets_Off.txt",
+      "Bytes": 3131,
+      "SHA256": "A1A48D18F175C2203435572C23F049A6BBB328FB6880FD3DD62C37FB50B4C571"
+    },
+    {
+      "Path": "SavedOffsets_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "SavedOffsets_Off.txt.stdout.log",
+      "Bytes": 586,
+      "SHA256": "1E1E32A078D20DCAD8D64521CAC51B28FD803A6B388C548E505EEF778E24A8E3"
+    },
+    {
+      "Path": "SavedOffsets_On.txt",
+      "Bytes": 3133,
+      "SHA256": "3BE23FE40E5F41EAC630F9789685885C649C614350FA55125AA8175D1A78F0A1"
+    },
+    {
+      "Path": "SavedOffsets_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "SavedOffsets_On.txt.stdout.log",
+      "Bytes": 589,
+      "SHA256": "0BEFD59943A12D0701FEA52D8BC848F5A8704D155E5FBA09DB3F6F8BDF55C0DC"
+    },
+    {
+      "Path": "SP35_Off.txt",
+      "Bytes": 47228,
+      "SHA256": "062DDF3FAA11C77508B73C477E67AC771FBB4ED0D9D42ACC0B929E45A89D936E"
+    },
+    {
+      "Path": "SP35_Off.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "SP35_Off.txt.stdout.log",
+      "Bytes": 844,
+      "SHA256": "F6102003CFB08FF11AC0A5E33BC03DC5D1A078E47084DB39D39A6DA64D881F1C"
+    },
+    {
+      "Path": "SP35_On.txt",
+      "Bytes": 47235,
+      "SHA256": "94492CFA18A61F581FE7F9F328ADFD232C05F0FCC563E8A9678C8DC32C8BC6E4"
+    },
+    {
+      "Path": "SP35_On.txt.stderr.log",
+      "Bytes": 0,
+      "SHA256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "SP35_On.txt.stdout.log",
+      "Bytes": 851,
+      "SHA256": "4E4488385EB9FA170B785E442C4D1E9A51DE405AD8235831AE3714AB7A982F07"
+    },
+    {
+      "Path": "Summary.json",
+      "Bytes": 68479,
+      "SHA256": "98AFA04C08E0F180AA290DD5F86BA843F564EEE6D9D90894B5398D27A0DD221D"
+    }
+  ],
+  "ExcludedBinaryCopies": [
+    "Focused/NativeCAD/RunRealAutoCADFarCapacityTests/RC_Section_NDM.xlsm",
+    "Focused/NativeCAD/RunRealAutoCADFarOriginTests/RC_Section_NDM.xlsm",
+    "Focused/Probe/RC_Section_NDM.xlsm",
+    "Source/RC_Section_NDM.xlsm"
+  ],
+  "Restore": "Extract Evidence.zip into this Run02 directory; the production workbook is tracked at SourceCommit."
+}

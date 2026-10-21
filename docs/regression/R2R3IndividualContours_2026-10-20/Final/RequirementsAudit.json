@@ -1,5 +1,5 @@
 {
-  "Status": "DIRECTED_VERIFIED_FULL_REPEAT_PENDING",
+  "Status": "VERIFIED_FULL_ACCEPTANCE_PASS",
   "PublishedWorkbookSHA256": "BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434",
   "Requirements": [
     {
@@ -137,7 +137,29 @@
   "Architecture": "В новых рецептах только связи; смещение и отбор в общих компонентах. OffsetPath и OffsetRoundedPolygon не изменены, что отдельно проверено по исходному коммиту.",
   "Performance": "Индексы правил, границ, частей, смежности; массивы растут с удвоением; принадлежность по подготовленным массивам; поиск пересечений стержней по координатным ячейкам.",
   "RemainingComplexity": "Однократные попарные проверки рёбер оставлены для простоты; новый проход не перебирает все ранее добавленные стержни.",
-  "Pending": "Fresh full acceptance for the corrected workbook; Run01 completed all parts but retained 16 stale expectation failures.",
+  "Pending": null,
+  "FullAcceptance": {
+    "Directory": "docs/regression/FullOnOff_2026-10-21_Run02",
+    "SourceCommit": "50eee183b255026805cb4bdf2f9c09790fe1d3f0",
+    "Status": "PASS",
+    "CoreSuites": 156,
+    "FocusedSingleCases": 122,
+    "FocusedStages": 26,
+    "FocusedPassedAssertions": 13948,
+    "IndependentIntegrals": 560,
+    "ReviewedNumFailStates": 10,
+    "UnsupportedNumFailStates": 0,
+    "Batch15BothModes": true,
+    "StabilityBothModes": true,
+    "AsymmetricSteelBothModes": true,
+    "NativeAutoCAD": true,
+    "SameWorkbookBytes": true,
+    "SourceAndRunnersUnchanged": true,
+    "FinishedMSK": "2026-10-21T06:57:01+03:00",
+    "SummarizerExitCode": 0,
+    "FinalizerExitCode": 0,
+    "CombinedAcceptanceSHA256": "0BD324DEB74F4023B29C1EB47BF576935010E585DB00FC5A4F08CDF3259DFE0E"
+  },
   "OriginalImplementationCommit": "8d07b082ccdbbeb6a1b02ab05cb33ec4888f275f",
   "DirectedAssertions": 8070
 }

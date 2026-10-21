@@ -1,0 +1,40 @@
+{
+  "Status": "PASS",
+  "VerifiedUTC": "2026-10-21T04:01:33.844997+00:00",
+  "SourceCommit": "50eee183b255026805cb4bdf2f9c09790fe1d3f0",
+  "SourcePathsChangedSinceLaunch": [],
+  "CoreSuites": 156,
+  "FocusedStages": 26,
+  "FocusedSingleCases": 122,
+  "SameWorkbookBytes": true,
+  "SummarizerExitCode": 0,
+  "FinalizerExitCode": 0,
+  "ProtectedFiles": [
+    {
+      "Path": "workbook/output/RC_Section_NDM.xlsm",
+      "SHA256": "BD614F467E673FFAF0B9E02D17C0FF12C68D8668BF740FE7478D74A6DD957434",
+      "Passed": true
+    },
+    {
+      "Path": "workbook/output/VBA_All_Code.txt",
+      "SHA256": "C82C480C74EE2D11815E3314DE3E5B8C162031A6C591147C71AF9FC9448E48C6",
+      "Passed": true
+    },
+    {
+      "Path": "workbook/output/RC_Section_NDM_execution_report.txt",
+      "SHA256": "A98E8983BCBC2777E860EAD9BFE98549C041E2B86065F023827741C504180544",
+      "Passed": true
+    }
+  ],
+  "IndependentControlsFailed": 0,
+  "IndependentNumFailStates": 10,
+  "UnsupportedNumFailStates": 0,
+  "OwnDriverTerminated": true,
+  "OriginalUserAutoCADStillRunning": 111536,
+  "AutomationStatus": "PAUSED",
+  "ForeignChangesExcluded": [
+    "workbook/output/RC_Section_NDM_execution_report.txt",
+    "outputs/"
+  ],
+  "CombinedAcceptanceSHA256": "0BD324DEB74F4023B29C1EB47BF576935010E585DB00FC5A4F08CDF3259DFE0E"
+}
