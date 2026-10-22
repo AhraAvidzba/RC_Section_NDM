@@ -1,0 +1,17 @@
+{
+  "Status": "PASS_DIRECTED_FIXES",
+  "PublishedAt": "2026-10-22T08:33:25.075067+03:00",
+  "WorkbookSHA256": "2A27AEEAAE7B8D9CE59830EF1264DED104E561F6A88068CF8C8604B3A7980525",
+  "AllCodeSHA256": "CB39C56709DCAB5109A0BD858AD698FF16FEBD8CC0411DA73B74E160C4C4865F",
+  "PassedAssertionsPerMode": 3434,
+  "Modes": [
+    "No",
+    "Yes"
+  ],
+  "StructuralChecks": 27,
+  "ProductionModulesUnchanged": 117,
+  "PreservedCells": 51518,
+  "OnlyFormattingChange": "Config!E7 border",
+  "ForeignExecutionReportUnchanged": true,
+  "FullRerun": false
+}

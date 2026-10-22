@@ -1,0 +1,9 @@
+﻿{
+    "CandidateSHA256":  "3E5C08F4CF79CC0E46E5190B954750300A12A460FC2732DA86FB7BE1892B6590",
+    "UpdatedSources":  [
+                           "tests/modTestWorkbookInterface.bas"
+                       ],
+    "Compiled":  true,
+    "SourceSHA256":  "13589633DDC929532D6A48672A369E8E35416759853B548E93670F982C42E3A4",
+    "ProductionChanged":  false
+}

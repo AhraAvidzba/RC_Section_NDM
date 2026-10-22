@@ -334,8 +334,10 @@ Public Function RunBatchCalculationTests() As String
     stats.Report = stats.Report & RunAudit03UserPsiFallbackTests(searchPassed, searchFailed)
     stats.Passed = stats.Passed + searchPassed: stats.Failed = stats.Failed + searchFailed
 
+    Dim elapsed As Double: elapsed = Timer - t0
+    If elapsed < 0# Then elapsed = elapsed + 86400#
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed) & _
-        "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
+        "; elapsedSec=" & FormatNumberInvariant(elapsed)
     RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
     RunBatchCalculationTests = stats.Report
     Exit Function

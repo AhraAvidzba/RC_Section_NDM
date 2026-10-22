@@ -861,7 +861,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
     annotations(2, 1) = "DIMENSION": annotations(2, 2) = -5#: annotations(2, 3) = 0#
     annotations(2, 4) = 5#: annotations(2, 5) = 0#: annotations(2, 6) = 0#: annotations(2, 7) = 1#
-    annotations(2, 8) = "DIM": annotations(2, 9) = "-"
+    annotations(2, 8) = "DIM": annotations(2, 9) = "mm"
     keys = Array("Bounds.MinX", "Bounds.MaxX", "Bounds.MinY", "Bounds.MaxY", "LoadReferenceX", "LoadReferenceY", _
         "State.StrengthState.Epsilon0", "State.StrengthState.KappaX", "State.StrengthState.KappaY", _
         "State.StrengthState.ExtensionUsed", "State.StrengthState.Status", "ProfileId", _
@@ -890,7 +890,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
             If index = 0 Then curvatureFactor = 1# Else curvatureFactor = 1000#
             props(9, 3) = 0.000002 * curvatureFactor: props(10, 3) = -0.000003 * curvatureFactor
             If index = 0 Then props(17, 3) = "1/mm" Else props(17, 3) = "1/m"
-            annotations(2, 2) = -50# / factor: annotations(2, 4) = 50# / factor
+            annotations(2, 2) = -50# / factor: annotations(2, 4) = 50# / factor: annotations(2, 9) = CStr(unit)
             anchor.Resize(18, 4).Value2 = props: sheet.Range("A20").Resize(2, 9).Value2 = annotations
             For mode = 0 To 2
                 cases = cases + 1: Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
@@ -910,7 +910,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         For index = 0 To UBound(values): props(index + 2, 3) = values(index): Next index
         anchor.Resize(18, 4).Value2 = props
         sheet.Range("A5").Resize(3, 15).Value2 = Audit03GeometrySnapshotArray("mm", 1#)
-        annotations(2, 2) = -50#: annotations(2, 4) = 50#: sheet.Range("A20").Resize(2, 9).Value2 = annotations
+        annotations(2, 2) = -50#: annotations(2, 4) = 50#: annotations(2, 9) = "mm": sheet.Range("A20").Resize(2, 9).Value2 = annotations
         baseline = sheet.Range("A5:X37").Value2
         For Each row In Array(11, 12, 14, 15, 16, 17)
             Set cell = anchor.Cells(row, 3)
@@ -939,7 +939,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         Set cell = sheet.Range("I21"): cell.Value2 = CVErr(2015)
         Audit03ReadLifecycleLoad reader, fixture, settings, 1, code, reason
         AssertTrue stats, "audit03.snapshotMetadata.annotationUnit.p" & CStr(position), code <> 0 And InStr(1, reason, "Results!I21", vbTextCompare) > 0
-        cell.Value2 = "-"
+        cell.Value2 = "mm"
         For Each flag In Array(True, False, "True", "False", "Yes", "No", "да", "нет", 1, 0)
             anchor.Cells(11, 3).Value2 = flag: reader.LoadFromWorkbook fixture, settings
             AssertTrue stats, "audit03.snapshotMetadata.flag.p" & CStr(position) & "." & CStr(flag), reader.ExtensionUsed = CBool(InStr(1, "|true|yes|да|1|", "|" & LCase$(CStr(flag)) & "|", vbBinaryCompare) > 0)

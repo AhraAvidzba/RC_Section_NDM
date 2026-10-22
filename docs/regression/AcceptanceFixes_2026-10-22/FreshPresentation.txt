@@ -1,0 +1,1336 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ResultsFormatting_2026-10-21\Fresh03\RC_Section_NDM.xlsm
+SOURCE_SHA256: 7F07EE6012F6F4FFA2D1F7D24EF1A13841AD9EA187FC68AFDC05E1CFDD6F3FFA
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8883286193b74585b54f95f00a07f69c\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=44608; startTicks=639282435468395567
+===== RunConfigPresentationTests =====
+SUITE_STARTED: RunConfigPresentationTests; 2026-10-22T08:25:51
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=44608; workingSet=133586944; privateBytes=90255360; cpu=5.40625
+OK: config.dropdown.I4.validSource
+OK: config.dropdown.I4.visible
+OK: config.dropdown.I4.accepts.mm
+OK: config.dropdown.I4.accepts.cm
+OK: config.dropdown.I4.accepts.m
+OK: config.dropdown.I4.rejectsUnknown
+OK: config.dropdown.I5.validSource
+OK: config.dropdown.I5.visible
+OK: config.dropdown.I5.accepts.mm2
+OK: config.dropdown.I5.accepts.cm2
+OK: config.dropdown.I5.accepts.m2
+OK: config.dropdown.I5.rejectsUnknown
+OK: config.dropdown.I6.validSource
+OK: config.dropdown.I6.visible
+OK: config.dropdown.I6.accepts.N
+OK: config.dropdown.I6.accepts.kN
+OK: config.dropdown.I6.accepts.tf
+OK: config.dropdown.I6.rejectsUnknown
+OK: config.dropdown.I7.validSource
+OK: config.dropdown.I7.visible
+OK: config.dropdown.I7.accepts.N*mm
+OK: config.dropdown.I7.accepts.kN*m
+OK: config.dropdown.I7.accepts.tf*m
+OK: config.dropdown.I7.rejectsUnknown
+OK: config.dropdown.I8.validSource
+OK: config.dropdown.I8.visible
+OK: config.dropdown.I8.accepts.Pa
+OK: config.dropdown.I8.accepts.kPa
+OK: config.dropdown.I8.accepts.MPa
+OK: config.dropdown.I8.accepts.kgf/cm2
+OK: config.dropdown.I8.accepts.tf/m2
+OK: config.dropdown.I8.rejectsUnknown
+OK: config.dropdown.I9.validSource
+OK: config.dropdown.I9.visible
+OK: config.dropdown.I9.accepts.1/mm
+OK: config.dropdown.I9.accepts.1/m
+OK: config.dropdown.I9.rejectsUnknown
+OK: config.dropdown.K4.validSource
+OK: config.dropdown.K4.visible
+OK: config.dropdown.K5.validSource
+OK: config.dropdown.K5.visible
+OK: config.dropdown.K6.validSource
+OK: config.dropdown.K6.visible
+OK: config.dropdown.K7.validSource
+OK: config.dropdown.K7.visible
+OK: config.dropdown.K8.validSource
+OK: config.dropdown.K8.visible
+OK: config.dropdown.K9.validSource
+OK: config.dropdown.K9.visible
+OK: config.dropdown.I13.validSource
+OK: config.dropdown.I13.visible
+OK: config.dropdown.I13.accepts.Tension
+OK: config.dropdown.I13.accepts.Compression
+OK: config.dropdown.I13.rejectsUnknown
+OK: config.dropdown.I14.validSource
+OK: config.dropdown.I14.visible
+OK: config.dropdown.I14.accepts.+Y tension
+OK: config.dropdown.I14.accepts.-Y tension
+OK: config.dropdown.I14.rejectsUnknown
+OK: config.dropdown.I15.validSource
+OK: config.dropdown.I15.visible
+OK: config.dropdown.I15.accepts.+X tension
+OK: config.dropdown.I15.accepts.-X tension
+OK: config.dropdown.I15.rejectsUnknown
+OK: config.dropdown.J42.validSource
+OK: config.dropdown.J42.visible
+OK: config.dropdown.J42.accepts.Yes
+OK: config.dropdown.J42.accepts.No
+OK: config.dropdown.J42.rejectsUnknown
+OK: config.dropdown.K42.validSource
+OK: config.dropdown.K42.visible
+OK: config.dropdown.L42.validSource
+OK: config.dropdown.L42.visible
+OK: config.dropdown.M42.validSource
+OK: config.dropdown.M42.visible
+OK: config.dropdown.J43.validSource
+OK: config.dropdown.J43.visible
+OK: config.dropdown.K43.validSource
+OK: config.dropdown.K43.visible
+OK: config.dropdown.L43.validSource
+OK: config.dropdown.L43.visible
+OK: config.dropdown.M43.validSource
+OK: config.dropdown.M43.visible
+OK: config.dropdown.J44.validSource
+OK: config.dropdown.J44.visible
+OK: config.dropdown.K44.validSource
+OK: config.dropdown.K44.visible
+OK: config.dropdown.L44.validSource
+OK: config.dropdown.L44.visible
+OK: config.dropdown.M44.validSource
+OK: config.dropdown.M44.visible
+OK: config.dropdown.J45.validSource
+OK: config.dropdown.J45.visible
+OK: config.dropdown.K45.validSource
+OK: config.dropdown.K45.visible
+OK: config.dropdown.L45.validSource
+OK: config.dropdown.L45.visible
+OK: config.dropdown.M45.validSource
+OK: config.dropdown.M45.visible
+OK: config.dropdown.B49.validSource
+OK: config.dropdown.B49.visible
+OK: config.dropdown.B49.accepts.SP63
+OK: config.dropdown.B49.accepts.SP35
+OK: config.dropdown.B49.rejectsUnknown
+OK: config.dropdown.B71.validSource
+OK: config.dropdown.B71.visible
+OK: config.dropdown.B53.validSource
+OK: config.dropdown.B53.visible
+OK: config.dropdown.B53.accepts.Determinate
+OK: config.dropdown.B53.accepts.Indeterminate
+OK: config.dropdown.B53.rejectsUnknown
+OK: config.dropdown.B54.validSource
+OK: config.dropdown.B54.visible
+OK: config.dropdown.B54.accepts.1
+OK: config.dropdown.B54.accepts.-1
+OK: config.dropdown.B54.rejectsUnknown
+OK: config.dropdown.B55.validSource
+OK: config.dropdown.B55.visible
+OK: config.dropdown.B56.validSource
+OK: config.dropdown.B56.visible
+OK: config.dropdown.B56.accepts.AutoWithL
+OK: config.dropdown.B56.accepts.AutoWithμL
+OK: config.dropdown.B56.accepts.User
+OK: config.dropdown.B56.rejectsUnknown
+OK: config.dropdown.B59.validSource
+OK: config.dropdown.B59.visible
+OK: config.dropdown.B59.accepts.OnlyMomentPlane
+OK: config.dropdown.B59.accepts.BothPlanes
+OK: config.dropdown.B59.rejectsUnknown
+OK: config.dropdown.B60.validSource
+OK: config.dropdown.B60.visible
+OK: config.dropdown.B60.accepts.Auto
+OK: config.dropdown.B60.accepts.PhiL2
+OK: config.dropdown.B60.rejectsUnknown
+OK: config.dropdown.B24.validSource
+OK: config.dropdown.B24.visible
+OK: config.dropdown.B24.accepts.Newton
+OK: config.dropdown.B24.accepts.Secant
+OK: config.dropdown.B24.rejectsUnknown
+OK: config.dropdown.B35.validSource
+OK: config.dropdown.B35.visible
+OK: config.dropdown.B35.accepts.Auto
+OK: config.dropdown.B35.accepts.UltimateStrain
+OK: config.dropdown.B35.accepts.LoadMultiplier
+OK: config.dropdown.B35.rejectsUnknown
+OK: config.dropdown.B73.validSource
+OK: config.dropdown.B73.visible
+OK: config.dropdown.B41.validSource
+OK: config.dropdown.B41.visible
+OK: config.dropdown.B41.accepts.Bisection
+OK: config.dropdown.B41.accepts.Brent
+OK: config.dropdown.B41.accepts.Secant
+OK: config.dropdown.B41.rejectsUnknown
+OK: config.dropdown.B89.validSource
+OK: config.dropdown.B89.visible
+OK: config.dropdown.B89.accepts.Max
+OK: config.dropdown.B89.accepts.Min
+OK: config.dropdown.B89.accepts.Average
+OK: config.dropdown.B89.rejectsUnknown
+OK: config.dropdown.B90.validSource
+OK: config.dropdown.B90.visible
+OK: config.dropdown.B90.accepts.3d
+OK: config.dropdown.B90.accepts.5d
+OK: config.dropdown.B90.accepts.6d
+OK: config.dropdown.B90.rejectsUnknown
+OK: config.dropdown.B91.validSource
+OK: config.dropdown.B91.visible
+OK: config.dropdown.B91.accepts.Periodic
+OK: config.dropdown.B91.accepts.Smooth
+OK: config.dropdown.B91.rejectsUnknown
+OK: config.dropdown.B80.validSource
+OK: config.dropdown.B80.visible
+OK: config.dropdown.B80.accepts.Auto
+OK: config.dropdown.B80.accepts.User
+OK: config.dropdown.B80.rejectsUnknown
+OK: config.dropdown.B82.validSource
+OK: config.dropdown.B82.visible
+OK: config.dropdown.B82.accepts.User
+OK: config.dropdown.B82.accepts.Auto
+OK: config.dropdown.B82.accepts.AlwaysCalc
+OK: config.dropdown.B82.rejectsUnknown
+OK: config.dropdown.B83.validSource
+OK: config.dropdown.B83.visible
+OK: config.dropdown.B83.accepts.AllSelected
+OK: config.dropdown.B83.accepts.TensionOnly
+OK: config.dropdown.B83.rejectsUnknown
+OK: config.dropdown.B76.validSource
+OK: config.dropdown.B76.visible
+OK: config.dropdown.B76.accepts.Effective
+OK: config.dropdown.B76.accepts.FullTension
+OK: config.dropdown.B76.rejectsUnknown
+OK: config.dropdown.B77.validSource
+OK: config.dropdown.B77.visible
+OK: config.dropdown.B77.accepts.NearestContour
+OK: config.dropdown.B77.accepts.GlobalExtreme
+OK: config.dropdown.B77.rejectsUnknown
+OK: config.dropdown.B128.validSource
+OK: config.dropdown.B128.visible
+OK: config.dropdown.B129.validSource
+OK: config.dropdown.B129.visible
+OK: config.dropdown.B129.accepts.Transformed
+OK: config.dropdown.B129.accepts.Concrete
+OK: config.dropdown.B129.accepts.None
+OK: config.dropdown.B129.rejectsUnknown
+OK: config.dropdown.B130.validSource
+OK: config.dropdown.B130.visible
+OK: config.dropdown.B131.validSource
+OK: config.dropdown.B131.visible
+OK: config.dropdown.B133.validSource
+OK: config.dropdown.B133.visible
+OK: config.dropdown.B134.validSource
+OK: config.dropdown.B134.visible
+OK: config.dropdown.B135.validSource
+OK: config.dropdown.B135.visible
+OK: config.dropdown.B135.accepts.Separate
+OK: config.dropdown.B135.accepts.Common
+OK: config.dropdown.B135.rejectsUnknown
+OK: config.dropdown.B5.validSource
+OK: config.dropdown.B5.visible
+OK: config.dropdown.B6.validSource
+OK: config.dropdown.B6.visible
+OK: config.dropdown.B7.validSource
+OK: config.dropdown.B7.visible
+OK: config.dropdown.B8.validSource
+OK: config.dropdown.B8.visible
+OK: config.dropdown.B8.accepts.StrengthStrain
+OK: config.dropdown.B8.accepts.StrengthCapacity
+OK: config.dropdown.B8.accepts.Cracks
+OK: config.dropdown.B8.accepts.Stability
+OK: config.dropdown.B8.rejectsUnknown
+OK: config.dropdown.B10.validSource
+OK: config.dropdown.B10.visible
+OK: config.dropdown.B102.validSource
+OK: config.dropdown.B102.visible
+OK: config.dropdown.B102.vertical
+OK: config.dropdown.B102.accepts.1
+OK: config.dropdown.B102.accepts.2
+OK: config.dropdown.B102.accepts.3
+OK: config.dropdown.B102.accepts.4
+OK: config.dropdown.B102.accepts.5
+OK: config.dropdown.B102.accepts.6
+OK: config.dropdown.B102.accepts.7
+OK: config.dropdown.B102.accepts.8
+OK: config.dropdown.B102.accepts.9
+OK: config.dropdown.B102.accepts.10
+OK: config.dropdown.B102.accepts.11
+OK: config.dropdown.B102.accepts.12
+OK: config.dropdown.B102.accepts.13
+OK: config.dropdown.B102.accepts.14
+OK: config.dropdown.B102.accepts.15
+OK: config.dropdown.B102.accepts.16
+OK: config.dropdown.B102.accepts.17
+OK: config.dropdown.B102.accepts.18
+OK: config.dropdown.B102.accepts.19
+OK: config.dropdown.B102.accepts.20
+OK: config.dropdown.B102.accepts.21
+OK: config.dropdown.B102.accepts.22
+OK: config.dropdown.B102.accepts.23
+OK: config.dropdown.B102.accepts.24
+OK: config.dropdown.B102.accepts.25
+OK: config.dropdown.B102.accepts.26
+OK: config.dropdown.B102.accepts.27
+OK: config.dropdown.B102.accepts.28
+OK: config.dropdown.B102.accepts.29
+OK: config.dropdown.B102.accepts.30
+OK: config.dropdown.B102.accepts.31
+OK: config.dropdown.B102.rejectsUnknown
+OK: config.dropdown.B102.notEmpty
+OK: config.dropdown.B103.validSource
+OK: config.dropdown.B103.visible
+OK: config.dropdown.B104.validSource
+OK: config.dropdown.B104.visible
+OK: config.dropdown.B105.validSource
+OK: config.dropdown.B105.visible
+OK: config.dropdown.B106.validSource
+OK: config.dropdown.B106.visible
+OK: config.dropdown.B107.validSource
+OK: config.dropdown.B107.visible
+OK: config.dropdown.B107.accepts.Region
+OK: config.dropdown.B107.accepts.Polyline
+OK: config.dropdown.B107.rejectsUnknown
+OK: config.dropdown.B108.validSource
+OK: config.dropdown.B108.visible
+OK: config.dropdown.B109.validSource
+OK: config.dropdown.B109.visible
+OK: config.dropdown.B109.accepts.ValuesOnly
+OK: config.dropdown.B109.accepts.NamesAndValues
+OK: config.dropdown.B109.rejectsUnknown
+OK: config.dropdown.B122.validSource
+OK: config.dropdown.B122.visible
+OK: config.dropdown.B123.validSource
+OK: config.dropdown.B123.visible
+OK: config.dropdown.B124.validSource
+OK: config.dropdown.B124.visible
+OK: config.dropdown.B125.validSource
+OK: config.dropdown.B125.visible
+OK: config.dropdown.B126.validSource
+OK: config.dropdown.B126.visible
+OK: config.dropdown.J47.validSource
+OK: config.dropdown.J47.visible
+OK: config.dropdown.J47.accepts.ULS(I)
+OK: config.dropdown.J47.accepts.SLS(II)
+OK: config.dropdown.J47.rejectsUnknown
+OK: config.dropdown.K47.validSource
+OK: config.dropdown.K47.visible
+OK: config.dropdown.L47.validSource
+OK: config.dropdown.L47.visible
+OK: config.dropdown.M47.validSource
+OK: config.dropdown.M47.visible
+OK: config.dropdown.J54.validSource
+OK: config.dropdown.J54.visible
+OK: config.dropdown.K54.validSource
+OK: config.dropdown.K54.visible
+OK: config.dropdown.L54.validSource
+OK: config.dropdown.L54.visible
+OK: config.dropdown.M54.validSource
+OK: config.dropdown.M54.visible
+OK: config.dropdown.J55.validSource
+OK: config.dropdown.J55.visible
+OK: config.dropdown.J55.accepts.TwoLine
+OK: config.dropdown.J55.accepts.ThreeLine
+OK: config.dropdown.J55.rejectsUnknown
+OK: config.dropdown.K55.validSource
+OK: config.dropdown.K55.visible
+OK: config.dropdown.L55.validSource
+OK: config.dropdown.L55.visible
+OK: config.dropdown.M55.validSource
+OK: config.dropdown.M55.visible
+OK: config.dropdown.J57.validSource
+OK: config.dropdown.J57.visible
+OK: config.dropdown.K57.validSource
+OK: config.dropdown.K57.visible
+OK: config.dropdown.L57.validSource
+OK: config.dropdown.L57.visible
+OK: config.dropdown.M57.validSource
+OK: config.dropdown.M57.visible
+OK: config.dropdown.J59.validSource
+OK: config.dropdown.J59.visible
+OK: config.dropdown.K59.validSource
+OK: config.dropdown.K59.visible
+OK: config.dropdown.L59.validSource
+OK: config.dropdown.L59.visible
+OK: config.dropdown.M59.validSource
+OK: config.dropdown.M59.visible
+OK: config.dropdown.J60.validSource
+OK: config.dropdown.J60.visible
+OK: config.dropdown.K60.validSource
+OK: config.dropdown.K60.visible
+OK: config.dropdown.L60.validSource
+OK: config.dropdown.L60.visible
+OK: config.dropdown.M60.validSource
+OK: config.dropdown.M60.visible
+OK: config.dropdown.J62.validSource
+OK: config.dropdown.J62.visible
+OK: config.dropdown.K62.validSource
+OK: config.dropdown.K62.visible
+OK: config.dropdown.L62.validSource
+OK: config.dropdown.L62.visible
+OK: config.dropdown.M62.validSource
+OK: config.dropdown.M62.visible
+OK: config.dropdown.J49.validSource
+OK: config.dropdown.J49.visible
+OK: config.dropdown.K49.validSource
+OK: config.dropdown.K49.visible
+OK: config.dropdown.L49.validSource
+OK: config.dropdown.L49.visible
+OK: config.dropdown.M49.validSource
+OK: config.dropdown.M49.visible
+OK: config.dropdown.J50.validSource
+OK: config.dropdown.J50.visible
+OK: config.dropdown.K50.validSource
+OK: config.dropdown.K50.visible
+OK: config.dropdown.L50.validSource
+OK: config.dropdown.L50.visible
+OK: config.dropdown.M50.validSource
+OK: config.dropdown.M50.visible
+OK: config.dropdown.J51.validSource
+OK: config.dropdown.J51.visible
+OK: config.dropdown.J51.accepts.Ignore
+OK: config.dropdown.J51.accepts.UseDiagram
+OK: config.dropdown.J51.rejectsUnknown
+OK: config.dropdown.K51.validSource
+OK: config.dropdown.K51.visible
+OK: config.dropdown.L51.validSource
+OK: config.dropdown.L51.visible
+OK: config.dropdown.M51.validSource
+OK: config.dropdown.M51.visible
+OK: config.dropdown.J52.validSource
+OK: config.dropdown.J52.visible
+OK: config.dropdown.K52.validSource
+OK: config.dropdown.K52.visible
+OK: config.dropdown.L52.validSource
+OK: config.dropdown.L52.visible
+OK: config.dropdown.M52.validSource
+OK: config.dropdown.M52.visible
+OK: config.dropdown.J64.validSource
+OK: config.dropdown.J64.visible
+OK: config.dropdown.J64.accepts.StrengthState
+OK: config.dropdown.J64.accepts.CapacityState
+OK: config.dropdown.J64.accepts.PreCrackState
+OK: config.dropdown.J64.accepts.PostCrackState
+OK: config.dropdown.J64.accepts.CrackedState
+OK: config.dropdown.J64.rejectsUnknown
+OK: config.dropdown.K64.validSource
+OK: config.dropdown.K64.visible
+OK: config.dropdown.L64.validSource
+OK: config.dropdown.L64.visible
+OK: config.dropdown.M64.validSource
+OK: config.dropdown.M64.visible
+OK: config.dropdown.J65.validSource
+OK: config.dropdown.J65.visible
+OK: config.dropdown.J65.accepts.Stress
+OK: config.dropdown.J65.accepts.Strain
+OK: config.dropdown.J65.rejectsUnknown
+OK: config.dropdown.K65.validSource
+OK: config.dropdown.K65.visible
+OK: config.dropdown.L65.validSource
+OK: config.dropdown.L65.visible
+OK: config.dropdown.M65.validSource
+OK: config.dropdown.M65.visible
+OK: config.dropdown.B14.validSource
+OK: config.dropdown.B14.visible
+OK: config.dropdown.B14.accepts.Generated
+OK: config.dropdown.B14.accepts.AutoCAD
+OK: config.dropdown.B14.rejectsUnknown
+OK: config.dropdown.B15.validSource
+OK: config.dropdown.B15.visible
+OK: config.dropdown.B15.vertical
+OK: config.dropdown.B15.accepts.1
+OK: config.dropdown.B15.accepts.2
+OK: config.dropdown.B15.accepts.3
+OK: config.dropdown.B15.accepts.4
+OK: config.dropdown.B15.rejectsUnknown
+OK: config.dropdown.B15.notEmpty
+OK: config.dropdown.L71.validSource
+OK: config.dropdown.L71.visible
+OK: config.dropdown.L71.vertical
+OK: config.dropdown.L71.accepts.1
+OK: config.dropdown.L71.accepts.2
+OK: config.dropdown.L71.accepts.3
+OK: config.dropdown.L71.accepts.4
+OK: config.dropdown.L71.rejectsUnknown
+OK: config.dropdown.L71.notEmpty
+OK: config.dropdown.M71.validSource
+OK: config.dropdown.M71.visible
+OK: config.dropdown.M71.accepts.Auto
+OK: config.dropdown.M71.accepts.λ*Mx
+OK: config.dropdown.M71.accepts.λ*My
+OK: config.dropdown.M71.accepts.λ*Mxy
+OK: config.dropdown.M71.accepts.λ*N
+OK: config.dropdown.M71.accepts.λ*NMxy
+OK: config.dropdown.M71.rejectsUnknown
+OK: config.dropdown.L72.validSource
+OK: config.dropdown.L72.visible
+OK: config.dropdown.M72.validSource
+OK: config.dropdown.M72.visible
+OK: config.dropdown.L73.validSource
+OK: config.dropdown.L73.visible
+OK: config.dropdown.M73.validSource
+OK: config.dropdown.M73.visible
+OK: config.dropdown.L74.validSource
+OK: config.dropdown.L74.visible
+OK: config.dropdown.M74.validSource
+OK: config.dropdown.M74.visible
+OK: config.dropdown.L75.validSource
+OK: config.dropdown.L75.visible
+OK: config.dropdown.M75.validSource
+OK: config.dropdown.M75.visible
+OK: config.dropdown.L76.validSource
+OK: config.dropdown.L76.visible
+OK: config.dropdown.M76.validSource
+OK: config.dropdown.M76.visible
+OK: config.dropdown.L77.validSource
+OK: config.dropdown.L77.visible
+OK: config.dropdown.M77.validSource
+OK: config.dropdown.M77.visible
+OK: config.dropdown.L78.validSource
+OK: config.dropdown.L78.visible
+OK: config.dropdown.M78.validSource
+OK: config.dropdown.M78.visible
+OK: config.dropdown.L79.validSource
+OK: config.dropdown.L79.visible
+OK: config.dropdown.M79.validSource
+OK: config.dropdown.M79.visible
+OK: config.dropdown.L80.validSource
+OK: config.dropdown.L80.visible
+OK: config.dropdown.M80.validSource
+OK: config.dropdown.M80.visible
+OK: config.dropdown.L81.validSource
+OK: config.dropdown.L81.visible
+OK: config.dropdown.M81.validSource
+OK: config.dropdown.M81.visible
+OK: config.dropdown.L82.validSource
+OK: config.dropdown.L82.visible
+OK: config.dropdown.M82.validSource
+OK: config.dropdown.M82.visible
+OK: config.dropdown.L83.validSource
+OK: config.dropdown.L83.visible
+OK: config.dropdown.M83.validSource
+OK: config.dropdown.M83.visible
+OK: config.dropdown.L84.validSource
+OK: config.dropdown.L84.visible
+OK: config.dropdown.M84.validSource
+OK: config.dropdown.M84.visible
+OK: config.dropdown.L85.validSource
+OK: config.dropdown.L85.visible
+OK: config.dropdown.M85.validSource
+OK: config.dropdown.M85.visible
+OK: config.dropdown.L86.validSource
+OK: config.dropdown.L86.visible
+OK: config.dropdown.M86.validSource
+OK: config.dropdown.M86.visible
+OK: config.dropdown.L87.validSource
+OK: config.dropdown.L87.visible
+OK: config.dropdown.M87.validSource
+OK: config.dropdown.M87.visible
+OK: config.dropdown.L88.validSource
+OK: config.dropdown.L88.visible
+OK: config.dropdown.M88.validSource
+OK: config.dropdown.M88.visible
+OK: config.dropdown.L89.validSource
+OK: config.dropdown.L89.visible
+OK: config.dropdown.M89.validSource
+OK: config.dropdown.M89.visible
+OK: config.dropdown.L90.validSource
+OK: config.dropdown.L90.visible
+OK: config.dropdown.M90.validSource
+OK: config.dropdown.M90.visible
+OK: config.dropdown.L91.validSource
+OK: config.dropdown.L91.visible
+OK: config.dropdown.M91.validSource
+OK: config.dropdown.M91.visible
+OK: config.dropdown.L92.validSource
+OK: config.dropdown.L92.visible
+OK: config.dropdown.M92.validSource
+OK: config.dropdown.M92.visible
+OK: config.dropdown.L93.validSource
+OK: config.dropdown.L93.visible
+OK: config.dropdown.M93.validSource
+OK: config.dropdown.M93.visible
+OK: config.dropdown.L94.validSource
+OK: config.dropdown.L94.visible
+OK: config.dropdown.M94.validSource
+OK: config.dropdown.M94.visible
+OK: config.dropdown.L95.validSource
+OK: config.dropdown.L95.visible
+OK: config.dropdown.M95.validSource
+OK: config.dropdown.M95.visible
+OK: config.dropdown.L96.validSource
+OK: config.dropdown.L96.visible
+OK: config.dropdown.M96.validSource
+OK: config.dropdown.M96.visible
+OK: config.dropdown.L97.validSource
+OK: config.dropdown.L97.visible
+OK: config.dropdown.M97.validSource
+OK: config.dropdown.M97.visible
+OK: config.dropdown.L98.validSource
+OK: config.dropdown.L98.visible
+OK: config.dropdown.M98.validSource
+OK: config.dropdown.M98.visible
+OK: config.dropdown.L99.validSource
+OK: config.dropdown.L99.visible
+OK: config.dropdown.M99.validSource
+OK: config.dropdown.M99.visible
+OK: config.dropdown.L100.validSource
+OK: config.dropdown.L100.visible
+OK: config.dropdown.M100.validSource
+OK: config.dropdown.M100.visible
+OK: config.dropdown.I107.validSource
+OK: config.dropdown.I107.visible
+OK: config.dropdown.I104.validSource
+OK: config.dropdown.I104.visible
+OK: config.dropdown.J104.validSource
+OK: config.dropdown.J104.visible
+OK: config.dropdown.I105.validSource
+OK: config.dropdown.I105.visible
+OK: config.dropdown.I105.accepts.Outside
+OK: config.dropdown.I105.accepts.Inside
+OK: config.dropdown.I105.rejectsUnknown
+OK: config.dropdown.J105.validSource
+OK: config.dropdown.J105.visible
+OK: config.dropdown.I110.validSource
+OK: config.dropdown.I110.visible
+OK: config.dropdown.I110.accepts.mm
+OK: config.dropdown.I110.accepts.pt
+OK: config.dropdown.I110.rejectsUnknown
+OK: config.dropdown.J110.validSource
+OK: config.dropdown.J110.visible
+OK: config.dropdown.J113.validSource
+OK: config.dropdown.J113.visible
+OK: config.dropdown.J113.accepts.Triangle
+OK: config.dropdown.J113.accepts.Stealth
+OK: config.dropdown.J113.accepts.Diamond
+OK: config.dropdown.J113.accepts.Oval
+OK: config.dropdown.J113.accepts.Open
+OK: config.dropdown.J113.rejectsUnknown
+OK: config.dropdown.J114.validSource
+OK: config.dropdown.J114.visible
+OK: config.dropdown.J114.accepts.Small
+OK: config.dropdown.J114.accepts.Medium
+OK: config.dropdown.J114.accepts.Wide
+OK: config.dropdown.J114.rejectsUnknown
+OK: config.dropdown.targetsPresent
+CONFIG_DROPDOWNS: targets=199; rangeSources=46
+OK: config.dropdown.meaning.rngSystemSettings.3.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.4.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.5.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.6.2; actual=StrengthStrain|StrengthCapacity|Cracks|Stability
+OK: config.dropdown.meaning.rngSystemSettings.8.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.12.2; actual=Generated|AutoCAD
+OK: config.dropdown.meaning.rngSystemSettings.13.2; actual=Circle|Rectangles|PointedSection|HollowRectangle
+OK: config.dropdown.meaning.rngSystemSettings.22.2; actual=Newton|Secant
+OK: config.dropdown.meaning.rngSystemSettings.33.2; actual=Auto|UltimateStrain|LoadMultiplier
+OK: config.dropdown.meaning.rngSystemSettings.39.2; actual=Bisection|Brent|Secant
+OK: config.dropdown.meaning.rngSystemSettings.47.2; actual=SP63|SP35
+OK: config.dropdown.meaning.rngSystemSettings.51.2; actual=Determinate|Indeterminate
+OK: config.dropdown.meaning.rngSystemSettings.52.2; actual=1|-1
+OK: config.dropdown.meaning.rngSystemSettings.53.2; actual=1|-1
+OK: config.dropdown.meaning.rngSystemSettings.54.2; actual=AutoWithL|AutoWithμL|User
+OK: config.dropdown.meaning.rngSystemSettings.57.2; actual=OnlyMomentPlane|BothPlanes
+OK: config.dropdown.meaning.rngSystemSettings.58.2; actual=Auto|PhiL2
+OK: config.dropdown.meaning.rngSystemSettings.69.2; actual=SP63|SP35
+OK: config.dropdown.meaning.rngSystemSettings.71.2; actual=Auto|UltimateStrain|LoadMultiplier
+OK: config.dropdown.meaning.rngSystemSettings.74.2; actual=Effective|FullTension
+OK: config.dropdown.meaning.rngSystemSettings.75.2; actual=NearestContour|GlobalExtreme
+OK: config.dropdown.meaning.rngSystemSettings.78.2; actual=Auto|User
+OK: config.dropdown.meaning.rngSystemSettings.80.2; actual=User|Auto|AlwaysCalc
+OK: config.dropdown.meaning.rngSystemSettings.81.2; actual=AllSelected|TensionOnly
+OK: config.dropdown.meaning.rngSystemSettings.87.2; actual=Max|Min|Average
+OK: config.dropdown.meaning.rngSystemSettings.88.2; actual=3d|5d|6d
+OK: config.dropdown.meaning.rngSystemSettings.89.2; actual=Periodic|Smooth
+OK: config.dropdown.meaning.rngSystemSettings.101.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.102.2; actual=Transformed|Concrete|None
+OK: config.dropdown.meaning.rngSystemSettings.103.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.104.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.105.2; actual=Region|Polyline
+OK: config.dropdown.meaning.rngSystemSettings.106.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.107.2; actual=ValuesOnly|NamesAndValues
+OK: config.dropdown.meaning.rngSystemSettings.120.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.121.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.123.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.124.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.126.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.127.2; actual=Transformed|Concrete|None
+OK: config.dropdown.meaning.rngSystemSettings.128.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.129.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.131.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.132.2; actual=Yes|No
+OK: config.dropdown.meaning.rngSystemSettings.133.2; actual=Separate|Common
+OK: config.dropdown.meaning.rngUnitSettings.2.2; actual=mm|cm|m
+OK: config.dropdown.meaning.rngUnitSettings.2.4; actual=mm|cm|m
+OK: config.dropdown.meaning.rngUnitSettings.3.2; actual=mm2|cm2|m2
+OK: config.dropdown.meaning.rngUnitSettings.3.4; actual=mm2|cm2|m2
+OK: config.dropdown.meaning.rngUnitSettings.4.2; actual=N|kN|tf
+OK: config.dropdown.meaning.rngUnitSettings.4.4; actual=N|kN|tf
+OK: config.dropdown.meaning.rngUnitSettings.5.2; actual=N*mm|kN*m|tf*m
+OK: config.dropdown.meaning.rngUnitSettings.5.4; actual=N*mm|kN*m|tf*m
+OK: config.dropdown.meaning.rngUnitSettings.6.2; actual=Pa|kPa|MPa|kgf/cm2|tf/m2
+OK: config.dropdown.meaning.rngUnitSettings.6.4; actual=Pa|kPa|MPa|kgf/cm2|tf/m2
+OK: config.dropdown.meaning.rngUnitSettings.7.2; actual=1/mm|1/m
+OK: config.dropdown.meaning.rngUnitSettings.7.4; actual=1/mm|1/m
+OK: config.dropdown.meaning.rngSignConventionSettings.2.2; actual=Tension|Compression
+OK: config.dropdown.meaning.rngSignConventionSettings.3.2; actual=+Y tension|-Y tension
+OK: config.dropdown.meaning.rngSignConventionSettings.4.2; actual=+X tension|-X tension
+OK: config.dropdown.meaning.rngCalculationProfiles.7.3; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.7.4; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.7.5; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.7.6; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.8.3; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.8.4; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.8.5; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.8.6; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.9.3; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.9.4; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.9.5; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.9.6; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.10.3; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.10.4; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.10.5; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.10.6; actual=Yes|No
+OK: config.dropdown.meaning.rngCalculationProfiles.12.3; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.12.4; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.12.5; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.12.6; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.14.3; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.14.4; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.14.5; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.14.6; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.15.3; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.15.4; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.15.5; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.15.6; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.16.3; actual=Ignore|UseDiagram
+OK: config.dropdown.meaning.rngCalculationProfiles.16.4; actual=Ignore|UseDiagram
+OK: config.dropdown.meaning.rngCalculationProfiles.16.5; actual=Ignore|UseDiagram
+OK: config.dropdown.meaning.rngCalculationProfiles.16.6; actual=Ignore|UseDiagram
+OK: config.dropdown.meaning.rngCalculationProfiles.17.3; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.17.4; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.17.5; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.17.6; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.19.3; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.19.4; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.19.5; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.19.6; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.20.3; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.20.4; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.20.5; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.20.6; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.22.3; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.22.4; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.22.5; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.22.6; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.24.3; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.24.4; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.24.5; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.24.6; actual=ULS(I)|SLS(II)
+OK: config.dropdown.meaning.rngCalculationProfiles.25.3; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.25.4; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.25.5; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.25.6; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.27.3; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.27.4; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.27.5; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.27.6; actual=TwoLine|ThreeLine
+OK: config.dropdown.meaning.rngCalculationProfiles.29.3; actual=StrengthState|CapacityState|PreCrackState|PostCrackState|CrackedState
+OK: config.dropdown.meaning.rngCalculationProfiles.29.4; actual=StrengthState|CapacityState|PreCrackState|PostCrackState|CrackedState
+OK: config.dropdown.meaning.rngCalculationProfiles.29.5; actual=StrengthState|CapacityState|PreCrackState|PostCrackState|CrackedState
+OK: config.dropdown.meaning.rngCalculationProfiles.29.6; actual=StrengthState|CapacityState|PreCrackState|PostCrackState|CrackedState
+OK: config.dropdown.meaning.rngCalculationProfiles.30.3; actual=Stress|Strain
+OK: config.dropdown.meaning.rngCalculationProfiles.30.4; actual=Stress|Strain
+OK: config.dropdown.meaning.rngCalculationProfiles.30.5; actual=Stress|Strain
+OK: config.dropdown.meaning.rngCalculationProfiles.30.6; actual=Stress|Strain
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.2.2; actual=Yes|No
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.2.3; actual=Yes|No
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.3.2; actual=Outside|Inside
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.3.3; actual=Outside|Inside
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.5.2; actual=Yes|No
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.8.2; actual=mm|pt
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.8.3; actual=mm|pt
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.11.3; actual=Triangle|Stealth|Diamond|Oval|Open
+OK: config.dropdown.meaning.rngPlotAnnotationSettings.12.3; actual=Small|Medium|Wide
+OK: config.dropdown.meaning.rngCircleGeometry.16.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngCircleGeometry.16.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngCircleGeometry.16.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngCircleGeometry.16.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.28.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.28.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.28.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.28.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.29.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.29.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.29.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.29.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.30.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.30.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.30.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.30.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.31.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.31.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.31.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.31.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.32.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.32.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.32.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.32.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.33.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.33.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.33.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.33.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.34.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.34.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.34.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.34.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.35.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.35.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngRectanglesGeometry.35.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngRectanglesGeometry.35.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.26.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.26.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.26.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.26.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.27.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.27.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.27.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.27.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.28.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.28.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.28.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.28.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.29.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.29.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngPointedSectionGeometry.29.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngPointedSectionGeometry.29.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.30.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.30.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.30.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.30.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.31.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.31.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.31.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.31.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.32.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.32.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.32.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.32.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.33.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.33.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.33.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.33.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.34.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.34.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.34.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.34.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.35.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.35.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.35.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.35.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.36.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.36.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.36.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.36.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.37.5; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.37.6; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.37.9; actual=EachBar|EverySecondBar
+OK: config.dropdown.meaning.rngHollowRectangleGeometry.37.10; actual=Stacked|SideBySide
+OK: config.dropdown.meaning.rngLoadCombinations.2.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.3.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.4.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.5.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.6.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.7.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.8.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.9.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.10.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.11.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.12.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.13.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.14.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.15.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.16.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.17.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.18.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.19.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.20.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.21.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.22.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.23.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.24.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.25.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.26.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.27.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.28.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.29.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.30.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.rngLoadCombinations.31.6; actual=Auto|λ*Mx|λ*My|λ*Mxy|λ*N|λ*NMxy
+OK: config.dropdown.meaning.coverage
+CONFIG_DROPDOWN_MEANING: checked=251
+OK: config.settings.rightBorder.1
+OK: config.settings.rightBorder.2
+OK: config.settings.rightBorder.3
+OK: config.settings.rightBorder.4
+OK: config.settings.rightBorder.5
+OK: config.settings.rightBorder.6
+OK: config.settings.rightBorder.7
+OK: config.settings.rightBorder.8
+OK: config.settings.rightBorder.9
+OK: config.settings.rightBorder.10
+OK: config.settings.rightBorder.11
+OK: config.settings.rightBorder.12
+OK: config.settings.rightBorder.13
+OK: config.settings.rightBorder.14
+OK: config.settings.rightBorder.15
+OK: config.settings.rightBorder.16
+OK: config.settings.rightBorder.17
+OK: config.settings.rightBorder.18
+OK: config.settings.rightBorder.19
+OK: config.settings.rightBorder.20
+OK: config.settings.rightBorder.21
+OK: config.settings.rightBorder.22
+OK: config.settings.rightBorder.23
+OK: config.settings.rightBorder.24
+OK: config.settings.rightBorder.25
+OK: config.settings.rightBorder.26
+OK: config.settings.rightBorder.27
+OK: config.settings.rightBorder.28
+OK: config.settings.rightBorder.29
+OK: config.settings.rightBorder.30
+OK: config.settings.rightBorder.31
+OK: config.settings.rightBorder.32
+OK: config.settings.rightBorder.33
+OK: config.settings.rightBorder.34
+OK: config.settings.rightBorder.35
+OK: config.settings.rightBorder.36
+OK: config.settings.rightBorder.37
+OK: config.settings.rightBorder.38
+OK: config.settings.rightBorder.39
+OK: config.settings.rightBorder.40
+OK: config.settings.rightBorder.41
+OK: config.settings.rightBorder.42
+OK: config.settings.rightBorder.43
+OK: config.settings.rightBorder.44
+OK: config.settings.rightBorder.45
+OK: config.settings.rightBorder.46
+OK: config.settings.rightBorder.47
+OK: config.settings.rightBorder.48
+OK: config.settings.rightBorder.49
+OK: config.settings.rightBorder.50
+OK: config.settings.rightBorder.51
+OK: config.settings.rightBorder.52
+OK: config.settings.rightBorder.53
+OK: config.settings.rightBorder.54
+OK: config.settings.rightBorder.55
+OK: config.settings.rightBorder.56
+OK: config.settings.rightBorder.57
+OK: config.settings.rightBorder.58
+OK: config.settings.rightBorder.59
+OK: config.settings.rightBorder.60
+OK: config.settings.rightBorder.61
+OK: config.settings.rightBorder.62
+OK: config.settings.rightBorder.63
+OK: config.settings.rightBorder.64
+OK: config.settings.rightBorder.65
+OK: config.settings.rightBorder.66
+OK: config.settings.rightBorder.67
+OK: config.settings.rightBorder.68
+OK: config.settings.rightBorder.69
+OK: config.settings.rightBorder.70
+OK: config.settings.rightBorder.71
+OK: config.settings.rightBorder.72
+OK: config.settings.rightBorder.73
+OK: config.settings.rightBorder.74
+OK: config.settings.rightBorder.75
+OK: config.settings.rightBorder.76
+OK: config.settings.rightBorder.77
+OK: config.settings.rightBorder.78
+OK: config.settings.rightBorder.79
+OK: config.settings.rightBorder.80
+OK: config.settings.rightBorder.81
+OK: config.settings.rightBorder.82
+OK: config.settings.rightBorder.83
+OK: config.settings.rightBorder.84
+OK: config.settings.rightBorder.85
+OK: config.settings.rightBorder.86
+OK: config.settings.rightBorder.87
+OK: config.settings.rightBorder.88
+OK: config.settings.rightBorder.89
+OK: config.settings.rightBorder.90
+OK: config.settings.rightBorder.91
+OK: config.settings.rightBorder.92
+OK: config.settings.rightBorder.93
+OK: config.settings.rightBorder.94
+OK: config.settings.rightBorder.95
+OK: config.settings.rightBorder.96
+OK: config.settings.rightBorder.97
+OK: config.settings.rightBorder.98
+OK: config.settings.rightBorder.99
+OK: config.settings.rightBorder.100
+OK: config.settings.rightBorder.101
+OK: config.settings.rightBorder.102
+OK: config.settings.rightBorder.103
+OK: config.settings.rightBorder.104
+OK: config.settings.rightBorder.105
+OK: config.settings.rightBorder.106
+OK: config.settings.rightBorder.107
+OK: config.settings.rightBorder.108
+OK: config.settings.rightBorder.109
+OK: config.settings.rightBorder.110
+OK: config.settings.rightBorder.111
+OK: config.settings.rightBorder.112
+OK: config.settings.rightBorder.113
+OK: config.settings.rightBorder.114
+OK: config.settings.rightBorder.115
+OK: config.settings.rightBorder.116
+OK: config.settings.rightBorder.117
+OK: config.settings.rightBorder.118
+OK: config.settings.rightBorder.119
+OK: config.settings.rightBorder.120
+OK: config.settings.rightBorder.121
+OK: config.settings.rightBorder.122
+OK: config.settings.rightBorder.123
+OK: config.settings.rightBorder.124
+OK: config.settings.rightBorder.125
+OK: config.settings.rightBorder.126
+OK: config.settings.rightBorder.127
+OK: config.settings.rightBorder.128
+OK: config.settings.rightBorder.129
+OK: config.settings.rightBorder.130
+OK: config.settings.rightBorder.131
+OK: config.settings.rightBorder.132
+OK: config.settings.rightBorder.133
+OK: config.settings.rightBorder.134
+OK: config.settings.rightBorder.135
+OK: config.settings.rightBorder.136
+OK: config.settings.rightBorder.137
+OK: rectangles.independent.layout.R1.Top.pos2.unmerged
+OK: rectangles.independent.layout.R1.Top.pos2.dropdown
+OK: rectangles.independent.layout.R1.Top.pos2.inlineList
+OK: rectangles.independent.layout.R1.Top.pos2.centered
+OK: rectangles.independent.layout.R1.Top.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Top.bind2.unmerged
+OK: rectangles.independent.layout.R1.Top.bind2.dropdown
+OK: rectangles.independent.layout.R1.Top.bind2.inlineList
+OK: rectangles.independent.layout.R1.Top.bind2.centered
+OK: rectangles.independent.layout.R1.Top.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Top.pos3.unmerged
+OK: rectangles.independent.layout.R1.Top.pos3.dropdown
+OK: rectangles.independent.layout.R1.Top.pos3.inlineList
+OK: rectangles.independent.layout.R1.Top.pos3.centered
+OK: rectangles.independent.layout.R1.Top.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Top.bind3.unmerged
+OK: rectangles.independent.layout.R1.Top.bind3.dropdown
+OK: rectangles.independent.layout.R1.Top.bind3.inlineList
+OK: rectangles.independent.layout.R1.Top.bind3.centered
+OK: rectangles.independent.layout.R1.Top.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Bottom.pos2.unmerged
+OK: rectangles.independent.layout.R1.Bottom.pos2.dropdown
+OK: rectangles.independent.layout.R1.Bottom.pos2.inlineList
+OK: rectangles.independent.layout.R1.Bottom.pos2.centered
+OK: rectangles.independent.layout.R1.Bottom.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Bottom.bind2.unmerged
+OK: rectangles.independent.layout.R1.Bottom.bind2.dropdown
+OK: rectangles.independent.layout.R1.Bottom.bind2.inlineList
+OK: rectangles.independent.layout.R1.Bottom.bind2.centered
+OK: rectangles.independent.layout.R1.Bottom.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Bottom.pos3.unmerged
+OK: rectangles.independent.layout.R1.Bottom.pos3.dropdown
+OK: rectangles.independent.layout.R1.Bottom.pos3.inlineList
+OK: rectangles.independent.layout.R1.Bottom.pos3.centered
+OK: rectangles.independent.layout.R1.Bottom.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Bottom.bind3.unmerged
+OK: rectangles.independent.layout.R1.Bottom.bind3.dropdown
+OK: rectangles.independent.layout.R1.Bottom.bind3.inlineList
+OK: rectangles.independent.layout.R1.Bottom.bind3.centered
+OK: rectangles.independent.layout.R1.Bottom.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Left.pos2.unmerged
+OK: rectangles.independent.layout.R1.Left.pos2.dropdown
+OK: rectangles.independent.layout.R1.Left.pos2.inlineList
+OK: rectangles.independent.layout.R1.Left.pos2.centered
+OK: rectangles.independent.layout.R1.Left.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Left.bind2.unmerged
+OK: rectangles.independent.layout.R1.Left.bind2.dropdown
+OK: rectangles.independent.layout.R1.Left.bind2.inlineList
+OK: rectangles.independent.layout.R1.Left.bind2.centered
+OK: rectangles.independent.layout.R1.Left.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Left.pos3.unmerged
+OK: rectangles.independent.layout.R1.Left.pos3.dropdown
+OK: rectangles.independent.layout.R1.Left.pos3.inlineList
+OK: rectangles.independent.layout.R1.Left.pos3.centered
+OK: rectangles.independent.layout.R1.Left.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Left.bind3.unmerged
+OK: rectangles.independent.layout.R1.Left.bind3.dropdown
+OK: rectangles.independent.layout.R1.Left.bind3.inlineList
+OK: rectangles.independent.layout.R1.Left.bind3.centered
+OK: rectangles.independent.layout.R1.Left.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Right.pos2.unmerged
+OK: rectangles.independent.layout.R1.Right.pos2.dropdown
+OK: rectangles.independent.layout.R1.Right.pos2.inlineList
+OK: rectangles.independent.layout.R1.Right.pos2.centered
+OK: rectangles.independent.layout.R1.Right.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Right.bind2.unmerged
+OK: rectangles.independent.layout.R1.Right.bind2.dropdown
+OK: rectangles.independent.layout.R1.Right.bind2.inlineList
+OK: rectangles.independent.layout.R1.Right.bind2.centered
+OK: rectangles.independent.layout.R1.Right.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R1.Right.pos3.unmerged
+OK: rectangles.independent.layout.R1.Right.pos3.dropdown
+OK: rectangles.independent.layout.R1.Right.pos3.inlineList
+OK: rectangles.independent.layout.R1.Right.pos3.centered
+OK: rectangles.independent.layout.R1.Right.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R1.Right.bind3.unmerged
+OK: rectangles.independent.layout.R1.Right.bind3.dropdown
+OK: rectangles.independent.layout.R1.Right.bind3.inlineList
+OK: rectangles.independent.layout.R1.Right.bind3.centered
+OK: rectangles.independent.layout.R1.Right.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Top.pos2.unmerged
+OK: rectangles.independent.layout.R2.Top.pos2.dropdown
+OK: rectangles.independent.layout.R2.Top.pos2.inlineList
+OK: rectangles.independent.layout.R2.Top.pos2.centered
+OK: rectangles.independent.layout.R2.Top.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Top.bind2.unmerged
+OK: rectangles.independent.layout.R2.Top.bind2.dropdown
+OK: rectangles.independent.layout.R2.Top.bind2.inlineList
+OK: rectangles.independent.layout.R2.Top.bind2.centered
+OK: rectangles.independent.layout.R2.Top.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Top.pos3.unmerged
+OK: rectangles.independent.layout.R2.Top.pos3.dropdown
+OK: rectangles.independent.layout.R2.Top.pos3.inlineList
+OK: rectangles.independent.layout.R2.Top.pos3.centered
+OK: rectangles.independent.layout.R2.Top.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Top.bind3.unmerged
+OK: rectangles.independent.layout.R2.Top.bind3.dropdown
+OK: rectangles.independent.layout.R2.Top.bind3.inlineList
+OK: rectangles.independent.layout.R2.Top.bind3.centered
+OK: rectangles.independent.layout.R2.Top.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Bottom.pos2.unmerged
+OK: rectangles.independent.layout.R2.Bottom.pos2.dropdown
+OK: rectangles.independent.layout.R2.Bottom.pos2.inlineList
+OK: rectangles.independent.layout.R2.Bottom.pos2.centered
+OK: rectangles.independent.layout.R2.Bottom.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Bottom.bind2.unmerged
+OK: rectangles.independent.layout.R2.Bottom.bind2.dropdown
+OK: rectangles.independent.layout.R2.Bottom.bind2.inlineList
+OK: rectangles.independent.layout.R2.Bottom.bind2.centered
+OK: rectangles.independent.layout.R2.Bottom.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Bottom.pos3.unmerged
+OK: rectangles.independent.layout.R2.Bottom.pos3.dropdown
+OK: rectangles.independent.layout.R2.Bottom.pos3.inlineList
+OK: rectangles.independent.layout.R2.Bottom.pos3.centered
+OK: rectangles.independent.layout.R2.Bottom.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Bottom.bind3.unmerged
+OK: rectangles.independent.layout.R2.Bottom.bind3.dropdown
+OK: rectangles.independent.layout.R2.Bottom.bind3.inlineList
+OK: rectangles.independent.layout.R2.Bottom.bind3.centered
+OK: rectangles.independent.layout.R2.Bottom.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Left.pos2.unmerged
+OK: rectangles.independent.layout.R2.Left.pos2.dropdown
+OK: rectangles.independent.layout.R2.Left.pos2.inlineList
+OK: rectangles.independent.layout.R2.Left.pos2.centered
+OK: rectangles.independent.layout.R2.Left.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Left.bind2.unmerged
+OK: rectangles.independent.layout.R2.Left.bind2.dropdown
+OK: rectangles.independent.layout.R2.Left.bind2.inlineList
+OK: rectangles.independent.layout.R2.Left.bind2.centered
+OK: rectangles.independent.layout.R2.Left.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Left.pos3.unmerged
+OK: rectangles.independent.layout.R2.Left.pos3.dropdown
+OK: rectangles.independent.layout.R2.Left.pos3.inlineList
+OK: rectangles.independent.layout.R2.Left.pos3.centered
+OK: rectangles.independent.layout.R2.Left.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Left.bind3.unmerged
+OK: rectangles.independent.layout.R2.Left.bind3.dropdown
+OK: rectangles.independent.layout.R2.Left.bind3.inlineList
+OK: rectangles.independent.layout.R2.Left.bind3.centered
+OK: rectangles.independent.layout.R2.Left.bind3.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Right.pos2.unmerged
+OK: rectangles.independent.layout.R2.Right.pos2.dropdown
+OK: rectangles.independent.layout.R2.Right.pos2.inlineList
+OK: rectangles.independent.layout.R2.Right.pos2.centered
+OK: rectangles.independent.layout.R2.Right.pos2.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Right.bind2.unmerged
+OK: rectangles.independent.layout.R2.Right.bind2.dropdown
+OK: rectangles.independent.layout.R2.Right.bind2.inlineList
+OK: rectangles.independent.layout.R2.Right.bind2.centered
+OK: rectangles.independent.layout.R2.Right.bind2.reader; actual=EachBar
+OK: rectangles.independent.layout.R2.Right.pos3.unmerged
+OK: rectangles.independent.layout.R2.Right.pos3.dropdown
+OK: rectangles.independent.layout.R2.Right.pos3.inlineList
+OK: rectangles.independent.layout.R2.Right.pos3.centered
+OK: rectangles.independent.layout.R2.Right.pos3.reader; actual=Stacked
+OK: rectangles.independent.layout.R2.Right.bind3.unmerged
+OK: rectangles.independent.layout.R2.Right.bind3.dropdown
+OK: rectangles.independent.layout.R2.Right.bind3.inlineList
+OK: rectangles.independent.layout.R2.Right.bind3.centered
+OK: rectangles.independent.layout.R2.Right.bind3.reader; actual=EachBar
+OK: config.subsection.russian.2
+OK: config.subsection.russian.3
+OK: config.subsection.russian.4
+OK: config.subsection.russian.5
+OK: config.subsection.russian.6
+OK: config.subsection.russian.7
+OK: config.subsection.russian.8
+OK: config.subsection.russian.9
+OK: config.subsection.russian.10
+OK: config.subsection.russian.11
+OK: config.subsection.russian.12
+OK: config.subsection.russian.13
+OK: config.subsection.russian.14
+OK: config.subsection.russian.15
+OK: config.subsection.russian.16
+OK: config.subsection.russian.17
+OK: config.subsection.russian.18
+OK: config.subsection.russian.19
+OK: config.subsection.russian.20
+OK: config.subsection.russian.21
+OK: config.subsection.russian.22
+OK: config.subsection.russian.23
+OK: config.subsection.russian.24
+OK: config.subsection.russian.25
+OK: config.subsection.russian.26
+OK: config.subsection.russian.27
+OK: config.subsection.russian.28
+OK: config.subsection.russian.29
+OK: config.subsection.russian.30
+OK: config.subsection.russian.31
+OK: config.subsection.russian.32
+OK: config.subsection.russian.33
+OK: config.subsection.russian.34
+OK: config.subsection.russian.35
+OK: config.subsection.russian.36
+OK: config.subsection.russian.37
+OK: config.subsection.russian.38
+OK: config.subsection.russian.39
+OK: config.subsection.russian.40
+OK: config.subsection.russian.41
+OK: config.subsection.russian.42
+OK: config.subsection.russian.43
+OK: config.subsection.russian.44
+OK: config.subsection.russian.45
+OK: config.subsection.russian.46
+OK: config.subsection.russian.47
+OK: config.subsection.russian.48
+OK: config.subsection.russian.49
+OK: config.subsection.russian.50
+OK: config.subsection.russian.51
+OK: config.subsection.russian.52
+OK: config.subsection.russian.53
+OK: config.subsection.russian.54
+OK: config.subsection.russian.55
+OK: config.subsection.russian.56
+OK: config.subsection.russian.57
+OK: config.subsection.russian.58
+OK: config.subsection.russian.59
+OK: config.subsection.russian.60
+OK: config.subsection.russian.61
+OK: config.subsection.russian.62
+OK: config.subsection.russian.63
+OK: config.subsection.russian.64
+OK: config.subsection.russian.65
+OK: config.subsection.russian.66
+OK: config.subsection.russian.67
+OK: config.subsection.russian.68
+OK: config.subsection.russian.69
+OK: config.subsection.russian.70
+OK: config.subsection.russian.71
+OK: config.subsection.russian.72
+OK: config.subsection.russian.73
+OK: config.subsection.russian.74
+OK: config.subsection.russian.75
+OK: config.subsection.russian.76
+OK: config.subsection.russian.77
+OK: config.subsection.russian.78
+OK: config.subsection.russian.79
+OK: config.subsection.russian.80
+OK: config.subsection.russian.81
+OK: config.subsection.russian.82
+OK: config.subsection.russian.83
+OK: config.subsection.russian.84
+OK: config.subsection.russian.85
+OK: config.subsection.russian.86
+OK: config.subsection.russian.87
+OK: config.subsection.russian.88
+OK: config.subsection.russian.89
+OK: config.subsection.russian.90
+OK: config.subsection.russian.91
+OK: config.subsection.russian.92
+OK: config.subsection.russian.93
+OK: config.autoCAD.common.AutoCAD.Common.ConcreteLayer
+OK: config.subsection.russian.94
+OK: config.autoCAD.common.AutoCAD.Common.RebarLayer
+OK: config.subsection.russian.95
+OK: config.autoCAD.common.AutoCAD.Common.SectionContourLayer
+OK: config.subsection.russian.96
+OK: config.autoCAD.common.AutoCAD.Common.OpeningContourLayer
+OK: config.subsection.russian.97
+OK: config.subsection.russian.98
+OK: config.subsection.russian.99
+OK: config.subsection.russian.100
+OK: config.subsection.russian.101
+OK: config.subsection.russian.102
+OK: config.subsection.russian.103
+OK: config.subsection.russian.104
+OK: config.subsection.russian.105
+OK: config.subsection.russian.106
+OK: config.subsection.russian.107
+OK: config.subsection.russian.108
+OK: config.autoCAD.crack.exportOnly
+OK: config.subsection.russian.109
+OK: config.subsection.russian.110
+OK: config.subsection.russian.111
+OK: config.subsection.russian.112
+OK: config.subsection.russian.113
+OK: config.subsection.russian.114
+OK: config.subsection.russian.115
+OK: config.subsection.russian.116
+OK: config.subsection.russian.117
+OK: config.subsection.russian.118
+OK: config.subsection.russian.119
+OK: config.subsection.russian.120
+OK: config.subsection.russian.121
+OK: config.subsection.russian.122
+OK: config.subsection.russian.123
+OK: config.subsection.russian.124
+OK: config.subsection.russian.125
+OK: config.subsection.russian.126
+OK: config.subsection.russian.127
+OK: config.subsection.russian.128
+OK: config.subsection.russian.129
+OK: config.subsection.russian.130
+OK: config.subsection.russian.131
+OK: config.subsection.russian.132
+OK: config.subsection.russian.133
+OK: config.subsection.russian.134
+OK: config.subsection.russian.135
+OK: config.subsection.russian.136
+OK: config.subsection.russian.137
+OK: config.autoCAD.unique.AutoCAD.Common.ConcreteLayer
+OK: config.autoCAD.once.AutoCAD.Common.ConcreteLayer
+OK: config.autoCAD.unique.AutoCAD.Common.RebarLayer
+OK: config.autoCAD.once.AutoCAD.Common.RebarLayer
+OK: config.autoCAD.unique.AutoCAD.Common.SectionContourLayer
+OK: config.autoCAD.once.AutoCAD.Common.SectionContourLayer
+OK: config.autoCAD.unique.AutoCAD.Common.OpeningContourLayer
+OK: config.autoCAD.once.AutoCAD.Common.OpeningContourLayer
+OK: config.autoCAD.unique.AutoCAD.Export.CrackInteractionLayer
+OK: config.autoCAD.once.AutoCAD.Export.CrackInteractionLayer
+OK: config.autoCAD.removed.AutoCAD.Import.ConcreteLayer
+OK: config.autoCAD.removed.AutoCAD.Import.RebarLayer
+OK: config.autoCAD.removed.AutoCAD.Layer.Concrete
+OK: config.autoCAD.removed.AutoCAD.Layer.Rebar
+OK: config.autoCAD.removed.AutoCAD.Common.CrackInteractionLayer
+OK: config.autoCAD.crack.beforeConcreteTension
+OK: guide.autoCAD.contourWarning.exists
+OK: guide.autoCAD.contourWarning.location
+OK: guide.autoCAD.contourWarning.redBold.23
+OK: guide.autoCAD.contourWarning.redBold.24
+OK: guide.autoCAD.contourWarning.recommendation
+OK: guide.autoCAD.contourWarning.armature
+OK: guide.autoCAD.contourWarning.risks
+OK: guide.autoCAD.knownOuter.solid
+OK: guide.autoCAD.knownOuter.noMeshVoids
+TOTAL_CONFIG_PRESENTATION: passed=1318; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_8883286193b74585b54f95f00a07f69c\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: RunConfigPresentationTests; 2026-10-22T08:25:53
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

@@ -1,0 +1,78 @@
+{
+  "Status": "PASS_DIRECTED_FIXES",
+  "OriginalUniqueFailedAssertions": 65,
+  "OriginalFullRun": "FullOnOff_2026-10-22_ResultsFormatting_Run01",
+  "HistoricalFullResultPreserved": "INCOMPLETE_OR_FAILED",
+  "FixedSourceSHA256": "2A27AEEAAE7B8D9CE59830EF1264DED104E561F6A88068CF8C8604B3A7980525",
+  "Coverage": {
+    "No": {
+      "CONFIG_PRESENTATION": {
+        "Passed": 1317,
+        "Failed": 0
+      },
+      "AUDIT03_IMPORTED_UNIT_CHANGES": {
+        "Passed": 237,
+        "Failed": 0
+      },
+      "AUDIT03_GEOMETRY_SNAPSHOT": {
+        "Passed": 1251,
+        "Failed": 0
+      },
+      "AUDIT03_SNAPSHOT_METADATA": {
+        "Passed": 471,
+        "Failed": 0
+      },
+      "PREVIEW_SNAPSHOT_CONTRACT": {
+        "Passed": 21,
+        "Failed": 0
+      },
+      "COLLAPSED_INPUT_MESSAGES": {
+        "Passed": 65,
+        "Failed": 0
+      },
+      "SAVED_OFFSET_CALCULATION": {
+        "Passed": 8,
+        "Failed": 0
+      },
+      "RESULTS_FORMATTING": {
+        "Passed": 64,
+        "Failed": 0
+      }
+    },
+    "Yes": {
+      "CONFIG_PRESENTATION": {
+        "Passed": 1317,
+        "Failed": 0
+      },
+      "AUDIT03_IMPORTED_UNIT_CHANGES": {
+        "Passed": 237,
+        "Failed": 0
+      },
+      "AUDIT03_GEOMETRY_SNAPSHOT": {
+        "Passed": 1251,
+        "Failed": 0
+      },
+      "AUDIT03_SNAPSHOT_METADATA": {
+        "Passed": 471,
+        "Failed": 0
+      },
+      "PREVIEW_SNAPSHOT_CONTRACT": {
+        "Passed": 21,
+        "Failed": 0
+      },
+      "COLLAPSED_INPUT_MESSAGES": {
+        "Passed": 65,
+        "Failed": 0
+      },
+      "SAVED_OFFSET_CALCULATION": {
+        "Passed": 8,
+        "Failed": 0
+      },
+      "RESULTS_FORMATTING": {
+        "Passed": 64,
+        "Failed": 0
+      }
+    }
+  },
+  "NewFullRunPerformed": false
+}

@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "PreservedCells": 51518,
+  "OnlyCellFormattingChange": "Config!E7 full border",
+  "GraphicPartsByteExact": 86,
+  "NativeComponents": 169,
+  "SourceComponents": 163,
+  "ProductionComponentsUnchanged": 117,
+  "ChangedTestComponents": [
+    "modTestBatchCalculation",
+    "modTestGeometryReview",
+    "modTestPlotConfig",
+    "modTestRecipeOperations",
+    "modTestWorkbookInterface"
+  ],
+  "WorkbookSHA256": "2A27AEEAAE7B8D9CE59830EF1264DED104E561F6A88068CF8C8604B3A7980525",
+  "AllCodeSHA256": "CB39C56709DCAB5109A0BD858AD698FF16FEBD8CC0411DA73B74E160C4C4865F"
+}

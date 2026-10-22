@@ -1,0 +1,13 @@
+﻿{
+    "CandidateSHA256":  "13589633DDC929532D6A48672A369E8E35416759853B548E93670F982C42E3A4",
+    "UpdatedSources":  [
+                           "tests/modTestWorkbookInterface.bas",
+                           "tests/modTestPlotConfig.bas",
+                           "tests/modTestRecipeOperations.bas",
+                           "tests/modTestGeometryReview.bas",
+                           "tests/modTestBatchCalculation.bas"
+                       ],
+    "Compiled":  true,
+    "SourceSHA256":  "991BB5618B8F862471772709727168CBA95FF1B7E00D09B9719FBB747D208A81",
+    "ProductionChanged":  false
+}

@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-21 23:41:01
+Date: 2026-10-22 08:31:30
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -523,7 +523,7 @@ Friend Sub PrepareNumericalPath(ByVal section As CSectionModel, ByVal loadPath A
     mPathTolerance = MinDouble(toleranceN, MinDouble(toleranceMx, toleranceMy) / mNumericalFrame.lengthScale) / mForceScale
     Set mSourcePath = New CLoadPathVector
     mSourcePath.Initialize loadPath.nOffset, loadPath.nBase, loadPath.mxOffset, loadPath.mxBase, loadPath.myOffset, loadPath.myBase
-    Set mPathSection = section: mPathRevision = section.Revision
+    Set mPathSection = section: mPathRevision = section.revision
     mSourceTolerances(1) = toleranceN: mSourceTolerances(2) = toleranceMx: mSourceTolerances(3) = toleranceMy
     mCommonNumericalScale = commonForceScale: mNumericalReady = True
 End Sub
@@ -535,7 +535,7 @@ Private Function NumericalPathMatches(ByVal section As CSectionModel, ByVal load
         ByVal commonForceScale As Boolean) As Boolean
     If Not mNumericalReady Then Exit Function
     If Not section Is mPathSection Then Exit Function
-    If section.Revision <> mPathRevision Or commonForceScale <> mCommonNumericalScale Then Exit Function
+    If section.revision <> mPathRevision Or commonForceScale <> mCommonNumericalScale Then Exit Function
     NumericalPathMatches = loadPath.nOffset = mSourcePath.nOffset And loadPath.nBase = mSourcePath.nBase And _
         loadPath.mxOffset = mSourcePath.mxOffset And loadPath.mxBase = mSourcePath.mxBase And _
         loadPath.myOffset = mSourcePath.myOffset And loadPath.myBase = mSourcePath.myBase And _
@@ -2180,22 +2180,22 @@ End Function
 ' Нулевой угол означает вырожденный отрезок. Место ввода передаёт
 ' вызывающий класс; листы Excel здесь не читаются.
 Public Function ReadContourArcSweep(ByVal value As Variant, ByVal InputLocation As String) As Double
-    On Error GoTo InvalidValue
-    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
+    On Error GoTo invalidValue
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo invalidValue
     Dim text As String, index As Long, decimalSeparator As String
     text = Replace$(Trim$(CStr(value)), ",", ".")
-    If Len(text) = 0 Then GoTo InvalidValue
-    If Len(text) - Len(Replace$(text, ".", vbNullString)) > 1 Then GoTo InvalidValue
+    If Len(text) = 0 Then GoTo invalidValue
+    If Len(text) - Len(Replace$(text, ".", vbNullString)) > 1 Then GoTo invalidValue
     For index = 1 To Len(text)
-        If InStr(1, "0123456789+-.Ee", mid$(text, index, 1), vbBinaryCompare) = 0 Then GoTo InvalidValue
+        If InStr(1, "0123456789+-.Ee", mid$(text, index, 1), vbBinaryCompare) = 0 Then GoTo invalidValue
     Next index
     decimalSeparator = mid$(CStr(0.5), 2, 1)
     text = Replace$(text, ".", decimalSeparator)
-    If Not IsNumeric(text) Then GoTo InvalidValue
+    If Not IsNumeric(text) Then GoTo invalidValue
     ReadContourArcSweep = CDbl(text)
-    If Abs(ReadContourArcSweep) >= 2# * GEOM_PI Then GoTo InvalidValue
+    If Abs(ReadContourArcSweep) >= 2# * GEOM_PI Then GoTo invalidValue
     Exit Function
-InvalidValue:
+invalidValue:
     Err.Raise vbObjectError + 5283, "ReadContourArcSweep", _
         "В сохраненном контуре угол дуги (" & InputLocation & ") должен быть полностью задан числом в радианах: " & _
         "десятичное число с точкой или запятой, по модулю меньше полного оборота 2*pi. " & _
@@ -8931,10 +8931,10 @@ Private mBoundaryProbes As Variant ' Пары точек на границах �
 ' Копирует готовые границы области, чтобы дальнейшее использование рабочих массивов
 ' при пересечениях и обрезке не изменило сохранённый результат.
 Friend Sub SetGeometry(ByRef edges() As TRegionEdge, ByVal count As Long, _
-        ByVal loopCount As Long, ByVal area As Double, ByVal source As String, ByVal Revision As Long, _
+        ByVal loopCount As Long, ByVal area As Double, ByVal source As String, ByVal revision As Long, _
         ByRef loopOpening() As Boolean)
     mCount = count: mLoopCount = loopCount: mArea = area
-    mSource = source: mSectionRevision = Revision
+    mSource = source: mSectionRevision = revision
     Erase mEdges
     Erase mLoopOpening
     mBoundaryProbes = Empty
@@ -11739,7 +11739,7 @@ Public Function Build(ByVal definition As CSectionDefinition, ByRef meshOptions 
     Set annotationBuilder = New CSectionAnnotationBuilder
     annotationBuilder.Build definition, rebars, model.annotations, rules
     mesh.Freeze: rebars.Freeze: rules.Freeze
-    Set mModel = model: mModelRevision = model.Revision
+    Set mModel = model: mModelRevision = model.revision
     Set mMesh = mesh: Set mRebars = rebars: Set mRules = rules
     Set Build = model
 End Function
@@ -11769,7 +11769,7 @@ End Property
 ' После изменения её геометрии требует новую сборку; большие массивы не копирует.
 Private Sub RequireCurrentModel()
     If mModel Is Nothing Then SectionRecipeError "CSectionBuilder", "Нет успешно собранной модели."
-    If mModel.Revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; прежние сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
+    If mModel.revision <> mModelRevision Then SectionRecipeError "CSectionBuilder", "После сборки геометрия модели изменилась; прежние сетка, арматура и правила больше не соответствуют модели. Выполните новую сборку."
 End Sub
 
 
@@ -11886,8 +11886,8 @@ Public Property Get count() As Long
     count = mCount
 End Property
 ' Версия границ для обновления подготовленных геометрических данных.
-Public Property Get Revision() As Long
-    Revision = mRevision
+Public Property Get revision() As Long
+    revision = mRevision
 End Property
 ' Возвращает вид выбранного сегмента границы: отрезок, дуга или окружность.
 Public Property Get SegmentType(ByVal index As Long) As String
@@ -13128,7 +13128,7 @@ Public Sub Initialize(ByVal section As CSectionModel)
     If section Is Nothing Then GeometryError "Модель сечения не передана."
     If section.ConcreteCount = 0 Then GeometryError "В модели нет бетонных элементов."
     Set mSection = section
-    mRevision = section.Revision
+    mRevision = section.revision
     Set mDomain = Nothing
 End Sub
 
@@ -13138,8 +13138,8 @@ Friend Sub EnsureSection(ByVal section As CSectionModel)
     If section Is Nothing Then GeometryError "Модель сечения не передана."
     If Not section Is mSection Then
         Initialize section
-    ElseIf section.Revision <> mRevision Then
-        mRevision = section.Revision
+    ElseIf section.revision <> mRevision Then
+        mRevision = section.revision
         Set mDomain = Nothing
     End If
 End Sub
@@ -14299,9 +14299,9 @@ End Function
 ' При ошибке незавершённая область не сохраняется для последующих запросов.
 Private Sub EnsureDomain()
     If mSection Is Nothing Then GeometryError "Сначала привяжите геометрический запрос к модели сечения."
-    If mSection.Revision <> mRevision Then Set mDomain = Nothing
+    If mSection.revision <> mRevision Then Set mDomain = Nothing
     If Not mDomain Is Nothing Then Exit Sub
-    mRevision = mSection.Revision
+    mRevision = mSection.revision
     Dim outer() As TRegionEdge, outerCount As Long, holes() As TRegionEdge, holeCount As Long
     ReadMaterialContours mSection.contours, outer, outerCount, holes, holeCount
     Dim mesh() As TRegionEdge, meshCount As Long
@@ -14394,8 +14394,8 @@ Private Sub MeshBoundary(ByVal section As CSectionModel, ByRef boundary() As TRe
                 Case 3: lx = width / 2#: ly = height / 2#
                 Case 4: lx = -width / 2#: ly = height / 2#
             End Select
-            px(j) = section.ConcreteX(i) + lx * Cos(angle) - ly * Sin(angle)
-            py(j) = section.ConcreteY(i) + lx * Sin(angle) + ly * Cos(angle)
+            px(j) = section.concreteX(i) + lx * Cos(angle) - ly * Sin(angle)
+            py(j) = section.concreteY(i) + lx * Sin(angle) + ly * Cos(angle)
         Next j
         For j = 1 To 4
             k = j + 1: If k = 5 Then k = 1
@@ -14540,7 +14540,7 @@ End Sub
 ' Создаёт готовую область только из замкнутых границ. Вычисляет её площадь
 ' по формуле Грина с точным вкладом дуг и вычитанием отверстий.
 Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
-        ByVal source As String, ByVal Revision As Long) As CConcreteRegion
+        ByVal source As String, ByVal revision As Long) As CConcreteRegion
     Dim ordered() As TRegionEdge, loopCount As Long, area As Double, i As Long
     Dim loopAreas() As Double, loopOpening() As Boolean, originX() As Double, originY() As Double
     Dim seenLoop() As Boolean
@@ -14564,7 +14564,7 @@ Private Function MakeRegion(ByRef edges() As TRegionEdge, ByVal count As Long, _
     If area < -QUERY_TOLERANCE Then GeometryError "Не удалось получить положительную площадь бетона. Проверьте наружные границы Outer и отверстия Opening, их положение и направление обхода."
     Dim result As CConcreteRegion
     Set result = New CConcreteRegion
-    result.SetGeometry ordered, count, loopCount, GeomMax(area, 0#), source, Revision, loopOpening
+    result.SetGeometry ordered, count, loopCount, GeomMax(area, 0#), source, revision, loopOpening
     Set MakeRegion = result
 End Function
 
@@ -15665,14 +15665,14 @@ End Sub
 
 ' Возвращает версию геометрии без копирования волокон. Она меняется только
 ' при изменении модели, а не при чтении границ или расчетных характеристик.
-Public Property Get Revision() As Long
+Public Property Get revision() As Long
     If Not mContours Is Nothing Then
-        If mContours.Revision <> mObservedContourRevision Then
-            mObservedContourRevision = mContours.Revision
+        If mContours.revision <> mObservedContourRevision Then
+            mObservedContourRevision = mContours.revision
             mRevision = mRevision + 1
         End If
     End If
-    Revision = mRevision
+    revision = mRevision
 End Property
 
 ' Находит центр бетонной сетки без арматуры и сохраняет его для текущей версии геометрии.
@@ -15681,7 +15681,7 @@ End Property
 Public Sub ConcreteMeshCentroid(ByRef centerX As Double, ByRef centerY As Double, ByRef totalArea As Double)
     CheckConcreteIndex 1
     Dim currentRevision As Long
-    currentRevision = Revision
+    currentRevision = revision
     If Not mConcreteCenterValid Or mConcreteCenterRevision <> currentRevision Then
         Dim x0 As Double, y0 As Double, sumArea As Double, sumX As Double, sumY As Double, i As Long
         x0 = mConcreteX(1): y0 = mConcreteY(1)
@@ -15703,7 +15703,7 @@ End Sub
 ' во всех пробных полях деформаций без повторного обхода элементов.
 Friend Function MaximumElementRadiusFromConcreteCenter() As Double
     Dim currentRevision As Long
-    currentRevision = Revision
+    currentRevision = revision
     If Not mElementRadiusValid Or mElementRadiusRevision <> currentRevision Then
         Dim cx As Double, cy As Double, area As Double, x As Double, y As Double, radius As Double, i As Long
         ConcreteMeshCentroid cx, cy, area
@@ -16153,15 +16153,15 @@ Public Property Get ConcreteSourceHandle(ByVal index As Long) As String
 End Property
 
 ' X центра тяжести бетонного элемента во внутренней системе координат, мм.
-Public Property Get ConcreteX(ByVal index As Long) As Double
+Public Property Get concreteX(ByVal index As Long) As Double
     CheckConcreteIndex index
-    ConcreteX = mConcreteX(index)
+    concreteX = mConcreteX(index)
 End Property
 
 ' Y центра тяжести бетонного элемента во внутренней системе координат, мм.
-Public Property Get ConcreteY(ByVal index As Long) As Double
+Public Property Get concreteY(ByVal index As Long) As Double
     CheckConcreteIndex index
-    ConcreteY = mConcreteY(index)
+    concreteY = mConcreteY(index)
 End Property
 
 ' Площадь бетонного элемента, мм2.
@@ -16539,14 +16539,14 @@ Public Sub PrepareSnapshot(ByVal section As CSectionModel, Optional ByVal provid
         mTransformedSnapshot.CalculateTransformedByModuli section, _
             provider.ConcreteElasticModulusFromValueSet(mvsULS), provider.SteelElasticModulusFromValueSet(mvsULS)
     End If
-    Set mSnapshotSection = section: mSnapshotRevision = section.Revision
+    Set mSnapshotSection = section: mSnapshotRevision = section.revision
 End Sub
 
 ' Проверяет принадлежность готовых данных без повторного расчета.
 Public Sub ValidateSnapshot(ByVal section As CSectionModel, Optional ByVal requireTransformed As Boolean = False)
     If section Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Модель для снимка не передана."
     If Not section Is mSnapshotSection Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Характеристики подготовлены для другой модели сечения."
-    If section.Revision <> mSnapshotRevision Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "После подготовки характеристик геометрия изменилась; подготовьте текущий снимок заново."
+    If section.revision <> mSnapshotRevision Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "После подготовки характеристик геометрия изменилась; подготовьте текущий снимок заново."
     If requireTransformed And mTransformedSnapshot Is Nothing Then Err.Raise vbObjectError + 2215, "CSectionPropertiesCalculator", "Приведенные характеристики снимка не подготовлены."
 End Sub
 
@@ -16667,7 +16667,7 @@ End Sub
 
 ' Принимает в кэш только успешно завершенный расчет; Clear удаляет контекст.
 Private Sub StorePreparationContext(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double)
-    Set mPreparedSection = section: mPreparedRevision = section.Revision
+    Set mPreparedSection = section: mPreparedRevision = section.revision
     mPreparedKind = kind: mPreparedEb = eb: mPreparedEs = es
     mPreparationBuildCount = mPreparationBuildCount + 1
 End Sub
@@ -16676,7 +16676,7 @@ End Sub
 Private Function PreparationMatches(ByVal section As CSectionModel, ByVal kind As Long, ByVal eb As Double, ByVal es As Double) As Boolean
     If section Is Nothing Then Exit Function
     If Not section Is mPreparedSection Then Exit Function
-    PreparationMatches = section.Revision = mPreparedRevision And kind = mPreparedKind And eb = mPreparedEb And es = mPreparedEs
+    PreparationMatches = section.revision = mPreparedRevision And kind = mPreparedKind And eb = mPreparedEb And es = mPreparedEs
 End Function
 
 ' Добавляет элемент с весовой площадью и собственными инерциями вокруг центра.
@@ -16705,7 +16705,7 @@ Private Sub AddConcreteWeightedArea(ByVal section As CSectionModel, ByVal index 
     section.ConcreteLocalInertiaComponents index, localIx, localIy, localIxy
 
     AddWeightedArea section.concreteArea(index) * weightFactor, _
-        section.ConcreteX(index), section.ConcreteY(index), _
+        section.concreteX(index), section.concreteY(index), _
         localIx * weightFactor, localIy * weightFactor, localIxy * weightFactor
 End Sub
 
@@ -16736,7 +16736,7 @@ Public Sub CalculateProjection(ByVal section As CSectionModel, ByVal axisX As Do
     Dim i As Long
     For i = 1 To section.ConcreteCount
         ExtendProjection initialized, minProjection, maxProjection, _
-            nx * section.ConcreteX(i) + ny * section.ConcreteY(i), _
+            nx * section.concreteX(i) + ny * section.concreteY(i), _
             ConcreteHalfProjection(section, i, nx, ny)
     Next i
 
@@ -16828,8 +16828,8 @@ Public Function ConcreteInertiaAboutAxis(ByVal section As CSectionModel, ByVal a
     Dim distanceToAxis As Double
     Dim localInertia As Double
     For i = 1 To section.ConcreteCount
-        dx = section.ConcreteX(i) - originX
-        dy = section.ConcreteY(i) - originY
+        dx = section.concreteX(i) - originX
+        dy = section.concreteY(i) - originY
         distanceToAxis = -ny * dx + nx * dy
         Dim localIx As Double
         Dim localIy As Double
@@ -16849,7 +16849,7 @@ Private Function ReadMechanicalQuery(ByVal section As CSectionModel, ByVal kind 
         ByVal axisX As Double, ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double, _
         ByVal includeRebar As Boolean, ByRef value1 As Double, ByRef value2 As Double) As Boolean
     If Not section Is mPreparedSection Then Exit Function
-    If section.Revision <> mPreparedRevision Then Exit Function
+    If section.revision <> mPreparedRevision Then Exit Function
     Dim i As Long
     For i = 1 To mMechanicalQueryCount
         With mMechanicalQueries(i)
@@ -16869,7 +16869,7 @@ Private Sub StoreMechanicalQuery(ByVal section As CSectionModel, ByVal kind As L
         ByVal axisX As Double, ByVal axisY As Double, ByVal originX As Double, ByVal originY As Double, _
         ByVal includeRebar As Boolean, ByVal value1 As Double, ByVal value2 As Double)
     If Not section Is mPreparedSection Then Exit Sub
-    If section.Revision <> mPreparedRevision Or mMechanicalQueryCount >= 16 Then Exit Sub
+    If section.revision <> mPreparedRevision Or mMechanicalQueryCount >= 16 Then Exit Sub
     mMechanicalQueryCount = mMechanicalQueryCount + 1
     With mMechanicalQueries(mMechanicalQueryCount)
         .kind = kind: .axisX = axisX: .axisY = axisY: .originX = originX: .originY = originY
@@ -17022,7 +17022,7 @@ Private Sub CalculateLinearProjection(ByVal section As CSectionModel, ByVal axis
     Dim i As Long
     For i = 1 To section.ConcreteCount
         ExtendProjection initialized, minProjection, maxProjection, _
-            axisX * section.ConcreteX(i) + axisY * section.ConcreteY(i), _
+            axisX * section.concreteX(i) + axisY * section.concreteY(i), _
             ConcreteHalfProjection(section, i, axisX, axisY)
     Next i
 
@@ -19025,9 +19025,9 @@ End Property
 ' Возвращает версию подготовленного набора материалов. Вместе с самим объектом
 ' подготовки она позволяет проверить пригодность ранее найденного НДС;
 ' одинакового имени профиля для этого недостаточно.
-Public Property Get Revision() As Long
+Public Property Get revision() As Long
     EnsureInitialized
-    Revision = mRevision
+    revision = mRevision
 End Property
 
 ' Возвращает отдельные копии исходных параметров. Их изменение не затрагивает
@@ -21099,8 +21099,8 @@ Private Sub InitializeUltimateLoadPathGuess(ByVal section As CSectionModel, _
 
     For i = 1 To section.ConcreteCount
         area = area + section.concreteArea(i)
-        maxAbsX = MaxDouble(maxAbsX, Abs(section.ConcreteX(i) - originX))
-        maxAbsY = MaxDouble(maxAbsY, Abs(section.ConcreteY(i) - originY))
+        maxAbsX = MaxDouble(maxAbsX, Abs(section.concreteX(i) - originX))
+        maxAbsY = MaxDouble(maxAbsY, Abs(section.concreteY(i) - originY))
     Next i
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
@@ -21157,8 +21157,8 @@ Private Sub InitializeUltimateMomentGuess(ByVal section As CSectionModel, _
 
     For i = 1 To section.ConcreteCount
         area = area + section.concreteArea(i)
-        maxAbsX = MaxDouble(maxAbsX, Abs(section.ConcreteX(i) - originX))
-        maxAbsY = MaxDouble(maxAbsY, Abs(section.ConcreteY(i) - originY))
+        maxAbsX = MaxDouble(maxAbsX, Abs(section.concreteX(i) - originX))
+        maxAbsY = MaxDouble(maxAbsY, Abs(section.concreteY(i) - originY))
     Next i
     If section.RebarCount > 0 Then
         For i = 1 To section.RebarCount
@@ -25171,7 +25171,7 @@ End Sub
 ' кэшируется моделью, а не пересчитывается для каждой пробной плоскости.
 Friend Sub Initialize(ByVal section As CSectionModel)
     If section Is mSection Then
-        If section.Revision = mRevision Then Exit Sub
+        If section.revision = mRevision Then Exit Sub
     End If
     Dim sumArea As Double
     section.ConcreteMeshCentroid mOriginX, mOriginY, sumArea
@@ -25179,7 +25179,7 @@ Friend Sub Initialize(ByVal section As CSectionModel)
     ' Вырожденная геометрия остается вырожденной; масштаб не добавляет жесткости.
     If mLength <= 0# Then mLength = 1#
     mConcreteArea = sumArea: mSupportChecked = False
-    Set mSection = section: mRevision = section.Revision
+    Set mSection = section: mRevision = section.revision
 End Sub
 
 ' Регуляризация материала допустима только при независимой геометрии трех
@@ -26136,17 +26136,17 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         Optional ByVal collectPhysical As Boolean = False, Optional ByVal centeredInput As Boolean = False, _
         Optional ByVal centeredOutput As Boolean = False)
 
-    Dim physical As Boolean, reusable As Boolean, Revision As Long
+    Dim physical As Boolean, reusable As Boolean, revision As Long
     mFrame.Initialize section
     If Not centeredInput Then eps0 = mFrame.centerStrain(eps0, kx, ky)
     physical = buildTangent Or collectPhysical
     If mEvaluationReuseEnabled Then
         reusable = section Is mSnapshotSection And concreteMaterial Is mSnapshotConcrete And steelMaterial Is mSnapshotSteel
         If reusable Then
-            Revision = section.Revision
+            revision = section.revision
             If physical Then
                 If mPhysicalEvaluationValid And (Not buildTangent Or mPhysicalEvaluationHasK) Then
-                    If Revision = mPhysicalEvaluationRevision And eps0 = mPhysicalEvaluationPlane(1) And _
+                    If revision = mPhysicalEvaluationRevision And eps0 = mPhysicalEvaluationPlane(1) And _
                             kx = mPhysicalEvaluationPlane(2) And ky = mPhysicalEvaluationPlane(3) Then
                         Nint = mPhysicalEvaluationForces(1): Mxint = mPhysicalEvaluationForces(2): Myint = mPhysicalEvaluationForces(3)
                         mEvaluationReuseCount = mEvaluationReuseCount + 1
@@ -26154,7 +26154,7 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
                     End If
                 End If
             ElseIf mForceEvaluationValid Then
-                If Revision = mForceEvaluationRevision And eps0 = mForceEvaluationPlane(1) And _
+                If revision = mForceEvaluationRevision And eps0 = mForceEvaluationPlane(1) And _
                         kx = mForceEvaluationPlane(2) And ky = mForceEvaluationPlane(3) Then
                     Nint = mForceEvaluationForces(1): Mxint = mForceEvaluationForces(2): Myint = mForceEvaluationForces(3)
                     mEvaluationReuseCount = mEvaluationReuseCount + 1
@@ -26311,19 +26311,19 @@ Private Sub EvaluateStateInto(ByVal section As CSectionModel, _
         If Not mHasConcreteTension Then mMaxConcreteStress = 0#
         If Not mHasSteelCompression Then mMinSteelStress = 0#
         If Not mHasSteelTension Then mMaxSteelStress = 0#
-        mStrainExtremaRevision = section.Revision
+        mStrainExtremaRevision = section.revision
         mStrainExtremaPlane(1) = eps0: mStrainExtremaPlane(2) = kx: mStrainExtremaPlane(3) = ky
         mStrainExtremaValid = True
     End If
     If buildTangent Then BuildOriginalTangent
     If reusable Then
         If physical Then
-            mPhysicalEvaluationRevision = Revision
+            mPhysicalEvaluationRevision = revision
             mPhysicalEvaluationPlane(1) = eps0: mPhysicalEvaluationPlane(2) = kx: mPhysicalEvaluationPlane(3) = ky
             mPhysicalEvaluationForces(1) = Nint: mPhysicalEvaluationForces(2) = Mxint: mPhysicalEvaluationForces(3) = Myint
             mPhysicalEvaluationHasK = buildTangent: mPhysicalEvaluationValid = True
         Else
-            mForceEvaluationRevision = Revision
+            mForceEvaluationRevision = revision
             mForceEvaluationPlane(1) = eps0: mForceEvaluationPlane(2) = kx: mForceEvaluationPlane(3) = ky
             mForceEvaluationForces(1) = Nint: mForceEvaluationForces(2) = Mxint: mForceEvaluationForces(3) = Myint
             mForceEvaluationValid = True
@@ -26591,7 +26591,7 @@ End Function
 Private Function StrainExtremaContextMatches(ByVal section As CSectionModel) As Boolean
     If Not mStrainExtremaValid Then Exit Function
     If Not section Is mSnapshotSection Then Exit Function
-    If section.Revision <> mStrainExtremaRevision Then Exit Function
+    If section.revision <> mStrainExtremaRevision Then Exit Function
     StrainExtremaContextMatches = (mCenterEpsilon = mStrainExtremaPlane(1) And _
         mKappaX = mStrainExtremaPlane(2) And mKappaY = mStrainExtremaPlane(3))
 End Function
@@ -27334,9 +27334,9 @@ Private Function TrySolveLinearizedTrialPlane(ByVal section As CSectionModel, _
     ' на физическом плато будет только постоянное усилие, а растянутый бетон
     ' с Ignore даст нулевой вклад сам через диаграмму.
     For i = 1 To section.ConcreteCount
-        strain = PlaneStrain(trialEps0, trialKx, trialKy, section.ConcreteX(i), section.ConcreteY(i))
+        strain = PlaneStrain(trialEps0, trialKx, trialKy, section.concreteX(i), section.concreteY(i))
         AccumulateMaterialElement concreteMaterial, strain, section.concreteArea(i), _
-            section.ConcreteX(i), section.ConcreteY(i), activeCount, _
+            section.concreteX(i), section.concreteY(i), activeCount, _
             k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
     Next i
 
@@ -27377,7 +27377,7 @@ Private Function TryBuildNearZeroElasticPlane(ByVal section As CSectionModel, _
     sampleStrain = -STATE_NEAR_ZERO
     For i = 1 To section.ConcreteCount
         AccumulateMaterialElement concreteMaterial, sampleStrain, section.concreteArea(i), _
-            section.ConcreteX(i), section.ConcreteY(i), activeCount, _
+            section.concreteX(i), section.concreteY(i), activeCount, _
             k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
     Next i
 
@@ -27421,7 +27421,7 @@ Private Function TryBuildGlobalExtensionEquilibrium(ByVal section As CSectionMod
         If TryCompressionExtensionSample(concreteMaterial, sampleStrain) Then
             For i = 1 To section.ConcreteCount
                 AccumulateMaterialElement concreteMaterial, sampleStrain, section.concreteArea(i), _
-                    section.ConcreteX(i), section.ConcreteY(i), activeCount, _
+                    section.concreteX(i), section.concreteY(i), activeCount, _
                     k11, k12, k13, k21, k22, k23, k31, k32, k33, n0, mx0, my0
             Next i
         End If
@@ -27665,7 +27665,7 @@ Private Function CandidateUsesExtension(ByVal section As CSectionModel, _
     Dim strain As Double
 
     For i = 1 To section.ConcreteCount
-        strain = PlaneStrain(eps0, kx, ky, section.ConcreteX(i), section.ConcreteY(i))
+        strain = PlaneStrain(eps0, kx, ky, section.concreteX(i), section.concreteY(i))
         If concreteMaterial.IsInExtensionRange(strain) Then
             CandidateUsesExtension = True
             Exit Function
@@ -27827,7 +27827,7 @@ Friend Sub BeginRetryAttemptSession(ByVal section As CSectionModel, _
     Set mRetryContextSection = section
     Set mRetryContextConcrete = concreteMaterial
     Set mRetryContextSteel = steelMaterial
-    mRetrySectionRevision = section.Revision
+    mRetrySectionRevision = section.revision
     Set mRetryAttemptFailures = New Collection
 End Sub
 
@@ -28288,7 +28288,7 @@ Private Function RetryAttemptContextMatches(ByVal section As CSectionModel, _
         Set mRetryAttemptFailures = Nothing
         Exit Function
     End If
-    If section.Revision <> mRetrySectionRevision Then
+    If section.revision <> mRetrySectionRevision Then
         Set mRetryAttemptFailures = Nothing
         Exit Function
     End If
@@ -28344,7 +28344,7 @@ Public Function StateUsesExtension(ByVal section As CSectionModel, ByVal solver 
 
     If Not concreteDiagram Is Nothing Then
         For i = 1 To section.ConcreteCount
-            strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
+            strain = ElementStrain(solver, section.concreteX(i), section.concreteY(i))
             If concreteDiagram.IsInExtensionRange(strain) Then
                 StateUsesExtension = True
                 Exit Function
@@ -28384,7 +28384,7 @@ Public Function StateWithinPhysicalRange(ByVal section As CSectionModel, ByVal s
 
     If Not concreteDiagram Is Nothing Then
         For i = 1 To section.ConcreteCount
-            strain = ElementStrain(solver, section.ConcreteX(i), section.ConcreteY(i))
+            strain = ElementStrain(solver, section.concreteX(i), section.concreteY(i))
             If Not concreteDiagram.IsInPhysicalRange(strain) Then Exit Function
         Next i
     End If
@@ -28745,7 +28745,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
     For iter = 1 To context.LimitSearchUltimateMaxIterations
         RecordUltimateStrainIteration
         If acceptedEvaluation Then
-            acceptedEvaluation = section.Revision = acceptedRevision And _
+            acceptedEvaluation = section.revision = acceptedRevision And _
                 loadPath.nOffset = acceptedPath(1) And loadPath.nBase = acceptedPath(2) And _
                 loadPath.mxOffset = acceptedPath(3) And loadPath.mxBase = acceptedPath(4) And _
                 loadPath.myOffset = acceptedPath(5) And loadPath.myBase = acceptedPath(6)
@@ -28809,7 +28809,7 @@ Public Function RunNewton(ByVal context As ILimitSearchProblem, ByVal section As
         ' подтверждаются отдельно при принятии результата.
         acceptedEvaluation = immutableMaterials
         If acceptedEvaluation Then
-            acceptedRevision = section.Revision
+            acceptedRevision = section.revision
             acceptedPath(1) = loadPath.nOffset: acceptedPath(2) = loadPath.nBase
             acceptedPath(3) = loadPath.mxOffset: acceptedPath(4) = loadPath.mxBase
             acceptedPath(5) = loadPath.myOffset: acceptedPath(6) = loadPath.myBase
@@ -29177,7 +29177,7 @@ Private Function ProjectedMaterialsAreFlat(ByVal section As CSectionModel, ByVal
     Dim concrete As CMaterialDiagram, steel As CMaterialDiagram, strain As Double, i As Long
     Set concrete = concreteMaterial: Set steel = steelMaterial
     For i = 1 To section.ConcreteCount
-        strain = epsCenter + kx * (section.ConcreteY(i) - mFrame.originY) + ky * (section.ConcreteX(i) - mFrame.originX)
+        strain = epsCenter + kx * (section.concreteY(i) - mFrame.originY) + ky * (section.concreteX(i) - mFrame.originX)
         If concrete.GetTangentModulus(strain) <> 0# Then Exit Function
     Next i
     For i = 1 To section.RebarCount
@@ -29692,7 +29692,7 @@ Public Function NonlinearMaterialTransitions(ByVal section As CSectionModel, _
     Dim i As Long, x As Double, y As Double, strain As Double, delta As Double
     For i = 1 To section.ConcreteCount + section.RebarCount
         If i <= section.ConcreteCount Then
-            x = section.ConcreteX(i): y = section.ConcreteY(i)
+            x = section.concreteX(i): y = section.concreteY(i)
         Else
             x = section.RebarX(i - section.ConcreteCount): y = section.rebarY(i - section.ConcreteCount)
         End If
@@ -31248,8 +31248,8 @@ Private Sub InitializeCrcStrainGuess(ByVal section As CSectionModel, ByVal start
     Dim i As Long
     For i = 1 To section.ConcreteCount
         area = area + section.concreteArea(i)
-        If Abs(section.ConcreteX(i)) > maxAbsX Then maxAbsX = Abs(section.ConcreteX(i))
-        If Abs(section.ConcreteY(i)) > maxAbsY Then maxAbsY = Abs(section.ConcreteY(i))
+        If Abs(section.concreteX(i)) > maxAbsX Then maxAbsX = Abs(section.concreteX(i))
+        If Abs(section.concreteY(i)) > maxAbsY Then maxAbsY = Abs(section.concreteY(i))
     Next i
     For i = 1 To section.RebarCount
         area = area + section.rebarArea(i)
@@ -31538,7 +31538,7 @@ End Function
 
 ' Деформация бетонного КЭ.
 Private Function ConcreteStrain(ByVal solver As CSectionSolver, ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteStrain = solver.StrainAt(section.ConcreteX(index), section.ConcreteY(index))
+    ConcreteStrain = solver.StrainAt(section.concreteX(index), section.concreteY(index))
 End Function
 
 ' Определяет минимальную и максимальную деформацию бетонных КЭ для пробной
@@ -33391,7 +33391,7 @@ End Function
 
 ' Деформация бетонного КЭ.
 Private Function ConcreteStrain(ByVal solver As CSectionStateResult, ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteStrain = solver.epsilon0 + solver.kappaX * section.ConcreteY(index) + solver.kappaY * section.ConcreteX(index)
+    ConcreteStrain = solver.epsilon0 + solver.kappaX * section.concreteY(index) + solver.kappaY * section.concreteX(index)
 End Function
 
 
@@ -34513,7 +34513,7 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     End Select
     Dim multiplier As Double
     multiplier = SP35InteractionMultiplierFromData(radiusMode)
-    Set mSection = section: mSectionRevision = section.Revision
+    Set mSection = section: mSectionRevision = section.revision
     If geometryQuery Is Nothing Then
         Set mQuery = New CSectionGeometryQuery: mQuery.Initialize section
     Else
@@ -36304,7 +36304,7 @@ End Function
 ' положительного коэффициента. Числовые строки остаются допустимыми;
 ' логические значения и даты не трактуются как инженерные числа.
 Private Function SP35TablePositiveNumber(ByVal rawValue As Variant, ByRef value As Double) As Boolean
-    On Error GoTo InvalidValue
+    On Error GoTo invalidValue
     If IsError(rawValue) Or IsEmpty(rawValue) Or IsNull(rawValue) Then Exit Function
     If IsObject(rawValue) Or IsArray(rawValue) Then Exit Function
     If VarType(rawValue) = vbBoolean Or VarType(rawValue) = vbDate Then Exit Function
@@ -36312,7 +36312,7 @@ Private Function SP35TablePositiveNumber(ByVal rawValue As Variant, ByRef value 
     value = CDbl(rawValue)
     SP35TablePositiveNumber = (value > 0#)
     Exit Function
-InvalidValue:
+invalidValue:
 End Function
 
 ' Называет неверный коэффициент по заголовку таблицы, чтобы сообщение
@@ -40222,7 +40222,7 @@ End Sub
 ' для понятной ошибки ввода. Адреса не передаются в расчетное ядро.
 Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
         ByVal profileColumn As Long, ByVal profileId As String, ByVal includeVisualization As Boolean) As CCalculationProfile
-    On Error GoTo InvalidValue
+    On Error GoTo invalidValue
     Dim values As Object
     Dim locations As Object
     Dim activeKey As String ' Параметр, который сейчас проверяется; пустой для уже адресной ошибки.
@@ -40286,7 +40286,7 @@ Private Function BuildProfile(ByVal source As Object, ByRef data As Variant, _
 
     Set BuildProfile = profile
     Exit Function
-InvalidValue:
+invalidValue:
     Dim errorNumber As Long, description As String
     errorNumber = Err.number: description = Err.description
     If Len(activeKey) = 0 Then Err.Raise errorNumber, "CCalculationProfileCatalog", description
@@ -40298,7 +40298,7 @@ End Function
 ' неактивная модель остаётся незаданной без подстановки произвольной диаграммы.
 Private Function SpecFromValues(ByVal values As Object, ByVal locations As Object, _
         ByVal profileId As String, ByVal prefix As String) As CMaterialModelSpec
-    On Error GoTo InvalidValue
+    On Error GoTo invalidValue
     Dim activeKey As String
     Dim spec As CMaterialModelSpec
     Set spec = New CMaterialModelSpec
@@ -40328,7 +40328,7 @@ Private Function SpecFromValues(ByVal values As Object, ByVal locations As Objec
     spec.Initialize valueSetText, concreteDiagramText, concreteTensionText, steelDiagramText
     Set SpecFromValues = spec
     Exit Function
-InvalidValue:
+invalidValue:
     RaiseProfileInputError Err.number, Err.description, activeKey, profileId, locations
 End Function
 
@@ -41115,7 +41115,7 @@ Public Sub InitializeFromSolver(ByVal stateType As ESectionStateType, _
     mHasSteelCompression = solver.HasSteelCompression
     mHasSteelTension = solver.HasSteelTension
     solver.CopyMaterialContext mSnapshotSection, mSnapshotConcrete, mSnapshotSteel
-    If Not mSnapshotSection Is Nothing Then mSnapshotRevision = mSnapshotSection.Revision
+    If Not mSnapshotSection Is Nothing Then mSnapshotRevision = mSnapshotSection.revision
 End Sub
 
 ' Сохраняет причину, по которой решение не удалось начать: обязательные программные
@@ -41168,13 +41168,13 @@ Public Function PrepareElementSnapshot(ByVal section As CSectionModel) As Varian
     If Not mConverged Then Exit Function
     If section Is Nothing Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Модель для снимка элементов не передана."
     If Not section Is mSnapshotSection Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Снимок НДС относится к другой модели сечения."
-    If section.Revision <> mSnapshotRevision Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "После расчета НДС геометрия изменилась; выполните расчет для текущего сечения."
+    If section.revision <> mSnapshotRevision Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "После расчета НДС геометрия изменилась; выполните расчет для текущего сечения."
     If Not HasMaterialSnapshot Then Err.Raise vbObjectError + 3974, "CSectionStateResult", "Фактические диаграммы состояния недоступны для записи элементов."
     Dim data() As Variant, i As Long, row As Long, strain As Double, stress As Double
     ReDim data(1 To section.ConcreteCount + section.RebarCount, 1 To 5)
     row = 1
     For i = 1 To section.ConcreteCount
-        strain = mEpsilon0 + mKappaX * section.ConcreteY(i) + mKappaY * section.ConcreteX(i)
+        strain = mEpsilon0 + mKappaX * section.concreteY(i) + mKappaY * section.concreteX(i)
         stress = mSnapshotConcrete.GetStress(strain)
         data(row, 1) = section.ConcreteID(i): data(row, 2) = "Concrete"
         data(row, 3) = strain: data(row, 4) = stress: data(row, 5) = ElementPhysicalState("Concrete", strain, stress)
@@ -41876,8 +41876,8 @@ Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMater
     Dim changed As Boolean
     If mContextBound Then
         changed = (Not section Is mContextSection) Or (Not materials Is mContextMaterials)
-        changed = changed Or (mSectionRevision <> section.Revision) Or _
-            (mMaterialRevision <> materials.Revision) Or (mAcceptanceKey <> acceptanceKey)
+        changed = changed Or (mSectionRevision <> section.revision) Or _
+            (mMaterialRevision <> materials.revision) Or (mAcceptanceKey <> acceptanceKey)
         If changed Then Clear
     Else
         ' Без заданных условий расчёта нельзя подтвердить пригодность вручную сохранённого НДС
@@ -41886,8 +41886,8 @@ Public Sub BindContext(ByVal section As CSectionModel, ByVal materials As CMater
     End If
     Set mContextSection = section
     Set mContextMaterials = materials
-    mSectionRevision = section.Revision
-    mMaterialRevision = materials.Revision
+    mSectionRevision = section.revision
+    mMaterialRevision = materials.revision
     mAcceptanceKey = acceptanceKey
     mContextBound = True
 End Sub
@@ -46681,8 +46681,8 @@ Private Sub WriteSectionGeometry(ByVal Workbook As Object, ByVal section As CSec
         data(rowIndex, 1) = runID
         data(rowIndex, 2) = section.ConcreteID(i)
         data(rowIndex, 3) = "Concrete"
-        data(rowIndex, 4) = OutputLength(section.ConcreteX(i), units)
-        data(rowIndex, 5) = OutputLength(section.ConcreteY(i), units)
+        data(rowIndex, 4) = OutputLength(section.concreteX(i), units)
+        data(rowIndex, 5) = OutputLength(section.concreteY(i), units)
         data(rowIndex, 6) = OutputArea(section.concreteArea(i), units)
         data(rowIndex, 7) = section.ConcreteShapeType(i)
         data(rowIndex, 8) = OutputLength(section.ConcreteWidth(i), units)
@@ -46806,7 +46806,7 @@ Private Sub WriteSectionProperties(ByVal Workbook As Object, ByVal section As CS
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.sourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.ConcreteMeshSource", section.ConcreteMeshSource, "-", "Источник бетонной сетки: Generated, AutoCADRegions или AutoCADContours."
-    PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии, к которой относятся состояния и расчетные области этого снимка."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.revision, "-", "Версия геометрии, к которой относятся состояния и расчетные области этого снимка."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.RecipeDiagnostics", previousDiagnostics & section.GeometryDiagnosticsText, "-", "Запрошенные/созданные позиции, совпадения, пропуски и конфликты. StationStep и CenterStep в мм; для связанного ряда StationStep относится к исходному пути."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceX", OutputLength(batch.loadReferenceX, units), OutputLengthUnit(units), "X точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetX."
     PutProperty data, rowIndex, runID, "ALL", "LoadReferenceY", OutputLength(batch.loadReferenceY, units), OutputLengthUnit(units), "Y точки приложения нагрузки в координатах модели; это центр тяжести бетонного сечения плюс Load.ReferenceOffsetY."
@@ -47367,7 +47367,7 @@ Private Sub WriteSectionPropertiesPreview(ByVal Workbook As Object, ByVal sectio
     PutProperty data, rowIndex, runID, "ALL", "Bounds.MaxY", OutputLength(maxY, units), OutputLengthUnit(units), "Максимальный Y бетонной расчетной модели в координатах модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.Source", section.sourceType, "-", "Источник геометрии расчетной модели."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.ConcreteMeshSource", section.ConcreteMeshSource, "-", "Источник бетонной сетки: Generated, AutoCADRegions или AutoCADContours."
-    PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.Revision, "-", "Версия геометрии сохраненного снимка."
+    PutProperty data, rowIndex, runID, "ALL", "Geometry.Revision", section.revision, "-", "Версия геометрии сохраненного снимка."
     PutProperty data, rowIndex, runID, "ALL", "Geometry.RecipeDiagnostics", section.GeometryDiagnosticsText, "-", "Фактическая диагностика сохраненной сборки. StationStep и CenterStep в мм; для связанного ряда StationStep относится к исходному пути."
 
     Dim concreteProps As CSectionPropertiesCalculator
@@ -49419,13 +49419,13 @@ End Sub
 ' вместо подстановки нулевого значения.
 Private Function ReadAnnotationNumber(ByVal value As Variant, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long, ByVal field As String) As Double
-    If IsError(value) Then GoTo InvalidValue
-    If IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
-    If Not IsNumeric(value) Then GoTo InvalidValue
-    On Error GoTo InvalidValue
+    If IsError(value) Then GoTo invalidValue
+    If IsNull(value) Or IsEmpty(value) Then GoTo invalidValue
+    If Not IsNumeric(value) Then GoTo invalidValue
+    On Error GoTo invalidValue
     ReadAnnotationNumber = CDbl(value)
     Exit Function
-InvalidValue:
+invalidValue:
     Err.Raise vbObjectError + 4718, "CSectionPlotDataReader", AnnotationInputMessage(anchor, row, column, field)
 End Function
 
@@ -49573,7 +49573,7 @@ End Function
 ' False. Допускает Boolean и явные текстовые/числовые пары Yes/No, True/False.
 Private Function ReadSnapshotBoolean(ByVal value As Variant, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long, ByVal field As String) As Boolean
-    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo InvalidValue
+    If IsError(value) Or IsNull(value) Or IsEmpty(value) Then GoTo invalidValue
     If VarType(value) = vbBoolean Then
         ReadSnapshotBoolean = CBool(value)
     Else
@@ -49583,11 +49583,11 @@ Private Function ReadSnapshotBoolean(ByVal value As Variant, ByVal anchor As Obj
             Case "false", "no", "нет", "0"
                 ReadSnapshotBoolean = False
             Case Else
-                GoTo InvalidValue
+                GoTo invalidValue
         End Select
     End If
     Exit Function
-InvalidValue:
+invalidValue:
     Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
 End Function
 
@@ -49620,11 +49620,11 @@ Private Function ReadSnapshotUnit(ByVal value As Variant, ByVal dimension As Str
         ByVal fallbackUnit As String, ByVal hardDefault As String, ByVal anchor As Object, _
         ByVal row As Long, ByVal column As Long, ByVal field As String, Optional ByVal allowBlank As Boolean = False) As String
     Dim unitText As String, checked As Double
-    On Error GoTo InvalidValue
-    If IsError(value) Or IsNull(value) Then GoTo InvalidValue
+    On Error GoTo invalidValue
+    If IsError(value) Or IsNull(value) Then GoTo invalidValue
     unitText = Trim$(CStr(value))
     If Len(unitText) = 0 Or unitText = "-" Then
-        If Not allowBlank Then GoTo InvalidValue
+        If Not allowBlank Then GoTo invalidValue
         unitText = UnitOrDefault(unitText, fallbackUnit, hardDefault)
     End If
     Select Case dimension
@@ -49635,7 +49635,7 @@ Private Function ReadSnapshotUnit(ByVal value As Variant, ByVal dimension As Str
     End Select
     ReadSnapshotUnit = unitText
     Exit Function
-InvalidValue:
+invalidValue:
     Err.Raise vbObjectError + 4720, "CSectionPlotDataReader", SnapshotMetadataInputMessage(anchor, row, column, field)
 End Function
 
@@ -55870,12 +55870,12 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
         physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
         textHeight = 0.22 * MinDouble(ConcreteWidth, ConcreteHeight)
         If textHeight <= 0# Then textHeight = 1#
-        AddAcadRectangleRegion ms, section.ConcreteX(i), section.ConcreteY(i), ConcreteWidth, ConcreteHeight, ConcreteRotation, _
+        AddAcadRectangleRegion ms, section.concreteX(i), section.concreteY(i), ConcreteWidth, ConcreteHeight, ConcreteRotation, _
             exportSettings.concreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings), temporarySources
 
         Dim labelX As Double
         Dim labelY As Double
-        ConcreteLabelPoint section.ConcreteX(i), section.ConcreteY(i), ConcreteWidth, ConcreteHeight, ConcreteRotation, _
+        ConcreteLabelPoint section.concreteX(i), section.concreteY(i), ConcreteWidth, ConcreteHeight, ConcreteRotation, _
             labelX, labelY
         AddAcadText ms, ResultLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames, resultPrecision), _
             labelX, labelY, textHeight, _
@@ -55944,25 +55944,25 @@ Private Function CurrentCrackRegionRows(ByVal Workbook As Object, ByVal combinat
     Dim colOwner As Long, colRevision As Long, colType As Long, colRun As Long
     colOwner = ResultColumn(data, "CombinationID"): colRevision = ResultColumn(data, "SectionRevision")
     colType = ResultColumn(data, "AnnotationType"): colRun = ResultColumn(data, "RunID")
-    Dim colParameter As Long, colValue As Long, colCase As Long, Revision As Variant, runID As Variant, row As Long
+    Dim colParameter As Long, colValue As Long, colCase As Long, revision As Variant, runID As Variant, row As Long
     colParameter = ResultColumn(properties, "Parameter"): colValue = ResultColumn(properties, "Value")
     colCase = ResultColumn(properties, "LoadCase")
     runID = geometry(2, ResultColumn(geometry, "RunID"))
     For row = 2 To UBound(properties, 1)
         If SafeText(properties(row, colCase)) = "ALL" And SafeText(properties(row, colParameter)) = "Geometry.Revision" Then
-            Revision = properties(row, colValue)
+            revision = properties(row, colValue)
             If CStr(properties(row, ResultColumn(properties, "RunID"))) <> CStr(runID) Then Exit Function
             Exit For
         End If
     Next row
-    If IsEmpty(Revision) Then Exit Function
+    If IsEmpty(revision) Then Exit Function
     Dim anchor As Object, colLoop As Long, colStandard As Long, colAnchor As Long, identity As String, rowIdentity As String
     Set anchor = Workbook.names.item("rngNDMSectionAnnotations").RefersToRange
     colLoop = ResultColumn(data, "LoopID"): colStandard = ResultColumn(data, "Standard"): colAnchor = ResultColumn(data, "AnchorID")
     For row = 2 To UBound(data, 1)
         If left$(UCase$(SafeText(data(row, colType))), 13) = "CRACK_REGION_" And _
                 StrComp(SafeText(data(row, colOwner)), combinationID, vbTextCompare) = 0 Then
-            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(Revision) Then
+            If CStr(data(row, colRun)) <> CStr(runID) Or CStr(data(row, colRevision)) <> CStr(revision) Then
                 selected.RemoveAll: Exit Function
             End If
             rowIdentity = ReadSavedAnnotationText(data, anchor, row, colStandard) & "|" & ReadSavedAnnotationText(data, anchor, row, colAnchor)
@@ -56789,13 +56789,13 @@ Private Sub ExpandSectionBoundsByConcreteElement(ByVal section As CSectionModel,
     height = ConcreteDrawHeight(section, index)
     rotationRad = ConcreteDrawRotation(section, index)
 
-    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+    IncludeRotatedRectangleCorner section.concreteX(index), section.concreteY(index), width, height, rotationRad, _
         -1#, -1#, minX, maxX, minY, maxY, hasBounds
-    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+    IncludeRotatedRectangleCorner section.concreteX(index), section.concreteY(index), width, height, rotationRad, _
         1#, -1#, minX, maxX, minY, maxY, hasBounds
-    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+    IncludeRotatedRectangleCorner section.concreteX(index), section.concreteY(index), width, height, rotationRad, _
         1#, 1#, minX, maxX, minY, maxY, hasBounds
-    IncludeRotatedRectangleCorner section.ConcreteX(index), section.ConcreteY(index), width, height, rotationRad, _
+    IncludeRotatedRectangleCorner section.concreteX(index), section.concreteY(index), width, height, rotationRad, _
         -1#, 1#, minX, maxX, minY, maxY, hasBounds
 End Sub
 
@@ -63254,7 +63254,7 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     Set settings = reader(): Set model = importer.ImportConfiguredModelSpace(regions, settings, Nothing, EmptyContourLayers())
     prefix = "autoCADConfig.import." & CStr(position)
     Check stats, prefix & ".counts", model.ConcreteCount = 1 And model.RebarCount = 1
-    CheckClose stats, prefix & ".concreteMm", model.ConcreteX(1), 20#
+    CheckClose stats, prefix & ".concreteMm", model.concreteX(1), 20#
     CheckClose stats, prefix & ".steelMm", model.RebarX(1), 80#
     Dim emptyLayers As Collection, layer As CFakeAcadContour, layerName As Variant
     Set emptyLayers = New Collection
@@ -63269,7 +63269,7 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     Check stats, prefix & ".existingEmptyLayers.comment", InStr(importer.ImportComment, "бетонной сетке") > 0
     SetValue system, "AutoCAD.Common.ConcreteLayer", "AUDIT_IC2"
     Set model = importer.ImportConfiguredModelSpace(regions, reader(), Nothing, EmptyContourLayers())
-    CheckClose stats, prefix & ".changedConcrete", model.ConcreteX(1), 120#
+    CheckClose stats, prefix & ".changedConcrete", model.concreteX(1), 120#
     CheckClose stats, prefix & ".concreteLayerKeepsSteel", model.RebarX(1), 80#
     Dim presentation As Object
     Set presentation = Audit03AutoCADPresentationForTests(reader(), "Concrete", "Tension", "C1", 1#, 2)
@@ -63278,7 +63278,7 @@ Private Sub CheckImporter(ByRef stats As TCadStats, ByVal system As Object, ByVa
     SetValue system, "AutoCAD.Common.RebarLayer", "AUDIT_IR2"
     Set model = importer.ImportConfiguredModelSpace(regions, reader(), Nothing, EmptyContourLayers())
     CheckClose stats, prefix & ".changedSteel", model.RebarX(1), 180#
-    CheckClose stats, prefix & ".steelLayerKeepsConcrete", model.ConcreteX(1), 20#
+    CheckClose stats, prefix & ".steelLayerKeepsConcrete", model.concreteX(1), 20#
     Set presentation = Audit03AutoCADPresentationForTests(reader(), "Rebar", "Tension", "R1", 1#, 2)
     Check stats, prefix & ".rebarSharedWithExport", CStr(presentation("GeometryLayer")) = "AUDIT_IR2"
     stats.cases = stats.cases + 4: system.formula = saved
@@ -63738,8 +63738,8 @@ Private Sub CheckNativeImport(ByRef stats As TCadStats, ByVal doc As Object, ByV
     Check stats, "realAutoCAD.import.counts", model.ConcreteCount = 4 And model.RebarCount = 4
     For i = 1 To model.ConcreteCount
         CheckClose stats, "realAutoCAD.import.concreteArea." & CStr(i), model.concreteArea(i), 10000#
-        CheckClose stats, "realAutoCAD.import.concreteX." & CStr(i), Abs(model.ConcreteX(i)), 50#
-        CheckClose stats, "realAutoCAD.import.concreteY." & CStr(i), Abs(model.ConcreteY(i)), 50#
+        CheckClose stats, "realAutoCAD.import.concreteX." & CStr(i), Abs(model.concreteX(i)), 50#
+        CheckClose stats, "realAutoCAD.import.concreteY." & CStr(i), Abs(model.concreteY(i)), 50#
     Next i
     For i = 1 To model.RebarCount
         CheckClose stats, "realAutoCAD.import.rebarArea." & CStr(i), model.rebarArea(i), GEOM_PI * 64#
@@ -63782,8 +63782,8 @@ Private Sub CheckNativeRegionInertia(ByRef stats As TCadStats, ByVal doc As Obje
             If model.ConcreteCount = 1 Then
                 model.ConcreteLocalInertiaComponents 1, ix, iy, ixy
                 CheckNativeInertiaClose stats, prefix & ".area", model.concreteArea(1), 7200#
-                CheckNativeInertiaClose stats, prefix & ".x", model.ConcreteX(1), cx
-                CheckNativeInertiaClose stats, prefix & ".y", model.ConcreteY(1), cy
+                CheckNativeInertiaClose stats, prefix & ".x", model.concreteX(1), cx
+                CheckNativeInertiaClose stats, prefix & ".y", model.concreteY(1), cy
                 CheckNativeInertiaClose stats, prefix & ".Ix", ix, expectedIx
                 CheckNativeInertiaClose stats, prefix & ".Iy", iy, expectedIy
                 CheckNativeInertiaClose stats, prefix & ".Ixy", ixy, expectedIxy
@@ -65704,8 +65704,8 @@ Public Function RunRealAutoCADFarOriginTests(ByVal ownedApplication As Object, _
         Else
             Check prefix & ".meshCount", model.ConcreteCount = baseline.ConcreteCount
             For i = 1 To model.ConcreteCount
-                CheckCloseFar prefix & ".fiberX." & CStr(i), model.ConcreteX(i) - sx, baseline.ConcreteX(i), 0.000001
-                CheckCloseFar prefix & ".fiberY." & CStr(i), model.ConcreteY(i) - sy, baseline.ConcreteY(i), 0.000001
+                CheckCloseFar prefix & ".fiberX." & CStr(i), model.concreteX(i) - sx, baseline.concreteX(i), 0.000001
+                CheckCloseFar prefix & ".fiberY." & CStr(i), model.concreteY(i) - sy, baseline.concreteY(i), 0.000001
                 CheckCloseFar prefix & ".fiberArea." & CStr(i), model.concreteArea(i), baseline.concreteArea(i), 0.000001
             Next i
         End If
@@ -65794,8 +65794,8 @@ NextFarLoad:
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, model, PrepareSectionSnapshot(model), units
         Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
         CheckPostAudit03ContoursEqual prefix & ".savedContours", model.contours, restored.contours
-        CheckCloseFar prefix & ".savedOriginalX", restored.ConcreteX(1), model.ConcreteX(1), 0.000001
-        CheckCloseFar prefix & ".savedOriginalY", restored.ConcreteY(1), model.ConcreteY(1), 0.000001
+        CheckCloseFar prefix & ".savedOriginalX", restored.concreteX(1), model.concreteX(1), 0.000001
+        CheckCloseFar prefix & ".savedOriginalY", restored.concreteY(1), model.concreteY(1), 0.000001
     Next position
     doc.SaveAs ThisWorkbook.path & "\FarOrigin_1000m.dwg"
     GoTo Cleanup
@@ -66013,8 +66013,8 @@ Private Sub CheckNativeWorldCoordinateGuard(ByVal doc As Object)
     doc.ActiveUCS = world
     Set section = importer.ImportFromDocument(doc, settings)
     Check "native.worldUCS.worldImported", section.ConcreteCount = 1 And section.RebarCount = 1
-    CheckArea "native.worldUCS.coordinatesX", section.ConcreteX(1), 5000#
-    CheckArea "native.worldUCS.coordinatesY", section.ConcreteY(1), 5000#
+    CheckArea "native.worldUCS.coordinatesX", section.concreteX(1), 5000#
+    CheckArea "native.worldUCS.coordinatesY", section.concreteY(1), 5000#
     Check "native.worldUCS.sourcesKept", doc.modelSpace.count = countBefore And CLng(doc.GetVariable("WORLDUCS")) = 1
     Set query = New CSectionGeometryQuery: query.Initialize section: Set region = query.ConcreteDomain
     Check "native.openingOnly.source", region.source = "ElementBoundaryLoops+KnownOpening"
@@ -66637,7 +66637,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestBatchCalculation
 TYPE: 1
-LINES: 10468
+LINES: 10471
 ====================================================================================================
 Option Explicit
 
@@ -66974,8 +66974,10 @@ Public Function RunBatchCalculationTests() As String
     stats.report = stats.report & RunAudit03UserPsiFallbackTests(searchPassed, searchFailed)
     stats.passed = stats.passed + searchPassed: stats.Failed = stats.Failed + searchFailed
 
+    Dim elapsed As Double: elapsed = Timer - t0
+    If elapsed < 0# Then elapsed = elapsed + 86400#
     AppendLine stats, "TOTAL_BATCH: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed) & _
-        "; elapsedSec=" & FormatNumberInvariant(Timer - t0)
+        "; elapsedSec=" & FormatNumberInvariant(elapsed)
     RestoreBatchSuiteProfileDefaults originalPr1Stability, hasOriginalPr1Stability, originalCrackCode, originalPr1CrackWidth
     RunBatchCalculationTests = stats.report
     Exit Function
@@ -69013,17 +69015,17 @@ Private Sub CheckRectanglesReferenceUsesConcreteCentroid(ByRef stats As TBatchTe
     Set section = BuildGeneratedSectionModel(mesh, _
         RectanglesRebars(250#, 550#, 600#, 250#, 40#, 50, 32#))
 
-    Dim ConcreteX As Double
-    Dim ConcreteY As Double
-    CalculateConcreteSectionCentroid section, ConcreteX, ConcreteY
+    Dim concreteX As Double
+    Dim concreteY As Double
+    CalculateConcreteSectionCentroid section, concreteX, concreteY
 
     Dim transformedX As Double
     Dim transformedY As Double
     CalculateTransformedSectionCentroid section, ProvisionalConcrete(), ProvisionalSteel(), transformedX, transformedY
 
-    AssertTrue stats, "batch.reference.rectangles.concreteCenter.exists", Abs(ConcreteX) + Abs(ConcreteY) > 0.000001
+    AssertTrue stats, "batch.reference.rectangles.concreteCenter.exists", Abs(concreteX) + Abs(concreteY) > 0.000001
     AssertTrue stats, "batch.reference.rectangles.centerDifference", _
-        Abs(ConcreteX - transformedX) > 0.000001 Or Abs(ConcreteY - transformedY) > 0.000001
+        Abs(concreteX - transformedX) > 0.000001 Or Abs(concreteY - transformedY) > 0.000001
 End Sub
 
 ' Сравнивает центральное и эксцентричное растяжение одной симметричной модели.
@@ -72929,12 +72931,12 @@ Private Sub TestAudit02RepositoryContextAndRetry(ByRef stats As TBatchTestStats)
     AssertClose stats, "audit02.cache.material.targetMx", state.Mxint, request.targetMx, 5000#
     AssertClose stats, "audit02.cache.material.targetMy", state.Myint, request.targetMy, 5000#
 
-    Dim Revision As Long
-    Revision = section.Revision
+    Dim revision As Long
+    revision = section.revision
     section.sourceType = "Changed presentation label"
-    AssertTrue stats, "audit02.cache.geometry.labelNotPhysical", section.Revision = Revision
+    AssertTrue stats, "audit02.cache.geometry.labelNotPhysical", section.revision = revision
     section.AddRebarElement 0#, 0#, 20#, 0#, "A400"
-    AssertTrue stats, "audit02.cache.geometry.revision", section.Revision > Revision
+    AssertTrue stats, "audit02.cache.geometry.revision", section.revision > revision
     Dim beforeGeometry As CSectionStateResult
     Set beforeGeometry = state
     Set state = provider.GetOrSolve(request)
@@ -74241,10 +74243,10 @@ Private Function Audit03NormalizedLoads(ByVal section As CSectionModel, ByVal fa
         ac = ac + section.concreteArea(i)
         halfX = section.ConcreteBoundaryHalfProjection(i, 1#, 0#)
         halfY = section.ConcreteBoundaryHalfProjection(i, 0#, 1#)
-        If i = 1 Or section.ConcreteX(i) - halfX < minX Then minX = section.ConcreteX(i) - halfX
-        If i = 1 Or section.ConcreteX(i) + halfX > maxX Then maxX = section.ConcreteX(i) + halfX
-        If i = 1 Or section.ConcreteY(i) - halfY < minY Then minY = section.ConcreteY(i) - halfY
-        If i = 1 Or section.ConcreteY(i) + halfY > maxY Then maxY = section.ConcreteY(i) + halfY
+        If i = 1 Or section.concreteX(i) - halfX < minX Then minX = section.concreteX(i) - halfX
+        If i = 1 Or section.concreteX(i) + halfX > maxX Then maxX = section.concreteX(i) + halfX
+        If i = 1 Or section.concreteY(i) - halfY < minY Then minY = section.concreteY(i) - halfY
+        If i = 1 Or section.concreteY(i) + halfY > maxY Then maxY = section.concreteY(i) + halfY
     Next i
     For i = 1 To section.RebarCount: steelArea = steelArea + section.rebarArea(i): Next i
     Dim nc As Double, nt As Double, mxRef As Double, myRef As Double, signX As Long, signY As Long, ratio As Variant, factor As Variant
@@ -74730,8 +74732,8 @@ Private Sub Audit03OverloadPlane(ByVal section As CSectionModel, ByVal magnitude
     Dim cx As Double, cy As Double, spanX As Double, spanY As Double, i As Long
     CalculateConcreteSectionCentroid section, cx, cy
     For i = 1 To section.ConcreteCount
-        If Abs(section.ConcreteX(i) - cx) > spanX Then spanX = Abs(section.ConcreteX(i) - cx)
-        If Abs(section.ConcreteY(i) - cy) > spanY Then spanY = Abs(section.ConcreteY(i) - cy)
+        If Abs(section.concreteX(i) - cx) > spanX Then spanX = Abs(section.concreteX(i) - cx)
+        If Abs(section.concreteY(i) - cy) > spanY Then spanY = Abs(section.concreteY(i) - cy)
     Next i
     For i = 1 To section.RebarCount
         If Abs(section.RebarX(i) - cx) > spanX Then spanX = Abs(section.RebarX(i) - cx)
@@ -75330,7 +75332,7 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
     keys = Array("SLS.Crack.Allowable", "SLS.Crack.InitiationSolutionStrategy", _
         "SLS.Crack.TensionZoneMode", "SLS.Crack.CoverDistanceMode", "SLS.Crack.Phi1", "SLS.Crack.Phi2", _
         "SLS.Crack.Phi3Mode", "SLS.Crack.Phi3", "SLS.Crack.PsiMode", "SLS.Crack.SigmaSCrcAveragingMode", "SLS.Crack.PsiS")
-    Dim InvalidValue As Variant, cell As Object, keyCell As Object, row As Long, originalKey As Variant, invalidText As String
+    Dim invalidValue As Variant, cell As Object, keyCell As Object, row As Long, originalKey As Variant, invalidText As String
     For i = 0 To UBound(keys)
         Set cell = Nothing
         For row = 2 To systemRange.rows.count
@@ -75340,32 +75342,32 @@ Private Sub TestAudit03CrackConfigBehavior(ByRef stats As TBatchTestStats)
         Next row
         If cell Is Nothing Then Err.Raise 5, , "Не найдена тестируемая настройка " & CStr(keys(i))
         previous = CStr(cell.value2)
-        For Each InvalidValue In Array("", "TODO", "abc", CVErr(2015))
-            cell.value2 = InvalidValue
-            prefix = "invalid." & CStr(i) & "." & CStr(VarType(InvalidValue)) & "." & CStr(LenSafeAudit03(InvalidValue))
+        For Each invalidValue In Array("", "TODO", "abc", CVErr(2015))
+            cell.value2 = invalidValue
+            prefix = "invalid." & CStr(i) & "." & CStr(VarType(invalidValue)) & "." & CStr(LenSafeAudit03(invalidValue))
             Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
             AssertEquals stats, "audit03.crackConfig." & prefix & ".inputErr", changed.ResultAt(1).status, "InputErr"
             AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonKey", InStr(1, changed.ResultAt(1).OverallMeta.resultComment, CStr(keys(i)), vbTextCompare) > 0
             AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonConfig", InStr(1, changed.ResultAt(1).OverallMeta.resultComment, "Config", vbTextCompare) > 0
             invalidText = vbNullString
-            If Not IsError(InvalidValue) Then invalidText = CStr(InvalidValue)
+            If Not IsError(invalidValue) Then invalidText = CStr(invalidValue)
             If Len(invalidText) = 0 Or invalidText = "TODO" Then
                 AssertTrue stats, "audit03.crackConfig." & prefix & ".reasonAddress", _
                     InStr(1, changed.ResultAt(1).OverallMeta.resultComment, cell.address(False, False), vbTextCompare) > 0
             End If
             cell.value2 = previous
-        Next InvalidValue
+        Next invalidValue
         If CStr(keys(i)) = "SLS.Crack.Allowable" Or CStr(keys(i)) = "SLS.Crack.Phi1" Or _
                 CStr(keys(i)) = "SLS.Crack.Phi2" Or CStr(keys(i)) = "SLS.Crack.Phi3" Or _
                 CStr(keys(i)) = "SLS.Crack.PsiS" Then
-            For Each InvalidValue In Array("0", "-1", "1e309")
-                cell.value2 = InvalidValue
+            For Each invalidValue In Array("0", "-1", "1e309")
+                cell.value2 = invalidValue
                 Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
-                AssertEquals stats, "audit03.crackConfig.numericInvalid." & CStr(i) & "." & CStr(InvalidValue), changed.ResultAt(1).status, "InputErr"
+                AssertEquals stats, "audit03.crackConfig.numericInvalid." & CStr(i) & "." & CStr(invalidValue), changed.ResultAt(1).status, "InputErr"
                 AssertTrue stats, "audit03.crackConfig.numericInvalid." & CStr(i) & ".action", _
                     InStr(1, changed.ResultAt(1).OverallMeta.resultComment, "Введите", vbTextCompare) > 0
                 cell.value2 = previous
-            Next InvalidValue
+            Next invalidValue
         End If
         originalKey = keyCell.value2: keyCell.value2 = CStr(originalKey) & ".REMOVED"
         Set changed = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)))
@@ -75563,7 +75565,7 @@ End Function
 ' восстанавливается и валидное сочетание снова подтверждает отсутствие трещины.
 Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
     Dim systemRange As Object, profileRange As Object, savedSystem As Variant, savedProfiles As Variant
-    Dim keys As Variant, invalidValues As Variant, InvalidValue As Variant, cell As Object
+    Dim keys As Variant, invalidValues As Variant, invalidValue As Variant, cell As Object
     Dim i As Long, row As Long, index As Long, originalValue As Variant, prefix As String
     Dim settings As CSystemSettingsReader, batch As CBatchSectionCalculator, result As CCombinationResult
     On Error GoTo Failed
@@ -75595,8 +75597,8 @@ Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
             invalidValues = Array("", "TODO", "abc", CVErr(2015), "0", "-1")
         End If
         index = 0
-        For Each InvalidValue In invalidValues
-            cell.value2 = InvalidValue
+        For Each invalidValue In invalidValues
+            cell.value2 = invalidValue
             prefix = "audit03.notCrackedInput." & CStr(i) & "." & CStr(index)
             Set batch = Audit03CrackConfigInvalidBatch(stats, CStr(keys(i)), -90000#)
             Set result = batch.ResultAt(1)
@@ -75608,7 +75610,7 @@ Private Sub TestAudit03NotCrackedInputValidation(ByRef stats As TBatchTestStats)
             AssertTrue stats, prefix & ".inputMessage", InStr(1, batch.FirstInvalidInputMessage, result.DirectStateMeta.resultComment, vbBinaryCompare) > 0
             cell.formula = originalValue
             index = index + 1
-        Next InvalidValue
+        Next invalidValue
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set batch = BuildBatchCalculator(False): batch.ApplySettings settings
         batch.AddCombination "NOT_CRACKED_RECOVERY", -90000#, 0#, 0#, "PR2", "Восстановленный Config", "Auto"
@@ -77061,7 +77063,7 @@ Public Function RunPostAudit03SnapshotOwnerTests() As String
         AssertTrue stats, "postAudit03.snapshot.points." & CStr(mode), state.ConcreteDiagramSnapshot.pointCount = concrete.pointCount
         For i = 1 To 4
             If i <= 2 Then
-                actualStrain = eps + 0.000001 * section.ConcreteY(i) - 0.0000005 * section.ConcreteX(i)
+                actualStrain = eps + 0.000001 * section.concreteY(i) - 0.0000005 * section.concreteX(i)
                 Set physical = concrete.clone(mode = 0)
             Else
                 actualStrain = eps + 0.000001 * section.rebarY(i - 2) - 0.0000005 * section.RebarX(i - 2)
@@ -77106,6 +77108,7 @@ Failed:
 Finished:
     RunPostAudit03SnapshotOwnerTests = stats.report & "TOTAL_POSTAUDIT03_SNAPSHOT: passed=" & CStr(stats.passed) & "; failed=" & CStr(stats.Failed)
 End Function
+
 
 
 ====================================================================================================
@@ -77389,7 +77392,7 @@ Public Function RunLimitGuessScalingTests() As String
                 -CDbl(multiplier) * 0.004 * 0.9 / utilization, 0.00000000001
             AssertClose stats, prefix & ".kx", kx, CDbl(multiplier) * 0.00001 * 0.9 / utilization, 0.000000000001
             AssertClose stats, prefix & ".ky", ky, CDbl(multiplier) * -0.000006 * 0.9 / utilization, 0.000000000001
-            AssertClose stats, prefix & ".coordinates", section.ConcreteX(1), CDbl(shift) - 100#, 0#
+            AssertClose stats, prefix & ".coordinates", section.concreteX(1), CDbl(shift) - 100#, 0#
         Next multiplier
         eps0 = 0.0002: kx = 0.000001: ky = -0.000003
         builder.ScaleToPhysicalLimit section, 0#, eps0, kx, ky
@@ -77520,7 +77523,7 @@ Private Sub TestCommonStrainLimits(ByRef stats As TCapacityTestStats)
                 utilization = 0#: criticalStrain = 0#: element = vbNullString: state = "NumericalFailure"
                 ' Независимый тестовый oracle: прямой перебор по известным пределам.
                 For i = 1 To section.ConcreteCount
-                    strain = solver.StrainAt(section.ConcreteX(i), section.ConcreteY(i))
+                    strain = solver.StrainAt(section.concreteX(i), section.concreteY(i))
                     expected = 0#
                     If strain < 0# Then expected = strain / -0.0035
                     If strain > 0# And CBool(enabled) Then expected = strain / 0.00015
@@ -84065,7 +84068,7 @@ Private Sub CompareGeneratedAndImported(ByVal geometry As CGeometryRegion, ByVal
     CheckCellCenters label, mesh, geometry
     Dim i As Long
     For i = 1 To imported.ConcreteCount
-        Check label & ".importedCenter." & CStr(i), adapter.ContainsPoint(imported.ConcreteX(i), imported.ConcreteY(i))
+        Check label & ".importedCenter." & CStr(i), adapter.ContainsPoint(imported.concreteX(i), imported.concreteY(i))
     Next i
     If solve Then CompareSolutions label, generated, imported, True
     If label = "3.sub2" Then CheckBatchPair generated, imported
@@ -84159,8 +84162,8 @@ Private Sub CompareModels(ByVal label As String, ByVal first As CSectionModel, B
     If first.ConcreteCount <> second.ConcreteCount Or first.RebarCount <> second.RebarCount Then Exit Sub
     Dim i As Long
     For i = 1 To first.ConcreteCount
-        Near label & ".x." & CStr(i), first.ConcreteX(i), second.ConcreteX(i)
-        Near label & ".y." & CStr(i), first.ConcreteY(i), second.ConcreteY(i)
+        Near label & ".x." & CStr(i), first.concreteX(i), second.concreteX(i)
+        Near label & ".y." & CStr(i), first.concreteY(i), second.concreteY(i)
         Near label & ".a." & CStr(i), first.concreteArea(i), second.concreteArea(i)
         Near label & ".width." & CStr(i), first.ConcreteWidth(i), second.ConcreteWidth(i)
         Near label & ".height." & CStr(i), first.ConcreteHeight(i), second.ConcreteHeight(i)
@@ -85486,7 +85489,7 @@ Private Sub ConcreteStateStrainBounds(ByVal state As CSectionStateResult, ByVal 
     Dim i As Long
     For i = 1 To section.ConcreteCount
         Dim strain As Double
-        strain = state.epsilon0 + state.kappaX * section.ConcreteY(i) + state.kappaY * section.ConcreteX(i)
+        strain = state.epsilon0 + state.kappaX * section.concreteY(i) + state.kappaY * section.concreteX(i)
         If i = 1 Then
             minStrain = strain
             maxStrain = strain
@@ -87474,8 +87477,8 @@ Private Sub CheckGeneratedMeshUnits(ByRef stats As TGeneralConfigStats, ByVal sy
     If changed.ConcreteCount = baseline.ConcreteCount Then
         For i = 1 To baseline.ConcreteCount
             prefix = "generalGeometry.Mesh.units.C" & CStr(i)
-            CheckClose stats, prefix & ".x", changed.ConcreteX(i), baseline.ConcreteX(i), 0.00000001
-            CheckClose stats, prefix & ".y", changed.ConcreteY(i), baseline.ConcreteY(i), 0.00000001
+            CheckClose stats, prefix & ".x", changed.concreteX(i), baseline.concreteX(i), 0.00000001
+            CheckClose stats, prefix & ".y", changed.concreteY(i), baseline.concreteY(i), 0.00000001
             CheckClose stats, prefix & ".area", changed.concreteArea(i), baseline.concreteArea(i), 0.00000001
         Next i
     End If
@@ -87515,11 +87518,11 @@ Private Sub CheckSavedImport(ByRef stats As TGeneralConfigStats, ByVal system As
     SetValue system, "Mesh.BoundarySubdivisions", -1
     Set restored = BuildModel(stats)
     Check stats, "generalGeometry.Geometry.Source.AutoCAD.noGenerator", restored.ConcreteCount = 1 And restored.RebarCount = 1
-    CheckClose stats, "generalGeometry.Geometry.Source.AutoCAD.x", restored.ConcreteX(1), 20#, 0.00000001
+    CheckClose stats, "generalGeometry.Geometry.Source.AutoCAD.x", restored.concreteX(1), 20#, 0.00000001
     CheckClose stats, "generalGeometry.Geometry.Source.AutoCAD.area", concreteArea(restored), 40000#, 0.00000001
     SetValue unitRange, "Length", "m"
     Set restored = BuildModel(stats)
-    CheckClose stats, "generalGeometry.Geometry.Source.AutoCAD.changedInputUnit", restored.ConcreteX(1), 20#, 0.00000001
+    CheckClose stats, "generalGeometry.Geometry.Source.AutoCAD.changedInputUnit", restored.concreteX(1), 20#, 0.00000001
     CheckClose stats, "generalGeometry.Geometry.Source.AutoCAD.changedInputArea", concreteArea(restored), 40000#, 0.00000001
     SetValue unitRange, "Length", "mm"
     system.formula = saved
@@ -88051,8 +88054,8 @@ Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
         AssertClose stats, prefix & ".propertiesY", props.centroidY, centerY, 0#
         AssertClose stats, prefix & ".loadReferenceX", referenceX, centerX, 0#
         AssertClose stats, prefix & ".loadReferenceY", referenceY, centerY, 0#
-        AssertClose stats, prefix & ".originalX", section.ConcreteX(1), CDbl(shift), 0#
-        AssertClose stats, prefix & ".originalY", section.ConcreteY(2), -CDbl(shift) + 80#, 0#
+        AssertClose stats, prefix & ".originalX", section.concreteX(1), CDbl(shift), 0#
+        AssertClose stats, prefix & ".originalY", section.concreteY(2), -CDbl(shift) + 80#, 0#
         section.AddConcreteElement CDbl(shift) - 20#, -CDbl(shift) - 40#, 400#
         section.ConcreteMeshCentroid centerX, centerY, area
         frame.Initialize section: props.EnsureConcrete section
@@ -88214,8 +88217,8 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     AssertTrue stats, "autocad.import.concrete.count", model.ConcreteCount = 1
     AssertTrue stats, "autocad.import.rebar.count", model.RebarCount = 1
     AssertTrue stats, "autocad.import.concrete.id", model.ConcreteID(1) = "C1"
-    AssertClose stats, "autocad.import.concrete.x", model.ConcreteX(1), 10#, 0.000001
-    AssertClose stats, "autocad.import.concrete.y", model.ConcreteY(1), 20#, 0.000001
+    AssertClose stats, "autocad.import.concrete.x", model.concreteX(1), 10#, 0.000001
+    AssertClose stats, "autocad.import.concrete.y", model.concreteY(1), 20#, 0.000001
     AssertClose stats, "autocad.import.concrete.width", model.ConcreteWidth(1), 6#, 0.000001
     AssertClose stats, "autocad.import.concrete.height", model.ConcreteHeight(1), 3#, 0.000001
     AssertClose stats, "autocad.import.concrete.rotation", model.ConcreteRotation(1), 0#, 0.000001
@@ -88435,8 +88438,8 @@ Private Sub TestAudit03AutoCADSmallTranslationInertia(ByRef stats As TTestStats)
             Set model = importer.ImportFromModelSpace(space, "Concrete", "Reinf", "A400", 0#)
             prefix = "audit03.autocad.smallTranslation." & CStr(signValue) & "." & CStr(position)
             AssertClose stats, prefix & ".area", model.concreteArea(1), 7200#, 0.000001
-            AssertClose stats, prefix & ".x", model.ConcreteX(1), cx, 0.000001
-            AssertClose stats, prefix & ".y", model.ConcreteY(1), cy, 0.000001
+            AssertClose stats, prefix & ".x", model.concreteX(1), cx, 0.000001
+            AssertClose stats, prefix & ".y", model.concreteY(1), cy, 0.000001
             AssertClose stats, prefix & ".Ix", model.ConcreteLocalIx(1), ix, 0.000001
             AssertClose stats, prefix & ".Iy", model.ConcreteLocalIy(1), iy, 0.000001
             AssertClose stats, prefix & ".Ixy", model.ConcreteLocalIxy(1), ixy, 0.000001
@@ -89448,10 +89451,10 @@ Private Function MinimumLinearBoundaryProjection(ByVal section As CSectionModel,
         Dim heightValue As Double
         Dim angleValue As Double
         If section.ConcreteBoundaryRectangle(i, widthValue, heightValue, angleValue) Then
-            IncludeRectangleProjectionMinimum section.ConcreteX(i), section.ConcreteY(i), _
+            IncludeRectangleProjectionMinimum section.concreteX(i), section.concreteY(i), _
                 widthValue, heightValue, angleValue, axisX, axisY, initialized, minValue
         Else
-            IncludeProjectionMinimum axisX * section.ConcreteX(i) + axisY * section.ConcreteY(i), _
+            IncludeProjectionMinimum axisX * section.concreteX(i) + axisY * section.concreteY(i), _
                 initialized, minValue
         End If
     Next i
@@ -93931,7 +93934,7 @@ End Sub
 ' пустот по сетке. Изменение геометрии требует новой подготовки области;
 ' изменение только подписи расчётного результата её не меняет.
 Private Sub TestKnownAndUnknownContours(ByVal query As CSectionGeometryQuery)
-    Dim model As CSectionModel, region As CConcreteRegion, i As Long, j As Long, Revision As Long
+    Dim model As CSectionModel, region As CConcreteRegion, i As Long, j As Long, revision As Long
     Set model = New CSectionModel
     For i = 0 To 2
         For j = 0 To 2
@@ -93959,13 +93962,13 @@ Private Sub TestKnownAndUnknownContours(ByVal query As CSectionGeometryQuery)
     model.AddConcreteElement 50#, 50#, 10000#, 1, , , "Rectangle", 100#, 100#
     query.Initialize model
     Set region = query.ConcreteDomain
-    Revision = region.SectionRevision
+    revision = region.SectionRevision
     model.annotations.AddAnnotation "CRACK_REGION_LABEL", "RESULT1", 0#, 0#, 1#, 1#, 0#, 0#, "TEST", 0#, "-", vbNullString
     Set region = query.ConcreteDomain
-    Check "resultAnnotation.noInvalidation", region.SectionRevision = Revision
+    Check "resultAnnotation.noInvalidation", region.SectionRevision = revision
     AddContourRectangle model, "CONTOUR_OPENING", 20#, 30#, 60#, 70#
     Set region = query.ConcreteDomain
-    Check "openingAnnotation.invalidates", region.SectionRevision > Revision
+    Check "openingAnnotation.invalidates", region.SectionRevision > revision
     CheckNear "unknownOuter.knownOpening.area", region.area, 8400#
     Check "unknownOuter.knownOpening.loops", region.loopCount = 2
     Check "unknownOuter.knownOpening.empty", Not query.ContainsPoint(region, 40#, 50#)
@@ -94101,7 +94104,7 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
     Dim kind As Variant, geometry As CGeometryRegion, facade As CSectionDefinitionBuilder
     Dim path As CGeometryPath, definition As CSectionDefinition, labels As CSectionAnnotationBuilder
     Dim model As CSectionModel, bars As CRebarLayout, mesh As CFiberMeshBuilder, query As CSectionGeometryQuery
-    Dim saved As CSectionContours, expectedArea As Double, Revision As Long
+    Dim saved As CSectionContours, expectedArea As Double, revision As Long
     Dim bounds() As Double, openingCount As Long
     For Each kind In Array("Circle", "Rectangles", "PointedSection", "HollowRectangle")
         Set facade = New CSectionDefinitionBuilder: facade.Initialize CStr(kind)
@@ -94154,13 +94157,13 @@ Private Sub TestGeneratedContoursWithoutAnnotations()
             Check "generatedContours.hollow.meshBoundsUnchanged", bounds(1, 1) = -20# And bounds(1, 2) = 20# And _
                 bounds(1, 3) = -30# And bounds(1, 4) = 30#
         End If
-        Set saved = CopyGeneratedContoursForTests(model.contours): Revision = model.contours.Revision
+        Set saved = CopyGeneratedContoursForTests(model.contours): revision = model.contours.revision
         Set labels = New CSectionAnnotationBuilder: labels.Build definition, bars, model.annotations
         Check "generatedContours." & CStr(kind) & ".annotationsBuilt", model.annotationCount = 2
-        Check "generatedContours." & CStr(kind) & ".annotationRevisionUnchanged", model.contours.Revision = Revision
+        Check "generatedContours." & CStr(kind) & ".annotationRevisionUnchanged", model.contours.revision = revision
         CheckGeneratedContoursEqual "generatedContours." & CStr(kind) & ".annotations", saved, model.contours
         model.annotations.Clear
-        Check "generatedContours." & CStr(kind) & ".clearAnnotationsKeepsRevision", model.contours.Revision = Revision
+        Check "generatedContours." & CStr(kind) & ".clearAnnotationsKeepsRevision", model.contours.revision = revision
         CheckNear "generatedContours." & CStr(kind) & ".areaWithoutAnnotations", query.ConcreteDomain.area, expectedArea
         definition.WriteContours model.contours
         CheckGeneratedContoursEqual "generatedContours." & CStr(kind) & ".rebuild", saved, model.contours
@@ -94376,7 +94379,7 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
     Dim builder As CSectionBuilder, model As CSectionModel, mesh As TSectionMeshOptions, i As Long, diameter As Double
     Dim expected As String, prefix As String, count As Long, settings As CSystemSettingsReader, units As CUnitSystem
     Dim properties As CSectionPropertiesCalculator, writer As CNDMResultsWriter, reader As CSectionPlotDataReader
-    Dim config As Object, saved As Variant, table As Object, row As Long, OutputUnit As Variant, labelIndex As Long, labelCount As Long
+    Dim config As Object, saved As Variant, table As Object, row As Long, outputUnit As Variant, labelIndex As Long, labelCount As Long
     Dim annotations As CSectionAnnotations, labels As CRebarGroupAnnotationBuilder
     On Error GoTo Failed
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
@@ -94411,8 +94414,8 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
     Set table = ThisWorkbook.names("rngUnitSettings").RefersToRange
     row = headerRow(table, "Length", 1)
     Set reader = New CSectionPlotDataReader
-    For Each OutputUnit In Array("mm", "cm", "m")
-        table.cells(row, 4).value2 = CStr(OutputUnit)
+    For Each outputUnit In Array("mm", "cm", "m")
+        table.cells(row, 4).value2 = CStr(outputUnit)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, model, properties, units
@@ -94424,9 +94427,9 @@ Private Sub TestIndependentRowLabels(ByVal rows As Long, ByVal mixedDiameter As 
         For i = 1 To reader.annotationCount
             If reader.annotationType(i) = "REBAR_ANNOTATION" Then labelIndex = i: labelCount = labelCount + 1
         Next i
-        Check prefix & ".savedTotal." & CStr(OutputUnit), labelCount = 1 And reader.AnnotationText(labelIndex) = expected
-        Check prefix & ".savedBoundary." & CStr(OutputUnit), Abs(reader.AnnotationBoundaryDistance(labelIndex) - 50#) < 0.000001 And reader.lengthUnit = "mm"
-    Next OutputUnit
+        Check prefix & ".savedTotal." & CStr(outputUnit), labelCount = 1 And reader.AnnotationText(labelIndex) = expected
+        Check prefix & ".savedBoundary." & CStr(outputUnit), Abs(reader.AnnotationBoundaryDistance(labelIndex) - 50#) < 0.000001 And reader.lengthUnit = "mm"
+    Next outputUnit
     If Len(outputDirectory) > 0 Then
         Check prefix & ".preview", Len(modTestShapeArchitecture.PreparedPreviewSnapshot(Replace$(prefix, ".", "_"), model, outputDirectory)) > 0
     End If
@@ -94531,7 +94534,7 @@ Public Function RunCollapsedInputMessageTests() As String
     Next scenario
     message = CollapsedExtraRowMessage()
     Check "collapsed.extra.inputError", left$(message, 11) = "INPUT_ERROR"
-    Check "collapsed.extra.row", InStr(message, "проверочную область ряда 2") > 0
+    Check "collapsed.extra.row", InStr(message, "контур для 2-го ряда арматуры") > 0
     Check "collapsed.extra.cause", InStr(message, "проверочный контур исчез целиком") > 0
     Check "collapsed.extra.values", InStr(message, "радиус первой дуги: 150 мм") > 0 And _
         InStr(message, "отступ внутрь этой дуги: 240 мм") > 0
@@ -95128,8 +95131,8 @@ Public Function DumpSolidPhysicalBits() As String
         Set model = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
         result = result & CStr(fixture) & "|COUNTS|" & CStr(model.ConcreteCount) & "|" & CStr(model.RebarCount) & vbCrLf
         For i = 1 To model.ConcreteCount
-            result = result & CStr(fixture) & "|" & model.ConcreteID(i) & "|" & Bits(model.ConcreteX(i)) & "|" & _
-                Bits(model.ConcreteY(i)) & "|" & Bits(model.concreteArea(i)) & "|" & Bits(model.ConcreteWidth(i)) & "|" & _
+            result = result & CStr(fixture) & "|" & model.ConcreteID(i) & "|" & Bits(model.concreteX(i)) & "|" & _
+                Bits(model.concreteY(i)) & "|" & Bits(model.concreteArea(i)) & "|" & Bits(model.ConcreteWidth(i)) & "|" & _
                 Bits(model.ConcreteHeight(i)) & "|" & Bits(model.ConcreteRotation(i)) & "|" & _
                 Bits(model.ConcreteLocalIx(i)) & "|" & Bits(model.ConcreteLocalIy(i)) & "|" & Bits(model.ConcreteLocalIxy(i)) & vbCrLf
         Next i
@@ -97017,7 +97020,7 @@ Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
     Dim extension As Variant, factor As Variant, kind As Variant, valueSet As Variant, tension As Variant
     Dim baseline As CMaterialDiagram, diagram As CMaterialDiagram, equilibrium As CMaterialDiagram
     Dim clone As CMaterialDiagram, i As Long, material As Long, compressionE As Double, tensionE As Double
-    Dim alpha As Double, strain As Double, expected As Double, h As Double, prefix As String, Revision As Long
+    Dim alpha As Double, strain As Double, expected As Double, h As Double, prefix As String, revision As Long
     concrete.Initialize 14.5, 1.05, 18.5, 1.6, 30000#, 27000#, RbMc2:=22#
     steel.Initialize 310#, 350#, 360#, 400#, 205000#, 200000#, 0.018, 0.025, 0.014, 0.015
     For Each extension In Array(False, True)
@@ -97078,10 +97081,10 @@ Private Sub TestPlateauSlope(ByRef stats As TMaterialTestStats)
                     Next tension
                 Next valueSet
             Next kind
-            Revision = provider.Revision
+            revision = provider.revision
             expected = diagram.PointStress(1)
             provider.InitializeFromParameters concrete, steel, plateauSlopeFactor:=alpha + 0.002
-            AssertTrue stats, "plateau.cache.newRevision", provider.Revision > Revision
+            AssertTrue stats, "plateau.cache.newRevision", provider.revision > revision
             AssertClose stats, "plateau.cache.oldSnapshot", diagram.PointStress(1), expected, 0#
             AssertClose stats, "plateau.cache.newFactor", provider.plateauSlopeFactor, alpha + 0.002, 0#
             Set clone = provider.SteelMaterialFromSpec(spec)
@@ -98319,7 +98322,7 @@ Private Sub TestAudit03PublishedMaterialDiagrams(ByRef stats As TMaterialTestSta
     On Error GoTo Failed
     Dim extension As Variant, purpose As Variant, profileApi As Long, equilibrium As Long, steel As Long
     Dim provider As CMaterialModelProvider, diagram As CMaterialDiagram, again As CMaterialDiagram
-    Dim spec As CMaterialModelSpec, prefix As String, signature As String, Revision As Long
+    Dim spec As CMaterialModelSpec, prefix As String, signature As String, revision As Long
     Dim strains() As Double, stresses() As Double, i As Long, errorNumber As Long, description As String
     Dim beforeStress As Double, physicalCompression As Double, physicalTension As Double
     For Each extension In Array(False, True)
@@ -98343,7 +98346,7 @@ Private Sub TestAudit03PublishedMaterialDiagrams(ByRef stats As TMaterialTestSta
                             prefix = "audit03.publishedMaterial." & CStr(extension) & "." & CStr(purpose) & _
                                 "." & CStr(profileApi) & "." & CStr(equilibrium) & "." & CStr(steel)
                             signature = Audit03MaterialDiagramSignature(diagram)
-                            Revision = provider.Revision
+                            revision = provider.revision
                             beforeStress = diagram.GetStress(-0.0005)
                             physicalCompression = diagram.PhysicalCompressionStrain
                             physicalTension = diagram.PhysicalTensionStrain
@@ -98361,13 +98364,13 @@ Private Sub TestAudit03PublishedMaterialDiagrams(ByRef stats As TMaterialTestSta
                             AssertClose stats, prefix & ".stressUnchanged", diagram.GetStress(-0.0005), beforeStress, 0#
                             AssertClose stats, prefix & ".compressionUnchanged", diagram.PhysicalCompressionStrain, physicalCompression, 0#
                             AssertClose stats, prefix & ".tensionUnchanged", diagram.PhysicalTensionStrain, physicalTension, 0#
-                            AssertTrue stats, prefix & ".revisionUnchanged", provider.Revision = Revision
+                            AssertTrue stats, prefix & ".revisionUnchanged", provider.revision = revision
                             Set again = Audit03PublishedDiagram(provider, CLng(purpose), spec, _
                                 profileApi <> 0, equilibrium <> 0, steel <> 0)
                             AssertTrue stats, prefix & ".nextConsumerUnchanged", signature = Audit03MaterialDiagramSignature(again)
                             provider.InitializeFromParameters TestConcreteParameters(), TestSteelParameters(), _
                                 diagramExtensionEnabled:=CBool(extension)
-                            AssertTrue stats, prefix & ".reinitializeChangesRevision", provider.Revision > Revision
+                            AssertTrue stats, prefix & ".reinitializeChangesRevision", provider.revision > revision
                             AssertTrue stats, prefix & ".oldReferenceUnchanged", signature = Audit03MaterialDiagramSignature(diagram)
                         Next steel
                     End If
@@ -98481,7 +98484,7 @@ Public Function MeasurePerformanceModel(ByVal count As Long) As String
     Dim area As Double, x As Double, y As Double
     For i = 1 To model.ConcreteCount
         area = area + model.concreteArea(i)
-        x = x + model.ConcreteX(i): y = y + model.ConcreteY(i)
+        x = x + model.concreteX(i): y = y + model.concreteY(i)
     Next i
     MeasurePerformanceModel = "seconds=" & NumberText(elapsed) & "; count=" & CStr(model.ConcreteCount) & _
         "; area=" & NumberText(area) & "; x=" & NumberText(x) & "; y=" & NumberText(y) & _
@@ -98518,7 +98521,7 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: поля по обе стороны нескольких границ резерва и Clear.
 Private Sub TestModelStorage()
-    Dim model As CSectionModel, i As Long, Revision As Long, value As Double, errorNumber As Long
+    Dim model As CSectionModel, i As Long, revision As Long, value As Double, errorNumber As Long
     Set model = New CSectionModel
     For i = 1 To 257
         model.AddConcreteElement CDbl(i) / 8#, -CDbl(i) / 16#, CDbl(i) + 1#, 2, "source" & CStr(i), "handle" & CStr(i)
@@ -98527,29 +98530,29 @@ Private Sub TestModelStorage()
     Check "model.count", model.ConcreteCount = 257 And model.RebarCount = 257
     For i = 1 To 257
         Check "model.concrete." & CStr(i), model.ConcreteID(i) = "C" & CStr(i) And _
-            model.ConcreteX(i) = CDbl(i) / 8# And model.ConcreteY(i) = -CDbl(i) / 16# And _
+            model.concreteX(i) = CDbl(i) / 8# And model.concreteY(i) = -CDbl(i) / 16# And _
             model.concreteArea(i) = CDbl(i) + 1# And model.ConcreteSourceHandle(i) = "handle" & CStr(i)
         Check "model.rebar." & CStr(i), model.RebarID(i) = "R" & CStr(i) And _
             model.RebarX(i) = CDbl(i) / 32# And model.rebarY(i) = CDbl(i) / 64# And _
             model.rebarArea(i) = CDbl(i) + 2# And model.RebarSourceName(i) = "bar" & CStr(i)
     Next i
-    Revision = model.Revision
+    revision = model.revision
     On Error Resume Next
     model.AddConcreteElement 0#, 0#, 0#: errorNumber = Err.number: Err.Clear
     On Error GoTo 0
-    Check "model.invalidConcrete", errorNumber <> 0 And model.ConcreteCount = 257 And model.Revision = Revision
+    Check "model.invalidConcrete", errorNumber <> 0 And model.ConcreteCount = 257 And model.revision = revision
     On Error Resume Next
     model.AddRebarElement 0#, 0#, 0#, 0#, "Periodic": errorNumber = Err.number: Err.Clear
     On Error GoTo 0
-    Check "model.invalidRebar", errorNumber <> 0 And model.RebarCount = 257 And model.Revision = Revision
+    Check "model.invalidRebar", errorNumber <> 0 And model.RebarCount = 257 And model.revision = revision
     On Error Resume Next
-    value = model.ConcreteX(258): errorNumber = Err.number: Err.Clear
+    value = model.concreteX(258): errorNumber = Err.number: Err.Clear
     On Error GoTo 0
     Check "model.tailHidden", errorNumber <> 0
     model.Clear
-    Check "model.clear", model.ConcreteCount = 0 And model.RebarCount = 0 And model.Revision = Revision + 1
+    Check "model.clear", model.ConcreteCount = 0 And model.RebarCount = 0 And model.revision = revision + 1
     model.AddConcreteElement 1#, 2#, 3#: model.AddRebarElement 4#, 5#, 6#, 7#, "Smooth"
-    Check "model.rebuild", model.ConcreteID(1) = "C1" And model.ConcreteX(1) = 1# And model.RebarID(1) = "R1" And model.rebarArea(1) = 7#
+    Check "model.rebuild", model.ConcreteID(1) = "C1" And model.concreteX(1) = 1# And model.RebarID(1) = "R1" And model.rebarArea(1) = 7#
 End Sub
 
 ' ДЛЯ ТЕСТОВ: чтение одной ячейки и массива, пустых значений, формул, пробелов, ошибок и края
@@ -99458,7 +99461,7 @@ Public Sub PrepareNativeCADPerformance(ByVal rotated As Boolean)
         Set section = New CSectionModel: section.sourceType = "AutoCADImport"
         c = Cos(0.37): s = Sin(0.37)
         For i = 1 To original.ConcreteCount
-            x = original.ConcreteX(i): y = original.ConcreteY(i)
+            x = original.concreteX(i): y = original.concreteY(i)
             section.AddConcreteElement c * x - s * y, s * x + c * y, original.concreteArea(i), 1, , , "Rectangle", 10#, 10#, 0.37
         Next i
         For i = 1 To original.RebarCount
@@ -99526,7 +99529,7 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
     If SectionEquilibriumSolveCount() <> solves Then Err.Raise 5, , "Импорт/экспорт неожиданно запустил решатель."
     For i = 1 To section.ConcreteCount
         signature = signature & "C|" & section.ConcreteID(i) & "|" & section.ConcreteShapeType(i)
-        signature = signature & "|" & DoubleBits(section.ConcreteX(i)) & "|" & DoubleBits(section.ConcreteY(i)) & "|" & DoubleBits(section.concreteArea(i))
+        signature = signature & "|" & DoubleBits(section.concreteX(i)) & "|" & DoubleBits(section.concreteY(i)) & "|" & DoubleBits(section.concreteArea(i))
         signature = signature & "|" & DoubleBits(section.ConcreteWidth(i)) & "|" & DoubleBits(section.ConcreteHeight(i)) & "|" & DoubleBits(section.ConcreteRotation(i))
         signature = signature & "|" & DoubleBits(section.ConcreteLocalIx(i)) & "|" & DoubleBits(section.ConcreteLocalIy(i)) & "|" & DoubleBits(section.ConcreteLocalIxy(i)) & vbLf
     Next i
@@ -100534,7 +100537,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
     For index = 0 To UBound(keys): annotations(1, index + 1) = keys(index): Next index
     annotations(2, 1) = "DIMENSION": annotations(2, 2) = -5#: annotations(2, 3) = 0#
     annotations(2, 4) = 5#: annotations(2, 5) = 0#: annotations(2, 6) = 0#: annotations(2, 7) = 1#
-    annotations(2, 8) = "DIM": annotations(2, 9) = "-"
+    annotations(2, 8) = "DIM": annotations(2, 9) = "mm"
     keys = Array("Bounds.MinX", "Bounds.MaxX", "Bounds.MinY", "Bounds.MaxY", "LoadReferenceX", "LoadReferenceY", _
         "State.StrengthState.Epsilon0", "State.StrengthState.KappaX", "State.StrengthState.KappaY", _
         "State.StrengthState.ExtensionUsed", "State.StrengthState.Status", "ProfileId", _
@@ -100563,7 +100566,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
             If index = 0 Then curvatureFactor = 1# Else curvatureFactor = 1000#
             props(9, 3) = 0.000002 * curvatureFactor: props(10, 3) = -0.000003 * curvatureFactor
             If index = 0 Then props(17, 3) = "1/mm" Else props(17, 3) = "1/m"
-            annotations(2, 2) = -50# / factor: annotations(2, 4) = 50# / factor
+            annotations(2, 2) = -50# / factor: annotations(2, 4) = 50# / factor: annotations(2, 9) = CStr(unit)
             anchor.Resize(18, 4).value2 = props: sheet.range("A20").Resize(2, 9).value2 = annotations
             For mode = 0 To 2
                 cases = cases + 1: Audit03ReadLifecycleLoad reader, fixture, settings, mode, code, reason
@@ -100583,7 +100586,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         For index = 0 To UBound(values): props(index + 2, 3) = values(index): Next index
         anchor.Resize(18, 4).value2 = props
         sheet.range("A5").Resize(3, 15).value2 = Audit03GeometrySnapshotArray("mm", 1#)
-        annotations(2, 2) = -50#: annotations(2, 4) = 50#: sheet.range("A20").Resize(2, 9).value2 = annotations
+        annotations(2, 2) = -50#: annotations(2, 4) = 50#: annotations(2, 9) = "mm": sheet.range("A20").Resize(2, 9).value2 = annotations
         baseline = sheet.range("A5:X37").value2
         For Each row In Array(11, 12, 14, 15, 16, 17)
             Set cell = anchor.cells(row, 3)
@@ -100612,7 +100615,7 @@ Private Sub TestAudit03SnapshotMetadataContracts(ByRef stats As TUiTestStats)
         Set cell = sheet.range("I21"): cell.value2 = CVErr(2015)
         Audit03ReadLifecycleLoad reader, fixture, settings, 1, code, reason
         AssertTrue stats, "audit03.snapshotMetadata.annotationUnit.p" & CStr(position), code <> 0 And InStr(1, reason, "Results!I21", vbTextCompare) > 0
-        cell.value2 = "-"
+        cell.value2 = "mm"
         For Each flag In Array(True, False, "True", "False", "Yes", "No", "да", "нет", 1, 0)
             anchor.cells(11, 3).value2 = flag: reader.LoadFromWorkbook fixture, settings
             AssertTrue stats, "audit03.snapshotMetadata.flag.p" & CStr(position) & "." & CStr(flag), reader.extensionUsed = CBool(InStr(1, "|true|yes|да|1|", "|" & LCase$(CStr(flag)) & "|", vbBinaryCompare) > 0)
@@ -102454,9 +102457,9 @@ Private Sub CheckState(ByRef stats As TProfileStats, ByVal prefix As String, ByV
         Set steel = provider.SteelMaterialFromSpec(expected)
     End If
     For i = 1 To section.ConcreteCount
-        strain = state.epsilon0 + state.kappaX * section.ConcreteY(i) + state.kappaY * section.ConcreteX(i)
+        strain = state.epsilon0 + state.kappaX * section.concreteY(i) + state.kappaY * section.concreteX(i)
         force = concrete.GetStress(strain) * section.concreteArea(i)
-        n = n + force: mx = mx + force * section.ConcreteY(i): my = my + force * section.ConcreteX(i)
+        n = n + force: mx = mx + force * section.concreteY(i): my = my + force * section.concreteX(i)
     Next i
     For i = 1 To section.RebarCount
         strain = state.epsilon0 + state.kappaX * section.rebarY(i) + state.kappaY * section.RebarX(i)
@@ -103508,7 +103511,7 @@ Private Sub CheckVisualizationValues(ByRef stats As TProfileStats, ByVal prefix 
     Set steel = state.SteelDiagramSnapshot
     For i = 1 To reader.count
         If i <= section.ConcreteCount Then
-            x = section.ConcreteX(i): y = section.ConcreteY(i): Set diagram = concrete
+            x = section.concreteX(i): y = section.concreteY(i): Set diagram = concrete
         Else
             bar = i - section.ConcreteCount
             x = section.RebarX(bar): y = section.rebarY(bar): Set diagram = steel
@@ -103802,26 +103805,26 @@ Public Function RunRecipeAnnotationSnapshotTests() As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     Dim facade As CSectionDefinitionBuilder, builder As CSectionBuilder, definition As CSectionDefinition, model As CSectionModel
     Dim properties As CSectionPropertiesCalculator, units As CUnitSystem, settings As CSystemSettingsReader
-    Dim writer As CNDMResultsWriter, reader As CSectionPlotDataReader, OutputUnit As Variant, i As Long, found As Long
+    Dim writer As CNDMResultsWriter, reader As CSectionPlotDataReader, outputUnit As Variant, i As Long, found As Long
     Set facade = AnnotationFacade: Set definition = facade.Finish
     Set builder = New CSectionBuilder: Set model = BuildDefinition(definition, builder)
     Set properties = New CSectionPropertiesCalculator: properties.PrepareSnapshot model
-    For Each OutputUnit In Array("mm", "cm", "m")
-        SetUnitSetting "Units.Length.Output", CStr(OutputUnit)
+    For Each outputUnit In Array("mm", "cm", "m")
+        SetUnitSetting "Units.Length.Output", CStr(outputUnit)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set writer = New CNDMResultsWriter: writer.WriteGeometryPreview ThisWorkbook, model, properties, units
         Dim geometryTable As Variant, propertyTable As Variant, row As Long, foundDiagnostics As Boolean
         geometryTable = ThisWorkbook.names("rngNDMSectionGeometry").RefersToRange.Resize(1 + model.ConcreteCount + model.RebarCount, 16).value2
-        Check "snapshot.provenance." & CStr(OutputUnit), InStr(SectionOptionalText(ReadSectionOptionalJson(CStr(geometryTable(UBound(geometryTable, 1), 16))), "RecipeTrace"), "RuleId=TopBars|PathId=Row|SourcePositionId=TopBars.2") > 0
+        Check "snapshot.provenance." & CStr(outputUnit), InStr(SectionOptionalText(ReadSectionOptionalJson(CStr(geometryTable(UBound(geometryTable, 1), 16))), "RecipeTrace"), "RuleId=TopBars|PathId=Row|SourcePositionId=TopBars.2") > 0
         propertyTable = ThisWorkbook.names("rngNDMSectionProperties").RefersToRange.Resize(46, 6).value2: foundDiagnostics = False
         For row = 2 To UBound(propertyTable, 1)
             If CStr(propertyTable(row, 3)) = "Geometry.RecipeDiagnostics" Then
                 foundDiagnostics = True
-                Check "snapshot.diagnostics.counts." & CStr(OutputUnit), InStr(CStr(propertyTable(row, 4)), "Requested=2; Created=2") > 0
+                Check "snapshot.diagnostics.counts." & CStr(outputUnit), InStr(CStr(propertyTable(row, 4)), "Requested=2; Created=2") > 0
             End If
         Next row
-        Check "snapshot.diagnostics.present." & CStr(OutputUnit), foundDiagnostics
+        Check "snapshot.diagnostics.present." & CStr(outputUnit), foundDiagnostics
         ' Изменение input и output после сохранения не меняет измерение Results.
         SetUnitSetting "Units.Length.Input", "m"
         SetUnitSetting "Units.Length.Output", "mm"
@@ -103831,16 +103834,16 @@ Public Function RunRecipeAnnotationSnapshotTests() As String
         For i = 1 To reader.annotationCount
             If reader.annotationType(i) = "MEASUREMENT_LABEL" Then
                 found = found + 1
-                Near "snapshot.length.anchor.x." & CStr(OutputUnit), reader.AnnotationStartX(i), 0#
-                Near "snapshot.length.anchor.y." & CStr(OutputUnit), reader.AnnotationStartY(i), -100#
-                Check "snapshot.length.text." & CStr(OutputUnit) & "; " & reader.AnnotationText(i), InStr(reader.AnnotationText(i), "L=") > 0 And InStr(reader.AnnotationText(i), CStr(OutputUnit)) > 0
+                Near "snapshot.length.anchor.x." & CStr(outputUnit), reader.AnnotationStartX(i), 0#
+                Near "snapshot.length.anchor.y." & CStr(outputUnit), reader.AnnotationStartY(i), -100#
+                Check "snapshot.length.text." & CStr(outputUnit) & "; " & reader.AnnotationText(i), InStr(reader.AnnotationText(i), "L=") > 0 And InStr(reader.AnnotationText(i), CStr(outputUnit)) > 0
             ElseIf reader.annotationType(i) = "TEXT_ANNOTATION" Then
                 found = found + 1
-                Check "snapshot.text." & CStr(OutputUnit), reader.AnnotationText(i) = "Проверка привязки"
+                Check "snapshot.text." & CStr(outputUnit), reader.AnnotationText(i) = "Проверка привязки"
             End If
         Next i
-        Check "snapshot.labels." & CStr(OutputUnit), found = 2
-    Next OutputUnit
+        Check "snapshot.labels." & CStr(outputUnit), found = 2
+    Next outputUnit
     GoTo Finished
 Failed:
     Check "snapshot.runtime: " & CStr(Err.number) & "; " & Err.description, False
@@ -104235,7 +104238,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestRecipeOperations
 TYPE: 1
-LINES: 603
+LINES: 604
 ====================================================================================================
 Option Explicit
 
@@ -104751,22 +104754,23 @@ Finished:
 End Function
 
 ' ДЛЯ ТЕСТОВ: обычный расчёт сохранённого примера проходит через запись Results и схему.
-' При пропуске стержня предупреждение возвращается вместе с итогом расчёта.
+' Предупреждение о пропуске стержня проверяется в ответе формирования и в Results.
 Public Function RunSavedOffsetCalculationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Dim area As Object, config As Object, inputCell As Object, saved As Variant, value As Variant, message As String
-    Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String
+    Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String, formation As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     PrepareSavedOffsetCase
     Set area = ThisWorkbook.names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2")
     For Each value In Array(40#, 50#)
         inputCell.value2 = value
-        message = FixtureRunSectionWorkflow(ThisWorkbook, True)
+        formation = FormSectionForWorkbook(ThisWorkbook)
+        message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
         Check "saved.calculation.completed." & CStr(value), InStr(message, "завершен.") > 0 And InStr(message, "ошиб") = 0
         diagnostics = SavedRecipeDiagnostics()
-        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)
+        Check "saved.calculation.warning." & CStr(value), (InStr(formation, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)
         Check "saved.calculation.rowWarning." & CStr(value), SavedRuleSkipped(diagnostics, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
         Set summary = ThisWorkbook.names("rngBatchSummary").RefersToRange
         text = ""
@@ -107037,7 +107041,7 @@ Private Sub CheckModelEquilibrium(ByVal fixture As String, ByVal model As CSecti
             If Not solver.converged Then GoTo NextLoad
             sn = 0#: smx = 0#: smy = 0#
             For i = 1 To model.ConcreteCount
-                x = model.ConcreteX(i): y = model.ConcreteY(i)
+                x = model.concreteX(i): y = model.concreteY(i)
                 strain = solver.epsilon0 + solver.kappaX * y + solver.kappaY * x
                 force = concrete.StressAtStrain(strain) * model.concreteArea(i)
                 sn = sn + force: smx = smx + force * y: smy = smy + force * x
@@ -107466,7 +107470,7 @@ Private Sub TestCenteredNumericalFrame(ByRef stats As TSectionSolverTestStats)
                     ' Публичная K по-прежнему должна быть производной исходных усилий.
                     Dim expectedK22 As Double, i As Long
                     For i = 1 To section.ConcreteCount
-                        expectedK22 = expectedK22 + 30000# * section.concreteArea(i) * section.ConcreteY(i) ^ 2
+                        expectedK22 = expectedK22 + 30000# * section.concreteArea(i) * section.concreteY(i) ^ 2
                     Next i
                     For i = 1 To section.RebarCount
                         expectedK22 = expectedK22 + 170000# * section.rebarArea(i) * section.rebarY(i) ^ 2
@@ -107552,7 +107556,7 @@ Private Sub IndependentPlaneForces(ByVal section As CSectionModel, ByVal concret
     n = 0#: mx = 0#: my = 0#
     For i = 1 To section.ConcreteCount + section.RebarCount
         If i <= section.ConcreteCount Then
-            x = section.ConcreteX(i): y = section.ConcreteY(i)
+            x = section.concreteX(i): y = section.concreteY(i)
             strain = eps0 + kx * y + ky * x
             force = concrete.GetStress(strain) * section.concreteArea(i)
         Else
@@ -109374,7 +109378,7 @@ Private Sub Setting(ByVal key As String, ByVal value As Variant)
 End Sub
 
 ' Выбирает выходную единицу по строке общей таблицы единиц.
-Private Sub OutputUnit(ByVal quantity As String, ByVal value As String)
+Private Sub outputUnit(ByVal quantity As String, ByVal value As String)
     Dim area As Object, row As Long, values As Variant
     Set area = ThisWorkbook.names("rngUnitSettings").RefersToRange
     values = area.value2
@@ -109412,8 +109416,8 @@ Private Sub TestCompleteModel(ByRef stats As TWorkflowStats)
     Dim unit As Variant, expected As CSectionModel, actual As CSectionModel
     Dim settings As CSystemSettingsReader, units As CUnitSystem, writer As CNDMResultsWriter
     For Each unit In Array("mm", "cm", "m")
-        OutputUnit "Length", CStr(unit)
-        OutputUnit "Area", "cm2"
+        outputUnit "Length", CStr(unit)
+        outputUnit "Area", "cm2"
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set expected = ExampleModel(): Set writer = New CNDMResultsWriter
@@ -109426,7 +109430,7 @@ Private Sub TestCompleteModel(ByRef stats As TWorkflowStats)
         Check stats, "snapshot." & unit & ".contours", actual.contours.count = 4
         Dim i As Long
         For i = 1 To 2
-            Near stats, "snapshot." & unit & ".concrete.x." & i, actual.ConcreteX(i), expected.ConcreteX(i)
+            Near stats, "snapshot." & unit & ".concrete.x." & i, actual.concreteX(i), expected.concreteX(i)
             Near stats, "snapshot." & unit & ".concrete.area." & i, actual.concreteArea(i), expected.concreteArea(i)
             Near stats, "snapshot." & unit & ".concrete.Ix." & i, actual.ConcreteLocalIx(i), expected.ConcreteLocalIx(i)
             Near stats, "snapshot." & unit & ".concrete.Ixy." & i, actual.ConcreteLocalIxy(i), expected.ConcreteLocalIxy(i)
@@ -109556,7 +109560,7 @@ Public Function RunWorkflowReadPerformanceTests() As String
     Dim stats As TWorkflowStats, saved As Variant, count As Variant
     saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
     On Error GoTo Failed
-    OutputUnit "Length", "mm": OutputUnit "Area", "mm2"
+    outputUnit "Length", "mm": outputUnit "Area", "mm2"
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook ThisWorkbook
     Dim units As CUnitSystem: Set units = New CUnitSystem
@@ -109605,7 +109609,7 @@ Public Function RunCompactSnapshotTests() As String
     Dim expectedProperties As CSectionPropertiesCalculator, actualProperties As CSectionPropertiesCalculator
     Dim geometry As Object, annotations As Object, original As Variant, changed As Variant, mode As Long, code As Long, reason As String
     For Each unit In Array("mm", "cm", "m")
-        OutputUnit "Length", CStr(unit): OutputUnit "Area", "cm2"
+        outputUnit "Length", CStr(unit): outputUnit "Area", "cm2"
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         Set expected = ExampleModel(): Set writer = New CNDMResultsWriter
@@ -109687,7 +109691,7 @@ Public Function RunCompactSnapshotTests() As String
         On Error GoTo Failed
         Check stats, "compact.json.reject." & CStr(unit), code <> 0 And InStr(reason, "Results!AA157") > 0
     Next unit
-    OutputUnit "Length", "mm"
+    outputUnit "Length", "mm"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Dim withContour As Long, i As Long, px(1 To 4) As Double, py(1 To 4) As Double, x As Double, y As Double
@@ -109874,7 +109878,7 @@ Private Function ShapeSnapshot(ByVal fixture As String, Optional ByVal suppliedM
     count = count + 1: lines(count) = row(fixture, "BOUNDS", "concrete", bounds)
     For i = 1 To model.ConcreteCount
         count = count + 1
-        lines(count) = row(fixture, "CONCRETE", model.ConcreteID(i), Array(model.ConcreteX(i), model.ConcreteY(i), _
+        lines(count) = row(fixture, "CONCRETE", model.ConcreteID(i), Array(model.concreteX(i), model.concreteY(i), _
             model.concreteArea(i), model.ConcreteMaterialID(i), model.ConcreteShapeType(i), model.ConcreteWidth(i), _
             model.ConcreteHeight(i), model.ConcreteRotation(i), model.ConcreteLocalIx(i), model.ConcreteLocalIy(i), _
             model.ConcreteLocalIxy(i), model.ConcreteSourceName(i), model.ConcreteSourceHandle(i), model.ConcreteComment(i)))
@@ -110441,7 +110445,7 @@ Private Function ElementStateSnapshot(ByVal fixture As String, ByVal stateID As 
     Dim lines() As String, i As Long, strain As Double
     ReDim lines(1 To model.ConcreteCount + model.RebarCount)
     For i = 1 To model.ConcreteCount
-        strain = solver.StrainAt(model.ConcreteX(i), model.ConcreteY(i))
+        strain = solver.StrainAt(model.concreteX(i), model.concreteY(i))
         lines(i) = row(fixture, "FIBER_STATE", stateID & "." & model.ConcreteID(i), Array(strain, concrete.StressAtStrain(strain)))
     Next i
     For i = 1 To model.RebarCount
@@ -110710,7 +110714,7 @@ Private Sub TestReadyStatePipeline()
     Set region = result.InteractionRegion: Set data = result.SP35Data
     Check "SP35.result.owner", region.OwnerID = "SP35_TEST" And region.standard = "SP35" And region.anchorID = "G2"
     Check "SP35.result.criticalAnchor", result.CriticalAnchorGroupID = "G2" And result.StandardCode = "SP35"
-    Check "SP35.result.revision", data.SectionRevision = section.Revision
+    Check "SP35.result.revision", data.SectionRevision = section.revision
     CheckNear "SP35.result.sameArea", region.area, result.Abt
     Check "SP35.result.fiveBoundaryProbes", region.BoundaryProbeCount = 5
     Dim probes As Variant, savedProbe As Double
@@ -112010,7 +112014,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 8353
+LINES: 8373
 ====================================================================================================
 Option Explicit
 
@@ -112190,8 +112194,8 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
     TestPlotOverlayCoordinatesMatchResults stats
-    AppendLine stats, "RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview"
-    TestGeneratedSourceDoesNotReuseAutoCADPreview stats
+    AppendLine stats, "RUN: TestPlotUsesSavedGeometryAfterSourceChange"
+    TestPlotUsesSavedGeometryAfterSourceChange stats
     AppendLine stats, "RUN: TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC"
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     AppendLine stats, "RUN: TestProfileDrivenPlotUsesSnapshotState"
@@ -112810,8 +112814,8 @@ Private Sub TestAutoCADImporterTreatsDrawingUnitsAsMillimeters(ByRef stats As TU
     Dim section As CSectionModel
     Set section = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "Rebar", 0.000001, units)
 
-    AssertClose stats, "ui.autocad.importUnits.concreteX", section.ConcreteX(1), 1000#, 0.000001
-    AssertClose stats, "ui.autocad.importUnits.concreteY", section.ConcreteY(1), 2000#, 0.000001
+    AssertClose stats, "ui.autocad.importUnits.concreteX", section.concreteX(1), 1000#, 0.000001
+    AssertClose stats, "ui.autocad.importUnits.concreteY", section.concreteY(1), 2000#, 0.000001
     AssertClose stats, "ui.autocad.importUnits.concreteArea", section.concreteArea(1), 2500#, 0.000001
     AssertClose stats, "ui.autocad.importUnits.localIx", section.ConcreteLocalIx(1), _
         2500# * 2500# / 12#, 0.001
@@ -112897,7 +112901,7 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
     AssertTrue stats, "ui.autocad.preview.boundsAnnotations", CountAnnotationType(annotationData, "DIMENSION") = 2
-    AssertTrue stats, "ui.autocad.preview.rebarAnnotation", CountAnnotationType(annotationData, "REBAR_ANNOTATION") = 1
+    AssertTrue stats, "ui.autocad.preview.rebarAnnotation", CountAnnotationType(annotationData, "REBAR_GLOBAL_ANNOTATION") = 1
     AssertTextEquals stats, "ui.autocad.preview.rebarText", _
         AnnotationTextByID(annotationData, "REBAR_AUTO_ALL"), "ALL: 1" & ChrW$(&H2205) & "32+2" & ChrW$(&H2205) & "20"
     AssertTrue stats, "ui.autocad.preview.approxText", _
@@ -113052,37 +113056,33 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     SetSystemSetting "Plot.AxisLabelsFontSize", oldAxisLabelsFontSize
 End Sub
 
-' Проверяет, что AutoCAD-preview не используется как запасная схема
-' после переключения Geometry.Source обратно на Generated. Иначе пользователь
-' видит подпись "Импортированная геометрия AutoCAD" у уже generated-сценария.
-Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTestStats)
+' Проверяет, что выбор будущего источника не меняет уже сформированное сечение.
+' Только команда формирования заменяет сохранённую геометрию и её схему.
+Private Sub TestPlotUsesSavedGeometryAfterSourceChange(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Geometry.Source", "AutoCAD"
-
-    Dim section As CSectionModel
-    Set section = New CSectionModel
+    Dim section As CSectionModel: Set section = New CSectionModel
     section.sourceType = "AutoCADImport"
     section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddRebarElement 50#, 50#, 20#, 0#, "Rebar"
-
-    Dim writer As CNDMResultsWriter
-    Set writer = New CNDMResultsWriter
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
     writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
-
     UpdateSectionPlotForWorkbook ThisWorkbook
-    AssertTrue stats, "ui.plot.preview.title", PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
-
+    AssertTrue stats, "ui.plot.preview.title", PlotVisibleTitleContains("Сформированное сечение: AutoCADImport")
+    Dim geometry As Variant, annotations As Variant, actual As Variant, solves As Long
+    geometry = ResultTable("rngNDMSectionGeometry"): annotations = ResultTable("rngNDMSectionAnnotations")
+    solves = SectionEquilibriumSolveCount()
     SetSystemSetting "Geometry.Source", "Generated"
-    Dim errorDescription As String
-    On Error Resume Next
     UpdateSectionPlotForWorkbook ThisWorkbook
-    errorDescription = Err.description
-    On Error GoTo 0
-
-    AssertTrue stats, "ui.plot.generated.noPreviewFallback.error", _
-        InStr(1, errorDescription, "Выполните расчет", vbTextCompare) > 0
-    AssertTrue stats, "ui.plot.generated.noPreviewFallback.title", _
-        Not PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
+    AssertTrue stats, "ui.plot.sourceChange.savedTitle", PlotVisibleTitleContains("Сформированное сечение: AutoCADImport")
+    actual = ResultTable("rngNDMSectionGeometry")
+    AssertTrue stats, "ui.plot.sourceChange.savedGeometry", Audit02SnapshotTablesEqual(geometry, actual)
+    actual = ResultTable("rngNDMSectionAnnotations")
+    AssertTrue stats, "ui.plot.sourceChange.savedAnnotations", Audit02SnapshotTablesEqual(annotations, actual)
+    AssertTrue stats, "ui.plot.sourceChange.noSolve", SectionEquilibriumSolveCount() = solves
+    Dim message As String: message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "ui.plot.sourceChange.formationReplacesSource", ResultsGeometrySource(ThisWorkbook) <> "AutoCADImport"
+    AssertTrue stats, "ui.plot.sourceChange.newTitle", PlotVisibleTitleContains("Сформированное сечение: " & ResultsGeometrySource(ThisWorkbook))
 End Sub
 
 ' Проверяет DirectState-сценарий без определяющего сочетания по прочности.
@@ -117740,10 +117740,10 @@ Private Sub Audit03AssertAutoCADMmGeometry(ByRef stats As TUiTestStats, ByVal pr
     If same Then
         For i = 1 To expected.ConcreteCount + expected.RebarCount
             If i <= expected.ConcreteCount Then
-                values = Array(actual.ConcreteX(i), actual.ConcreteY(i), actual.concreteArea(i), _
+                values = Array(actual.concreteX(i), actual.concreteY(i), actual.concreteArea(i), _
                     actual.ConcreteWidth(i), actual.ConcreteHeight(i), actual.ConcreteRotation(i), _
                     actual.ConcreteLocalIx(i), actual.ConcreteLocalIy(i), actual.ConcreteLocalIxy(i))
-                reference = Array(expected.ConcreteX(i), expected.ConcreteY(i), expected.concreteArea(i), _
+                reference = Array(expected.concreteX(i), expected.concreteY(i), expected.concreteArea(i), _
                     expected.ConcreteWidth(i), expected.ConcreteHeight(i), expected.ConcreteRotation(i), _
                     expected.ConcreteLocalIx(i), expected.ConcreteLocalIy(i), expected.ConcreteLocalIxy(i))
             Else
@@ -118171,8 +118171,8 @@ Private Sub TestAudit03InputAreaImportFilter(ByRef stats As TUiTestStats)
             prefix = "audit03.inputArea.unit" & CStr(unitIndex) & ".case" & CStr(caseIndex)
             AssertTrue stats, prefix & ".concreteCount", section.ConcreteCount = expectedConcrete
             AssertTrue stats, prefix & ".rebarCount", section.RebarCount = expectedRebar
-            AssertClose stats, prefix & ".xMm", section.ConcreteX(1), 1000#, 0.000001
-            AssertClose stats, prefix & ".yMm", section.ConcreteY(1), 2000#, 0.000001
+            AssertClose stats, prefix & ".xMm", section.concreteX(1), 1000#, 0.000001
+            AssertClose stats, prefix & ".yMm", section.concreteY(1), 2000#, 0.000001
             AssertClose stats, prefix & ".areaMm2", section.concreteArea(1), 10000#, 0.000001
             AssertClose stats, prefix & ".inertiaMm4", section.ConcreteLocalIx(1), 10000# * 10000# / 12#, 0.001
             If caseIndex = 1 Then
@@ -118369,7 +118369,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             solveCount = SectionEquilibriumSolveCount()
             Set restored = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
             AssertTextEquals stats, prefix & ".source", restored.sourceType, "AutoCADImport"
-            AssertClose stats, prefix & ".restoredX", restored.ConcreteX(1), 950#, 0.000001
+            AssertClose stats, prefix & ".restoredX", restored.concreteX(1), 950#, 0.000001
             AssertClose stats, prefix & ".restoredArea", restored.concreteArea(1), 10000#, 0.000001
             AssertTrue stats, prefix & ".restoreNoSolve", SectionEquilibriumSolveCount() = solveCount
             actual = ResultTable("rngNDMSectionGeometry")
@@ -118389,9 +118389,10 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             AssertClose stats, prefix & ".loadN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * forceFactor * signN, -100000#, 0.001
             Audit03AssertAutoCADMmGeometry stats, prefix & ".afterSolve", section
             actual = ResultTable("rngNDMSectionGeometry")
-            AssertTextEquals stats, prefix & ".newHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "X"))), "X, " & CStr(lengthNames(afterIndex))
-            AssertTextEquals stats, prefix & ".newAreaHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "Area"))), "Area, " & CStr(areaNames(afterIndex))
-            AssertClose stats, prefix & ".newX", GeometryResultValue(actual, "C1", "X"), 950# / lengthFactor, 0.000001
+            AssertTextEquals stats, prefix & ".savedHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "X"))), "X, " & CStr(lengthNames(beforeIndex))
+            AssertTextEquals stats, prefix & ".savedAreaHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "Area"))), "Area, " & CStr(areaNames(beforeIndex))
+            AssertClose stats, prefix & ".savedX", GeometryResultValue(actual, "C1", "X"), 950# / CDbl(lengthFactors(beforeIndex)), 0.000001
+            Audit03ComparePlainSnapshot stats, prefix & ".geometryPreservedAfterSolve", preview, actual, 2
             actual = ResultTable("rngNDMElementResults")
             If beforeIndex = 0 And afterIndex = 0 Then
                 baselineElements = actual
@@ -118402,7 +118403,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
                     lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, IIf(afterIndex = 0, 1#, 0.001), forceFactor, momentFactor, signN, signMx, signMy
                 actual = ResultTable("rngNDMSectionGeometry")
                 Audit03CompareUnitSnapshot stats, prefix & ".geometry", baselineGeometry, actual, "Geometry", _
-                    lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, 1#, forceFactor, momentFactor, signN, signMx, signMy
+                    CDbl(lengthFactors(beforeIndex)), CDbl(areaFactors(beforeIndex)), stressFactor, 1#, forceFactor, momentFactor, signN, signMx, signMy
                 actual = ResultTable("rngNDMSectionProperties")
                 Audit03CompareUnitSnapshot stats, prefix & ".properties", baselineProperties, actual, "Properties", _
                     lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, IIf(afterIndex = 0, 1#, 0.001), forceFactor, momentFactor, signN, signMx, signMy, True
@@ -118873,7 +118874,7 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
             AssertTrue stats, prefix & ".rejected", errorNumber <> 0
             AssertTrue stats, prefix & ".field", InStr(1, description, CStr(fieldName(0)), vbTextCompare) > 0
             AssertTrue stats, prefix & ".address", InStr(1, description, "Snapshot!" & anchor.offset(row, CLng(field) - 1).address(False, False), vbTextCompare) > 0
-            AssertTrue stats, prefix & ".action", InStr(1, description, "Повторите", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".action", InStr(1, description, "Сформировать сечение", vbTextCompare) > 0
             If CLng(field) < 12 Then
                 For Each operation In Array("Preview", "State")
                     Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description, CStr(operation) = "State"
@@ -118901,13 +118902,21 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
         Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description, True
         AssertTrue stats, prefix & ".state", errorNumber = vbObjectError + 4719
     Next field
-    ' Пустые необязательные размеры/инерции остаются допустимым отсутствием
-    ' геометрической оболочки; это не текст, ошибочно распознанный как число.
-    anchor.Resize(3, 15).value2 = data
-    cases = cases + 1
-    For Each field In Array(8, 9, 11, 12, 13, 14): anchor.offset(1, CLng(field) - 1).ClearContents: Next field
-    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
-    AssertTrue stats, "audit03.geometrySnapshot.optionalBlank", model.ConcreteCount = 1 And model.RebarCount = 1
+    ' Готовая сетка хранит размеры, угол и собственные инерции каждого элемента.
+    ' Потерянное значение не восстанавливаем молча по приближённой оболочке.
+    For Each field In Array(8, 9, 11, 12, 13, 14)
+        anchor.Resize(3, 15).value2 = data
+        anchor.offset(1, CLng(field) - 1).ClearContents
+        cases = cases + 1
+        Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+        prefix = "audit03.geometrySnapshot.missingGeometry." & CStr(field)
+        AssertTrue stats, prefix & ".rejected", errorNumber <> 0
+        AssertTrue stats, prefix & ".address", InStr(description, "Snapshot!" & anchor.offset(1, CLng(field) - 1).address(False, False)) > 0
+        AssertTrue stats, prefix & ".action", InStr(description, "Сформировать сечение") > 0
+        anchor.Resize(3, 15).value2 = data
+        Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+        Audit03CheckRestoredGeometry stats, prefix & ".recovery", model
+    Next field
     anchor.Resize(3, 15).value2 = data
     cases = cases + 1
     anchor.offset(1, 7).NumberFormat = "@": anchor.offset(1, 7).value2 = "123.75"
@@ -118979,17 +118988,17 @@ End Sub
 ' это не live Region или инженерный solve. Масштаб fixture независим от reader-а.
 Private Function Audit03GeometrySnapshotArray(ByVal unit As String, ByVal factor As Double) As Variant
     Dim data(1 To 3, 1 To 15) As Variant, headers As Variant, column As Long
-    headers = Array("ElementID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
-        "MaterialID", "GeometryInterpretationStatus", "Width, " & unit, "Height, " & unit, _
+    headers = Array("RunID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
+        "ElementID", "GeometryInterpretationStatus", "Width, " & unit, "Height, " & unit, _
         "Diameter, " & unit, "Rotation, rad", "LocalIx, " & unit & "4", "LocalIy, " & unit & "4", "LocalIxy, " & unit & "4", "Comment")
     For column = 1 To 15: data(1, column) = headers(column - 1): Next column
-    data(2, 1) = "C1": data(2, 2) = "Concrete": data(2, 3) = -23.125 / factor: data(2, 4) = 17.625 / factor
-    data(2, 5) = 10828.125 / factor ^ 2: data(2, 6) = 1: data(2, 7) = "Rectangle"
+    data(2, 1) = 46023#: data(2, 2) = "Concrete": data(2, 3) = -23.125 / factor: data(2, 4) = 17.625 / factor
+    data(2, 5) = 10828.125 / factor ^ 2: data(2, 6) = "C1": data(2, 7) = "Rectangle"
     data(2, 8) = 123.75 / factor: data(2, 9) = 87.5 / factor: data(2, 10) = 0#: data(2, 11) = 0.3125
     data(2, 12) = 654321.125 / factor ^ 4: data(2, 13) = 987654.375 / factor ^ 4: data(2, 14) = -23456.625 / factor ^ 4
     data(2, 15) = "Дробные параметры Region"
-    data(3, 1) = "R1": data(3, 2) = "Rebar": data(3, 3) = 12.375 / factor: data(3, 4) = -8.125 / factor
-    data(3, 5) = 117.8581 / factor ^ 2: data(3, 6) = 1: data(3, 7) = "Circle": data(3, 10) = 12.25 / factor
+    data(3, 1) = 46023#: data(3, 2) = "Rebar": data(3, 3) = 12.375 / factor: data(3, 4) = -8.125 / factor
+    data(3, 5) = 117.8581 / factor ^ 2: data(3, 6) = "R1": data(3, 7) = "Circle": data(3, 10) = 12.25 / factor
     data(3, 15) = "Дробная арматура"
     Audit03GeometrySnapshotArray = data
 End Function
@@ -118999,8 +119008,8 @@ End Function
 Private Sub Audit03CheckRestoredGeometry(ByRef stats As TUiTestStats, ByVal prefix As String, ByVal model As CSectionModel)
     AssertTrue stats, prefix & ".concreteCount", model.ConcreteCount = 1
     AssertTrue stats, prefix & ".rebarCount", model.RebarCount = 1
-    AssertClose stats, prefix & ".x", model.ConcreteX(1), -23.125, 0.000000001
-    AssertClose stats, prefix & ".y", model.ConcreteY(1), 17.625, 0.000000001
+    AssertClose stats, prefix & ".x", model.concreteX(1), -23.125, 0.000000001
+    AssertClose stats, prefix & ".y", model.concreteY(1), 17.625, 0.000000001
     AssertClose stats, prefix & ".area", model.concreteArea(1), 10828.125, 0.000000001
     AssertClose stats, prefix & ".width", model.ConcreteWidth(1), 123.75, 0.000000001
     AssertClose stats, prefix & ".height", model.ConcreteHeight(1), 87.5, 0.000000001
@@ -120365,6 +120374,21 @@ Failed:
 End Sub
 
 
+' ДЛЯ ТЕСТОВ
+' Повторяет проверки импортированных подписей и независимости схемы от будущего ввода.
+Public Function RunPreviewSnapshotContractTests() As String
+    Dim stats As TUiTestStats
+    On Error GoTo Failed
+    TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
+    TestPlotUsesSavedGeometryAfterSourceChange stats
+    GoTo Finished
+Failed:
+    AssertTrue stats, "previewSnapshot.runtime." & CStr(Err.number) & "." & Err.description, False
+Finished:
+    RunPreviewSnapshotContractTests = stats.report & "TOTAL_PREVIEW_SNAPSHOT_CONTRACT: passed=" & stats.passed & "; failed=" & stats.Failed
+End Function
+
+
 
 ====================================================================================================
 COMPONENT: modTestZeroContourParity
@@ -120437,7 +120461,7 @@ Private Function ModelBits(ByVal name As String, ByVal model As CSectionModel) A
     lines(0) = "ZERO_CASE: " & name & "; concrete=" & CStr(model.ConcreteCount) & "; rebar=" & CStr(model.RebarCount)
     For i = 1 To model.ConcreteCount
         at = at + 1
-        lines(at) = "C|" & model.ConcreteID(i) & "|" & Bits(model.ConcreteX(i)) & "|" & Bits(model.ConcreteY(i)) & _
+        lines(at) = "C|" & model.ConcreteID(i) & "|" & Bits(model.concreteX(i)) & "|" & Bits(model.concreteY(i)) & _
             "|" & Bits(model.concreteArea(i)) & "|" & Bits(model.ConcreteLocalIx(i)) & "|" & Bits(model.ConcreteLocalIy(i)) & _
             "|" & Bits(model.ConcreteLocalIxy(i)) & "|" & Bits(model.ConcreteWidth(i)) & "|" & Bits(model.ConcreteHeight(i)) & "|" & Bits(model.ConcreteRotation(i))
     Next i

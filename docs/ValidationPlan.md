@@ -1,5 +1,12 @@
 # Проверки
 
+После исправлений приёмки 22.10 использовать направленные
+RunAudit03ImportedSnapshotUnitChangeTests, RunAudit03GeometrySnapshotTests,
+modTestPlotConfig.RunAudit03SnapshotMetadataTests, RunPreviewSnapshotContractTests,
+RunCollapsedInputMessageTests, RunSavedOffsetCalculationTests,
+RunConfigPresentationTests и RunResultsFormattingTests в обоих режимах.
+Отчёт и причины корректировки ожиданий: reports/AcceptanceFixes_2026-10-22.md.
+
 При изменениях независимых этапов формирования и расчёта использовать
 `modTestSectionWorkflow.RunWorkflowSnapshotTests`,
 `modTestWorkbookInterface.RunSectionWorkflowUiTests` и

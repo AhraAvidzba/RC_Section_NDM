@@ -513,22 +513,23 @@ Finished:
 End Function
 
 ' ДЛЯ ТЕСТОВ: обычный расчёт сохранённого примера проходит через запись Results и схему.
-' При пропуске стержня предупреждение возвращается вместе с итогом расчёта.
+' Предупреждение о пропуске стержня проверяется в ответе формирования и в Results.
 Public Function RunSavedOffsetCalculationTests() As String
     mPassed = 0: mFailed = 0: mReport = ""
     On Error GoTo Failed
     Dim area As Object, config As Object, inputCell As Object, saved As Variant, value As Variant, message As String
-    Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String
+    Dim summary As Object, i As Long, j As Long, text As String, diagnostics As String, formation As String
     Set config = ThisWorkbook.Worksheets("Config").UsedRange: saved = FixtureSaveInputs(config)
     PrepareSavedOffsetCase
     Set area = ThisWorkbook.Names("rngPointedSectionGeometry").RefersToRange
     Set inputCell = FixtureInputCell(area, "Extra", "Right", "a2")
     For Each value In Array(40#, 50#)
         inputCell.Value2 = value
-        message = FixtureRunSectionWorkflow(ThisWorkbook, True)
+        formation = FormSectionForWorkbook(ThisWorkbook)
+        message = RunSectionCalculationForWorkbook(ThisWorkbook, True)
         Check "saved.calculation.completed." & CStr(value), InStr(message, "завершен.") > 0 And InStr(message, "ошиб") = 0
         diagnostics = SavedRecipeDiagnostics()
-        Check "saved.calculation.warning." & CStr(value), (InStr(message, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)
+        Check "saved.calculation.warning." & CStr(value), (InStr(formation, "Предупреждение:") > 0) = (InStr(diagnostics, "Предупреждение:") > 0)
         Check "saved.calculation.rowWarning." & CStr(value), SavedRuleSkipped(diagnostics, "H.Right.Row2") = IIf(CDbl(value) > 40#, 1, 0)
         Set summary = ThisWorkbook.Names("rngBatchSummary").RefersToRange
         text = ""

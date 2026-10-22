@@ -177,8 +177,8 @@ Public Function RunWorkbookInterfaceTests() As String
     TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
     TestAnnotationDimensionTextRoundsInMillimeters stats
     TestPlotOverlayCoordinatesMatchResults stats
-    AppendLine stats, "RUN: TestGeneratedSourceDoesNotReuseAutoCADPreview"
-    TestGeneratedSourceDoesNotReuseAutoCADPreview stats
+    AppendLine stats, "RUN: TestPlotUsesSavedGeometryAfterSourceChange"
+    TestPlotUsesSavedGeometryAfterSourceChange stats
     AppendLine stats, "RUN: TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC"
     TestGeneratedDirectStateWorstStillDrawsFirstCalculatedLC stats
     AppendLine stats, "RUN: TestProfileDrivenPlotUsesSnapshotState"
@@ -884,7 +884,7 @@ Private Sub TestAutoCADPreviewWritesAndDrawsBoundsDimensions(ByRef stats As TUiT
     Dim annotationData As Variant
     annotationData = ResultTable("rngNDMSectionAnnotations")
     AssertTrue stats, "ui.autocad.preview.boundsAnnotations", CountAnnotationType(annotationData, "DIMENSION") = 2
-    AssertTrue stats, "ui.autocad.preview.rebarAnnotation", CountAnnotationType(annotationData, "REBAR_ANNOTATION") = 1
+    AssertTrue stats, "ui.autocad.preview.rebarAnnotation", CountAnnotationType(annotationData, "REBAR_GLOBAL_ANNOTATION") = 1
     AssertTextEquals stats, "ui.autocad.preview.rebarText", _
         AnnotationTextByID(annotationData, "REBAR_AUTO_ALL"), "ALL: 1" & ChrW$(&H2205) & "32+2" & ChrW$(&H2205) & "20"
     AssertTrue stats, "ui.autocad.preview.approxText", _
@@ -1039,37 +1039,33 @@ Private Sub TestPlotOverlayCoordinatesMatchResults(ByRef stats As TUiTestStats)
     SetSystemSetting "Plot.AxisLabelsFontSize", oldAxisLabelsFontSize
 End Sub
 
-' Проверяет, что AutoCAD-preview не используется как запасная схема
-' после переключения Geometry.Source обратно на Generated. Иначе пользователь
-' видит подпись "Импортированная геометрия AutoCAD" у уже generated-сценария.
-Private Sub TestGeneratedSourceDoesNotReuseAutoCADPreview(ByRef stats As TUiTestStats)
+' Проверяет, что выбор будущего источника не меняет уже сформированное сечение.
+' Только команда формирования заменяет сохранённую геометрию и её схему.
+Private Sub TestPlotUsesSavedGeometryAfterSourceChange(ByRef stats As TUiTestStats)
     PrepareCircleInput
     SetSystemSetting "Geometry.Source", "AutoCAD"
-
-    Dim section As CSectionModel
-    Set section = New CSectionModel
+    Dim section As CSectionModel: Set section = New CSectionModel
     section.SourceType = "AutoCADImport"
     section.AddConcreteElement 50#, 50#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddRebarElement 50#, 50#, 20#, 0#, "Rebar"
-
-    Dim writer As CNDMResultsWriter
-    Set writer = New CNDMResultsWriter
+    Dim writer As CNDMResultsWriter: Set writer = New CNDMResultsWriter
     writer.WriteGeometryPreview ThisWorkbook, section, PrepareSectionSnapshot(section)
-
     UpdateSectionPlotForWorkbook ThisWorkbook
-    AssertTrue stats, "ui.plot.preview.title", PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
-
+    AssertTrue stats, "ui.plot.preview.title", PlotVisibleTitleContains("Сформированное сечение: AutoCADImport")
+    Dim geometry As Variant, annotations As Variant, actual As Variant, solves As Long
+    geometry = ResultTable("rngNDMSectionGeometry"): annotations = ResultTable("rngNDMSectionAnnotations")
+    solves = SectionEquilibriumSolveCount()
     SetSystemSetting "Geometry.Source", "Generated"
-    Dim errorDescription As String
-    On Error Resume Next
     UpdateSectionPlotForWorkbook ThisWorkbook
-    errorDescription = Err.Description
-    On Error GoTo 0
-
-    AssertTrue stats, "ui.plot.generated.noPreviewFallback.error", _
-        InStr(1, errorDescription, "Выполните расчет", vbTextCompare) > 0
-    AssertTrue stats, "ui.plot.generated.noPreviewFallback.title", _
-        Not PlotVisibleTitleContains("Импортированная геометрия AutoCAD")
+    AssertTrue stats, "ui.plot.sourceChange.savedTitle", PlotVisibleTitleContains("Сформированное сечение: AutoCADImport")
+    actual = ResultTable("rngNDMSectionGeometry")
+    AssertTrue stats, "ui.plot.sourceChange.savedGeometry", Audit02SnapshotTablesEqual(geometry, actual)
+    actual = ResultTable("rngNDMSectionAnnotations")
+    AssertTrue stats, "ui.plot.sourceChange.savedAnnotations", Audit02SnapshotTablesEqual(annotations, actual)
+    AssertTrue stats, "ui.plot.sourceChange.noSolve", SectionEquilibriumSolveCount() = solves
+    Dim message As String: message = FormSectionForWorkbook(ThisWorkbook)
+    AssertTrue stats, "ui.plot.sourceChange.formationReplacesSource", ResultsGeometrySource(ThisWorkbook) <> "AutoCADImport"
+    AssertTrue stats, "ui.plot.sourceChange.newTitle", PlotVisibleTitleContains("Сформированное сечение: " & ResultsGeometrySource(ThisWorkbook))
 End Sub
 
 ' Проверяет DirectState-сценарий без определяющего сочетания по прочности.
@@ -6376,9 +6372,10 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
             AssertClose stats, prefix & ".loadN", CDbl(ResultsPropertyValue("LC_IMPORT", "N")) * forceFactor * signN, -100000#, 0.001
             Audit03AssertAutoCADMmGeometry stats, prefix & ".afterSolve", section
             actual = ResultTable("rngNDMSectionGeometry")
-            AssertTextEquals stats, prefix & ".newHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "X"))), "X, " & CStr(lengthNames(afterIndex))
-            AssertTextEquals stats, prefix & ".newAreaHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "Area"))), "Area, " & CStr(areaNames(afterIndex))
-            AssertClose stats, prefix & ".newX", GeometryResultValue(actual, "C1", "X"), 950# / lengthFactor, 0.000001
+            AssertTextEquals stats, prefix & ".savedHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "X"))), "X, " & CStr(lengthNames(beforeIndex))
+            AssertTextEquals stats, prefix & ".savedAreaHeader", CStr(actual(1, ResultHeaderColumnByBaseName(actual, "Area"))), "Area, " & CStr(areaNames(beforeIndex))
+            AssertClose stats, prefix & ".savedX", GeometryResultValue(actual, "C1", "X"), 950# / CDbl(lengthFactors(beforeIndex)), 0.000001
+            Audit03ComparePlainSnapshot stats, prefix & ".geometryPreservedAfterSolve", preview, actual, 2
             actual = ResultTable("rngNDMElementResults")
             If beforeIndex = 0 And afterIndex = 0 Then
                 baselineElements = actual
@@ -6389,7 +6386,7 @@ Private Sub TestAudit03ImportedSnapshotUnitChanges(ByRef stats As TUiTestStats)
                     lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, IIf(afterIndex = 0, 1#, 0.001), forceFactor, momentFactor, signN, signMx, signMy
                 actual = ResultTable("rngNDMSectionGeometry")
                 Audit03CompareUnitSnapshot stats, prefix & ".geometry", baselineGeometry, actual, "Geometry", _
-                    lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, 1#, forceFactor, momentFactor, signN, signMx, signMy
+                    CDbl(lengthFactors(beforeIndex)), CDbl(areaFactors(beforeIndex)), stressFactor, 1#, forceFactor, momentFactor, signN, signMx, signMy
                 actual = ResultTable("rngNDMSectionProperties")
                 Audit03CompareUnitSnapshot stats, prefix & ".properties", baselineProperties, actual, "Properties", _
                     lengthFactor, CDbl(areaFactors(afterIndex)), stressFactor, IIf(afterIndex = 0, 1#, 0.001), forceFactor, momentFactor, signN, signMx, signMy, True
@@ -6860,7 +6857,7 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
             AssertTrue stats, prefix & ".rejected", errorNumber <> 0
             AssertTrue stats, prefix & ".field", InStr(1, description, CStr(fieldName(0)), vbTextCompare) > 0
             AssertTrue stats, prefix & ".address", InStr(1, description, "Snapshot!" & anchor.Offset(row, CLng(field) - 1).Address(False, False), vbTextCompare) > 0
-            AssertTrue stats, prefix & ".action", InStr(1, description, "Повторите", vbTextCompare) > 0
+            AssertTrue stats, prefix & ".action", InStr(1, description, "Сформировать сечение", vbTextCompare) > 0
             If CLng(field) < 12 Then
                 For Each operation In Array("Preview", "State")
                     Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description, CStr(operation) = "State"
@@ -6888,13 +6885,21 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
         Audit03CapturePlotGeometryError fixture, settings, reader, errorNumber, description, True
         AssertTrue stats, prefix & ".state", errorNumber = vbObjectError + 4719
     Next field
-    ' Пустые необязательные размеры/инерции остаются допустимым отсутствием
-    ' геометрической оболочки; это не текст, ошибочно распознанный как число.
-    anchor.Resize(3, 15).Value2 = data
-    cases = cases + 1
-    For Each field In Array(8, 9, 11, 12, 13, 14): anchor.Offset(1, CLng(field) - 1).ClearContents: Next field
-    Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
-    AssertTrue stats, "audit03.geometrySnapshot.optionalBlank", model.ConcreteCount = 1 And model.RebarCount = 1
+    ' Готовая сетка хранит размеры, угол и собственные инерции каждого элемента.
+    ' Потерянное значение не восстанавливаем молча по приближённой оболочке.
+    For Each field In Array(8, 9, 11, 12, 13, 14)
+        anchor.Resize(3, 15).Value2 = data
+        anchor.Offset(1, CLng(field) - 1).ClearContents
+        cases = cases + 1
+        Audit03CaptureGeometrySnapshotError fixture, errorNumber, description
+        prefix = "audit03.geometrySnapshot.missingGeometry." & CStr(field)
+        AssertTrue stats, prefix & ".rejected", errorNumber <> 0
+        AssertTrue stats, prefix & ".address", InStr(description, "Snapshot!" & anchor.Offset(1, CLng(field) - 1).Address(False, False)) > 0
+        AssertTrue stats, prefix & ".action", InStr(description, "Сформировать сечение") > 0
+        anchor.Resize(3, 15).Value2 = data
+        Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
+        Audit03CheckRestoredGeometry stats, prefix & ".recovery", model
+    Next field
     anchor.Resize(3, 15).Value2 = data
     cases = cases + 1
     anchor.Offset(1, 7).NumberFormat = "@": anchor.Offset(1, 7).Value2 = "123.75"
@@ -6966,17 +6971,17 @@ End Sub
 ' это не live Region или инженерный solve. Масштаб fixture независим от reader-а.
 Private Function Audit03GeometrySnapshotArray(ByVal unit As String, ByVal factor As Double) As Variant
     Dim data(1 To 3, 1 To 15) As Variant, headers As Variant, column As Long
-    headers = Array("ElementID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
-        "MaterialID", "GeometryInterpretationStatus", "Width, " & unit, "Height, " & unit, _
+    headers = Array("RunID", "MaterialType", "X, " & unit, "Y, " & unit, "Area, " & unit & "2", _
+        "ElementID", "GeometryInterpretationStatus", "Width, " & unit, "Height, " & unit, _
         "Diameter, " & unit, "Rotation, rad", "LocalIx, " & unit & "4", "LocalIy, " & unit & "4", "LocalIxy, " & unit & "4", "Comment")
     For column = 1 To 15: data(1, column) = headers(column - 1): Next column
-    data(2, 1) = "C1": data(2, 2) = "Concrete": data(2, 3) = -23.125 / factor: data(2, 4) = 17.625 / factor
-    data(2, 5) = 10828.125 / factor ^ 2: data(2, 6) = 1: data(2, 7) = "Rectangle"
+    data(2, 1) = 46023#: data(2, 2) = "Concrete": data(2, 3) = -23.125 / factor: data(2, 4) = 17.625 / factor
+    data(2, 5) = 10828.125 / factor ^ 2: data(2, 6) = "C1": data(2, 7) = "Rectangle"
     data(2, 8) = 123.75 / factor: data(2, 9) = 87.5 / factor: data(2, 10) = 0#: data(2, 11) = 0.3125
     data(2, 12) = 654321.125 / factor ^ 4: data(2, 13) = 987654.375 / factor ^ 4: data(2, 14) = -23456.625 / factor ^ 4
     data(2, 15) = "Дробные параметры Region"
-    data(3, 1) = "R1": data(3, 2) = "Rebar": data(3, 3) = 12.375 / factor: data(3, 4) = -8.125 / factor
-    data(3, 5) = 117.8581 / factor ^ 2: data(3, 6) = 1: data(3, 7) = "Circle": data(3, 10) = 12.25 / factor
+    data(3, 1) = 46023#: data(3, 2) = "Rebar": data(3, 3) = 12.375 / factor: data(3, 4) = -8.125 / factor
+    data(3, 5) = 117.8581 / factor ^ 2: data(3, 6) = "R1": data(3, 7) = "Circle": data(3, 10) = 12.25 / factor
     data(3, 15) = "Дробная арматура"
     Audit03GeometrySnapshotArray = data
 End Function
@@ -8350,3 +8355,18 @@ Failed:
     AssertTrue stats, "unexpected.resultsFormatting." & Err.Number & "." & Err.Description, False
     Resume Done
 End Sub
+
+
+' ДЛЯ ТЕСТОВ
+' Повторяет проверки импортированных подписей и независимости схемы от будущего ввода.
+Public Function RunPreviewSnapshotContractTests() As String
+    Dim stats As TUiTestStats
+    On Error GoTo Failed
+    TestAutoCADPreviewWritesAndDrawsBoundsDimensions stats
+    TestPlotUsesSavedGeometryAfterSourceChange stats
+    GoTo Finished
+Failed:
+    AssertTrue stats, "previewSnapshot.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    RunPreviewSnapshotContractTests = stats.Report & "TOTAL_PREVIEW_SNAPSHOT_CONTRACT: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function

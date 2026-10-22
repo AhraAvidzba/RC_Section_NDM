@@ -262,7 +262,7 @@ Public Function RunCollapsedInputMessageTests() As String
     Next scenario
     message = CollapsedExtraRowMessage()
     Check "collapsed.extra.inputError", Left$(message, 11) = "INPUT_ERROR"
-    Check "collapsed.extra.row", InStr(message, "проверочную область ряда 2") > 0
+    Check "collapsed.extra.row", InStr(message, "контур для 2-го ряда арматуры") > 0
     Check "collapsed.extra.cause", InStr(message, "проверочный контур исчез целиком") > 0
     Check "collapsed.extra.values", InStr(message, "радиус первой дуги: 150 мм") > 0 And _
         InStr(message, "отступ внутрь этой дуги: 240 мм") > 0
