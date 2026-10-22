@@ -18,14 +18,31 @@ $jobs=@(
     @{Shape='SavedWorkbook'; Group='Saved'; Count=23},
     @{Shape='SavedWorkbook'; Group='Paths'; Count=6}
 )
+# Проверяет сохранённую пару PID/время старта перед Close/Quit/Stop-Process.
+# Отсутствующий или повторно использованный PID не даёт права закрывать приложение.
+function Test-OwnedProcessIdentity {
+    param([int]$ProcessId, [long]$StartTicks, [string]$ProcessName)
+    if ($ProcessId -le 0 -or $StartTicks -le 0) { return $false }
+    $current=Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+    return ($null -ne $current -and $current.ProcessName -eq $ProcessName -and
+        $current.StartTime.ToUniversalTime().Ticks -eq $StartTicks)
+}
+
 $records=@(); $excel=$null; $book=$null; $ownedPid=0; $ownedTicks=0
 try {
-    $excel=New-Object -ComObject Excel.Application
-    $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
     Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class FocusedDescribeWindow { [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId); }'
+    $existingExcelIds=@([Diagnostics.Process]::GetProcessesByName('EXCEL') | ForEach-Object { $_.Id })
+    $excel=New-Object -ComObject Excel.Application
     [uint32]$id=0
     [void][FocusedDescribeWindow]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd,[ref]$id)
-    $ownedPid=[int]$id; $ownedTicks=(Get-Process -Id $ownedPid).StartTime.ToUniversalTime().Ticks
+    if ($id -eq 0 -or $existingExcelIds -contains [int]$id) {
+        throw 'COM returned an existing or unidentified Excel; no properties changed and no Quit allowed.'
+    }
+    $newExcelProcess=Get-Process -Id $id -ErrorAction Stop
+    $newExcelTicks=$newExcelProcess.StartTime.ToUniversalTime().Ticks
+    if (-not (Test-OwnedProcessIdentity ([int]$id) $newExcelTicks 'EXCEL')) { throw 'New Excel identity could not be verified.' }
+    $ownedPid=[int]$id; $ownedTicks=$newExcelTicks
+    $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
     Write-Output ('OWNED_EXCEL: id='+$ownedPid+'; utcStartTicks='+$ownedTicks)
     $book=$excel.Workbooks.Open($source,0,$true)
     foreach ($job in $jobs) {
@@ -52,13 +69,19 @@ try {
         ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $directory 'InputManifest.json') -Encoding UTF8
     Write-Output 'FOCUSED_MANIFEST_READY: geometry and loads only; no acceptance calculations executed.'
 } finally {
-    if ($book) { $book.Close($false) }
-    if ($excel) { $excel.Quit(); [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel) }
-    [GC]::Collect(); [GC]::WaitForPendingFinalizers()
-    if ($ownedPid) {
-        $owned=Get-Process -Id $ownedPid -ErrorAction SilentlyContinue
-        if ($owned -and $owned.ProcessName -eq 'EXCEL' -and $owned.StartTime.ToUniversalTime().Ticks -eq $ownedTicks) {
-            Stop-Process -Id $ownedPid -Force -ErrorAction SilentlyContinue
+    try {
+        if ($book -and (Test-OwnedProcessIdentity $ownedPid $ownedTicks 'EXCEL')) { $book.Close($false) }
+    } finally {
+        try {
+            if ($excel) {
+                try { if (Test-OwnedProcessIdentity $ownedPid $ownedTicks 'EXCEL') { $excel.Quit() } }
+                finally { [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel) }
+            }
+        } finally {
+            [GC]::Collect(); [GC]::WaitForPendingFinalizers()
+            if (Test-OwnedProcessIdentity $ownedPid $ownedTicks 'EXCEL') {
+                Stop-Process -Id $ownedPid -Force -ErrorAction SilentlyContinue
+            }
         }
     }
 }

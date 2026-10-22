@@ -8,8 +8,8 @@ Public Function RunFocusedSnapshotDiagnostic() As String
     Dim cx As Double, cy As Double, area As Double, centerStrain As Double, tangent As Double, savedTangent As Double
     Dim loadRange As Object, values() As Variant, section As CSectionModel
     FocusedSelectGeometry "SavedWorkbook"
-    SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0": TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
@@ -23,10 +23,10 @@ Public Function RunFocusedSnapshotDiagnostic() As String
         End If
     Next item
     loadRange.Offset(1, 0).Resize(loadRange.Rows.Count - 1, loadRange.Columns.Count).Value2 = values
-    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
     output = RunSectionCalculationForWorkbook(ThisWorkbook, False) & vbCrLf
     Set provider = New CMaterialModelProvider: provider.Initialize settings, units
     Set state = mFocusedBatch.ResultAt(1).StateRepository.FindState(sstCapacityState)

@@ -32,7 +32,7 @@ Friend Function Build(ByRef original() As TRegionEdge, ByRef distances() As Doub
     ReDim shifted(1 To count): ReDim result(1 To 2 * count): ReDim sourceIndex(1 To count)
     For i = 1 To count
         If IsArray(segmentSources) Then sourceReference = OffsetSourceReferences(segmentSources, i, i, i)
-        before = before + EdgeArea(original(i))
+        before = before + EdgeArea(original(i), original(1).X1, original(1).Y1)
         If original(i).Sweep <> 0# Then
             radius = Sqr((original(i).X1 - original(i).CenterX) ^ 2 + (original(i).Y1 - original(i).CenterY) ^ 2)
             If radius - Sgn(original(i).Sweep) * distances(i) <= TOL Then GoTo NextSource
@@ -70,7 +70,7 @@ NextSource:
         End If
     Next i
     sourceReference = allReferences
-    For i = 1 To resultCount: after = after + EdgeArea(result(i)): Next i
+    For i = 1 To resultCount: after = after + EdgeArea(result(i), original(1).X1, original(1).Y1): Next i
     If Abs(after) <= TOL Or before * after <= 0# Then _
         Fail "Проверочный контур выродился или изменил направление обхода. Уменьшите отступы дополнительных рядов.", sourceReference
     Set query = New CSectionGeometryQuery
@@ -141,9 +141,10 @@ Private Sub JoinLines(ByRef first As TRegionEdge, ByRef second As TRegionEdge)
 End Sub
 
 ' Площадь под ориентированным отрезком или дугой; используется для контроля обхода.
-Friend Function EdgeArea(ByRef edge As TRegionEdge) As Double
+Friend Function EdgeArea(ByRef edge As TRegionEdge, Optional ByVal originX As Double = 0#, _
+        Optional ByVal originY As Double = 0#) As Double
     Dim radiusSquared As Double
-    EdgeArea = (edge.X1 * edge.Y2 - edge.X2 * edge.Y1) / 2#
+    EdgeArea = ((edge.X1 - originX) * (edge.Y2 - originY) - (edge.X2 - originX) * (edge.Y1 - originY)) / 2# ' Одна опора для всего кольца сохраняет знак площади при большом WCS-переносе.
     If edge.Sweep <> 0# Then
         radiusSquared = (edge.X1 - edge.CenterX) ^ 2 + (edge.Y1 - edge.CenterY) ^ 2
         EdgeArea = EdgeArea + radiusSquared * (edge.Sweep - Sin(edge.Sweep)) / 2# ' К площади под хордой добавляется знаковая площадь кругового сегмента, мм2.

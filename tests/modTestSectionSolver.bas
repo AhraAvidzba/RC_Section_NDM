@@ -13,6 +13,15 @@ Private Type TSectionSolverTestStats
     Report As String
 End Type
 
+Private Type TTestDoubleWords
+    Low As Long
+    High As Long
+End Type
+
+Private Type TTestDoubleValue
+    Value As Double
+End Type
+
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Проверяет равновесие, единицы, численные методы и сохранение НДС.
 ' Возвращает результаты отдельных проверок и итог; ошибка запуска отмечается отдельно.
@@ -29,6 +38,7 @@ Public Function RunSectionSolverTests() As String
     TestLinearSystem3x3 stats
     TestAudit03ExtremeLinearSystem stats
     TestAudit03LinearFailureCodes stats
+    TestLinearSystemNonFiniteValues stats
     TestAudit03LargeTangentState stats
     TestLinearMaterialEquilibrium stats
     TestLinearMaterialWithRebarReplacement stats
@@ -724,6 +734,12 @@ Private Sub TestSolverMethodInputErrors(ByRef stats As TSectionSolverTestStats)
     TestAssertTrue stats, "section.method.emptyInput", Not solver.Converged
     TestAssertTrue stats, "section.method.emptyMessage", InStr(1, solver.StopReason, "Ошибка настройки Solver.Method:", vbTextCompare) > 0
     TestAssertTrue stats, "section.method.emptyCode", solver.FailureCode = sfcInvalidConfiguration
+    TestAssertTrue stats, "section.method.failedSourceKey", solver.FailureSettingKeys = "Solver.Method"
+    solver.SolverMethod = "Newton"
+    solver.Solve TestBuildGeneratedSectionModel(mesh, Nothing), TestProvisionalConcrete(), TestProvisionalSteel(), -100000#, 0#, 0#
+    TestAssertTrue stats, "section.method.recoveryConverged", solver.Converged
+    TestAssertTrue stats, "section.method.recoveryCode", solver.FailureCode = sfcNone
+    TestAssertTrue stats, "section.method.recoverySourceKeyCleared", Len(solver.FailureSettingKeys) = 0
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -1822,9 +1838,49 @@ Public Function RunAudit03ExtremeLinearSystemTests() As String
     TestLinearSystem3x3 stats
     TestAudit03ExtremeLinearSystem stats
     TestAudit03LinearFailureCodes stats
+    TestLinearSystemNonFiniteValues stats
     TestAudit03LargeTangentState stats
     TestAppendLine stats, "TOTAL_AUDIT03_EXTREME_LINEAR: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunAudit03ExtremeLinearSystemTests = stats.Report
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' IEEE NaN и бесконечности не подтверждают решение даже тогда, когда арифметика
+' VBA не выбрасывает исключение. Проверяются матрица, RHS и повтор после отказа.
+Private Sub TestLinearSystemNonFiniteValues(ByRef stats As TSectionSolverTestStats)
+    Dim system As CLinearSystem3x3, kind As Long, position As Long, value As Double, solved As Boolean, prefix As String
+    Set system = New CLinearSystem3x3
+    For kind = 1 To 3
+        value = TestNonFiniteDouble(kind)
+        For position = 1 To 2
+            If position = 1 Then
+                solved = system.Solve(value, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1#, 2#, 3#)
+            Else
+                solved = system.Solve(1#, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, value, 2#, 3#)
+            End If
+            prefix = "workingReview.linear.nonFinite." & CStr(kind) & "." & CStr(position)
+            TestAssertTrue stats, prefix & ".notSolved", Not solved And Not system.Solved
+            TestAssertTrue stats, prefix & ".failureCode", system.FailureCode = sfcNumericalFailure
+            TestAssertTrue stats, prefix & ".vectorCleared", system.X1 = 0# And system.X2 = 0# And system.X3 = 0#
+            TestAssertTrue stats, prefix & ".recovery", system.Solve(1#, 0#, 0#, 0#, 1#, 0#, 0#, 0#, 1#, 1#, 2#, 3#)
+            TestAssertTrue stats, prefix & ".recoveryVector", system.X1 = 1# And system.X2 = 2# And system.X3 = 3#
+        Next position
+    Next kind
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задаёт quiet NaN или бесконечность точными битами IEEE 754 без переполнения
+' в самом тесте. LSet копирует два Long в Double одинакового размера.
+Private Function TestNonFiniteDouble(ByVal kind As Long) As Double
+    Dim words As TTestDoubleWords, number As TTestDoubleValue
+    Select Case kind
+        Case 1: words.High = &H7FF80000
+        Case 2: words.High = &H7FF00000
+        Case 3: words.High = &HFFF00000
+        Case Else: Err.Raise 5, "modTestSectionSolver", "Неизвестный вид неконечного тестового значения."
+    End Select
+    LSet number = words
+    TestNonFiniteDouble = number.Value
 End Function
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------

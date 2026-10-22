@@ -36,7 +36,18 @@ public static class PostAuditCADIdentity {
 '@
 $existing=@(Get-Process acad -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
 if($LaunchInstalledAutoCAD -and $existing.Count -gt 0){throw 'Explicit ROT launch requires no existing AutoCAD; use verified direct COM activation with an open user instance.'}
-$excel=$null; $book=$null; $acad=$null; $owned=$false; $pidValue=0
+# Проверяет сохранённую пару PID/время старта перед Close/Quit/Stop-Process.
+# Отсутствующий или повторно использованный PID не даёт права закрывать приложение.
+function Test-OwnedProcessIdentity {
+    param([int]$ProcessId, [long]$StartTicks, [string]$ProcessName)
+    if ($ProcessId -le 0 -or $StartTicks -le 0) { return $false }
+    $current=Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+    return ($null -ne $current -and $current.ProcessName -eq $ProcessName -and
+        $current.StartTime.ToUniversalTime().Ticks -eq $StartTicks)
+}
+
+$excel=$null; $book=$null; $acad=$null; $owned=$false; $pidValue=0; $cadStartTicks=0
+$ownedExcelPid=0; $ownedExcelTicks=0
 $launchedCad=$null; $launchedTicks=0
 function Invoke-CadReady([scriptblock]$Action) {
     $deadline=[DateTime]::UtcNow.AddSeconds(90)
@@ -109,11 +120,19 @@ try {
         $bootstrap=Invoke-CadReady { $acad.Documents.Add($template) }
     }
     Write-Output ('CAD_BOOTSTRAP_DOCUMENT: ' + [string]$bootstrap.Name)
+    $existingExcelIds=@([Diagnostics.Process]::GetProcessesByName('EXCEL') | ForEach-Object { $_.Id })
     $excel=New-Object -ComObject Excel.Application
-    $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
     [uint32]$excelId=0
     [void][PostAuditCADIdentity]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd,[ref]$excelId)
-    [ordered]@{OwnedPID=[int]$excelId; StartTicks=(Get-Process -Id $excelId).StartTime.ToUniversalTime().Ticks; ProcessName='EXCEL'} |
+    if ($excelId -eq 0 -or $existingExcelIds -contains [int]$excelId) {
+        throw 'COM returned an existing or unidentified Excel; no properties changed and no ownership file written.'
+    }
+    $newExcelProcess=Get-Process -Id $excelId -ErrorAction Stop
+    $newExcelTicks=$newExcelProcess.StartTime.ToUniversalTime().Ticks
+    if (-not (Test-OwnedProcessIdentity ([int]$excelId) $newExcelTicks 'EXCEL')) { throw 'New Excel identity could not be verified.' }
+    $ownedExcelPid=[int]$excelId; $ownedExcelTicks=$newExcelTicks
+    $excel.Visible=$false; $excel.DisplayAlerts=$false; $excel.EnableEvents=$false; $excel.AutomationSecurity=1
+    [ordered]@{OwnedPID=$ownedExcelPid; StartTicks=$ownedExcelTicks; ExistingPIDs=$existingExcelIds; ProcessName='EXCEL'} |
         ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory 'NativeExcelOwnership.json') -Encoding UTF8
     $book=$excel.Workbooks.Open($path)
     $excel.DisplayAlerts=$false
@@ -146,10 +165,13 @@ try {
     if ($result -notmatch 'TOTAL[^\r\n]*failed=0\b' -or $result -match '(?m)^FAIL:') {throw 'Native CAD test failed.'}
     $nativePassed=$true
 } finally {
-    if ($book) {try {$book.Close($false)} catch {}}
-    if ($excel) {try {$excel.Quit()} catch {}; [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)}
+    if ($book -and (Test-OwnedProcessIdentity $ownedExcelPid $ownedExcelTicks 'EXCEL')) {try {$book.Close($false)} catch {}}
+    if ($excel) {
+        if (Test-OwnedProcessIdentity $ownedExcelPid $ownedExcelTicks 'EXCEL') {try {$excel.Quit()} catch {}}
+        [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
+    }
     if ($acad) {
-        if ($owned) {try {Invoke-CadReady { $acad.Quit() }} catch {Write-Warning $_.Exception.Message}}
+        if ($owned -and (Test-OwnedProcessIdentity $pidValue $cadStartTicks 'acad')) {try {Invoke-CadReady { $acad.Quit() }} catch {Write-Warning $_.Exception.Message}}
         [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($acad)
     }
     if ($launchedCad) {

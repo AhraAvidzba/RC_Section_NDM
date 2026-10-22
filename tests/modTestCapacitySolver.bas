@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestCapacitySolver"
+Attribute VB_Name = "modTestCapacitySolver"
 Option Explicit
 
 ' ==========================================================================
@@ -24,6 +24,7 @@ Public Function RunCapacitySolverTests() As String
     t0 = Timer
 
     TestLimitSearchAdapterInterfaces stats
+    TestRequestReinitialization stats
     TestCommonStrainLimits stats
     TestCenteredAxialPathClassification stats
     TestAppendLine stats, "RUN: TestMxPositiveAndNegative"
@@ -4388,3 +4389,56 @@ End Function
 
 
 
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет только повторное заполнение request без решения равновесия.
+' Инициализация трещин должна убрать данные прежнего запроса несущей способности.
+Public Function RunLimitRequestLifecycleTests() As String
+    On Error GoTo Failed
+    Dim stats As TCapacityTestStats
+    TestRequestReinitialization stats
+    TestAppendLine stats, "TOTAL_LIMIT_REQUEST_LIFECYCLE: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunLimitRequestLifecycleTests = stats.Report
+    Exit Function
+Failed:
+    RunLimitRequestLifecycleTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сопоставляет переиспользованный запрос со свежим для трех прежних осевых
+' режимов. Настройки/объекты нового расчета сохраняются точно; solver не вызывается.
+Private Sub TestRequestReinitialization(ByRef stats As TCapacityTestStats)
+    Dim problem As CTestLimitSearchProblem, request As CLimitSearchRequest, fresh As CLimitSearchRequest
+    Dim section As CSectionModel, concrete As Object, steel As Object, prior As Variant, prefix As String
+    Set problem = New CTestLimitSearchProblem: Set section = New CSectionModel
+    Set concrete = TestLinearConcrete(): Set steel = TestLinearSteel()
+    For Each prior In Array(Array(False, False), Array(True, False), Array(True, True))
+        Set request = New CLimitSearchRequest: Set fresh = New CLimitSearchRequest
+        request.InitializeCapacity problem, section, concrete, steel, "LoadMultiplier", 11#, 12#, 13#, 14#, 15#, 16#, CBool(prior(0)), CBool(prior(1))
+        request.InitializeCrackFormation problem, section, concrete, steel, "UltimateStrain", "LambdaMxy", 17#, 18#, 19#, 20#, 21#, 22#, 23#
+        fresh.InitializeCrackFormation problem, section, concrete, steel, "UltimateStrain", "LambdaMxy", 17#, 18#, 19#, 20#, 21#, 22#, 23#
+        prefix = "request.reinitialize." & CStr(prior(0)) & "." & CStr(prior(1))
+        TestAssertClose stats, prefix & ".nOffset", request.NOffset, fresh.NOffset, 0#
+        TestAssertClose stats, prefix & ".nBase", request.NBase, fresh.NBase, 0#
+        TestAssertClose stats, prefix & ".mxOffset", request.MxOffset, fresh.MxOffset, 0#
+        TestAssertClose stats, prefix & ".mxBase", request.MxBase, fresh.MxBase, 0#
+        TestAssertClose stats, prefix & ".myOffset", request.MyOffset, fresh.MyOffset, 0#
+        TestAssertClose stats, prefix & ".myBase", request.MyBase, fresh.MyBase, 0#
+        TestAssertTrue stats, prefix & ".forceOnly", request.ForceOnly = fresh.ForceOnly
+        TestAssertTrue stats, prefix & ".pureAxial", request.PureAxialForMethod = fresh.PureAxialForMethod
+        TestAssertClose stats, prefix & ".targetN", request.TargetN, fresh.TargetN, 0#
+        TestAssertClose stats, prefix & ".targetMx", request.TargetMx, fresh.TargetMx, 0#
+        TestAssertClose stats, prefix & ".targetMy", request.TargetMy, fresh.TargetMy, 0#
+        TestAssertClose stats, prefix & ".momentMx", request.MomentMxAtReference, fresh.MomentMxAtReference, 0#
+        TestAssertClose stats, prefix & ".momentMy", request.MomentMyAtReference, fresh.MomentMyAtReference, 0#
+        TestAssertClose stats, prefix & ".referenceX", request.ReferenceX, fresh.ReferenceX, 0#
+        TestAssertClose stats, prefix & ".referenceY", request.ReferenceY, fresh.ReferenceY, 0#
+        TestAssertTrue stats, prefix & ".kind", request.ResultKind = fresh.ResultKind
+        TestAssertTrue stats, prefix & ".strategy", request.SolutionStrategy = fresh.SolutionStrategy
+        TestAssertTrue stats, prefix & ".problem", request.Problem Is fresh.Problem
+        TestAssertTrue stats, prefix & ".section", request.Section Is fresh.Section
+        TestAssertTrue stats, prefix & ".concrete", request.ConcreteMaterial Is fresh.ConcreteMaterial
+        TestAssertTrue stats, prefix & ".steel", request.SteelMaterial Is fresh.SteelMaterial
+        TestAssertTrue stats, prefix & ".selection", Not request.HasLoadPathSelection And Not fresh.HasLoadPathSelection
+    Next prior
+End Sub

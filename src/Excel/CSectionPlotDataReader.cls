@@ -71,6 +71,7 @@ Private mLoadReferenceY As Double ' Координата Y общей точки
 Private mExtensionUsed As Boolean ' Признак использования численного продолжения диаграмм в выбранном НДС.
 Private mStateStatus As String ' Статус выбранного сохранённого расчётного состояния.
 Private mAnnotationCount As Long ' Число размеров, подписей и исходных контуров для схемы; расчётные области трещин сюда не включаются.
+Private mAnnotationCapacity As Long ' Закрытый резерв массивов аннотаций; внешний Count содержит только заполненную часть.
 Private mAnnotationType() As String ' Тип аннотации: DIMENSION, REBAR_ANNOTATION, REBAR_GLOBAL_ANNOTATION, TEXT_ANNOTATION или CONTOUR_*.
 Private mLabelContours As CSectionContours, mLabelBoundary As CConcreteRegion ' Сохранённые контуры и бетонная область для отсчёта отступов подписей.
 Private mAnnotationStartX() As Double ' Начало линии/размера в координатах модели.
@@ -329,18 +330,31 @@ Private Function ReadBatchSummaryComment(ByVal workbook As Object, ByVal loadCas
     On Error GoTo Failed
     If Len(Trim$(loadCase)) = 0 Then Exit Function
 
-    Dim anchor As Object
+    Dim anchor As Object, nextAnchor As Object, summaryWriter As CStrengthSummaryWriter
     Set anchor = workbook.Names.Item("rngBatchSummary").RefersToRange(1, 1)
-
-    Dim rowOffset As Long, combinationID As String
-    For rowOffset = 11 To anchor.Worksheet.Rows.Count - anchor.Row
-        combinationID = Trim$(SafeText(anchor.Offset(rowOffset, 0).Value2))
-        If Len(combinationID) = 0 Then Exit For
+    Dim firstRow As Long, lastRow As Long, summaryEnd As Long, row As Long, data As Variant, combinationID As String
+    firstRow = anchor.Row + 12 ' CBatchResultWriter.FIRST_DATA_ROW=13; строка worst LC перед ней не является пользовательским сочетанием.
+    lastRow = anchor.Worksheet.Cells(anchor.Worksheet.Rows.Count, anchor.Column).End(xlUp).Row
+    On Error Resume Next
+    Set nextAnchor = workbook.Names.Item("rngStrengthSummaryAnchor").RefersToRange(1, 1)
+    On Error GoTo Failed
+    If Not nextAnchor Is Nothing Then
+        If nextAnchor.Worksheet Is anchor.Worksheet Then
+            Set summaryWriter = New CStrengthSummaryWriter
+            summaryEnd = nextAnchor.Row - summaryWriter.HeaderRowsAboveAnchor - 1 ' Не читаем соседнюю таблицу прочности вместо отсутствующего комментария сводки.
+            If summaryEnd < firstRow Then Exit Function
+            If summaryEnd < lastRow Then lastRow = summaryEnd
+        End If
+    End If
+    If lastRow < firstRow Then Exit Function
+    data = anchor.Worksheet.Cells(firstRow, anchor.Column).Resize(lastRow - firstRow + 1, 2).Value2
+    For row = 1 To UBound(data, 1)
+        combinationID = Trim$(SafeText(data(row, 1)))
         If StrComp(combinationID, loadCase, vbTextCompare) = 0 Then
-            ReadBatchSummaryComment = Trim$(SafeText(anchor.Offset(rowOffset, 1).Value2))
+            ReadBatchSummaryComment = Trim$(SafeText(data(row, 2)))
             Exit Function
         End If
-    Next rowOffset
+    Next row
 Failed:
 End Function
 
@@ -710,16 +724,8 @@ Private Sub ReadAnnotations(ByVal workbook As Object)
             normalX = ReadAnnotationNumber(data(rowIndex, colNormalX), anchor, rowIndex, colNormalX, "OutsideNormalX")
             normalY = ReadAnnotationNumber(data(rowIndex, colNormalY), anchor, rowIndex, colNormalY, "OutsideNormalY")
             textValue = ReadAnnotationText(data(rowIndex, colText), anchor, rowIndex, colText, "Text")
+            EnsureAnnotationCapacity mAnnotationCount + 1
             mAnnotationCount = mAnnotationCount + 1
-            ReDim Preserve mAnnotationType(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationStartX(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationStartY(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationEndX(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationEndY(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationText(1 To mAnnotationCount)
-            ReDim Preserve mAnnotationSweepAngle(1 To mAnnotationCount)
             mAnnotationType(mAnnotationCount) = annotationType
             mAnnotationStartX(mAnnotationCount) = OutputLengthToInternalByUnit(startX, lengthUnit)
             mAnnotationStartY(mAnnotationCount) = OutputLengthToInternalByUnit(startY, lengthUnit)
@@ -749,17 +755,9 @@ Private Sub ReadMaterialContours(ByVal workbook As Object)
     Dim contours As CSectionContours, i As Long
     Set contours = ReadSavedSectionContours(workbook)
     Set mLabelContours = contours
+    EnsureAnnotationCapacity mAnnotationCount + contours.Count ' Число исходных сегментов уже известно; резервируем их одной операцией до прохода.
     For i = 1 To contours.Count
         mAnnotationCount = mAnnotationCount + 1
-        ReDim Preserve mAnnotationType(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationStartX(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationStartY(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationEndX(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationEndY(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationNormalX(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationNormalY(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationText(1 To mAnnotationCount)
-        ReDim Preserve mAnnotationSweepAngle(1 To mAnnotationCount)
         mAnnotationType(mAnnotationCount) = contours.SegmentType(i)
         mAnnotationStartX(mAnnotationCount) = contours.StartX(i)
         mAnnotationStartY(mAnnotationCount) = contours.StartY(i)
@@ -783,6 +781,29 @@ Private Sub ReadMaterialContours(ByVal workbook As Object)
             modGeometryPrimitives.AccumulateEdgeProjection edge, 0#, 1#, mMinY, mMaxY
         End If
     Next i
+End Sub
+
+' Увеличивает закрытый резерв аннотаций геометрически; копирование массивов
+' больше не повторяется для каждого сегмента импортированного контура.
+Private Sub EnsureAnnotationCapacity(ByVal required As Long)
+    If required <= mAnnotationCapacity Then Exit Sub
+    Dim capacity As Long
+    capacity = required
+    If mAnnotationCapacity = 0 Then
+        If capacity < 64 Then capacity = 64
+    ElseIf mAnnotationCapacity <= 1073741823 Then
+        If capacity < mAnnotationCapacity * 2 Then capacity = mAnnotationCapacity * 2
+    End If
+    ReDim Preserve mAnnotationType(1 To capacity)
+    ReDim Preserve mAnnotationStartX(1 To capacity)
+    ReDim Preserve mAnnotationStartY(1 To capacity)
+    ReDim Preserve mAnnotationEndX(1 To capacity)
+    ReDim Preserve mAnnotationEndY(1 To capacity)
+    ReDim Preserve mAnnotationNormalX(1 To capacity)
+    ReDim Preserve mAnnotationNormalY(1 To capacity)
+    ReDim Preserve mAnnotationText(1 To capacity)
+    ReDim Preserve mAnnotationSweepAngle(1 To capacity)
+    mAnnotationCapacity = capacity
 End Sub
 
 ' Читает координату или направление аннотации. Ноль допустим; пустое
@@ -844,6 +865,7 @@ Private Sub ResetReaderState()
     mSnapshotCurvatureUnit = vbNullString
     mCount = 0
     mAnnotationCount = 0
+    mAnnotationCapacity = 0
     Set mLabelContours = Nothing: Set mLabelBoundary = Nothing
     mMinX = 0#: mMaxX = 0#: mMinY = 0#: mMaxY = 0#
     mCentroidX = 0#: mCentroidY = 0#: mPrincipalAngle = 0#

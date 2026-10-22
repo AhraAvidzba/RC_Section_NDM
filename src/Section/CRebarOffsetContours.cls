@@ -52,6 +52,7 @@ Friend Sub Initialize(ByVal definition As CSectionDefinition, ByRef rules() As T
     On Error GoTo InvalidMetadata
     Dim i As Long, j As Long, main As Long, axis As CGeometryPath, source As CGeometryPath
     Dim paths As Variant, pathID As Variant, inward As Double, area As Double, edge As TRegionEdge, reference As String
+    Dim originX As Double, originY As Double ' Общая опора исходного кольца; исходные координаты рёбер не меняются.
     Set mDefinition = definition: Set mQuery = New CSectionGeometryQuery: Set mOffset = New CGeometryVariableOffset
     Set mRegions = CreateObject("Scripting.Dictionary")
     Set mAdjacency = CreateObject("Scripting.Dictionary")
@@ -92,8 +93,9 @@ Friend Sub Initialize(ByVal definition As CSectionDefinition, ByRef rules() As T
             Next pathID
         End If
         area = 0#
+        source.CopySegment 1, edge: originX = edge.X1: originY = edge.Y1
         For j = 1 To source.SegmentCount
-            source.CopySegment j, edge: area = area + mOffset.EdgeArea(edge)
+            source.CopySegment j, edge: area = area + mOffset.EdgeArea(edge, originX, originY)
         Next j
         inward = Sgn(area) * mLinks(i).AxisDistance ' Знак обхода переводит положительный as в смещение по левой нормали исходного контура.
         j = LoopIndex(mLinks(i).LoopID)

@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modWorkbookCalculation"
+Attribute VB_Name = "modWorkbookCalculation"
 Option Explicit
 
 ' ==========================================================================
@@ -17,9 +17,8 @@ Public Sub RunSectionCalculation()
     On Error GoTo Failed
     Dim startedAt As Double: startedAt = Timer
     Dim informationEnabled As Boolean
-    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook) ' Проверяем оформление сообщения до расчета, чтобы ошибка Config не обнаруживалась лишь после успешной записи нового Results.
     Dim message As String
-    message = RunSectionCalculationForWorkbook(ThisWorkbook, True, startedAt)
+    message = RunSectionCalculationForWorkbook(ThisWorkbook, True, startedAt, informationEnabled)
     If InStr(1, message, "ошиб", vbTextCompare) > 0 Or InStr(1, message, "InputErr", vbTextCompare) > 0 Or _
             InStr(1, message, "Предупреждение:", vbTextCompare) > 0 Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
@@ -71,9 +70,8 @@ Public Sub FormSection()
     On Error GoTo Failed
     Dim startedAt As Double: startedAt = Timer
     Dim informationEnabled As Boolean
-    informationEnabled = NonCriticalMessagesEnabled(ThisWorkbook)
     Dim message As String
-    message = FormSectionForWorkbook(ThisWorkbook, startedAt)
+    message = FormSectionForWorkbook(ThisWorkbook, startedAt, informationEnabled)
     If InStr(1, message, "Предупреждени", vbTextCompare) > 0 Then
         ShowWorkbookMessage message, vbExclamation, "RC Section NDM"
     ElseIf informationEnabled Then
@@ -197,14 +195,17 @@ End Sub
 ' Формирует сечение выбранным способом и публикует полный снимок в Results.
 ' Не читает сочетания и не выполняет расчёт; прежний снимок сохраняется,
 ' если получение новой геометрии или подготовка её характеристик завершились ошибкой.
-Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#) As String
+Public Function FormSectionForWorkbook(ByVal workbook As Object, Optional ByVal startedAt As Double = -1#, _
+        Optional ByRef informationEnabled As Boolean = False) As String
     On Error GoTo Failed
     If startedAt < 0# Then startedAt = Timer
     If workbook Is Nothing Then Err.Raise vbObjectError + 4142, "FormSectionForWorkbook", "Книга Excel не передана."
     Dim guard As CExcelAppStateGuard: Set guard = New CExcelAppStateGuard
     guard.Enter workbook.Application
+    workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
     Dim settings As CSystemSettingsReader: Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
+    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled") ' Кнопка получает проверенный флаг из того же снимка; ошибка обнаруживается до изменения Results.
     Dim units As CUnitSystem: Set units = New CUnitSystem
     units.LoadFromSettings settings
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
@@ -281,7 +282,7 @@ End Function
 ' Подготавливает материалы один раз, рассчитывает сочетания и записывает Results.
 ' Возвращает итоговое сообщение; временные настройки Excel сохраняет CExcelAppStateGuard.
 Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optional ByVal showMessages As Boolean = False, _
-        Optional ByVal startedAt As Double = -1#) As String
+        Optional ByVal startedAt As Double = -1#, Optional ByRef informationEnabled As Boolean = False) As String
     On Error GoTo Failed
     Dim runStart As Double
     runStart = startedAt
@@ -291,10 +292,12 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
     Dim excelGuard As CExcelAppStateGuard
     Set excelGuard = New CExcelAppStateGuard
     excelGuard.Enter workbook.Application
+    workbook.Application.Calculate ' Один пересчёт всех открытых книг этого Excel: актуализирует внешние формульные зависимости при отключённых событиях, до чтения входов.
 
     Dim settings As CSystemSettingsReader
     Set settings = New CSystemSettingsReader
     settings.LoadFromWorkbook workbook
+    informationEnabled = settings.GetRequiredBoolean("General.NonCriticalMessagesEnabled") ' Кнопка получает проверенный флаг из того же снимка; ошибка обнаруживается до изменения Results.
     Dim fullFormatting As Boolean: fullFormatting = settings.GetRequiredBoolean("General.ReformatResultsEnabled")
 
     Dim report As CExecutionReport

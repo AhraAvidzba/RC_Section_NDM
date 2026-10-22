@@ -1,4 +1,4 @@
-﻿Attribute VB_Name = "modTestGeometry"
+Attribute VB_Name = "modTestGeometry"
 Option Explicit
 
 ' ==========================================================================
@@ -34,6 +34,8 @@ Public Function RunGeometryTests() As String
     TestHollowRectangleSharpOpeningBProjection stats
     TestCircleGeometry stats
     TestCircleCoreDistance stats
+    TestGeometryReviewCoreScale stats
+    TestGeometryReviewSP35Rectangles stats
     TestAsymmetricCoreDistanceUsesOppositeFiber stats
     TestCoreDistanceWithProductInertiaMatchesLinearBoundary stats
     TestPrincipalAxisCoreDistanceIsAxisBased stats
@@ -72,6 +74,12 @@ Public Function RunGeometryTests() As String
     TestAudit03GeometryLifecycle stats
     TestAudit03CircleCountGuard stats
     TestAudit03CirclePlacementAddresses stats
+    TestGeometryReviewTranslationInertia stats
+    TestGeometryReviewMeshFailureState stats
+    TestGeometryReviewConcreteAddFailureState stats
+    TestGeometryReviewLargeAngles stats
+    TestGeometryReviewAreaTranslation stats
+    TestGeometryReviewCornerJoints stats
 
     TestAppendLine stats, "TOTAL: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunGeometryTests = stats.Report
@@ -206,6 +214,238 @@ Private Sub TestConcreteMeshCenter(ByRef stats As TTestStats)
         TestAssertClose stats, prefix & ".rebuiltRadius", frame.LengthScale, 1#, 0#
         TestAssertClose stats, prefix & ".rebuiltPropertiesY", props.CentroidY, centerY, 0#
     Next shift
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отдельный направленный прогон локальных сумм площади: полная геометрия до WCS=1e10, сумма и знак площади также при WCS=1e12.
+Public Function TestRunWorkingAreaTranslationTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestGeometryReviewAreaTranslation stats
+    TestAppendLine stats, "TOTAL_WORKING_AREA_TRANSLATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestRunWorkingAreaTranslationTests = stats.Report
+    Exit Function
+Failed:
+    TestRunWorkingAreaTranslationTests = stats.Report & "FAIL: areaTranslation.runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полные mesh/Opening/Main/Extra пути проверяются там, где шаг Double ещё меньше геометрической пробы; экстремальные координаты отдельно проверяют площадь.
+Private Sub TestGeometryReviewAreaTranslation(ByRef stats As TTestStats)
+    Dim side As Variant, shift As Variant, angle As Variant, clockwise As Variant
+    For Each side In Array(10#, 100#, 1000#)
+        For Each shift In Array(0#, 1000000#, -1000000#, 10000000000#, -10000000000#, 1000000000000#, -1000000000000#)
+            For Each clockwise In Array(False, True)
+                For Each angle In Array(0#, GEOM_PI / 2#, GEOM_PI / 7#)
+                    TestGeometryReviewLocalRingArea stats, CDbl(side), CDbl(shift), CDbl(angle), CBool(clockwise)
+                Next angle
+                TestGeometryReviewLocalArcArea stats, CDbl(side), CDbl(shift), CBool(clockwise)
+            Next clockwise
+        Next shift
+    Next side
+    For Each side In Array(10#, 100#)
+        For Each shift In Array(0#, 1000000#, -1000000#, 10000000000#, -10000000000#)
+            TestGeometryReviewMeshOpeningTranslation stats, CDbl(side), CDbl(shift)
+            For Each clockwise In Array(False, True)
+                TestGeometryReviewOffsetTranslation stats, CDbl(side), CDbl(shift), CBool(clockwise)
+                TestGeometryReviewFamilyTranslation stats, CDbl(side), CDbl(shift), CBool(clockwise), False
+                TestGeometryReviewFamilyTranslation stats, CDbl(side), CDbl(shift), CBool(clockwise), True
+                TestGeometryReviewAnnulusTranslation stats, CDbl(side), CDbl(shift), CBool(clockwise)
+            Next clockwise
+        Next shift
+    Next side
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Строит четыре точных исходных ребра квадрата, затем при необходимости обращает обход; ни один рабочий метод не получает права менять этот массив.
+Private Sub TestGeometryReviewSquareEdges(ByRef edges() As TRegionEdge, ByVal side As Double, _
+        ByVal shift As Double, ByVal angle As Double, ByVal clockwise As Boolean)
+    Dim x(1 To 4) As Double, y(1 To 4) As Double, i As Long, j As Long, c As Double, sn As Double
+    Dim reversed(1 To 4) As TRegionEdge
+    x(2) = side: x(3) = side: y(3) = side: y(4) = side
+    c = Cos(angle): sn = Sin(angle): ReDim edges(1 To 4)
+    For i = 1 To 4
+        j = i Mod 4 + 1
+        edges(i).X1 = shift + x(i) * c - y(i) * sn: edges(i).Y1 = -shift + x(i) * sn + y(i) * c
+        edges(i).X2 = shift + x(j) * c - y(j) * sn: edges(i).Y2 = -shift + x(j) * sn + y(j) * c
+        edges(i).LoopID = 1
+    Next i
+    If clockwise Then
+        For i = 1 To 4: reversed(i) = edges(5 - i): modGeometryPrimitives.ReverseEdge reversed(i): Next i
+        For i = 1 To 4: edges(i) = reversed(i): Next i
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает локальную сумму с независимым разбиением четырёхугольника на два треугольника по фактически представленным Double-координатам.
+Private Sub TestGeometryReviewLocalRingArea(ByRef stats As TTestStats, ByVal side As Double, _
+        ByVal shift As Double, ByVal angle As Double, ByVal clockwise As Boolean)
+    Dim edges() As TRegionEdge, variable As CGeometryVariableOffset, i As Long, area As Double, expected As Double
+    Dim x0 As Double, y0 As Double, prefix As String, sourceX As Double, sourceY As Double, sign As Double
+    TestGeometryReviewSquareEdges edges, side, shift, angle, clockwise
+    x0 = edges(1).X1: y0 = edges(1).Y1: sourceX = edges(2).X1: sourceY = edges(2).Y1
+    Set variable = New CGeometryVariableOffset
+    For i = 1 To 4: area = area + variable.EdgeArea(edges(i), x0, y0): Next i
+    For i = 2 To 3
+        expected = expected + ((edges(i).X1 - x0) * (edges(i + 1).Y1 - y0) - (edges(i + 1).X1 - x0) * (edges(i).Y1 - y0)) / 2#
+    Next i
+    prefix = "review.localArea.B=" & CStr(side) & ".WCS=" & CStr(shift) & ".rot=" & CStr(angle) & ".cw=" & CStr(clockwise)
+    sign = 1#: If clockwise Then sign = -1#
+    TestAssertClose stats, prefix & ".triangulatedArea", area, expected, side * side * 0.000000000001
+    TestAssertTrue stats, prefix & ".orientation", Sgn(area) = sign
+    TestAssertTrue stats, prefix & ".sourceUnchanged", edges(1).X1 = x0 And edges(1).Y1 = y0 And edges(2).X1 = sourceX And edges(2).Y1 = sourceY
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Полная окружность из четырёх четвертей проверяет знаковую площадь хорд и дуговых сегментов, включая оба направления обхода при WCS=1e12.
+Private Sub TestGeometryReviewLocalArcArea(ByRef stats As TTestStats, ByVal radius As Double, ByVal shift As Double, ByVal clockwise As Boolean)
+    Dim path As CGeometryPath, variable As CGeometryVariableOffset, edge As TRegionEdge, i As Long
+    Dim originX As Double, originY As Double, area As Double, sign As Double, prefix As String
+    sign = 1#: If clockwise Then sign = -1#
+    Set path = New CGeometryPath: path.Initialize "AreaCircle"
+    For i = 0 To 3: path.AddArc "Arc" & CStr(i), shift, -shift, radius, sign * CDbl(i) * GEOM_PI / 2#, sign * GEOM_PI / 2#: Next i
+    path.Seal True: path.CopySegment 1, edge: originX = edge.X1: originY = edge.Y1
+    Set variable = New CGeometryVariableOffset
+    For i = 1 To 4: path.CopySegment i, edge: area = area + variable.EdgeArea(edge, originX, originY): Next i
+    prefix = "review.localArc.R=" & CStr(radius) & ".WCS=" & CStr(shift) & ".cw=" & CStr(clockwise)
+    TestAssertClose stats, prefix & ".area", area, sign * GEOM_PI * radius * radius, radius * radius * 0.000000001
+    TestAssertTrue stats, prefix & ".orientation", Sgn(area) = sign
+    path.CopySegment 1, edge
+    TestAssertTrue stats, prefix & ".sourceUnchanged", edge.X1 = originX And edge.Y1 = originY And edge.CenterX = shift And edge.CenterY = -shift
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Смещённый квадрат сохраняет точную площадь и обход до WCS=1e10; исходные ребра остаются в прежней системе координат.
+Private Sub TestGeometryReviewOffsetTranslation(ByRef stats As TTestStats, ByVal side As Double, ByVal shift As Double, ByVal clockwise As Boolean)
+    Dim edges() As TRegionEdge, distances(1 To 4) As Double, variable As CGeometryVariableOffset
+    Dim region As CConcreteRegion, i As Long, sign As Double, oldX As Double, oldY As Double, prefix As String
+    TestGeometryReviewSquareEdges edges, side, shift, 0#, clockwise
+    oldX = edges(1).X1: oldY = edges(1).Y1: sign = 1#: If clockwise Then sign = -1#
+    For i = 1 To 4: distances(i) = sign * side / 10#: Next i
+    Set variable = New CGeometryVariableOffset: Set region = variable.Build(edges, distances, 4, "AreaTranslation")
+    prefix = "review.offsetArea.B=" & CStr(side) & ".WCS=" & CStr(shift) & ".cw=" & CStr(clockwise)
+    TestAssertClose stats, prefix & ".area", region.Area, 0.64 * side * side, side * side * 0.000000001
+    TestAssertClose stats, prefix & ".oneLoop", region.LoopCount, 1#, 0#
+    TestAssertTrue stats, prefix & ".sourceUnchanged", edges(1).X1 = oldX And edges(1).Y1 = oldY
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сетка с неявной наружной границей и заданным круглым отверстием проверяет локальную классификацию каждого сеточного кольца.
+Private Sub TestGeometryReviewMeshOpeningTranslation(ByRef stats As TTestStats, ByVal side As Double, ByVal shift As Double)
+    Dim model As CSectionModel, query As CSectionGeometryQuery, region As CConcreteRegion
+    Dim i As Long, j As Long, cell As Double, prefix As String
+    cell = side / 5#: Set model = New CSectionModel
+    For i = 0 To 4
+        For j = 0 To 4
+            model.AddConcreteElement shift + (CDbl(i) + 0.5) * cell, -shift + (CDbl(j) + 0.5) * cell, cell * cell, width:=cell, height:=cell
+        Next j
+    Next i
+    model.Contours.AddContourCircle "HOLE", shift + side / 2#, -shift + side / 2#, side / 10#, loopID:="OPENING", loopRole:="Opening"
+    Set query = New CSectionGeometryQuery: query.Initialize model: Set region = query.ConcreteDomain
+    prefix = "review.meshOpeningArea.B=" & CStr(side) & ".WCS=" & CStr(shift)
+    TestAssertClose stats, prefix & ".area", region.Area, side * side * (1# - GEOM_PI / 100#), side * side * 0.000000001
+    TestAssertClose stats, prefix & ".twoLoops", region.LoopCount, 2#, 0#
+    TestAssertTrue stats, prefix & ".sourceUnchanged", model.ConcreteX(1) = shift + cell / 2# And model.ConcreteY(1) = -shift + cell / 2#
+    TestAssertClose stats, prefix & ".meshCountUnchanged", model.ConcreteCount, 25#, 0#
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт Main/Extra с полной явной связью либо с Outer, либо с Opening; смена обхода меняет только знаки нормальных отступов.
+Private Function TestGeometryReviewAreaFamily(ByVal side As Double, ByVal shift As Double, ByVal clockwise As Boolean, _
+        ByVal opening As Boolean, ByRef executor As CRebarRuleExecutor, ByRef definition As CSectionDefinition) As CRebarLayout
+    Dim facade As CSectionDefinitionBuilder, path As CGeometryPath, geometry As CGeometryRegion
+    Dim options As CRebarRuleOptions, edges() As TRegionEdge, i As Long, inward As Double, loopID As String
+    Set facade = New CSectionDefinitionBuilder: facade.Initialize "AreaFamily"
+    TestGeometryReviewSquareEdges edges, side, shift, 0#, clockwise
+    Set path = New CGeometryPath: path.Initialize "Boundary"
+    For i = 1 To 4: path.AddLine "Edge" & CStr(i), edges(i).X1, edges(i).Y1, edges(i).X2, edges(i).Y2: Next i
+    path.Seal True: facade.AddPath path
+    inward = 1#: If clockwise Then inward = -1#
+    If opening Then
+        Set path = facade.RectanglePath("OuterBoundary", shift - side, -shift - side, 3# * side, 3# * side)
+        facade.Outer "OUTER", path.ID
+        facade.Opening "OPENING", "Boundary", "OUTER"
+        loopID = "OPENING": inward = -inward
+    Else
+        facade.Outer "OUTER", "Boundary": loopID = "OUTER"
+    End If
+    Set path = facade.Offset("Axis", "Boundary", inward * side / 10#)
+    Set options = New CRebarRuleOptions: options.EndMode = ClosedUniform: options.AnnotationGroup = "Family"
+    facade.RebarByCount "Main", path.ID, 8, side / 20#, options
+    Set options = New CRebarRuleOptions: options.NormalOffset = inward * side / 10#: options.ValidateRowOffset = True
+    options.AnnotationGroup = "Family": options.PlacementCheck = CheckFullDisk
+    facade.RebarDependent "Extra", "Main", side / 20#, options
+    facade.RebarContour "Main", loopID, "Boundary", side / 10#, "Extra", "", normalSign:=inward
+    Set definition = facade.Finish: Set geometry = New CGeometryRegion: geometry.Initialize definition.ConcreteDomain
+    Set executor = New CRebarRuleExecutor: Set TestGeometryReviewAreaFamily = executor.Build(definition, geometry)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сверяет количество, источники, владельцев и координаты фактических Main/Extra с неперенесённой моделью той же роли и обхода.
+Private Sub TestGeometryReviewFamilyTranslation(ByRef stats As TTestStats, ByVal side As Double, ByVal shift As Double, _
+        ByVal clockwise As Boolean, ByVal opening As Boolean)
+    Dim definition As CSectionDefinition, reference As CSectionDefinition, executor As CRebarRuleExecutor, control As CRebarRuleExecutor
+    Dim bars As CRebarLayout, expected As CRebarLayout, i As Long, difference As Double, sameOwners As Boolean
+    Dim mainCount As Long, extraCount As Long, prefix As String, factor As Double, edge As TRegionEdge
+    Set expected = TestGeometryReviewAreaFamily(side, 0#, clockwise, opening, control, reference)
+    Set bars = TestGeometryReviewAreaFamily(side, shift, clockwise, opening, executor, definition)
+    prefix = "review.familyArea.B=" & CStr(side) & ".WCS=" & CStr(shift) & ".cw=" & CStr(clockwise) & ".opening=" & CStr(opening)
+    factor = 1#: If opening Then factor = 8#
+    TestAssertClose stats, prefix & ".physicalCount", bars.Count, expected.Count, 0#
+    TestAssertClose stats, prefix & ".requested", executor.RequestedPositions, 16#, 0#
+    TestAssertClose stats, prefix & ".sourceArea", definition.ConcreteDomain.Area, factor * side * side, side * side * 0.000000001
+    TestAssertClose stats, prefix & ".sourceLength", definition.Path("Boundary").Length, 4# * side, side * 0.000000001
+    definition.Path("Boundary").CopySegment 1, edge
+    TestAssertTrue stats, prefix & ".sourceUnchanged", edge.X1 = shift And edge.Y1 = -shift
+    sameOwners = bars.Count = expected.Count And executor.PositionCount = control.PositionCount
+    For i = 1 To GeomMin(bars.Count, expected.Count)
+        difference = GeomMax(difference, Abs((bars.X(i) - shift) - expected.X(i)))
+        difference = GeomMax(difference, Abs((bars.Y(i) + shift) - expected.Y(i)))
+        sameOwners = sameOwners And bars.BarID(i) = expected.BarID(i) And bars.Diameter(i) = expected.Diameter(i)
+    Next i
+    For i = 1 To GeomMin(executor.PositionCount, control.PositionCount)
+        sameOwners = sameOwners And executor.PositionRuleID(i) = control.PositionRuleID(i) And executor.PositionSourceID(i) = control.PositionSourceID(i) And executor.PositionPhysicalOwner(i) = control.PositionPhysicalOwner(i)
+        If executor.PositionPhysicalOwner(i) > 0 Then
+            If executor.PositionRuleID(i) = "Main" Then mainCount = mainCount + 1
+            If executor.PositionRuleID(i) = "Extra" Then extraCount = extraCount + 1
+        End If
+    Next i
+    TestAssertClose stats, prefix & ".coordinateDeviation", difference, 0#, GeomMax(0.000001, Abs(shift) * 0.0000000000000005)
+    TestAssertTrue stats, prefix & ".sameOwners", sameOwners
+    TestAssertClose stats, prefix & ".mainPhysical", mainCount, 8#, 0#
+    If opening Then
+        TestAssertClose stats, prefix & ".extraPhysical", extraCount, 8#, 0# ' У расширяющегося отверстия оба нормальных переноса угловых позиций остаются на новых прямых; у сужающегося Outer четыре угловые позиции отбрасываются.
+    Else
+        TestAssertClose stats, prefix & ".extraPhysical", extraCount, 4#, 0#
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Два круговых кольца с разным направлением обхода сохраняют точную площадь и одинаковую бетонную сетку при переносе до WCS=1e10.
+Private Sub TestGeometryReviewAnnulusTranslation(ByRef stats As TTestStats, ByVal radius As Double, ByVal shift As Double, ByVal clockwise As Boolean)
+    Dim outer As CGeometryPath, hole As CGeometryPath, query As CSectionGeometryQuery
+    Dim region As CConcreteRegion, control As CConcreteRegion, geometry As CGeometryRegion, baseline As CGeometryRegion
+    Dim mesh As CFiberMeshBuilder, expected As CFiberMeshBuilder, i As Long, sweep As Double, prefix As String, edge As TRegionEdge
+    Set outer = New CGeometryPath: outer.Initialize "Outer"
+    Set hole = New CGeometryPath: hole.Initialize "Hole"
+    sweep = GEOM_PI / 2#: If clockwise Then sweep = -sweep
+    For i = 0 To 3
+        outer.AddArc "Outer" & CStr(i), shift, -shift, radius, CDbl(i) * sweep, sweep
+        hole.AddArc "Hole" & CStr(i), shift, -shift, radius * 0.4, CDbl(i) * sweep, sweep
+    Next i
+    outer.Seal True: hole.Seal True: Set query = New CSectionGeometryQuery
+    Set region = query.SubtractContainedRegion(query.RegionFromPath(outer), query.RegionFromPath(hole))
+    Set control = query.SubtractContainedRegion(query.CircleRegion(0#, 0#, radius), query.CircleRegion(0#, 0#, radius * 0.4))
+    Set geometry = New CGeometryRegion: geometry.Initialize region
+    Set baseline = New CGeometryRegion: baseline.Initialize control
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, radius / 10#, radius / 10#, 1, 2
+    Set expected = New CFiberMeshBuilder: expected.BuildMesh baseline, radius / 10#, radius / 10#, 1, 2
+    prefix = "review.annulusArea.R=" & CStr(radius) & ".WCS=" & CStr(shift) & ".cw=" & CStr(clockwise)
+    TestAssertClose stats, prefix & ".area", region.Area, 0.84 * GEOM_PI * radius * radius, radius * radius * 0.000000001
+    TestAssertClose stats, prefix & ".twoLoops", region.LoopCount, 2#, 0#
+    TestAssertClose stats, prefix & ".meshCount", mesh.FiberCount, expected.FiberCount, 0#
+    outer.CopySegment 1, edge
+    TestAssertTrue stats, prefix & ".sourceUnchanged", edge.CenterX = shift And edge.CenterY = -shift And edge.X1 = shift + radius And edge.Y1 = -shift
 End Sub
 
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
@@ -3059,3 +3299,456 @@ Private Function TestFailedGeometryDefinition(ByVal hollow As Boolean, ByRef rea
 Failed:
     reason = Err.Description
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Короткий прогон исправленного размерного guard, штатных прямоугольников СП 35 и безопасного состояния геометрии.
+Public Function TestRunWorkingGeometryReviewTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestGeometryReviewCoreScale stats
+    TestGeometryReviewSP35Rectangles stats
+    TestGeometryReviewTranslationInertia stats
+    TestGeometryReviewMeshFailureState stats
+    TestGeometryReviewConcreteAddFailureState stats
+    TestSectionModelFromGeneratedGeometry stats
+    TestGeometryReviewLargeAngles stats
+    TestAppendLine stats, "TOTAL_WORKING_GEOMETRY_RELIABILITY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestRunWorkingGeometryReviewTests = stats.Report
+    Exit Function
+Failed:
+    TestRunWorkingGeometryReviewTests = stats.Report & "FAIL: workingGeometry.runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ядро прямоугольника проверяется независимо по аналитическому ромбу при пяти масштабах, трёх поворотах и пяти направлениях.
+Private Sub TestGeometryReviewCoreScale(ByRef stats As TTestStats)
+    Dim scaleFactor As Variant, angle As Variant, direction As Variant
+    For Each scaleFactor In Array(0.1, 1#, 2#, 3#, 10#)
+        For Each angle In Array(0#, GEOM_PI / 7#, GEOM_PI / 2#)
+            For Each direction In Array(0#, GEOM_PI / 5#, GEOM_PI / 2#, GEOM_PI, 7# * GEOM_PI / 5#)
+                TestGeometryReviewCoreRectangle stats, 300# * CDbl(scaleFactor), 1000# * CDbl(scaleFactor), CDbl(angle), CDbl(direction)
+            Next direction
+        Next angle
+    Next scaleFactor
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' В локальных осях прямоугольника расстояние до ядра равно 1/[6*(|nx|/B+|ny|/H)], без обращения к рабочему guard.
+Private Sub TestGeometryReviewCoreRectangle(ByRef stats As TTestStats, ByVal width As Double, ByVal height As Double, _
+        ByVal rotation As Double, ByVal direction As Double)
+    Dim model As CSectionModel, props As CSectionPropertiesCalculator, ix As Double, iy As Double
+    Dim globalIx As Double, globalIy As Double, globalIxy As Double, c As Double, sn As Double, expected As Double
+    c = Cos(rotation): sn = Sin(rotation)
+    ix = width * height ^ 3 / 12#: iy = height * width ^ 3 / 12#
+    globalIx = ix * c * c + iy * sn * sn: globalIy = ix * sn * sn + iy * c * c
+    globalIxy = (iy - ix) * sn * c
+    Set model = New CSectionModel
+    model.AddConcreteElement 0#, 0#, width * height, 1, shapeType:="Rectangle", width:=width, height:=height, rotation:=rotation, localIx:=globalIx, localIy:=globalIy, localIxy:=globalIxy
+    Set props = New CSectionPropertiesCalculator: props.CalculateConcrete model
+    expected = 1# / (6# * (Abs(Cos(direction - rotation)) / width + Abs(Sin(direction - rotation)) / height))
+    TestAssertClose stats, "review.core.B=" & CStr(width) & ".H=" & CStr(height) & ".rot=" & CStr(rotation) & ".dir=" & CStr(direction), _
+        props.CoreDistanceAlong(model, Cos(direction), Sin(direction), False), expected, expected * 0.000000001
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Прямоугольник 200x600 уже принят в проверке главных осей СП 35; его подобный 2000x6000 должен давать в десять раз большие r.
+Private Sub TestGeometryReviewSP35Rectangles(ByRef stats As TTestStats)
+    Dim scaleFactor As Variant, model As CSectionModel, props As CSectionPropertiesCalculator, width As Double, height As Double
+    For Each scaleFactor In Array(1#, 10#)
+        width = 200# * CDbl(scaleFactor): height = 600# * CDbl(scaleFactor)
+        Set model = New CSectionModel
+        model.AddConcreteElement 0#, 0#, width * height, 1, shapeType:="Rectangle", width:=width, height:=height
+        Set props = New CSectionPropertiesCalculator: props.CalculateConcrete model
+        TestAssertClose stats, "review.sp35.rectangle.rX." & CStr(scaleFactor), props.CoreDistanceAlong(model, 1#, 0#, False), width / 6#, 0.000001
+        TestAssertClose stats, "review.sp35.rectangle.rY." & CStr(scaleFactor), props.CoreDistanceAlong(model, 0#, 1#, False), height / 6#, 0.000001
+        TestAssertClose stats, "review.sp35.rectangle.plane1." & CStr(scaleFactor), props.PrincipalPlaneCoreDistance(model, 1, True, False), height / 6#, 0.000001
+        TestAssertClose stats, "review.sp35.rectangle.plane2." & CStr(scaleFactor), props.PrincipalPlaneCoreDistance(model, 2, True, False), width / 6#, 0.000001
+    Next scaleFactor
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ошибка изменяемой повторной сборки сбрасывает старый результат, а отказ перестройки Frozen-сетки сохраняет опубликованные элементы.
+Private Sub TestGeometryReviewMeshFailureState(ByRef stats As TTestStats)
+    Dim geometry As CGeometryRegion, mesh As CFiberMeshBuilder, oldCount As Long, failed As Long
+    Dim builder As CSectionModelBuilder, model As CSectionModel
+    Set geometry = TestFixtureDisk(20#)
+    Set mesh = New CFiberMeshBuilder: mesh.BuildMesh geometry, 2#, 2#
+    On Error Resume Next
+    mesh.BuildMesh geometry, 0#, 2#: failed = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestAssertTrue stats, "review.mesh.invalidRejected", failed <> 0
+    TestAssertClose stats, "review.mesh.noStaleFibers", mesh.FiberCount, 0#, 0#
+    TestAssertClose stats, "review.mesh.noStaleSeconds", mesh.TestBuildSeconds, 0#, 0#
+    Set builder = New CSectionModelBuilder
+    On Error Resume Next
+    Set model = builder.BuildFromGenerated(mesh, Nothing): failed = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestAssertTrue stats, "review.mesh.failedNotPublished", failed <> 0
+    mesh.BuildMesh geometry, 2#, 2#: oldCount = mesh.FiberCount: mesh.Freeze
+    On Error Resume Next
+    mesh.BuildMesh geometry, 0#, 2#: failed = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestAssertTrue stats, "review.mesh.frozenRebuildRejected", failed <> 0
+    TestAssertClose stats, "review.mesh.frozenCountPreserved", mesh.FiberCount, oldCount, 0#
+    TestAssertTrue stats, "review.mesh.frozenReadOnly", mesh.IsReadOnly
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Отказ добавления не публикует незаконченный элемент; следующее успешное добавление корректно меняет версию и инвалидирует все подготовленные свойства.
+Private Sub TestGeometryReviewConcreteAddFailureState(ByRef stats As TTestStats)
+    Dim model As CSectionModel, control As CSectionModel, props As CSectionPropertiesCalculator
+    Dim expected As CSectionPropertiesCalculator, snapshot As CSectionPropertiesCalculator
+    Dim mode As Long, failure As Long, oldRevision As Long, oldBuildCount As Long, prefix As String
+    Dim minValue As Double, maxValue As Double, cx As Double, cy As Double, area As Double, hiddenID As String
+    Set model = New CSectionModel: Set control = New CSectionModel
+    model.AddConcreteElement 5#, -7#, 600#, width:=30#, height:=20#
+    control.AddConcreteElement 5#, -7#, 600#, width:=30#, height:=20#
+    Set props = New CSectionPropertiesCalculator: props.EnsureConcrete model
+    props.CalculateProjection model, 1#, 0#, False, minValue, maxValue
+    model.ConcreteMeshCentroid cx, cy, area
+    area = model.MaximumElementRadiusFromConcreteCenter ' Заранее заполняем отдельный кэш радиуса, чтобы отказ не скрывался за первым чтением после него.
+    Set snapshot = New CSectionPropertiesCalculator: snapshot.PrepareSnapshot model
+    oldRevision = model.Revision: oldBuildCount = props.TestPreparationBuildCount
+    For mode = 1 To 2
+        On Error Resume Next
+        If mode = 1 Then
+            model.AddConcreteElement 100#, 100#, 1E+200, width:=1E+100, height:=1E+100
+        Else
+            model.AddConcreteElement 100#, 100#, 600#, width:=30#, height:=20#, localIx:=1E+200, localIy:=1E+200
+        End If
+        failure = Err.Number: Err.Clear
+        On Error GoTo 0
+        prefix = "review.addFailure.mode=" & CStr(mode)
+        TestAssertTrue stats, prefix & ".overflow", failure = 6
+        TestAssertClose stats, prefix & ".countUnchanged", model.ConcreteCount, 1#, 0#
+        TestAssertClose stats, prefix & ".revisionUnchanged", model.Revision, oldRevision, 0#
+        props.EnsureConcrete model
+        TestAssertClose stats, prefix & ".preparedContextReusable", props.TestPreparationBuildCount, oldBuildCount, 0#
+        TestAssertClose stats, prefix & ".area", props.Area, 600#, 0#
+        TestAssertClose stats, prefix & ".Ix", props.Ixc, 20000#, 0#
+        TestAssertClose stats, prefix & ".Iy", props.Iyc, 45000#, 0#
+        TestAssertClose stats, prefix & ".Ixy", props.Ixyc, 0#, 0#
+        props.CalculateProjection model, 1#, 0#, False, minValue, maxValue
+        TestAssertClose stats, prefix & ".cachedProjectionMin", minValue, -10#, 0#
+        TestAssertClose stats, prefix & ".cachedProjectionMax", maxValue, 20#, 0#
+        model.ConcreteMeshCentroid cx, cy, area
+        TestAssertClose stats, prefix & ".cachedCenterX", cx, 5#, 0#
+        TestAssertClose stats, prefix & ".cachedCenterY", cy, -7#, 0#
+        TestAssertClose stats, prefix & ".cachedCenterArea", area, 600#, 0#
+        TestAssertClose stats, prefix & ".cachedRadius", model.MaximumElementRadiusFromConcreteCenter, 0#, 0#
+        On Error Resume Next
+        snapshot.ValidateSnapshot model: failure = Err.Number: Err.Clear
+        On Error GoTo 0
+        TestAssertTrue stats, prefix & ".snapshotStillValid", failure = 0
+        On Error Resume Next
+        hiddenID = model.ConcreteID(2): failure = Err.Number: Err.Clear
+        On Error GoTo 0
+        TestAssertTrue stats, prefix & ".partialSlotInvisible", failure <> 0
+        TestAssertTrue stats, prefix & ".originalElement", model.ConcreteID(1) = "C1" And model.ConcreteX(1) = 5# And model.ConcreteY(1) = -7#
+        TestAssertClose stats, prefix & ".queriesDoNotChangeRevision", model.Revision, oldRevision, 0#
+    Next mode
+    model.AddConcreteElement 35#, 13#, 300#, 2, "Recovered", "H2", width:=15#, height:=20#, comment:="second valid"
+    control.AddConcreteElement 35#, 13#, 300#, 2, "Recovered", "H2", width:=15#, height:=20#, comment:="second valid"
+    TestAssertClose stats, "review.addRecovery.count", model.ConcreteCount, 2#, 0#
+    TestAssertClose stats, "review.addRecovery.revision", model.Revision, oldRevision + 1, 0#
+    TestAssertTrue stats, "review.addRecovery.noIdGap", model.ConcreteID(2) = "C2"
+    TestAssertTrue stats, "review.addRecovery.noPartialComment", model.ConcreteComment(2) = "second valid"
+    props.EnsureConcrete model
+    TestAssertClose stats, "review.addRecovery.contextRebuiltOnce", props.TestPreparationBuildCount, oldBuildCount + 1, 0#
+    Set expected = New CSectionPropertiesCalculator: expected.CalculateConcrete control
+    TestAssertClose stats, "review.addRecovery.area", props.Area, expected.Area, 0#
+    TestAssertClose stats, "review.addRecovery.centroidX", props.CentroidX, expected.CentroidX, 0#
+    TestAssertClose stats, "review.addRecovery.centroidY", props.CentroidY, expected.CentroidY, 0#
+    TestAssertClose stats, "review.addRecovery.Ix", props.Ixc, expected.Ixc, 0#
+    TestAssertClose stats, "review.addRecovery.Iy", props.Iyc, expected.Iyc, 0#
+    TestAssertClose stats, "review.addRecovery.Ixy", props.Ixyc, expected.Ixyc, 0#
+    TestAssertClose stats, "review.addRecovery.principalI1", props.PrincipalI1, expected.PrincipalI1, 0#
+    TestAssertClose stats, "review.addRecovery.principalI2", props.PrincipalI2, expected.PrincipalI2, 0#
+    props.CalculateProjection model, 1#, 0#, False, minValue, maxValue
+    TestAssertClose stats, "review.addRecovery.projectionMin", minValue, -10#, 0#
+    TestAssertClose stats, "review.addRecovery.projectionMax", maxValue, 42.5, 0#
+    model.ConcreteMeshCentroid cx, cy, area
+    TestAssertClose stats, "review.addRecovery.centerX", cx, expected.CentroidX, 0#
+    TestAssertClose stats, "review.addRecovery.centerY", cy, expected.CentroidY, 0#
+    TestAssertClose stats, "review.addRecovery.centerArea", area, expected.Area, 0#
+    TestAssertClose stats, "review.addRecovery.radiusRebuilt", model.MaximumElementRadiusFromConcreteCenter, control.MaximumElementRadiusFromConcreteCenter, 0#
+    On Error Resume Next
+    snapshot.ValidateSnapshot model: failure = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestAssertTrue stats, "review.addRecovery.oldSnapshotRejected", failure <> 0
+    TestAssertTrue stats, "review.addRecovery.originalElement", model.ConcreteID(1) = "C1" And model.ConcreteX(1) = 5# And model.ConcreteY(1) = -7#
+    TestAssertTrue stats, "review.addRecovery.replacedSlot", model.ConcreteX(2) = 35# And model.ConcreteY(2) = 13# And model.ConcreteMaterialID(2) = 2 And model.ConcreteSourceName(2) = "Recovered" And model.ConcreteSourceHandle(2) = "H2"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' В штатном диапазоне проверяется точное равенство прежнему нормализатору; огромные углы проверяются только на исправленной реализации.
+Private Sub TestGeometryReviewLargeAngles(ByRef stats As TTestStats)
+    Dim angle As Variant, model As CSectionModel, expected As Double, actual As Double
+    For Each angle In Array(-2# * GEOM_PI, -GEOM_PI, -GEOM_PI / 2#, -0.1, 0#, 0.1, GEOM_PI / 2#, GEOM_PI, 2# * GEOM_PI)
+        Set model = New CSectionModel
+        model.AddConcreteElement 0#, 0#, 200#, 1, shapeType:="Rectangle", width:=20#, height:=10#, rotation:=CDbl(angle)
+        expected = TestGeometryReviewLegacyAngle(CDbl(angle))
+        TestAssertTrue stats, "review.angle.boundedExact." & CStr(angle), model.ConcreteRotation(1) = expected
+    Next angle
+    For Each angle In Array(-1000000#, 1000000#, -1000# * GEOM_PI - 0.23, 1000# * GEOM_PI + 0.23)
+        Set model = New CSectionModel
+        model.AddConcreteElement 0#, 0#, 200#, 1, shapeType:="Rectangle", width:=20#, height:=10#, rotation:=CDbl(angle)
+        actual = model.ConcreteRotation(1)
+        TestAssertTrue stats, "review.angle.range." & CStr(angle), actual > -GEOM_PI / 2# And actual <= GEOM_PI / 2#
+        TestAssertClose stats, "review.angle.axisEquivalent." & CStr(angle), Cos(actual) * Sin(CDbl(angle)) - Sin(actual) * Cos(CDbl(angle)), 0#, 0.00000001
+        expected = (20# * Abs(Cos(CDbl(angle))) + 10# * Abs(Sin(CDbl(angle)))) / 2#
+        TestAssertClose stats, "review.angle.envelope." & CStr(angle), model.ConcreteBoundaryHalfProjection(1, 1#, 0#), expected, 0.0000001
+    Next angle
+    TestGeometryReviewHugeAngle stats, -1E+20
+    TestGeometryReviewHugeAngle stats, 1E+20
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Если тригонометрия среды не принимает огромный аргумент, модель должна отказать понятной ошибкой до добавления элемента; иначе сверяем допустимое направление с теми же Sin/Cos.
+Private Sub TestGeometryReviewHugeAngle(ByRef stats As TTestStats, ByVal angle As Double)
+    Dim originalSin As Double, originalCos As Double, trigFailure As Long, failure As Long
+    Dim failureSource As String, reason As String, model As CSectionModel, actual As Double
+    On Error Resume Next
+    originalSin = Sin(angle): originalCos = Cos(angle): trigFailure = Err.Number: Err.Clear
+    On Error GoTo 0
+    Set model = New CSectionModel
+    On Error Resume Next
+    model.AddConcreteElement 0#, 0#, 200#, 1, shapeType:="Rectangle", width:=20#, height:=10#, rotation:=angle
+    failure = Err.Number: failureSource = Err.Source: reason = Err.Description: Err.Clear
+    On Error GoTo 0
+    If trigFailure <> 0 Then
+        TestAssertTrue stats, "review.angle.huge.errorCode." & CStr(angle), failure = vbObjectError + 5222
+        TestAssertTrue stats, "review.angle.huge.errorSource." & CStr(angle), failureSource = "CSectionModel"
+        TestAssertTrue stats, "review.angle.huge.errorReason." & CStr(angle), InStr(1, reason, "угол", vbTextCompare) > 0
+        TestAssertClose stats, "review.angle.huge.noPartialElement." & CStr(angle), model.ConcreteCount, 0#, 0#
+    Else
+        TestAssertTrue stats, "review.angle.huge.accepted." & CStr(angle), failure = 0
+        If failure <> 0 Then Exit Sub
+        actual = model.ConcreteRotation(1)
+        TestAssertTrue stats, "review.angle.huge.range." & CStr(angle), actual > -GEOM_PI / 2# And actual <= GEOM_PI / 2#
+        TestAssertClose stats, "review.angle.huge.axisEquivalent." & CStr(angle), Cos(actual) * originalSin - Sin(actual) * originalCos, 0#, 0.00000001
+        TestAssertClose stats, "review.angle.huge.envelope." & CStr(angle), model.ConcreteBoundaryHalfProjection(1, 1#, 0#), (20# * Abs(originalCos) + 10# * Abs(originalSin)) / 2#, 0.0000001
+    End If
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет прежнюю арифметику только для ограниченных тестовых углов; не вызывается с заведомо зависающим аргументом.
+Private Function TestGeometryReviewLegacyAngle(ByVal angle As Double) As Double
+    Do While angle > GEOM_PI / 2#: angle = angle - GEOM_PI: Loop
+    Do While angle <= -GEOM_PI / 2#: angle = angle + GEOM_PI: Loop
+    TestGeometryReviewLegacyAngle = angle
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет устойчивость бетонных и приведённых характеристик при больших положительных и отрицательных WCS-переносах.
+Private Sub TestGeometryReviewTranslationInertia(ByRef stats As TTestStats)
+    Dim fixtureKind As Long, es As Variant, shift As Variant, model As CSectionModel, props As CSectionPropertiesCalculator
+    Dim reference As CSectionPropertiesCalculator, area As Double, cx As Double, cy As Double, ix As Double, iy As Double, ixy As Double
+    Dim prefix As String, x As Double, y As Double, cxGlobal As Double, cyGlobal As Double, coordinateTolerance As Double
+    Dim referenceModel As CSectionModel, direction As Long, referenceCore(1 To 3) As Double
+    Dim axisX(1 To 3) As Double, axisY(1 To 3) As Double, includeRebar As Boolean
+    axisX(1) = 1#: axisY(2) = 1#: axisX(3) = 1#: axisY(3) = 1# ' Проверяем две координатные оси и диагональ, не ограничиваясь главными направлениями.
+    For fixtureKind = 1 To 2
+        For Each es In Array(0#, 150000#, 200000#, 220000#)
+            TestGeometryReviewInertiaOracle fixtureKind, CDbl(es), area, cx, cy, ix, iy, ixy
+            Set model = TestGeometryReviewInertiaModel(fixtureKind, 0#, 0#)
+            Set referenceModel = model: includeRebar = CDbl(es) > 0#
+            Set reference = New CSectionPropertiesCalculator
+            If CDbl(es) = 0# Then reference.CalculateConcrete model Else reference.CalculateTransformedByModuli model, 30000#, CDbl(es)
+            For direction = 1 To 3
+                referenceCore(direction) = reference.CoreDistanceAlong(referenceModel, axisX(direction), axisY(direction), includeRebar)
+            Next direction
+            For Each shift In Array(0#, 1000000#, -1000000#, 1000000000#, -1000000000#, 10000000000#, -10000000000#)
+                x = CDbl(shift): y = -CDbl(shift)
+                Set model = TestGeometryReviewInertiaModel(fixtureKind, x, y)
+                Set props = New CSectionPropertiesCalculator
+                If CDbl(es) = 0# Then props.CalculateConcrete model Else props.CalculateTransformedByModuli model, 30000#, CDbl(es)
+                prefix = "review.inertia.kind=" & CStr(fixtureKind) & ".Es=" & CStr(es) & ".WCS=" & CStr(shift)
+                TestAssertClose stats, prefix & ".area", props.Area, area, GeomMax(0.000001, area * 0.00000000001)
+                TestAssertClose stats, prefix & ".Ixc", props.Ixc, ix, GeomMax(0.000001, Abs(ix) * 0.00000000001)
+                TestAssertClose stats, prefix & ".Iyc", props.Iyc, iy, GeomMax(0.000001, Abs(iy) * 0.00000000001)
+                TestAssertClose stats, prefix & ".Ixyc", props.Ixyc, ixy, GeomMax(0.000001, Abs(ixy) * 0.00000000001)
+                TestAssertTrue stats, prefix & ".exactCentralIx", props.Ixc = reference.Ixc
+                TestAssertTrue stats, prefix & ".exactCentralIy", props.Iyc = reference.Iyc
+                TestAssertTrue stats, prefix & ".exactCentralIxy", props.Ixyc = reference.Ixyc
+                TestAssertTrue stats, prefix & ".exactPrincipalI1", props.PrincipalI1 = reference.PrincipalI1
+                TestAssertTrue stats, prefix & ".exactPrincipalI2", props.PrincipalI2 = reference.PrincipalI2
+                For direction = 1 To 3
+                    TestAssertClose stats, prefix & ".coreDirection=" & CStr(direction), _
+                        props.CoreDistanceAlong(model, axisX(direction), axisY(direction), includeRebar), _
+                        referenceCore(direction), GeomMax(0.00000001, Abs(referenceCore(direction)) * 0.0000001) ' Проверка r допускает только субмикронный/малый относительный шум проекций в удалённой WCS; actual и разница сохраняются в отчёте.
+                Next direction
+                cxGlobal = x + cx: cyGlobal = y + cy
+                coordinateTolerance = GeomMax(0.00000001, (Abs(x) + Abs(y)) * 0.0000000000000004) ' В WCS=1e10 мм сам Double хранит глобальную координату с шагом около 2e-6 мм; локальные I выше сравниваются точно.
+                TestAssertClose stats, prefix & ".centroidX", props.CentroidX, cxGlobal, coordinateTolerance
+                TestAssertClose stats, prefix & ".centroidY", props.CentroidY, cyGlobal, coordinateTolerance
+                TestAssertClose stats, prefix & ".globalSx", props.StaticMomentX, area * cyGlobal, GeomMax(0.000001, Abs(area * cyGlobal) * 0.00000000001)
+                TestAssertClose stats, prefix & ".globalSy", props.StaticMomentY, area * cxGlobal, GeomMax(0.000001, Abs(area * cxGlobal) * 0.00000000001)
+                TestAssertClose stats, prefix & ".globalIx", props.Ix, ix + area * cyGlobal * cyGlobal, GeomMax(0.000001, Abs(ix + area * cyGlobal * cyGlobal) * 0.00000000001)
+                TestAssertClose stats, prefix & ".globalIy", props.Iy, iy + area * cxGlobal * cxGlobal, GeomMax(0.000001, Abs(iy + area * cxGlobal * cxGlobal) * 0.00000000001)
+                TestAssertClose stats, prefix & ".globalIxy", props.Ixy, ixy + area * cxGlobal * cyGlobal, GeomMax(0.000001, Abs(ixy + area * cxGlobal * cyGlobal) * 0.00000000001)
+                If fixtureKind = 1 Then
+                    TestAssertTrue stats, prefix & ".sourceX", model.ConcreteX(1) = x
+                    TestAssertTrue stats, prefix & ".sourceY", model.ConcreteY(1) = y
+                Else
+                    TestAssertTrue stats, prefix & ".sourceX", model.ConcreteX(1) = x - 100#
+                    TestAssertTrue stats, prefix & ".sourceY", model.ConcreteY(1) = y - 40#
+                    TestAssertTrue stats, prefix & ".sourceRebarX", model.RebarX(1) = x - 80#
+                    TestAssertTrue stats, prefix & ".sourceRebarY", model.RebarY(1) = y - 40#
+                End If
+            Next shift
+        Next es
+    Next fixtureKind
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Создаёт либо один реальный прямоугольник 300x200, либо два неравных волокна и два разных стержня без изменения их координат при расчёте.
+Private Function TestGeometryReviewInertiaModel(ByVal fixtureKind As Long, ByVal shiftX As Double, ByVal shiftY As Double) As CSectionModel
+    Dim model As CSectionModel
+    Set model = New CSectionModel
+    If fixtureKind = 1 Then
+        model.AddConcreteElement shiftX, shiftY, 60000#, 1, shapeType:="Rectangle", width:=300#, height:=200#, localIx:=200000000#, localIy:=450000000#
+    Else
+        model.AddConcreteElement shiftX - 100#, shiftY - 40#, 20000#, 1, shapeType:="Rectangle", width:=200#, height:=100#, localIx:=20000# * 100# ^ 2 / 12#, localIy:=20000# * 200# ^ 2 / 12#
+        model.AddConcreteElement shiftX + 150#, shiftY + 90#, 30000#, 1, shapeType:="Rectangle", width:=150#, height:=200#, localIx:=30000# * 200# ^ 2 / 12#, localIy:=30000# * 150# ^ 2 / 12#
+        model.AddRebarElement shiftX - 80#, shiftY - 40#, 20#, 100# * GEOM_PI, "A400"
+        model.AddRebarElement shiftX + 130#, shiftY + 80#, 32#, 256# * GEOM_PI, "A500"
+    End If
+    Set TestGeometryReviewInertiaModel = model
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимая двухпроходная аналитика в исходных локальных координатах; рабочий класс накапливает первые и вторые моменты в одном проходе.
+Private Sub TestGeometryReviewInertiaOracle(ByVal fixtureKind As Long, ByVal es As Double, ByRef area As Double, _
+        ByRef cx As Double, ByRef cy As Double, ByRef ix As Double, ByRef iy As Double, ByRef ixy As Double)
+    Dim weight(1 To 4) As Double, x(1 To 4) As Double, y(1 To 4) As Double
+    Dim ownIx(1 To 4) As Double, ownIy(1 To 4) As Double, count As Long, i As Long, factor As Double, barArea As Double
+    area = 0#: cx = 0#: cy = 0#: ix = 0#: iy = 0#: ixy = 0#
+    If fixtureKind = 1 Then
+        count = 1: weight(1) = 60000#: ownIx(1) = 200000000#: ownIy(1) = 450000000#
+    Else
+        count = 2
+        weight(1) = 20000#: x(1) = -100#: y(1) = -40#: ownIx(1) = 20000# * 100# ^ 2 / 12#: ownIy(1) = 20000# * 200# ^ 2 / 12#
+        weight(2) = 30000#: x(2) = 150#: y(2) = 90#: ownIx(2) = 30000# * 200# ^ 2 / 12#: ownIy(2) = 30000# * 150# ^ 2 / 12#
+        If es > 0# Then
+            count = 4: factor = es / 30000# - 1# ' Сетка содержит бетон в месте стержня: добавочный вес равен прежнему (Es/Eb-1)*As.
+            barArea = 100# * GEOM_PI: weight(3) = factor * barArea: x(3) = -80#: y(3) = -40#
+            ownIx(3) = factor * barArea * barArea / (4# * GEOM_PI): ownIy(3) = ownIx(3)
+            barArea = 256# * GEOM_PI: weight(4) = factor * barArea: x(4) = 130#: y(4) = 80#
+            ownIx(4) = factor * barArea * barArea / (4# * GEOM_PI): ownIy(4) = ownIx(4)
+        End If
+    End If
+    For i = 1 To count
+        area = area + weight(i): cx = cx + weight(i) * x(i): cy = cy + weight(i) * y(i)
+    Next i
+    cx = cx / area: cy = cy / area
+    For i = 1 To count
+        ix = ix + ownIx(i) + weight(i) * (y(i) - cy) ^ 2
+        iy = iy + ownIy(i) + weight(i) * (x(i) - cx) ^ 2
+        ixy = ixy + weight(i) * (x(i) - cx) * (y(i) - cy)
+    Next i
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет обе явные политики касательной у стыка, близкие станции, открытые концы и прежнюю семантику замыкания.
+Public Function TestRunWorkingCornerJointTests() As String
+    On Error GoTo Failed
+    Dim stats As TTestStats
+    TestGeometryReviewCornerJoints stats
+    TestAppendLine stats, "TOTAL_WORKING_CORNER_JOINTS: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    TestRunWorkingCornerJointTests = stats.Report
+    Exit Function
+Failed:
+    TestRunWorkingCornerJointTests = stats.Report & "FAIL: cornerJoint.runtime=" & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Независимая таблица ожидаемых сегментов различает численный шум стыка и физически разные станции вне существующего допуска.
+Private Sub TestGeometryReviewCornerJoints(ByRef stats As TTestStats)
+    Dim shape As Long, reversed As Variant, incoming As Variant, deltaIndex As Long, j As Long, endIndex As Long
+    Dim path As CGeometryPath, edge As TRegionEdge, first As TRegionEdge, last As TRegionEdge, unchanged As Boolean
+    Dim deltas As Variant, station As Double, expectedIndex As Long, normalOffset As Double, oldLength As Double, prefix As String
+    deltas = Array(-2# * GEOM_TOLERANCE, -GEOM_TOLERANCE / 2#, -1E-14, 0#, 1E-14, GEOM_TOLERANCE / 2#, 2# * GEOM_TOLERANCE)
+    For shape = 1 To 3
+        For Each reversed In Array(False, True)
+            Set path = TestGeometryReviewCornerPath(shape, CBool(reversed))
+            path.CopySegment 1, first: path.CopySegment path.SegmentCount, last: oldLength = path.Length
+            normalOffset = 5#
+            For j = 1 To path.SegmentCount
+                path.CopySegment j, edge
+                If edge.Sweep <> 0# Then normalOffset = Sgn(edge.Sweep) * 5#
+            Next j
+            For j = 1 To path.SegmentCount - 1
+                station = path.AnchorStation(path.SegmentID(j + 1), 0#)
+                For Each incoming In Array(False, True)
+                    For deltaIndex = 0 To 6
+                        expectedIndex = j + 1
+                        If CBool(incoming) And deltaIndex < 6 Then expectedIndex = j
+                        If Not CBool(incoming) And deltaIndex = 0 Then expectedIndex = j
+                        prefix = "review.joint.shape=" & CStr(shape) & ".reverse=" & CStr(reversed) & ".j=" & CStr(j) & ".incoming=" & CStr(incoming) & ".delta=" & CStr(deltaIndex)
+                        TestGeometryReviewJointSample stats, path, station + CDbl(deltas(deltaIndex)), expectedIndex, CBool(incoming), normalOffset, prefix
+                    Next deltaIndex
+                Next incoming
+            Next j
+            For Each incoming In Array(False, True)
+                For endIndex = 0 To 1
+                    station = 0#: expectedIndex = 1
+                    If endIndex = 1 Then station = path.Length: expectedIndex = path.SegmentCount
+                    prefix = "review.jointEndpoint.shape=" & CStr(shape) & ".reverse=" & CStr(reversed) & ".incoming=" & CStr(incoming) & ".end=" & CStr(endIndex)
+                    TestGeometryReviewJointSample stats, path, station, expectedIndex, CBool(incoming), normalOffset, prefix
+                Next endIndex
+            Next incoming
+            prefix = "review.jointSource.shape=" & CStr(shape) & ".reverse=" & CStr(reversed)
+            TestAssertClose stats, prefix & ".length", path.Length, oldLength, 0#
+            path.CopySegment 1, edge
+            unchanged = edge.X1 = first.X1 And edge.Y1 = first.Y1 And edge.X2 = first.X2 And edge.Y2 = first.Y2
+            path.CopySegment path.SegmentCount, edge
+            TestAssertTrue stats, prefix & ".endpoints", unchanged And edge.X1 = last.X1 And edge.Y1 = last.Y1 And edge.X2 = last.X2 And edge.Y2 = last.Y2
+        Next reversed
+    Next shape
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Один острый стык прямых, гладкий стык прямой с дугой и замкнутый квадрат дают различимые касательные и проверку выбора дуги для нормального переноса.
+Private Function TestGeometryReviewCornerPath(ByVal shape As Long, ByVal reversed As Boolean) As CGeometryPath
+    Dim path As CGeometryPath, i As Long, edges() As TRegionEdge
+    Set path = New CGeometryPath: path.Initialize "JointPath"
+    If shape = 1 Then
+        path.AddLine "First", 0#, 0#, 10#, 0#
+        path.AddLine "Second", 10#, 0#, 10#, 20#
+        path.Seal
+    ElseIf shape = 2 Then
+        path.AddLine "Line", 0#, 0#, 10#, 0#
+        path.AddArc "Arc", 10#, 5#, 5#, -GEOM_PI / 2#, GEOM_PI / 2#
+        path.Seal
+    Else
+        TestGeometryReviewSquareEdges edges, 10#, 0#, 0#, False
+        For i = 1 To 4: path.AddLine "Edge" & CStr(i), edges(i).X1, edges(i).Y1, edges(i).X2, edges(i).Y2: Next i
+        path.Seal True
+    End If
+    If reversed Then Set path = path.Reversed
+    Set TestGeometryReviewCornerPath = path
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Ожидаемый сегмент задаётся тестовой таблицей, без вызова рабочего поиска; AtDistance и ValidateNormalTransfer обязаны выбрать один и тот же сегмент.
+Private Sub TestGeometryReviewJointSample(ByRef stats As TTestStats, ByVal path As CGeometryPath, ByVal station As Double, _
+        ByVal expectedIndex As Long, ByVal incoming As Boolean, ByVal normalOffset As Double, ByVal prefix As String)
+    Dim edge As TRegionEdge, first As Double, last As Double, parameter As Double, expectedX As Double, expectedY As Double
+    Dim expectedTx As Double, expectedTy As Double, norm As Double, x As Double, y As Double, tx As Double, ty As Double, failure As Long
+    path.CopySegment expectedIndex, edge
+    first = path.AnchorStation(path.SegmentID(expectedIndex), 0#): last = path.AnchorStation(path.SegmentID(expectedIndex), 1#)
+    parameter = GeomMax(0#, GeomMin(1#, (station - first) / (last - first)))
+    modGeometryPrimitives.EdgePoint edge, parameter, expectedX, expectedY
+    modGeometryPrimitives.EdgeTangent edge, parameter, expectedTx, expectedTy
+    norm = Sqr(expectedTx * expectedTx + expectedTy * expectedTy): expectedTx = expectedTx / norm: expectedTy = expectedTy / norm
+    path.AtDistance station, x, y, tx, ty, incoming
+    TestAssertClose stats, prefix & ".x", x, expectedX, 0.0000000001
+    TestAssertClose stats, prefix & ".y", y, expectedY, 0.0000000001
+    TestAssertClose stats, prefix & ".tangentX", tx, expectedTx, 0.000000000001
+    TestAssertClose stats, prefix & ".tangentY", ty, expectedTy, 0.000000000001
+    On Error Resume Next
+    path.ValidateNormalTransfer station, normalOffset, incoming: failure = Err.Number: Err.Clear
+    On Error GoTo 0
+    TestAssertTrue stats, prefix & ".normalTransferSameSegment", (failure <> 0) = (edge.Sweep <> 0#)
+End Sub

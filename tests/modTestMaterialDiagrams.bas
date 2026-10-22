@@ -35,6 +35,7 @@ Public Function RunMaterialDiagramTests() As String
     TestProviderStateSolutionExtension stats
     TestUserStrainParametersAffectDiagrams stats
     TestInvalidParameters stats
+    TestActiveMaterialPointOrder stats
     TestAudit02PhysicalDiagramPairs stats
     TestAudit02ExtensionBeyondTechnicalDefault stats
     TestAudit02ExtensionOverflowIsExplicit stats
@@ -1533,4 +1534,118 @@ Private Function TestAudit03CapturePublishedDiagramMutation(ByVal diagram As CMa
 Rejected:
     TestAudit03CapturePublishedDiagramMutation = Err.Number
     description = Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отклонение противоречивого порядка точек материалов без численного
+' решения сечения. Валидные границы сохраняют заданный физический предел.
+Public Function RunMaterialPointOrderTests() As String
+    On Error GoTo Failed
+    Dim stats As TMaterialTestStats
+    TestActiveMaterialPointOrder stats
+    TestAppendLine stats, "TOTAL_MATERIAL_POINT_ORDER: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunMaterialPointOrderTests = stats.Report
+    Exit Function
+Failed:
+    RunMaterialPointOrderTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Для десяти активных пар проверяет значения ниже, точно на и выше соседнего
+' перелома в обеих ГПС. Наклон плато и extension не должны менять эту проверку.
+Private Sub TestActiveMaterialPointOrder(ByRef stats As TMaterialTestStats)
+    Dim pair As Long, valueSet As Variant, boundary As Variant, alpha As Variant, extension As Variant
+    Dim actualCode As Long, description As String, limit As Double, expectedLimit As Double
+    Dim inputKey As String, prefix As String
+    For pair = 1 To 10
+        For Each valueSet In Array("ULS(I)", "SLS(II)")
+            For Each boundary In Array(-1#, 0#, 1#)
+                For Each alpha In Array(0#, 0.001)
+                    For Each extension In Array(False, True)
+                        actualCode = TestMaterialOrderCase(pair, CStr(valueSet), CDbl(boundary), CDbl(alpha), _
+                            CBool(extension), description, inputKey, limit, expectedLimit)
+                        prefix = "material.pointOrder." & CStr(pair) & "." & CStr(valueSet) & "." & CStr(boundary) & "." & CStr(alpha) & "." & CStr(extension)
+                        If CDbl(boundary) <= 0# Then
+                            TestAssertTrue stats, prefix & ".rejected", actualCode = vbObjectError + 3260
+                            TestAssertTrue stats, prefix & ".sourceKey", InStr(1, description, inputKey, vbBinaryCompare) > 0
+                            TestAssertTrue stats, prefix & ".correction", InStr(1, description, "Проверьте", vbBinaryCompare) > 0
+                        Else
+                            TestAssertTrue stats, prefix & ".accepted", actualCode = 0
+                            TestAssertClose stats, prefix & ".physicalLimit", limit, expectedLimit, 0#
+                        End If
+                    Next extension
+                Next alpha
+            Next boundary
+        Next valueSet
+    Next pair
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Собирает только выбранную опасную пару; остальные ветви имеют допустимый
+' порядок. Поэтому ошибка ULS не маскируется проверкой другой диаграммы SLS.
+Private Function TestMaterialOrderCase(ByVal pair As Long, ByVal valueSet As String, ByVal boundary As Double, _
+        ByVal alpha As Double, ByVal extension As Boolean, ByRef description As String, ByRef inputKey As String, _
+        ByRef actualLimit As Double, ByRef expectedLimit As Double) As Long
+    On Error GoTo ExpectedError
+    description = vbNullString: inputKey = vbNullString: actualLimit = 0#: expectedLimit = 0#
+    Dim eb2 As Double, ebt2 As Double, eb0 As Double, ebt0 As Double, esc2 As Double, es2 As Double
+    Dim threeEsc2 As Double, threeEs2 As Double, factor As Double, resistance As Double
+    Dim kind As String, concreteKind As String, steelKind As String, strengthConcrete As String, mcrcConcrete As String
+    Dim strengthSteel As String, mcrcSteel As String
+    eb2 = 0.0035: ebt2 = 0.00015: eb0 = 0.002: ebt0 = 0.0001
+    esc2 = 0.025: es2 = 0.025: threeEsc2 = 0.015: threeEs2 = 0.015
+    factor = 1# + boundary * 0.00000001
+    kind = "TwoLine": If pair = 3 Or pair = 4 Or pair = 5 Or pair = 6 Or pair = 9 Or pair = 10 Then kind = "ThreeLine"
+    concreteKind = "TwoLine": steelKind = "TwoLine"
+    If pair <= 6 Then concreteKind = kind Else steelKind = kind
+    strengthConcrete = "TwoLine": mcrcConcrete = "TwoLine": strengthSteel = "TwoLine": mcrcSteel = "TwoLine"
+    If valueSet = "ULS(I)" Then
+        strengthConcrete = concreteKind: strengthSteel = steelKind
+    Else
+        mcrcConcrete = concreteKind: mcrcSteel = steelKind
+    End If
+    Select Case pair
+        Case 1: eb2 = 0.0015 * factor: inputKey = "Concrete.Eb2": expectedLimit = -eb2
+        Case 2: ebt2 = 0.00008 * factor: inputKey = "Concrete.Ebt2": expectedLimit = ebt2
+        Case 3: eb2 = eb0 * factor: inputKey = "Concrete.Eb2": expectedLimit = -eb2
+        Case 4: ebt2 = ebt0 * factor: inputKey = "Concrete.Ebt2": expectedLimit = ebt2
+        Case 5
+            If valueSet = "ULS(I)" Then resistance = 15.5 Else resistance = 22#
+            eb0 = 0.6 * resistance / 32500# * factor: inputKey = "Concrete.Eb0": expectedLimit = -eb2
+        Case 6
+            If valueSet = "ULS(I)" Then resistance = 1.1 Else resistance = 1.8
+            ebt0 = 0.6 * resistance / 32500# * factor: inputKey = "Concrete.Ebt0": expectedLimit = ebt2
+        Case 7
+            If valueSet = "ULS(I)" Then resistance = 350# Else resistance = 390#
+            esc2 = resistance / 200000# * factor: inputKey = "Steel.TwoLine.Esc2": expectedLimit = -esc2
+        Case 8
+            If valueSet = "ULS(I)" Then resistance = 350# Else resistance = 390#
+            es2 = resistance / 200000# * factor: inputKey = "Steel.TwoLine.Es2": expectedLimit = es2
+        Case 9
+            If valueSet = "ULS(I)" Then resistance = 350# Else resistance = 390#
+            threeEsc2 = (2# * (resistance / 200000# + 0.002) - 0.9 * resistance / 200000#) * factor
+            inputKey = "Steel.ThreeLine.Esc2": expectedLimit = -threeEsc2
+        Case 10
+            If valueSet = "ULS(I)" Then resistance = 350# Else resistance = 390#
+            threeEs2 = (2# * (resistance / 200000# + 0.002) - 0.9 * resistance / 200000#) * factor
+            inputKey = "Steel.ThreeLine.Es2": expectedLimit = threeEs2
+    End Select
+    Dim concrete As CConcreteMaterialParameters, steel As CSteelMaterialParameters, provider As CMaterialModelProvider
+    Set concrete = New CConcreteMaterialParameters
+    concrete.Initialize 15.5, 1.1, 22#, 1.8, 32500#, 32500#, eb0:=eb0, ebt0:=ebt0, eb2:=eb2, ebt2:=ebt2, rbMc2:=14.6
+    Set steel = New CSteelMaterialParameters
+    Dim slsStrength As Double
+    slsStrength = 390#
+    If valueSet = "ULS(I)" And (pair = 7 Or pair = 8) Then slsStrength = 300# ' Неакцентированная диаграмма SLS также обязана иметь допустимый порядок; ее меньший R исключает посторонний отказ до выбранной ULS-проверки.
+    steel.Initialize 350#, 350#, slsStrength, slsStrength, 200000#, 200000#, esc2, es2, threeEsc2, threeEs2
+    Set provider = New CMaterialModelProvider
+    provider.TestInitializeFromParameters concrete, steel, strengthConcrete, "UseDiagram", strengthSteel, _
+        mcrcConcrete, mcrcSteel, "TwoLine", "TwoLine", extension, alpha
+    Dim spec As CMaterialModelSpec, diagram As CMaterialDiagram
+    Set spec = New CMaterialModelSpec: spec.Initialize valueSet, concreteKind, "UseDiagram", steelKind
+    If pair <= 6 Then Set diagram = provider.ConcreteMaterialFromSpec(spec) Else Set diagram = provider.SteelMaterialFromSpec(spec)
+    If pair = 2 Or pair = 4 Or pair = 6 Or pair = 8 Or pair = 10 Then actualLimit = diagram.PhysicalTensionStrain Else actualLimit = diagram.PhysicalCompressionStrain
+    Exit Function
+ExpectedError:
+    TestMaterialOrderCase = Err.Number: description = Err.Description
 End Function

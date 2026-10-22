@@ -109,6 +109,10 @@ Public Sub InitializeCrackFormation(ByVal problem As ILimitSearchProblem, _
     mMomentMyAtReference = momentMyAtReference
     mReferenceX = referenceX
     mReferenceY = referenceY
+    mNOffset = 0#: mNBase = 0#
+    mMxOffset = 0#: mMxBase = 0#
+    mMyOffset = 0#: mMyBase = 0#
+    mForceOnly = False: mPureAxialForMethod = False ' Повторная инициализация должна дать тот же запрос, что новый объект; фактический путь трещин далее задает его задача или SelectLoadPath.
     mResultKind = rkCrackFormation
 End Sub
 

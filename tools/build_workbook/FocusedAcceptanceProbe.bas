@@ -22,8 +22,8 @@ Public Function DescribeFocusedAcceptance(ByVal shapeName As String, ByVal group
     output = "FOCUSED_MANIFEST|shape=" & shapeName & "|group=" & groupName & "|cases=" & CStr(cases.Count) & _
         "|fibers=" & CStr(section.ConcreteCount) & "|rebars=" & CStr(section.RebarCount) & vbCrLf
     For Each item In cases
-        output = output & "FOCUSED_INPUT|id=" & CStr(item(0)) & "|N=" & FormatNumberInvariant(CDbl(item(1))) & _
-            "|Mx=" & FormatNumberInvariant(CDbl(item(2))) & "|My=" & FormatNumberInvariant(CDbl(item(3))) & _
+        output = output & "FOCUSED_INPUT|id=" & CStr(item(0)) & "|N=" & TestFormatNumberInvariant(CDbl(item(1))) & _
+            "|Mx=" & TestFormatNumberInvariant(CDbl(item(2))) & "|My=" & TestFormatNumberInvariant(CDbl(item(3))) & _
             "|path=" & CStr(item(4)) & vbCrLf
     Next item
     output = output & "FOCUSED_MANIFEST_COMPLETE: no calculation executed" & vbCrLf
@@ -53,23 +53,23 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
     FocusedSelectGeometry shapeName
-    SetSystemSetting "Load.ReferenceOffsetX", "0"
-    SetSystemSetting "Load.ReferenceOffsetY", "0"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    SetSystemSetting "SLS.Crack.Code", "SP35"
-    SetSystemSetting "Plot.Enabled", "Yes"
-    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    SetSystemSetting "Plot.LoadCase", "Worst"
-    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
-    SetProfileValue "Visualization.State", "PR3", "StrengthState"
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0"
+    TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    TestSetSystemSetting "Plot.Enabled", "Yes"
+    TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
+    TestSetProfileValue "Visualization.State", "PR3", "StrengthState"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    SetSystemSetting "Load.ReferenceOffsetX", FormatNumberInvariant(10# / units.InputLengthToInternal(1#))
-    SetSystemSetting "Load.ReferenceOffsetY", FormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
+    TestSetSystemSetting "Load.ReferenceOffsetX", TestFormatNumberInvariant(10# / units.InputLengthToInternal(1#))
+    TestSetSystemSetting "Load.ReferenceOffsetY", TestFormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
     settings.LoadFromWorkbook ThisWorkbook
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Set cases = FocusedSelectedLoads(section, groupName)
@@ -81,7 +81,7 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
         If selected.Count <> 1 Then Err.Raise 5, , "Selected focused load was not found uniquely."
         Set cases = selected
     End If
-    AppendLine stats, "FOCUSED_SETUP|shape=" & shapeName & "|group=" & groupName & "|mode=" & _
+    TestAppendLine stats, "FOCUSED_SETUP|shape=" & shapeName & "|group=" & groupName & "|mode=" & _
         settings.GetRequiredString("General.DiagramExtension") & "|cases=" & CStr(cases.Count) & _
         "|fibers=" & CStr(section.ConcreteCount) & "|rebars=" & CStr(section.RebarCount) & "|offsetX=10|offsetY=-7|profile=PR3|code=SP35"
     For Each item In cases
@@ -100,59 +100,59 @@ Public Function RunFocusedAcceptanceCases(ByVal shapeName As String, ByVal group
         If CDbl(item(1)) = 0# And CDbl(item(2)) = 0# And CDbl(item(3)) = 0# Then
             FocusedCheckZeroInput stats, prefix
         Else
-            message = FixtureRunSectionWorkflow(ThisWorkbook, False)
+            message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
         End If
         elapsed = Timer - start: If elapsed < 0# Then elapsed = elapsed + 86400#
         If elapsed > maxSeconds Then maxSeconds = elapsed
-        AssertTrue stats, prefix & ".within10Seconds", elapsed <= 10#
-        AppendLine stats, "FOCUSED_TIME|shape=" & shapeName & "|id=" & CStr(item(0)) & _
-            "|elapsedSec=" & FormatNumberInvariant(elapsed) & "|solverCalls=" & CStr(SectionEquilibriumSolveCount())
+        TestAssertTrue stats, prefix & ".within10Seconds", elapsed <= 10#
+        TestAppendLine stats, "FOCUSED_TIME|shape=" & shapeName & "|id=" & CStr(item(0)) & _
+            "|elapsedSec=" & TestFormatNumberInvariant(elapsed) & "|solverCalls=" & CStr(SectionEquilibriumSolveCount())
         If Not mFocusedBatch Is Nothing Then
-            AssertTrue stats, prefix & ".oneCombination", mFocusedBatch.Count = 1
-            AssertTrue stats, prefix & ".preparationReleased", mFocusedBatch.RunPreparationReleased
+            TestAssertTrue stats, prefix & ".oneCombination", mFocusedBatch.Count = 1
+            TestAssertTrue stats, prefix & ".preparationReleased", mFocusedBatch.TestRunPreparationReleased
             ' ULS и SLS имеют отдельные точные кэши; устойчивость в этом профиле отключена.
-            AssertTrue stats, prefix & ".mechanicalNoRepeatedMaterialPreparation", _
-                mFocusedBatch.MechanicalPreparationBuildCount > 0 And mFocusedBatch.MechanicalPreparationBuildCount <= 2
-            AssertTrue stats, prefix & ".crackDomainPreparedOnce", mFocusedBatch.CrackDomainBuildCount <= 1
-            AppendLine stats, "FOCUSED_PREPARATION|id=" & CStr(item(0)) & _
-                "|mechanicalBuilds=" & CStr(mFocusedBatch.MechanicalPreparationBuildCount) & _
-                "|crackDomainBuilds=" & CStr(mFocusedBatch.CrackDomainBuildCount)
+            TestAssertTrue stats, prefix & ".mechanicalNoRepeatedMaterialPreparation", _
+                mFocusedBatch.TestMechanicalPreparationBuildCount > 0 And mFocusedBatch.TestMechanicalPreparationBuildCount <= 2
+            TestAssertTrue stats, prefix & ".crackDomainPreparedOnce", mFocusedBatch.TestCrackDomainBuildCount <= 1
+            TestAppendLine stats, "FOCUSED_PREPARATION|id=" & CStr(item(0)) & _
+                "|mechanicalBuilds=" & CStr(mFocusedBatch.TestMechanicalPreparationBuildCount) & _
+                "|crackDomainBuilds=" & CStr(mFocusedBatch.TestCrackDomainBuildCount)
             Set result = mFocusedBatch.ResultAt(1)
-            Audit03CheckResultComments stats, mFocusedBatch, 1
+            TestAudit03CheckResultComments stats, mFocusedBatch, 1
             Dim cx As Double, cy As Double, area As Double
             mFocusedSection.ConcreteMeshCentroid cx, cy, area
-            Audit03CheckCapacityPath stats, result.StrengthResult.Capacity, prefix, CStr(item(4)), _
+            TestAudit03CheckCapacityPath stats, result.StrengthResult.Capacity, prefix, CStr(item(4)), _
                 Array(item(1), item(2), item(3)), cx, cy, True
-            Audit03CheckFormationPath stats, result.CrackResult.Formation, prefix, path, Array(item(1), item(2), item(3))
+            TestAudit03CheckFormationPath stats, result.CrackResult.Formation, prefix, path, Array(item(1), item(2), item(3))
             FocusedCheckStates stats, result, settings, units, prefix
-            AppendLine stats, FocusedComparisonRecord(result, CStr(item(0)))
+            TestAppendLine stats, FocusedComparisonRecord(result, CStr(item(0)))
             For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                     result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
-                AssertTrue stats, prefix & ".noInputOrInternalError." & CStr(meta.ResultKind), _
+                TestAssertTrue stats, prefix & ".noInputOrInternalError." & CStr(meta.ResultKind), _
                     meta.InternalStatus <> rsInvalidInput And meta.InternalStatus <> rsInvalidConfiguration And _
                     meta.InternalStatus <> rsInternalError
-                If meta.InternalStatus = rsNumericalFailure Then AppendLine stats, _
+                If meta.InternalStatus = rsNumericalFailure Then TestAppendLine stats, _
                     "FOCUSED_UNRESOLVED|shape=" & shapeName & "|id=" & CStr(item(0)) & _
                     "|kind=" & CStr(meta.ResultKind) & "|reason=" & meta.ResultComment
             Next meta
             FocusedCheckOutputRow stats, "rngStrengthSummaryAnchor", CStr(item(0)), prefix
             FocusedCheckOutputRow stats, "rngCrackSummaryAnchor", CStr(item(0)), prefix
-            AppendLine stats, "FOCUSED_RESULT|id=" & CStr(item(0)) & "|overall=" & result.Status & _
+            TestAppendLine stats, "FOCUSED_RESULT|id=" & CStr(item(0)) & "|overall=" & result.Status & _
                 "|capacity=" & result.StrengthResult.Capacity.Status & "|cracks=" & result.CrackSummaryStatus
         ElseIf CStr(item(0)) <> "zero" Then
-            AssertTrue stats, prefix & ".capturedCalculation", False
+            TestAssertTrue stats, prefix & ".capturedCalculation", False
         End If
         completed = completed + 1
-        Audit03SaveMatrixProgress stats.Report
+        TestAudit03SaveMatrixProgress stats.Report
     Next item
-    AssertTrue stats, "focused.complete", completed = cases.Count
-    AppendLine stats, "TOTAL_FOCUSED_ACCEPTANCE: shape=" & shapeName & "; group=" & groupName & _
-        "; cases=" & CStr(completed) & "; maxSeconds=" & FormatNumberInvariant(maxSeconds) & _
+    TestAssertTrue stats, "focused.complete", completed = cases.Count
+    TestAppendLine stats, "TOTAL_FOCUSED_ACCEPTANCE: shape=" & shapeName & "; group=" & groupName & _
+        "; cases=" & CStr(completed) & "; maxSeconds=" & TestFormatNumberInvariant(maxSeconds) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: focused.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: focused.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(oldRebars) Then ThisWorkbook.Worksheets("Сечения").UsedRange.Formula = oldRebars
@@ -193,13 +193,13 @@ End Function
 ' ДЛЯ ТЕСТОВ: генерируемые формы читаются настоящим реестром из Config.
 Private Sub FocusedSelectGeometry(ByVal shapeName As String)
     Select Case shapeName
-        Case "SavedWorkbook": SetSystemSetting "Geometry.Source", "AutoCAD"
+        Case "SavedWorkbook": TestSetSystemSetting "Geometry.Source", "AutoCAD"
         Case "Rectangles", "Circle", "PointedSection", "HollowRectangle"
-            SetSystemSetting "Geometry.Source", "Generated"
-            SetSystemSetting "Geometry.Type", shapeName
+            TestSetSystemSetting "Geometry.Source", "Generated"
+            TestSetSystemSetting "Geometry.Type", shapeName
             ' Общая таблица не хранит четыре независимых набора армирования.
             ' Перед каждой формой задаём явный контрольный набор прежних исходных данных.
-            FixtureResetReinforcement shapeName
+            TestFixtureResetReinforcement shapeName
         Case Else: Err.Raise 5, "FocusedSelectGeometry", "Unknown focused geometry: " & shapeName
     End Select
 End Sub
@@ -209,7 +209,7 @@ Private Function FocusedSelectedLoads(ByVal section As CSectionModel, ByVal grou
     Dim result As New Collection, item As Variant, path As Variant, names As Variant
     names = Array("axialSmall-1", "axialSmall1", "Mx-1", "Mx1", "My-1", "My1", "mixedC1_-1", "mixedT-1_1")
     If groupName = "Paths" Then
-        For Each item In Audit03NormalizedLoads(section, "Light")
+        For Each item In TestAudit03NormalizedLoads(section, "Light")
             If CStr(item(0)) = "mixedC1_-1" Then
                 For Each path In Array("Auto", "Mx", "My", "Mxy", "N", "NMxy")
                     result.Add Array("path" & CStr(path), item(1), item(2), item(3), CStr(path))
@@ -221,11 +221,11 @@ Private Function FocusedSelectedLoads(ByVal section As CSectionModel, ByVal grou
     ElseIf groupName = "Generated" Or groupName = "Saved" Then
         If groupName = "Saved" Then names = Array("axialSmall-1", "axialSmall1", "Mx-1", "Mx1", "My-1", "My1", _
             "mixedC1_-1", "mixedT-1_1", "zero", "tinyMx1", "biaxial1_-1_10", "biaxial1_-1_1000000", "biaxial1_-1_" & CStr(0.000001))
-        For Each item In Audit03NormalizedLoads(section, "Light")
+        For Each item In TestAudit03NormalizedLoads(section, "Light")
             If FocusedNameIn(CStr(item(0)), names) Then result.Add Array(item(0), item(1), item(2), item(3), "Auto")
         Next item
         If groupName = "Saved" Then
-            For Each item In Audit03NormalizedLoads(section, "Stress")
+            For Each item In TestAudit03NormalizedLoads(section, "Stress")
                 If FocusedNameIn(CStr(item(0)), Array("axialC" & CStr(0.95), "axialC1", "axialC" & CStr(1.05), "axialC2", _
                         "overloadMixed1", "overloadMixed1000000")) Then _
                     result.Add Array(item(0), item(1), item(2), item(3), "Auto")
@@ -255,14 +255,14 @@ End Function
 Private Sub FocusedCheckZeroInput(ByRef stats As TBatchTestStats, ByVal prefix As String)
     On Error GoTo Rejected
     Dim message As String
-    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
-    AssertTrue stats, prefix & ".zeroRejected", False
+    message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
+    TestAssertTrue stats, prefix & ".zeroRejected", False
     Exit Sub
 Rejected:
     Dim errorNumber As Long
     errorNumber = Err.Number: Err.Clear
-    AssertTrue stats, prefix & ".zeroRejectedBeforeSolve", errorNumber = vbObjectError + 4101
-    AssertTrue stats, prefix & ".zeroNoSolverCalls", SectionEquilibriumSolveCount() = 0
+    TestAssertTrue stats, prefix & ".zeroRejectedBeforeSolve", errorNumber = vbObjectError + 4101
+    TestAssertTrue stats, prefix & ".zeroNoSolverCalls", SectionEquilibriumSolveCount() = 0
 End Sub
 
 ' ДЛЯ ТЕСТОВ: повторное интегрирование по фактическим диаграммам каждого state.
@@ -278,30 +278,30 @@ Private Sub FocusedCheckStates(ByRef stats As TBatchTestStats, ByVal result As C
     mFocusedSection.ConcreteMeshCentroid cx, cy, area
     For i = 1 To result.StateRepository.StateCount
         Set state = result.StateRepository.StateAt(i)
-        AppendLine stats, "FOCUSED_STATE|id=" & prefix & "|type=" & state.StateTypeText & _
+        TestAppendLine stats, "FOCUSED_STATE|id=" & prefix & "|type=" & state.StateTypeText & _
             "|converged=" & CStr(state.Converged) & "|physical=" & CStr(state.WithinPhysicalRange) & _
             "|extension=" & CStr(state.ExtensionUsed) & "|status=" & state.Status & _
             "|N=" & FocusedExactNumber(state.TargetN) & "|Mx=" & FocusedExactNumber(state.TargetMx) & _
             "|My=" & FocusedExactNumber(state.TargetMy) & "|eps0=" & FocusedExactNumber(state.Epsilon0) & _
             "|kx=" & FocusedExactNumber(state.KappaX) & "|ky=" & FocusedExactNumber(state.KappaY)
         If state.Converged Then
-            AssertTrue stats, prefix & ".snapshot." & CStr(i), state.HasMaterialSnapshot
+            TestAssertTrue stats, prefix & ".snapshot." & CStr(i), state.HasMaterialSnapshot
             Set probe = New CSectionSolver
             probe.EvaluateStrainPlane mFocusedSection, state.ConcreteDiagramSnapshot, state.SteelDiagramSnapshot, _
                 state.Epsilon0, state.KappaX, state.KappaY
-            AssertClose stats, prefix & ".originalN." & CStr(i), probe.Nint, state.TargetN, toleranceN
-            AssertClose stats, prefix & ".originalMx." & CStr(i), probe.Mxint, state.TargetMx, toleranceMx
-            AssertClose stats, prefix & ".originalMy." & CStr(i), probe.Myint, state.TargetMy, toleranceMy
+            TestAssertClose stats, prefix & ".originalN." & CStr(i), probe.Nint, state.TargetN, toleranceN
+            TestAssertClose stats, prefix & ".originalMx." & CStr(i), probe.Mxint, state.TargetMx, toleranceMx
+            TestAssertClose stats, prefix & ".originalMy." & CStr(i), probe.Myint, state.TargetMy, toleranceMy
             probe.NumericalEfforts n, mx, my
-            AssertClose stats, prefix & ".centerN." & CStr(i), n, state.TargetN, toleranceN
-            AssertClose stats, prefix & ".centerMx." & CStr(i), mx, state.TargetMx - cy * state.TargetN, toleranceMx
-            AssertClose stats, prefix & ".centerMy." & CStr(i), my, state.TargetMy - cx * state.TargetN, toleranceMy
-            AssertTrue stats, prefix & ".physicalStatus." & CStr(i), _
+            TestAssertClose stats, prefix & ".centerN." & CStr(i), n, state.TargetN, toleranceN
+            TestAssertClose stats, prefix & ".centerMx." & CStr(i), mx, state.TargetMx - cy * state.TargetN, toleranceMx
+            TestAssertClose stats, prefix & ".centerMy." & CStr(i), my, state.TargetMy - cx * state.TargetN, toleranceMy
+            TestAssertTrue stats, prefix & ".physicalStatus." & CStr(i), _
                 state.WithinPhysicalRange Or state.InternalStatus = rsCheckFailed
         Else
-            AssertTrue stats, prefix & ".failureNotPhysical." & CStr(i), Not state.WithinPhysicalRange
+            TestAssertTrue stats, prefix & ".failureNotPhysical." & CStr(i), Not state.WithinPhysicalRange
         End If
-        If Not extensionEnabled Then AssertTrue stats, prefix & ".noHiddenExtension." & CStr(i), Not state.ExtensionUsed
+        If Not extensionEnabled Then TestAssertTrue stats, prefix & ".noHiddenExtension." & CStr(i), Not state.ExtensionUsed
     Next i
 End Sub
 
@@ -316,5 +316,5 @@ Private Sub FocusedCheckOutputRow(ByRef stats As TBatchTestStats, ByVal rangeNam
         ByVal id As String, ByVal prefix As String)
     Dim anchor As Object
     Set anchor = ThisWorkbook.Names.Item(rangeName).RefersToRange.Cells(1, 1)
-    AssertEquals stats, prefix & ".output." & rangeName, CStr(anchor.Value2), id
+    TestAssertEquals stats, prefix & ".output." & rangeName, CStr(anchor.Value2), id
 End Sub

@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestCrackWidth"
+﻿Attribute VB_Name = "modTestCrackWidth"
 Option Explicit
 
 ' ==========================================================================
@@ -40,6 +40,7 @@ Public Function RunCrackWidthTests() As String
     TestCrackInitiationLoadPaths stats
     TestFormationFailureStillCalculatesWidth stats
     TestFormationFallbackWithUniformCurrentState stats
+    TestNearUniformCrackTranslations stats
     TestAudit03ConfirmedNotCrackedSkipsWidth stats
     TestCrackFormationSearchBoundKeepsTechnicalCode stats
     TestCrackFormationNoCrackDoesNotBuildPostState stats
@@ -2010,9 +2011,121 @@ Public Function RunCrackGeometryTests() As String
     TestEffectiveAndFullTensionZones stats
     TestCentralTensionBranch stats
     TestCrackUserPsiMxy stats
+    TestNearUniformCrackTranslations stats
     TestAppendLine stats, "TOTAL_CRACK_GEOMETRY: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     RunCrackGeometryTests = stats.Report
     Exit Function
 Failed:
     RunCrackGeometryTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
 End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет почти равномерное растяжение и сжатие при переносах WCS по обеим
+' осям. Ширина, статусы и фактические деформации должны сохраняться; epsilon0
+' при этом меняется по закону переноса плоскости и может менять знак.
+Public Function RunCrackTranslationTests() As String
+    On Error GoTo Failed
+    Dim stats As TCrackTestStats
+    TestNearUniformCrackTranslations stats
+    TestAppendLine stats, "TOTAL_CRACK_TRANSLATION: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
+    RunCrackTranslationTests = stats.Report
+    Exit Function
+Failed:
+    RunCrackTranslationTests = stats.Report & "RUNTIME ERROR: " & CStr(Err.Number) & "; " & Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Задает физическую плоскость с кривизной 5e-13/мм без поиска равновесия,
+' затем подтверждает ее по собственным внутренним усилиям. Независимая ширина
+' СП 63: 1.4*0.5*1.2*(20/200000)*400 = 0.0336 мм при psi_s=1.
+' СП 35: (20/200000)*1.5*Sqr(75)*10 = 0.012990381... мм по всей площади.
+' Для центра 0/±1e-11 плоскость пересекает ноль: перенос не должен менять
+' выбор центральной ветки или превращать малую деформацию в ошибку ввода.
+Private Sub TestNearUniformCrackTranslations(ByRef stats As TCrackTestStats)
+    Dim provider As CMaterialModelProvider, spec As CMaterialModelSpec
+    Set provider = TestMaterialProvider(): Set spec = TestCrackedStateSpec()
+    Dim owner As CCrackFormationCalculator, meta As CResultMeta, formation As CCrackFormationResult
+    Set owner = New CCrackFormationCalculator
+    owner.LimitSearchSetFailure sfcNumericalFailure, "Контрольное отсутствие точки образования трещины."
+    Set meta = New CResultMeta
+    meta.SetSolverFailure sfcNumericalFailure, rkCrackFormation, "Контрольное отсутствие точки образования трещины.", True
+    Set formation = New CCrackFormationResult: formation.InitializeFromCalculator owner, meta
+    Dim axis As Long, shift As Variant, center As Variant, standard As Variant, x As Variant, y As Variant
+    Dim standardIndex As Long, baselineStatus(1 To 2) As EResultInternalStatus, baselineCode(1 To 2) As EResultCode
+    Dim baselineCalculated(1 To 2) As Boolean, baselineWidth(1 To 2) As Double
+    Dim dx As Double, dy As Double, kx As Double, ky As Double, epsilonCenter As Double
+    Dim section As CSectionModel, solver As CSectionSolver, current As CSectionStateResult
+    Dim width As CCrackWidthCalculator, load As CSectionLoadState, prefix As String
+    For Each center In Array(0.0001, -0.0001, 0#, 0.00000000001, -0.00000000001)
+        epsilonCenter = CDbl(center)
+        For axis = 1 To 2
+            kx = 0#: ky = 0#
+            If axis = 1 Then ky = 0.0000000000005 Else kx = 0.0000000000005
+            For Each shift In Array(0#, 1000000000#, -1000000000#)
+                dx = 0#: dy = 0#
+                If axis = 1 Then dx = CDbl(shift) Else dy = CDbl(shift)
+                Set section = New CSectionModel
+                For Each x In Array(-75#, 75#)
+                    For Each y In Array(-50#, 50#)
+                        section.AddConcreteElement dx + CDbl(x), dy + CDbl(y), 15000#, width:=150#, height:=100#
+                    Next y
+                Next x
+                For Each x In Array(-90#, 90#)
+                    For Each y In Array(-60#, 60#)
+                        section.AddRebarElement dx + CDbl(x), dy + CDbl(y), 20#, 0#, "Rebar"
+                    Next y
+                Next x
+                Set solver = New CSectionSolver
+                solver.EvaluateStrainPlane section, provider.ConcreteMaterialFromSpec(spec), provider.SteelMaterialFromSpec(spec), _
+                    epsilonCenter - ky * dx - kx * dy, kx, ky
+                prefix = "crack.translate." & CStr(center) & ".axis" & CStr(axis) & "." & CStr(shift)
+                TestAssertTrue stats, prefix & ".equilibrium", solver.ConfirmEquilibrium(solver.Nint, solver.Mxint, solver.Myint)
+                Set current = New CSectionStateResult
+                current.InitializeFromSolver sstCrackedState, cpCrackedNDS, spec, solver, False, True
+                TestAssertTrue stats, prefix & ".physical", current.WithinPhysicalRange
+                TestAssertClose stats, prefix & ".maxStrain", current.MaxConcreteStrain, epsilonCenter + ky * 75# + kx * 50#, 0.000000000000001
+                TestAssertClose stats, prefix & ".minStrain", current.MinConcreteStrain, epsilonCenter - ky * 75# - kx * 50#, 0.000000000000001
+                Set load = New CSectionLoadState
+                load.Initialize solver.Nint, solver.Mxint - solver.Nint * dy, solver.Myint - solver.Nint * dx, dx, dy
+                standardIndex = 0
+                For Each standard In Array("SP63", "SP35")
+                    standardIndex = standardIndex + 1
+                    prefix = "crack.translate." & CStr(standard) & "." & CStr(center) & ".axis" & CStr(axis) & "." & CStr(shift)
+                    Set width = New CCrackWidthCalculator
+                    width.StandardCode = CStr(standard)
+                    width.PsiMode = "AlwaysCalc": width.AllowableCrackWidth = 0.001
+                    width.Calculate current, section, provider, spec, formation, load
+                    If Abs(epsilonCenter) < 0.000001 Then
+                        If CDbl(shift) = 0# Then ' Начало координат в центре воспроизводит прежний критерий; другие WCS обязаны дать тот же результат.
+                            baselineStatus(standardIndex) = width.CrackWidthInternalStatus
+                            baselineCode(standardIndex) = width.CrackWidthResultCode
+                            baselineCalculated(standardIndex) = width.ResultMeta.Calculated
+                            baselineWidth(standardIndex) = width.CrackWidth
+                        End If
+                        TestAssertTrue stats, prefix & ".noInputOrInternalError", _
+                            width.CrackWidthInternalStatus <> rsInvalidInput And width.CrackWidthInternalStatus <> rsInternalError
+                        TestAssertTrue stats, prefix & ".centralCriterion", width.CentralTensionBranch = (epsilonCenter > 0.000000000001)
+                        TestAssertTrue stats, prefix & ".sameStatus", width.CrackWidthInternalStatus = baselineStatus(standardIndex)
+                        TestAssertTrue stats, prefix & ".sameCode", width.CrackWidthResultCode = baselineCode(standardIndex)
+                        TestAssertTrue stats, prefix & ".sameCalculated", width.ResultMeta.Calculated = baselineCalculated(standardIndex)
+                        TestAssertClose stats, prefix & ".sameWidth", width.CrackWidth, baselineWidth(standardIndex), 0.000000000001
+                    ElseIf epsilonCenter > 0# Then
+                        TestAssertTrue stats, prefix & ".calculated", width.ResultMeta.Calculated
+                        TestAssertTrue stats, prefix & ".checkFailed", width.CrackWidthInternalStatus = rsCheckFailed
+                        TestAssertTrue stats, prefix & ".widthExceeded", width.CrackWidthResultCode = rcCrackWidthExceeded
+                        If CStr(standard) = "SP63" Then
+                            TestAssertClose stats, prefix & ".width", width.CrackWidth, 0.0336, 0.0000001
+                        Else
+                            TestAssertClose stats, prefix & ".width", width.CrackWidth, 20# / 200000# * 1.5 * Sqr(75#) * 10#, 0.0000001
+                        End If
+                    Else
+                        TestAssertTrue stats, prefix & ".notCalculated", Not width.ResultMeta.Calculated
+                        TestAssertTrue stats, prefix & ".notApplicable", width.CrackWidthInternalStatus = rsNotApplicable
+                        TestAssertTrue stats, prefix & ".notCracked", width.CrackWidthResultCode = rcCrackNotFormed
+                        TestAssertClose stats, prefix & ".width", width.CrackWidth, 0#, 0#
+                    End If
+                Next standard
+            Next shift
+        Next axis
+    Next center
+End Sub

@@ -1261,6 +1261,7 @@ Public Sub ClearResult()
     mConverged = False
     mStopReason = vbNullString
     mFailureCode = sfcNone
+    mFailureSettingKeys = vbNullString ' Успешный повторный расчет не наследует адреса ошибки прежней конфигурации.
     mEpsilon0 = 0#: mKappaX = 0#: mKappaY = 0#
     mCenterEpsilon = 0#: mCenterMx = 0#: mCenterMy = 0#
     mCenterResidualMx = 0#: mCenterResidualMy = 0#

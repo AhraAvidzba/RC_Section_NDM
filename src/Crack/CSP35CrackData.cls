@@ -88,8 +88,11 @@ Public Sub Prepare(ByVal section As CSectionModel, ByVal epsilon0 As Double, ByV
     If Not centralTension Then
         If gradient <= STRAIN_TOL Then Exit Sub
         mNx = kappaY / gradient: mNy = kappaX / gradient: mNeutralN = -epsilon0 / gradient
-    ElseIf epsilon0 <= STRAIN_TOL Then
-        InvalidData "Для центрального растяжения СП 35 должна быть положительная деформация текущего НДС."
+    Else
+        Dim centerX As Double, centerY As Double, concreteArea As Double
+        section.ConcreteMeshCentroid centerX, centerY, concreteArea ' Центр уже кэширован оценкой НДС; дополнительного обхода элементов нет.
+        If epsilon0 + kappaX * centerY + kappaY * centerX <= STRAIN_TOL Then _
+            InvalidData "Для центрального растяжения СП 35 должна быть положительная деформация текущего НДС в центре бетонного сечения."
     End If
     BuildGroups epsilon0, kappaX, kappaY, steelMaterial
     If mGroupCount = 0 Then Exit Sub

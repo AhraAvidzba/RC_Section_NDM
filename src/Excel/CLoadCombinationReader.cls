@@ -1,4 +1,4 @@
-VERSION 1.0 CLASS
+﻿VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -32,6 +32,10 @@ End Sub
 Public Sub LoadFromRange(ByVal source As Object, ByVal batch As CBatchSectionCalculator, Optional ByVal units As CUnitSystem = Nothing)
     If source Is Nothing Then Err.Raise vbObjectError + 3952, "CLoadCombinationReader", "Диапазон сочетаний нагрузок не найден."
     If batch Is Nothing Then Err.Raise vbObjectError + 3953, "CLoadCombinationReader", "Пакетный расчетчик не передан."
+    If source.Areas.Count <> 1 Then Err.Raise vbObjectError + 3956, "CLoadCombinationReader", _
+        "Именованный диапазон rngLoadCombinations должен ссылаться на единую прямоугольную таблицу, а не на несколько отдельных областей." & vbCrLf & vbCrLf & _
+        "Сейчас указан диапазон: " & source.Worksheet.Name & "!" & source.Address(False, False) & "." & vbCrLf & vbCrLf & _
+        "Сделайте единую прямоугольную таблицу со строкой заголовков и всеми сочетаниями. В диспетчере имён Excel укажите её целиком для rngLoadCombinations."
     If source.Rows.Count < 2 Then Err.Raise vbObjectError + 3954, "CLoadCombinationReader", _
         "rngLoadCombinations должен содержать строку заголовков и минимум одну строку сочетания."
     If source.Columns.Count < 5 Then Err.Raise vbObjectError + 3955, "CLoadCombinationReader", _

@@ -19,27 +19,27 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     Set durationRange = ThisWorkbook.Names.Item("rngStabilityDurationLoads").RefersToRange
     oldDuration = durationRange.Formula
     FocusedSelectGeometry "SavedWorkbook"
-    SetSystemSetting "Load.ReferenceOffsetX", "0": SetSystemSetting "Load.ReferenceOffsetY", "0"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    SetSystemSetting "Plot.Enabled", "Yes": SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    SetSystemSetting "Plot.LoadCase", "Worst": SetSystemSetting "SLS.Crack.Code", "SP35"
-    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR3", IIf(caseName = "Stability", "Yes", "No")
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0": TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "Plot.Enabled", "Yes": TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+    TestSetSystemSetting "Plot.LoadCase", "Worst": TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR3", IIf(caseName = "Stability", "Yes", "No")
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Select Case caseName
         Case "Stability"
-            SetSystemSetting "Stability.Code", "SP35"
-            SetSystemSetting "Stability.ElementLength", FormatNumberInvariant(1000# / units.InputLengthToInternal(1#))
-            SetSystemSetting "Stability.Mu1", "1": SetSystemSetting "Stability.Mu2", "1"
-            SetSystemSetting "Stability.AccidentalEccentricityMode", "User"
-            SetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
-            SetSystemSetting "Stability.AccidentalEccentricityUser1", FormatNumberInvariant(5# / units.InputLengthToInternal(1#))
-            SetSystemSetting "Stability.AccidentalEccentricityUser2", FormatNumberInvariant(5# / units.InputLengthToInternal(1#))
-            SetProfileValue "MaterialModel.Stability.ValueSet", "PR3", "ULS(I)"
+            TestSetSystemSetting "Stability.Code", "SP35"
+            TestSetSystemSetting "Stability.ElementLength", TestFormatNumberInvariant(1000# / units.InputLengthToInternal(1#))
+            TestSetSystemSetting "Stability.Mu1", "1": TestSetSystemSetting "Stability.Mu2", "1"
+            TestSetSystemSetting "Stability.AccidentalEccentricityMode", "User"
+            TestSetSystemSetting "Stability.AccidentalEccentricityPlanes", "BothPlanes"
+            TestSetSystemSetting "Stability.AccidentalEccentricityUser1", TestFormatNumberInvariant(5# / units.InputLengthToInternal(1#))
+            TestSetSystemSetting "Stability.AccidentalEccentricityUser2", TestFormatNumberInvariant(5# / units.InputLengthToInternal(1#))
+            TestSetProfileValue "MaterialModel.Stability.ValueSet", "PR3", "ULS(I)"
         Case "AsymmetricSteel"
             For Each item In Array(Array("Steel.R.ULS(I)", 2, 250#), Array("Steel.R.ULS(I)", 3, 400#), _
                     Array("Steel.R.SLS(II)", 2, 280#), Array("Steel.R.SLS(II)", 3, 450#), _
@@ -50,9 +50,9 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
             FocusedSetSteelValue steelRange, "Steel.TwoLine.Es2", 3, 0.03
             FocusedSetSteelValue steelRange, "Steel.ThreeLine.Es2", 2, 0.018
             FocusedSetSteelValue steelRange, "Steel.ThreeLine.Es2", 3, 0.022
-            SetProfileValue "MaterialModel.Strength.SteelDiagram", "PR3", "TwoLine"
-            SetProfileValue "MaterialModel.CrackInitiation.SteelDiagram", "PR3", "TwoLine"
-            SetProfileValue "MaterialModel.CrackedState.SteelDiagram", "PR3", "TwoLine"
+            TestSetProfileValue "MaterialModel.Strength.SteelDiagram", "PR3", "TwoLine"
+            TestSetProfileValue "MaterialModel.CrackInitiation.SteelDiagram", "PR3", "TwoLine"
+            TestSetProfileValue "MaterialModel.CrackedState.SteelDiagram", "PR3", "TwoLine"
         Case Else
             Err.Raise 5, "RunFocusedSpecialCase", "Unknown focused special case."
     End Select
@@ -63,12 +63,12 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
     Set concrete = provider.ConcreteMaterialForEquilibriumFromSpec(profiles.ProfileById("PR3").StrengthSpec)
     Set steel = provider.SteelMaterialForEquilibriumFromSpec(profiles.ProfileById("PR3").StrengthSpec)
     If caseName = "AsymmetricSteel" Then
-        AssertClose stats, "special.steel.compressionLimit", steel.PhysicalCompressionStrain, -0.02, 0#
-        AssertClose stats, "special.steel.tensionLimit", steel.PhysicalTensionStrain, 0.03, 0#
+        TestAssertClose stats, "special.steel.compressionLimit", steel.PhysicalCompressionStrain, -0.02, 0#
+        TestAssertClose stats, "special.steel.tensionLimit", steel.PhysicalTensionStrain, 0.03, 0#
         ' На плато к сопротивлению прибавляется alpha * E * длина участка после текучести.
-        AssertClose stats, "special.steel.compressionStress", steel.GetStress(-0.02), _
+        TestAssertClose stats, "special.steel.compressionStress", steel.GetStress(-0.02), _
             -250# - settings.GetRequiredDouble("General.PlateauSlopeFactor") * 190000# * (0.02 - 250# / 190000#), 0.00000001
-        AssertClose stats, "special.steel.tensionStress", steel.GetStress(0.03), _
+        TestAssertClose stats, "special.steel.tensionStress", steel.GetStress(0.03), _
             400# + settings.GetRequiredDouble("General.PlateauSlopeFactor") * 210000# * (0.03 - 400# / 210000#), 0.00000001
     End If
     Set frame = New CSectionNumericalFrame: frame.Initialize section
@@ -88,39 +88,39 @@ Public Function RunFocusedSpecialCase(ByVal caseName As String) As String
         durationValues(1, 2) = 0#: durationValues(1, 3) = 0#: durationValues(1, 4) = 0#
         durationRange.Offset(1, 0).Resize(durationRange.Rows.Count - 1, durationRange.Columns.Count).Value2 = durationValues
     End If
-    AppendLine stats, "SPECIAL_INPUT|case=" & caseName & "|N=" & FormatNumberInvariant(n) & _
-        "|Mx=" & FormatNumberInvariant(mx) & "|My=" & FormatNumberInvariant(my)
+    TestAppendLine stats, "SPECIAL_INPUT|case=" & caseName & "|N=" & TestFormatNumberInvariant(n) & _
+        "|Mx=" & TestFormatNumberInvariant(mx) & "|My=" & TestFormatNumberInvariant(my)
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     ResetSectionEquilibriumSolveCount: started = Timer
-    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
+    message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
-    AssertTrue stats, "special.within10Seconds", elapsed <= 10#
-    AssertTrue stats, "special.capture", Not mFocusedBatch Is Nothing
+    TestAssertTrue stats, "special.within10Seconds", elapsed <= 10#
+    TestAssertTrue stats, "special.capture", Not mFocusedBatch Is Nothing
     If Not mFocusedBatch Is Nothing Then
         Set result = mFocusedBatch.ResultAt(1)
         ' Проверка трещин может законно дать FAIL при равновесном НДС.
         ' Состав общего статуса и причины каждого результата проверяются ниже.
-        AssertTrue stats, "special.overall.typed", result.Status = "OK" Or result.Status = "FAIL"
-        AssertTrue stats, "special.preparationReleased", mFocusedBatch.RunPreparationReleased
-        AssertTrue stats, "special.crackDomainOnce", mFocusedBatch.CrackDomainBuildCount <= 1
-        AssertTrue stats, "special.mechanicalNoRepeat", mFocusedBatch.MechanicalPreparationBuildCount <= IIf(caseName = "Stability", 3, 2)
-        If caseName = "Stability" Then AssertEquals stats, "special.stability", result.StabilityResult.Status, "OK"
-        Audit03CheckResultComments stats, mFocusedBatch, 1
+        TestAssertTrue stats, "special.overall.typed", result.Status = "OK" Or result.Status = "FAIL"
+        TestAssertTrue stats, "special.preparationReleased", mFocusedBatch.TestRunPreparationReleased
+        TestAssertTrue stats, "special.crackDomainOnce", mFocusedBatch.TestCrackDomainBuildCount <= 1
+        TestAssertTrue stats, "special.mechanicalNoRepeat", mFocusedBatch.TestMechanicalPreparationBuildCount <= IIf(caseName = "Stability", 3, 2)
+        If caseName = "Stability" Then TestAssertEquals stats, "special.stability", result.StabilityResult.Status, "OK"
+        TestAudit03CheckResultComments stats, mFocusedBatch, 1
         FocusedCheckStates stats, result, settings, units, "special." & caseName
         For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                 result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
-            AssertTrue stats, "special.noNumericalOrInputError." & CStr(meta.ResultKind), _
+            TestAssertTrue stats, "special.noNumericalOrInputError." & CStr(meta.ResultKind), _
                 meta.InternalStatus <> rsNumericalFailure And meta.InternalStatus <> rsInvalidInput And _
                 meta.InternalStatus <> rsInvalidConfiguration And meta.InternalStatus <> rsInternalError
         Next meta
         FocusedCheckOutputRow stats, "rngStrengthSummaryAnchor", caseName, "special"
         FocusedCheckOutputRow stats, "rngCrackSummaryAnchor", caseName, "special"
     End If
-    AppendLine stats, "TOTAL_FOCUSED_SPECIAL: case=" & caseName & "; elapsedSec=" & FormatNumberInvariant(elapsed) & _
+    TestAppendLine stats, "TOTAL_FOCUSED_SPECIAL: case=" & caseName & "; elapsedSec=" & TestFormatNumberInvariant(elapsed) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     GoTo Restore
 Failed:
-    AssertTrue stats, "special.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "special.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Restore:
     On Error GoTo RestoreFailed
     If IsArray(oldSystem) Then systemRange.Formula = oldSystem

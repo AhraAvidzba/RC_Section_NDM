@@ -61,6 +61,7 @@ Private mRebarColor As Long ' Цвет подписей арматуры и их
 Private mDimensionsEnabled As Boolean ' Активна ли группа размеров; выключенные параметры не читаются.
 Private mRebarLabelsEnabled As Boolean ' Активна ли группа подписей арматуры.
 
+Private mCapacity As Long ' Закрытый резерв графических элементов; Count ограничивает доступную заполненную часть.
 Private mCount As Long ' Число подготовленных линий и текстов, которые затем создаст CSectionPlotter.
 Private mKind() As String ' Вид подготовленного графического элемента: линия или текст.
 Private mX1() As Double ' Для линии: X начала; для текста: left.
@@ -442,19 +443,8 @@ End Sub
 Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Double, ByVal x2 As Double, ByVal y2 As Double, _
         ByVal textValue As String, ByVal rotation As Double, ByVal colorValue As Long, ByVal weight As Double, _
         ByVal isBold As Boolean, ByVal hasArrowheads As Boolean, Optional ByVal fontSize As Double = 0#)
+    EnsureItemCapacity mCount + 1
     mCount = mCount + 1
-    ReDim Preserve mKind(1 To mCount)
-    ReDim Preserve mX1(1 To mCount)
-    ReDim Preserve mY1(1 To mCount)
-    ReDim Preserve mX2(1 To mCount)
-    ReDim Preserve mY2(1 To mCount)
-    ReDim Preserve mText(1 To mCount)
-    ReDim Preserve mRotation(1 To mCount)
-    ReDim Preserve mColor(1 To mCount)
-    ReDim Preserve mWeight(1 To mCount)
-    ReDim Preserve mBold(1 To mCount)
-    ReDim Preserve mArrowheads(1 To mCount)
-    ReDim Preserve mFontSize(1 To mCount)
 
     mKind(mCount) = kind
     mX1(mCount) = x1
@@ -469,6 +459,33 @@ Private Sub AppendItem(ByVal kind As String, ByVal x1 As Double, ByVal y1 As Dou
     mArrowheads(mCount) = hasArrowheads
     mFontSize(mCount) = fontSize
 End Sub
+
+' Растит закрытые массивы геометрически, чтобы подготовка N подписей не
+' копировала весь накопленный набор на каждой итерации. Повторный Initialize
+' оставляет резерв и обнуляет только Count; заполненная часть перезаписывается.
+Private Sub EnsureItemCapacity(ByVal required As Long)
+    If required <= mCapacity Then Exit Sub
+    Dim capacity As Long: capacity = required
+    If mCapacity = 0 Then
+        If capacity < 64 Then capacity = 64
+    ElseIf mCapacity <= 1073741823 Then
+        If capacity < mCapacity * 2 Then capacity = mCapacity * 2
+    End If
+    ReDim Preserve mKind(1 To capacity)
+    ReDim Preserve mX1(1 To capacity)
+    ReDim Preserve mY1(1 To capacity)
+    ReDim Preserve mX2(1 To capacity)
+    ReDim Preserve mY2(1 To capacity)
+    ReDim Preserve mText(1 To capacity)
+    ReDim Preserve mRotation(1 To capacity)
+    ReDim Preserve mColor(1 To capacity)
+    ReDim Preserve mWeight(1 To capacity)
+    ReDim Preserve mBold(1 To capacity)
+    ReDim Preserve mArrowheads(1 To capacity)
+    ReDim Preserve mFontSize(1 To capacity)
+    mCapacity = capacity
+End Sub
+
 
 ' Ограничивает визуальные величины диапазоном, в котором они остаются читаемыми.
 Private Function ClampDouble(ByVal value As Double, ByVal minValue As Double, ByVal maxValue As Double) As Double

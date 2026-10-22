@@ -1,0 +1,242 @@
+{
+  "Status": "DIRECTED_ACCEPTANCE_PASS",
+  "FullOnOffAcceptanceClaimed": false,
+  "ReleaseSHA256": "A3F2F4544820CB684139D25C8DA452A439B2AEBAE99B34A2570F422CA3D9C200",
+  "ExportSHA256": "D4E631D7CB129AB23773E25DEDD473E2DC185D53C58084B3EF9340702026DE51",
+  "FrozenTestBookSHA256": "B646D46B5E9CEFABD39C11D9E51F81061867BB1814000244A260E95059960FB2",
+  "ProductionSourceImports": 17,
+  "CurrentImportHashesMatch": true,
+  "GroupsPerMode": 21,
+  "TotalsPerMode": {
+    "On": 25164,
+    "Off": 25164
+  },
+  "DirectedGroups": {
+    "On": [
+      {
+        "Macro": "modTestGeometry.RunGeometryTests",
+        "Passed": 4051,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestCrackWidth.RunCrackTranslationTests",
+        "Passed": 432,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestMaterialDiagrams.RunMaterialPointOrderTests",
+        "Passed": 640,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestCapacitySolver.RunLimitRequestLifecycleTests",
+        "Passed": 66,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSectionSolver.RunSectionSolverTests",
+        "Passed": 3340,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestCrackWidth.RunCrackGeometryTests",
+        "Passed": 473,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "Passed": 27,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "Passed": 34,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "Passed": 172,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestProfileConfig.RunStabilityDurationMatchingTests",
+        "Passed": 384,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "Passed": 287,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestLoadTableConfig.RunAudit03LoadTableTests",
+        "Passed": 11981,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestLoadTableConfig.RunTestMultiAreaLoadValidation",
+        "Passed": 18,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunAudit03GeometrySnapshotTests",
+        "Passed": 1252,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestPlotConfig.RunArbitraryAnnotationLayoutTests",
+        "Passed": 928,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+        "Passed": 425,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow",
+        "Passed": 344,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+        "Passed": 185,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunExcelGuardWorkflowTests",
+        "Passed": 8,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunSectionWorkflowUiTests",
+        "Passed": 17,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "Passed": 100,
+        "Failed": 0
+      }
+    ],
+    "Off": [
+      {
+        "Macro": "modTestGeometry.RunGeometryTests",
+        "Passed": 4051,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestCrackWidth.RunCrackTranslationTests",
+        "Passed": 432,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestMaterialDiagrams.RunMaterialPointOrderTests",
+        "Passed": 640,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestCapacitySolver.RunLimitRequestLifecycleTests",
+        "Passed": 66,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSectionSolver.RunSectionSolverTests",
+        "Passed": 3340,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestCrackWidth.RunCrackGeometryTests",
+        "Passed": 473,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "Passed": 27,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "Passed": 34,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestBatchCalculation.RunAudit03LifecycleTests",
+        "Passed": 172,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestProfileConfig.RunStabilityDurationMatchingTests",
+        "Passed": 384,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "Passed": 287,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestLoadTableConfig.RunAudit03LoadTableTests",
+        "Passed": 11981,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestLoadTableConfig.RunTestMultiAreaLoadValidation",
+        "Passed": 18,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunAudit03GeometrySnapshotTests",
+        "Passed": 1252,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestPlotConfig.RunArbitraryAnnotationLayoutTests",
+        "Passed": 928,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestPlotConfig.RunAudit03NamedAnnotationTests",
+        "Passed": 425,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunTestCalculationFreshnessWorkflow",
+        "Passed": 344,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunAudit03ExcelGuardTests",
+        "Passed": 185,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunExcelGuardWorkflowTests",
+        "Passed": 8,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunSectionWorkflowUiTests",
+        "Passed": 17,
+        "Failed": 0
+      },
+      {
+        "Macro": "modTestWorkbookInterface.RunSectionWorkflowCalculationTests",
+        "Passed": 100,
+        "Failed": 0
+      }
+    ]
+  },
+  "NativeCADSolutions": 24,
+  "AllCodeMatchesSource": true,
+  "UserDataAndFormattingPreserved": true,
+  "SavedDefaultAutomatic": true,
+  "ReviewFiles": 117,
+  "ReviewMethods": 3709,
+  "UnresolvedConcreteFindings": [],
+  "Limitations": [
+    "Not the full156-suite and focused acceptance",
+    "Extreme WCS1e12 full geometry is not guaranteed",
+    "Persistent COM failure / Excel process reset cannot be recovered by VBA"
+  ]
+}

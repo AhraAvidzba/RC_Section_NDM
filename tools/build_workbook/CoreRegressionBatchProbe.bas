@@ -12,23 +12,23 @@ Public Function RunCoreRegressionBatch15() As String
     Set loadRange = ThisWorkbook.Names.Item("rngLoadCombinations").RefersToRange
     oldSystem = systemRange.Formula: oldProfiles = profileRange.Formula: oldLoads = loadRange.Formula
     FocusedSelectGeometry "SavedWorkbook"
-    SetSystemSetting "Load.ReferenceOffsetX", "0"
-    SetSystemSetting "Load.ReferenceOffsetY", "0"
-    SetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
-    SetSystemSetting "General.ExecutionReportEnabled", "Yes"
-    SetSystemSetting "SLS.Crack.Code", "SP35"
-    SetSystemSetting "Plot.Enabled", "Yes"
-    SetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
-    SetSystemSetting "Plot.LoadCase", "Worst"
-    SetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
-    SetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
-    SetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
-    SetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
-    SetProfileValue "Visualization.State", "PR3", "StrengthState"
+    TestSetSystemSetting "Load.ReferenceOffsetX", "0"
+    TestSetSystemSetting "Load.ReferenceOffsetY", "0"
+    TestSetSystemSetting "Calculation.ZeroMomentPerDepth", "0"
+    TestSetSystemSetting "General.ExecutionReportEnabled", "Yes"
+    TestSetSystemSetting "SLS.Crack.Code", "SP35"
+    TestSetSystemSetting "Plot.Enabled", "Yes"
+    TestSetSystemSetting "Plot.AutoUpdateAfterCalculation", "Yes"
+    TestSetSystemSetting "Plot.LoadCase", "Worst"
+    TestSetProfileValue "Calculation.Strength.DirectState", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Strength.Capacity", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Crack.Width", "PR3", "Yes"
+    TestSetProfileValue "Calculation.Stability.Enabled", "PR3", "No"
+    TestSetProfileValue "Visualization.State", "PR3", "StrengthState"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
-    SetSystemSetting "Load.ReferenceOffsetX", FormatNumberInvariant(10# / units.InputLengthToInternal(1#))
-    SetSystemSetting "Load.ReferenceOffsetY", FormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
+    TestSetSystemSetting "Load.ReferenceOffsetX", TestFormatNumberInvariant(10# / units.InputLengthToInternal(1#))
+    TestSetSystemSetting "Load.ReferenceOffsetY", TestFormatNumberInvariant(-7# / units.InputLengthToInternal(1#))
     settings.LoadFromWorkbook ThisWorkbook
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
     Set allCases = FocusedSelectedLoads(section, "Saved")
@@ -52,30 +52,30 @@ Public Function RunCoreRegressionBatch15() As String
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     ResetSectionEquilibriumSolveCount
     started = Timer
-    message = FixtureRunSectionWorkflow(ThisWorkbook, False)
+    message = TestFixtureRunSectionWorkflow(ThisWorkbook, False)
     elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
-    AssertTrue stats, "plateau.batch15.capture", Not mFocusedBatch Is Nothing
+    TestAssertTrue stats, "plateau.batch15.capture", Not mFocusedBatch Is Nothing
     If Not mFocusedBatch Is Nothing Then
-        AssertTrue stats, "plateau.batch15.count", mFocusedBatch.Count = 15
-        AssertTrue stats, "plateau.batch15.preparationReleased", mFocusedBatch.RunPreparationReleased
-        AssertTrue stats, "plateau.batch15.noRepeatedMaterialPreparation", mFocusedBatch.MechanicalPreparationBuildCount <= 2
-        AssertTrue stats, "plateau.batch15.oneCrackDomain", mFocusedBatch.CrackDomainBuildCount <= 1
-        AppendLine stats, "CORE_BATCH_TIME|seconds=" & FormatNumberInvariant(elapsed)
+        TestAssertTrue stats, "plateau.batch15.count", mFocusedBatch.Count = 15
+        TestAssertTrue stats, "plateau.batch15.preparationReleased", mFocusedBatch.TestRunPreparationReleased
+        TestAssertTrue stats, "plateau.batch15.noRepeatedMaterialPreparation", mFocusedBatch.TestMechanicalPreparationBuildCount <= 2
+        TestAssertTrue stats, "plateau.batch15.oneCrackDomain", mFocusedBatch.TestCrackDomainBuildCount <= 1
+        TestAppendLine stats, "CORE_BATCH_TIME|seconds=" & TestFormatNumberInvariant(elapsed)
         ResetSectionEquilibriumSolveCount
         For i = 1 To mFocusedBatch.Count
             Set result = mFocusedBatch.ResultAt(i)
             item = cases(i)
-            AppendLine stats, FocusedComparisonRecord(result, "batch15." & CStr(item(0)))
+            TestAppendLine stats, FocusedComparisonRecord(result, "batch15." & CStr(item(0)))
             FocusedCheckStates stats, result, settings, units, "plateau.batch15." & CStr(item(0))
-            Audit03CheckResultComments stats, mFocusedBatch, i
+            TestAudit03CheckResultComments stats, mFocusedBatch, i
         Next i
     End If
-    AppendLine stats, "TOTAL_CORE_BATCH15: seconds=" & FormatNumberInvariant(elapsed) & _
+    TestAppendLine stats, "TOTAL_CORE_BATCH15: seconds=" & TestFormatNumberInvariant(elapsed) & _
         "; passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)
     GoTo Restore
 Failed:
     stats.Failed = stats.Failed + 1
-    AppendLine stats, "FAIL: plateau.batch15.runtime; " & CStr(Err.Number) & "; " & Err.Description
+    TestAppendLine stats, "FAIL: plateau.batch15.runtime; " & CStr(Err.Number) & "; " & Err.Description
 Restore:
     If IsArray(oldSystem) Then systemRange.Formula = oldSystem
     If IsArray(oldProfiles) Then profileRange.Formula = oldProfiles

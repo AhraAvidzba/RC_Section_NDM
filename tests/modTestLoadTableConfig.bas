@@ -1,4 +1,4 @@
-Attribute VB_Name = "modTestLoadTableConfig"
+﻿Attribute VB_Name = "modTestLoadTableConfig"
 Option Explicit
 
 ' ==========================================================================
@@ -880,4 +880,62 @@ Private Function TestAudit03ExcelMemory() As String
     Exit Function
 Unavailable:
     TestAudit03ExcelMemory = "memory unavailable"
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет отказ до чтения неполной области и отсутствие частично добавленных LC.
+' Один reader после каждого отказа должен читать обе строки обычной таблицы;
+' фактический адрес ошибки получается из Range, а не из фиксированного Config.
+Public Function RunTestMultiAreaLoadValidation() As String
+    Dim stats As TLoadTableStats, fixture As Object, sheet As Object, source As Object
+    Dim reader As CLoadCombinationReader, batch As CBatchSectionCalculator
+    Dim data(1 To 4, 1 To 7) As Variant, caseIndex As Long, number As Long, reason As String
+    Dim oldAlerts As Boolean, expectedAddress As String, prefix As String
+    oldAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167): Set sheet = fixture.Worksheets(1)
+    sheet.Name = "Test MultiArea"
+    data(1, 1) = "CombinationID": data(1, 2) = "N": data(1, 3) = "Mx": data(1, 4) = "My"
+    data(1, 5) = "ProfileId": data(1, 6) = "LoadPath": data(1, 7) = "Comment"
+    data(2, 1) = "AREA_ONE": data(2, 2) = 10#: data(2, 5) = "PR1": data(2, 6) = "Auto"
+    data(4, 1) = "AREA_TWO": data(4, 2) = 20#: data(4, 5) = "PR1": data(4, 6) = "Auto"
+    sheet.Range("A1:G4").Value2 = data
+    Set reader = New CLoadCombinationReader
+    For caseIndex = 1 To 2
+        If caseIndex = 1 Then
+            Set source = Application.Union(sheet.Range("A1:G2"), sheet.Range("A4:G4"))
+        Else
+            Set source = Application.Union(sheet.Range("A1:D4"), sheet.Range("F1:G4")) ' Горизонтальный разрыв должен определяться до проверки числа столбцов первой области.
+        End If
+        Set batch = New CBatchSectionCalculator
+        batch.AddCombination "KEEP_EXISTING", 1#, 0#, 0#, "PR1", "untouched sentinel"
+        expectedAddress = source.Worksheet.Name & "!" & source.Address(False, False)
+        number = 0: reason = vbNullString
+        On Error Resume Next
+        Err.Clear: reader.LoadFromRange source, batch
+        number = Err.Number: reason = Err.Description: Err.Clear
+        On Error GoTo Failed
+        prefix = "multiArea." & CStr(caseIndex)
+        TestCheck stats, prefix & ".shapeRejectedBeforeRead", number = vbObjectError + 3956
+        TestCheck stats, prefix & ".namedRange", InStr(reason, "rngLoadCombinations") > 0
+        TestCheck stats, prefix & ".actualAddress", InStr(reason, expectedAddress) > 0
+        TestCheck stats, prefix & ".solution", InStr(reason, "единую прямоугольную таблицу") > 0 And InStr(reason, "диспетчере имён") > 0
+        TestCheck stats, prefix & ".noPartialRows", batch.Count = 1 And batch.CombinationID(1) = "KEEP_EXISTING"
+        reader.LoadFromRange sheet.Range("A1:G4"), batch
+        TestCheck stats, prefix & ".recoveryCount", batch.Count = 3
+        TestCheck stats, prefix & ".recoveryFirst", batch.CombinationID(2) = "AREA_ONE" And batch.N(2) = 10#
+        TestCheck stats, prefix & ".recoverySecond", batch.CombinationID(3) = "AREA_TWO" And batch.N(3) = 20#
+        TestCheck stats, prefix & ".existingRetained", batch.CombinationID(1) = "KEEP_EXISTING" And batch.N(1) = 1#
+    Next caseIndex
+    GoTo Finished
+Failed:
+    TestCheck stats, "multiArea.runtime." & Err.Number & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not fixture Is Nothing Then fixture.Close False
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+    RunTestMultiAreaLoadValidation = stats.Report & "TOTAL_MULTI_AREA_LOAD: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

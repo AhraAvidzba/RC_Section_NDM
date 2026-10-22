@@ -5,25 +5,25 @@ Public Function RunFocusedBatch15() As String
     Dim settings As CSystemSettingsReader, units As CUnitSystem, i As Long, meta As Variant
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     body = RunSavedCrackSearchProbe("batch15")
-    AssertTrue stats, "batch15.completed", InStr(1, body, "TOTAL_CRACK_SEARCH_PROBE: completed=True", vbBinaryCompare) > 0
-    AssertTrue stats, "batch15.capture", Not mFocusedBatch Is Nothing
+    TestAssertTrue stats, "batch15.completed", InStr(1, body, "TOTAL_CRACK_SEARCH_PROBE: completed=True", vbBinaryCompare) > 0
+    TestAssertTrue stats, "batch15.capture", Not mFocusedBatch Is Nothing
     If Not mFocusedBatch Is Nothing Then
-        AssertTrue stats, "batch15.count", mFocusedBatch.Count = 15
-        AssertTrue stats, "batch15.preparationReleased", mFocusedBatch.RunPreparationReleased
-        AssertTrue stats, "batch15.mechanicalNoRepeat", mFocusedBatch.MechanicalPreparationBuildCount > 0 And _
-            mFocusedBatch.MechanicalPreparationBuildCount <= 2
-        AssertTrue stats, "batch15.crackDomainNoRepeat", mFocusedBatch.CrackDomainBuildCount <= 1
-        AppendLine stats, "BATCH15_PREPARATION|mechanicalBuilds=" & CStr(mFocusedBatch.MechanicalPreparationBuildCount) & _
-            "|crackDomainBuilds=" & CStr(mFocusedBatch.CrackDomainBuildCount)
+        TestAssertTrue stats, "batch15.count", mFocusedBatch.Count = 15
+        TestAssertTrue stats, "batch15.preparationReleased", mFocusedBatch.TestRunPreparationReleased
+        TestAssertTrue stats, "batch15.mechanicalNoRepeat", mFocusedBatch.TestMechanicalPreparationBuildCount > 0 And _
+            mFocusedBatch.TestMechanicalPreparationBuildCount <= 2
+        TestAssertTrue stats, "batch15.crackDomainNoRepeat", mFocusedBatch.TestCrackDomainBuildCount <= 1
+        TestAppendLine stats, "BATCH15_PREPARATION|mechanicalBuilds=" & CStr(mFocusedBatch.TestMechanicalPreparationBuildCount) & _
+            "|crackDomainBuilds=" & CStr(mFocusedBatch.TestCrackDomainBuildCount)
         Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
         Set units = New CUnitSystem: units.LoadFromSettings settings
         For i = 1 To mFocusedBatch.Count
             Set result = mFocusedBatch.ResultAt(i)
-            Audit03CheckResultComments stats, mFocusedBatch, i
+            TestAudit03CheckResultComments stats, mFocusedBatch, i
             FocusedCheckStates stats, result, settings, units, "batch15." & CStr(i)
             For Each meta In Array(result.DirectStateMeta, result.CapacityMeta, result.CrackFormationMeta, _
                     result.CrackCurrentStateMeta, result.CrackWidthMeta, result.LongitudinalCrackMeta, result.OverallMeta)
-                AssertTrue stats, "batch15.noNumericalOrInputError." & CStr(i) & "." & CStr(meta.ResultKind), _
+                TestAssertTrue stats, "batch15.noNumericalOrInputError." & CStr(i) & "." & CStr(meta.ResultKind), _
                     meta.InternalStatus <> rsNumericalFailure And meta.InternalStatus <> rsInvalidInput And _
                     meta.InternalStatus <> rsInvalidConfiguration And meta.InternalStatus <> rsInternalError
             Next meta
@@ -31,7 +31,7 @@ Public Function RunFocusedBatch15() As String
     End If
     GoTo Finished
 Failed:
-    AssertTrue stats, "batch15.runtime." & CStr(Err.Number) & "." & Err.Description, False
+    TestAssertTrue stats, "batch15.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     Set mFocusedBatch = Nothing: Set mFocusedSection = Nothing
     RunFocusedBatch15 = body & stats.Report & "TOTAL_FOCUSED_BATCH15: passed=" & CStr(stats.Passed) & "; failed=" & CStr(stats.Failed)

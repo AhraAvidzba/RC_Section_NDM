@@ -1,4 +1,4 @@
-﻿VERSION 1.0 CLASS
+VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
@@ -1546,9 +1546,16 @@ End Sub
 Private Sub KeepOuterMeshContours(ByRef edges() As TRegionEdge, ByRef count As Long)
     If count = 0 Then Exit Sub
     Dim loopAreas() As Double, outer() As TRegionEdge, outerCount As Long, i As Long
+    Dim originX() As Double, originY() As Double, seenLoop() As Boolean
     ReDim loopAreas(1 To count)
+    ReDim originX(1 To count): ReDim originY(1 To count): ReDim seenLoop(1 To count)
     For i = 1 To count
-        loopAreas(edges(i).LoopID) = loopAreas(edges(i).LoopID) + EdgeSignedArea(edges(i))
+        If Not seenLoop(edges(i).LoopID) Then
+            originX(edges(i).LoopID) = edges(i).X1: originY(edges(i).LoopID) = edges(i).Y1
+            seenLoop(edges(i).LoopID) = True
+        End If
+        loopAreas(edges(i).LoopID) = loopAreas(edges(i).LoopID) + _
+            EdgeSignedArea(edges(i), originX(edges(i).LoopID), originY(edges(i).LoopID)) ' У каждого кольца своя опора; отбор наружных границ не зависит от WCS-переноса.
     Next i
     For i = 1 To count
         If loopAreas(edges(i).LoopID) > QUERY_TOLERANCE Then AppendEdge outer, outerCount, edges(i)

@@ -303,7 +303,8 @@ Private Function SegmentAtDistance(ByVal distance As Double, ByVal incomingTange
     lo = 1: hi = mCount
     Do While lo < hi
         middle = lo + (hi - lo) \ 2 ' Двоичный поиск по накопленным длинам сегментов, без линейного обхода.
-        If distance < mStations(middle) Or (incomingTangentAtJoint And distance <= mStations(middle) + GEOM_TOLERANCE) Then
+        If (Not incomingTangentAtJoint And distance < mStations(middle) - GEOM_TOLERANCE) Or _
+                (incomingTangentAtJoint And distance <= mStations(middle) + GEOM_TOLERANCE) Then ' У численно близкого стыка сохраняем явно выбранную входящую или исходящую касательную.
             hi = middle
         Else
             lo = middle + 1

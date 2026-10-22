@@ -78,7 +78,12 @@ Public Function RunWorkbookRecipeInputTests() As String
     diameterCell.Value2 = 320#
     TestNear "workbook.manual.stale.fixture", CDbl(coverCell.Value2), 75#
     Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units): Set table = context.Table("rngCircleGeometry")
-    TestNear "workbook.manual.capture.refreshed", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
+    TestNear "workbook.manual.capture.noHiddenCalculate", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 75#
+    TestNear "workbook.manual.capture.cacheUnchanged", CDbl(coverCell.Value2), 75#
+    TestCheck "workbook.manual.capture.modeUnchanged", Application.Calculation = xlCalculationManual
+    Application.Calculate ' Низкоуровневый API снимает готовый кэш; штатный Form/Calculate актуализирует весь граф до чтения.
+    Set context = reader.Capture(ThisWorkbook, Array("rngCircleGeometry"), units)
+    TestNear "workbook.manual.capture.afterExplicitCalculate", context.Reader("rngCircleGeometry").Length("Main", "Circle", "as"), 80#
     names = registry.RecipeTableNames("Circle"): names(0) = "CHANGED_COPY"
     names = registry.RecipeTableNames("Circle")
     TestCheck "workbook.registry.metadata.copy", CStr(names(0)) = "rngCircleGeometry"

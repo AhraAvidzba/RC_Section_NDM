@@ -301,7 +301,7 @@ Private Sub CalculateSP35(ByVal currentState As CSectionStateResult, ByVal secti
     On Error GoTo Failed
     Dim gradient As Double, central As Boolean
     gradient = Sqr(currentState.KappaX * currentState.KappaX + currentState.KappaY * currentState.KappaY)
-    central = mCentralTensionBranch Or (gradient <= NEAR_ZERO_STRAIN And currentState.Epsilon0 > NEAR_ZERO_STRAIN)
+    central = mCentralTensionBranch Or (gradient <= NEAR_ZERO_STRAIN And StrainAtConcreteCenter(currentState, section) > NEAR_ZERO_STRAIN) ' Одинаковый с Prepare критерий по центру сечения сохраняет ветку при переносе WCS и при почти нулевой деформации.
     Set mSP35Data = New CSP35CrackData
     mSP35Data.Prepare section, currentState.Epsilon0, currentState.KappaX, currentState.KappaY, steelMaterial, _
         mSP35GroupGapTolerance, mSP35RowTolerance, mSP35RadiusDiameterMode, mSP35InteractionRadiusMode, central, _
@@ -418,7 +418,7 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     Dim normK As Double
     normK = Sqr(currentSolver.KappaX * currentSolver.KappaX + currentSolver.KappaY * currentSolver.KappaY)
     If normK <= NEAR_ZERO_STRAIN Then ' При равномерной деформации нейтральной линии нет. Если порог образования трещины не выделен, определяем состояние по текущему НДС, не деля на нулевую кривизну.
-        If currentSolver.Epsilon0 > NEAR_ZERO_STRAIN Then
+        If StrainAtConcreteCenter(currentSolver, section) > NEAR_ZERO_STRAIN Then ' При почти равномерной плоскости проверяем деформацию в центре бетона, а не в удаленном начале WCS.
             CalculateCentralTension currentSolver, section, materialProvider, loadStateForClassification
         Else
             FinishNoCrack "В текущем равномерном поле деформаций нет растянутой зоны для расчета раскрытия трещины."
@@ -481,6 +481,15 @@ Private Sub CalculateGeneralBending(ByVal currentSolver As CSectionStateResult, 
     If Not FinalizeWithPsiMode(section, materialProvider, selected, _
             "Расчет выполнен для произвольного сечения по общей НДМ-ветке.") Then Exit Sub
 End Sub
+
+
+' Вычисляет деформацию в центре бетонной сетки для выбора почти равномерной
+' ветки; центр уже кэширован подготовкой НДС, новый обход элементов не нужен.
+Private Function StrainAtConcreteCenter(ByVal state As CSectionStateResult, ByVal section As CSectionModel) As Double
+    Dim centerX As Double, centerY As Double, concreteArea As Double
+    section.ConcreteMeshCentroid centerX, centerY, concreteArea
+    StrainAtConcreteCenter = state.Epsilon0 + state.KappaX * centerY + state.KappaY * centerX
+End Function
 
 
 ' Завершает подготовку нормативной формулы раскрытия трещин после выбора

@@ -47,13 +47,16 @@ Private mConcreteElasticModulus(1 To 3) As Double ' Eb выбранной бет
 Private mSteelElasticModulus(1 To 3) As Double ' Es выбранной модели арматуры, МПа.
 Private mDiagramExtensionEnabled As Boolean ' Разрешение вспомогательного продолжения диаграмм при поиске равновесия.
 Private mPlateauSlopeFactor As Double ' Et = alpha * E; default Config 0.001 дает наклон плато 0.001 * E (0.1% E); ноль — горизонтальное плато.
+Private mInputLocations As Object ' Независимый снимок строк фактических адресов Concrete/Steel; не хранит изменяемый reader или объекты Excel.
 Private mInitialized As Boolean ' Защита от использования provider-а до чтения параметров.
 Private mDiagramCache As Object ' Кэш CMaterialDiagram по MaterialModelSpec; диаграммы после Initialize неизменяемы.
 Private mRevision As Long ' Версия набора материалов и effective Extension после переинициализации.
 
 ' Читает Config, создает параметры материалов и строит физические диаграммы.
 Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal units As CUnitSystem = Nothing)
+    Set mInputLocations = Nothing
     If settings Is Nothing Then Err.Raise vbObjectError + 3240, "CMaterialModelProvider", "Настройки материалов не переданы."
+    SnapshotMaterialInputLocations settings
     mInitialized = False
     mRevision = mRevision + 1
     Set mDiagramCache = CreateObject("Scripting.Dictionary")
@@ -86,6 +89,22 @@ Public Sub Initialize(ByVal settings As CSystemSettingsReader, Optional ByVal un
         settings.GetString("Diagram.CrackedNDS.Steel", "TwoLine")
 
     mInitialized = True
+End Sub
+
+' Сохраняет только неизменяемые строки мест ввода материалов один раз.
+' FromSpec может построить другую активную диаграмму после Initialize; ее
+' ошибка также получит фактический адрес без чтения листов и хранения reader.
+Private Sub SnapshotMaterialInputLocations(ByVal settings As CSystemSettingsReader)
+    Set mInputLocations = CreateObject("Scripting.Dictionary")
+    mInputLocations.CompareMode = vbTextCompare
+    Dim i As Long, key As String
+    For i = 1 To settings.KeyCount
+        key = settings.KeyAt(i)
+        If StrComp(Left$(key, 9), "Concrete.", vbTextCompare) = 0 Or _
+                StrComp(Left$(key, 6), "Steel.", vbTextCompare) = 0 Then
+            If Not mInputLocations.Exists(key) Then mInputLocations.Add key, settings.InputLocation(key)
+        End If
+    Next i
 End Sub
 
 ' Читает обязательную текущую настройку численного продолжения диаграмм.
@@ -161,6 +180,8 @@ Private Function BuildConcreteTwoLine(ByVal limitStateGroup As String, ByVal ten
         eps(5) = mConcreteParameters.Ebt2: sig(5) = rbt
     End If
 
+    ValidateStrainPointOrder eps, count, Array("Concrete.Eb2", "Concrete.Eb1Red", vbNullString, _
+        "Concrete.Ebt1Red", "Concrete.Ebt2"), "бетона TwoLine"
     Set BuildConcreteTwoLine = DiagramFromArrays(eps, sig, count, mConcreteParameters.Eb, mConcreteParameters.Ebt)
 End Function
 
@@ -193,6 +214,11 @@ Private Function BuildConcreteThreeLine(ByVal limitStateGroup As String, ByVal t
         eps(7) = mConcreteParameters.Ebt2: sig(7) = rbt
     End If
 
+    Dim suffix As String
+    suffix = MaterialStrengthKeySuffix(limitStateGroup)
+    ValidateStrainPointOrder eps, count, Array("Concrete.Eb2", "Concrete.Eb0", _
+        "Concrete.Rb." & suffix & ";Concrete.Eb", vbNullString, _
+        "Concrete.Rbt." & suffix & ";Concrete.Ebt", "Concrete.Ebt0", "Concrete.Ebt2"), "бетона ThreeLine"
     Set BuildConcreteThreeLine = DiagramFromArrays(eps, sig, count, mConcreteParameters.Eb, mConcreteParameters.Ebt)
 End Function
 
@@ -219,6 +245,10 @@ Private Function BuildSteelTwoLine(ByVal limitStateGroup As String) As CMaterial
     eps(4) = rs / mSteelParameters.Es: sig(4) = rs
     eps(5) = mSteelParameters.TwoLineEs2: sig(5) = rs
 
+    Dim suffix As String
+    suffix = MaterialStrengthKeySuffix(limitStateGroup)
+    ValidateStrainPointOrder eps, 5, Array("Steel.TwoLine.Esc2", "Steel.Rsc." & suffix & ";Steel.Esc", _
+        vbNullString, "Steel.Rs." & suffix & ";Steel.Es", "Steel.TwoLine.Es2"), "арматуры TwoLine"
     Set BuildSteelTwoLine = DiagramFromArrays(eps, sig, 5, mSteelParameters.Esc, mSteelParameters.Es)
 End Function
 
@@ -254,8 +284,48 @@ Private Function BuildSteelThreeLine(ByVal limitStateGroup As String) As CMateri
     eps(8) = epsSPl: sig(8) = 1.1 * rs
     eps(9) = mSteelParameters.ThreeLineEs2: sig(9) = 1.1 * rs
 
+    Dim suffix As String, compressionKeys As String, tensionKeys As String
+    suffix = MaterialStrengthKeySuffix(limitStateGroup)
+    compressionKeys = "Steel.Rsc." & suffix & ";Steel.Esc"
+    tensionKeys = "Steel.Rs." & suffix & ";Steel.Es"
+    ValidateStrainPointOrder eps, 9, Array("Steel.ThreeLine.Esc2", compressionKeys, compressionKeys, _
+        compressionKeys, vbNullString, tensionKeys, tensionKeys, tensionKeys, "Steel.ThreeLine.Es2"), "арматуры ThreeLine"
     Set BuildSteelThreeLine = DiagramFromArrays(eps, sig, 9, mSteelParameters.Esc, mSteelParameters.Es)
 End Function
+
+' Выбирает только ключ набора сопротивлений для сообщения; формулы точек и
+' действующие сопротивления остаются в ConcreteStrengths/SteelStrengths.
+Private Function MaterialStrengthKeySuffix(ByVal limitStateGroup As String) As String
+    If StrComp(limitStateGroup, "II", vbTextCompare) = 0 Then MaterialStrengthKeySuffix = "SLS" Else MaterialStrengthKeySuffix = "ULS"
+End Function
+
+' Проверяет порядок фактически используемых точек до изменения напряжений плато.
+' Сортировка готовой CMaterialDiagram не должна превращать ошибочный eps_ult в
+' другую точку и незаметно менять физический предел. Неактивные ветви не проверяются.
+Private Sub ValidateStrainPointOrder(ByRef strains() As Double, ByVal count As Long, _
+        ByVal sourceKeys As Variant, ByVal materialLabel As String)
+    Dim i As Long
+    For i = 2 To count
+        If strains(i) <= strains(i - 1) Then
+            Dim message As String, correction As String, keys As String, key As Variant, seen As String
+            correction = "Проверьте указанные параметры: модуль предельной деформации должен быть больше деформации соседнего перелома, а промежуточные точки должны следовать по порядку."
+            message = "Противоречивые параметры диаграммы " & materialLabel & ": соседние точки имеют деформации " & _
+                CStr(strains(i - 1)) & " и " & CStr(strains(i)) & ", которые не возрастают. " & correction
+            keys = CStr(sourceKeys(i - 2)) & ";" & CStr(sourceKeys(i - 1))
+            For Each key In Split(keys, ";")
+                If Len(CStr(key)) > 0 And InStr(1, seen, ";" & CStr(key) & ";", vbBinaryCompare) = 0 Then
+                    seen = seen & ";" & CStr(key) & ";"
+                    message = message & vbCrLf & "Настройка " & CStr(key)
+                    If Not mInputLocations Is Nothing Then
+                        If mInputLocations.Exists(CStr(key)) Then message = message & " (" & CStr(mInputLocations(CStr(key))) & ")"
+                    End If
+                    message = message & "."
+                End If
+            Next key
+            Err.Raise vbObjectError + 3260, "CMaterialModelProvider", message
+        End If
+    Next i
+End Sub
 
 ' Создает CMaterialDiagram из массивов физических точек.
 Private Function DiagramFromArrays(ByRef strains() As Double, ByRef stresses() As Double, ByVal pointCount As Long, _
@@ -890,6 +960,7 @@ Public Sub TestInitializeFromParameters(ByVal concreteParameters As CConcreteMat
         Optional ByVal crackedSteelDiagram As String = "TwoLine", _
         Optional ByVal diagramExtensionEnabled As Boolean = True, _
         Optional ByVal plateauSlopeFactor As Double = 0#)
+    Set mInputLocations = Nothing
     If concreteParameters Is Nothing Then Err.Raise vbObjectError + 3243, "CMaterialModelProvider", "Параметры бетона не переданы."
     If steelParameters Is Nothing Then Err.Raise vbObjectError + 3244, "CMaterialModelProvider", "Параметры арматуры не переданы."
     If plateauSlopeFactor < 0# Then Err.Raise vbObjectError + 3247, "CMaterialModelProvider", "Коэффициент наклона плато должен быть не меньше нуля."

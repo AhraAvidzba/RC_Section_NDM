@@ -211,36 +211,39 @@ Public Sub AddConcreteElement(ByVal xCoord As Double, ByVal yCoord As Double, By
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
         Optional ByVal localIxy As Double = 0#, Optional ByVal rotationKnown As Boolean = False)
     If area <= 0# Then Err.Raise vbObjectError + 5200, "CSectionModel", "Площадь бетонного элемента должна быть положительной."
+    If Abs(rotation) > 2# * GEOM_PI Then rotation = NormalizeAnglePi(rotation) ' Проверяем большой угол до тригонометрии собственных инерций и до добавления элемента в массивы.
 
     EnsureConcreteCapacity mConcreteCount + 1 ' Массивы хранятся параллельно, чтобы горячие расчетные циклы работали без коллекций и COM-объектов на каждом элементе.
-    mConcreteCount = mConcreteCount + 1
+    Dim nextIndex As Long
+    nextIndex = mConcreteCount + 1
 
-    mConcreteID(mConcreteCount) = "C" & CStr(mConcreteCount) ' Единое расчётное имя создаётся здесь независимо от генератора или AutoCAD.
-    mConcreteSourceName(mConcreteCount) = sourceName
-    mConcreteSourceHandle(mConcreteCount) = sourceHandle
-    mConcreteX(mConcreteCount) = xCoord
-    mConcreteY(mConcreteCount) = yCoord
-    mConcreteArea(mConcreteCount) = area
-    mConcreteMaterialID(mConcreteCount) = materialID
-    mConcreteShapeType(mConcreteCount) = shapeType
-    mConcreteWidth(mConcreteCount) = width
-    mConcreteHeight(mConcreteCount) = height
-    mConcreteRotation(mConcreteCount) = rotation
-    mConcreteRotationKnown(mConcreteCount) = rotationKnown Or Abs(rotation) > GEOM_TOLERANCE Or _
-        HasExplicitRectangleGeometry(mConcreteCount)
-    mConcreteLocalIx(mConcreteCount) = localIx
-    mConcreteLocalIy(mConcreteCount) = localIy
-    mConcreteLocalIxy(mConcreteCount) = localIxy
-    If Not IsPositiveDefiniteInertia(mConcreteLocalIx(mConcreteCount), _
-            mConcreteLocalIy(mConcreteCount), mConcreteLocalIxy(mConcreteCount)) Then
-        If HasExplicitRectangleGeometry(mConcreteCount) Then
+    mConcreteID(nextIndex) = "C" & CStr(nextIndex) ' Единое расчётное имя создаётся здесь независимо от генератора или AutoCAD.
+    mConcreteSourceName(nextIndex) = sourceName
+    mConcreteSourceHandle(nextIndex) = sourceHandle
+    mConcreteX(nextIndex) = xCoord
+    mConcreteY(nextIndex) = yCoord
+    mConcreteArea(nextIndex) = area
+    mConcreteMaterialID(nextIndex) = materialID
+    mConcreteShapeType(nextIndex) = shapeType
+    mConcreteWidth(nextIndex) = width
+    mConcreteHeight(nextIndex) = height
+    mConcreteRotation(nextIndex) = rotation
+    mConcreteRotationKnown(nextIndex) = rotationKnown Or Abs(rotation) > GEOM_TOLERANCE Or _
+        HasExplicitRectangleGeometry(nextIndex)
+    mConcreteLocalIx(nextIndex) = localIx
+    mConcreteLocalIy(nextIndex) = localIy
+    mConcreteLocalIxy(nextIndex) = localIxy
+    If Not IsPositiveDefiniteInertia(mConcreteLocalIx(nextIndex), _
+            mConcreteLocalIy(nextIndex), mConcreteLocalIxy(nextIndex)) Then
+        If HasExplicitRectangleGeometry(nextIndex) Then
             RectangleLocalInertiaComponents area, width, height, rotation, _
-                mConcreteLocalIx(mConcreteCount), _
-                mConcreteLocalIy(mConcreteCount), _
-                mConcreteLocalIxy(mConcreteCount) ' Если генератор передал реальные размеры прямоугольной ячейки, рассчитываем её собственные моменты инерции по этим размерам. При импорте AutoCAD отсутствующие размеры здесь не угадываются.
+                mConcreteLocalIx(nextIndex), _
+                mConcreteLocalIy(nextIndex), _
+                mConcreteLocalIxy(nextIndex) ' Если генератор передал реальные размеры прямоугольной ячейки, рассчитываем её собственные моменты инерции по этим размерам. При импорте AutoCAD отсутствующие размеры здесь не угадываются.
         End If
     End If
-    mConcreteComment(mConcreteCount) = comment
+    mConcreteComment(nextIndex) = comment
+    mConcreteCount = nextIndex ' Слот становится видимым только после успешного завершения; при ошибке прежние Count, Revision и кэши остаются согласованными.
     mRevision = mRevision + 1
 End Sub
 
@@ -735,6 +738,11 @@ End Function
 
 ' Нормализует угол беззнаковой оси в диапазон (-pi/2; pi/2], радианы.
 Private Function NormalizeAnglePi(ByVal angleValue As Double) As Double
+    If Abs(angleValue) > 2# * GEOM_PI Then
+        On Error GoTo InvalidAngle
+        angleValue = Atn2Local(Sin(angleValue), Cos(angleValue)) ' Большой угол сводим за постоянное время: при 1e20 вычитание pi уже не изменяет Double.
+        On Error GoTo 0
+    End If
     Do While angleValue > GEOM_PI / 2#
         angleValue = angleValue - GEOM_PI
     Loop
@@ -742,6 +750,9 @@ Private Function NormalizeAnglePi(ByVal angleValue As Double) As Double
         angleValue = angleValue + GEOM_PI
     Loop
     NormalizeAnglePi = angleValue
+    Exit Function
+InvalidAngle:
+    Err.Raise vbObjectError + 5222, "CSectionModel", "Не удалось определить направление бетонного элемента по заданному углу. Укажите конечный угол поворота в радианах."
 End Function
 
 ' Добавляет стержень арматуры. Если площадь не задана, вычисляет её по диаметру.

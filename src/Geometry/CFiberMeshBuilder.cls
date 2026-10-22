@@ -30,6 +30,7 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
 
     On Error GoTo FailedBuild
     If mReadOnly Then Err.Raise vbObjectError + 2111, "CFiberMeshBuilder", "Опубликованную сетку нельзя перестроить. Создайте новый построитель."
+    mFiberCount = 0: mBuildSeconds = 0#: Erase mFibers ' Ошибочная новая попытка не должна оставлять доступной сетку прежнего запуска.
     Dim message As String
     If geometry Is Nothing Then Err.Raise vbObjectError + 2107, "CFiberMeshBuilder", "Геометрия бетонного сечения не передана."
     If Not geometry.IsValid(message) Then Err.Raise vbObjectError + 2100, "CFiberMeshBuilder", message
@@ -147,10 +148,14 @@ Public Sub BuildMesh(ByVal geometry As CGeometryRegion, ByVal stepX As Double, B
     End If
 
     mBuildSeconds = Timer - t0
+    If mBuildSeconds < 0# Then mBuildSeconds = mBuildSeconds + 86400# ' Timer обнуляется в полночь; длительность успешной сборки остаётся положительной.
     Exit Sub
 FailedBuild:
     Dim number As Long, source As String, reason As String
     number = Err.Number: source = Err.Source: reason = Err.Description
+    If Not mReadOnly Then
+        mFiberCount = 0: mBuildSeconds = 0#: Erase mFibers ' Не публикуем частично собранные элементы; отказ изменения Frozen-сетки её не очищает.
+    End If
     If Len(sourceReference) > 0 Then reason = reason & " Параметры бетонной сетки: " & sourceReference & "."
     Err.Raise number, source, reason
 End Sub

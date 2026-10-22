@@ -65,6 +65,8 @@ Private Type TMechanicalQuery
 End Type
 Private mMechanicalQueries(1 To 16) As TMechanicalQuery ' Малый ограниченный кэш точных осей/точек одного представления.
 Private mMechanicalQueryCount As Long ' Число сохранённых вычислений характеристик для заданных осей и точек.
+Private mAccumulationOriginX As Double, mAccumulationOriginY As Double ' Общая локальная опора сумм; глобальные S/I восстанавливаются после вычисления центральных инерций.
+Private mAccumulationOriginKnown As Boolean ' Опора назначается первому добавленному элементу и не меняется до Clear.
 
 Private Const PRINCIPAL_AXIS_ISOTROPIC_RELATIVE_TOLERANCE As Double = 0.000001 ' Допуск для почти круговых/изотропных сечений.
 
@@ -228,6 +230,10 @@ End Function
 Private Sub AddWeightedArea(ByVal weight As Double, ByVal x As Double, ByVal y As Double, _
         Optional ByVal localIx As Double = 0#, Optional ByVal localIy As Double = 0#, _
         Optional ByVal localIxy As Double = 0#)
+    If Not mAccumulationOriginKnown Then
+        mAccumulationOriginX = x: mAccumulationOriginY = y: mAccumulationOriginKnown = True
+    End If
+    x = x - mAccumulationOriginX: y = y - mAccumulationOriginY ' Суммируем локально в том же проходе: большой WCS-перенос не поглощает собственную инерцию элемента.
     mArea = mArea + weight
     mStaticMomentX = mStaticMomentX + weight * y
     mStaticMomentY = mStaticMomentY + weight * x
@@ -545,7 +551,7 @@ Public Function CoreDistanceAlong(ByVal section As CSectionModel, ByVal directio
     Dim criticalShapeValue As Double
     centroidProjection = kyPerEccentricity * mCentroidX + kxPerEccentricity * mCentroidY
     criticalShapeValue = minProjection - centroidProjection ' Критическое крайнее волокно относительно текущего центра даёт первое обнуление линейной деформации.
-    If criticalShapeValue >= -GEOM_TOLERANCE Then Exit Function
+    If criticalShapeValue >= 0# Then Exit Function ' Проверяем знак, не сравниваем величину 1/мм3 с допуском длины.
 
     CoreDistanceAlong = -1# / (mArea * criticalShapeValue)
 End Function
@@ -615,16 +621,22 @@ End Function
 ' потому что к этому моменту все различие уже учтено в накопленных весах.
 Private Sub FinalizeProperties(ByVal t0 As Double, Optional ByVal hasConcreteCenter As Boolean = False, _
         Optional ByVal centerX As Double = 0#, Optional ByVal centerY As Double = 0#)
+    Dim localCenterX As Double, localCenterY As Double
+    localCenterX = mStaticMomentY / mArea: localCenterY = mStaticMomentX / mArea ' Эти отклонения не восстанавливаем вычитанием двух больших глобальных координат.
     If hasConcreteCenter Then
         mCentroidX = centerX: mCentroidY = centerY
     Else
-        mCentroidX = mStaticMomentY / mArea
-        mCentroidY = mStaticMomentX / mArea
+        mCentroidX = mAccumulationOriginX + localCenterX
+        mCentroidY = mAccumulationOriginY + localCenterY
     End If
 
-    mIxc = mIx - mArea * mCentroidY * mCentroidY ' Перенос к центру тяжести по теореме Гюйгенса — Штейнера, мм4.
-    mIyc = mIy - mArea * mCentroidX * mCentroidX
-    mIxyc = mIxy - mArea * mCentroidX * mCentroidY
+    mIxc = mIx - mArea * localCenterY * localCenterY ' Центральные моменты получаем до возврата в WCS, без разности глобальных величин порядка A*WCS^2.
+    mIyc = mIy - mArea * localCenterX * localCenterX
+    mIxyc = mIxy - mArea * localCenterX * localCenterY
+    mStaticMomentX = mArea * mCentroidY: mStaticMomentY = mArea * mCentroidX ' Публичные статические моменты по-прежнему относятся к исходным осям WCS.
+    mIx = mIxc + mArea * mCentroidY * mCentroidY
+    mIy = mIyc + mArea * mCentroidX * mCentroidX
+    mIxy = mIxyc + mArea * mCentroidX * mCentroidY
 
     Dim avgI As Double
     Dim radius As Double
@@ -682,6 +694,7 @@ Public Sub Clear()
     mPrincipalRadius1 = 0#
     mPrincipalRadius2 = 0#
     mLastCalculationSeconds = 0#
+    mAccumulationOriginX = 0#: mAccumulationOriginY = 0#: mAccumulationOriginKnown = False
 End Sub
 
 ' Площадь текущего представления: бетонная или приведенная к бетону, мм2.

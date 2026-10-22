@@ -7,6 +7,16 @@ Option Explicit
 ' Проверяет именованные диапазоны, выпадающие списки, листы и макросы
 ' для воспроизводимой сборки книги.
 
+#If VBA7 Then
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Связывает полученный COM HWND с PID, чтобы не трогать прежний пользовательский Excel.
+Private Declare PtrSafe Function TestExcelWindowProcessId Lib "user32" Alias "GetWindowThreadProcessId" (ByVal hwnd As LongPtr, ByRef processID As Long) As Long
+#Else
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Тот же Win32-контракт для 32-разрядного VBA без LongPtr.
+Private Declare Function TestExcelWindowProcessId Lib "user32" Alias "GetWindowThreadProcessId" (ByVal hwnd As Long, ByRef processID As Long) As Long
+#End If
+
 Private Type TUiTestStats
     Passed As Long
     Failed As Long
@@ -7136,6 +7146,9 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     before = anchor.Resize(3, 15).Value2
     reader.LoadGeometryOnlyForMissingState fixture, settings, "Нет расчетного состояния в test fixture"
     TestAssertTextEquals stats, "audit03.geometrySnapshot.lateComment", reader.LoadCaseComment, "Комментарий позднего сочетания"
+    comments.Offset(12, 0).Resize(2, 2).ClearContents ' Сводка сохраняет пустые позиции исходных строк LC; они не заканчивают таблицу.
+    reader.LoadGeometryOnlyForMissingState fixture, settings, "Нет расчетного состояния в test fixture"
+    TestAssertTextEquals stats, "workingReview.plotComment.afterBlankSlots", reader.LoadCaseComment, "Комментарий позднего сочетания"
     actual = anchor.Resize(3, 15).Value2
     TestAssertTrue stats, "audit03.geometrySnapshot.unchanged", TestAudit02SnapshotTablesEqual(before, actual)
     ' Ширина таблицы тоже должна учитывать реальную границу листа, если
@@ -7511,6 +7524,32 @@ Public Function RunAudit03ExcelGuardTests() As String
     RunAudit03ExcelGuardTests = stats.Report
 End Function
 
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Снимает PID и время создания всех прежних Excel до CreateObject; отказ WMI
+' запрещает тесту менять видимость, состояние или закрывать неизвестный процесс.
+Private Function TestExcelProcessSnapshot() As Object
+    Dim result As Object, process As Object
+    Set result = CreateObject("Scripting.Dictionary")
+    For Each process In GetObject("winmgmts:").ExecQuery("SELECT ProcessId,CreationDate FROM Win32_Process WHERE Name='EXCEL.EXE'")
+        result.Add CStr(process.ProcessId), CStr(process.CreationDate)
+    Next process
+    Set TestExcelProcessSnapshot = result
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Получает текущую идентичность конкретного COM-окна; пустой результат означает
+' отсутствие доказательства владения, поэтому cleanup не получает разрешения Quit.
+Private Function TestExcelProcessIdentity(ByVal excel As Object, ByRef processID As Long) As String
+    Dim process As Object
+    processID = 0
+    TestExcelWindowProcessId excel.hwnd, processID
+    If processID <= 0 Then Exit Function
+    For Each process In GetObject("winmgmts:").ExecQuery("SELECT CreationDate FROM Win32_Process WHERE Name='EXCEL.EXE' AND ProcessId=" & CStr(processID))
+        TestExcelProcessIdentity = CStr(process.CreationDate)
+    Next process
+End Function
+
 ' -------------------- ДЛЯ ТЕСТОВ --------------------
 ' Восемь сочетаний Boolean и три режима пересчета проверяются через тот же
 ' guard, что используется workbook-сценарием. После failed Enter проверяем
@@ -7519,14 +7558,19 @@ Private Sub TestAudit03ExcelGuardContracts(ByRef stats As TUiTestStats)
     Dim otherExcel As Object, book As Object, guard As CExcelAppStateGuard, owned As Boolean
     Dim mode As Variant, flags As Long, screen As Boolean, events As Boolean, alerts As Boolean
     Dim code As Long, source As String, reason As String, nativeCode As Long, nativeSource As String, nativeReason As String
-    Dim prefix As String, solveCount As Long
+    Dim prefix As String, solveCount As Long, existing As Object, ownedPID As Long, checkedPID As Long, ownedStart As String, currentStart As String
     On Error GoTo Failed
     solveCount = SectionEquilibriumSolveCount()
+    Set existing = TestExcelProcessSnapshot()
     Set otherExcel = CreateObject("Excel.Application")
-    owned = (otherExcel.Hwnd <> Application.Hwnd)
-    If Not owned Then Err.Raise 5, "TestAudit03ExcelGuardContracts", "Не создан отдельный Excel.Application для теста."
+    ownedStart = TestExcelProcessIdentity(otherExcel, ownedPID)
+    If ownedPID <= 0 Or Len(ownedStart) = 0 Then Err.Raise 5, "TestAudit03ExcelGuardContracts", "Не удалось доказать PID/время создания отдельного Excel."
+    If existing.Exists(CStr(ownedPID)) Then Err.Raise 5, "TestAudit03ExcelGuardContracts", "CreateObject вернул ранее открытый Excel; его состояние не менялось."
+    owned = True ' Только новый PID с проверенным временем создания получает право изменять свойства и завершаться.
+    TestAppendLine stats, "EXCEL_GUARD_OWNED: pid=" & ownedPID & "; creationDate=" & ownedStart
     otherExcel.Visible = False
     TestAssertTrue stats, "audit03.excelGuard.emptyApplication", otherExcel.Workbooks.Count = 0
+    If otherExcel.Workbooks.Count <> 0 Then Err.Raise 5, "TestAudit03ExcelGuardContracts", "Новый Excel уже содержит книги: проверка пустого приложения остановлена."
     On Error Resume Next
     Err.Clear: otherExcel.Calculation = xlCalculationManual
     nativeCode = Err.Number: nativeSource = Err.Source: nativeReason = Err.Description
@@ -7576,12 +7620,17 @@ Failed:
     TestAssertTrue stats, "audit03.excelGuard.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Cleanup:
     On Error Resume Next
-    If Not guard Is Nothing Then guard.Restore
-    Set guard = Nothing
     If owned Then
-        otherExcel.DisplayAlerts = False
-        If Not book Is Nothing Then book.Close False
-        otherExcel.Quit
+        Err.Clear: currentStart = TestExcelProcessIdentity(otherExcel, checkedPID)
+        If Err.Number = 0 And checkedPID = ownedPID And currentStart = ownedStart Then
+            If Not guard Is Nothing Then guard.Restore
+            Set guard = Nothing
+            otherExcel.DisplayAlerts = False
+            If Not book Is Nothing Then book.Close False
+            otherExcel.Quit
+        Else
+            TestAssertTrue stats, "audit03.excelGuard.cleanup.identityChanged", False
+        End If
     End If
     Set book = Nothing: Set otherExcel = Nothing
     On Error GoTo 0
@@ -8634,4 +8683,386 @@ Failed:
 Finished:
     TestFixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
     RunImportMessageScopeTests = stats.Report & "TOTAL_IMPORT_MESSAGE_SCOPE: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Измеряет только чтение готовых 100/1000/10000 аннотаций, без формирования,
+' НДС и рисунка. Запускается одинаково до и после изменения закрытого резерва;
+' проверка всех полей выполняется вне измеряемого участка.
+Public Function RunTestAnnotationReadBenchmark() As String
+    Dim stats As TUiTestStats, fixture As Object, sheet As Object, anchor As Object
+    Dim reader As CSectionPlotDataReader, settings As CSystemSettingsReader
+    Dim configuration(1 To 2, 1 To 3) As Variant, properties(1 To 2, 1 To 4) As Variant
+    Dim sizes As Variant, size As Variant, data As Variant, row As Long, column As Long, repetition As Long
+    Dim started As Double, elapsed As Double, errorNumber As Long, description As String
+    Dim wasAlerts As Boolean: wasAlerts = Application.DisplayAlerts
+    On Error GoTo Failed
+    Set fixture = Application.Workbooks.Add(-4167)
+    Set sheet = fixture.Worksheets(1): sheet.Name = "AnnotationBench"
+    TestInitializeEmptyContourFixture fixture, sheet
+    fixture.Names.Add Name:="rngNDMSectionGeometry", RefersTo:="='AnnotationBench'!$A$5"
+    sheet.Range("A5").Resize(3, 15).Value2 = TestAudit03GeometrySnapshotArray("mm", 1#)
+    properties(1, 1) = "LoadCase": properties(1, 2) = "Parameter": properties(1, 3) = "Value": properties(1, 4) = "Unit"
+    properties(2, 1) = "ALL": properties(2, 2) = "Bounds.MaxX": properties(2, 3) = 100#: properties(2, 4) = "mm"
+    sheet.Range("R5").Resize(2, 4).Value2 = properties
+    fixture.Names.Add Name:="rngNDMSectionProperties", RefersTo:="='AnnotationBench'!$R$5"
+    configuration(1, 1) = "Параметр": configuration(1, 2) = "Значение": configuration(1, 3) = "Комментарий"
+    configuration(2, 1) = "Plot.LoadCase": configuration(2, 2) = "Worst"
+    sheet.Range("AO5").Resize(2, 3).Value2 = configuration
+    Set settings = New CSystemSettingsReader: settings.LoadFromRange sheet.Range("AO5").Resize(2, 3)
+    Set anchor = sheet.Range("A30")
+    fixture.Names.Add Name:="rngNDMSectionAnnotations", RefersTo:="='AnnotationBench'!$A$30"
+    Set reader = New CSectionPlotDataReader
+    sizes = Array(100, 1000, 10000, 100) ' Последний меньший набор проверяет очистку хвоста после большого.
+    For Each size In sizes
+        anchor.Resize(10002, 24).ClearContents
+        data = TestAnnotationBenchmarkArray(CLng(size))
+        anchor.Resize(CLng(size) + 1, 24).Value2 = data
+        For repetition = 1 To 3
+            started = Timer
+            reader.LoadGeometryPreviewFromWorkbook fixture, settings
+            elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
+            TestAppendLine stats, "ANNOTATION_BENCH: count=" & size & "; repetition=" & repetition & "; seconds=" & TestFormatNumberInvariant(elapsed)
+        Next repetition
+        TestAssertTrue stats, "annotationBench.count." & size, reader.AnnotationCount = CLng(size)
+        Dim valuesMatch As Boolean: valuesMatch = True
+        For row = 1 To CLng(size)
+            If reader.AnnotationType(row) <> "TEXT_ANNOTATION" Or reader.AnnotationText(row) <> "ROW_" & row Then valuesMatch = False
+            If reader.AnnotationStartX(row) <> row * 0.25 Or reader.AnnotationStartY(row) <> -row * 0.5 Then valuesMatch = False
+            If reader.AnnotationEndX(row) <> row + 1# Or reader.AnnotationEndY(row) <> row + 2# Then valuesMatch = False
+            If reader.AnnotationNormalX(row) <> 1# Or reader.AnnotationNormalY(row) <> 0# Or reader.AnnotationSweepAngle(row) <> 0# Then valuesMatch = False
+        Next row
+        TestAssertTrue stats, "annotationBench.orderAndEveryField." & size, valuesMatch
+    Next size
+    anchor.Cells(51, 4).Value2 = CVErr(2015) ' Ошибка в середине набора должна очистить частично прочитанные массивы.
+    On Error Resume Next
+    reader.LoadGeometryPreviewFromWorkbook fixture, settings
+    errorNumber = Err.Number: description = Err.Description: Err.Clear
+    On Error GoTo Failed
+    TestAssertTrue stats, "annotationBench.invalidNumber.rejected", errorNumber <> 0
+    TestAssertTrue stats, "annotationBench.invalidNumber.address", InStr(1, description, "D80", vbTextCompare) > 0
+    TestAssertTrue stats, "annotationBench.failureClearsState", reader.Count = 0 And reader.AnnotationCount = 0
+    anchor.Resize(101, 24).Value2 = data
+    reader.LoadGeometryPreviewFromWorkbook fixture, settings
+    TestAssertTrue stats, "annotationBench.recovery", reader.Count = 2 And reader.AnnotationCount = 100 And reader.AnnotationText(100) = "ROW_100"
+    GoTo Finished
+Failed:
+    TestAssertTrue stats, "annotationBench.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    If Not fixture Is Nothing Then fixture.Close False
+    Application.DisplayAlerts = wasAlerts
+    On Error GoTo 0
+    RunTestAnnotationReadBenchmark = stats.Report & "TOTAL_ANNOTATION_BENCH: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Готовит независимые координаты и подписи без обращения к закрытым массивам
+' reader-а. Все дроби двоичные, поэтому проверка равенства не требует допуска.
+Private Function TestAnnotationBenchmarkArray(ByVal count As Long) As Variant
+    Dim data() As Variant, headers As Variant, row As Long, column As Long
+    ReDim data(1 To count + 1, 1 To 24)
+    headers = Array("RunID", "AnnotationType", "AnnotationID", "StartX", "StartY", "EndX", "EndY", "OutsideNormalX", "OutsideNormalY", "Text", "Value", "Unit", "Comment", "CombinationID", "Standard", "AnchorID", "LoopID", "LoopRole", "SectionRevision", "RegionArea", "AreaUnit", "GeometrySource", "CoordinateUnit", "ExtraData")
+    For column = 1 To 24: data(1, column) = headers(column - 1): Next column
+    For row = 1 To count
+        data(row + 1, 1) = 46023#: data(row + 1, 2) = "TEXT_ANNOTATION": data(row + 1, 3) = "T" & row
+        data(row + 1, 4) = row * 0.25: data(row + 1, 5) = -row * 0.5
+        data(row + 1, 6) = row + 1#: data(row + 1, 7) = row + 2#
+        data(row + 1, 8) = 1#: data(row + 1, 9) = 0#: data(row + 1, 10) = "ROW_" & row
+        data(row + 1, 23) = "mm"
+    Next row
+    TestAnnotationBenchmarkArray = data
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сравнивает подготовку графического layout до/после резерва без Excel Chart.
+' Проверяет каждый элемент, пустой и повторный Initialize, меньший набор
+' после большого и сохранность предыдущего состояния при отказе до инициализации.
+Public Function RunTestAnnotationLayoutBenchmark() As String
+    Dim stats As TUiTestStats, layout As CPlotAnnotationLayout, size As Variant, row As Long, repetition As Long
+    Dim started As Double, elapsed As Double, valuesMatch As Boolean, number As Long
+    Set layout = New CPlotAnnotationLayout
+    On Error GoTo Failed
+    For Each size In Array(100, 1000, 10000, 100)
+        For repetition = 1 To 3
+            layout.Initialize 0#, 20000#, 0#, 20000#, 0#, 0#, 640#, 430#
+            TestAssertTrue stats, "layoutBench.initializeZero." & size, layout.Count = 0
+            started = Timer
+            For row = 1 To CLng(size)
+                layout.AddPointLabel row, row, "ROW_" & row
+            Next row
+            elapsed = Timer - started: If elapsed < 0# Then elapsed = elapsed + 86400#
+            TestAppendLine stats, "LAYOUT_BENCH: count=" & size & "; repetition=" & repetition & "; seconds=" & TestFormatNumberInvariant(elapsed)
+        Next repetition
+        TestAssertTrue stats, "layoutBench.count." & size, layout.Count = CLng(size)
+        valuesMatch = True
+        For row = 1 To CLng(size)
+            If layout.ItemKind(row) <> "TEXT" Or layout.Text(row) <> "ROW_" & row Then valuesMatch = False
+            If Abs(layout.X1(row) - (row * 640# / 20000# - 45#)) > 0.000000001 Then valuesMatch = False
+            If Abs(layout.Y1(row) - (430# - row * 430# / 20000# - 4.5)) > 0.000000001 Then valuesMatch = False
+            If layout.X2(row) <> 90# Or layout.Y2(row) <> 9# Or layout.FontSize(row) <> 5# Then valuesMatch = False
+            If layout.Rotation(row) <> 0# Or layout.Weight(row) <> 0# Or Not layout.Bold(row) Or layout.Arrowheads(row) Then valuesMatch = False
+            If layout.Color(row) <> RGB(20, 30, 90) Then valuesMatch = False
+        Next row
+        TestAssertTrue stats, "layoutBench.orderAndEveryField." & size, valuesMatch
+    Next size
+    On Error Resume Next
+    layout.Initialize 0#, 1#, 0#, 1#, 0#, 0#, 640#, 430#, "mm", 0.5
+    number = Err.Number: Err.Clear
+    On Error GoTo Failed
+    TestAssertTrue stats, "layoutBench.invalidInitialize.rejected", number <> 0
+    TestAssertTrue stats, "layoutBench.invalidInitialize.preservesOldState", layout.Count = 100 And layout.Text(100) = "ROW_100"
+    layout.Initialize 0#, 20000#, 0#, 20000#, 0#, 0#, 640#, 430#
+    TestAssertTrue stats, "layoutBench.emptyAfterReuse", layout.Count = 0
+    layout.AddPointLabel 1#, 1#, "RECOVERED"
+    TestAssertTrue stats, "layoutBench.recovered", layout.Count = 1 And layout.Text(1) = "RECOVERED"
+    GoTo Finished
+Failed:
+    TestAssertTrue stats, "layoutBench.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    RunTestAnnotationLayoutBenchmark = stats.Report & "TOTAL_LAYOUT_BENCH: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Запускает два микрозамера в одинаковом ручном режиме без событий и обновления
+' экрана. Время подготовки/записи fixture и восстановления Excel не входит
+' во внутренние интервалы; метод не измеряет полный пользовательский сценарий.
+Public Function RunTestAnnotationControlledBenchmark() As String
+    Dim oldCalculation As Long, oldEvents As Boolean, oldScreenUpdating As Boolean, oldAlerts As Boolean
+    Dim report As String, number As Long, description As String, oldBooks As Long
+    oldCalculation = Application.Calculation: oldEvents = Application.EnableEvents
+    oldScreenUpdating = Application.ScreenUpdating: oldAlerts = Application.DisplayAlerts
+    oldBooks = Application.Workbooks.Count
+    On Error GoTo Failed
+    Application.EnableEvents = False: Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    report = "BENCH_CONTROL: calculation=" & Application.Calculation & "; events=" & Application.EnableEvents & _
+        "; screenUpdating=" & Application.ScreenUpdating & "; openBooks=" & oldBooks & _
+        "; calculationState=" & Application.CalculationState & vbCrLf
+    report = report & RunTestAnnotationReadBenchmark() & vbCrLf & RunTestAnnotationLayoutBenchmark() & vbCrLf
+    GoTo Finished
+Failed:
+    number = Err.Number: description = Err.Description
+    report = report & "BENCH_CONTROL_ERROR=" & number & "; " & description & vbCrLf
+Finished:
+    On Error Resume Next
+    Application.Calculation = oldCalculation: Application.DisplayAlerts = oldAlerts
+    Application.EnableEvents = oldEvents: Application.ScreenUpdating = oldScreenUpdating
+    On Error GoTo 0
+    report = report & "BENCH_CONTROL_RESTORE: calculation=" & Application.Calculation & "; events=" & Application.EnableEvents & _
+        "; screenUpdating=" & Application.ScreenUpdating & "; openBooks=" & Application.Workbooks.Count & vbCrLf
+    RunTestAnnotationControlledBenchmark = report
+End Function
+
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Сохраняет ровно пять свойств Excel, которыми владеет CExcelAppStateGuard.
+Private Function TestFreshnessAppState(ByVal app As Object) As Variant
+    TestFreshnessAppState = Array(app.EnableCancelKey, app.ScreenUpdating, app.EnableEvents, app.DisplayAlerts, app.Calculation)
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет точное восстановление исходного состояния после штатного и ошибочного действия.
+Private Sub TestFreshnessAssertState(ByRef stats As TUiTestStats, ByVal app As Object, ByVal expected As Variant, ByVal label As String)
+    TestAssertTrue stats, label & ".cancel", app.EnableCancelKey = expected(0)
+    TestAssertTrue stats, label & ".screen", app.ScreenUpdating = expected(1)
+    TestAssertTrue stats, label & ".events", app.EnableEvents = expected(2)
+    TestAssertTrue stats, label & ".alerts", app.DisplayAlerts = expected(3)
+    TestAssertTrue stats, label & ".calculation", app.Calculation = expected(4)
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Находит реальную ячейку ключа Config, не привязывая тест к номеру строки листа.
+Private Function TestFreshnessSystemCell(ByVal key As String) As Object
+    Dim area As Object, row As Long, values As Variant
+    Set area = ThisWorkbook.Names("rngSystemSettings").RefersToRange: values = area.Value2
+    For row = 2 To UBound(values, 1)
+        If CStr(values(row, 1)) = key Then Set TestFreshnessSystemCell = area.Cells(row, 2): Exit Function
+    Next row
+    Err.Raise 5, "TestFreshnessSystemCell", "Нет ключа " & key
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Находит ячейку параметра в текущей широкой таблице профилей: ключи по строкам,
+' ProfileId по столбцам; старую длинную структуру fixture здесь не имитирует.
+Private Function TestFreshnessProfileCell(ByVal profileID As String, ByVal key As String) As Object
+    Dim area As Object, values As Variant, row As Long, column As Long, profileColumn As Long
+    Set area = ThisWorkbook.Names("rngCalculationProfiles").RefersToRange: values = area.Value2
+    For row = 1 To UBound(values, 1)
+        For column = 3 To UBound(values, 2)
+            If CStr(values(row, column)) = profileID Then profileColumn = column: Exit For
+        Next column
+        If profileColumn > 0 Then Exit For
+    Next row
+    If profileColumn = 0 Then Err.Raise 5, "TestFreshnessProfileCell", "Нет профиля " & profileID
+    For row = 1 To UBound(values, 1)
+        If CStr(values(row, 2)) = key Then Set TestFreshnessProfileCell = area.Cells(row, profileColumn): Exit Function
+    Next row
+    Err.Raise 5, "TestFreshnessProfileCell", "Нет параметра профиля " & key
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Вызывает настоящую границу действия и сохраняет исходный номер отказа.
+' Никакую ошибку тест не заменяет успехом: ожидаемый код проверяется отдельно.
+Private Function TestFreshnessInvoke(ByVal form As Boolean, ByVal workbook As Object, _
+        ByRef message As String, ByRef informationEnabled As Boolean) As Long
+    On Error GoTo Failed
+    If form Then
+        message = FormSectionForWorkbook(workbook, -1#, informationEnabled)
+    Else
+        message = RunSectionCalculationForWorkbook(workbook, False, -1#, informationEnabled)
+    End If
+    Exit Function
+Failed:
+    TestFreshnessInvoke = Err.Number: message = Err.Description
+End Function
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' Проверяет одну явную актуализацию до любых имён и при выключенных событиях.
+' Режим и остальные свойства должны совпасть с исходными после возврата из действия.
+Private Sub TestFreshnessAssertAction(ByRef stats As TUiTestStats, ByVal proxy As CTestWorkflowWorkbook, _
+        ByVal observed As CTestExcelApplicationState, ByVal expected As Variant, ByVal label As String)
+    TestAssertTrue stats, label & ".oneApplicationCalculate", observed.TestCalculateCalls = 1
+    TestAssertTrue stats, label & ".calculateInsideGuard", observed.TestCalculateGuarded
+    TestAssertTrue stats, label & ".noInputBeforeCalculate", proxy.TestNamesBeforeCalculate = 0
+    TestFreshnessAssertState stats, observed.TestNativeApplication, expected, label & ".restored"
+End Sub
+
+' -------------------- ДЛЯ ТЕСТОВ --------------------
+' На настоящей приватной книге проверяет свежесть межлистовой цепи и границы
+' Form/Calculate для трёх исходных режимов. Экспорт, схема и очистка не получают
+' Application.Calculate; снимок геометрии не меняется при расчёте после смены Config.
+Public Function RunTestCalculationFreshnessWorkflow() As String
+    Dim stats As TUiTestStats, saved As Variant, app As Object, initial As Variant, expected As Variant
+    Dim helper As Object, mode As Variant, action As Variant, fault As Variant, prefix As String, label As String
+    Dim observed As CTestExcelApplicationState, proxy As CTestWorkflowWorkbook
+    Dim message As String, code As Long, informationEnabled As Boolean, solves As Long, beforeGeometry As Variant
+    Dim target As Object, loads As Object, geometryCell As Object, profileCell As Object, flagCell As Object
+    Set app = ThisWorkbook.Application: initial = TestFreshnessAppState(app)
+    saved = TestFixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    app.EnableEvents = False: app.DisplayAlerts = False
+    Set helper = ThisWorkbook.Worksheets.Add
+    prefix = "='" & Replace$(helper.Name, "'", "''") & "'!$C$1"
+    Set loads = ThisWorkbook.Names("rngLoadCombinations").RefersToRange
+    For Each mode In Array(xlCalculationAutomatic, xlCalculationManual, xlCalculationSemiautomatic)
+        TestPrepareCircleInput
+        TestSetSystemSetting "General.ExecutionReportEnabled", "No"
+        TestSetSystemSetting "Plot.Enabled", "No"
+        TestSetSystemSetting "Units.Force.Output", "N"
+        TestSetSystemSetting "Mesh.StepX", "60": TestSetSystemSetting "Mesh.StepY", "60"
+        TestSetSystemSetting "Mesh.BoundarySubdivisions", "1"
+        TestSetSystemSetting "Solver.ToleranceN", "0.0001"
+        TestSetProfileSetting "PR1", "Calculation.Strength.DirectState", "Yes"
+        TestSetProfileSetting "PR1", "Calculation.Strength.Capacity", "No"
+        TestSetProfileSetting "PR1", "Calculation.Crack.Width", "No"
+        TestSetProfileSetting "PR1", "Calculation.Stability.Enabled", "No"
+        TestSetProfileSetting "PR1", "Visualization.State", "StrengthState"
+        loads.Cells(2, 5).Value2 = "PR1": loads.Cells(2, 3).Value2 = 0#: loads.Cells(2, 4).Value2 = 0#
+        Set geometryCell = TestFixtureConfigFieldCell("Circle.Diameter")
+        Set profileCell = TestFreshnessProfileCell("PR1", "Calculation.Strength.DirectState")
+        Set flagCell = TestFreshnessSystemCell("General.NonCriticalMessagesEnabled")
+        app.Calculation = xlCalculationManual
+        helper.Range("A1").Value2 = 1#: helper.Range("B1").Formula = "=A1*3": helper.Range("C1").Formula = "=B1+1"
+        geometryCell.Formula = prefix & "*10+200"
+        flagCell.Formula = "=IF(" & Mid$(prefix, 2) & ">10,""Yes"",""No"")"
+        app.Calculate ' Достоверный старый кэш240/No; дальнейшее изменение не вычисляется вручную тестом.
+        helper.Range("A1").Value2 = 5#
+        app.Calculation = mode: app.ScreenUpdating = (mode = xlCalculationAutomatic)
+        app.EnableEvents = (mode <> xlCalculationManual): app.DisplayAlerts = (mode = xlCalculationSemiautomatic)
+        app.EnableCancelKey = xlInterrupt: expected = TestFreshnessAppState(app)
+        Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
+        Set proxy = New CTestWorkflowWorkbook: proxy.TestInitialize ThisWorkbook, observed
+        solves = SectionEquilibriumSolveCount(): informationEnabled = False
+        code = TestFreshnessInvoke(True, proxy, message, informationEnabled)
+        label = "freshness.form." & CStr(mode)
+        TestAssertTrue stats, label & ".success." & message, code = 0
+        TestFreshnessAssertAction stats, proxy, observed, expected, label
+        TestAssertClose stats, label & ".geometryFormula", CDbl(geometryCell.Value2), 360#, 0#
+        TestAssertTrue stats, label & ".sameFreshUiFlag", informationEnabled
+        TestAssertTrue stats, label & ".noSolver", SectionEquilibriumSolveCount() = solves
+        beforeGeometry = TestResultTable("rngNDMSectionGeometry")
+
+        app.Calculation = xlCalculationManual: app.EnableEvents = False
+        helper.Range("A1").Value2 = 1#
+        loads.Cells(2, 2).Formula = prefix & "*-1000"
+        profileCell.Formula = "=IF(" & Mid$(prefix, 2) & ">10,""Yes"",""No"")"
+        app.Calculate ' Старый кэшN=-4000 и профильDirectState=No; ожидается обновление обоих reader-ов.
+        helper.Range("A1").Value2 = 6#
+        TestSetSystemSetting "Geometry.Source", "AutoCAD": TestSetSystemSetting "Geometry.Type", "INVALID_UNUSED_RECIPE"
+        app.Calculation = mode: app.EnableEvents = expected(2)
+        Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
+        proxy.TestInitialize ThisWorkbook, observed
+        code = TestFreshnessInvoke(False, proxy, message, informationEnabled)
+        label = "freshness.calculate." & CStr(mode)
+        TestAssertTrue stats, label & ".success." & message, code = 0 And InStr(message, "Расчет завершен") > 0
+        TestFreshnessAssertAction stats, proxy, observed, expected, label
+        TestAssertClose stats, label & ".freshLoad", CDbl(TestResultsPropertyValue("LC1", "N")), -19000#, 0.000001
+        TestAssertTrue stats, label & ".freshProfileSolved", SectionEquilibriumSolveCount() > 0 ' Execute сбрасывает счётчики перед текущим пакетом; сравнение с предыдущим пакетом неверно.
+        TestAssertTrue stats, label & ".directStateFinished", TestResultsPropertyValue("LC1", "DirectStateStatus") = "OK"
+        Dim epsilonText As String, forceText As String
+        epsilonText = TestResultsPropertyValue("LC1", "State.StrengthState.Epsilon0")
+        forceText = TestResultsPropertyValue("LC1", "Nint")
+        TestAssertTrue stats, label & ".savedStrainPresent", IsNumeric(epsilonText)
+        If IsNumeric(epsilonText) Then TestAssertTrue stats, label & ".compressionStrain", CDbl(epsilonText) < 0#
+        TestAssertTrue stats, label & ".savedEquilibriumPresent", IsNumeric(forceText)
+        If IsNumeric(forceText) Then TestAssertClose stats, label & ".savedEquilibrium", CDbl(forceText), -19000#, 0.0001 ' Тот же явно заданный абсолютный допуск N, без ослабления равновесия ради успешного теста.
+        TestAssertTrue stats, label & ".savedGeometryUnchanged", TestWorkflowSameTable(beforeGeometry, TestResultTable("rngNDMSectionGeometry"))
+
+        observed.TestCalculateCalls = 0
+        UpdateSectionPlotForWorkbook proxy ' Plot.Enabled=No: ранний выход не требует актуализации входов.
+        UpdateSectionGeometryPreviewForWorkbook proxy
+        TestAssertTrue stats, label & ".disabledPlotNoCalculate", observed.TestCalculateCalls = 0
+        TestSetSystemSetting "Plot.Enabled", "Yes"
+        solves = SectionEquilibriumSolveCount()
+        message = Audit02ReadExportSnapshotForTests(proxy) ' Тот же read-path экспорта без запуска реального AutoCAD.
+        UpdateSectionPlotForWorkbook proxy
+        TestAssertTrue stats, label & ".exportPlotNoCalculate", observed.TestCalculateCalls = 0
+        TestAssertTrue stats, label & ".exportPlotNoSolve", SectionEquilibriumSolveCount() = solves
+        TestFreshnessAssertState stats, app, expected, label & ".exportPlotRestored"
+        TestSetSystemSetting "Plot.Enabled", "No"
+
+        For Each action In Array(True, False)
+            Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
+            proxy.TestInitialize ThisWorkbook, observed: proxy.TestNamesFault = 1004
+            code = TestFreshnessInvoke(CBool(action), proxy, message, informationEnabled)
+            label = "freshness.expectedError." & mode & "." & CStr(action)
+            TestAssertTrue stats, label & ".addressedReason", code = vbObjectError + 4316 And InStr(message, "rngUnitSettings") > 0
+            TestFreshnessAssertAction stats, proxy, observed, expected, label
+            For Each fault In Array(9, 18)
+                Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
+                observed.TestCalculateFault = CLng(fault): proxy.TestInitialize ThisWorkbook, observed
+                code = TestFreshnessInvoke(CBool(action), proxy, message, informationEnabled)
+                label = "freshness.unexpectedError." & mode & "." & CStr(action) & "." & fault
+                TestAssertTrue stats, label & ".originalNumber", code = CLng(fault)
+                TestAssertTrue stats, label & ".noInputRead", proxy.TestNameReads = 0
+                TestFreshnessAssertAction stats, proxy, observed, expected, label
+            Next fault
+        Next action
+        For Each action In Array(True, False)
+            code = TestFreshnessInvoke(CBool(action), Nothing, message, informationEnabled)
+            TestAssertTrue stats, "freshness.nullWorkbook.rejected." & mode & "." & CStr(action), code <> 0
+            TestFreshnessAssertState stats, app, expected, "freshness.nullWorkbook." & mode & "." & CStr(action)
+        Next action
+        Set observed = New CTestExcelApplicationState: Set observed.TestNativeApplication = app
+        proxy.TestInitialize ThisWorkbook, observed
+        ClearSectionResultsForWorkbook proxy
+        TestAssertTrue stats, "freshness.clearNoCalculate." & mode, observed.TestCalculateCalls = 0
+        TestFreshnessAssertState stats, app, expected, "freshness.clearRestored." & mode
+        app.EnableEvents = False
+    Next mode
+    GoTo Finished
+Failed:
+    TestAssertTrue stats, "freshness.runtime." & Err.Number & "." & Err.Description, False
+Finished:
+    On Error Resume Next
+    app.EnableEvents = False: app.DisplayAlerts = False: app.Calculation = xlCalculationManual
+    TestFixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    If Not helper Is Nothing Then helper.Delete
+    app.Calculation = initial(4): app.DisplayAlerts = initial(3): app.EnableEvents = initial(2)
+    app.ScreenUpdating = initial(1): app.EnableCancelKey = initial(0)
+    On Error GoTo 0
+    TestFreshnessAssertState stats, app, initial, "freshness.testCleanup"
+    RunTestCalculationFreshnessWorkflow = stats.Report & "TOTAL_FRESHNESS_WORKFLOW: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

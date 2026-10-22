@@ -9,7 +9,7 @@ Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "Sav
     Dim output As String, x As Double, y As Double, i As Long, oldSystem As Variant
     oldSystem = ThisWorkbook.Names.Item("rngSystemSettings").RefersToRange.Formula
     FocusedSelectGeometry shapeName
-    SetSystemSetting "SLS.Crack.Code", "SP35"
+    TestSetSystemSetting "SLS.Crack.Code", "SP35"
     Set settings = New CSystemSettingsReader: settings.LoadFromWorkbook ThisWorkbook
     Set units = New CUnitSystem: units.LoadFromSettings settings
     Set section = BuildWorkbookSectionModel(ThisWorkbook, settings, units)
@@ -28,7 +28,7 @@ Public Function DumpFocusedForceBounds(Optional ByVal shapeName As String = "Sav
             "|y=" & FocusedBoundNumber(section.RebarY(i) - y) & "|area=" & FocusedBoundNumber(section.RebarArea(i)) & vbCrLf
     Next i
     For Each mode In Array("No", "Yes")
-        SetSystemSetting "General.DiagramExtension", CStr(mode)
+        TestSetSystemSetting "General.DiagramExtension", CStr(mode)
         settings.LoadFromWorkbook ThisWorkbook
         Set provider = New CMaterialModelProvider: provider.Initialize settings, units
         For Each label In Array("PR1", "PR2", "PR3")

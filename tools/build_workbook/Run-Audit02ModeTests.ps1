@@ -193,9 +193,15 @@ try {
     $lines.Add("FIXTURE: $fixturePath")
     $lines.Add("GLOBAL_MODE: $SettingKey=$Mode; explicit-On tests retain their setup")
     Save-Progress
+    $preexistingExcelProcessIds = @(Get-Process -Name EXCEL -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
     $excel = New-Object -ComObject Excel.Application
     [uint32]$testExcelProcessId = 0
     [void][AuditExcelProcessIdentity]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$testExcelProcessId)
+    if ([int]$testExcelProcessId -in $preexistingExcelProcessIds) {
+        [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
+        $excel = $null
+        throw 'Excel reused an existing user process; no settings or workbooks were changed.'
+    }
     if ($testExcelProcessId -eq 0) { throw 'Не удалось определить собственный тестовый процесс Excel.' }
     $testExcelProcess = Get-Process -Id $testExcelProcessId
     $lines.Add("TEST_EXCEL_PROCESS: id=$testExcelProcessId; startTicks=$($testExcelProcess.StartTime.ToUniversalTime().Ticks)")

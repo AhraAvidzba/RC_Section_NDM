@@ -411,11 +411,50 @@ $fullOutputPath = Join-Path $root $OutputPath
 $outputDir = Split-Path -Parent $fullOutputPath
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 
+# HWND связывается с PID до любых изменений Excel: COM не должен вернуть ранее открытый пользовательский процесс.
+if (-not ('NDMWorkbookBuildWindow' -as [type])) {
+    Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class NDMWorkbookBuildWindow {
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
+}
+"@
+}
+
+# Подтверждает ту же пару PID/время старта перед сохранением и закрытием собственного приложения.
+function Test-BuildExcelIdentity {
+    param([object]$Application, [int]$ExpectedProcessId, [long]$ExpectedStartTicks)
+    if ($null -eq $Application -or $ExpectedProcessId -le 0) { return $false }
+    try {
+        [uint32]$currentProcessId = 0
+        [void][NDMWorkbookBuildWindow]::GetWindowThreadProcessId([IntPtr]$Application.Hwnd, [ref]$currentProcessId)
+        $currentProcess = Get-Process -Id $currentProcessId -ErrorAction Stop
+        return ([int]$currentProcessId -eq $ExpectedProcessId -and
+            $currentProcess.StartTime.ToUniversalTime().Ticks -eq $ExpectedStartTicks)
+    }
+    catch { return $false }
+}
+
 $excel = $null
 $workbook = $null
+$ownedExcelProcessId = 0
+[long]$ownedExcelStartTicks = 0
 
 try {
+    $preexistingExcelProcessIds = @([Diagnostics.Process]::GetProcessesByName('EXCEL') | ForEach-Object { $_.Id }) # Ошибка инвентаризации не подавляется: без полного снимка владение новым COM-процессом не доказано.
     $excel = New-Object -ComObject Excel.Application
+    [uint32]$createdProcessId = 0
+    [void][NDMWorkbookBuildWindow]::GetWindowThreadProcessId([IntPtr]$excel.Hwnd, [ref]$createdProcessId)
+    if ($createdProcessId -le 0 -or $preexistingExcelProcessIds -contains [int]$createdProcessId) {
+        throw 'CreateObject did not provide a new Excel process; existing application was not changed or closed.'
+    }
+    $createdProcess = Get-Process -Id $createdProcessId -ErrorAction Stop
+    $ownedExcelProcessId = [int]$createdProcessId
+    $ownedExcelStartTicks = $createdProcess.StartTime.ToUniversalTime().Ticks
+    if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
+        throw 'New Excel process identity could not be verified before workbook creation.'
+    }
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.ScreenUpdating = $false
@@ -530,6 +569,10 @@ try {
     $excel.Run("'" + $workbook.Name + "'!modSectionRecipeSetup.UpdateSectionRecipeTypes")
 
     Apply-WorkbookLayout $workbook $script:WorkbookLayout
+    if (-not (Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks)) {
+        throw 'Excel process identity changed before saving the new workbook.'
+    }
+    $excel.Calculation = -4105 # xlCalculationAutomatic: новый шаблон не должен сохранять случайный Manual служебного экземпляра; режим пользовательского Excel здесь не меняется.
     $workbook.SaveAs($fullOutputPath, 52)
     Write-Output "Workbook built: $fullOutputPath"
 }
@@ -539,12 +582,13 @@ catch {
     throw
 }
 finally {
+    $mayCloseOwnedExcel = Test-BuildExcelIdentity $excel $ownedExcelProcessId $ownedExcelStartTicks
     if ($workbook -ne $null) {
-        $workbook.Close($false)
+        if ($mayCloseOwnedExcel) { $workbook.Close($false) }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($workbook) | Out-Null
     }
     if ($excel -ne $null) {
-        $excel.Quit()
+        if ($mayCloseOwnedExcel) { $excel.Quit() }
         [System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) | Out-Null
     }
     [GC]::Collect()

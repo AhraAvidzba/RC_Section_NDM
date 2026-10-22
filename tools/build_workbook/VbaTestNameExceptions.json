@@ -613,5 +613,35 @@
     "Module": "CTestLimitSearchProblem",
     "Method": "ILimitSearchProblem_SetFailure",
     "Reason": "Обязательное имя события VBA, рабочего интерфейса либо внешнего COM API; класс явно тестовый."
+  },
+  {
+    "Module": "CTestWorkflowWorkbook",
+    "Method": "Application",
+    "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
+  },
+  {
+    "Module": "CTestWorkflowWorkbook",
+    "Method": "Names",
+    "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
+  },
+  {
+    "Module": "CTestWorkflowWorkbook",
+    "Method": "Worksheets",
+    "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
+  },
+  {
+    "Module": "CTestWorkflowWorkbook",
+    "Method": "Name",
+    "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
+  },
+  {
+    "Module": "CTestWorkflowWorkbook",
+    "Method": "Path",
+    "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
+  },
+  {
+    "Module": "CTestExcelApplicationState",
+    "Method": "Calculate",
+    "Reason": "Обязательное имя Excel COM API в явно тестовом прокси: сохраняет рабочий late-bound вызов и позволяет наблюдать порядок чтения/пересчёта без изменения рабочего API."
   }
 ]
