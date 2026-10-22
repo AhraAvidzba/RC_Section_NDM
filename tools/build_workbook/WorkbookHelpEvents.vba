@@ -16,7 +16,7 @@ Private Sub ApplyHelpDefaults()
     Dim helpSheet As Worksheet, found As Range
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     ' Заголовок объединён A:F; поиск в одном столбце не гарантирует его нахождение.
-    Set found = helpSheet.Cells.Find("Справка по настройкам листа Config", LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext)
+    Set found = helpSheet.Cells.Find("Справка по настройкам Config и листа «Сечения»", LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext)
     If found Is Nothing Then Exit Sub
     helpSheet.Outline.ShowLevels 1
     helpSheet.Rows(found.Row).ShowDetail = True

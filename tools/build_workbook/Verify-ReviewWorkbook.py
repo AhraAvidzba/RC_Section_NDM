@@ -129,8 +129,8 @@ def verify(before, after, layout, halve_default_rebar_offset=False):
         if help_cells.get('A'+str(first+index),{}).get('value') != row['text']: errors.append('Brief guide text differs at '+str(index))
     titles = [row['value'] for address,row in sorted(help_cells.items(),key=lambda pair: xmlreader.row_of(pair[0]))
               if re.fullmatch(r'A\d+',address) and row['value'] in (
-                  'Справка по результатам расчета листа Results','Добавление нового типа сечения','Справка по настройкам листа Config')]
-    if titles != ['Справка по результатам расчета листа Results','Добавление нового типа сечения','Справка по настройкам листа Config']:
+                  'Справка по результатам расчета листа Results','Добавление нового типа сечения','Справка по настройкам Config и листа «Сечения»')]
+    if titles != ['Справка по результатам расчета листа Results','Добавление нового типа сечения','Справка по настройкам Config и листа «Сечения»']:
         errors.append('Main final Help order differs')
     result = {'status': 'REVIEW_XML_PRESERVATION_PASS' if not errors else 'FAIL', 'userCellsChecked': cells_checked,
               'beforeSHA256': hashlib.sha256(before.read_bytes()).hexdigest(),

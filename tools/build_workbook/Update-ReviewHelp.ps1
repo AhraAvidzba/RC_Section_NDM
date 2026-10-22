@@ -79,7 +79,7 @@ try {
     $excel.EnableEvents=$true
     $book=$excel.Workbooks.Open($path,0,$false)
     $sheet=$book.Worksheets.Item('Справка');$rows=Get-HelpMainRows $sheet
-    $probe=$sheet.Cells.Find('Справка по настройкам листа Config',$sheet.Cells.Item(1,1),-4163,1)
+    $probe=$sheet.Cells.Find('Справка по настройкам Config и листа «Сечения»',$sheet.Cells.Item(1,1),-4163,1)
     Write-Output ('OPEN_CONFIG_TITLE: '+$probe.Row+'; codeLines='+$book.VBProject.VBComponents.Item($book.CodeName).CodeModule.CountOfLines)
     $states=@()
     foreach ($title in $script:HelpMainTitles) {

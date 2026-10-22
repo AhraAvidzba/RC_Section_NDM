@@ -183,7 +183,7 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
     $titles = [ordered]@{}
     foreach ($title in @('Подготовка геометрии в AutoCAD и импорт','Поиск НДС текущего сочетания',
         'Поиск предельной несущей способности','Расчет ширины раскрытия нормальных трещин',
-        'Расчет продольного изгиба и устойчивости','Справка по настройкам листа Config',
+        'Расчет продольного изгиба и устойчивости','Справка по настройкам Config и листа «Сечения»',
         'Справка по результатам расчета листа Results','СП 35: расчет ширины нормальных трещин')) {
         for ($row=1; $row -le $data.GetLength(0); $row++) {
             if ([string]$data[$row,1] -eq $title) { $titles[$title]=$row; break }
@@ -319,7 +319,7 @@ function Test-ActualHelp([object]$Book, [string]$Stage) {
         Assert-Help "$Stage.pictureBounds.$($shape.Name)" $inside @{row=$cell.Row; top=$shape.Top; height=$shape.Height; rowHeight=$row.Height}
     }
     $guide.Outline.ShowLevels(1) | Out-Null
-    $settingsFirst=$titles['Справка по настройкам листа Config']+1
+    $settingsFirst=$titles['Справка по настройкам Config и листа «Сечения»']+1
     $settingsLast=$titles['Справка по результатам расчета листа Results']-1
     $guide.Range("A${settingsFirst}:A${settingsLast}").EntireRow.Hidden=$false
     return $titles
@@ -332,7 +332,7 @@ function Export-GuidePages([object]$Book, [object]$Titles) {
     $sheet.Outline.ShowLevels(8)
     $starts=@('Подготовка геометрии в AutoCAD и импорт','Поиск НДС текущего сочетания',
         'Поиск предельной несущей способности','Расчет ширины раскрытия нормальных трещин',
-        'Расчет продольного изгиба и устойчивости','Справка по настройкам листа Config',
+        'Расчет продольного изгиба и устойчивости','Справка по настройкам Config и листа «Сечения»',
         'Справка по результатам расчета листа Results')
     $names=@('AutoCAD','DirectState','Capacity','Cracks','Stability','Config','Results')
     for ($i=0; $i -lt $starts.Count; $i++) {

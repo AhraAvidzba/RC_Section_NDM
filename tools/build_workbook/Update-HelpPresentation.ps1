@@ -61,7 +61,7 @@ try {
     }
     $recipe=$sheet.Cells.Find('Добавление нового типа сечения',$sheet.Cells.Item(1,1),-4163,1)
     $reference=$sheet.Cells.Find('Справка по результатам расчета листа Results',$sheet.Cells.Item(1,1),-4163,1)
-    $config=$sheet.Cells.Find('Справка по настройкам листа Config',$sheet.Cells.Item(1,1),-4163,1)
+    $config=$sheet.Cells.Find('Справка по настройкам Config и листа «Сечения»',$sheet.Cells.Item(1,1),-4163,1)
     $recipeRow=[int]$recipe.Row;$referenceRow=[int]$reference.Row;$configRow=[int]$config.Row
     Export-HelpPicture $book $sheet ($blocks[0].First-6) $blocks[1].Last (Join-Path $directory 'BeforeSettings.png')
     Export-HelpPicture $book $sheet $referenceRow $configRow (Join-Path $directory 'BeforeSections.png')

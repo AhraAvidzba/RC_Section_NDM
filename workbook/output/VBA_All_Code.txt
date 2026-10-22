@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-22 08:31:30
+Date: 2026-10-22 11:55:14
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -24,7 +24,7 @@ Private Sub ApplyHelpDefaults()
     Dim helpSheet As Worksheet, found As range
     Set helpSheet = ThisWorkbook.Worksheets("Справка")
     ' Заголовок объединён A:F; поиск в одном столбце не гарантирует его нахождение.
-    Set found = helpSheet.cells.Find("Справка по настройкам листа Config", LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext)
+    Set found = helpSheet.cells.Find("Справка по настройкам Config и листа «Сечения»", LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext)
     If found Is Nothing Then Exit Sub
     helpSheet.Outline.ShowLevels 1
     helpSheet.rows(found.row).ShowDetail = True

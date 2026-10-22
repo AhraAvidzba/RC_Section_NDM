@@ -7,7 +7,7 @@ $script:HelpMainTitles=@(
     'Расчет продольного изгиба и устойчивости',
     'Справка по результатам расчета листа Results',
     'Добавление нового типа сечения',
-    'Справка по настройкам листа Config'
+    'Справка по настройкам Config и листа «Сечения»'
 )
 
 # Ищет содержимое, а не оставшийся после старого большого гайда UsedRange.
@@ -172,7 +172,7 @@ function Repair-HelpConfigEntries($Workbook) {
     $sheet=$Workbook.Worksheets.Item('Справка')
     foreach ($key in @('SLS.Crack.ToleranceLambda','General.PlateauSlopeFactor')) {
         $rows=Get-HelpMainRows $sheet
-        $config=[int]$rows['Справка по настройкам листа Config']
+        $config=[int]$rows['Справка по настройкам Config и листа «Сечения»']
         if ($config -eq 0) {throw 'Config Help section is missing.'}
         $next=@($rows.Values | Where-Object {$_ -gt $config} | Sort-Object)[0]
         $found=$sheet.Cells.Find($key,$sheet.Cells.Item(1,1),-4163,1)

@@ -1,0 +1,62 @@
+{
+  "Archive": "Evidence.zip",
+  "ArchiveSHA256": "6571A49D300A1E0DF19B0B3DFA315ABD7DB159BDDB9E13B861850E3450EE341C",
+  "ArchiveBytes": 3210467,
+  "Files": [
+    {
+      "Path": "BaselineVBA.txt",
+      "Bytes": 7790765,
+      "SHA256": "CB39C56709DCAB5109A0BD858AD698FF16FEBD8CC0411DA73B74E160C4C4865F"
+    },
+    {
+      "Path": "NativeCheckVBA.txt",
+      "Bytes": 7790787,
+      "SHA256": "0E46C165EBA55A585B6E383DAF0C295747953E223DBEAC57C85A686CE1FEBC49"
+    },
+    {
+      "Path": "Native02/Catalog.json",
+      "Bytes": 14800,
+      "SHA256": "C9CC6352DF3008BA31DEF7C57E692E3ADD7936D399A8BCCBA8FA2EC819DBAD85"
+    },
+    {
+      "Path": "Native02/NativeEdit.json",
+      "Bytes": 32551,
+      "SHA256": "864AA6130AE023EAE5773FC8157ACFDAB03FE8FEF6C98D953E2966E6C6232D8E"
+    },
+    {
+      "Path": "Native02/After_CircleGeometry.png",
+      "Bytes": 28467,
+      "SHA256": "1504F301540ADA550E7DCE82F73BA42DCCA51F5277CF0DA36AFC25BBBD04FA63"
+    },
+    {
+      "Path": "Native02/After_DependentRebarRows.png",
+      "Bytes": 67384,
+      "SHA256": "3C9B40FC98999EDFEB18D9CF923E403A08DE96EA2C648250D5410CCDE0955A40"
+    },
+    {
+      "Path": "Native02/After_HollowRectangleGeometry.png",
+      "Bytes": 35456,
+      "SHA256": "FB5BD9E1416668E0BB671C4144B33D447CBCE61106510F422F2F706546CBB6CB"
+    },
+    {
+      "Path": "Native02/After_PointedSectionGeometry.png",
+      "Bytes": 32596,
+      "SHA256": "31D89EA6E6E2055177E0EB9C2120EB7E873851071F15497BF94814AF835F7E4D"
+    },
+    {
+      "Path": "Native02/After_RectanglesGeometry.png",
+      "Bytes": 32575,
+      "SHA256": "0B19215018E462E9F5D9A39B5E3E5AA460FD40A8C68E668E23E00565E4F9D41B"
+    },
+    {
+      "Path": "Native02/Before_DependentRebarRows.png",
+      "Bytes": 58373,
+      "SHA256": "D091D8D8A2941255F62E93C8001DDDA11493BA761348D83E0836515C63CF23E3"
+    },
+    {
+      "Path": "Native02/Before_HollowRectangleGeometry.png",
+      "Bytes": 37349,
+      "SHA256": "2A024ACEBB2F67A90759167FB3F3E64866C21FFD28A1904293A5009186EE5996"
+    }
+  ]
+}

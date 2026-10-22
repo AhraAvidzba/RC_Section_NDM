@@ -1,0 +1,10 @@
+{
+  "Passed": true,
+  "Components": 169,
+  "UnchangedComponents": 168,
+  "ChangedComponent": "ЭтаКнига",
+  "OnlyChange": "Renamed help section string literal",
+  "SourceEventEqualityIgnoringVBEIdentifierCase": true,
+  "BuildHelpHeightsMatchAcceptedBook": true,
+  "NativeAllCodeSHA256": "0E46C165EBA55A585B6E383DAF0C295747953E223DBEAC57C85A686CE1FEBC49"
+}

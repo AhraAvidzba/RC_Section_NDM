@@ -52,7 +52,7 @@ try {
     # Картинка подтверждает чтение пояснений и рамку источников в настоящем Excel.
     $initialSheet=[string]$book.ActiveSheet.Name
     $sheet.Activate();$excel.ScreenUpdating=$true
-    $config=$sheet.Cells.Find('Справка по настройкам листа Config',$sheet.Cells.Item(1,1),-4163,1)
+    $config=$sheet.Cells.Find('Справка по настройкам Config и листа «Сечения»',$sheet.Cells.Item(1,1),-4163,1)
     $pictureRange=$sheet.Range($sheet.Cells.Item(1,1),$sheet.Cells.Item([int]$config.Row+4,6))
     $pictureRange.CopyPicture(1,-4147)
     $scratch=$book.Worksheets.Add()

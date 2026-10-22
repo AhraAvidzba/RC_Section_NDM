@@ -1,0 +1,56 @@
+{
+  "Passed": true,
+  "WorkbookSHA256": "859B4AD1716D4C37D345BB5BABCBE4A65FC0B20A6A1DD30C0704F10E71409140",
+  "BaselineSHA256": "2A27AEEAAE7B8D9CE59830EF1264DED104E561F6A88068CF8C8604B3A7980525",
+  "ChangedParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin",
+    "xl/styles.xml"
+  ],
+  "UnchangedPackageParts": 109,
+  "AllUserInputAndResultsPartsByteIdentical": true,
+  "UnchangedDrawingParts": 86,
+  "ChangedHelpCells": 32,
+  "RegisteredTypes": 4,
+  "Coverage": [
+    {
+      "Type": "Circle",
+      "Range": "rngCircleGeometry",
+      "Header": "A2",
+      "Target": "'Справка'!A751",
+      "CommonHelpLink": "B757"
+    },
+    {
+      "Type": "Rectangles",
+      "Range": "rngRectanglesGeometry",
+      "Header": "A21",
+      "Target": "'Справка'!A773",
+      "CommonHelpLink": "B779"
+    },
+    {
+      "Type": "PointedSection",
+      "Range": "rngPointedSectionGeometry",
+      "Header": "A59",
+      "Target": "'Справка'!A759",
+      "CommonHelpLink": "B764"
+    },
+    {
+      "Type": "HollowRectangle",
+      "Range": "rngHollowRectangleGeometry",
+      "Header": "A91",
+      "Target": "'Справка'!A766",
+      "CommonHelpLink": "B771"
+    }
+  ],
+  "CommonLinks": {
+    "B757": "'Справка'!A741",
+    "B764": "'Справка'!A741",
+    "B771": "'Справка'!A741",
+    "B779": "'Справка'!A741"
+  },
+  "DescriptiveParagraphs": 26,
+  "ExactDuplicateDescriptions": 0,
+  "ObsoleteSectionNamesAndSharedRebarReferences": 0,
+  "BeforeCharacters": 8324,
+  "AfterCharacters": 7648
+}
