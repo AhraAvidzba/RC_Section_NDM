@@ -1,0 +1,2308 @@
+{
+  "status": "INCOMPLETE_OR_FAILED",
+  "sourceCommit": "113ac7a0fb189ce71fe44e84511d0105c8598257",
+  "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+  "runnerSHA256": "85393AD087E64727FE748D3D0BE72C9BB1D5537AF38D29FD98467F6C3DA28907",
+  "modeRunnerSHA256": "3BE86C2EC61006AB8DEAE5B1A2E5DB376B0ABFB010FF9641C64ED53AD3E600AC",
+  "coverageDefinition": "AllActiveAcceptanceIncludingFocused",
+  "includesFocusedAcceptance": true,
+  "focusedAcceptance": {
+    "ExitCode": 1,
+    "Directory": "docs/regression/FullOnOff_2026-10-22_ResultsFormatting_Run01/Focused",
+    "AcceptanceSHA256": "E2F056D71050DF2FC538BCF8B81C3FE2F577DE6A5DDD98DA1B6211BEFD1EFF89",
+    "Passed": false
+  },
+  "inputProvenance": "frozen file",
+  "startedUTC": "2026-10-21T20:50:40.0726854+00:00",
+  "finishedUTC": "2026-10-21T23:57:57.9028996+00:00",
+  "deadline": "2026-10-22T10:00:00.0000000+03:00",
+  "expectedSuites": 156,
+  "completedSuites": 156,
+  "observedSuites": 156,
+  "printedSuccessfulAssertions": 286844,
+  "failedAssertions": 130,
+  "errors": [
+    "Full_Off.txt",
+    "Geometry_Off.txt",
+    "SavedOffsets_Off.txt",
+    "Full_On.txt",
+    "Geometry_On.txt",
+    "SavedOffsets_On.txt",
+    "Driver is not successfully complete",
+    "Mandatory focused acceptance did not finish successfully"
+  ],
+  "jobs": [
+    {
+      "name": "Full_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "34b3abf0fc6cfb43a5a6145e6167564df987b912bcf5a0daaefd62fa61f09e52",
+      "suites": [
+        {
+          "name": "modTestGeometry.RunGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-21T23:50:47",
+          "finished": "2026-10-21T23:51:06",
+          "passed": 766,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+          "status": "PASS",
+          "started": "2026-10-21T23:51:07",
+          "finished": "2026-10-21T23:52:32",
+          "passed": 30457,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionSolver.RunSectionSolverTests",
+          "status": "PASS",
+          "started": "2026-10-21T23:52:33",
+          "finished": "2026-10-21T23:52:35",
+          "passed": 3306,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestCapacitySolver.RunCapacitySolverTests",
+          "status": "PASS",
+          "started": "2026-10-21T23:52:36",
+          "finished": "2026-10-21T23:56:32",
+          "passed": 5355,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestCrackWidth.RunCrackWidthTests",
+          "status": "PASS",
+          "started": "2026-10-21T23:56:33",
+          "finished": "2026-10-21T23:57:31",
+          "passed": 2134,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestBatchCalculation.RunBatchCalculationTests",
+          "status": "PASS",
+          "started": "2026-10-21T23:57:31",
+          "finished": "2026-10-22T00:09:33",
+          "passed": 30982,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+          "status": "FAIL",
+          "started": "2026-10-22T00:09:34",
+          "finished": "2026-10-22T01:09:42",
+          "passed": 67480,
+          "failedLines": 63,
+          "nestedFailureCounts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            34,
+            0,
+            63
+          ]
+        },
+        {
+          "name": "modTestRegressionBaseline.RunRegressionBaselineTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:09:43",
+          "finished": "2026-10-22T01:09:45",
+          "passed": 39,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Successful driver completion is missing"
+      ],
+      "passed": 140519,
+      "group": "Full",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "printedSuccessfulAssertions": 140519,
+      "failures": [
+        "FAIL: config.settings.rightBorder.5",
+        "FAIL: audit03.importUnits.before0.after1.newHeader; actual=X, mm; expected=X, cm",
+        "FAIL: audit03.importUnits.before0.after1.newAreaHeader; actual=Area, mm2; expected=Area, cm2",
+        "FAIL: audit03.importUnits.before0.after1.newX; actual=950.; expected=95.",
+        "FAIL: audit03.importUnits.before0.after1.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=950; factor=10",
+        "FAIL: audit03.importUnits.before0.after2.newHeader; actual=X, mm; expected=X, m",
+        "FAIL: audit03.importUnits.before0.after2.newAreaHeader; actual=Area, mm2; expected=Area, m2",
+        "FAIL: audit03.importUnits.before0.after2.newX; actual=950.; expected=0.95",
+        "FAIL: audit03.importUnits.before0.after2.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=950; factor=1000",
+        "FAIL: audit03.importUnits.before1.after0.newHeader; actual=X, cm; expected=X, mm",
+        "FAIL: audit03.importUnits.before1.after0.newAreaHeader; actual=Area, cm2; expected=Area, mm2",
+        "FAIL: audit03.importUnits.before1.after0.newX; actual=95.; expected=950.",
+        "FAIL: audit03.importUnits.before1.after0.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=95; factor=1",
+        "FAIL: audit03.importUnits.before1.after2.newHeader; actual=X, cm; expected=X, m",
+        "FAIL: audit03.importUnits.before1.after2.newAreaHeader; actual=Area, cm2; expected=Area, m2",
+        "FAIL: audit03.importUnits.before1.after2.newX; actual=95.; expected=0.95",
+        "FAIL: audit03.importUnits.before1.after2.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=95; factor=1000",
+        "FAIL: audit03.importUnits.before2.after0.newHeader; actual=X, m; expected=X, mm",
+        "FAIL: audit03.importUnits.before2.after0.newAreaHeader; actual=Area, m2; expected=Area, mm2",
+        "FAIL: audit03.importUnits.before2.after0.newX; actual=0.95; expected=950.",
+        "FAIL: audit03.importUnits.before2.after0.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=0.95; factor=1",
+        "FAIL: audit03.importUnits.before2.after1.newHeader; actual=X, m; expected=X, cm",
+        "FAIL: audit03.importUnits.before2.after1.newAreaHeader; actual=Area, m2; expected=Area, cm2",
+        "FAIL: audit03.importUnits.before2.after1.newX; actual=0.95; expected=95.",
+        "FAIL: audit03.importUnits.before2.after1.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=0.95; factor=10",
+        "FAIL: audit03.geometrySnapshot.runtime; -2147217123; Нарушены тип, порядок или имя элемента: Snapshot!A7. Нажмите «Сформировать сечение».",
+        "FAIL: audit03.snapshotMetadata.units.p0.mm.mode0.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.mm.mode1.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.mm.mode2.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.cm.mode0.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.cm.mode1.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.cm.mode2.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.m.mode0.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.m.mode1.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.m.mode2.loaded",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v10.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v11.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v12.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.recovery",
+        "FAIL: audit03.snapshotMetadata.runtime.-2147216784.В сохраненном снимке Results поле CoordinateUnit (Results!I21) содержит недопустимое значение. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.",
+        "FAIL: ui.autocad.preview.rebarAnnotation",
+        "FAIL: ui.plot.preview.title",
+        "FAIL: ui.plot.generated.noPreviewFallback.error"
+      ]
+    },
+    {
+      "name": "Geometry_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "4851007367a9a0d69364821ad8220396b67e3ca25ba116d492f0e24f9e3ebe9d",
+      "suites": [
+        {
+          "name": "modTestDeclarativeGeometry.RunCoreGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:09:57",
+          "finished": "2026-10-22T01:09:58",
+          "passed": 45,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "modTestPolygonSpec.RunPolygonSpecTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:09:58",
+          "finished": "2026-10-22T01:09:59",
+          "passed": 52,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:09:59",
+          "finished": "2026-10-22T01:10:00",
+          "passed": 15,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeRuleTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:10:00",
+          "finished": "2026-10-22T01:10:01",
+          "passed": 187,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:10:02",
+          "finished": "2026-10-22T01:10:02",
+          "passed": 158,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:10:03",
+          "finished": "2026-10-22T01:11:41",
+          "passed": 92,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunAnnotationIsolationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:41",
+          "finished": "2026-10-22T01:11:42",
+          "passed": 12,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunRecipeContextFreezeTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:43",
+          "finished": "2026-10-22T01:11:43",
+          "passed": 11,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunPublishedBuildTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:44",
+          "finished": "2026-10-22T01:11:44",
+          "passed": 20,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunDefinitionLifecycleTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:45",
+          "finished": "2026-10-22T01:11:45",
+          "passed": 10,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeOperationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:46",
+          "finished": "2026-10-22T01:11:47",
+          "passed": 32,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:47",
+          "finished": "2026-10-22T01:11:48",
+          "passed": 35,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunResolveAnchorTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:48",
+          "finished": "2026-10-22T01:11:49",
+          "passed": 1475,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryQuery.RunGeometryQueryTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:49",
+          "finished": "2026-10-22T01:11:50",
+          "passed": 1319,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:51",
+          "finished": "2026-10-22T01:11:53",
+          "passed": 168,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:53",
+          "finished": "2026-10-22T01:11:54",
+          "passed": 24,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAutoCADContours.RunImportedDimensionTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:55",
+          "finished": "2026-10-22T01:11:56",
+          "passed": 23,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:56",
+          "finished": "2026-10-22T01:11:57",
+          "passed": 12,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestContourMesh.RunContourMeshTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:11:58",
+          "finished": "2026-10-22T01:12:00",
+          "passed": 34333,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02PolygonApiTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:01",
+          "finished": "2026-10-22T01:12:01",
+          "passed": 16,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02OptionsTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:02",
+          "finished": "2026-10-22T01:12:02",
+          "passed": 15,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02InputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:03",
+          "finished": "2026-10-22T01:12:04",
+          "passed": 5,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02AnnotationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:04",
+          "finished": "2026-10-22T01:12:05",
+          "passed": 9,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02GuideExamplesTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:05",
+          "finished": "2026-10-22T01:12:06",
+          "passed": 11,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutContactTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:06",
+          "finished": "2026-10-22T01:12:07",
+          "passed": 23,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:07",
+          "finished": "2026-10-22T01:12:22",
+          "passed": 309,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryReview.RunGeometryReviewTests",
+          "status": "FAIL",
+          "started": "2026-10-22T01:12:23",
+          "finished": "2026-10-22T01:12:57",
+          "passed": 40,
+          "failedLines": 1,
+          "nestedFailureCounts": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryReview.RunPointedWidthInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:12:58",
+          "finished": "2026-10-22T01:13:28",
+          "passed": 64,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunCollapsingOffsetTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:29",
+          "finished": "2026-10-22T01:13:29",
+          "passed": 26,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:30",
+          "finished": "2026-10-22T01:13:31",
+          "passed": 152,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:31",
+          "finished": "2026-10-22T01:13:32",
+          "passed": 269,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourFailureTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:33",
+          "finished": "2026-10-22T01:13:33",
+          "passed": 11,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourWorkbookTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:34",
+          "finished": "2026-10-22T01:13:46",
+          "passed": 604,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunUserRoundedContourTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:47",
+          "finished": "2026-10-22T01:13:47",
+          "passed": 68,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunOffsetNeighborMergeTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:48",
+          "finished": "2026-10-22T01:13:49",
+          "passed": 264,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourPerformanceTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:13:49",
+          "finished": "2026-10-22T01:13:58",
+          "passed": 73227,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Successful driver completion is missing"
+      ],
+      "passed": 113136,
+      "group": "Geometry",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestGeometryReview.RunGeometryReviewTests",
+        "modTestGeometryReview.RunPointedWidthInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests",
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourPerformanceTests"
+      ],
+      "printedSuccessfulAssertions": 2012,
+      "failures": [
+        "FAIL: collapsed.extra.row"
+      ]
+    },
+    {
+      "name": "SP35_Off.txt",
+      "status": "PASS",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "588a87e2616371acc1b29e24f645e83a7ea71de73e5e4e12d8d1b308a7a5a34a",
+      "suites": [
+        {
+          "name": "modTestSP35CrackWidth.RunSP35FormulaTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:06",
+          "finished": "2026-10-22T01:14:07",
+          "passed": 27,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:07",
+          "finished": "2026-10-22T01:14:08",
+          "passed": 36,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35PreparationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:08",
+          "finished": "2026-10-22T01:14:09",
+          "passed": 405,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:09",
+          "finished": "2026-10-22T01:14:10",
+          "passed": 18,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35PipelineTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:11",
+          "finished": "2026-10-22T01:14:11",
+          "passed": 34,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35EndToEndTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:12",
+          "finished": "2026-10-22T01:14:19",
+          "passed": 270,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [],
+      "passed": 790,
+      "group": "SP35",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "printedSuccessfulAssertions": 790,
+      "failures": []
+    },
+    {
+      "name": "Recipes_Off.txt",
+      "status": "PASS",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "9432017054c4894df1e5fe1339459e60497dc6a71351b561adbf0886ef66d23a",
+      "suites": [
+        {
+          "name": "modTestAudit02Api.RunRebarContactBuilderTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:26",
+          "finished": "2026-10-22T01:14:27",
+          "passed": 97,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:27",
+          "finished": "2026-10-22T01:14:35",
+          "passed": 284,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:35",
+          "finished": "2026-10-22T01:14:36",
+          "passed": 15,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunCircleRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:36",
+          "finished": "2026-10-22T01:14:38",
+          "passed": 5,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:39",
+          "finished": "2026-10-22T01:14:50",
+          "passed": 14,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunHollowRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:14:50",
+          "finished": "2026-10-22T01:15:14",
+          "passed": 20,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunCircleBindingTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:15:14",
+          "finished": "2026-10-22T01:15:20",
+          "passed": 4774,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:15:21",
+          "finished": "2026-10-22T01:15:22",
+          "passed": 19,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:15:22",
+          "finished": "2026-10-22T01:17:01",
+          "passed": 92,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeRuleTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:02",
+          "finished": "2026-10-22T01:17:03",
+          "passed": 187,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeCaptionTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:03",
+          "finished": "2026-10-22T01:17:12",
+          "passed": 84,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:12",
+          "finished": "2026-10-22T01:17:13",
+          "passed": 75,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:14",
+          "finished": "2026-10-22T01:17:19",
+          "passed": 20,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeOperationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:20",
+          "finished": "2026-10-22T01:17:20",
+          "passed": 32,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:21",
+          "finished": "2026-10-22T01:17:21",
+          "passed": 35,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:22",
+          "finished": "2026-10-22T01:17:37",
+          "passed": 309,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutContactTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:38",
+          "finished": "2026-10-22T01:17:39",
+          "passed": 23,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:39",
+          "finished": "2026-10-22T01:17:40",
+          "passed": 16,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:40",
+          "finished": "2026-10-22T01:17:41",
+          "passed": 107,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:41",
+          "finished": "2026-10-22T01:17:42",
+          "passed": 99,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:42",
+          "finished": "2026-10-22T01:17:43",
+          "passed": 112,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:17:44",
+          "finished": "2026-10-22T01:18:55",
+          "passed": 146,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:18:56",
+          "finished": "2026-10-22T01:18:58",
+          "passed": 10,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunCircleSetbackTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:18:59",
+          "finished": "2026-10-22T01:19:02",
+          "passed": 146,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunOffsetWallCollisionTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:19:03",
+          "finished": "2026-10-22T01:19:08",
+          "passed": 4,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestWorkbookInterface.RunConfigComparisonContractTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:19:09",
+          "finished": "2026-10-22T01:19:09",
+          "passed": 6,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [],
+      "passed": 6731,
+      "group": "Recipes",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "printedSuccessfulAssertions": 101,
+      "failures": []
+    },
+    {
+      "name": "SavedOffsets_Off.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "0fe4ad5a307fe2c2e905b6702f1441bb801f7dbc345d0903a8134157f5b6e865",
+      "suites": [
+        {
+          "name": "modTestRecipeOperations.RunSavedPointedOffsetTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:19:18",
+          "finished": "2026-10-22T01:19:20",
+          "passed": 14,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+          "status": "FAIL",
+          "started": "2026-10-22T01:19:20",
+          "finished": "2026-10-22T01:19:28",
+          "passed": 7,
+          "failedLines": 1,
+          "nestedFailureCounts": [
+            1
+          ]
+        }
+      ],
+      "errors": [
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Successful driver completion is missing"
+      ],
+      "passed": 21,
+      "group": "SavedOffsets",
+      "mode": "No",
+      "expectedMacros": [
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [
+        "FAIL: saved.calculation.warning.50"
+      ]
+    },
+    {
+      "name": "Full_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "e30690837bb94ec9026bb1bbc4316875c3a846b6733ea8d61ab936e556414104",
+      "suites": [
+        {
+          "name": "modTestGeometry.RunGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:19:34",
+          "finished": "2026-10-22T01:19:54",
+          "passed": 766,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestMaterialDiagrams.RunMaterialDiagramTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:19:54",
+          "finished": "2026-10-22T01:21:18",
+          "passed": 30457,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionSolver.RunSectionSolverTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:21:18",
+          "finished": "2026-10-22T01:21:20",
+          "passed": 3306,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestCapacitySolver.RunCapacitySolverTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:21:21",
+          "finished": "2026-10-22T01:24:54",
+          "passed": 5355,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestCrackWidth.RunCrackWidthTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:24:54",
+          "finished": "2026-10-22T01:25:44",
+          "passed": 2134,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestBatchCalculation.RunBatchCalculationTests",
+          "status": "PASS",
+          "started": "2026-10-22T01:25:45",
+          "finished": "2026-10-22T01:36:53",
+          "passed": 30982,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+          "status": "FAIL",
+          "started": "2026-10-22T01:36:54",
+          "finished": "2026-10-22T02:34:23",
+          "passed": 67480,
+          "failedLines": 63,
+          "nestedFailureCounts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            34,
+            0,
+            63
+          ]
+        },
+        {
+          "name": "modTestRegressionBaseline.RunRegressionBaselineTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:24",
+          "finished": "2026-10-22T02:34:26",
+          "passed": 39,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Successful driver completion is missing"
+      ],
+      "passed": 140519,
+      "group": "Full",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestGeometry.RunGeometryTests",
+        "modTestMaterialDiagrams.RunMaterialDiagramTests",
+        "modTestSectionSolver.RunSectionSolverTests",
+        "modTestCapacitySolver.RunCapacitySolverTests",
+        "modTestCrackWidth.RunCrackWidthTests",
+        "modTestBatchCalculation.RunBatchCalculationTests",
+        "modTestWorkbookInterface.RunWorkbookInterfaceTests",
+        "modTestRegressionBaseline.RunRegressionBaselineTests"
+      ],
+      "printedSuccessfulAssertions": 140519,
+      "failures": [
+        "FAIL: config.settings.rightBorder.5",
+        "FAIL: audit03.importUnits.before0.after1.newHeader; actual=X, mm; expected=X, cm",
+        "FAIL: audit03.importUnits.before0.after1.newAreaHeader; actual=Area, mm2; expected=Area, cm2",
+        "FAIL: audit03.importUnits.before0.after1.newX; actual=950.; expected=95.",
+        "FAIL: audit03.importUnits.before0.after1.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=950; factor=10",
+        "FAIL: audit03.importUnits.before0.after2.newHeader; actual=X, mm; expected=X, m",
+        "FAIL: audit03.importUnits.before0.after2.newAreaHeader; actual=Area, mm2; expected=Area, m2",
+        "FAIL: audit03.importUnits.before0.after2.newX; actual=950.; expected=0.95",
+        "FAIL: audit03.importUnits.before0.after2.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=950; factor=1000",
+        "FAIL: audit03.importUnits.before1.after0.newHeader; actual=X, cm; expected=X, mm",
+        "FAIL: audit03.importUnits.before1.after0.newAreaHeader; actual=Area, cm2; expected=Area, mm2",
+        "FAIL: audit03.importUnits.before1.after0.newX; actual=95.; expected=950.",
+        "FAIL: audit03.importUnits.before1.after0.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=95; factor=1",
+        "FAIL: audit03.importUnits.before1.after2.newHeader; actual=X, cm; expected=X, m",
+        "FAIL: audit03.importUnits.before1.after2.newAreaHeader; actual=Area, cm2; expected=Area, m2",
+        "FAIL: audit03.importUnits.before1.after2.newX; actual=95.; expected=0.95",
+        "FAIL: audit03.importUnits.before1.after2.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=95; factor=1000",
+        "FAIL: audit03.importUnits.before2.after0.newHeader; actual=X, m; expected=X, mm",
+        "FAIL: audit03.importUnits.before2.after0.newAreaHeader; actual=Area, m2; expected=Area, mm2",
+        "FAIL: audit03.importUnits.before2.after0.newX; actual=0.95; expected=950.",
+        "FAIL: audit03.importUnits.before2.after0.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=0.95; factor=1",
+        "FAIL: audit03.importUnits.before2.after1.newHeader; actual=X, m; expected=X, cm",
+        "FAIL: audit03.importUnits.before2.after1.newAreaHeader; actual=Area, m2; expected=Area, cm2",
+        "FAIL: audit03.importUnits.before2.after1.newX; actual=0.95; expected=95.",
+        "FAIL: audit03.importUnits.before2.after1.geometry.equivalent; row=2; col=4; parameter=; expected=950; actual=0.95; factor=10",
+        "FAIL: audit03.geometrySnapshot.runtime; -2147217123; Нарушены тип, порядок или имя элемента: Snapshot!A7. Нажмите «Сформировать сечение».",
+        "FAIL: audit03.snapshotMetadata.units.p0.mm.mode0.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.mm.mode1.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.mm.mode2.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.cm.mode0.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.cm.mode1.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.cm.mode2.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.m.mode0.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.m.mode1.loaded",
+        "FAIL: audit03.snapshotMetadata.units.p0.m.mode2.loaded",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v1.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v2.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v3.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row11.v4.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v5.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v6.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v7.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row12.v8.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v9.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v10.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v11.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row14.v12.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v13.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v14.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v15.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row15.v16.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v17.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v18.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v19.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row16.v20.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v21.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v22.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v23.recovery",
+        "FAIL: audit03.snapshotMetadata.invalid.p0.row17.v24.recovery",
+        "FAIL: audit03.snapshotMetadata.runtime.-2147216784.В сохраненном снимке Results поле CoordinateUnit (Results!I21) содержит недопустимое значение. Исправьте указанную ячейку или повторите расчет/импорт для восстановления снимка.",
+        "FAIL: ui.autocad.preview.rebarAnnotation",
+        "FAIL: ui.plot.preview.title",
+        "FAIL: ui.plot.generated.noPreviewFallback.error"
+      ]
+    },
+    {
+      "name": "Geometry_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "d89f5c9f0c8ccd0844d7bba1a6165b92ed54b3f068c3ac70cba65cbd27833fad",
+      "suites": [
+        {
+          "name": "modTestDeclarativeGeometry.RunCoreGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:37",
+          "finished": "2026-10-22T02:34:38",
+          "passed": 45,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "modTestPolygonSpec.RunPolygonSpecTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:38",
+          "finished": "2026-10-22T02:34:39",
+          "passed": 52,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:39",
+          "finished": "2026-10-22T02:34:40",
+          "passed": 15,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeRuleTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:40",
+          "finished": "2026-10-22T02:34:41",
+          "passed": 187,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:42",
+          "finished": "2026-10-22T02:34:42",
+          "passed": 158,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:34:43",
+          "finished": "2026-10-22T02:36:22",
+          "passed": 92,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunAnnotationIsolationTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:23",
+          "finished": "2026-10-22T02:36:23",
+          "passed": 12,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunRecipeContextFreezeTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:24",
+          "finished": "2026-10-22T02:36:24",
+          "passed": 11,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunPublishedBuildTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:25",
+          "finished": "2026-10-22T02:36:25",
+          "passed": 20,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryPublication.RunDefinitionLifecycleTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:26",
+          "finished": "2026-10-22T02:36:26",
+          "passed": 10,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeOperationTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:27",
+          "finished": "2026-10-22T02:36:27",
+          "passed": 32,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:28",
+          "finished": "2026-10-22T02:36:29",
+          "passed": 35,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunResolveAnchorTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:29",
+          "finished": "2026-10-22T02:36:30",
+          "passed": 1475,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryQuery.RunGeometryQueryTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:30",
+          "finished": "2026-10-22T02:36:31",
+          "passed": 1319,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:32",
+          "finished": "2026-10-22T02:36:34",
+          "passed": 168,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:34",
+          "finished": "2026-10-22T02:36:35",
+          "passed": 24,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAutoCADContours.RunImportedDimensionTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:36",
+          "finished": "2026-10-22T02:36:37",
+          "passed": 23,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:37",
+          "finished": "2026-10-22T02:36:38",
+          "passed": 12,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestContourMesh.RunContourMeshTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:39",
+          "finished": "2026-10-22T02:36:41",
+          "passed": 34333,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02PolygonApiTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:41",
+          "finished": "2026-10-22T02:36:42",
+          "passed": 16,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02OptionsTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:43",
+          "finished": "2026-10-22T02:36:43",
+          "passed": 15,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02InputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:44",
+          "finished": "2026-10-22T02:36:44",
+          "passed": 5,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02AnnotationTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:45",
+          "finished": "2026-10-22T02:36:45",
+          "passed": 9,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02GuideExamplesTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:46",
+          "finished": "2026-10-22T02:36:46",
+          "passed": 11,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutContactTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:47",
+          "finished": "2026-10-22T02:36:47",
+          "passed": 23,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:36:48",
+          "finished": "2026-10-22T02:37:02",
+          "passed": 309,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryReview.RunGeometryReviewTests",
+          "status": "FAIL",
+          "started": "2026-10-22T02:37:03",
+          "finished": "2026-10-22T02:37:37",
+          "passed": 40,
+          "failedLines": 1,
+          "nestedFailureCounts": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "name": "modTestGeometryReview.RunPointedWidthInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:37:38",
+          "finished": "2026-10-22T02:38:07",
+          "passed": 64,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunCollapsingOffsetTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:07",
+          "finished": "2026-10-22T02:38:08",
+          "passed": 26,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:09",
+          "finished": "2026-10-22T02:38:09",
+          "passed": 152,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:10",
+          "finished": "2026-10-22T02:38:11",
+          "passed": 269,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourFailureTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:12",
+          "finished": "2026-10-22T02:38:12",
+          "passed": 11,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourWorkbookTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:13",
+          "finished": "2026-10-22T02:38:25",
+          "passed": 604,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunUserRoundedContourTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:25",
+          "finished": "2026-10-22T02:38:26",
+          "passed": 68,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunOffsetNeighborMergeTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:27",
+          "finished": "2026-10-22T02:38:28",
+          "passed": 264,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestIndividualContours.RunIndividualContourPerformanceTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:28",
+          "finished": "2026-10-22T02:38:38",
+          "passed": 73227,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Successful driver completion is missing"
+      ],
+      "passed": 113136,
+      "group": "Geometry",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestDeclarativeGeometry.RunCoreGeometryTests",
+        "modTestPolygonSpec.RunPolygonSpecTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeMeshBoundaryTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestGeometryPublication.RunAnnotationIsolationTests",
+        "modTestGeometryPublication.RunRecipeContextFreezeTests",
+        "modTestGeometryPublication.RunPublishedBuildTests",
+        "modTestGeometryPublication.RunDefinitionLifecycleTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestRecipeOperations.RunResolveAnchorTests",
+        "modTestGeometryQuery.RunGeometryQueryTests",
+        "modTestRecipeAnnotations.RunArbitraryAnnotationGeometryTests",
+        "modTestRecipeAnnotations.RunRecipeAnnotationSnapshotTests",
+        "modTestAutoCADContours.RunImportedDimensionTests",
+        "modTestAutoCADContours.RunAnnotationSectionScaleTests",
+        "modTestContourMesh.RunContourMeshTests",
+        "modTestAudit02Api.RunAudit02PolygonApiTests",
+        "modTestAudit02Api.RunAudit02OptionsTests",
+        "modTestAudit02Api.RunAudit02InputTests",
+        "modTestAudit02Api.RunAudit02AnnotationTests",
+        "modTestAudit02Api.RunAudit02GuideExamplesTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestGeometryReview.RunGeometryReviewTests",
+        "modTestGeometryReview.RunPointedWidthInputTests",
+        "modTestRecipeOperations.RunCollapsingOffsetTests",
+        "modTestRecipeOperations.RunFullBoundaryOffsetTests",
+        "modTestIndividualContours.RunIndividualContourTests",
+        "modTestIndividualContours.RunIndividualContourFailureTests",
+        "modTestIndividualContours.RunIndividualContourWorkbookTests",
+        "modTestIndividualContours.RunUserRoundedContourTests",
+        "modTestIndividualContours.RunOffsetNeighborMergeTests",
+        "modTestIndividualContours.RunIndividualContourPerformanceTests"
+      ],
+      "printedSuccessfulAssertions": 2012,
+      "failures": [
+        "FAIL: collapsed.extra.row"
+      ]
+    },
+    {
+      "name": "SP35_On.txt",
+      "status": "PASS",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "b0604897b2b3ba300d80fe16cd054d2fc503e241ffb8d4aed681cba1279ff14f",
+      "suites": [
+        {
+          "name": "modTestSP35CrackWidth.RunSP35FormulaTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:45",
+          "finished": "2026-10-22T02:38:46",
+          "passed": 27,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:46",
+          "finished": "2026-10-22T02:38:47",
+          "passed": 36,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35PreparationTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:47",
+          "finished": "2026-10-22T02:38:48",
+          "passed": 405,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:49",
+          "finished": "2026-10-22T02:38:49",
+          "passed": 18,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35PipelineTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:50",
+          "finished": "2026-10-22T02:38:50",
+          "passed": 34,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSP35CrackWidth.RunSP35EndToEndTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:38:51",
+          "finished": "2026-10-22T02:38:58",
+          "passed": 270,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [],
+      "passed": 790,
+      "group": "SP35",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestSP35CrackWidth.RunSP35FormulaTests",
+        "modTestSP35CrackWidth.RunSP35LocalOpeningTests",
+        "modTestSP35CrackWidth.RunSP35PreparationTests",
+        "modTestSP35CrackWidth.RunSP35NeighborSettingsTests",
+        "modTestSP35CrackWidth.RunSP35PipelineTests",
+        "modTestSP35CrackWidth.RunSP35EndToEndTests"
+      ],
+      "printedSuccessfulAssertions": 790,
+      "failures": []
+    },
+    {
+      "name": "Recipes_On.txt",
+      "status": "PASS",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "e455fa59f07e9b6b64cd1d4f03ee60415a31a97cfbcb834f10b9d9e35e377ae0",
+      "suites": [
+        {
+          "name": "modTestAudit02Api.RunRebarContactBuilderTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:06",
+          "finished": "2026-10-22T02:39:07",
+          "passed": 97,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:07",
+          "finished": "2026-10-22T02:39:14",
+          "passed": 284,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeDefinitionTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:15",
+          "finished": "2026-10-22T02:39:15",
+          "passed": 15,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunCircleRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:16",
+          "finished": "2026-10-22T02:39:18",
+          "passed": 5,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRoundedRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:18",
+          "finished": "2026-10-22T02:39:29",
+          "passed": 14,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunHollowRecipeInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:30",
+          "finished": "2026-10-22T02:39:54",
+          "passed": 20,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunCircleBindingTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:39:55",
+          "finished": "2026-10-22T02:40:01",
+          "passed": 4774,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:40:01",
+          "finished": "2026-10-22T02:40:02",
+          "passed": 19,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:40:03",
+          "finished": "2026-10-22T02:41:43",
+          "passed": 92,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeRuleTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:41:43",
+          "finished": "2026-10-22T02:41:44",
+          "passed": 187,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionRecipes.RunRecipeCaptionTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:41:45",
+          "finished": "2026-10-22T02:41:53",
+          "passed": 84,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:41:54",
+          "finished": "2026-10-22T02:41:55",
+          "passed": 75,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:41:55",
+          "finished": "2026-10-22T02:42:01",
+          "passed": 20,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeOperationTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:01",
+          "finished": "2026-10-22T02:42:02",
+          "passed": 32,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunRecipeDiagnosticTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:02",
+          "finished": "2026-10-22T02:42:03",
+          "passed": 35,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:03",
+          "finished": "2026-10-22T02:42:18",
+          "passed": 309,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunAudit02CloseoutContactTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:19",
+          "finished": "2026-10-22T02:42:19",
+          "passed": 23,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:20",
+          "finished": "2026-10-22T02:42:20",
+          "passed": 16,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestSectionInputReader.RunSectionInputReaderTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:21",
+          "finished": "2026-10-22T02:42:22",
+          "passed": 107,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:22",
+          "finished": "2026-10-22T02:42:23",
+          "passed": 99,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:23",
+          "finished": "2026-10-22T02:42:24",
+          "passed": 112,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:42:25",
+          "finished": "2026-10-22T02:43:38",
+          "passed": 146,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:43:38",
+          "finished": "2026-10-22T02:43:41",
+          "passed": 10,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunCircleSetbackTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:43:42",
+          "finished": "2026-10-22T02:43:45",
+          "passed": 146,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestAudit02Api.RunOffsetWallCollisionTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:43:46",
+          "finished": "2026-10-22T02:43:51",
+          "passed": 4,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestWorkbookInterface.RunConfigComparisonContractTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:43:52",
+          "finished": "2026-10-22T02:43:52",
+          "passed": 6,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        }
+      ],
+      "errors": [],
+      "passed": 6731,
+      "group": "Recipes",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestAudit02Api.RunRebarContactBuilderTests",
+        "modTestSectionRecipes.RunWorkbookRecipeInputTests",
+        "modTestSectionRecipes.RunRecipeDefinitionTests",
+        "modTestSectionRecipes.RunCircleRecipeInputTests",
+        "modTestSectionRecipes.RunRoundedRecipeInputTests",
+        "modTestSectionRecipes.RunHollowRecipeInputTests",
+        "modTestSectionRecipes.RunCircleBindingTests",
+        "modTestSectionRecipes.RunCircleBindingWorkbookTests",
+        "modTestSectionRecipes.RunRecipeAnnotationCountTests",
+        "modTestSectionRecipes.RunRecipeRuleTests",
+        "modTestSectionRecipes.RunRecipeCaptionTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackUnitTests",
+        "modTestRecipeSetbacks.RunRecipeSetbackInputTests",
+        "modTestRecipeOperations.RunRecipeOperationTests",
+        "modTestRecipeOperations.RunRecipeDiagnosticTests",
+        "modTestAudit02Api.RunAudit02CloseoutRectanglesInputTests",
+        "modTestAudit02Api.RunAudit02CloseoutContactTests",
+        "modTestRecipeApiCatalogue.RunAdvancedGuideExamples",
+        "modTestSectionInputReader.RunSectionInputReaderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetBuilderTests",
+        "modTestAudit02Api.RunIndependentRowOffsetGeometryTests",
+        "modTestAudit02Api.RunIndependentRowOffsetWorkbookTests",
+        "modTestAudit02Api.RunOffsetOpeningAnnotationTests",
+        "modTestAudit02Api.RunCircleSetbackTests",
+        "modTestAudit02Api.RunOffsetWallCollisionTests",
+        "modTestWorkbookInterface.RunConfigComparisonContractTests"
+      ],
+      "printedSuccessfulAssertions": 101,
+      "failures": []
+    },
+    {
+      "name": "SavedOffsets_On.txt",
+      "status": "INCOMPLETE_OR_FAILED",
+      "sourceSHA256": "0002e910e28ad95b03362296315839c245aaacad80011b2aca158115a69f0845",
+      "reportSHA256": "94580773ca275a2d8c9d1b2e04f1d8897e0a28a80614ed1778e1da1f130e7ede",
+      "suites": [
+        {
+          "name": "modTestRecipeOperations.RunSavedPointedOffsetTests",
+          "status": "PASS",
+          "started": "2026-10-22T02:44:00",
+          "finished": "2026-10-22T02:44:02",
+          "passed": 14,
+          "failedLines": 0,
+          "nestedFailureCounts": [
+            0
+          ]
+        },
+        {
+          "name": "modTestRecipeOperations.RunSavedOffsetCalculationTests",
+          "status": "FAIL",
+          "started": "2026-10-22T02:44:02",
+          "finished": "2026-10-22T02:44:09",
+          "passed": 7,
+          "failedLines": 1,
+          "nestedFailureCounts": [
+            1
+          ]
+        }
+      ],
+      "errors": [
+        "Suite is incomplete or failed",
+        "Successful terminal source guard is missing",
+        "Successful driver completion is missing"
+      ],
+      "passed": 21,
+      "group": "SavedOffsets",
+      "mode": "Yes",
+      "expectedMacros": [
+        "modTestRecipeOperations.RunSavedPointedOffsetTests",
+        "modTestRecipeOperations.RunSavedOffsetCalculationTests"
+      ],
+      "printedSuccessfulAssertions": 0,
+      "failures": [
+        "FAIL: saved.calculation.warning.50"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "CheckedAt": "2026-10-22T03:15:18.066285+03:00",
+  "AutomationId": "ndm",
+  "Status": "PAUSED",
+  "AcceptanceStatus": "INCOMPLETE_OR_FAILED",
+  "CoreComplete": 156,
+  "FocusedSingleCases": 122,
+  "NoSourceChangesOrRestart": true
+}

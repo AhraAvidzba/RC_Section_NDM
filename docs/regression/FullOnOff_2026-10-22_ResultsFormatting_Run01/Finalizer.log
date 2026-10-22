@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Finalize-CompleteAcceptance.py", line 61, in <module>
+    args=parser.parse_args();result=finalize(args.core_directory,args.focused_directory)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\tools\build_workbook\Finalize-CompleteAcceptance.py", line 19, in finalize
+    if main['status']!='PASS':raise ValueError(main['errors'])
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: ['Full_Off.txt', 'Geometry_Off.txt', 'SavedOffsets_Off.txt', 'Full_On.txt', 'Geometry_On.txt', 'SavedOffsets_On.txt', 'Driver is not successfully complete', 'Mandatory focused acceptance did not finish successfully']

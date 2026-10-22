@@ -1,0 +1,7 @@
+{
+  "CheckedAt": "2026-10-22T03:11:53.4510255+03:00",
+  "SummarizerExitCode": 1,
+  "FinalizerExitCode": 1,
+  "OverallStatus": "INCOMPLETE_OR_FAILED",
+  "Reason": "Actual failures in finished tests exclude PASS; no stages skipped or restarted"
+}

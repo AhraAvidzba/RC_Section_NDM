@@ -1,0 +1,22 @@
+{
+  "CheckedAt": "2026-10-22T01:31:56.9121320+03:00",
+  "AdditionalFailures": [
+    {
+      "Group": "Geometry_Off",
+      "FailureLines": [
+        "FAIL: collapsed.extra.row"
+      ]
+    },
+    {
+      "Group": "SavedOffsets_Off",
+      "FailureLines": [
+        "FAIL: saved.calculation.warning.50"
+      ]
+    }
+  ],
+  "ReadOnlyFindings": [
+    "collapsed.extra.row expects an older exact phrase; actual message correctly names the 2nd reinforcement row, input addresses, vanished contour, radius/offset and correction.",
+    "saved.calculation.warning.50 compares a formation diagnostic with a calculation-only return message; review the helper contract after the earlier command separation. Actual calculation completed and no NumFail/InputErr/CalcErr assertion failed."
+  ],
+  "Action": "No source/book changes while full ON continues."
+}

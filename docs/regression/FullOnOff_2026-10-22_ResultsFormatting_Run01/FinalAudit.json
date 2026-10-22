@@ -1,0 +1,21 @@
+{
+  "CheckedAt": "2026-10-22T03:14:13.524638+03:00",
+  "Status": "INCOMPLETE_OR_FAILED",
+  "CompletedCoreSuites": 156,
+  "PassedCoreSuites": 150,
+  "FailedCoreSuites": 6,
+  "CoreFailedAssertions": 130,
+  "SameFailureLinesOnOff": true,
+  "FocusedSingleCases": 122,
+  "FocusedOnlyFailedStage": "OutputPresentation",
+  "FocusedFailure": "config.settings.rightBorder.5",
+  "ActualAutoCADPassed": true,
+  "IndependentPassed": true,
+  "IndependentIntegrals": 560,
+  "ReviewedNumFailStates": 10,
+  "SameWorkbookBytes": true,
+  "CompletedBeforeDeadline": true,
+  "SourceBookAndAllCodeUnchanged": true,
+  "ForeignExecutionReportUnchanged": true,
+  "NoAutomaticRetry": true
+}
