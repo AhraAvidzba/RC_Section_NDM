@@ -52,7 +52,8 @@ Public Function ResultMessage(ByVal model As CSectionModel) As String
         "Бетонных элементов: " & CStr(model.ConcreteCount) & "; стержней: " & CStr(model.RebarCount) & "." & vbCrLf & _
         "Наружных контуров: " & CStr(outerCount) & "; отверстий: " & CStr(openingCount) & "."
     If Len(mImportWarnings) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & "Предупреждения:" & vbCrLf & mImportWarnings
-    ResultMessage = WithConcreteMeshGenerationNotice(ResultMessage, model)
+    If model.ConcreteMeshSource = "AutoCADContours" Then _
+        ResultMessage = ResultMessage & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
 End Function
 
 ' Добавляет отдельную строку предупреждения без смешивания с технической диагностикой.

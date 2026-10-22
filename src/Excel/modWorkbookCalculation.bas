@@ -420,7 +420,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal workbook As Object, Optio
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
-    RunSectionCalculationForWorkbook = BuildCalculationMessage(section, batch)
+    RunSectionCalculationForWorkbook = BuildCalculationMessage(batch)
     If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.Enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
@@ -852,20 +852,14 @@ End Sub
 
 ' Готовит итоговое сообщение о запуске, отдельно выделяя ошибки входных строк.
 ' Берёт инженерные статусы из готовых результатов расчёта сочетаний.
-Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator) As String
-    Dim calculationCaption As String
-    calculationCaption = "Расчет"
-    If StrComp(section.SourceType, "AutoCADImport", vbTextCompare) = 0 Then
-        calculationCaption = "Расчет импортированной из AutoCAD геометрии"
-    End If
-
+Private Function BuildCalculationMessage(ByVal batch As CBatchSectionCalculator) As String
     If batch.InvalidInputCount > 0 Then
-        BuildCalculationMessage = calculationCaption & " завершен с ошибками ввода. Обработано сочетаний: " & _
+        BuildCalculationMessage = "Расчет завершен с ошибками ввода. Обработано сочетаний: " & _
             CStr(batch.Count) & "; ошибок ввода: " & CStr(batch.InvalidInputCount) & "." & vbCrLf & _
             "Проверьте строки со статусом InputErr на листе Results." & vbCrLf & _
             "Первая ошибка: " & batch.FirstInvalidInputMessage
     Else
-        BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.Count) & _
+        BuildCalculationMessage = "Расчет завершен. Обработано сочетаний: " & CStr(batch.Count) & _
             ". Определяющее сочетание: " & batch.WorstCombinationID
     End If
 End Function

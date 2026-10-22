@@ -85,7 +85,7 @@ Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template A
             writer.WriteGeometryPreview ThisWorkbook, imported, PrepareSectionSnapshot(imported), units
             Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
             CompareModels key & ".snapshot", imported, restored, False
-            Check key & ".restoredNotice", InStr(WithConcreteMeshGenerationNotice("Export", restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+            Check key & ".restoredMeshSource", restored.ConcreteMeshSource = "AutoCADContours"
             exported = SP35ExportSavedMaterialContoursForTests(doc, key & "_OUT2", key & "_HOLE2", CStr(format))
             Check key & ".secondExport", exported > 0
             Dim reimported As CSectionModel
@@ -166,7 +166,7 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
     Near "native.fullExport.areaInMm2", expectedArea, area, 0.0000001
     Dim restored As CSectionModel
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
-    Check "native.fullExport.notice", InStr(WithConcreteMeshGenerationNotice("Экспорт завершен.", restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+    Check "native.fullExport.meshSourcePreserved", restored.ConcreteMeshSource = "AutoCADContours"
     GoTo Finish
 Failed:
     Check "native.fullExport.runtime." & CStr(Err.Number) & "; " & Err.Description, False
@@ -638,9 +638,9 @@ Private Sub CheckSnapshot()
     Set restored = ReadSectionGeometryFromResults(mFixture)
     CompareModels "snapshot.reopen", model, restored, False
     Check "snapshot.source", restored.ConcreteMeshSource = "AutoCADContours"
-    Check "snapshot.exportNotice", WithConcreteMeshGenerationNotice("Экспорт завершен.", restored) = "Экспорт завершен." & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
+    Check "snapshot.importNotice", InStr(importer.ResultMessage(restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
     restored.ConcreteMeshSource = "AutoCADRegions"
-    Check "snapshot.noFalseNotice", WithConcreteMeshGenerationNotice("Экспорт завершен.", restored) = "Экспорт завершен."
+    Check "snapshot.noFalseImportNotice", InStr(importer.ResultMessage(restored), CONTOUR_MESH_GENERATION_NOTICE) = 0
 End Sub
 
 Private Sub Near(ByVal label As String, ByVal a As Double, ByVal b As Double, Optional ByVal tolerance As Double = 0.00000001)

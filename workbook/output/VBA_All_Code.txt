@@ -1,6 +1,6 @@
 ﻿VBA PROJECT EXPORT
 Workbook: RC_Section_NDM.xlsm
-Date: 2026-10-22 11:55:14
+Date: 2026-10-22 20:06:04
 ====================================================================================================
 COMPONENT: ЭтаКнига
 TYPE: 100
@@ -16196,33 +16196,33 @@ End Property
 
 ' Читает ширину представления границы элемента. Для импортированного волокна
 ' оно может быть эквивалентным; реальная площадь и инерции не заменяются.
-Public Property Get ConcreteWidth(ByVal index As Long) As Double
+Public Property Get concreteWidth(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim widthValue As Double
     Dim heightValue As Double
     Dim rotationValue As Double
     ConcreteBoundaryRectangle index, widthValue, heightValue, rotationValue
-    ConcreteWidth = widthValue
+    concreteWidth = widthValue
 End Property
 
 ' Читает высоту той же границы/эквивалентного отображения, не меняя расчетные A/I.
-Public Property Get ConcreteHeight(ByVal index As Long) As Double
+Public Property Get concreteHeight(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim widthValue As Double
     Dim heightValue As Double
     Dim rotationValue As Double
     ConcreteBoundaryRectangle index, widthValue, heightValue, rotationValue
-    ConcreteHeight = heightValue
+    concreteHeight = heightValue
 End Property
 
 ' Возвращает поворот отображаемого прямоугольника относительно расчетных осей.
-Public Property Get ConcreteRotation(ByVal index As Long) As Double
+Public Property Get concreteRotation(ByVal index As Long) As Double
     CheckConcreteIndex index
     Dim widthValue As Double
     Dim heightValue As Double
     Dim rotationValue As Double
     ConcreteBoundaryRectangle index, widthValue, heightValue, rotationValue
-    ConcreteRotation = rotationValue
+    concreteRotation = rotationValue
 End Property
 
 ' Читает собственную Ix элемента из единого блока реальных геометрических характеристик.
@@ -42341,15 +42341,15 @@ End Function
 ' может пропустить его с предупреждением: такой объект не задает границу.
 ' Ненулевые отрезки и дуги здесь не объединяются и не скрываются.
 Public Function IsEmptyStraightSegment(ByVal entity As Object) As Boolean
-    Dim point As Variant, endpoint As Variant, context As String, dx As Double, dy As Double
+    Dim point As Variant, endPoint As Variant, context As String, dx As Double, dy As Double
     On Error GoTo Failed
     If entity Is Nothing Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Объект контура не передан."
     context = "Слой '" & CStr(entity.layer) & "', объект " & CStr(entity.handle) & ": "
     If StrComp(CStr(entity.objectName), "AcDbLine", vbTextCompare) <> 0 Then Exit Function
-    point = entity.StartPoint: endpoint = entity.endpoint
-    ValidatePoint point: ValidatePoint endpoint
-    dx = CDbl(point(LBound(point))) - CDbl(endpoint(LBound(endpoint)))
-    dy = CDbl(point(LBound(point) + 1)) - CDbl(endpoint(LBound(endpoint) + 1))
+    point = entity.startPoint: endPoint = entity.endPoint
+    ValidatePoint point: ValidatePoint endPoint
+    dx = CDbl(point(LBound(point))) - CDbl(endPoint(LBound(endPoint)))
+    dy = CDbl(point(LBound(point) + 1)) - CDbl(endPoint(LBound(endPoint) + 1))
     IsEmptyStraightSegment = (Abs(dx) <= PLANE_TOLERANCE And Abs(dy) <= PLANE_TOLERANCE)
     Exit Function
 Failed:
@@ -42363,15 +42363,15 @@ End Function
 ' вырожденные дуги и поврежденные Region по-прежнему отклоняются.
 Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByRef count As Long, _
         Optional ByVal ignoreRepeatedPolylineVertex As Boolean = False)
-    Dim kind As String, edge As TRegionEdge, point As Variant, endpoint As Variant
+    Dim kind As String, edge As TRegionEdge, point As Variant, endPoint As Variant
     Dim normal As Variant, radius As Double, sweep As Double, angle As Double, i As Long
     kind = CStr(curve.objectName)
     Select Case kind
         Case "AcDbLine"
-            point = curve.StartPoint: endpoint = curve.endpoint
-            ValidatePoint point: ValidatePoint endpoint
+            point = curve.startPoint: endPoint = curve.endPoint
+            ValidatePoint point: ValidatePoint endPoint
             edge.x1 = CDbl(point(LBound(point))): edge.y1 = CDbl(point(LBound(point) + 1))
-            edge.x2 = CDbl(endpoint(LBound(endpoint))): edge.y2 = CDbl(endpoint(LBound(endpoint) + 1))
+            edge.x2 = CDbl(endPoint(LBound(endPoint))): edge.y2 = CDbl(endPoint(LBound(endPoint) + 1))
             If ignoreRepeatedPolylineVertex Then
                 If Abs(edge.x2 - edge.x1) <= PLANE_TOLERANCE And Abs(edge.y2 - edge.y1) <= PLANE_TOLERANCE Then Exit Sub
             End If
@@ -42380,10 +42380,10 @@ Private Sub AppendCurve(ByVal curve As Object, ByRef edges() As TRegionEdge, ByR
             ValidatePlaneNormal curve
             point = curve.center: ValidatePoint point
             edge.centerX = CDbl(point(LBound(point))): edge.centerY = CDbl(point(LBound(point) + 1))
-            point = curve.StartPoint: endpoint = curve.endpoint
-            ValidatePoint point: ValidatePoint endpoint
+            point = curve.startPoint: endPoint = curve.endPoint
+            ValidatePoint point: ValidatePoint endPoint
             edge.x1 = CDbl(point(LBound(point))): edge.y1 = CDbl(point(LBound(point) + 1))
-            edge.x2 = CDbl(endpoint(LBound(endpoint))): edge.y2 = CDbl(endpoint(LBound(endpoint) + 1))
+            edge.x2 = CDbl(endPoint(LBound(endPoint))): edge.y2 = CDbl(endPoint(LBound(endPoint) + 1))
             normal = curve.normal
             sweep = CDbl(curve.TotalAngle)
             If sweep <= 0# Or sweep > 2# * GEOM_PI Then Err.Raise vbObjectError + 4410, "CAutoCADContourReader", "Круговая дуга имеет недопустимый угол."
@@ -42455,7 +42455,7 @@ End Sub
 ====================================================================================================
 COMPONENT: CAutoCADSectionModelImporter
 TYPE: 2
-LINES: 923
+LINES: 925
 ====================================================================================================
 Option Explicit
 
@@ -42502,7 +42502,8 @@ Public Function ResultMessage(ByVal model As CSectionModel) As String
         "Бетонных элементов: " & CStr(model.ConcreteCount) & "; стержней: " & CStr(model.RebarCount) & "." & vbCrLf & _
         "Наружных контуров: " & CStr(outerCount) & "; отверстий: " & CStr(openingCount) & "."
     If Len(mImportWarnings) > 0 Then ResultMessage = ResultMessage & vbCrLf & vbCrLf & "Предупреждения:" & vbCrLf & mImportWarnings
-    ResultMessage = WithConcreteMeshGenerationNotice(ResultMessage, model)
+    If model.ConcreteMeshSource = "AutoCADContours" Then _
+        ResultMessage = ResultMessage & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
 End Function
 
 ' Добавляет отдельную строку предупреждения без смешивания с технической диагностикой.
@@ -43107,19 +43108,19 @@ End Function
 ' фильтр от вырожденных сегментов; форму Region по этой линии не выводим.
 Private Function TryReadLineDirection(ByVal lineEntity As Object, ByVal units As CUnitSystem, _
         ByRef rotation As Double) As Boolean
-    Dim StartPoint As Variant
-    Dim endpoint As Variant
-    StartPoint = lineEntity.StartPoint
-    endpoint = lineEntity.endpoint
+    Dim startPoint As Variant
+    Dim endPoint As Variant
+    startPoint = lineEntity.startPoint
+    endPoint = lineEntity.endPoint
 
     Dim x1 As Double
     Dim y1 As Double
     Dim x2 As Double
     Dim y2 As Double
-    x1 = InputLength(CDbl(StartPoint(LBound(StartPoint))), units)
-    y1 = InputLength(CDbl(StartPoint(LBound(StartPoint) + 1)), units)
-    x2 = InputLength(CDbl(endpoint(LBound(endpoint))), units)
-    y2 = InputLength(CDbl(endpoint(LBound(endpoint) + 1)), units)
+    x1 = InputLength(CDbl(startPoint(LBound(startPoint))), units)
+    y1 = InputLength(CDbl(startPoint(LBound(startPoint) + 1)), units)
+    x2 = InputLength(CDbl(endPoint(LBound(endPoint))), units)
+    y2 = InputLength(CDbl(endPoint(LBound(endPoint) + 1)), units)
 
     Dim dx As Double
     Dim dy As Double
@@ -43379,6 +43380,7 @@ End Function
 Public Property Get DebugEdgeProbeCount() As Long
     DebugEdgeProbeCount = mEdgeProbeCount
 End Property
+
 
 
 ====================================================================================================
@@ -46685,10 +46687,10 @@ Private Sub WriteSectionGeometry(ByVal Workbook As Object, ByVal section As CSec
         data(rowIndex, 5) = OutputLength(section.concreteY(i), units)
         data(rowIndex, 6) = OutputArea(section.concreteArea(i), units)
         data(rowIndex, 7) = section.ConcreteShapeType(i)
-        data(rowIndex, 8) = OutputLength(section.ConcreteWidth(i), units)
-        data(rowIndex, 9) = OutputLength(section.ConcreteHeight(i), units)
+        data(rowIndex, 8) = OutputLength(section.concreteWidth(i), units)
+        data(rowIndex, 9) = OutputLength(section.concreteHeight(i), units)
         data(rowIndex, 10) = vbNullString
-        data(rowIndex, 11) = section.ConcreteRotation(i)
+        data(rowIndex, 11) = section.concreteRotation(i)
         data(rowIndex, 12) = OutputFourthPowerLength(section.ConcreteLocalIx(i), units)
         data(rowIndex, 13) = OutputFourthPowerLength(section.ConcreteLocalIy(i), units)
         data(rowIndex, 14) = OutputFourthPowerLength(section.ConcreteLocalIxy(i), units)
@@ -55334,7 +55336,7 @@ Public Sub ExportSectionStressToAutoCAD()
             "; профиль: " & profileId & _
             "; состояние: " & stateType & _
             "; величина: " & quantity
-        ShowWorkbookMessage WithConcreteMeshGenerationNotice(message, section), vbInformation, "RC Section NDM"
+        ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
 
@@ -55860,22 +55862,22 @@ Private Sub DrawResultsStressExport(ByVal section As CSectionModel, _
     Dim textHeight As Double
 
     For i = 1 To section.ConcreteCount
-        Dim ConcreteWidth As Double
-        Dim ConcreteHeight As Double
-        Dim ConcreteRotation As Double
-        ConcreteWidth = ConcreteDrawWidth(section, i)
-        ConcreteHeight = ConcreteDrawHeight(section, i)
-        ConcreteRotation = ConcreteDrawRotation(section, i)
+        Dim concreteWidth As Double
+        Dim concreteHeight As Double
+        Dim concreteRotation As Double
+        concreteWidth = ConcreteDrawWidth(section, i)
+        concreteHeight = ConcreteDrawHeight(section, i)
+        concreteRotation = ConcreteDrawRotation(section, i)
         resultValue = LookupResultValue(resultByID, section.ConcreteID(i))
         physicalState = ResultPhysicalState(physicalStateByID, section.ConcreteID(i))
-        textHeight = 0.22 * MinDouble(ConcreteWidth, ConcreteHeight)
+        textHeight = 0.22 * MinDouble(concreteWidth, concreteHeight)
         If textHeight <= 0# Then textHeight = 1#
-        AddAcadRectangleRegion ms, section.concreteX(i), section.concreteY(i), ConcreteWidth, ConcreteHeight, ConcreteRotation, _
+        AddAcadRectangleRegion ms, section.concreteX(i), section.concreteY(i), concreteWidth, concreteHeight, concreteRotation, _
             exportSettings.concreteLayer, ResultColorByPhysicalState("Concrete", physicalState, exportSettings), temporarySources
 
         Dim labelX As Double
         Dim labelY As Double
-        ConcreteLabelPoint section.concreteX(i), section.concreteY(i), ConcreteWidth, ConcreteHeight, ConcreteRotation, _
+        ConcreteLabelPoint section.concreteX(i), section.concreteY(i), concreteWidth, concreteHeight, concreteRotation, _
             labelX, labelY
         AddAcadText ms, ResultLabelText(section.ConcreteID(i), resultValue, exportSettings.IncludeElementNames, resultPrecision), _
             labelX, labelY, textHeight, _
@@ -56741,7 +56743,7 @@ End Sub
 ' Если реальные ширина/высота сохранены, используются они; иначе рисуется
 ' квадрат равной площади без замены расчетных A/I импортированного элемента.
 Private Function ConcreteDrawWidth(ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteDrawWidth = section.ConcreteWidth(index)
+    ConcreteDrawWidth = section.concreteWidth(index)
     If ConcreteDrawWidth <= 0# Then ConcreteDrawWidth = Sqr(section.concreteArea(index))
 End Function
 
@@ -56749,7 +56751,7 @@ End Function
 ' не сохранил габарит, для рисунка используется сторона равноплощадного
 ' квадрата; расчетные Area/I и напряжения элемента не заменяются.
 Private Function ConcreteDrawHeight(ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteDrawHeight = section.ConcreteHeight(index)
+    ConcreteDrawHeight = section.concreteHeight(index)
     If ConcreteDrawHeight <= 0# Then ConcreteDrawHeight = Sqr(section.concreteArea(index))
 End Function
 
@@ -56757,7 +56759,7 @@ End Function
 ' Results уже содержит окончательное направление, включая нулевой угол
 ' известной грани и среднее направление для круглых областей.
 Private Function ConcreteDrawRotation(ByVal section As CSectionModel, ByVal index As Long) As Double
-    ConcreteDrawRotation = section.ConcreteRotation(index)
+    ConcreteDrawRotation = section.concreteRotation(index)
 End Function
 
 ' Возвращает точку подписи бетонного элемента в его локальной системе осей.
@@ -58207,7 +58209,7 @@ End Function
 ====================================================================================================
 COMPONENT: modWorkbookCalculation
 TYPE: 1
-LINES: 1293
+LINES: 1287
 ====================================================================================================
 Option Explicit
 
@@ -58630,7 +58632,7 @@ Public Function RunSectionCalculationForWorkbook(ByVal Workbook As Object, Optio
 
     report.AddSection "Финальное сообщение"
     report.AddStep "Формируется пользовательское сообщение о завершении."
-    RunSectionCalculationForWorkbook = BuildCalculationMessage(section, batch)
+    RunSectionCalculationForWorkbook = BuildCalculationMessage(batch)
     If Len(plotWarning) > 0 Then RunSectionCalculationForWorkbook = RunSectionCalculationForWorkbook & vbCrLf & vbCrLf & plotWarning
     If report.enabled Then
         report.AddStep "Отчет сохраняется в txt-файл рядом с книгой."
@@ -59062,20 +59064,14 @@ End Sub
 
 ' Готовит итоговое сообщение о запуске, отдельно выделяя ошибки входных строк.
 ' Берёт инженерные статусы из готовых результатов расчёта сочетаний.
-Private Function BuildCalculationMessage(ByVal section As CSectionModel, ByVal batch As CBatchSectionCalculator) As String
-    Dim calculationCaption As String
-    calculationCaption = "Расчет"
-    If StrComp(section.sourceType, "AutoCADImport", vbTextCompare) = 0 Then
-        calculationCaption = "Расчет импортированной из AutoCAD геометрии"
-    End If
-
+Private Function BuildCalculationMessage(ByVal batch As CBatchSectionCalculator) As String
     If batch.InvalidInputCount > 0 Then
-        BuildCalculationMessage = calculationCaption & " завершен с ошибками ввода. Обработано сочетаний: " & _
+        BuildCalculationMessage = "Расчет завершен с ошибками ввода. Обработано сочетаний: " & _
             CStr(batch.count) & "; ошибок ввода: " & CStr(batch.InvalidInputCount) & "." & vbCrLf & _
             "Проверьте строки со статусом InputErr на листе Results." & vbCrLf & _
             "Первая ошибка: " & batch.FirstInvalidInputMessage
     Else
-        BuildCalculationMessage = calculationCaption & " завершен. Обработано сочетаний: " & CStr(batch.count) & _
+        BuildCalculationMessage = "Расчет завершен. Обработано сочетаний: " & CStr(batch.count) & _
             ". Определяющее сочетание: " & batch.WorstCombinationID
     End If
 End Function
@@ -59506,7 +59502,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modWorkbookMessages
 TYPE: 1
-LINES: 133
+LINES: 125
 ====================================================================================================
 Option Explicit
 
@@ -59530,14 +59526,6 @@ Public Const CONTOUR_MESH_GENERATION_NOTICE As String = "БЕТОННАЯ СЕТ
         ByVal ownerWindow As Long, ByVal textPointer As Long, _
         ByVal titlePointer As Long, ByVal flags As Long) As Long
 #End If
-
-' Отдельная заметная строка сохраняет происхождение сетки при импорте
-' и последующем экспорте, в том числе после открытия сохраненного Results.
-Public Function WithConcreteMeshGenerationNotice(ByVal text As String, ByVal section As CSectionModel) As String
-    WithConcreteMeshGenerationNotice = text
-    If section.ConcreteMeshSource = "AutoCADContours" Then _
-        WithConcreteMeshGenerationNotice = text & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
-End Function
 
 ' Показывает модальное сообщение, принадлежащее текущему Excel, и возвращает
 ' выбранную кнопку. StrPtr передает исходные UTF-16 строки непосредственно
@@ -59760,12 +59748,12 @@ Public Property Get normal() As Variant
     normal = mNormal
 End Property
 ' ДЛЯ ТЕСТОВ: координаты начала имитируемого сегмента в WCS.
-Public Property Get StartPoint() As Variant
-    StartPoint = mStart
+Public Property Get startPoint() As Variant
+    startPoint = mStart
 End Property
 ' ДЛЯ ТЕСТОВ: координаты конца имитируемого сегмента в WCS.
-Public Property Get endpoint() As Variant
-    endpoint = mEnd
+Public Property Get endPoint() As Variant
+    endPoint = mEnd
 End Property
 ' ДЛЯ ТЕСТОВ: координаты центра имитируемой дуги в WCS.
 Public Property Get center() As Variant
@@ -59804,11 +59792,11 @@ End Function
 
 ' ДЛЯ ТЕСТОВ: принимает численные поля Copy через объявленный Friend API,
 ' не обращаясь к private-полям другого экземпляра VBA-класса.
-Friend Sub CopyValues(ByVal StartPoint As Variant, ByVal endpoint As Variant, ByVal center As Variant, _
+Friend Sub CopyValues(ByVal startPoint As Variant, ByVal endPoint As Variant, ByVal center As Variant, _
         ByVal normal As Variant, ByVal radius As Double, ByVal angle As Double, ByVal elevation As Double)
     Dim i As Long
     For i = 0 To 2
-        mStart(i) = StartPoint(i): mEnd(i) = endpoint(i)
+        mStart(i) = startPoint(i): mEnd(i) = endPoint(i)
         mCenter(i) = center(i): mNormal(i) = normal(i)
     Next i
     mRadius = radius: mAngle = angle: mElevation = elevation
@@ -60125,13 +60113,13 @@ Public Property Get objectName() As String
 End Property
 
 ' Возвращает начальную точку в формате, похожем на AutoCAD COM Variant-array.
-Public Property Get StartPoint() As Variant
-    StartPoint = mStartPoint
+Public Property Get startPoint() As Variant
+    startPoint = mStartPoint
 End Property
 
 ' Возвращает конечную точку в формате, похожем на AutoCAD COM Variant-array.
-Public Property Get endpoint() As Variant
-    endpoint = mEndPoint
+Public Property Get endPoint() As Variant
+    endPoint = mEndPoint
 End Property
 
 ' Имитирует удаление временного AutoCAD-объекта после Explode.
@@ -63924,7 +63912,7 @@ Private Sub CheckNativeShapeRoundTrip(ByRef stats As TCadStats, ByVal doc As Obj
                 doc.SaveAs path
                 LogLine stats, "REAL_SHAPE_DWG: " & doc.FullName & "|shape=" & model.ConcreteShapeType(1) & _
                     "; sourceArea=" & NativeNumber(area) & "; exportArea=" & NativeNumber(actualArea) & _
-                    "; rotation=" & NativeNumber(model.ConcreteRotation(1))
+                    "; rotation=" & NativeNumber(model.concreteRotation(1))
             Next signValue
         Next shape
     Next unitMode
@@ -64004,13 +63992,13 @@ Private Sub CheckNativeIsotropicRoundTrip(ByRef stats As TCadStats, ByVal doc As
             Next i
             Check stats, prefix & ".circle.found", circleIndex > 0
             If circleIndex = 0 Then Err.Raise vbObjectError + 4499, "CheckNativeIsotropicRoundTrip", "Круговой Region потерян при импорте."
-            If squareIndex > 0 Then CheckNativeDirection stats, prefix & ".square.import", model.ConcreteRotation(squareIndex), squareAngle, 4#
+            If squareIndex > 0 Then CheckNativeDirection stats, prefix & ".square.import", model.concreteRotation(squareIndex), squareAngle, 4#
             CheckNativeDirection stats, prefix & ".average.sources", model.AverageKnownConcreteElementRotation(), expected, 2#
             model.ApplyAverageRotationToEquivalentAreaFallbacks
-            CheckNativeDirection stats, prefix & ".circle.assigned", model.ConcreteRotation(circleIndex), expected, 2#
+            CheckNativeDirection stats, prefix & ".circle.assigned", model.concreteRotation(circleIndex), expected, 2#
             model.ApplyAverageRotationToEquivalentAreaFallbacks
-            CheckNativeDirection stats, prefix & ".circle.repeated", model.ConcreteRotation(circleIndex), expected, 2#
-            If squareIndex > 0 Then CheckNativeDirection stats, prefix & ".square.retained", model.ConcreteRotation(squareIndex), squareAngle, 4#
+            CheckNativeDirection stats, prefix & ".circle.repeated", model.concreteRotation(circleIndex), expected, 2#
+            If squareIndex > 0 Then CheckNativeDirection stats, prefix & ".square.retained", model.concreteRotation(squareIndex), squareAngle, 4#
             PrepareNativeImportedSnapshot stats, system, model, prefix
             solves = SectionEquilibriumSolveCount(): added = Audit03ExportAutoCADDocumentForTests(doc)
             Check stats, prefix & ".export.noSolve", SectionEquilibriumSolveCount() = solves
@@ -64063,7 +64051,7 @@ Private Function NativeFirstEdgeAngle(ByVal region As Object) As Double
     Set copy = region.copy(): pieces = copy.Explode
     For Each line In pieces
         If Not found And line.objectName = "AcDbLine" Then
-            p = line.StartPoint: q = line.endpoint: dx = q(0) - p(0): dy = q(1) - p(1)
+            p = line.startPoint: q = line.endPoint: dx = q(0) - p(0): dy = q(1) - p(1)
             If Abs(dx) > 0.000000001 Or Abs(dy) > 0.000000001 Then
                 If Abs(dx) < 0.000000001 Then
                     angle = Sgn(dy) * GEOM_PI / 2#
@@ -64193,7 +64181,7 @@ Private Sub CheckNativeRectangleEdges(ByRef stats As TCadStats, ByVal prefix As 
         count = count + 1
         Check stats, prefix & ".rectangle.line." & CStr(count), line.objectName = "AcDbLine"
         If line.objectName = "AcDbLine" Then
-            p = line.StartPoint: q = line.endpoint
+            p = line.startPoint: q = line.endPoint
             wx = q(0) - p(0): wy = q(1) - p(1)
             If first Then
                 Check stats, prefix & ".rectangle.edgeDirection." & CStr(count), _
@@ -66198,7 +66186,7 @@ End Sub
 Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     Dim importer As CAutoCADSectionModelImporter, section As CSectionModel, query As CSectionGeometryQuery
     Dim entity As Object, outer As Object, zero As Object, curve As Object, regions As Variant, curves(0 To 0) As Object
-    Dim point(0 To 2) As Double, endpoint(0 To 2) As Double, values(0 To 9) As Double
+    Dim point(0 To 2) As Double, endPoint(0 To 2) As Double, values(0 To 9) As Double
     Dim layer As Variant, targetLayer As Variant, countBefore As Long, number As Long, description As String, prefix As String
     For Each layer In Array("NP_CONCRETE", "NP_REBAR", "NP_OUTER", "NP_OPENING"): doc.layers.Add CStr(layer): Next layer
     Set curve = NativeRectangle(doc, 100#, 100#, 0#, 50#, 50#)
@@ -66210,10 +66198,10 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     values(0) = 40#: values(1) = 40#: values(2) = 60#: values(3) = 40#: values(4) = 60#: values(5) = 60#
     values(6) = 40#: values(7) = 60#: values(8) = 40#: values(9) = 40#
     Set entity = doc.modelSpace.AddLightWeightPolyline(values): entity.layer = "NP_OPENING": entity.Closed = False
-    point(0) = 40#: point(1) = 40#: endpoint(0) = 40#: endpoint(1) = 40#
+    point(0) = 40#: point(1) = 40#: endPoint(0) = 40#: endPoint(1) = 40#
     Set importer = New CAutoCADSectionModelImporter
     For Each targetLayer In Array("NP_OUTER", "NP_OPENING")
-    Set zero = doc.modelSpace.AddLine(point, endpoint): zero.layer = CStr(targetLayer): countBefore = doc.modelSpace.count
+    Set zero = doc.modelSpace.AddLine(point, endPoint): zero.layer = CStr(targetLayer): countBefore = doc.modelSpace.count
     prefix = "native.emptyContourSegment." & CStr(targetLayer)
     Set section = importer.ImportFromModelSpace(doc.modelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.layers)
     Set query = New CSectionGeometryQuery: query.Initialize section
@@ -66221,7 +66209,7 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     Check prefix & ".roles", query.ConcreteDomain.loopCount = 2
     Check prefix & ".warning", InStr(importer.ImportComment, CStr(zero.handle)) > 0 And InStr(importer.ImportComment, "нулевой длины") > 0
     Check prefix & ".noMutation", doc.modelSpace.count = countBefore And Not CBool(entity.Closed) And Not CBool(outer.Closed)
-    zero.Delete: endpoint(0) = 41#: Set zero = doc.modelSpace.AddLine(point, endpoint): zero.layer = CStr(targetLayer)
+    zero.Delete: endPoint(0) = 41#: Set zero = doc.modelSpace.AddLine(point, endPoint): zero.layer = CStr(targetLayer)
     countBefore = doc.modelSpace.count
     On Error Resume Next
     Set section = importer.ImportFromModelSpace(doc.modelSpace, "NP_CONCRETE", "NP_REBAR", "Rebar", 0#, Nothing, "NP_OUTER", "NP_OPENING", doc.layers)
@@ -66229,7 +66217,7 @@ Private Sub CheckNativeEmptyOpeningSegment(ByVal doc As Object)
     On Error GoTo 0
     Check prefix & ".nonzeroRejected", number <> 0 And InStr(description, CStr(zero.handle)) > 0 And InStr(description, "PEDIT") > 0
     Check prefix & ".failedNoMutation", doc.modelSpace.count = countBefore
-    zero.Delete: endpoint(0) = 40#
+    zero.Delete: endPoint(0) = 40#
     Next targetLayer
 End Sub
 
@@ -83706,7 +83694,7 @@ End Sub
 ====================================================================================================
 COMPONENT: modTestContourMesh
 TYPE: 1
-LINES: 656
+LINES: 657
 ====================================================================================================
 Option Explicit
 
@@ -83794,7 +83782,7 @@ Public Function RunNativeContourMeshTests(ByVal acad As Object, ByVal template A
             writer.WriteGeometryPreview ThisWorkbook, imported, PrepareSectionSnapshot(imported), units
             Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
             CompareModels key & ".snapshot", imported, restored, False
-            Check key & ".restoredNotice", InStr(WithConcreteMeshGenerationNotice("Export", restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+            Check key & ".restoredMeshSource", restored.ConcreteMeshSource = "AutoCADContours"
             exported = SP35ExportSavedMaterialContoursForTests(doc, key & "_OUT2", key & "_HOLE2", CStr(format))
             Check key & ".secondExport", exported > 0
             Dim reimported As CSectionModel
@@ -83875,7 +83863,7 @@ Private Sub CheckNativeFullExport(ByVal doc As Object, ByVal model As CSectionMo
     Near "native.fullExport.areaInMm2", expectedArea, area, 0.0000001
     Dim restored As CSectionModel
     Set restored = ReadSectionGeometryFromResults(ThisWorkbook)
-    Check "native.fullExport.notice", InStr(WithConcreteMeshGenerationNotice("Экспорт завершен.", restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
+    Check "native.fullExport.meshSourcePreserved", restored.ConcreteMeshSource = "AutoCADContours"
     GoTo Finish
 Failed:
     Check "native.fullExport.runtime." & CStr(Err.number) & "; " & Err.description, False
@@ -84165,8 +84153,8 @@ Private Sub CompareModels(ByVal label As String, ByVal first As CSectionModel, B
         Near label & ".x." & CStr(i), first.concreteX(i), second.concreteX(i)
         Near label & ".y." & CStr(i), first.concreteY(i), second.concreteY(i)
         Near label & ".a." & CStr(i), first.concreteArea(i), second.concreteArea(i)
-        Near label & ".width." & CStr(i), first.ConcreteWidth(i), second.ConcreteWidth(i)
-        Near label & ".height." & CStr(i), first.ConcreteHeight(i), second.ConcreteHeight(i)
+        Near label & ".width." & CStr(i), first.concreteWidth(i), second.concreteWidth(i)
+        Near label & ".height." & CStr(i), first.concreteHeight(i), second.concreteHeight(i)
         Near label & ".Ix." & CStr(i), first.ConcreteLocalIx(i), second.ConcreteLocalIx(i)
         Near label & ".Iy." & CStr(i), first.ConcreteLocalIy(i), second.ConcreteLocalIy(i)
         Check label & ".id." & CStr(i), first.ConcreteID(i) = second.ConcreteID(i)
@@ -84347,9 +84335,9 @@ Private Sub CheckSnapshot()
     Set restored = ReadSectionGeometryFromResults(mFixture)
     CompareModels "snapshot.reopen", model, restored, False
     Check "snapshot.source", restored.ConcreteMeshSource = "AutoCADContours"
-    Check "snapshot.exportNotice", WithConcreteMeshGenerationNotice("Экспорт завершен.", restored) = "Экспорт завершен." & vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE
+    Check "snapshot.importNotice", InStr(importer.ResultMessage(restored), vbCrLf & vbCrLf & CONTOUR_MESH_GENERATION_NOTICE) > 0
     restored.ConcreteMeshSource = "AutoCADRegions"
-    Check "snapshot.noFalseNotice", WithConcreteMeshGenerationNotice("Экспорт завершен.", restored) = "Экспорт завершен."
+    Check "snapshot.noFalseImportNotice", InStr(importer.ResultMessage(restored), CONTOUR_MESH_GENERATION_NOTICE) = 0
 End Sub
 
 Private Sub Near(ByVal label As String, ByVal a As Double, ByVal b As Double, Optional ByVal tolerance As Double = 0.00000001)
@@ -84363,6 +84351,7 @@ Private Sub Check(ByVal label As String, ByVal condition As Boolean)
         mFailed = mFailed + 1: mReport = mReport & "FAIL: " & label & vbCrLf
     End If
 End Sub
+
 
 
 ====================================================================================================
@@ -88219,9 +88208,9 @@ Private Sub TestAutoCADImporterBuildsSectionModel(ByRef stats As TTestStats)
     AssertTrue stats, "autocad.import.concrete.id", model.ConcreteID(1) = "C1"
     AssertClose stats, "autocad.import.concrete.x", model.concreteX(1), 10#, 0.000001
     AssertClose stats, "autocad.import.concrete.y", model.concreteY(1), 20#, 0.000001
-    AssertClose stats, "autocad.import.concrete.width", model.ConcreteWidth(1), 6#, 0.000001
-    AssertClose stats, "autocad.import.concrete.height", model.ConcreteHeight(1), 3#, 0.000001
-    AssertClose stats, "autocad.import.concrete.rotation", model.ConcreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.concrete.width", model.concreteWidth(1), 6#, 0.000001
+    AssertClose stats, "autocad.import.concrete.height", model.concreteHeight(1), 3#, 0.000001
+    AssertClose stats, "autocad.import.concrete.rotation", model.concreteRotation(1), 0#, 0.000001
     AssertClose stats, "autocad.import.concrete.localIx", model.ConcreteLocalIx(1), 18# * 3# * 3# / 12#, 0.000001
     AssertClose stats, "autocad.import.concrete.localIy", model.ConcreteLocalIy(1), 18# * 6# * 6# / 12#, 0.000001
     AssertClose stats, "autocad.import.rebar.diameter", model.RebarDiameter(1), 20#, 0.000001
@@ -88270,9 +88259,9 @@ Private Sub TestAutoCADImporterRotatedRectangleBounds(ByRef stats As TTestStats)
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
     AssertTrue stats, "autocad.import.rotated.shape", model.ConcreteShapeType(1) = "Rectangle"
-    AssertClose stats, "autocad.import.rotated.width", model.ConcreteWidth(1), widthValue, 0.000001
-    AssertClose stats, "autocad.import.rotated.height", model.ConcreteHeight(1), heightValue, 0.000001
-    AssertClose stats, "autocad.import.rotated.rotation", model.ConcreteRotation(1), angle, 0.000001
+    AssertClose stats, "autocad.import.rotated.width", model.concreteWidth(1), widthValue, 0.000001
+    AssertClose stats, "autocad.import.rotated.height", model.concreteHeight(1), heightValue, 0.000001
+    AssertClose stats, "autocad.import.rotated.rotation", model.concreteRotation(1), angle, 0.000001
     Dim ixLocal As Double
     Dim iyLocal As Double
     Dim c As Double
@@ -88345,7 +88334,7 @@ Private Sub TestAutoCADImporterPrincipalInertiaBounds(ByRef stats As TTestStats)
     AssertClose stats, "autocad.import.principal.localIy", model.ConcreteLocalIy(1), localIy, 0.000001
     AssertClose stats, "autocad.import.principal.localIxy", model.ConcreteLocalIxy(1), localIxy, 0.000001
     AssertClose stats, "autocad.import.principal.areaShell", _
-        model.ConcreteWidth(1) * model.ConcreteHeight(1), area, 0.000001
+        model.concreteWidth(1) * model.concreteHeight(1), area, 0.000001
     AssertClose stats, "autocad.import.principal.noExplode", importer.DebugEdgeProbeCount, 0#, 0.000001
 
     Dim props As CSectionPropertiesCalculator
@@ -88399,9 +88388,9 @@ Private Sub TestAutoCADImporterTranslatedRegionKeepsLocalGeometry(ByRef stats As
     AssertClose stats, "autocad.import.translated.localIx", model.ConcreteLocalIx(2), model.ConcreteLocalIx(1), 0.001
     AssertClose stats, "autocad.import.translated.localIy", model.ConcreteLocalIy(2), model.ConcreteLocalIy(1), 0.001
     AssertClose stats, "autocad.import.translated.localIxy", model.ConcreteLocalIxy(2), model.ConcreteLocalIxy(1), 0.001
-    AssertClose stats, "autocad.import.translated.width", model.ConcreteWidth(2), model.ConcreteWidth(1), 0.000001
-    AssertClose stats, "autocad.import.translated.height", model.ConcreteHeight(2), model.ConcreteHeight(1), 0.000001
-    AssertClose stats, "autocad.import.translated.rotation", model.ConcreteRotation(2), model.ConcreteRotation(1), 0.000001
+    AssertClose stats, "autocad.import.translated.width", model.concreteWidth(2), model.concreteWidth(1), 0.000001
+    AssertClose stats, "autocad.import.translated.height", model.concreteHeight(2), model.concreteHeight(1), 0.000001
+    AssertClose stats, "autocad.import.translated.rotation", model.concreteRotation(2), model.concreteRotation(1), 0.000001
 
     Dim nearI1 As Double
     Dim nearI2 As Double
@@ -88488,9 +88477,9 @@ Private Sub TestAutoCADImporterSquareRegionReadsEdgeRotation(ByRef stats As TTes
     AssertTrue stats, "autocad.import.edgeProbe.rect.shape", model.ConcreteShapeType(1) = "Rectangle"
     AssertClose stats, "autocad.import.edgeProbe.rect.noExplode", importer.DebugEdgeProbeCount, 1#, 0.000001
     AssertTrue stats, "autocad.import.edgeProbe.square.shape", model.ConcreteShapeType(2) = "Equivalent square"
-    AssertClose stats, "autocad.import.edgeProbe.square.width", model.ConcreteWidth(2), Sqr(squareArea), 0.000001
-    AssertClose stats, "autocad.import.edgeProbe.square.height", model.ConcreteHeight(2), Sqr(squareArea), 0.000001
-    AssertClose stats, "autocad.import.edgeProbe.square.rotation", model.ConcreteRotation(2), squareAngle, 0.000001
+    AssertClose stats, "autocad.import.edgeProbe.square.width", model.concreteWidth(2), Sqr(squareArea), 0.000001
+    AssertClose stats, "autocad.import.edgeProbe.square.height", model.concreteHeight(2), Sqr(squareArea), 0.000001
+    AssertClose stats, "autocad.import.edgeProbe.square.rotation", model.concreteRotation(2), squareAngle, 0.000001
 End Sub
 
 ' Проверяет известный нулевой угол прямой грани отдельно от неизвестного
@@ -88512,19 +88501,19 @@ Private Sub TestAutoCADImporterZeroEdgeAndCircleAverage(ByRef stats As TTestStat
     modelSpace.Add FakeRegion(100#, 0#, 0#, 1#, 1#, 0#, "Reinf", "R1", 0#, False)
     Set importer = New CAutoCADSectionModelImporter
     Set model = importer.ImportFromModelSpace(modelSpace, "Concrete", "Reinf", "A400", 0#)
-    AssertClose stats, "autocad.import.zeroEdge.square", model.ConcreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.square", model.concreteRotation(1), 0#, 0.000001
     AssertClose stats, "autocad.import.zeroEdge.mean", model.AverageKnownConcreteElementRotation(), GEOM_PI / 12#, 0.000001
-    AssertClose stats, "autocad.import.zeroEdge.circle", model.ConcreteRotation(3), GEOM_PI / 12#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.circle", model.concreteRotation(3), GEOM_PI / 12#, 0.000001
     model.ApplyAverageRotationToEquivalentAreaFallbacks
     model.ApplyAverageRotationToEquivalentAreaFallbacks
-    AssertClose stats, "autocad.import.zeroEdge.repeated.square", model.ConcreteRotation(1), 0#, 0.000001
-    AssertClose stats, "autocad.import.zeroEdge.repeated.circle", model.ConcreteRotation(3), GEOM_PI / 12#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.repeated.square", model.concreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.repeated.circle", model.concreteRotation(3), GEOM_PI / 12#, 0.000001
     AssertClose stats, "autocad.import.zeroEdge.repeated.mean", model.AverageKnownConcreteElementRotation(), GEOM_PI / 12#, 0.000001
     model.AddConcreteElement 600#, 0#, 80# * 160#, 1, "new rectangle", "RECT_MINUS_30", _
         "Rectangle", 80#, 160#, -GEOM_PI / 6#
     model.ApplyAverageRotationToEquivalentAreaFallbacks
-    AssertClose stats, "autocad.import.zeroEdge.changed.square", model.ConcreteRotation(1), 0#, 0.000001
-    AssertClose stats, "autocad.import.zeroEdge.changed.circle", model.ConcreteRotation(3), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.changed.square", model.concreteRotation(1), 0#, 0.000001
+    AssertClose stats, "autocad.import.zeroEdge.changed.circle", model.concreteRotation(3), 0#, 0.000001
     AssertClose stats, "autocad.import.zeroEdge.changed.mean", model.AverageKnownConcreteElementRotation(), 0#, 0.000001
     AssertClose stats, "autocad.import.zeroEdge.changed.circleIx", model.ConcreteLocalIx(3), GEOM_PI * 20# ^ 4 / 4#, 0.000001
 End Sub
@@ -88550,8 +88539,8 @@ Private Sub TestAutoCADImporterAreaSquareFallback(ByRef stats As TTestStats)
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
     AssertTrue stats, "autocad.import.squareFallback.shape", model.ConcreteShapeType(1) = "Equivalent square"
-    AssertClose stats, "autocad.import.squareFallback.width", model.ConcreteWidth(1), Sqr(model.concreteArea(1)), 0.000001
-    AssertClose stats, "autocad.import.squareFallback.height", model.ConcreteHeight(1), Sqr(model.concreteArea(1)), 0.000001
+    AssertClose stats, "autocad.import.squareFallback.width", model.concreteWidth(1), Sqr(model.concreteArea(1)), 0.000001
+    AssertClose stats, "autocad.import.squareFallback.height", model.concreteHeight(1), Sqr(model.concreteArea(1)), 0.000001
     AssertClose stats, "autocad.import.squareFallback.localIx", model.ConcreteLocalIx(1), _
         model.concreteArea(1) * model.concreteArea(1) / 12#, 0.000001
 
@@ -88600,7 +88589,7 @@ Private Sub TestAutoCADImporterAreaSquareFallbackAverageRotation(ByRef stats As 
     Set model = importer.BuildFromRegionArrays(concreteRegions, rebarRegions, "Rebar", 0.000001)
 
     AssertTrue stats, "autocad.import.squareFallbackRotation.shape", model.ConcreteShapeType(2) = "Equivalent square"
-    AssertClose stats, "autocad.import.squareFallbackRotation.angle", model.ConcreteRotation(2), angle, 0.000001
+    AssertClose stats, "autocad.import.squareFallbackRotation.angle", model.concreteRotation(2), angle, 0.000001
 
     Dim props As CSectionPropertiesCalculator
     Set props = New CSectionPropertiesCalculator
@@ -88639,7 +88628,7 @@ Private Sub TestSectionModelEquivalentSquareEdgeRotationAverageSource(ByRef stat
     AssertTrue stats, "model.squareEdgeAverage.target.shape", _
         model.ConcreteShapeType(2) = "Equivalent square"
     AssertClose stats, "model.squareEdgeAverage.target.rotation", _
-        model.ConcreteRotation(2), edgeAngle, 0.000001
+        model.concreteRotation(2), edgeAngle, 0.000001
 End Sub
 
 ' Если матрица собственных инерций Region физически непригодна, габариты
@@ -88700,9 +88689,9 @@ Private Sub TestSectionModelEquivalentRectangleFromRealInertia(ByRef stats As TT
     AssertTrue stats, "model.boundary.equivalentRectangle.status", _
         model.ConcreteShapeType(1) = "Equivalent rectangle"
     AssertClose stats, "model.boundary.equivalentRectangle.area", _
-        model.ConcreteWidth(1) * model.ConcreteHeight(1), area, 0.000001
+        model.concreteWidth(1) * model.concreteHeight(1), area, 0.000001
     AssertClose stats, "model.boundary.equivalentRectangle.ratio", _
-        (model.ConcreteHeight(1) / model.ConcreteWidth(1)) ^ 2, i1 / i2, 0.000001
+        (model.concreteHeight(1) / model.concreteWidth(1)) ^ 2, i1 / i2, 0.000001
     AssertClose stats, "model.boundary.equivalentRectangle.realIx", model.ConcreteLocalIx(1), localIx, 0.000001
     AssertClose stats, "model.boundary.equivalentRectangle.realIy", model.ConcreteLocalIy(1), localIy, 0.000001
     AssertClose stats, "model.boundary.equivalentRectangle.realIxy", model.ConcreteLocalIxy(1), localIxy, 0.000001
@@ -88757,7 +88746,7 @@ Private Sub TestSectionModelFallbackInertiaSquare(ByRef stats As TTestStats)
     model.AddConcreteElement 0#, 0#, area, 1, "noI", "noI", "Region"
 
     AssertTrue stats, "model.fallback.square.status", model.ConcreteShapeType(1) = "Equivalent square"
-    AssertClose stats, "model.fallback.square.width", model.ConcreteWidth(1), 60#, 0.000001
+    AssertClose stats, "model.fallback.square.width", model.concreteWidth(1), 60#, 0.000001
     AssertClose stats, "model.fallback.square.localIx", model.ConcreteLocalIx(1), area * area / 12#, 0.000001
     AssertClose stats, "model.fallback.square.localIy", model.ConcreteLocalIy(1), area * area / 12#, 0.000001
     AssertClose stats, "model.fallback.square.localIxy", model.ConcreteLocalIxy(1), 0#, 0.000001
@@ -89269,8 +89258,8 @@ Private Sub TestRectangularMeshSteps(ByRef stats As TTestStats)
 
     Dim model As CSectionModel
     Set model = BuildGeneratedSectionModel(mesh, Nothing)
-    AssertClose stats, "mesh.rectangularSteps.modelWidth", model.ConcreteWidth(1), 25#, 0.000001
-    AssertClose stats, "mesh.rectangularSteps.modelHeight", model.ConcreteHeight(1), 15#, 0.000001
+    AssertClose stats, "mesh.rectangularSteps.modelWidth", model.concreteWidth(1), 25#, 0.000001
+    AssertClose stats, "mesh.rectangularSteps.modelHeight", model.concreteHeight(1), 15#, 0.000001
 End Sub
 
 ' Проверяет круг с ненулевым центром: аналитические размеры/характеристики,
@@ -95132,8 +95121,8 @@ Public Function DumpSolidPhysicalBits() As String
         result = result & CStr(fixture) & "|COUNTS|" & CStr(model.ConcreteCount) & "|" & CStr(model.RebarCount) & vbCrLf
         For i = 1 To model.ConcreteCount
             result = result & CStr(fixture) & "|" & model.ConcreteID(i) & "|" & Bits(model.concreteX(i)) & "|" & _
-                Bits(model.concreteY(i)) & "|" & Bits(model.concreteArea(i)) & "|" & Bits(model.ConcreteWidth(i)) & "|" & _
-                Bits(model.ConcreteHeight(i)) & "|" & Bits(model.ConcreteRotation(i)) & "|" & _
+                Bits(model.concreteY(i)) & "|" & Bits(model.concreteArea(i)) & "|" & Bits(model.concreteWidth(i)) & "|" & _
+                Bits(model.concreteHeight(i)) & "|" & Bits(model.concreteRotation(i)) & "|" & _
                 Bits(model.ConcreteLocalIx(i)) & "|" & Bits(model.ConcreteLocalIy(i)) & "|" & Bits(model.ConcreteLocalIxy(i)) & vbCrLf
         Next i
         For i = 1 To model.RebarCount
@@ -99502,7 +99491,7 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
     solves = SectionEquilibriumSolveCount()
     t = PerformanceNow(): count = Audit03ExportAutoCADDocumentForTests(doc): exportSeconds = SecondsSince(t)
     If CStr(userLine.handle) <> userHandle Or CStr(userLine.layer) <> "PERFORMANCE_EXISTING" Or userLine.color <> 173 Then Err.Raise 5, , "Экспорт изменил прежний объект чертежа."
-    Dim savedPoint As Variant: savedPoint = userLine.endpoint
+    Dim savedPoint As Variant: savedPoint = userLine.endPoint
     If CDbl(savedPoint(0)) <> 1010# Or CDbl(savedPoint(1)) <> 10# Then Err.Raise 5, , "Экспорт изменил координаты прежнего объекта."
     If doc.SelectionSets.count <> selectionCount Or userSet.count <> 1 Then Err.Raise 5, , "Экспорт изменил прежние наборы выбора или оставил временный набор."
     For Each entity In doc.modelSpace
@@ -99530,7 +99519,7 @@ Public Function MeasureNativeCADPerformance(ByVal doc As Object, ByVal noiseCoun
     For i = 1 To section.ConcreteCount
         signature = signature & "C|" & section.ConcreteID(i) & "|" & section.ConcreteShapeType(i)
         signature = signature & "|" & DoubleBits(section.concreteX(i)) & "|" & DoubleBits(section.concreteY(i)) & "|" & DoubleBits(section.concreteArea(i))
-        signature = signature & "|" & DoubleBits(section.ConcreteWidth(i)) & "|" & DoubleBits(section.ConcreteHeight(i)) & "|" & DoubleBits(section.ConcreteRotation(i))
+        signature = signature & "|" & DoubleBits(section.concreteWidth(i)) & "|" & DoubleBits(section.concreteHeight(i)) & "|" & DoubleBits(section.concreteRotation(i))
         signature = signature & "|" & DoubleBits(section.ConcreteLocalIx(i)) & "|" & DoubleBits(section.ConcreteLocalIy(i)) & "|" & DoubleBits(section.ConcreteLocalIxy(i)) & vbLf
     Next i
     For i = 1 To section.RebarCount
@@ -109629,8 +109618,8 @@ Public Function RunCompactSnapshotTests() As String
         Near stats, "compact." & unit & ".Ix", actualProperties.ix, expectedProperties.ix
         Near stats, "compact." & unit & ".Iy", actualProperties.iy, expectedProperties.iy
         Near stats, "compact." & unit & ".Ixy", actualProperties.ixy, expectedProperties.ixy
-        Near stats, "compact." & unit & ".cellWidth", actual.ConcreteWidth(2), expected.ConcreteWidth(2)
-        Near stats, "compact." & unit & ".cellAngle", actual.ConcreteRotation(2), expected.ConcreteRotation(2)
+        Near stats, "compact." & unit & ".cellWidth", actual.concreteWidth(2), expected.concreteWidth(2)
+        Near stats, "compact." & unit & ".cellAngle", actual.concreteRotation(2), expected.concreteRotation(2)
         Dim savedAnnotations As Variant, readyDimension As String
         savedAnnotations = ReadAnchoredResultTable(ThisWorkbook, "rngNDMSectionAnnotations")
         readyDimension = CStr(savedAnnotations(2, 10))
@@ -109879,8 +109868,8 @@ Private Function ShapeSnapshot(ByVal fixture As String, Optional ByVal suppliedM
     For i = 1 To model.ConcreteCount
         count = count + 1
         lines(count) = row(fixture, "CONCRETE", model.ConcreteID(i), Array(model.concreteX(i), model.concreteY(i), _
-            model.concreteArea(i), model.ConcreteMaterialID(i), model.ConcreteShapeType(i), model.ConcreteWidth(i), _
-            model.ConcreteHeight(i), model.ConcreteRotation(i), model.ConcreteLocalIx(i), model.ConcreteLocalIy(i), _
+            model.concreteArea(i), model.ConcreteMaterialID(i), model.ConcreteShapeType(i), model.concreteWidth(i), _
+            model.concreteHeight(i), model.concreteRotation(i), model.ConcreteLocalIx(i), model.ConcreteLocalIy(i), _
             model.ConcreteLocalIxy(i), model.ConcreteSourceName(i), model.ConcreteSourceHandle(i), model.ConcreteComment(i)))
     Next i
     For i = 1 To contours.count
@@ -112014,7 +112003,7 @@ End Function
 ====================================================================================================
 COMPONENT: modTestWorkbookInterface
 TYPE: 1
-LINES: 8373
+LINES: 8391
 ====================================================================================================
 Option Explicit
 
@@ -113149,8 +113138,8 @@ End Sub
 
 ' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
 ' геометрию Results. Макрос не должен повторно импортировать Region и не должен
-' показывать строку "Импортировано из AutoCAD", потому что это действие относится
-' только к отдельной кнопке импорта геометрии.
+' повторять сведения об импорте или создании сетки: они относятся только
+' к команде формирования сечения.
 Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTestStats)
     PrepareCircleInput
 
@@ -113165,6 +113154,7 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     Dim section As CSectionModel
     Set section = New CSectionModel
     section.sourceType = "AutoCADImport"
+    section.ConcreteMeshSource = "AutoCADContours"
     section.AddConcreteElement 950#, -750#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddConcreteElement 1050#, -750#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddConcreteElement 950#, -650#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
@@ -113205,9 +113195,11 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.autocad.run.savedGeometry.message", _
-        InStr(1, message, "Расчет импортированной из AutoCAD геометрии завершен", vbTextCompare) > 0
+        InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTrue stats, "ui.autocad.run.savedGeometry.noImportText", _
-        InStr(1, message, "Импортировано из AutoCAD", vbTextCompare) = 0
+        InStr(1, message, "AutoCAD", vbTextCompare) = 0
+    AssertTrue stats, "ui.autocad.run.savedGeometry.noMeshNotice", _
+        InStr(1, message, CONTOUR_MESH_GENERATION_NOTICE, vbTextCompare) = 0
 
     Dim afterGeometry As Variant
     afterGeometry = ResultTable("rngNDMSectionGeometry")
@@ -117741,10 +117733,10 @@ Private Sub Audit03AssertAutoCADMmGeometry(ByRef stats As TUiTestStats, ByVal pr
         For i = 1 To expected.ConcreteCount + expected.RebarCount
             If i <= expected.ConcreteCount Then
                 values = Array(actual.concreteX(i), actual.concreteY(i), actual.concreteArea(i), _
-                    actual.ConcreteWidth(i), actual.ConcreteHeight(i), actual.ConcreteRotation(i), _
+                    actual.concreteWidth(i), actual.concreteHeight(i), actual.concreteRotation(i), _
                     actual.ConcreteLocalIx(i), actual.ConcreteLocalIy(i), actual.ConcreteLocalIxy(i))
                 reference = Array(expected.concreteX(i), expected.concreteY(i), expected.concreteArea(i), _
-                    expected.ConcreteWidth(i), expected.ConcreteHeight(i), expected.ConcreteRotation(i), _
+                    expected.concreteWidth(i), expected.concreteHeight(i), expected.concreteRotation(i), _
                     expected.ConcreteLocalIx(i), expected.ConcreteLocalIy(i), expected.ConcreteLocalIxy(i))
             Else
                 Dim bar As Long
@@ -118921,7 +118913,7 @@ Private Sub TestAudit03GeometrySnapshotContract(ByRef stats As TUiTestStats)
     cases = cases + 1
     anchor.offset(1, 7).NumberFormat = "@": anchor.offset(1, 7).value2 = "123.75"
     Set model = ReadSectionGeometryFromResults(fixture, "AutoCADImport")
-    AssertClose stats, "audit03.geometrySnapshot.numericText", model.ConcreteWidth(1), 123.75, 0#
+    AssertClose stats, "audit03.geometrySnapshot.numericText", model.concreteWidth(1), 123.75, 0#
     anchor.offset(1, 7).NumberFormat = "General"
     anchor.Resize(3, 15).value2 = data
     cases = cases + 1
@@ -119011,9 +119003,9 @@ Private Sub Audit03CheckRestoredGeometry(ByRef stats As TUiTestStats, ByVal pref
     AssertClose stats, prefix & ".x", model.concreteX(1), -23.125, 0.000000001
     AssertClose stats, prefix & ".y", model.concreteY(1), 17.625, 0.000000001
     AssertClose stats, prefix & ".area", model.concreteArea(1), 10828.125, 0.000000001
-    AssertClose stats, prefix & ".width", model.ConcreteWidth(1), 123.75, 0.000000001
-    AssertClose stats, prefix & ".height", model.ConcreteHeight(1), 87.5, 0.000000001
-    AssertClose stats, prefix & ".rotation", model.ConcreteRotation(1), 0.3125, 0.000000001
+    AssertClose stats, prefix & ".width", model.concreteWidth(1), 123.75, 0.000000001
+    AssertClose stats, prefix & ".height", model.concreteHeight(1), 87.5, 0.000000001
+    AssertClose stats, prefix & ".rotation", model.concreteRotation(1), 0.3125, 0.000000001
     AssertClose stats, prefix & ".ix", model.ConcreteLocalIx(1), 654321.125, 0.000000001
     AssertClose stats, prefix & ".iy", model.ConcreteLocalIy(1), 987654.375, 0.000000001
     AssertClose stats, prefix & ".ixy", model.ConcreteLocalIxy(1), -23456.625, 0.000000001
@@ -120388,6 +120380,21 @@ Finished:
     RunPreviewSnapshotContractTests = stats.report & "TOTAL_PREVIEW_SNAPSHOT_CONTRACT: passed=" & stats.passed & "; failed=" & stats.Failed
 End Function
 
+' ДЛЯ ТЕСТОВ
+' Проверяет итог расчёта сохранённой импортированной сетки без повторения сведений об импорте.
+Public Function RunImportMessageScopeTests() As String
+    Dim stats As TUiTestStats, saved As Variant
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    TestAutoCADCalculationMessageUsesSavedGeometry stats
+    GoTo Finished
+Failed:
+    AssertTrue stats, "importMessageScope.runtime." & CStr(Err.number) & "." & Err.description, False
+Finished:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    RunImportMessageScopeTests = stats.report & "TOTAL_IMPORT_MESSAGE_SCOPE: passed=" & stats.passed & "; failed=" & stats.Failed
+End Function
+
 
 
 ====================================================================================================
@@ -120463,7 +120470,7 @@ Private Function ModelBits(ByVal name As String, ByVal model As CSectionModel) A
         at = at + 1
         lines(at) = "C|" & model.ConcreteID(i) & "|" & Bits(model.concreteX(i)) & "|" & Bits(model.concreteY(i)) & _
             "|" & Bits(model.concreteArea(i)) & "|" & Bits(model.ConcreteLocalIx(i)) & "|" & Bits(model.ConcreteLocalIy(i)) & _
-            "|" & Bits(model.ConcreteLocalIxy(i)) & "|" & Bits(model.ConcreteWidth(i)) & "|" & Bits(model.ConcreteHeight(i)) & "|" & Bits(model.ConcreteRotation(i))
+            "|" & Bits(model.ConcreteLocalIxy(i)) & "|" & Bits(model.concreteWidth(i)) & "|" & Bits(model.concreteHeight(i)) & "|" & Bits(model.concreteRotation(i))
     Next i
     For i = 1 To model.RebarCount
         at = at + 1

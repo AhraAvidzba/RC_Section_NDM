@@ -1,0 +1,17 @@
+{
+  "Passed": true,
+  "WorkbookSHA256": "3A9E57548CDB35E14ED49DB4E2609F9C31B6ABE1923D5D0C97D6D3ECA186DE57",
+  "BaselineSHA256": "E01A3A83ED107B7E427ECB99210CF88910D87F2C6D34E4F612221E677C9C0689",
+  "ChangedParts": [
+    "xl/worksheets/sheet3.xml",
+    "xl/vbaProject.bin"
+  ],
+  "UnchangedParts": 110,
+  "UserInputsResultsStylesAndGraphicsByteIdentical": true,
+  "HelpLinksAndStructureUnchanged": true,
+  "ChangedHelpCells": 26,
+  "SectionHelpBlocks": 4,
+  "CommonRebarHelpBlocks": 1,
+  "ExactDuplicateDescriptions": 0,
+  "CompiledVbaSHA256": "A75CAA053283182696236D0E0D1236CF2A1FE5353387207AE6A3BF6D020C422F"
+}

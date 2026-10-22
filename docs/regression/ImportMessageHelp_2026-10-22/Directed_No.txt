@@ -1,0 +1,125 @@
+﻿SOURCE: C:\Users\avidzba\Desktop\программы\В_РАБОТЕ!\RC_Section_NDM\docs\regression\ImportMessageHelp_2026-10-22\Release\RC_Section_NDM.xlsm
+SOURCE_SHA256: 3A9E57548CDB35E14ED49DB4E2609F9C31B6ABE1923D5D0C97D6D3ECA186DE57
+FIXTURE: C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_af5f14ca568a41328ab886a53d851f7b\RC_Section_NDM.xlsm
+GLOBAL_MODE: General.DiagramExtension=No; explicit-On tests retain their setup
+TEST_EXCEL_PROCESS: id=126228; startTicks=639282855889235335
+===== modTestContourMesh.RunContourMeshTests =====
+SUITE_STARTED: modTestContourMesh.RunContourMeshTests; 2026-10-22T20:06:33
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=126228; workingSet=153329664; privateBytes=106749952; cpu=6.5
+SECTION 1.sub1: concrete=56; rebar=4
+SOLVE 1.sub2.purpose1.load0: eps=-1.60169617990309E-04; kx=-2.13337083341986E-08; ky=2.46340140429108E-09; iterations=2
+SOLVE 1.sub2.purpose1.load1: eps=-1.59529606740283E-04; kx=9.67893449574463E-07; ky=-1.11762570554308E-07; iterations=2
+SOLVE 1.sub2.purpose1.load2: eps=-1.60114191458712E-04; kx=6.43357706347505E-08; ky=-4.80322598818204E-07; iterations=2
+SOLVE 1.sub2.purpose1.load3: eps=-1.59329632510142E-04; kx=1.0575460396184E-06; ky=-5.96055554150388E-07; iterations=3
+SOLVE 1.sub2.purpose2.load0: eps=-5.81354352922624E-05; kx=-2.27229531389796E-09; ky=1.01875656406836E-10; iterations=2
+SOLVE 1.sub2.purpose2.load1: eps=-5.80672664328455E-05; kx=3.26409731072515E-07; ky=-1.46341918707507E-08; iterations=2
+SOLVE 1.sub2.purpose2.load2: eps=-5.81331430899933E-05; kx=8.77975533147018E-09; ky=-2.08304211417826E-07; iterations=2
+SOLVE 1.sub2.purpose2.load3: eps=-5.80649742305763E-05; kx=3.37461781717883E-07; ky=-2.23040278944983E-07; iterations=2
+SOLVE 1.sub2.purpose3.load0: eps=-1.19251970419453E-04; kx=-1.11255083070299E-08; ky=1.00493072515152E-09; iterations=2
+SOLVE 1.sub2.purpose3.load1: eps=-1.18918205170242E-04; kx=6.97934900226436E-07; ky=-6.30421735382583E-08; iterations=2
+SOLVE 1.sub2.purpose3.load2: eps=-1.19229359478137E-04; kx=3.69098198905275E-08; ky=-3.81905937399715E-07; iterations=2
+SOLVE 1.sub2.purpose3.load3: eps=-1.1886009634889E-04; kx=7.46940818936349E-07; ky=-4.46289717596297E-07; iterations=3
+SECTION 1.sub2: concrete=110; rebar=4
+SECTION 1.sub3: concrete=190; rebar=4
+SECTION 2.sub1: concrete=104; rebar=4
+SOLVE 2.sub2.purpose1.load0: eps=-2.19645857634298E-04; kx=1.49238031925354E-08; ky=2.71030610385977E-07; iterations=2
+SOLVE 2.sub2.purpose1.load1: eps=-3.2965447336316E-04; kx=5.44855447343146E-07; ky=2.84984235446419E-07; iterations=2
+SOLVE 2.sub2.purpose1.load2: eps=-1.38631399940924E-04; kx=7.17178927006737E-09; ky=-2.17945963883285E-07; iterations=2
+SOLVE 2.sub2.purpose1.load3: eps=-2.48640015669787E-04; kx=5.37103433420678E-07; ky=-2.03992338822843E-07; iterations=2
+SOLVE 2.sub2.purpose2.load0: eps=-6.43380186011393E-05; kx=1.2285948854133E-09; ky=2.97839569031862E-08; iterations=2
+SOLVE 2.sub2.purpose2.load1: eps=-1.00821494085567E-04; kx=1.80072705379008E-07; ky=3.12358570139544E-08; iterations=2
+SOLVE 2.sub2.purpose2.load2: eps=-3.70163198204147E-05; kx=4.21983712764301E-10; ky=-1.46804183016424E-07; iterations=2
+SOLVE 2.sub2.purpose2.load3: eps=-7.34997953048421E-05; kx=1.79266094206359E-07; ky=-1.45352282905656E-07; iterations=2
+SOLVE 2.sub2.purpose3.load0: eps=-1.50005462221582E-04; kx=7.05263331922879E-09; ky=1.43099745212299E-07; iterations=2
+SOLVE 2.sub2.purpose3.load1: eps=-2.28917521940939E-04; kx=3.89995357984867E-07; ky=1.50303254046545E-07; iterations=2
+SOLVE 2.sub2.purpose3.load2: eps=-9.16060894754706E-05; kx=3.05068396686968E-09; ky=-2.19361813020913E-07; iterations=2
+SOLVE 2.sub2.purpose3.load3: eps=-1.70518149194828E-04; kx=3.85993408632508E-07; ky=-2.12158304186667E-07; iterations=2
+SECTION 2.sub2: concrete=132; rebar=4
+SECTION 2.sub3: concrete=192; rebar=4
+SECTION 3.sub1: concrete=56; rebar=4
+SOLVE 3.sub2.purpose1.load0: eps=-1.97841854049088E-04; kx=3.48631474962693E-08; ky=2.89651160265432E-07; iterations=2
+SOLVE 3.sub2.purpose1.load1: eps=-3.43059247817481E-04; kx=7.66263284063724E-07; ky=6.67526626984375E-07; iterations=2
+SOLVE 3.sub2.purpose1.load2: eps=-9.11567130744276E-05; kx=-2.01309019203071E-07; ky=-3.2038417183257E-07; iterations=2
+SOLVE 3.sub2.purpose1.load3: eps=-2.36374106842821E-04; kx=5.30091117364385E-07; ky=5.74912948863737E-08; iterations=2
+SOLVE 3.sub2.purpose2.load0: eps=-6.29140646751528E-05; kx=5.66304193487487E-09; ky=3.76228584436547E-08; iterations=2
+SOLVE 3.sub2.purpose2.load1: eps=-1.1517411130948E-04; kx=2.61661166496007E-07; ky=1.85045037408324E-07; iterations=2
+SOLVE 3.sub2.purpose2.load2: eps=-2.23745900017201E-05; kx=-8.64758199180433E-08; ky=-2.05954593365817E-07; iterations=2
+SOLVE 3.sub2.purpose2.load3: eps=-7.46346366360477E-05; kx=1.69522304643089E-07; ky=-5.85324144011479E-08; iterations=2
+SOLVE 3.sub2.purpose3.load0: eps=-1.40311346267891E-04; kx=2.17184160961866E-08; ky=1.63401997267112E-07; iterations=2
+SOLVE 3.sub2.purpose3.load1: eps=-2.47945280098474E-04; kx=5.57887448633243E-07; ky=4.52387509048316E-07; iterations=2
+SOLVE 3.sub2.purpose3.load2: eps=-5.96122691860711E-05; kx=-1.58897528767066E-07; ky=-3.06928001482477E-07; iterations=2
+SOLVE 3.sub2.purpose3.load3: eps=-1.67246203016654E-04; kx=3.7727150376999E-07; ky=-1.7942489701272E-08; iterations=2
+BATCH 1: status=OK; normalCrack=OK; capacity=2.30950026428562; width=0; Ar=0; reason=Трещинообразование: При заданной нагрузке нормальная трещина не образуется: равновесие подтверждено в физических пределах. При увеличении нагрузки по пути λ*N другой физический предел достигнут раньше образования трещины, при lambda = 3.184049324924; отдельная точка трещинообразования на этом пути не определяется.
+BATCH 2: status=NumFail; normalCrack=OK; capacity=0.929875588622392; width=0.23099677950311; Ar=9949.7910834762; reason=НДС: Достигнут лимит итераций на ступени нагрузки 1.; Несущая способность: Поиск несущей способности через UltimateStrain сошелся. Несущая способность не проходит: предел по выбранному пути достигается при lambda = 0.929876, раньше заданной нагрузки (lambda = 1).; Продольные трещины: Проверка продольных трещин не проходит: сжатие бетона выше допускаемого. Максимальное сжатие бетона 22.015 МПа; допускаемое Rb,mc2 = 14.600 МПа.
+SECTION 3.sub2: concrete=60; rebar=4
+SECTION 3.sub3: concrete=76; rebar=4
+SECTION 4.sub1: concrete=80; rebar=4
+SOLVE 4.sub2.purpose1.load0: eps=-1.67670358269433E-04; kx=3.06646895215318E-08; ky=-4.54987145158994E-08; iterations=2
+SOLVE 4.sub2.purpose1.load1: eps=-2.79838146523053E-04; kx=6.07624478084411E-07; ky=-1.35625634483115E-07; iterations=2
+SOLVE 4.sub2.purpose1.load2: eps=-1.25291454334291E-04; kx=8.69940145010416E-08; ky=-8.00312706319455E-07; iterations=2
+SOLVE 4.sub2.purpose1.load3: eps=-2.37937927780066E-04; kx=6.7012163486552E-07; ky=-8.96752341605578E-07; iterations=3
+SOLVE 4.sub2.purpose2.load0: eps=-5.89381955115768E-05; kx=3.15922704202282E-09; ky=-4.86942163039431E-09; iterations=2
+SOLVE 4.sub2.purpose2.load1: eps=-9.72268083341051E-05; kx=1.97997563385659E-07; ky=-2.6107420489451E-08; iterations=2
+SOLVE 4.sub2.purpose2.load2: eps=-4.24824462384696E-05; kx=1.64329763289333E-08; ky=-2.69896571042887E-07; iterations=2
+SOLVE 4.sub2.purpose2.load3: eps=-8.07710590609979E-05; kx=2.11271312672569E-07; ky=-2.91134569901944E-07; iterations=2
+SOLVE 4.sub2.purpose3.load0: eps=-1.23177071901385E-04; kx=1.58028919957604E-08; ky=-2.38116064862451E-08; iterations=2
+SOLVE 4.sub2.purpose3.load1: eps=-2.04590624808678E-04; kx=4.32740574136363E-07; ky=-8.08990934145724E-08; iterations=2
+SOLVE 4.sub2.purpose3.load2: eps=-9.06813528071784E-05; kx=5.14825713259649E-08; ky=-5.78104856162531E-07; iterations=2
+SOLVE 4.sub2.purpose3.load3: eps=-1.72273123455246E-04; kx=4.70883365148204E-07; ky=-6.37848466699662E-07; iterations=3
+SECTION 4.sub2: concrete=100; rebar=4
+SECTION 4.sub3: concrete=180; rebar=4
+SECTION 5.sub1: concrete=102; rebar=4
+SOLVE 5.sub2.purpose1.load0: eps=-1.72548234491909E-04; kx=9.81011832621906E-09; ky=2.74170887165471E-08; iterations=2
+SOLVE 5.sub2.purpose1.load1: eps=-1.59238070239254E-04; kx=5.48004572880632E-07; ky=-1.27144426899408E-08; iterations=2
+SOLVE 5.sub2.purpose1.load2: eps=-1.63830382515897E-04; kx=3.21054135520457E-08; ky=-5.53716199503262E-07; iterations=2
+SOLVE 5.sub2.purpose1.load3: eps=-1.50401768166625E-04; kx=5.7136266143802E-07; ky=-5.95358910362303E-07; iterations=3
+SOLVE 5.sub2.purpose2.load0: eps=-5.9499304975277E-05; kx=1.0895184151438E-09; ky=2.772486959663E-09; iterations=2
+SOLVE 5.sub2.purpose2.load1: eps=-5.50373330802874E-05; kx=1.82938245102159E-07; ky=-1.13548126888061E-09; iterations=2
+SOLVE 5.sub2.purpose2.load2: eps=-5.69278305299895E-05; kx=3.26061187544581E-09; ky=-1.86143028341699E-07; iterations=2
+SOLVE 5.sub2.purpose2.load3: eps=-5.24658586349999E-05; kx=1.85109338562461E-07; ky=-1.90050996570243E-07; iterations=2
+SOLVE 5.sub2.purpose3.load0: eps=-1.25809403425545E-04; kx=5.22294261039497E-09; ky=1.40147784560378E-08; iterations=2
+SOLVE 5.sub2.purpose3.load1: eps=-1.16228251776254E-04; kx=3.94209541239066E-07; ky=-6.17823374468921E-09; iterations=2
+SOLVE 5.sub2.purpose3.load2: eps=-1.19847407838297E-04; kx=1.644128272191E-08; ky=-3.992016630251E-07; iterations=2
+SOLVE 5.sub2.purpose3.load3: eps=-1.10228535103969E-04; kx=4.05767692128523E-07; ky=-4.19861781933494E-07; iterations=3
+SECTION 5.sub2: concrete=140; rebar=4
+SECTION 5.sub3: concrete=208; rebar=4
+SECTION 6.sub1: concrete=125; rebar=4
+SOLVE 6.sub2.purpose1.load0: eps=-1.76549955977004E-04; kx=4.54315654339084E-09; ky=-7.33426615996991E-08; iterations=2
+SOLVE 6.sub2.purpose1.load1: eps=-1.7920479203819E-04; kx=3.55733946614893E-07; ky=-7.06467519844549E-08; iterations=2
+SOLVE 6.sub2.purpose1.load2: eps=-1.81277663389451E-04; kx=2.90927192809133E-09; ky=-4.10442489655731E-07; iterations=2
+SOLVE 6.sub2.purpose1.load3: eps=-1.83932499450636E-04; kx=3.54100061999593E-07; ky=-4.07746580040487E-07; iterations=2
+SOLVE 6.sub2.purpose2.load0: eps=-5.98817081270271E-05; kx=5.31820566595696E-10; ky=-7.18338494573666E-09; iterations=2
+SOLVE 6.sub2.purpose2.load1: eps=-6.07365913434666E-05; kx=1.18268593365801E-07; ky=-8.12744987532597E-09; iterations=2
+SOLVE 6.sub2.purpose2.load2: eps=-6.0926450817075E-05; kx=1.10398112998316E-09; ky=-1.16758137790766E-07; iterations=2
+SOLVE 6.sub2.purpose2.load3: eps=-6.17813340335145E-05; kx=1.18840753929188E-07; ky=-1.17702202720355E-07; iterations=2
+SOLVE 6.sub2.purpose3.load0: eps=-1.27807527829865E-04; kx=2.47958617301995E-09; ky=-3.69932075516696E-08; iterations=2
+SOLVE 6.sub2.purpose3.load1: eps=-1.29694087512345E-04; kx=2.5555707585114E-07; ky=-3.67411552486125E-08; iterations=2
+SOLVE 6.sub2.purpose3.load2: eps=-1.30721426922398E-04; kx=2.32682720147016E-09; ky=-2.76679491193374E-07; iterations=2
+SOLVE 6.sub2.purpose3.load3: eps=-1.32607986604878E-04; kx=2.5540431687959E-07; ky=-2.76427438890317E-07; iterations=2
+SECTION 6.sub2: concrete=214; rebar=4
+SECTION 6.sub3: concrete=375; rebar=4
+TOTAL_CONTOUR_MESH: passed=34333; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_af5f14ca568a41328ab886a53d851f7b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestContourMesh.RunContourMeshTests; 2026-10-22T20:06:36
+===== modTestWorkbookInterface.RunImportMessageScopeTests =====
+SUITE_STARTED: modTestWorkbookInterface.RunImportMessageScopeTests; 2026-10-22T20:06:37
+TEST_MACRO_CANCEL_KEY: Disabled; isolated Excel instance only
+TEST_MACRO_DISPLAY_ALERTS: False; isolated Excel instance only
+EXCEL_AFTER_SUITE: pid=126228; workingSet=163069952; privateBytes=112336896; cpu=10.96875
+OK: ui.autocad.run.savedGeometry.message
+OK: ui.autocad.run.savedGeometry.noImportText
+OK: ui.autocad.run.savedGeometry.noMeshNotice
+OK: ui.autocad.run.savedGeometry.concreteX; actual=0.95; expected=0.95
+OK: ui.autocad.run.savedGeometry.concreteY; actual=-0.75; expected=-0.75
+OK: ui.autocad.run.savedGeometry.rebarX; actual=0.93; expected=0.93
+OK: ui.autocad.run.savedGeometry.rebarY; actual=-0.77; expected=-0.77
+OK: ui.autocad.run.savedGeometry.rebarText; actual=ALL: 4∅20
+TOTAL_IMPORT_MESSAGE_SCOPE: passed=8; failed=0
+COM_WORKBOOK_AFTER_SUITE: path=C:\Users\avidzba\AppData\Local\Temp\RC_NDM_ModeSuite_af5f14ca568a41328ab886a53d851f7b\RC_Section_NDM.xlsm; readOnly=True; sameProxy=True
+MODE_AFTER_SUITE: No
+SUITE_FINISHED: modTestWorkbookInterface.RunImportMessageScopeTests; 2026-10-22T20:06:41
+SOURCE_UNCHANGED: True
+WATCHDOG_COMPLETED: exit=0; source unchanged=True

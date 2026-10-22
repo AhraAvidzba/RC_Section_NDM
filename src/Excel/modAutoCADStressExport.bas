@@ -102,7 +102,7 @@ Public Sub ExportSectionStressToAutoCAD()
             "; профиль: " & profileId & _
             "; состояние: " & stateType & _
             "; величина: " & quantity
-        ShowWorkbookMessage WithConcreteMeshGenerationNotice(message, section), vbInformation, "RC Section NDM"
+        ShowWorkbookMessage message, vbInformation, "RC Section NDM"
     End If
     Exit Sub
 

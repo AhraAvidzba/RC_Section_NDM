@@ -1132,8 +1132,8 @@ End Sub
 
 ' Проверяет, что кнопка расчета в режиме AutoCAD использует уже сохраненную
 ' геометрию Results. Макрос не должен повторно импортировать Region и не должен
-' показывать строку "Импортировано из AutoCAD", потому что это действие относится
-' только к отдельной кнопке импорта геометрии.
+' повторять сведения об импорте или создании сетки: они относятся только
+' к команде формирования сечения.
 Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTestStats)
     PrepareCircleInput
 
@@ -1148,6 +1148,7 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     Dim section As CSectionModel
     Set section = New CSectionModel
     section.SourceType = "AutoCADImport"
+    section.ConcreteMeshSource = "AutoCADContours"
     section.AddConcreteElement 950#, -750#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddConcreteElement 1050#, -750#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
     section.AddConcreteElement 950#, -650#, 10000#, 1, vbNullString, vbNullString, "Rectangle", 100#, 100#
@@ -1188,9 +1189,11 @@ Private Sub TestAutoCADCalculationMessageUsesSavedGeometry(ByRef stats As TUiTes
     message = FixtureRunSectionWorkflow(ThisWorkbook, False)
 
     AssertTrue stats, "ui.autocad.run.savedGeometry.message", _
-        InStr(1, message, "Расчет импортированной из AutoCAD геометрии завершен", vbTextCompare) > 0
+        InStr(1, message, "Расчет завершен", vbTextCompare) > 0
     AssertTrue stats, "ui.autocad.run.savedGeometry.noImportText", _
-        InStr(1, message, "Импортировано из AutoCAD", vbTextCompare) = 0
+        InStr(1, message, "AutoCAD", vbTextCompare) = 0
+    AssertTrue stats, "ui.autocad.run.savedGeometry.noMeshNotice", _
+        InStr(1, message, CONTOUR_MESH_GENERATION_NOTICE, vbTextCompare) = 0
 
     Dim afterGeometry As Variant
     afterGeometry = ResultTable("rngNDMSectionGeometry")
@@ -8369,4 +8372,19 @@ Failed:
     AssertTrue stats, "previewSnapshot.runtime." & CStr(Err.Number) & "." & Err.Description, False
 Finished:
     RunPreviewSnapshotContractTests = stats.Report & "TOTAL_PREVIEW_SNAPSHOT_CONTRACT: passed=" & stats.Passed & "; failed=" & stats.Failed
+End Function
+
+' ДЛЯ ТЕСТОВ
+' Проверяет итог расчёта сохранённой импортированной сетки без повторения сведений об импорте.
+Public Function RunImportMessageScopeTests() As String
+    Dim stats As TUiTestStats, saved As Variant
+    saved = FixtureSaveInputs(ThisWorkbook.Worksheets("Config").UsedRange)
+    On Error GoTo Failed
+    TestAutoCADCalculationMessageUsesSavedGeometry stats
+    GoTo Finished
+Failed:
+    AssertTrue stats, "importMessageScope.runtime." & CStr(Err.Number) & "." & Err.Description, False
+Finished:
+    FixtureRestoreInputs ThisWorkbook.Worksheets("Config").UsedRange, saved
+    RunImportMessageScopeTests = stats.Report & "TOTAL_IMPORT_MESSAGE_SCOPE: passed=" & stats.Passed & "; failed=" & stats.Failed
 End Function

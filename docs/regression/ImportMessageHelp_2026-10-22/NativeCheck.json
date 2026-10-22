@@ -1,0 +1,68 @@
+﻿{
+    "Passed":  true,
+    "ReadOnly":  true,
+    "WorkbookSHA256":  "3A9E57548CDB35E14ED49DB4E2609F9C31B6ABE1923D5D0C97D6D3ECA186DE57",
+    "WorkbookOpenReveal":  true,
+    "FollowedLinks":  [
+                          {
+                              "Type":  "Circle",
+                              "Link":  "A2",
+                              "Target":  "\u0027Справка\u0027!A751",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "Circle",
+                              "Link":  "B757",
+                              "Target":  "\u0027Справка\u0027!A741",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "Rectangles",
+                              "Link":  "A21",
+                              "Target":  "\u0027Справка\u0027!A773",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "Rectangles",
+                              "Link":  "B779",
+                              "Target":  "\u0027Справка\u0027!A741",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "PointedSection",
+                              "Link":  "A59",
+                              "Target":  "\u0027Справка\u0027!A759",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "PointedSection",
+                              "Link":  "B764",
+                              "Target":  "\u0027Справка\u0027!A741",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "HollowRectangle",
+                              "Link":  "A91",
+                              "Target":  "\u0027Справка\u0027!A766",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          },
+                          {
+                              "Type":  "HollowRectangle",
+                              "Link":  "B771",
+                              "Target":  "\u0027Справка\u0027!A741",
+                              "Followed":  true,
+                              "TargetVisible":  true
+                          }
+                      ],
+    "Components":  169,
+    "OwnPID":  59892,
+    "OwnStartTicks":  639282855617696404,
+    "SourceUnchanged":  true
+}

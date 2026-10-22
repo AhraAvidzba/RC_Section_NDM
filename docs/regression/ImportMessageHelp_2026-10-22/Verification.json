@@ -1,0 +1,41 @@
+{
+  "Passed": true,
+  "Components": 169,
+  "SubstantivelyChangedComponents": [
+    "CAutoCADSectionModelImporter",
+    "modAutoCADStressExport",
+    "modTestContourMesh",
+    "modTestWorkbookInterface",
+    "modWorkbookCalculation",
+    "modWorkbookMessages"
+  ],
+  "UnchangedComponentsExceptVBEIdentifierCase": 163,
+  "AllSourceStringLiteralsExact": true,
+  "ExportNoticeAbsent": true,
+  "CalculationImportNoticeAbsent": true,
+  "FormationNoticePreserved": true,
+  "BuildHelpHeightsMatch": true,
+  "DirectedTests": {
+    "No": {
+      "TOTAL_CONTOUR_MESH": {
+        "Passed": 34333,
+        "Failed": 0
+      },
+      "TOTAL_IMPORT_MESSAGE_SCOPE": {
+        "Passed": 8,
+        "Failed": 0
+      }
+    },
+    "Yes": {
+      "TOTAL_CONTOUR_MESH": {
+        "Passed": 34333,
+        "Failed": 0
+      },
+      "TOTAL_IMPORT_MESSAGE_SCOPE": {
+        "Passed": 8,
+        "Failed": 0
+      }
+    }
+  },
+  "AllCodeSHA256": "7584A221784CFB7AEB2A2D396D8AA95780448B277049201709AFD25167ECAAF8"
+}
